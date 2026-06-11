@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Speaking — Part 1 Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --ink: #1a1612;
+    --accent: #c4411b;
+    --accent2: #2c6e4f;
+    --muted: #7a6f62;
+    --card: #fffdf8;
+    --border: #e2d9cc;
+    --tag-bg: #fde8e0;
+    --tag-ink: #c4411b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: 'SPEAKING';
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -0.02em;
+    pointer-events: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  header p {
+    color: rgba(245,240,232,0.6);
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+  .lesson-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(196,65,27,0.15);
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+  }
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  nav a:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section {
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 2.2rem;
+  }
+  .section-title-block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-title-block .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    color: var(--tag-ink);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--accent2);
+  }
+  .card p, .card li { font-size: 0.92rem; color: #3a3530; }
+  .card ul, .card ol { padding-left: 1.2rem; }
+  .card li { margin-bottom: 0.3rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 640px) { .three-col { grid-template-columns: 1fr; } }
+
+  .passage-box {
+    background: #fffef5;
+    border: 1px solid #ddd;
+    border-left: 4px solid var(--accent);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.8;
+  }
+  .passage-box strong { color: var(--ink); }
+
+  .exercise-box {
+    background: #f0f8f4;
+    border: 1px solid #b8dcc8;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .exercise-box h3 {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  .exercise-box ol, .exercise-box ul { padding-left: 1.3rem; }
+  .exercise-box li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+
+  details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 0.75rem;
+  }
+  summary {
+    cursor: pointer;
+    padding: 0.6rem 1rem;
+    font-size: 0.83rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    list-style: none;
+  }
+  summary::after { content: ' ▾'; }
+  details[open] summary::after { content: ' ▴'; }
+  .answers { padding: 0.75rem 1.25rem 1rem; font-size: 0.88rem; }
+  .answers li { margin-bottom: 0.6rem; }
+  .answers strong { color: var(--accent2); }
+
+  .tip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    background: #fff3cd;
+    border: 1px solid #f0c040;
+    color: #7a5800;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    font-weight: 500;
+  }
+  .good-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    color: #2c6e4f;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    font-weight: 500;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 2rem 0;
+  }
+  .note-box {
+    background: #eef2ff;
+    border: 1px solid #c5cff5;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    font-size: 0.88rem;
+    color: #3a3f8c;
+    margin-bottom: 1rem;
+  }
+  .note-box strong { display: block; margin-bottom: 0.3rem; }
+
+  /* Criteria grid */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .criteria-grid { grid-template-columns: 1fr; } }
+  .criteria-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+  .criteria-card .pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .criteria-card .label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 0.3rem;
+    color: var(--ink);
+  }
+  .criteria-card p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* Answer comparison */
+  .answer-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .answer-compare { grid-template-columns: 1fr; } }
+  .bad-answer {
+    background: #fff5f5;
+    border: 1px solid #ffcdd2;
+    border-left: 4px solid #e53935;
+    border-radius: 0 4px 4px 0;
+    padding: 1rem 1.25rem;
+    font-size: 0.88rem;
+  }
+  .bad-answer .label { font-size: 0.75rem; color: #e53935; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .good-answer {
+    background: #f0f8f4;
+    border: 1px solid #b8dcc8;
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 4px 4px 0;
+    padding: 1rem 1.25rem;
+    font-size: 0.88rem;
+  }
+  .good-answer .label { font-size: 0.75rem; color: var(--accent2); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+
+  /* Topic practice card */
+  .topic-practice {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .topic-practice h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+  .topic-practice ol { padding-left: 1.2rem; }
+  .topic-practice li { font-size: 0.9rem; color: #3a3530; margin-bottom: 0.25rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lesson-date">IELTS Speaking · Part 1</div>
+  <h1>Speaking Part 1<br>Full Lesson</h1>
+  <p>Format · Marking · Strategy · Answer Techniques · Practice Topics</p>
+</header>
+
+<nav>
+  <a href="#format">1. Test Format</a>
+  <a href="#marking">2. Marking Criteria</a>
+  <a href="#strategy">3. Strategy</a>
+  <a href="#answers">4. Answer Technique</a>
+  <a href="#practice">5. Practice Topics</a>
+</nav>
+
+<main>
+
+<!-- =================== 1. FORMAT =================== -->
+<div class="section" id="format">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title-block">
+      <div class="tag">Test Format</div>
+      <h2>What is Speaking Part 1?</h2>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>The Basics</h3>
+      <ul>
+        <li>Face-to-face with an examiner (or via video call)</li>
+        <li>Lasts <strong>4–5 minutes</strong></li>
+        <li>Around <strong>12 questions</strong> across <strong>3 topics</strong></li>
+        <li>All questions are about <strong>you, your life, and your country</strong></li>
+        <li>Topics are everyday: home, hobbies, food, weather, transport…</li>
+        <li>The test is recorded for possible re-marking</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>The Full Test at a Glance</h3>
+      <ul>
+        <li><strong>Part 1</strong> — 4–5 min / Q&A / personal topics (← today)</li>
+        <li><strong>Part 2</strong> — 3–4 min / individual talk / cue card</li>
+        <li><strong>Part 3</strong> — 4–5 min / discussion / world issues</li>
+      </ul>
+      <p style="margin-top:0.6rem; font-size:0.88rem;">Total test: <strong>11–14 minutes</strong>. All three parts use the same marking criteria.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>What Kind of Questions to Expect</h3>
+    <p>Part 1 questions are <strong>not difficult</strong> — they are designed to be easy so you can warm up and speak naturally. The examiner is not testing your knowledge; they are giving you an opportunity to <strong>show your English</strong>. You will typically get 4 questions on each of 3 topics (≈ 12 questions total).</p>
+    <div style="margin-top:0.75rem;">
+      <span class="good-pill">✓ Do you enjoy cooking?</span>
+      <span class="good-pill">✓ What kind of music do you listen to?</span>
+      <span class="good-pill">✓ How often do you use public transport?</span>
+      <span class="good-pill">✓ Did you have a pet as a child?</span>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>📌 Important: This is an informal test</strong>
+    Informal language is completely normal and acceptable in Part 1. You do not need to sound formal or academic. Speak naturally, as you would in a friendly conversation.
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- =================== 2. MARKING =================== -->
+<div class="section" id="marking">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title-block">
+      <div class="tag">Marking Criteria</div>
+      <h2>How You Are Scored</h2>
+    </div>
+  </div>
+
+  <p style="margin-bottom:1rem; font-size:0.93rem;">Your score is NOT given after each part — the examiner marks your performance across the <strong>whole test</strong>. There are four criteria, each worth <strong>25%</strong> of your total speaking score.</p>
+
+  <div class="criteria-grid">
+    <div class="criteria-card">
+      <div class="pct">25%</div>
+      <div class="label">Fluency & Coherence</div>
+      <p>Speak at a natural pace without long pauses. Ideas should connect logically.</p>
+    </div>
+    <div class="criteria-card">
+      <div class="pct">25%</div>
+      <div class="label">Lexical Resource</div>
+      <p>Use a wide and varied vocabulary. Avoid repeating the same basic words.</p>
+    </div>
+    <div class="criteria-card">
+      <div class="pct">25%</div>
+      <div class="label">Grammatical Range & Accuracy</div>
+      <p>Use a mix of simple and complex sentence structures with few errors.</p>
+    </div>
+    <div class="criteria-card">
+      <div class="pct">25%</div>
+      <div class="label">Pronunciation</div>
+      <p>Be clear and easy to understand. Accent is fine — clarity is what matters.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>What This Means for Part 1</h3>
+    <ul>
+      <li><strong>Fluency:</strong> Don't rush to fill silence with "um, um, um" — use natural fillers like "Well…", "Actually…", "That's a good question…"</li>
+      <li><strong>Vocabulary:</strong> Don't say "good" — say "enjoyable", "fascinating", "rewarding". Don't say "big" — say "enormous", "spacious", "considerable".</li>
+      <li><strong>Grammar:</strong> Mix tenses. Use conditionals, comparatives, and relative clauses where natural.</li>
+      <li><strong>Pronunciation:</strong> Speak at a steady pace, stress the right syllables, and link words naturally.</li>
+    </ul>
+    <div style="margin-top:0.75rem;">
+      <span class="tip-pill">⚠ Accent does NOT affect your score — clarity does</span>
+      <span class="tip-pill">⚠ You are marked on the whole test, not part by part</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- =================== 3. STRATEGY =================== -->
+<div class="section" id="strategy">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-title-block">
+      <div class="tag">Strategy</div>
+      <h2>How to Approach Part 1</h2>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>How Long Should Your Answer Be?</h3>
+      <p>Part 1 answers should be <strong>2–4 sentences</strong>. Not one word. Not a paragraph. Give a direct answer, then add one reason, example, or detail to extend it.</p>
+      <p style="margin-top:0.5rem;">Think: <strong>Answer → Extend → (Optional detail)</strong></p>
+    </div>
+    <div class="card">
+      <h3>Should I Speak Fast or Slow?</h3>
+      <p>Speak at a <strong>natural, comfortable pace</strong> — not fast to impress, not artificially slow. Speed does not equal fluency. Fluency means speaking smoothly with ideas connected naturally.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Key Strategy Points</h3>
+    <ol>
+      <li><strong>Prepare topics in advance</strong> — topics repeat every year. Know your opinions on home, food, hobbies, transport, weather, music, etc.</li>
+      <li><strong>Don't memorise full answers</strong> — examiners can spot memorised responses. Prepare ideas and vocabulary, then speak naturally.</li>
+      <li><strong>Extend every answer</strong> — the biggest mistake is giving one-word or one-sentence answers. Always add a reason or example.</li>
+      <li><strong>Showcase vocabulary naturally</strong> — don't force in difficult words. Use richer vocabulary where it fits naturally.</li>
+      <li><strong>You can ask for clarification</strong> — if you didn't understand a question, it's fine to say "Sorry, could you repeat that?" or "Do you mean…?"</li>
+      <li><strong>You can self-correct</strong> — if you make a mistake and notice it, correct yourself briefly and move on. Don't stop and apologise.</li>
+      <li><strong>You can tell lies</strong> — it is perfectly fine to invent or exaggerate details. The examiner is testing your English, not your honesty.</li>
+    </ol>
+    <div style="margin-top:0.75rem;">
+      <span class="tip-pill">⚠ Don't give one-word answers</span>
+      <span class="tip-pill">⚠ Don't memorise whole model answers</span>
+      <span class="tip-pill">⚠ Don't panic if the examiner interrupts — they control the time</span>
+      <span class="good-pill">✓ Prepare vocabulary, not scripts</span>
+      <span class="good-pill">✓ Always extend your answer</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Useful Fillers & Linking Phrases</h3>
+    <p style="margin-bottom:0.6rem; font-size:0.88rem;">These help you sound fluent and give you a moment to think naturally:</p>
+    <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+      <span class="good-pill">Well, actually…</span>
+      <span class="good-pill">To be honest…</span>
+      <span class="good-pill">I'd say that…</span>
+      <span class="good-pill">That's a good question…</span>
+      <span class="good-pill">As far as I know…</span>
+      <span class="good-pill">What I mean is…</span>
+      <span class="good-pill">Having said that…</span>
+      <span class="good-pill">I suppose…</span>
+      <span class="good-pill">Funnily enough…</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- =================== 4. ANSWER TECHNIQUE =================== -->
+<div class="section" id="answers">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-title-block">
+      <div class="tag">Answer Technique</div>
+      <h2>Weak vs. Strong Answers</h2>
+    </div>
+  </div>
+
+  <p style="margin-bottom:1rem; font-size:0.93rem;">Study the difference between a weak answer and a strong one. The topic is the same — only the technique changes.</p>
+
+  <!-- Example 1 -->
+  <div class="passage-box">
+    <strong>Question: Do you enjoy cooking?</strong>
+  </div>
+  <div class="answer-compare">
+    <div class="bad-answer">
+      <div class="label">✗ Weak Answer (Band 4–5)</div>
+      "Yes, I like cooking. I cook every day."
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:#c62828;">Why weak: Too short. No reason, no detail, no interesting vocabulary. Examiner has nothing to work with.</p>
+    </div>
+    <div class="good-answer">
+      <div class="label">✓ Strong Answer (Band 7+)</div>
+      "Yes, I actually find cooking quite therapeutic. After a long day at work, I enjoy experimenting with different recipes — lately I've been trying to cook more Korean dishes, which has been a real challenge but also really rewarding."
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:#2c6e4f;">Why strong: Gives a reason (therapeutic), uses good vocabulary (experimenting, rewarding), adds specific detail (Korean dishes), and sounds natural.</p>
+    </div>
+  </div>
+
+  <!-- Example 2 -->
+  <div class="passage-box">
+    <strong>Question: What kind of music do you listen to?</strong>
+  </div>
+  <div class="answer-compare">
+    <div class="bad-answer">
+      <div class="label">✗ Weak Answer</div>
+      "I listen to pop music. I like it."
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:#c62828;">Why weak: Extremely basic vocabulary, no extension, no personal touch.</p>
+    </div>
+    <div class="good-answer">
+      <div class="label">✓ Strong Answer</div>
+      "Well, my taste is quite varied to be honest. I mostly gravitate towards jazz and indie music — there's something about the laid-back rhythms that I find really relaxing. I also grew up listening to a lot of classical music, so that still has a special place for me."
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:#2c6e4f;">Why strong: Rich vocabulary (gravitate, laid-back, varied), uses past tense naturally, explains feelings, sounds conversational.</p>
+    </div>
+  </div>
+
+  <!-- Example 3 -->
+  <div class="passage-box">
+    <strong>Question: How do you usually get to work or school?</strong>
+  </div>
+  <div class="answer-compare">
+    <div class="bad-answer">
+      <div class="label">✗ Weak Answer</div>
+      "I take the bus. It takes 20 minutes."
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:#c62828;">Why weak: Just facts, no opinion, no vocabulary range.</p>
+    </div>
+    <div class="good-answer">
+      <div class="label">✓ Strong Answer</div>
+      "I usually take public transport — the metro, specifically. It's fairly convenient where I live, and it saves me from dealing with traffic, which can be absolutely chaotic during rush hour. I'd say it takes around 30 minutes door-to-door, which I actually use to read or listen to podcasts."
+      <p style="margin-top:0.5rem; font-size:0.82rem; color:#2c6e4f;">Why strong: Uses specific vocabulary (chaotic, convenient, door-to-door), gives reasons and habits, uses "I'd say" as a natural filler.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>The Formula: Answer + Reason + Example / Detail</h3>
+    <ol>
+      <li><strong>Answer the question directly</strong> — don't avoid it or go off-topic</li>
+      <li><strong>Give a reason</strong> — "because…", "since…", "mainly because…"</li>
+      <li><strong>Add a detail or example</strong> — a memory, a habit, something specific to you</li>
+    </ol>
+    <p style="margin-top:0.6rem; font-size:0.88rem;">For Part 1, this usually gives you a natural 2–4 sentence answer — exactly the right length.</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- =================== 5. PRACTICE TOPICS =================== -->
+<div class="section" id="practice">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-title-block">
+      <div class="tag">Practice</div>
+      <h2>Practice Topics & Questions</h2>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>📌 How to Use This Section</strong>
+    For each topic below: read the questions, then answer them out loud (or in writing). Aim for 2–4 sentences per answer using the Answer → Reason → Detail formula. The most common first topics are Work, Study, Hometown, and Home.
+  </div>
+
+  <!-- Work / Study -->
+  <div class="two-col">
+    <div class="topic-practice">
+      <h4>💼 Work</h4>
+      <ol>
+        <li>What is your job?</li>
+        <li>Why did you choose that job?</li>
+        <li>Do you like your job?</li>
+        <li>Do you get on well with your colleagues?</li>
+        <li>Would you change your job if you could?</li>
+        <li>Do you plan to continue with this job in the future?</li>
+      </ol>
+    </div>
+    <div class="topic-practice">
+      <h4>📚 Study</h4>
+      <ol>
+        <li>What do you study?</li>
+        <li>Why did you choose that subject?</li>
+        <li>Do you enjoy it?</li>
+        <li>What are the main aspects of your subject?</li>
+        <li>Would you change your subject if you could?</li>
+        <li>Do you plan to work in the same field?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="topic-practice">
+      <h4>🏠 Home</h4>
+      <ol>
+        <li>Do you live in a house or a flat?</li>
+        <li>Who do you live with?</li>
+        <li>What is your favourite room and why?</li>
+        <li>What would you change about your home?</li>
+        <li>Do you plan to live there in the future?</li>
+        <li>What is your neighbourhood like?</li>
+      </ol>
+    </div>
+    <div class="topic-practice">
+      <h4>🏙 Hometown</h4>
+      <ol>
+        <li>Where is your hometown?</li>
+        <li>Do you like your hometown?</li>
+        <li>What is your hometown like?</li>
+        <li>How could your hometown be improved?</li>
+        <li>Has it changed much since you were a child?</li>
+        <li>Is it a good place to bring up children?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="topic-practice">
+      <h4>🎵 Music</h4>
+      <ol>
+        <li>What kind of music do you enjoy?</li>
+        <li>Did you listen to music as a child?</li>
+        <li>Do you play a musical instrument?</li>
+        <li>Is music important in your culture?</li>
+      </ol>
+    </div>
+    <div class="topic-practice">
+      <h4>🍽 Food</h4>
+      <ol>
+        <li>Do you enjoy cooking?</li>
+        <li>What is your favourite food?</li>
+        <li>Is there any food you dislike?</li>
+        <li>How important is food in your culture?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="topic-practice">
+      <h4>🚌 Transport</h4>
+      <ol>
+        <li>How do you usually travel around your city?</li>
+        <li>Do you prefer public or private transport?</li>
+        <li>Is public transport good in your country?</li>
+        <li>Has transport changed much in your lifetime?</li>
+      </ol>
+    </div>
+    <div class="topic-practice">
+      <h4>👶 Childhood</h4>
+      <ol>
+        <li>Did you enjoy your childhood?</li>
+        <li>What is your earliest memory?</li>
+        <li>What did you enjoy doing as a child?</li>
+        <li>Did you have a lot of friends growing up?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Self-assessment exercise -->
+  <div class="exercise-box" style="margin-top:1.5rem;">
+    <h3>Self-Assessment Exercise — After Each Answer, Check:</h3>
+    <ol>
+      <li>Did I answer the question directly? (not avoid it)</li>
+      <li>Did I give at least one reason or explanation?</li>
+      <li>Did I add a personal detail, memory, or example?</li>
+      <li>Did I use at least one piece of vocabulary beyond basic words?</li>
+      <li>Was my answer 2–4 sentences long? (not too short, not too long)</li>
+      <li>Did I use a natural filler or linking phrase at least once?</li>
+    </ol>
+  </div>
+
+  <details>
+    <summary>Show Sample Answer — "Do you enjoy cooking?" (Band 7+)</summary>
+    <div class="answers">
+      <p><em>"Well, to be honest, I wouldn't say I'm a passionate cook, but I do enjoy it when I have the time. I find there's something quite satisfying about preparing a meal from scratch — especially when it turns out well! Lately I've been trying to learn a few traditional dishes from my country, which has been both challenging and fun."</em></p>
+      <br>
+      <ul>
+        <li><strong>Answer:</strong> "I do enjoy it when I have the time"</li>
+        <li><strong>Reason:</strong> "something quite satisfying about preparing a meal from scratch"</li>
+        <li><strong>Detail:</strong> "trying to learn traditional dishes… challenging and fun"</li>
+        <li><strong>Good vocab:</strong> satisfying, from scratch, challenging</li>
+        <li><strong>Natural filler:</strong> "Well, to be honest…"</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Show Sample Answer — "What is your hometown like?" (Band 7+)</summary>
+    <div class="answers">
+      <p><em>"I'm from Almaty, which is the largest city in Kazakhstan. It's a really vibrant and modern city, surrounded by the Tian Shan mountains, which gives it a spectacular backdrop. I'd say it has a nice mix of old Soviet architecture and very contemporary buildings — it's changed enormously in the last twenty years or so."</em></p>
+      <br>
+      <ul>
+        <li><strong>Answer:</strong> Describes the city directly</li>
+        <li><strong>Detail:</strong> Mountains, architecture, change over time</li>
+        <li><strong>Good vocab:</strong> vibrant, spectacular backdrop, contemporary, enormously</li>
+        <li><strong>Natural filler:</strong> "I'd say…"</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+</main>
+</body>
+</html>

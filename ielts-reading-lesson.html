@@ -1,16 +1,247 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com https://plus.unsplash.com data:; frame-src 'none'; object-src 'none'">
-<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>IELTS Reading — Full Question Types Lesson</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css">
 <style>
-  header::after { content: 'READING'; }
-  header { background: linear-gradient(to bottom, rgba(26,22,18,0.78), rgba(26,22,18,0.93)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1400&q=80') center/cover no-repeat; }
+  :root {
+    --bg: #f5f0e8;
+    --ink: #1a1612;
+    --accent: #c4411b;
+    --accent2: #2c6e4f;
+    --muted: #7a6f62;
+    --card: #fffdf8;
+    --border: #e2d9cc;
+    --tag-bg: #fde8e0;
+    --tag-ink: #c4411b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: 'READING';
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -0.02em;
+    pointer-events: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  header p {
+    color: rgba(245,240,232,0.6);
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+  .lesson-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(196,65,27,0.15);
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+  }
+
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  nav a:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section {
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 2.2rem;
+  }
+  .section-title-block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-title-block .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    color: var(--tag-ink);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--accent2);
+  }
+  .card p, .card li { font-size: 0.92rem; color: #3a3530; }
+  .card ul, .card ol { padding-left: 1.2rem; }
+  .card li { margin-bottom: 0.3rem; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .passage-box {
+    background: #fffef5;
+    border: 1px solid #ddd;
+    border-left: 4px solid var(--accent);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.8;
+  }
+  .passage-box strong { color: var(--ink); }
+
+  .exercise-box {
+    background: #f0f8f4;
+    border: 1px solid #b8dcc8;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .exercise-box h3 {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  .exercise-box ol, .exercise-box ul { padding-left: 1.3rem; }
+  .exercise-box li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+  .exercise-box .answer-opt {
+    display: block;
+    padding-left: 1rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 0.75rem;
+  }
+  summary {
+    cursor: pointer;
+    padding: 0.6rem 1rem;
+    font-size: 0.83rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    list-style: none;
+  }
+  summary::after { content: ' ▾'; }
+  details[open] summary::after { content: ' ▴'; }
+  .answers { padding: 0.75rem 1.25rem 1rem; font-size: 0.88rem; }
+  .answers li { margin-bottom: 0.4rem; }
+  .answers strong { color: var(--accent2); }
+
+  .tip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    background: #fff3cd;
+    border: 1px solid #f0c040;
+    color: #7a5800;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    font-weight: 500;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 2rem 0;
+  }
+
+  .diagram-note {
+    background: #eef2ff;
+    border: 1px solid #c5cff5;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    font-size: 0.88rem;
+    color: #3a3f8c;
+  }
+  .diagram-note strong { display: block; margin-bottom: 0.3rem; }
 </style>
 </head>
 <body>
@@ -21,29 +252,6 @@
   <p>Explanation · Strategy · Practice passage for each type</p>
 </header>
 
-<div class="site-nav">
-  <a href="../index.html" class="home">← Home</a>
-  <span class="sep">|</span>
-  <a href="reading-task1.html">Reading</a>
-  <div class="nav-dropdown">
-    <button class="nav-drop-btn">Speaking ▾</button>
-    <div class="nav-drop-menu">
-      <a href="speaking-part1.html">Part 1 — Q&amp;A</a>
-      <a href="speaking-part2.html">Part 2 — Cue Card</a>
-      <a href="speaking-part3.html">Part 3 — Discussion</a>
-    </div>
-  </div>
-  <div class="nav-dropdown">
-    <button class="nav-drop-btn">Writing ▾</button>
-    <div class="nav-drop-menu">
-      <a href="writing-task1.html">Task 1 — Report</a>
-      <a href="writing-task2.html">Task 2 — Essay</a>
-    </div>
-  </div>
-  <a href="listening.html">Listening</a>
-  <a href="vocabulary.html">Vocabulary</a>
-</div>
-
 <nav>
   <a href="#tfng">1. True/False/NG</a>
   <a href="#mc">2. Multiple Choice</a>
@@ -52,14 +260,11 @@
   <a href="#sentence">5. Sentence Completion</a>
   <a href="#para">6. Matching Paragraphs</a>
   <a href="#cat">7. Categorisation</a>
-  <a href="#quiz">8. Practice Quiz</a>
-  <a href="#samples">9. Sample Tests</a>
 </nav>
 
 <main>
 
-<img class="lesson-hero" src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=900&h=440&fit=crop&q=80" alt="Books on a library shelf">
-
+<!-- =================== 1. TFNG =================== -->
 <div class="section" id="tfng">
   <div class="section-header">
     <div class="section-num">1</div>
@@ -94,9 +299,9 @@
       <li>Be especially careful with NOT GIVEN — ask: "does the passage give any information about this at all?"</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: "believed" ≠ factual truth</span>
-      <span class="tip-pill">&#9888; Trap: numbers without context (increase? decrease?)</span>
-      <span class="tip-pill">&#9888; Trap: idiomatic expressions — read for meaning</span>
+      <span class="tip-pill">⚠ Trap: "believed" ≠ factual truth</span>
+      <span class="tip-pill">⚠ Trap: numbers without context (increase? decrease?)</span>
+      <span class="tip-pill">⚠ Trap: idiomatic expressions — read for meaning</span>
     </div>
   </div>
 
@@ -119,7 +324,7 @@
   </div>
 
   <details>
-    <summary>Show Answers &amp; Explanations</summary>
+    <summary>Show Answers & Explanations</summary>
     <div class="answers">
       <ol>
         <li><strong>TRUE</strong> — "a roaring trade" = a successful/booming business</li>
@@ -135,6 +340,7 @@
 
 <hr class="divider">
 
+<!-- =================== 2. MULTIPLE CHOICE =================== -->
 <div class="section" id="mc">
   <div class="section-header">
     <div class="section-num">2</div>
@@ -171,8 +377,8 @@
       <li>Choose based on <strong>deeper meaning</strong>, not just word-matching.</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: all options may appear in the passage — only one is accurate</span>
-      <span class="tip-pill">&#9888; Trap: similar-sounding options with small but crucial differences</span>
+      <span class="tip-pill">⚠ Trap: all options may appear in the passage — only one is accurate</span>
+      <span class="tip-pill">⚠ Trap: similar-sounding options with small but crucial differences</span>
     </div>
   </div>
 
@@ -205,7 +411,7 @@
   </div>
 
   <details>
-    <summary>Show Answers &amp; Explanations</summary>
+    <summary>Show Answers & Explanations</summary>
     <div class="answers">
       <ol>
         <li><strong>A</strong> — "as long as 15,000 years ago" is directly stated in the passage</li>
@@ -218,6 +424,7 @@
 
 <hr class="divider">
 
+<!-- =================== 3. DIAGRAM LABELLING =================== -->
 <div class="section" id="diagram">
   <div class="section-header">
     <div class="section-num">3</div>
@@ -253,15 +460,15 @@
       <li>Check the word limit — never exceed it.</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: writing paraphrases instead of exact passage words</span>
-      <span class="tip-pill">&#9888; Trap: exceeding the word limit</span>
-      <span class="tip-pill">&#9888; Trap: misspelling technical terms</span>
+      <span class="tip-pill">⚠ Trap: writing paraphrases instead of exact passage words</span>
+      <span class="tip-pill">⚠ Trap: exceeding the word limit</span>
+      <span class="tip-pill">⚠ Trap: misspelling technical terms</span>
     </div>
   </div>
 
-  <div class="note-box">
-    <strong>About the Diagram Exercise (Ants)</strong>
-    The original exercise uses a diagram of an ant's body with 5 blank labels. The passage describes each body part. Below is the passage and exercise reproduced for study.
+  <div class="diagram-note">
+    <strong>🖼 About the Diagram Exercise (Ants)</strong>
+    The original exercise from IELTS Liz uses a diagram of an ant's body with 5 blank labels. The passage describes each body part. Below is the passage and exercise reproduced for study.
   </div>
 
   <div class="passage-box" style="margin-top:1rem;">
@@ -307,6 +514,7 @@
 
 <hr class="divider">
 
+<!-- =================== 4. MATCHING HEADINGS =================== -->
 <div class="section" id="headings">
   <div class="section-header">
     <div class="section-num">4</div>
@@ -323,7 +531,7 @@
     </div>
     <div class="card">
       <h3>Important Distinction</h3>
-      <p>A <strong>heading</strong> is a <em>title</em> — it must describe the <em>whole paragraph's main idea</em>, not just one detail inside it. One matching detail ≠ the correct heading.</p>
+      <p>This is NOT Matching Paragraph Information. A <strong>heading</strong> is a <em>title</em> — it must describe the <em>whole paragraph's main idea</em>, not just one detail inside it. One matching detail ≠ the correct heading.</p>
     </div>
   </div>
 
@@ -338,8 +546,8 @@
       <li>Your answer must be a roman numeral (e.g. <strong>III</strong>).</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: choosing a heading that matches one detail, not the whole paragraph</span>
-      <span class="tip-pill">&#9888; Trap: headings with similar wording — look at meaning, not just words</span>
+      <span class="tip-pill">⚠ Trap: choosing a heading that matches one detail, not the whole paragraph</span>
+      <span class="tip-pill">⚠ Trap: headings with similar wording — look at meaning, not just words</span>
     </div>
   </div>
 
@@ -347,7 +555,7 @@
     <strong>Passage: The Greenhouse Effect</strong><br><br>
     <strong>A.</strong> A greenhouse is a house made entirely of glass. One of the main purposes of a greenhouse is to grow plants that might struggle outside. A greenhouse stays warm inside, even during winter. Sunlight shines in and warms the plants and air inside. But the heat is trapped by the glass and cannot escape. So during the daylight hours, it gets warmer inside a greenhouse, and stays quite warm at night too.<br><br>
     <strong>B.</strong> The Earth experiences a similar thing to a greenhouse. Gases in the atmosphere such as carbon dioxide do what the roof of a greenhouse does. During the day, the Sun shines through the atmosphere and Earth's surface warms up. At night, Earth's surface cools, releasing heat back into the air. But some of the heat is trapped by the greenhouse gases. That is what keeps our Earth a comfortable temperature on average.<br><br>
-    <strong>C.</strong> However, humans have been adding extra greenhouse gases — especially carbon dioxide — to the atmosphere. When we burn fossil fuels such as coal and oil, we release CO2. These extra gases are trapping more heat than usual, causing global temperatures to rise. Scientists call this enhanced greenhouse effect the cause of global warming.<br><br>
+    <strong>C.</strong> However, humans have been adding extra greenhouse gases — especially carbon dioxide — to the atmosphere. When we burn fossil fuels such as coal and oil, we release CO₂. These extra gases are trapping more heat than usual, causing global temperatures to rise. Scientists call this enhanced greenhouse effect the cause of global warming.<br><br>
     <strong>D.</strong> What can we do? Many governments are working on agreements to reduce emissions. Individuals can make changes too: driving less, using renewable energy, and eating less meat all help reduce the amount of carbon dioxide we put into the atmosphere. Our everyday choices have a direct impact on the future of the planet.
   </div>
 
@@ -373,7 +581,7 @@
   </div>
 
   <details>
-    <summary>Show Answers &amp; Explanations</summary>
+    <summary>Show Answers & Explanations</summary>
     <div class="answers">
       <ol type="A">
         <li><strong>II — The greenhouse structure</strong> — the whole paragraph describes what a greenhouse is and how it works physically</li>
@@ -388,6 +596,7 @@
 
 <hr class="divider">
 
+<!-- =================== 5. SENTENCE COMPLETION =================== -->
 <div class="section" id="sentence">
   <div class="section-header">
     <div class="section-num">5</div>
@@ -423,9 +632,9 @@
       <li>Write the answer — check spelling and word count.</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: paraphrasing instead of copying exact words</span>
-      <span class="tip-pill">&#9888; Trap: going over the word limit</span>
-      <span class="tip-pill">&#9888; Trap: ignoring grammar — the completed sentence must make grammatical sense</span>
+      <span class="tip-pill">⚠ Trap: paraphrasing instead of copying exact words</span>
+      <span class="tip-pill">⚠ Trap: going over the word limit</span>
+      <span class="tip-pill">⚠ Trap: ignoring grammar — the completed sentence must make grammatical sense</span>
     </div>
   </div>
 
@@ -464,6 +673,7 @@
 
 <hr class="divider">
 
+<!-- =================== 6. MATCHING PARAGRAPHS =================== -->
 <div class="section" id="para">
   <div class="section-header">
     <div class="section-num">6</div>
@@ -481,8 +691,8 @@
     <div class="card">
       <h3>vs. Matching Headings</h3>
       <ul>
-        <li><strong>Matching Headings</strong> — What is the paragraph <em>mainly about?</em></li>
-        <li><strong>Matching Paragraphs</strong> — Which paragraph <em>contains this specific detail?</em></li>
+        <li><strong>Matching Headings</strong> → What is the paragraph <em>mainly about?</em> (the whole)</li>
+        <li><strong>Matching Paragraphs</strong> → Which paragraph <em>contains this specific detail?</em></li>
         <li>One paragraph can be the answer to more than one question</li>
         <li>Your answer is always a <strong>letter</strong></li>
       </ul>
@@ -499,8 +709,8 @@
       <li>Remember: a paragraph can answer more than one question — check the instructions.</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: confusing this with Matching Headings</span>
-      <span class="tip-pill">&#9888; Trap: forgetting that one letter can be used more than once</span>
+      <span class="tip-pill">⚠ Trap: confusing this with Matching Headings</span>
+      <span class="tip-pill">⚠ Trap: forgetting that one letter can be used more than once</span>
     </div>
   </div>
 
@@ -541,6 +751,7 @@
 
 <hr class="divider">
 
+<!-- =================== 7. CATEGORISATION =================== -->
 <div class="section" id="cat">
   <div class="section-header">
     <div class="section-num">7</div>
@@ -576,8 +787,8 @@
       <li>Don't panic if the same letter appears several times — that's normal.</li>
     </ol>
     <div style="margin-top:0.75rem;">
-      <span class="tip-pill">&#9888; Trap: using general knowledge — rely only on the passage</span>
-      <span class="tip-pill">&#9888; Trap: assuming each category is used only once</span>
+      <span class="tip-pill">⚠ Trap: using general knowledge — rely only on the passage</span>
+      <span class="tip-pill">⚠ Trap: assuming each category is used only once</span>
     </div>
   </div>
 
@@ -620,181 +831,7 @@
   </details>
 </div>
 
-  <hr class="divider">
-  <!-- MATERIALS -->
-<div class="section" id="materials">
-  <div class="section-header">
-    <div class="section-num">&#9733;</div>
-    <div class="section-title-block">
-      <div class="tag">Free Materials</div>
-      <h2>Practice &amp; Resources</h2>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Examiner Tips</h3>
-    <ul>
-      <li>Skim over and watch for the answers Skimming refers to looking only for the main ideas. You don't need to read attentively every word. Remember, you just need to answer the questions, nothing more. So skim over the text and then start looking for the answers.</li>
-      <li>Watch your time Donât forget you have only 60 minutes to read three texts and answer 40 questions. You wonât get additional time for filling your answer sheet, so make sure manage your time properly.</li>
-      <li>Is your spelling correct? Check your spelling before writing your answer on the answer blank. You will get zero points for the answer if it's spelled incorrectly.</li>
-      <li>Keep the order Remember that the questions follow the order of the text in most cases. So the answer to question 5 will come after the answer to question 4 and so on.</li>
-      <li>Underline! When you skim over the text, underline the most important phrases. It will help you to save some time when you will search for answers.</li>
-      <li>Unfamiliar vocabulary? That's OK! Do not worry if the text seems unfamiliar to you or you donât know some words. Every answer can be found in the text, you donât need any additional knowledge to succeed.</li>
-    </ul>
-    <p class="material-source">Source: <a href="https://ielts-up.com/reading/ielts-reading-tips.html" target="_blank" rel="noopener noreferrer">IELTS Up</a></p>
-  </div>
-</div>
-<!-- /MATERIALS -->
-
-  <hr class="divider">
-  <!-- QUIZ -->
-<div class="section" id="quiz">
-  <div class="section-header">
-    <div class="section-num">Q</div>
-    <div class="section-title-block">
-      <div class="tag">Quick Quiz</div>
-      <h2>Practice Quiz</h2>
-    </div>
-  </div>
-  <div class="exercise-box" data-quiz="reading">
-    <p class="quiz-h3">Reading Practice Quiz — Academic Test 1, Section 1</p>
-    <div class="quiz-passage">Aphantasia: A life without mental images Close your eyes and imagine walking along a sandy beach and then gazing over the horizon as the Sun rises. How clear is the image that springs to mind? Most people can readily conjure images inside their head - known as their mind's eye. But this year scientists have described a condition, aphantasia, in which some people are unable to visualise mental images. Niel Kenmuir, from Lancaster, has always had a blind mind's eye. He knew he was different even in childhood. &quot;My stepfather, when I couldn't sleep, told me to count sheep, and he explained what he meant, I tried to do it and I couldn't,&quot; he says. &quot;I couldn't see any sheep jumping over fences, there was nothing to count.&quot; Our memories are often tied up in images, think back to a wedding or first day at school. As a result, Niel admits, some aspects of his memory are &quot;terrible&quot;, but he is very good at remembering facts. And, like others with aphantasia, he struggles to recognise faces. Yet he does not see aphantasia as a disability, but simply a different way of experiencing life. Mind's eye blind Ironically, Niel now works in a bookshop, although he largely sticks to the non-fiction …</div>
-    <div class="quiz-item" data-answer="false">
-      <span class="quiz-num">1.</span>
-      <span class="quiz-q">1. Aphantasia is a condition, which describes people, for whom it is hard to visualise mental images.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="true">
-      <span class="quiz-num">2.</span>
-      <span class="quiz-q">2. Niel Kenmuir was unable to count sheep in his head.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="not given">
-      <span class="quiz-num">3.</span>
-      <span class="quiz-q">3. People with aphantasia struggle to remember personal traits and clothes of different people.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="true">
-      <span class="quiz-num">4.</span>
-      <span class="quiz-q">4. Niel regrets that he cannot portray an image of his fiancee in his mind.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="true">
-      <span class="quiz-num">5.</span>
-      <span class="quiz-q">5. Inability to picture things in someone's head is often a cause of distress for a person.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="not given">
-      <span class="quiz-num">6.</span>
-      <span class="quiz-q">6. All people with aphantasia start to feel 'isolated' or 'alone' at some point of their lives.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="true">
-      <span class="quiz-num">7.</span>
-      <span class="quiz-q">7. Lauren Beard's career depends on her imagination.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <div class="quiz-item" data-answer="false">
-      <span class="quiz-num">8.</span>
-      <span class="quiz-q">8. The author met Lauren Beard when she was working on a comedy scene in her next book.</span>
-      <select class="quiz-select">
-        <option value="">—</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
-        <option value="not given">Not Given</option>
-      </select>
-    </div>
-    <button class="quiz-check-btn">Check Answers</button>
-    <p class="quiz-score" hidden></p>
-    <p class="material-source">Source: <a href="https://ielts-up.com/reading/academic-reading-sample-1.1.html" target="_blank" rel="noopener noreferrer">IELTS Up</a></p>
-  </div>
-</div>
-<!-- /QUIZ -->
-
-  <hr class="divider">
-  <!-- SAMPLES -->
-<div class="section" id="samples">
-  <div class="section-header">
-    <div class="section-num">T</div>
-    <div class="section-title-block">
-      <div class="tag">Practice Tests</div>
-      <h2>Sample Tests</h2>
-    </div>
-  </div>
-  <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.5rem;">Full interactive tests — complete them on IELTS Up and get your score instantly.</p>
-  <div class="samples-grid">
-    <a class="sample-card" href="https://ielts-up.com/reading/academic-reading-sample-1.1.html" target="_blank" rel="noopener noreferrer">
-      <span class="sample-topic">Academic Reading</span>
-      <strong class="sample-title">Academic Test 1</strong>
-      <span class="sample-go">Practice on IELTS Up &#8594;</span>
-    </a>
-    <a class="sample-card" href="https://ielts-up.com/reading/academic-reading-sample-2.1.html" target="_blank" rel="noopener noreferrer">
-      <span class="sample-topic">Academic Reading</span>
-      <strong class="sample-title">Academic Test 2</strong>
-      <span class="sample-go">Practice on IELTS Up &#8594;</span>
-    </a>
-    <a class="sample-card" href="https://ielts-up.com/reading/academic-reading-sample-3.1.html" target="_blank" rel="noopener noreferrer">
-      <span class="sample-topic">Academic Reading</span>
-      <strong class="sample-title">Academic Test 3</strong>
-      <span class="sample-go">Practice on IELTS Up &#8594;</span>
-    </a>
-    <a class="sample-card" href="https://ielts-up.com/reading/academic-reading-sample-4.1.html" target="_blank" rel="noopener noreferrer">
-      <span class="sample-topic">Academic Reading</span>
-      <strong class="sample-title">Academic Test 4</strong>
-      <span class="sample-go">Practice on IELTS Up &#8594;</span>
-    </a>
-    <a class="sample-card" href="https://ielts-up.com/reading/academic-reading-sample-5.1.html" target="_blank" rel="noopener noreferrer">
-      <span class="sample-topic">Academic Reading</span>
-      <strong class="sample-title">Academic Test 5</strong>
-      <span class="sample-go">Practice on IELTS Up &#8594;</span>
-    </a>
-    <a class="sample-card" href="https://ielts-up.com/reading/academic-reading-sample-6.1.html" target="_blank" rel="noopener noreferrer">
-      <span class="sample-topic">Academic Reading</span>
-      <strong class="sample-title">Academic Test 6</strong>
-      <span class="sample-go">Practice on IELTS Up &#8594;</span>
-    </a>
-  </div>
-  <p class="material-source">Tests provided by <a href="https://ielts-up.com" target="_blank" rel="noopener noreferrer">IELTS Up</a></p>
-</div>
-<!-- /SAMPLES -->
-
 </main>
-<script src="../assets/transitions.js"></script>
-<script src="../assets/quiz.js"></script>
+
 </body>
 </html>

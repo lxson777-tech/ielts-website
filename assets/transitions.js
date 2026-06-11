@@ -49,7 +49,9 @@ document.addEventListener('click', function (e) {
 
 // Active nav link highlighting via IntersectionObserver
 (function () {
-  const links = document.querySelectorAll('nav a[href^="#"]');
+  // Exclude footer nav links — only highlight in-page and site navs
+  const links = Array.from(document.querySelectorAll('nav a[href^="#"]'))
+    .filter(a => !a.closest('footer'));
   if (!links.length) return;
   const ids = Array.from(links).map(a => a.getAttribute('href').slice(1));
   const sections = ids.map(id => document.getElementById(id)).filter(Boolean);

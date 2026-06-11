@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lesson — [LESSON TITLE]</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --ink: #1a1612;
+    --accent: #c4411b;
+    --accent2: #2c6e4f;
+    --muted: #7a6f62;
+    --card: #fffdf8;
+    --border: #e2d9cc;
+    --tag-bg: #fde8e0;
+    --tag-ink: #c4411b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    /* Large watermark word in the header background — change to match skill/topic */
+    content: 'LESSON';
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -0.02em;
+    pointer-events: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  header p {
+    color: rgba(245,240,232,0.6);
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+  .lesson-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(196,65,27,0.15);
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+  }
+
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  nav a:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section {
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 2.2rem;
+  }
+  .section-title-block h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-title-block .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    color: var(--tag-ink);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--accent2);
+  }
+  .card p, .card li { font-size: 0.92rem; color: #3a3530; }
+  .card ul, .card ol { padding-left: 1.2rem; }
+  .card li { margin-bottom: 0.3rem; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .passage-box {
+    background: #fffef5;
+    border: 1px solid #ddd;
+    border-left: 4px solid var(--accent);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.8;
+  }
+  .passage-box strong { color: var(--ink); }
+
+  .exercise-box {
+    background: #f0f8f4;
+    border: 1px solid #b8dcc8;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .exercise-box h3 {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  .exercise-box ol, .exercise-box ul { padding-left: 1.3rem; }
+  .exercise-box li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+  .exercise-box .answer-opt {
+    display: block;
+    padding-left: 1rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 0.75rem;
+  }
+  summary {
+    cursor: pointer;
+    padding: 0.6rem 1rem;
+    font-size: 0.83rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    list-style: none;
+  }
+  summary::after { content: ' ▾'; }
+  details[open] summary::after { content: ' ▴'; }
+  .answers { padding: 0.75rem 1.25rem 1rem; font-size: 0.88rem; }
+  .answers li { margin-bottom: 0.4rem; }
+  .answers strong { color: var(--accent2); }
+
+  .tip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    background: #fff3cd;
+    border: 1px solid #f0c040;
+    color: #7a5800;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    font-weight: 500;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 2rem 0;
+  }
+
+  .note-box {
+    background: #eef2ff;
+    border: 1px solid #c5cff5;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    font-size: 0.88rem;
+    color: #3a3f8c;
+  }
+  .note-box strong { display: block; margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     - lesson-date: skill + lesson type label, e.g. "IELTS Reading · Lesson 2"
+     - h1: main lesson title (can be 2 lines)
+     - p: subtitle / focus description
+     - header::after content: one word watermark, e.g. 'READING', 'WRITING', 'SPEAKING'
+     ============================================================ -->
+<header>
+  <div class="lesson-date">IELTS [SKILL] · [LESSON LABEL]</div>
+  <h1>[MAIN LESSON TITLE]<br>[SUBTITLE LINE]</h1>
+  <p>[Short description of lesson focus]</p>
+</header>
+
+<!-- ============================================================
+     NAV BAR
+     Add one <a> per section, href="#section-id"
+     ============================================================ -->
+<nav>
+  <a href="#section1">[Section 1 Name]</a>
+  <a href="#section2">[Section 2 Name]</a>
+  <a href="#section3">[Section 3 Name]</a>
+  <!-- Add or remove as needed -->
+</nav>
+
+<main>
+
+<!-- ============================================================
+     SECTION TEMPLATE
+     Copy this block for each section / question type / topic.
+     Change: id, section-num, tag text, h2 title, and all content.
+     ============================================================ -->
+<div class="section" id="section1">
+
+  <!-- Section header with number + title -->
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title-block">
+      <div class="tag">[Category Tag]</div>
+      <h2>[Section Title]</h2>
+    </div>
+  </div>
+
+  <!-- TWO-COLUMN INFO CARDS (use for "What is it?" + "Key Rules" etc.) -->
+  <div class="two-col">
+    <div class="card">
+      <h3>What is it?</h3>
+      <p>[Explanation of this question type / topic]</p>
+    </div>
+    <div class="card">
+      <h3>[Second Card Title]</h3>
+      <ul>
+        <li>[Point 1]</li>
+        <li>[Point 2]</li>
+        <li>[Point 3]</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SINGLE CARD (use for strategy / approach) -->
+  <div class="card">
+    <h3>How to Approach It</h3>
+    <ol>
+      <li>[Step 1]</li>
+      <li>[Step 2]</li>
+      <li>[Step 3]</li>
+    </ol>
+    <!-- TIP PILLS — common traps or reminders -->
+    <div style="margin-top:0.75rem;">
+      <span class="tip-pill">⚠ [Trap or tip]</span>
+      <span class="tip-pill">⚠ [Trap or tip]</span>
+    </div>
+  </div>
+
+  <!-- OPTIONAL: info/diagram note box (blue tint) -->
+  <!--
+  <div class="note-box">
+    <strong>📌 Note Title</strong>
+    [Extra context, diagram description, or teacher note]
+  </div>
+  -->
+
+  <!-- READING PASSAGE (red left border) -->
+  <div class="passage-box">
+    <strong>Passage: [Title]</strong><br><br>
+    [Passage text goes here. Use &lt;strong&gt; to bold key terms if needed.]
+  </div>
+
+  <!-- EXERCISE BOX (green tint) -->
+  <div class="exercise-box">
+    <h3>Exercise — [Instruction, e.g. "Choose True, False, or Not Given"]</h3>
+    <ol>
+      <li>[Question 1]</li>
+      <li>[Question 2]
+        <!-- For multiple choice, add answer options like this: -->
+        <!-- <span class="answer-opt">A) Option A</span> -->
+        <!-- <span class="answer-opt">B) Option B</span> -->
+        <!-- <span class="answer-opt">C) Option C</span> -->
+      </li>
+      <li>[Question 3]</li>
+    </ol>
+  </div>
+
+  <!-- COLLAPSIBLE ANSWERS -->
+  <details>
+    <summary>Show Answers & Explanations</summary>
+    <div class="answers">
+      <ol>
+        <li><strong>[Answer]</strong> — [Explanation]</li>
+        <li><strong>[Answer]</strong> — [Explanation]</li>
+        <li><strong>[Answer]</strong> — [Explanation]</li>
+      </ol>
+    </div>
+  </details>
+
+</div>
+<!-- END SECTION 1 -->
+
+<hr class="divider">
+
+<!-- ============================================================
+     SECTION 2 — Copy and paste the block above, change the id and content
+     ============================================================ -->
+<div class="section" id="section2">
+
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title-block">
+      <div class="tag">[Category Tag]</div>
+      <h2>[Section Title]</h2>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>[Card Title]</h3>
+      <p>[Content]</p>
+    </div>
+    <div class="card">
+      <h3>[Card Title]</h3>
+      <ul>
+        <li>[Point]</li>
+        <li>[Point]</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>How to Approach It</h3>
+    <ol>
+      <li>[Step]</li>
+      <li>[Step]</li>
+    </ol>
+    <div style="margin-top:0.75rem;">
+      <span class="tip-pill">⚠ [Trap]</span>
+    </div>
+  </div>
+
+  <div class="passage-box">
+    <strong>Passage: [Title]</strong><br><br>
+    [Passage text]
+  </div>
+
+  <div class="exercise-box">
+    <h3>Exercise — [Instructions]</h3>
+    <ol>
+      <li>[Question]</li>
+      <li>[Question]</li>
+    </ol>
+  </div>
+
+  <details>
+    <summary>Show Answers & Explanations</summary>
+    <div class="answers">
+      <ol>
+        <li><strong>[Answer]</strong> — [Explanation]</li>
+        <li><strong>[Answer]</strong> — [Explanation]</li>
+      </ol>
+    </div>
+  </details>
+
+</div>
+<!-- END SECTION 2 -->
+
+<!-- Add more sections as needed by copying the block above -->
+
+</main>
+</body>
+</html>

@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com https://plus.unsplash.com data:; frame-src 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>IELTS Lesson Hub — Almaty English Centre</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
   header::after { content: 'IELTS'; }
-  header { background: linear-gradient(to bottom, rgba(26,22,18,0.78), rgba(26,22,18,0.93)), url('https://plus.unsplash.com/premium_photo-1664372145591-f7cc308ff5da?w=1400&q=80') center/cover no-repeat; }
+  header { background: linear-gradient(to bottom, rgba(26,22,18,0.78), rgba(26,22,18,0.93)), url('../pics/hero.png') center/cover no-repeat; }
 
   /* ── Ongoing loop animations ────────────────────────────── */
 
-  /* Header photo: slow cinematic vertical drift */
   @keyframes bgDrift {
     0%, 100% { background-position: center 42%; }
     50%       { background-position: center 58%; }
   }
   header { animation: bgDrift 22s ease-in-out infinite; }
 
-  /* Title: repeating light shimmer sweep */
   @keyframes shimmer {
     0%   { background-position:  200% center; }
     100% { background-position: -200% center; }
@@ -33,7 +33,6 @@
     animation: shimmer 4s linear infinite;
   }
 
-  /* Card thumbnails: each photo slowly pans at a different phase */
   @keyframes imgDrift {
     0%, 100% { object-position: center 42%; }
     50%       { object-position: center 58%; }
@@ -44,7 +43,7 @@
   .skill-group:nth-child(4) .card-img { animation-delay: -5.4s; }
   .skill-group:nth-child(5) .card-img { animation-delay: -7.2s; }
 
-  /* ── Vocab card ──────────────────────────────── */
+  /* ── Word of the Day card ─────────────────────────────── */
   @keyframes wotdIn {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -127,6 +126,7 @@
     border-radius: 20px;
     transition: background 0.2s, color 0.2s;
     flex-shrink: 0;
+    cursor: pointer;
   }
   .wotd-link:hover { background: #c4411b; color: white; }
   @media (max-width: 600px) {
@@ -137,11 +137,36 @@
 </head>
 <body>
 
+<!-- Site-wide navigation -->
+<nav class="site-nav">
+  <a href="index.html" class="home">IELTS Hub</a>
+  <span class="sep">·</span>
+  <a href="#reading">Reading</a>
+  <div class="nav-dropdown">
+    <button class="nav-drop-btn">Writing ▾</button>
+    <div class="nav-drop-menu">
+      <a href="lessons/writing-task1.html">Task 1 — Report Writing</a>
+      <a href="lessons/writing-task2.html">Task 2 — Essay Writing</a>
+    </div>
+  </div>
+  <div class="nav-dropdown">
+    <button class="nav-drop-btn">Speaking ▾</button>
+    <div class="nav-drop-menu">
+      <a href="lessons/speaking-part1.html">Part 1 — Personal Topics</a>
+      <a href="lessons/speaking-part2.html">Part 2 — Cue Card Talk</a>
+      <a href="lessons/speaking-part3.html">Part 3 — Discussion</a>
+    </div>
+  </div>
+  <a href="#listening">Listening</a>
+  <a href="#vocabulary">Vocabulary</a>
+</nav>
+
 <header>
   <h1>IELTS Lesson Hub</h1>
   <p>All lessons · Reading, Writing, Speaking, Listening &amp; Vocabulary</p>
 </header>
 
+<!-- Word of the Day -->
 <div class="wotd-card">
   <div class="wotd-meta">
     <span class="wotd-eyebrow">Vocab</span>
@@ -158,14 +183,20 @@
 <div class="dashboard">
 
   <!-- READING -->
-  <div class="skill-group">
+  <div class="skill-group reveal" id="reading"
+       style="--skill-color:#c4411b;--skill-tag-bg:#fde8e0">
     <div class="skill-group-header">
+      <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
       <h2>Reading</h2>
     </div>
     <div class="lesson-cards">
       <a class="lesson-card" href="lessons/reading-task1.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=700&h=280&fit=crop&q=80" alt="Books on a library shelf">
+        <img class="card-img" src="../pics/reading.png" alt="Open books with reading glasses on a desk" loading="lazy" width="700" height="280">
         <div class="card-label">Reading · Full Lesson</div>
+        <span class="band-badge">7 Question Types</span>
         <h3>7 Question Types Masterclass</h3>
         <p>True/False/NG, Multiple Choice, Diagram Labelling, Matching Headings, Sentence Completion, Matching Paragraphs, Categorisation.</p>
         <span class="card-arrow">Start Lesson →</span>
@@ -174,21 +205,28 @@
   </div>
 
   <!-- WRITING -->
-  <div class="skill-group">
+  <div class="skill-group reveal" id="writing"
+       style="--skill-color:#2c6e4f;--skill-tag-bg:#e0f0e8">
     <div class="skill-group-header">
+      <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 20h9"/>
+        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+      </svg>
       <h2>Writing</h2>
     </div>
     <div class="lesson-cards">
       <a class="lesson-card" href="lessons/writing-task1.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=700&h=280&fit=crop&q=80" alt="Fountain pen on a spiral notebook">
+        <img class="card-img" src="../pics/writing-task1.png" alt="Fountain pen resting on notebook with chart" loading="lazy" width="700" height="280">
         <div class="card-label">Writing · Task 1</div>
+        <span class="band-badge">Report Writing</span>
         <h3>Report Writing Full Lesson</h3>
         <p>Format, six task types, marking criteria, 4-paragraph structure, vocabulary, and practice exercises.</p>
         <span class="card-arrow">Start Lesson →</span>
       </a>
       <a class="lesson-card" href="lessons/writing-task2.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1514369118554-e20d93546b30?w=700&h=280&fit=crop&q=80" alt="Person writing in a notebook">
+        <img class="card-img" src="../pics/writing-task2.png" alt="Hand writing with a fountain pen" loading="lazy" width="700" height="280">
         <div class="card-label">Writing · Task 2</div>
+        <span class="band-badge">Essay Writing</span>
         <h3>Essay Writing Full Lesson</h3>
         <p>Four essay types, structure, introductions, body paragraphs, conclusions, linking language, and practice.</p>
         <span class="card-arrow">Start Lesson →</span>
@@ -197,28 +235,35 @@
   </div>
 
   <!-- SPEAKING -->
-  <div class="skill-group">
+  <div class="skill-group reveal" id="speaking"
+       style="--skill-color:#6344a0;--skill-tag-bg:#ece8f5">
     <div class="skill-group-header">
+      <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+      </svg>
       <h2>Speaking</h2>
     </div>
     <div class="lesson-cards">
       <a class="lesson-card" href="lessons/speaking-part1.html">
-        <img class="card-img" src="https://plus.unsplash.com/premium_photo-1679547202606-4d905471107f?w=700&h=280&fit=crop&q=80" alt="Person presenting to a group">
+        <img class="card-img" src="../pics/speaking-part1.png" alt="Examiner and student in conversation at a table" loading="lazy" width="700" height="280">
         <div class="card-label">Speaking · Part 1</div>
+        <span class="band-badge">4–5 min</span>
         <h3>Q&amp;A — Personal Topics</h3>
         <p>Format, marking, strategy, weak vs. strong answers, the Answer → Reason → Detail formula, and practice topics.</p>
         <span class="card-arrow">Start Lesson →</span>
       </a>
       <a class="lesson-card" href="lessons/speaking-part2.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=700&h=280&fit=crop&q=80" alt="Person speaking in front of an audience">
+        <img class="card-img" src="../pics/speaking-part2.png" alt="Student presenting with cue card in classroom" loading="lazy" width="700" height="280">
         <div class="card-label">Speaking · Part 2</div>
+        <span class="band-badge">3–4 min</span>
         <h3>The Cue Card Talk</h3>
         <p>Preparation strategy for your 1 minute, how to structure a 2-minute talk, and practice cue cards with model answers.</p>
         <span class="card-arrow">Start Lesson →</span>
       </a>
       <a class="lesson-card" href="lessons/speaking-part3.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=700&h=280&fit=crop&q=80" alt="Microphone close-up">
+        <img class="card-img" src="../pics/speaking-part3.png" alt="Studio microphone with bookshelf background" loading="lazy" width="700" height="280">
         <div class="card-label">Speaking · Part 3</div>
+        <span class="band-badge">4–5 min</span>
         <h3>Discussion &amp; Abstract Questions</h3>
         <p>Opinion language, speculation, cause &amp; effect, how to extend your answers, and sample questions with model responses.</p>
         <span class="card-arrow">Start Lesson →</span>
@@ -227,14 +272,19 @@
   </div>
 
   <!-- LISTENING -->
-  <div class="skill-group">
+  <div class="skill-group reveal" id="listening"
+       style="--skill-color:#1a6b8a;--skill-tag-bg:#e0f0f8">
     <div class="skill-group-header">
+      <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>
+      </svg>
       <h2>Listening</h2>
     </div>
     <div class="lesson-cards">
       <a class="lesson-card" href="lessons/listening.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&h=280&fit=crop&q=80" alt="Wireless headphones laid flat">
+        <img class="card-img" src="../pics/listening.png" alt="Headphones resting on an open book with tea" loading="lazy" width="700" height="280">
         <div class="card-label">Listening · Full Lesson</div>
+        <span class="band-badge">4 Sections</span>
         <h3>All 4 Sections &amp; Question Types</h3>
         <p>Test format, the four sections, all question types, key strategies, and practice exercises with answer keys.</p>
         <span class="card-arrow">Start Lesson →</span>
@@ -243,14 +293,21 @@
   </div>
 
   <!-- VOCABULARY -->
-  <div class="skill-group">
+  <div class="skill-group reveal" id="vocabulary"
+       style="--skill-color:#9b6b00;--skill-tag-bg:#f7f0e0">
     <div class="skill-group-header">
+      <svg class="skill-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <polyline points="4 7 4 4 20 4 20 7"/>
+        <line x1="9" y1="20" x2="15" y2="20"/>
+        <line x1="12" y1="4" x2="12" y2="20"/>
+      </svg>
       <h2>Vocabulary</h2>
     </div>
     <div class="lesson-cards">
       <a class="lesson-card" href="lessons/vocabulary.html">
-        <img class="card-img" src="https://images.unsplash.com/photo-1704881986191-af461749f922?w=700&h=280&fit=crop&q=80" alt="Scrabble tiles spelling out words">
+        <img class="card-img" src="../pics/vocabulary.png" alt="Letter tiles and magnifying glass on dictionary" loading="lazy" width="700" height="280">
         <div class="card-label">Vocabulary · Topic-Based</div>
+        <span class="band-badge">50 Words</span>
         <h3>IELTS Topic Vocabulary</h3>
         <p>Environment, Technology, Health, Education, and Society — key words, collocations, and phrases for essays and speaking.</p>
         <span class="card-arrow">Start Lesson →</span>
@@ -259,6 +316,19 @@
   </div>
 
 </div>
+
+<footer class="site-footer">
+  <span class="footer-brand">Almaty English Centre</span>
+  <span class="footer-sub">IELTS Preparation Resources</span>
+  <nav class="footer-links" aria-label="Footer navigation">
+    <a href="#reading">Reading</a>
+    <a href="#writing">Writing</a>
+    <a href="#speaking">Speaking</a>
+    <a href="#listening">Listening</a>
+    <a href="#vocabulary">Vocabulary</a>
+  </nav>
+  <p class="footer-copy">© 2025 Almaty English Centre. All rights reserved.</p>
+</footer>
 
 <script src="assets/transitions.js"></script>
 <script>
@@ -325,7 +395,28 @@
   document.getElementById('wotd-topic').textContent   = w.topic;
   document.getElementById('wotd-word').textContent    = w.word;
   document.getElementById('wotd-def').textContent     = w.def;
-  document.getElementById('wotd-example').textContent = '”' + w.example + '”';
+  document.getElementById('wotd-example').textContent = '"' + w.example + '"';
+})();
+
+// Scroll-reveal via IntersectionObserver
+(function () {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      el.classList.add('revealed');
+    });
+    return;
+  }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.reveal').forEach(function (el) {
+    obs.observe(el);
+  });
 })();
 </script>
 </body>
