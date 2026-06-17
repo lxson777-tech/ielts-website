@@ -225,11 +225,6 @@
     user-select: none;
     line-height: 1;
     letter-spacing: -0.04em;
-    animation: wmBreathe 10s ease-in-out infinite;
-  }
-  @keyframes wmBreathe {
-    0%, 100% { opacity: 0.07; transform: translateY(-50%) scale(1); }
-    50%       { opacity: 0.11; transform: translateY(-52%) scale(1.04); }
   }
 
   /* ── Section icon ────────────────────────────────────────────────  */
@@ -309,11 +304,9 @@
   /* ── Card: enhanced hover with section-color ring + lift ─────────  */
   .lesson-card {
     border-radius: 13px;
-    opacity: 1;  /* JS stagger will handle this */
     transition: border-color 0.28s ease,
                 box-shadow 0.28s ease,
-                transform 0.28s cubic-bezier(0.16,1,0.3,1),
-                opacity 0.55s ease;
+                transform 0.28s cubic-bezier(0.16,1,0.3,1);
   }
   .lesson-card:hover {
     transform: translateY(-7px) scale(1.015);
@@ -323,49 +316,6 @@
                 0 6px 20px rgba(0,0,0,0.07);
   }
 
-  /* ── Scroll-reveal: section blocks ──────────────────────────────  */
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      opacity: 0;
-      transform: translateY(32px) scale(0.985);
-      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
-                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
-    }
-    .reveal.revealed { opacity: 1; transform: none; }
-    .dashboard .reveal:nth-child(1) { transition-delay: 0.00s; }
-    .dashboard .reveal:nth-child(2) { transition-delay: 0.07s; }
-    .dashboard .reveal:nth-child(3) { transition-delay: 0.14s; }
-    .dashboard .reveal:nth-child(4) { transition-delay: 0.21s; }
-    .dashboard .reveal:nth-child(5) { transition-delay: 0.28s; }
-
-    /* Icon: collapsed before reveal, pops in on reveal */
-    .reveal .section-icon-wrap {
-      transform: scale(0.45) rotate(-12deg);
-      opacity: 0;
-    }
-    .reveal.revealed .section-icon-wrap {
-      transform: scale(1) rotate(0deg);
-      opacity: 1;
-    }
-    /* Icon float loop — starts after the pop finishes */
-    .reveal.revealed .section-icon-floater {
-      animation: iconFloat 3.5s ease-in-out 0.85s infinite;
-    }
-    @keyframes iconFloat {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(-6px); }
-    }
-
-    /* JS-controlled card stagger (.card-visible added by script) */
-    .lesson-card {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    .lesson-card.card-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   /* ── Mobile responsive ───────────────────────────────────────────  */
   @media (max-width: 800px) {
@@ -708,50 +658,20 @@
   document.getElementById('wotd-example').textContent = '"' + w.example + '"';
 })();
 
-/* ── Scroll-reveal + card stagger ───────────────────────────────── */
+/* ── Section observer (adds .revealed for any CSS hooks) ────────── */
 (function () {
-  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* Make all cards immediately visible if reduced motion preferred */
-  if (prefersReduced) {
-    document.querySelectorAll('.lesson-card').forEach(function (c) {
-      c.classList.add('card-visible');
-    });
-  }
-
   if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.reveal').forEach(function (el) {
-      el.classList.add('revealed');
-    });
-    document.querySelectorAll('.lesson-card').forEach(function (c) {
-      c.classList.add('card-visible');
-    });
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('revealed'); });
     return;
   }
-
-  /* Section reveal observer */
-  var sectionObs = new IntersectionObserver(function (entries) {
+  var obs = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       if (!e.isIntersecting) return;
       e.target.classList.add('revealed');
-
-      /* Stagger cards within this section */
-      if (!prefersReduced) {
-        var cards = e.target.querySelectorAll('.lesson-card');
-        cards.forEach(function (card, i) {
-          setTimeout(function () {
-            card.classList.add('card-visible');
-          }, 180 + i * 110);
-        });
-      }
-
-      sectionObs.unobserve(e.target);
+      obs.unobserve(e.target);
     });
   }, { threshold: 0.07 });
-
-  document.querySelectorAll('.reveal').forEach(function (el) {
-    sectionObs.observe(el);
-  });
+  document.querySelectorAll('.reveal').forEach(function (el) { obs.observe(el); });
 })();
 </script>
 </body>
