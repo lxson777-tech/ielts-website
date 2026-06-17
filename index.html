@@ -347,94 +347,6 @@
   /* ── Mouse-follow card glow ──────────────────────────────────────  */
   .lesson-card { position: relative; }
 
-  /* ── Countdown widget ────────────────────────────────────────────  */
-  .countdown-card {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 1.5rem 1rem;
-  }
-  .countdown-inner {
-    background: #fff;
-    border: 1px solid #e2d9cc;
-    border-radius: 16px;
-    padding: 1.2rem 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .cd-eyebrow {
-    font-size: 0.67rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #9b6b00;
-    white-space: nowrap;
-  }
-  .cd-prompt {
-    font-size: 0.86rem;
-    color: #7a6f62;
-    margin: 0;
-    flex: 1;
-  }
-  .cd-input-row {
-    display: flex;
-    gap: 0.55rem;
-    align-items: center;
-    flex-shrink: 0;
-  }
-  .cd-input-row input[type="date"] {
-    border: 1px solid #d9cfc4;
-    border-radius: 8px;
-    padding: 0.42rem 0.7rem;
-    font-size: 0.84rem;
-    font-family: inherit;
-    color: #2e2a25;
-    background: #faf8f5;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .cd-input-row input[type="date"]:focus { border-color: #9b6b00; }
-  .cd-save-btn, .cd-reset-btn {
-    border: none;
-    border-radius: 8px;
-    padding: 0.42rem 1rem;
-    font-size: 0.81rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.2s, color 0.2s;
-  }
-  .cd-save-btn { background: #9b6b00; color: #fff; }
-  .cd-save-btn:hover { background: #7a5500; }
-  .cd-reset-btn {
-    background: transparent;
-    color: #9b6b00;
-    border: 1px solid #9b6b00;
-    padding: 0.3rem 0.65rem;
-    font-size: 0.74rem;
-  }
-  .cd-reset-btn:hover { background: #fdf5e6; }
-  .cd-header { display: flex; align-items: center; gap: 0.7rem; flex-shrink: 0; }
-  .cd-date-label { font-size: 0.79rem; color: #7a6f62; }
-  .cd-units { display: flex; align-items: center; gap: 0.4rem; margin-left: auto; }
-  .cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 2.8rem; }
-  .cu-num {
-    font-size: 1.75rem;
-    font-weight: 700;
-    font-family: 'Playfair Display', serif;
-    color: #2e2a25;
-    line-height: 1;
-  }
-  .cu-lbl {
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #9a8f82;
-    margin-top: 0.1rem;
-  }
-  .cd-sep { font-size: 1.4rem; font-weight: 700; color: #d9cfc4; margin-bottom: 0.9rem; }
-
   @media (max-width: 800px) {
     header { min-height: 50vh; padding: 2.5rem 1.5rem 2.25rem; }
     header h1 { font-size: 2.5rem; }
@@ -532,35 +444,7 @@
   <a class="wotd-link" href="lessons/vocabulary.html">Full list →</a>
 </div>
 
-<!-- Countdown to test date -->
-<div class="countdown-card" id="countdown-card">
-  <!-- State A: no date set -->
-  <div class="countdown-inner" id="cd-setup">
-    <span class="cd-eyebrow">📅 Test Date</span>
-    <p class="cd-prompt">Set your IELTS exam date to start a countdown</p>
-    <div class="cd-input-row">
-      <input type="date" id="cd-date-input" aria-label="IELTS exam date">
-      <button class="cd-save-btn" id="cd-save-btn">Set Date</button>
-    </div>
-  </div>
-  <!-- State B: date set, counting down -->
-  <div class="countdown-inner" id="cd-active" hidden>
-    <div class="cd-header">
-      <span class="cd-eyebrow">📅 IELTS Test</span>
-      <span class="cd-date-label" id="cd-date-label"></span>
-      <button class="cd-reset-btn" id="cd-reset-btn">Change</button>
-    </div>
-    <div class="cd-units">
-      <div class="cd-unit"><span class="cu-num" id="cd-days">--</span><span class="cu-lbl">days</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><span class="cu-num" id="cd-hours">--</span><span class="cu-lbl">hrs</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><span class="cu-num" id="cd-mins">--</span><span class="cu-lbl">min</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><span class="cu-num" id="cd-secs">--</span><span class="cu-lbl">sec</span></div>
-    </div>
-  </div>
-</div>
+
 
 <div class="dashboard">
 
@@ -939,72 +823,6 @@
   });
 })();
 
-/* ── 4. Test date countdown ──────────────────────────────────────── */
-(function () {
-  var setup  = document.getElementById('cd-setup');
-  var active = document.getElementById('cd-active');
-  var input  = document.getElementById('cd-date-input');
-  var saveBtn  = document.getElementById('cd-save-btn');
-  var resetBtn = document.getElementById('cd-reset-btn');
-  var dateLabel = document.getElementById('cd-date-label');
-  var elDays  = document.getElementById('cd-days');
-  var elHours = document.getElementById('cd-hours');
-  var elMins  = document.getElementById('cd-mins');
-  var elSecs  = document.getElementById('cd-secs');
-  if (!setup) return;
-
-  var stored = localStorage.getItem('ielts_test_date');
-  var tickId;
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function showActive(dateStr) {
-    var d = new Date(dateStr);
-    dateLabel.textContent = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    setup.hidden  = true;
-    active.hidden = false;
-    tick(dateStr);
-    tickId = setInterval(function () { tick(dateStr); }, 1000);
-  }
-
-  function tick(dateStr) {
-    var now  = Date.now();
-    var end  = new Date(dateStr).getTime();
-    var diff = end - now;
-    if (diff <= 0) {
-      elDays.textContent = elHours.textContent = elMins.textContent = elSecs.textContent = '00';
-      clearInterval(tickId);
-      return;
-    }
-    var days  = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    var mins  = Math.floor((diff % 3600000)  / 60000);
-    var secs  = Math.floor((diff % 60000)    / 1000);
-    elDays.textContent  = days;
-    elHours.textContent = pad(hours);
-    elMins.textContent  = pad(mins);
-    elSecs.textContent  = pad(secs);
-  }
-
-  if (stored) showActive(stored);
-
-  saveBtn.addEventListener('click', function () {
-    var val = input.value;
-    if (!val) return;
-    localStorage.setItem('ielts_test_date', val);
-    clearInterval(tickId);
-    showActive(val);
-  });
-
-  resetBtn.addEventListener('click', function () {
-    clearInterval(tickId);
-    localStorage.removeItem('ielts_test_date');
-    active.hidden = false;
-    active.hidden = true;
-    setup.hidden  = false;
-    input.value   = '';
-  });
-})();
 </script>
 </body>
 </html>
