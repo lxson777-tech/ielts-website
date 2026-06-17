@@ -757,18 +757,30 @@
     </div>
   </div>
   <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1.25rem;">Full timed reading tests with instant scoring — passage on the left, questions on the right.</p>
-  <div class="samples-grid">
-    <a class="sample-card" href="reading-test-1.html">
-      <span class="sample-topic">Academic Reading · 13 Questions</span>
-      <strong class="sample-title">Test 1 — Money Transfers by Mobile</strong>
-      <span class="sample-go">Start test &#8594;</span>
-    </a>
-  </div>
+  <div class="samples-grid" id="test-card-grid"></div>
 </div>
 <!-- /SAMPLES -->
 
 </main>
 <script src="../assets/transitions.js"></script>
 <script src="../assets/quiz.js"></script>
+<script src="reading-tests-data.js"></script>
+<script>
+(function () {
+  var grid = document.getElementById('test-card-grid');
+  if (!grid || typeof READING_TESTS === 'undefined') return;
+  READING_TESTS.forEach(function (t) {
+    var totalQ = t.groups.reduce(function (sum, g) { return sum + g.questions.length; }, 0);
+    var a = document.createElement('a');
+    a.className = 'sample-card';
+    a.href = 'reading-test.html?id=' + t.id;
+    a.innerHTML =
+      '<span class="sample-topic">' + t.topic + ' · ' + totalQ + ' Questions</span>' +
+      '<strong class="sample-title">Test ' + t.id + ' — ' + t.title + '</strong>' +
+      '<span class="sample-go">Start test &#8594;</span>';
+    grid.appendChild(a);
+  });
+})();
+</script>
 </body>
 </html>
