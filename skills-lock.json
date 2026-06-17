@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "skills": {
+    "a11y-audit": {
+      "source": "alirezarezvani/claude-skills",
+      "sourceType": "github",
+      "skillPath": "engineering-team/a11y-audit/skills/a11y-audit/SKILL.md",
+      "computedHash": "b1cc0a7386a86080c534f7e6f5bf17fd2960e4b1a3ce62ab52361483d58e26d6"
+    },
+    "aceternity-ui": {
+      "source": "secondsky/claude-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/aceternity-ui/skills/aceternity-ui/SKILL.md",
+      "computedHash": "c14782ab99da57707caa44b33edbddcb70344e6450b22600c66623e54de7aec8"
+    },
+    "css-animation-creator": {
+      "source": "onewave-ai/claude-skills",
+      "sourceType": "github",
+      "skillPath": "css-animation-creator/SKILL.md",
+      "computedHash": "733e7c6cd6d70106541651b09c826b0b7766894118f96ce6bb476403231197c3"
+    },
+    "education-learning": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "skillPath": "skills/08-by-industry/education-learning/SKILL.md",
+      "computedHash": "3100d428f4ab84d7427241b2893efaa0a9c9c5e86578e0918ea6db8cf9b1bb56"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "9e1c8b3103f92fa8092568a44fe64858de7c5c9dc65ce4bea8f168080e889cfd"
+    },
+    "hover-interactions": {
+      "source": "dylantarre/animation-principles",
+      "sourceType": "github",
+      "skillPath": "skills/05-by-animation-type/hover-interactions/SKILL.md",
+      "computedHash": "a8f7f1b5d48dce5de96b8dda19e1c2cde134552856c3eb3ac8f1eb3a9e69f26f"
+    },
+    "modern-web-design": {
+      "source": "kuse-ai/kuse-skills",
+      "sourceType": "github",
+      "skillPath": "modern-web-design/SKILL.md",
+      "computedHash": "c1d24d7e9894d4041fb1fe7b617f7fff1dfde5af0711db663f8e9492403b321c"
+    },
+    "typography": {
+      "source": "petekp/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/typography/SKILL.md",
+      "computedHash": "3292d34592e7224b7fe1e47c4aa7bc6ff3ca7fdcc62d6c493e1a23c903779879"
+    },
+    "web-quality-audit": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-quality-audit/SKILL.md",
+      "computedHash": "10db799d6bff4fc98a4067aa04fdee2e9f34eaca1c42fd4207a89aafe644a6f0"
+    }
+  }
+}

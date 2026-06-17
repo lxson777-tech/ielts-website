@@ -9,11 +9,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
+  /* ================================================================
+     HOMEPAGE — Overrides & new components
+     ================================================================ */
+
+  /* ── Hero ──────────────────────────────────────────────────────── */
   header::after { content: 'IELTS'; }
-  header { background: linear-gradient(to bottom, rgba(26,22,18,0.78), rgba(26,22,18,0.93)), url('pics/hero.png') center/cover no-repeat; }
+  header {
+    background: linear-gradient(to bottom, rgba(26,22,18,0.60), rgba(26,22,18,0.96)),
+                url('pics/hero.png') center/cover no-repeat;
+    min-height: 62vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 4rem 2.5rem 2.75rem;
+  }
+  header h1 {
+    font-size: 3.2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(105deg, #f5ede0 38%, #fffcf5 50%, #f5ede0 62%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+  header p { font-size: 1rem; margin-bottom: 1.75rem; opacity: 0.7; }
 
-  /* ── Ongoing loop animations ────────────────────────────── */
-
+  /* ── Continuous loop animations ─────────────────────────────────  */
   @keyframes bgDrift {
     0%, 100% { background-position: center 42%; }
     50%       { background-position: center 58%; }
@@ -23,14 +46,6 @@
   @keyframes shimmer {
     0%   { background-position:  200% center; }
     100% { background-position: -200% center; }
-  }
-  header h1 {
-    background: linear-gradient(105deg, #f5ede0 38%, #fffcf5 50%, #f5ede0 62%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 4s linear infinite;
   }
 
   @keyframes imgDrift {
@@ -43,7 +58,58 @@
   .skill-group:nth-child(4) .card-img { animation-delay: -5.4s; }
   .skill-group:nth-child(5) .card-img { animation-delay: -7.2s; }
 
-  /* ── Word of the Day card ─────────────────────────────── */
+  /* ── Hero section stats bar ──────────────────────────────────────  */
+  .hero-stats {
+    display: flex;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(26,22,18,0.38);
+    max-width: 480px;
+  }
+  .hero-stat {
+    flex: 1;
+    padding: 0.9rem 0.75rem 0.75rem;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    cursor: default;
+    transition: background 0.3s;
+    opacity: 0;
+    animation: statIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .hero-stat:nth-child(1) { animation-delay: 0.4s; }
+  .hero-stat:nth-child(2) { animation-delay: 0.52s; }
+  .hero-stat:nth-child(3) { animation-delay: 0.64s; }
+  .hero-stat:nth-child(4) { animation-delay: 0.76s; border-right: none; }
+  .hero-stat:hover { background: rgba(255,255,255,0.07); }
+  @keyframes statIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .stat-icon  { font-size: 1.1rem; display: block; margin-bottom: 0.2rem; }
+  .stat-label {
+    display: block;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.52);
+    margin-bottom: 0.3rem;
+  }
+  .stat-bar {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    margin: 0 auto;
+  }
+  .stat-bar.reading  { background: #c4411b; }
+  .stat-bar.writing  { background: #2c6e4f; }
+  .stat-bar.speaking { background: #6344a0; }
+  .stat-bar.listening{ background: #1a6b8a; }
+
+  /* ── Word of the Day card ────────────────────────────────────────  */
   @keyframes wotdIn {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -53,85 +119,265 @@
     50%       { box-shadow: 0 4px 28px rgba(196,65,27,0.14), 0 2px 8px rgba(26,22,18,0.07); }
   }
   .wotd-card {
-    max-width: 1120px;
+    max-width: 1200px;
     margin: 2rem auto 0;
     padding: 1.4rem 2rem;
     background: #fffdf8;
     border: 1px solid #e2d9cc;
     border-left: 4px solid #c4411b;
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 2rem;
     animation: wotdIn 0.65s cubic-bezier(0.16,1,0.3,1) 0.2s both,
                wotdGlow 4s ease-in-out 1s infinite;
   }
-  .wotd-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.4rem;
-    min-width: 130px;
-  }
-  .wotd-eyebrow {
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #c4411b;
-  }
-  .wotd-topic-badge {
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: #fde8e0;
-    color: #c4411b;
-    padding: 0.15rem 0.55rem;
-    border-radius: 4px;
-  }
-  .wotd-content { flex: 1; min-width: 0; }
+  .wotd-meta { display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;min-width:130px; }
+  .wotd-eyebrow { font-size:0.6rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#c4411b; }
+  .wotd-topic-badge { font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;background:#fde8e0;color:#c4411b;padding:0.15rem 0.55rem;border-radius:4px; }
+  .wotd-content { flex:1;min-width:0; }
   .wotd-word {
-    display: block;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    background: linear-gradient(105deg, #1a1612 38%, #c4411b 50%, #1a1612 62%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 5s linear 1.5s infinite;
+    display:block;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:0.25rem;
+    background:linear-gradient(105deg,#1a1612 38%,#c4411b 50%,#1a1612 62%);
+    background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    animation:shimmer 5s linear 1.5s infinite;
   }
-  .wotd-def {
-    font-size: 0.9rem;
-    color: #1a1612;
-    opacity: 0.82;
+  .wotd-def { font-size:0.9rem;color:#1a1612;opacity:0.82;margin-bottom:0.3rem; }
+  .wotd-example { font-size:0.84rem;color:#7a6f62;font-style:italic; }
+  .wotd-link {
+    font-size:0.76rem;color:#c4411b;text-decoration:none;font-weight:500;white-space:nowrap;
+    padding:0.45rem 0.9rem;border:1.5px solid #c4411b;border-radius:20px;
+    transition:background 0.2s,color 0.2s;flex-shrink:0;cursor:pointer;
+  }
+  .wotd-link:hover { background:#c4411b;color:white; }
+
+  /* ── Dashboard: single-column override ──────────────────────────  */
+  .dashboard {
+    display: flex !important;
+    flex-direction: column !important;
+    max-width: 1200px;
+    padding: 2.5rem 1.5rem 5rem;
+    gap: 2rem;
+  }
+  /* Kill the vocabulary full-width grid override — not needed in flex */
+  .skill-group:nth-child(5) { grid-column: auto; }
+  .skill-group:nth-child(5) .lesson-cards {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+
+  /* ── Skill group block ───────────────────────────────────────────  */
+  .skill-group {
+    border-radius: 20px;
+    border: 1px solid #e2d9cc;
+    overflow: hidden;
+    background: #fffdf8;
+    position: relative;
+    /* Inset top stripe in section color */
+    box-shadow: inset 0 4px 0 var(--skill-color);
+    transition: box-shadow 0.3s ease;
+  }
+  .skill-group:hover {
+    box-shadow: inset 0 4px 0 var(--skill-color),
+                0 8px 40px rgba(0,0,0,0.08);
+  }
+
+  /* ── Section header banner ───────────────────────────────────────  */
+  .skill-group-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2.1rem 2.5rem 1.8rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Per-section tinted gradient backgrounds */
+  #reading   .skill-group-header { background: linear-gradient(135deg, rgba(196,65,27,0.07) 0%, rgba(255,255,255,0) 65%); }
+  #writing   .skill-group-header { background: linear-gradient(135deg, rgba(44,110,79,0.07) 0%, rgba(255,255,255,0) 65%); }
+  #speaking  .skill-group-header { background: linear-gradient(135deg, rgba(99,68,160,0.07) 0%, rgba(255,255,255,0) 65%); }
+  #listening .skill-group-header { background: linear-gradient(135deg, rgba(26,107,138,0.07) 0%, rgba(255,255,255,0) 65%); }
+  #vocabulary .skill-group-header { background: linear-gradient(135deg, rgba(155,107,0,0.07) 0%, rgba(255,255,255,0) 65%); }
+
+  /* Remove old h2 bar — replaced by top stripe + icon */
+  .skill-group-header h2::before { display: none !important; }
+
+  /* ── Watermark letter ────────────────────────────────────────────  */
+  .wm-letter {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 9rem;
+    font-weight: 900;
+    color: var(--skill-color);
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    animation: wmBreathe 10s ease-in-out infinite;
+  }
+  @keyframes wmBreathe {
+    0%, 100% { opacity: 0.07; transform: translateY(-50%) scale(1); }
+    50%       { opacity: 0.11; transform: translateY(-52%) scale(1.04); }
+  }
+
+  /* ── Section icon ────────────────────────────────────────────────  */
+  .section-icon-floater {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .section-icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: var(--skill-tag-bg, #fde8e0);
+    border: 1.5px solid var(--skill-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    line-height: 1;
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.18s,
+                opacity 0.35s ease 0.18s;
+  }
+
+  /* ── Header text ─────────────────────────────────────────────────  */
+  .section-header-body {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+  .section-header-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
     margin-bottom: 0.3rem;
   }
-  .wotd-example {
-    font-size: 0.84rem;
+  .section-subtitle {
+    font-size: 0.82rem;
     color: #7a6f62;
-    font-style: italic;
+    font-weight: 400;
+    line-height: 1.5;
   }
-  .wotd-link {
-    font-size: 0.76rem;
-    color: #c4411b;
-    text-decoration: none;
-    font-weight: 500;
-    white-space: nowrap;
-    padding: 0.45rem 0.9rem;
-    border: 1.5px solid #c4411b;
-    border-radius: 20px;
-    transition: background 0.2s, color 0.2s;
+
+  /* ── Lesson count badge ──────────────────────────────────────────  */
+  .section-count-badge {
     flex-shrink: 0;
-    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--skill-color);
+    background: var(--skill-tag-bg, #fde8e0);
+    border: 1.5px solid var(--skill-color);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    white-space: nowrap;
   }
-  .wotd-link:hover { background: #c4411b; color: white; }
+
+  /* ── Cards container ─────────────────────────────────────────────  */
+  .lesson-cards-wrap {
+    padding: 2rem 2.5rem 2.25rem;
+  }
+  .lesson-cards { gap: 1.25rem; }
+
+  /* ── Card: enhanced hover with section-color ring + lift ─────────  */
+  .lesson-card {
+    border-radius: 13px;
+    opacity: 1;  /* JS stagger will handle this */
+    transition: border-color 0.28s ease,
+                box-shadow 0.28s ease,
+                transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                opacity 0.55s ease;
+  }
+  .lesson-card:hover {
+    transform: translateY(-7px) scale(1.015);
+    border-color: var(--skill-color);
+    box-shadow: 0 18px 48px rgba(0,0,0,0.13),
+                0 0 0 2px var(--skill-color),
+                0 6px 20px rgba(0,0,0,0.07);
+  }
+
+  /* ── Scroll-reveal: section blocks ──────────────────────────────  */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px) scale(0.985);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.revealed { opacity: 1; transform: none; }
+    .dashboard .reveal:nth-child(1) { transition-delay: 0.00s; }
+    .dashboard .reveal:nth-child(2) { transition-delay: 0.07s; }
+    .dashboard .reveal:nth-child(3) { transition-delay: 0.14s; }
+    .dashboard .reveal:nth-child(4) { transition-delay: 0.21s; }
+    .dashboard .reveal:nth-child(5) { transition-delay: 0.28s; }
+
+    /* Icon: collapsed before reveal, pops in on reveal */
+    .reveal .section-icon-wrap {
+      transform: scale(0.45) rotate(-12deg);
+      opacity: 0;
+    }
+    .reveal.revealed .section-icon-wrap {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    /* Icon float loop — starts after the pop finishes */
+    .reveal.revealed .section-icon-floater {
+      animation: iconFloat 3.5s ease-in-out 0.85s infinite;
+    }
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    /* JS-controlled card stagger (.card-visible added by script) */
+    .lesson-card {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .lesson-card.card-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Mobile responsive ───────────────────────────────────────────  */
+  @media (max-width: 800px) {
+    header { min-height: 50vh; padding: 2.5rem 1.5rem 2.25rem; }
+    header h1 { font-size: 2.5rem; }
+    .hero-stats { max-width: 100%; }
+    .skill-group-header { padding: 1.6rem 1.75rem 1.4rem; gap: 1.1rem; }
+    .section-header-body h2 { font-size: 1.55rem; }
+    .wm-letter { font-size: 6.5rem; right: 1.25rem; }
+    .lesson-cards-wrap { padding: 1.5rem 1.75rem 1.75rem; }
+  }
   @media (max-width: 600px) {
+    .section-count-badge { display: none; }
+    .wm-letter { font-size: 4.5rem; }
     .wotd-card { flex-direction: column; align-items: flex-start; gap: 0.8rem; padding: 1.1rem 1.25rem; }
     .wotd-meta { flex-direction: row; align-items: center; gap: 0.6rem; min-width: unset; }
+  }
+  @media (max-width: 520px) {
+    header { min-height: 42vh; padding: 2rem 1.25rem 1.75rem; }
+    header h1 { font-size: 2rem; }
+    .dashboard { padding: 1.5rem 1rem 3rem; gap: 1.5rem; }
+    .skill-group { border-radius: 14px; }
+    .skill-group-header { padding: 1.25rem 1.25rem 1.1rem; gap: 0.9rem; }
+    .section-icon-wrap { width: 50px; height: 50px; font-size: 1.45rem; border-radius: 12px; }
+    .section-header-body h2 { font-size: 1.35rem; }
+    .section-subtitle { font-size: 0.77rem; }
+    .lesson-cards-wrap { padding: 1.1rem 1.1rem 1.4rem; }
+    .wm-letter { display: none; }
   }
 </style>
 </head>
@@ -164,6 +410,28 @@
 <header>
   <h1>IELTS Lesson Hub</h1>
   <p>All lessons · Reading, Writing, Speaking, Listening &amp; Vocabulary</p>
+  <div class="hero-stats" aria-label="Site sections">
+    <div class="hero-stat">
+      <span class="stat-icon" aria-hidden="true">📖</span>
+      <span class="stat-label">Reading</span>
+      <span class="stat-bar reading"></span>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-icon" aria-hidden="true">✍️</span>
+      <span class="stat-label">Writing</span>
+      <span class="stat-bar writing"></span>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-icon" aria-hidden="true">🎙️</span>
+      <span class="stat-label">Speaking</span>
+      <span class="stat-bar speaking"></span>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-icon" aria-hidden="true">🎧</span>
+      <span class="stat-label">Listening</span>
+      <span class="stat-bar listening"></span>
+    </div>
+  </div>
 </header>
 
 <!-- Word of the Day -->
@@ -182,117 +450,167 @@
 
 <div class="dashboard">
 
-  <!-- READING -->
+  <!-- ════════════ READING ════════════ -->
   <div class="skill-group reveal" id="reading"
        style="--skill-color:#c4411b;--skill-tag-bg:#fde8e0">
     <div class="skill-group-header">
-      <h2>Reading</h2>
+      <div class="section-icon-floater">
+        <div class="section-icon-wrap" aria-hidden="true">📖</div>
+      </div>
+      <div class="section-header-body">
+        <h2>Reading</h2>
+        <p class="section-subtitle">7 question types · True/False/NG · Skimming &amp; scanning · Matching headings</p>
+      </div>
+      <span class="section-count-badge">1 Lesson</span>
+      <span class="wm-letter" aria-hidden="true">R</span>
     </div>
-    <div class="lesson-cards">
-      <a class="lesson-card" href="lessons/reading-task1.html">
-        <img class="card-img" src="pics/reading.png" alt="Open books with reading glasses on a desk" loading="lazy" width="700" height="280">
-        <div class="card-label">Reading · Full Lesson</div>
-        <span class="band-badge">7 Question Types</span>
-        <h3>7 Question Types Masterclass</h3>
-        <p>True/False/NG, Multiple Choice, Diagram Labelling, Matching Headings, Sentence Completion, Matching Paragraphs, Categorisation.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
+    <div class="lesson-cards-wrap">
+      <div class="lesson-cards">
+        <a class="lesson-card" href="lessons/reading-task1.html">
+          <img class="card-img" src="pics/reading.png" alt="Open books with reading glasses on a desk" loading="lazy" width="700" height="280">
+          <div class="card-label">Reading · Full Lesson</div>
+          <span class="band-badge">7 Question Types</span>
+          <h3>7 Question Types Masterclass</h3>
+          <p>True/False/NG, Multiple Choice, Diagram Labelling, Matching Headings, Sentence Completion, Matching Paragraphs, Categorisation.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- WRITING -->
+  <!-- ════════════ WRITING ════════════ -->
   <div class="skill-group reveal" id="writing"
        style="--skill-color:#2c6e4f;--skill-tag-bg:#e0f0e8">
     <div class="skill-group-header">
-      <h2>Writing</h2>
+      <div class="section-icon-floater">
+        <div class="section-icon-wrap" aria-hidden="true">✍️</div>
+      </div>
+      <div class="section-header-body">
+        <h2>Writing</h2>
+        <p class="section-subtitle">Task 1 (reports) · Task 2 (essays) · 4 marking criteria · Band 7+ structure</p>
+      </div>
+      <span class="section-count-badge">2 Lessons</span>
+      <span class="wm-letter" aria-hidden="true">W</span>
     </div>
-    <div class="lesson-cards">
-      <a class="lesson-card" href="lessons/writing-task1.html">
-        <img class="card-img" src="pics/writing-task1.png" alt="Fountain pen resting on notebook with chart" loading="lazy" width="700" height="280">
-        <div class="card-label">Writing · Task 1</div>
-        <span class="band-badge">Report Writing</span>
-        <h3>Report Writing Full Lesson</h3>
-        <p>Format, six task types, marking criteria, 4-paragraph structure, vocabulary, and practice exercises.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
-      <a class="lesson-card" href="lessons/writing-task2.html">
-        <img class="card-img" src="pics/writing-task2.png" alt="Hand writing with a fountain pen" loading="lazy" width="700" height="280">
-        <div class="card-label">Writing · Task 2</div>
-        <span class="band-badge">Essay Writing</span>
-        <h3>Essay Writing Full Lesson</h3>
-        <p>Four essay types, structure, introductions, body paragraphs, conclusions, linking language, and practice.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
+    <div class="lesson-cards-wrap">
+      <div class="lesson-cards">
+        <a class="lesson-card" href="lessons/writing-task1.html">
+          <img class="card-img" src="pics/writing-task1.png" alt="Fountain pen resting on notebook with chart" loading="lazy" width="700" height="280">
+          <div class="card-label">Writing · Task 1</div>
+          <span class="band-badge">Report Writing</span>
+          <h3>Report Writing Full Lesson</h3>
+          <p>Format, six task types, marking criteria, 4-paragraph structure, vocabulary, and practice exercises.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+        <a class="lesson-card" href="lessons/writing-task2.html">
+          <img class="card-img" src="pics/writing-task2.png" alt="Hand writing with a fountain pen" loading="lazy" width="700" height="280">
+          <div class="card-label">Writing · Task 2</div>
+          <span class="band-badge">Essay Writing</span>
+          <h3>Essay Writing Full Lesson</h3>
+          <p>Four essay types, structure, introductions, body paragraphs, conclusions, linking language, and practice.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- SPEAKING -->
+  <!-- ════════════ SPEAKING ════════════ -->
   <div class="skill-group reveal" id="speaking"
        style="--skill-color:#6344a0;--skill-tag-bg:#ece8f5">
     <div class="skill-group-header">
-      <h2>Speaking</h2>
+      <div class="section-icon-floater">
+        <div class="section-icon-wrap" aria-hidden="true">🎙️</div>
+      </div>
+      <div class="section-header-body">
+        <h2>Speaking</h2>
+        <p class="section-subtitle">Parts 1, 2 &amp; 3 · ARD formula · Fluency &amp; coherence · Pronunciation</p>
+      </div>
+      <span class="section-count-badge">3 Lessons</span>
+      <span class="wm-letter" aria-hidden="true">S</span>
     </div>
-    <div class="lesson-cards">
-      <a class="lesson-card" href="lessons/speaking-part1.html">
-        <img class="card-img" src="pics/speaking-part1.png" alt="Examiner and student in conversation at a table" loading="lazy" width="700" height="280">
-        <div class="card-label">Speaking · Part 1</div>
-        <span class="band-badge">4–5 min</span>
-        <h3>Q&amp;A — Personal Topics</h3>
-        <p>Format, marking, strategy, weak vs. strong answers, the Answer → Reason → Detail formula, and practice topics.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
-      <a class="lesson-card" href="lessons/speaking-part2.html">
-        <img class="card-img" src="pics/speaking-part2.png" alt="Student presenting with cue card in classroom" loading="lazy" width="700" height="280">
-        <div class="card-label">Speaking · Part 2</div>
-        <span class="band-badge">3–4 min</span>
-        <h3>The Cue Card Talk</h3>
-        <p>Preparation strategy for your 1 minute, how to structure a 2-minute talk, and practice cue cards with model answers.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
-      <a class="lesson-card" href="lessons/speaking-part3.html">
-        <img class="card-img" src="pics/speaking-part3.png" alt="Studio microphone with bookshelf background" loading="lazy" width="700" height="280">
-        <div class="card-label">Speaking · Part 3</div>
-        <span class="band-badge">4–5 min</span>
-        <h3>Discussion &amp; Abstract Questions</h3>
-        <p>Opinion language, speculation, cause &amp; effect, how to extend your answers, and sample questions with model responses.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
+    <div class="lesson-cards-wrap">
+      <div class="lesson-cards">
+        <a class="lesson-card" href="lessons/speaking-part1.html">
+          <img class="card-img" src="pics/speaking-part1.png" alt="Examiner and student in conversation at a table" loading="lazy" width="700" height="280">
+          <div class="card-label">Speaking · Part 1</div>
+          <span class="band-badge">4–5 min</span>
+          <h3>Q&amp;A — Personal Topics</h3>
+          <p>Format, marking, strategy, weak vs. strong answers, the Answer → Reason → Detail formula, and practice topics.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+        <a class="lesson-card" href="lessons/speaking-part2.html">
+          <img class="card-img" src="pics/speaking-part2.png" alt="Student presenting with cue card in classroom" loading="lazy" width="700" height="280">
+          <div class="card-label">Speaking · Part 2</div>
+          <span class="band-badge">3–4 min</span>
+          <h3>The Cue Card Talk</h3>
+          <p>Preparation strategy for your 1 minute, how to structure a 2-minute talk, and practice cue cards with model answers.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+        <a class="lesson-card" href="lessons/speaking-part3.html">
+          <img class="card-img" src="pics/speaking-part3.png" alt="Studio microphone with bookshelf background" loading="lazy" width="700" height="280">
+          <div class="card-label">Speaking · Part 3</div>
+          <span class="band-badge">4–5 min</span>
+          <h3>Discussion &amp; Abstract Questions</h3>
+          <p>Opinion language, speculation, cause &amp; effect, how to extend your answers, and sample questions with model responses.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- LISTENING -->
+  <!-- ════════════ LISTENING ════════════ -->
   <div class="skill-group reveal" id="listening"
        style="--skill-color:#1a6b8a;--skill-tag-bg:#e0f0f8">
     <div class="skill-group-header">
-      <h2>Listening</h2>
+      <div class="section-icon-floater">
+        <div class="section-icon-wrap" aria-hidden="true">🎧</div>
+      </div>
+      <div class="section-header-body">
+        <h2>Listening</h2>
+        <p class="section-subtitle">4 sections · All question types · Note completion · Multiple choice</p>
+      </div>
+      <span class="section-count-badge">1 Lesson</span>
+      <span class="wm-letter" aria-hidden="true">L</span>
     </div>
-    <div class="lesson-cards">
-      <a class="lesson-card" href="lessons/listening.html">
-        <img class="card-img" src="pics/listening.png" alt="Headphones resting on an open book with tea" loading="lazy" width="700" height="280">
-        <div class="card-label">Listening · Full Lesson</div>
-        <span class="band-badge">4 Sections</span>
-        <h3>All 4 Sections &amp; Question Types</h3>
-        <p>Test format, the four sections, all question types, key strategies, and practice exercises with answer keys.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
+    <div class="lesson-cards-wrap">
+      <div class="lesson-cards">
+        <a class="lesson-card" href="lessons/listening.html">
+          <img class="card-img" src="pics/listening.png" alt="Headphones resting on an open book with tea" loading="lazy" width="700" height="280">
+          <div class="card-label">Listening · Full Lesson</div>
+          <span class="band-badge">4 Sections</span>
+          <h3>All 4 Sections &amp; Question Types</h3>
+          <p>Test format, the four sections, all question types, key strategies, and practice exercises with answer keys.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- VOCABULARY -->
+  <!-- ════════════ VOCABULARY ════════════ -->
   <div class="skill-group reveal" id="vocabulary"
        style="--skill-color:#9b6b00;--skill-tag-bg:#f7f0e0">
     <div class="skill-group-header">
-      <h2>Vocabulary</h2>
+      <div class="section-icon-floater">
+        <div class="section-icon-wrap" aria-hidden="true">📝</div>
+      </div>
+      <div class="section-header-body">
+        <h2>Vocabulary</h2>
+        <p class="section-subtitle">50 IELTS words · 5 topics · Collocations, phrases &amp; practice quiz</p>
+      </div>
+      <span class="section-count-badge">1 Lesson</span>
+      <span class="wm-letter" aria-hidden="true">V</span>
     </div>
-    <div class="lesson-cards">
-      <a class="lesson-card" href="lessons/vocabulary.html">
-        <img class="card-img" src="pics/vocabulary.png" alt="Letter tiles and magnifying glass on dictionary" loading="lazy" width="700" height="280">
-        <div class="card-label">Vocabulary · Topic-Based</div>
-        <span class="band-badge">50 Words</span>
-        <h3>IELTS Topic Vocabulary</h3>
-        <p>Environment, Technology, Health, Education, and Society — key words, collocations, and phrases for essays and speaking.</p>
-        <span class="card-arrow">Start Lesson →</span>
-      </a>
+    <div class="lesson-cards-wrap">
+      <div class="lesson-cards">
+        <a class="lesson-card" href="lessons/vocabulary.html">
+          <img class="card-img" src="pics/vocabulary.png" alt="Letter tiles and magnifying glass on dictionary" loading="lazy" width="700" height="280">
+          <div class="card-label">Vocabulary · Topic-Based</div>
+          <span class="band-badge">50 Words</span>
+          <h3>IELTS Topic Vocabulary</h3>
+          <p>Environment, Technology, Health, Education, and Society — key words, collocations, and phrases for essays and speaking.</p>
+          <span class="card-arrow">Start Lesson →</span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -313,9 +631,9 @@
 
 <script src="assets/transitions.js"></script>
 <script>
+/* ── Word of the Day ─────────────────────────────────────────────── */
 (function () {
   var words = [
-    // Environment
     { word: "carbon footprint",    def: "Total greenhouse gas emissions caused by an individual or activity.",           example: "Governments are urging citizens to reduce their carbon footprint.",                               topic: "Environment" },
     { word: "biodiversity",        def: "The variety of plant and animal life in an ecosystem.",                          example: "Deforestation is one of the leading threats to biodiversity.",                                  topic: "Environment" },
     { word: "deforestation",       def: "Large-scale clearing of forests.",                                               example: "Deforestation in the Amazon has accelerated at an alarming rate.",                              topic: "Environment" },
@@ -326,7 +644,6 @@
     { word: "ecosystem",           def: "A biological community of organisms and their environment.",                     example: "Human activity is disrupting fragile ecosystems worldwide.",                                    topic: "Environment" },
     { word: "pollution",           def: "Contamination of air, water, or soil by harmful substances.",                   example: "Air pollution in major cities poses a serious threat to public health.",                        topic: "Environment" },
     { word: "conservation",        def: "Protection and preservation of natural resources and wildlife.",                 example: "Conservation efforts have helped to stabilise tiger populations in India.",                     topic: "Environment" },
-    // Technology
     { word: "artificial intelligence", def: "Computer systems that perform tasks requiring human-level intelligence.",    example: "Artificial intelligence is transforming the healthcare and finance industries.",                  topic: "Technology" },
     { word: "automation",          def: "Use of machines or software to perform tasks previously done by humans.",        example: "Automation has displaced many low-skilled manufacturing jobs.",                                 topic: "Technology" },
     { word: "digital divide",      def: "Inequality in access to digital technology and the internet.",                  example: "The digital divide remains a significant barrier to educational equality.",                     topic: "Technology" },
@@ -337,7 +654,6 @@
     { word: "misinformation",      def: "False or inaccurate information spread unintentionally.",                        example: "The spread of misinformation online has become a major public concern.",                       topic: "Technology" },
     { word: "cybersecurity",       def: "Protection of computer systems from digital attacks.",                           example: "Investing in cybersecurity is now a national priority for most governments.",                  topic: "Technology" },
     { word: "remote working",      def: "Performing job duties from home or outside the office.",                         example: "Remote working has fundamentally changed urban commuting patterns.",                           topic: "Technology" },
-    // Health
     { word: "obesity",             def: "A medical condition involving excessive body fat that risks health.",            example: "Childhood obesity rates have doubled in many countries over the past 20 years.",                topic: "Health" },
     { word: "sedentary lifestyle", def: "A way of life involving little physical activity.",                              example: "An increasingly sedentary lifestyle is contributing to a range of chronic illnesses.",           topic: "Health" },
     { word: "mental health",       def: "Psychological and emotional wellbeing.",                                         example: "Awareness of mental health issues has grown significantly in recent years.",                   topic: "Health" },
@@ -348,7 +664,6 @@
     { word: "pandemic",            def: "Widespread occurrence of a disease across the world.",                           example: "The COVID-19 pandemic exposed deep inequalities in global healthcare.",                        topic: "Health" },
     { word: "wellbeing",           def: "The state of being comfortable, healthy, and happy.",                            example: "Employers are increasingly focusing on the wellbeing of their workforce.",                     topic: "Health" },
     { word: "life expectancy",     def: "The average number of years a person is expected to live.",                      example: "Advances in medicine have dramatically increased life expectancy worldwide.",                  topic: "Health" },
-    // Education
     { word: "curriculum",          def: "The subjects and content taught at a school or university.",                     example: "Many argue the school curriculum should include more practical life skills.",                  topic: "Education" },
     { word: "academic achievement",def: "Performance measured by grades and qualifications.",                             example: "Academic achievement is only one measure of a student's potential.",                          topic: "Education" },
     { word: "critical thinking",   def: "The ability to analyse information and form reasoned judgements.",               example: "Critical thinking is increasingly valued by employers in all sectors.",                       topic: "Education" },
@@ -359,7 +674,6 @@
     { word: "equality of opportunity", def: "The principle that all people should have equal access to education.",       example: "Equality of opportunity remains an elusive goal in many education systems.",                  topic: "Education" },
     { word: "standardised testing",def: "Uniform assessments used to measure student performance across schools.",        example: "Standardised testing has been criticised for narrowing the curriculum.",                      topic: "Education" },
     { word: "literacy",            def: "The ability to read and write.",                                                 example: "Improving literacy at primary level is the foundation of a strong education.",                topic: "Education" },
-    // Society
     { word: "globalisation",       def: "Increased interconnection between countries economically, culturally, and politically.", example: "Globalisation has brought both economic opportunity and cultural homogenisation.",     topic: "Society" },
     { word: "inequality",          def: "An unequal distribution of resources, opportunities, or rights.",                example: "Growing income inequality is destabilising societies around the world.",                      topic: "Society" },
     { word: "urbanisation",        def: "The process by which more people move from rural to urban areas.",               example: "Rapid urbanisation in developing nations is creating severe infrastructure challenges.",       topic: "Society" },
@@ -371,7 +685,6 @@
     { word: "multiculturalism",    def: "The presence and promotion of multiple cultural communities within a society.",  example: "Cities like London and Toronto are celebrated as examples of successful multiculturalism.",   topic: "Society" },
     { word: "ageing population",   def: "A demographic shift where the proportion of elderly people increases.",          example: "An ageing population creates long-term challenges for pension and healthcare systems.",        topic: "Society" }
   ];
-
   var w = words[Math.floor(Math.random() * words.length)];
   document.getElementById('wotd-topic').textContent   = w.topic;
   document.getElementById('wotd-word').textContent    = w.word;
@@ -379,24 +692,49 @@
   document.getElementById('wotd-example').textContent = '"' + w.example + '"';
 })();
 
-// Scroll-reveal via IntersectionObserver
+/* ── Scroll-reveal + card stagger ───────────────────────────────── */
 (function () {
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Make all cards immediately visible if reduced motion preferred */
+  if (prefersReduced) {
+    document.querySelectorAll('.lesson-card').forEach(function (c) {
+      c.classList.add('card-visible');
+    });
+  }
+
   if (!('IntersectionObserver' in window)) {
     document.querySelectorAll('.reveal').forEach(function (el) {
       el.classList.add('revealed');
     });
+    document.querySelectorAll('.lesson-card').forEach(function (c) {
+      c.classList.add('card-visible');
+    });
     return;
   }
-  var obs = new IntersectionObserver(function (entries) {
+
+  /* Section reveal observer */
+  var sectionObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('revealed');
-        obs.unobserve(e.target);
+      if (!e.isIntersecting) return;
+      e.target.classList.add('revealed');
+
+      /* Stagger cards within this section */
+      if (!prefersReduced) {
+        var cards = e.target.querySelectorAll('.lesson-card');
+        cards.forEach(function (card, i) {
+          setTimeout(function () {
+            card.classList.add('card-visible');
+          }, 180 + i * 110);
+        });
       }
+
+      sectionObs.unobserve(e.target);
     });
   }, { threshold: 0.07 });
+
   document.querySelectorAll('.reveal').forEach(function (el) {
-    obs.observe(el);
+    sectionObs.observe(el);
   });
 })();
 </script>
