@@ -74,10 +74,13 @@
     padding: 0.9rem 0.75rem 0.75rem;
     text-align: center;
     border-right: 1px solid rgba(255,255,255,0.08);
-    cursor: default;
+    cursor: pointer;
     transition: background 0.3s;
     opacity: 0;
     animation: statIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    text-decoration: none;
+    color: inherit;
+    display: block;
   }
   .hero-stat:nth-child(1) { animation-delay: 0.4s; }
   .hero-stat:nth-child(2) { animation-delay: 0.52s; }
@@ -229,6 +232,13 @@
     flex-shrink: 0;
     position: relative;
     z-index: 1;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .section-icon-floater:hover .section-icon-wrap {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   }
   .section-icon-wrap {
     width: 60px;
@@ -242,7 +252,8 @@
     font-size: 1.7rem;
     line-height: 1;
     transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.18s,
-                opacity 0.35s ease 0.18s;
+                opacity 0.35s ease 0.18s,
+                box-shadow 0.25s ease;
   }
 
   /* ── Header text ─────────────────────────────────────────────────  */
@@ -411,26 +422,26 @@
   <h1>IELTS Lesson Hub</h1>
   <p>All lessons · Reading, Writing, Speaking, Listening &amp; Vocabulary</p>
   <div class="hero-stats" aria-label="Site sections">
-    <div class="hero-stat">
+    <a class="hero-stat" href="#reading">
       <span class="stat-icon" aria-hidden="true">📖</span>
       <span class="stat-label">Reading</span>
       <span class="stat-bar reading"></span>
-    </div>
-    <div class="hero-stat">
+    </a>
+    <a class="hero-stat" href="#writing">
       <span class="stat-icon" aria-hidden="true">✍️</span>
       <span class="stat-label">Writing</span>
       <span class="stat-bar writing"></span>
-    </div>
-    <div class="hero-stat">
+    </a>
+    <a class="hero-stat" href="#speaking">
       <span class="stat-icon" aria-hidden="true">🎙️</span>
       <span class="stat-label">Speaking</span>
       <span class="stat-bar speaking"></span>
-    </div>
-    <div class="hero-stat">
+    </a>
+    <a class="hero-stat" href="#listening">
       <span class="stat-icon" aria-hidden="true">🎧</span>
       <span class="stat-label">Listening</span>
       <span class="stat-bar listening"></span>
-    </div>
+    </a>
   </div>
 </header>
 
@@ -454,9 +465,9 @@
   <div class="skill-group reveal" id="reading"
        style="--skill-color:#c4411b;--skill-tag-bg:#fde8e0">
     <div class="skill-group-header">
-      <div class="section-icon-floater">
-        <div class="section-icon-wrap" aria-hidden="true">📖</div>
-      </div>
+      <a class="section-icon-floater" href="lessons/reading-task1.html" title="Go to Reading lesson">
+        <div class="section-icon-wrap">📖</div>
+      </a>
       <div class="section-header-body">
         <h2>Reading</h2>
         <p class="section-subtitle">7 question types · True/False/NG · Skimming &amp; scanning · Matching headings</p>
@@ -482,9 +493,9 @@
   <div class="skill-group reveal" id="writing"
        style="--skill-color:#2c6e4f;--skill-tag-bg:#e0f0e8">
     <div class="skill-group-header">
-      <div class="section-icon-floater">
-        <div class="section-icon-wrap" aria-hidden="true">✍️</div>
-      </div>
+      <a class="section-icon-floater" href="lessons/writing-task1.html" title="Go to Writing lessons">
+        <div class="section-icon-wrap">✍️</div>
+      </a>
       <div class="section-header-body">
         <h2>Writing</h2>
         <p class="section-subtitle">Task 1 (reports) · Task 2 (essays) · 4 marking criteria · Band 7+ structure</p>
@@ -518,9 +529,9 @@
   <div class="skill-group reveal" id="speaking"
        style="--skill-color:#6344a0;--skill-tag-bg:#ece8f5">
     <div class="skill-group-header">
-      <div class="section-icon-floater">
-        <div class="section-icon-wrap" aria-hidden="true">🎙️</div>
-      </div>
+      <a class="section-icon-floater" href="lessons/speaking-part1.html" title="Go to Speaking lessons">
+        <div class="section-icon-wrap">🎙️</div>
+      </a>
       <div class="section-header-body">
         <h2>Speaking</h2>
         <p class="section-subtitle">Parts 1, 2 &amp; 3 · ARD formula · Fluency &amp; coherence · Pronunciation</p>
@@ -562,9 +573,9 @@
   <div class="skill-group reveal" id="listening"
        style="--skill-color:#1a6b8a;--skill-tag-bg:#e0f0f8">
     <div class="skill-group-header">
-      <div class="section-icon-floater">
-        <div class="section-icon-wrap" aria-hidden="true">🎧</div>
-      </div>
+      <a class="section-icon-floater" href="lessons/listening.html" title="Go to Listening lesson">
+        <div class="section-icon-wrap">🎧</div>
+      </a>
       <div class="section-header-body">
         <h2>Listening</h2>
         <p class="section-subtitle">4 sections · All question types · Note completion · Multiple choice</p>
@@ -590,9 +601,9 @@
   <div class="skill-group reveal" id="vocabulary"
        style="--skill-color:#9b6b00;--skill-tag-bg:#f7f0e0">
     <div class="skill-group-header">
-      <div class="section-icon-floater">
-        <div class="section-icon-wrap" aria-hidden="true">📝</div>
-      </div>
+      <a class="section-icon-floater" href="lessons/vocabulary.html" title="Go to Vocabulary lesson">
+        <div class="section-icon-wrap">📝</div>
+      </a>
       <div class="section-header-body">
         <h2>Vocabulary</h2>
         <p class="section-subtitle">50 IELTS words · 5 topics · Collocations, phrases &amp; practice quiz</p>
