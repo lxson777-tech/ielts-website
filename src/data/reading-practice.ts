@@ -6,8 +6,8 @@
 export interface PracticeQuestion {
   /** Question text (plain text or small inline HTML). */
   prompt: string;
-  kind: 'choice' | 'text';
-  /** For choice questions: value = what is checked, label = what the button shows. */
+  kind: 'choice' | 'text' | 'select';
+  /** For choice/select questions: value = what is chosen, label = what shows. */
   options?: { value: string; label?: string }[];
   /** Accepted answer(s); text answers compare case-insensitively, trimmed. */
   answer: string | string[];
@@ -193,58 +193,35 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   headings: {
-    title: 'Exercise — Choose the correct heading for each paragraph',
-    intro: 'Headings: I Changing temperatures · II The greenhouse structure · III Global warming · IV Use of a greenhouse for plants · V Scientific research findings · VI Earth\'s atmosphere and natural warmth · VII Our choices · VIII Effects of burning fossil fuels · IX Climates around the world',
-    questions: [
-      {
-        prompt: 'Paragraph A',
-        kind: 'choice',
-        options: [
-          { value: 'II', label: 'II — The greenhouse structure' },
-          { value: 'IV', label: 'IV — Use of a greenhouse for plants' },
-          { value: 'VI', label: 'VI — Earth\'s atmosphere and natural warmth' },
-          { value: 'IX', label: 'IX — Climates around the world' },
-        ],
-        answer: 'II',
-        explanation: 'The whole paragraph describes what a greenhouse is and how it works physically. Heading IV is too narrow — plants are only one sentence.',
-      },
-      {
-        prompt: 'Paragraph B',
-        kind: 'choice',
-        options: [
-          { value: 'I', label: 'I — Changing temperatures' },
-          { value: 'III', label: 'III — Global warming' },
-          { value: 'VI', label: 'VI — Earth\'s atmosphere and natural warmth' },
-          { value: 'V', label: 'V — Scientific research findings' },
-        ],
-        answer: 'VI',
-        explanation: 'The paragraph explains how the Earth\'s atmosphere naturally traps heat, like a greenhouse — a natural, comfortable warmth, not global warming.',
-      },
-      {
-        prompt: 'Paragraph C',
-        kind: 'choice',
-        options: [
-          { value: 'III', label: 'III — Global warming' },
-          { value: 'VIII', label: 'VIII — Effects of burning fossil fuels' },
-          { value: 'V', label: 'V — Scientific research findings' },
-          { value: 'I', label: 'I — Changing temperatures' },
-        ],
-        answer: 'VIII',
-        explanation: 'The main idea is that human emissions from burning fossil fuels enhance the greenhouse effect. III (Global warming) seems close, but VIII is more precise about the cause the paragraph discusses.',
-      },
-      {
-        prompt: 'Paragraph D',
-        kind: 'choice',
-        options: [
-          { value: 'VII', label: 'VII — Our choices' },
-          { value: 'V', label: 'V — Scientific research findings' },
-          { value: 'III', label: 'III — Global warming' },
-          { value: 'I', label: 'I — Changing temperatures' },
-        ],
-        answer: 'VII',
-        explanation: 'The paragraph is entirely about what governments and individuals can choose to do.',
-      },
-    ],
+    title: 'Exercise — Match each heading to a paragraph',
+    intro: 'For every heading, choose the paragraph (A–D) it best fits. Some headings are distractors and match no paragraph — choose “Not used” for those.',
+    questions: (() => {
+      const PARAS = [
+        { value: 'A', label: 'Paragraph A' },
+        { value: 'B', label: 'Paragraph B' },
+        { value: 'C', label: 'Paragraph C' },
+        { value: 'D', label: 'Paragraph D' },
+        { value: 'None', label: 'Not used' },
+      ];
+      const rows: [string, string, string][] = [
+        ['I — Changing temperatures', 'None', 'A distractor — no paragraph is mainly about temperatures changing over time.'],
+        ['II — The greenhouse structure', 'A', 'Paragraph A describes what a greenhouse is and how it physically traps heat.'],
+        ['III — Global warming', 'None', 'Tempting for C, but that paragraph is specifically about the effects of burning fossil fuels (heading VIII), not global warming in general.'],
+        ['IV — Use of a greenhouse for plants', 'None', 'Only one sentence in A mentions plants — the paragraph as a whole is about the structure.'],
+        ['V — Scientific research findings', 'None', 'A distractor — no paragraph reports the results of scientific research.'],
+        ["VI — Earth's atmosphere and natural warmth", 'B', 'Paragraph B explains how the atmosphere naturally traps heat and keeps Earth comfortable.'],
+        ['VII — Our choices', 'D', 'Paragraph D is entirely about what governments and individuals can choose to do.'],
+        ['VIII — Effects of burning fossil fuels', 'C', 'Paragraph C explains that burning fossil fuels adds CO₂ and enhances the greenhouse effect.'],
+        ['IX — Climates around the world', 'None', 'A distractor — the passage never discusses different climates around the world.'],
+      ];
+      return rows.map(([prompt, answer, explanation]) => ({
+        prompt,
+        kind: 'select' as const,
+        options: PARAS,
+        answer,
+        explanation,
+      }));
+    })(),
   },
 
   sentence: {

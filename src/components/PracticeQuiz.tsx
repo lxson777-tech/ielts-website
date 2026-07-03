@@ -166,6 +166,31 @@ export default function PracticeQuiz({ set }: Props) {
                     );
                   })}
                 </div>
+              ) : q.kind === 'select' ? (
+                <div className="mt-3 pl-11">
+                  <select
+                    value={locked ? g : ''}
+                    disabled={locked}
+                    onChange={(e) => lock(i, e.target.value)}
+                    aria-label={`Paragraph for ${q.prompt}`}
+                    className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors ${
+                      locked
+                        ? right
+                          ? 'border-success bg-success-tint text-success'
+                          : 'border-error bg-error-tint text-error'
+                        : 'border-border bg-surface focus:border-[var(--skill,var(--color-brand))] focus:outline-none'
+                    }`}
+                  >
+                    <option value="" disabled>
+                      Choose paragraph…
+                    </option>
+                    {q.options!.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label ?? `Paragraph ${opt.value}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               ) : (
                 <form
                   className="mt-3 flex flex-wrap items-center gap-2 pl-11"
