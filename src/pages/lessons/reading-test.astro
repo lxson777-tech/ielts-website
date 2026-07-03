@@ -1,0 +1,18 @@
+---
+/* Legacy URL stub: lessons/reading-test.html?id=N was the old test player.
+   Tests now live under /tests — redirect old links to the hub. */
+import { withBase } from '../../lib/url';
+const hub = withBase('/tests');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${hub}`} />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>This page has moved. <a href={hub}>Go to practice tests →</a></p>
+  </body>
+</html>

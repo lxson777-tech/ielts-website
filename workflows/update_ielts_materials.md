@@ -27,7 +27,13 @@ For each lesson file it:
 2. Fetches the target URL with a browser User-Agent
 3. Extracts bullet-point tips or practice questions from the main content area
 4. Builds a **Practice & Resources** section using the site's existing card classes
-5. Replaces the content between `<!-- MATERIALS -->` and `<!-- /MATERIALS -->` markers in the HTML file
+5. Replaces the content between `<!-- MATERIALS -->` and `<!-- /MATERIALS -->` markers in the lesson fragment
+
+> **Since the Astro migration (July 2026):** lesson content lives in
+> `src/content/lesson-bodies/<slug>.html` fragments, not `lessons/*.html`.
+> The script targets those fragments automatically. After running it, commit
+> and push — the site rebuilds via GitHub Actions, so scraped updates go live
+> on the next push rather than immediately.
 
 ## Sources and Target URLs
 
@@ -54,11 +60,12 @@ For each lesson file it:
 Edit the `LESSON_SOURCES` dict at the top of `tools/scrape_ielts_materials.py`. Re-run the script.
 
 ## If a Source Is Blocked or Returns Nothing
-The script skips that source and logs a warning. The existing materials in the HTML are left unchanged. You can:
+The script skips that source and logs a warning. The existing materials in the fragment are left unchanged. You can:
 1. Try a different URL for that source and update the config
-2. Or manually write content directly between the `<!-- MATERIALS -->` and `<!-- /MATERIALS -->` markers in the lesson HTML file
+2. Or manually write content directly between the `<!-- MATERIALS -->` and `<!-- /MATERIALS -->` markers in `src/content/lesson-bodies/<slug>.html`
 
 ## Adding a New Lesson Page
-1. Add `<!-- MATERIALS --><!-- /MATERIALS -->` before `</main>` in the new HTML file
-2. Add an entry to `LESSON_SOURCES` in the script with the lesson filename and source URLs
-3. Re-run the script
+1. Create the body fragment `src/content/lesson-bodies/<slug>.html` with `<!-- MATERIALS --><!-- /MATERIALS -->` markers at the end
+2. Create the wrapper page `src/pages/lessons/<slug>.astro` (copy an existing one) and register the lesson in `src/data/lessons.ts`
+3. Add an entry to `LESSON_SOURCES` in the script with `<slug>.html` and source URLs
+4. Re-run the script, then commit and push
