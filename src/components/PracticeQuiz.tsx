@@ -3,7 +3,8 @@ import type { PracticeQuestion, PracticeSet } from '../data/reading-practice';
 
 /* Interactive practice exercise for reading question-type pages.
    Choice questions answer on click; text questions on Check/Enter.
-   Wrong answers reveal the correct answer plus an explanation. */
+   Wrong answers reveal the correct answer plus an explanation.
+   Inherits the ambient --skill / --skill-tint variables (reading coral). */
 
 interface Props {
   set: PracticeSet;
@@ -21,14 +22,26 @@ function answerLabel(q: PracticeQuestion): string {
   return opt?.label ?? value;
 }
 
+const PRAISE = ['Nice one!', 'Exactly right!', 'Well spotted!', 'Perfect!', 'Correct!'];
+
+function scoreMessage(correct: number, total: number): string {
+  const p = correct / total;
+  if (p === 1) return 'Flawless! You have mastered this question type. 🏆';
+  if (p >= 0.8) return 'Excellent work — almost perfect! 🌟';
+  if (p >= 0.6) return 'Good job! Review the explanations you missed and go again. 💪';
+  if (p >= 0.4) return 'Getting there — reread the strategy above and try again. 📖';
+  return 'Tough round! Study the explanations, then hit Try again. 🔄';
+}
+
 export default function PracticeQuiz({ set }: Props) {
   // null = unanswered; otherwise the given answer (locked)
   const [given, setGiven] = useState<(string | null)[]>(() => set.questions.map(() => null));
   const [drafts, setDrafts] = useState<string[]>(() => set.questions.map(() => ''));
 
+  const total = set.questions.length;
   const answered = given.filter((g) => g !== null).length;
   const correct = given.filter((g, i) => g !== null && isRight(set.questions[i]!, g)).length;
-  const done = answered === set.questions.length;
+  const done = answered === total;
 
   function lock(i: number, value: string) {
     if (given[i] !== null || !value.trim()) return;
@@ -41,11 +54,33 @@ export default function PracticeQuiz({ set }: Props) {
   }
 
   return (
-    <div className="my-6 rounded-card border border-border bg-brand-tint/40 p-5 sm:p-6">
-      <h3 className="font-display text-base font-bold">{set.title}</h3>
-      {set.intro && <p className="mt-1 text-sm text-ink-muted">{set.intro}</p>}
+    <div className="my-8 overflow-hidden rounded-card border border-border shadow-card">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[var(--color-brand)] to-[var(--skill,var(--color-brand-hover))] px-5 py-4 text-white sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-display text-base font-bold sm:text-lg">🎯 {set.title}</h3>
+          <span className="rounded-full bg-white/20 px-3 py-1 font-display text-xs font-bold">
+            {correct} / {total} correct
+          </span>
+        </div>
+        {set.intro && <p className="mt-1 text-sm text-white/85">{set.intro}</p>}
+        <div
+          className="mt-3 h-2 overflow-hidden rounded-full bg-white/25"
+          role="progressbar"
+          aria-valuenow={answered}
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-label="Questions answered"
+        >
+          <div
+            className="h-full rounded-full bg-white transition-[width] duration-500"
+            style={{ width: `${(answered / total) * 100}%` }}
+          />
+        </div>
+      </div>
 
-      <div className="mt-4 space-y-3">
+      {/* Questions */}
+      <div className="space-y-4 bg-surface-alt p-4 sm:p-6">
         {set.questions.map((q, i) => {
           const g = given[i];
           const locked = g !== null;
@@ -54,25 +89,32 @@ export default function PracticeQuiz({ set }: Props) {
           return (
             <div
               key={i}
-              className={`rounded-xl border bg-surface p-4 transition-colors ${
-                locked ? (right ? 'border-success' : 'border-error') : 'border-border'
+              className={`rounded-xl border-2 bg-surface p-4 shadow-card transition-colors ${
+                locked ? (right ? 'border-success pq-pop' : 'border-error pq-shake') : 'border-transparent'
               }`}
             >
-              <p className="text-[0.95rem]">
-                <strong className="mr-1.5">{i + 1}.</strong>
-                {q.prompt}
-              </p>
+              <div className="flex items-start gap-3">
+                <span
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-sm font-extrabold text-white ${
+                    locked ? (right ? 'bg-success' : 'bg-error') : 'bg-[var(--skill,var(--color-brand))]'
+                  }`}
+                >
+                  {locked ? (right ? '✓' : '✗') : i + 1}
+                </span>
+                <p className="pt-1 text-[0.95rem] font-medium">{q.prompt}</p>
+              </div>
 
               {q.kind === 'choice' ? (
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2 pl-11">
                   {q.options!.map((opt) => {
                     const chosen = g === opt.value;
                     const isAnswer = isRight(q, opt.value);
-                    let cls = 'border-border bg-surface hover:border-brand hover:bg-brand-tint';
+                    let cls =
+                      'border-border bg-surface text-ink hover:-translate-y-0.5 hover:border-[var(--skill)] hover:bg-[var(--skill-tint)] hover:shadow-card';
                     if (locked) {
-                      if (isAnswer) cls = 'border-success bg-success-tint text-success font-semibold';
-                      else if (chosen) cls = 'border-error bg-error-tint text-error';
-                      else cls = 'border-border bg-surface opacity-50';
+                      if (isAnswer) cls = 'border-success bg-success text-white font-bold shadow-card';
+                      else if (chosen) cls = 'border-error bg-error text-white line-through';
+                      else cls = 'border-border bg-surface opacity-40';
                     }
                     return (
                       <button
@@ -80,9 +122,7 @@ export default function PracticeQuiz({ set }: Props) {
                         type="button"
                         disabled={locked}
                         onClick={() => lock(i, opt.value)}
-                        className={`rounded-button border px-3.5 py-1.5 text-sm transition-colors ${cls} ${
-                          locked ? '' : 'cursor-pointer'
-                        }`}
+                        className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-all ${cls}`}
                       >
                         {opt.label ?? opt.value}
                       </button>
@@ -91,7 +131,7 @@ export default function PracticeQuiz({ set }: Props) {
                 </div>
               ) : (
                 <form
-                  className="mt-3 flex flex-wrap items-center gap-2"
+                  className="mt-3 flex flex-wrap items-center gap-2 pl-11"
                   onSubmit={(e) => {
                     e.preventDefault();
                     lock(i, drafts[i]!);
@@ -104,20 +144,20 @@ export default function PracticeQuiz({ set }: Props) {
                     onChange={(e) => setDrafts((prev) => prev.map((d, j) => (j === i ? e.target.value : d)))}
                     placeholder="Type your answer…"
                     aria-label={`Answer to question ${i + 1}`}
-                    className={`w-56 rounded-button border px-3 py-1.5 text-sm ${
+                    className={`w-56 rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors ${
                       locked
                         ? right
-                          ? 'border-success bg-success-tint text-success font-semibold'
-                          : 'border-error bg-error-tint text-error'
-                        : 'border-border bg-surface focus:border-brand'
+                          ? 'border-success bg-success-tint text-success'
+                          : 'border-error bg-error-tint text-error line-through'
+                        : 'border-border bg-surface focus:border-[var(--skill,var(--color-brand))] focus:outline-none'
                     }`}
                   />
                   {!locked && (
                     <button
                       type="submit"
-                      className="rounded-button bg-brand px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-hover"
+                      className="rounded-full bg-[var(--skill,var(--color-brand))] px-5 py-1.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 hover:shadow-card"
                     >
-                      Check
+                      Check ✓
                     </button>
                   )}
                 </form>
@@ -125,20 +165,18 @@ export default function PracticeQuiz({ set }: Props) {
 
               {locked && (
                 <div
-                  className={`mt-3 rounded-lg px-3.5 py-2.5 text-sm ${
-                    right ? 'bg-success-tint text-ink' : 'bg-error-tint text-ink'
+                  className={`pq-in ml-11 mt-3 rounded-xl border-l-4 px-4 py-3 text-sm ${
+                    right ? 'border-success bg-success-tint' : 'border-error bg-error-tint'
                   }`}
                 >
                   {right ? (
                     <p>
-                      <strong className="text-success">✓ Correct.</strong> {q.explanation}
+                      <strong className="text-success">🎉 {PRAISE[i % PRAISE.length]}</strong> {q.explanation}
                     </p>
                   ) : (
                     <p>
-                      <strong className="text-error">✗ Not quite.</strong>{' '}
-                      <span>
-                        The answer is <strong>{answerLabel(q)}</strong>. {q.explanation}
-                      </span>
+                      <strong className="text-error">💡 Not quite — the answer is “{answerLabel(q)}”.</strong>{' '}
+                      {q.explanation}
                     </p>
                   )}
                 </div>
@@ -146,30 +184,37 @@ export default function PracticeQuiz({ set }: Props) {
             </div>
           );
         })}
-      </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-4">
-        <p className="text-sm font-semibold">
-          {done ? (
-            <>
-              Finished — {correct} / {set.questions.length} correct
-              {correct === set.questions.length ? ' 🎉' : ''}
-            </>
-          ) : (
-            <>
-              {answered} of {set.questions.length} answered
-              {answered > 0 && ` · ${correct} correct`}
-            </>
-          )}
-        </p>
-        {answered > 0 && (
-          <button
-            type="button"
-            onClick={reset}
-            className="text-sm font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
-          >
-            Try again
-          </button>
+        {/* Score card */}
+        {done ? (
+          <div className="pq-pop rounded-xl bg-gradient-to-r from-[var(--color-brand)] to-[var(--skill,var(--color-brand-hover))] p-6 text-center text-white shadow-card-hover">
+            <p className="font-display text-4xl font-extrabold">
+              {correct} / {total}
+            </p>
+            <p className="mt-1 text-sm text-white/90">{scoreMessage(correct, total)}</p>
+            <button
+              type="button"
+              onClick={reset}
+              className="mt-4 rounded-full bg-white px-6 py-2 font-display text-sm font-bold text-brand transition-transform hover:-translate-y-0.5"
+            >
+              Try again ↺
+            </button>
+          </div>
+        ) : (
+          answered > 0 && (
+            <div className="flex items-center justify-between px-1 text-sm text-ink-muted">
+              <span>
+                {answered} of {total} answered
+              </span>
+              <button
+                type="button"
+                onClick={reset}
+                className="font-semibold underline underline-offset-2 hover:text-ink"
+              >
+                Start over
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>
