@@ -554,6 +554,18 @@
   margin-top: auto;
   padding-top: 0.55rem;
 }
+.lesson-body .part-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s ease;
+}
+.lesson-body .part-card:hover img {
+  transform: scale(1.03);
+}
 .lesson-body .material-source {
   font-size: 0.78rem;
   color: var(--color-ink-muted);
