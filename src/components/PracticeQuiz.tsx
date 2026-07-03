@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import type { PracticeQuestion, PracticeSet } from '../data/reading-practice';
 
+/** Base-prefixed URL for images stored under /public. */
+const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
+
 /* Interactive practice exercise for reading question-type pages.
    Choice questions answer on click; text questions on Check/Enter.
    Wrong answers reveal the correct answer plus an explanation.
@@ -78,6 +81,40 @@ export default function PracticeQuiz({ set }: Props) {
           />
         </div>
       </div>
+
+      {/* Labelled diagram */}
+      {set.diagram && (
+        <div className="border-b border-border bg-surface p-4 sm:p-6">
+          <div className="relative mx-auto max-w-lg overflow-hidden rounded-xl border border-border bg-white">
+            <img src={asset(set.diagram.image)} alt={set.diagram.alt} className="block w-full" />
+            {set.diagram.markers.map((m, idx) => {
+              const g = given[idx];
+              const locked = g !== null;
+              const right = locked && isRight(set.questions[idx]!, g);
+              const color = !locked
+                ? 'bg-[var(--skill,var(--color-brand))]'
+                : right
+                  ? 'bg-success'
+                  : 'bg-error';
+              return (
+                <span
+                  key={idx}
+                  className={`absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white font-display text-xs font-extrabold text-white shadow-card ${color} ${
+                    locked ? (right ? 'pq-pop' : 'pq-shake') : ''
+                  }`}
+                  style={{ left: `${m.x}%`, top: `${m.y}%` }}
+                  aria-hidden="true"
+                >
+                  {locked ? (right ? '✓' : '✗') : idx + 1}
+                </span>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-center text-xs text-ink-muted">
+            Match each numbered pin to a body part below.
+          </p>
+        </div>
+      )}
 
       {/* Questions */}
       <div className="space-y-4 bg-surface-alt p-4 sm:p-6">

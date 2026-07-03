@@ -18,6 +18,13 @@ export interface PracticeSet {
   title: string;
   /** Optional short instruction shown above the questions. */
   intro?: string;
+  /** Optional labelled diagram: numbered pins overlaid on an image, one per
+      text question (in order). x/y are percentages of the image box. */
+  diagram?: {
+    image: string;
+    alt: string;
+    markers: { x: number; y: number }[];
+  };
   questions: PracticeQuestion[];
 }
 
@@ -116,8 +123,20 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   diagram: {
-    title: 'Exercise — Diagram Completion',
-    intro: "Label the parts of the ant's body using NO MORE than 2 words from the passage. Then answer the bonus True/False/Not Given questions.",
+    title: "Exercise — Label the Ant's Body",
+    intro: "Type the correct body part for each numbered pin, using NO MORE than 2 words from the passage. Then answer the bonus True/False/Not Given questions.",
+    diagram: {
+      image: '/pics/reading/ant-diagram.png',
+      alt: "Side profile of an ant with numbered pins on its body parts",
+      // one marker per label question, in order (exoskeleton, thorax, antennae, mandibles, stinger)
+      markers: [
+        { x: 76, y: 36 }, // 1 exoskeleton — abdomen shell
+        { x: 51, y: 41 }, // 2 thorax — middle segment
+        { x: 20, y: 29 }, // 3 antennae — upper feelers
+        { x: 19, y: 55 }, // 4 mandibles — front pincers
+        { x: 90, y: 57 }, // 5 stinger — coral rear tip
+      ],
+    },
     questions: [
       {
         prompt: "The hard covering protecting the ant's body →",
