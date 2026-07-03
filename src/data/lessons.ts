@@ -19,9 +19,9 @@ export const SKILLS: { id: Skill; label: string; blurb: string }[] = [
 export const LESSONS: LessonMeta[] = [
   {
     slug: 'reading-task1',
-    title: 'Reading: Question Types',
+    title: 'Reading Overview',
     skill: 'reading',
-    description: 'Master every reading question type — T/F/NG, matching headings, completion and more.',
+    description: 'How the test works, the band score table, and a lesson for every question type.',
     image: '/pics/reading.png',
   },
   {

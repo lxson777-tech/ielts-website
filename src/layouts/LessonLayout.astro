@@ -6,10 +6,15 @@ import { getLesson, SKILLS } from '../data/lessons';
 
 interface Props {
   slug: string;
+  /** For pages not in the LESSONS registry (e.g. reading question-type
+      pages): supply the metadata directly. */
+  meta?: { title: string; description: string; skill: import('../data/lessons').Skill };
+  /** Extra breadcrumb level between Home and this page. */
+  parent?: { label: string; href: string };
 }
 
-const { slug } = Astro.props;
-const lesson = getLesson(slug);
+const { slug, meta, parent } = Astro.props;
+const lesson = meta ? { ...meta, slug, image: '' } : getLesson(slug);
 if (!lesson) throw new Error(`Unknown lesson slug: ${slug}`);
 const skill = SKILLS.find((s) => s.id === lesson.skill)!;
 ---
@@ -22,6 +27,14 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
         <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb">
           <a href={withBase('/')} class="hover:text-ink">Home</a>
           <span aria-hidden="true">/</span>
+          {
+            parent && (
+              <>
+                <a href={parent.href} class="hover:text-ink">{parent.label}</a>
+                <span aria-hidden="true">/</span>
+              </>
+            )
+          }
           <span class="font-medium text-ink">{lesson.title}</span>
         </nav>
         <Badge tone="skill">{skill.label}</Badge>

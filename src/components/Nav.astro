@@ -1,6 +1,7 @@
 ---
 import { withBase } from '../lib/url';
 import { LESSONS, SKILLS, lessonsBySkill } from '../data/lessons';
+import { READING_PARTS } from '../data/reading';
 
 const current = Astro.url.pathname;
 const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
@@ -10,7 +11,7 @@ const testsActive = current.startsWith(withBase('/tests'));
 
 /* Short labels for dropdown entries — the parts of each section. */
 const partLabel: Record<string, string> = {
-  'reading-task1': 'Question Types',
+  'reading-task1': 'Reading Overview',
   'writing-task1': 'Task 1 Report',
   'writing-task2': 'Task 2 Essay',
   'speaking-part1': 'Part 1 Interview',
@@ -81,6 +82,15 @@ const partLabel: Record<string, string> = {
                       {partLabel[lesson.slug] ?? lesson.title}
                     </a>
                   ))}
+                  {skill.id === 'reading' &&
+                    READING_PARTS.map((p) => (
+                      <a
+                        href={withBase(`/lessons/reading/${p.slug}`)}
+                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
+                      >
+                        {p.title}
+                      </a>
+                    ))}
                   {skill.id === 'reading' && (
                     <a
                       href={withBase('/tests')}
@@ -144,6 +154,15 @@ const partLabel: Record<string, string> = {
               {partLabel[lesson.slug] ?? lesson.title}
             </a>
           ))}
+          {skill.id === 'reading' &&
+            READING_PARTS.map((p) => (
+              <a
+                href={withBase(`/lessons/reading/${p.slug}`)}
+                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
+              >
+                {p.title}
+              </a>
+            ))}
         </div>
       ))
     }
