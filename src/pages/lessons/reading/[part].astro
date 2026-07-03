@@ -1,7 +1,9 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import PracticeQuiz from '../../../components/PracticeQuiz';
 import { withBase } from '../../../lib/url';
 import { READING_PARTS } from '../../../data/reading';
+import { READING_PRACTICE } from '../../../data/reading-practice';
 
 export function getStaticPaths() {
   return READING_PARTS.map((part, i) => ({
@@ -22,6 +24,7 @@ if (!raw) throw new Error(`Missing fragment for reading part: ${part.slug}`);
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 const overviewUrl = withBase('/lessons/reading-task1');
+const practice = READING_PRACTICE[part.slug];
 ---
 
 <LessonLayout
@@ -30,6 +33,8 @@ const overviewUrl = withBase('/lessons/reading-task1');
   parent={{ label: 'Reading', href: overviewUrl }}
 >
   <Fragment set:html={body} />
+
+  {practice && <PracticeQuiz client:visible set={practice} />}
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Reading section">
     {
