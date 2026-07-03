@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Hide nav/footer chrome (used by the fullscreen test player). */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description = 'Free IELTS preparation — lessons, strategies and timed practice tests for every skill.',
+  bare = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body class="flex min-h-screen flex-col bg-surface text-ink">
+    {!bare && <Nav />}
+    <main class="flex-1">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+  </body>
+</html>

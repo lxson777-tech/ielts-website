@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Badge from '../components/Badge.astro';
+import Card from '../components/Card.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+import ModelAnswer from '../components/ModelAnswer.astro';
+import { SKILLS } from '../data/lessons';
+---
+
+<BaseLayout title="Styleguide · IELTS Portal">
+  <div class="mx-auto max-w-6xl space-y-14 px-4 py-12 sm:px-6">
+    <SectionHeading eyebrow="Internal" title="Component styleguide" subtitle="Every core component and variant in one place." />
+
+    <section>
+      <h2 class="mb-4 text-xl font-bold">Buttons</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        <Button variant="primary" size="lg">Primary lg</Button>
+        <Button variant="primary">Primary md</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="primary" size="sm">Small</Button>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="mb-4 text-xl font-bold">Badges</h2>
+      <div class="flex flex-wrap gap-3">
+        <Badge tone="brand">Brand</Badge>
+        <Badge tone="success">Completed ✓</Badge>
+        <Badge tone="neutral">Neutral</Badge>
+        {SKILLS.map((s) => (
+          <span class={`skill-${s.id}`}>
+            <Badge tone="skill">{s.label}</Badge>
+          </span>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2 class="mb-4 text-xl font-bold">Progress bars</h2>
+      <div class="max-w-md space-y-4">
+        <ProgressBar value={35} label="Brand default" />
+        <div class="skill-reading"><ProgressBar value={60} label="Reading" /></div>
+        <div class="skill-listening"><ProgressBar value={85} label="Listening" /></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="mb-4 text-xl font-bold">Cards</h2>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <Card
+          title="Reading: Question Types"
+          href="#"
+          description="Master every reading question type in the exam."
+          image="/pics/reading.png"
+          badge="Reading"
+          skill="reading"
+        />
+        <Card
+          title="Writing Task 2"
+          href="#"
+          description="Plan and write a well-structured essay."
+          image="/pics/writing-task2.png"
+          badge="Writing"
+          skill="writing"
+        />
+        <Card title="No image card" href="#" description="Cards work without an illustration too." badge="Listening" skill="listening" />
+      </div>
+    </section>
+
+    <section class="prose-lesson">
+      <h2 class="mb-4 text-xl font-bold">Lesson prose + model answer</h2>
+      <p>
+        Body text uses Inter at 16px/1.6. <strong>Bold text</strong> and <a href="#">links</a> look like this.
+      </p>
+      <table>
+        <thead><tr><th>Question type</th><th>Skill tested</th></tr></thead>
+        <tbody>
+          <tr><td>True / False / Not Given</td><td>Fact checking</td></tr>
+          <tr><td>Matching headings</td><td>Main ideas</td></tr>
+        </tbody>
+      </table>
+      <ModelAnswer summary="Show model answer">
+        <p>The chart illustrates changes in household spending between 1990 and 2020…</p>
+      </ModelAnswer>
+    </section>
+  </div>
+</BaseLayout>

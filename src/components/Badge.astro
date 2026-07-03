@@ -1,0 +1,22 @@
+---
+/**
+ * Pill badge. `tone="skill"` reads the ambient --skill/--skill-tint variables
+ * (set by a .skill-* wrapper class), so one badge serves all five skills.
+ */
+interface Props {
+  tone?: 'skill' | 'brand' | 'success' | 'neutral';
+  class?: string;
+}
+const { tone = 'neutral', class: extra = '' } = Astro.props;
+
+const tones = {
+  skill: 'text-[var(--skill)] bg-[var(--skill-tint)]',
+  brand: 'text-brand bg-brand-tint',
+  success: 'text-success bg-success-tint',
+  neutral: 'text-ink-muted bg-surface-alt border border-border',
+};
+---
+
+<span class={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${tones[tone]} ${extra}`}>
+  <slot />
+</span>

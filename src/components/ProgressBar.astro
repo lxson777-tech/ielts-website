@@ -1,0 +1,26 @@
+---
+interface Props {
+  /** 0–100 */
+  value: number;
+  label?: string;
+  class?: string;
+}
+const { value, label, class: extra = '' } = Astro.props;
+const clamped = Math.max(0, Math.min(100, value));
+---
+
+<div class={extra}>
+  {label && (
+    <div class="mb-1.5 flex items-baseline justify-between text-sm">
+      <span class="font-medium">{label}</span>
+      <span class="text-ink-muted">{clamped}%</span>
+    </div>
+  )}
+  <div class="h-2 overflow-hidden rounded-full bg-surface-alt" role="progressbar" aria-valuenow={clamped} aria-valuemin="0" aria-valuemax="100">
+    <div
+      class="h-full rounded-full bg-[var(--skill,var(--color-brand))] transition-[width] duration-500"
+      style={`width:${clamped}%`}
+    >
+    </div>
+  </div>
+</div>

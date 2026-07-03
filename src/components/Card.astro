@@ -1,0 +1,49 @@
+---
+import { withBase } from '../lib/url';
+import Badge from './Badge.astro';
+
+/**
+ * Lesson / test card. Wrap in a .skill-<skill> element (or pass `skill`)
+ * so the accent stripe and badge pick up the skill color.
+ */
+interface Props {
+  title: string;
+  href: string;
+  description?: string;
+  image?: string;
+  badge?: string;
+  skill?: string;
+  /** data-* hook for client scripts (progress checkmarks, best band). */
+  dataKey?: string;
+}
+const { title, href, description, image, badge, skill, dataKey } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    skill && `skill-${skill}`,
+    'group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover',
+  ]}
+  data-key={dataKey}
+>
+  <span class="absolute inset-x-0 top-0 h-1 bg-[var(--skill,var(--color-brand))]"></span>
+  {image && (
+    <div class="flex h-36 items-center justify-center bg-[var(--skill-tint,var(--color-surface-alt))] p-4">
+      <img src={withBase(image)} alt="" class="h-full w-auto object-contain transition-transform duration-200 group-hover:scale-105" loading="lazy" />
+    </div>
+  )}
+  <div class="flex flex-1 flex-col gap-2 p-5">
+    <div class="flex items-center justify-between gap-2">
+      <h3 class="font-display text-base font-bold">{title}</h3>
+      <span data-slot="status"></span>
+    </div>
+    {description && <p class="text-sm text-ink-muted">{description}</p>}
+    <div class="mt-auto flex items-center justify-between pt-2">
+      {badge ? <Badge tone="skill">{badge}</Badge> : <span></span>}
+      <span class="text-sm font-semibold text-[var(--skill,var(--color-brand))] opacity-0 transition-opacity group-hover:opacity-100">
+        Open →
+      </span>
+    </div>
+  </div>
+</a>

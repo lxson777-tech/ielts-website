@@ -5,3 +5,6 @@ token.json
 __pycache__/
 *.pyc
 .claude/
+node_modules/
+dist/
+.astro/

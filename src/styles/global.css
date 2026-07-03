@@ -1,0 +1,145 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/inter';
+@import 'tailwindcss';
+
+@theme {
+  /* ── Fonts ─────────────────────────────────────────────── */
+  --font-display: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Surfaces & text ───────────────────────────────────── */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f8fb;
+  --color-border: #e6e8ef;
+  --color-ink: #101828;
+  --color-ink-muted: #5b6472;
+
+  /* ── Brand ─────────────────────────────────────────────── */
+  --color-brand: #4f46e5;
+  --color-brand-hover: #4338ca;
+  --color-brand-tint: #eef2ff;
+
+  /* ── Per-skill accents ─────────────────────────────────── */
+  --color-reading: #e0532f;
+  --color-reading-tint: #fdeee8;
+  --color-writing: #0e9f6e;
+  --color-writing-tint: #e6f7f0;
+  --color-speaking: #7c5cd6;
+  --color-speaking-tint: #f1edfc;
+  --color-listening: #0e8fc4;
+  --color-listening-tint: #e5f4fb;
+  --color-vocabulary: #d99000;
+  --color-vocabulary-tint: #fdf3dd;
+
+  /* ── Feedback ──────────────────────────────────────────── */
+  --color-success: #16a34a;
+  --color-success-tint: #ecfdf3;
+  --color-error: #dc2626;
+  --color-error-tint: #fef2f2;
+  --color-warning: #d97706;
+  --color-warning-tint: #fffbeb;
+
+  /* ── Shape ─────────────────────────────────────────────── */
+  --radius-card: 16px;
+  --radius-button: 10px;
+
+  /* ── Elevation ─────────────────────────────────────────── */
+  --shadow-card: 0 1px 3px rgb(16 24 40 / 0.06), 0 1px 2px rgb(16 24 40 / 0.04);
+  --shadow-card-hover: 0 12px 24px -6px rgb(16 24 40 / 0.12), 0 2px 6px rgb(16 24 40 / 0.06);
+}
+
+/* Skill theming: components read these two variables; a wrapper sets them
+   via the .skill-* classes so one Card/Badge implementation serves all five. */
+.skill-reading    { --skill: var(--color-reading);    --skill-tint: var(--color-reading-tint); }
+.skill-writing    { --skill: var(--color-writing);    --skill-tint: var(--color-writing-tint); }
+.skill-speaking   { --skill: var(--color-speaking);   --skill-tint: var(--color-speaking-tint); }
+.skill-listening  { --skill: var(--color-listening);  --skill-tint: var(--color-listening-tint); }
+.skill-vocabulary { --skill: var(--color-vocabulary); --skill-tint: var(--color-vocabulary-tint); }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-ink);
+    background: var(--color-surface);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Lesson prose ─────────────────────────────────────────────
+   Lesson bodies are migrated HTML (tables, lists, details); styling
+   them via one class keeps the page markup close to the original. */
+@layer components {
+  .prose-lesson {
+    max-width: 46rem;
+  }
+  .prose-lesson h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 0.75rem;
+  }
+  .prose-lesson h3 {
+    font-size: 1.15rem;
+    margin: 1.75rem 0 0.5rem;
+  }
+  .prose-lesson p {
+    margin: 0.75rem 0;
+  }
+  .prose-lesson ul,
+  .prose-lesson ol {
+    margin: 0.75rem 0;
+    padding-left: 1.4rem;
+  }
+  .prose-lesson ul { list-style: disc; }
+  .prose-lesson ol { list-style: decimal; }
+  .prose-lesson li { margin: 0.35rem 0; }
+  .prose-lesson a {
+    color: var(--color-brand);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-lesson a:hover { color: var(--color-brand-hover); }
+  .prose-lesson strong { font-weight: 600; }
+  .prose-lesson table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.925rem;
+  }
+  .prose-lesson th,
+  .prose-lesson td {
+    border: 1px solid var(--color-border);
+    padding: 0.55rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  .prose-lesson th {
+    background: var(--color-surface-alt);
+    font-weight: 600;
+  }
+  .prose-lesson blockquote {
+    border-left: 3px solid var(--skill, var(--color-brand));
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--color-ink-muted);
+  }
+  .prose-lesson hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 2rem 0;
+  }
+}
