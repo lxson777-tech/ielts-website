@@ -1,9 +1,85 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import WordOfTheDay from '../components/WordOfTheDay.astro';
+import { withBase } from '../lib/url';
+import { LESSONS, SKILLS } from '../data/lessons';
 ---
 
 <BaseLayout title="IELTS Portal — Free IELTS Preparation">
-  <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-    <h1 class="text-4xl font-extrabold">Placeholder — homepage lands in Phase 2</h1>
+  <!-- Hero -->
+  <section class="border-b border-border bg-surface-alt">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
+      <div>
+        <p class="mb-4 inline-block rounded-full bg-brand-tint px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
+          Free · No sign-up needed
+        </p>
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
+          Master IELTS,<br />one skill at a time.
+        </h1>
+        <p class="mt-4 max-w-md text-lg text-ink-muted">
+          Clear lessons for every paper, real exam question types, and timed practice tests that estimate your band score.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button href="#skills" size="lg">Browse lessons</Button>
+          <Button href={withBase('/tests')} variant="secondary" size="lg">Take a practice test</Button>
+        </div>
+      </div>
+      <div class="hidden justify-center md:flex">
+        <img src={withBase('/pics/hero.png')} alt="Student preparing for IELTS" class="max-h-80 w-auto rounded-card" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Progress strip (hidden until localStorage has data — populated in Phase 5) -->
+  <section id="progress-strip" class="hidden border-b border-border bg-surface">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 px-4 py-4 text-sm sm:px-6">
+      <p class="font-semibold">Your progress</p>
+      <p class="text-ink-muted"><span id="progress-lessons" class="font-semibold text-ink">0</span> lessons completed</p>
+      <p class="text-ink-muted">Best band so far: <span id="progress-band" class="font-semibold text-brand">–</span></p>
+      <a href={withBase('/tests#history')} class="ml-auto font-semibold text-brand hover:text-brand-hover">View history →</a>
+    </div>
+  </section>
+
+  <!-- Word of the day -->
+  <section class="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
+    <WordOfTheDay />
+  </section>
+
+  <!-- Skill sections -->
+  <div id="skills" class="mx-auto max-w-6xl space-y-16 px-4 py-16 sm:px-6">
+    {
+      SKILLS.map((skill) => {
+        const lessons = LESSONS.filter((l) => l.skill === skill.id);
+        if (lessons.length === 0) return null;
+        return (
+          <section class={`skill-${skill.id}`} id={skill.id} aria-labelledby={`heading-${skill.id}`}>
+            <SectionHeading eyebrow={skill.label} title={skill.label} subtitle={skill.blurb} id={`heading-${skill.id}`} />
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {lessons.map((lesson) => (
+                <Card
+                  title={lesson.title}
+                  href={withBase(`/lessons/${lesson.slug}`)}
+                  description={lesson.description}
+                  image={lesson.image}
+                  badge={skill.label}
+                  dataKey={lesson.slug}
+                />
+              ))}
+              {skill.id === 'reading' && (
+                <Card
+                  title="Timed Practice Tests"
+                  href={withBase('/tests')}
+                  description="Full reading passages with a real 60-minute timer and band estimate."
+                  badge="Practice"
+                />
+              )}
+            </div>
+          </section>
+        );
+      })
+    }
   </div>
 </BaseLayout>
