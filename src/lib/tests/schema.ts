@@ -8,9 +8,13 @@ export type QuestionType =
   | 'paragraph-matching'
   | 'sentence-completion'
   | 'tfng'
+  | 'yes-no-notgiven'
   | 'multiple-choice'
   | 'matching-headings'
+  | 'matching-features' // statement → person/thing from a shared list
+  | 'sentence-endings' // stem → correct ending from a shared list
   | 'categorisation'
+  | 'multiple-answer' // pick N correct statements from a longer list
   | 'diagram-labelling';
 
 export interface DiagramSpec {
@@ -53,12 +57,16 @@ export interface QuestionGroup {
   title: string;
   type: QuestionType;
   instructionHtml: string;
-  /** shared dropdown options for paragraph-matching / matching-headings / categorisation */
+  /** shared dropdown options for paragraph-matching / matching-* / sentence-endings / categorisation */
   options?: string[];
-  /** optional key/legend shown above the group (e.g. heading list, category names) */
+  /** optional key/legend shown above the group (e.g. heading list, category names, sentence endings) */
   legendHtml?: string;
   /** diagram-labelling: image + numbered pins, one per question */
   diagram?: DiagramSpec;
+  /** multiple-answer: how many statements to select (= number of questions in the group) */
+  selectCount?: number;
+  /** multiple-answer: the labelled statements to choose from */
+  choices?: { value: string; label: string }[];
   questions: Question[];
 }
 

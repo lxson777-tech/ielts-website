@@ -258,15 +258,19 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                   {group.type === 'diagram-labelling' && group.diagram && (
                     <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
                   )}
-                  {groupQs.map((nq) => (
-                    <QuestionItem
-                      key={nq.question.id}
-                      nq={nq}
-                      value={answers[nq.question.id] ?? ''}
-                      submitted={submitted}
-                      onChange={(v) => setAnswer(nq.question.id, v)}
-                    />
-                  ))}
+                  {group.type === 'multiple-answer' ? (
+                    <MultiAnswer group={group} slotIds={groupQs.map((nq) => nq.question.id)} answers={answers} submitted={submitted} setAnswer={setAnswer} />
+                  ) : (
+                    groupQs.map((nq) => (
+                      <QuestionItem
+                        key={nq.question.id}
+                        nq={nq}
+                        value={answers[nq.question.id] ?? ''}
+                        submitted={submitted}
+                        onChange={(v) => setAnswer(nq.question.id, v)}
+                      />
+                    ))
+                  )}
                 </div>
               );
             })}
@@ -463,7 +467,12 @@ function QuestionItem({
             className="shrink-0 rounded-lg border border-border bg-surface px-2 py-1 text-sm font-semibold"
           >
             <option value="">—</option>
-            {(group.type === 'tfng' ? ['True', 'False', 'Not Given'] : (group.options ?? [])).map((v) => (
+            {(group.type === 'tfng'
+              ? ['True', 'False', 'Not Given']
+              : group.type === 'yes-no-notgiven'
+                ? ['Yes', 'No', 'Not Given']
+                : (group.options ?? [])
+            ).map((v) => (
               <option key={v} value={v}>
                 {v}
               </option>
@@ -514,6 +523,86 @@ function DiagramFigure({
             >
               {nq.n}
             </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* "Choose N statements" — checkbox list capped at selectCount. The chosen
+   letters are written into the group's slot question ids (sorted), so scoring,
+   answered-state and nav circles reuse the normal per-question machinery: each
+   slot's answer is the full correct set, so a chosen letter scores iff it's in
+   that set — matching IELTS marking (one mark per correct selection). */
+function MultiAnswer({
+  group,
+  slotIds,
+  answers,
+  submitted,
+  setAnswer,
+}: {
+  group: QuestionGroup;
+  slotIds: string[];
+  answers: Record<string, string>;
+  submitted: boolean;
+  setAnswer: (qid: string, value: string) => void;
+}) {
+  const selectCount = group.selectCount ?? slotIds.length;
+  const choices = group.choices ?? [];
+  const correct = new Set(
+    Array.isArray(group.questions[0]?.answer) ? (group.questions[0]!.answer as string[]) : [],
+  );
+  const selected = slotIds.map((id) => answers[id]).filter(Boolean) as string[];
+  const selectedSet = new Set(selected);
+
+  function toggle(letter: string) {
+    if (submitted) return;
+    let next: string[];
+    if (selectedSet.has(letter)) next = selected.filter((l) => l !== letter);
+    else if (selected.length >= selectCount) return; // cap reached
+    else next = [...selected, letter];
+    next.sort();
+    slotIds.forEach((id, i) => setAnswer(id, next[i] ?? ''));
+  }
+
+  return (
+    <div id={`player-${slotIds[0]}`} className="rounded-card border border-border bg-surface p-4">
+      <p className="mb-3 text-xs font-semibold text-ink-muted">
+        Selected {selected.length} of {selectCount}
+      </p>
+      <div className="space-y-1.5">
+        {choices.map((c) => {
+          const chosen = selectedSet.has(c.value);
+          const isCorrectChoice = correct.has(c.value);
+          let cls = 'border-border hover:border-brand/50';
+          if (submitted) {
+            if (isCorrectChoice) cls = 'border-success bg-success-tint';
+            else if (chosen) cls = 'border-error bg-error-tint';
+            else cls = 'border-border opacity-50';
+          } else if (chosen) {
+            cls = 'border-brand bg-brand-tint';
+          }
+          const atCap = !chosen && selected.length >= selectCount;
+          return (
+            <label
+              key={c.value}
+              className={`flex cursor-pointer items-start gap-2 rounded-lg border px-3 py-2 text-sm ${cls} ${
+                atCap && !submitted ? 'cursor-not-allowed opacity-60' : ''
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={chosen}
+                disabled={submitted || atCap}
+                onChange={() => toggle(c.value)}
+                className="mt-0.5 accent-[var(--color-brand)]"
+              />
+              <span>
+                <strong className="mr-1">{c.value}</strong>
+                {c.label}
+              </span>
+            </label>
           );
         })}
       </div>
