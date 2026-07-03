@@ -145,10 +145,6 @@ export default function TestPlayer({ test, hubUrl }: Props) {
     document.addEventListener('mouseup', onUp);
   }
 
-  function scrollToQuestion(qid: string) {
-    document.getElementById(`player-${qid}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
   const part = test.parts[activePart]!;
   const stimulus = part.stimulus;
   const timerWarn = timeLeft <= 300 && !submitted;
@@ -318,17 +314,15 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                     : 'bg-error text-white'
                   : answered
                     ? 'bg-brand text-white'
-                    : 'border border-border text-ink-muted hover:border-brand';
+                    : 'border border-border text-ink-muted';
                 return (
-                  <button
+                  <span
                     key={question.id}
-                    type="button"
-                    onClick={() => scrollToQuestion(question.id)}
-                    aria-label={`Go to question ${n}`}
+                    aria-label={`Question ${n}${answered ? ' answered' : ' unanswered'}`}
                     className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${cls}`}
                   >
                     {n}
-                  </button>
+                  </span>
                 );
               })}
           </div>
