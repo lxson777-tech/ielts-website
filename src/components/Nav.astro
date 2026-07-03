@@ -40,14 +40,15 @@ const partLabel: Record<string, string> = {
               <button
                 type="button"
                 class:list={[
-                  'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors',
+                  'flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition-colors',
                   active
                     ? 'bg-[var(--skill-tint)] text-[var(--skill)]'
-                    : 'text-ink-muted hover:bg-surface-alt hover:text-ink',
+                    : 'text-ink-muted hover:bg-[var(--skill-tint)] hover:text-[var(--skill)] group-focus-within:bg-[var(--skill-tint)] group-focus-within:text-[var(--skill)]',
                 ]}
                 aria-haspopup="true"
                 aria-expanded="false"
               >
+                <span class="h-2 w-2 rounded-full bg-[var(--skill)]" aria-hidden="true"></span>
                 {skill.label}
                 <svg
                   class="h-3 w-3 transition-transform group-focus-within:rotate-180 group-hover:rotate-180"
