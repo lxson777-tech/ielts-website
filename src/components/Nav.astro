@@ -40,7 +40,7 @@ const partLabel: Record<string, string> = {
               <button
                 type="button"
                 class:list={[
-                  'flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition-colors',
+                  'flex items-center gap-1.5 rounded-full px-3 py-2 font-display text-[0.95rem] font-bold tracking-tight transition-colors',
                   active
                     ? 'bg-[var(--skill-tint)] text-[var(--skill)]'
                     : 'text-ink-muted hover:bg-[var(--skill-tint)] hover:text-[var(--skill)] group-focus-within:bg-[var(--skill-tint)] group-focus-within:text-[var(--skill)]',
@@ -66,22 +66,16 @@ const partLabel: Record<string, string> = {
               <div
                 class:list={[
                   alignRight ? 'right-0' : 'left-0',
-                  'invisible absolute top-full w-72 translate-y-1 rounded-2xl border border-border bg-surface p-2 opacity-0 shadow-card-hover transition-all duration-150',
+                  'invisible absolute top-full w-80 translate-y-1 rounded-2xl border border-border bg-surface p-3 opacity-0 shadow-card-hover transition-all duration-150',
                   'group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100',
                   'group-hover:visible group-hover:translate-y-2 group-hover:opacity-100',
                 ]}
               >
-                <div class="border-b border-border px-3 pb-2.5 pt-2">
-                  <p class="text-xs font-bold uppercase tracking-wider" style="color: var(--skill)">
-                    {skill.label}
-                  </p>
-                  <p class="mt-0.5 text-xs leading-snug text-ink-muted">{skill.blurb}</p>
-                </div>
-                <div class="pt-1.5">
+                <div>
                   {lessons.map((lesson) => (
                     <a
                       href={withBase(`/lessons/${lesson.slug}`)}
-                      class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink transition-colors hover:bg-[var(--skill-tint)]"
+                      class="flex items-center gap-3 rounded-xl px-4 py-3 text-[0.95rem] text-ink transition-colors hover:bg-[var(--skill-tint)]"
                     >
                       <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
                       {partLabel[lesson.slug] ?? lesson.title}
@@ -90,14 +84,14 @@ const partLabel: Record<string, string> = {
                   {skill.id === 'reading' && (
                     <a
                       href={withBase('/tests')}
-                      class="mt-1 flex items-center gap-2.5 rounded-lg border-t border-border px-3 pb-2 pt-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand-tint"
+                      class="mt-1 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-3 pt-3.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
                     >
                       ⏱ Practice Tests — timed, with band score
                     </a>
                   )}
                   <a
                     href={withBase(`/#${skill.id}`)}
-                    class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-ink-muted transition-colors hover:bg-surface-alt hover:text-ink"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-ink-muted transition-colors hover:bg-surface-alt hover:text-ink"
                   >
                     All {skill.label.toLowerCase()} on the homepage →
                   </a>
