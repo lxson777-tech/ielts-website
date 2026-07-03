@@ -1,0 +1,55 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Badge from '../components/Badge.astro';
+import { withBase } from '../lib/url';
+import { getLesson, SKILLS } from '../data/lessons';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const lesson = getLesson(slug);
+if (!lesson) throw new Error(`Unknown lesson slug: ${slug}`);
+const skill = SKILLS.find((s) => s.id === lesson.skill)!;
+---
+
+<BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description}>
+  <div class={`skill-${lesson.skill}`}>
+    <!-- Lesson hero band -->
+    <section class="border-b border-border bg-surface-alt">
+      <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+        <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb">
+          <a href={withBase('/')} class="hover:text-ink">Home</a>
+          <span aria-hidden="true">/</span>
+          <span class="font-medium text-ink">{lesson.title}</span>
+        </nav>
+        <Badge tone="skill">{skill.label}</Badge>
+        <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{lesson.title}</h1>
+        <p class="mt-3 max-w-2xl text-ink-muted">{lesson.description}</p>
+      </div>
+    </section>
+
+    <!-- Migrated lesson content -->
+    <article class="lesson-body mx-auto max-w-4xl px-4 py-10 sm:px-6">
+      <slot />
+
+      <div class="mt-12 flex justify-center border-t border-border pt-8" data-lesson-complete={slug}>
+        <!-- LessonCompleteButton mounts here in the progress phase -->
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/lesson.css';
+</style>
+
+<script>
+  import { initReadingQuiz, initVocabQuiz } from '../scripts/lesson-quiz';
+  initReadingQuiz();
+  const vocabData = document.getElementById('vocab-words-data');
+  if (vocabData?.textContent) {
+    initVocabQuiz(JSON.parse(vocabData.textContent));
+  }
+</script>

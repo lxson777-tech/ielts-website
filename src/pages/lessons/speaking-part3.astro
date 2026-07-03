@@ -1,0 +1,11 @@
+---
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import { withBase } from '../../lib/url';
+import raw from '../../content/lesson-bodies/speaking-part3.html?raw';
+
+const body = raw.replaceAll('../pics/', withBase('/pics/'));
+---
+
+<LessonLayout slug="speaking-part3">
+  <Fragment set:html={body} />
+</LessonLayout>

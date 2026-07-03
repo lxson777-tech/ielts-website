@@ -24,7 +24,11 @@ except ImportError:
     sys.exit("Missing dependencies. Run: pip install requests beautifulsoup4")
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-LESSONS_DIR = os.path.join(ROOT, 'lessons')
+# Lesson content now lives as HTML fragments consumed by the Astro build.
+# The fragments keep the MATERIALS / SAMPLES / QUIZ markers, so injection
+# works unchanged — but updates go live on the next push (Pages rebuild),
+# not instantly.
+LESSONS_DIR = os.path.join(ROOT, 'src', 'content', 'lesson-bodies')
 TIMEOUT = 15        # seconds per HTTP request
 POLITE_DELAY = 1.5  # seconds between requests (be a good citizen)
 

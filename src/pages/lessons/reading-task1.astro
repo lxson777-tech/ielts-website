@@ -1,0 +1,40 @@
+---
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import { withBase } from '../../lib/url';
+import { ALL_TESTS } from '../../data/tests';
+import { questionCount } from '../../lib/tests/schema';
+import raw from '../../content/lesson-bodies/reading-task1.html?raw';
+
+const body = raw.replaceAll('../pics/', withBase('/pics/'));
+const readingTests = ALL_TESTS.filter((t) => t.skill === 'reading');
+---
+
+<LessonLayout slug="reading-task1">
+  <Fragment set:html={body} />
+
+  <!-- Replaces the legacy #samples grid (was rendered client-side) -->
+  <hr class="divider" />
+  <div class="section" id="samples">
+    <div class="section-header">
+      <div class="section-num">T</div>
+      <div class="section-title-block">
+        <div class="tag">Practice Tests</div>
+        <h2>Take a Test</h2>
+      </div>
+    </div>
+    <p class="text-sm text-ink-muted">
+      Full timed reading tests with instant scoring — passage on the left, questions on the right.
+    </p>
+    <div class="samples-grid">
+      {
+        readingTests.map((t, i) => (
+          <a class="sample-card" href={withBase(`/tests/${t.id}`)}>
+            <span class="sample-topic">Academic Reading · {questionCount(t)} Questions</span>
+            <strong class="sample-title">Test {i + 1} — {t.title}</strong>
+            <span class="sample-go">Start test →</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</LessonLayout>
