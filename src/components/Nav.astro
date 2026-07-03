@@ -10,14 +10,14 @@ const testsActive = current.startsWith(withBase('/tests'));
 
 /* Short labels for dropdown entries — the parts of each section. */
 const partLabel: Record<string, string> = {
-  'reading-task1': 'Question Types — Full Lesson',
-  'writing-task1': 'Task 1 — Report',
-  'writing-task2': 'Task 2 — Essay',
-  'speaking-part1': 'Part 1 — Interview',
-  'speaking-part2': 'Part 2 — Cue Card',
-  'speaking-part3': 'Part 3 — Discussion',
+  'reading-task1': 'Question Types',
+  'writing-task1': 'Task 1 Report',
+  'writing-task2': 'Task 2 Essay',
+  'speaking-part1': 'Part 1 Interview',
+  'speaking-part2': 'Part 2 Cue Card',
+  'speaking-part3': 'Part 3 Discussion',
   listening: 'Full Lesson',
-  vocabulary: 'Topic Vocabulary — Full Lesson',
+  vocabulary: 'Topic Vocabulary',
 };
 ---
 
@@ -86,7 +86,7 @@ const partLabel: Record<string, string> = {
                       href={withBase('/tests')}
                       class="mt-1 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-3 pt-3.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
                     >
-                      ⏱ Practice Tests — timed, with band score
+                      ⏱ Timed Practice Tests
                     </a>
                   )}
                   <a
