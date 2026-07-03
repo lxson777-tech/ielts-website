@@ -63,7 +63,6 @@ export default function TestPlayer({ test, hubUrl }: Props) {
   const questionsRef = useRef<HTMLDivElement>(null);
   const submittedRef = useRef(false);
 
-  const answeredCount = Object.values(answers).filter(Boolean).length;
   const correctCount = useMemo(
     () => numbered.filter(({ question }) => isCorrect(question, answers[question.id] ?? '')).length,
     [numbered, answers],
@@ -280,49 +279,59 @@ export default function TestPlayer({ test, hubUrl }: Props) {
       </div>
 
       {/* ── Bottom bar ── */}
-      <footer className="flex shrink-0 flex-wrap items-center gap-2 border-t border-border bg-surface px-4 py-2">
+      <footer className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-border bg-surface px-4 py-2">
         <div className="flex gap-1">
-          {test.parts.map((p, i) => (
-            <button
-              key={p.label}
-              type="button"
-              onClick={() => setActivePart(i)}
-              className={`rounded-full px-3 py-1 text-xs font-bold ${
-                i === activePart ? 'bg-brand text-white' : 'bg-surface-alt text-ink-muted hover:text-ink'
-              }`}
-            >
-              {p.label}
-              {i === activePart && (
-                <span className="ml-1 font-normal opacity-80">
-                  · {answeredCount} of {TOTAL}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-        <div className="ml-auto flex flex-wrap gap-1.5">
-          {numbered.map(({ question, n }) => {
-            const answered = !!answers[question.id];
-            const ok = submitted && isCorrect(question, answers[question.id] ?? '');
-            const cls = submitted
-              ? ok
-                ? 'bg-success text-white'
-                : 'bg-error text-white'
-              : answered
-                ? 'bg-brand text-white'
-                : 'border border-border text-ink-muted hover:border-brand';
+          {test.parts.map((p, i) => {
+            const partQs = numbered.filter((nq) => nq.part === p);
+            const partAnswered = partQs.filter((nq) => answers[nq.question.id]).length;
+            const complete = partAnswered === partQs.length;
             return (
               <button
-                key={question.id}
+                key={p.label}
                 type="button"
-                onClick={() => scrollToQuestion(question.id)}
-                aria-label={`Go to question ${n}`}
-                className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${cls}`}
+                onClick={() => setActivePart(i)}
+                className={`rounded-full px-3 py-1 text-xs font-bold ${
+                  i === activePart ? 'bg-brand text-white' : 'bg-surface-alt text-ink-muted hover:text-ink'
+                }`}
               >
-                {n}
+                {p.label}
+                <span className={`ml-1 font-normal ${i === activePart ? 'opacity-80' : 'opacity-60'}`}>
+                  {complete && !submitted ? '✓' : `${partAnswered}/${partQs.length}`}
+                </span>
               </button>
             );
           })}
+        </div>
+
+        {/* Question indicators — current passage only */}
+        <div className="ml-auto flex items-center gap-2">
+          <span className="hidden text-xs font-medium text-ink-muted sm:inline">{part.label}:</span>
+          <div className="flex flex-wrap gap-1.5">
+            {numbered
+              .filter((nq) => nq.part === part)
+              .map(({ question, n }) => {
+                const answered = !!answers[question.id];
+                const ok = submitted && isCorrect(question, answers[question.id] ?? '');
+                const cls = submitted
+                  ? ok
+                    ? 'bg-success text-white'
+                    : 'bg-error text-white'
+                  : answered
+                    ? 'bg-brand text-white'
+                    : 'border border-border text-ink-muted hover:border-brand';
+                return (
+                  <button
+                    key={question.id}
+                    type="button"
+                    onClick={() => scrollToQuestion(question.id)}
+                    aria-label={`Go to question ${n}`}
+                    className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${cls}`}
+                  >
+                    {n}
+                  </button>
+                );
+              })}
+          </div>
         </div>
       </footer>
 
