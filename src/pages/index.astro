@@ -83,3 +83,26 @@ import { LESSONS, SKILLS } from '../data/lessons';
     }
   </div>
 </BaseLayout>
+
+<script>
+  import { completedLessonCount, getBestBand, isLessonComplete } from '../lib/progress';
+
+  // Progress strip — only shown once there is something to report.
+  const lessonsDone = completedLessonCount();
+  const best = getBestBand();
+  if (lessonsDone > 0 || best) {
+    document.getElementById('progress-strip')?.classList.remove('hidden');
+    document.getElementById('progress-lessons')!.textContent = String(lessonsDone);
+    if (best) document.getElementById('progress-band')!.textContent = best.bandLabel;
+  }
+
+  // Checkmark badge on completed lesson cards.
+  document.querySelectorAll<HTMLElement>('[data-key]').forEach((card) => {
+    if (!isLessonComplete(card.dataset.key!)) return;
+    const slot = card.querySelector('[data-slot="status"]');
+    if (slot) {
+      slot.innerHTML =
+        '<span class="grid h-5 w-5 place-items-center rounded-full bg-success text-[10px] font-bold text-white" title="Completed">✓</span>';
+    }
+  });
+</script>

@@ -9,6 +9,6 @@ const quizWords = WORDS.map(({ word, def }) => ({ word, def }));
 ---
 
 <LessonLayout slug="vocabulary">
-  <script type="application/json" id="vocab-words-data" set:html={JSON.stringify(quizWords)} />
+  <script is:inline type="application/json" id="vocab-words-data" set:html={JSON.stringify(quizWords)} />
   <Fragment set:html={body} />
 </LessonLayout>

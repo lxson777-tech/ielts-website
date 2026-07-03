@@ -34,8 +34,16 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
     <article class="lesson-body mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <slot />
 
-      <div class="mt-12 flex justify-center border-t border-border pt-8" data-lesson-complete={slug}>
-        <!-- LessonCompleteButton mounts here in the progress phase -->
+      <div class="mt-12 flex justify-center border-t border-border pt-8">
+        <button
+          type="button"
+          id="lesson-complete-btn"
+          data-slug={slug}
+          class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-success hover:text-success data-[done]:border-success data-[done]:bg-success-tint data-[done]:text-success"
+        >
+          <span data-icon>○</span>
+          <span data-label>Mark lesson as complete</span>
+        </button>
       </div>
     </article>
   </div>
@@ -47,9 +55,29 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
 
 <script>
   import { initReadingQuiz, initVocabQuiz } from '../scripts/lesson-quiz';
+  import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
+
   initReadingQuiz();
   const vocabData = document.getElementById('vocab-words-data');
   if (vocabData?.textContent) {
     initVocabQuiz(JSON.parse(vocabData.textContent));
+  }
+
+  const btn = document.getElementById('lesson-complete-btn');
+  if (btn) {
+    const slug = btn.dataset.slug!;
+    const render = (done: boolean) => {
+      btn.toggleAttribute('data-done', done);
+      btn.querySelector('[data-icon]')!.textContent = done ? '✓' : '○';
+      btn.querySelector('[data-label]')!.textContent = done
+        ? 'Lesson completed — tap to undo'
+        : 'Mark lesson as complete';
+    };
+    render(isLessonComplete(slug));
+    btn.addEventListener('click', () => {
+      const next = !isLessonComplete(slug);
+      next ? markLessonComplete(slug) : unmarkLessonComplete(slug);
+      render(next);
+    });
   }
 </script>
