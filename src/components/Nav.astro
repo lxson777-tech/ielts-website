@@ -1,75 +1,118 @@
 ---
 import { withBase } from '../lib/url';
-import { LESSONS, SKILLS } from '../data/lessons';
+import { LESSONS, SKILLS, lessonsBySkill } from '../data/lessons';
 
 const current = Astro.url.pathname;
-const isActive = (path: string) => {
-  const target = withBase(path);
-  return path === '/' ? current === target || current === target + '/' : current.startsWith(target);
+const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
+const skillActive = (skillId: string) =>
+  lessonsBySkill(skillId as (typeof SKILLS)[number]['id']).some((l) => isPath(`/lessons/${l.slug}`));
+const testsActive = current.startsWith(withBase('/tests'));
+
+/* Short labels for dropdown entries — the parts of each section. */
+const partLabel: Record<string, string> = {
+  'reading-task1': 'Question Types — Full Lesson',
+  'writing-task1': 'Task 1 — Report',
+  'writing-task2': 'Task 2 — Essay',
+  'speaking-part1': 'Part 1 — Interview',
+  'speaking-part2': 'Part 2 — Cue Card',
+  'speaking-part3': 'Part 3 — Discussion',
+  listening: 'Full Lesson',
+  vocabulary: 'Topic Vocabulary — Full Lesson',
 };
 ---
 
 <header class="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
-  <nav class="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 sm:px-6" aria-label="Main">
-    <a href={withBase('/')} class="mr-4 flex items-center gap-2 font-display text-lg font-extrabold tracking-tight">
+  <nav class="mx-auto flex h-16 max-w-6xl items-center px-4 sm:px-6" aria-label="Main">
+    <a href={withBase('/')} class="mr-2 flex shrink-0 items-center gap-2 font-display text-lg font-extrabold tracking-tight lg:mr-6">
       <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand font-display text-sm font-extrabold text-white">IE</span>
-      IELTS<span class="text-brand">Portal</span>
+      <span class="hidden sm:inline">IELTS<span class="text-brand">Portal</span></span>
     </a>
 
-    <div class="ml-auto hidden items-center gap-1 md:flex">
-      <a
-        href={withBase('/')}
-        class:list={[
-          'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-          isActive('/') && !isActive('/lessons') && !isActive('/tests')
-            ? 'bg-brand-tint text-brand'
-            : 'text-ink-muted hover:bg-surface-alt hover:text-ink',
-        ]}>Home</a
-      >
-
-      <div class="group relative">
-        <button
-          type="button"
-          class:list={[
-            'flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors',
-            isActive('/lessons')
-              ? 'bg-brand-tint text-brand'
-              : 'text-ink-muted hover:bg-surface-alt hover:text-ink',
-          ]}
-          aria-haspopup="true"
-        >
-          Lessons
-          <svg class="h-3.5 w-3.5 transition-transform group-focus-within:rotate-180 group-hover:rotate-180" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 6l4 4 4-4"></path>
-          </svg>
-        </button>
-        <div
-          class="invisible absolute right-0 top-full w-64 translate-y-1 rounded-2xl border border-border bg-surface p-2 opacity-0 shadow-card-hover transition-all duration-150 group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100"
-        >
-          {SKILLS.map((skill) => (
-            <div class={`skill-${skill.id}`}>
-              <p class="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide" style="color: var(--skill)">
+    <div class="ml-auto hidden items-center gap-0.5 md:flex">
+      {
+        SKILLS.map((skill, i) => {
+          const lessons = lessonsBySkill(skill.id);
+          const active = skillActive(skill.id);
+          // Right-align the last two panels so they never overflow the viewport.
+          const alignRight = i >= SKILLS.length - 2;
+          return (
+            <div class={`group relative skill-${skill.id}`}>
+              <button
+                type="button"
+                class:list={[
+                  'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors',
+                  active
+                    ? 'bg-[var(--skill-tint)] text-[var(--skill)]'
+                    : 'text-ink-muted hover:bg-surface-alt hover:text-ink',
+                ]}
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
                 {skill.label}
-              </p>
-              {LESSONS.filter((l) => l.skill === skill.id).map((lesson) => (
-                <a
-                  href={withBase(`/lessons/${lesson.slug}`)}
-                  class="block rounded-lg px-3 py-1.5 text-sm text-ink-muted transition-colors hover:bg-surface-alt hover:text-ink"
+                <svg
+                  class="h-3 w-3 transition-transform group-focus-within:rotate-180 group-hover:rotate-180"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
                 >
-                  {lesson.title}
-                </a>
-              ))}
+                  <path d="M4 6l4 4 4-4" />
+                </svg>
+              </button>
+              <div
+                class:list={[
+                  alignRight ? 'right-0' : 'left-0',
+                  'invisible absolute top-full w-72 translate-y-1 rounded-2xl border border-border bg-surface p-2 opacity-0 shadow-card-hover transition-all duration-150',
+                  'group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100',
+                  'group-hover:visible group-hover:translate-y-2 group-hover:opacity-100',
+                ]}
+              >
+                <div class="border-b border-border px-3 pb-2.5 pt-2">
+                  <p class="text-xs font-bold uppercase tracking-wider" style="color: var(--skill)">
+                    {skill.label}
+                  </p>
+                  <p class="mt-0.5 text-xs leading-snug text-ink-muted">{skill.blurb}</p>
+                </div>
+                <div class="pt-1.5">
+                  {lessons.map((lesson) => (
+                    <a
+                      href={withBase(`/lessons/${lesson.slug}`)}
+                      class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink transition-colors hover:bg-[var(--skill-tint)]"
+                    >
+                      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
+                      {partLabel[lesson.slug] ?? lesson.title}
+                    </a>
+                  ))}
+                  {skill.id === 'reading' && (
+                    <a
+                      href={withBase('/tests')}
+                      class="mt-1 flex items-center gap-2.5 rounded-lg border-t border-border px-3 pb-2 pt-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand-tint"
+                    >
+                      ⏱ Practice Tests — timed, with band score
+                    </a>
+                  )}
+                  <a
+                    href={withBase(`/#${skill.id}`)}
+                    class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-ink-muted transition-colors hover:bg-surface-alt hover:text-ink"
+                  >
+                    All {skill.label.toLowerCase()} on the homepage →
+                  </a>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
+          );
+        })
+      }
 
       <a
         href={withBase('/tests')}
         class:list={[
-          'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-          isActive('/tests') ? 'bg-brand-tint text-brand' : 'text-ink-muted hover:bg-surface-alt hover:text-ink',
-        ]}>Practice Tests</a
+          'ml-1 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
+          testsActive ? 'bg-brand-tint text-brand' : 'bg-brand text-white hover:bg-brand-hover',
+        ]}>Tests</a
       >
     </div>
 
@@ -87,15 +130,28 @@ const isActive = (path: string) => {
     </button>
   </nav>
 
-  <div id="nav-mobile" class="hidden border-t border-border bg-surface px-4 pb-4 md:hidden">
-    <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface-alt">Home</a>
-    <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface-alt">Practice Tests</a>
-    <p class="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">Lessons</p>
-    {LESSONS.map((lesson) => (
-      <a href={withBase(`/lessons/${lesson.slug}`)} class="block rounded-lg px-3 py-2 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink">
-        {lesson.title}
-      </a>
-    ))}
+  <div id="nav-mobile" class="hidden max-h-[75dvh] overflow-y-auto border-t border-border bg-surface px-4 pb-5 md:hidden">
+    <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
+    <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
+      Practice Tests
+    </a>
+    {
+      SKILLS.map((skill) => (
+        <div class={`skill-${skill.id} mt-2`}>
+          <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wider" style="color: var(--skill)">
+            {skill.label}
+          </p>
+          {lessonsBySkill(skill.id).map((lesson) => (
+            <a
+              href={withBase(`/lessons/${lesson.slug}`)}
+              class="block rounded-lg px-3 py-2 pl-6 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
+            >
+              {partLabel[lesson.slug] ?? lesson.title}
+            </a>
+          ))}
+        </div>
+      ))
+    }
   </div>
 </header>
 
