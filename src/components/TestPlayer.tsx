@@ -2,12 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PracticeTest, Question, QuestionGroup, TestPart } from '../lib/tests/schema';
 import { bandEstimate, bandMidpoint, isCorrect, questionCount } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
+import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
 
 interface Props {
   test: PracticeTest;
   /** Base-prefixed URL back to the tests hub. */
   hubUrl: string;
 }
+
+/** Base-prefixed URL for images stored under /public. */
+const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
 
 interface Numbered {
   question: Question;
@@ -33,12 +37,27 @@ export default function TestPlayer({ test, hubUrl }: Props) {
   const numbered = useMemo(() => numberQuestions(test), [test]);
   const TOTAL = numbered.length;
 
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // Resume an in-progress session if one exists (survives refresh / tab close).
+  const resumed = useMemo(
+    () => (typeof window !== 'undefined' ? loadSession(test.id) : null),
+    [test.id],
+  );
+
+  const [started, setStarted] = useState(() => !!resumed);
+  const [answers, setAnswers] = useState<Record<string, string>>(() => resumed?.answers ?? {});
   const [submitted, setSubmitted] = useState(false);
   const [showScore, setShowScore] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(test.durationMinutes * 60);
+  const [timeLeft, setTimeLeft] = useState(() =>
+    resumed ? secondsLeft(resumed) : test.durationMinutes * 60,
+  );
   const [activePart, setActivePart] = useState(0);
   const [splitPct, setSplitPct] = useState(50);
+
+  function start() {
+    const s = startSession(test);
+    setTimeLeft(secondsLeft(s));
+    setStarted(true);
+  }
 
   const mainRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
@@ -56,6 +75,7 @@ export default function TestPlayer({ test, hubUrl }: Props) {
       const next = { ...prev };
       if (value.trim()) next[qid] = value.trim();
       else delete next[qid];
+      saveAnswers(next);
       return next;
     });
   }
@@ -74,11 +94,12 @@ export default function TestPlayer({ test, hubUrl }: Props) {
       bandLabel: bandEstimate(raw, TOTAL),
       secondsUsed: test.durationMinutes * 60 - timeLeft,
     });
+    clearSession(); // in-progress state done; permanent attempt kept in progress history
   }
 
-  /* Timer — auto-submits at zero. */
+  /* Timer — runs only once started, auto-submits at zero. */
   useEffect(() => {
-    if (submitted) return;
+    if (!started || submitted) return;
     const id = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
@@ -91,7 +112,18 @@ export default function TestPlayer({ test, hubUrl }: Props) {
     }, 1000);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submitted]);
+  }, [started, submitted]);
+
+  /* Warn before leaving an in-progress test (can't pause). */
+  useEffect(() => {
+    if (!started || submitted) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [started, submitted]);
 
   /* Split-pane drag (desktop only). */
   function startDrag(e: React.MouseEvent) {
@@ -121,6 +153,11 @@ export default function TestPlayer({ test, hubUrl }: Props) {
   const part = test.parts[activePart]!;
   const stimulus = part.stimulus;
   const timerWarn = timeLeft <= 300 && !submitted;
+
+  /* ── Instructions gate — timer does not run until Start ── */
+  if (!started) {
+    return <InstructionsScreen test={test} hubUrl={hubUrl} onStart={start} />;
+  }
 
   return (
     <div className="flex h-dvh flex-col bg-surface text-ink">
@@ -208,16 +245,25 @@ export default function TestPlayer({ test, hubUrl }: Props) {
         {/* Questions pane */}
         <div ref={questionsRef} className="min-h-0 overflow-y-auto">
           <div className="mx-auto max-w-2xl px-5 py-6">
-            {part.groups.map((group) => (
-              <div key={group.title} className="mb-8">
-                <h3 className="font-display text-lg font-bold">{group.title}</h3>
-                <p
-                  className="mb-4 mt-1 text-sm text-ink-muted"
-                  dangerouslySetInnerHTML={{ __html: group.instructionHtml }}
-                />
-                {numbered
-                  .filter((nq) => nq.group === group)
-                  .map((nq) => (
+            {part.groups.map((group) => {
+              const groupQs = numbered.filter((nq) => nq.group === group);
+              return (
+                <div key={group.title} className="mb-8">
+                  <h3 className="font-display text-lg font-bold">{group.title}</h3>
+                  <p
+                    className="mb-4 mt-1 text-sm text-ink-muted"
+                    dangerouslySetInnerHTML={{ __html: group.instructionHtml }}
+                  />
+                  {group.legendHtml && (
+                    <div
+                      className="mb-4 rounded-card border border-border bg-surface-alt p-3 text-sm"
+                      dangerouslySetInnerHTML={{ __html: group.legendHtml }}
+                    />
+                  )}
+                  {group.type === 'diagram-labelling' && group.diagram && (
+                    <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
+                  )}
+                  {groupQs.map((nq) => (
                     <QuestionItem
                       key={nq.question.id}
                       nq={nq}
@@ -226,8 +272,9 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                       onChange={(v) => setAnswer(nq.question.id, v)}
                     />
                   ))}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -337,7 +384,23 @@ function QuestionItem({
 
   return (
     <div id={`player-${q.id}`} className={`mb-3 rounded-card border p-4 transition-colors ${stateCls}`}>
-      {group.type === 'sentence-completion' ? (
+      {group.type === 'diagram-labelling' ? (
+        <div className="flex items-center gap-3">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
+            {n}
+          </span>
+          <input
+            type="text"
+            value={value}
+            disabled={submitted}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="Label…"
+            aria-label={`Question ${n}`}
+            className="w-48 rounded-lg border border-border bg-surface px-3 py-1 text-sm font-semibold focus:border-brand"
+          />
+          {q.textHtml && <span className="text-sm text-ink-muted" dangerouslySetInnerHTML={{ __html: q.textHtml }} />}
+        </div>
+      ) : group.type === 'sentence-completion' ? (
         <div className="flex items-start gap-3">
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
             {n}
@@ -412,6 +475,101 @@ function QuestionItem({
       {showHint && (
         <p className="mt-2 pl-10 text-sm font-semibold text-success">✓ {answerText}</p>
       )}
+    </div>
+  );
+}
+
+/* Diagram with numbered pins, one per question in the group (in order).
+   Pins recolor on submit to match each label input's correctness. */
+function DiagramFigure({
+  diagram,
+  items,
+  answers,
+  submitted,
+}: {
+  diagram: NonNullable<QuestionGroup['diagram']>;
+  items: Numbered[];
+  answers: Record<string, string>;
+  submitted: boolean;
+}) {
+  return (
+    <div className="mb-4 rounded-card border border-border bg-white p-3">
+      <div className="relative mx-auto max-w-md">
+        <img src={asset(diagram.image)} alt={diagram.alt} className="block w-full rounded-lg" />
+        {diagram.markers.map((m, i) => {
+          const nq = items[i];
+          if (!nq) return null;
+          const answered = !!answers[nq.question.id];
+          const ok = submitted && isCorrect(nq.question, answers[nq.question.id] ?? '');
+          const color = submitted ? (ok ? 'bg-success' : 'bg-error') : answered ? 'bg-brand' : 'bg-ink/60';
+          return (
+            <span
+              key={i}
+              className={`absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white text-xs font-extrabold text-white shadow-card ${color}`}
+              style={{ left: `${m.x}%`, top: `${m.y}%` }}
+              aria-hidden="true"
+            >
+              {nq.n}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* Full-screen instructions gate shown before the timer starts. */
+function InstructionsScreen({
+  test,
+  hubUrl,
+  onStart,
+}: {
+  test: PracticeTest;
+  hubUrl: string;
+  onStart: () => void;
+}) {
+  return (
+    <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
+      <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover">
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">Reading Test</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">{test.title}</h1>
+        <p className="mt-2 text-ink-muted">{test.description}</p>
+
+        <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+          <div className="rounded-card bg-surface-alt p-3">
+            <p className="font-display text-2xl font-extrabold text-brand">{test.parts.length}</p>
+            <p className="text-xs text-ink-muted">passages</p>
+          </div>
+          <div className="rounded-card bg-surface-alt p-3">
+            <p className="font-display text-2xl font-extrabold text-brand">{questionCount(test)}</p>
+            <p className="text-xs text-ink-muted">questions</p>
+          </div>
+          <div className="rounded-card bg-surface-alt p-3">
+            <p className="font-display text-2xl font-extrabold text-brand">{test.durationMinutes}</p>
+            <p className="text-xs text-ink-muted">minutes</p>
+          </div>
+        </div>
+
+        <ul className="mt-6 space-y-2 text-sm text-ink">
+          <li className="flex gap-2"><span aria-hidden="true">⏱</span> The timer starts as soon as you begin and runs continuously.</li>
+          <li className="flex gap-2"><span aria-hidden="true">🚫</span> <strong>You cannot pause.</strong> Refreshing or closing the tab will not stop the clock — you will resume with time already elapsed.</li>
+          <li className="flex gap-2"><span aria-hidden="true">✍️</span> Answer all {questionCount(test)} questions across {test.parts.length} passages, then submit. It auto-submits when time runs out.</li>
+          <li className="flex gap-2"><span aria-hidden="true">📊</span> You'll get a score, an estimated band, and answer review at the end.</li>
+        </ul>
+
+        <div className="mt-8 flex items-center justify-between gap-3">
+          <a href={hubUrl} className="text-sm font-semibold text-ink-muted hover:text-ink">
+            ← Back
+          </a>
+          <button
+            type="button"
+            onClick={onStart}
+            className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
+          >
+            Start test →
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

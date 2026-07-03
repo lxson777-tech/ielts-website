@@ -1,10 +1,10 @@
 import type { PracticeTest } from '../../lib/tests/schema';
-import { readingTest001 } from './reading-001';
+import { readingFull001 } from './reading-full-001';
 
-/* To add a test: create src/data/tests/<skill>-<nnn>.ts following the
-   PracticeTest schema and append it here. The tests hub, the player route
-   and the reading lesson's test grid all pick it up automatically. */
-export const ALL_TESTS: PracticeTest[] = [readingTest001];
+/* Portal lists full 60-minute exams only. To add one: create
+   src/data/tests/<skill>-full-<nnn>.ts following the PracticeTest schema
+   (3 parts / 40 questions for reading) and append it here. */
+export const ALL_TESTS: PracticeTest[] = [readingFull001];
 
 export function getTest(id: string): PracticeTest | undefined {
   return ALL_TESTS.find((t) => t.id === id);

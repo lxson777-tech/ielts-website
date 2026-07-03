@@ -8,7 +8,17 @@ export type QuestionType =
   | 'paragraph-matching'
   | 'sentence-completion'
   | 'tfng'
-  | 'multiple-choice';
+  | 'multiple-choice'
+  | 'matching-headings'
+  | 'categorisation'
+  | 'diagram-labelling';
+
+export interface DiagramSpec {
+  image: string; // path under /public, prefixed with base at render
+  alt: string;
+  /** one marker per question in the group, in order; x/y are % of the image box */
+  markers: { x: number; y: number }[];
+}
 
 export interface PassageStimulus {
   kind: 'passage';
@@ -43,8 +53,12 @@ export interface QuestionGroup {
   title: string;
   type: QuestionType;
   instructionHtml: string;
-  /** paragraph-matching: shared dropdown options */
+  /** shared dropdown options for paragraph-matching / matching-headings / categorisation */
   options?: string[];
+  /** optional key/legend shown above the group (e.g. heading list, category names) */
+  legendHtml?: string;
+  /** diagram-labelling: image + numbered pins, one per question */
+  diagram?: DiagramSpec;
   questions: Question[];
 }
 
