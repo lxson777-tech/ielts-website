@@ -34,7 +34,7 @@ const practice = READING_PRACTICE[part.slug];
 >
   <Fragment set:html={body} />
 
-  {practice && <PracticeQuiz client:visible set={practice} />}
+  {practice && <PracticeQuiz client:load set={practice} />}
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Reading section">
     {
