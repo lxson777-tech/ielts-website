@@ -6,5 +6,8 @@
 export function withBase(path: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   if (!path.startsWith('/')) path = '/' + path;
+  // trailingSlash: 'never' — the home route is the bare base path,
+  // so '/' must not become '<base>/'.
+  if (path === '/') return base || '/';
   return base + path;
 }
