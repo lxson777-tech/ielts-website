@@ -51,6 +51,10 @@ export interface Question {
   options?: string[];
   /** Accepted answer(s); comparison is case-insensitive and trimmed. */
   answer: string | string[];
+  /** Post-submit review: a short "why this is the answer" note. */
+  explanation?: string;
+  /** Post-submit review: the exact supporting sentence from the passage. */
+  evidence?: string;
 }
 
 export interface QuestionGroup {
@@ -67,6 +71,9 @@ export interface QuestionGroup {
   selectCount?: number;
   /** multiple-answer: the labelled statements to choose from */
   choices?: { value: string; label: string }[];
+  /** Post-submit review note for group-scored types (e.g. multiple-answer),
+      shown once under the whole group. */
+  explanationHtml?: string;
   questions: Question[];
 }
 

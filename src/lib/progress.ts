@@ -11,6 +11,9 @@ export interface TestAttempt {
   band: number; // bandMidpoint value
   bandLabel: string; // e.g. '7.5 – 8'
   secondsUsed: number;
+  /** correct/total per question type (keyed by QuestionType). Optional so
+      attempts recorded before this feature still load. */
+  byType?: Record<string, { correct: number; total: number }>;
 }
 
 export interface ProgressV1 {
@@ -74,6 +77,29 @@ export function getAttempts(testId?: string): { testId: string; attempt: TestAtt
   return ids
     .flatMap((id) => (p.tests[id] ?? []).map((attempt) => ({ testId: id, attempt })))
     .sort((a, b) => a.attempt.at.localeCompare(b.attempt.at));
+}
+
+export interface TypeStat {
+  type: string;
+  correct: number;
+  total: number;
+}
+
+/** Accuracy per question type, aggregated across every recorded attempt.
+    Only attempts that carry a `byType` breakdown contribute. */
+export function getTypeStats(): TypeStat[] {
+  const acc: Record<string, { correct: number; total: number }> = {};
+  for (const attempts of Object.values(getProgress().tests)) {
+    for (const a of attempts) {
+      if (!a.byType) continue;
+      for (const [type, v] of Object.entries(a.byType)) {
+        (acc[type] ??= { correct: 0, total: 0 });
+        acc[type].correct += v.correct;
+        acc[type].total += v.total;
+      }
+    }
+  }
+  return Object.entries(acc).map(([type, v]) => ({ type, ...v }));
 }
 
 export function getBestBand(testId?: string): TestAttempt | null {

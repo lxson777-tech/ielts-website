@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Badge from '../../components/Badge.astro';
 import ScoreHistory from '../../components/ScoreHistory';
+import TypeAnalytics from '../../components/TypeAnalytics';
 import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
 import { questionCount } from '../../lib/tests/schema';
@@ -48,6 +49,14 @@ const skillLabel = { reading: 'Reading', listening: 'Listening' } as const;
         ))
       }
     </div>
+
+    <section id="analytics" class="mt-16 scroll-mt-20">
+      <SectionHeading
+        title="Your weak spots"
+        subtitle="Accuracy by question type across every attempt on this device — drill the red ones first."
+      />
+      <TypeAnalytics client:load />
+    </section>
 
     <section id="history" class="mt-16 scroll-mt-20">
       <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser — no account needed." />

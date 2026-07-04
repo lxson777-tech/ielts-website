@@ -61,7 +61,29 @@ export default function TestPlayer({ test, hubUrl }: Props) {
 
   const mainRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
+  const passageContentRef = useRef<HTMLDivElement>(null);
   const submittedRef = useRef(false);
+
+  /* Review: find a question's supporting quote in the passage, highlight it and
+     scroll it into view. Splits on "…"/"..." so multi-fragment quotes each get
+     marked. */
+  function locateEvidence(evidence: string) {
+    const root = passageContentRef.current;
+    if (!root) return;
+    root.querySelectorAll('mark.ielts-evidence').forEach(unwrap);
+    const fragments = evidence
+      .split(/\s*(?:\.\.\.|…)\s*/)
+      .map((f) => f.trim())
+      .filter((f) => f.length > 2);
+    let first: HTMLElement | null = null;
+    for (const frag of fragments) {
+      const range = findTextRange(root, frag);
+      if (!range) continue;
+      const m = wrapRange(range, root, 'ielts-evidence');
+      if (!first) first = m;
+    }
+    first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
 
   const correctCount = useMemo(
     () => numbered.filter(({ question }) => isCorrect(question, answers[question.id] ?? '')).length,
@@ -85,6 +107,12 @@ export default function TestPlayer({ test, hubUrl }: Props) {
     setSubmitted(true);
     setShowScore(true);
     const raw = numbered.filter(({ question }) => isCorrect(question, answers[question.id] ?? '')).length;
+    const byType: Record<string, { correct: number; total: number }> = {};
+    for (const { question, group } of numbered) {
+      const t = byType[group.type] ?? (byType[group.type] = { correct: 0, total: 0 });
+      t.total += 1;
+      if (isCorrect(question, answers[question.id] ?? '')) t.correct += 1;
+    }
     recordTestAttempt(test.id, {
       at: new Date().toISOString(),
       raw,
@@ -92,6 +120,7 @@ export default function TestPlayer({ test, hubUrl }: Props) {
       band: bandMidpoint(raw, TOTAL),
       bandLabel: bandEstimate(raw, TOTAL),
       secondsUsed: test.durationMinutes * 60 - timeLeft,
+      byType,
     });
     clearSession(); // in-progress state done; permanent attempt kept in progress history
   }
@@ -197,35 +226,33 @@ export default function TestPlayer({ test, hubUrl }: Props) {
       >
         {/* Stimulus pane */}
         <div className="min-h-0 overflow-y-auto border-b border-border bg-surface-alt md:border-b-0">
-          <div className="mx-auto max-w-2xl px-5 py-6">
-            {stimulus.kind === 'passage' ? (
-              <>
-                <p
-                  className="mb-4 text-sm italic text-ink-muted"
-                  dangerouslySetInnerHTML={{ __html: stimulus.instructionHtml }}
-                />
-                <p className="text-xs font-bold uppercase tracking-wider text-brand">{stimulus.label}</p>
-                <h2 className="mb-4 mt-1 font-display text-2xl font-extrabold">{stimulus.title}</h2>
-                {stimulus.paragraphs.map((p, i) => (
-                  <p key={i} className="mb-4 text-[0.95rem] leading-relaxed">
-                    {p.label && <strong className="mr-1 font-display">{p.label}.</strong>}
-                    <span dangerouslySetInnerHTML={{ __html: p.html }} />
-                  </p>
-                ))}
-              </>
-            ) : (
-              <>
-                <p className="text-xs font-bold uppercase tracking-wider text-brand">{stimulus.label}</p>
-                <audio controls src={stimulus.src} className="mt-3 w-full" />
-                {stimulus.transcriptHtml && (
-                  <details className="mt-4 rounded-card border border-border bg-surface p-4">
-                    <summary className="cursor-pointer text-sm font-semibold text-brand">Show transcript</summary>
-                    <div className="mt-2 text-sm" dangerouslySetInnerHTML={{ __html: stimulus.transcriptHtml }} />
-                  </details>
-                )}
-              </>
-            )}
-          </div>
+          {stimulus.kind === 'passage' ? (
+            <Highlightable key={activePart} innerRef={passageContentRef} className="mx-auto max-w-2xl px-5 py-6">
+              <p
+                className="mb-4 text-sm italic text-ink-muted"
+                dangerouslySetInnerHTML={{ __html: stimulus.instructionHtml }}
+              />
+              <p className="text-xs font-bold uppercase tracking-wider text-brand">{stimulus.label}</p>
+              <h2 className="mb-4 mt-1 font-display text-2xl font-extrabold">{stimulus.title}</h2>
+              {stimulus.paragraphs.map((p, i) => (
+                <p key={i} className="mb-4 text-[0.95rem] leading-relaxed">
+                  {p.label && <strong className="mr-1 font-display">{p.label}.</strong>}
+                  <span dangerouslySetInnerHTML={{ __html: p.html }} />
+                </p>
+              ))}
+            </Highlightable>
+          ) : (
+            <div className="mx-auto max-w-2xl px-5 py-6">
+              <p className="text-xs font-bold uppercase tracking-wider text-brand">{stimulus.label}</p>
+              <audio controls src={stimulus.src} className="mt-3 w-full" />
+              {stimulus.transcriptHtml && (
+                <details className="mt-4 rounded-card border border-border bg-surface p-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-brand">Show transcript</summary>
+                  <div className="mt-2 text-sm" dangerouslySetInnerHTML={{ __html: stimulus.transcriptHtml }} />
+                </details>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Resizer */}
@@ -268,6 +295,7 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                         value={answers[nq.question.id] ?? ''}
                         submitted={submitted}
                         onChange={(v) => setAnswer(nq.question.id, v)}
+                        onLocate={locateEvidence}
                       />
                     ))
                   )}
@@ -372,11 +400,13 @@ function QuestionItem({
   value,
   submitted,
   onChange,
+  onLocate,
 }: {
   nq: Numbered;
   value: string;
   submitted: boolean;
   onChange: (v: string) => void;
+  onLocate?: (evidence: string) => void;
 }) {
   const { question: q, group, n } = nq;
   const ok = submitted && isCorrect(q, value);
@@ -484,8 +514,29 @@ function QuestionItem({
           </p>
         </div>
       )}
-      {showHint && (
-        <p className="mt-2 pl-10 text-sm font-semibold text-success">✓ {answerText}</p>
+      {submitted && (showHint || q.explanation || q.evidence) && (
+        <div className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm sm:ml-10">
+          {!ok && (
+            <p className="font-semibold text-success">
+              ✓ Correct answer: <span className="font-bold">{answerText}</span>
+            </p>
+          )}
+          {q.explanation && <p className="mt-0.5 text-ink-muted">{q.explanation}</p>}
+          {q.evidence && (
+            <div className="mt-1.5 border-l-2 border-brand/40 pl-2.5">
+              <p className="italic text-ink-muted">“{q.evidence}”</p>
+              {onLocate && (
+                <button
+                  type="button"
+                  onClick={() => onLocate(q.evidence!)}
+                  className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
+                >
+                  🔍 Show in passage
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
@@ -606,6 +657,203 @@ function MultiAnswer({
           );
         })}
       </div>
+      {submitted && group.explanationHtml && (
+        <div
+          className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm text-ink-muted"
+          dangerouslySetInnerHTML={{ __html: group.explanationHtml }}
+        />
+      )}
+    </div>
+  );
+}
+
+/* Wrap the current selection in <mark> elements — one per intersected text
+   node — so highlighting survives inline tags (<em>, <strong>) and spans
+   multiple paragraphs. Each fragment is a single text-node range, so
+   surroundContents never throws on partially-selected elements. */
+function wrapRange(range: Range, root: HTMLElement, className = 'ielts-hl'): HTMLElement | null {
+  if (range.collapsed) return null;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      return range.intersectsNode(node) && (node.textContent ?? '').length > 0
+        ? NodeFilter.FILTER_ACCEPT
+        : NodeFilter.FILTER_REJECT;
+    },
+  });
+  const nodes: Text[] = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+  let first: HTMLElement | null = null;
+  for (const node of nodes) {
+    if ((node.parentElement as HTMLElement | null)?.closest(`mark.${className}`)) continue;
+    const start = node === range.startContainer ? range.startOffset : 0;
+    const end = node === range.endContainer ? range.endOffset : node.length;
+    if (start >= end) continue;
+    const r = document.createRange();
+    r.setStart(node, start);
+    r.setEnd(node, end);
+    const mark = document.createElement('mark');
+    mark.className = className;
+    try {
+      r.surroundContents(mark);
+      if (!first) first = mark;
+    } catch {
+      /* skip any fragment that can't be cleanly wrapped */
+    }
+  }
+  return first;
+}
+
+/* Char-for-char normalisation (each replacement is 1:1, so string indices are
+   preserved) — lets evidence text match the passage despite curly quotes,
+   dashes and non-breaking spaces. */
+const normEvidence = (s: string) =>
+  s
+    .replace(/[’‘‛]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/ /g, ' ');
+
+/* Locate `search` inside a container's text, spanning inline tags and element
+   boundaries, and return a DOM Range for it (or null if not found). */
+function findTextRange(root: HTMLElement, search: string): Range | null {
+  const nodes: Text[] = [];
+  const starts: number[] = [];
+  let full = '';
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let n: Node | null;
+  while ((n = walker.nextNode())) {
+    const t = n as Text;
+    nodes.push(t);
+    starts.push(full.length);
+    full += t.data;
+  }
+  if (nodes.length === 0) return null;
+  const fullNorm = normEvidence(full);
+  // Try the exact quote (minus any trailing punctuation) first; if it doesn't
+  // resolve — quotes sometimes end a word early or swap a trailing comma for a
+  // full stop — fall back to the longest leading run of words that does.
+  const cleaned = normEvidence(search).trim().replace(/[.,;:]+$/, '');
+  let target = '';
+  let idx = fullNorm.indexOf(cleaned);
+  if (idx >= 0) {
+    target = cleaned;
+  } else {
+    const words = cleaned.split(/\s+/);
+    for (let take = words.length - 1; take >= 4; take--) {
+      const cand = words.slice(0, take).join(' ').replace(/[.,;:]+$/, '');
+      if (cand.length < 12) break;
+      idx = fullNorm.indexOf(cand);
+      if (idx >= 0) {
+        target = cand;
+        break;
+      }
+    }
+  }
+  if (idx < 0) return null;
+  const point = (pos: number, isEnd: boolean) => {
+    for (let i = 0; i < nodes.length; i++) {
+      const s = starts[i]!;
+      const e = s + nodes[i]!.length;
+      if (isEnd ? pos <= e : pos < e)
+        return { node: nodes[i]!, offset: Math.max(0, Math.min(pos - s, nodes[i]!.length)) };
+    }
+    const last = nodes[nodes.length - 1]!;
+    return { node: last, offset: last.length };
+  };
+  const a = point(idx, false);
+  const b = point(idx + target.length, true);
+  const range = document.createRange();
+  range.setStart(a.node, a.offset);
+  range.setEnd(b.node, b.offset);
+  return range;
+}
+
+function unwrap(mark: Element) {
+  const parent = mark.parentNode;
+  if (!parent) return;
+  while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+  parent.removeChild(mark);
+  parent.normalize();
+}
+
+/* Passage wrapper that lets the candidate highlight text like the real
+   computer-delivered IELTS: drag to select → "Highlight", click a highlight
+   to remove it, or clear them all. Highlights live in the DOM for the current
+   passage view (reset when switching passages). */
+function Highlightable({
+  className,
+  children,
+  innerRef,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  innerRef?: React.RefObject<HTMLDivElement | null>;
+}) {
+  const internalRef = useRef<HTMLDivElement>(null);
+  const ref = innerRef ?? internalRef;
+  const [popover, setPopover] = useState<{ x: number; y: number } | null>(null);
+  const [hasHighlights, setHasHighlights] = useState(false);
+
+  const refresh = () => setHasHighlights(!!ref.current?.querySelector('mark.ielts-hl'));
+
+  function onMouseUp() {
+    const sel = window.getSelection();
+    const host = ref.current;
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0 || !host) return setPopover(null);
+    const range = sel.getRangeAt(0);
+    if (!host.contains(range.commonAncestorContainer)) return setPopover(null);
+    const rect = range.getBoundingClientRect();
+    const hostRect = host.getBoundingClientRect();
+    setPopover({ x: rect.left - hostRect.left + rect.width / 2, y: rect.top - hostRect.top });
+  }
+
+  function applyHighlight() {
+    const sel = window.getSelection();
+    const host = ref.current;
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0 || !host) return;
+    wrapRange(sel.getRangeAt(0), host);
+    sel.removeAllRanges();
+    setPopover(null);
+    refresh();
+  }
+
+  function onClick(e: React.MouseEvent) {
+    const mark = (e.target as HTMLElement).closest?.('mark.ielts-hl');
+    if (!mark || !ref.current?.contains(mark)) return;
+    unwrap(mark);
+    refresh();
+  }
+
+  function clearAll() {
+    ref.current?.querySelectorAll('mark.ielts-hl').forEach(unwrap);
+    setHasHighlights(false);
+    setPopover(null);
+  }
+
+  return (
+    <div ref={ref} className={`relative ${className ?? ''}`} onMouseUp={onMouseUp} onClick={onClick}>
+      <style>{`mark.ielts-hl{background-color:#fde68a;color:#1f2937;border-radius:2px;padding:0 1px;cursor:pointer}mark.ielts-evidence{background-color:#bfdbfe;color:#10243b;border-radius:2px;padding:0 1px;box-shadow:0 0 0 1px rgba(37,99,235,.35);animation:ielts-eviflash .9s ease-out}@keyframes ielts-eviflash{0%{background-color:#fde68a}100%{background-color:#bfdbfe}}`}</style>
+      {hasHighlights && (
+        <button
+          type="button"
+          onClick={clearAll}
+          className="absolute right-2 top-2 z-10 rounded-full border border-border bg-surface/90 px-2.5 py-1 text-xs font-semibold text-ink-muted backdrop-blur hover:text-ink"
+        >
+          Clear highlights
+        </button>
+      )}
+      {children}
+      {popover && (
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={applyHighlight}
+          className="absolute z-20 -translate-x-1/2 -translate-y-full rounded-full bg-ink px-3 py-1 text-xs font-bold text-white shadow-card"
+          style={{ left: popover.x, top: popover.y - 6 }}
+        >
+          🖍 Highlight
+        </button>
+      )}
     </div>
   );
 }
@@ -642,11 +890,27 @@ function InstructionsScreen({
           </div>
         </div>
 
-        <ul className="mt-6 space-y-2 text-sm text-ink">
-          <li className="flex gap-2"><span aria-hidden="true">⏱</span> The timer starts as soon as you begin and runs continuously.</li>
-          <li className="flex gap-2"><span aria-hidden="true">🚫</span> <strong>You cannot pause.</strong> Refreshing or closing the tab will not stop the clock — you will resume with time already elapsed.</li>
-          <li className="flex gap-2"><span aria-hidden="true">✍️</span> Answer all {questionCount(test)} questions across {test.parts.length} passages, then submit. It auto-submits when time runs out.</li>
-          <li className="flex gap-2"><span aria-hidden="true">📊</span> You'll get a score, an estimated band, and answer review at the end.</li>
+        <ul className="mt-6 space-y-2.5 text-sm text-ink">
+          <li className="flex gap-2.5">
+            <span aria-hidden="true" className="shrink-0">⏱</span>
+            <span>The timer starts as soon as you begin and runs continuously.</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span aria-hidden="true" className="shrink-0">🚫</span>
+            <span><strong>You cannot pause.</strong> Refreshing or closing the tab will not stop the clock — you will resume with time already elapsed.</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span aria-hidden="true" className="shrink-0">✍️</span>
+            <span>Answer all {questionCount(test)} questions across {test.parts.length} passages, then submit. It auto-submits when time runs out.</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span aria-hidden="true" className="shrink-0">🖍</span>
+            <span>Select any text in a passage to <strong>highlight</strong> it, just like the real computer test. Click a highlight to remove it.</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span aria-hidden="true" className="shrink-0">📊</span>
+            <span>At the end you get a score, an estimated band, and a full <strong>answer review</strong> — every question explained with the exact line from the passage.</span>
+          </li>
         </ul>
 
         <div className="mt-8 flex items-center justify-between gap-3">
