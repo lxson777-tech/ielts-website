@@ -17,7 +17,6 @@ export const READING_PARTS: ReadingPart[] = [
   { slug: 'sentence', title: 'Sentence Completion', blurb: 'Fill the gaps within the word limit, keeping the sentence grammatical.' },
   { slug: 'para', title: 'Matching Paragraphs', blurb: 'Find which paragraph contains a specific piece of information.' },
   { slug: 'cat', title: 'Categorisation', blurb: 'Sort statements into the categories the passage describes.' },
-  { slug: 'quiz', title: 'Practice Quiz', blurb: 'An eight-question T/F/NG quiz on a real academic passage.' },
 ];
 
 export function getReadingPart(slug: string): ReadingPart | undefined {
