@@ -1,11 +1,43 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
 import { withBase } from '../../lib/url';
+import { ALL_TESTS } from '../../data/tests';
+import { questionCount } from '../../lib/tests/schema';
 import raw from '../../content/lesson-bodies/reading-task1.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
+const readingTests = ALL_TESTS.filter((t) => t.skill === 'reading');
 ---
 
 <LessonLayout slug="reading-task1">
   <Fragment set:html={body} />
+
+  <hr class="divider" />
+  <div class="section" id="timed-test">
+    <div class="section-header">
+      <div class="section-num">T</div>
+      <div class="section-title-block">
+        <div class="tag">Practice Tests</div>
+        <h2>Take a Timed Test</h2>
+      </div>
+    </div>
+    <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">
+      Ready to put it together? Each full test is a real exam: 3 passages, 40 questions, 60 minutes,
+      with instant scoring and an estimated band. Once you start, the clock can’t be paused.
+    </p>
+    <div class="samples-grid">
+      {
+        readingTests.map((t, i) => (
+          <a class="sample-card" href={withBase(`/tests/${t.id}`)}>
+            <span class="sample-topic">{t.parts.length} passages · {questionCount(t)} questions · {t.durationMinutes} min</span>
+            <strong class="sample-title">Test {i + 1}</strong>
+            <span class="sample-go">Start test →</span>
+          </a>
+        ))
+      }
+    </div>
+    <p class="material-source">
+      See all tests and your score history on the <a href={withBase('/tests')}>practice tests page</a>.
+    </p>
+  </div>
 </LessonLayout>
