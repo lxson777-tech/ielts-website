@@ -53,7 +53,7 @@ class StubGrader implements EssayGrader {
       : m.offTopicRisk
         ? 'Ideas may drift from the exact question — keep every paragraph tied to the prompt.'
         : 'Addresses the task; a real examiner will judge how fully each part is developed.';
-    return { band: toBand(band), comment: `[sample] ${note}` };
+    return { band: toBand(Math.round(band)), comment: `[sample] ${note}` };
   }
 
   private coherence(m: MechanicsReport): CriterionScore {
@@ -67,7 +67,7 @@ class StubGrader implements EssayGrader {
         : m.connectiveDensity > 0.8
           ? 'Linking words are overused in places; vary how ideas connect.'
           : 'Reasonable paragraphing and use of cohesive devices.';
-    return { band: toBand(band), comment: `[sample] ${note}` };
+    return { band: toBand(Math.round(band)), comment: `[sample] ${note}` };
   }
 
   private lexical(m: MechanicsReport): CriterionScore {
@@ -78,7 +78,7 @@ class StubGrader implements EssayGrader {
     const note = m.overusedWords.length
       ? `Repetition of words like "${m.overusedWords[0]!.word}" holds the range back.`
       : 'A workable range of vocabulary with some flexibility.';
-    return { band: toBand(band), comment: `[sample] ${note}` };
+    return { band: toBand(Math.round(band)), comment: `[sample] ${note}` };
   }
 
   private grammar(m: MechanicsReport): CriterionScore {
@@ -91,7 +91,7 @@ class StubGrader implements EssayGrader {
         : m.sentenceLengthSpread < 3
           ? 'Sentence structures are uniform — show a wider range of forms.'
           : 'A mix of simple and complex sentences with generally good control.';
-    return { band: toBand(band), comment: `[sample] ${note}` };
+    return { band: toBand(Math.round(band)), comment: `[sample] ${note}` };
   }
 
   private strengths(m: MechanicsReport): string[] {

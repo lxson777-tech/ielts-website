@@ -93,7 +93,7 @@ export default function WritingTester() {
           {CRITERIA.map((c) => {
             const s = result.criteria[c.key];
             return (
-              <div key={c.key} className="rounded-card border border-border bg-surface p-4 shadow-card">
+              <div key={c.key} className="flex flex-col rounded-card border border-border bg-surface p-4 shadow-card">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold">{criterionLabel(c, prompt.task)}</span>
                   <span className="rounded-full bg-brand-tint px-2.5 py-0.5 font-display text-sm font-extrabold text-brand">
@@ -101,6 +101,13 @@ export default function WritingTester() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm text-ink-muted">{s.comment}</p>
+                {s.tip && (
+                  <p className="mt-auto pt-3">
+                    <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
+                      <strong className="text-brand">→ Band {Math.min(9, s.band + 1)}:</strong> {s.tip}
+                    </span>
+                  </p>
+                )}
               </div>
             );
           })}

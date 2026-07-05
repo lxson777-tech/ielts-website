@@ -57,8 +57,12 @@ export function criterionLabel(meta: CriterionMeta, task: WritingTask): string {
 }
 
 export interface CriterionScore {
-  band: number; // 0–9, whole or .5
+  /** Whole band 0–9, per the official method (examiners award integers per
+      criterion; half bands appear only in the averaged task score). */
+  band: number;
   comment: string;
+  /** One actionable sentence: what would lift this criterion to the next band. */
+  tip?: string;
 }
 
 export interface Correction {
@@ -124,8 +128,9 @@ export interface EssayGrader {
 
 /* ── Band assembly ─────────────────────────────────────────────────────── */
 
-/** Overall band = mean of the four criteria, rounded to the nearest 0.5
-    (IELTS rounds .25 and .75 up, which `Math.round` on the doubled value does). */
+/** Official method: the four criteria are equally weighted and the task score
+    is their mean, with .25 rounded up to .5 and .75 up to the next whole band
+    — which `Math.round` on the doubled value implements exactly. */
 export function overallBand(criteria: Record<CriterionKey, CriterionScore>): number {
   const bands = CRITERIA.map((c) => criteria[c.key].band);
   const avg = bands.reduce((a, b) => a + b, 0) / bands.length;
