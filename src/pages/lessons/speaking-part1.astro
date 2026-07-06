@@ -1,11 +1,17 @@
 ---
-import LessonLayout from '../../layouts/LessonLayout.astro';
+/* Legacy URL stub: this part lesson moved to /lessons/speaking/part1. */
 import { withBase } from '../../lib/url';
-import raw from '../../content/lesson-bodies/speaking-part1.html?raw';
-
-const body = raw.replaceAll('../pics/', withBase('/pics/'));
+const target = withBase('/lessons/speaking/part1');
 ---
 
-<LessonLayout slug="speaking-part1">
-  <Fragment set:html={body} />
-</LessonLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>This page has moved. <a href={target}>Go to the lesson →</a></p>
+  </body>
+</html>

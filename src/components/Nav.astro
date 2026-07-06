@@ -3,6 +3,7 @@ import { withBase } from '../lib/url';
 import { LESSONS, SKILLS, lessonsBySkill } from '../data/lessons';
 import { READING_PARTS } from '../data/reading';
 import { WRITING_PARTS } from '../data/writing';
+import { SPEAKING_PARTS } from '../data/speaking';
 
 const current = Astro.url.pathname;
 const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
@@ -14,9 +15,7 @@ const testsActive = current.startsWith(withBase('/tests'));
 const partLabel: Record<string, string> = {
   'reading-task1': 'Reading Overview',
   writing: 'Writing Overview',
-  'speaking-part1': 'Part 1 Interview',
-  'speaking-part2': 'Part 2 Cue Card',
-  'speaking-part3': 'Part 3 Discussion',
+  speaking: 'Speaking Overview',
   listening: 'Full Lesson',
   vocabulary: 'Topic Vocabulary',
 };
@@ -91,6 +90,15 @@ const partLabel: Record<string, string> = {
                     WRITING_PARTS.map((p) => (
                       <a
                         href={withBase(`/lessons/writing/${p.slug}`)}
+                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
+                      >
+                        {p.title}
+                      </a>
+                    ))}
+                  {skill.id === 'speaking' &&
+                    SPEAKING_PARTS.map((p) => (
+                      <a
+                        href={withBase(`/lessons/speaking/${p.slug}`)}
                         class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
                       >
                         {p.title}
@@ -172,6 +180,15 @@ const partLabel: Record<string, string> = {
             WRITING_PARTS.map((p) => (
               <a
                 href={withBase(`/lessons/writing/${p.slug}`)}
+                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
+              >
+                {p.title}
+              </a>
+            ))}
+          {skill.id === 'speaking' &&
+            SPEAKING_PARTS.map((p) => (
+              <a
+                href={withBase(`/lessons/speaking/${p.slug}`)}
                 class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
               >
                 {p.title}

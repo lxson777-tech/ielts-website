@@ -32,25 +32,11 @@ export const LESSONS: LessonMeta[] = [
     image: '/pics/writing/start-task.png',
   },
   {
-    slug: 'speaking-part1',
-    title: 'Speaking Part 1',
+    slug: 'speaking',
+    title: 'Speaking Overview',
     skill: 'speaking',
-    description: 'Handle the warm-up interview questions with natural, extended answers.',
+    description: 'How the interview works, how examiners mark it, and a lesson for each part.',
     image: '/pics/speaking-part1.png',
-  },
-  {
-    slug: 'speaking-part2',
-    title: 'Speaking Part 2',
-    skill: 'speaking',
-    description: 'Speak for two minutes from a cue card without running dry.',
-    image: '/pics/speaking-part2.png',
-  },
-  {
-    slug: 'speaking-part3',
-    title: 'Speaking Part 3',
-    skill: 'speaking',
-    description: 'Discuss abstract follow-up questions and show off complex language.',
-    image: '/pics/speaking-part3.png',
   },
   {
     slug: 'listening',
