@@ -7,6 +7,7 @@ import raw from '../../content/lesson-bodies/reading-task1.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
 const readingTests = ALL_TESTS.filter((t) => t.skill === 'reading');
+const sample = readingTests[0];
 ---
 
 <LessonLayout slug="reading-task1">
@@ -22,22 +23,21 @@ const readingTests = ALL_TESTS.filter((t) => t.skill === 'reading');
       </div>
     </div>
     <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">
-      Ready to put it together? Each full test is a real exam: 3 passages, 40 questions, 60 minutes,
-      with instant scoring and an estimated band. Once you start, the clock can’t be paused.
+      Ready to put it together? Every attempt is a real exam: 3 passages, 40 questions, 60 minutes,
+      with instant scoring and an estimated band — and you get a different test each time.
+      Once you start, the clock can’t be paused.
     </p>
     <div class="samples-grid">
-      {
-        readingTests.map((t, i) => (
-          <a class="sample-card" href={withBase(`/tests/${t.id}`)}>
-            <span class="sample-topic">{t.parts.length} passages · {questionCount(t)} questions · {t.durationMinutes} min</span>
-            <strong class="sample-title">Test {i + 1}</strong>
-            <span class="sample-go">Start test →</span>
-          </a>
-        ))
-      }
+      <a class="sample-card" href={withBase('/tests')}>
+        <span class="sample-topic">
+          {sample.parts.length} passages · {questionCount(sample)} questions · {sample.durationMinutes} min · {readingTests.length} tests in rotation
+        </span>
+        <strong class="sample-title">Take a Reading Test</strong>
+        <span class="sample-go">Start a test →</span>
+      </a>
     </div>
     <p class="material-source">
-      See all tests and your score history on the <a href={withBase('/tests')}>practice tests page</a>.
+      Your score history lives on the <a href={withBase('/tests')}>practice tests page</a>.
     </p>
   </div>
 </LessonLayout>
