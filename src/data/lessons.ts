@@ -40,9 +40,9 @@ export const LESSONS: LessonMeta[] = [
   },
   {
     slug: 'listening',
-    title: 'Listening',
+    title: 'Listening Overview',
     skill: 'listening',
-    description: 'Strategies for all four sections, from form completion to academic talks.',
+    description: 'How the test works, how it is scored, and a lesson for each of the four sections.',
     image: '/pics/listening.png',
   },
   {
