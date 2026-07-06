@@ -13,6 +13,7 @@ export interface WritingPart {
 }
 
 export const WRITING_PARTS: WritingPart[] = [
+  { slug: 'method', title: 'How to Answer Task 1', blurb: 'The universal report method: analyse, paraphrase, overview, then two detail paragraphs.', task: 'task1' },
   { slug: 'charts', title: 'Charts, Graphs & Tables', blurb: 'Report the key features of data without listing every number.', task: 'task1' },
   { slug: 'process', title: 'Process Diagrams', blurb: 'Describe each stage in order using passives and sequencers.', task: 'task1' },
   { slug: 'maps', title: 'Maps & Plans', blurb: 'Compare two maps and describe what changed, using location language.', task: 'task1' },
