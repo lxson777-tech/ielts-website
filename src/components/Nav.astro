@@ -24,20 +24,35 @@ const overviewLabel: Record<string, string> = {
   vocabulary: 'Vocabulary Overview',
 };
 
-const partsBySkill: Record<string, { href: string; title: string }[]> = {
-  reading: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })),
-  writing: WRITING_PARTS.map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title })),
-  speaking: SPEAKING_PARTS.map((p) => ({ href: `/lessons/speaking/${p.slug}`, title: p.title })),
-  listening: LISTENING_PARTS.map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })),
-  vocabulary: VOCABULARY_PARTS.map((p) => ({ href: `/lessons/vocabulary/${p.slug}`, title: p.title })),
-};
-
-const partsHeading: Record<string, string> = {
-  reading: 'Question Types',
-  writing: 'Question Types',
-  speaking: 'The Three Parts',
-  listening: 'The Four Sections',
-  vocabulary: 'Topics',
+interface NavLink {
+  href: string;
+  title: string;
+}
+/* Each skill's type lessons, in labelled groups. Writing is split into
+   its two exam tasks; every other skill has a single group. */
+const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
+  reading: [
+    { heading: 'Question Types', items: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })) },
+  ],
+  writing: [
+    {
+      heading: 'Task 1 · Report',
+      items: WRITING_PARTS.filter((p) => p.task === 'task1').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title })),
+    },
+    {
+      heading: 'Task 2 · Essay',
+      items: WRITING_PARTS.filter((p) => p.task === 'task2').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title })),
+    },
+  ],
+  speaking: [
+    { heading: 'The Three Parts', items: SPEAKING_PARTS.map((p) => ({ href: `/lessons/speaking/${p.slug}`, title: p.title })) },
+  ],
+  listening: [
+    { heading: 'The Four Sections', items: LISTENING_PARTS.map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })) },
+  ],
+  vocabulary: [
+    { heading: 'Topics', items: VOCABULARY_PARTS.map((p) => ({ href: `/lessons/vocabulary/${p.slug}`, title: p.title })) },
+  ],
 };
 
 const practiceBySkill: Record<string, { href: string; label: string }> = {
@@ -57,7 +72,7 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
       {
         SKILLS.map((skill, i) => {
           const lessons = lessonsBySkill(skill.id);
-          const parts = partsBySkill[skill.id] ?? [];
+          const groups = groupsBySkill[skill.id] ?? [];
           const practice = practiceBySkill[skill.id];
           const active = skillActive(skill.id);
           // Right-align the last two panels so they never overflow the viewport.
@@ -99,19 +114,21 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
                     </a>
                   ))}
 
-                  {parts.length > 0 && (
-                    <p class="px-4 pb-1 pt-3 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
-                      {partsHeading[skill.id]}
-                    </p>
-                  )}
-                  {parts.map((p) => (
-                    <a
-                      href={withBase(p.href)}
-                      class="flex items-center gap-2.5 rounded-lg px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors hover:bg-[var(--skill-tint)] hover:text-[var(--skill)]"
-                    >
-                      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
-                      {p.title}
-                    </a>
+                  {groups.map((g) => (
+                    <>
+                      <p class="px-4 pb-1 pt-3 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
+                        {g.heading}
+                      </p>
+                      {g.items.map((p) => (
+                        <a
+                          href={withBase(p.href)}
+                          class="flex items-center gap-2.5 rounded-lg px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors hover:bg-[var(--skill-tint)] hover:text-[var(--skill)]"
+                        >
+                          <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
+                          {p.title}
+                        </a>
+                      ))}
+                    </>
                   ))}
 
                   {practice && (
@@ -173,13 +190,22 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
                 {overviewLabel[lesson.slug] ?? lesson.title}
               </a>
             ))}
-            {(partsBySkill[skill.id] ?? []).map((p) => (
-              <a
-                href={withBase(p.href)}
-                class="block rounded-lg px-3 py-2 pl-9 text-sm font-medium text-ink-muted hover:bg-surface-alt hover:text-ink"
-              >
-                {p.title}
-              </a>
+            {(groupsBySkill[skill.id] ?? []).map((g, gi, arr) => (
+              <>
+                {arr.length > 1 && (
+                  <p class="px-3 pb-0.5 pt-1.5 pl-6 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
+                    {g.heading}
+                  </p>
+                )}
+                {g.items.map((p) => (
+                  <a
+                    href={withBase(p.href)}
+                    class="block rounded-lg px-3 py-2 pl-9 text-sm font-medium text-ink-muted hover:bg-surface-alt hover:text-ink"
+                  >
+                    {p.title}
+                  </a>
+                ))}
+              </>
             ))}
             {practice && (
               <a
