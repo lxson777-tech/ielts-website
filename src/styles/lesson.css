@@ -554,36 +554,63 @@
   margin-top: auto;
   padding-top: 0.55rem;
 }
-/* Wide CTA card with illustration — test / essay-checker entry points. */
+/* Wide CTA card with illustration — test / essay-checker entry points.
+   A full-width card that reads like one big button. */
 .lesson-body .cta-card {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.25rem;
+  gap: 1.5rem;
   align-items: center;
-  padding: 1.4rem 1.6rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
+  padding: 1.9rem 2.1rem;
+  background: linear-gradient(120deg, var(--color-surface) 45%, var(--accent-tint) 100%);
+  border: 1.5px solid var(--accent);
+  border-radius: 18px;
   text-decoration: none;
-  margin-top: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  margin-top: 1.25rem;
+  text-align: center;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 @media (min-width: 560px) {
-  .lesson-body .cta-card { grid-template-columns: 1fr minmax(0, 220px); }
+  .lesson-body .cta-card {
+    grid-template-columns: 1fr minmax(0, 240px);
+    text-align: left;
+  }
 }
 .lesson-body .cta-card:hover {
-  border-color: var(--accent);
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 .lesson-body .cta-card-body {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 0.4rem;
+}
+@media (min-width: 560px) {
+  .lesson-body .cta-card-body { align-items: flex-start; }
+}
+.lesson-body .cta-card .sample-title {
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+}
+.lesson-body .cta-card .sample-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  padding: 0.7rem 1.6rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.lesson-body .cta-card:hover .sample-go {
+  filter: brightness(1.08);
 }
 .lesson-body .cta-card img {
   width: 100%;
-  max-width: 220px;
+  max-width: 240px;
   height: auto;
   margin: 0 auto;
   order: -1;
