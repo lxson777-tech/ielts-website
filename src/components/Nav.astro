@@ -90,7 +90,7 @@ const partLabel: Record<string, string> = {
                   {skill.id === 'writing' &&
                     WRITING_PARTS.map((p) => (
                       <a
-                        href={withBase(`/lessons/${p.slug}`)}
+                        href={withBase(`/lessons/writing/${p.slug}`)}
                         class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
                       >
                         {p.title}
@@ -171,7 +171,7 @@ const partLabel: Record<string, string> = {
           {skill.id === 'writing' &&
             WRITING_PARTS.map((p) => (
               <a
-                href={withBase(`/lessons/${p.slug}`)}
+                href={withBase(`/lessons/writing/${p.slug}`)}
                 class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
               >
                 {p.title}

@@ -1,0 +1,63 @@
+---
+import LessonLayout from '../../../layouts/LessonLayout.astro';
+import EssayCheckerCta from '../../../components/EssayCheckerCta.astro';
+import { withBase } from '../../../lib/url';
+import { WRITING_PARTS } from '../../../data/writing';
+
+export function getStaticPaths() {
+  return WRITING_PARTS.map((part, i) => ({
+    params: { part: part.slug },
+    props: { part, prev: WRITING_PARTS[i - 1] ?? null, next: WRITING_PARTS[i + 1] ?? null },
+  }));
+}
+
+const { part, prev, next } = Astro.props;
+
+const fragments = import.meta.glob<string>('../../../content/lesson-bodies/writing-*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+const raw = fragments[`../../../content/lesson-bodies/writing-${part.slug}.html`];
+if (!raw) throw new Error(`Missing fragment for writing part: ${part.slug}`);
+const body = raw.replaceAll('../pics/', withBase('/pics/'));
+
+const overviewUrl = withBase('/lessons/writing');
+---
+
+<LessonLayout
+  slug={`writing-${part.slug}`}
+  meta={{ title: part.title, description: part.blurb, skill: 'writing' }}
+  parent={{ label: 'Writing', href: overviewUrl }}
+>
+  <Fragment set:html={body} />
+
+  <EssayCheckerCta task={part.task} />
+
+  <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Writing section">
+    {
+      prev ? (
+        <a href={withBase(`/lessons/writing/${prev.slug}`)} class="group rounded-card border border-border p-4 transition-colors hover:border-[var(--skill)]">
+          <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">← Previous</span>
+          <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">{prev.title}</span>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    <a href={overviewUrl} class="group rounded-card border border-border p-4 text-center transition-colors hover:border-[var(--skill)]">
+      <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Writing</span>
+      <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">All Question Types</span>
+    </a>
+    {
+      next ? (
+        <a href={withBase(`/lessons/writing/${next.slug}`)} class="group rounded-card border border-border p-4 text-right transition-colors hover:border-[var(--skill)]">
+          <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Next →</span>
+          <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">{next.title}</span>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+  </nav>
+</LessonLayout>

@@ -1,33 +1,18 @@
 ---
-import LessonLayout from '../../layouts/LessonLayout.astro';
-import EssayCheckerCta from '../../components/EssayCheckerCta.astro';
+/* Legacy URL stub: the monolithic Task 1 lesson was split into per-type
+   lessons under /lessons/writing/<type> — send old links to the overview. */
 import { withBase } from '../../lib/url';
-import { getWritingPart, WRITING_PARTS } from '../../data/writing';
-import raw from '../../content/lesson-bodies/writing-task1.html?raw';
-
-const body = raw.replaceAll('../pics/', withBase('/pics/'));
-const part = getWritingPart('writing-task1')!;
-const next = WRITING_PARTS[1];
-const overviewUrl = withBase('/lessons/writing');
+const hub = withBase('/lessons/writing');
 ---
 
-<LessonLayout
-  slug="writing-task1"
-  meta={{ title: 'Writing Task 1', description: part.blurb, skill: 'writing' }}
-  parent={{ label: 'Writing', href: overviewUrl }}
->
-  <Fragment set:html={body} />
-  <EssayCheckerCta task="task1" />
-
-  <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Writing section">
-    <span></span>
-    <a href={overviewUrl} class="group rounded-card border border-border p-4 text-center transition-colors hover:border-[var(--skill)]">
-      <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Writing</span>
-      <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">Overview & Both Tasks</span>
-    </a>
-    <a href={withBase(`/lessons/${next.slug}`)} class="group rounded-card border border-border p-4 text-right transition-colors hover:border-[var(--skill)]">
-      <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Next →</span>
-      <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">{next.title}</span>
-    </a>
-  </nav>
-</LessonLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${hub}`} />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>This page has moved. <a href={hub}>Go to the Writing section →</a></p>
+  </body>
+</html>
