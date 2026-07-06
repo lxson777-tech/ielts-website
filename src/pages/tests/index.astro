@@ -4,6 +4,7 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import Badge from '../../components/Badge.astro';
 import ScoreHistory from '../../components/ScoreHistory';
 import TypeAnalytics from '../../components/TypeAnalytics';
+import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
 import { questionCount } from '../../lib/tests/schema';
 
@@ -25,29 +26,37 @@ const testIds = ALL_TESTS.map((t) => t.id);
       subtitle="Press start and you'll get a full IELTS exam — a different test every time, until you've done them all. Instant scoring, an estimated band, and results saved on this device."
     />
 
-    <div class="skill-reading relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+    <div class="skill-reading relative overflow-hidden rounded-card border border-border bg-surface shadow-card">
       <span class="absolute inset-x-0 top-0 h-1 bg-[var(--skill)]"></span>
-      <div class="mx-auto max-w-xl">
-        <Badge tone="skill">Reading</Badge>
-        <h3 class="mt-3 font-display text-2xl font-extrabold sm:text-3xl">Full Reading Test</h3>
-        <p class="mt-2 text-sm text-ink-muted sm:text-[0.95rem]">
-          {ALL_TESTS.length} complete exams in rotation — you won't see the same test twice until
-          you've taken them all.
-        </p>
-        <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm font-semibold text-ink-muted">
-          <span>{sample.parts.length} passages</span>
-          <span>{questionCount(sample)} questions</span>
-          <span>⏱ {sample.durationMinutes} min</span>
+      <div class="grid items-center gap-8 p-8 sm:p-10 md:grid-cols-[1fr_minmax(0,300px)]">
+        <div class="text-center md:text-left">
+          <Badge tone="skill">Reading</Badge>
+          <h3 class="mt-3 font-display text-2xl font-extrabold sm:text-3xl">Full Reading Test</h3>
+          <p class="mt-2 text-sm text-ink-muted sm:text-[0.95rem]">
+            {ALL_TESTS.length} complete exams in rotation — you won't see the same test twice until
+            you've taken them all.
+          </p>
+          <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm font-semibold text-ink-muted md:justify-start">
+            <span>{sample.parts.length} passages</span>
+            <span>{questionCount(sample)} questions</span>
+            <span>⏱ {sample.durationMinutes} min</span>
+          </div>
+          <button
+            type="button"
+            id="start-test"
+            data-test-ids={JSON.stringify(testIds)}
+            class="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
+          >
+            Start a test →
+          </button>
+          <p class="mt-3 text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
         </div>
-        <button
-          type="button"
-          id="start-test"
-          data-test-ids={JSON.stringify(testIds)}
-          class="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
-        >
-          Start a test →
-        </button>
-        <p class="mt-3 text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
+        <img
+          src={withBase('/pics/reading/start-test.png')}
+          alt="Stopwatch at 60:00 beside a reading test booklet"
+          class="mx-auto hidden w-full max-w-[300px] md:block"
+          loading="lazy"
+        />
       </div>
     </div>
 

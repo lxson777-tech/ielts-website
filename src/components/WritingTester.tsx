@@ -13,6 +13,7 @@ import { countWords } from '../lib/writing/mechanics';
 import { gradeEssay } from '../lib/writing/grader';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { nextInRotation } from '../lib/rotation';
+import { withBase } from '../lib/url';
 
 export default function WritingTester() {
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
@@ -51,24 +52,34 @@ export default function WritingTester() {
   /* ── 1. Start screen ── */
   if (!prompt) {
     return (
-      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+      <div className="relative overflow-hidden rounded-card border border-border bg-surface shadow-card">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
-        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
-        <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          You'll get an exam-style task — a different one every time, until you've written them all.
-          An AI examiner grades your answer on the four official IELTS criteria.
-        </p>
-        <button
-          type="button"
-          onClick={startTask}
-          className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
-        >
-          Start a task →
-        </button>
-        <p className="mt-3 text-xs text-ink-muted">
-          {WRITING_PROMPTS.length} tasks in rotation · essays and letters · free
-        </p>
+        <div className="grid items-center gap-8 p-8 sm:p-10 md:grid-cols-[1fr_minmax(0,280px)]">
+          <div className="text-center md:text-left">
+            <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
+            <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
+            <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem] md:mx-0">
+              You'll get an exam-style task — a different one every time, until you've written them all.
+              An AI examiner grades your answer on the four official IELTS criteria.
+            </p>
+            <button
+              type="button"
+              onClick={startTask}
+              className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
+            >
+              Start a task →
+            </button>
+            <p className="mt-3 text-xs text-ink-muted">
+              {WRITING_PROMPTS.length} tasks in rotation · essays and letters · free
+            </p>
+          </div>
+          <img
+            src={withBase('/pics/writing/start-task.png')}
+            alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
+            className="mx-auto hidden w-full max-w-[280px] md:block"
+            loading="lazy"
+          />
+        </div>
       </div>
     );
   }
