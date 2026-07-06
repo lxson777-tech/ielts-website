@@ -1,6 +1,6 @@
 ---
 import { withBase } from '../lib/url';
-import { LESSONS, SKILLS, lessonsBySkill } from '../data/lessons';
+import { SKILLS, lessonsBySkill } from '../data/lessons';
 import { READING_PARTS } from '../data/reading';
 import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
@@ -10,16 +10,39 @@ import { VOCABULARY_PARTS } from '../data/vocabulary';
 const current = Astro.url.pathname;
 const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
 const skillActive = (skillId: string) =>
-  lessonsBySkill(skillId as (typeof SKILLS)[number]['id']).some((l) => isPath(`/lessons/${l.slug}`));
+  lessonsBySkill(skillId as (typeof SKILLS)[number]['id']).some((l) => isPath(`/lessons/${l.slug}`)) ||
+  current.startsWith(withBase(`/lessons/${skillId}/`));
 const testsActive = current.startsWith(withBase('/tests'));
 
-/* Short labels for dropdown entries — the parts of each section. */
-const partLabel: Record<string, string> = {
+/* Every skill dropdown has the same anatomy: the overview link, a labelled
+   group of type/part lessons, and (where one exists) the practice tool. */
+const overviewLabel: Record<string, string> = {
   'reading-task1': 'Reading Overview',
   writing: 'Writing Overview',
   speaking: 'Speaking Overview',
   listening: 'Listening Overview',
   vocabulary: 'Vocabulary Overview',
+};
+
+const partsBySkill: Record<string, { href: string; title: string }[]> = {
+  reading: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })),
+  writing: WRITING_PARTS.map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title })),
+  speaking: SPEAKING_PARTS.map((p) => ({ href: `/lessons/speaking/${p.slug}`, title: p.title })),
+  listening: LISTENING_PARTS.map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })),
+  vocabulary: VOCABULARY_PARTS.map((p) => ({ href: `/lessons/vocabulary/${p.slug}`, title: p.title })),
+};
+
+const partsHeading: Record<string, string> = {
+  reading: 'Question Types',
+  writing: 'Question Types',
+  speaking: 'The Three Parts',
+  listening: 'The Four Sections',
+  vocabulary: 'Topics',
+};
+
+const practiceBySkill: Record<string, { href: string; label: string }> = {
+  reading: { href: '/tests', label: '⏱ Timed Practice Tests' },
+  writing: { href: '/writing/checker', label: '✨ Essay Checker' },
 };
 ---
 
@@ -34,6 +57,8 @@ const partLabel: Record<string, string> = {
       {
         SKILLS.map((skill, i) => {
           const lessons = lessonsBySkill(skill.id);
+          const parts = partsBySkill[skill.id] ?? [];
+          const practice = practiceBySkill[skill.id];
           const active = skillActive(skill.id);
           // Right-align the last two panels so they never overflow the viewport.
           const alignRight = i >= SKILLS.length - 2;
@@ -56,88 +81,47 @@ const partLabel: Record<string, string> = {
               <div
                 class:list={[
                   alignRight ? 'right-0' : 'left-0',
-                  'invisible absolute top-full w-80 translate-y-1 rounded-2xl border border-border bg-surface p-3 opacity-0 shadow-card-hover transition-all duration-150',
+                  'invisible absolute top-full w-80 translate-y-1 overflow-hidden rounded-2xl border border-border bg-surface opacity-0 shadow-card-hover transition-all duration-150',
                   'group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100',
                   'group-hover:visible group-hover:translate-y-2 group-hover:opacity-100',
                 ]}
               >
-                <div>
+                <span class="block h-1 bg-[var(--skill)]" aria-hidden="true"></span>
+                <div class="p-3">
                   {lessons.map((lesson) => (
                     <a
                       href={withBase(`/lessons/${lesson.slug}`)}
-                      class="flex items-center gap-3 rounded-xl px-4 py-3 text-[0.95rem] text-ink transition-colors hover:bg-[var(--skill-tint)]"
+                      class="flex items-center gap-2.5 rounded-xl bg-[var(--skill-tint)] px-4 py-3 font-display text-[0.95rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
                     >
-                      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
-                      {partLabel[lesson.slug] ?? lesson.title}
+                      <span class="h-2 w-2 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
+                      {overviewLabel[lesson.slug] ?? lesson.title}
+                      <span class="ml-auto text-xs font-semibold opacity-70">Start here →</span>
                     </a>
                   ))}
-                  {skill.id === 'reading' &&
-                    READING_PARTS.map((p) => (
-                      <a
-                        href={withBase(`/lessons/reading/${p.slug}`)}
-                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
-                      >
-                        {p.title}
-                      </a>
-                    ))}
-                  {skill.id === 'reading' && (
+
+                  {parts.length > 0 && (
+                    <p class="px-4 pb-1 pt-3 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
+                      {partsHeading[skill.id]}
+                    </p>
+                  )}
+                  {parts.map((p) => (
                     <a
-                      href={withBase('/tests')}
-                      class="mt-1 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-3 pt-3.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
+                      href={withBase(p.href)}
+                      class="flex items-center gap-2.5 rounded-lg px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors hover:bg-[var(--skill-tint)] hover:text-[var(--skill)]"
                     >
-                      ⏱ Timed Practice Tests
+                      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
+                      {p.title}
+                    </a>
+                  ))}
+
+                  {practice && (
+                    <a
+                      href={withBase(practice.href)}
+                      class="mt-2 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-2 pt-3 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
+                    >
+                      {practice.label}
                     </a>
                   )}
-                  {skill.id === 'writing' &&
-                    WRITING_PARTS.map((p) => (
-                      <a
-                        href={withBase(`/lessons/writing/${p.slug}`)}
-                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
-                      >
-                        {p.title}
-                      </a>
-                    ))}
-                  {skill.id === 'speaking' &&
-                    SPEAKING_PARTS.map((p) => (
-                      <a
-                        href={withBase(`/lessons/speaking/${p.slug}`)}
-                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
-                      >
-                        {p.title}
-                      </a>
-                    ))}
-                  {skill.id === 'listening' &&
-                    LISTENING_PARTS.map((p) => (
-                      <a
-                        href={withBase(`/lessons/listening/${p.slug}`)}
-                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
-                      >
-                        {p.title}
-                      </a>
-                    ))}
-                  {skill.id === 'vocabulary' &&
-                    VOCABULARY_PARTS.map((p) => (
-                      <a
-                        href={withBase(`/lessons/vocabulary/${p.slug}`)}
-                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
-                      >
-                        {p.title}
-                      </a>
-                    ))}
-                  {skill.id === 'writing' && (
-                    <a
-                      href={withBase('/writing/checker')}
-                      class="mt-1 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-3 pt-3.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
-                    >
-                      ✨ Essay Checker
-                    </a>
-                  )}
-                  <a
-                    href={withBase(`/#${skill.id}`)}
-                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-ink-muted transition-colors hover:bg-surface-alt hover:text-ink"
-                  >
-                    All {skill.label.toLowerCase()} on the homepage →
-                  </a>
                 </div>
               </div>
             </div>
@@ -174,74 +158,40 @@ const partLabel: Record<string, string> = {
       Practice Tests
     </a>
     {
-      SKILLS.map((skill) => (
-        <div class={`skill-${skill.id} mt-2`}>
-          <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wider" style="color: var(--skill)">
-            {skill.label}
-          </p>
-          {lessonsBySkill(skill.id).map((lesson) => (
-            <a
-              href={withBase(`/lessons/${lesson.slug}`)}
-              class="block rounded-lg px-3 py-2 pl-6 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
-            >
-              {partLabel[lesson.slug] ?? lesson.title}
-            </a>
-          ))}
-          {skill.id === 'reading' &&
-            READING_PARTS.map((p) => (
+      SKILLS.map((skill) => {
+        const practice = practiceBySkill[skill.id];
+        return (
+          <div class={`skill-${skill.id} mt-2`}>
+            <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wider" style="color: var(--skill)">
+              {skill.label}
+            </p>
+            {lessonsBySkill(skill.id).map((lesson) => (
               <a
-                href={withBase(`/lessons/reading/${p.slug}`)}
-                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
+                href={withBase(`/lessons/${lesson.slug}`)}
+                class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-ink hover:bg-surface-alt"
+              >
+                {overviewLabel[lesson.slug] ?? lesson.title}
+              </a>
+            ))}
+            {(partsBySkill[skill.id] ?? []).map((p) => (
+              <a
+                href={withBase(p.href)}
+                class="block rounded-lg px-3 py-2 pl-9 text-sm font-medium text-ink-muted hover:bg-surface-alt hover:text-ink"
               >
                 {p.title}
               </a>
             ))}
-          {skill.id === 'writing' &&
-            WRITING_PARTS.map((p) => (
+            {practice && (
               <a
-                href={withBase(`/lessons/writing/${p.slug}`)}
-                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
+                href={withBase(practice.href)}
+                class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-brand hover:bg-brand-tint"
               >
-                {p.title}
+                {practice.label}
               </a>
-            ))}
-          {skill.id === 'speaking' &&
-            SPEAKING_PARTS.map((p) => (
-              <a
-                href={withBase(`/lessons/speaking/${p.slug}`)}
-                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
-              >
-                {p.title}
-              </a>
-            ))}
-          {skill.id === 'listening' &&
-            LISTENING_PARTS.map((p) => (
-              <a
-                href={withBase(`/lessons/listening/${p.slug}`)}
-                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
-              >
-                {p.title}
-              </a>
-            ))}
-          {skill.id === 'vocabulary' &&
-            VOCABULARY_PARTS.map((p) => (
-              <a
-                href={withBase(`/lessons/vocabulary/${p.slug}`)}
-                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
-              >
-                {p.title}
-              </a>
-            ))}
-          {skill.id === 'writing' && (
-            <a
-              href={withBase('/writing/checker')}
-              class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-brand hover:bg-brand-tint"
-            >
-              ✨ Essay Checker
-            </a>
-          )}
-        </div>
-      ))
+            )}
+          </div>
+        );
+      })
     }
   </div>
 </header>
