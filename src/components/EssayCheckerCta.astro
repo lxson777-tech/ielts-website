@@ -1,0 +1,34 @@
+---
+/* "Check Your Essay" section appended to the writing lesson pages.
+   Links to the AI essay checker at /writing/checker. */
+import { withBase } from '../lib/url';
+
+interface Props {
+  /** Which task the surrounding lesson teaches — tunes the copy. */
+  task: 'task1' | 'task2';
+}
+const { task } = Astro.props;
+const blurb =
+  task === 'task2'
+    ? 'Written a Task 2 essay? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.'
+    : 'Written a practice answer? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.';
+---
+
+<hr class="divider" />
+<div class="section" id="essay-checker">
+  <div class="section-header">
+    <div class="section-num">AI</div>
+    <div class="section-title-block">
+      <div class="tag">Instant Feedback</div>
+      <h2>Check Your Essay</h2>
+    </div>
+  </div>
+  <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">{blurb}</p>
+  <div class="samples-grid">
+    <a class="sample-card" href={withBase('/writing/checker')}>
+      <span class="sample-topic">✨ AI examiner · official band descriptors · free</span>
+      <strong class="sample-title">Open the Essay Checker</strong>
+      <span class="sample-go">Check my writing →</span>
+    </a>
+  </div>
+</div>

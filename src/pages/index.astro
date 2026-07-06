@@ -81,6 +81,15 @@ import { LESSONS, SKILLS } from '../data/lessons';
                   badge="Practice"
                 />
               )}
+              {skill.id === 'writing' && (
+                <Card
+                  title="Essay Checker"
+                  href={withBase('/writing/checker')}
+                  description="Write an answer and get AI examiner feedback: a band for every criterion, corrections, and next-band tips."
+                  image="/pics/writing/essay-checker.png"
+                  badge="Practice"
+                />
+              )}
             </div>
           </section>
         );

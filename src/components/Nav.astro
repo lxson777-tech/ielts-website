@@ -99,6 +99,14 @@ const partLabel: Record<string, string> = {
                       ⏱ Timed Practice Tests
                     </a>
                   )}
+                  {skill.id === 'writing' && (
+                    <a
+                      href={withBase('/writing/checker')}
+                      class="mt-1 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-3 pt-3.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
+                    >
+                      ✨ Essay Checker
+                    </a>
+                  )}
                   <a
                     href={withBase(`/#${skill.id}`)}
                     class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-ink-muted transition-colors hover:bg-surface-alt hover:text-ink"
@@ -163,6 +171,14 @@ const partLabel: Record<string, string> = {
                 {p.title}
               </a>
             ))}
+          {skill.id === 'writing' && (
+            <a
+              href={withBase('/writing/checker')}
+              class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-brand hover:bg-brand-tint"
+            >
+              ✨ Essay Checker
+            </a>
+          )}
         </div>
       ))
     }
