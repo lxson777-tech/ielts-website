@@ -1,7 +1,9 @@
-/* The essay checker: pick a prompt → write → submit → feedback report.
-   Grading goes through gradeEssay() (heuristics + the active EssayGrader),
-   so this component is provider-agnostic — it renders the same report
-   whether the stub or a real model produced the assessment. */
+/* The essay checker: start → get a rotating task → write → submit → report.
+   Every start serves a different prompt (localStorage rotation) until the
+   whole pool has been used, then the cycle restarts. Grading goes through
+   gradeEssay() (heuristics + the active EssayGrader), so this component is
+   provider-agnostic — it renders the same report whether the stub or a real
+   model produced the assessment. */
 
 import { useMemo, useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
@@ -10,6 +12,7 @@ import { CRITERIA, criterionLabel } from '../lib/writing/schema';
 import { countWords } from '../lib/writing/mechanics';
 import { gradeEssay } from '../lib/writing/grader';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
+import { nextInRotation } from '../lib/rotation';
 
 export default function WritingTester() {
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
@@ -29,39 +32,43 @@ export default function WritingTester() {
     }
   }
 
-  function reset() {
-    setPrompt(null);
+  /* Serve the next prompt in the rotation and clear the workspace. */
+  function startTask() {
+    const id = nextInRotation(
+      'ielts.rotation.writing-prompts.v1',
+      WRITING_PROMPTS.map((p) => p.id),
+    );
+    setPrompt(WRITING_PROMPTS.find((p) => p.id === id) ?? WRITING_PROMPTS[0]);
     setEssay('');
     setResult(null);
   }
 
-  /* ── 1. Prompt picker ── */
+  function newTask() {
+    if (essay.trim() && !window.confirm('Get a different task? Your current answer will be cleared.')) return;
+    startTask();
+  }
+
+  /* ── 1. Start screen ── */
   if (!prompt) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {WRITING_PROMPTS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setPrompt(p)}
-            className="group flex flex-col rounded-card border border-border bg-surface p-5 text-left shadow-card transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
-          >
-            <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
-              {p.task === 'task2' ? 'Task 2 · Essay' : 'Task 1 · Report/Letter'} · {p.variant}
-            </span>
-            <span className="mt-2 font-display text-lg font-bold">{p.title}</span>
-            <span
-              className="mt-2 line-clamp-3 text-sm text-ink-muted"
-              dangerouslySetInnerHTML={{ __html: p.promptHtml }}
-            />
-            <span className="mt-4 border-t border-border pt-3 text-xs font-semibold text-ink-muted">
-              {p.minWords}+ words · ~{p.suggestedMinutes} min
-              <span className="float-right font-bold text-[var(--skill,#0E9F6E)] opacity-0 transition-opacity group-hover:opacity-100">
-                Write →
-              </span>
-            </span>
-          </button>
-        ))}
+      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+        <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
+        <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
+        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
+          You'll get an exam-style task — a different one every time, until you've written them all.
+          An AI examiner grades your answer on the four official IELTS criteria.
+        </p>
+        <button
+          type="button"
+          onClick={startTask}
+          className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
+        >
+          Start a task →
+        </button>
+        <p className="mt-3 text-xs text-ink-muted">
+          {WRITING_PROMPTS.length} tasks in rotation · essays and letters · free
+        </p>
       </div>
     );
   }
@@ -167,10 +174,10 @@ export default function WritingTester() {
           </button>
           <button
             type="button"
-            onClick={reset}
+            onClick={startTask}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Try another prompt
+            Take another test →
           </button>
         </div>
       </div>
@@ -186,8 +193,8 @@ export default function WritingTester() {
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
             {prompt.task === 'task2' ? 'Writing Task 2' : 'Writing Task 1'} · ~{prompt.suggestedMinutes} min
           </span>
-          <button type="button" onClick={reset} className="text-xs font-semibold text-ink-muted hover:text-ink">
-            ← Change prompt
+          <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
+            ↻ New task
           </button>
         </div>
         <p className="mt-2 text-[0.95rem] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt.promptHtml }} />

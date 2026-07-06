@@ -48,6 +48,11 @@ export function startSession(test: PracticeTest): TestSession {
   return s;
 }
 
+/** The in-progress session for whichever test is active, if any. */
+export function activeSession(): TestSession | null {
+  return read();
+}
+
 /** Return the in-progress session for this test, if one exists (any remaining time). */
 export function loadSession(testId: string): TestSession | null {
   const s = read();
