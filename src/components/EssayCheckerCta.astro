@@ -4,14 +4,16 @@
 import { withBase } from '../lib/url';
 
 interface Props {
-  /** Which task the surrounding lesson teaches — tunes the copy. */
-  task: 'task1' | 'task2';
+  /** Which page the CTA sits on — tunes the copy. */
+  task: 'task1' | 'task2' | 'overview';
 }
 const { task } = Astro.props;
 const blurb =
   task === 'task2'
     ? 'Written a Task 2 essay? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.'
-    : 'Written a practice answer? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.';
+    : task === 'task1'
+      ? 'Written a practice answer? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.'
+      : 'Ready to write? Take a writing test and get your answer assessed like the real exam: a band for each of the four marking criteria, examiner-style comments, corrections, and one tip per criterion to reach the next band.';
 ---
 
 <hr class="divider" />

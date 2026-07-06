@@ -25,18 +25,11 @@ export const LESSONS: LessonMeta[] = [
     image: '/pics/reading.png',
   },
   {
-    slug: 'writing-task1',
-    title: 'Writing Task 1',
+    slug: 'writing',
+    title: 'Writing Overview',
     skill: 'writing',
-    description: 'Describe charts, graphs and processes in a clear 150-word report.',
-    image: '/pics/writing-task1.png',
-  },
-  {
-    slug: 'writing-task2',
-    title: 'Writing Task 2',
-    skill: 'writing',
-    description: 'Plan and write a well-structured 250-word essay that answers the question.',
-    image: '/pics/writing-task2.png',
+    description: 'How the test works, how examiners mark it, and a lesson for each task.',
+    image: '/pics/writing/start-task.png',
   },
   {
     slug: 'speaking-part1',
