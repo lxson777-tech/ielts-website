@@ -94,7 +94,10 @@ export default function TestPlayer({ test, hubUrl }: Props) {
     if (submittedRef.current) return;
     setAnswers((prev) => {
       const next = { ...prev };
-      if (value.trim()) next[qid] = value.trim();
+      // Store exactly what was typed — trimming here eats the space the
+      // student just typed (controlled input), blocking multi-word answers.
+      // Normalisation happens once, at scoring time (isCorrect).
+      if (value) next[qid] = value;
       else delete next[qid];
       saveAnswers(next);
       return next;

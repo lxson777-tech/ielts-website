@@ -100,7 +100,9 @@ export function questionCount(test: PracticeTest): number {
 }
 
 export function isCorrect(question: Question, given: string): boolean {
-  const norm = (s: string) => s.toLowerCase().trim();
+  // Free-form typing is stored raw, so normalise here: case, extra spaces
+  // (including doubles between words), and curly apostrophes all forgiven.
+  const norm = (s: string) => s.toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
   const accepted = Array.isArray(question.answer) ? question.answer : [question.answer];
   return accepted.some((a) => norm(a) === norm(given));
 }
