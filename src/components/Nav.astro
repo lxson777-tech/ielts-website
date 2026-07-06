@@ -5,6 +5,7 @@ import { READING_PARTS } from '../data/reading';
 import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
 import { LISTENING_PARTS } from '../data/listening';
+import { VOCABULARY_PARTS } from '../data/vocabulary';
 
 const current = Astro.url.pathname;
 const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
@@ -18,7 +19,7 @@ const partLabel: Record<string, string> = {
   writing: 'Writing Overview',
   speaking: 'Speaking Overview',
   listening: 'Listening Overview',
-  vocabulary: 'Topic Vocabulary',
+  vocabulary: 'Vocabulary Overview',
 };
 ---
 
@@ -109,6 +110,15 @@ const partLabel: Record<string, string> = {
                     LISTENING_PARTS.map((p) => (
                       <a
                         href={withBase(`/lessons/listening/${p.slug}`)}
+                        class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
+                      >
+                        {p.title}
+                      </a>
+                    ))}
+                  {skill.id === 'vocabulary' &&
+                    VOCABULARY_PARTS.map((p) => (
+                      <a
+                        href={withBase(`/lessons/vocabulary/${p.slug}`)}
                         class="flex items-center gap-3 rounded-xl px-4 py-2 pl-7 text-sm text-ink-muted transition-colors hover:bg-[var(--skill-tint)] hover:text-ink"
                       >
                         {p.title}
@@ -208,6 +218,15 @@ const partLabel: Record<string, string> = {
             LISTENING_PARTS.map((p) => (
               <a
                 href={withBase(`/lessons/listening/${p.slug}`)}
+                class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
+              >
+                {p.title}
+              </a>
+            ))}
+          {skill.id === 'vocabulary' &&
+            VOCABULARY_PARTS.map((p) => (
+              <a
+                href={withBase(`/lessons/vocabulary/${p.slug}`)}
                 class="block rounded-lg px-3 py-2 pl-9 text-sm text-ink-muted hover:bg-surface-alt hover:text-ink"
               >
                 {p.title}

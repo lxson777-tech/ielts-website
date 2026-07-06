@@ -47,9 +47,9 @@ export const LESSONS: LessonMeta[] = [
   },
   {
     slug: 'vocabulary',
-    title: 'Vocabulary',
+    title: 'Vocabulary Overview',
     skill: 'vocabulary',
-    description: 'Build the academic word bank the exam rewards, then test yourself.',
+    description: 'Why vocabulary decides your band, a lesson per exam topic, and a quiz.',
     image: '/pics/vocabulary.png',
   },
 ];
