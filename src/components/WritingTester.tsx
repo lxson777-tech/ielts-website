@@ -76,7 +76,7 @@ export default function WritingTester() {
           <img
             src={withBase('/pics/writing/start-task.png')}
             alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
-            className="mx-auto hidden w-full max-w-[280px] md:block"
+            className="mx-auto -order-1 w-full max-w-[240px] md:order-none md:max-w-[280px]"
             loading="lazy"
           />
         </div>
