@@ -554,6 +554,43 @@
   margin-top: auto;
   padding-top: 0.55rem;
 }
+/* Wide CTA card with illustration — test / essay-checker entry points. */
+.lesson-body .cta-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.4rem 1.6rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+@media (min-width: 560px) {
+  .lesson-body .cta-card { grid-template-columns: 1fr minmax(0, 220px); }
+}
+.lesson-body .cta-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+.lesson-body .cta-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.lesson-body .cta-card img {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  margin: 0 auto;
+  order: -1;
+}
+@media (min-width: 560px) {
+  .lesson-body .cta-card img { order: 0; }
+}
 .lesson-body .part-card img {
   width: 100%;
   height: auto;

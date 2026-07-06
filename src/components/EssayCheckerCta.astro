@@ -24,11 +24,16 @@ const blurb =
     </div>
   </div>
   <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">{blurb}</p>
-  <div class="samples-grid">
-    <a class="sample-card" href={withBase('/writing/checker')}>
+  <a class="cta-card" href={withBase('/writing/checker')}>
+    <span class="cta-card-body">
       <span class="sample-topic">✨ AI examiner · official band descriptors · free</span>
       <strong class="sample-title">Open the Essay Checker</strong>
       <span class="sample-go">Check my writing →</span>
-    </a>
-  </div>
+    </span>
+    <img
+      src={withBase('/pics/writing/start-task.png')}
+      alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
+      loading="lazy"
+    />
+  </a>
 </div>

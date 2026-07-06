@@ -27,15 +27,16 @@ const sample = readingTests[0];
       with instant scoring and an estimated band — and you get a different test each time.
       Once you start, the clock can’t be paused.
     </p>
-    <div class="samples-grid">
-      <a class="sample-card" href={withBase('/tests')}>
+    <a class="cta-card" href={withBase('/tests')}>
+      <span class="cta-card-body">
         <span class="sample-topic">
           {sample.parts.length} passages · {questionCount(sample)} questions · {sample.durationMinutes} min · {readingTests.length} tests in rotation
         </span>
         <strong class="sample-title">Take a Reading Test</strong>
         <span class="sample-go">Start a test →</span>
-      </a>
-    </div>
+      </span>
+      <img src={withBase('/pics/reading/start-test.png')} alt="Stopwatch at 60:00 beside a reading test booklet" loading="lazy" />
+    </a>
     <p class="material-source">
       Your score history lives on the <a href={withBase('/tests')}>practice tests page</a>.
     </p>
