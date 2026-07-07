@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import SpeakingTester from '../../components/SpeakingTester';
+---
+
+<BaseLayout
+  title="Speaking Test · IELTS Portal"
+  description="Answer real IELTS Speaking Part 1, 2 and 3 questions by microphone and get instant feedback: band-by-band comments on fluency, vocabulary, grammar and pronunciation."
+>
+  <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="Speaking"
+      title="Speaking Test"
+      subtitle="Pick Part 1 or Part 2 & 3. Questions are read aloud — record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria."
+    />
+    <SpeakingTester client:load />
+  </div>
+</BaseLayout>

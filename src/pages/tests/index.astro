@@ -50,6 +50,11 @@ const testIds = ALL_TESTS.map((t) => t.id);
             Start a test →
           </button>
           <p class="mt-3 text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
+          <p class="mt-4 text-sm">
+            <a href={withBase('/tests/drills')} class="font-semibold text-brand hover:underline">
+              Only have 20 minutes? Try a single-passage drill →
+            </a>
+          </p>
         </div>
         <img
           src={withBase('/pics/reading/start-test.png')}

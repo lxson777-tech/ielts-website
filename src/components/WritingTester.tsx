@@ -14,6 +14,8 @@ import { gradeEssay } from '../lib/writing/grader';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
+import { recordWritingAttempt } from '../lib/progress';
+import BandReport from './BandReport';
 
 export default function WritingTester() {
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
@@ -27,7 +29,17 @@ export default function WritingTester() {
     if (!prompt || grading) return;
     setGrading(true);
     try {
-      setResult(await gradeEssay({ prompt, essay }));
+      const graded = await gradeEssay({ prompt, essay });
+      setResult(graded);
+      const criteria: Record<string, number> = {};
+      for (const key of Object.keys(graded.criteria)) criteria[key] = graded.criteria[key as keyof typeof graded.criteria].band;
+      recordWritingAttempt(prompt.id, {
+        at: new Date().toISOString(),
+        overallBand: graded.overallBand,
+        criteria,
+        wordCount,
+        live: graded.grader.live,
+      });
     } finally {
       setGrading(false);
     }
@@ -89,91 +101,59 @@ export default function WritingTester() {
     const m = result.mechanics;
     return (
       <div className="space-y-6">
-        {/* Band header */}
-        <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
-          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-            {result.grader.live ? '✨ AI-assessed' : 'Sample assessment (offline)'} · {prompt.title}
-          </p>
-          <p className="mt-2 font-display text-5xl font-extrabold text-brand">
-            {result.overallBand.toFixed(1)}
-          </p>
-          <p className="mt-1 text-sm text-ink-muted">Estimated overall band</p>
-          {!result.grader.live && (
-            <p className="mx-auto mt-3 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-              ⚠ The band scores below are illustrative — generated from mechanical signals only,
-              without an AI examiner. Your teacher can enable AI grading.
-            </p>
-          )}
-        </div>
-
-        {/* 4 criteria */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          {CRITERIA.map((c) => {
-            const s = result.criteria[c.key];
-            return (
-              <div key={c.key} className="flex flex-col rounded-card border border-border bg-surface p-4 shadow-card">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold">{criterionLabel(c, prompt.task)}</span>
-                  <span className="rounded-full bg-brand-tint px-2.5 py-0.5 font-display text-sm font-extrabold text-brand">
-                    {s.band.toFixed(1)}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-ink-muted">{s.comment}</p>
-                {s.tip && (
-                  <p className="mt-auto pt-3">
-                    <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
-                      <strong className="text-brand">→ Band {Math.min(9, s.band + 1)}:</strong> {s.tip}
-                    </span>
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Instant mechanics */}
-        <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-          <h3 className="font-display font-bold">Mechanics check</h3>
-          <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
-            <Stat label="Words" value={`${m.wordCount}`} bad={m.underLength} />
-            <Stat label="Sentences" value={`${m.sentenceCount}`} />
-            <Stat label="Vocab variety" value={`${Math.round(m.lexicalDiversity * 100)}%`} bad={m.lexicalDiversity < 0.42} />
-            <Stat label="Linking words" value={`${m.linkingDevices.reduce((a, l) => a + l.count, 0)}`} bad={m.linkingDevices.length === 0 && m.sentenceCount > 3} />
-          </div>
-          <ul className="mt-4 space-y-1.5 text-sm text-ink-muted">
-            {m.notes.map((n) => (
-              <li key={n} className="flex gap-2">
-                <span aria-hidden="true">·</span>
-                <span>{n}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Corrections */}
-        {result.corrections.length > 0 && (
+        <BandReport
+          title={prompt.title}
+          overallBand={result.overallBand}
+          live={result.grader.live}
+          offlineWarning="The band scores below are illustrative — generated from mechanical signals only, without an AI examiner. Your teacher can enable AI grading."
+          criteria={CRITERIA.map((c) => ({
+            key: c.key,
+            label: criterionLabel(c, prompt.task),
+            band: result.criteria[c.key].band,
+            comment: result.criteria[c.key].comment,
+            tip: result.criteria[c.key].tip,
+          }))}
+          strengths={result.strengths}
+          improvements={result.improvements}
+        >
+          {/* Instant mechanics */}
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-            <h3 className="font-display font-bold">Corrections</h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              {result.corrections.map((c, i) => (
-                <li key={i} className="flex flex-wrap items-center gap-2">
-                  <span className="rounded bg-error-tint px-1.5 py-0.5 font-semibold text-error line-through">
-                    {c.original}
-                  </span>
-                  <span aria-hidden="true">→</span>
-                  <span className="rounded bg-success-tint px-1.5 py-0.5 font-semibold text-success">{c.fix}</span>
-                  <span className="text-ink-muted">— {c.reason}</span>
+            <h3 className="font-display font-bold">Mechanics check</h3>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+              <Stat label="Words" value={`${m.wordCount}`} bad={m.underLength} />
+              <Stat label="Sentences" value={`${m.sentenceCount}`} />
+              <Stat label="Vocab variety" value={`${Math.round(m.lexicalDiversity * 100)}%`} bad={m.lexicalDiversity < 0.42} />
+              <Stat label="Linking words" value={`${m.linkingDevices.reduce((a, l) => a + l.count, 0)}`} bad={m.linkingDevices.length === 0 && m.sentenceCount > 3} />
+            </div>
+            <ul className="mt-4 space-y-1.5 text-sm text-ink-muted">
+              {m.notes.map((n) => (
+                <li key={n} className="flex gap-2">
+                  <span aria-hidden="true">·</span>
+                  <span>{n}</span>
                 </li>
               ))}
             </ul>
           </div>
-        )}
 
-        {/* Strengths / improvements */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <ListCard title="✓ Strengths" items={result.strengths} tone="success" />
-          <ListCard title="↗ Improve next" items={result.improvements} tone="brand" />
-        </div>
+          {/* Corrections */}
+          {result.corrections.length > 0 && (
+            <div className="rounded-card border border-border bg-surface p-5 shadow-card">
+              <h3 className="font-display font-bold">Corrections</h3>
+              <ul className="mt-3 space-y-2 text-sm">
+                {result.corrections.map((c, i) => (
+                  <li key={i} className="flex flex-wrap items-center gap-2">
+                    <span className="rounded bg-error-tint px-1.5 py-0.5 font-semibold text-error line-through">
+                      {c.original}
+                    </span>
+                    <span aria-hidden="true">→</span>
+                    <span className="rounded bg-success-tint px-1.5 py-0.5 font-semibold text-success">{c.fix}</span>
+                    <span className="text-ink-muted">— {c.reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </BandReport>
 
         <div className="flex flex-wrap justify-center gap-3">
           <button
@@ -241,22 +221,6 @@ function Stat({ label, value, bad }: { label: string; value: string; bad?: boole
     <div className={`rounded-lg border p-2.5 ${bad ? 'border-error/40 bg-error-tint' : 'border-border bg-surface-alt'}`}>
       <p className={`font-display text-lg font-extrabold ${bad ? 'text-error' : ''}`}>{value}</p>
       <p className="text-xs text-ink-muted">{label}</p>
-    </div>
-  );
-}
-
-function ListCard({ title, items, tone }: { title: string; items: string[]; tone: 'success' | 'brand' }) {
-  return (
-    <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-      <h3 className={`font-display font-bold ${tone === 'success' ? 'text-success' : 'text-brand'}`}>{title}</h3>
-      <ul className="mt-2 space-y-1.5 text-sm text-ink-muted">
-        {items.map((s) => (
-          <li key={s} className="flex gap-2">
-            <span aria-hidden="true">·</span>
-            <span>{s}</span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

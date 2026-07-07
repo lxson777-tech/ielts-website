@@ -15,13 +15,23 @@ export type QuestionType =
   | 'sentence-endings' // stem → correct ending from a shared list
   | 'categorisation'
   | 'multiple-answer' // pick N correct statements from a longer list
-  | 'diagram-labelling';
+  | 'diagram-labelling'
+  | 'table-completion'; // table/flow-chart grid with blanks
 
 export interface DiagramSpec {
   image: string; // path under /public, prefixed with base at render
   alt: string;
   /** one marker per question in the group, in order; x/y are % of the image box */
   markers: { x: number; y: number }[];
+}
+
+export type TableCell = string | { questionId: string };
+
+export interface TableSpec {
+  /** optional header labels, one per column */
+  headerRow?: string[];
+  /** each row is an array of cells: plain text, or a blank tied to a question id */
+  rows: TableCell[][];
 }
 
 export interface PassageStimulus {
@@ -67,6 +77,12 @@ export interface QuestionGroup {
   legendHtml?: string;
   /** diagram-labelling: image + numbered pins, one per question */
   diagram?: DiagramSpec;
+  /** table-completion: a table grid with blanks wired to question ids */
+  table?: TableSpec;
+  /** Free-text groups only (sentence-completion / diagram-labelling /
+      table-completion): the stated word limit, e.g. 2 for "NO MORE THAN TWO
+      WORDS". Drives the live word-count warning in the player. */
+  wordLimit?: number;
   /** multiple-answer: how many statements to select (= number of questions in the group) */
   selectCount?: number;
   /** multiple-answer: the labelled statements to choose from */
@@ -100,9 +116,27 @@ export function questionCount(test: PracticeTest): number {
 }
 
 export function isCorrect(question: Question, given: string): boolean {
-  // Free-form typing is stored raw, so normalise here: case, extra spaces
-  // (including doubles between words), and curly apostrophes all forgiven.
-  const norm = (s: string) => s.toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
+  // Free-form typing is stored raw, so we mark on content, not formatting.
+  // Forgiven: case; extra/doubled spaces; curly vs straight quotes and dashes;
+  // thousand-separator commas (5000 vs 5,000); currency symbols ($50 vs 50);
+  // "%" vs "percent"/"per cent"; hyphenated vs spaced compounds (well-known vs
+  // well known); and any leading/trailing punctuation or quote marks.
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[’‘]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/[‒–—―−]/g, '-')
+      .replace(/[£$€]/g, '')
+      .replace(/(?<=\d),(?=\d)/g, '')
+      .replace(/per\s*cent/g, 'percent')
+      .replace(/%/g, ' percent')
+      .replace(/(?<=[a-z])-(?=[a-z])/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^["']+|["']+$/g, '')
+      .replace(/[.,;:!?]+$/, '')
+      .trim();
   const accepted = Array.isArray(question.answer) ? question.answer : [question.answer];
   return accepted.some((a) => norm(a) === norm(given));
 }

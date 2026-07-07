@@ -8,6 +8,9 @@ interface Props {
   test: PracticeTest;
   /** Base-prefixed URL back to the tests hub. */
   hubUrl: string;
+  /** 'drill' tags the recorded attempt so it's excluded from the full-test
+      band history (see progress.ts). Defaults to a full exam. */
+  attemptKind?: 'full' | 'drill';
 }
 
 /** Base-prefixed URL for images stored under /public. */
@@ -33,7 +36,12 @@ function pad(n: number): string {
   return String(n).padStart(2, '0');
 }
 
-export default function TestPlayer({ test, hubUrl }: Props) {
+function countWords(s: string): number {
+  const t = s.trim();
+  return t ? t.split(/\s+/).length : 0;
+}
+
+export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props) {
   const numbered = useMemo(() => numberQuestions(test), [test]);
   const TOTAL = numbered.length;
 
@@ -52,6 +60,23 @@ export default function TestPlayer({ test, hubUrl }: Props) {
   );
   const [activePart, setActivePart] = useState(0);
   const [splitPct, setSplitPct] = useState(50);
+  const [flagged, setFlagged] = useState<Set<string>>(new Set());
+
+  function toggleFlag(qid: string) {
+    if (submittedRef.current) return;
+    setFlagged((prev) => {
+      const next = new Set(prev);
+      if (next.has(qid)) next.delete(qid);
+      else next.add(qid);
+      return next;
+    });
+  }
+
+  /* Jump to a question card and bring it into view — used by the flag-aware
+     nav circles in the footer, mirroring "skip and return" on CD-IELTS. */
+  function jumpToQuestion(qid: string) {
+    document.getElementById(`player-${qid}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
   function start() {
     const s = startSession(test);
@@ -124,6 +149,8 @@ export default function TestPlayer({ test, hubUrl }: Props) {
       bandLabel: bandEstimate(raw, TOTAL),
       secondsUsed: test.durationMinutes * 60 - timeLeft,
       byType,
+      kind: attemptKind,
+      skill: test.skill,
     });
     clearSession(); // in-progress state done; permanent attempt kept in progress history
   }
@@ -290,6 +317,16 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                   )}
                   {group.type === 'multiple-answer' ? (
                     <MultiAnswer group={group} slotIds={groupQs.map((nq) => nq.question.id)} answers={answers} submitted={submitted} setAnswer={setAnswer} />
+                  ) : group.type === 'table-completion' && group.table ? (
+                    <TableGrid
+                      table={group.table}
+                      items={groupQs}
+                      answers={answers}
+                      submitted={submitted}
+                      wordLimit={group.wordLimit}
+                      setAnswer={setAnswer}
+                      onLocate={locateEvidence}
+                    />
                   ) : (
                     groupQs.map((nq) => (
                       <QuestionItem
@@ -299,6 +336,8 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                         submitted={submitted}
                         onChange={(v) => setAnswer(nq.question.id, v)}
                         onLocate={locateEvidence}
+                        flagged={flagged.has(nq.question.id)}
+                        onToggleFlag={() => toggleFlag(nq.question.id)}
                       />
                     ))
                   )}
@@ -350,14 +389,24 @@ export default function TestPlayer({ test, hubUrl }: Props) {
                   : answered
                     ? 'bg-brand text-white'
                     : 'border border-border text-ink-muted';
+                const isFlagged = flagged.has(question.id);
                 return (
-                  <span
+                  <button
                     key={question.id}
-                    aria-label={`Question ${n}${answered ? ' answered' : ' unanswered'}`}
-                    className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${cls}`}
+                    type="button"
+                    onClick={() => jumpToQuestion(question.id)}
+                    aria-label={`Jump to question ${n}${answered ? ', answered' : ', unanswered'}${isFlagged ? ', flagged for review' : ''}`}
+                    className={`relative grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${cls} ${
+                      isFlagged && !submitted ? 'ring-2 ring-warning ring-offset-1 ring-offset-surface' : ''
+                    }`}
                   >
                     {n}
-                  </span>
+                    {isFlagged && !submitted && (
+                      <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 text-[0.6rem] leading-none">
+                        🚩
+                      </span>
+                    )}
+                  </button>
                 );
               })}
           </div>
@@ -404,60 +453,87 @@ function QuestionItem({
   submitted,
   onChange,
   onLocate,
+  flagged,
+  onToggleFlag,
 }: {
   nq: Numbered;
   value: string;
   submitted: boolean;
   onChange: (v: string) => void;
   onLocate?: (evidence: string) => void;
+  flagged?: boolean;
+  onToggleFlag?: () => void;
 }) {
   const { question: q, group, n } = nq;
   const ok = submitted && isCorrect(q, value);
   const showHint = submitted && !ok;
   const answerText = Array.isArray(q.answer) ? q.answer[0] : q.answer;
+  const overLimit = !submitted && group.wordLimit != null && countWords(value) > group.wordLimit;
 
   const stateCls = submitted
     ? ok
       ? 'border-success bg-success-tint'
       : 'border-error bg-error-tint'
-    : 'border-border bg-surface';
+    : flagged
+      ? 'border-warning bg-warning-tint'
+      : 'border-border bg-surface';
 
   return (
-    <div id={`player-${q.id}`} className={`mb-3 rounded-card border p-4 transition-colors ${stateCls}`}>
+    <div id={`player-${q.id}`} className={`relative mb-3 rounded-card border p-4 transition-colors ${stateCls}`}>
+      {!submitted && onToggleFlag && (
+        <button
+          type="button"
+          onClick={onToggleFlag}
+          aria-pressed={!!flagged}
+          aria-label={flagged ? `Unflag question ${n} for review` : `Flag question ${n} for review`}
+          title={flagged ? 'Unflag for review' : 'Flag for review'}
+          className={`absolute right-3 top-3 text-base leading-none transition-opacity ${
+            flagged ? 'opacity-100' : 'opacity-30 hover:opacity-70'
+          }`}
+        >
+          🚩
+        </button>
+      )}
       {group.type === 'diagram-labelling' ? (
-        <div className="flex items-center gap-3">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
-            {n}
-          </span>
-          <input
-            type="text"
-            value={value}
-            disabled={submitted}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="Label…"
-            aria-label={`Question ${n}`}
-            className="w-48 rounded-lg border border-border bg-surface px-3 py-1 text-sm font-semibold focus:border-brand"
-          />
-          {q.textHtml && <span className="text-sm text-ink-muted" dangerouslySetInnerHTML={{ __html: q.textHtml }} />}
-        </div>
-      ) : group.type === 'sentence-completion' ? (
-        <div className="flex items-start gap-3">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
-            {n}
-          </span>
-          <p className="text-[0.95rem] leading-loose">
-            {q.before}{' '}
+        <div>
+          <div className="flex items-center gap-3">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
+              {n}
+            </span>
             <input
               type="text"
               value={value}
               disabled={submitted}
               onChange={(e) => onChange(e.target.value)}
-              placeholder="…"
+              placeholder="Label…"
               aria-label={`Question ${n}`}
-              className="mx-1 w-36 rounded-lg border border-border bg-surface px-2 py-0.5 text-center font-semibold focus:border-brand"
-            />{' '}
-            {q.after}
-          </p>
+              className="w-48 rounded-lg border border-border bg-surface px-3 py-1 text-sm font-semibold focus:border-brand"
+            />
+            {q.textHtml && <span className="text-sm text-ink-muted" dangerouslySetInnerHTML={{ __html: q.textHtml }} />}
+          </div>
+          {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} className="ml-10 mt-1" />}
+        </div>
+      ) : group.type === 'sentence-completion' ? (
+        <div>
+          <div className="flex items-start gap-3">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
+              {n}
+            </span>
+            <p className="text-[0.95rem] leading-loose">
+              {q.before}{' '}
+              <input
+                type="text"
+                value={value}
+                disabled={submitted}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder="…"
+                aria-label={`Question ${n}`}
+                className="mx-1 w-36 rounded-lg border border-border bg-surface px-2 py-0.5 text-center font-semibold focus:border-brand"
+              />{' '}
+              {q.after}
+            </p>
+          </div>
+          {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} className="ml-10 mt-1" />}
         </div>
       ) : group.type === 'multiple-choice' ? (
         <div>
@@ -518,26 +594,59 @@ function QuestionItem({
         </div>
       )}
       {submitted && (showHint || q.explanation || q.evidence) && (
-        <div className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm sm:ml-10">
-          {!ok && (
-            <p className="font-semibold text-success">
-              ✓ Correct answer: <span className="font-bold">{answerText}</span>
-            </p>
-          )}
-          {q.explanation && <p className="mt-0.5 text-ink-muted">{q.explanation}</p>}
-          {q.evidence && (
-            <div className="mt-1.5 border-l-2 border-brand/40 pl-2.5">
-              <p className="italic text-ink-muted">“{q.evidence}”</p>
-              {onLocate && (
-                <button
-                  type="button"
-                  onClick={() => onLocate(q.evidence!)}
-                  className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
-                >
-                  🔍 Show in passage
-                </button>
-              )}
-            </div>
+        <AnswerReview q={q} ok={ok} answerText={answerText} onLocate={onLocate} className="sm:ml-10" />
+      )}
+    </div>
+  );
+}
+
+/** Word-count nudge shown live while typing a free-text answer that has a
+    stated limit (e.g. "NO MORE THAN TWO WORDS") — a nudge, not a hard block,
+    since the real exam only penalises at marking time. */
+function WordLimitWarning({ value, limit, className }: { value: string; limit: number; className?: string }) {
+  const count = countWords(value);
+  return (
+    <p className={`text-xs font-semibold text-warning ${className ?? ''}`}>
+      ⚠ {count} {count === 1 ? 'word' : 'words'} — limit is {limit}
+    </p>
+  );
+}
+
+/** Post-submit "why this is the answer" panel: correct answer, explanation,
+    and the exact evidence line with a jump-to-passage button. Shared by the
+    normal per-question list and the table-completion grid. */
+function AnswerReview({
+  q,
+  ok,
+  answerText,
+  onLocate,
+  className,
+}: {
+  q: Question;
+  ok: boolean;
+  answerText: string;
+  onLocate?: (evidence: string) => void;
+  className?: string;
+}) {
+  return (
+    <div className={`mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm ${className ?? ''}`}>
+      {!ok && (
+        <p className="font-semibold text-success">
+          ✓ Correct answer: <span className="font-bold">{answerText}</span>
+        </p>
+      )}
+      {q.explanation && <p className="mt-0.5 text-ink-muted">{q.explanation}</p>}
+      {q.evidence && (
+        <div className="mt-1.5 border-l-2 border-brand/40 pl-2.5">
+          <p className="italic text-ink-muted">“{q.evidence}”</p>
+          {onLocate && (
+            <button
+              type="button"
+              onClick={() => onLocate(q.evidence!)}
+              className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
+            >
+              🔍 Show in passage
+            </button>
           )}
         </div>
       )}
@@ -666,6 +775,109 @@ function MultiAnswer({
           dangerouslySetInnerHTML={{ __html: group.explanationHtml }}
         />
       )}
+    </div>
+  );
+}
+
+/* Table/flow-chart completion: a grid of static cells and fill-in-the-blank
+   cells, one input per question in the group (in reading order, left→right
+   then top→bottom — same left-to-right/top-to-bottom convention as diagram
+   pins). Answer explanations render below the table, reusing AnswerReview,
+   since the blanks themselves are too small to hold them. */
+function TableGrid({
+  table,
+  items,
+  answers,
+  submitted,
+  wordLimit,
+  setAnswer,
+  onLocate,
+}: {
+  table: NonNullable<QuestionGroup['table']>;
+  items: Numbered[];
+  answers: Record<string, string>;
+  submitted: boolean;
+  wordLimit?: number;
+  setAnswer: (qid: string, value: string) => void;
+  onLocate?: (evidence: string) => void;
+}) {
+  const byId = new Map(items.map((nq) => [nq.question.id, nq]));
+
+  return (
+    <div id={`player-${items[0]?.question.id ?? ''}`} className="mb-4 overflow-x-auto rounded-card border border-border">
+      <table className="w-full border-collapse text-sm">
+        {table.headerRow && (
+          <thead>
+            <tr className="bg-surface-alt text-left">
+              {table.headerRow.map((h, i) => (
+                <th key={i} className="border-b border-border px-3 py-2 font-semibold">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {table.rows.map((row, ri) => (
+            <tr key={ri} className="border-b border-border last:border-b-0">
+              {row.map((cell, ci) => {
+                if (typeof cell === 'string') {
+                  return (
+                    <td key={ci} className="px-3 py-2 align-top">
+                      {cell}
+                    </td>
+                  );
+                }
+                const nq = byId.get(cell.questionId);
+                if (!nq) return <td key={ci} className="px-3 py-2" />;
+                const value = answers[nq.question.id] ?? '';
+                const ok = submitted && isCorrect(nq.question, value);
+                const cls = submitted
+                  ? ok
+                    ? 'border-success bg-success-tint'
+                    : 'border-error bg-error-tint'
+                  : 'border-border bg-surface';
+                return (
+                  <td key={ci} className="px-3 py-2 align-top">
+                    <span className="mr-1.5 inline-grid h-6 w-6 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
+                      {nq.n}
+                    </span>
+                    <input
+                      type="text"
+                      value={value}
+                      disabled={submitted}
+                      onChange={(e) => setAnswer(nq.question.id, e.target.value)}
+                      placeholder="…"
+                      aria-label={`Question ${nq.n}`}
+                      className={`w-32 rounded-lg border px-2 py-0.5 text-center font-semibold focus:border-brand ${cls}`}
+                    />
+                    {wordLimit != null && !submitted && countWords(value) > wordLimit && (
+                      <WordLimitWarning value={value} limit={wordLimit} className="mt-1" />
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {submitted &&
+        items.map((nq) => {
+          const value = answers[nq.question.id] ?? '';
+          const ok = isCorrect(nq.question, value);
+          const answerText = Array.isArray(nq.question.answer) ? nq.question.answer[0]! : nq.question.answer;
+          if (ok && !nq.question.explanation && !nq.question.evidence) return null;
+          return (
+            <AnswerReview
+              key={nq.question.id}
+              q={nq.question}
+              ok={ok}
+              answerText={answerText}
+              onLocate={onLocate}
+              className="mx-3 my-2"
+            />
+          );
+        })}
     </div>
   );
 }
@@ -909,6 +1121,10 @@ function InstructionsScreen({
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">🖍</span>
             <span>Select any text in a passage to <strong>highlight</strong> it, just like the real computer test. Click a highlight to remove it.</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span aria-hidden="true" className="shrink-0">🚩</span>
+            <span>Not sure about an answer? <strong>Flag it</strong> and jump back later using the numbered circles at the bottom.</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">📊</span>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import Badge from '../../../components/Badge.astro';
+import { withBase } from '../../../lib/url';
+import { ALL_DRILLS } from '../../../lib/tests/drills';
+
+/* Group drills by their source test so the picker reads as "Test 1 → its
+   3 passages" rather than one flat list of 15. */
+const bySource = new Map<string, { sourceTitle: string; drills: typeof ALL_DRILLS }>();
+for (const d of ALL_DRILLS) {
+  const bucket = bySource.get(d.sourceTestId) ?? { sourceTitle: d.sourceTitle, drills: [] };
+  bucket.drills.push(d);
+  bySource.set(d.sourceTestId, bucket);
+}
+---
+
+<BaseLayout
+  title="Passage Drills · IELTS Portal"
+  description="Timed single-passage reading drills — practice pace on one passage without a full 60-minute exam."
+>
+  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <a href={withBase('/tests')} class="text-sm font-semibold text-ink-muted hover:text-ink">← All practice tests</a>
+
+    <SectionHeading
+      eyebrow="Reading"
+      title="Passage Drills"
+      subtitle="One passage, one realistic time budget, instant scoring — the same review and evidence features as a full test, without committing 60 minutes. These attempts don't count toward your full-test band history."
+    />
+
+    <div class="space-y-8">
+      {[...bySource.values()].map(({ sourceTitle, drills }) => (
+        <div class="rounded-card border border-border bg-surface p-5 shadow-card">
+          <h3 class="font-display text-base font-bold">{sourceTitle}</h3>
+          <div class="mt-3 grid gap-3 sm:grid-cols-3">
+            {drills.map((d) => (
+              <a
+                href={withBase(`/tests/drills/${d.id}`)}
+                class="group rounded-card border border-border p-4 transition-colors hover:border-[var(--skill,var(--color-brand))]"
+              >
+                <Badge tone="skill">{d.test.parts[0]!.label}</Badge>
+                <p class="mt-2 font-display text-sm font-bold group-hover:text-[var(--skill,var(--color-brand))]">
+                  {d.test.parts[0]!.stimulus.kind === 'passage' ? d.test.parts[0]!.stimulus.title : d.test.parts[0]!.label}
+                </p>
+                <p class="mt-1 text-xs text-ink-muted">
+                  {d.test.parts[0]!.groups.reduce((s, g) => s + g.questions.length, 0)} questions · {d.test.durationMinutes} min
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

@@ -62,6 +62,7 @@ const passage1: TestPart = {
     {
       title: 'Questions 5–8',
       type: 'sentence-completion',
+      wordLimit: 2,
       instructionHtml:
         'Complete the sentences below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
       questions: [
@@ -213,6 +214,7 @@ const passage2: TestPart = {
     {
       title: 'Questions 19–23',
       type: 'diagram-labelling',
+      wordLimit: 1,
       instructionHtml:
         'Label the diagram below. Choose <strong>ONE WORD ONLY</strong> from the passage for each pin.',
       diagram: {

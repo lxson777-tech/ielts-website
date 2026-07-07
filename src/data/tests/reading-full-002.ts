@@ -71,6 +71,7 @@ const passage1: TestPart = {
     {
       title: 'Questions 6–9',
       type: 'sentence-completion',
+      wordLimit: 2,
       instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
       questions: [
         {

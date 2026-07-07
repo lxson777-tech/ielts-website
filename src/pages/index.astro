@@ -42,7 +42,8 @@ import { LESSONS, SKILLS } from '../data/lessons';
     <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 px-4 py-4 text-sm sm:px-6">
       <p class="font-semibold">Your progress</p>
       <p class="text-ink-muted"><span id="progress-lessons" class="font-semibold text-ink">0</span> lessons completed</p>
-      <p class="text-ink-muted">Best band so far: <span id="progress-band" class="font-semibold text-brand">–</span></p>
+      <p class="text-ink-muted">Best reading band: <span id="progress-band" class="font-semibold text-brand">–</span></p>
+      <p id="progress-writing-band" class="hidden text-ink-muted">Best writing band: <span id="progress-writing-band-value" class="font-semibold text-brand">–</span></p>
       <a href={withBase('/tests#history')} class="ml-auto font-semibold text-brand hover:text-brand-hover">View history →</a>
     </div>
   </section>
@@ -99,15 +100,20 @@ import { LESSONS, SKILLS } from '../data/lessons';
 </BaseLayout>
 
 <script>
-  import { completedLessonCount, getBestBand, isLessonComplete } from '../lib/progress';
+  import { completedLessonCount, getBestBand, getBestWritingBand, isLessonComplete } from '../lib/progress';
 
   // Progress strip — only shown once there is something to report.
   const lessonsDone = completedLessonCount();
   const best = getBestBand();
-  if (lessonsDone > 0 || best) {
+  const bestWriting = getBestWritingBand();
+  if (lessonsDone > 0 || best || bestWriting) {
     document.getElementById('progress-strip')?.classList.remove('hidden');
     document.getElementById('progress-lessons')!.textContent = String(lessonsDone);
     if (best) document.getElementById('progress-band')!.textContent = best.bandLabel;
+    if (bestWriting) {
+      document.getElementById('progress-writing-band')?.classList.remove('hidden');
+      document.getElementById('progress-writing-band-value')!.textContent = bestWriting.toFixed(1);
+    }
   }
 
   // Checkmark badge on completed lesson cards.

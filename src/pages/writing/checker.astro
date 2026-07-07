@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import WritingTester from '../../components/WritingTester';
+import WritingHistory from '../../components/WritingHistory';
 ---
 
 <BaseLayout
@@ -15,5 +16,10 @@ import WritingTester from '../../components/WritingTester';
       subtitle="Press start to get an exam-style task — a different one every time. Write your answer and get instant feedback on the four IELTS criteria, plus a mechanics check on length, vocabulary, cohesion and spelling."
     />
     <WritingTester client:load />
+
+    <section id="history" class="mt-16 scroll-mt-20">
+      <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser — no account needed." />
+      <WritingHistory client:load />
+    </section>
   </div>
 </BaseLayout>

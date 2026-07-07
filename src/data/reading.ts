@@ -10,6 +10,7 @@ export interface ReadingPart {
 }
 
 export const READING_PARTS: ReadingPart[] = [
+  { slug: 'paraphrase', title: 'Paraphrase Spotting', blurb: 'The skill behind every question type: recognising when the passage says the same thing in different words.' },
   { slug: 'tfng', title: 'True / False / Not Given', blurb: 'Decide whether statements agree with the text — and learn what "Not Given" really means.' },
   { slug: 'mc', title: 'Multiple Choice', blurb: 'Pick the right option and dodge the distractors designed to catch skimmers.' },
   { slug: 'diagram', title: 'Diagram Labelling', blurb: 'Label a diagram or process using exact words from the passage.' },

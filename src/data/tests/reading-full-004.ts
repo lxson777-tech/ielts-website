@@ -69,6 +69,7 @@ const passage1: TestPart = {
     {
       title: 'Questions 6–9',
       type: 'sentence-completion',
+      wordLimit: 2,
       instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
       questions: [
         {
@@ -218,38 +219,40 @@ const passage2: TestPart = {
     },
     {
       title: 'Questions 20–23',
-      type: 'sentence-completion',
-      instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
+      type: 'table-completion',
+      wordLimit: 2,
+      instructionHtml: 'Complete the table below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
+      table: {
+        headerRow: ['Feature', 'Detail'],
+        rows: [
+          ['Depth at which the twilight zone begins', { questionId: 'q20' }],
+          ['Process most animals use to make their own light', { questionId: 'q21' }],
+          ['Name for the nightly rise and fall of ocean animals', { questionId: 'q22' }],
+          ['What large-scale fishing could disrupt', { questionId: 'q23' }],
+        ],
+      },
       questions: [
         {
           id: 'q20',
-          before: 'The twilight zone begins about',
-          after: 'metres below the surface.',
-          answer: ['two hundred', '200'],
+          answer: ['two hundred metres', '200 metres', 'two hundred', '200'],
           explanation: 'The zone begins about two hundred metres down.',
           evidence: 'It begins about two hundred metres down, where the light has faded to a dim blue glow.',
         },
         {
           id: 'q21',
-          before: 'Most twilight-zone animals can make their own light through',
-          after: '.',
           answer: 'bioluminescence',
           explanation: 'Animals make their own light through a chemical process called bioluminescence.',
           evidence: 'Others have given up on external light altogether and make their own, through a chemical process called bioluminescence.',
         },
         {
           id: 'q22',
-          before: 'The nightly rise and fall of ocean animals is called the vertical',
-          after: '.',
-          answer: 'migration',
+          answer: ['vertical migration', 'the vertical migration'],
           explanation: 'The nightly rise and fall is known as the vertical migration.',
           evidence: 'This daily journey... is known as the vertical migration.',
         },
         {
           id: 'q23',
-          before: 'Scientists worry that large-scale fishing could disrupt the carbon',
-          after: '.',
-          answer: 'pump',
+          answer: ['carbon pump', 'the carbon pump'],
           explanation: 'Researchers fear large-scale harvesting could disrupt the carbon pump.',
           evidence: 'harvesting these creatures on a large scale, before we even understand their role, could disrupt the carbon pump.',
         },

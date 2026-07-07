@@ -1,0 +1,15 @@
+// Cloudflare Worker config for the IELTS speaking grader.
+// Deploy:  npx wrangler deploy   (from this directory)
+// Secret:  npx wrangler secret put GEMINI_API_KEY
+{
+  "name": "ielts-grade-speaking",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "vars": {
+    // Free-tier Flash model — same as grade-essay. Swap via
+    // `wrangler deploy --var GEMINI_MODEL:...` or edit here.
+    "GEMINI_MODEL": "gemini-2.5-flash",
+    // Comma-separated origins allowed to call this Worker from a browser.
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321"
+  }
+}

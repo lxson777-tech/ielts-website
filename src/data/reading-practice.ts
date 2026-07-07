@@ -409,4 +409,99 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
       },
     ],
   },
+
+  paraphrase: {
+    title: 'Exercise — Spot the Correct Paraphrase',
+    intro: 'For each "passage" sentence, choose the option that means the same thing — not the one that just reuses the same words.',
+    questions: [
+      {
+        prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) Visitor numbers grew quickly after entry became free.' },
+          { value: 'B', label: 'B) The museum introduced free admission because visitor numbers were falling.' },
+          { value: 'C', label: 'C) Visitor numbers have started to fall since admission became free.' },
+        ],
+        answer: 'A',
+        explanation: '“Risen sharply” = grew quickly; “introduced free admission” = entry became free. B invents a reason the passage never gives; C reverses the direction of change.',
+      },
+      {
+        prompt: 'Passage: "Although the theory is widely accepted, a small number of scientists continue to dispute it."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) All scientists now accept the theory.' },
+          { value: 'B', label: 'B) Most scientists accept the theory, but a few still disagree.' },
+          { value: 'C', label: 'C) The theory has been rejected by the majority of scientists.' },
+        ],
+        answer: 'B',
+        explanation: '“Widely accepted” is not “all” — B keeps the same quantifier strength; A over-generalises and C reverses which side the majority is on.',
+      },
+      {
+        prompt: 'Passage: "Coral reefs, though they cover less than one percent of the ocean floor, support around a quarter of all marine species."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) A disproportionately large share of marine life depends on a tiny fraction of the seabed.' },
+          { value: 'B', label: 'B) Coral reefs make up a quarter of the world’s oceans.' },
+          { value: 'C', label: 'C) Marine species make up one percent of coral reefs.' },
+        ],
+        answer: 'A',
+        explanation: '“Tiny fraction of the seabed” = under 1% of the ocean floor; “disproportionately large share of marine life” = a quarter of all species. B and C both misread which number applies to which quantity.',
+      },
+      {
+        prompt: 'Passage: "The invention of the printing press led to a rapid spread of literacy across Europe."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) Literacy spread quickly across Europe after the printing press was invented.' },
+          { value: 'B', label: 'B) The printing press spread rapidly because literacy increased across Europe.' },
+          { value: 'C', label: 'C) Few people in Europe could read after the printing press was invented.' },
+        ],
+        answer: 'A',
+        explanation: 'The cause is the printing press, the effect is spreading literacy. B reverses cause and effect; C contradicts the passage outright.',
+      },
+      {
+        prompt: 'Passage: "Researchers believe the drug may reduce symptoms in some patients, although further trials are needed."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) The drug has been proven to cure the illness in all patients.' },
+          { value: 'B', label: 'B) It is possible the drug helps some patients, but this is not yet confirmed.' },
+          { value: 'C', label: 'C) Researchers have concluded the drug does not work.' },
+        ],
+        answer: 'B',
+        explanation: '“Believe… may… some” is hedged, uncertain language. A upgrades it to a proven, universal claim; C states the opposite conclusion.',
+      },
+      {
+        prompt: 'Passage: "Most of the artefacts recovered from the site date back to the Bronze Age, although a few are considerably older."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) Every artefact found at the site is from the Bronze Age.' },
+          { value: 'B', label: 'B) The majority of the finds are Bronze Age, but not every single one.' },
+          { value: 'C', label: 'C) None of the artefacts are older than the Bronze Age.' },
+        ],
+        answer: 'B',
+        explanation: '“Most” ≠ “every” — A over-generalises, and C directly contradicts “a few are considerably older”.',
+      },
+      {
+        prompt: 'Passage: "When oil prices spiked in the 1970s, many Western economies were caught off guard."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) Western economies were well prepared for the rise in oil prices.' },
+          { value: 'B', label: 'B) Many Western economies were unprepared when oil prices rose suddenly.' },
+          { value: 'C', label: 'C) Oil prices fell sharply in the 1970s, surprising many economies.' },
+        ],
+        answer: 'B',
+        explanation: '“Caught off guard” = unprepared; “spiked” = rose suddenly. A reverses the meaning of the idiom, and C reverses the direction of the price change.',
+      },
+      {
+        prompt: 'Passage: "Fewer than one in ten adults in the survey reported exercising regularly."',
+        kind: 'choice',
+        options: [
+          { value: 'A', label: 'A) Over 90% of the adults surveyed said they exercised regularly.' },
+          { value: 'B', label: 'B) The vast majority of adults surveyed do not exercise regularly.' },
+          { value: 'C', label: 'C) Around half the adults surveyed exercise on a regular basis.' },
+        ],
+        answer: 'B',
+        explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not — A inverts the fraction, and C misreads it as roughly half.',
+      },
+    ],
+  },
 };

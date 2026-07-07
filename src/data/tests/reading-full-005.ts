@@ -26,6 +26,7 @@ const passage1: TestPart = {
     {
       title: 'Questions 1–5',
       type: 'diagram-labelling',
+      wordLimit: 1,
       instructionHtml:
         'Label the diagram of a worker bee below. Choose <strong>ONE WORD ONLY</strong> from the passage for each pin.',
       diagram: {
@@ -75,6 +76,7 @@ const passage1: TestPart = {
     {
       title: 'Questions 6–9',
       type: 'sentence-completion',
+      wordLimit: 2,
       instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
       questions: [
         {
@@ -218,6 +220,7 @@ const passage2: TestPart = {
     {
       title: 'Questions 19–22',
       type: 'sentence-completion',
+      wordLimit: 2,
       instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
       questions: [
         {
