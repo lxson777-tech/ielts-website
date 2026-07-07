@@ -10,3 +10,4 @@ dist/
 .astro/
 .dev.vars
 .wrangler/
+graphify-out/
