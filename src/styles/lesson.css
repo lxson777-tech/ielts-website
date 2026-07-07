@@ -524,6 +524,27 @@
   box-shadow: var(--shadow-card-hover);
   transform: translateY(-2px);
 }
+/* "Start here" method lessons — visually distinct from the question-type cards. */
+.lesson-body .sample-card.featured {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  background: var(--accent-tint);
+  border-color: var(--accent);
+}
+.lesson-body .sample-card.featured .sample-topic { color: var(--accent); }
+.lesson-body .sample-card.featured .sample-title { font-size: 1.15rem; }
+.lesson-body .sample-card.featured .sample-go {
+  margin-top: 0;
+  margin-left: auto;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
 .lesson-body .sample-topic {
   font-size: 0.62rem;
   font-weight: 700;

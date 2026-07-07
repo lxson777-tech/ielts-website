@@ -27,6 +27,9 @@ const overviewLabel: Record<string, string> = {
 interface NavLink {
   href: string;
   title: string;
+  /** "Start here" method lessons — rendered as a highlighted row, distinct
+      from the plain question-type links in the same group. */
+  featured?: boolean;
 }
 /* Each skill's type lessons, in labelled groups. Writing is split into
    its two exam tasks; every other skill has a single group. */
@@ -37,11 +40,11 @@ const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
   writing: [
     {
       heading: 'Task 1 · Report',
-      items: WRITING_PARTS.filter((p) => p.task === 'task1').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title })),
+      items: WRITING_PARTS.filter((p) => p.task === 'task1').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title, featured: p.featured })),
     },
     {
       heading: 'Task 2 · Essay',
-      items: WRITING_PARTS.filter((p) => p.task === 'task2').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title })),
+      items: WRITING_PARTS.filter((p) => p.task === 'task2').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title, featured: p.featured })),
     },
   ],
   speaking: [
@@ -119,15 +122,26 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
                       <p class="px-4 pb-1 pt-3 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
                         {g.heading}
                       </p>
-                      {g.items.map((p) => (
-                        <a
-                          href={withBase(p.href)}
-                          class="flex items-center gap-2.5 rounded-lg px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors hover:bg-[var(--skill-tint)] hover:text-[var(--skill)]"
-                        >
-                          <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
-                          {p.title}
-                        </a>
-                      ))}
+                      {g.items.map((p) =>
+                        p.featured ? (
+                          <a
+                            href={withBase(p.href)}
+                            class="mb-1 flex items-center gap-2 rounded-lg bg-[var(--skill-tint)] px-4 py-2.5 text-[0.9rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
+                          >
+                            <span aria-hidden="true">★</span>
+                            {p.title}
+                            <span class="ml-auto text-[0.65rem] font-bold uppercase tracking-wide opacity-70">Method</span>
+                          </a>
+                        ) : (
+                          <a
+                            href={withBase(p.href)}
+                            class="flex items-center gap-2.5 rounded-lg px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors hover:bg-[var(--skill-tint)] hover:text-[var(--skill)]"
+                          >
+                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
+                            {p.title}
+                          </a>
+                        ),
+                      )}
                     </>
                   ))}
 
@@ -197,14 +211,25 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
                     {g.heading}
                   </p>
                 )}
-                {g.items.map((p) => (
-                  <a
-                    href={withBase(p.href)}
-                    class="block rounded-lg px-3 py-2 pl-9 text-sm font-medium text-ink-muted hover:bg-surface-alt hover:text-ink"
-                  >
-                    {p.title}
-                  </a>
-                ))}
+                {g.items.map((p) =>
+                  p.featured ? (
+                    <a
+                      href={withBase(p.href)}
+                      class="mx-3 my-0.5 flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold"
+                      style="background: var(--skill-tint); color: var(--skill)"
+                    >
+                      <span aria-hidden="true">★</span>
+                      {p.title}
+                    </a>
+                  ) : (
+                    <a
+                      href={withBase(p.href)}
+                      class="block rounded-lg px-3 py-2 pl-9 text-sm font-medium text-ink-muted hover:bg-surface-alt hover:text-ink"
+                    >
+                      {p.title}
+                    </a>
+                  ),
+                )}
               </>
             ))}
             {practice && (
