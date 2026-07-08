@@ -1,4 +1,4 @@
-/* Writing practice prompts. Original material. Drives the essay checker at
+/* Writing practice prompts. Original material. Drives the writing checker at
    /writing/checker; more prompts can be added freely — the checker lists
    whatever is here. */
 

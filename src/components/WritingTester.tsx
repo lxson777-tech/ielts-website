@@ -1,4 +1,4 @@
-/* The essay checker: start → get a rotating task → write → submit → report.
+/* The writing checker: start → get a rotating task → write → submit → report.
    Every start serves a different prompt (localStorage rotation) until the
    whole pool has been used, then the cycle restarts. Grading goes through
    gradeEssay() (heuristics + the active EssayGrader), so this component is

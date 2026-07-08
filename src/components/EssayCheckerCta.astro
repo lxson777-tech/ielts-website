@@ -1,6 +1,6 @@
 ---
-/* "Check Your Essay" section appended to the writing lesson pages.
-   Links to the AI essay checker at /writing/checker. */
+/* "Check Your Writing" section appended to the writing lesson pages.
+   Links to the AI writing checker at /writing/checker. */
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -22,14 +22,14 @@ const blurb =
     <div class="section-num">AI</div>
     <div class="section-title-block">
       <div class="tag">Instant Feedback</div>
-      <h2>Check Your Essay</h2>
+      <h2>Check Your Writing</h2>
     </div>
   </div>
   <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">{blurb}</p>
   <a class="cta-card" href={withBase('/writing/checker')}>
     <span class="cta-card-body">
       <span class="sample-topic">✨ AI examiner · official band descriptors · free</span>
-      <strong class="sample-title">Open the Essay Checker</strong>
+      <strong class="sample-title">Open the Writing Checker</strong>
       <span class="sample-go">Check my writing →</span>
     </span>
     <img
