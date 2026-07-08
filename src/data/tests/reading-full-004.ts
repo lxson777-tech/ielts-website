@@ -225,7 +225,7 @@ const passage2: TestPart = {
       table: {
         headerRow: ['Feature', 'Detail'],
         rows: [
-          ['Depth at which the twilight zone begins', { questionId: 'q20' }],
+          ['Depth at which the twilight zone begins (metres)', { questionId: 'q20' }],
           ['Process most animals use to make their own light', { questionId: 'q21' }],
           ['Name for the nightly rise and fall of ocean animals', { questionId: 'q22' }],
           ['What large-scale fishing could disrupt', { questionId: 'q23' }],
@@ -234,7 +234,7 @@ const passage2: TestPart = {
       questions: [
         {
           id: 'q20',
-          answer: ['two hundred metres', '200 metres', 'two hundred', '200'],
+          answer: ['two hundred', '200'],
           explanation: 'The zone begins about two hundred metres down.',
           evidence: 'It begins about two hundred metres down, where the light has faded to a dim blue glow.',
         },

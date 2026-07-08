@@ -35,7 +35,7 @@ interface NavLink {
    its two exam tasks; every other skill has a single group. */
 const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
   reading: [
-    { heading: 'Question Types', items: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })) },
+    { heading: 'Lessons', items: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })) },
   ],
   writing: [
     {

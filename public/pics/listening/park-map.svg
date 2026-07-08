@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 350" role="img" aria-label="Map of Fenwick Country Park with five unlabelled numbered locations">
+  <rect x="0" y="0" width="500" height="350" fill="#eafbea" />
+  <ellipse cx="130" cy="230" rx="70" ry="45" fill="#93c5fd" />
+  <text x="130" y="234" font-size="11" text-anchor="middle" fill="#1e3a8a" font-weight="700">Lake</text>
+
+  <path d="M250,335 C 200,290 150,240 120,190" stroke="#d6d3d1" stroke-width="10" fill="none" />
+  <path d="M250,335 C 300,290 350,240 380,200" stroke="#d6d3d1" stroke-width="10" fill="none" />
+  <path d="M380,200 C 390,170 395,155 400,145" stroke="#d6d3d1" stroke-width="8" fill="none" />
+  <path d="M400,145 C 415,120 425,105 430,95" stroke="#d6d3d1" stroke-width="8" fill="none" />
+  <path d="M120,190 C 105,220 95,240 90,255" stroke="#d6d3d1" stroke-width="8" fill="none" />
+
+  <rect x="225" y="315" width="50" height="26" rx="4" fill="#d1d5db" stroke="#6b7280" />
+  <text x="250" y="332" font-size="10" text-anchor="middle" fill="#374151">Entrance</text>
+
+  <rect x="215" y="280" width="70" height="26" rx="4" fill="#e5e7eb" stroke="#6b7280" />
+  <text x="250" y="297" font-size="10" text-anchor="middle" fill="#374151">Car Park</text>
+
+  <!-- Numbered feature locations (unlabelled — identified from the audio) -->
+  <rect x="105" y="168" width="30" height="24" rx="3" fill="#fca5a5" stroke="#991b1b" />
+  <circle cx="90" cy="255" r="16" fill="#fcd34d" stroke="#92400e" />
+  <polygon points="380,178 396,204 364,204" fill="#86efac" stroke="#166534" />
+  <rect x="388" y="130" width="24" height="20" rx="2" fill="#fdba74" stroke="#9a3412" />
+  <rect x="418" y="82" width="26" height="18" rx="2" fill="#c4b5fd" stroke="#4c1d95" />
+</svg>

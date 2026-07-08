@@ -27,6 +27,9 @@ jobs:
           # Actions → Variables). Empty = writing checker uses the offline
           # sample grader.
           PUBLIC_GRADER_URL: ${{ vars.PUBLIC_GRADER_URL }}
+          # Speaking-grader Worker URL, same pattern. Empty = speaking checker
+          # uses the offline sample grader.
+          PUBLIC_SPEAKING_GRADER_URL: ${{ vars.PUBLIC_SPEAKING_GRADER_URL }}
         with:
           node-version: 22
 
