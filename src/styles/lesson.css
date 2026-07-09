@@ -189,6 +189,24 @@
 }
 .lesson-body details[open] summary::after { transform: rotate(180deg); }
 .lesson-body summary:hover { background: var(--color-brand-tint); }
+
+/* Outer "which type" toggle in a nested details group (e.g. Full Worked
+   Examples) reads as a section header — bigger, dark ink, accent-tinted —
+   so it doesn't get lost among the inner "Show model report" toggles. */
+.lesson-body details.worked-example {
+  border-color: var(--accent);
+}
+.lesson-body details.worked-example > summary {
+  padding: 0.85rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  background: var(--accent-tint);
+  border-left: 4px solid var(--accent);
+}
+.lesson-body details.worked-example > summary:hover {
+  background: color-mix(in srgb, var(--accent-tint) 60%, var(--accent) 15%);
+}
 .lesson-body .answers,
 .lesson-body .speaking-answer {
   padding: 0.75rem 1.25rem 1rem;
@@ -287,6 +305,37 @@
   font-size: 0.8rem;
   color: var(--color-ink-muted);
   margin-top: 0.4rem;
+}
+
+/* ── Question-type example card (e.g. "What Each Type Looks Like") ── */
+.lesson-body .type-example {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.1rem 1.1rem;
+  box-shadow: var(--shadow-card);
+}
+.lesson-body .type-example .type-example-label {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.lesson-body .type-example .type-example-question {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--color-ink-muted);
+  margin-bottom: 0.85rem;
+}
+.lesson-body .type-example img {
+  border-radius: 8px;
+}
+.lesson-body .type-example .vocab-table {
+  margin-bottom: 0;
 }
 
 /* ── Good / bad answer comparison ─────────────────────────────── */
@@ -509,6 +558,7 @@
   .lesson-body .samples-grid { grid-template-columns: 1fr 1fr; }
 }
 .lesson-body .sample-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -519,6 +569,23 @@
   text-decoration: none;
   box-shadow: var(--shadow-card);
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+/* Completion checkmark, injected client-side for lessons already marked
+   done (see LessonLayout.astro's script) — top-right corner of the card. */
+.lesson-body .sample-status {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: grid;
+  height: 20px;
+  width: 20px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--color-success);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
 }
 .lesson-body .sample-card:hover {
   border-color: var(--accent);

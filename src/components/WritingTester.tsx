@@ -5,7 +5,7 @@
    provider-agnostic — it renders the same report whether the stub or a real
    model produced the assessment. */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
 import type { GradeResult } from '../lib/writing/schema';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
@@ -17,17 +17,76 @@ import { withBase } from '../lib/url';
 import { recordWritingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
 
+const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
+const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
+/* Task 1 splits into two non-overlapping pools: GT is always a letter,
+   Academic is everything else (chart/graph/table/process/map/combination).
+   Task 2 is one shared essay pool — real IELTS GT and Academic Task 2 use
+   the same skill and near-identical topics, so splitting it would just
+   fragment an already-small pool for no real benefit. */
+const ACADEMIC_TASK1_PROMPTS = TASK1_PROMPTS.filter((p) => p.variant !== 'letter');
+const GT_TASK1_PROMPTS = TASK1_PROMPTS.filter((p) => p.variant === 'letter');
+
+type Module = 'academic' | 'general';
+
+/* Fake-but-honest progress steps shown while the real request is in flight —
+   ticks forward on a timer, independent of the actual grading call, so it
+   never has to lie about real completion (it just stops advancing past the
+   last step until the response actually arrives). */
+const GRADING_STEPS = [
+  'Reading your essay…',
+  'Checking grammar, vocabulary & coherence…',
+  'Scoring against the 4 official IELTS criteria…',
+  'Writing your feedback…',
+];
+
+function pad(n: number): string {
+  return String(n).padStart(2, '0');
+}
+
 export default function WritingTester() {
+  const [module, setModule] = useState<Module>('academic');
+  const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
   const [essay, setEssay] = useState('');
   const [result, setResult] = useState<GradeResult | null>(null);
   const [grading, setGrading] = useState(false);
+  const [gradingError, setGradingError] = useState<string | null>(null);
+  const [gradingStep, setGradingStep] = useState(0);
+  const gradingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Elapsed time — starts the moment the task begins, exactly like the real
+  // exam clock (it doesn't wait for the first keystroke).
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const timerStartedRef = useRef(false);
+  const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      if (gradingIntervalRef.current) clearInterval(gradingIntervalRef.current);
+    };
+  }, []);
+
+  /* Clears any running timer and starts a fresh one from 0, right away. */
+  function restartTimer() {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    timerStartedRef.current = true;
+    setElapsedMs(0);
+    const startedAt = performance.now();
+    timerIntervalRef.current = setInterval(() => setElapsedMs(performance.now() - startedAt), 500);
+  }
 
   const wordCount = useMemo(() => countWords(essay), [essay]);
 
   async function submit() {
     if (!prompt || grading) return;
     setGrading(true);
+    setGradingStep(0);
+    setGradingError(null);
+    gradingIntervalRef.current = setInterval(() => {
+      setGradingStep((s) => (s < GRADING_STEPS.length - 1 ? s + 1 : s));
+    }, 1600);
     try {
       const graded = await gradeEssay({ prompt, essay });
       setResult(graded);
@@ -40,58 +99,165 @@ export default function WritingTester() {
         wordCount,
         live: graded.grader.live,
       });
+    } catch (err) {
+      setGradingError(err instanceof Error ? err.message : 'Something went wrong while grading your essay.');
     } finally {
+      if (gradingIntervalRef.current) clearInterval(gradingIntervalRef.current);
       setGrading(false);
     }
   }
 
-  /* Serve the next prompt in the rotation and clear the workspace. */
-  function startTask() {
+  /* Serve the next prompt in the given task's rotation and clear the workspace.
+     Task 1's pool (and rotation) depends on the module; Task 2 is shared. */
+  function startTask(task: 'task1' | 'task2', mod: Module) {
+    const pool = task === 'task2' ? TASK2_PROMPTS : mod === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS;
+    const rotationKey = task === 'task2' ? 'ielts.rotation.writing-task2.v1' : `ielts.rotation.writing-task1-${mod}.v1`;
     const id = nextInRotation(
-      'ielts.rotation.writing-prompts.v1',
-      WRITING_PROMPTS.map((p) => p.id),
+      rotationKey,
+      pool.map((p) => p.id),
     );
-    setPrompt(WRITING_PROMPTS.find((p) => p.id === id) ?? WRITING_PROMPTS[0]);
+    setTaskType(task);
+    setModule(mod);
+    setPrompt(pool.find((p) => p.id === id) ?? pool[0]);
     setEssay('');
     setResult(null);
+    restartTimer();
   }
 
   function newTask() {
     if (essay.trim() && !window.confirm('Get a different task? Your current answer will be cleared.')) return;
-    startTask();
+    startTask(taskType!, module);
   }
 
   /* ── 1. Start screen ── */
   if (!prompt) {
     return (
-      <div className="relative overflow-hidden rounded-card border border-border bg-surface shadow-card">
+      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
-        <div className="grid items-center gap-8 p-8 sm:p-10 md:grid-cols-[1fr_minmax(0,280px)]">
-          <div className="text-center md:text-left">
-            <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
-            <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
-            <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem] md:mx-0">
-              You'll get an exam-style task — a different one every time, until you've written them all.
-              An AI examiner grades your answer on the four official IELTS criteria.
-            </p>
-            <button
-              type="button"
-              onClick={startTask}
-              className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
-            >
-              Start a task →
-            </button>
-            <p className="mt-3 text-xs text-ink-muted">
-              {WRITING_PROMPTS.length} tasks in rotation · essays and letters · free
-            </p>
-          </div>
-          <img
-            src={withBase('/pics/writing/start-task.png')}
-            alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
-            className="mx-auto -order-1 w-full max-w-[240px] md:order-none md:max-w-[280px]"
-            loading="lazy"
-          />
+        <img
+          src={withBase('/pics/writing/start-task.png')}
+          alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
+          className="mx-auto w-full max-w-[160px]"
+          loading="lazy"
+        />
+        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
+        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
+          Pick a module, then a task. You'll get an exam-style prompt — a different one every time,
+          until you've written them all. An AI examiner grades your answer on the four official IELTS criteria.
+        </p>
+
+        <div className="mx-auto mt-6 inline-flex rounded-button border border-border bg-surface-alt/60 p-1">
+          <button
+            type="button"
+            onClick={() => setModule('academic')}
+            className={`rounded-button px-4 py-1.5 text-sm font-semibold transition-colors ${
+              module === 'academic' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            Academic
+          </button>
+          <button
+            type="button"
+            onClick={() => setModule('general')}
+            className={`rounded-button px-4 py-1.5 text-sm font-semibold transition-colors ${
+              module === 'general' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            General Training
+          </button>
         </div>
+
+        <div className="mx-auto mt-6 grid max-w-xl gap-4 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => startTask('task1', module)}
+            className="group flex flex-col items-center rounded-card border border-border bg-surface-alt/60 p-5 text-center transition-all hover:-translate-y-0.5 hover:border-brand hover:shadow-card sm:items-start sm:text-left"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand font-display text-sm font-bold text-white">
+              1
+            </span>
+            <h4 className="mt-3 font-display text-lg font-bold">Task 1</h4>
+            <p className="mt-1 text-sm text-ink-muted">
+              {module === 'general'
+                ? 'Write a formal, semi-formal or informal letter.'
+                : 'Describe a chart, graph, table, process or map.'}{' '}
+              {(module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS)[0]?.minWords}+ words ·
+              ~{(module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS)[0]?.suggestedMinutes} min.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 font-display text-sm font-bold text-brand transition-transform group-hover:translate-x-0.5">
+              Start Task 1 →
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => startTask('task2', module)}
+            className="group flex flex-col items-center rounded-card border border-border bg-surface-alt/60 p-5 text-center transition-all hover:-translate-y-0.5 hover:border-brand hover:shadow-card sm:items-start sm:text-left"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand font-display text-sm font-bold text-white">
+              2
+            </span>
+            <h4 className="mt-3 font-display text-lg font-bold">Task 2</h4>
+            <p className="mt-1 text-sm text-ink-muted">
+              Write a discursive essay responding to a prompt. {TASK2_PROMPTS[0]?.minWords}+ words ·
+              ~{TASK2_PROMPTS[0]?.suggestedMinutes} min.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 font-display text-sm font-bold text-brand transition-transform group-hover:translate-x-0.5">
+              Start Task 2 →
+            </span>
+          </button>
+        </div>
+
+        <p className="mt-5 text-xs text-ink-muted">
+          {module === 'general' ? GT_TASK1_PROMPTS.length : ACADEMIC_TASK1_PROMPTS.length} Task 1 prompts ·{' '}
+          {TASK2_PROMPTS.length} Task 2 prompts (shared with Academic) · free
+        </p>
+      </div>
+    );
+  }
+
+  /* ── 2b. Grading in progress ── */
+  if (grading) {
+    return (
+      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
+        <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
+        <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
+          <span
+            className="absolute inset-0 animate-spin rounded-full border-4 border-[var(--skill,#0E9F6E)]/15 border-t-[var(--skill,#0E9F6E)]"
+            style={{ animationDuration: '1.1s' }}
+            aria-hidden="true"
+          />
+          <span className="text-3xl" aria-hidden="true">
+            📝
+          </span>
+        </div>
+        <h3 className="mt-6 font-display text-xl font-extrabold">Grading your essay…</h3>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-ink-muted">
+          Our AI examiner is reading your response against the official IELTS band descriptors.
+        </p>
+        <ul className="mx-auto mt-6 max-w-xs space-y-2.5 text-left">
+          {GRADING_STEPS.map((step, i) => {
+            const done = i < gradingStep;
+            const active = i === gradingStep;
+            return (
+              <li key={step} className="flex items-center gap-2.5 text-sm">
+                <span
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.65rem] font-bold transition-colors ${
+                    done
+                      ? 'bg-[var(--skill,#0E9F6E)] text-white'
+                      : active
+                        ? 'border-2 border-[var(--skill,#0E9F6E)] text-[var(--skill,#0E9F6E)]'
+                        : 'border border-border text-transparent'
+                  }`}
+                  aria-hidden="true"
+                >
+                  {done ? '✓' : active ? <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--skill,#0E9F6E)]" /> : '○'}
+                </span>
+                <span className={done || active ? 'text-ink' : 'text-ink-muted'}>{step}</span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   }
@@ -165,7 +331,7 @@ export default function WritingTester() {
           </button>
           <button
             type="button"
-            onClick={startTask}
+            onClick={() => startTask(taskType!, module)}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
             Take another test →
@@ -177,12 +343,34 @@ export default function WritingTester() {
 
   /* ── 2. Editor ── */
   const under = wordCount < prompt.minWords;
+  const totalSeconds = Math.floor(elapsedMs / 1000);
+  const timerOvertime = elapsedMs >= prompt.suggestedMinutes * 60_000;
   return (
     <div className="space-y-4">
+      {timerStartedRef.current && (
+        <div
+          className={`fixed right-3 top-20 z-50 flex flex-col items-center rounded-card border-2 bg-surface px-4 py-3 shadow-card-hover sm:right-6 ${
+            timerOvertime ? 'border-error' : 'border-brand'
+          }`}
+          title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
+        >
+          <span className={`text-[0.65rem] font-bold uppercase tracking-wider ${timerOvertime ? 'text-error' : 'text-ink-muted'}`}>
+            {timerOvertime ? '⚠ Overtime' : '⏱ Writing time'}
+          </span>
+          <span className={`font-mono text-3xl font-extrabold tabular-nums leading-tight sm:text-4xl ${timerOvertime ? 'text-error' : 'text-ink'}`}>
+            {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
+          </span>
+          <span className="text-[0.65rem] text-ink-muted">of ~{prompt.suggestedMinutes} min</span>
+        </div>
+      )}
+
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
         <div className="flex items-start justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
-            {prompt.task === 'task2' ? 'Writing Task 2' : 'Writing Task 1'} · ~{prompt.suggestedMinutes} min
+            {prompt.task === 'task2'
+              ? 'Writing Task 2'
+              : `Writing Task 1 (${module === 'general' ? 'General Training' : 'Academic'})`}{' '}
+            · ~{prompt.suggestedMinutes} min
           </span>
           <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
             ↻ New task
@@ -199,6 +387,12 @@ export default function WritingTester() {
         className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
       />
 
+      {gradingError && (
+        <div className="rounded-card border border-error/30 bg-error-tint px-4 py-3 text-sm text-error">
+          ⚠ Couldn't grade your essay — {gradingError.replace(/\.?$/, '.')} Please try again in a moment.
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <span className={`text-sm font-semibold ${under ? 'text-ink-muted' : 'text-success'}`}>
           {wordCount} / {prompt.minWords}+ words
@@ -206,10 +400,10 @@ export default function WritingTester() {
         <button
           type="button"
           onClick={submit}
-          disabled={grading || wordCount === 0}
+          disabled={wordCount === 0}
           className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {grading ? 'Checking…' : 'Check my essay'}
+          Check my essay
         </button>
       </div>
     </div>

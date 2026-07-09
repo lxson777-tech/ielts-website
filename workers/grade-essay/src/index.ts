@@ -49,7 +49,10 @@ const TR_TASK2 = `TASK RESPONSE (Task 2) — all parts of the question, position
 6: addresses all parts but some more fully than others; relevant position though conclusions may become unclear or repetitive; some main ideas inadequately developed or unclear.
 5: addresses the task only partially; format may be inappropriate in places; expresses a position but development is not always clear, possibly no conclusions; limited, insufficiently developed main ideas; may include irrelevant detail.
 4: responds minimally or tangentially; position unclear; main ideas difficult to identify, repetitive, irrelevant or unsupported.
-3: does not adequately address any part; no clear position; few ideas, largely undeveloped or irrelevant.`;
+3: does not adequately address any part; no clear position; few ideas, largely undeveloped or irrelevant.
+2: barely responds to the task; does not express a position; may attempt one or two ideas but there is no development.
+1: answer is completely unrelated to the task.
+0: does not attend to the task, does not attempt it in any way, or writes a totally memorised response.`;
 
 const TA_TASK1_ACADEMIC = `TASK ACHIEVEMENT (Task 1 Academic) — reporting the visual information:
 9: fully satisfies all requirements; clearly presents a fully developed response.
@@ -59,6 +62,9 @@ const TA_TASK1_ACADEMIC = `TASK ACHIEVEMENT (Task 1 Academic) — reporting the 
 5: generally addresses the task; recounts detail mechanically with NO CLEAR OVERVIEW; may lack data to support the description; key features inadequately covered; tendency to focus on details.
 4: attempts the task but does not cover all key features; may confuse key features with detail; parts unclear, irrelevant, repetitive or inaccurate.
 3: fails to address the task, which may have been completely misunderstood; limited, largely irrelevant ideas.
+2: answer is barely related to the task.
+1: answer is completely unrelated to the task.
+0: does not attend to the task, does not attempt it in any way, or writes a totally memorised response.
 NOTE: without a clear overview, Task Achievement cannot exceed 5.`;
 
 const TA_TASK1_GT = `TASK ACHIEVEMENT (Task 1 General Training letter) — purpose, tone, bullet points:
@@ -69,6 +75,9 @@ const TA_TASK1_GT = `TASK ACHIEVEMENT (Task 1 General Training letter) — purpo
 5: generally addresses the task; purpose may be unclear at times; tone variable and sometimes inappropriate; bullet points presented but inadequately covered.
 4: fails to clearly explain the purpose; tone may be inappropriate; not all bullet points covered.
 3: fails to address the task, which may have been completely misunderstood.
+2: answer is barely related to the task.
+1: answer is completely unrelated to the task.
+0: does not attend to the task, does not attempt it in any way, or writes a totally memorised response.
 NOTE: a letter that omits one of the three bullet points cannot score above 5 here.`;
 
 const CC_SCALE = (task2: boolean) => `COHERENCE AND COHESION — organisation, progression, linking, paragraphing:
@@ -78,7 +87,10 @@ const CC_SCALE = (task2: boolean) => `COHERENCE AND COHESION — organisation, p
 6: arranges information coherently with clear overall progression; cohesive devices effective but cohesion within/between sentences may be faulty or mechanical; referencing not always clear${task2 ? '; paragraphing used but not always logically' : ''}.
 5: some organisation but may lack overall progression; inadequate, inaccurate or over-use of cohesive devices; may be repetitive from lack of referencing/substitution${task2 ? '; may not write in paragraphs or paragraphing inadequate' : ''}.
 4: information not arranged coherently; no clear progression; basic cohesive devices inaccurate or repetitive${task2 ? '; paragraphs absent or confusing' : ''}.
-3: does not organise ideas logically; cohesive devices, if used, may not indicate logical relationships.`;
+3: does not organise ideas logically; cohesive devices, if used, may not indicate logical relationships.
+2: very little control of organisational features.
+1: fails to communicate any message.
+0: does not attend to the task, does not attempt it in any way, or writes a totally memorised response.`;
 
 const LR_SCALE = `LEXICAL RESOURCE — range, precision, collocation, spelling:
 9: wide range with very natural, sophisticated control; rare minor errors only as slips.
@@ -87,7 +99,10 @@ const LR_SCALE = `LEXICAL RESOURCE — range, precision, collocation, spelling:
 6: adequate range for the task; attempts less common vocabulary with some inaccuracy; some spelling/word-formation errors that do not impede communication.
 5: limited range, minimally adequate for the task; noticeable spelling/word-formation errors that may cause some difficulty for the reader.
 4: only basic vocabulary, used repetitively or inappropriately; limited control of word formation/spelling; errors may cause strain.
-3: very limited range; errors may severely distort the message.`;
+3: very limited range; errors may severely distort the message.
+2: extremely limited range of vocabulary; essentially no control of word formation or spelling.
+1: can only use a few isolated words.
+0: does not attend to the task, does not attempt it in any way, or writes a totally memorised response.`;
 
 const GRA_SCALE = `GRAMMATICAL RANGE AND ACCURACY — structure variety, error density, punctuation:
 9: wide range of structures with full flexibility and accuracy; rare minor errors only as slips.
@@ -96,7 +111,10 @@ const GRA_SCALE = `GRAMMATICAL RANGE AND ACCURACY — structure variety, error d
 6: mix of simple and complex sentence forms; some grammar/punctuation errors but they rarely reduce communication.
 5: limited range of structures; complex sentences attempted but tend to be less accurate than simple ones; frequent errors can cause some difficulty for the reader.
 4: very limited range; rare use of subordinate clauses; errors predominate; punctuation often faulty.
-3: attempts sentence forms but errors predominate and distort the meaning.`;
+3: attempts sentence forms but errors predominate and distort the meaning.
+2: cannot use sentence forms except in memorised phrases.
+1: cannot use sentence forms at all.
+0: does not attend to the task, does not attempt it in any way, or writes a totally memorised response.`;
 
 function systemInstruction(task: 'task1' | 'task2', variant?: string): string {
   const isTask2 = task === 'task2';

@@ -93,4 +93,22 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
       render(next);
     });
   }
+
+  // Completion checkmarks on any "<skill> lessons" grid on this page — the
+  // per-skill overview (e.g. /lessons/writing) and the cross-links inside
+  // "start here" method lessons both use .sample-card. Resolve via the
+  // anchor's fully-qualified pathname (not the raw href) so it works
+  // whether the link is written as "writing/charts" (from the overview,
+  // one directory up) or just "charts" (from a sibling lesson page, same
+  // directory) — both resolve to the same last two path segments.
+  document.querySelectorAll<HTMLAnchorElement>('.sample-card[href]').forEach((card) => {
+    const segments = card.pathname.split('/').filter(Boolean);
+    const lessonSlug = segments.slice(-2).join('-');
+    if (!isLessonComplete(lessonSlug)) return;
+    const status = document.createElement('span');
+    status.className = 'sample-status';
+    status.title = 'Completed';
+    status.textContent = '✓';
+    card.prepend(status);
+  });
 </script>
