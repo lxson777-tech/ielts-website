@@ -10,7 +10,10 @@
 
 import { EXAMINER_VOICE } from './script';
 
-const WS_HOST = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent';
+/* NOTE: ephemeral tokens only authenticate against the ...Constrained method
+   (verified 2026-07-10: plain BidiGenerateContent rejects them with 1008
+   "unregistered callers"). Real API keys use the unsuffixed method instead. */
+const WS_HOST = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained';
 
 export interface TranscriptTurn {
   role: 'examiner' | 'candidate';
