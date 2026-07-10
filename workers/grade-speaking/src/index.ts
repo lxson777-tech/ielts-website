@@ -25,12 +25,18 @@ interface WireClip {
 }
 
 interface GradeSpeakingRequest {
-  kind: 'part1' | 'part2and3';
+  kind: 'part1' | 'part2and3' | 'interview';
   part1?: { topic: string; answers: WireClip[] };
   part2and3?: {
     cueCard: { topic: string; bullets: string[] };
     monologue: WireClip;
     followUps: WireClip[];
+  };
+  /** A full live-examiner session: the candidate's whole mic track as one
+      clip, plus the role-labelled conversation transcript for grounding. */
+  interview?: {
+    transcript: { role: 'examiner' | 'candidate'; text: string }[];
+    audio: WireClip;
   };
   mechanics?: { totalDurationMs?: number; underLength?: boolean; estSilenceRatio?: number };
 }
@@ -192,6 +198,14 @@ function buildParts(req: GradeSpeakingRequest): { text?: string; inlineData?: { 
     parts.push({ inlineData: { mimeType: monologue.mimeType, data: monologue.audioBase64 } });
     parts.push({ text: 'SPEAKING PART 3 — follow-up discussion on the same theme. Each question is followed by the candidate\'s spoken answer.' });
     followUps.forEach((a, i) => addClip(`Q${i + 1}: ${a.question}`, a));
+  } else if (req.kind === 'interview' && req.interview) {
+    const dialog = req.interview.transcript
+      .map((t) => `${t.role === 'examiner' ? 'EXAMINER' : 'CANDIDATE'}: ${t.text}`)
+      .join('\n');
+    parts.push({
+      text: `LIVE INTERVIEW — a full IELTS Speaking test (Parts 1, 2 and 3) conducted as a real-time voice conversation with an AI examiner. Below is the interview transcript for reference, followed by ONE continuous audio recording of the CANDIDATE's microphone for the whole session. Assess ONLY the candidate's speech. The examiner's voice may bleed faintly into the recording through the candidate's speakers — ignore it. Use the transcript to know which question each stretch of speech answers, but judge Pronunciation and Fluency from the AUDIO, not the transcript.\n\n=== TRANSCRIPT ===\n${dialog}\n\n=== CANDIDATE AUDIO ===`,
+    });
+    parts.push({ inlineData: { mimeType: req.interview.audio.mimeType, data: req.interview.audio.audioBase64 } });
   }
   return parts;
 }
@@ -213,7 +227,9 @@ function totalBase64Length(req: GradeSpeakingRequest): number {
   const clips: WireClip[] =
     req.kind === 'part1'
       ? (req.part1?.answers ?? [])
-      : [req.part2and3?.monologue, ...(req.part2and3?.followUps ?? [])].filter((c): c is WireClip => !!c);
+      : req.kind === 'interview'
+        ? [req.interview?.audio].filter((c): c is WireClip => !!c)
+        : [req.part2and3?.monologue, ...(req.part2and3?.followUps ?? [])].filter((c): c is WireClip => !!c);
   return clips.reduce((sum, c) => sum + c.audioBase64.length, 0);
 }
 
@@ -279,8 +295,20 @@ export default {
       if (!p || !p.cueCard || !validateClip(p.monologue) || !Array.isArray(p.followUps) || !p.followUps.every(validateClip)) {
         return json({ error: 'Expected { kind: "part2and3", part2and3: {cueCard, monologue, followUps} }' }, 400, cors);
       }
+    } else if (body.kind === 'interview') {
+      const iv = body.interview;
+      const validTurn = (t: unknown): boolean =>
+        typeof t === 'object' &&
+        t !== null &&
+        ((t as { role?: unknown }).role === 'examiner' || (t as { role?: unknown }).role === 'candidate') &&
+        typeof (t as { text?: unknown }).text === 'string';
+      if (!iv || !Array.isArray(iv.transcript) || iv.transcript.length === 0 || !iv.transcript.every(validTurn) || !validateClip(iv.audio)) {
+        return json({ error: 'Expected { kind: "interview", interview: {transcript, audio} }' }, 400, cors);
+      }
+      // Keep the prompt bounded even if a client sends a pathological transcript.
+      iv.transcript = iv.transcript.slice(0, 400).map((t) => ({ role: t.role, text: t.text.slice(0, 2000) }));
     } else {
-      return json({ error: 'kind must be "part1" or "part2and3"' }, 400, cors);
+      return json({ error: 'kind must be "part1", "part2and3" or "interview"' }, 400, cors);
     }
 
     // ~15MB of base64 audio, comfortably under Gemini's ~20MB inline request limit.

@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import LiveExaminer from '../../components/LiveExaminer';
+---
+
+<BaseLayout
+  title="Live AI Examiner · IELTS Portal"
+  description="Take a full mock IELTS Speaking test as a real-time voice conversation: an AI examiner asks questions out loud, listens, follows up on your answers, and grades you on the four official criteria."
+>
+  <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="Speaking"
+      title="Live AI Examiner"
+      subtitle="A full three-part mock speaking test as a real conversation — the examiner speaks, listens, and asks follow-up questions based on what you actually say."
+    />
+    <LiveExaminer client:load />
+  </div>
+</BaseLayout>

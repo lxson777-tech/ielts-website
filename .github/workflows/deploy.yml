@@ -30,6 +30,10 @@ jobs:
           # Speaking-grader Worker URL, same pattern. Empty = speaking checker
           # uses the offline sample grader.
           PUBLIC_SPEAKING_GRADER_URL: ${{ vars.PUBLIC_SPEAKING_GRADER_URL }}
+          # Live-examiner token Worker URL. Not a secret (it ships in the
+          # client bundle), so the deployed URL doubles as the default; a
+          # repo Variable of the same name overrides it.
+          PUBLIC_LIVE_EXAMINER_URL: ${{ vars.PUBLIC_LIVE_EXAMINER_URL || 'https://ielts-live-examiner.lxson777.workers.dev' }}
         with:
           node-version: 22
 
