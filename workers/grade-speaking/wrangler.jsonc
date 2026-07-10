@@ -10,6 +10,8 @@
     // `wrangler deploy --var GEMINI_MODEL:...` or edit here.
     "GEMINI_MODEL": "gemini-2.5-flash",
     // Comma-separated origins allowed to call this Worker from a browser.
-    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321"
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321",
+    // Independent grading runs whose median becomes the result (1-5).
+    "GRADING_SAMPLES": "3"
   }
 }

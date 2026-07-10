@@ -46,6 +46,18 @@ Lexical Resource, and Grammatical Range & Accuracy.
 
 - `GEMINI_MODEL` (wrangler.jsonc vars): `gemini-2.5-flash` by default.
 - `ALLOWED_ORIGINS` (vars): comma-separated origins allowed by CORS.
+- `GRADING_SAMPLES` (vars): independent grading runs whose median becomes
+  the result (default 3, parallel — no extra latency, 3× token usage).
+
+## Grading calibration
+
+Precision measures (added 2026-07-10): full 1-9 descriptor scales; an
+anti-leniency calibration block (grade language not ideas, 6/7 boundary
+anchors, "award the lower" on doubt); evidence-before-band structured
+output (`propertyOrdering` forces observations to be written before the
+band); temperature 0 with a real thinking budget; and median-of-N
+ensemble grading. Verified: silent audio scores band 1 everywhere with
+no fabricated quotes.
 
 ## Notes & limits
 
