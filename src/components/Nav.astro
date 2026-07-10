@@ -58,9 +58,10 @@ const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
   ],
 };
 
-const practiceBySkill: Record<string, { href: string; label: string }> = {
-  reading: { href: '/tests', label: '⏱ Timed Practice Tests' },
-  writing: { href: '/writing/checker', label: '✨ Writing Checker' },
+const practiceBySkill: Record<string, { href: string; label: string }[]> = {
+  reading: [{ href: '/tests', label: '⏱ Timed Practice Tests' }],
+  writing: [{ href: '/writing/checker', label: '✨ Writing Checker' }],
+  speaking: [{ href: '/speaking/examiner', label: '🎙 Live AI Examiner' }],
 };
 ---
 
@@ -145,13 +146,17 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
                     </>
                   ))}
 
-                  {practice && (
-                    <a
-                      href={withBase(practice.href)}
-                      class="mt-2 flex items-center gap-3 rounded-xl border-t border-border px-4 pb-2 pt-3 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
-                    >
-                      {practice.label}
-                    </a>
+                  {practice && practice.length > 0 && (
+                    <div class="mt-2 border-t border-border pt-1">
+                      {practice.map((pr) => (
+                        <a
+                          href={withBase(pr.href)}
+                          class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
+                        >
+                          {pr.label}
+                        </a>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
@@ -232,14 +237,14 @@ const practiceBySkill: Record<string, { href: string; label: string }> = {
                 )}
               </>
             ))}
-            {practice && (
+            {(practice ?? []).map((pr) => (
               <a
-                href={withBase(practice.href)}
+                href={withBase(pr.href)}
                 class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-brand hover:bg-brand-tint"
               >
-                {practice.label}
+                {pr.label}
               </a>
-            )}
+            ))}
           </div>
         );
       })
