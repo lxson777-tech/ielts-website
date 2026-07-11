@@ -346,14 +346,22 @@ export default function WritingTester() {
   const totalSeconds = Math.floor(elapsedMs / 1000);
   const timerOvertime = elapsedMs >= prompt.suggestedMinutes * 60_000;
   return (
-    <div className="screen-in space-y-4">
-      {/* Floating clock — fine on wider screens where it sits in the margin
-          beside the task card, but on a phone the card is nearly full-width
-          so a fixed box there would sit right on top of the prompt text.
-          Below sm: it renders inline in the card header instead. */}
+    <>
+      {/* Floating clock — rendered as a sibling of (not nested inside)
+          .screen-in on purpose: that div's entrance animation ends with
+          animation-fill-mode: both holding `transform: translateY(0)`, and
+          ANY transform on an ancestor — even the identity one — creates a
+          new containing block for `position: fixed` descendants, which
+          would silently rebase this box to .screen-in's own edges instead
+          of the viewport. Nested there, it can never actually reach the
+          real margin beside the card and always overlaps the prompt text.
+          Only safe once the viewport is wide enough that the max-w-4xl
+          card's side margin clears the clock's own width (~135px plus its
+          right-6 offset), which is xl. Below xl: it renders inline in the
+          card header instead. */}
       {timerStartedRef.current && (
         <div
-          className={`fixed right-3 top-20 z-50 hidden flex-col items-center rounded-card border-2 bg-surface px-4 py-3 shadow-card-hover sm:flex sm:right-6 ${
+          className={`fixed right-3 top-20 z-50 hidden flex-col items-center rounded-card border-2 bg-surface px-4 py-3 shadow-card-hover xl:flex xl:right-6 ${
             timerOvertime ? 'border-error' : 'border-brand'
           }`}
           title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
@@ -361,13 +369,14 @@ export default function WritingTester() {
           <span className={`text-[0.65rem] font-bold uppercase tracking-wider ${timerOvertime ? 'text-error' : 'text-ink-muted'}`}>
             {timerOvertime ? '⚠ Overtime' : '⏱ Writing time'}
           </span>
-          <span className={`font-mono text-3xl font-extrabold tabular-nums leading-tight sm:text-4xl ${timerOvertime ? 'text-error' : 'text-ink'}`}>
+          <span className={`font-mono text-3xl font-extrabold tabular-nums leading-tight xl:text-4xl ${timerOvertime ? 'text-error' : 'text-ink'}`}>
             {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
           </span>
           <span className="text-[0.65rem] text-ink-muted">of ~{prompt.suggestedMinutes} min</span>
         </div>
       )}
 
+      <div className="screen-in space-y-4">
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
         <div className="flex items-start justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
@@ -379,7 +388,7 @@ export default function WritingTester() {
           <div className="flex shrink-0 items-center gap-2">
             {timerStartedRef.current && (
               <span
-                className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums sm:hidden ${
+                className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums xl:hidden ${
                   timerOvertime ? 'border-error text-error' : 'border-border text-ink'
                 }`}
                 title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
@@ -422,7 +431,8 @@ export default function WritingTester() {
           Check my essay
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
