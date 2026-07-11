@@ -1,12 +1,9 @@
-/* The speaking checker: pick a mode → the question is read aloud → record
-   your answer → repeat → get a report. Two independent practice modes:
-   "Part 1" (a topic's worth of short Q&A) and "Part 2 & 3" (a cue-card
-   monologue after a minute's prep, then matching follow-up discussion).
-   Grading is audio-native — the actual recordings go to gradeSpeaking(),
-   never a transcript — so Pronunciation can be judged from what was really
-   said. Phase 1: the question is read by the browser's speechSynthesis with
-   no avatar yet (src/lib/speaking/tts.ts); a later pass layers a talking
-   avatar on top of the same speak() call without touching this state machine. */
+/* The speaking checker: pick a mode → read the question → record your answer
+   → repeat → get a report. Two independent practice modes: "Part 1" (a
+   topic's worth of short Q&A) and "Part 2 & 3" (a cue-card monologue after a
+   minute's prep, then matching follow-up discussion). Grading is
+   audio-native — the actual recordings go to gradeSpeaking(), never a
+   transcript — so Pronunciation can be judged from what was really said. */
 
 import { useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult } from '../lib/speaking/schema';
@@ -15,7 +12,6 @@ import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prom
 import { nextInRotation } from '../lib/rotation';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../lib/speaking/recorder';
 import { toAnsweredClip, gradeSpeaking } from '../lib/speaking/grader';
-import { speak, cancelSpeech } from '../lib/speaking/tts';
 import BandReport from './BandReport';
 
 type Mode = 'part1' | 'part2and3';
@@ -58,6 +54,7 @@ export default function SpeakingTester() {
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prepResolveRef = useRef<(() => void) | null>(null);
+  const readyResolveRef = useRef<(() => void) | null>(null);
 
   async function startMode(m: Mode) {
     setMicError(null);
@@ -90,7 +87,11 @@ export default function SpeakingTester() {
       setPromptTitle(cue.topic);
       cueCardRef.current = { topic: cue.topic, bullets: cue.bullets };
       turns = [
-        { question: `${cue.topic} You should say: ${cue.bullets.join('; ')}.`, maxMs: 120_000, prepMs: 60_000 },
+        {
+          question: `${cue.topic} You should say: ${cue.bullets.join('; ')}.`,
+          maxMs: 120_000,
+          prepMs: 60_000,
+        },
         ...cue.part3Questions.map((q) => ({ question: q.text, maxMs: 60_000 })),
       ];
       expectedMinMsRef.current = 60_000;
@@ -110,13 +111,24 @@ export default function SpeakingTester() {
     setCurrentQuestion(turn.question);
     setElapsedMs(0);
     setPhase('asking');
-    await speak(turn.question);
+    await waitUntilReady();
     if (turn.prepMs) {
       setNotes('');
       setPhase('prepping');
       await runPrepCountdown(turn.prepMs);
     }
     beginRecording(turn.maxMs);
+  }
+
+  function waitUntilReady(): Promise<void> {
+    return new Promise((resolve) => {
+      readyResolveRef.current = resolve;
+    });
+  }
+
+  function confirmReady() {
+    readyResolveRef.current?.();
+    readyResolveRef.current = null;
   }
 
   function runPrepCountdown(prepMs: number): Promise<void> {
@@ -192,7 +204,6 @@ export default function SpeakingTester() {
   }
 
   function backToMenu() {
-    cancelSpeech();
     if (recordingRef.current) void recordingRef.current.stop();
     if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
     if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
@@ -337,7 +348,14 @@ export default function SpeakingTester() {
 
       {phase === 'asking' && (
         <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
-          <p className="text-sm text-ink-muted">🔊 Listen to the question…</p>
+          <p className="text-sm text-ink-muted">Read the question above, then continue when you're ready.</p>
+          <button
+            type="button"
+            onClick={confirmReady}
+            className="mt-4 rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
+          >
+            {turnsRef.current[turnIndex]?.prepMs ? 'Start prep time →' : 'Start answering →'}
+          </button>
         </div>
       )}
 

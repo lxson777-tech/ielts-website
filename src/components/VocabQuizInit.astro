@@ -1,0 +1,15 @@
+---
+/**
+ * Renders once, site-wide (from BaseLayout). No markup of its own —
+ * just wires up every [data-vocab-quiz-trigger] already on the page
+ * (see VocabQuizTrigger.astro) so each one can expand its own inline
+ * quiz panel.
+ */
+---
+
+<script>
+  import { initVocabQuizTriggers } from '../scripts/vocab-quiz';
+  import { WORDS } from '../data/words';
+
+  initVocabQuizTriggers(WORDS);
+</script>

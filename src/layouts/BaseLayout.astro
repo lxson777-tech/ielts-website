@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import VocabQuizInit from '../components/VocabQuizInit.astro';
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -33,5 +34,6 @@ const {
       <slot />
     </main>
     {!bare && <Footer />}
+    {!bare && <VocabQuizInit />}
   </body>
 </html>

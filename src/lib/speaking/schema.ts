@@ -55,7 +55,7 @@ export type SpeakingPrompt = Part1Topic | CueCard;
 
 /** One recorded answer, ready to ship to the Worker. */
 export interface AnsweredClip {
-  /** exact text the avatar asked — grounds the model's grading, not a transcript */
+  /** exact text that was asked — grounds the model's grading, not a transcript */
   question: string;
   audioBase64: string;
   /** whatever MediaRecorder actually produced, passed through as-is */

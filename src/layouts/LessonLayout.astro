@@ -1,8 +1,10 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Badge from '../components/Badge.astro';
+import VocabQuizTrigger from '../components/VocabQuizTrigger.astro';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
+import { WORDS } from '../data/words';
 
 interface Props {
   slug: string;
@@ -22,8 +24,20 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
 <BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description}>
   <div class={`skill-${lesson.skill}`}>
     <!-- Lesson hero band -->
-    <section class="border-b border-border bg-surface-alt">
-      <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <section class="lesson-hero border-b border-border">
+      <div class="lesson-hero-word">
+        <button
+          type="button"
+          id="lesson-hero-word-text"
+          class="lesson-hero-word-text"
+          aria-label="Click to test yourself on this vocabulary word"
+          aria-expanded="false"
+          aria-controls="lesson-hero-word-panel"
+          data-vocab-quiz-trigger
+          data-words={JSON.stringify(WORDS.map(({ word, def }) => ({ word, def })))}
+        ></button>
+      </div>
+      <div class="lesson-hero-content mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb">
           <a href={withBase('/')} class="hover:text-ink">Home</a>
           <span aria-hidden="true">/</span>
@@ -40,6 +54,14 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
         <Badge tone="skill">{skill.label}</Badge>
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{lesson.title}</h1>
         <p class="mt-3 max-w-2xl text-ink-muted">{lesson.description}</p>
+        <!-- The floating word drifts and can't host its own panel, so its
+             quiz expands here instead, in the static content column. -->
+        <div id="lesson-hero-word-panel" class="vocab-quiz-panel mt-4" hidden>
+          <p class="vocab-quiz-panel-eyebrow">Quick check</p>
+          <h2 class="vocab-quiz-panel-word"></h2>
+          <p class="vocab-quiz-panel-prompt">Which definition is correct?</p>
+          <div class="vocab-quiz-panel-opts"></div>
+        </div>
       </div>
     </section>
 
@@ -47,7 +69,8 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
     <article class="lesson-body mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <slot />
 
-      <div class="mt-12 flex justify-center border-t border-border pt-8">
+      <div class="mt-12 flex flex-col items-center gap-4 border-t border-border pt-8">
+        <VocabQuizTrigger />
         <button
           type="button"
           id="lesson-complete-btn"
@@ -68,12 +91,38 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
 
 <script>
   import { initReadingQuiz, initVocabQuiz } from '../scripts/lesson-quiz';
+  import type { VocabWord } from '../scripts/vocab-quiz';
   import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
 
   initReadingQuiz();
   const vocabData = document.getElementById('vocab-words-data');
   if (vocabData?.textContent) {
     initVocabQuiz(JSON.parse(vocabData.textContent));
+  }
+
+  // Floating vocabulary word that drifts across the hero panel — one
+  // word per lap, swapped to a new random word (never repeating the
+  // one just shown) exactly when the CSS drift animation loops, i.e.
+  // while the word is off-screen and invisible, so the swap is never
+  // visible mid-flight. It's also a [data-vocab-quiz-trigger] pointing
+  // (via aria-controls) at #lesson-hero-word-panel above — clicking it
+  // expands that inline panel with whatever word is showing at the
+  // time. The click wiring itself lives in vocab-quiz.ts (initialized
+  // once site-wide by VocabQuizInit.astro), not here.
+  const heroWord = document.getElementById('lesson-hero-word-text');
+  if (heroWord) {
+    const words: VocabWord[] = JSON.parse(heroWord.dataset.words!);
+    let last = -1;
+    const nextWord = () => {
+      let i = Math.floor(Math.random() * words.length);
+      if (words.length > 1) while (i === last) i = Math.floor(Math.random() * words.length);
+      last = i;
+      heroWord.textContent = words[i]!.word;
+    };
+    nextWord();
+    heroWord.addEventListener('animationiteration', (e) => {
+      if (e.animationName === 'lesson-hero-word-drift') nextWord();
+    });
   }
 
   const btn = document.getElementById('lesson-complete-btn');

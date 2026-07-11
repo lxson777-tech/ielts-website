@@ -128,6 +128,267 @@
   .aurora-hero::before { animation: none; }
 }
 
+/* ── Lesson hero band (skill-tinted) ───────────────────────────────
+   A crisp angular corner panel, not a soft blurred wash: a diagonal
+   colour block anchored top-right with a hairline precision grid
+   confined inside it, plus a solid accent line under the nav. The
+   text column (left) sits on plain --color-surface, untouched by any
+   tint, so legibility never depends on the artwork. Reads the ambient
+   --skill/--skill-tint set by the .skill-* wrapper, so the same band
+   self-colors per subject (reading, writing, speaking, …). Width is a
+   fixed cap (not a %), so the panel never crowds wrapped text on
+   narrow viewports — it only ever eats into the right edge. The panel
+   itself is now a static backdrop (just the load-in wipe below) — the
+   ongoing motion lives in the floating vocabulary word instead, see
+   .lesson-hero-word further down. */
+.lesson-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-top: 3px solid var(--skill, var(--color-brand));
+}
+.lesson-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  width: min(46%, 30rem);
+  /* Purely decorative — without this, a mostly-transparent background
+     (gaps between grid lines, etc.) still occupies a solid hit-test
+     box and can end up in front of the floating word button in tree
+     order at the same negative z-index, silently swallowing clicks. */
+  pointer-events: none;
+  /* Seam layer listed FIRST so it paints on top of the tint fill —
+     background layers stack with the first on top, so a layer listed
+     after an opaque one is invisible no matter what it contains. */
+  background:
+    linear-gradient(115deg,
+      transparent 66%,
+      color-mix(in srgb, var(--skill, var(--color-brand)) 40%, transparent) 66%,
+      color-mix(in srgb, var(--skill, var(--color-brand)) 40%, transparent) 72%,
+      transparent 72%),
+    linear-gradient(115deg, transparent 30%, var(--skill-tint, var(--color-brand-tint)) 30%);
+  animation: lesson-hero-panel-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lesson-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  width: min(46%, 30rem);
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--skill, var(--color-brand)) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--skill, var(--color-brand)) 45%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.16;
+  mask-image: linear-gradient(115deg, transparent 26%, black 40%, black 100%);
+  animation: lesson-hero-grid-in 0.5s ease-out 0.25s both;
+}
+/* Sharp wipe reveal on load — panel uncovers from its own right edge,
+   the grid fades in slightly after. One-time only. */
+@keyframes lesson-hero-panel-in {
+  from { clip-path: inset(0 0 0 100%); }
+  to   { clip-path: inset(0 0 0 0%); }
+}
+@keyframes lesson-hero-grid-in {
+  from { opacity: 0; }
+  to   { opacity: 0.16; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lesson-hero::before, .lesson-hero::after { animation: none; }
+}
+
+/* ── Floating vocabulary word ──────────────────────────────────────
+   One word from the vocabulary bank drifts left-to-right across the
+   whole band and off the right edge, then loops. JS (in
+   LessonLayout.astro) swaps the text on each "animationiteration" —
+   i.e. exactly when the word is off-screen and invisible, so the swap
+   is never seen. Decorative — aria-hidden, no pointer events.
+   Negative z-index (not 0): in-flow static content (the real heading
+   text) paints AFTER z-index:0 positioned boxes, so 0 here would put
+   the word on top of the h1 wherever the two overlap. Negative is the
+   bucket that paints before in-flow content — always behind the text. */
+.lesson-hero-word {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+/* The real content sits in front of the (negative z-index) floating
+   word, so whenever the word drifts underneath it, the content div's
+   own box — even the empty space around the text — would otherwise
+   swallow the click before it ever reaches the button behind it.
+   Making the wrapper pass-through and re-enabling only the actual
+   links lets clicks fall through to the word everywhere else. */
+.lesson-hero-content {
+  pointer-events: none;
+}
+.lesson-hero-content a {
+  pointer-events: auto;
+}
+.lesson-hero-word-text {
+  position: absolute;
+  top: 50%;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 4.5vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--skill, var(--color-brand));
+  opacity: 0;
+  animation:
+    lesson-hero-word-drift 15s linear infinite,
+    lesson-hero-word-bob 4s ease-in-out infinite;
+  /* It's a <button> now (click opens the quiz popup) — strip the
+     browser's default button chrome so it still just looks like text. */
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.lesson-hero-word-text:hover,
+.lesson-hero-word-text:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.lesson-hero-word-text:focus-visible {
+  outline: 2px solid var(--skill, var(--color-brand));
+  outline-offset: 4px;
+}
+/* left/opacity: the actual left-to-right traversal, fading in just
+   after it enters and out just before it exits so there's no hard
+   pop at either edge. Percentages are relative to the containing
+   block's width (this wrapper spans the full band), unlike transform
+   percentages which are relative to the word's own box — that's why
+   this drift is done with `left`, not `translateX`. */
+@keyframes lesson-hero-word-drift {
+  0%   { left: -55%; opacity: 0; }
+  10%  { opacity: 0.4; }
+  88%  { opacity: 0.4; }
+  100% { left: 130%; opacity: 0; }
+}
+/* transform: a small independent vertical wobble layered on top, for
+   a "floating" feel rather than a flat straight-line slide. */
+@keyframes lesson-hero-word-bob {
+  0%, 100% { transform: translateY(-50%); }
+  50%      { transform: translateY(calc(-50% - 8px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lesson-hero-word-text {
+    animation: none;
+    left: 6%;
+    opacity: 0.4;
+    transform: translateY(-50%);
+  }
+}
+
+/* ── Vocab quiz inline panel ─────────────────────────────────────────
+   "Choose the right meaning" check, expanding in place — no overlay,
+   no modal. Every [data-vocab-quiz-trigger] (the floating hero word on
+   lesson pages, any <VocabQuizTrigger /> dropped into a page) owns a
+   panel that toggles open/closed right where the trigger lives, like
+   an accordion. Same success/error tones as the in-lesson
+   .vocab-quiz-opt (lesson.css), just a different container. */
+.vocab-quiz-inline {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.vocab-quiz-panel {
+  width: 100%;
+  max-width: 26rem;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  animation: vocab-quiz-panel-in 0.2s ease both;
+}
+.vocab-quiz-panel[hidden] {
+  display: none;
+}
+.vocab-quiz-panel-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--skill, var(--color-brand));
+  margin: 0 0 0.35rem;
+}
+.vocab-quiz-panel-word {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+}
+.vocab-quiz-panel-prompt {
+  font-size: 0.9rem;
+  color: var(--color-ink-muted);
+  margin: 0 0 1rem;
+}
+.vocab-quiz-panel-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.vocab-quiz-panel-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.vocab-quiz-panel-opt:hover:not(:disabled) {
+  border-color: var(--skill, var(--color-brand));
+  background: var(--skill-tint, var(--color-brand-tint));
+}
+.vocab-quiz-panel-opt:disabled {
+  cursor: default;
+}
+.vocab-quiz-panel-opt.correct {
+  border-color: var(--color-success);
+  background: var(--color-success-tint);
+  color: var(--color-success);
+  font-weight: 600;
+}
+.vocab-quiz-panel-opt.wrong {
+  border-color: var(--color-error);
+  background: var(--color-error-tint);
+  color: var(--color-error);
+}
+@keyframes vocab-quiz-panel-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vocab-quiz-panel { animation: none; }
+}
+/* The hero word's panel lives inside .lesson-hero-content, which is
+   pointer-events:none (see the ".lesson-hero-content a" rule above) so
+   clicks fall through to the floating word behind it — this panel and
+   its answer buttons need to opt back in or nothing in it would be
+   clickable. */
+.lesson-hero-content .vocab-quiz-panel {
+  pointer-events: auto;
+}
+
 /* ── Practice quiz feedback animations ───────────────────────── */
 @keyframes pq-pop {
   0% { transform: scale(0.9); }

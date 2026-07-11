@@ -1,6 +1,10 @@
 /* Port of the legacy assets/quiz.js — runs against the migrated lesson
    HTML, which keeps its original markup hooks (data-quiz, .quiz-item…). */
 
+import { pickDistractors, type VocabWord } from './vocab-quiz';
+
+export type { VocabWord };
+
 export function initReadingQuiz(): void {
   document.querySelectorAll<HTMLElement>('[data-quiz="reading"]').forEach((container) => {
     const btn = container.querySelector<HTMLButtonElement>('.quiz-check-btn');
@@ -26,11 +30,6 @@ export function initReadingQuiz(): void {
   });
 }
 
-export interface VocabWord {
-  word: string;
-  def: string;
-}
-
 export function initVocabQuiz(words: VocabWord[]): void {
   const container = document.querySelector<HTMLElement>('[data-quiz="vocab"]');
   if (!container || words.length < 4) return;
@@ -47,12 +46,6 @@ export function initVocabQuiz(words: VocabWord[]): void {
   const finalEl = container.querySelector<HTMLElement>('.vocab-quiz-final');
   if (!optsEl) return;
 
-  const getDistractors = (correct: VocabWord) =>
-    words
-      .filter((w) => w.word !== correct.word)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
-
   function render(): void {
     if (current >= TOTAL) {
       optsEl!.innerHTML = '';
@@ -67,7 +60,7 @@ export function initVocabQuiz(words: VocabWord[]): void {
     if (wordEl) wordEl.textContent = w.word;
     if (progressEl) progressEl.textContent = `Question ${current + 1} of ${TOTAL}`;
 
-    const choices = [...getDistractors(w), w].sort(() => Math.random() - 0.5);
+    const choices = [...pickDistractors(words, w, 3), w].sort(() => Math.random() - 0.5);
     optsEl!.innerHTML = '';
     choices.forEach((c) => {
       const btn = document.createElement('button');

@@ -4,6 +4,7 @@ import Button from '../components/Button.astro';
 import Card from '../components/Card.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import WordOfTheDay from '../components/WordOfTheDay.astro';
+import VocabQuizTrigger from '../components/VocabQuizTrigger.astro';
 import { withBase } from '../lib/url';
 import { LESSONS, SKILLS } from '../data/lessons';
 ---
@@ -51,6 +52,9 @@ import { LESSONS, SKILLS } from '../data/lessons';
   <!-- Word of the day -->
   <section class="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
     <WordOfTheDay />
+    <div class="mt-4 flex justify-center">
+      <VocabQuizTrigger label="Test yourself on a random word" />
+    </div>
   </section>
 
   <!-- Skill sections -->
