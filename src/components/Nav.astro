@@ -189,7 +189,8 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
   </nav>
 
   <div id="nav-mobile-wrap" class="nav-mobile-wrap md:hidden">
-  <div id="nav-mobile" class="max-h-[75dvh] overflow-y-auto border-t border-border bg-surface px-4 pb-5">
+  <div class="max-h-[75dvh] overflow-y-auto">
+  <div id="nav-mobile" class="border-t border-border bg-surface px-4 pb-5">
     <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
     <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
       Practice Tests
@@ -250,6 +251,7 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
         );
       })
     }
+  </div>
   </div>
   </div>
 </header>

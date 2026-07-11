@@ -536,6 +536,14 @@
 @media (prefers-reduced-motion: reduce) {
   .nav-mobile-wrap { transition: none; }
 }
+/* Belt-and-suspenders over the md:hidden utility class: this rule sets
+   display unconditionally above, so it must also be the one to unset it
+   at the same breakpoint — relying on utility-class cascade order here
+   is what let the menu stay display:grid (and its ~21px collapsed sliver
+   visible) on desktop. */
+@media (min-width: 768px) {
+  .nav-mobile-wrap { display: none; }
+}
 
 /* ── Screen swap (AI checker / test player phase changes) ─────────
    Writing/Speaking checkers and the test player each swap their whole
