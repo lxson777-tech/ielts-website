@@ -37,11 +37,11 @@ function renderQuiz(panel: HTMLElement, words: VocabWord[], word?: string): void
       const all = optsEl.querySelectorAll<HTMLButtonElement>('.vocab-quiz-panel-opt');
       all.forEach((b) => (b.disabled = true));
       if (c.word === w.word) {
-        btn.classList.add('correct');
+        btn.classList.add('correct', 'pq-pop');
       } else {
-        btn.classList.add('wrong');
+        btn.classList.add('wrong', 'pq-shake');
         all.forEach((b) => {
-          if (b.textContent === w.def) b.classList.add('correct');
+          if (b.textContent === w.def) b.classList.add('correct', 'pq-pop');
         });
       }
     });

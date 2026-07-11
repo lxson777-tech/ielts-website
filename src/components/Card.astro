@@ -21,9 +21,10 @@ const { title, href, description, image, badge, skill, dataKey } = Astro.props;
 
 <a
   href={href}
+  data-reveal
   class:list={[
     skill && `skill-${skill}`,
-    'group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover',
+    'group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover active:scale-[0.98] active:duration-100',
   ]}
   data-key={dataKey}
 >

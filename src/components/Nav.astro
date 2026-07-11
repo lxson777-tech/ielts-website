@@ -188,7 +188,8 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
     </button>
   </nav>
 
-  <div id="nav-mobile" class="hidden max-h-[75dvh] overflow-y-auto border-t border-border bg-surface px-4 pb-5 md:hidden">
+  <div id="nav-mobile-wrap" class="nav-mobile-wrap md:hidden">
+  <div id="nav-mobile" class="max-h-[75dvh] overflow-y-auto border-t border-border bg-surface px-4 pb-5">
     <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
     <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
       Practice Tests
@@ -250,13 +251,14 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
       })
     }
   </div>
+  </div>
 </header>
 
 <script>
   const toggle = document.getElementById('nav-toggle');
-  const menu = document.getElementById('nav-mobile');
+  const wrap = document.getElementById('nav-mobile-wrap');
   toggle?.addEventListener('click', () => {
-    const open = menu?.classList.toggle('hidden') === false;
+    const open = wrap?.classList.toggle('is-open') === true;
     toggle.setAttribute('aria-expanded', String(open));
   });
 </script>

@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -27,13 +28,144 @@ const {
     <meta name="description" content={description} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <title>{title}</title>
+    <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col bg-surface text-ink">
     {!bare && <Nav />}
-    <main class="flex-1">
+    <main class="flex-1" transition:animate="fade">
       <slot />
     </main>
     {!bare && <Footer />}
     {!bare && <VocabQuizInit />}
+    <script>
+      const REVEAL_SELECTOR = [
+        '[data-reveal]',
+        '.lesson-body .section',
+        '.lesson-body .vocab-table',
+        '.lesson-body .exercise-box',
+        '.lesson-body .type-example',
+        '.lesson-body .cue-card',
+        '.lesson-body .criteria-card',
+        '.lesson-body .answer-compare',
+        '.lesson-body .passage-box',
+        '.lesson-body .task-type-card',
+        '.lesson-body .cta-card',
+      ].join(',');
+
+      function initScrollReveal() {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Anything nested inside a <details> (worked examples, "show model
+        // report", …) starts hidden until the user opens it, so it never
+        // has a chance to naturally intersect while closed — and once
+        // opened it should just be there, not queue its own separate
+        // fade-up on top of the accordion's own open animation.
+        const els = Array.from(document.querySelectorAll<HTMLElement>(REVEAL_SELECTOR)).filter(
+          (el) => !el.closest('details'),
+        );
+
+        els.forEach((el, i) => {
+          if (el.classList.contains('reveal-init')) return;
+          el.classList.add('reveal-init');
+          el.style.setProperty('--reveal-delay', `${(i % 6) * 70}ms`);
+        });
+
+        if (reduceMotion || !('IntersectionObserver' in window)) {
+          els.forEach((el) => el.classList.add('is-visible'));
+          return;
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+        );
+        els.forEach((el) => {
+          if (!el.classList.contains('is-visible')) io.observe(el);
+        });
+      }
+
+      initScrollReveal();
+      document.addEventListener('astro:page-load', initScrollReveal);
+
+      // Animated <details>/<summary> expand-collapse — covers every
+      // collapsible in lesson content (worked examples, "show model
+      // report", quiz answers, …) so opening one smoothly grows instead
+      // of the browser's instant snap. Wraps whatever markup follows
+      // <summary> in a single measurable element at runtime so it works
+      // regardless of how the migrated content nests its children.
+      function initDetailsAnimation() {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const allDetails = document.querySelectorAll<HTMLDetailsElement>(
+          '.lesson-body details:not([data-animated])',
+        );
+
+        allDetails.forEach((details) => {
+          details.dataset.animated = 'true';
+          const summary = details.querySelector(':scope > summary');
+          if (!summary) return;
+
+          if (reduceMotion) return; // native open/close is already instant
+
+          const content = document.createElement('div');
+          content.className = 'details-content';
+          let node = summary.nextSibling;
+          while (node) {
+            const next = node.nextSibling;
+            content.appendChild(node);
+            node = next;
+          }
+          details.appendChild(content);
+
+          let animation: Animation | null = null;
+
+          summary.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (details.classList.contains('is-animating')) return;
+            details.open ? collapse() : expand();
+          });
+
+          function expand() {
+            details.classList.add('is-animating', 'is-open');
+            details.open = true;
+            const endHeight = content.offsetHeight;
+            animation?.cancel();
+            content.style.height = '0px';
+            animation = content.animate(
+              [{ height: '0px' }, { height: `${endHeight}px` }],
+              { duration: 250, easing: 'cubic-bezier(.16,1,.3,1)' },
+            );
+            animation.onfinish = () => {
+              content.style.height = 'auto';
+              details.classList.remove('is-animating');
+            };
+          }
+
+          function collapse() {
+            details.classList.add('is-animating');
+            details.classList.remove('is-open');
+            const startHeight = content.offsetHeight;
+            animation?.cancel();
+            animation = content.animate(
+              [{ height: `${startHeight}px` }, { height: '0px' }],
+              { duration: 200, easing: 'ease' },
+            );
+            animation.onfinish = () => {
+              details.open = false;
+              content.style.height = '0px';
+              details.classList.remove('is-animating');
+            };
+          }
+        });
+      }
+
+      initDetailsAnimation();
+      document.addEventListener('astro:page-load', initDetailsAnimation);
+    </script>
   </body>
 </html>

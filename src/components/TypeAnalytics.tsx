@@ -63,7 +63,7 @@ export default function TypeAnalytics() {
                 </span>
               </div>
               <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-alt">
-                <div className={`h-full rounded-full ${t.bar}`} style={{ width: `${r.pct}%` }} />
+                <div className={`h-full rounded-full transition-[width] duration-500 ${t.bar}`} style={{ width: `${r.pct}%` }} />
               </div>
             </li>
           );

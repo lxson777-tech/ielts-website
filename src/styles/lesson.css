@@ -187,8 +187,17 @@
   display: inline-block;
   transition: transform 0.25s ease;
 }
-.lesson-body details[open] summary::after { transform: rotate(180deg); }
+.lesson-body details[open] summary::after,
+.lesson-body details.is-open summary::after { transform: rotate(180deg); }
 .lesson-body summary:hover { background: var(--color-brand-tint); }
+
+/* Runtime-created wrapper (see BaseLayout.astro's initDetailsAnimation)
+   that holds everything after <summary> — the element the WAAPI height
+   animation actually runs on. Clipped so the mid-animation frames don't
+   show overflowing content. */
+.lesson-body details > .details-content {
+  overflow: hidden;
+}
 
 /* Outer "which type" toggle in a nested details group (e.g. Full Worked
    Examples) reads as a section header — bigger, dark ink, accent-tinted —
@@ -543,6 +552,8 @@
   vertical-align: top;
 }
 .lesson-body .vocab-table tr:last-child td { border-bottom: none; }
+.lesson-body .vocab-table tbody tr { transition: background-color 0.15s ease; }
+.lesson-body .vocab-table tbody tr:hover { background: var(--color-surface-alt); }
 .lesson-body .up { color: var(--color-success); font-weight: 600; }
 .lesson-body .down { color: var(--color-error); font-weight: 600; }
 .lesson-body .flat { color: var(--color-listening); font-weight: 600; }

@@ -19,12 +19,18 @@ export function initReadingQuiz(): void {
         const ok = ctrl.value.toLowerCase().trim() === expected;
         item.classList.toggle('quiz-correct', ok);
         item.classList.toggle('quiz-wrong', !ok);
+        item.classList.remove('pq-pop', 'pq-shake');
+        void item.offsetWidth; // restart the animation if this is a re-check
+        item.classList.add(ok ? 'pq-pop' : 'pq-shake');
         if (ok) correct++;
       });
       const score = container.querySelector<HTMLElement>('.quiz-score');
       if (score) {
         score.textContent = `${correct} / ${items.length} correct`;
         score.hidden = false;
+        score.classList.remove('pq-in');
+        void score.offsetWidth;
+        score.classList.add('pq-in');
       }
     });
   });
@@ -53,6 +59,7 @@ export function initVocabQuiz(words: VocabWord[]): void {
       if (finalEl) {
         finalEl.textContent = `Final score: ${answered} / ${TOTAL}`;
         finalEl.style.display = 'block';
+        finalEl.classList.add('pq-in');
       }
       return;
     }
@@ -70,15 +77,18 @@ export function initVocabQuiz(words: VocabWord[]): void {
         const all = optsEl!.querySelectorAll<HTMLButtonElement>('.vocab-quiz-opt');
         all.forEach((b) => (b.disabled = true));
         if (c.word === w.word) {
-          btn.classList.add('correct');
+          btn.classList.add('correct', 'pq-pop');
           answered++;
         } else {
-          btn.classList.add('wrong');
+          btn.classList.add('wrong', 'pq-shake');
           all.forEach((b) => {
-            if (b.textContent === w.def) b.classList.add('correct');
+            if (b.textContent === w.def) b.classList.add('correct', 'pq-pop');
           });
         }
-        if (nextBtn) nextBtn.style.display = 'inline-block';
+        if (nextBtn) {
+          nextBtn.style.display = 'inline-block';
+          nextBtn.classList.add('pq-in');
+        }
       });
       optsEl!.appendChild(btn);
     });

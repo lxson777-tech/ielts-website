@@ -132,7 +132,7 @@ export default function WritingTester() {
   /* ── 1. Start screen ── */
   if (!prompt) {
     return (
-      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+      <div className="screen-in relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <img
           src={withBase('/pics/writing/start-task.png')}
@@ -219,7 +219,7 @@ export default function WritingTester() {
   /* ── 2b. Grading in progress ── */
   if (grading) {
     return (
-      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
+      <div className="screen-in relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
           <span
@@ -266,7 +266,7 @@ export default function WritingTester() {
   if (result) {
     const m = result.mechanics;
     return (
-      <div className="space-y-6">
+      <div className="screen-in space-y-6">
         <BandReport
           title={prompt.title}
           overallBand={result.overallBand}
@@ -346,10 +346,14 @@ export default function WritingTester() {
   const totalSeconds = Math.floor(elapsedMs / 1000);
   const timerOvertime = elapsedMs >= prompt.suggestedMinutes * 60_000;
   return (
-    <div className="space-y-4">
+    <div className="screen-in space-y-4">
+      {/* Floating clock — fine on wider screens where it sits in the margin
+          beside the task card, but on a phone the card is nearly full-width
+          so a fixed box there would sit right on top of the prompt text.
+          Below sm: it renders inline in the card header instead. */}
       {timerStartedRef.current && (
         <div
-          className={`fixed right-3 top-20 z-50 flex flex-col items-center rounded-card border-2 bg-surface px-4 py-3 shadow-card-hover sm:right-6 ${
+          className={`fixed right-3 top-20 z-50 hidden flex-col items-center rounded-card border-2 bg-surface px-4 py-3 shadow-card-hover sm:flex sm:right-6 ${
             timerOvertime ? 'border-error' : 'border-brand'
           }`}
           title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
@@ -372,9 +376,21 @@ export default function WritingTester() {
               : `Writing Task 1 (${module === 'general' ? 'General Training' : 'Academic'})`}{' '}
             · ~{prompt.suggestedMinutes} min
           </span>
-          <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
-            ↻ New task
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            {timerStartedRef.current && (
+              <span
+                className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums sm:hidden ${
+                  timerOvertime ? 'border-error text-error' : 'border-border text-ink'
+                }`}
+                title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
+              >
+                {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
+              </span>
+            )}
+            <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
+              ↻ New task
+            </button>
+          </div>
         </div>
         <p className="mt-2 text-[0.95rem] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt.promptHtml }} />
       </div>

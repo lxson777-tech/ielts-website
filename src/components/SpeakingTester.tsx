@@ -220,7 +220,7 @@ export default function SpeakingTester() {
   if (phase === 'report' && result) {
     const m = result.mechanics;
     return (
-      <div className="space-y-6">
+      <div className="screen-in space-y-6">
         <BandReport
           title={promptTitle}
           overallBand={result.overallBand}
@@ -293,7 +293,7 @@ export default function SpeakingTester() {
   /* ── Menu screen ── */
   if (phase === 'menu') {
     return (
-      <div className="space-y-4">
+      <div className="screen-in space-y-4">
         <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
           <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking</p>
@@ -332,7 +332,7 @@ export default function SpeakingTester() {
   /* ── In-progress screens: asking / prepping / listening / grading ── */
   const remainingMs = Math.max(0, (turnsRef.current[turnIndex]?.maxMs ?? 0) - elapsedMs);
   return (
-    <div className="space-y-4">
+    <div className="screen-in space-y-4">
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
@@ -347,7 +347,7 @@ export default function SpeakingTester() {
       </div>
 
       {phase === 'asking' && (
-        <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
+        <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
           <p className="text-sm text-ink-muted">Read the question above, then continue when you're ready.</p>
           <button
             type="button"
@@ -360,7 +360,7 @@ export default function SpeakingTester() {
       )}
 
       {phase === 'prepping' && (
-        <div className="space-y-3">
+        <div className="screen-in space-y-3">
           <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
             <p className="font-display text-4xl font-extrabold text-brand">{prepSecondsLeft}s</p>
             <p className="mt-1 text-sm text-ink-muted">Prep time — plan what you'll say. You can start early.</p>
@@ -383,7 +383,7 @@ export default function SpeakingTester() {
       )}
 
       {phase === 'listening' && (
-        <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
+        <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
           <p className="flex items-center justify-center gap-2 text-sm font-semibold text-error">
             <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-error" aria-hidden="true" />
             Recording — {Math.ceil(remainingMs / 1000)}s left
@@ -399,7 +399,7 @@ export default function SpeakingTester() {
       )}
 
       {phase === 'grading' && (
-        <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
+        <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
           <p className="text-sm text-ink-muted">Grading your answer…</p>
         </div>
       )}

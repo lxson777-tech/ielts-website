@@ -61,6 +61,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   const [activePart, setActivePart] = useState(0);
   const [splitPct, setSplitPct] = useState(50);
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
+  // Mobile only: the split pane doesn't fit comfortably on a phone screen, so
+  // below md the passage and questions each get the full pane one at a time,
+  // switched via the tab bar right under the header.
+  const [mobileView, setMobileView] = useState<'stimulus' | 'questions'>('stimulus');
 
   function toggleFlag(qid: string) {
     if (submittedRef.current) return;
@@ -73,9 +77,15 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   }
 
   /* Jump to a question card and bring it into view — used by the flag-aware
-     nav circles in the footer, mirroring "skip and return" on CD-IELTS. */
+     nav circles in the footer, mirroring "skip and return" on CD-IELTS. On
+     mobile the questions pane may currently be hidden (single-pane tab
+     view), so switch to it first and defer the scroll a frame so it's
+     scrolling a pane that's actually laid out, not a display:none one. */
   function jumpToQuestion(qid: string) {
-    document.getElementById(`player-${qid}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setMobileView('questions');
+    requestAnimationFrame(() => {
+      document.getElementById(`player-${qid}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }
 
   function start() {
@@ -107,7 +117,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
       const m = wrapRange(range, root, 'ielts-evidence');
       if (!first) first = m;
     }
-    first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    // On mobile the stimulus pane may currently be hidden (single-pane tab
+    // view) — switch to it and wait a frame so scrollIntoView runs against
+    // a pane that's actually laid out, not a display:none one.
+    setMobileView('stimulus');
+    requestAnimationFrame(() => {
+      first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
   }
 
   const correctCount = useMemo(
@@ -214,15 +230,15 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   }
 
   return (
-    <div className="flex h-dvh flex-col bg-surface text-ink">
+    <div className="screen-in flex h-dvh flex-col bg-surface text-ink">
       {/* ── Top bar ── */}
-      <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
-        <a href={hubUrl} className="text-sm font-semibold text-ink-muted hover:text-ink">
-          ← Tests
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 sm:gap-3 sm:px-4">
+        <a href={hubUrl} className="shrink-0 whitespace-nowrap text-sm font-semibold text-ink-muted hover:text-ink">
+          <span aria-hidden="true">←</span> <span className="hidden sm:inline">Tests</span>
         </a>
-        <span className="hidden truncate font-display text-sm font-bold sm:block">{test.title}</span>
+        <span className="hidden truncate font-display text-sm font-bold md:block">{test.title}</span>
         <div
-          className={`mx-auto flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-sm font-bold ${
+          className={`mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold sm:gap-2 sm:px-4 ${
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
           }`}
           role="timer"
@@ -233,8 +249,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
         </div>
         <button
           type="button"
-          onClick={() => questionsRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="rounded-button border border-border px-3 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt"
+          onClick={() => {
+            setMobileView('questions');
+            requestAnimationFrame(() => questionsRef.current?.scrollTo({ top: 0, behavior: 'smooth' }));
+          }}
+          className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt sm:px-3"
         >
           Review
         </button>
@@ -242,20 +261,53 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
           type="button"
           onClick={handleSubmit}
           disabled={submitted}
-          className="rounded-button bg-brand px-4 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50"
+          className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 sm:px-4"
         >
           Submit ➤
         </button>
       </header>
 
+      {/* ── Mobile pane switcher — the split pane below is too cramped on a
+           phone screen, so below md each side gets the full pane, one at a
+           time. ── */}
+      <div className="flex shrink-0 border-b border-border md:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileView('stimulus')}
+          className={`flex-1 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
+            mobileView === 'stimulus' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
+          }`}
+        >
+          {stimulus.kind === 'passage' ? '📖 Passage' : '🎧 Audio'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileView('questions')}
+          className={`flex-1 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
+            mobileView === 'questions' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
+          }`}
+        >
+          ✍️ Questions{' '}
+          <span className="font-normal opacity-70">
+            {numbered.filter((nq) => nq.part === part && answers[nq.question.id]).length}/
+            {numbered.filter((nq) => nq.part === part).length}
+          </span>
+        </button>
+      </div>
+
       {/* ── Main split pane ── */}
       <div
         ref={mainRef}
-        className="grid min-h-0 flex-1 max-md:grid-rows-[45%_auto_1fr] md:grid-cols-[var(--split)_4px_1fr]"
+        className="flex min-h-0 flex-1 flex-col md:grid md:grid-cols-[var(--split)_4px_1fr]"
         style={{ '--split': `${splitPct}%` } as React.CSSProperties}
       >
-        {/* Stimulus pane */}
-        <div className="min-h-0 overflow-y-auto border-b border-border bg-surface-alt md:border-b-0">
+        {/* Stimulus pane — full-height on mobile when its tab is active,
+            always visible side-by-side with questions from md up. */}
+        <div
+          className={`min-h-0 flex-1 overflow-y-auto border-b border-border bg-surface-alt md:block md:border-b-0 ${
+            mobileView === 'stimulus' ? 'block' : 'hidden'
+          }`}
+        >
           {stimulus.kind === 'passage' ? (
             <Highlightable key={activePart} innerRef={passageContentRef} className="mx-auto max-w-2xl px-5 py-6">
               <p
@@ -295,7 +347,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
         />
 
         {/* Questions pane */}
-        <div ref={questionsRef} className="min-h-0 overflow-y-auto">
+        <div
+          ref={questionsRef}
+          className={`min-h-0 flex-1 overflow-y-auto md:block ${mobileView === 'questions' ? 'block' : 'hidden'}`}
+        >
           <div className="mx-auto max-w-2xl px-5 py-6">
             {part.groups.map((group) => {
               const groupQs = numbered.filter((nq) => nq.group === group);
@@ -396,7 +451,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                     type="button"
                     onClick={() => jumpToQuestion(question.id)}
                     aria-label={`Jump to question ${n}${answered ? ', answered' : ', unanswered'}${isFlagged ? ', flagged for review' : ''}`}
-                    className={`relative grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${cls} ${
+                    className={`relative grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition-colors ${cls} ${
                       isFlagged && !submitted ? 'ring-2 ring-warning ring-offset-1 ring-offset-surface' : ''
                     }`}
                   >
@@ -415,10 +470,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
 
       {/* ── Score modal ── */}
       {showScore && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4" role="dialog" aria-modal="true">
-          <div className="w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover">
+        <div className="modal-backdrop-in fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4" role="dialog" aria-modal="true">
+          <div className="modal-panel-in w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover">
             <h2 className="font-display text-xl font-extrabold">Your Score</h2>
-            <p className="mt-4 font-display text-5xl font-extrabold text-brand">
+            <p className="band-score-pop mt-4 font-display text-5xl font-extrabold text-brand">
               {correctCount} / {TOTAL}
             </p>
             <p className="mt-2 text-ink-muted">{Math.round((correctCount / TOTAL) * 100)}% correct</p>

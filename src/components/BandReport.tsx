@@ -43,7 +43,7 @@ export default function BandReport({
         <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
           {live ? '✨ AI-assessed' : 'Sample assessment (offline)'} · {title}
         </p>
-        <p className="mt-2 font-display text-5xl font-extrabold text-brand">{overallBand.toFixed(1)}</p>
+        <p className="band-score-pop mt-2 font-display text-5xl font-extrabold text-brand">{overallBand.toFixed(1)}</p>
         <p className="mt-1 text-sm text-ink-muted">Estimated overall band</p>
         {!live && (
           <p className="mx-auto mt-3 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">

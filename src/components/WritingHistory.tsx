@@ -54,9 +54,17 @@ function BandChart({ rows }: { rows: Row[] }) {
             </text>
           </g>
         ))}
-        <path d={path} fill="none" stroke="var(--color-brand)" strokeWidth="2" strokeLinejoin="round" />
+        <path
+          d={path}
+          fill="none"
+          stroke="var(--color-brand)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          pathLength={1}
+          className="band-chart-path"
+        />
         {rows.map((r, i) => (
-          <g key={i}>
+          <g key={i} className="band-chart-point" style={{ animationDelay: `${0.5 + i * 0.06}s` }}>
             <circle cx={x(i)} cy={y(r.attempt.overallBand)} r="12" fill="transparent" onMouseEnter={() => setHover(i)} />
             <circle
               cx={x(i)}
@@ -127,7 +135,7 @@ export default function WritingHistory() {
           </thead>
           <tbody>
             {[...rows].reverse().map((r, i) => (
-              <tr key={i} className="border-t border-border">
+              <tr key={i} className="border-t border-border transition-colors hover:bg-surface-alt">
                 <td className="px-4 py-2.5 text-ink-muted">{fmtDate(r.attempt.at)}</td>
                 <td className="px-4 py-2.5 font-medium">{promptTitle(r.promptId)}</td>
                 <td className="px-4 py-2.5">{r.attempt.wordCount}</td>
