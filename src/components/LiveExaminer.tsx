@@ -10,7 +10,7 @@
    part, the cue card when it matters. */
 
 import { useEffect, useRef, useState } from 'react';
-import type { SpeakingGradeResult } from '../lib/speaking/schema';
+import type { SpeakingCriterionKey, SpeakingGradeResult } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
 import { MicCapture, ExaminerPlayback } from '../lib/speaking/live/audio';
@@ -45,6 +45,16 @@ export default function LiveExaminer() {
   const [notes, setNotes] = useState('');
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
   const [finalTranscript, setFinalTranscript] = useState<TranscriptTurn[]>([]);
+  const [gradeStep, setGradeStep] = useState(0);
+
+  useEffect(() => {
+    if (phase !== 'grading') return;
+    setGradeStep(0);
+    // Advance through the steps once, then hold on the final "comparing
+    // assessments" line until the real result lands.
+    const i = setInterval(() => setGradeStep((s) => Math.min(s + 1, GRADING_STEPS.length - 1)), GRADE_STEP_MS);
+    return () => clearInterval(i);
+  }, [phase]);
 
   const planRef = useRef<ExamPlan | null>(null);
   const sessionRef = useRef<ExaminerSession | null>(null);
@@ -55,8 +65,9 @@ export default function LiveExaminer() {
   const recChunksRef = useRef<BlobPart[]>([]);
   const recActiveSinceRef = useRef(0);
   const recAccumMsRef = useRef(0);
-  const orbRef = useRef<HTMLDivElement | null>(null);
-  const micDotRef = useRef<HTMLDivElement | null>(null);
+  const coreRef = useRef<HTMLDivElement | null>(null);
+  const glowRef = useRef<HTMLDivElement | null>(null);
+  const micRingRef = useRef<HTMLDivElement | null>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const intervalsRef = useRef<ReturnType<typeof setInterval>[]>([]);
   const stageRef = useRef<Stage>('part1');
@@ -325,8 +336,14 @@ export default function LiveExaminer() {
     }
 
     setPhase('grading');
+    const gradingStartedAt = performance.now();
     try {
       const graded = await gradeInterview(transcript, recording);
+      // Let the criteria sequence play out in full before the reveal — a
+      // report that pops in mid-"checking grammar" reads as fake.
+      const minVisibleMs = GRADING_STEPS.length * GRADE_STEP_MS;
+      const remaining = minVisibleMs - (performance.now() - gradingStartedAt);
+      if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
       setResult(graded);
       setPhase('report');
     } catch (e) {
@@ -366,15 +383,61 @@ export default function LiveExaminer() {
 
   useEffect(() => () => abandonToMenu(), []); // page navigation cleanup
 
-  /* ── orb animation (direct DOM writes — no per-frame re-render) ─────── */
+  /* Design preview: /speaking/examiner?preview renders the interview stage
+     with synthetic audio levels — no mic, no session, no API cost. The orb
+     alternates between "examiner speaking" and "listening" every few
+     seconds so every animation state can be reviewed. */
+  const previewRef = useRef(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('preview')) return;
+    if (params.get('preview') === 'grading') {
+      setPhase('grading');
+      return;
+    }
+    previewRef.current = true;
+    planRef.current = buildExamPlan();
+    setPhase('interview');
+    setStageBoth('part1');
+    setCaption('This is a design preview — the examiner is not connected.');
+    startOrbLoop();
+    every(() => setElapsedS((s) => s + 1), 1000);
+    every(() => setExaminerTalking(Math.floor(performance.now() / 4500) % 2 === 0), 250);
+  }, []);
+
+  /* ── orb animation (direct DOM writes — no per-frame re-render) ───────
+     Audio levels are lerp-smoothed so the orb swells with the voice instead
+     of jittering per audio frame. Everything animated here and in the CSS
+     below touches only transform/opacity (GPU-composited). Under
+     prefers-reduced-motion the loop parks all layers at rest. */
 
   function startOrbLoop() {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let exSmooth = 0;
+    let meSmooth = 0;
     const step = () => {
       if (endedRef.current && !playbackRef.current) return;
-      const ex = playbackRef.current?.level() ?? 0;
-      const me = micRef.current?.level() ?? 0;
-      if (orbRef.current) orbRef.current.style.transform = `scale(${1 + ex * 0.35})`;
-      if (micDotRef.current) micDotRef.current.style.transform = `scale(${1 + me * 0.9})`;
+      if (reduced) return;
+      let exL = playbackRef.current?.level() ?? 0;
+      let meL = micRef.current?.level() ?? 0;
+      if (previewRef.current) {
+        const t = performance.now();
+        const talking = Math.floor(t / 4500) % 2 === 0;
+        const wobble = (Math.sin(t / 90) + Math.sin(t / 41) + 2) / 4;
+        exL = talking ? 0.15 + wobble * 0.5 : 0;
+        meL = talking ? 0 : 0.1 + wobble * 0.45;
+      }
+      exSmooth += (exL - exSmooth) * 0.22;
+      meSmooth += (meL - meSmooth) * 0.25;
+      if (coreRef.current) coreRef.current.style.transform = `scale(${1 + exSmooth * 0.32})`;
+      if (glowRef.current) {
+        glowRef.current.style.opacity = String(0.35 + exSmooth * 0.65);
+        glowRef.current.style.transform = `scale(${1 + exSmooth * 0.5})`;
+      }
+      if (micRingRef.current) {
+        micRingRef.current.style.opacity = String(Math.min(1, meSmooth * 2.2));
+        micRingRef.current.style.transform = `scale(${1.04 + meSmooth * 0.28})`;
+      }
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -494,10 +557,44 @@ export default function LiveExaminer() {
   }
 
   if (phase === 'grading') {
+    const step = GRADING_STEPS[gradeStep % GRADING_STEPS.length]!;
     return (
-      <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
-        {notice && <p className="mx-auto mb-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
-        <p className="text-sm text-ink-muted">The examiner is writing your band report — this takes about a minute…</p>
+      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
+        <style>{LX_STYLES}</style>
+        <div className="lx-ambient" aria-hidden="true" style={{ animationDuration: '18s' }} />
+        <div className="relative flex flex-col items-center">
+          {notice && <p className="mb-6 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
+
+          {/* equalizer — the examiner is "listening back" to the interview */}
+          <div className="lx-eq" aria-hidden="true">
+            <span /><span /><span /><span /><span />
+          </div>
+
+          <p className="lx-status mt-6 min-h-6 text-sm font-semibold" key={gradeStep} aria-live="polite">
+            {step.text}
+          </p>
+
+          {/* the four official criteria — the one being "checked" lights up */}
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {SPEAKING_CRITERIA.map((c) => (
+              <span
+                key={c.key}
+                title={c.label}
+                className={`rounded-full border px-3 py-1 text-xs font-bold transition-all duration-500 ${
+                  step.crit === c.key
+                    ? 'scale-110 border-brand bg-brand text-white shadow-card'
+                    : 'border-border bg-surface-alt text-ink-muted'
+                }`}
+              >
+                {c.short}
+              </span>
+            ))}
+          </div>
+
+          <p className="mt-6 text-xs text-ink-muted">
+            Three independent assessments are compared — the median becomes your report. ~1 minute.
+          </p>
+        </div>
       </div>
     );
   }
@@ -525,10 +622,16 @@ export default function LiveExaminer() {
     stage === 'part2talk' ? 'Part 2 · Your talk' :
     stage === 'part3' ? 'Part 3 · Discussion' : 'Finishing…';
 
+  const orbMode = stage === 'part2prep' ? 'lx-prep' : examinerTalking ? 'lx-speaking' : 'lx-listening';
+
   return (
     <div className="space-y-4">
-      <div className="rounded-card border border-border bg-surface p-6 shadow-card">
-        <div className="flex items-center justify-between gap-3">
+      <style>{LX_STYLES}</style>
+      <div className={`lx-stage relative overflow-hidden rounded-card border border-border bg-surface p-6 shadow-card ${orbMode}`}>
+        {/* ambient drifting glow behind everything */}
+        <div className="lx-ambient" aria-hidden="true" />
+
+        <div className="relative flex items-center justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">{stageLabel}</span>
           <span className="text-xs font-semibold tabular-nums text-ink-muted">
             {Math.floor(elapsedS / 60)}:{String(elapsedS % 60).padStart(2, '0')}
@@ -536,36 +639,63 @@ export default function LiveExaminer() {
         </div>
 
         {/* the orb */}
-        <div className="mt-6 flex flex-col items-center">
-          <div className="relative flex h-32 w-32 items-center justify-center">
-            <div
-              ref={orbRef}
-              className={`absolute inset-0 rounded-full transition-colors duration-300 ${
-                examinerTalking ? 'bg-brand/25' : 'bg-[var(--skill,#0E9F6E)]/15'
-              }`}
-              style={{ willChange: 'transform' }}
-              aria-hidden="true"
-            />
-            <div
-              ref={micDotRef}
-              className={`h-16 w-16 rounded-full ${examinerTalking ? 'bg-brand' : 'bg-[var(--skill,#0E9F6E)]'}`}
-              style={{ willChange: 'transform' }}
-              aria-hidden="true"
-            />
+        <div className="relative mt-8 flex flex-col items-center">
+          <div className="relative flex h-52 w-52 items-center justify-center">
+            {/* slow-spinning aurora halo */}
+            <div className="lx-aura" aria-hidden="true" />
+            {/* second, brighter aurora that only shows while the examiner speaks */}
+            <div className="lx-aura lx-aura-hot" aria-hidden="true" />
+            {/* idle breathing ring */}
+            <div className="lx-breathe" aria-hidden="true" />
+            {/* voice ripples while the examiner speaks */}
+            {examinerTalking && (
+              <>
+                <span className="lx-ripple" aria-hidden="true" />
+                <span className="lx-ripple" style={{ animationDelay: '0.6s' }} aria-hidden="true" />
+                <span className="lx-ripple" style={{ animationDelay: '1.2s' }} aria-hidden="true" />
+              </>
+            )}
+            {/* mic-reactive ring (student's voice, section green) */}
+            <div ref={micRingRef} className="lx-micring" aria-hidden="true" />
+            {/* audio-reactive glow + glassy core */}
+            <div ref={glowRef} className="lx-glow" aria-hidden="true" />
+            <div className="lx-float" aria-hidden="true">
+              <div ref={coreRef} className="lx-core">
+                <div className="lx-core-icon" key={orbMode}>
+                  {orbMode === 'lx-speaking' ? <IconSpeaker /> : orbMode === 'lx-prep' ? <IconPencil /> : <IconMic />}
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="mt-4 text-sm font-semibold">
-            {stage === 'part2prep'
-              ? `Prepare your talk — ${prepSecondsLeft}s`
-              : examinerTalking
-                ? `${EXAMINER_NAME} is speaking…`
-                : 'Listening to you'}
+
+          {/* turn indicator: pill color + icon + wording all flip with the turn */}
+          <p
+            className="lx-status mt-6 rounded-full px-4 py-1.5 text-sm font-bold"
+            style={{
+              background: 'color-mix(in srgb, var(--lx-hue) 13%, transparent)',
+              color: 'var(--lx-hue)',
+            }}
+            key={orbMode}
+          >
+            {stage === 'part2prep' ? (
+              <>
+                ✍ Prepare your talk —{' '}
+                <span className="lx-tick inline-block font-display text-base font-extrabold" key={prepSecondsLeft}>
+                  {prepSecondsLeft}s
+                </span>
+              </>
+            ) : examinerTalking ? (
+              `${EXAMINER_NAME} is speaking — listen`
+            ) : (
+              'Your turn — speak'
+            )}
           </p>
           {showCaptions && caption && (
-            <p className="mt-2 max-w-lg text-center text-sm italic text-ink-muted">&ldquo;{caption}&rdquo;</p>
+            <p className="lx-caption mt-2 max-w-lg text-center text-sm italic text-ink-muted">&ldquo;{caption}&rdquo;</p>
           )}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <div className="relative mt-6 flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
             onClick={() => setShowCaptions((v) => !v)}
@@ -628,6 +758,185 @@ export default function LiveExaminer() {
 
       {notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
     </div>
+  );
+}
+
+/* Scoped styles for the interview stage. Only transform/opacity are
+   animated (GPU-composited); hues come from the theme tokens via color-mix,
+   so the orb follows the site palette. The stage mode class (lx-speaking /
+   lx-listening / lx-prep) retargets --lx-hue and the loops' intensity. */
+const LX_STYLES = `
+.lx-stage { --lx-hue: var(--color-brand, #4f46e5); }
+.lx-stage.lx-listening { --lx-hue: var(--skill, #0E9F6E); }
+.lx-stage.lx-prep { --lx-hue: #d97706; }
+
+.lx-ambient {
+  position: absolute; inset: -40%; pointer-events: none;
+  background:
+    radial-gradient(38% 34% at 30% 35%, color-mix(in srgb, var(--lx-hue) 16%, transparent), transparent 70%),
+    radial-gradient(30% 30% at 72% 60%, color-mix(in srgb, var(--lx-hue) 10%, transparent), transparent 70%);
+  animation: lx-drift 26s ease-in-out infinite alternate;
+  transition: background 0.8s ease;
+}
+@keyframes lx-drift {
+  from { transform: translate3d(-2%, -1%, 0) rotate(0deg); }
+  to   { transform: translate3d(2%, 2%, 0) rotate(6deg); }
+}
+
+.lx-aura {
+  position: absolute; inset: -1.5rem; border-radius: 9999px; pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--lx-hue) 55%, transparent),
+    transparent 30%,
+    color-mix(in srgb, var(--lx-hue) 35%, transparent) 55%,
+    transparent 80%,
+    color-mix(in srgb, var(--lx-hue) 55%, transparent)
+  );
+  filter: blur(18px);
+  opacity: 0.5;
+  animation: lx-spin 24s linear infinite;
+  transition: opacity 0.6s ease;
+}
+.lx-aura-hot { animation-duration: 7s; animation-direction: reverse; opacity: 0; filter: blur(12px); }
+.lx-speaking .lx-aura-hot { opacity: 0.75; }
+@keyframes lx-spin { to { transform: rotate(360deg); } }
+
+.lx-breathe {
+  position: absolute; inset: 0.75rem; border-radius: 9999px; pointer-events: none;
+  border: 1.5px solid color-mix(in srgb, var(--lx-hue) 45%, transparent);
+  animation: lx-breathe 4.2s ease-in-out infinite;
+}
+@keyframes lx-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50%      { transform: scale(1.06); opacity: 0.2; }
+}
+
+.lx-ripple {
+  position: absolute; inset: 1.5rem; border-radius: 9999px; pointer-events: none;
+  border: 2px solid color-mix(in srgb, var(--lx-hue) 60%, transparent);
+  animation: lx-ripple 1.8s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+}
+@keyframes lx-ripple {
+  from { transform: scale(0.72); opacity: 0.8; }
+  to   { transform: scale(1.45); opacity: 0; }
+}
+
+.lx-micring {
+  position: absolute; inset: 2.25rem; border-radius: 9999px; pointer-events: none;
+  border: 3px solid color-mix(in srgb, var(--skill, #0E9F6E) 80%, transparent);
+  opacity: 0; will-change: transform, opacity;
+}
+
+.lx-glow {
+  position: absolute; inset: 3rem; border-radius: 9999px; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--lx-hue) 75%, transparent), transparent 70%);
+  filter: blur(14px);
+  opacity: 0.35; will-change: transform, opacity;
+}
+
+.lx-float { animation: lx-float 6s ease-in-out infinite; will-change: transform; }
+@keyframes lx-float {
+  0%, 100% { transform: translate3d(0, -3px, 0); }
+  50%      { transform: translate3d(0, 3px, 0); }
+}
+
+.lx-core {
+  display: grid; place-items: center;
+  height: 7rem; width: 7rem; border-radius: 9999px;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), transparent 42%),
+    radial-gradient(circle at 68% 78%, color-mix(in srgb, var(--lx-hue) 55%, transparent), transparent 60%),
+    linear-gradient(145deg, color-mix(in srgb, var(--lx-hue) 92%, white), color-mix(in srgb, var(--lx-hue) 70%, black));
+  box-shadow:
+    inset 0 -14px 26px color-mix(in srgb, var(--lx-hue) 55%, transparent),
+    0 10px 34px color-mix(in srgb, var(--lx-hue) 38%, transparent);
+  transition: background 0.8s ease, box-shadow 0.8s ease;
+  will-change: transform;
+}
+
+.lx-core-icon {
+  color: rgba(255, 255, 255, 0.94);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
+  animation: lx-fade-up 0.45s ease both;
+}
+
+.lx-eq { display: flex; align-items: center; gap: 0.4rem; height: 3.5rem; }
+.lx-eq span {
+  width: 0.55rem; height: 3rem; border-radius: 9999px;
+  background: linear-gradient(180deg, var(--color-brand, #4f46e5), color-mix(in srgb, var(--color-brand, #4f46e5) 35%, transparent));
+  transform-origin: center; will-change: transform;
+  animation: lx-eq 1.1s ease-in-out infinite;
+}
+.lx-eq span:nth-child(2) { animation-delay: 0.14s; }
+.lx-eq span:nth-child(3) { animation-delay: 0.28s; }
+.lx-eq span:nth-child(4) { animation-delay: 0.42s; }
+.lx-eq span:nth-child(5) { animation-delay: 0.56s; }
+@keyframes lx-eq {
+  0%, 100% { transform: scaleY(0.3); }
+  50%      { transform: scaleY(1); }
+}
+
+.lx-status { animation: lx-fade-up 0.45s ease both; }
+.lx-caption { animation: lx-fade-up 0.6s ease both; }
+@keyframes lx-fade-up {
+  from { transform: translate3d(0, 6px, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+.lx-tick { animation: lx-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes lx-pop {
+  from { transform: scale(1.3); }
+  to   { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-ambient, .lx-aura, .lx-aura-hot, .lx-breathe, .lx-ripple,
+  .lx-float, .lx-status, .lx-caption, .lx-tick, .lx-eq span, .lx-core-icon { animation: none; }
+  .lx-aura-hot { opacity: 0; }
+  .lx-eq span { transform: scaleY(0.6); }
+}
+`;
+
+/* Rotating status lines shown while the report is generated — walks through
+   the four official criteria so the wait reads as work, not silence. The
+   sequence always plays in full: steps advance every GRADE_STEP_MS, hold on
+   the last line, and the report never appears before one complete pass. */
+const GRADE_STEP_MS = 4000;
+const GRADING_STEPS: { text: string; crit?: SpeakingCriterionKey }[] = [
+  { text: 'Replaying your interview…' },
+  { text: 'Checking Fluency & Coherence — pacing, hesitation, linking…', crit: 'fluencyCoherence' },
+  { text: 'Assessing Lexical Resource — range, precision, paraphrase…', crit: 'lexicalResource' },
+  { text: 'Checking Grammatical Range & Accuracy…', crit: 'grammaticalRange' },
+  { text: 'Listening closely to Pronunciation — stress, rhythm, clarity…', crit: 'pronunciation' },
+  { text: 'Comparing independent assessments…' },
+];
+
+function IconMic() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="9" y="2.5" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0" />
+      <path d="M12 18v3.5" />
+    </svg>
+  );
+}
+
+function IconSpeaker() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M11 5.5 6.5 9H3v6h3.5L11 18.5z" fill="currentColor" stroke="none" />
+      <path d="M15 9.5a3.5 3.5 0 0 1 0 5" />
+      <path d="M17.5 7a7 7 0 0 1 0 10" />
+    </svg>
+  );
+}
+
+function IconPencil() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M17 3.5 20.5 7 8.5 19l-4.5 1.5L5.5 16z" />
+    </svg>
   );
 }
 
