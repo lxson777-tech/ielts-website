@@ -1,5 +1,5 @@
-/* Writing practice prompts. Original material. Drives the writing checker at
-   /writing/checker; more prompts can be added freely — the checker lists
+/* Writing practice prompts. Original material. Drives the Writing Trainer at
+   /trainers/writing; more prompts can be added freely — the trainer lists
    whatever is here. */
 
 import type { EssayPrompt } from '../lib/writing/schema';

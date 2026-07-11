@@ -464,31 +464,6 @@
   }
 }
 
-/* ── Modal entrance (results/score dialogs) ──────────────────────
-   Shared by any fixed inset-0 dialog — currently TestPlayer's score
-   modal. Backdrop fades, panel scales up from a slight sink so it
-   reads as "arriving", not popping in. */
-@keyframes modal-backdrop-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes modal-panel-in {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-.modal-backdrop-in {
-  animation: modal-backdrop-in 0.2s ease both;
-}
-.modal-panel-in {
-  animation: modal-panel-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .modal-backdrop-in,
-  .modal-panel-in {
-    animation: none;
-  }
-}
-
 /* ── Band score chart (ScoreHistory.tsx) ──────────────────────────
    Line draws itself in via stroke-dashoffset (pathLength=1 on the SVG
    path normalizes stroke-dasharray to a 0–1 range regardless of the

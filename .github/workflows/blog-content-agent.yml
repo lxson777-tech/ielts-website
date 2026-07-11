@@ -1,0 +1,48 @@
+name: Blog Content Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Optional topic override (leave blank to pull from the backlog)'
+        required: false
+        type: string
+  # Draft-only by design: no `schedule:` trigger yet. Uncomment once you're
+  # happy with a few manually-triggered drafts:
+  # schedule:
+  #   - cron: '0 6 * * 1' # weekly, Monday 06:00 UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  draft-post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git identity
+        run: |
+          git config user.name "marketing-agent[bot]"
+          git config user.email "marketing-agent@users.noreply.github.com"
+
+      - name: Run blog agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.topic }}" ]; then
+            python tools/blog_agent.py --topic "${{ inputs.topic }}"
+          else
+            python tools/blog_agent.py
+          fi

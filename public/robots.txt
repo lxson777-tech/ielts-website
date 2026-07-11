@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lxson777-tech.github.io/ielts-website/sitemap-index.xml

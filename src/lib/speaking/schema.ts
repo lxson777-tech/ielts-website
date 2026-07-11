@@ -72,7 +72,8 @@ export interface SpeakingAttemptPart1 {
 export interface SpeakingAttemptPart2and3 {
   kind: 'part2and3';
   cueCard: { topic: string; bullets: string[] };
-  monologue: AnsweredClip;
+  /** absent when practicing Part 3 in isolation, with no Part 2 monologue recorded */
+  monologue?: AnsweredClip;
   followUps: AnsweredClip[];
 }
 

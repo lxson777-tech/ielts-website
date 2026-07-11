@@ -13,6 +13,7 @@ const skillActive = (skillId: string) =>
   lessonsBySkill(skillId as (typeof SKILLS)[number]['id']).some((l) => isPath(`/lessons/${l.slug}`)) ||
   current.startsWith(withBase(`/lessons/${skillId}/`));
 const testsActive = current.startsWith(withBase('/tests'));
+const trainersActive = current.startsWith(withBase('/trainers'));
 
 /* Every skill dropdown has the same anatomy: the overview link, a labelled
    group of type/part lessons, and (where one exists) the practice tool. */
@@ -58,10 +59,13 @@ const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
   ],
 };
 
+/* Reading/Writing/Speaking practice tools all live on the unified /tests hub
+   now — each skill dropdown links there instead of to its own standalone
+   checker page. */
 const practiceBySkill: Record<string, { href: string; label: string }[]> = {
-  reading: [{ href: '/tests', label: '⏱ Timed Practice Tests' }],
-  writing: [{ href: '/writing/checker', label: '✨ Writing Checker' }],
-  speaking: [{ href: '/speaking/examiner', label: '🎙 Live AI Examiner' }],
+  reading: [{ href: '/tests', label: '⏱ Practice Tests' }],
+  writing: [{ href: '/tests', label: '⏱ Practice Tests' }],
+  speaking: [{ href: '/tests', label: '⏱ Practice Tests' }],
 };
 ---
 
@@ -166,6 +170,13 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
       }
 
       <a
+        href={withBase('/trainers')}
+        class:list={[
+          'ml-1 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
+          trainersActive ? 'bg-brand-tint text-brand' : 'text-ink-muted hover:bg-brand-tint hover:text-brand',
+        ]}>Trainers</a
+      >
+      <a
         href={withBase('/tests')}
         class:list={[
           'ml-1 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
@@ -192,6 +203,9 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
   <div class="max-h-[75dvh] overflow-y-auto">
   <div id="nav-mobile" class="border-t border-border bg-surface px-4 pb-5">
     <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
+    <a href={withBase('/trainers')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
+      Trainers
+    </a>
     <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
       Practice Tests
     </a>

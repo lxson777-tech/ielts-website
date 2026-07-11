@@ -89,9 +89,18 @@ import { LESSONS, SKILLS } from '../data/lessons';
               {skill.id === 'writing' && (
                 <Card
                   title="Writing Checker"
-                  href={withBase('/writing/checker')}
+                  href={withBase('/tests')}
                   description="Write an answer and get AI examiner feedback: a band for every criterion, corrections, and next-band tips."
                   image="/pics/writing/essay-checker.png"
+                  badge="Practice"
+                />
+              )}
+              {skill.id === 'speaking' && (
+                <Card
+                  title="Live AI Examiner"
+                  href={withBase('/speaking/examiner')}
+                  description="A real voice conversation with an AI examiner — all three parts, with follow-up questions based on what you say."
+                  image="/pics/speaking/live-examiner.png"
                   badge="Practice"
                 />
               )}

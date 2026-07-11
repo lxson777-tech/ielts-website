@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion, MotionConfig } from 'framer-motion';
 import { getTypeStats, type TypeStat } from '../lib/progress';
 
 /* Friendly labels for the schema's QuestionType keys. */
@@ -51,24 +52,31 @@ export default function TypeAnalytics() {
         Across every test you've taken. Your weakest type so far is{' '}
         <strong className="text-ink">{LABELS[weakest.type] ?? weakest.type}</strong> — start there.
       </p>
-      <ul className="mt-4 space-y-3">
-        {rows.map((r) => {
-          const t = tone(r.pct);
-          return (
-            <li key={r.type}>
-              <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="font-semibold">{LABELS[r.type] ?? r.type}</span>
-                <span className={`shrink-0 font-bold ${t.text}`}>
-                  {r.pct}% <span className="font-normal text-ink-muted">({r.correct}/{r.total})</span>
-                </span>
-              </div>
-              <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-alt">
-                <div className={`h-full rounded-full transition-[width] duration-500 ${t.bar}`} style={{ width: `${r.pct}%` }} />
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <MotionConfig reducedMotion="user">
+        <ul className="mt-4 space-y-3">
+          {rows.map((r, i) => {
+            const t = tone(r.pct);
+            return (
+              <li key={r.type}>
+                <div className="flex items-baseline justify-between gap-3 text-sm">
+                  <span className="font-semibold">{LABELS[r.type] ?? r.type}</span>
+                  <span className={`shrink-0 font-bold ${t.text}`}>
+                    {r.pct}% <span className="font-normal text-ink-muted">({r.correct}/{r.total})</span>
+                  </span>
+                </div>
+                <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-alt">
+                  <motion.div
+                    className={`h-full rounded-full ${t.bar}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${r.pct}%` }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
+                  />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </MotionConfig>
     </div>
   );
 }

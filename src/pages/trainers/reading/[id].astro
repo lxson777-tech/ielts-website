@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TestPlayer from '../../../components/TestPlayer';
+import { withBase } from '../../../lib/url';
+import { ALL_DRILLS } from '../../../lib/tests/drills';
+
+export function getStaticPaths() {
+  return ALL_DRILLS.map((d) => ({ params: { id: d.id }, props: { test: d.test } }));
+}
+
+const { test } = Astro.props;
+---
+
+<BaseLayout title={`${test.title} — IELTS Reading Drill`} bare>
+  <TestPlayer client:load test={test} hubUrl={withBase('/trainers/reading')} attemptKind="drill" />
+</BaseLayout>

@@ -1,26 +1,34 @@
 /* The speaking checker: pick a mode → read the question → record your answer
-   → repeat → get a report. Two independent practice modes: "Part 1" (a
-   topic's worth of short Q&A) and "Part 2 & 3" (a cue-card monologue after a
-   minute's prep, then matching follow-up discussion). Grading is
-   audio-native — the actual recordings go to gradeSpeaking(), never a
+   → repeat → get a report. Three independent practice modes: "Part 1" (a
+   topic's worth of short Q&A), "Part 2" (a cue-card monologue after a
+   minute's prep), and "Part 3" (the follow-up discussion for a cue card's
+   theme). Each in-progress screen shows a structure cheat-sheet (A.R.E. /
+   PEEL / OREO) so students can check it while prepping or answering. Grading
+   is audio-native — the actual recordings go to gradeSpeaking(), never a
    transcript — so Pronunciation can be judged from what was really said. */
 
 import { useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
+import type { StructureMethod } from '../data/speaking-structure-guides';
 import { nextInRotation } from '../lib/rotation';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../lib/speaking/recorder';
 import { toAnsweredClip, gradeSpeaking } from '../lib/speaking/grader';
 import BandReport from './BandReport';
+import SpeakingStructureGuide from './SpeakingStructureGuide';
 
-type Mode = 'part1' | 'part2and3';
+type Mode = 'part1' | 'part2' | 'part3';
 type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report';
+
+const STRUCTURE_METHOD: Record<Mode, StructureMethod> = { part1: 'ARE', part2: 'PEEL', part3: 'OREO' };
+const MODE_LABEL: Record<Mode, string> = { part1: 'Speaking Part 1', part2: 'Speaking Part 2', part3: 'Speaking Part 3' };
 
 interface Turn {
   question: string;
   maxMs: number;
   prepMs?: number;
+  isMonologue?: boolean;
 }
 
 interface CollectedClip {
@@ -86,15 +94,20 @@ export default function SpeakingTester() {
       promptTitleRef.current = cue.topic;
       setPromptTitle(cue.topic);
       cueCardRef.current = { topic: cue.topic, bullets: cue.bullets };
-      turns = [
-        {
-          question: `${cue.topic} You should say: ${cue.bullets.join('; ')}.`,
-          maxMs: 120_000,
-          prepMs: 60_000,
-        },
-        ...cue.part3Questions.map((q) => ({ question: q.text, maxMs: 60_000 })),
-      ];
-      expectedMinMsRef.current = 60_000;
+      if (m === 'part2') {
+        turns = [
+          {
+            question: `${cue.topic} You should say: ${cue.bullets.join('; ')}.`,
+            maxMs: 120_000,
+            prepMs: 60_000,
+            isMonologue: true,
+          },
+        ];
+        expectedMinMsRef.current = 60_000;
+      } else {
+        turns = cue.part3Questions.map((q) => ({ question: q.text, maxMs: 60_000 }));
+        expectedMinMsRef.current = turns.length * 20_000;
+      }
     }
     turnsRef.current = turns;
     setTurnCount(turns.length);
@@ -184,14 +197,15 @@ export default function SpeakingTester() {
     const clips = clipsRef.current;
     const answered: AnsweredClip[] = await Promise.all(clips.map((c) => toAnsweredClip(c.question, c)));
 
+    const monologueIdx = turnsRef.current.findIndex((t) => t.isMonologue);
     const attempt: SpeakingAttempt =
       modeRef.current === 'part1'
         ? { kind: 'part1', topic: promptTitleRef.current, answers: answered }
         : {
             kind: 'part2and3',
             cueCard: cueCardRef.current!,
-            monologue: answered[0]!,
-            followUps: answered.slice(1),
+            monologue: monologueIdx >= 0 ? answered[monologueIdx] : undefined,
+            followUps: answered.filter((_, i) => i !== monologueIdx),
           };
 
     const graded = await gradeSpeaking(attempt, clips, expectedMinMsRef.current);
@@ -315,10 +329,17 @@ export default function SpeakingTester() {
             </button>
             <button
               type="button"
-              onClick={() => void startMode('part2and3')}
+              onClick={() => void startMode('part2')}
               className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt"
             >
-              Part 2 &amp; 3 practice →
+              Part 2 practice →
+            </button>
+            <button
+              type="button"
+              onClick={() => void startMode('part3')}
+              className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt"
+            >
+              Part 3 practice →
             </button>
           </div>
           <p className="mt-3 text-xs text-ink-muted">
@@ -336,8 +357,7 @@ export default function SpeakingTester() {
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
-            {mode === 'part1' ? 'Speaking Part 1' : turnIndex === 0 ? 'Speaking Part 2' : 'Speaking Part 3'} ·{' '}
-            {promptTitle}
+            {MODE_LABEL[mode!]} · {promptTitle}
           </span>
           <span className="text-xs font-semibold text-ink-muted">
             Question {turnIndex + 1} / {turnCount}
@@ -345,6 +365,8 @@ export default function SpeakingTester() {
         </div>
         <p className="mt-3 text-[1.05rem] font-semibold leading-relaxed">{currentQuestion}</p>
       </div>
+
+      <SpeakingStructureGuide method={STRUCTURE_METHOD[mode!]} />
 
       {phase === 'asking' && (
         <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">

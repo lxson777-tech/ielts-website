@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { PracticeTest, Question, QuestionGroup, TestPart } from '../lib/tests/schema';
 import { bandEstimate, bandMidpoint, isCorrect, questionCount } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
 import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
+import ReadingStrategyPanel from './ReadingStrategyPanel';
 
 interface Props {
   test: PracticeTest;
@@ -367,6 +369,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                       dangerouslySetInnerHTML={{ __html: group.legendHtml }}
                     />
                   )}
+                  {attemptKind === 'drill' && <ReadingStrategyPanel type={group.type} />}
                   {group.type === 'diagram-labelling' && group.diagram && (
                     <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
                   )}
@@ -469,35 +472,53 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
       </footer>
 
       {/* ── Score modal ── */}
-      {showScore && (
-        <div className="modal-backdrop-in fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4" role="dialog" aria-modal="true">
-          <div className="modal-panel-in w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover">
-            <h2 className="font-display text-xl font-extrabold">Your Score</h2>
-            <p className="band-score-pop mt-4 font-display text-5xl font-extrabold text-brand">
-              {correctCount} / {TOTAL}
-            </p>
-            <p className="mt-2 text-ink-muted">{Math.round((correctCount / TOTAL) * 100)}% correct</p>
-            <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
-              Estimated Band: {bandEstimate(correctCount, TOTAL)}
-            </p>
-            <div className="mt-6 flex justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => setShowScore(false)}
-                className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+      <MotionConfig reducedMotion="user">
+        <AnimatePresence>
+          {showScore && (
+            <motion.div
+              className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4"
+              role="dialog"
+              aria-modal="true"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                className="w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover"
+                initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               >
-                Review Answers
-              </button>
-              <a
-                href={hubUrl}
-                className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
-              >
-                More Tests
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+                <h2 className="font-display text-xl font-extrabold">Your Score</h2>
+                <p className="band-score-pop mt-4 font-display text-5xl font-extrabold text-brand">
+                  {correctCount} / {TOTAL}
+                </p>
+                <p className="mt-2 text-ink-muted">{Math.round((correctCount / TOTAL) * 100)}% correct</p>
+                <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
+                  Estimated Band: {bandEstimate(correctCount, TOTAL)}
+                </p>
+                <div className="mt-6 flex justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowScore(false)}
+                    className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+                  >
+                    Review Answers
+                  </button>
+                  <a
+                    href={hubUrl}
+                    className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+                  >
+                    More Tests
+                  </a>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </MotionConfig>
     </div>
   );
 }

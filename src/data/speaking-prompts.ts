@@ -1,8 +1,8 @@
 /* Speaking practice prompts. Part 1 topics adapted from the material already
    taught in src/content/lesson-bodies/speaking-part1.html; Part 2 cue cards
    are original, in the standard IELTS "you should say" format, each paired
-   with matching Part 3 follow-ups. Drives the speaking checker at
-   /speaking/checker; more can be added freely. */
+   with matching Part 3 follow-ups. Drives the Speaking Trainer at
+   /trainers/speaking; more can be added freely. */
 
 import type { CueCard, Part1Topic } from '../lib/speaking/schema';
 

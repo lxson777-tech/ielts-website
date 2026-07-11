@@ -29,6 +29,12 @@ def run_agent(task, system_prompt, tools, tool_registry, model=DEFAULT_MODEL):
                     return block.text
             return ""
 
+        if response.stop_reason == "pause_turn":
+            # Hosted server tool (e.g. web_search) needs more iterations than
+            # fit in one turn — resend as-is to let the model continue.
+            messages.append({"role": "assistant", "content": response.content})
+            continue
+
         # stop_reason == "tool_use"
         messages.append({"role": "assistant", "content": response.content})
 

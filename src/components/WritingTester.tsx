@@ -16,6 +16,7 @@ import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
+import WritingStructureGuide from './WritingStructureGuide';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
@@ -403,6 +404,8 @@ export default function WritingTester() {
         </div>
         <p className="mt-2 text-[0.95rem] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt.promptHtml }} />
       </div>
+
+      <WritingStructureGuide variant={prompt.variant} />
 
       <textarea
         value={essay}

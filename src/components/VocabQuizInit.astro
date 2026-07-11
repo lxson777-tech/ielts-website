@@ -11,5 +11,9 @@
   import { initVocabQuizTriggers } from '../scripts/vocab-quiz';
   import { WORDS } from '../data/words';
 
-  initVocabQuizTriggers(WORDS);
+  // Module scripts only execute once, on the initial hard load — they don't
+  // re-run after a client-side (astro:transitions) navigation. Wiring up
+  // triggers only inside this listener (not also directly) covers both the
+  // first load and every subsequent page swap, since it fires on both.
+  document.addEventListener('astro:page-load', () => initVocabQuizTriggers(WORDS));
 </script>

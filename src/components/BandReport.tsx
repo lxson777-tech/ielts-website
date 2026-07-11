@@ -6,6 +6,8 @@
    render via `children`, slotted between the criteria grid and the
    strengths/improvements cards. */
 
+import { motion, MotionConfig } from 'framer-motion';
+
 export interface BandReportCriterion {
   key: string;
   label: string;
@@ -52,26 +54,40 @@ export default function BandReport({
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {criteria.map((c) => (
-          <div key={c.key} className="flex flex-col rounded-card border border-border bg-surface p-4 shadow-card">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-bold">{c.label}</span>
-              <span className="rounded-full bg-brand-tint px-2.5 py-0.5 font-display text-sm font-extrabold text-brand">
-                {c.band.toFixed(1)}
-              </span>
-            </div>
-            <p className="mt-2 text-sm text-ink-muted">{c.comment}</p>
-            {c.tip && (
-              <p className="mt-auto pt-3">
-                <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
-                  <strong className="text-brand">→ Band {Math.min(9, c.band + 1)}:</strong> {c.tip}
+      <MotionConfig reducedMotion="user">
+        <motion.div
+          className="grid gap-4 sm:grid-cols-2"
+          initial="hidden"
+          animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }}
+        >
+          {criteria.map((c) => (
+            <motion.div
+              key={c.key}
+              className="flex flex-col rounded-card border border-border bg-surface p-4 shadow-card"
+              variants={{
+                hidden: { opacity: 0, y: 12 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold">{c.label}</span>
+                <span className="rounded-full bg-brand-tint px-2.5 py-0.5 font-display text-sm font-extrabold text-brand">
+                  {c.band.toFixed(1)}
                 </span>
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
+              </div>
+              <p className="mt-2 text-sm text-ink-muted">{c.comment}</p>
+              {c.tip && (
+                <p className="mt-auto pt-3">
+                  <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
+                    <strong className="text-brand">→ Band {Math.min(9, c.band + 1)}:</strong> {c.tip}
+                  </span>
+                </p>
+              )}
+            </motion.div>
+          ))}
+        </motion.div>
+      </MotionConfig>
 
       {children}
 

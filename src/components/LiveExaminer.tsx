@@ -10,6 +10,7 @@
    part, the cue card when it matters. */
 
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { SpeakingCriterionKey, SpeakingGradeResult } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
@@ -445,9 +446,11 @@ export default function LiveExaminer() {
 
   /* ── screens ───────────────────────────────────────────────────────── */
 
+  let content: React.ReactNode;
+
   if (phase === 'report' && result) {
     const m = result.mechanics;
-    return (
+    content = (
       <div className="space-y-6">
         <BandReport
           title="Live mock speaking test"
@@ -512,10 +515,8 @@ export default function LiveExaminer() {
         </div>
       </div>
     );
-  }
-
-  if (phase === 'menu') {
-    return (
+  } else if (phase === 'menu') {
+    content = (
       <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking · Live</p>
@@ -546,19 +547,15 @@ export default function LiveExaminer() {
         </button>
       </div>
     );
-  }
-
-  if (phase === 'connecting') {
-    return (
+  } else if (phase === 'connecting') {
+    content = (
       <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <p className="text-sm text-ink-muted">Connecting you to {EXAMINER_NAME}…</p>
       </div>
     );
-  }
-
-  if (phase === 'grading') {
+  } else if (phase === 'grading') {
     const step = GRADING_STEPS[gradeStep % GRADING_STEPS.length]!;
-    return (
+    content = (
       <div className="relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <style>{LX_STYLES}</style>
         <div className="lx-ambient" aria-hidden="true" style={{ animationDuration: '18s' }} />
@@ -597,10 +594,8 @@ export default function LiveExaminer() {
         </div>
       </div>
     );
-  }
-
-  if (phase === 'error') {
-    return (
+  } else if (phase === 'error') {
+    content = (
       <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <p className="mx-auto max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>
         <button
@@ -612,8 +607,7 @@ export default function LiveExaminer() {
         </button>
       </div>
     );
-  }
-
+  } else {
   /* ── the interview screen ── */
   const cue = planRef.current?.cueCard;
   const stageLabel =
@@ -624,7 +618,7 @@ export default function LiveExaminer() {
 
   const orbMode = stage === 'part2prep' ? 'lx-prep' : examinerTalking ? 'lx-speaking' : 'lx-listening';
 
-  return (
+  content = (
     <div className="space-y-4">
       <style>{LX_STYLES}</style>
       <div className={`lx-stage relative overflow-hidden rounded-card border border-border bg-surface p-6 shadow-card ${orbMode}`}>
@@ -758,6 +752,23 @@ export default function LiveExaminer() {
 
       {notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
     </div>
+  );
+  }
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={phase}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+    </MotionConfig>
   );
 }
 

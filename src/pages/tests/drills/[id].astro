@@ -1,16 +1,30 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import TestPlayer from '../../../components/TestPlayer';
-import { withBase } from '../../../lib/url';
+/* Standalone redirect page: the drills moved to /trainers/reading/[id].
+   Astro's config-level `redirects` can't express this one because it needs
+   a live dynamic route at the OLD path to enumerate which ids to generate
+   pages for, and that route no longer exists — so this file *is* the
+   redirect, one static meta-refresh page per old drill id. */
 import { ALL_DRILLS } from '../../../lib/tests/drills';
+import { withBase } from '../../../lib/url';
 
 export function getStaticPaths() {
-  return ALL_DRILLS.map((d) => ({ params: { id: d.id }, props: { test: d.test } }));
+  return ALL_DRILLS.map((d) => ({ params: { id: d.id } }));
 }
 
-const { test } = Astro.props;
+const { id } = Astro.params;
+const target = withBase(`/trainers/reading/${id}`);
 ---
 
-<BaseLayout title={`${test.title} — IELTS Reading Drill`} bare>
-  <TestPlayer client:load test={test} hubUrl={withBase('/tests/drills')} attemptKind="drill" />
-</BaseLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <meta name="robots" content="noindex" />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <a href={target}>Redirecting to {target}</a>
+  </body>
+</html>

@@ -11,13 +11,30 @@ interface Props {
   description?: string;
   /** Hide nav/footer chrome (used by the fullscreen test player). */
   bare?: boolean;
+  /** Root-relative image path (e.g. '/pics/hero.png'), passed through withBase(). */
+  ogImage?: string;
+  /** Defaults to 'website'; blog posts should pass 'article'. */
+  ogType?: string;
 }
 
 const {
   title,
   description = 'Free IELTS preparation — lessons, strategies and timed practice tests for every skill.',
   bare = false,
+  ogImage = '/pics/hero.png',
+  ogType = 'website',
 } = Astro.props;
+
+const canonicalUrl = new URL(withBase(Astro.url.pathname), Astro.site).toString();
+const absoluteOgImage = new URL(withBase(ogImage), Astro.site).toString();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: 'IELTS Website',
+  description: 'Free IELTS preparation — lessons, strategies and timed practice tests for every skill.',
+  url: new URL(withBase('/'), Astro.site).toString(),
+};
 ---
 
 <!doctype html>
@@ -27,7 +44,21 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="canonical" href={canonicalUrl} />
     <title>{title}</title>
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
     <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col bg-surface text-ink">
