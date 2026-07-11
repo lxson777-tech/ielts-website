@@ -261,6 +261,12 @@
 .lesson-hero-word-text:focus-visible {
   text-decoration: underline;
   text-underline-offset: 4px;
+  /* The word drifts continuously (15s linear infinite) — without this,
+     it's a moving target that a pointer click can almost never land on.
+     Freezing it in place the instant the cursor reaches it turns "chase
+     and click" into "wait for it to pass under your cursor, then click". */
+  animation-play-state: paused;
+  opacity: 0.4;
 }
 .lesson-hero-word-text:focus-visible {
   outline: 2px solid var(--skill, var(--color-brand));
