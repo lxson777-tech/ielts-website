@@ -782,74 +782,6 @@
   color: var(--color-success);
   font-size: 1rem;
 }
-.lesson-body .quiz-h3 {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-}
-
-/* ── Vocabulary quiz ──────────────────────────────────────────── */
-.lesson-body .vocab-quiz-word {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-bottom: 0.3rem;
-}
-.lesson-body .vocab-quiz-progress {
-  font-size: 0.8rem;
-  color: var(--color-ink-muted);
-  margin-bottom: 1rem;
-}
-.lesson-body .vocab-quiz-opt {
-  display: block;
-  width: 100%;
-  text-align: left;
-  margin-top: 0.4rem;
-  padding: 0.5rem 0.9rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-button);
-  background: var(--color-surface);
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.15s, border-color 0.15s;
-}
-.lesson-body .vocab-quiz-opt:hover:not(:disabled) {
-  border-color: var(--color-brand);
-  background: var(--color-brand-tint);
-}
-.lesson-body .vocab-quiz-opt.correct {
-  border-color: var(--color-success);
-  background: var(--color-success-tint);
-  color: var(--color-success);
-  font-weight: 600;
-}
-.lesson-body .vocab-quiz-opt.wrong {
-  border-color: var(--color-error);
-  background: var(--color-error-tint);
-  color: var(--color-error);
-}
-.lesson-body .vocab-quiz-next {
-  margin-top: 1rem;
-  padding: 0.5rem 1.3rem;
-  background: var(--color-brand);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-button);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.87rem;
-  display: none;
-  transition: background 0.2s;
-}
-.lesson-body .vocab-quiz-next:hover { background: var(--color-brand-hover); }
-.lesson-body .vocab-quiz-final {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-success);
-  margin-top: 0.5rem;
-}
-
 /* ── Mobile ───────────────────────────────────────────────────── */
 @media (max-width: 520px) {
   .lesson-body .section-num { width: 2.25rem; height: 2.25rem; font-size: 1rem; }
@@ -863,7 +795,5 @@
   .lesson-body .quiz-q { width: 100%; order: 2; }
   .lesson-body .quiz-num { order: 1; }
   .lesson-body .quiz-select { order: 3; margin-left: 1.6rem; }
-  .lesson-body .quiz-check-btn,
-  .lesson-body .vocab-quiz-next,
-  .lesson-body .vocab-quiz-opt { min-height: 44px; }
+  .lesson-body .quiz-check-btn { min-height: 44px; }
 }

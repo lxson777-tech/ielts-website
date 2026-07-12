@@ -90,15 +90,11 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
 </style>
 
 <script>
-  import { initReadingQuiz, initVocabQuiz } from '../scripts/lesson-quiz';
+  import { initReadingQuiz } from '../scripts/lesson-quiz';
   import type { VocabWord } from '../scripts/vocab-quiz';
   import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
 
   initReadingQuiz();
-  const vocabData = document.getElementById('vocab-words-data');
-  if (vocabData?.textContent) {
-    initVocabQuiz(JSON.parse(vocabData.textContent));
-  }
 
   // Floating vocabulary word that drifts across the hero panel — one
   // word per lap, swapped to a new random word (never repeating the

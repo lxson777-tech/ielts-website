@@ -1,14 +1,11 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
 import { withBase } from '../../lib/url';
-import { WORDS } from '../../data/words';
 import raw from '../../content/lesson-bodies/vocabulary.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
-const quizWords = WORDS.map(({ word, def }) => ({ word, def }));
 ---
 
 <LessonLayout slug="vocabulary">
-  <script is:inline type="application/json" id="vocab-words-data" set:html={JSON.stringify(quizWords)} />
   <Fragment set:html={body} />
 </LessonLayout>
