@@ -75,6 +75,11 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     title: 'Family & Relationships',
     blurb: 'Family structure, childcare and generational change — a Speaking Part 1–2 staple.',
   },
+  {
+    slug: 'conjunctions',
+    title: 'Conjunctions & Linking Words',
+    blurb: 'Although, whereas, therefore, provided that — the linking words that lift Coherence and Cohesion.',
+  },
 ];
 
 export function getVocabularyPart(slug: string): VocabularyPart | undefined {
