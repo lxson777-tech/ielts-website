@@ -33,8 +33,8 @@ function buildDrill(source: PracticeTest, partIndex: number): PracticeTest {
   return {
     id: `${source.id}-drill-p${partIndex + 1}`,
     skill: source.skill,
-    title: `${part.label} Drill — ${passageTitle(source, partIndex)}`,
-    description: `One timed passage from "${source.title}" — ${questionCount} questions in ${minutes} minutes. Good for practicing pace on a single passage without committing to a full exam.`,
+    title: `${part.label} Drill: ${passageTitle(source, partIndex)}`,
+    description: `One timed passage from "${source.title}", ${questionCount} questions in ${minutes} minutes. Good for practicing pace on a single passage without committing to a full exam.`,
     durationMinutes: minutes,
     parts: [part],
   };

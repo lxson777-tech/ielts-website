@@ -15,6 +15,7 @@ import type { StructureMethod } from '../data/speaking-structure-guides';
 import { nextInRotation } from '../lib/rotation';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../lib/speaking/recorder';
 import { toAnsweredClip, gradeSpeaking } from '../lib/speaking/grader';
+import { recordSpeakingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
 import SpeakingStructureGuide from './SpeakingStructureGuide';
 
@@ -70,7 +71,7 @@ export default function SpeakingTester() {
     try {
       stream = await requestMic();
     } catch {
-      setMicError('Microphone access is required for the Speaking test — please allow the permission and try again.');
+      setMicError('Microphone access is required for the Speaking test. Please allow the permission and try again.');
       return;
     }
     streamRef.current = stream;
@@ -213,6 +214,19 @@ export default function SpeakingTester() {
       releaseMic(streamRef.current);
       streamRef.current = null;
     }
+    // Persist to the on-device history so speaking shows a band-over-time trend
+    // like reading and writing already do (previously it was never recorded).
+    const gradedMode = modeRef.current;
+    if (gradedMode) {
+      recordSpeakingAttempt({
+        at: new Date().toISOString(),
+        mode: gradedMode,
+        topic: promptTitleRef.current,
+        overallBand: graded.overallBand,
+        criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
+        live: graded.grader.live,
+      });
+    }
     setResult(graded);
     setPhase('report');
   }
@@ -239,7 +253,7 @@ export default function SpeakingTester() {
           title={promptTitle}
           overallBand={result.overallBand}
           live={result.grader.live}
-          offlineWarning="Only Fluency & Coherence has any real signal without an AI examiner (from timing alone) — Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading."
+          offlineWarning="Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading."
           criteria={SPEAKING_CRITERIA.map((c) => ({
             key: c.key,
             label: c.label,
@@ -276,7 +290,7 @@ export default function SpeakingTester() {
                 {result.moments.map((mo, i) => (
                   <li key={i}>
                     <span className="italic text-ink-muted">&ldquo;{mo.quote}&rdquo;</span>
-                    <span className="block text-ink-muted">— {mo.note}</span>
+                    <span className="block text-ink-muted">· {mo.note}</span>
                   </li>
                 ))}
               </ul>
@@ -313,7 +327,7 @@ export default function SpeakingTester() {
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking</p>
           <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Speaking Test</h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-            Pick a part. Questions are read aloud — record your answer with your microphone, and an AI examiner
+            Pick a part. Questions are read aloud, record your answer with your microphone, and an AI examiner
             grades you on the four official IELTS Speaking criteria.
           </p>
           {micError && (
@@ -385,7 +399,7 @@ export default function SpeakingTester() {
         <div className="screen-in space-y-3">
           <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
             <p className="font-display text-4xl font-extrabold text-brand">{prepSecondsLeft}s</p>
-            <p className="mt-1 text-sm text-ink-muted">Prep time — plan what you'll say. You can start early.</p>
+            <p className="mt-1 text-sm text-ink-muted">Prep time: plan what you'll say. You can start early.</p>
             <button
               type="button"
               onClick={skipPrep}
@@ -408,7 +422,7 @@ export default function SpeakingTester() {
         <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
           <p className="flex items-center justify-center gap-2 text-sm font-semibold text-error">
             <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-error" aria-hidden="true" />
-            Recording — {Math.ceil(remainingMs / 1000)}s left
+            Recording: {Math.ceil(remainingMs / 1000)}s left
           </p>
           <button
             type="button"

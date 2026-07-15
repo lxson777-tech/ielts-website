@@ -13,7 +13,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'environment',
     title: 'Environment & Ecology',
-    blurb: 'Climate, energy and conservation — the most common essay topic of all.',
+    blurb: 'Climate, energy and conservation. The most common essay topic of all.',
   },
   {
     slug: 'technology',
@@ -28,7 +28,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'education',
     title: 'Education & Learning',
-    blurb: 'Schools, universities and lifelong learning — a Speaking Part 3 favourite.',
+    blurb: 'Schools, universities and lifelong learning. A Speaking Part 3 favourite.',
   },
   {
     slug: 'society',
@@ -38,22 +38,22 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'ai',
     title: 'Artificial Intelligence',
-    blurb: 'Automation, machine learning and job displacement — the fastest-growing essay theme of 2026.',
+    blurb: 'Automation, machine learning and job displacement. The fastest-growing essay theme of 2026.',
   },
   {
     slug: 'social-media',
     title: 'Social Media & Digital Life',
-    blurb: 'Echo chambers, influencers and screen time — a constant Speaking Part 1–3 topic.',
+    blurb: 'Echo chambers, influencers and screen time. A constant Speaking Part 1-3 topic.',
   },
   {
     slug: 'crime',
     title: 'Crime & Law',
-    blurb: 'Punishment, rehabilitation and the causes of crime — around 1 in 10 Task 2 essays.',
+    blurb: 'Punishment, rehabilitation and the causes of crime. Around 1 in 10 Task 2 essays.',
   },
   {
     slug: 'work',
     title: 'Work & Employment',
-    blurb: 'The gig economy, redundancy and the four-day week — the most common Speaking Part 1 topic.',
+    blurb: 'The gig economy, redundancy and the four-day week. The most common Speaking Part 1 topic.',
   },
   {
     slug: 'government',
@@ -63,7 +63,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'travel',
     title: 'Travel & Tourism',
-    blurb: 'Overtourism, eco-tourism and transport — a Speaking and Writing regular.',
+    blurb: 'Overtourism, eco-tourism and transport. A Speaking and Writing regular.',
   },
   {
     slug: 'housing',
@@ -73,12 +73,12 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'family',
     title: 'Family & Relationships',
-    blurb: 'Family structure, childcare and generational change — a Speaking Part 1–2 staple.',
+    blurb: 'Family structure, childcare and generational change. A Speaking Part 1-2 staple.',
   },
   {
     slug: 'conjunctions',
     title: 'Conjunctions & Linking Words',
-    blurb: 'Although, whereas, therefore, provided that — the linking words that lift Coherence and Cohesion.',
+    blurb: 'Although, whereas, therefore, provided that. The linking words that lift Coherence and Cohesion.',
   },
 ];
 

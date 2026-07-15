@@ -8,7 +8,7 @@ export default function SpeakingStructureGuide({ method }: { method: StructureMe
   return (
     <Accordion
       className="rounded-card border border-border bg-surface-alt p-4"
-      summary={`Structure cheat-sheet — ${guide.title}`}
+      summary={`Structure cheat-sheet: ${guide.title}`}
     >
       <div className="mt-3 space-y-3">
         {guide.stages.map((stage) => (

@@ -29,7 +29,10 @@ function BandChart({ rows }: { rows: Row[] }) {
   const yMax = 9;
 
   const x = (i: number) => PAD.left + (rows.length === 1 ? innerW / 2 : (i / (rows.length - 1)) * innerW);
-  const y = (band: number) => PAD.top + innerH - ((band - yMin) / (yMax - yMin)) * innerH;
+  // Clamp to the plotted range: bands can now come back below 4 (e.g. 3.5), and
+  // an unclamped point would render below the axis.
+  const y = (band: number) =>
+    PAD.top + innerH - ((Math.max(yMin, Math.min(yMax, band)) - yMin) / (yMax - yMin)) * innerH;
 
   const path = rows.map((r, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(r.attempt.band).toFixed(1)}`).join(' ');
   const gridBands = [5, 6, 7, 8, 9];

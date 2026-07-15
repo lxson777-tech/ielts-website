@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StudyPlan from '../components/StudyPlan';
+---
+
+<BaseLayout
+  title="Start Here · IELTS Portal"
+  description="New to IELTS or short on time? Answer two questions and get a personalised, step-by-step study plan that links straight to the lessons, trainers and practice tests you need."
+>
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="Start Here"
+      title="Your personal study plan"
+      subtitle="Not sure where to begin? Tell us your target band and test date, and we'll lay out exactly what to do, in order, with a link to each step. Tick things off as you go."
+    />
+    <StudyPlan client:load />
+  </div>
+</BaseLayout>

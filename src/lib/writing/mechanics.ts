@@ -163,39 +163,39 @@ export function analyzeEssay(input: EssayInput): MechanicsReport {
   const notes: string[] = [];
   if (underLength) {
     notes.push(
-      `Under the ${prompt.minWords}-word minimum (${wordCount} words) — this caps your Task Achievement band.`,
+      `Under the ${prompt.minWords}-word minimum (${wordCount} words), which caps your Task Achievement band.`,
     );
   } else {
-    notes.push(`${wordCount} words — comfortably over the ${prompt.minWords}-word minimum.`);
+    notes.push(`${wordCount} words, comfortably over the ${prompt.minWords}-word minimum.`);
   }
   if (sentenceCount >= 3) {
     if (sentenceLengthSpread < 3) {
-      notes.push('Sentence lengths are very uniform — mix short and long sentences for rhythm.');
+      notes.push('Sentence lengths are very uniform. Mix short and long sentences for rhythm.');
     } else if (avgSentenceLength > 30) {
-      notes.push('Your sentences are long on average — check for run-ons you could split.');
+      notes.push('Your sentences are long on average. Check for run-ons you could split.');
     } else {
       notes.push('Good variation in sentence length.');
     }
   }
   if (lexicalDiversity < 0.42) {
-    notes.push('Vocabulary is quite repetitive — vary word choice to lift Lexical Resource.');
+    notes.push('Vocabulary is quite repetitive. Vary word choice to lift Lexical Resource.');
   } else if (lexicalDiversity >= 0.55) {
-    notes.push('Varied vocabulary — a strong Lexical Resource signal.');
+    notes.push('Varied vocabulary: a strong Lexical Resource signal.');
   }
   if (overusedWords.length) {
     const top = overusedWords[0]!;
-    notes.push(`You repeat "${top.word}" ${top.count} times — try synonyms.`);
+    notes.push(`You repeat "${top.word}" ${top.count} times. Try synonyms.`);
   }
   if (linkerTotal === 0 && sentenceCount > 3) {
-    notes.push('No linking words detected — add cohesive devices (However, Moreover, For example…).');
+    notes.push('No linking words detected. Add cohesive devices (However, Moreover, For example…).');
   } else if (connectiveDensity > 0.8) {
-    notes.push('Heavy use of linking words — a few are being overused; let some ideas connect naturally.');
+    notes.push('Heavy use of linking words: a few are being overused; let some ideas connect naturally.');
   }
   if (flags.length) {
     notes.push(`${flags.length} likely spelling slip${flags.length > 1 ? 's' : ''} detected.`);
   }
   if (offTopicRisk) {
-    notes.push('Low overlap with the question wording — make sure you are answering the prompt directly.');
+    notes.push('Low overlap with the question wording. Make sure you are answering the prompt directly.');
   }
 
   return {

@@ -19,7 +19,7 @@ interface Props {
 
 const {
   title,
-  description = 'Free IELTS preparation — lessons, strategies and timed practice tests for every skill.',
+  description = 'Free IELTS preparation: lessons, strategies and timed practice tests for every skill.',
   bare = false,
   ogImage = '/pics/hero.png',
   ogType = 'website',
@@ -32,7 +32,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'EducationalOrganization',
   name: 'IELTS Website',
-  description: 'Free IELTS preparation — lessons, strategies and timed practice tests for every skill.',
+  description: 'Free IELTS preparation: lessons, strategies and timed practice tests for every skill.',
   url: new URL(withBase('/'), Astro.site).toString(),
 };
 ---

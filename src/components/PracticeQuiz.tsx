@@ -30,9 +30,9 @@ const PRAISE = ['Nice one!', 'Exactly right!', 'Well spotted!', 'Perfect!', 'Cor
 function scoreMessage(correct: number, total: number): string {
   const p = correct / total;
   if (p === 1) return 'Flawless! You have mastered this question type. 🏆';
-  if (p >= 0.8) return 'Excellent work — almost perfect! 🌟';
+  if (p >= 0.8) return 'Excellent work, almost perfect! 🌟';
   if (p >= 0.6) return 'Good job! Review the explanations you missed and go again. 💪';
-  if (p >= 0.4) return 'Getting there — reread the strategy above and try again. 📖';
+  if (p >= 0.4) return 'Getting there. Reread the strategy above and try again. 📖';
   return 'Tough round! Study the explanations, then hit Try again. 🔄';
 }
 
@@ -237,7 +237,7 @@ export default function PracticeQuiz({ set }: Props) {
                     </p>
                   ) : (
                     <p>
-                      <strong className="text-error">💡 Not quite — the answer is “{answerLabel(q)}”.</strong>{' '}
+                      <strong className="text-error">💡 Not quite. The answer is “{answerLabel(q)}”.</strong>{' '}
                       {q.explanation}
                     </p>
                   )}

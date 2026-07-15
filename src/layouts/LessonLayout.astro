@@ -1,7 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Badge from '../components/Badge.astro';
-import VocabQuizTrigger from '../components/VocabQuizTrigger.astro';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
 import { WORDS } from '../data/words';
@@ -70,7 +69,6 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
       <slot />
 
       <div class="mt-12 flex flex-col items-center gap-4 border-t border-border pt-8">
-        <VocabQuizTrigger />
         <button
           type="button"
           id="lesson-complete-btn"
@@ -128,7 +126,7 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
       btn.toggleAttribute('data-done', done);
       btn.querySelector('[data-icon]')!.textContent = done ? '✓' : '○';
       btn.querySelector('[data-label]')!.textContent = done
-        ? 'Lesson completed — tap to undo'
+        ? 'Lesson completed, tap to undo'
         : 'Mark lesson as complete';
     };
     render(isLessonComplete(slug));

@@ -114,7 +114,7 @@ export default function LiveExaminer() {
       });
     } catch {
       setPhase('menu');
-      setError('Microphone access is required — please allow the permission and try again.');
+      setError('Microphone access is required. Please allow the permission and try again.');
       return;
     }
     streamRef.current = stream;
@@ -400,7 +400,7 @@ export default function LiveExaminer() {
     planRef.current = buildExamPlan();
     setPhase('interview');
     setStageBoth('part1');
-    setCaption('This is a design preview — the examiner is not connected.');
+    setCaption('This is a design preview. The examiner is not connected.');
     startOrbLoop();
     every(() => setElapsedS((s) => s + 1), 1000);
     every(() => setExaminerTalking(Math.floor(performance.now() / 4500) % 2 === 0), 250);
@@ -483,7 +483,7 @@ export default function LiveExaminer() {
                 {result.moments.map((mo, i) => (
                   <li key={i}>
                     <span className="italic text-ink-muted">&ldquo;{mo.quote}&rdquo;</span>
-                    <span className="block text-ink-muted">— {mo.note}</span>
+                    <span className="block text-ink-muted">· {mo.note}</span>
                   </li>
                 ))}
               </ul>
@@ -522,13 +522,13 @@ export default function LiveExaminer() {
         <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking · Live</p>
         <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Live Mock Test with an AI Examiner</h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          A real-time spoken interview — all three parts, ~12 minutes. {EXAMINER_NAME} asks questions out loud,
+          A real-time spoken interview, all three parts, ~12 minutes. {EXAMINER_NAME} asks questions out loud,
           listens to your answers, and follows up on what <em>you</em> say, exactly like the real test. You'll get a
           full band report at the end.
         </p>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· Use headphones if you can, in a quiet room</li>
-          <li>· Speak naturally — the examiner waits while you think</li>
+          <li>· Speak naturally, the examiner waits while you think</li>
           <li>· You can ask her to repeat or rephrase a question</li>
         </ul>
         {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
@@ -589,7 +589,7 @@ export default function LiveExaminer() {
           </div>
 
           <p className="mt-6 text-xs text-ink-muted">
-            Three independent assessments are compared — the median becomes your report. ~1 minute.
+            Three independent assessments are compared, and the median becomes your report. ~1 minute.
           </p>
         </div>
       </div>
@@ -673,15 +673,15 @@ export default function LiveExaminer() {
           >
             {stage === 'part2prep' ? (
               <>
-                ✍ Prepare your talk —{' '}
+                ✍ Prepare your talk:{' '}
                 <span className="lx-tick inline-block font-display text-base font-extrabold" key={prepSecondsLeft}>
                   {prepSecondsLeft}s
                 </span>
               </>
             ) : examinerTalking ? (
-              `${EXAMINER_NAME} is speaking — listen`
+              `${EXAMINER_NAME} is speaking: listen`
             ) : (
-              'Your turn — speak'
+              'Your turn: speak'
             )}
           </p>
           {showCaptions && caption && (
@@ -703,7 +703,7 @@ export default function LiveExaminer() {
               onClick={beginPart2Talk}
               className="rounded-button bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover"
             >
-              I'm ready — start speaking →
+              I'm ready, start speaking →
             </button>
           )}
           {stage === 'part2talk' && (
@@ -916,10 +916,10 @@ const LX_STYLES = `
 const GRADE_STEP_MS = 4000;
 const GRADING_STEPS: { text: string; crit?: SpeakingCriterionKey }[] = [
   { text: 'Replaying your interview…' },
-  { text: 'Checking Fluency & Coherence — pacing, hesitation, linking…', crit: 'fluencyCoherence' },
-  { text: 'Assessing Lexical Resource — range, precision, paraphrase…', crit: 'lexicalResource' },
+  { text: 'Checking Fluency & Coherence: pacing, hesitation, linking…', crit: 'fluencyCoherence' },
+  { text: 'Assessing Lexical Resource: range, precision, paraphrase…', crit: 'lexicalResource' },
   { text: 'Checking Grammatical Range & Accuracy…', crit: 'grammaticalRange' },
-  { text: 'Listening closely to Pronunciation — stress, rhythm, clarity…', crit: 'pronunciation' },
+  { text: 'Listening closely to Pronunciation: stress, rhythm, clarity…', crit: 'pronunciation' },
   { text: 'Comparing independent assessments…' },
 ];
 

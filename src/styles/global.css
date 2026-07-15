@@ -301,17 +301,11 @@
 
 /* ── Vocab quiz inline panel ─────────────────────────────────────────
    "Choose the right meaning" check, expanding in place — no overlay,
-   no modal. Every [data-vocab-quiz-trigger] (the floating hero word on
-   lesson pages, any <VocabQuizTrigger /> dropped into a page) owns a
-   panel that toggles open/closed right where the trigger lives, like
-   an accordion. Same success/error tones as the in-lesson
-   .vocab-quiz-opt (lesson.css), just a different container. */
-.vocab-quiz-inline {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-}
+   no modal. The floating hero word on lesson pages
+   ([data-vocab-quiz-trigger]) owns a panel that toggles open/closed
+   right where the trigger lives, like an accordion. Same success/error
+   tones as the in-lesson .vocab-quiz-opt (lesson.css), just a different
+   container. */
 .vocab-quiz-panel {
   width: 100%;
   max-width: 26rem;
@@ -567,6 +561,22 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .wotd-fade { transition: none; }
+}
+
+/* ── Tap-to-reveal panel (Word of the Day, writing vocab cards) ───
+   CSS-only expand/collapse via grid-template-rows — no JS height
+   measurement needed. Shared by any component that reveals a hidden
+   block of text on click instead of using the Accordion component. */
+.grid-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.grid-reveal.is-open {
+  grid-template-rows: 1fr;
+}
+@media (prefers-reduced-motion: reduce) {
+  .grid-reveal { transition: none; }
 }
 
 /* ── Table row interactivity ──────────────────────────────────── */

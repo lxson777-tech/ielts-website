@@ -32,127 +32,142 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
     <SectionHeading
       eyebrow="Practice"
       title="Take a Practice Test"
-      subtitle="Press start and you'll get a full IELTS exam — a different test every time, until you've done them all. Instant scoring, an estimated band, and results saved on this device."
+      subtitle="Press start and you'll get a full IELTS exam, a different test every time, until you've done them all. Instant scoring, an estimated band, and results saved on this device."
     />
 
-    <div class="skill-reading relative overflow-hidden rounded-card border border-border bg-surface shadow-card">
-      <span class="absolute inset-x-0 top-0 h-1 bg-[var(--skill)]"></span>
-      <div class="grid items-center gap-8 p-8 sm:p-10 md:grid-cols-[1fr_minmax(0,300px)]">
-        <div class="text-center md:text-left">
-          <Badge tone="skill">Reading</Badge>
-          <h3 class="mt-3 font-display text-2xl font-extrabold sm:text-3xl">Full Reading Test</h3>
-          <p class="mt-2 text-sm text-ink-muted sm:text-[0.95rem]">
-            {ALL_TESTS.length} complete exams in rotation — you won't see the same test twice until
-            you've taken them all.
-          </p>
-          <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm font-semibold text-ink-muted md:justify-start">
-            <span>{sample.parts.length} passages</span>
-            <span>{questionCount(sample)} questions</span>
-            <span>⏱ {sample.durationMinutes} min</span>
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="skill-reading group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover">
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[var(--skill-tint)] opacity-80 blur-2xl transition-transform duration-500 group-hover:scale-125"
+        >
+        </div>
+        <div class="relative flex flex-1 flex-col p-6">
+          <div class="flex items-start justify-between gap-3">
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--skill-tint)] text-[var(--skill)]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
+                <path d="M12 6.5c-1.5-1-4-1.5-6-1.5v13c2 0 4.5.5 6 1.5m0-13c1.5-1 4-1.5 6-1.5v13c-2 0-4.5.5-6 1.5m0-13v13" />
+              </svg>
+            </span>
+            <Badge tone="skill">Reading</Badge>
           </div>
-          <button
-            type="button"
-            id="start-test"
-            data-test-ids={JSON.stringify(testIds)}
-            class="mt-7 rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
-          >
-            Start a test →
-          </button>
-          <p class="mt-3 text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
-          <p class="mt-4 text-sm">
-            <a href={withBase('/trainers/reading')} class="font-semibold text-brand hover:underline">
+          <h3 class="mt-4 font-display text-xl font-extrabold">Full Reading Test</h3>
+          <p class="mt-1.5 text-sm text-ink-muted">
+            {ALL_TESTS.length} complete exams in rotation, a different one every attempt until you've
+            taken them all.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{sample.parts.length} passages</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{questionCount(sample)} questions</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">⏱ {sample.durationMinutes} min</span>
+          </div>
+          <div class="mt-auto flex flex-col gap-2 pt-6">
+            <button
+              type="button"
+              id="start-test"
+              data-test-ids={JSON.stringify(testIds)}
+              class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+            >
+              Start a test <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+            </button>
+            <p class="text-center text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
+            <a href={withBase('/trainers/reading')} class="text-center text-xs font-semibold text-[var(--skill)] hover:underline">
               Only have 20 minutes? Try the Reading Trainer →
             </a>
-          </p>
-        </div>
-        <img
-          src={withBase('/pics/reading/start-test.png')}
-          alt="Stopwatch at 60:00 beside a reading test booklet"
-          class="mx-auto -order-1 w-full max-w-[240px] md:order-none md:max-w-[300px]"
-          loading="lazy"
-        />
-      </div>
-    </div>
-
-    <div class="skill-writing relative mt-8 overflow-hidden rounded-card border border-border bg-surface shadow-card">
-      <span class="absolute inset-x-0 top-0 h-1 bg-[var(--skill)]"></span>
-      <div class="grid items-center gap-8 p-8 sm:p-10 md:grid-cols-[1fr_minmax(0,300px)]">
-        <div class="text-center md:text-left">
-          <Badge tone="skill">Writing</Badge>
-          <h3 class="mt-3 font-display text-2xl font-extrabold sm:text-3xl">Writing Checker</h3>
-          <p class="mt-2 text-sm text-ink-muted sm:text-[0.95rem]">
-            Get instant, AI-graded feedback on Task 1 and Task 2 essays — plus a mechanics check on
-            length, vocabulary, cohesion and spelling.
-          </p>
-          <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm font-semibold text-ink-muted md:justify-start">
-            <span>{task1Count} Task 1 prompts</span>
-            <span>{task2Count} Task 2 prompts</span>
-            <span>✨ Instant AI feedback</span>
           </div>
-          <a
-            href={withBase('/trainers/writing')}
-            class="mt-7 inline-block rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
-          >
-            Start writing →
-          </a>
-          <p class="mt-3 text-xs text-ink-muted">A different prompt every attempt — write at your own pace.</p>
         </div>
-        <img
-          src={withBase('/pics/writing/start-task.png')}
-          alt="Essay draft with a band-score feedback panel beside it"
-          class="mx-auto -order-1 w-full max-w-[240px] md:order-none md:max-w-[300px]"
-          loading="lazy"
-        />
       </div>
-    </div>
 
-    <div class="skill-speaking relative mt-8 overflow-hidden rounded-card border border-border bg-surface shadow-card">
-      <span class="absolute inset-x-0 top-0 h-1 bg-[var(--skill)]"></span>
-      <div class="grid items-center gap-8 p-8 sm:p-10 md:grid-cols-[1fr_minmax(0,300px)]">
-        <div class="text-center md:text-left">
-          <Badge tone="skill">Speaking</Badge>
-          <h3 class="mt-3 font-display text-2xl font-extrabold sm:text-3xl">Live AI Examiner</h3>
-          <p class="mt-2 text-sm text-ink-muted sm:text-[0.95rem]">
-            A full three-part mock speaking test as a real voice conversation — the examiner speaks,
-            listens, and asks follow-up questions based on what you actually say.
-          </p>
-          <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm font-semibold text-ink-muted md:justify-start">
-            <span>3 parts</span>
-            <span>{SPEAKING_CUE_CARDS.length} cue cards</span>
-            <span>🎙 Real-time voice</span>
+      <div class="skill-writing group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover">
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[var(--skill-tint)] opacity-80 blur-2xl transition-transform duration-500 group-hover:scale-125"
+        >
+        </div>
+        <div class="relative flex flex-1 flex-col p-6">
+          <div class="flex items-start justify-between gap-3">
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--skill-tint)] text-[var(--skill)]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
+                <path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+            </span>
+            <Badge tone="skill">Writing</Badge>
           </div>
-          <a
-            href={withBase('/speaking/examiner')}
-            class="mt-7 inline-block rounded-button bg-brand px-8 py-3 font-display text-lg font-bold text-white transition-colors hover:bg-brand-hover"
-          >
-            Start the interview →
-          </a>
-          <p class="mt-3 text-xs text-ink-muted">Microphone access required — the examiner listens and replies out loud.</p>
-          <p class="mt-4 text-sm">
-            <a href={withBase('/trainers/speaking')} class="font-semibold text-brand hover:underline">
+          <h3 class="mt-4 font-display text-xl font-extrabold">Writing Checker</h3>
+          <p class="mt-1.5 text-sm text-ink-muted">
+            Instant, AI-graded feedback on Task 1 and Task 2 essays, plus a mechanics check on length,
+            vocabulary, cohesion and spelling.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task1Count} Task 1 prompts</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task2Count} Task 2 prompts</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">✨ Instant AI feedback</span>
+          </div>
+          <div class="mt-auto flex flex-col gap-2 pt-6">
+            <a
+              href={withBase('/trainers/writing')}
+              class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+            >
+              Start writing <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+            </a>
+            <p class="text-center text-xs text-ink-muted">A different prompt every attempt. Write at your own pace.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-speaking group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover">
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[var(--skill-tint)] opacity-80 blur-2xl transition-transform duration-500 group-hover:scale-125"
+        >
+        </div>
+        <div class="relative flex flex-1 flex-col p-6">
+          <div class="flex items-start justify-between gap-3">
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--skill-tint)] text-[var(--skill)]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
+                <path d="M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                <path d="M19 11a7 7 0 01-14 0" />
+                <path d="M12 18v3" />
+              </svg>
+            </span>
+            <Badge tone="skill">Speaking</Badge>
+          </div>
+          <h3 class="mt-4 font-display text-xl font-extrabold">Live AI Examiner</h3>
+          <p class="mt-1.5 text-sm text-ink-muted">
+            A full three-part mock speaking test as a real voice conversation: the examiner speaks,
+            listens, and asks follow-ups based on what you actually say.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">3 parts</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{SPEAKING_CUE_CARDS.length} cue cards</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">🎙 Real-time voice</span>
+          </div>
+          <div class="mt-auto flex flex-col gap-2 pt-6">
+            <a
+              href={withBase('/speaking/examiner')}
+              class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+            >
+              Start the interview <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+            </a>
+            <p class="text-center text-xs text-ink-muted">Microphone access required.</p>
+            <a href={withBase('/trainers/speaking')} class="text-center text-xs font-semibold text-[var(--skill)] hover:underline">
               Want to practice one part at a time instead? →
             </a>
-          </p>
+          </div>
         </div>
-        <img
-          src={withBase('/pics/speaking/start-interview.png')}
-          alt="Microphone with sound waves beside three numbered speaking-test parts"
-          class="mx-auto -order-1 w-full max-w-[240px] md:order-none md:max-w-[300px]"
-          loading="lazy"
-        />
       </div>
     </div>
 
     <section id="analytics" class="mt-16 scroll-mt-20">
       <SectionHeading
         title="Your weak spots"
-        subtitle="Accuracy by question type across every attempt on this device — drill the red ones first."
+        subtitle="Accuracy by question type across every attempt on this device. Drill the red ones first."
       />
       <TypeAnalytics client:load />
     </section>
 
     <section id="history" class="mt-16 scroll-mt-20">
-      <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser — no account needed." />
+      <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />
       <ScoreHistory client:load />
     </section>
   </div>
@@ -172,7 +187,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
     const session = activeSession();
     const resume = session && ids.includes(session.testId) && secondsLeft(session) > 0 ? session : null;
     if (resume) {
-      btn.textContent = `Resume your test — ${Math.ceil(secondsLeft(resume) / 60)} min left`;
+      btn.textContent = `Resume your test: ${Math.ceil(secondsLeft(resume) / 60)} min left`;
     }
 
     btn.addEventListener('click', () => {

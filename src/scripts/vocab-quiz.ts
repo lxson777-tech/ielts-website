@@ -1,10 +1,10 @@
 /* Shared "choose the right meaning" quiz, usable from anywhere on the
    site. No overlay/modal — each trigger owns its own inline panel that
    expands in place (like an accordion) when clicked, and collapses on
-   a second click. See <VocabQuizTrigger /> for the common case, and
-   LessonLayout.astro for the floating hero word, which points its
-   `aria-controls` at a panel placed in the static hero content instead
-   of a panel next to itself (since the word itself keeps moving). */
+   a second click. See LessonLayout.astro for the floating hero word,
+   which points its `aria-controls` at a panel placed in the static hero
+   content instead of a panel next to itself (since the word itself keeps
+   moving). */
 
 export interface VocabWord {
   word: string;

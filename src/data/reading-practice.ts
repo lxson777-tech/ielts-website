@@ -36,7 +36,7 @@ const TFNG = [
 
 export const READING_PRACTICE: Record<string, PracticeSet> = {
   tfng: {
-    title: 'Exercise — Decide: True, False, or Not Given',
+    title: 'Exercise. Decide: True, False, or Not Given',
     questions: [
       {
         prompt: 'In China, SPAM text messaging is a successful business.',
@@ -64,27 +64,27 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         kind: 'choice',
         options: TFNG,
         answer: 'Not Given',
-        explanation: 'The passage gives the 2013 figure but never says whether it increased from a previous year — no information either way.',
+        explanation: 'The passage gives the 2013 figure but never says whether it increased from a previous year. No information either way.',
       },
       {
         prompt: 'The majority of all texts received in Shanghai and Beijing are SPAM.',
         kind: 'choice',
         options: TFNG,
         answer: 'False',
-        explanation: 'Spam accounts for one-fifth to one-third of texts at most — that is not a majority.',
+        explanation: 'Spam accounts for one-fifth to one-third of texts at most. That is not a majority.',
       },
       {
         prompt: 'In 2011, Americans sent more texts than anywhere else in the world.',
         kind: 'choice',
         options: TFNG,
         answer: 'Not Given',
-        explanation: 'The passage says how many spam texts Americans received — it never compares total texts sent with other countries.',
+        explanation: 'The passage says how many spam texts Americans received. It never compares total texts sent with other countries.',
       },
     ],
   },
 
   mc: {
-    title: 'Exercise — Choose the correct answer',
+    title: 'Exercise. Choose the correct answer',
     questions: [
       {
         prompt: 'When was rice first cultivated?',
@@ -117,13 +117,13 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           { value: 'C', label: 'C) It does not need water to grow' },
         ],
         answer: 'B',
-        explanation: '“Rice plants are used for many purposes” (grain, straw, husks) — unlike wheat, grown mainly for its grain.',
+        explanation: '“Rice plants are used for many purposes” (grain, straw, husks). Unlike wheat, grown mainly for its grain.',
       },
     ],
   },
 
   diagram: {
-    title: "Exercise — Label the Ant's Body",
+    title: "Exercise. Label the Ant's Body",
     intro: "Type the correct body part for each numbered pin, using NO MORE than 2 words from the passage. Then answer the bonus True/False/Not Given questions.",
     diagram: {
       image: '/pics/reading/ant-diagram.png',
@@ -173,7 +173,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         kind: 'choice',
         options: TFNG,
         answer: 'False',
-        explanation: 'The passage says antennae are “elbowed” — meaning they do bend.',
+        explanation: 'The passage says antennae are “elbowed”. Meaning they do bend.',
       },
       {
         prompt: 'Bonus: Only queen ants have wings.',
@@ -193,8 +193,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   headings: {
-    title: 'Exercise — Match each heading to a paragraph',
-    intro: 'For every heading, choose the paragraph (A–D) it best fits. Some headings are distractors and match no paragraph — choose “Not used” for those.',
+    title: 'Exercise. Match each heading to a paragraph',
+    intro: 'For every heading, choose the paragraph (A-D) it best fits. Some headings are distractors and match no paragraph. Choose “Not used” for those.',
     questions: (() => {
       const PARAS = [
         { value: 'A', label: 'Paragraph A' },
@@ -204,15 +204,15 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         { value: 'None', label: 'Not used' },
       ];
       const rows: [string, string, string][] = [
-        ['I — Changing temperatures', 'None', 'A distractor — no paragraph is mainly about temperatures changing over time.'],
-        ['II — The greenhouse structure', 'A', 'Paragraph A describes what a greenhouse is and how it physically traps heat.'],
-        ['III — Global warming', 'None', 'Tempting for C, but that paragraph is specifically about the effects of burning fossil fuels (heading VIII), not global warming in general.'],
-        ['IV — Use of a greenhouse for plants', 'None', 'Only one sentence in A mentions plants — the paragraph as a whole is about the structure.'],
-        ['V — Scientific research findings', 'None', 'A distractor — no paragraph reports the results of scientific research.'],
-        ["VI — Earth's atmosphere and natural warmth", 'B', 'Paragraph B explains how the atmosphere naturally traps heat and keeps Earth comfortable.'],
-        ['VII — Our choices', 'D', 'Paragraph D is entirely about what governments and individuals can choose to do.'],
-        ['VIII — Effects of burning fossil fuels', 'C', 'Paragraph C explains that burning fossil fuels adds CO₂ and enhances the greenhouse effect.'],
-        ['IX — Climates around the world', 'None', 'A distractor — the passage never discusses different climates around the world.'],
+        ['I: Changing temperatures', 'None', 'A distractor: no paragraph is mainly about temperatures changing over time.'],
+        ['II. The greenhouse structure', 'A', 'Paragraph A describes what a greenhouse is and how it physically traps heat.'],
+        ['III. Global warming', 'None', 'Tempting for C, but that paragraph is specifically about the effects of burning fossil fuels (heading VIII), not global warming in general.'],
+        ['IV: Use of a greenhouse for plants', 'None', 'Only one sentence in A mentions plants. The paragraph as a whole is about the structure.'],
+        ['V: Scientific research findings', 'None', 'A distractor: no paragraph reports the results of scientific research.'],
+        ["VI. Earth's atmosphere and natural warmth", 'B', 'Paragraph B explains how the atmosphere naturally traps heat and keeps Earth comfortable.'],
+        ['VII. Our choices', 'D', 'Paragraph D is entirely about what governments and individuals can choose to do.'],
+        ['VIII. Effects of burning fossil fuels', 'C', 'Paragraph C explains that burning fossil fuels adds CO₂ and enhances the greenhouse effect.'],
+        ['IX: Climates around the world', 'None', 'A distractor: the passage never discusses different climates around the world.'],
       ];
       return rows.map(([prompt, answer, explanation]) => ({
         prompt,
@@ -225,7 +225,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   sentence: {
-    title: 'Exercise — Complete the sentences',
+    title: 'Exercise. Complete the sentences',
     intro: 'Use NO MORE than THREE words from the passage for each gap.',
     questions: [
       {
@@ -268,7 +268,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   para: {
-    title: 'Exercise — Which paragraph contains the information?',
+    title: 'Exercise. Which paragraph contains the information?',
     questions: [
       {
         prompt: 'A reference to the harsh methods used to teach Beethoven music as a child',
@@ -316,7 +316,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   cat: {
-    title: 'Exercise — Classify each statement',
+    title: 'Exercise. Classify each statement',
     intro: 'A = Egyptians · B = Greeks · C = Romans',
     questions: [
       {
@@ -394,7 +394,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           { value: 'C', label: 'C · Romans' },
         ],
         answer: 'C',
-        explanation: '“Latin — the Roman language — is the root of several modern European languages.”',
+        explanation: '“Latin (the Roman language) is the root of several modern European languages.”',
       },
       {
         prompt: 'This civilisation built structures to transport water into urban areas.',
@@ -411,8 +411,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   },
 
   paraphrase: {
-    title: 'Exercise — Spot the Correct Paraphrase',
-    intro: 'For each "passage" sentence, choose the option that means the same thing — not the one that just reuses the same words.',
+    title: 'Exercise. Spot the Correct Paraphrase',
+    intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
     questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
@@ -434,7 +434,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           { value: 'C', label: 'C) The theory has been rejected by the majority of scientists.' },
         ],
         answer: 'B',
-        explanation: '“Widely accepted” is not “all” — B keeps the same quantifier strength; A over-generalises and C reverses which side the majority is on.',
+        explanation: '“Widely accepted” is not “all”. B keeps the same quantifier strength; A over-generalises and C reverses which side the majority is on.',
       },
       {
         prompt: 'Passage: "Coral reefs, though they cover less than one percent of the ocean floor, support around a quarter of all marine species."',
@@ -478,7 +478,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           { value: 'C', label: 'C) None of the artefacts are older than the Bronze Age.' },
         ],
         answer: 'B',
-        explanation: '“Most” ≠ “every” — A over-generalises, and C directly contradicts “a few are considerably older”.',
+        explanation: '“Most” ≠ “every”. A over-generalises, and C directly contradicts “a few are considerably older”.',
       },
       {
         prompt: 'Passage: "When oil prices spiked in the 1970s, many Western economies were caught off guard."',
@@ -500,7 +500,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           { value: 'C', label: 'C) Around half the adults surveyed exercise on a regular basis.' },
         ],
         answer: 'B',
-        explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not — A inverts the fraction, and C misreads it as roughly half.',
+        explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
       },
     ],
   },

@@ -1,7 +1,7 @@
 ---
 interface Props {
   href?: string;
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'gradient';
   size?: 'sm' | 'md' | 'lg';
   type?: 'button' | 'submit';
   id?: string;
@@ -14,13 +14,19 @@ const variants = {
   primary: 'bg-brand text-white hover:bg-brand-hover shadow-card',
   secondary: 'bg-surface text-ink border border-border hover:border-ink-muted/40 hover:bg-surface-alt',
   ghost: 'text-brand hover:bg-brand-tint',
+  // Reserved for the site's single highest-priority CTA (e.g. the homepage
+  // "build my study plan" hero button) — a brand→speaking-accent gradient
+  // built from existing tokens (no new colors), with a hover lift + glow so
+  // it reads as more important than the flat `primary` buttons beside it.
+  gradient:
+    'bg-linear-to-r from-brand to-speaking text-white shadow-card hover:shadow-[0_12px_28px_-8px_var(--color-brand)] hover:-translate-y-0.5 hover:from-brand-hover',
 };
 const sizes = {
   sm: 'px-3.5 py-1.5 text-sm',
   md: 'px-5 py-2.5 text-sm',
   lg: 'px-7 py-3 text-base',
 };
-const cls = `inline-flex items-center justify-center gap-2 rounded-button font-display font-semibold transition-[color,background-color,border-color,transform] duration-150 active:scale-[0.96] ${variants[variant]} ${sizes[size]} ${extra}`;
+const cls = `inline-flex items-center justify-center gap-2 rounded-button font-display font-semibold transition-[color,background-color,border-color,transform,box-shadow] duration-200 active:scale-[0.96] ${variants[variant]} ${sizes[size]} ${extra}`;
 ---
 
 {

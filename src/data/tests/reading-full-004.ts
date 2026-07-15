@@ -3,7 +3,7 @@ import type { PracticeTest, TestPart } from '../../lib/tests/schema';
 /* Academic Reading — Full Test 4. Original material, full exam length,
    realistic type weighting, no diagram. */
 
-// ── Passage 1 — The Rise of the Skyscraper (Q1–13) ──────────────────────────
+// ── Passage 1 — The Rise of the Skyscraper (Q1-13) ──────────────────────────
 const passage1: TestPart = {
   label: 'Passage 1',
   stimulus: {
@@ -11,23 +11,23 @@ const passage1: TestPart = {
     label: 'Reading Passage 1',
     title: 'The Rise of the Skyscraper',
     instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 1–13</strong>, which are based on Reading Passage 1 below.',
+      'You should spend about 20 minutes on <strong>Questions 1-13</strong>, which are based on Reading Passage 1 below.',
     paragraphs: [
       { label: 'A', html: 'For almost the whole of history, the height of a building was limited by a simple fact of engineering. Traditional structures were built of stone or brick, and in such buildings the walls carry the entire weight of everything above them. The higher you wish to build, the thicker the walls at the bottom must be, until at a certain point the lower walls are so massive that they swallow up the very space the building was meant to provide. The tallest masonry office building ever raised, a sixteen-storey block completed in Chicago in 1891, had ground-floor walls almost two metres thick. Beyond such a height, the method simply could not go.' },
       { label: 'B', html: 'The breakthrough that removed this limit was the steel frame. Instead of resting the weight of the building on its outer walls, engineers built a rigid skeleton of steel columns and beams, rather like the frame of a tent, and hung the walls onto it as a thin outer skin. Because the frame carried the load, the walls no longer had to, and they could be as light and as full of windows as the designer wished. A building could now rise as high as the frame could be made to stand, and the frame could be made very high indeed. The weight was carried straight down the steel columns to deep foundations sunk into solid rock.' },
       { label: 'C', html: 'Steel alone, however, would not have been enough. A tower of forty storeys is of little use if its occupants must climb forty flights of stairs to reach the top, and until the middle of the nineteenth century the upper floors of any tall building were the least desirable, let cheaply to those who could afford nothing better. The invention that changed this was the safety elevator, demonstrated by Elisha Otis in 1854. Passenger lifts already existed, but people feared them, for a snapped cable meant a fatal fall. Otis added a device that gripped the guide rails automatically the instant the cable went slack, so that the car could not drop. Suddenly the top of a building became the most prized location of all, and height became desirable rather than merely possible.' },
       { label: 'D', html: 'These technologies came together first in the American cities of Chicago and New York in the closing decades of the nineteenth century. There were good reasons why. Both cities were growing explosively, and the price of land in their business districts had risen so high that the only affordable way to expand was upward. Chicago had the further spur of a great fire in 1871, which destroyed much of the city centre and cleared the ground for something new. A generation of ambitious architects and engineers, gathered in these booming cities, competed to build higher than their rivals, and the modern skyline was born.' },
-      { label: 'E', html: 'The skyscraper was never merely a practical solution to a shortage of land, however. From the beginning it was also a statement. A soaring tower advertised the wealth and confidence of the company that built it, and cities and nations soon competed for the prestige of possessing the tallest building in the world — a title that has passed from New York to Chicago and, in recent decades, to the fast-growing cities of Asia and the Middle East. The race for height has as much to do with pride as with the price of land.' },
+      { label: 'E', html: 'The skyscraper was never merely a practical solution to a shortage of land, however. From the beginning it was also a statement. A soaring tower advertised the wealth and confidence of the company that built it, and cities and nations soon competed for the prestige of possessing the tallest building in the world. A title that has passed from New York to Chicago and, in recent decades, to the fast-growing cities of Asia and the Middle East. The race for height has as much to do with pride as with the price of land.' },
       { label: 'F', html: 'Modern towers face challenges the early builders never dreamed of. At great heights the chief enemy is not weight but wind, which can set a tall building swaying uncomfortably; the tallest towers now contain huge counterweights that shift to steady them. Lifts, too, set a practical limit, for a very tall building needs so many lift shafts that they begin to eat up the floor space, and engineers work constantly to design faster and cleverer systems. Yet the basic idea remains what it was more than a century ago: a strong frame, a fast lift, and the human desire to reach a little higher than before.' },
     ],
   },
   groups: [
     {
-      title: 'Questions 1–5',
+      title: 'Questions 1-5',
       type: 'paragraph-matching',
       options: ['A', 'B', 'C', 'D', 'E', 'F'],
       instructionHtml:
-        'Reading Passage 1 has six paragraphs, <strong>A–F</strong>. Which paragraph contains the following information?',
+        'Reading Passage 1 has six paragraphs, <strong>A-F</strong>. Which paragraph contains the following information?',
       questions: [
         {
           id: 'q1',
@@ -67,7 +67,7 @@ const passage1: TestPart = {
       ],
     },
     {
-      title: 'Questions 6–9',
+      title: 'Questions 6-9',
       type: 'sentence-completion',
       wordLimit: 2,
       instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
@@ -107,7 +107,7 @@ const passage1: TestPart = {
       ],
     },
     {
-      title: 'Questions 10–13',
+      title: 'Questions 10-13',
       type: 'tfng',
       instructionHtml:
         'Do the following statements agree with the information in Reading Passage 1? Write <strong>True</strong>, <strong>False</strong> or <strong>Not Given</strong>.',
@@ -123,7 +123,7 @@ const passage1: TestPart = {
           id: 'q11',
           textHtml: 'Passenger lifts did not exist before Otis’s invention.',
           answer: 'False',
-          explanation: 'The passage says passenger lifts already existed — Otis added a safety device to them.',
+          explanation: 'The passage says passenger lifts already existed. Otis added a safety device to them.',
           evidence: 'Passenger lifts already existed, but people feared them, for a snapped cable meant a fatal fall.',
         },
         {
@@ -145,7 +145,7 @@ const passage1: TestPart = {
   ],
 };
 
-// ── Passage 2 — The Twilight Zone of the Ocean (Q14–26) ─────────────────────
+// ── Passage 2 — The Twilight Zone of the Ocean (Q14-26) ─────────────────────
 const passage2: TestPart = {
   label: 'Passage 2',
   stimulus: {
@@ -153,22 +153,22 @@ const passage2: TestPart = {
     label: 'Reading Passage 2',
     title: 'The Twilight Zone of the Ocean',
     instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 14–26</strong>, which are based on Reading Passage 2 below.',
+      'You should spend about 20 minutes on <strong>Questions 14-26</strong>, which are based on Reading Passage 2 below.',
     paragraphs: [
       { label: 'A', html: 'Between the sunlit surface waters of the ocean and the pitch-black depths lies a vast and mysterious region that scientists call the twilight zone. It begins about two hundred metres down, where the light has faded to a dim blue glow, and extends to around a thousand metres, below which no sunlight penetrates at all. This zone is one of the largest habitats on the planet, yet it remains among the least explored. For most of history it was simply too deep and too dark to study, and even today far more is known about the surface of the Moon than about the creatures that live here.' },
       { label: 'B', html: 'The animals of the twilight zone have adapted to their dim world in extraordinary ways. Many have enormous eyes, several times larger in proportion to their bodies than our own, the better to gather what little light there is. Others have given up on external light altogether and make their own, through a chemical process called bioluminescence. In the twilight zone this ability is not rare but almost universal: the great majority of animals there can produce living light, using it to lure prey, to confuse predators, or to signal to mates in the darkness. A flash of light in these depths may be a trap, a warning or an invitation.' },
       { label: 'C', html: 'Every night, the twilight zone is the stage for the largest movement of animals anywhere on Earth. As darkness falls at the surface, countless small fish, squid and other creatures rise up from the depths to feed in the richer waters above, sinking down again before dawn to hide from predators in the dark. This daily journey, repeated across the whole ocean by an almost unimaginable number of animals, is known as the vertical migration. Because so many creatures take part, it is the largest migration on the planet, and it happens twice every single day, unseen beneath the waves.' },
       { label: 'D', html: 'This nightly migration turns out to be quietly important for the whole planet. The tiny plants of the sunlit surface absorb carbon dioxide from the atmosphere as they grow. When the animals of the twilight zone rise to feed on them at night and then sink again by day, they carry the carbon locked in that food down into the deep ocean, where much of it remains for centuries, out of contact with the air. In effect, the vertical migration acts as a vast pump, moving carbon from the surface into the depths and helping to regulate the climate of the entire world.' },
       { label: 'E', html: 'It is precisely this role that has begun to worry scientists, because the twilight zone is now attracting the attention of commercial fishing fleets. The waters nearer the surface have been so heavily fished that some companies are looking to the huge quantities of small fish in the twilight zone as a new source of food and animal feed. Researchers fear that harvesting these creatures on a large scale, before we even understand their role, could disrupt the carbon pump and damage the food chains that depend on them. Once such a fishery is established, it may be very hard to undo the harm.' },
-      { label: 'F', html: 'For all these reasons, the twilight zone has become one of the most active frontiers of ocean science. New robotic vehicles, able to descend into the darkness and linger there for hours, are sending back the first detailed pictures of its inhabitants, while nets and cameras reveal how many creatures truly live in these waters — far more, it now seems, than anyone once believed. The hope of scientists is that we will come to understand this hidden region properly before we decide, as we so often have in the past, to exploit it.' },
+      { label: 'F', html: 'For all these reasons, the twilight zone has become one of the most active frontiers of ocean science. New robotic vehicles, able to descend into the darkness and linger there for hours, are sending back the first detailed pictures of its inhabitants, while nets and cameras reveal how many creatures truly live in these waters. Far more, it now seems, than anyone once believed. The hope of scientists is that we will come to understand this hidden region properly before we decide, as we so often have in the past, to exploit it.' },
     ],
   },
   groups: [
     {
-      title: 'Questions 14–19',
+      title: 'Questions 14-19',
       type: 'matching-headings',
       instructionHtml:
-        'Reading Passage 2 has six paragraphs, A–F. Choose the correct heading for paragraphs <strong>A–F</strong>.',
+        'Reading Passage 2 has six paragraphs, A-F. Choose the correct heading for paragraphs <strong>A-F</strong>.',
       legendHtml:
         '<strong>List of Headings</strong><br>i&nbsp; A daily journey of countless animals<br>ii&nbsp; A little-known region of the sea<br>iii&nbsp; New tools for exploring the deep<br>iv&nbsp; Fishing the surface waters<br>v&nbsp; Living with very little light<br>vi&nbsp; A threat to a barely understood habitat<br>vii&nbsp; A hidden help to the climate<br>viii&nbsp; The deepest parts of the ocean',
       options: ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii'],
@@ -177,48 +177,48 @@ const passage2: TestPart = {
           id: 'q14',
           textHtml: 'Paragraph A',
           answer: 'ii',
-          explanation: 'Paragraph A introduces the twilight zone as one of the largest yet least explored regions of the sea — heading ii.',
+          explanation: 'Paragraph A introduces the twilight zone as one of the largest yet least explored regions of the sea. Heading ii.',
           evidence: 'This zone is one of the largest habitats on the planet, yet it remains among the least explored.',
         },
         {
           id: 'q15',
           textHtml: 'Paragraph B',
           answer: 'v',
-          explanation: 'Paragraph B is about adapting to dim light — huge eyes and self-made light — heading v.',
+          explanation: 'Paragraph B is about adapting to dim light (huge eyes and self-made light), heading v.',
           evidence: 'The animals of the twilight zone have adapted to their dim world in extraordinary ways. Many have enormous eyes.',
         },
         {
           id: 'q16',
           textHtml: 'Paragraph C',
           answer: 'i',
-          explanation: 'Paragraph C describes the nightly vertical migration of countless animals — heading i.',
+          explanation: 'Paragraph C describes the nightly vertical migration of countless animals. Heading i.',
           evidence: 'Every night, the twilight zone is the stage for the largest movement of animals anywhere on Earth.',
         },
         {
           id: 'q17',
           textHtml: 'Paragraph D',
           answer: 'vii',
-          explanation: 'Paragraph D explains how the migration pumps carbon into the deep and helps regulate the climate — heading vii.',
+          explanation: 'Paragraph D explains how the migration pumps carbon into the deep and helps regulate the climate. Heading vii.',
           evidence: 'the vertical migration acts as a vast pump, moving carbon from the surface into the depths and helping to regulate the climate.',
         },
         {
           id: 'q18',
           textHtml: 'Paragraph E',
           answer: 'vi',
-          explanation: 'Paragraph E warns that commercial fishing threatens this barely understood zone — heading vi.',
+          explanation: 'Paragraph E warns that commercial fishing threatens this barely understood zone. Heading vi.',
           evidence: 'the twilight zone is now attracting the attention of commercial fishing fleets.',
         },
         {
           id: 'q19',
           textHtml: 'Paragraph F',
           answer: 'iii',
-          explanation: 'Paragraph F describes new robotic vehicles and cameras exploring the deep — heading iii.',
+          explanation: 'Paragraph F describes new robotic vehicles and cameras exploring the deep. Heading iii.',
           evidence: 'New robotic vehicles, able to descend into the darkness and linger there for hours, are sending back the first detailed pictures of its inhabitants.',
         },
       ],
     },
     {
-      title: 'Questions 20–23',
+      title: 'Questions 20-23',
       type: 'table-completion',
       wordLimit: 2,
       instructionHtml: 'Complete the table below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
@@ -259,7 +259,7 @@ const passage2: TestPart = {
       ],
     },
     {
-      title: 'Questions 24–26',
+      title: 'Questions 24-26',
       type: 'multiple-choice',
       instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
       questions: [
@@ -268,7 +268,7 @@ const passage2: TestPart = {
           textHtml: 'The vertical migration is described as the largest on Earth because',
           options: ['the animals travel the furthest.', 'so many creatures take part in it.', 'it happens only once a year.', 'it can be seen from the surface.'],
           answer: 'B',
-          explanation: 'It is the largest migration because so many creatures take part — and it happens twice a day, unseen.',
+          explanation: 'It is the largest migration because so many creatures take part. And it happens twice a day, unseen.',
           evidence: 'Because so many creatures take part, it is the largest migration on the planet, and it happens twice every single day.',
         },
         {
@@ -292,7 +292,7 @@ const passage2: TestPart = {
   ],
 };
 
-// ── Passage 3 — Should We Trust the Crowd? (Q27–40) ─────────────────────────
+// ── Passage 3 — Should We Trust the Crowd? (Q27-40) ─────────────────────────
 const passage3: TestPart = {
   label: 'Passage 3',
   stimulus: {
@@ -300,7 +300,7 @@ const passage3: TestPart = {
     label: 'Reading Passage 3',
     title: 'Should We Trust the Crowd?',
     instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 27–40</strong>, which are based on Reading Passage 3 below.',
+      'You should spend about 20 minutes on <strong>Questions 27-40</strong>, which are based on Reading Passage 3 below.',
     paragraphs: [
       { label: 'A', html: 'There is an old and appealing idea that a large group of people, taken together, is wiser than any single member of it. Ask a crowd at a fair to guess the weight of an ox, the story goes, and while individual guesses vary wildly, their average will land remarkably close to the truth. This phenomenon, often called the wisdom of crowds, has become fashionable in the age of the internet, which allows the opinions of millions to be gathered and combined as never before. But how far can the crowd really be trusted, and when does its supposed wisdom turn into something far less reliable?' },
       { label: 'B', html: 'The classic examples are genuinely impressive. When many people independently estimate a quantity, their errors tend to cancel out: some guess too high, others too low, and the average is left close to the correct figure. The same principle underlies many useful modern tools, from the prediction markets that forecast elections to the review scores that guide our shopping. Pooled together, the scattered knowledge of ordinary people can outperform the judgement of a single expert, and can do so cheaply and quickly.' },
@@ -312,7 +312,7 @@ const passage3: TestPart = {
   },
   groups: [
     {
-      title: 'Questions 27–31',
+      title: 'Questions 27-31',
       type: 'yes-no-notgiven',
       instructionHtml:
         'Do the following statements agree with the views of the writer in Reading Passage 3? Write <strong>Yes</strong>, <strong>No</strong> or <strong>Not Given</strong>.',
@@ -354,7 +354,7 @@ const passage3: TestPart = {
       ],
     },
     {
-      title: 'Questions 32–36',
+      title: 'Questions 32-36',
       type: 'multiple-answer',
       instructionHtml:
         'Which <strong>FIVE</strong> of the following conditions does the writer say a crowd needs in order to be wise? Choose five.',
@@ -380,7 +380,7 @@ const passage3: TestPart = {
       ],
     },
     {
-      title: 'Questions 37–40',
+      title: 'Questions 37-40',
       type: 'multiple-choice',
       instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
       questions: [
@@ -424,7 +424,7 @@ const passage3: TestPart = {
 export const readingFull004: PracticeTest = {
   id: 'reading-full-004',
   skill: 'reading',
-  title: 'Academic Reading — Full Test 4',
+  title: 'Academic Reading. Full Test 4',
   description: 'A complete 60-minute Academic Reading exam: three passages on skyscrapers, the ocean twilight zone and the wisdom of crowds, 40 questions across the full range of question types.',
   durationMinutes: 60,
   parts: [passage1, passage2, passage3],

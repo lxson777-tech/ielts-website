@@ -13,10 +13,12 @@ interface Props {
   image?: string;
   badge?: string;
   skill?: string;
+  /** Optional difficulty pill (e.g. "Beginner") shown next to the badge. */
+  level?: string;
   /** data-* hook for client scripts (progress checkmarks, best band). */
   dataKey?: string;
 }
-const { title, href, description, image, badge, skill, dataKey } = Astro.props;
+const { title, href, description, image, badge, skill, level, dataKey } = Astro.props;
 ---
 
 <a
@@ -41,7 +43,14 @@ const { title, href, description, image, badge, skill, dataKey } = Astro.props;
     </div>
     {description && <p class="text-sm text-ink-muted">{description}</p>}
     <div class="mt-auto flex items-center justify-between pt-2">
-      {badge ? <Badge tone="skill">{badge}</Badge> : <span></span>}
+      <div class="flex items-center gap-2">
+        {badge ? <Badge tone="skill">{badge}</Badge> : <span></span>}
+        {level && (
+          <span class="rounded-full bg-surface-alt px-2 py-0.5 text-[11px] font-semibold text-ink-muted">
+            {level}
+          </span>
+        )}
+      </div>
       <span class="text-sm font-semibold text-[var(--skill,var(--color-brand))] opacity-0 transition-opacity group-hover:opacity-100">
         Open →
       </span>

@@ -30,7 +30,7 @@ class StubSpeakingGrader implements SpeakingGrader {
     const fluencyCoherence = this.fluencyFromAcoustics(m);
     const neutral = (label: string): SpeakingCriterionScore => ({
       band: 6,
-      comment: `[sample] ${label} can't be judged offline — this needs a model listening to your recording. Connect the AI examiner for a real assessment.`,
+      comment: `[sample] ${label} can't be judged offline. This needs a model listening to your recording. Connect the AI examiner for a real assessment.`,
     });
 
     return {
@@ -56,8 +56,8 @@ class StubSpeakingGrader implements SpeakingGrader {
     const note = m.underLength
       ? 'Response was shorter than the suggested length, which limits how much can be judged.'
       : m.longestSilenceMs > 4000
-        ? 'A long pause was detected — real fluency means keeping ideas flowing even while thinking.'
-        : 'Reasonable pacing based on timing alone — a real examiner also judges how ideas connect.';
+        ? 'A long pause was detected. Real fluency means keeping ideas flowing even while thinking.'
+        : 'Reasonable pacing based on timing alone. A real examiner also judges how ideas connect.';
     return { band: toSpeakingBand(Math.round(band)), comment: `[sample] ${note}` };
   }
 }

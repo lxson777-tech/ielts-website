@@ -21,29 +21,29 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     steps: [
       'Read each statement carefully and identify keywords.',
       'Scan the passage to locate the relevant section (answers appear in order).',
-      'Read that section and the sentences around it — not just one line.',
+      'Read that section and the sentences around it. Not just one line.',
       'Focus on meaning, not just word-matching. The passage will paraphrase the statement.',
-      'Be especially careful with NOT GIVEN — ask: "does the passage give any information about this at all?"',
+      'Be especially careful with NOT GIVEN. Ask: "does the passage give any information about this at all?"',
     ],
     traps: [
       '"believed" ≠ factual truth',
       'numbers without context (increase? decrease?)',
-      'idiomatic expressions — read for meaning',
+      'idiomatic expressions. Read for meaning',
     ],
   },
   mc: {
     label: 'Multiple Choice',
     steps: [
       'Read the question and all three options carefully before looking at the passage.',
-      'Identify differences between the options — they may be subtly different.',
+      'Identify differences between the options. They may be subtly different.',
       'Prepare paraphrases and synonyms for the question keywords.',
       'Scan the passage for the relevant section (answers come in order).',
-      'Read the surrounding sentences — not just the one that matches.',
-      'You may see information about all three options in the passage — only one is correct.',
+      'Read the surrounding sentences. Not just the one that matches.',
+      'You may see information about all three options in the passage. Only one is correct.',
       'Choose based on deeper meaning, not just word-matching.',
     ],
     traps: [
-      'all options may appear in the passage — only one is accurate',
+      'all options may appear in the passage. Only one is accurate',
       'similar-sounding options with small but crucial differences',
     ],
   },
@@ -51,15 +51,15 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     label: 'Matching Headings',
     steps: [
       'Read through all the headings first and note synonyms/paraphrases.',
-      'For each paragraph, read to find its central aim — what is the paragraph mainly about?',
+      'For each paragraph, read to find its central aim. What is the paragraph mainly about?',
       'Distinguish between the main idea and supporting examples or details.',
       'Eliminate headings that only match one sentence in the paragraph.',
-      'Watch for headings that look similar — compare them carefully.',
+      'Watch for headings that look similar. Compare them carefully.',
       'Your answer must be a roman numeral (e.g. III).',
     ],
     traps: [
       'choosing a heading that matches one detail, not the whole paragraph',
-      'headings with similar wording — look at meaning, not just words',
+      'headings with similar wording. Look at meaning, not just words',
     ],
   },
   para: {
@@ -69,7 +69,7 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       'Skim the passage to get a sense of what each paragraph covers.',
       'For each statement, scan the passage for keywords or synonyms.',
       'When you find the relevant section, confirm it contains the information in the statement.',
-      'Remember: a paragraph can answer more than one question — check the instructions.',
+      'Remember: a paragraph can answer more than one question. Check the instructions.',
     ],
     traps: ['confusing this with Matching Headings', 'forgetting that one letter can be used more than once'],
   },
@@ -80,12 +80,12 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       'Think about what type of word is missing (noun, verb, adjective, number?).',
       'Scan the passage using keywords and synonyms to locate the relevant section.',
       'Read carefully around that section and identify the exact word(s) that complete the sentence logically and grammatically.',
-      'Write the answer — check spelling and word count.',
+      'Write the answer. Check spelling and word count.',
     ],
     traps: [
       'paraphrasing instead of copying exact words',
       'going over the word limit',
-      'ignoring grammar — the completed sentence must make grammatical sense',
+      'ignoring grammar. The completed sentence must make grammatical sense',
     ],
   },
   diagram: {
@@ -93,9 +93,9 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     steps: [
       'Study the diagram first. What is it showing? What parts are labelled and what are blank?',
       'Read the passage and identify the section that describes it.',
-      'Match each blank to the position on the diagram — think about location/function.',
+      'Match each blank to the position on the diagram. Think about location/function.',
       'Find the exact word(s) in the passage that name that part.',
-      'Check the word limit — never exceed it.',
+      'Check the word limit. Never exceed it.',
     ],
     traps: [
       'writing paraphrases instead of exact passage words',
@@ -106,13 +106,13 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
   cat: {
     label: 'Categorisation',
     steps: [
-      'Read the categories carefully — understand what each one represents.',
+      'Read the categories carefully. Understand what each one represents.',
       'Skim the passage to identify which section refers to each category.',
       'Read each statement and identify keywords.',
       'Locate the relevant passage section and decide which category the information belongs to.',
-      "Don't panic if the same letter appears several times — that's normal.",
+      "Don't panic if the same letter appears several times. That's normal.",
     ],
-    traps: ['using general knowledge — rely only on the passage', 'assuming each category is used only once'],
+    traps: ['using general knowledge. Rely only on the passage', 'assuming each category is used only once'],
   },
 };
 

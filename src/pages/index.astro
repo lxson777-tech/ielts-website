@@ -4,12 +4,11 @@ import Button from '../components/Button.astro';
 import Card from '../components/Card.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import WordOfTheDay from '../components/WordOfTheDay.astro';
-import VocabQuizTrigger from '../components/VocabQuizTrigger.astro';
 import { withBase } from '../lib/url';
 import { LESSONS, SKILLS } from '../data/lessons';
 ---
 
-<BaseLayout title="IELTS Portal — Free IELTS Preparation">
+<BaseLayout title="IELTS Portal · Free IELTS Preparation">
   <!-- Hero -->
   <section class="aurora-hero border-b border-border">
     <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
@@ -24,7 +23,14 @@ import { LESSONS, SKILLS } from '../data/lessons';
           Clear lessons for every paper, real exam question types, and timed practice tests that estimate your band score.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <Button href="#skills" size="lg">Browse lessons</Button>
+          <Button href={withBase('/start')} variant="gradient" size="lg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+            </svg>
+            New here? Build my study plan →
+          </Button>
+          <Button href="#skills" variant="secondary" size="lg">Browse lessons</Button>
           <Button href={withBase('/tests')} variant="secondary" size="lg">Take a practice test</Button>
         </div>
       </div>
@@ -43,18 +49,16 @@ import { LESSONS, SKILLS } from '../data/lessons';
     <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 px-4 py-4 text-sm sm:px-6">
       <p class="font-semibold">Your progress</p>
       <p class="text-ink-muted"><span id="progress-lessons" class="font-semibold text-ink">0</span> lessons completed</p>
-      <p class="text-ink-muted">Best reading band: <span id="progress-band" class="font-semibold text-brand">–</span></p>
-      <p id="progress-writing-band" class="hidden text-ink-muted">Best writing band: <span id="progress-writing-band-value" class="font-semibold text-brand">–</span></p>
-      <a href={withBase('/tests#history')} class="ml-auto font-semibold text-brand hover:text-brand-hover">View history →</a>
+      <p class="text-ink-muted">Best reading band: <span id="progress-band" class="font-semibold text-brand">-</span></p>
+      <p id="progress-writing-band" class="hidden text-ink-muted">Best writing band: <span id="progress-writing-band-value" class="font-semibold text-brand">-</span></p>
+      <p id="progress-speaking-band" class="hidden text-ink-muted">Best speaking band: <span id="progress-speaking-band-value" class="font-semibold text-brand">-</span></p>
+      <a href={withBase('/account')} class="ml-auto font-semibold text-brand hover:text-brand-hover">View my progress →</a>
     </div>
   </section>
 
   <!-- Word of the day -->
   <section class="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
     <WordOfTheDay />
-    <div class="mt-4 flex justify-center">
-      <VocabQuizTrigger label="Test yourself on a random word" />
-    </div>
   </section>
 
   <!-- Skill sections -->
@@ -74,6 +78,7 @@ import { LESSONS, SKILLS } from '../data/lessons';
                   description={lesson.description}
                   image={lesson.image}
                   badge={skill.label}
+                  level={lesson.level}
                   dataKey={lesson.slug}
                 />
               ))}
@@ -84,6 +89,16 @@ import { LESSONS, SKILLS } from '../data/lessons';
                   description="Full reading passages with a real 60-minute timer and band estimate."
                   image="/pics/reading/timed-test.png"
                   badge="Practice"
+                />
+              )}
+              {skill.id === 'reading' && (
+                <Card
+                  title="Reading Trainer"
+                  href={withBase('/trainers/reading')}
+                  description="Short on time? One passage at a time with live strategy coaching, no full 60-minute commitment."
+                  image="/pics/reading/timed-test.png"
+                  badge="Trainer"
+                  level="Beginner"
                 />
               )}
               {skill.id === 'writing' && (
@@ -99,7 +114,7 @@ import { LESSONS, SKILLS } from '../data/lessons';
                 <Card
                   title="Live AI Examiner"
                   href={withBase('/speaking/examiner')}
-                  description="A real voice conversation with an AI examiner — all three parts, with follow-up questions based on what you say."
+                  description="A real voice conversation with an AI examiner, all three parts, with follow-up questions based on what you say."
                   image="/pics/speaking/live-examiner.png"
                   badge="Practice"
                 />
@@ -113,19 +128,30 @@ import { LESSONS, SKILLS } from '../data/lessons';
 </BaseLayout>
 
 <script>
-  import { completedLessonCount, getBestBand, getBestWritingBand, isLessonComplete } from '../lib/progress';
+  import {
+    completedLessonCount,
+    getBestBand,
+    getBestWritingBand,
+    getBestSpeakingBand,
+    isLessonComplete,
+  } from '../lib/progress';
 
   // Progress strip — only shown once there is something to report.
   const lessonsDone = completedLessonCount();
   const best = getBestBand();
   const bestWriting = getBestWritingBand();
-  if (lessonsDone > 0 || best || bestWriting) {
+  const bestSpeaking = getBestSpeakingBand();
+  if (lessonsDone > 0 || best || bestWriting || bestSpeaking) {
     document.getElementById('progress-strip')?.classList.remove('hidden');
     document.getElementById('progress-lessons')!.textContent = String(lessonsDone);
     if (best) document.getElementById('progress-band')!.textContent = best.bandLabel;
     if (bestWriting) {
       document.getElementById('progress-writing-band')?.classList.remove('hidden');
       document.getElementById('progress-writing-band-value')!.textContent = bestWriting.toFixed(1);
+    }
+    if (bestSpeaking) {
+      document.getElementById('progress-speaking-band')?.classList.remove('hidden');
+      document.getElementById('progress-speaking-band-value')!.textContent = bestSpeaking.toFixed(1);
     }
   }
 

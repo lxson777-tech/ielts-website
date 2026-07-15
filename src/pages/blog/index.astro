@@ -10,11 +10,11 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 );
 ---
 
-<BaseLayout title="Blog — IELTS Portal" description="IELTS tips, strategies and study guides.">
+<BaseLayout title="Blog · IELTS Portal" description="IELTS tips, strategies and study guides.">
   <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
     <SectionHeading eyebrow="Blog" title="IELTS tips & strategies" subtitle="Guides to help you prepare smarter." />
     {posts.length === 0 ? (
-      <p class="text-ink-muted">No posts published yet — check back soon.</p>
+      <p class="text-ink-muted">No posts published yet. Check back soon.</p>
     ) : (
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (

@@ -34,6 +34,11 @@ jobs:
           # client bundle), so the deployed URL doubles as the default; a
           # repo Variable of the same name overrides it.
           PUBLIC_LIVE_EXAMINER_URL: ${{ vars.PUBLIC_LIVE_EXAMINER_URL || 'https://ielts-live-examiner.lxson777.workers.dev' }}
+          # Supabase project (accounts + cross-device sync). Both are public
+          # client keys — the anon key is RLS-guarded, safe to ship. Empty =
+          # accounts disabled, site stays anonymous/localStorage-only.
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
         with:
           node-version: 22
 

@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import SpeakingTester from '../../components/SpeakingTester';
+import SpeakingHistory from '../../components/SpeakingHistory';
 ---
 
 <BaseLayout
@@ -12,8 +13,13 @@ import SpeakingTester from '../../components/SpeakingTester';
     <SectionHeading
       eyebrow="Speaking"
       title="Speaking Trainer"
-      subtitle="Pick a part. Questions are read aloud — record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria."
+      subtitle="Pick a part. Questions are read aloud, record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria."
     />
     <SpeakingTester client:load />
+
+    <section id="history" class="mt-16 scroll-mt-20">
+      <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />
+      <SpeakingHistory client:load />
+    </section>
   </div>
 </BaseLayout>

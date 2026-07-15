@@ -651,7 +651,7 @@ function QuestionItem({
             aria-label={`Question ${n}`}
             className="shrink-0 rounded-lg border border-border bg-surface px-2 py-1 text-sm font-semibold"
           >
-            <option value="">—</option>
+            <option value="">(blank)</option>
             {(group.type === 'tfng'
               ? ['True', 'False', 'Not Given']
               : group.type === 'yes-no-notgiven'
@@ -683,7 +683,7 @@ function WordLimitWarning({ value, limit, className }: { value: string; limit: n
   const count = countWords(value);
   return (
     <p className={`text-xs font-semibold text-warning ${className ?? ''}`}>
-      ⚠ {count} {count === 1 ? 'word' : 'words'} — limit is {limit}
+      ⚠ {count} {count === 1 ? 'word' : 'words'}: limit is {limit}
     </p>
   );
 }
@@ -1188,7 +1188,7 @@ function InstructionsScreen({
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">🚫</span>
-            <span><strong>You cannot pause.</strong> Refreshing or closing the tab will not stop the clock — you will resume with time already elapsed.</span>
+            <span><strong>You cannot pause.</strong> Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">✍️</span>
@@ -1204,7 +1204,7 @@ function InstructionsScreen({
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">📊</span>
-            <span>At the end you get a score, an estimated band, and a full <strong>answer review</strong> — every question explained with the exact line from the passage.</span>
+            <span>At the end you get a score, an estimated band, and a full <strong>answer review</strong>, with every question explained with the exact line from the passage.</span>
           </li>
         </ul>
 

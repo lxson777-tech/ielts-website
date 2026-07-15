@@ -1,11 +1,11 @@
 ---
 import { withBase } from '../lib/url';
+import AccountMenu from './AccountMenu';
 import { SKILLS, lessonsBySkill } from '../data/lessons';
 import { READING_PARTS } from '../data/reading';
 import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
 import { LISTENING_PARTS } from '../data/listening';
-import { VOCABULARY_PARTS } from '../data/vocabulary';
 
 const current = Astro.url.pathname;
 const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
@@ -14,6 +14,13 @@ const skillActive = (skillId: string) =>
   current.startsWith(withBase(`/lessons/${skillId}/`));
 const testsActive = current.startsWith(withBase('/tests'));
 const trainersActive = current.startsWith(withBase('/trainers'));
+// Vocabulary lives in the "More" menu, not the main 4-skill row, so it needs
+// its own active check to light up that trigger instead of a skill dropdown.
+const vocabActive = skillActive('vocabulary');
+const moreActive = testsActive || vocabActive;
+/* The 4 primary skill dropdowns — Vocabulary is intentionally excluded here
+   (see "More" menu below) to keep the main row to 4 items instead of 5. */
+const NAV_SKILLS = SKILLS.filter((s) => s.id !== 'vocabulary');
 
 /* Every skill dropdown has the same anatomy: the overview link, a labelled
    group of type/part lessons, and (where one exists) the practice tool. */
@@ -22,7 +29,6 @@ const overviewLabel: Record<string, string> = {
   writing: 'Writing Overview',
   speaking: 'Speaking Overview',
   listening: 'Listening Overview',
-  vocabulary: 'Vocabulary Overview',
 };
 
 interface NavLink {
@@ -54,9 +60,6 @@ const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
   listening: [
     { heading: 'The Four Sections', items: LISTENING_PARTS.map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })) },
   ],
-  vocabulary: [
-    { heading: 'Topics', items: VOCABULARY_PARTS.map((p) => ({ href: `/lessons/vocabulary/${p.slug}`, title: p.title })) },
-  ],
 };
 
 /* Reading/Writing/Speaking practice tools all live on the unified /tests hub
@@ -76,15 +79,15 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
       <span class="hidden sm:inline">IELTS<span class="text-brand">Portal</span></span>
     </a>
 
-    <div class="ml-auto hidden items-center gap-0.5 md:flex">
+    <div class="hidden flex-1 items-center justify-evenly md:flex">
       {
-        SKILLS.map((skill, i) => {
+        NAV_SKILLS.map((skill, i) => {
           const lessons = lessonsBySkill(skill.id);
           const groups = groupsBySkill[skill.id] ?? [];
           const practice = practiceBySkill[skill.id];
           const active = skillActive(skill.id);
-          // Right-align the last two panels so they never overflow the viewport.
-          const alignRight = i >= SKILLS.length - 2;
+          // Right-align the last panel so it never overflows the viewport.
+          const alignRight = i >= NAV_SKILLS.length - 1;
           return (
             <div class={`group relative skill-${skill.id}`}>
               <button
@@ -172,17 +175,65 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
       <a
         href={withBase('/trainers')}
         class:list={[
-          'ml-1 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
-          trainersActive ? 'bg-brand-tint text-brand' : 'text-ink-muted hover:bg-brand-tint hover:text-brand',
-        ]}>Trainers</a
+          'group inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-display text-sm font-bold tracking-tight text-white shadow-card transition-all duration-200',
+          trainersActive ? 'bg-brand-hover' : 'bg-brand hover:-translate-y-0.5 hover:bg-brand-hover hover:shadow-card-hover',
+        ]}
       >
-      <a
-        href={withBase('/tests')}
-        class:list={[
-          'ml-1 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
-          testsActive ? 'bg-brand-tint text-brand' : 'bg-brand text-white hover:bg-brand-hover',
-        ]}>Tests</a
-      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="12" cy="12" r="5" />
+          <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+        </svg>
+        Trainers
+      </a>
+
+      {/* Vocabulary + Tests + Account, consolidated so the main row stays at
+          the 4 core skills instead of growing with every new feature. */}
+      <div class="group relative">
+        <button
+          type="button"
+          class:list={[
+            'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold transition-colors',
+            moreActive
+              ? 'bg-brand-tint text-brand'
+              : 'text-ink-muted hover:bg-brand-tint hover:text-brand group-focus-within:bg-brand-tint group-focus-within:text-brand',
+          ]}
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          More
+          <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 opacity-70" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <div
+          class="invisible absolute right-0 top-full w-64 translate-y-1 overflow-hidden rounded-2xl border border-border bg-surface opacity-0 shadow-card-hover transition-all duration-150 group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100"
+        >
+          <div class="skill-vocabulary p-3">
+            <a
+              href={withBase('/lessons/vocabulary')}
+              class="flex items-center gap-2.5 rounded-xl bg-[var(--skill-tint)] px-4 py-3 font-display text-[0.95rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
+            >
+              <span class="h-2 w-2 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
+              Vocabulary Overview
+              <span class="ml-auto text-xs font-semibold opacity-70">Start here →</span>
+            </a>
+            <a
+              href={withBase('/tests')}
+              class="mt-1 flex items-center gap-3 rounded-xl px-4 py-2.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
+            >
+              ⏱ Practice Tests
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Account/login — deliberately outside the evenly-spaced group above and
+        pinned to the very right edge, since it's where a signed-in user
+        expects to find their account no matter what. */}
+    <div class="hidden md:block">
+      <AccountMenu client:load />
     </div>
 
     <button
@@ -203,14 +254,26 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
   <div class="max-h-[75dvh] overflow-y-auto">
   <div id="nav-mobile" class="border-t border-border bg-surface px-4 pb-5">
     <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
-    <a href={withBase('/trainers')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
+    <a
+      href={withBase('/trainers')}
+      class="flex items-center gap-2 rounded-lg bg-brand px-3 py-2.5 font-display text-sm font-bold text-white"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="5" />
+        <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+      </svg>
       Trainers
     </a>
     <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
       Practice Tests
     </a>
+    <a href={withBase('/lessons/vocabulary')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
+      Vocabulary
+    </a>
+    <div class="mt-1"><AccountMenu client:load compact /></div>
     {
-      SKILLS.map((skill) => {
+      NAV_SKILLS.map((skill) => {
         const practice = practiceBySkill[skill.id];
         return (
           <div class={`skill-${skill.id} mt-2`}>

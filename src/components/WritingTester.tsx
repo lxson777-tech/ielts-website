@@ -16,7 +16,7 @@ import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
-import WritingStructureGuide from './WritingStructureGuide';
+import WritingCoachPanel from './WritingCoachPanel';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
@@ -144,7 +144,7 @@ export default function WritingTester() {
         <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
         <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          Pick a module, then a task. You'll get an exam-style prompt — a different one every time,
+          Pick a module, then a task. You'll get an exam-style prompt, a different one every time,
           until you've written them all. An AI examiner grades your answer on the four official IELTS criteria.
         </p>
 
@@ -272,7 +272,7 @@ export default function WritingTester() {
           title={prompt.title}
           overallBand={result.overallBand}
           live={result.grader.live}
-          offlineWarning="The band scores below are illustrative — generated from mechanical signals only, without an AI examiner. Your teacher can enable AI grading."
+          offlineWarning="The band scores below are illustrative, generated from mechanical signals only, without an AI examiner. Your teacher can enable AI grading."
           criteria={CRITERIA.map((c) => ({
             key: c.key,
             label: criterionLabel(c, prompt.task),
@@ -314,7 +314,7 @@ export default function WritingTester() {
                     </span>
                     <span aria-hidden="true">→</span>
                     <span className="rounded bg-success-tint px-1.5 py-0.5 font-semibold text-success">{c.fix}</span>
-                    <span className="text-ink-muted">— {c.reason}</span>
+                    <span className="text-ink-muted">· {c.reason}</span>
                   </li>
                 ))}
               </ul>
@@ -377,63 +377,67 @@ export default function WritingTester() {
         </div>
       )}
 
-      <div className="screen-in space-y-4">
-      <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-        <div className="flex items-start justify-between gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
-            {prompt.task === 'task2'
-              ? 'Writing Task 2'
-              : `Writing Task 1 (${module === 'general' ? 'General Training' : 'Academic'})`}{' '}
-            · ~{prompt.suggestedMinutes} min
-          </span>
-          <div className="flex shrink-0 items-center gap-2">
-            {timerStartedRef.current && (
-              <span
-                className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums xl:hidden ${
-                  timerOvertime ? 'border-error text-error' : 'border-border text-ink'
-                }`}
-                title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
-              >
-                {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
+      <div className="screen-in lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-6">
+        <div className="space-y-4">
+          <div className="rounded-card border border-border bg-surface p-5 shadow-card">
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
+                {prompt.task === 'task2'
+                  ? 'Writing Task 2'
+                  : `Writing Task 1 (${module === 'general' ? 'General Training' : 'Academic'})`}{' '}
+                · ~{prompt.suggestedMinutes} min
               </span>
-            )}
-            <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
-              ↻ New task
+              <div className="flex shrink-0 items-center gap-2">
+                {timerStartedRef.current && (
+                  <span
+                    className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums xl:hidden ${
+                      timerOvertime ? 'border-error text-error' : 'border-border text-ink'
+                    }`}
+                    title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
+                  >
+                    {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
+                  </span>
+                )}
+                <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
+                  ↻ New task
+                </button>
+              </div>
+            </div>
+            <p className="mt-2 text-[0.95rem] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt.promptHtml }} />
+          </div>
+
+          <textarea
+            value={essay}
+            onChange={(e) => setEssay(e.target.value)}
+            rows={14}
+            placeholder="Write your answer here…"
+            className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
+          />
+
+          {gradingError && (
+            <div className="rounded-card border border-error/30 bg-error-tint px-4 py-3 text-sm text-error">
+              ⚠ Couldn't grade your essay. {gradingError.replace(/\.?$/, '.')} Please try again in a moment.
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <span className={`text-sm font-semibold ${under ? 'text-ink-muted' : 'text-success'}`}>
+              {wordCount} / {prompt.minWords}+ words
+            </span>
+            <button
+              type="button"
+              onClick={submit}
+              disabled={wordCount === 0}
+              className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Check my essay
             </button>
           </div>
         </div>
-        <p className="mt-2 text-[0.95rem] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt.promptHtml }} />
-      </div>
 
-      <WritingStructureGuide variant={prompt.variant} />
-
-      <textarea
-        value={essay}
-        onChange={(e) => setEssay(e.target.value)}
-        rows={14}
-        placeholder="Write your answer here…"
-        className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
-      />
-
-      {gradingError && (
-        <div className="rounded-card border border-error/30 bg-error-tint px-4 py-3 text-sm text-error">
-          ⚠ Couldn't grade your essay — {gradingError.replace(/\.?$/, '.')} Please try again in a moment.
+        <div className="mt-4 lg:sticky lg:top-24 lg:mt-0">
+          <WritingCoachPanel key={prompt.id} prompt={prompt} />
         </div>
-      )}
-
-      <div className="flex items-center justify-between">
-        <span className={`text-sm font-semibold ${under ? 'text-ink-muted' : 'text-success'}`}>
-          {wordCount} / {prompt.minWords}+ words
-        </span>
-        <button
-          type="button"
-          onClick={submit}
-          disabled={wordCount === 0}
-          className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Check my essay
-        </button>
-      </div>
       </div>
     </>
   );

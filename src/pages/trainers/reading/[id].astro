@@ -11,6 +11,6 @@ export function getStaticPaths() {
 const { test } = Astro.props;
 ---
 
-<BaseLayout title={`${test.title} — IELTS Reading Drill`} bare>
+<BaseLayout title={`${test.title} · IELTS Reading Drill`} bare>
   <TestPlayer client:load test={test} hubUrl={withBase('/trainers/reading')} attemptKind="drill" />
 </BaseLayout>

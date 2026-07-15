@@ -5,6 +5,16 @@
 
 export type WritingTask = 'task1' | 'task2';
 
+/** A single topic-specific vocabulary suggestion for a prompt — distinct from the
+    generic functional language in writing-structures.ts (which teaches phrases for
+    the essay *type*, e.g. "stating an opinion"). These teach words for the essay's
+    *subject matter*. */
+export interface VocabSuggestion {
+  phrase: string;
+  meaning: string;
+  example: string;
+}
+
 export interface EssayPrompt {
   id: string;
   task: WritingTask;
@@ -19,6 +29,8 @@ export interface EssayPrompt {
   minWords: number;
   /** 40 for Task 2, 20 for Task 1 */
   suggestedMinutes: number;
+  /** Topic vocabulary shown in the writing coach panel. */
+  suggestedVocab: VocabSuggestion[];
 }
 
 export interface EssayInput {

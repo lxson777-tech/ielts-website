@@ -141,24 +141,48 @@ export function isCorrect(question: Question, given: string): boolean {
   return accepted.some((a) => norm(a) === norm(given));
 }
 
-/* Band thresholds carried over verbatim from the legacy player. */
-export function bandEstimate(raw: number, total: number): string {
-  const p = raw / total;
-  if (p >= 0.92) return '8.5 – 9';
-  if (p >= 0.77) return '7.5 – 8';
-  if (p >= 0.62) return '6.5 – 7';
-  if (p >= 0.46) return '5.5 – 6';
-  if (p >= 0.38) return '5.0';
-  return 'Below 5';
+/* Official IELTS Academic Reading raw-score → band conversion, as published
+   by the test owners (a representative table; the real cut-offs vary a point
+   either way between versions). Each entry is [minimum raw out of 40, band];
+   the first row whose minimum the score meets wins. Replaces the old coarse
+   percentage buckets, which returned a full-band-wide range like "6.5 – 7"
+   and read a whole band low around the boundaries (e.g. 30/40 is Band 7, but
+   the old curve showed "6.5 – 7"). Academic only — General Training reading
+   uses a more lenient table and the app's passages are Academic-style. */
+const READING_BAND_TABLE: [minRaw: number, band: number][] = [
+  [39, 9.0],
+  [37, 8.5],
+  [35, 8.0],
+  [33, 7.5],
+  [30, 7.0],
+  [27, 6.5],
+  [23, 6.0],
+  [19, 5.5],
+  [15, 5.0],
+  [13, 4.5],
+  [10, 4.0],
+  [8, 3.5],
+  [6, 3.0],
+  [4, 2.5],
+];
+
+/** Exact Academic Reading band for a raw score. The official table is defined
+    over 40 questions, so shorter single-passage drills are scaled onto the
+    same curve (raw → nearest /40 equivalent) to stay comparable. Returns 0 for
+    a score below the lowest tabulated band. */
+export function readingBand(raw: number, total: number): number {
+  const scaled = total === 40 ? raw : Math.round((raw / total) * 40);
+  for (const [minRaw, band] of READING_BAND_TABLE) if (scaled >= minRaw) return band;
+  return 0;
 }
 
-/** Midpoint of the band estimate range, for score-history charts. */
+/** Display label for a result, e.g. "7.0" (callers supply the "Band" prefix). */
+export function bandEstimate(raw: number, total: number): string {
+  const band = readingBand(raw, total);
+  return band >= 2.5 ? band.toFixed(1) : 'below 2.5';
+}
+
+/** Numeric band for score-history charts and best-band comparisons. */
 export function bandMidpoint(raw: number, total: number): number {
-  const p = raw / total;
-  if (p >= 0.92) return 8.75;
-  if (p >= 0.77) return 7.75;
-  if (p >= 0.62) return 6.75;
-  if (p >= 0.46) return 5.75;
-  if (p >= 0.38) return 5.0;
-  return 4.0;
+  return readingBand(raw, total);
 }

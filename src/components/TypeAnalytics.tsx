@@ -34,7 +34,7 @@ export default function TypeAnalytics() {
   if (stats.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-6 text-center text-sm text-ink-muted">
-        Finish a test and you'll see your accuracy broken down by question type here — so you know exactly what to drill next.
+        Finish a test and you'll see your accuracy broken down by question type here, so you know exactly what to drill next.
       </div>
     );
   }
@@ -50,7 +50,7 @@ export default function TypeAnalytics() {
     <div className="rounded-card border border-border bg-surface p-5">
       <p className="text-sm text-ink-muted">
         Across every test you've taken. Your weakest type so far is{' '}
-        <strong className="text-ink">{LABELS[weakest.type] ?? weakest.type}</strong> — start there.
+        <strong className="text-ink">{LABELS[weakest.type] ?? weakest.type}</strong>. Start there.
       </p>
       <MotionConfig reducedMotion="user">
         <ul className="mt-4 space-y-3">

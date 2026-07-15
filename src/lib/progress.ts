@@ -37,14 +37,29 @@ export interface WritingAttempt {
   live: boolean;
 }
 
+/** One graded speaking attempt. Unlike tests/writing this is a flat list, not
+    keyed by prompt — speaking history is most useful as a single band-over-time
+    trend across all parts, and students rarely re-take one exact topic. */
+export interface SpeakingAttempt {
+  at: string; // ISO datetime
+  mode: 'part1' | 'part2' | 'part3';
+  topic: string;
+  overallBand: number;
+  /** band per criterion key (fluencyCoherence/lexicalResource/grammaticalRange/pronunciation) */
+  criteria: Record<string, number>;
+  /** whether this came from the live AI grader or the offline stub */
+  live: boolean;
+}
+
 export interface ProgressV1 {
   version: 1;
   lessons: Record<string, { completedAt: string }>;
   tests: Record<string, TestAttempt[]>;
   writing: Record<string, WritingAttempt[]>;
+  speaking: SpeakingAttempt[];
 }
 
-const EMPTY: ProgressV1 = { version: 1, lessons: {}, tests: {}, writing: {} };
+const EMPTY: ProgressV1 = { version: 1, lessons: {}, tests: {}, writing: {}, speaking: [] };
 
 export function getProgress(): ProgressV1 {
   if (typeof window === 'undefined') return structuredClone(EMPTY);
@@ -59,12 +74,35 @@ export function getProgress(): ProgressV1 {
   }
 }
 
+const listeners = new Set<() => void>();
+
+/** Subscribe to progress writes (local activity or a cloud pull). Returns an
+    unsubscribe. Used by the account-sync layer to push changes up. */
+export function onProgressChange(cb: () => void): () => void {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+
 function save(p: ProgressV1): void {
   try {
     window.localStorage.setItem(KEY, JSON.stringify(p));
   } catch {
     /* storage full/blocked — progress is a nice-to-have, never fatal */
   }
+  for (const l of listeners) {
+    try {
+      l();
+    } catch {
+      /* a listener throwing must not break the writer */
+    }
+  }
+}
+
+/** Overwrite the whole store — used when a cloud pull brings down merged state.
+    Goes through save() so change listeners still fire (minus any re-entrancy:
+    the sync layer guards against echoing its own writes). */
+export function replaceProgress(p: ProgressV1): void {
+  save({ ...structuredClone(EMPTY), ...p });
 }
 
 export function markLessonComplete(slug: string): void {
@@ -115,6 +153,22 @@ export function getWritingAttempts(promptId?: string): { promptId: string; attem
     .sort((a, b) => a.attempt.at.localeCompare(b.attempt.at));
 }
 
+export function recordSpeakingAttempt(attempt: SpeakingAttempt): void {
+  const p = getProgress();
+  (p.speaking ??= []).push(attempt);
+  save(p);
+}
+
+export function getSpeakingAttempts(): SpeakingAttempt[] {
+  return [...(getProgress().speaking ?? [])].sort((a, b) => a.at.localeCompare(b.at));
+}
+
+export function getBestSpeakingBand(): number | null {
+  const all = getProgress().speaking ?? [];
+  if (all.length === 0) return null;
+  return Math.max(...all.map((a) => a.overallBand));
+}
+
 export interface TypeStat {
   type: string;
   correct: number;
@@ -160,4 +214,43 @@ export function resetProgress(): void {
   } catch {
     /* ignore */
   }
+}
+
+/** Union-merge two progress blobs (local + cloud) so nothing recorded on either
+    device is lost. Attempts are additive and stamped with an ISO `at`, so they
+    dedupe cleanly on that timestamp; completed lessons keep the earliest date. */
+export function mergeProgress(a: ProgressV1, b: ProgressV1): ProgressV1 {
+  const lessons: ProgressV1['lessons'] = { ...b.lessons };
+  for (const [slug, v] of Object.entries(a.lessons)) {
+    const other = lessons[slug];
+    lessons[slug] = other && other.completedAt < v.completedAt ? other : v;
+  }
+
+  const mergeAttempts = <T extends { at: string }>(x: T[] = [], y: T[] = []): T[] => {
+    const seen = new Set<string>();
+    const out: T[] = [];
+    for (const item of [...x, ...y]) {
+      if (seen.has(item.at)) continue;
+      seen.add(item.at);
+      out.push(item);
+    }
+    return out.sort((m, n) => m.at.localeCompare(n.at));
+  };
+
+  const tests: ProgressV1['tests'] = {};
+  for (const id of new Set([...Object.keys(a.tests), ...Object.keys(b.tests)])) {
+    tests[id] = mergeAttempts(a.tests[id], b.tests[id]);
+  }
+  const writing: ProgressV1['writing'] = {};
+  for (const id of new Set([...Object.keys(a.writing), ...Object.keys(b.writing)])) {
+    writing[id] = mergeAttempts(a.writing[id], b.writing[id]);
+  }
+
+  return {
+    version: 1,
+    lessons,
+    tests,
+    writing,
+    speaking: mergeAttempts(a.speaking ?? [], b.speaking ?? []),
+  };
 }

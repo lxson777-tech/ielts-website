@@ -25,7 +25,7 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
     stages: [
       {
         name: 'Answer',
-        description: 'Respond directly in one sentence — yes, no, sometimes, rarely. Don’t dodge or ramble before getting to the point.',
+        description: 'Respond directly in one sentence. Yes, no, sometimes, rarely. Don’t dodge or ramble before getting to the point.',
         phrases: [],
       },
       {
@@ -35,7 +35,7 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
       },
       {
         name: 'Extend',
-        description: 'Add a specific example, memory, or contrasting detail — connects two ideas in one breath instead of two flat sentences.',
+        description: 'Add a specific example, memory, or contrasting detail. Connects two ideas in one breath instead of two flat sentences.',
         phrases: ['even though…', 'whereas…', 'not only… but also…'],
       },
     ],
@@ -46,25 +46,25 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
     stages: [
       {
         name: 'Point',
-        timing: '15–20s',
-        description: 'Introduce your topic clearly — briefly cover the who/what/where.',
+        timing: '15-20s',
+        description: 'Introduce your topic clearly. Briefly cover the who/what/where.',
         phrases: ['I’d like to talk about…', 'The [topic] I’m going to describe is…'],
       },
       {
         name: 'Explain',
-        timing: '60–70s',
+        timing: '60-70s',
         description: 'Work through each bullet point on the cue card in turn, with specific details and examples.',
         phrases: ['In terms of [bullet]…', 'As far as [bullet] is concerned…', 'When it comes to [bullet]…'],
       },
       {
         name: 'Elaborate',
-        timing: '20–25s',
-        description: 'Expand beyond the bullet points with your personal reaction — how did you feel, what stood out?',
+        timing: '20-25s',
+        description: 'Expand beyond the bullet points with your personal reaction. How did you feel, what stood out?',
         phrases: ['What really struck me was…', 'I was particularly impressed by…'],
       },
       {
         name: 'Link',
-        timing: '10–15s',
+        timing: '10-15s',
         description: 'Round off your talk with a brief reflection.',
         phrases: ['All in all…', 'To sum up…', 'It’s definitely an experience I’d recommend because…'],
       },

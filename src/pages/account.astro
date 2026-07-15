@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import AccountOverview from '../components/AccountOverview';
+import TypeAnalytics from '../components/TypeAnalytics';
+import ScoreHistory from '../components/ScoreHistory';
+import WritingHistory from '../components/WritingHistory';
+import SpeakingHistory from '../components/SpeakingHistory';
+---
+
+<BaseLayout
+  title="My Account · IELTS Portal"
+  description="Track your progress across Reading, Writing and Speaking in one place: lessons completed, band history, and your study plan."
+>
+  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="My Account"
+      title="Your progress, all in one place"
+      subtitle="Every skill, every attempt, at a glance, instead of checking each trainer separately."
+    />
+
+    <AccountOverview client:load />
+
+    <section id="reading" class="mt-16 scroll-mt-20">
+      <SectionHeading eyebrow="Reading" title="Your weak spots" subtitle="Accuracy by question type across every attempt. Drill the red ones first." />
+      <TypeAnalytics client:load />
+      <div class="mt-8">
+        <SectionHeading eyebrow="Reading" title="Score history" />
+        <ScoreHistory client:load />
+      </div>
+    </section>
+
+    <section id="writing" class="mt-16 scroll-mt-20">
+      <SectionHeading eyebrow="Writing" title="Score history" subtitle="Every essay you've submitted to the AI examiner." />
+      <WritingHistory client:load />
+    </section>
+
+    <section id="speaking" class="mt-16 scroll-mt-20">
+      <SectionHeading eyebrow="Speaking" title="Score history" subtitle="Every part you've practiced with the AI examiner." />
+      <SpeakingHistory client:load />
+    </section>
+  </div>
+</BaseLayout>
