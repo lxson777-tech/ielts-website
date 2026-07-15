@@ -10,6 +10,9 @@
     // or edit here — e.g. a newer flash model once you confirm it's on the free tier.
     "GEMINI_MODEL": "gemini-2.5-flash",
     // Comma-separated origins allowed to call this Worker from a browser.
-    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321"
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321",
+    // Independent grading runs whose median becomes the result (1-5). Cuts the
+    // ±1-band single-run variance at the 7/8 boundary. Set "1" to disable.
+    "GRADING_SAMPLES": "3"
   }
 }

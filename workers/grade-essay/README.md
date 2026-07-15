@@ -35,6 +35,21 @@ Worker calls Gemini and returns the assessment JSON.
 - `GEMINI_MODEL` (wrangler.jsonc vars): `gemini-2.5-flash` by default.
 - `ALLOWED_ORIGINS` (vars): comma-separated origins allowed by CORS. Add your
   custom domain here if the site moves.
+- `GRADING_SAMPLES` (vars, default `3`): how many independent grading runs the
+  Worker takes the **median** of. This cuts the ±1-band luck a single run
+  carries at the consequential 7/8 boundary. **Trade-off:** it multiplies the
+  Gemini calls (and free-tier quota) per grade by this number — set `"1"` to
+  disable if you hit the daily limit. Mirrors `workers/grade-speaking`.
+
+## Grading calibration
+
+The system prompt grades **evidence-first** (the model must gather quoted
+observations per criterion before it commits to a band) and carries an explicit
+anti-inflation calibration block — "band 8 is rare", the exact band-7 conditions
+for each criterion, "grade the typical level, not the peaks". This is the same
+discipline the speaking grader uses, and it exists because lightweight models
+systematically over-score by 0.5–1 band. If you recalibrate, keep the essay and
+speaking prompts in step.
 
 ## Notes & limits
 
