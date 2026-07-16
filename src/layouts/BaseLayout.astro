@@ -114,15 +114,45 @@ const jsonLd = {
               }
             }
           },
-          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+          // threshold 0 (any visible pixel), not a ratio: tall sections on
+          // narrow phone screens may never have 12% on screen at once, and a
+          // fast fling can skip past a ratio threshold entirely, leaving
+          // content permanently invisible.
+          { threshold: 0, rootMargin: '0px 0px -8% 0px' },
         );
         els.forEach((el) => {
           if (!el.classList.contains('is-visible')) io.observe(el);
         });
       }
 
+      // Safety net for the observer above: fast flings can skip an element
+      // between rendered frames, anchor jumps teleport past whole sections,
+      // and island hydration can swap a node out from under the observer,
+      // all of which leave content permanently invisible. On scroll,
+      // force-reveal anything the user has already reached or passed,
+      // querying the live DOM so replaced nodes are covered too.
+      let sweepQueued = false;
+      function revealReached() {
+        sweepQueued = false;
+        for (const el of document.querySelectorAll<HTMLElement>('.reveal-init:not(.is-visible)')) {
+          if (el.closest('details')) continue;
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.95) el.classList.add('is-visible');
+        }
+      }
+      function queueRevealSweep() {
+        if (sweepQueued) return;
+        sweepQueued = true;
+        requestAnimationFrame(revealReached);
+      }
+      document.addEventListener('scroll', queueRevealSweep, { passive: true, capture: true });
+
       initScrollReveal();
-      document.addEventListener('astro:page-load', initScrollReveal);
+      // Late sweep: catch nodes hydration replaced inside the initial viewport.
+      setTimeout(revealReached, 1500);
+      document.addEventListener('astro:page-load', () => {
+        initScrollReveal();
+        setTimeout(revealReached, 1500);
+      });
 
       // Animated <details>/<summary> expand-collapse — covers every
       // collapsible in lesson content (worked examples, "show model

@@ -311,7 +311,7 @@ export default function SpeakingTester() {
             onClick={backToMenu}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Choose a different part →
+            Choose a different part
           </button>
         </div>
       </div>
@@ -339,21 +339,21 @@ export default function SpeakingTester() {
               onClick={() => void startMode('part1')}
               className="rounded-button bg-brand px-6 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover"
             >
-              Part 1 practice →
+              Part 1 practice
             </button>
             <button
               type="button"
               onClick={() => void startMode('part2')}
               className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt"
             >
-              Part 2 practice →
+              Part 2 practice
             </button>
             <button
               type="button"
               onClick={() => void startMode('part3')}
               className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt"
             >
-              Part 3 practice →
+              Part 3 practice
             </button>
           </div>
           <p className="mt-3 text-xs text-ink-muted">
@@ -390,7 +390,7 @@ export default function SpeakingTester() {
             onClick={confirmReady}
             className="mt-4 rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
           >
-            {turnsRef.current[turnIndex]?.prepMs ? 'Start prep time →' : 'Start answering →'}
+            {turnsRef.current[turnIndex]?.prepMs ? 'Start prep time' : 'Start answering'}
           </button>
         </div>
       )}
@@ -405,7 +405,7 @@ export default function SpeakingTester() {
               onClick={skipPrep}
               className="mt-4 rounded-button bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
             >
-              Start speaking now →
+              Start speaking now
             </button>
           </div>
           <textarea

@@ -68,11 +68,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               data-test-ids={JSON.stringify(testIds)}
               class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
             >
-              Start a test <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+              Start a test
             </button>
             <p class="text-center text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
-            <a href={withBase('/trainers/reading')} class="text-center text-xs font-semibold text-[var(--skill)] hover:underline">
-              Only have 20 minutes? Try the Reading Trainer →
+            <a href={withBase('/trainers/reading')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline">
+              Only have 20 minutes? Try the Reading Trainer
             </a>
           </div>
         </div>
@@ -108,7 +108,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               href={withBase('/trainers/writing')}
               class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
             >
-              Start writing <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+              Start writing
             </a>
             <p class="text-center text-xs text-ink-muted">A different prompt every attempt. Write at your own pace.</p>
           </div>
@@ -147,11 +147,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               href={withBase('/speaking/examiner')}
               class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
             >
-              Start the interview <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
+              Start the interview
             </a>
             <p class="text-center text-xs text-ink-muted">Microphone access required.</p>
-            <a href={withBase('/trainers/speaking')} class="text-center text-xs font-semibold text-[var(--skill)] hover:underline">
-              Want to practice one part at a time instead? →
+            <a href={withBase('/trainers/speaking')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline">
+              Want to practice one part at a time instead?
             </a>
           </div>
         </div>

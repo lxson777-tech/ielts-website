@@ -40,7 +40,7 @@ const practice = READING_PRACTICE[part.slug];
     {
       prev ? (
         <a href={withBase(`/lessons/reading/${prev.slug}`)} class="group rounded-card border border-border p-4 transition-colors hover:border-[var(--skill)]">
-          <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">← Previous</span>
+          <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Previous</span>
           <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">{prev.title}</span>
         </a>
       ) : (
@@ -54,7 +54,7 @@ const practice = READING_PRACTICE[part.slug];
     {
       next ? (
         <a href={withBase(`/lessons/reading/${next.slug}`)} class="group rounded-card border border-border p-4 text-right transition-colors hover:border-[var(--skill)]">
-          <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Next →</span>
+          <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Next</span>
           <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">{next.title}</span>
         </a>
       ) : (

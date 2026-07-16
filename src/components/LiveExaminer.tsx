@@ -543,7 +543,7 @@ export default function LiveExaminer() {
           disabled={!TOKEN_URL}
           className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Start the interview →
+          Start the interview
         </button>
       </div>
     );
@@ -703,7 +703,7 @@ export default function LiveExaminer() {
               onClick={beginPart2Talk}
               className="rounded-button bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover"
             >
-              I'm ready, start speaking →
+              I'm ready, start speaking
             </button>
           )}
           {stage === 'part2talk' && (
@@ -712,7 +712,7 @@ export default function LiveExaminer() {
               onClick={() => beginPart3(false)}
               className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
-              I've finished my talk →
+              I've finished my talk
             </button>
           )}
           <button

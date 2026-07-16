@@ -1,9 +1,8 @@
-/* Account widget for the nav. Also the sole home of the "Start Here" study-plan
-   link (it used to be a standalone nav pill; now it only lives in this menu so
-   there's one place users go to for account + onboarding). Always renders, even
-   when accounts aren't configured, so Start Here never disappears: unconfigured
-   shows a plain Start Here link, configured-but-signed-out shows a menu with
-   Start Here + Log in, and signed in shows Start Here alongside progress/sign-out.
+/* Account widget for the nav. Renders nothing when accounts aren't configured
+   (the "Start Here" study-plan link lives in Nav.astro's More menu and mobile
+   menu, so onboarding doesn't depend on this island). Signed out, the button
+   opens the login window directly; signed in, it becomes an avatar menu with
+   progress and sign-out.
    Login itself is a standard email + password window (sign in / create account /
    forgot password), with Google and a one-time email link as secondary options.
    Mounting this island also drives sync: on auth change it starts/stops the
@@ -79,39 +78,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
     return () => document.removeEventListener('mousedown', onDoc);
   }, [menuOpen]);
 
-  const startHereLink = (
-    <a
-      href={withBase('/start')}
-      className="flex items-center gap-2 px-4 py-3 font-display text-sm font-bold text-brand hover:bg-brand-tint"
-    >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-      </svg>
-      Start Here
-    </a>
-  );
-
-  // No Supabase project configured at all: Start Here is still the one thing
-  // to surface, just as a plain link with no account affordance.
-  if (!isAuthConfigured()) {
-    return (
-      <a
-        href={withBase('/start')}
-        className={`group inline-flex items-center gap-2 rounded-full font-display font-bold ring-1 ring-inset ring-brand/15 transition-all duration-200 ${
-          compact
-            ? 'w-full bg-brand-tint px-3 py-2 text-sm text-brand'
-            : 'bg-brand-tint px-2.5 py-1.5 text-sm text-brand hover:-translate-y-0.5 hover:shadow-card hover:ring-brand/35'
-        }`}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 transition-transform duration-300 group-hover:rotate-45" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" />
-          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-        </svg>
-        Start Here
-      </a>
-    );
-  }
+  // No Supabase project configured at all: no account to offer, render nothing.
+  // (Start Here lives in the nav itself, so nothing is lost here.)
+  if (!isAuthConfigured()) return null;
 
   // Pre-hydration: avoid a flash of the wrong signed-in/out state.
   if (!ready) return null;
@@ -227,14 +196,11 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
               <p className="truncate text-sm font-semibold">{label}</p>
               <p className="mt-1 text-xs text-success">Progress is syncing to your account.</p>
             </div>
-            <div className="border-b border-border" onClick={() => setMenuOpen(false)}>
-              {startHereLink}
-            </div>
             <a
               href={withBase('/account')}
               className="block border-b border-border px-4 py-3 text-left text-sm font-semibold text-brand hover:bg-brand-tint"
             >
-              My progress →
+              My progress
             </a>
             <button
               type="button"
@@ -254,19 +220,17 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
 
   /* ── Signed out ── */
   return (
-    <div ref={menuRef} className="relative inline-block">
+    <div className="relative inline-block">
       <button
         type="button"
-        onClick={() => setMenuOpen((o) => !o)}
+        onClick={() => setModalOpen(true)}
         className={`group inline-flex items-center gap-2 rounded-full font-display font-bold ring-1 ring-inset ring-brand/15 transition-all duration-200 ${
           compact
             ? 'w-full bg-brand-tint px-3 py-2 text-sm text-brand'
             : 'bg-brand-tint px-2.5 py-1.5 text-sm text-brand hover:-translate-y-0.5 hover:shadow-card hover:ring-brand/35'
         }`}
-        aria-haspopup="true"
-        aria-expanded={menuOpen}
       >
-        {/* Same shape as the signed-in avatar bubble above — a preview of what this becomes once you're logged in. */}
+        {/* Same shape as the signed-in avatar bubble above, a preview of what this becomes once you're logged in. */}
         <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand text-white transition-transform duration-200 group-hover:scale-105">
           <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden="true">
             <path
@@ -278,28 +242,6 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
         </span>
         Log in
       </button>
-
-      {menuOpen && (
-        <div
-          className={`absolute z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-border bg-surface shadow-card-hover ${
-            compact ? 'left-0' : 'right-0'
-          }`}
-        >
-          <div className="border-b border-border" onClick={() => setMenuOpen(false)}>
-            {startHereLink}
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setMenuOpen(false);
-              setModalOpen(true);
-            }}
-            className="block w-full px-4 py-3 text-left text-sm font-semibold text-ink hover:bg-surface-alt"
-          >
-            Log in
-          </button>
-        </div>
-      )}
 
       {modalOpen && (
         <div
@@ -349,7 +291,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
                           <button
                             type="button"
                             onClick={() => switchMode('forgot')}
-                            className="text-xs font-semibold text-brand hover:underline"
+                            className="py-2 -my-2 text-xs font-semibold text-brand hover:underline"
                           >
                             Forgot password?
                           </button>
@@ -413,7 +355,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
                     <button
                       type="button"
                       onClick={() => switchMode('magiclink')}
-                      className="w-full text-center text-xs font-semibold text-ink-muted hover:text-brand"
+                      className="w-full py-2 text-center text-xs font-semibold text-ink-muted hover:text-brand"
                     >
                       Email me a sign-in link instead
                     </button>
@@ -452,7 +394,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             <button
               type="button"
               onClick={closeModal}
-              className="mt-4 w-full text-center text-xs font-semibold text-ink-muted hover:text-ink"
+              className="mt-2 w-full py-2 text-center text-xs font-semibold text-ink-muted hover:text-ink"
             >
               {phase === 'done' ? 'Done' : 'Maybe later'}
             </button>

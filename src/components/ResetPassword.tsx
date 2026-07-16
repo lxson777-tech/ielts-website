@@ -49,8 +49,8 @@ export default function ResetPassword() {
       <div className="mx-auto max-w-sm rounded-card border border-border bg-surface p-6 text-center shadow-card sm:p-7">
         <h2 className="font-display text-lg font-extrabold">Link expired or invalid</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Password-reset links only work once and expire after a while. Open the site and click{' '}
-          <strong>Log in → Forgot password?</strong> to request a fresh one.
+          Password-reset links only work once and expire after a while. Open the site, click{' '}
+          <strong>Log in</strong>, then <strong>Forgot password?</strong> to request a fresh one.
         </p>
         <a
           href={withBase('/')}
@@ -71,7 +71,7 @@ export default function ResetPassword() {
           href={withBase('/account')}
           className="mt-5 inline-block rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white hover:bg-brand-hover"
         >
-          Go to my account →
+          Go to my account
         </a>
       </div>
     );

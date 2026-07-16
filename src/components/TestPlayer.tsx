@@ -235,8 +235,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     <div className="screen-in flex h-dvh flex-col bg-surface text-ink">
       {/* ── Top bar ── */}
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 sm:gap-3 sm:px-4">
-        <a href={hubUrl} className="shrink-0 whitespace-nowrap text-sm font-semibold text-ink-muted hover:text-ink">
-          <span aria-hidden="true">←</span> <span className="hidden sm:inline">Tests</span>
+        <a href={hubUrl} className="shrink-0 whitespace-nowrap py-2 text-sm font-semibold text-ink-muted hover:text-ink">
+          <span className="hidden sm:inline">Tests</span>
         </a>
         <span className="hidden truncate font-display text-sm font-bold md:block">{test.title}</span>
         <div
@@ -719,7 +719,7 @@ function AnswerReview({
             <button
               type="button"
               onClick={() => onLocate(q.evidence!)}
-              className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
+              className="mt-1 inline-flex items-center gap-1 py-2 -my-1 text-xs font-semibold text-brand hover:underline"
             >
               🔍 Show in passage
             </button>
@@ -1209,15 +1209,15 @@ function InstructionsScreen({
         </ul>
 
         <div className="mt-8 flex items-center justify-between gap-3">
-          <a href={hubUrl} className="text-sm font-semibold text-ink-muted hover:text-ink">
-            ← Back
+          <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+            Back
           </a>
           <button
             type="button"
             onClick={onStart}
             className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
           >
-            Start test →
+            Start test
           </button>
         </div>
       </div>

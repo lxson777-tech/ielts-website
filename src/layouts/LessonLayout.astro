@@ -38,12 +38,13 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
       </div>
       <div class="lesson-hero-content mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb">
-          <a href={withBase('/')} class="hover:text-ink">Home</a>
+          {/* py-2/-my-2 pad the tap target to 24px+ without growing the row visually */}
+          <a href={withBase('/')} class="inline-block py-2 -my-2 hover:text-ink">Home</a>
           <span aria-hidden="true">/</span>
           {
             parent && (
               <>
-                <a href={parent.href} class="hover:text-ink">{parent.label}</a>
+                <a href={parent.href} class="inline-block py-2 -my-2 hover:text-ink">{parent.label}</a>
                 <span aria-hidden="true">/</span>
               </>
             )

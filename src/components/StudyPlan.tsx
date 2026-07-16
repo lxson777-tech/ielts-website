@@ -113,7 +113,7 @@ export default function StudyPlan() {
           type="submit"
           className="mt-7 w-full rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white transition-colors hover:bg-brand-hover"
         >
-          Show my plan →
+          Show my plan
         </button>
       </form>
     );
@@ -191,7 +191,7 @@ export default function StudyPlan() {
                             href={withBase(step.href)}
                             className="font-semibold text-brand hover:underline"
                           >
-                            Open →
+                            Open
                           </a>
                         </>
                       )}
@@ -209,7 +209,7 @@ export default function StudyPlan() {
         <button
           type="button"
           onClick={startOver}
-          className="text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
+          className="py-2 -my-2 text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
         >
           Start over / change answers
         </button>

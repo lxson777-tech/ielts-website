@@ -142,7 +142,7 @@ export default function AccountOverview() {
               href={withBase('/start')}
               className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
             >
-              View plan →
+              View plan
             </a>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-alt">
@@ -156,7 +156,7 @@ export default function AccountOverview() {
             href={withBase('/start')}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Build my plan →
+            Build my plan
           </a>
         </div>
       )}

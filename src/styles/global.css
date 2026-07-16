@@ -649,3 +649,17 @@
     margin: 2rem 0;
   }
 }
+
+/* ── Touch-device form controls ──
+   iOS Safari zooms the whole page when focusing any form control whose font
+   is under 16px. Keep every text-entry control at >=16px on coarse-pointer
+   devices so tapping an answer box never zooms; desktop keeps the compact
+   sizes. Unlayered on purpose: it must win over Tailwind utility classes
+   like text-sm inside @layer utilities. */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+}

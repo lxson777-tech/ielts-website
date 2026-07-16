@@ -187,7 +187,7 @@ export default function WritingTester() {
               ~{(module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS)[0]?.suggestedMinutes} min.
             </p>
             <span className="mt-4 inline-flex items-center gap-1 font-display text-sm font-bold text-brand transition-transform group-hover:translate-x-0.5">
-              Start Task 1 →
+              Start Task 1
             </span>
           </button>
           <button
@@ -204,7 +204,7 @@ export default function WritingTester() {
               ~{TASK2_PROMPTS[0]?.suggestedMinutes} min.
             </p>
             <span className="mt-4 inline-flex items-center gap-1 font-display text-sm font-bold text-brand transition-transform group-hover:translate-x-0.5">
-              Start Task 2 →
+              Start Task 2
             </span>
           </button>
         </div>
@@ -335,7 +335,7 @@ export default function WritingTester() {
             onClick={() => startTask(taskType!, module)}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Take another test →
+            Take another test
           </button>
         </div>
       </div>
@@ -398,7 +398,7 @@ export default function WritingTester() {
                     {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
                   </span>
                 )}
-                <button type="button" onClick={newTask} className="text-xs font-semibold text-ink-muted hover:text-ink">
+                <button type="button" onClick={newTask} className="py-2 -my-2 text-xs font-semibold text-ink-muted hover:text-ink">
                   ↻ New task
                 </button>
               </div>

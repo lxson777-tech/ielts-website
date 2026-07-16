@@ -80,7 +80,7 @@ export default function BandReport({
               {c.tip && (
                 <p className="mt-auto pt-3">
                   <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
-                    <strong className="text-brand">→ Band {Math.min(9, c.band + 1)}:</strong> {c.tip}
+                    <strong className="text-brand">Band {Math.min(9, c.band + 1)}:</strong> {c.tip}
                   </span>
                 </p>
               )}

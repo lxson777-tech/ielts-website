@@ -121,7 +121,7 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
                     >
                       <span class="h-2 w-2 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
                       {overviewLabel[lesson.slug] ?? lesson.title}
-                      <span class="ml-auto text-xs font-semibold opacity-70">Start here →</span>
+                      <span class="ml-auto text-xs font-semibold opacity-70">Start here</span>
                     </a>
                   ))}
 
@@ -187,7 +187,7 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
         Trainers
       </a>
 
-      {/* Vocabulary + Tests + Account, consolidated so the main row stays at
+      {/* Start Here + Vocabulary + Tests, consolidated so the main row stays at
           the 4 core skills instead of growing with every new feature. */}
       <div class="group relative">
         <button
@@ -211,12 +211,23 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
         >
           <div class="skill-vocabulary p-3">
             <a
+              href={withBase('/start')}
+              class="mb-1 flex items-center gap-2.5 rounded-xl bg-brand-tint px-4 py-3 font-display text-[0.95rem] font-bold text-brand transition-opacity hover:opacity-80"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+              </svg>
+              Start Here
+              <span class="ml-auto text-xs font-semibold opacity-70">Study plan</span>
+            </a>
+            <a
               href={withBase('/lessons/vocabulary')}
               class="flex items-center gap-2.5 rounded-xl bg-[var(--skill-tint)] px-4 py-3 font-display text-[0.95rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
             >
               <span class="h-2 w-2 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
               Vocabulary Overview
-              <span class="ml-auto text-xs font-semibold opacity-70">Start here →</span>
+              <span class="ml-auto text-xs font-semibold opacity-70">Start here</span>
             </a>
             <a
               href={withBase('/tests')}
@@ -254,6 +265,16 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
   <div class="max-h-[75dvh] overflow-y-auto">
   <div id="nav-mobile" class="border-t border-border bg-surface px-4 pb-5">
     <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
+    <a
+      href={withBase('/start')}
+      class="flex items-center gap-2 rounded-lg bg-brand-tint px-3 py-2.5 font-display text-sm font-bold text-brand"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+      </svg>
+      Start Here
+    </a>
     <a
       href={withBase('/trainers')}
       class="flex items-center gap-2 rounded-lg bg-brand px-3 py-2.5 font-display text-sm font-bold text-white"
