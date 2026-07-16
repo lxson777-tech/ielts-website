@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAttempts, resetProgress, type TestAttempt } from '../lib/progress';
+import { getAttempts, onProgressChange, resetProgress, type TestAttempt } from '../lib/progress';
 import { ALL_TESTS } from '../data/tests';
 
 interface Row {
@@ -139,7 +139,9 @@ export default function ScoreHistory() {
     // Drills are single-passage practice, not full exams — a band estimate
     // only means something over the full 40-question mix, so keep them out
     // of the score history and band trend.
-    setRows(getAttempts().filter((r) => r.attempt.kind !== 'drill'));
+    const load = () => setRows(getAttempts().filter((r) => r.attempt.kind !== 'drill'));
+    load();
+    return onProgressChange(load);
   }, []);
 
   if (rows === null) return null; // pre-hydration

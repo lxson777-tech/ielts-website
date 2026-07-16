@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
-import { getTypeStats, type TypeStat } from '../lib/progress';
+import { getTypeStats, onProgressChange, type TypeStat } from '../lib/progress';
 
 /* Friendly labels for the schema's QuestionType keys. */
 const LABELS: Record<string, string> = {
@@ -28,6 +28,7 @@ export default function TypeAnalytics() {
 
   useEffect(() => {
     setStats(getTypeStats());
+    return onProgressChange(() => setStats(getTypeStats()));
   }, []);
 
   if (stats === null) return null; // pre-hydration

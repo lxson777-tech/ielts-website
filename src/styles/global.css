@@ -566,7 +566,12 @@
 /* ── Tap-to-reveal panel (Word of the Day, writing vocab cards) ───
    CSS-only expand/collapse via grid-template-rows — no JS height
    measurement needed. Shared by any component that reveals a hidden
-   block of text on click instead of using the Accordion component. */
+   block of text on click instead of using the Accordion component.
+   GOTCHA: the direct child (the min-h-0 overflow-hidden clip wrapper)
+   must have NO padding — padding sets a floor on the collapsed 0fr
+   track (the track computes to the padding height, not 0) and a
+   strip of clipped content shows through. Put padding on an inner
+   element instead. */
 .grid-reveal {
   display: grid;
   grid-template-rows: 0fr;

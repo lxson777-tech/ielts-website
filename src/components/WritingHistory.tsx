@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getWritingAttempts, type WritingAttempt } from '../lib/progress';
+import { getWritingAttempts, onProgressChange, type WritingAttempt } from '../lib/progress';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 
 interface Row {
@@ -108,6 +108,9 @@ export default function WritingHistory() {
 
   useEffect(() => {
     setRows(getWritingAttempts());
+    // Stay live: the trainer records the attempt on this same page right
+    // after grading, and this history sits directly below the report.
+    return onProgressChange(() => setRows(getWritingAttempts()));
   }, []);
 
   if (rows === null) return null; // pre-hydration

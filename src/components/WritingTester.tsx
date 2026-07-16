@@ -132,28 +132,52 @@ export default function WritingTester() {
 
   /* ── 1. Start screen ── */
   if (!prompt) {
+    const t1Pool = module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS;
+    const taskCards = [
+      {
+        task: 'task1' as const,
+        title: 'Task 1',
+        kind: module === 'general' ? 'Letter' : 'Report',
+        description:
+          module === 'general'
+            ? 'Write a formal, semi-formal or informal letter for an everyday situation.'
+            : 'Describe a chart, graph, table, process or map in your own words.',
+        minWords: t1Pool[0]?.minWords,
+        minutes: t1Pool[0]?.suggestedMinutes,
+      },
+      {
+        task: 'task2' as const,
+        title: 'Task 2',
+        kind: 'Essay',
+        description: 'Write a discursive essay responding to an opinion, discussion or problem prompt.',
+        minWords: TASK2_PROMPTS[0]?.minWords,
+        minutes: TASK2_PROMPTS[0]?.suggestedMinutes,
+      },
+    ];
     return (
       <div className="screen-in relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <img
           src={withBase('/pics/writing/start-task.png')}
           alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
-          className="mx-auto w-full max-w-[160px]"
+          className="mx-auto w-full max-w-[150px]"
           loading="lazy"
         />
-        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing</p>
+        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing · AI-graded</p>
         <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
+        {/* One line only — the page header above the card already explains the
+            grading; repeating it here was reading as a doubled introduction. */}
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          Pick a module, then a task. You'll get an exam-style prompt, a different one every time,
-          until you've written them all. An AI examiner grades your answer on the four official IELTS criteria.
+          Pick your module, then a task. A different exam-style prompt every attempt.
         </p>
 
         <div className="mx-auto mt-6 inline-flex rounded-button border border-border bg-surface-alt/60 p-1">
           <button
             type="button"
             onClick={() => setModule('academic')}
+            aria-pressed={module === 'academic'}
             className={`rounded-button px-4 py-1.5 text-sm font-semibold transition-colors ${
-              module === 'academic' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              module === 'academic' ? 'bg-[var(--skill,#0E9F6E)] text-white' : 'text-ink-muted hover:text-ink'
             }`}
           >
             Academic
@@ -161,8 +185,9 @@ export default function WritingTester() {
           <button
             type="button"
             onClick={() => setModule('general')}
+            aria-pressed={module === 'general'}
             className={`rounded-button px-4 py-1.5 text-sm font-semibold transition-colors ${
-              module === 'general' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              module === 'general' ? 'bg-[var(--skill,#0E9F6E)] text-white' : 'text-ink-muted hover:text-ink'
             }`}
           >
             General Training
@@ -170,48 +195,35 @@ export default function WritingTester() {
         </div>
 
         <div className="mx-auto mt-6 grid max-w-xl gap-4 sm:grid-cols-2">
-          <button
-            type="button"
-            onClick={() => startTask('task1', module)}
-            className="group flex flex-col items-center rounded-card border border-border bg-surface-alt/60 p-5 text-center transition-all hover:-translate-y-0.5 hover:border-brand hover:shadow-card sm:items-start sm:text-left"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand font-display text-sm font-bold text-white">
-              1
-            </span>
-            <h4 className="mt-3 font-display text-lg font-bold">Task 1</h4>
-            <p className="mt-1 text-sm text-ink-muted">
-              {module === 'general'
-                ? 'Write a formal, semi-formal or informal letter.'
-                : 'Describe a chart, graph, table, process or map.'}{' '}
-              {(module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS)[0]?.minWords}+ words ·
-              ~{(module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS)[0]?.suggestedMinutes} min.
-            </p>
-            <span className="mt-4 inline-flex items-center gap-1 font-display text-sm font-bold text-brand transition-transform group-hover:translate-x-0.5">
-              Start Task 1
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => startTask('task2', module)}
-            className="group flex flex-col items-center rounded-card border border-border bg-surface-alt/60 p-5 text-center transition-all hover:-translate-y-0.5 hover:border-brand hover:shadow-card sm:items-start sm:text-left"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand font-display text-sm font-bold text-white">
-              2
-            </span>
-            <h4 className="mt-3 font-display text-lg font-bold">Task 2</h4>
-            <p className="mt-1 text-sm text-ink-muted">
-              Write a discursive essay responding to a prompt. {TASK2_PROMPTS[0]?.minWords}+ words ·
-              ~{TASK2_PROMPTS[0]?.suggestedMinutes} min.
-            </p>
-            <span className="mt-4 inline-flex items-center gap-1 font-display text-sm font-bold text-brand transition-transform group-hover:translate-x-0.5">
-              Start Task 2
-            </span>
-          </button>
+          {taskCards.map((t) => (
+            <button
+              key={t.task}
+              type="button"
+              onClick={() => startTask(t.task, module)}
+              className="group flex flex-col rounded-card border border-border bg-surface-alt/60 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--skill,#0E9F6E)]/60 hover:shadow-card"
+            >
+              <span className="font-display text-lg font-extrabold">
+                {t.title} <span className="font-bold text-ink-muted">· {t.kind}</span>
+              </span>
+              <p className="mt-1.5 flex-1 text-sm text-ink-muted">{t.description}</p>
+              <span className="mt-3 flex flex-wrap gap-1.5">
+                <span className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink-muted">
+                  {t.minWords}+ words
+                </span>
+                <span className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink-muted">
+                  ⏱ ~{t.minutes} min
+                </span>
+              </span>
+              <span className="mt-4 inline-flex w-full items-center justify-center rounded-button bg-[var(--skill,#0E9F6E)] px-4 py-2.5 font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
+                Start {t.title}
+              </span>
+            </button>
+          ))}
         </div>
 
         <p className="mt-5 text-xs text-ink-muted">
-          {module === 'general' ? GT_TASK1_PROMPTS.length : ACADEMIC_TASK1_PROMPTS.length} Task 1 prompts ·{' '}
-          {TASK2_PROMPTS.length} Task 2 prompts (shared with Academic) · free
+          {t1Pool.length} Task 1 prompts · {TASK2_PROMPTS.length} Task 2 prompts
+          {module === 'general' ? ' (shared with Academic)' : ''} · free
         </p>
       </div>
     );

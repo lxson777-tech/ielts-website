@@ -95,8 +95,12 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       </span>
                     </button>
                   </div>
-                  <div className={`grid-reveal px-3 ${isOpen ? 'is-open' : ''}`}>
-                    <div className="min-h-0 overflow-hidden pb-3 text-sm text-ink-muted">{p.description}</div>
+                  {/* The clip wrapper must stay padding-free: padding on it sets a
+                      floor on the collapsed 0fr track and leaks clipped text. */}
+                  <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
+                    <div className="min-h-0 overflow-hidden">
+                      <p className="px-3 pb-3 pl-9 text-sm text-ink-muted">{p.description}</p>
+                    </div>
                   </div>
                 </div>
               );
@@ -143,8 +147,8 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                   </span>
                 </button>
                 <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
-                  <div className="min-h-0 overflow-hidden pt-2">
-                    <p className="text-sm text-ink-muted">{v.meaning}</p>
+                  <div className="min-h-0 overflow-hidden">
+                    <p className="pt-2 text-sm text-ink-muted">{v.meaning}</p>
                     <div className="mt-1.5 flex items-start justify-between gap-2 border-l-2 border-[var(--color-vocabulary)]/40 pl-2.5">
                       <p className="text-sm italic text-ink-muted">{v.example}</p>
                       <button

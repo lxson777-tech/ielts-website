@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSpeakingAttempts, type SpeakingAttempt } from '../lib/progress';
+import { getSpeakingAttempts, onProgressChange, type SpeakingAttempt } from '../lib/progress';
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -103,6 +103,8 @@ export default function SpeakingHistory() {
 
   useEffect(() => {
     setRows(getSpeakingAttempts());
+    // Stay live: drill attempts are recorded on this same page after grading.
+    return onProgressChange(() => setRows(getSpeakingAttempts()));
   }, []);
 
   if (rows === null) return null; // pre-hydration
