@@ -39,16 +39,24 @@ registerProcessor('pcm-capture', PcmCapture);
 `;
 
 function floatTo16kPcmBase64(samples: Float32Array, fromRate: number): string {
-  // Linear-interpolation resample to 16 kHz, then PCM16 little-endian.
+  // At 16 kHz already (the normal path — see MicCapture.start) this is a
+  // straight PCM16 conversion. Otherwise fall back to linear-interpolation
+  // resampling; crude (no anti-alias filter), but only browsers that ignore
+  // the requested context rate ever hit it.
   const ratio = fromRate / TARGET_IN_RATE;
-  const outLen = Math.floor(samples.length / ratio);
+  const outLen = ratio === 1 ? samples.length : Math.floor(samples.length / ratio);
   const bytes = new Uint8Array(outLen * 2);
   const view = new DataView(bytes.buffer);
   for (let i = 0; i < outLen; i++) {
-    const pos = i * ratio;
-    const i0 = Math.floor(pos);
-    const i1 = Math.min(i0 + 1, samples.length - 1);
-    const s = samples[i0]! + (samples[i1]! - samples[i0]!) * (pos - i0);
+    let s: number;
+    if (ratio === 1) {
+      s = samples[i]!;
+    } else {
+      const pos = i * ratio;
+      const i0 = Math.floor(pos);
+      const i1 = Math.min(i0 + 1, samples.length - 1);
+      s = samples[i0]! + (samples[i1]! - samples[i0]!) * (pos - i0);
+    }
     const clamped = Math.max(-1, Math.min(1, s));
     view.setInt16(i * 2, clamped < 0 ? clamped * 0x8000 : clamped * 0x7fff, true);
   }
@@ -68,7 +76,17 @@ export class MicCapture {
   muted = false;
 
   async start(stream: MediaStream, onChunk: (base64Pcm16k: string) => void): Promise<void> {
-    this.ctx = new AudioContext();
+    // Ask for a 16 kHz context so the browser does the downsampling with a
+    // proper anti-alias filter. The old approach (default 48 kHz context +
+    // linear-interp decimation) aliased high frequencies into the speech
+    // band, which measurably hurt the examiner's speech recognition,
+    // especially for accented speech. Browsers that don't honour the rate
+    // fall back to the manual resampler in floatTo16kPcmBase64.
+    try {
+      this.ctx = new AudioContext({ sampleRate: TARGET_IN_RATE });
+    } catch {
+      this.ctx = new AudioContext();
+    }
     await this.ctx.resume(); // iOS: must be inside/after a user gesture
     const workletUrl = URL.createObjectURL(new Blob([WORKLET_SOURCE], { type: 'application/javascript' }));
     try {

@@ -1,4 +1,4 @@
-/* The live AI examiner: a full mock IELTS Speaking test as a real-time voice
+/* The live AI examiner: a mock IELTS Speaking test as a real-time voice
    conversation. The model (via workers/live-examiner tokens) speaks and
    listens; this component is the "test director" — it owns the clock and
    injects [DIRECTOR] cues at every boundary (Part 1 over, prep minute over,
@@ -7,18 +7,36 @@
    candidate's whole mic track; when the examiner says the closing line, the
    recording + transcript go to the grade-speaking Worker for the band
    report. Visuals are deliberately minimal: a talking orb, the current
-   part, the cue card when it matters. */
+   part, the cue card when it matters.
+
+   Two variants share everything above. variant="full" is the complete
+   three-part test on /speaking/examiner; variant="drills" is the Speaking
+   Trainer on /trainers/speaking — the same live conversation scoped to a
+   single part (with the structure cheat-sheet on screen, and each attempt
+   saved to the speaking score history). */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import type { SpeakingCriterionKey, SpeakingGradeResult } from '../lib/speaking/schema';
+import type { CueCard, SpeakingCriterionKey, SpeakingGradeResult } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
 import { MicCapture, ExaminerPlayback } from '../lib/speaking/live/audio';
 import { ExaminerSession, type TranscriptTurn } from '../lib/speaking/live/session';
-import { buildExamPlan, buildSystemInstruction, CLOSING_PHRASE, EXAMINER_NAME, type ExamPlan } from '../lib/speaking/live/script';
-import { gradeInterview, gradingAvailable } from '../lib/speaking/live/grade';
+import {
+  buildExamPlan,
+  buildSystemInstruction,
+  buildDrillPlan,
+  buildDrillSystemInstruction,
+  CLOSING_PHRASE,
+  EXAMINER_NAME,
+  type DrillMode,
+} from '../lib/speaking/live/script';
+import { gradeInterview, gradingAvailable, FULL_TEST_EXPECTED_MIN_MS } from '../lib/speaking/live/grade';
+import { recordSpeakingAttempt } from '../lib/progress';
+import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
+import type { StructureMethod } from '../data/speaking-structure-guides';
 import BandReport from './BandReport';
+import SpeakingStructureGuide from './SpeakingStructureGuide';
 
 const TOKEN_URL: string | undefined = import.meta.env?.PUBLIC_LIVE_EXAMINER_URL;
 
@@ -30,10 +48,33 @@ const PART3_MAX_MS = 4.5 * 60_000; // from Part 3 start
 const HARD_STOP_MS = 18 * 60_000; // absolute safety net
 const FORCE_END_GRACE_MS = 12_000; // after asking the examiner to conclude
 
+/* Single-part drills run the same clock, scaled to one part. */
+const DRILL_MAX_MS = 4.5 * 60_000; // part1/part3 question time before conclude
+const DRILL_HARD_STOP_MS = 8 * 60_000;
+const PART2_WRAPUP_FALLBACK_MS = 75_000; // rounding-off Q&A + closing line budget
+
+/** Minimum candidate-speech length a serious attempt has, per session shape. */
+const DRILL_EXPECTED_MIN_MS: Record<DrillMode, number> = {
+  part1: 2 * 60_000,
+  part2: 60_000,
+  part3: 2 * 60_000,
+};
+/** One-line session description for the grading prompt. */
+const DRILL_GRADE_SCOPE: Record<DrillMode, string> = {
+  part1: 'a Part 1 IELTS Speaking practice drill (short interview questions on one topic only — there was no Part 2 or Part 3)',
+  part2: 'a Part 2 IELTS Speaking practice drill (one cue-card talk with a rounding-off question — there was no Part 1 or Part 3)',
+  part3: 'a Part 3 IELTS Speaking practice drill (abstract discussion questions only — there was no Part 1 or Part 2)',
+};
+const DRILL_METHOD: Record<DrillMode, StructureMethod> = { part1: 'ARE', part2: 'PEEL', part3: 'OREO' };
+
 type Phase = 'menu' | 'connecting' | 'interview' | 'grading' | 'report' | 'error';
 type Stage = 'part1' | 'part2prep' | 'part2talk' | 'part3' | 'wrapup';
+type LiveMode = 'full' | DrillMode;
 
-export default function LiveExaminer() {
+/** variant="full": the complete three-part mock test (/speaking/examiner).
+    variant="drills": the same live examiner scoped to a single part, with a
+    Part 1/2/3 picker menu (/trainers/speaking). */
+export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 'drills' }) {
   const [phase, setPhase] = useState<Phase>('menu');
   const [stage, setStage] = useState<Stage>('part1');
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +98,10 @@ export default function LiveExaminer() {
     return () => clearInterval(i);
   }, [phase]);
 
-  const planRef = useRef<ExamPlan | null>(null);
+  /** Only the cue card is needed after setup (for the on-screen card). */
+  const planRef = useRef<{ cueCard?: CueCard } | null>(null);
+  const modeRef = useRef<LiveMode>('full');
+  const titleRef = useRef('Live mock speaking test');
   const sessionRef = useRef<ExaminerSession | null>(null);
   const micRef = useRef<MicCapture | null>(null);
   const playbackRef = useRef<ExaminerPlayback | null>(null);
@@ -95,8 +139,9 @@ export default function LiveExaminer() {
 
   /* ── session start ─────────────────────────────────────────────────── */
 
-  async function startTest() {
+  async function startTest(m: LiveMode = 'full') {
     if (!TOKEN_URL) return;
+    modeRef.current = m;
     setError(null);
     setNotice(null);
     setPhase('connecting');
@@ -110,7 +155,9 @@ export default function LiveExaminer() {
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        // Mono: the Live API gets one channel anyway; asking for it up front
+        // lets the device apply its voice processing to the right signal.
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
       });
     } catch {
       setPhase('menu');
@@ -139,10 +186,20 @@ export default function LiveExaminer() {
       recActiveSinceRef.current = performance.now();
       recorderRef.current = rec;
 
-      const plan = buildExamPlan();
-      planRef.current = plan;
+      let instruction: string;
+      if (m === 'full') {
+        const plan = buildExamPlan();
+        planRef.current = { cueCard: plan.cueCard };
+        titleRef.current = 'Live mock speaking test';
+        instruction = buildSystemInstruction(plan);
+      } else {
+        const plan = buildDrillPlan(m);
+        planRef.current = { cueCard: plan.cueCard };
+        titleRef.current = plan.title;
+        instruction = buildDrillSystemInstruction(plan);
+      }
 
-      const session = await ExaminerSession.connect(TOKEN_URL, buildSystemInstruction(plan), {
+      const session = await ExaminerSession.connect(TOKEN_URL, instruction, {
         onAudio: (chunk) => playbackRef.current?.enqueue(chunk),
         onInterrupted: () => playbackRef.current?.flush(),
         onTranscript: onTranscriptUpdate,
@@ -166,16 +223,34 @@ export default function LiveExaminer() {
     }
 
     setPhase('interview');
-    setStageBoth('part1');
-    sessionRef.current.sendDirectorNote('The candidate is seated and ready. Begin the test now with the introduction.');
 
     const startedAt = performance.now();
     every(() => setElapsedS(Math.round((performance.now() - startedAt) / 1000)), 1000);
     every(() => setExaminerTalking(playbackRef.current?.isSpeaking() ?? false), 250);
     startOrbLoop();
 
-    later(() => void beginPart2(), PART2_AT_MS);
-    later(() => endEarly('The test time is over.'), HARD_STOP_MS);
+    if (m === 'full') {
+      setStageBoth('part1');
+      sessionRef.current.sendDirectorNote('The candidate is seated and ready. Begin the test now with the introduction.');
+      later(() => void beginPart2(), PART2_AT_MS);
+      later(() => endEarly('The test time is over.'), HARD_STOP_MS);
+    } else if (m === 'part1') {
+      setStageBoth('part1');
+      sessionRef.current.sendDirectorNote('The candidate is seated and ready. Greet them briefly and begin the Part 1 questions now.');
+      later(() => endEarly('The drill time is over.'), DRILL_MAX_MS);
+      later(() => endEarly('The drill time is over.'), DRILL_HARD_STOP_MS);
+    } else if (m === 'part2') {
+      // Straight to the cue card: same prep → talk flow as the full test.
+      void startPart2Flow(
+        'The candidate is seated and ready. Greet them briefly, then introduce the cue card exactly as scripted, ending with "Your one minute starts now." Then wait in complete silence.',
+      );
+      later(() => endEarly('The drill time is over.'), DRILL_HARD_STOP_MS);
+    } else {
+      setStageBoth('part3');
+      sessionRef.current.sendDirectorNote('The candidate is seated and ready. Greet them briefly and begin the discussion now.');
+      later(() => endEarly('The drill time is over.'), DRILL_MAX_MS);
+      later(() => endEarly('The drill time is over.'), DRILL_HARD_STOP_MS);
+    }
   }
 
   /* ── transcript handling (captions + closing-phrase detection) ──────── */
@@ -221,10 +296,17 @@ export default function LiveExaminer() {
 
   async function beginPart2() {
     if (stageRef.current !== 'part1' || endedRef.current) return;
-    setStageBoth('part2prep');
-    sessionRef.current?.sendDirectorNote(
+    await startPart2Flow(
       'Part 1 is over. Introduce the Part 2 cue card now exactly as scripted, ending with "Your one minute starts now." Then wait in complete silence.',
     );
+  }
+
+  /** Cue-card intro → prep minute → talk. Shared by the full test (after
+      Part 1) and the Part 2 drill (right after the greeting). */
+  async function startPart2Flow(directorNote: string) {
+    if (endedRef.current) return;
+    setStageBoth('part2prep');
+    sessionRef.current?.sendDirectorNote(directorNote);
     // Let the examiner finish reading the cue-card intro before the minute starts.
     await waitForExaminerQuiet(30_000);
     if (endedRef.current || !stageIs('part2prep')) return;
@@ -254,6 +336,20 @@ export default function LiveExaminer() {
 
   function beginPart3(timeUp: boolean) {
     if (endedRef.current || stageRef.current !== 'part2talk') return;
+
+    // Part 2 drill: there is no Part 3 — rounding-off question, then conclude.
+    if (modeRef.current === 'part2') {
+      setStageBoth('wrapup');
+      sessionRef.current?.sendDirectorNote(
+        timeUp
+          ? 'Two minutes are up. If the candidate is still speaking, stop them politely ("Thank you."). Ask the one rounding-off question, wait for the answer, then conclude the drill with the official closing line and say nothing more.'
+          : 'The candidate has finished their talk. Ask the one rounding-off question, wait for the answer, then conclude the drill with the official closing line and say nothing more.',
+      );
+      // If the closing line never comes (model hiccup), end anyway.
+      forceEndTimerRef.current = setTimeout(() => void finishTest(), PART2_WRAPUP_FALLBACK_MS);
+      return;
+    }
+
     setStageBoth('part3');
     sessionRef.current?.sendDirectorNote(
       timeUp
@@ -338,8 +434,26 @@ export default function LiveExaminer() {
 
     setPhase('grading');
     const gradingStartedAt = performance.now();
+    const m = modeRef.current;
     try {
-      const graded = await gradeInterview(transcript, recording);
+      const graded = await gradeInterview(
+        transcript,
+        recording,
+        m === 'full'
+          ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS }
+          : { expectedMinMs: DRILL_EXPECTED_MIN_MS[m], scope: DRILL_GRADE_SCOPE[m] },
+      );
+      // Drills feed the same band-over-time history as the recorded checker did.
+      if (m !== 'full') {
+        recordSpeakingAttempt({
+          at: new Date().toISOString(),
+          mode: m,
+          topic: titleRef.current,
+          overallBand: graded.overallBand,
+          criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
+          live: true,
+        });
+      }
       // Let the criteria sequence play out in full before the reveal — a
       // report that pops in mid-"checking grammar" reads as fake.
       const minVisibleMs = GRADING_STEPS.length * GRADE_STEP_MS;
@@ -398,8 +512,18 @@ export default function LiveExaminer() {
     }
     previewRef.current = true;
     planRef.current = buildExamPlan();
+    const isPart2Preview = params.get('preview') === 'part2';
+    // In the drills variant, preview as a drill so the structure
+    // cheat-sheet renders too.
+    if (variant === 'drills') modeRef.current = isPart2Preview ? 'part2' : 'part1';
     setPhase('interview');
-    setStageBoth('part1');
+    if (isPart2Preview) {
+      // ?preview=part2 renders the cue-card stage (card + prep notes + orb).
+      setStageBoth('part2prep');
+      setPrepSecondsLeft(47);
+    } else {
+      setStageBoth('part1');
+    }
     setCaption('This is a design preview. The examiner is not connected.');
     startOrbLoop();
     every(() => setElapsedS((s) => s + 1), 1000);
@@ -453,7 +577,7 @@ export default function LiveExaminer() {
     content = (
       <div className="space-y-6">
         <BandReport
-          title="Live mock speaking test"
+          title={titleRef.current}
           overallBand={result.overallBand}
           live
           offlineWarning=""
@@ -504,13 +628,22 @@ export default function LiveExaminer() {
           )}
         </BandReport>
 
-        <div className="flex justify-center">
+        <div className="flex flex-wrap justify-center gap-3">
+          {variant === 'drills' && modeRef.current !== 'full' && (
+            <button
+              type="button"
+              onClick={() => void startTest(modeRef.current)}
+              className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+            >
+              ↻ Practice this part again
+            </button>
+          )}
           <button
             type="button"
             onClick={abandonToMenu}
             className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
           >
-            Done
+            {variant === 'drills' ? 'Choose a different part' : 'Done'}
           </button>
         </div>
       </div>
@@ -520,11 +653,23 @@ export default function LiveExaminer() {
       <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking · Live</p>
-        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Live Mock Test with an AI Examiner</h3>
+        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">
+          {variant === 'drills' ? 'Practice One Part with the AI Examiner' : 'Live Mock Test with an AI Examiner'}
+        </h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          A real-time spoken interview, all three parts, ~12 minutes. {EXAMINER_NAME} asks questions out loud,
-          listens to your answers, and follows up on what <em>you</em> say, exactly like the real test. You'll get a
-          full band report at the end.
+          {variant === 'drills' ? (
+            <>
+              Pick a part. {EXAMINER_NAME} asks questions out loud, listens to your answers, and follows up on
+              what <em>you</em> say, exactly like the real test, just one part at a time. You'll get a band report
+              at the end.
+            </>
+          ) : (
+            <>
+              A real-time spoken interview, all three parts, ~12 minutes. {EXAMINER_NAME} asks questions out loud,
+              listens to your answers, and follows up on what <em>you</em> say, exactly like the real test. You'll
+              get a full band report at the end.
+            </>
+          )}
         </p>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· Use headphones if you can, in a quiet room</li>
@@ -537,14 +682,48 @@ export default function LiveExaminer() {
             ⚠ The live examiner is not configured on this site yet (PUBLIC_LIVE_EXAMINER_URL).
           </p>
         )}
-        <button
-          type="button"
-          onClick={() => void startTest()}
-          disabled={!TOKEN_URL}
-          className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Start the interview
-        </button>
+        {variant === 'drills' ? (
+          <>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => void startTest('part1')}
+                disabled={!TOKEN_URL}
+                className="rounded-button bg-brand px-6 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Part 1 practice
+              </button>
+              <button
+                type="button"
+                onClick={() => void startTest('part2')}
+                disabled={!TOKEN_URL}
+                className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Part 2 practice
+              </button>
+              <button
+                type="button"
+                onClick={() => void startTest('part3')}
+                disabled={!TOKEN_URL}
+                className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Part 3 practice
+              </button>
+            </div>
+            <p className="mt-3 text-xs text-ink-muted">
+              {SPEAKING_PART1_TOPICS.length} Part 1 topics · {SPEAKING_CUE_CARDS.length} cue cards · free
+            </p>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void startTest()}
+            disabled={!TOKEN_URL}
+            className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Start the interview
+          </button>
+        )}
       </div>
     );
   } else if (phase === 'connecting') {
@@ -618,9 +797,43 @@ export default function LiveExaminer() {
 
   const orbMode = stage === 'part2prep' ? 'lx-prep' : examinerTalking ? 'lx-speaking' : 'lx-listening';
 
+  // Like the paper card in the real exam: on screen for ALL of Part 2 —
+  // preparation, the talk, and (in the Part 2 drill) the rounding-off
+  // question. Rendered above the orb and sticky, so it can't scroll away
+  // while the student is talking.
+  const showCueCard =
+    !!cue &&
+    (stage === 'part2prep' || stage === 'part2talk' || (stage === 'wrapup' && modeRef.current === 'part2'));
+
   content = (
     <div className="space-y-4">
       <style>{LX_STYLES}</style>
+
+      {showCueCard && cue && (
+        <div className="sticky top-20 z-10 rounded-card border border-border bg-surface p-5 shadow-card">
+          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Cue card</p>
+          <p className="mt-2 font-semibold">{cue.topic}</p>
+          <p className="mt-2 text-sm text-ink-muted">You should say:</p>
+          <ul className="mt-1 space-y-1 text-sm text-ink-muted">
+            {cue.bullets.map((b) => (
+              <li key={b} className="flex gap-2">
+                <span aria-hidden="true">·</span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          {stage === 'part2prep' && (
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={3}
+              placeholder="Your notes (not graded, the examiner can't see them)…"
+              className="mt-3 w-full rounded-lg border border-border bg-surface-alt p-3 text-sm focus:border-brand focus:outline-none"
+            />
+          )}
+        </div>
+      )}
+
       <div className={`lx-stage relative overflow-hidden rounded-card border border-border bg-surface p-6 shadow-card ${orbMode}`}>
         {/* ambient drifting glow behind everything */}
         <div className="lx-ambient" aria-hidden="true" />
@@ -725,29 +938,10 @@ export default function LiveExaminer() {
         </div>
       </div>
 
-      {(stage === 'part2prep' || stage === 'part2talk') && cue && (
-        <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Cue card</p>
-          <p className="mt-2 font-semibold">{cue.topic}</p>
-          <p className="mt-2 text-sm text-ink-muted">You should say:</p>
-          <ul className="mt-1 space-y-1 text-sm text-ink-muted">
-            {cue.bullets.map((b) => (
-              <li key={b} className="flex gap-2">
-                <span aria-hidden="true">·</span>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-          {stage === 'part2prep' && (
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              placeholder="Your notes (not graded, the examiner can't see them)…"
-              className="mt-3 w-full rounded-lg border border-border bg-surface-alt p-3 text-sm focus:border-brand focus:outline-none"
-            />
-          )}
-        </div>
+      {/* Drills keep the trainer's structure cheat-sheet on screen — that
+          coaching aid is what distinguishes practice from the mock test. */}
+      {variant === 'drills' && modeRef.current !== 'full' && (
+        <SpeakingStructureGuide method={DRILL_METHOD[modeRef.current]} />
       )}
 
       {notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}

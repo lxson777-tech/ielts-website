@@ -195,6 +195,21 @@ export default function SpeakingTester() {
 
   async function finishAndGrade() {
     setPhase('grading');
+    try {
+      await runGrading();
+    } catch {
+      // Without this, any failure in the pipeline (audio decode, blob
+      // conversion, grading) left the student stuck on "Grading…" forever.
+      if (streamRef.current) {
+        releaseMic(streamRef.current);
+        streamRef.current = null;
+      }
+      setMicError('Something went wrong while grading your answer. Your recording could not be assessed, please try again.');
+      setPhase('menu');
+    }
+  }
+
+  async function runGrading() {
     const clips = clipsRef.current;
     const answered: AnsweredClip[] = await Promise.all(clips.map((c) => toAnsweredClip(c.question, c)));
 

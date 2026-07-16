@@ -1,21 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
+import LiveExaminer from '../../components/LiveExaminer';
 import SpeakingTester from '../../components/SpeakingTester';
 import SpeakingHistory from '../../components/SpeakingHistory';
+
+/* The trainer is the live examiner scoped to one part (same tech as
+   /speaking/examiner). When the live token service isn't configured at
+   build time, fall back to the older record-then-grade checker so the
+   trainer never disappears. */
+const liveConfigured = !!import.meta.env.PUBLIC_LIVE_EXAMINER_URL;
 ---
 
 <BaseLayout
   title="Speaking Trainer · IELTS Portal"
-  description="Practice IELTS Speaking Part 1, 2 or 3 by microphone, one part at a time, with a live structure & conjunction cheat-sheet and instant feedback."
+  description="Practice IELTS Speaking Part 1, 2 or 3 as a live voice conversation with an AI examiner, one part at a time, with a structure cheat-sheet and a full band report."
 >
   <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <SectionHeading
       eyebrow="Speaking"
       title="Speaking Trainer"
-      subtitle="Pick a part. Questions are read aloud, record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria."
+      subtitle={liveConfigured
+        ? 'Pick a part and talk to the AI examiner in a real voice conversation. She asks the questions out loud, follows up on your answers, and grades you on the four official IELTS Speaking criteria.'
+        : 'Pick a part. Questions are read aloud, record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria.'}
     />
-    <SpeakingTester client:load />
+    {liveConfigured ? <LiveExaminer client:load variant="drills" /> : <SpeakingTester client:load />}
 
     <section id="history" class="mt-16 scroll-mt-20">
       <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />

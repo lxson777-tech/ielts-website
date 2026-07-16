@@ -15,19 +15,29 @@ import type { TranscriptTurn } from './session';
 const GRADER_URL: string | undefined = import.meta.env?.PUBLIC_SPEAKING_GRADER_URL;
 
 /** A serious full test has ≥ ~5 minutes of candidate speech. */
-const EXPECTED_MIN_MS = 5 * 60_000;
+export const FULL_TEST_EXPECTED_MIN_MS = 5 * 60_000;
 
 export function gradingAvailable(): boolean {
   return !!GRADER_URL;
 }
 
+export interface InterviewGradeOptions {
+  /** Minimum candidate-speech length a serious attempt of this session shape has. */
+  expectedMinMs: number;
+  /** One-line description of the session shape for the grading prompt, e.g.
+      "a Part 2 practice drill (cue-card talk only)". Omit for the full test.
+      Older Workers ignore this field, so it degrades cleanly. */
+  scope?: string;
+}
+
 export async function gradeInterview(
   transcript: TranscriptTurn[],
   recording: { blob: Blob; mimeType: string; durationMs: number },
+  opts: InterviewGradeOptions = { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS },
 ): Promise<SpeakingGradeResult> {
   if (!GRADER_URL) throw new Error('The AI grader is not configured for this site.');
 
-  const mechanics: AudioMechanicsReport = await analyzeAudio(recording.blob, EXPECTED_MIN_MS);
+  const mechanics: AudioMechanicsReport = await analyzeAudio(recording.blob, opts.expectedMinMs);
 
   const resp = await fetch(GRADER_URL, {
     method: 'POST',
@@ -36,8 +46,9 @@ export async function gradeInterview(
       kind: 'interview',
       interview: {
         transcript: transcript.map((t) => ({ role: t.role, text: t.text.trim() })).filter((t) => t.text),
+        scope: opts.scope,
         audio: {
-          question: 'Full live interview — candidate microphone recording',
+          question: 'Live session — candidate microphone recording',
           audioBase64: await blobToBase64(recording.blob),
           mimeType: recording.mimeType,
           durationMs: recording.durationMs,

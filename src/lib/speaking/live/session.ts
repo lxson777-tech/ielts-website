@@ -90,10 +90,21 @@ export class ExaminerSession {
               inputAudioTranscription: {},
               outputAudioTranscription: {},
               realtimeInputConfig: {
+                // A real examiner always finishes the question: don't let
+                // candidate-side sound (a cough, room noise, or her own voice
+                // echoing into the mic without headphones) barge in and cut
+                // her audio mid-sentence. Candidate speech is still heard and
+                // transcribed; it just can't truncate her turn.
+                activityHandling: 'NO_INTERRUPTION',
                 automaticActivityDetection: {
-                  // Test-takers pause to think — don't snatch the turn early.
+                  // The response-delay dial. LOW sensitivity so mid-answer
+                  // thinking pauses don't get the turn snatched; the silence
+                  // window is the tradeoff: higher = examiner feels slow to
+                  // reply (each reply waits this long after you stop), lower
+                  // = she may jump in while a student is composing the next
+                  // sentence. 1100ms felt sluggish in real sessions.
                   endOfSpeechSensitivity: 'END_SENSITIVITY_LOW',
-                  silenceDurationMs: 1100,
+                  silenceDurationMs: 800,
                   prefixPaddingMs: 300,
                 },
               },

@@ -35,10 +35,14 @@ interface GradeSpeakingRequest {
     monologue: WireClip;
     followUps: WireClip[];
   };
-  /** A full live-examiner session: the candidate's whole mic track as one
-      clip, plus the role-labelled conversation transcript for grounding. */
+  /** A live-examiner session: the candidate's whole mic track as one
+      clip, plus the role-labelled conversation transcript for grounding.
+      `scope` describes the session shape (e.g. a single-part practice
+      drill) so the grader doesn't penalize a drill for "missing" parts;
+      absent = the full three-part test. */
   interview?: {
     transcript: { role: 'examiner' | 'candidate'; text: string }[];
+    scope?: string;
     audio: WireClip;
   };
   mechanics?: { totalDurationMs?: number; underLength?: boolean; estSilenceRatio?: number };
@@ -234,8 +238,9 @@ function buildParts(req: GradeSpeakingRequest): { text?: string; inlineData?: { 
     const dialog = req.interview.transcript
       .map((t) => `${t.role === 'examiner' ? 'EXAMINER' : 'CANDIDATE'}: ${t.text}`)
       .join('\n');
+    const shape = req.interview.scope ?? 'a full IELTS Speaking test (Parts 1, 2 and 3)';
     parts.push({
-      text: `LIVE INTERVIEW — a full IELTS Speaking test (Parts 1, 2 and 3) conducted as a real-time voice conversation with an AI examiner. Below is the interview transcript for reference, followed by ONE continuous audio recording of the CANDIDATE's microphone for the whole session. Assess ONLY the candidate's speech. The examiner's voice may bleed faintly into the recording through the candidate's speakers — ignore it. Use the transcript to know which question each stretch of speech answers, but judge Pronunciation and Fluency from the AUDIO, not the transcript.\n\n=== TRANSCRIPT ===\n${dialog}\n\n=== CANDIDATE AUDIO ===`,
+      text: `LIVE INTERVIEW — ${shape}, conducted as a real-time voice conversation with an AI examiner. Grade what was asked for in this session shape only — never penalize the candidate for parts that were not included in it. Below is the interview transcript for reference, followed by ONE continuous audio recording of the CANDIDATE's microphone for the whole session. Assess ONLY the candidate's speech. The examiner's voice may bleed faintly into the recording through the candidate's speakers — ignore it. Use the transcript to know which question each stretch of speech answers, but judge Pronunciation and Fluency from the AUDIO, not the transcript.\n\n=== TRANSCRIPT ===\n${dialog}\n\n=== CANDIDATE AUDIO ===`,
     });
     parts.push({ inlineData: { mimeType: req.interview.audio.mimeType, data: req.interview.audio.audioBase64 } });
   }
