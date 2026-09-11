@@ -45,7 +45,11 @@ export interface PassageStimulus {
 export interface AudioStimulus {
   kind: 'audio';
   label: string; // 'Section 1'
-  src: string;
+  /** Legacy per-part recording. Full listening tests should use
+      PracticeTest.audioSrc so playback survives moving between parts. */
+  src?: string;
+  /** Sanitized original question layout shown above this part's inputs. */
+  questionHtml?: string;
   transcriptHtml?: string;
 }
 
@@ -53,6 +57,9 @@ export type Stimulus = PassageStimulus | AudioStimulus;
 
 export interface Question {
   id: string;
+  /** False only when the authorized publisher source omits the question body.
+      The numbered slot stays visible, but cannot lower the student's score. */
+  scored?: boolean;
   textHtml?: string;
   /** sentence-completion: text around the inline input */
   before?: string;
@@ -61,6 +68,18 @@ export interface Question {
   options?: string[];
   /** Accepted answer(s); comparison is case-insensitive and trimmed. */
   answer: string | string[];
+  /** One numbered question that requires several choices. The whole unordered
+      set must match for this question to earn its single mark. This is
+      intentionally separate from `answer`, where an array means alternative
+      accepted spellings, and from `answerPairId`, where several numbered
+      questions share an answer pool. */
+  multiSelect?: {
+    correctValues: string[];
+    selectCount: number;
+  };
+  /** Questions sharing this id form an unordered answer pair. Each distinct
+      correct selection earns one mark, regardless of which slot contains it. */
+  answerPairId?: string;
   /** Post-submit review: a short "why this is the answer" note. */
   explanation?: string;
   /** Post-submit review: the exact supporting sentence from the passage. */
@@ -105,6 +124,14 @@ export interface PracticeTest {
   title: string;
   description: string;
   durationMinutes: number;
+  /** One complete recording for all four listening parts. */
+  audioSrc?: string;
+  /** Attribution for imported tests whose publisher authorized reuse. */
+  source?: {
+    name: string;
+    url: string;
+    permission: string;
+  };
   parts: TestPart[];
 }
 
@@ -115,14 +142,13 @@ export function questionCount(test: PracticeTest): number {
   );
 }
 
-export function isCorrect(question: Question, given: string): boolean {
+function normalizeAnswer(s: string): string {
   // Free-form typing is stored raw, so we mark on content, not formatting.
   // Forgiven: case; extra/doubled spaces; curly vs straight quotes and dashes;
   // thousand-separator commas (5000 vs 5,000); currency symbols ($50 vs 50);
   // "%" vs "percent"/"per cent"; hyphenated vs spaced compounds (well-known vs
   // well known); and any leading/trailing punctuation or quote marks.
-  const norm = (s: string) =>
-    s
+  return s
       .toLowerCase()
       .replace(/[’‘]/g, "'")
       .replace(/[“”]/g, '"')
@@ -137,8 +163,57 @@ export function isCorrect(question: Question, given: string): boolean {
       .replace(/^["']+|["']+$/g, '')
       .replace(/[.,;:!?]+$/, '')
       .trim();
+}
+
+export function isCorrect(question: Question, given: string): boolean {
+  if (question.multiSelect) {
+    const selected = new Set(
+      given
+        .split('|')
+        .map(normalizeAnswer)
+        .filter(Boolean),
+    );
+    const correct = new Set(question.multiSelect.correctValues.map(normalizeAnswer));
+    return selected.size === correct.size && [...selected].every((value) => correct.has(value));
+  }
   const accepted = Array.isArray(question.answer) ? question.answer : [question.answer];
-  return accepted.some((a) => norm(a) === norm(given));
+  return accepted.some((a) => normalizeAnswer(a) === normalizeAnswer(given));
+}
+
+/** Return the question ids that earn marks, including unordered answer pairs.
+    Repeating one correct choice in both slots earns one mark, while entering
+    the two correct choices in either order earns both marks. */
+export function scoredQuestionIds(questions: Question[], answers: Record<string, string>): Set<string> {
+  const scored = new Set<string>();
+  const pairs = new Map<string, Question[]>();
+
+  for (const question of questions) {
+    if (question.scored === false) continue;
+    if (question.answerPairId) {
+      const pair = pairs.get(question.answerPairId) ?? [];
+      pair.push(question);
+      pairs.set(question.answerPairId, pair);
+    } else if (isCorrect(question, answers[question.id] ?? '')) {
+      scored.add(question.id);
+    }
+  }
+
+  for (const pair of pairs.values()) {
+    const accepted = new Set(
+      pair.flatMap((question) => (Array.isArray(question.answer) ? question.answer : [question.answer]))
+        .map(normalizeAnswer),
+    );
+    const used = new Set<string>();
+    for (const question of pair) {
+      const given = normalizeAnswer(answers[question.id] ?? '');
+      if (given && accepted.has(given) && !used.has(given)) {
+        used.add(given);
+        scored.add(question.id);
+      }
+    }
+  }
+
+  return scored;
 }
 
 /* Official IELTS Academic Reading raw-score → band conversion, as published
@@ -166,6 +241,25 @@ const READING_BAND_TABLE: [minRaw: number, band: number][] = [
   [4, 2.5],
 ];
 
+/* IELTS's published Listening guide gives the representative boundaries for
+   Bands 4 to 9. As with Reading, precise cut-offs can vary slightly by test. */
+const LISTENING_BAND_TABLE: [minRaw: number, band: number][] = [
+  [39, 9.0],
+  [37, 8.5],
+  [35, 8.0],
+  [32, 7.5],
+  [30, 7.0],
+  [26, 6.5],
+  [23, 6.0],
+  [18, 5.5],
+  [16, 5.0],
+  [13, 4.5],
+  [11, 4.0],
+  [8, 3.5],
+  [6, 3.0],
+  [4, 2.5],
+];
+
 /** Exact Academic Reading band for a raw score. The official table is defined
     over 40 questions, so shorter single-passage drills are scaled onto the
     same curve (raw → nearest /40 equivalent) to stay comparable. Returns 0 for
@@ -176,13 +270,23 @@ export function readingBand(raw: number, total: number): number {
   return 0;
 }
 
+export function listeningBand(raw: number, total: number): number {
+  const scaled = total === 40 ? raw : Math.round((raw / total) * 40);
+  for (const [minRaw, band] of LISTENING_BAND_TABLE) if (scaled >= minRaw) return band;
+  return 0;
+}
+
+export function testBand(raw: number, total: number, skill: TestSkill = 'reading'): number {
+  return skill === 'listening' ? listeningBand(raw, total) : readingBand(raw, total);
+}
+
 /** Display label for a result, e.g. "7.0" (callers supply the "Band" prefix). */
-export function bandEstimate(raw: number, total: number): string {
-  const band = readingBand(raw, total);
+export function bandEstimate(raw: number, total: number, skill: TestSkill = 'reading'): string {
+  const band = testBand(raw, total, skill);
   return band >= 2.5 ? band.toFixed(1) : 'below 2.5';
 }
 
 /** Numeric band for score-history charts and best-band comparisons. */
-export function bandMidpoint(raw: number, total: number): number {
-  return readingBand(raw, total);
+export function bandMidpoint(raw: number, total: number, skill: TestSkill = 'reading'): number {
+  return testBand(raw, total, skill);
 }

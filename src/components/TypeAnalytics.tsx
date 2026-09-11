@@ -15,6 +15,7 @@ const LABELS: Record<string, string> = {
   categorisation: 'Categorisation',
   'multiple-answer': 'Multiple Answer',
   'diagram-labelling': 'Diagram Labelling',
+  'table-completion': 'Table Completion',
 };
 
 function tone(pct: number): { bar: string; text: string } {
@@ -23,19 +24,19 @@ function tone(pct: number): { bar: string; text: string } {
   return { bar: 'bg-error', text: 'text-error' };
 }
 
-export default function TypeAnalytics() {
+export default function TypeAnalytics({ skill = 'reading' }: { skill?: 'reading' | 'listening' }) {
   const [stats, setStats] = useState<TypeStat[] | null>(null);
 
   useEffect(() => {
-    setStats(getTypeStats());
-    return onProgressChange(() => setStats(getTypeStats()));
-  }, []);
+    setStats(getTypeStats(skill));
+    return onProgressChange(() => setStats(getTypeStats(skill)));
+  }, [skill]);
 
   if (stats === null) return null; // pre-hydration
   if (stats.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-6 text-center text-sm text-ink-muted">
-        Finish a test and you'll see your accuracy broken down by question type here, so you know exactly what to drill next.
+        Finish a {skill} test and you'll see your accuracy broken down by question type here, so you know exactly what to practise next.
       </div>
     );
   }
@@ -50,7 +51,7 @@ export default function TypeAnalytics() {
   return (
     <div className="rounded-card border border-border bg-surface p-5">
       <p className="text-sm text-ink-muted">
-        Across every test you've taken. Your weakest type so far is{' '}
+        Across every {skill} test you've taken. Your weakest type so far is{' '}
         <strong className="text-ink">{LABELS[weakest.type] ?? weakest.type}</strong>. Start there.
       </p>
       <MotionConfig reducedMotion="user">

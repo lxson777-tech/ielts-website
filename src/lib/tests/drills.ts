@@ -40,7 +40,7 @@ function buildDrill(source: PracticeTest, partIndex: number): PracticeTest {
   };
 }
 
-export const ALL_DRILLS: DrillMeta[] = ALL_TESTS.flatMap((test) =>
+export const ALL_DRILLS: DrillMeta[] = ALL_TESTS.filter((test) => test.skill === 'reading').flatMap((test) =>
   test.parts.map((_, i) => {
     const drill = buildDrill(test, i);
     return { id: drill.id, test: drill, sourceTestId: test.id, sourceTitle: test.title };
