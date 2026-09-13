@@ -61,32 +61,43 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "False",
-              "textHtml": "There are other parrots that share the kakapo’s inability to fly"
+              "textHtml": "There are other parrots that share the kakapo’s inability to fly",
+              "explanation": "Paragraph 2 says the kakapo is the world's only flightless parrot, so no other parrot shares this trait.",
+              "evidence": "It is the world’s only flightless parrot, and is also possibly one of the world’s longest-living birds, with a reported lifespan of up to 100 years."
             },
             {
               "id": "q2",
               "answer": "False",
-              "textHtml": "Adult kakapo produce chicks every year"
+              "textHtml": "Adult kakapo produce chicks every year",
+              "explanation": "Paragraph 4 says kakapo breed only in years when food is plentiful, not every year.",
+              "evidence": "Kakap6 breed in summer and autumn, but only in years when food is plentiful."
             },
             {
               "id": "q3",
               "answer": "False",
-              "textHtml": "Adult male kakapo bring food back to nesting females"
+              "textHtml": "Adult male kakapo bring food back to nesting females",
+              "explanation": "Paragraph 4 says males play no part in incubation or chick rearing and females alone search for food, so males do not bring food to the nest.",
+              "evidence": "Males play no part in incubation or chick-rearing – females alone incubate eggs and feed the chicks."
             },
             {
               "id": "q4",
               "answer": "Not given",
-              "textHtml": "The Polynesian rat was a greater threat to the kakapo than Polynesian settlers"
+              "textHtml": "The Polynesian rat was a greater threat to the kakapo than Polynesian settlers",
+              "explanation": "Paragraph 5 mentions both Polynesian settlers and the rat preying on kakapo but never compares which posed the greater threat."
             },
             {
               "id": "q5",
               "answer": "True",
-              "textHtml": "Kakapo were transferred from Rakiura Island to other locations because they were at risk from feral cats"
+              "textHtml": "Kakapo were transferred from Rakiura Island to other locations because they were at risk from feral cats",
+              "explanation": "Paragraph 8 says predation by feral cats caused a rapid decline, so the population was evacuated to three island sanctuaries.",
+              "evidence": "As a result, during 1980-97, the surviving population was evacuated to three island sanctuaries: Codfish Island, Maud Island and Little Barrier Island."
             },
             {
               "id": "q6",
               "answer": "True",
-              "textHtml": "One Recovery Plan initiative that helped increase the kakapo population size was caring for struggling young birds"
+              "textHtml": "One Recovery Plan initiative that helped increase the kakapo population size was caring for struggling young birds",
+              "explanation": "Paragraph 9 lists rescuing and hand raising failing chicks among the Recovery Plan actions that helped the population grow.",
+              "evidence": "This involved moving the birds between islands, supplementary feeding of adults and rescuing and hand-raising any failing chicks."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-6</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-6 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                         if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                        if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>             if there is no information on this</span></p><p><span>1. There are other parrots that share the kakapo’s inability to fly.</span><br/>\n<span>2. Adult kakapo produce chicks every year.</span><br/>\n<span>3. Adult male kakapo bring food back to nesting females.</span><br/>\n<span>4. The Polynesian rat was a greater threat to the kakapo than Polynesian settlers.</span><br/>\n<span>5. Kakapo were transferred from Rakiura Island to other locations because they were at risk from feral cats.</span><br/>\n<span>6. One Recovery Plan initiative that helped increase the kakapo population size was caring for struggling young birds.</span></p>"
@@ -100,43 +111,57 @@ const test: PracticeTest = {
               "id": "q7",
               "answer": "Bulbs",
               "before": "……………… • nests are created in",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 3 lists bulbs among the plant parts that make up the kakapo's diet.",
+              "evidence": "They are entirely vegetarian, with their diet including the leaves, roots and bark of trees as well as bulbs, and fern fronds."
             },
             {
               "id": "q8",
               "answer": "Soil",
               "before": "……………… where eggs are laid. Arrival of Polynesian settlers • the",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 4 says kakapo eggs are laid in soil that is repeatedly turned over.",
+              "evidence": "The 1-4 eggs are laid in soil, which is repeatedly turned over before and during incubation."
             },
             {
               "id": "q9",
               "answer": "Feathers",
               "before": "………… of the kakapo were used to make clothes. Arrival of European colonisers •",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says early settlers used kakapo feathers to make soft cloaks.",
+              "evidence": "They ate its meat and used its feathers to make soft cloaks."
             },
             {
               "id": "q10",
               "answer": "Deer",
               "before": "…………… were an animal which they introduced that ate the kakapo’s food sources. Protecting kakapo • Richard Henry, a conservationist, tried to protect the kakapo. • a definite sighting of female kakapo on Rakiura Island was reported in the year",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says introduced deer depleted the forests of the food kakapo needed.",
+              "evidence": "A great deal of habitat was lost through forest clearance, and introduced species such as deer depleted the remaining forests of food."
             },
             {
               "id": "q11",
               "answer": "1980",
               "before": "……………. • the Recovery Plan included an increase in",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 7 says females were confirmed present on Rakiura Island in 1980.",
+              "evidence": "There were about 200 individuals, and in 1980 it was confirmed females were also present."
             },
             {
               "id": "q12",
               "answer": "Funding",
               "before": "………………. • a current goal of the Recovery Plan is to maintain the involvement of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 9 says the 1996 Recovery Plan came with a higher amount of funding.",
+              "evidence": "In 1996, a new Recovery Plan was launched, together with a specialist advisory group called the Kakapo Scientific and Technical Advisory Committee and a higher amount of funding."
             },
             {
               "id": "q13",
               "answer": "Stakeholders",
               "before": "…………………. in kakapo protection",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 10 lists keeping stakeholders fully engaged as a current goal of the Recovery Plan.",
+              "evidence": "Its key goals are: minimise the loss of genetic diversity in the kakapo population, restore or maintain sufficient habitat to accommodate the expected increase in the kakapo population, and ensure stakeholders continue to be fully engaged in the preservation of the species."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 7-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer. Write your answers in boxes 7-13 on your answer sheet.</span></p><p><strong><span>New Zealand’s kakapo</span></strong></p><p><strong><span>A type of parrot:</span></strong><br/>\n<span>• diet consists of fern fronds, various parts of a tree and (7) ………………</span><br/>\n<span>• nests are created in (8) ……………… where eggs are laid.</span></p><p><strong><span>Arrival of Polynesian settlers</span></strong><br/>\n<span>• the (9) ………… of the kakapo were used to make clothes.</span></p><p><strong><span>Arrival of European colonisers</span></strong><br/>\n<span>• (10) …………… were an animal which they introduced that ate the kakapo’s food sources.</span></p><p><strong><span>Protecting kakapo</span></strong><br/>\n<span>• Richard Henry, a conservationist, tried to protect the kakapo.</span><br/>\n<span>• a definite sighting of female kakapo on Rakiura Island was reported in the year (11) …………….</span><br/>\n<span>• the Recovery Plan included an increase in (12) ……………….</span><br/>\n<span>• a current goal of the Recovery Plan is to maintain the involvement of (13) …………………. in kakapo protection.</span></p>",
@@ -187,27 +212,37 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "C",
-              "textHtml": "reference to the research problems that arise from there being only a few surviving large elms"
+              "textHtml": "reference to the research problems that arise from there being only a few surviving large elms",
+              "explanation": "Paragraph C says the number of surviving mature elms is relatively small, limiting research opportunities.",
+              "evidence": "Nevertheless, opportunities are limited as the number of these mature survivors is relatively small."
             },
             {
               "id": "q15",
               "answer": "G",
-              "textHtml": "details of a difference of opinion about the value of reintroducing elms to Britain"
+              "textHtml": "details of a difference of opinion about the value of reintroducing elms to Britain",
+              "explanation": "Paragraph G contrasts Russell's support for reintroducing elm with Elliot's wariness about cloning and new disease risks.",
+              "evidence": "You’re effectively cloning."
             },
             {
               "id": "q16",
               "answer": "B",
-              "textHtml": "reference to how Dutch elm disease was brought into Britain"
+              "textHtml": "reference to how Dutch elm disease was brought into Britain",
+              "explanation": "Paragraph B says a second epidemic was triggered by infected elm log shipments from Canada carrying the beetle.",
+              "evidence": "A first epidemic, which occurred in the 1920s, gradually died down, but in the ’70s a second epidemic was triggered by shipments of elm from Canada."
             },
             {
               "id": "q17",
               "answer": "E",
-              "textHtml": "a description of the conditions that have enabled a location in Britain to escape Dutch elm disease"
+              "textHtml": "a description of the conditions that have enabled a location in Britain to escape Dutch elm disease",
+              "explanation": "Paragraph E says strong sea winds make it hard for the beetle to reach Brighton's coastal elms.",
+              "evidence": "Strong winds from the sea make it difficult for the determined elm bark beetle to attack this coastal city’s elm population."
             },
             {
               "id": "q18",
               "answer": "C",
-              "textHtml": "reference to the stage at which young elms become vulnerable to Dutch elm disease"
+              "textHtml": "reference to the stage at which young elms become vulnerable to Dutch elm disease",
+              "explanation": "Paragraph C says once an elm trunk reaches 10 to 15 centimetres across it becomes a perfect size for the beetle to attack.",
+              "evidence": "Once the trunk of the elm reaches 10-15 centimetres or so in diameter, it becomes a perfect size for beetles to lay eggs and for the fungus to take hold."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Reading passage has seven sections, A-G. Which section contains the following information? NB You may use any letter more than once.</span></p><p><span>14. reference to the research problems that arise from there being only a few surviving large elms</span><br/>\n<span>15. details of a difference of opinion about the value of reintroducing elms to Britain</span><br/>\n<span>16. reference to how Dutch elm disease was brought into Britain</span><br/>\n<span>17. a description of the conditions that have enabled a location in Britain to escape Dutch elm disease</span><br/>\n<span>18.reference to the stage at which young elms become vulnerable to Dutch elm disease</span></p>",
@@ -229,27 +264,37 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "B",
-              "textHtml": "If a tree gets infected with Dutch elm disease, the damage rapidly becomes visible"
+              "textHtml": "If a tree gets infected with Dutch elm disease, the damage rapidly becomes visible",
+              "explanation": "Russell in paragraph F says resistant trees show no symptoms while susceptible ones show leaf loss within weeks, a rapid, visible effect.",
+              "evidence": "The effects are very quick,’ says Russell."
             },
             {
               "id": "q20",
               "answer": "A",
-              "textHtml": "It may be better to wait and see if the mature elms that have survived continue to flourish"
+              "textHtml": "It may be better to wait and see if the mature elms that have survived continue to flourish",
+              "explanation": "Elliot in paragraph G says the best thing may be to give nature time to recover rather than plant new elms.",
+              "evidence": "‘Sometimes the best thing you can do is just give nature time to recover… over time, you might get resistance,’ says Elliot."
             },
             {
               "id": "q21",
               "answer": "B",
-              "textHtml": "There must be an explanation for the survival of some mature elms"
+              "textHtml": "There must be an explanation for the survival of some mature elms",
+              "explanation": "Russell in paragraph C says she does not see how survival could be entirely down to luck, implying another explanation must exist.",
+              "evidence": "I don’t see how it can be entirely down to luck."
             },
             {
               "id": "q22",
               "answer": "C",
-              "textHtml": "We need to be aware that insects carrying Dutch elm disease are not very far away"
+              "textHtml": "We need to be aware that insects carrying Dutch elm disease are not very far away",
+              "explanation": "Bourne in paragraph E warns that the beetle threat is right on Brighton's doorstep.",
+              "evidence": "‘The beetles can just march in if we’re not careful, as the threat is right on our doorstep,’ says Bourne."
             },
             {
               "id": "q23",
               "answer": "A",
-              "textHtml": "You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was. List of People A. Matt Elliot B. Karen Russell C. Peter Bourne"
+              "textHtml": "You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was. List of People A. Matt Elliot B. Karen Russell C. Peter Bourne",
+              "explanation": "Elliot in paragraph A says old photographs only reveal how significant elms once were, showing the scale of the loss.",
+              "evidence": "‘You look at old photographs from the 1960s and it’s only then that you realise the impact [elms had] … They were significant, large trees … then they were gone."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 19-23</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A, B, or C. NB You may use any letter more than once.</span></p><p><span>19. If a tree gets infected with Dutch elm disease, the damage rapidly becomes visible.</span><br/>\n<span>20. It may be better to wait and see if the mature elms that have survived continue to flourish.</span><br/>\n<span>21. There must be an explanation for the survival of some mature elms.</span><br/>\n<span>22. We need to be aware that insects carrying Dutch elm disease are not very far away.</span><br/>\n<span>23. You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was.</span></p><p><strong><span>List of People</span></strong><br/>\n<span>A. Matt Elliot</span><br/>\n<span>B. Karen Russell</span><br/>\n<span>C. Peter Bourne</span></p>",
@@ -268,19 +313,25 @@ const test: PracticeTest = {
               "id": "q24",
               "answer": "Oak",
               "before": "………… Starting in the Bronze Age, many tools were made from elm and people also used it to make weapons. In the 18th century, it was grown to provide wood for boxes and",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says elm ran a close second to oak as Britain's preferred hardwood.",
+              "evidence": "For centuries, elm ran a close second to oak as the hardwood tree of choice in Britain and was in many instances the most prominent tree in the landscape."
             },
             {
               "id": "q25",
               "answer": "Flooring",
               "before": "…………… Due to its strength, elm was often used for mining equipment and the Cutty Sark’s",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says 18th century elm wood was used for storage crates and flooring.",
+              "evidence": "In the 18th century, it was planted more widely and its wood was used for items such as storage crates and flooring."
             },
             {
               "id": "q26",
               "answer": "Keel",
               "before": "……………… was also constructed from elm",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says elm was used to build the keel of the Cutty Sark.",
+              "evidence": "It was also suitable for items that experienced high levels of impact and was used to build the keel of the 19th-century sailing ship Cutty Sark as well as mining equipment."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Uses of a popular tree</span></strong></p><p><span>For hundreds of years, the only tree that was more popular in Britain than elm was (24) ………… Starting in the Bronze Age, many tools were made from elm and people also used it to make weapons. In the 18th century, it was grown to provide wood for boxes and (25) …………… Due to its strength, elm was often used for mining equipment and the Cutty Sark’s (26) ……………… was also constructed from elm.</span></p>",
@@ -346,7 +397,9 @@ const test: PracticeTest = {
                 "questioning a widely held assumption",
                 "mentioning a challenge faced by everyone",
                 "specifying a situation which makes us most anxious"
-              ]
+              ],
+              "explanation": "Paragraph 1 says we are all sometimes required to weigh up information under stress, a challenge everyone faces.",
+              "evidence": "From medical decisions to financial and professional ones, we are all sometimes required to weigh up information under stressful conditions."
             },
             {
               "id": "q28",
@@ -357,7 +410,9 @@ const test: PracticeTest = {
                 "The strategies they use to handle stress are of particular interest to researchers",
                 "The stressful nature of their job is typical of many public service professions",
                 "Their personalities make them especially well-suited to working under stress"
-              ]
+              ],
+              "explanation": "Paragraph 2 says the firefighters' varying stress levels gave the perfect setting for the experiment, making them ideal subjects.",
+              "evidence": "These ups and downs presented the perfect setting for an experiment on how people’s ability to use information changes when they feel under pressure."
             },
             {
               "id": "q29",
@@ -368,7 +423,9 @@ const test: PracticeTest = {
                 "justifying their approach",
                 "setting out their objectives",
                 "describing their methodology"
-              ]
+              ],
+              "explanation": "Paragraph 4 describes exactly how the estimates were collected and the good or bad news given, which is describing the method used.",
+              "evidence": "This is how we arrived at these results."
             },
             {
               "id": "q30",
@@ -379,7 +436,9 @@ const test: PracticeTest = {
                 "results in increased ability to control our levels of anxiety",
                 "produces heightened sensitivity to indications of external threats",
                 "is activated when there is a need to communicate a sense of danger"
-              ]
+              ],
+              "explanation": "Paragraph 7 says the stress response boosts a neural signal for learning in response to unexpected warning signs, producing heightened sensitivity to threats.",
+              "evidence": "Brain imaging reveals that this ‘switch’ is related to a sudden boost in a neural signal important for learning, specifically in response to unexpected warning signs, such as faces expressing fear."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>27. In the first paragraph, the writer introduces the topic of the text by</span><br/>\n<span>A. defining some commonly used terms.</span><br/>\n<span>B. questioning a widely held assumption.</span><br/>\n<span>C. mentioning a challenge faced by everyone.</span><br/>\n<span>D. specifying a situation which makes us most anxious.</span></p><p><span>28. What point does the writer make about firefighters in the second paragraph?</span><br/>\n<span>A. The regular changes of stress levels in their working lives make them ideal study subjects.</span><br/>\n<span>B. The strategies they use to handle stress are of particular interest to researchers.</span><br/>\n<span>C. The stressful nature of their job is typical of many public service professions.</span><br/>\n<span>D. Their personalities make them especially well-suited to working under stress.</span></p><p><span>29. What is the writer doing in the fourth paragraph?</span><br/>\n<span>A. explaining their findings</span><br/>\n<span>B. justifying their approach</span><br/>\n<span>C. setting out their objectives</span><br/>\n<span>D. describing their methodology</span></p><p><span>30. In the seventh paragraph, the writer describes a mechanism in the brain which</span><br/>\n<span>A. enables people to respond more quickly to stressful situations.</span><br/>\n<span>B. results in increased ability to control our levels of anxiety.</span><br/>\n<span>C. produces heightened sensitivity to indications of external threats.</span><br/>\n<span>D. is activated when there is a need to communicate a sense of danger.</span></p>"
@@ -393,31 +452,40 @@ const test: PracticeTest = {
               "id": "q31",
               "answer": "B",
               "before": "At times when they were relaxed, the firefighters usually",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says relaxed people normally ignore bad news, taking little notice of it.",
+              "evidence": "People are normally quite optimistic – they will ignore bad news and embrace the good."
             },
             {
               "id": "q32",
               "answer": "G",
               "before": "The researchers noted that when the firefighters were stressed, they",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says stressed firefighters became hyper vigilant to bad news and revised their estimates upward, thinking something bad was more likely.",
+              "evidence": "Under these conditions, they became hyper-vigilant to bad news, even when it had nothing to do with their job (such as learning that the likelihood of card fraud was higher than they’d thought), and altered their beliefs in response."
             },
             {
               "id": "q33",
               "answer": "F",
               "before": "When the firefighters were told good news, they always",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says stress did not change how firefighters responded to good news, so their behaviour stayed the same regardless of conditions.",
+              "evidence": "In contrast, stress didn’t change how they responded to good news (such as learning that the likelihood of card fraud was lower than they’d thought)."
             },
             {
               "id": "q34",
               "answer": "E",
               "before": "The students’ cortisol levels and heart rates were affected when the researchers",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 6 says students told they had to give a surprise public speech showed spiked cortisol and heart rate, since the speech put them under stress.",
+              "evidence": "Back in our lab, we observed the same pattern in students who were told they had to give a surprise public speech, which would be judged by a panel, recorded and posted online."
             },
             {
               "id": "q35",
               "answer": "D",
               "before": "In both experiments, negative information was processed better when the subjects A. made them feel optimistic. B. took relatively little notice of bad news. C. responded to negative and positive information in the same way. D. were feeling under stress. E. put them in a stressful situation. F. behaved in a similar manner, regardless of the circumstances. G. thought it more likely that they would experience something bad",
-              "after": ""
+              "after": "",
+              "explanation": "In both experiments, negative information was processed better while the subjects were under stress, as the firefighter and student studies both show."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 31-35</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-G, below.</span></p><p><span>31. At times when they were relaxed, the firefighters usually</span><br/>\n<span>32. The researchers noted that when the firefighters were stressed, they</span><br/>\n<span>33. When the firefighters were told good news, they always</span><br/>\n<span>34. The students’ cortisol levels and heart rates were affected when the researchers</span><br/>\n<span>35. In both experiments, negative information was processed better when the subjects</span></p><p><span>A. made them feel optimistic.</span><br/>\n<span>B. took relatively little notice of bad news.</span><br/>\n<span>C. responded to negative and positive information in the same way.</span><br/>\n<span>D. were feeling under stress.</span><br/>\n<span>E. put them in a stressful situation.</span><br/>\n<span>F. behaved in a similar manner, regardless of the circumstances.</span><br/>\n<span>G. thought it more likely that they would experience something bad.</span></p>"
@@ -430,27 +498,36 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "Yes",
-              "textHtml": "The tone of the content we post on social media tends to reflect the nature of the posts in our feeds"
+              "textHtml": "The tone of the content we post on social media tends to reflect the nature of the posts in our feeds",
+              "explanation": "Paragraph 8 says viewing positive posts makes us post more uplifting messages and negative posts make us post more negative ones, matching our tone to our feed.",
+              "evidence": "Studies show that if we observe positive feeds on social media, such as images of a pink sunset, we are more likely to post uplifting messages ourselves."
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "Phones have a greater impact on our stress levels than other electronic media devices"
+              "textHtml": "Phones have a greater impact on our stress levels than other electronic media devices",
+              "explanation": "Paragraph 8 links checking your phone to stress but never compares phones with other electronic devices."
             },
             {
               "id": "q38",
               "answer": "No",
-              "textHtml": "The more we read about a stressful public event on social media, the less able we are to take the information in"
+              "textHtml": "The more we read about a stressful public event on social media, the less able we are to take the information in",
+              "explanation": "Paragraph 9 says stress increases the likelihood we focus more on alarming messages, the opposite of being less able to take information in.",
+              "evidence": "The fact that stress increases the likelihood that we will focus more on alarming messages, together with the fact that it spreads extremely rapidly, can create collective fear that is not always justified."
             },
             {
               "id": "q39",
               "answer": "Yes",
-              "textHtml": "Stress created by social media posts can lead us to take unnecessary precautions"
+              "textHtml": "Stress created by social media posts can lead us to take unnecessary precautions",
+              "explanation": "Paragraph 9 says trips get cancelled and stocks sold even when holding on is best, showing stress driven, unnecessary precautions.",
+              "evidence": "As a result, trips are cancelled, even if the disaster took place across the globe; stocks are sold, even when holding on is the best thing to do."
             },
             {
               "id": "q40",
               "answer": "Yes",
-              "textHtml": "Our tendency to be affected by other people’s moods can be used in a positive way"
+              "textHtml": "Our tendency to be affected by other people’s moods can be used in a positive way",
+              "explanation": "The final paragraph says positive emotions such as hope are also contagious and can drive people to act, a positive use of this tendency.",
+              "evidence": "The good news, however, is that positive emotions, such as hope, are contagious too, and are powerful in inducing people to act to find solutions."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 36-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>YES</strong>                                  if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                     if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                 if it is impossible to say what the writer thinks about this</span></p><p><span>36. The tone of the content we post on social media tends to reflect the nature of the posts in our feeds.</span><br/>\n<span>37. Phones have a greater impact on our stress levels than other electronic media devices.</span><br/>\n<span>38. The more we read about a stressful public event on social media, the less able we are to take the information in.</span><br/>\n<span>39. Stress created by social media posts can lead us to take unnecessary precautions.</span><br/>\n<span>40. Our tendency to be affected by other people’s moods can be used in a positive way.</span></p>"

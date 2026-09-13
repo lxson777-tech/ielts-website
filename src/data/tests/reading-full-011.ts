@@ -49,37 +49,51 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "False",
-              "textHtml": "The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths"
+              "textHtml": "The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths",
+              "explanation": "This is False: the passage says the baobab appears in folklore because of its many practical uses, not because of symbolic meaning in myths.",
+              "evidence": "Given the tree's many practical uses, it is not surprising that the baobab features so prominently in traditional African folklore."
             },
             {
               "id": "q2",
               "answer": "False",
-              "textHtml": "Baobab trees are only found on the African continent"
+              "textHtml": "Baobab trees are only found on the African continent",
+              "explanation": "This is False: baobabs also grow outside Africa, in Madagascar, India, Sri Lanka and Australia.",
+              "evidence": "These are found in the drier parts of Africa, Madagascar, India, Sri Lanka and Australia."
             },
             {
               "id": "q3",
               "answer": "True",
-              "textHtml": "In West Africa, the presence of a baobab tree often indicates nearby human settlements"
+              "textHtml": "In West Africa, the presence of a baobab tree often indicates nearby human settlements",
+              "explanation": "Paragraph 2 states this directly about West Africa.",
+              "evidence": "In West Africa, the baobab's presence is often an indication of a human settlement nearby."
             },
             {
               "id": "q4",
               "answer": "False",
-              "textHtml": "Baobab trees are commonly found in humid tropical rainforests"
+              "textHtml": "Baobab trees are commonly found in humid tropical rainforests",
+              "explanation": "This is False: the baobab grows in dry, hot, arid savannahs, the opposite of humid tropical rainforest.",
+              "evidence": "The tree is most frequently found in dry, hot savannahs of sub-Saharan Africa, where the climate is extremely arid and rainfall is seasonal."
             },
             {
               "id": "q5",
               "answer": "True",
-              "textHtml": "The baobab stores water in its trunk during the rainy season to survive dry periods"
+              "textHtml": "The baobab stores water in its trunk during the rainy season to survive dry periods",
+              "explanation": "Paragraph 3 confirms this directly: the tree is a succulent that stores rainy season water in its trunk.",
+              "evidence": "It is a succulent, which means that during the rainy season it absorbs and stores water in its vast trunk."
             },
             {
               "id": "q6",
               "answer": "True",
-              "textHtml": "The leaves of the baobab tree can be used to make a medicinal sauce"
+              "textHtml": "The leaves of the baobab tree can be used to make a medicinal sauce",
+              "explanation": "The passage says leaves are used both as a medicine and as a sauce, though it never links the two into one \"medicinal sauce\", so this answer is arguably a stretch from the source text.",
+              "evidence": "They are rich in iron and can be used as a medicine... The leaves can also be used as a sauce for food."
             },
             {
               "id": "q7",
               "answer": "False",
-              "textHtml": "Baobab trees are pollinated exclusively by fruit bats"
+              "textHtml": "Baobab trees are pollinated exclusively by fruit bats",
+              "explanation": "This is False: bats pollinate the flowers, but birds, bees and other insects also feed on them, so bats are not the exclusive pollinator.",
+              "evidence": "The flowers provide food for birds, bees and other insects."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                 if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                               if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                    if there is no information on this</span></p><p><span>1. The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths.</span><br/>\n<span>2. Baobab trees are only found on the African continent.</span><br/>\n<span>3. In West Africa, the presence of a baobab tree often indicates nearby human settlements.</span><br/>\n<span>4. Baobab trees are commonly found in humid tropical rainforests.</span><br/>\n<span>5. The baobab stores water in its trunk during the rainy season to survive dry periods.</span><br/>\n<span>6. The leaves of the baobab tree can be used to make a medicinal sauce.</span><br/>\n<span>7. Baobab trees are pollinated exclusively by fruit bats.</span></p>"
@@ -93,37 +107,49 @@ const test: PracticeTest = {
               "id": "q8",
               "answer": "Sauce",
               "before": "…………. Bark – can be used to make cloth and musical instruments – can be used to protect",
-              "after": ""
+              "after": "",
+              "explanation": "The notes gap follows \"can be used to make a ___\", and the passage says leaves are used as a food sauce.",
+              "evidence": "The leaves can also be used as a sauce for food."
             },
             {
               "id": "q9",
               "answer": "Plants",
               "before": "…………… and to treat fever Trunk – can provide",
-              "after": ""
+              "after": "",
+              "explanation": "The bark protects young plants from animals, matching the gap \"can be used to protect ___\".",
+              "evidence": "The bark has also been used to protect young plants from animals."
             },
             {
               "id": "q10",
               "answer": "Shelter",
               "before": "……………… and water – can be used to make",
-              "after": ""
+              "after": "",
+              "explanation": "The trunk provides shelter and water, matching the notes gap before \"and water\".",
+              "evidence": "The trunk of the baobab is very wide and it can be used as a shelter."
             },
             {
               "id": "q11",
               "answer": "Pots",
               "before": "……………. General – provides",
-              "after": ""
+              "after": "",
+              "explanation": "The trunk can be shaped into pots for growing plants, matching \"can be used to make ___\".",
+              "evidence": "pots to grow plants in, and many other useful items."
             },
             {
               "id": "q12",
               "answer": "Shade",
               "before": "………………. for animals and humans – can be used to make",
-              "after": ""
+              "after": "",
+              "explanation": "The general uses list states the tree provides shade for animals and humans.",
+              "evidence": "The tree also provides shade for animals and humans."
             },
             {
               "id": "q13",
               "answer": "Fuel",
               "before": "…………… to burn",
-              "after": ""
+              "after": "",
+              "explanation": "The final general use listed is fuel, matching \"___ to burn\".",
+              "evidence": "The tree is also a source of fuel and is used as a firebreak as well."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>USES OF THE BAOBAB TREE</span></strong></p><p><span>Fruit</span><br/>\n<span>– contains a lot of vitamin C</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be stored for a long time</span><br/>\n<span>– seeds can be used to produce oil</span></p><p><span>Leaves</span><br/>\n<span>– can be used fresh or dried</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be used to make a (8) ………….</span></p><p><span>Bark</span><br/>\n<span>– can be used to make cloth and musical instruments</span><br/>\n<span>– can be used to protect (9) ……………</span><br/>\n<span>and to treat fever</span></p><p><span>Trunk</span><br/>\n<span>– can provide (10) ……………… and water</span><br/>\n<span>– can be used to make (11) …………….</span></p><p><span>General</span><br/>\n<span>– provides (12) ………………. for animals and humans</span><br/>\n<span>– can be used to make (13) …………… to burn</span></p>",
@@ -168,27 +194,37 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "A",
-              "textHtml": "a reference to the time when a distinction was first made between two types of skills"
+              "textHtml": "a reference to the time when a distinction was first made between two types of skills",
+              "explanation": "Paragraph A introduces the 1993 paper that first drew the line between innate talent and practice as the source of expert skill.",
+              "evidence": "Its most striking claim is that the difference between expert performers and normal adults is not due to innate talent, but rather is a reflection of the amount of deliberate practice they have undergone."
             },
             {
               "id": "q15",
               "answer": "D",
-              "textHtml": "a reference to what a particular investigation failed to do"
+              "textHtml": "a reference to what a particular investigation failed to do",
+              "explanation": "Paragraph D says the correlation Ericsson found never proved practice actually caused expertise.",
+              "evidence": "their research didn't determine whether practice was the cause of that expertise."
             },
             {
               "id": "q16",
               "answer": "C",
-              "textHtml": "a reference to the influence of the 10,000-hour rule outside the field of music"
+              "textHtml": "a reference to the influence of the 10,000-hour rule outside the field of music",
+              "explanation": "Paragraph C describes how Malcolm Gladwell's book Outliers spread the 10,000-hour idea to a general audience well beyond music research.",
+              "evidence": "The theory of deliberate practice was popularised by the writer Malcolm Gladwell, who argued that talent is irrelevant to performance in his book Outliers"
             },
             {
               "id": "q17",
               "answer": "B",
-              "textHtml": "A reference to how the study compared achievement levels based on practice time"
+              "textHtml": "A reference to how the study compared achievement levels based on practice time",
+              "explanation": "Paragraph B reports the exact practice hours for the best, good and least accomplished violinist groups.",
+              "evidence": "the best violinists had practised an average of 10,000 hours, the good ones had practised 8,000 hours, and the least skilled had practised 4,000 hours."
             },
             {
               "id": "q18",
               "answer": "D",
-              "textHtml": "a reference to a claim that was made without sufficient evidence"
+              "textHtml": "a reference to a claim that was made without sufficient evidence",
+              "explanation": "Paragraph D questions the 10,000-hour rule's appeal, noting practice was assumed to cause expertise without proof of causation.",
+              "evidence": "The idea that 10,000 hours of practice will make you an expert is appealing... but their research didn't determine whether practice was the cause of that expertise."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Reading passage has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.</span></p><p><span>14. a reference to the time when a distinction was first made between two types of skills</span><br/>\n<span>15. a reference to what a particular investigation failed to do</span><br/>\n<span>16. a reference to the influence of the 10,000-hour rule outside the field of music</span><br/>\n<span>17. A reference to how the study compared achievement levels based on practice time.</span><br/>\n<span>18. a reference to a claim that was made without sufficient evidence</span></p>",
@@ -207,22 +243,30 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "A",
-              "textHtml": "Their research involved innovative methods of measuring practice among participants"
+              "textHtml": "Their research involved innovative methods of measuring practice among participants",
+              "explanation": "Ericsson's team (A) used a detailed weekly practice-history survey, an original way of quantifying practice.",
+              "evidence": "All of the violinists were asked how much they had practised, alone, with a teacher, and with others, every week"
             },
             {
               "id": "q20",
               "answer": "B",
-              "textHtml": "They made claims about the significance of practice which were not justified"
+              "textHtml": "They made claims about the significance of practice which were not justified",
+              "explanation": "Gladwell (B) is criticised in the passage for overstating what the violinist research actually proved about practice.",
+              "evidence": "But while Ericsson and his colleagues had found a correlation... their research didn't determine whether practice was the cause of that expertise."
             },
             {
               "id": "q21",
               "answer": "C",
-              "textHtml": "They devised a sophisticated way of measuring the development of expertise"
+              "textHtml": "They devised a sophisticated way of measuring the development of expertise",
+              "explanation": "Macnamara's team (C) devised a statistical way, a meta-analysis across many studies, to measure how much practice explains expertise.",
+              "evidence": "re-analysed data from all of the studies they could find on the relationship between deliberate practice and performance"
             },
             {
               "id": "q22",
               "answer": "C",
-              "textHtml": "Their research generated an unexpected result"
+              "textHtml": "Their research generated an unexpected result",
+              "explanation": "Macnamara's finding that practice explains only 12 percent of expert performance was an unexpectedly small figure.",
+              "evidence": "estimated that the average amount that practice contributes to mastery of these is just 12 percent."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 19-22</span></strong><br/>\n<span>Look at the following statements (Questions 19-22) and the list of researchers below. Match each statement with the correct researcher, A, B or C. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.</span></p><p><strong><span>List of Researchers</span></strong><br/>\n<span>A. Ericsson and colleagues</span><br/>\n<span>B. Malcolm Gladwell</span><br/>\n<span>C. Brooke Macnamara and colleagues</span></p><p><span>19. Their research involved innovative methods of measuring practice among participants.</span><br/>\n<span>20. They made claims about the significance of practice which were not justified.</span><br/>\n<span>21. They devised a sophisticated way of measuring the development of expertise.</span><br/>\n<span>22. Their research generated an unexpected result.</span></p>",
@@ -244,7 +288,9 @@ const test: PracticeTest = {
                 "C"
               ],
               "textHtml": "",
-              "answerPairId": "reading-307-q23-q24"
+              "answerPairId": "reading-307-q23-q24",
+              "explanation": "The paper is described as one of the most cited in its field (widely regarded as original) and it uncovered the surprising absence of any \"natural\" or \"grind\" musicians.",
+              "evidence": "The paper is one of the most cited in its field."
             },
             {
               "id": "q24",
@@ -253,7 +299,9 @@ const test: PracticeTest = {
                 "C"
               ],
               "textHtml": "",
-              "answerPairId": "reading-307-q23-q24"
+              "answerPairId": "reading-307-q23-q24",
+              "explanation": "The paper is described as one of the most cited in its field (widely regarded as original) and it uncovered the surprising absence of any \"natural\" or \"grind\" musicians.",
+              "evidence": "couldn't find any \"naturals\", musicians who floated effortlessly to the top... Nor could they find any \"grinds\""
             }
           ],
           "legendHtml": "<p><strong><span>Questions 23-24</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the study of violinists undertaken by Ericsson and his colleagues?</span></p><p><span><strong>A</strong> It was widely regarded as original.</span><br/>\n<span><strong>B</strong> Its aims were innovative.</span><br/>\n<span><strong>C</strong> It produced some unexpected findings.</span><br/>\n<span><strong>D</strong> It called into question the methods of other researchers.</span><br/>\n<span><strong>E</strong> Its scope was very limited.</span></p>",
@@ -279,7 +327,8 @@ const test: PracticeTest = {
               "value": "E",
               "label": "Its scope was very limited"
             }
-          ]
+          ],
+          "explanationHtml": "<p>The writer calls the 1993 paper \"one of the most cited in its field\" (widely regarded as original) and highlights that the researchers unexpectedly found no exceptionally talented \"naturals\" and no hard-working \"grinds\" among the violinists.</p>"
         },
         {
           "title": "Questions 25-26",
@@ -293,7 +342,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-307-q25-q26"
+              "answerPairId": "reading-307-q25-q26",
+              "explanation": "The 1993 paper is presented as the study that first tied hours of deliberate practice to expert performance, and Macnamara's rebuttal shows the theory has since been challenged.",
+              "evidence": "The so-called 10,000-hour rule can be traced back to a 1993 paper"
             },
             {
               "id": "q26",
@@ -302,7 +353,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-307-q25-q26"
+              "answerPairId": "reading-307-q25-q26",
+              "explanation": "The 1993 paper is presented as the study that first tied hours of deliberate practice to expert performance, and Macnamara's rebuttal shows the theory has since been challenged.",
+              "evidence": "a group of psychologists led by Brooke Macnamara of Princeton University re-analysed data"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the theory of deliberate practice?</span></p><p><span><strong>A</strong> It was developed by combining data from several studies.</span><br/>\n<span><strong>B</strong> It is the only theory to attempt to calculate the number of hours required for expertise.</span><br/>\n<span><strong>C</strong> It is the first theory to link the acquisition of expertise with the number of hours spent practising.</span><br/>\n<span><strong>D</strong> It fails to take account of individual differences.</span><br/>\n<span><strong>E</strong> It has been challenged by some researchers.</span></p>",
@@ -328,7 +381,8 @@ const test: PracticeTest = {
               "value": "E",
               "label": "It has been challenged by some researchers"
             }
-          ]
+          ],
+          "explanationHtml": "<p>The 10,000-hour idea is traced back to the 1993 paper as its origin (the first theory linking hours of practice to expertise), and paragraphs D and E show the theory being challenged by Macnamara's later research.</p>"
         }
       ]
     },
@@ -381,32 +435,44 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "B",
-              "textHtml": "a description of the method used by stars to generate energy"
+              "textHtml": "a description of the method used by stars to generate energy",
+              "explanation": "Paragraph B explains that fusion, unlike fission, is the reaction that powers the sun and stars.",
+              "evidence": "This is the process that occurs in the sun and other stars."
             },
             {
               "id": "q28",
               "answer": "B",
-              "textHtml": "a description of the process used to produce energy in nuclear power plants today"
+              "textHtml": "a description of the process used to produce energy in nuclear power plants today",
+              "explanation": "Paragraph B states fission is the reaction used in today's nuclear power stations.",
+              "evidence": "This is the reaction that occurs in nuclear power stations today."
             },
             {
               "id": "q29",
               "answer": "B",
-              "textHtml": "an explanation of the advantages of nuclear fusion over nuclear fission"
+              "textHtml": "an explanation of the advantages of nuclear fusion over nuclear fission",
+              "explanation": "Paragraph B contrasts fission's radioactive fuel and waste with fusion's non-radioactive, potentially limitless clean energy.",
+              "evidence": "the fuel used is not radioactive. This makes nuclear fusion a potentially limitless source of clean energy."
             },
             {
               "id": "q30",
               "answer": "D",
-              "textHtml": "a reference to the difficulty of achieving the conditions required for nuclear fusion"
+              "textHtml": "a reference to the difficulty of achieving the conditions required for nuclear fusion",
+              "explanation": "Paragraph D describes the enormous temperature and pressure needed, and how hard this is to sustain.",
+              "evidence": "they must be heated to temperatures of millions of degrees Celsius... it is difficult to find materials that can withstand such high temperatures."
             },
             {
               "id": "q31",
               "answer": "A",
-              "textHtml": "a reference to a nuclear fusion experiment that has been successful"
+              "textHtml": "a reference to a nuclear fusion experiment that has been successful",
+              "explanation": "Paragraph A describes the December 2022 California experiment that produced more energy than it used.",
+              "evidence": "scientists had managed to produce a nuclear fusion reaction that generated more energy than it consumed."
             },
             {
               "id": "q32",
               "answer": "I",
-              "textHtml": "a mention of the need to find a way of making nuclear fusion research more affordable"
+              "textHtml": "a mention of the need to find a way of making nuclear fusion research more affordable",
+              "explanation": "Paragraph I calls for cheaper, more durable materials to bring down the cost of fusion research.",
+              "evidence": "find ways to reduce the cost of nuclear fusion research, such as by having cheaper, more durable materials"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.</span></p><p><span>27. a description of the method used by stars to generate energy</span><br/>\n<span>28. a description of the process used to produce energy in nuclear power plants today</span><br/>\n<span>29. an explanation of the advantages of nuclear fusion over nuclear fission</span><br/>\n<span>30. a reference to the difficulty of achieving the conditions required for nuclear fusion</span><br/>\n<span>31. a reference to a nuclear fusion experiment that has been successful</span><br/>\n<span>32. a mention of the need to find a way of making nuclear fusion research more affordable</span></p>",
@@ -430,17 +496,23 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "A",
-              "textHtml": "……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental"
+              "textHtml": "……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental",
+              "explanation": "Magnetic confinement heats a plasma of hydrogen nuclei inside a magnetic field.",
+              "evidence": "a plasma of hydrogen nuclei is confined within a magnetic field and heated"
             },
             {
               "id": "q34",
               "answer": "D",
-              "textHtml": "……………….. showing potential for generating fusion energy. INERTIAL CONFINEMENT In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the"
+              "textHtml": "……………….. showing potential for generating fusion energy. INERTIAL CONFINEMENT In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the",
+              "explanation": "The passage says this method has been tried in various experimental fusion reactors.",
+              "evidence": "This approach has been used in a number of experimental fusion reactors"
             },
             {
               "id": "q35",
               "answer": "B",
-              "textHtml": "………….. are fused together, releasing a significant amount of energy. A. plasma B. nuclei C. energy D. reactors E. fusion F. reaction G. hydrogen H. atoms I. nuclear fission J. nuclear fusion K. temperature"
+              "textHtml": "………….. are fused together, releasing a significant amount of energy. A. plasma B. nuclei C. energy D. reactors E. fusion F. reaction G. hydrogen H. atoms I. nuclear fission J. nuclear fusion K. temperature",
+              "explanation": "In inertial confinement, compression and heat fuse the nuclei together, releasing energy.",
+              "evidence": "The compression and heating cause the nuclei to fuse together, releasing energy."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 33-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-K, below. Write the correct letter, A-K, in boxes 33-35 on your answer sheet.</span></p><p><strong><span>MAGNETIC CONFINEMENT</span></strong></p><p><span>In the magnetic confinement approach, a (33) ……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental (34) ……………….. showing potential for generating fusion energy.</span></p><p><strong><span>INERTIAL CONFINEMENT</span></strong></p><p><span>In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the (35) ………….. are fused together, releasing a significant amount of energy.</span></p><p><span>A. plasma</span><br/>\n<span>B. nuclei</span><br/>\n<span>C. energy</span><br/>\n<span>D. reactors</span><br/>\n<span>E. fusion</span><br/>\n<span>F. reaction</span><br/>\n<span>G. hydrogen</span><br/>\n<span>H. atoms</span><br/>\n<span>I. nuclear fission</span><br/>\n<span>J. nuclear fusion</span><br/>\n<span>K. temperature</span></p>",
@@ -465,27 +537,36 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "False",
-              "textHtml": "The California experiment was the first time nuclear fusion had ever been achieved"
+              "textHtml": "The California experiment was the first time nuclear fusion had ever been achieved",
+              "explanation": "This is False: the breakthrough was the first fusion reaction to produce more energy than it consumed, not the first fusion reaction ever achieved.",
+              "evidence": "For the first time ever, scientists had managed to produce a nuclear fusion reaction that generated more energy than it consumed."
             },
             {
               "id": "q37",
               "answer": "True",
-              "textHtml": "Nuclear fusion could help to reduce the world’s dependence on fossil fuels"
+              "textHtml": "Nuclear fusion could help to reduce the world’s dependence on fossil fuels",
+              "explanation": "Paragraph C states this directly as a benefit of fusion.",
+              "evidence": "It could help to reduce our reliance on fossil fuels, and therefore help to combat climate change."
             },
             {
               "id": "q38",
               "answer": "False",
-              "textHtml": "The fuel used in nuclear fusion is rare and hard to find"
+              "textHtml": "The fuel used in nuclear fusion is rare and hard to find",
+              "explanation": "This is False: the passage says fusion fuel is abundant and widely available, the opposite of rare.",
+              "evidence": "the fuel used in nuclear fusion is abundant and widely available."
             },
             {
               "id": "q39",
               "answer": "False",
-              "textHtml": "The high cost of nuclear fusion is solely attributed to its equipment"
+              "textHtml": "The high cost of nuclear fusion is solely attributed to its equipment",
+              "explanation": "This is False: cost is attributed to both equipment and research, not equipment alone.",
+              "evidence": "The equipment and research required to achieve nuclear fusion are extremely expensive"
             },
             {
               "id": "q40",
               "answer": "Not given",
-              "textHtml": "The basic physics behind nuclear fusion is more advanced than scientists once thought"
+              "textHtml": "The basic physics behind nuclear fusion is more advanced than scientists once thought",
+              "explanation": "The passage never compares current physics understanding with what scientists previously expected, so there is no information on this."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 36-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>36. The California experiment was the first time nuclear fusion had ever been achieved.</span><br/>\n<span>37. Nuclear fusion could help to reduce the world’s dependence on fossil fuels.</span><br/>\n<span>38. The fuel used in nuclear fusion is rare and hard to find.</span><br/>\n<span>39. The high cost of nuclear fusion is solely attributed to its equipment.</span><br/>\n<span>40. The basic physics behind nuclear fusion is more advanced than scientists once thought.</span></p>"

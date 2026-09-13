@@ -59,43 +59,57 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Teacher",
               "before": "…………… in various places in the USA • created drawings using",
-              "after": ""
+              "after": "",
+              "explanation": "The second paragraph says she ‘became an art teacher and taught in elementary schools, high schools, and colleges’, matching this gap.",
+              "evidence": "she became an art teacher and taught in elementary schools, high schools, and colleges in Virginia, Texas, and South Carolina"
             },
             {
               "id": "q2",
               "answer": "Charcoal",
               "before": "………………. which were exhibited in New York City • moved to New York and became famous for her paintings of the city’s",
-              "after": ""
+              "after": "",
+              "explanation": "The third paragraph says she began ‘creating abstract compositions in charcoal’, matching this gap.",
+              "evidence": "O’Keeffe began to experiment with creating abstract compositions in charcoal"
             },
             {
               "id": "q3",
               "answer": "Skyscrapers",
               "before": "………… • produced a series of innovative close-up paintings of",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says she became known for ‘the soaring skyscrapers of New York’, matching this gap.",
+              "evidence": "the architectural pictures that dramatically depict the soaring skyscrapers of New York"
             },
             {
               "id": "q4",
               "answer": "Flowers",
               "before": "……………. • went to New Mexico and was initially inspired to paint the many",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph describes her ‘magnified images depicting flowers’, matching this gap.",
+              "evidence": "In her magnified images depicting flowers, begun in 1924"
             },
             {
               "id": "q5",
               "answer": "Bones",
               "before": "………………. that could be found there • continued to paint various features that together formed the dramatic",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says she found ‘the numerous sun-bleached bones she came across’ in New Mexico, matching this gap.",
+              "evidence": "the numerous sun-bleached bones she came across in the state’s rugged terrain that sparked her imagination"
             },
             {
               "id": "q6",
               "answer": "Landscape",
               "before": "………………… of New Mexico for over forty years • travelled widely by plane in later years, and painted pictures of clouds and",
-              "after": ""
+              "after": "",
+              "explanation": "The eighth paragraph says it was ‘the region’s spectacular landscape… that held the artist’s imagination for more than four decades’, matching this gap.",
+              "evidence": "it was the region’s spectacular landscape, with its unusual geological formations, vivid colours, clarity of light, and exotic vegetation, that held the artist’s imagination for more than four decades"
             },
             {
               "id": "q7",
               "answer": "Rivers",
               "before": "…………… seen from above",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says flying inspired ‘aerial views of rivers and expansive paintings of the sky viewed from just above clouds’, matching this final gap.",
+              "evidence": "aerial views of rivers and expansive paintings of the sky viewed from just above clouds"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The life and work of Georgia O’Keeffe</span></strong></p><p><span>• studied art, then worked as a (1) …………… in various places in the USA</span><br/>\n<span>• created drawings using (2) ………………. which were exhibited in New York City</span><br/>\n<span>• moved to New York and became famous for her paintings of the city’s (3) …………</span><br/>\n<span>• produced a series of innovative close-up paintings of (4) …………….</span><br/>\n<span>• went to New Mexico and was initially inspired to paint the many (5) ………………. that could be found there</span><br/>\n<span>• continued to paint various features that together formed the dramatic (6) ………………… of New Mexico for over forty years</span><br/>\n<span>• travelled widely by plane in later years, and painted pictures of clouds and (7) …………… seen from above</span></p>",
@@ -109,32 +123,42 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "False",
-              "textHtml": "Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career"
+              "textHtml": "Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career",
+              "explanation": "The opening paragraph says she ‘remained independent from shifting art trends’, contradicting the claim that fashions greatly influenced her style.",
+              "evidence": "she remained independent from shifting art trends and her work stayed true to her own vision"
             },
             {
               "id": "q9",
               "answer": "True",
-              "textHtml": "When O’Keeffe finished high school, she had already made her mind up about the career that she wanted"
+              "textHtml": "When O’Keeffe finished high school, she had already made her mind up about the career that she wanted",
+              "explanation": "The second paragraph says ‘by the time she graduated from high school in 1905, she had determined to make her way as an artist’, confirming the statement.",
+              "evidence": "By the time she graduated from high school in 1905, she had determined to make her way as an artist"
             },
             {
               "id": "q10",
               "answer": "False",
-              "textHtml": "Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City"
+              "textHtml": "Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City",
+              "explanation": "The third paragraph says she ‘sent some of these drawings to a friend in New York, who showed them to’ Stieglitz, so he saw them via a friend, not directly through his own gallery, contradicting the statement.",
+              "evidence": "She sent some of these drawings to a friend in New York, who showed them to art collector and photographer Alfred Stieglitz"
             },
             {
               "id": "q11",
               "answer": "True",
-              "textHtml": "O’Keeffe was the subject of Stieglitz’s photographic work for many years"
+              "textHtml": "O’Keeffe was the subject of Stieglitz’s photographic work for many years",
+              "explanation": "The fourth paragraph refers to ‘Stieglitz’s celebrated black-and-white portraits of O’Keeffe, taken over the course of twenty years’, confirming the statement.",
+              "evidence": "Stieglitz’s celebrated black-and-white portraits of O’Keeffe, taken over the course of twenty years (1917-37)"
             },
             {
               "id": "q12",
               "answer": "Not given",
-              "textHtml": "O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works"
+              "textHtml": "O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works",
+              "explanation": "The passage says the patio was ‘particularly inspirational’ for her paintings, but it never says these were among her favourite works, so this is not given."
             },
             {
               "id": "q13",
               "answer": "Not given",
-              "textHtml": "O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life"
+              "textHtml": "O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life",
+              "explanation": "The passage says her final two decades were ‘relatively unproductive’, but it never compares her 1950s-70s output with other periods, so this is not given."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>               if there is no information on this</span></p><p><span>8. Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career.</span><br/>\n<span>9. When O’Keeffe finished high school, she had already made her mind up about the career that she wanted.</span><br/>\n<span>10. Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City.</span><br/>\n<span>11. O’Keeffe was the subject of Stieglitz’s photographic work for many years.</span><br/>\n<span>12. O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works.</span><br/>\n<span>13. O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life.</span></p>"
@@ -178,22 +202,30 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "C",
-              "textHtml": "how a type of plant functions as a natural protection for coastlines"
+              "textHtml": "how a type of plant functions as a natural protection for coastlines",
+              "explanation": "Paragraph C explains mangroves ‘help defend coastal areas by trapping sediment in their net-like root systems’, matching a plant’s natural coastal protection.",
+              "evidence": "help defend coastal areas by trapping sediment in their net-like root systems, elevating the sea bed and dampening the energy of waves and tidal currents"
             },
             {
               "id": "q15",
               "answer": "A",
-              "textHtml": "a prediction about how long it could take to stop noticing the effects of climate change"
+              "textHtml": "a prediction about how long it could take to stop noticing the effects of climate change",
+              "explanation": "Paragraph A forecasts ‘global warming would continue for around 40 years’, matching a prediction about how long effects will persist.",
+              "evidence": "scientists forecasting that global warming would continue for around 40 years"
             },
             {
               "id": "q16",
               "answer": "D",
-              "textHtml": "a reference to the fact that a solution is particularly cost-effective"
+              "textHtml": "a reference to the fact that a solution is particularly cost-effective",
+              "explanation": "Paragraph D says amphibious houses cost ‘about a third of what it would cost to completely replace a building’s foundations’, matching a cost-effective solution.",
+              "evidence": "It’s much cheaper than permanently elevating houses… about a third of what it would cost to completely replace a building’s foundations"
             },
             {
               "id": "q17",
               "answer": "F",
-              "textHtml": "a mention of a technology used to locate areas most in need of intervention"
+              "textHtml": "a mention of a technology used to locate areas most in need of intervention",
+              "explanation": "Paragraph F says a ‘Geographic Information System data mapping tool’ identified streets most in need of cooling, matching this technology reference.",
+              "evidence": "Using a Geographic Information System data mapping tool, the programme identified streets with low tree canopy cover"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-17</span></strong><br/>\n<span>Reading passage has six paragraphs, A-F. Which paragraph contains the following information?</span></p><p><span>14. how a type of plant functions as a natural protection for coastlines</span><br/>\n<span>15. a prediction about how long it could take to stop noticing the effects of climate change</span><br/>\n<span>16. a reference to the fact that a solution is particularly cost-effective</span><br/>\n<span>17. a mention of a technology used to locate areas most in need of intervention</span></p>",
@@ -215,31 +247,41 @@ const test: PracticeTest = {
               "id": "q18",
               "answer": "Pumps",
               "before": "The stormwater-management programme in Miami Beach has involved the installation of efficient ……………",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says the city ‘set up new pumps that can remove up to 75,000 litres of water per minute’, matching this gap.",
+              "evidence": "the city has set up new pumps that can remove up to 75,000 litres of water per minute"
             },
             {
               "id": "q19",
               "answer": "Dams",
               "before": "The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C says Wetlands International started ‘building semi-permeable dams, made from bamboo poles and brushwood’, matching this gap.",
+              "evidence": "building semi-permeable dams, made from bamboo poles and brushwood"
             },
             {
               "id": "q20",
               "answer": "Float",
               "before": "As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can …………",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says the houses in Vietnam ‘had been built to float’, matching this gap.",
+              "evidence": "these ones had been built to float"
             },
             {
               "id": "q21",
               "answer": "Crops",
               "before": "Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E describes farmers ‘cultivating naturally salt-tolerant crops’, matching this gap.",
+              "evidence": "start cultivating naturally salt-tolerant crops in the region"
             },
             {
               "id": "q22",
               "answer": "Trees",
               "before": "A project in LA has increased the number of ……………… on the city’s streets",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph F describes a programme that ‘include the planting of trees’, matching this final gap.",
+              "evidence": "a series of pilot projects, which include the planting of trees"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 18-22</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>18. The stormwater-management programme in Miami Beach has involved the installation of efficient …………….</span><br/>\n<span>19. The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia.</span><br/>\n<span>20. As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can ………….</span><br/>\n<span>21. Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content.</span><br/>\n<span>22. A project in LA has increased the number of ……………… on the city’s streets.</span></p>",
@@ -292,22 +334,30 @@ const test: PracticeTest = {
             {
               "id": "q23",
               "answer": "B",
-              "textHtml": "It is essential to adopt strategies which involve and help residents of the region"
+              "textHtml": "It is essential to adopt strategies which involve and help residents of the region",
+              "explanation": "Toi says approaches must ‘engage and benefit communities and local decision-makers’, matching this statement about involving residents.",
+              "evidence": "engage and benefit communities and local decision-makers"
             },
             {
               "id": "q24",
               "answer": "E",
-              "textHtml": "Interventions which reduce heat are absolutely vital for our survival in this location"
+              "textHtml": "Interventions which reduce heat are absolutely vital for our survival in this location",
+              "explanation": "Spotts says ‘urban cooling is literally a matter of life and death for our future in LA’, matching this statement about heat interventions being vital.",
+              "evidence": "Urban cooling is literally a matter of life and death for our future in LA"
             },
             {
               "id": "q25",
               "answer": "A",
-              "textHtml": "More work will need to be done in future decades to deal with the impact of rising water levels"
+              "textHtml": "More work will need to be done in future decades to deal with the impact of rising water levels",
+              "explanation": "Pineda says ‘we’ll need to go back in there and adjust to the changing environment’ in future decades, matching this statement.",
+              "evidence": "we know that in 20, 30, 40 years, we’ll need to go back in there and adjust to the changing environment"
             },
             {
               "id": "q26",
               "answer": "C",
-              "textHtml": "The number of locations requiring action to adapt to flooding has grown in recent years. List of People A. Yanira Pineda B. Susanna Toi C. Elizabeth English D. Raisa Chowdhury E. Greg Spotts"
+              "textHtml": "The number of locations requiring action to adapt to flooding has grown in recent years. List of People A. Yanira Pineda B. Susanna Toi C. Elizabeth English D. Raisa Chowdhury E. Greg Spotts",
+              "explanation": "English says this ‘technology is becoming necessary in places that didn’t previously need it’, matching this statement about growing need.",
+              "evidence": "this technology is becoming necessary in places that didn’t previously need it"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A-E.</span></p><p><span>23. It is essential to adopt strategies which involve and help residents of the region.</span><br/>\n<span>24. Interventions which reduce heat are absolutely vital for our survival in this location.</span><br/>\n<span>25. More work will need to be done in future decades to deal with the impact of rising water levels.</span><br/>\n<span>26. The number of locations requiring action to adapt to flooding has grown in recent years.</span></p><p><strong><span>List of People</span></strong></p><p><span>A. Yanira Pineda</span><br/>\n<span>B. Susanna Toi</span><br/>\n<span>C. Elizabeth English</span><br/>\n<span>D. Raisa Chowdhury</span><br/>\n<span>E. Greg Spotts</span></p>",
@@ -364,27 +414,37 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "D",
-              "textHtml": "an example of how one predator has been protected by the introduction of livestock guard dogs"
+              "textHtml": "an example of how one predator has been protected by the introduction of livestock guard dogs",
+              "explanation": "Paragraph D describes how Namibian farmers reported fewer livestock losses and were ‘less likely to kill predators’ like cheetahs after getting guard dogs, matching this heading.",
+              "evidence": "more than 90 per cent of farmers reported a dramatic reduction in livestock losses, and said that as a result they were less likely to kill predators"
             },
             {
               "id": "q28",
               "answer": "G",
-              "textHtml": "an optimistic suggestion about the possible positive developments in the use of livestock guard dogs"
+              "textHtml": "an optimistic suggestion about the possible positive developments in the use of livestock guard dogs",
+              "explanation": "Paragraph G ends on the hope of ‘a bright future for guard dogs in promoting harmonious coexistence between humans and wildlife’, matching this optimistic heading.",
+              "evidence": "there may be a bright future for guard dogs in promoting harmonious coexistence between humans and wildlife"
             },
             {
               "id": "q29",
               "answer": "B",
-              "textHtml": "a description of how the methods used by livestock guard dogs help to keep predators away"
+              "textHtml": "a description of how the methods used by livestock guard dogs help to keep predators away",
+              "explanation": "Paragraph B describes how the dogs ‘place themselves between the livestock and any threat, barking loudly’ and chase predators away, matching this heading.",
+              "evidence": "The dogs will place themselves between the livestock and any threat, barking loudly"
             },
             {
               "id": "q30",
               "answer": "C",
-              "textHtml": "claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds"
+              "textHtml": "claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds",
+              "explanation": "Paragraph C cites both Ribeiro’s Portuguese study and van Bommel and Johnson’s Australian study praising the dogs’ effectiveness, matching claims by different academics.",
+              "evidence": "more than 90 per cent of the farmers participating in a programme to train and use guard dogs to protect their herds against attack from wolves rate the performance of the dogs as very good or excellent"
             },
             {
               "id": "q31",
               "answer": "B",
-              "textHtml": "a reference to how livestock guard dogs gain their skills"
+              "textHtml": "a reference to how livestock guard dogs gain their skills",
+              "explanation": "Paragraph B says the dogs ‘are raised from an early age with the animals they will be watching’, matching this heading about how they gain their skills.",
+              "evidence": "These dogs are raised from an early age with the animals they will be watching and eventually these animals become the dog’s family"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-31</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.</span></p><p><span>27. an example of how one predator has been protected by the introduction of livestock guard dogs</span><br/>\n<span>28.an optimistic suggestion about the possible positive developments in the use of livestock guard dogs</span><br/>\n<span>29.a description of how the methods used by livestock guard dogs help to keep predators away</span><br/>\n<span>30. claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds</span><br/>\n<span>31. a reference to how livestock guard dogs gain their skills</span></p>",
@@ -406,27 +466,37 @@ const test: PracticeTest = {
             {
               "id": "q32",
               "answer": "D",
-              "textHtml": "The use of guard dogs may save the lives of both livestock and wild animals"
+              "textHtml": "The use of guard dogs may save the lives of both livestock and wild animals",
+              "explanation": "Young says ‘if ranchers don’t have a dead cow, they will not make a call to apply for a permit to kill a wolf’, showing guard dogs can save both livestock and wild predators.",
+              "evidence": "There is common ground from the livestock perspective and from the conservation perspective"
             },
             {
               "id": "q33",
               "answer": "E",
-              "textHtml": "Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate"
+              "textHtml": "Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate",
+              "explanation": "Smith warns that ‘such self-reported results must be taken with a pinch of salt’, matching this statement about claims possibly being inaccurate.",
+              "evidence": "such self-reported results must be taken with a pinch of salt"
             },
             {
               "id": "q34",
               "answer": "B",
-              "textHtml": "There may be negative results if the use of livestock guard dogs is not sufficiently widespread"
+              "textHtml": "There may be negative results if the use of livestock guard dogs is not sufficiently widespread",
+              "explanation": "Ribeiro warns that without full coverage, ‘we are transferring the wolf pressure to the neighbour’s herd and he can use poison and kill an entire pack of wolves’, matching this statement about negative results from patchy use.",
+              "evidence": "If we are not working with everybody, we are transferring the wolf pressure to the neighbour’s herd and he can use poison and kill an entire pack of wolves"
             },
             {
               "id": "q35",
               "answer": "C",
-              "textHtml": "Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled"
+              "textHtml": "Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled",
+              "explanation": "Van Bommel says ‘if they are managed and used properly, livestock guard dogs are the most efficient control method that we have’, matching this statement.",
+              "evidence": "If they are managed and used properly, livestock guard dogs are the most efficient control method that we have in terms of the amount of livestock that they save from predation"
             },
             {
               "id": "q36",
               "answer": "A",
-              "textHtml": "Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog. List of people A. Dan Macon B. Silvia Ribeiro C. Linda van Bommel D. Julie Young E. Bethany Smith"
+              "textHtml": "Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog. List of people A. Dan Macon B. Silvia Ribeiro C. Linda van Bommel D. Julie Young E. Bethany Smith",
+              "explanation": "Macon warns that ‘too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog’, matching this statement about different training focuses.",
+              "evidence": "too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 32 – 36</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A – E.</span></p><p><span>32. The use of guard dogs may save the lives of both livestock and wild animals.</span><br/>\n<span>33. Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate.</span><br/>\n<span>34. There may be negative results if the use of livestock guard dogs is not sufficiently widespread.</span><br/>\n<span>35. Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled.</span><br/>\n<span>36. Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog.</span></p><p><strong><span>List of people</span></strong></p><p><span>A. Dan Macon</span><br/>\n<span>B. Silvia Ribeiro</span><br/>\n<span>C. Linda van Bommel</span><br/>\n<span>D. Julie Young</span><br/>\n<span>E. Bethany Smith </span></p>",
@@ -447,25 +517,33 @@ const test: PracticeTest = {
               "id": "q37",
               "answer": "Jackals",
               "before": "…………… In addition, it has been suggested that the dogs could have",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph F says ‘the number of jackals killed by dogs and people actually increased’, matching this gap.",
+              "evidence": "the number of jackals killed by dogs and people actually increased"
             },
             {
               "id": "q38",
               "answer": "Diseases",
               "before": "……… which may affect other species, and that they may reduce the amount of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph F says guard dogs ‘have been found to spread diseases to wild animals’, matching this gap.",
+              "evidence": "They have been found to spread diseases to wild animals, including endangered Ethiopian wolves"
             },
             {
               "id": "q39",
               "answer": "Food",
               "before": "…………… available to certain wild animals. On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph F says the dogs ‘may also compete with other carnivores for food’, matching this gap.",
+              "evidence": "They may also compete with other carnivores for food"
             },
             {
               "id": "q40",
               "answer": "Foxes",
               "before": "……………",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph G says ground-nesting birds ‘where foxes would normally raid them’ benefit from guard dogs, matching this final gap.",
+              "evidence": "where foxes would normally raid them"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Unintended ecological effects of using guard dogs</span></strong></p><p><span>In Namibia, livestock guard dogs have been used to protect domestic animals from attacks by cheetahs.</span><br/>\n<span>This has led to a rise in the deaths of other predators, particularly (37) ……………</span><br/>\n<span>In addition, it has been suggested that the dogs could have (38) ……… which may affect other species, and that they may reduce the amount of (39) …………… available to certain wild animals.</span><br/>\n<span>On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as (40) ……………</span></p>",

@@ -52,37 +52,50 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "False",
-              "textHtml": "The smart card was developed by two French inventors in the 1960s"
+              "textHtml": "The smart card was developed by two French inventors in the 1960s",
+              "explanation": "Paragraph 1 says the smart card technology was developed in the mid 1970s, not the 1960s.",
+              "evidence": "The smart card was the brainchild of two French inventors, Roland Moreno and Michel Ugon, who developed the technology in the mid-1970s."
             },
             {
               "id": "q2",
               "answer": "True",
-              "textHtml": "The microchips in smart cards can store information"
+              "textHtml": "The microchips in smart cards can store information",
+              "explanation": "Paragraph 1 says the embedded microchip can store information.",
+              "evidence": "These look and function like the familiar magnetic-stripe credit cards, but they have a microchip embedded inside them that can store information."
             },
             {
               "id": "q3",
               "answer": "Not given",
-              "textHtml": "The European Union wants all its citizens to use smart cards"
+              "textHtml": "The European Union wants all its citizens to use smart cards",
+              "explanation": "Paragraph 1 says the EU adopted the technology as the standard for future credit cards but never says it wants all citizens to use smart cards."
             },
             {
               "id": "q4",
               "answer": "True",
-              "textHtml": "The US Department of Defense has provided smart cards to its employees"
+              "textHtml": "The US Department of Defense has provided smart cards to its employees",
+              "explanation": "Paragraph 3 says the Department of Defense has provided smart cards to its 4.3 million employees.",
+              "evidence": "In the United States, the Department of Defense has provided smart cards to its 4."
             },
             {
               "id": "q5",
               "answer": "Not given",
-              "textHtml": "The US Department of Energy has developed a smart card for its employees"
+              "textHtml": "The US Department of Energy has developed a smart card for its employees",
+              "explanation": "Paragraph 3 says the Department of Energy is only planning to provide smart cards, so whether one has actually been developed is not stated.",
+              "evidence": "In the United States, the Department of Defense has provided smart cards to its 4.3 million employees, and the Department of Energy is planning to do the same."
             },
             {
               "id": "q6",
               "answer": "Treu",
-              "textHtml": "In France, people’s medical records are stored on a smart card"
+              "textHtml": "In France, people’s medical records are stored on a smart card",
+              "explanation": "Paragraph 4 says everyone in France now has a smart card containing a complete medical history. Note the stored answer is misspelt and should read True.",
+              "evidence": "In France, for example, everyone now has a smart card containing a complete medical history, which can be accessed immediately by a doctor or pharmacist."
             },
             {
               "id": "q7",
               "answer": "True",
-              "textHtml": "The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy"
+              "textHtml": "The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy",
+              "explanation": "Paragraph 5 says HIPAA requires health care providers to protect the privacy of patients' medical information.",
+              "evidence": "The Act requires health-care providers to protect the privacy of patients’ medical information and to take measures to protect the security of sensitive information."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 1-7<br/>\n</strong></span><span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE    </strong>              if the statement agrees with the information<br/>\n</span><span><strong>FALSE</strong>                 if the statement contradicts the information<br/>\n</span><span><strong>NOT GIVEN</strong>         if there is no information on this       </span></p><p><span>1. The smart card was developed by two French inventors in the 1960s.<br/>\n</span><span>2. The microchips in smart cards can store information.<br/>\n</span><span>3. The European Union wants all its citizens to use smart cards.<br/>\n</span><span>4. The US Department of Defense has provided smart cards to its employees.<br/>\n</span><span>5. The US Department of Energy has developed a smart card for its employees.<br/>\n</span><span>6. In France, people’s medical records are stored on a smart card.<br/>\n</span><span>7.The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy.</span></p>"
@@ -96,37 +109,49 @@ const test: PracticeTest = {
               "id": "q8",
               "answer": "Medical appointments",
               "before": "…………………. – to store",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 4 says the French card can store medical records, prescriptions and details of medical appointments.",
+              "evidence": "The card can be used to store medical records, prescriptions, and details of medical appointments."
             },
             {
               "id": "q9",
               "answer": "Prescriptions",
               "before": "………………… Use of smart cards in the United States – to improve the security of the US passport card – to provide a",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 4 lists prescriptions among the things the French health card can store.",
+              "evidence": "The card can be used to store medical records, prescriptions, and details of medical appointments."
             },
             {
               "id": "q10",
               "answer": "Unique number",
               "before": "…………………. between the card and a government database Use of smart cards in Hong Kong – to pay for travel on the city’s underground railway system – to pay for travel on",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 6 says the US passport card's chip holds a unique number linking it to a government database.",
+              "evidence": "The card has a microchip embedded in it that contains a unique number linking the card to a government database containing the cardholder’s personal information."
             },
             {
               "id": "q11",
               "answer": "Buses",
               "before": "………………….. ,",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
+              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
             },
             {
               "id": "q12",
               "answer": "Ferries",
               "before": "……………….. and",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
+              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
             },
             {
               "id": "q13",
               "answer": "Trams",
               "before": "……………",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
+              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 8-13<br/>\n</strong></span><span>Complete the notes below. Choose <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.</span></p><p><span><strong>THE SMART CARD</strong></span></p><p><span><strong>Functions of smart cards<br/>\n</strong></span><span>– store information<br/>\n</span><span>– allow the cardholder to access different systems</span></p><p><span><strong>Different uses of smart cards<br/>\n</strong></span><span>– to make small purchases<br/>\n</span><span>– to record phone and ATM transactions<br/>\n</span><span>– as a security pass</span></p><p><span><strong>Use of smart cards in France<br/>\n</strong></span><span>– to provide people with access to their own health records<br/>\n</span><span>– to store medical records and details about (8) ………………….<br/>\n</span><span>– to store (9) …………………</span></p><p><span><strong>Use of smart cards in the United States<br/>\n</strong></span><span>– to improve the security of the US passport card<br/>\n</span><span>– to provide a (10) …………………. between the card and a government database</span></p><p><span><strong>Use of smart cards in Hong Kong<br/>\n</strong></span><span>– to pay for travel on the city’s underground railway system<br/>\n</span><span>– to pay for travel on (11) ………………….. , (12) ……………….. and (13) …………….</span></p>",
@@ -174,27 +199,37 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "A",
-              "textHtml": "a reference to a person who resisted the use of gene therapy on humans"
+              "textHtml": "a reference to a person who resisted the use of gene therapy on humans",
+              "explanation": "Paragraph A says the 1972 authors urged caution before starting human gene therapy studies.",
+              "evidence": "Gene therapy was first conceptualised in 1972, with the authors urging caution before commencing human gene therapy studies."
             },
             {
               "id": "q15",
               "answer": "A",
-              "textHtml": "a reference to the early failure of a gene therapy trial"
+              "textHtml": "a reference to the early failure of a gene therapy trial",
+              "explanation": "Paragraph A says Martin Cline's 1980 attempt at modifying human DNA was unsuccessful.",
+              "evidence": "The first attempt, an unsuccessful one, at modifying human DNA was performed in 1980 by Martin Cline."
             },
             {
               "id": "q16",
               "answer": "C",
-              "textHtml": "a reference to different methods of delivering gene therapy"
+              "textHtml": "a reference to different methods of delivering gene therapy",
+              "explanation": "Paragraph C explains ex vivo and in vivo as the two methods of delivering gene therapy.",
+              "evidence": "Gene therapy may be classified into two types, ex vivo and in vivo, on the basis of the method of delivery of genes."
             },
             {
               "id": "q17",
               "answer": "B",
-              "textHtml": "a reference to the ethical concerns surrounding inheritable gene therapy"
+              "textHtml": "a reference to the ethical concerns surrounding inheritable gene therapy",
+              "explanation": "Paragraph B says germline gene therapy is fraught with many bio-ethical considerations since changes would be heritable.",
+              "evidence": "In some jurisdictions, germline gene therapy is the only feasible option for some diseases; however, this option is fraught with many bio-ethical considerations."
             },
             {
               "id": "q18",
               "answer": "D",
-              "textHtml": "mention of the total recorded attempts to apply gene therapy in clinical research"
+              "textHtml": "mention of the total recorded attempts to apply gene therapy in clinical research",
+              "explanation": "Paragraph D says more than 1,800 gene therapy clinical trials have been conducted since the technique began.",
+              "evidence": "However, more than 1,800 gene therapy clinical trials have been conducted since the technique was first developed."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 14-18</strong></span></p><p><span>Reading passage 2 has five sections, A-E. Which section contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB: You may use any letter more than once</span></p><p><span>14. a reference to a person who resisted the use of gene therapy on humans<br/>\n</span><span>15. a reference to the early failure of a gene therapy trial<br/>\n</span><span>16. a reference to different methods of delivering gene therapy.<br/>\n</span><span>17. a reference to the ethical concerns surrounding inheritable gene therapy.<br/>\n</span><span>18. mention of the total recorded attempts to apply gene therapy in clinical research.</span></p>",
@@ -214,25 +249,33 @@ const test: PracticeTest = {
               "id": "q19",
               "answer": "Somatic",
               "before": "……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says somatic gene therapy targets a patient's own body cells for gene replacement.",
+              "evidence": "Gene therapy may be classified into the two following types: Somatic gene therapy: In somatic gene therapy, the therapeutic genes are transferred into the somatic cells (cells that do not make sperm or eggs) of a patient."
             },
             {
               "id": "q20",
               "answer": "Generations",
               "before": "……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says effects of somatic therapy are not inherited by offspring or later generations.",
+              "evidence": "Any modifications and effects will be restricted to the individual patient only, and will not be inherited by the patient’s offspring or later generations."
             },
             {
               "id": "q21",
               "answer": "Diseases",
               "before": "…………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says germline therapy may be the only option for some diseases despite being banned in most countries.",
+              "evidence": "In some jurisdictions, germline gene therapy is the only feasible option for some diseases; however, this option is fraught with many bio-ethical considerations."
             },
             {
               "id": "q22",
               "answer": "Reinserted",
               "before": "……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C describes ex vivo therapy as altering cells outside the body before they go back into the patient. Note the passage uses the word reinsertion, not the stored form reinserted.",
+              "evidence": "Ex vivo gene therapy involves the transfer of genes in cultured cells and reinsertion of the genetically altered cells back into the patient."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 19-22<br/>\n</strong></span><span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 19-22 on your answer sheet.</span></p><p><span><strong>TYPES OF GENE THERAPY</strong></span><span><strong> </strong></span></p><p><span>Gene therapy can be classified as either somatic or germline. In somatic gene therapy, the (19) ……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future (20) ……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain (21) …………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the (22) ……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body.</span></p>",
@@ -246,22 +289,28 @@ const test: PracticeTest = {
             {
               "id": "q23",
               "answer": "True",
-              "textHtml": "The first gene therapy trial on humans was unsuccessful"
+              "textHtml": "The first gene therapy trial on humans was unsuccessful",
+              "explanation": "Paragraph A says Martin Cline's first attempt at modifying human DNA was unsuccessful.",
+              "evidence": "The first attempt, an unsuccessful one, at modifying human DNA was performed in 1980 by Martin Cline."
             },
             {
               "id": "q24",
               "answer": "Not given",
-              "textHtml": "So far, gene therapy has only been used on adults"
+              "textHtml": "So far, gene therapy has only been used on adults",
+              "explanation": "The passage never states the ages of the patients treated, so whether gene therapy has only been used on adults is not stated."
             },
             {
               "id": "q25",
               "answer": "Not given",
-              "textHtml": "X-SCID is more common in boys than girls"
+              "textHtml": "X-SCID is more common in boys than girls",
+              "explanation": "Paragraph D mentions two children who developed leukaemia after X-SCID treatment but never compares how common the condition is in boys versus girls."
             },
             {
               "id": "q26",
               "answer": "True",
-              "textHtml": "The corrected cells are then returned to the patient"
+              "textHtml": "The corrected cells are then returned to the patient",
+              "explanation": "Paragraph D says the corrected cells are then returned to the patient after being treated outside the body.",
+              "evidence": "The corrected cells are then returned to the patient."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 23-26<br/>\n</strong></span><span>Do the following statements agree with the information given in reading passage? In boxes 23-26 on your answer sheet, write</span></p><p><span><strong>TRUE    </strong>              if the statement agrees with the information<br/>\n</span><span><strong>FALSE</strong>                 if the statement contradicts the information<br/>\n</span><span><strong>NOT GIVEN</strong>         if there is no information on this       </span></p><p><span>23. The first gene therapy trial on humans was unsuccessful.<br/>\n</span><span>24. So far, gene therapy has only been used on adults.<br/>\n</span><span>25. X-SCID is more common in boys than girls.<br/>\n</span><span>26.The corrected cells are then returned to the patient.</span><br/> <br/>\n<br/>\n<br/> </p>"
@@ -317,27 +366,36 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "Yes",
-              "textHtml": "Teachers and students’ personal experiences contribute to the popularity of the learning styles concept"
+              "textHtml": "Teachers and students’ personal experiences contribute to the popularity of the learning styles concept",
+              "explanation": "Paragraph 3 says the idea is popular partly because it reflects the personal experience of teachers and students.",
+              "evidence": "The idea is popular in part because it reflects the intuition of teachers and students."
             },
             {
               "id": "q28",
               "answer": "Not given",
-              "textHtml": "Research into learning styles was popular in the 1970s"
+              "textHtml": "Research into learning styles was popular in the 1970s",
+              "explanation": "Paragraph 3 says the idea was developed in the 1970s but never says research into it was popular then."
             },
             {
               "id": "q29",
               "answer": "No",
-              "textHtml": "Psychologists found evidence for the idea of learning styles as early as 2004"
+              "textHtml": "Psychologists found evidence for the idea of learning styles as early as 2004",
+              "explanation": "Paragraph 4 says a 2004 review found the great majority of studies did not support the theory, the opposite of finding evidence for it.",
+              "evidence": "As early as 2004, a review of the evidence by cognitive scientists found that the great majority of studies did not provide any evidence supporting the idea that matching the material to a student’s particular learning style was helpful."
             },
             {
               "id": "q30",
               "answer": "No",
-              "textHtml": "The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles"
+              "textHtml": "The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles",
+              "explanation": "Paragraph 4 says Willingham's team found most studies showed no evidence for learning styles or actually contradicted the theory.",
+              "evidence": "They found that the vast majority of studies either found no evidence for the theory, or actually contradicted it."
             },
             {
               "id": "q31",
               "answer": "Yes",
-              "textHtml": "Students may learn better when they are taught using methods they are not familiar with"
+              "textHtml": "Students may learn better when they are taught using methods they are not familiar with",
+              "explanation": "Paragraph 8 says students who mix learning methods often learn more effectively than those who stick to one preferred style.",
+              "evidence": "This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 27-31<br/>\n</strong></span><span>Do the following statements agree with the claims of the writer in reading passage? In boxes 27-31 on your answer sheet, write</span></p><p><span><strong>YES       </strong>              if the statement agrees with the views of the writer<br/>\n</span><span><strong>NO</strong>                       if the statement contradicts the views of the writer<br/>\n</span><span><strong>NOT GIVEN</strong>         if it is impossible to say what the writer thinks about this            </span></p><p><span>27. Teachers and students’ personal experiences contribute to the popularity of the learning styles concept.<br/>\n</span><span>28. Research into learning styles was popular in the 1970s.<br/>\n</span><span>29. Psychologists found evidence for the idea of learning styles as early as 2004.<br/>\n</span><span>30. The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles.<br/>\n</span><span>31. Students may learn better when they are taught using methods they are not familiar with.</span></p>"
@@ -350,22 +408,30 @@ const test: PracticeTest = {
             {
               "id": "q32",
               "answer": "E",
-              "textHtml": "………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their"
+              "textHtml": "………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their",
+              "explanation": "Paragraph 5 says some students may not have a style strong enough to affect their learning, matching the word preference in the summary.",
+              "evidence": "One is that some students might not actually have a ‘style’ that is strong enough to affect their learning."
             },
             {
               "id": "q33",
               "answer": "D",
-              "textHtml": "…………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past. The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and"
+              "textHtml": "…………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past. The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and",
+              "explanation": "Paragraph 5 says students may have preferences that simply do not affect their learning.",
+              "evidence": "Another possibility is that students do have preferences about how they learn, but these preferences don’t affect their learning."
             },
             {
               "id": "q34",
               "answer": "C",
-              "textHtml": "…………………. The learning-styles approach is not only unsupported by science, but may actually be"
+              "textHtml": "…………………. The learning-styles approach is not only unsupported by science, but may actually be",
+              "explanation": "Paragraph 6 gives driving a car as an example combining visual, auditory and hands-on learning.",
+              "evidence": "For example, learning to drive a car involves a mix of visual learning (such as watching the instructor), auditory learning (listening to instructions), and hands-on learning (actually driving the car)."
             },
             {
               "id": "q35",
               "answer": "A",
-              "textHtml": "……………. A harmful B ability C hands-on learning D learning E preference F useful"
+              "textHtml": "……………. A harmful B ability C hands-on learning D learning E preference F useful",
+              "explanation": "Paragraph 6 says the learning styles approach may actually be harmful because it leads to less effective teaching.",
+              "evidence": "In a 2009 article in the journal Psychological Science in the Public Interest, psychologists Harold Pashler, Mark McDaniel, Doug Rohrer and Robert Bjork argued that the learning-styles approach is not only unsupported by science, but may actually be harmful, because it leads teachers to teach students in ways that are not very effective."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 32-35<br/>\n</strong></span><span>Complete the summary using the list of words, A-F, below. Write the correct letter, A-F, in boxes 32-35 on your answer sheet.</span></p><p><span><strong>EXPLANATIONS FOR THE FINDINGS</strong></span></p><p><span>One explanation is that some students might not have a strong enough (32) ………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their (33) …………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past.</span></p><p><span>The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and (34) ………………….</span></p><p><span>The learning-styles approach is not only unsupported by science, but may actually be (35) …………….</span></p><p><span><strong>A</strong> harmful<br/>\n</span><span><strong>B</strong> ability<br/>\n</span><span><strong>C</strong> hands-on learning<br/>\n</span><span><strong>D</strong> learning<br/>\n</span><span><strong>E</strong> preference<br/>\n</span><span><strong>F</strong> useful</span></p>",
@@ -387,25 +453,33 @@ const test: PracticeTest = {
               "id": "q36",
               "answer": "Intelligence",
               "before": "…………………. Students who believe that intelligence is",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 7 says learning styles can give students a fixed idea about their level of intelligence.",
+              "evidence": "The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence."
             },
             {
               "id": "q37",
               "answer": "Changeable",
               "before": "………………… tend to do better than other students. Students who have been told that they are",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 7 says students who believe intelligence can change tend to do better than those who think it is fixed. Note the passage says can change rather than the stored word changeable.",
+              "evidence": "For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies."
             },
             {
               "id": "q38",
               "answer": "Visual",
               "before": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 8 says students told they are visual learners might not try as hard at reading or listening tasks.",
+              "evidence": "In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’."
             },
             {
               "id": "q39",
               "answer": "Mix",
               "before": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 8 says students who use a mix of learning methods often learn more effectively.",
+              "evidence": "This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’."
             },
             {
               "id": "q40",
@@ -414,7 +488,9 @@ const test: PracticeTest = {
                 "style"
               ],
               "before": "…………………",
-              "after": ""
+              "after": "",
+              "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style.",
+              "evidence": "They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style."
             }
           ],
           "legendHtml": "<p><span><strong>Questions 36-40</strong></span></p><p><span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 36-40 on your answer sheet.</span></p><p><span>The idea of learning styles can give students the wrong idea about their level of (36) …………………. Students who believe that intelligence is (37) ………………… tend to do better than other students.</span></p><p><span>Students who have been told that they are (38) …………………… learners might not try so hard to learn by reading or listening.</span></p><p><span>Research has shown that students who use a (39) ………………….. of learning methods often learn more effectively.</span></p><p><span>In a 2018 study, 78 percent of students said that they had a particular (40) …………………</span></p>",

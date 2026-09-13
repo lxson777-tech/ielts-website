@@ -65,43 +65,57 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Mining",
               "before": "………………… and transportation businesses • their upbringing gave them a sense of social responsibility • their",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says their grandfather amassed his fortune ‘in the shipping and mining industries’, giving the word for this gap.",
+              "evidence": "a fortune in the shipping and mining industries"
             },
             {
               "id": "q2",
               "answer": "Education",
               "before": "…………… was designed to give them an interest in activities such as collecting art • their governess took them on trips to art galleries • they took lengthy",
-              "after": ""
+              "after": "",
+              "explanation": "The third paragraph says ‘the sisters’ education was rigorously geared toward such pursuits’, matching this gap.",
+              "evidence": "the sisters’ education was rigorously geared toward such pursuits"
             },
             {
               "id": "q3",
               "answer": "Notes",
               "before": "………………. about the things they saw in art galleries The sisters as art collectors • their",
-              "after": ""
+              "after": "",
+              "explanation": "The third paragraph says they went ‘making extensive notes on the collections there’, matching this gap.",
+              "evidence": "making extensive notes on the collections there"
             },
             {
               "id": "q4",
               "answer": "Journal",
               "before": "………………. showed they liked Old Master paintings, but they were expensive to buy • their early purchases were safe, popular paintings • the first Impressionist paintings they bought showed places in",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says ‘the sisters’ journals reveal their preference for Old Master paintings’, matching this gap.",
+              "evidence": "The sisters’ journals reveal their preference for Old Master paintings"
             },
             {
               "id": "q5",
               "answer": "Venice",
               "before": "…………… Impact of First World War • they helped bring artists from Belgium to Wales • they worked in a",
-              "after": ""
+              "after": "",
+              "explanation": "The sixth paragraph says their first Impressionist purchases ‘were scenes of Venice by the French artist Claude Monet’, matching this gap.",
+              "evidence": "their first purchases of Impressionist art, made in October 1912, were scenes of Venice by the French artist Claude Monet"
             },
             {
               "id": "q6",
               "answer": "Canteen",
               "before": "…………… for soldiers in France Opinions about the sisters as art collectors • were not considered typical collectors – they lived in isolation in the countryside and did not have any",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says both sisters ‘decided to volunteer at a canteen for troops at Troyes’, matching this gap.",
+              "evidence": "both sisters decided to volunteer at a canteen for troops at Troyes, in northern France"
             },
             {
               "id": "q7",
               "answer": "Friends",
               "before": "………………….. who were artists",
-              "after": ""
+              "after": "",
+              "explanation": "The ninth paragraph notes they ‘didn’t make friends with artists or gallery owners’, matching this final gap.",
+              "evidence": "they didn’t make friends with artists or gallery owners"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Gwendoline and Margaret Davies</span></strong><br/>\n<strong><span>Family and early life</span></strong><br/>\n<span>• their grandfather’s wealth came from (1) ………………… and transportation businesses</span><br/>\n<span>• their upbringing gave them a sense of social responsibility</span><br/>\n<span>• their (2) …………… was designed to give them an interest in activities such as collecting art</span><br/>\n<span>• their governess took them on trips to art galleries</span><br/>\n<span>• they took lengthy (3) ………………. about the things they saw in art galleries</span></p><p><strong><span>The sisters as art collectors</span></strong><br/>\n<span>• their (4) ………………. showed they liked Old Master paintings, but they were expensive to buy</span><br/>\n<span>• their early purchases were safe, popular paintings</span><br/>\n<span>• the first Impressionist paintings they bought showed places in (5) ……………</span></p><p><strong><span>Impact of First World War</span></strong><br/>\n<span>• they helped bring artists from Belgium to Wales</span><br/>\n<span>• they worked in a (6) …………… for soldiers in France</span></p><p><strong><span>Opinions about the sisters as art collectors</span></strong><br/>\n<span>• were not considered typical collectors – they lived in isolation in the countryside and did not have any (7) ………………….. who were artists</span></p>",
@@ -115,32 +129,42 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "True",
-              "textHtml": "The Davies sisters’ childhood influenced the way they decided to use their wealth"
+              "textHtml": "The Davies sisters’ childhood influenced the way they decided to use their wealth",
+              "explanation": "The second paragraph says their religious upbringing ‘gave them a deep sense of social responsibility and they chose to use their inheritance for cultural and philanthropic purposes’, confirming the statement.",
+              "evidence": "Their religious upbringing in rural Wales gave them a deep sense of social responsibility and they chose to use their inheritance for cultural and philanthropic purposes"
             },
             {
               "id": "q9",
               "answer": "Not given",
-              "textHtml": "The Jean-Baptiste-Camille Corot paintings in the Davies sisters’ collection were purchased from a gallery in France"
+              "textHtml": "The Jean-Baptiste-Camille Corot paintings in the Davies sisters’ collection were purchased from a gallery in France",
+              "explanation": "The passage mentions their early Corot purchases but never says where those paintings were bought, so this is not given."
             },
             {
               "id": "q10",
               "answer": "False",
-              "textHtml": "Hugh Blaker opposed the Davies sisters’ decision to buy art by French Impressionists"
+              "textHtml": "Hugh Blaker opposed the Davies sisters’ decision to buy art by French Impressionists",
+              "explanation": "The sixth paragraph says Hugh Blaker, ‘as a champion of contemporary French art had a hand in the decision’ to buy Impressionist works, showing he supported it rather than opposed it, contradicting the statement.",
+              "evidence": "Hugh Blaker, as a champion of contemporary French art had a hand in the decision"
             },
             {
               "id": "q11",
               "answer": "Not given",
-              "textHtml": "The exhibition of Cezanne paintings at the Bath gallery was very popular with the public"
+              "textHtml": "The exhibition of Cezanne paintings at the Bath gallery was very popular with the public",
+              "explanation": "The passage says the Cezanne paintings ‘became the first works by Cezanne to go on display in a public gallery in Britain’, but it never mentions how popular the exhibition was with the public, so this is not given."
             },
             {
               "id": "q12",
               "answer": "True",
-              "textHtml": "The impact of the First World War encouraged Gwendoline to reconsider her interest in collecting art"
+              "textHtml": "The impact of the First World War encouraged Gwendoline to reconsider her interest in collecting art",
+              "explanation": "The tenth paragraph says Gwendoline ‘felt increasingly uncomfortable buying art works when faced with the poverty and social upheaval created by the First World War’, confirming the statement.",
+              "evidence": "Gwendoline felt increasingly uncomfortable buying art works when faced with the poverty and social upheaval created by the First World War"
             },
             {
               "id": "q13",
               "answer": "True",
-              "textHtml": "The Davies sisters bought French Impressionist art during a period when very few people were doing so"
+              "textHtml": "The Davies sisters bought French Impressionist art during a period when very few people were doing so",
+              "explanation": "The final paragraph says the sisters collected Impressionist paintings ‘at a time when such art was routinely ignored by individuals and institutions alike’, confirming the statement.",
+              "evidence": "The sisters collected French Impressionist paintings at a time when such art was routinely ignored by individuals and institutions alike"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                               if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                   if there is no information on this</span></p><p><span>8. The Davies sisters’ childhood influenced the way they decided to use their wealth.</span><br/>\n<span>9. The Jean-Baptiste-Camille Corot paintings in the Davies sisters’ collection were purchased from a gallery in France.</span><br/>\n<span>10. Hugh Blaker opposed the Davies sisters’ decision to buy art by French Impressionists.</span><br/>\n<span>11. The exhibition of Cezanne paintings at the Bath gallery was very popular with the public.</span><br/>\n<span>12. The impact of the First World War encouraged Gwendoline to reconsider her interest in collecting art.</span><br/>\n<span>13. The Davies sisters bought French Impressionist art during a period when very few people were doing so.</span></p>"
@@ -193,22 +217,30 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "C",
-              "textHtml": "examples of strategies to decrease the noise that the public are exposed to"
+              "textHtml": "examples of strategies to decrease the noise that the public are exposed to",
+              "explanation": "Paragraph C describes London’s noise-reducing buses, roads and aircraft controls, and other cities’ road coatings and bans, matching strategies to cut noise exposure.",
+              "evidence": "several cities have been working to turn the volume down"
             },
             {
               "id": "q15",
               "answer": "B",
-              "textHtml": "data indicating the extent of the problem of excessive noise"
+              "textHtml": "data indicating the extent of the problem of excessive noise",
+              "explanation": "Paragraph B gives the figure that ‘at least 1 in 5 people’ in Europe are ‘consistently exposed to levels considered harmful to health’, matching data on the scale of the problem.",
+              "evidence": "at least 1 in 5 people consistently exposed to levels considered harmful to health"
             },
             {
               "id": "q16",
               "answer": "A",
-              "textHtml": "a description of physiological changes in our bodies when we hear sudden noises"
+              "textHtml": "a description of physiological changes in our bodies when we hear sudden noises",
+              "explanation": "Paragraph A describes how ‘blood pressure goes up, muscles tense and glands release hormones’ in response to noise, matching physiological changes on hearing sudden noise.",
+              "evidence": "Our blood pressure goes up, muscles tense and glands release hormones that prepare us for fight or flight"
             },
             {
               "id": "q17",
               "answer": "G",
-              "textHtml": "evidence that a relatively quiet environment can be more beneficial than a totally silent one"
+              "textHtml": "evidence that a relatively quiet environment can be more beneficial than a totally silent one",
+              "explanation": "Paragraph G reports participants felt ‘more relaxation and less boredom’ in a quiet garden than in ‘a completely silent room’, matching evidence that partial quiet can beat total silence.",
+              "evidence": "participants reported more relaxation and less boredom when they sat quietly in an outdoor garden compared with a completely silent room"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-17</span></strong><br/>\n<span>Reading passage 2 has seven sections, A-G. Which section contains the following information?</span><br/>\n<span>Write the correct letter, A-G, in boxes 14-17 on your answer sheet.</span></p><p><span>14. examples of strategies to decrease the noise that the public are exposed to</span><br/>\n<span>15. data indicating the extent of the problem of excessive noise</span><br/>\n<span>16. a description of physiological changes in our bodies when we hear sudden noises</span><br/>\n<span>17. evidence that a relatively quiet environment can be more beneficial than a totally silent one</span></p>",
@@ -231,25 +263,33 @@ const test: PracticeTest = {
               "id": "q18",
               "answer": "Breath",
               "before": "………………, which helps them relax and enables them to meditate. Feinstein and his colleagues conducted an experiment in which 50 people, who were all suffering from stress and related issues, were given a",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says ‘it is the ability to focus on the breath that helps people reach a relaxed or meditative state’, matching this gap.",
+              "evidence": "it is the ability to focus on the breath that helps people reach a relaxed or meditative state"
             },
             {
               "id": "q19",
               "answer": "Questionnaire",
               "before": "………………… to complete before and after using a flotation tank. Participants reported a reduction in their symptoms after an hour in the tank, together with signs of relaxation and improved general",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says participants ‘answer a questionnaire prior to and following a flotation session’, matching this gap.",
+              "evidence": "had them answer a questionnaire prior to and following a flotation session"
             },
             {
               "id": "q20",
               "answer": "Wellbeing",
               "before": "……………….. In another experiment, the researchers had 48 people spend periods of 90 minutes either lying back in a chair or floating in a tank. Brain scans then revealed that those people who had been in a tank had decreased activity in parts of the brain associated with",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E reports ‘an increase in feelings of relaxation and overall wellbeing’, matching this gap.",
+              "evidence": "an increase in feelings of relaxation and overall wellbeing"
             },
             {
               "id": "q21",
               "answer": "Depression",
               "before": "……………",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says float sessions decreased activity in ‘a collection of brain regions commonly linked with depression’, matching this final gap.",
+              "evidence": "a collection of brain regions commonly linked with depression"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 18-21</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 18-21 on your answer sheet</span></p><p><strong><span>Flotation Tanks</span></strong></p><p><span>According to Justin Feinstein, flotation tanks allow people to concentrate on their own (18) ………………, which helps them relax and enables them to meditate.</span></p><p><span>Feinstein and his colleagues conducted an experiment in which 50 people, who were all suffering from stress and related issues, were given a (19) ………………… to complete before and after using a flotation tank. Participants reported a reduction in their symptoms after an hour in the tank, together with signs of relaxation and improved general (20) ………………..</span></p><p><span>In another experiment, the researchers had 48 people spend periods of 90 minutes either lying back in a chair or floating in a tank. Brain scans then revealed that those people who had been in a tank had decreased activity in parts of the brain associated with (21) ……………..</span></p>",
@@ -263,27 +303,37 @@ const test: PracticeTest = {
             {
               "id": "q22",
               "answer": "C",
-              "textHtml": "It is unpleasant and upsetting for people to be placed in a silent environment against their will"
+              "textHtml": "It is unpleasant and upsetting for people to be placed in a silent environment against their will",
+              "explanation": "Ben-Soussan says ‘when people do not want silence, it can be very distressing’, matching this statement about unwanted silence.",
+              "evidence": "When people do not want silence, it can be very distressing"
             },
             {
               "id": "q23",
               "answer": "A",
-              "textHtml": "The trend towards creating quieter urban locations is likely to increase in the coming years"
+              "textHtml": "The trend towards creating quieter urban locations is likely to increase in the coming years",
+              "explanation": "Antonio says of quieter cities, ‘I expect we will see much more of this in the future’, matching this statement about a growing trend.",
+              "evidence": "I expect we will see much more of this in the future"
             },
             {
               "id": "q24",
               "answer": "B",
-              "textHtml": "When our body’s senses are completely deprived of input, our minds compensate for this by creating the illusion of images and sounds"
+              "textHtml": "When our body’s senses are completely deprived of input, our minds compensate for this by creating the illusion of images and sounds",
+              "explanation": "Feinstein explains that without input ‘the brain tries to fill the void to make sense of this dark and silent world’, matching this statement about the mind compensating for sensory deprivation.",
+              "evidence": "the brain tries to fill the void to make sense of this dark and silent world"
             },
             {
               "id": "q25",
               "answer": "D",
-              "textHtml": "Even a short amount of silent time can have a positive impact"
+              "textHtml": "Even a short amount of silent time can have a positive impact",
+              "explanation": "Pfeifer says ‘it is likely better to have more frequency of silence for a few minutes at a time’, matching this statement about short bursts of silence helping.",
+              "evidence": "It is likely better to have more frequency of silence for a few minutes at a time than a longer period of silence only once a week"
             },
             {
               "id": "q26",
               "answer": "C",
-              "textHtml": "External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events. List of People A Nick Antonio B Justin Feinstein C Tal Dotan Ben-Soussan D Eric Pfeifer"
+              "textHtml": "External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events. List of People A Nick Antonio B Justin Feinstein C Tal Dotan Ben-Soussan D Eric Pfeifer",
+              "explanation": "Ben-Soussan says quietness ‘allows us to be more aware of what is happening around us and what the situation may require from us’, matching this statement.",
+              "evidence": "This allows us to be more aware of what is happening around us and what the situation may require from us so we can provide [a more] adequate response"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 22-26</span></strong><br/>\n<span>Look at the following statements and list of people below. Match each statement with correct person A, B, C or D. NB you may use any letter more than once.</span></p><p><span>22. It is unpleasant and upsetting for people to be placed in a silent environment against their will.</span><br/>\n<span>23. The trend towards creating quieter urban locations is likely to increase in the coming years.</span><br/>\n<span>24. When our body’s senses are completely deprived of input, our minds compensate for this by creating the illusion of images and sounds.</span><br/>\n<span>25. Even a short amount of silent time can have a positive impact.</span><br/>\n<span>26. External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events.</span></p><p><strong><span>List of People</span></strong><br/>\n<span><strong>A</strong> Nick Antonio</span><br/>\n<span><strong>B</strong> Justin Feinstein</span><br/>\n<span><strong>C</strong> Tal Dotan Ben-Soussan</span><br/>\n<span><strong>D</strong> Eric Pfeifer</span></p>",
@@ -345,7 +395,9 @@ const test: PracticeTest = {
                 "Beet sugar has been made more internationally competitive",
                 "Cane sugar is thought to be of superior quality to beet sugar",
                 "New locations for cultivating sugar have increased production"
-              ]
+              ],
+              "explanation": "The first paragraph says beet sugar has been ‘massively subsidised and sold at artificially low prices on world markets’, matching option B, that it has become more internationally competitive.",
+              "evidence": "massively subsidised and sold at artificially low prices on world markets"
             },
             {
               "id": "q28",
@@ -356,7 +408,9 @@ const test: PracticeTest = {
                 "how developments in agriculture affected trade",
                 "the increased demand for sugar over the years",
                 "the growing support for ethical methods of cultivation"
-              ]
+              ],
+              "explanation": "The second paragraph traces how Britain’s sugar sources shifted from colonial cane, to cane from Cuba and Brazil, to European and then home-grown beet sugar, matching option A, how sources changed over time.",
+              "evidence": "Towards the end of the 19th century, the British started to import beet sugar from continental Europe"
             },
             {
               "id": "q29",
@@ -367,7 +421,9 @@ const test: PracticeTest = {
                 "explaining why the use of sugar plantations declined",
                 "addressing a misconception about the growing of sugar cane",
                 "evaluating different approaches to the cultivation of sugar cane"
-              ]
+              ],
+              "explanation": "The third paragraph opens ‘contrary to popular belief, cane sugar production was never just restricted to large… plantations’, matching option C, addressing a misconception.",
+              "evidence": "Contrary to popular belief, cane sugar production was never just restricted to large, dedicated plantations owned by rich men"
             },
             {
               "id": "q30",
@@ -378,7 +434,9 @@ const test: PracticeTest = {
                 "Economic pressure is needed to control sugar production",
                 "Conditions for workers in sugar production should be improved",
                 "Intensive marketing of sugar has had disastrous consequences"
-              ]
+              ],
+              "explanation": "The final paragraph says Bosma shows ‘we could always have done without sugar’, matching option A, that sugar is a harmful and unnecessary product.",
+              "evidence": "He shows that we could always have done without sugar and that today we have many alternative sources of sweetness"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>27. What does the reviewer suggest about the cultivation and trading of sugar in the first paragraph?</span><br/>\n<span><strong>A</strong> Sugar has played a major role in international relations.</span><br/>\n<span><strong>B</strong> Beet sugar has been made more internationally competitive.</span><br/>\n<span><strong>C</strong> Cane sugar is thought to be of superior quality to beet sugar.</span><br/>\n<span><strong>D</strong> New locations for cultivating sugar have increased production.</span></p><p><span>28. In the second paragraph, when discussing the sugar market in Britain, the reviewer stresses</span><br/>\n<span><strong>A</strong> how the sources used changed over time.</span><br/>\n<span><strong>B</strong> how developments in agriculture affected trade.</span><br/>\n<span><strong>C</strong> the increased demand for sugar over the years.</span><br/>\n<span><strong>D</strong> the growing support for ethical methods of cultivation.</span></p><p><span>29. What is the reviewer doing in the third paragraph?</span><br/>\n<span><strong>A</strong> describing an efficient approach to sugar cultivation</span><br/>\n<span><strong>B</strong> explaining why the use of sugar plantations declined</span><br/>\n<span><strong>C</strong> addressing a misconception about the growing of sugar cane</span><br/>\n<span><strong>D</strong> evaluating different approaches to the cultivation of sugar cane</span></p><p><span>30. In the final paragraph, what does the reviewer suggest is the overall message of Bosma’s book?</span><br/>\n<span><strong>A</strong> Sugar is a harmful and unnecessary product.</span><br/>\n<span><strong>B</strong> Economic pressure is needed to control sugar production.</span><br/>\n<span><strong>C</strong> Conditions for workers in sugar production should be improved.</span><br/>\n<span><strong>D</strong> Intensive marketing of sugar has had disastrous consequences.</span></p>"
@@ -391,32 +449,44 @@ const test: PracticeTest = {
             {
               "id": "q31",
               "answer": "H",
-              "textHtml": "……………… However, in other parts of the world such as South Asia and Latin America,"
+              "textHtml": "……………… However, in other parts of the world such as South Asia and Latin America,",
+              "explanation": "The passage says ‘German beet fields employed Polish workers; Mexicans and many others… were vital to US sugar production’, matching option H, ‘migrant workers’.",
+              "evidence": "German beet fields employed Polish workers; Mexicans and many others, including Sicilians, were vital to US sugar production"
             },
             {
               "id": "q32",
               "answer": "E",
-              "textHtml": "………………… continued. Sugar production has also involved"
+              "textHtml": "………………… continued. Sugar production has also involved",
+              "explanation": "The passage says ‘traditional methods on small farms… dominated in South Asia and Latin America’, matching option E, ‘small scale cultivation’.",
+              "evidence": "the continuity of the use of traditional methods on small farms. In the mid 20th-century, this type of sugar production dominated in South Asia and Latin America"
             },
             {
               "id": "q33",
               "answer": "I",
-              "textHtml": "…………….. who were eager to protect their markets. In countries such as Cuba the sugar industry therefore had a major influence on"
+              "textHtml": "…………….. who were eager to protect their markets. In countries such as Cuba the sugar industry therefore had a major influence on",
+              "explanation": "The passage says ‘a powerful sugar bourgeoisie played a major role in politics’, matching option I, ‘powerful individuals and businesses’.",
+              "evidence": "a powerful sugar bourgeoisie played a major role in politics"
             },
             {
               "id": "q34",
               "answer": "A",
-              "textHtml": "……………… To support the interests of sugar producers,"
+              "textHtml": "……………… To support the interests of sugar producers,",
+              "explanation": "The passage says their interests ‘were consequently protected by trade barriers and subsidies’, implying influence over government policy, matching option A, ‘national governments’.",
+              "evidence": "their interests were consequently protected by trade barriers and subsidies"
             },
             {
               "id": "q35",
               "answer": "G",
-              "textHtml": "……………… were established. As a result of this,"
+              "textHtml": "……………… were established. As a result of this,",
+              "explanation": "The same sentence about ‘trade barriers and subsidies’ describes financial protections put in place for producers, matching option G, ‘financial controls’.",
+              "evidence": "their interests were consequently protected by trade barriers and subsidies"
             },
             {
               "id": "q36",
               "answer": "C",
-              "textHtml": "…………….. were penalised. A national governments B agricultural developments C less wealthy nations D untrained worker E small scale cultivation F outdated methods G financial controls H migrant workers I powerful individuals and businesses"
+              "textHtml": "…………….. were penalised. A national governments B agricultural developments C less wealthy nations D untrained worker E small scale cultivation F outdated methods G financial controls H migrant workers I powerful individuals and businesses",
+              "explanation": "The passage says ‘it was inevitably the poor countries which came off worse’, matching option C, ‘less wealthy nations’.",
+              "evidence": "it was inevitably the poor countries which came off worse"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 31-36</span></strong><br/>\n<span>Complete the summary using the list of words, A-l, below. Write the correct letter, A-l, in boxes 31-36 on your answer sheet.</span></p><p><strong><span>Sugar cultivation and production</span></strong></p><p><span>The book The World of Sugar points out the similarities in the way that sugar was cultivated around the world. In the big industries in both Germany and the US, sugar farming depended on (31) ……………… However, in other parts of the world such as South Asia and Latin America, (32) ………………… continued.</span></p><p><span>Sugar production has also involved (33) …………….. who were eager to protect their markets. In countries such as Cuba the sugar industry therefore had a major influence on (34) ………………</span></p><p><span>To support the interests of sugar producers, (35) ……………… were established. As a result of this, (36) …………….. were penalised.</span></p><p><span><strong>A</strong> national governments</span><br/>\n<span><strong>B</strong> agricultural developments</span><br/>\n<span><strong>C</strong> less wealthy nations</span><br/>\n<span><strong>D</strong> untrained worker</span><br/>\n<span><strong>E</strong> small scale cultivation</span><br/>\n<span><strong>F</strong> outdated methods</span><br/>\n<span><strong>G</strong> financial controls</span><br/>\n<span><strong>H</strong> migrant workers</span><br/>\n<span><strong>I</strong> powerful individuals and businesses</span></p>",
@@ -440,22 +510,29 @@ const test: PracticeTest = {
             {
               "id": "q37",
               "answer": "Yes",
-              "textHtml": "Sugar has now become available in large quantities due to a range of agricultural developments"
+              "textHtml": "Sugar has now become available in large quantities due to a range of agricultural developments",
+              "explanation": "The seventh paragraph says ‘new techniques, varieties, fertilisers, irrigation systems and much more have turned… sugar into a ubiquitous chemical’, confirming the statement.",
+              "evidence": "new techniques, varieties, fertilisers, irrigation systems and much more have turned gleaming white sugar into a ubiquitous chemical"
             },
             {
               "id": "q38",
               "answer": "Not given",
-              "textHtml": "Advertisers initially marketed sugar as a luxury product"
+              "textHtml": "Advertisers initially marketed sugar as a luxury product",
+              "explanation": "The passage says sugar was ‘once regarded as a luxury’ before being promoted as an energy source, but it never says advertisers specifically marketed it that way, so this is not given."
             },
             {
               "id": "q39",
               "answer": "No",
-              "textHtml": "The invention of high-fructose corn syrup was a positive development"
+              "textHtml": "The invention of high-fructose corn syrup was a positive development",
+              "explanation": "The passage says high-fructose corn syrup ‘is regarded as a leading cause of obesity’, contradicting the claim that its invention was a positive development.",
+              "evidence": "is regarded as a leading cause of obesity"
             },
             {
               "id": "q40",
               "answer": "Yes",
-              "textHtml": "High-fructose corn syrup is an ingredient in many processed foods"
+              "textHtml": "High-fructose corn syrup is an ingredient in many processed foods",
+              "explanation": "The passage says high-fructose corn syrup has been ‘adopted in the making of soft drinks and a large number of processed foods’, confirming the statement.",
+              "evidence": "having been adopted in the making of soft drinks and a large number of processed foods"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Do the following statements agree with the views of the writer in reading passage? In boxes 37-40 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                      if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                       if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                     if it is impossible to say what the writer thinks about this</span></p><p><span>37. Sugar has now become available in large quantities due to a range of agricultural developments.</span><br/>\n<span>38. Advertisers initially marketed sugar as a luxury product.</span><br/>\n<span>39. The invention of high-fructose corn syrup was a positive development.</span><br/>\n<span>40. High-fructose corn syrup is an ingredient in many processed foods.</span></p>"

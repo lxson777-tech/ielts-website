@@ -61,32 +61,43 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "No",
-              "textHtml": "Frogwatch members need a basic level of scientific training"
+              "textHtml": "Frogwatch members need a basic level of scientific training",
+              "explanation": "The passage says the network lets 'ordinary untrained members of the community' report on frogs, contradicting the idea that basic training is required.",
+              "evidence": "ordinary untrained members of the community"
             },
             {
               "id": "q2",
               "answer": "Not given",
-              "textHtml": "All Frogwatch members live in Western Australia"
+              "textHtml": "All Frogwatch members live in Western Australia",
+              "explanation": "The passage describes a nationwide fungus problem and a national network, but never states that every member lives in Western Australia."
             },
             {
               "id": "q3",
               "answer": "No",
-              "textHtml": "Frogwatch has proved that frogs are disappearing because of a fungus"
+              "textHtml": "Frogwatch has proved that frogs are disappearing because of a fungus",
+              "explanation": "The passage says research into the fungus is 'not yet complete' and Roberts argues 'other things... might have precipitated the deaths', so no proof exists yet.",
+              "evidence": "research is not yet complete"
             },
             {
               "id": "q4",
               "answer": "No",
-              "textHtml": "Scientists in WA have examined about two thousand frogs collected by Frogwatch"
+              "textHtml": "Scientists in WA have examined about two thousand frogs collected by Frogwatch",
+              "explanation": "The passage says of the 2,000 frogs examined, 'half from the museum's existing collection', so not all came from Frogwatch members as the statement implies.",
+              "evidence": "half from the museum's existing collection"
             },
             {
               "id": "q5",
               "answer": "Yes",
-              "textHtml": "The frog fungus disease has been in Western Australia for more than ten years"
+              "textHtml": "The frog fungus disease has been in Western Australia for more than ten years",
+              "explanation": "Tests 'now suggest it has been there since the late 1980s', which is well over ten years before the article, matching the claim.",
+              "evidence": "it has been there since the late 1980s"
             },
             {
               "id": "q6",
               "answer": "Yes",
-              "textHtml": "New species of frogs have been found in Western Australia recently"
+              "textHtml": "New species of frogs have been found in Western Australia recently",
+              "explanation": "Roberts notes that in Western Australia, unlike other states, 'species are still being discovered there', confirming new finds.",
+              "evidence": "species are still being discovered there"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-6</span></strong><br/>\n<span>Do the following statements reflect the claims of the writer of the passage? Write</span></p><p><span><strong>YES</strong>                             if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                               if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>           if it is impossible to say what the writer thinks about this</span></p><p><span>1. Frogwatch members need a basic level of scientific training.</span><br/>\n<span>2. All Frogwatch members live in Western Australia.</span><br/>\n<span>3. Frogwatch has proved that frogs are disappearing because of a fungus.</span><br/>\n<span>4. Scientists in WA have examined about two thousand frogs collected by Frogwatch.</span><br/>\n<span>5. The frog fungus disease has been in Western Australia for more than ten years.</span><br/>\n<span>6. New species of frogs have been found in Western Australia recently.</span></p>"
@@ -99,27 +110,37 @@ const test: PracticeTest = {
             {
               "id": "q7",
               "answer": "B",
-              "textHtml": "Although the involvement of large numbers of people is encouraging, this does not guarantee scientifically valid data"
+              "textHtml": "Although the involvement of large numbers of people is encouraging, this does not guarantee scientifically valid data",
+              "explanation": "Roberts warns that public enthusiasm 'does not amount to sound science' and that giving reports credibility 'may not be valid scientifically'.",
+              "evidence": "may not be valid scientifically"
             },
             {
               "id": "q8",
               "answer": "A",
-              "textHtml": "The development of frog-friendly backyards will help to conserve frog species"
+              "textHtml": "The development of frog-friendly backyards will help to conserve frog species",
+              "explanation": "Aplin argues that 'increasing the number of frog-friendly habitats is important' for species survival.",
+              "evidence": "increasing the number of frog-friendly habitats is important"
             },
             {
               "id": "q9",
               "answer": "A",
-              "textHtml": "Although it is possible that frogs will adapt to fungal and other problems in the long term, we should take precautions in case this does not occur"
+              "textHtml": "Although it is possible that frogs will adapt to fungal and other problems in the long term, we should take precautions in case this does not occur",
+              "explanation": "Aplin says they should 'use the precautionary principle' even though frogs may eventually co-evolve with the fungus naturally.",
+              "evidence": "use the precautionary principle"
             },
             {
               "id": "q10",
               "answer": "B",
-              "textHtml": "As there may be many other explanations for recent frog deaths, it is not worth spending a great deal of time and money studying this fungus"
+              "textHtml": "As there may be many other explanations for recent frog deaths, it is not worth spending a great deal of time and money studying this fungus",
+              "explanation": "Roberts questions the value of acting on the fungus, saying 'it may not be worth the cost and effort of doing anything about it'.",
+              "evidence": "may not be worth the cost and effort of doing anything about it"
             },
             {
               "id": "q11",
               "answer": "B",
-              "textHtml": "Because of the unique geography of Western Australia,most frog species in this State are not in danger of extinction"
+              "textHtml": "Because of the unique geography of Western Australia,most frog species in this State are not in danger of extinction",
+              "explanation": "Roberts observes that, unlike other states, frog 'disappearances... are not occurring in Western Australia' because of its distinct geography.",
+              "evidence": "are not occurring in Western Australia"
             },
             {
               "id": "q12",
@@ -127,7 +148,9 @@ const test: PracticeTest = {
                 "A",
                 "C"
               ],
-              "textHtml": "Frogwatch has greater potential for frog observation than is possible by the scientific community"
+              "textHtml": "Frogwatch has greater potential for frog observation than is possible by the scientific community",
+              "explanation": "Speare's quote says there are 'a lot of eyes out there... beyond the power of any biologist to collect', while Aplin set up the whole network for that purpose.",
+              "evidence": "beyond the power of any biologist to collect"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 7-12</span></strong><br/>\n<span>The reading passage describes the opinions of Dr, Ken Aplin, Dr. Dale Roberts and Dr. Rick Speare in relation to strategies for frog conservation. Match one of the researchers A-C to each of the statements below. There may be more than one correct answer.</span></p><p><span>Write:</span></p><p><span>A – for Dr. Aplin</span></p><p><span>B – for Dr. Roberts</span></p><p><span>C – for Dr. Speare</span></p><p><span>7. Although the involvement of large numbers of people is encouraging, this does not guarantee scientifically valid data.</span><br/>\n<span>8. The development of frog-friendly backyards will help to conserve frog species.</span><br/>\n<span>9. Although it is possible that frogs will adapt to fungal and other problems in the long term, we should take precautions in case this does not occur.</span><br/>\n<span>10. As there may be many other explanations for recent frog deaths, it is not worth spending a great deal of time and money studying this fungus.</span><br/>\n<span>11. Because of the unique geography of Western Australia,most frog species in this State are not in danger of extinction.</span><br/>\n<span>12. Frogwatch has greater potential for frog observation than is possible by the scientific community.</span></p>",
@@ -146,7 +169,9 @@ const test: PracticeTest = {
               "id": "q13",
               "answer": "B",
               "before": "The main purpose of Frogwatch is . A for people to collect and deliver dead or dying frogs to scientists. B for people to observe and collect information about frog populations for scientists. C for people to allow scientists onto their private land to look at frog habitats. D for people to set up ponds in their gardens as habitat for frogs",
-              "after": ""
+              "after": "",
+              "explanation": "The opening paragraph describes the plan for members to 'observe the numbers and kinds of frogs' and 'report this information to the museum', matching B.",
+              "evidence": "report this information to the museum"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 13</span></strong><br/>\n<span>Write the appropriate letter A-D.</span></p><p><span>13. The main purpose of Frogwatch is .</span><br/>\n<span><strong>A</strong> for people to collect and deliver dead or dying frogs to scientists.</span><br/>\n<span><strong>B</strong> for people to observe and collect information about frog populations for scientists.</span><br/>\n<span><strong>C</strong> for people to allow scientists onto their private land to look at frog habitats.</span><br/>\n<span><strong>D</strong> for people to set up ponds in their gardens as habitat for frogs.</span></p>"
@@ -196,27 +221,37 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "iii",
-              "textHtml": "Section B"
+              "textHtml": "Section B",
+              "explanation": "Section B describes Esdaile using hypnotism 'instead of anaesthetic in over 200 major surgical operations', an early medical experiment, matching iii.",
+              "evidence": "over 200 major surgical operations"
             },
             {
               "id": "q15",
               "answer": "ii",
-              "textHtml": "Section C"
+              "textHtml": "Section C",
+              "explanation": "Section C says hypnotised people 'can talk, write, and walk about' and remain aware, showing their behaviour is essentially normal, matching ii.",
+              "evidence": "can talk, write, and walk about"
             },
             {
               "id": "q16",
               "answer": "vi",
-              "textHtml": "Section D"
+              "textHtml": "Section D",
+              "explanation": "Section D describes the induction method, 'a series of simple suggestions repeated continuously in the same tone of voice', matching vi, how to hypnotise.",
+              "evidence": "a series of simple suggestions repeated continuously"
             },
             {
               "id": "q17",
               "answer": "vii",
-              "textHtml": "Section E"
+              "textHtml": "Section E",
+              "explanation": "Section E explains that hypnotised 'subjects can resist suggestions' and keep their moral judgement, so the section is about free will, matching vii.",
+              "evidence": "subjects can resist suggestions"
             },
             {
               "id": "q18",
               "answer": "ix",
-              "textHtml": "Section F List of Headings i. Use of hypnotism in criminal cases ii. The normality of hypnotised subjects’ behaviour iii. Early medical experiments with hypnotism iv. Early association of hypnosis with psychology v. Dangers of hypnotism vi. How to hypnotise vii. Hypnosis and free will viii. Difference between mesmerism and hypnotism ix. Therapeutic uses of hypnosis x. Origins of hypnosis (Example)"
+              "textHtml": "Section F List of Headings i. Use of hypnotism in criminal cases ii. The normality of hypnotised subjects’ behaviour iii. Early medical experiments with hypnotism iv. Early association of hypnosis with psychology v. Dangers of hypnotism vi. How to hypnotise vii. Hypnosis and free will viii. Difference between mesmerism and hypnotism ix. Therapeutic uses of hypnosis x. Origins of hypnosis (Example)",
+              "explanation": "Section F lists treating 'anxiety, depression or phobias' and memory retrieval, showing hypnosis used as therapy, matching ix.",
+              "evidence": "anxiety, depression or phobias"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>The passage has eight sections A-H. Choose the most suitable heading for sections B-F from the list of headings below. Write the appropriate numbers (i-x).</span></p><p><span>14. Section B</span><br/>\n<span>15. Section C</span><br/>\n<span>16. Section D</span><br/>\n<span>17. Section E</span><br/>\n<span>18. Section F</span></p><p><strong><span>List of Headings</span></strong><br/>\n<span>i. Use of hypnotism in criminal cases</span><br/>\n<span>ii. The normality of hypnotised subjects’ behaviour</span><br/>\n<span>iii. Early medical experiments with hypnotism</span><br/>\n<span>iv. Early association of hypnosis with psychology</span><br/>\n<span>v. Dangers of hypnotism</span><br/>\n<span>vi. How to hypnotise</span><br/>\n<span>vii. Hypnosis and free will</span><br/>\n<span>viii. Difference between mesmerism and hypnotism</span><br/>\n<span>ix. Therapeutic uses of hypnosis</span><br/>\n<span>x. Origins of hypnosis (Example)</span></p>",
@@ -242,13 +277,17 @@ const test: PracticeTest = {
               "id": "q19",
               "answer": "Bible",
               "before": "…………. Even when Mesmer’s",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says references to hypnotism appear in 'the Bible and in the Jewish Talmud', giving the missing word.",
+              "evidence": "found in the Bible and in the Jewish Talmud"
             },
             {
               "id": "q20",
               "answer": "Magnets and water",
               "before": "………….. were not used, successful results occurred without them. Braid identified hypnosis as a natural",
-              "after": ""
+              "after": "",
+              "explanation": "Even 'without the need for magnets and water', results were still achieved, matching the gap.",
+              "evidence": "without the need for magnets and water"
             },
             {
               "id": "q21",
@@ -257,7 +296,9 @@ const test: PracticeTest = {
                 "human"
               ],
               "before": "……….. response, rather than magical or mystical. Early psychological studies showed the difference between sleep and hypnosis. Successful hypnosis requires the subject’s active",
-              "after": ""
+              "after": "",
+              "explanation": "Braid showed hypnosis was 'a physiological response and not the result of secret powers', matching the gap.",
+              "evidence": "a physiological response and not the result of secret powers"
             },
             {
               "id": "q22",
@@ -266,7 +307,9 @@ const test: PracticeTest = {
                 "concentration"
               ],
               "before": "…………. Consequently subjects can speak or move around and are",
-              "after": ""
+              "after": "",
+              "explanation": "Section C says hypnosis 'involves a more active and intense mental concentration' from the subject, matching the gap.",
+              "evidence": "a more active and intense mental concentration"
             },
             {
               "id": "q23",
@@ -275,7 +318,9 @@ const test: PracticeTest = {
                 "aware"
               ],
               "before": "………… of their surroundings",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says subjects 'are usually fully aware of what is being said and done', matching the gap.",
+              "evidence": "fully aware of what is being said and done"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 19-23</span></strong><br/>\n<span>Complete the notes on the history of hypnosis using <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><p><span>References to hypnotism can be found in both the Talmud and the (19) …………. Even when Mesmer’s</span><br/>\n<span>(20) ………….. were not used, successful results occurred without them. Braid identified hypnosis as a natural</span></p><p><span>(21) ……….. response, rather than magical or mystical. Early psychological studies showed the difference between sleep and hypnosis. Successful hypnosis requires the subject’s active (22) …………. Consequently subjects can speak or move around and are (23) ………… of their surroundings.</span></p>",
@@ -295,7 +340,9 @@ const test: PracticeTest = {
                 "say a specific set of words in a special tone of voice",
                 "say any words but in a particular tone of voice",
                 "encourage the person to relax while focussing on a slowly moving object"
-              ]
+              ],
+              "explanation": "Section D describes the standard technique as 'a series of simple suggestions repeated continuously in the same tone of voice', matching A.",
+              "evidence": "a series of simple suggestions repeated continuously in the same tone of voice"
             },
             {
               "id": "q25",
@@ -306,7 +353,9 @@ const test: PracticeTest = {
                 "demonstrate physical strength they would normally not have",
                 "reveal confidential information against their will",
                 "do something that they would normally be opposed to doing"
-              ]
+              ],
+              "explanation": "Section E's public-performance examples show subjects made to 'perform ridiculous or highly embarrassing actions', something they would not normally choose to do, matching D.",
+              "evidence": "perform ridiculous or highly embarrassing actions"
             },
             {
               "id": "q26",
@@ -317,7 +366,9 @@ const test: PracticeTest = {
                 "to allow subjects to reassess them without distress",
                 "to help the subjects improve their memories",
                 "to make the subject feel younger"
-              ]
+              ],
+              "explanation": "Section F says hypnosis lets patients 'feel calm while simultaneously thinking about distressing feelings or painful memories', reassessing them without distress, matching B.",
+              "evidence": "feel calm while simultaneously thinking about distressing feelings"
             },
             {
               "id": "q27",
@@ -328,7 +379,9 @@ const test: PracticeTest = {
                 "to keep the patient mobile",
                 "to make the patient forget to move",
                 "to minimise patient’s discomfort while immobile"
-              ]
+              ],
+              "explanation": "In the skin-graft case the patient held an awkward position for weeks yet 'at no time felt uncomfortable', matching D.",
+              "evidence": "the patient at no time felt uncomfortable"
             },
             {
               "id": "q28",
@@ -339,7 +392,9 @@ const test: PracticeTest = {
                 "people should be hypnotised before giving evidence",
                 "evidence given when hypnotised may be unreliable",
                 "secret evidence can be obtained through hypnosis"
-              ]
+              ],
+              "explanation": "The AMA reported that memories recovered under hypnosis 'may include inaccurate information, false memories, and confabulation', matching C.",
+              "evidence": "may include inaccurate information, false memories, and confabulation"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 24-28</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>24. In order to induce hypnosis, the hypnotist will</span><br/>\n<span><strong>A</strong> encourage the person to relax using a repetitively even tone of voice.</span><br/>\n<span><strong>B</strong> say a specific set of words in a special tone of voice.</span><br/>\n<span><strong>C</strong> say any words but in a particular tone of voice.</span><br/>\n<span><strong>D</strong> encourage the person to relax while focussing on a slowly moving object.</span></p><p><span>25. Hypnotised subjects can be instructed to</span><br/>\n<span><strong>A</strong> do something they have previously said is against their wishes.</span><br/>\n<span><strong>B</strong> demonstrate physical strength they would normally not have.</span><br/>\n<span><strong>C</strong> reveal confidential information against their will.</span><br/>\n<span><strong>D</strong> do something that they would normally be opposed to doing.</span></p><p><span>26. Past events are recalled under hypnosis</span><br/>\n<span><strong>A</strong> to entertain the hypnotist.</span><br/>\n<span><strong>B</strong> to allow subjects to reassess them without distress.</span><br/>\n<span><strong>C</strong> to help the subjects improve their memories.</span><br/>\n<span><strong>D</strong> to make the subject feel younger.</span></p><p><span>27. After surgery, hypnosis may be used</span><br/>\n<span><strong>A</strong> to make drugs unnecessary.</span><br/>\n<span><strong>B</strong> to keep the patient mobile.</span><br/>\n<span><strong>C</strong> to make the patient forget to move.</span><br/>\n<span><strong>D</strong> to minimise patient’s discomfort while immobile.</span></p><p><span>28. The American Medical Association reported that</span><br/>\n<span><strong>A</strong> people lie when giving evidence under hypnosis.</span><br/>\n<span><strong>B</strong> people should be hypnotised before giving evidence.</span><br/>\n<span><strong>C</strong> evidence given when hypnotised may be unreliable.</span><br/>\n<span><strong>D</strong> secret evidence can be obtained through hypnosis.</span></p>"
@@ -396,13 +451,17 @@ const test: PracticeTest = {
               "id": "q29",
               "answer": "Freedom",
               "before": "…………… Because today sport is often decided and",
-              "after": ""
+              "after": "",
+              "explanation": "The passage describes children's spontaneous sporting games as 'an activity of freedom', giving the exact word for the gap.",
+              "evidence": "an activity of freedom"
             },
             {
               "id": "q30",
               "answer": "Organized",
               "before": "…………… by parents, children lose their autonomy. A first imbalance occurs because",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says parents are now 'organising sport for children... and often deciding for them', matching the gap.",
+              "evidence": "organising sport for children"
             },
             {
               "id": "q31",
@@ -411,7 +470,9 @@ const test: PracticeTest = {
                 "sports halls"
               ],
               "before": "………….. are out of the city and often crowded, whilst there are a limited number of open recreational areas where children can play spontaneously. Children should discover and learn about sports themselves. The second imbalance occurs because they start early",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says 'sports grounds are often on the outskirts of cities, and are overcrowded', matching the first imbalance.",
+              "evidence": "Sports grounds are often on the outskirts of cities, and are overcrowded"
             },
             {
               "id": "q32",
@@ -420,13 +481,17 @@ const test: PracticeTest = {
                 "sports"
               ],
               "before": "…………….. training very young and participate in only",
-              "after": ""
+              "after": "",
+              "explanation": "The second imbalance is 'early intensive training' starting very young, matching the gap.",
+              "evidence": "early intensive training from the youngest possible age"
             },
             {
               "id": "q33",
               "answer": "One",
               "before": "………….. specific activity. Children often give up a sport because of negative",
-              "after": ""
+              "after": "",
+              "explanation": "This intensive training is 'usually one specific sport within an organised framework', matching the gap.",
+              "evidence": "usually one specific sport within an organised framework"
             },
             {
               "id": "q34",
@@ -435,19 +500,25 @@ const test: PracticeTest = {
                 "criticism"
               ],
               "before": "…………….. It is important that trainers avoid excessive criticism of young children, who should have",
-              "after": ""
+              "after": "",
+              "explanation": "Children leave sport after 'too much criticism and too many negative assessments', matching the gap.",
+              "evidence": "too much criticism and too many negative assessments"
             },
             {
               "id": "q35",
               "answer": "Fun",
               "before": "……………… at sporting activities. Another reason that children may give up sport is the attitudes of their parents. This third imbalance occurs as parents exert",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says children's 'main desire is to have fun and socialise' at sport, matching the gap.",
+              "evidence": "main desire is to have fun and socialise"
             },
             {
               "id": "q36",
               "answer": "Pressure",
               "before": "………….. on children to win rather than to enjoy sport",
-              "after": ""
+              "after": "",
+              "explanation": "The third imbalance is that 'parental pressure is high on the list of reasons why children leave sport', matching the gap.",
+              "evidence": "parental pressure is high on the list of reasons why children leave sport"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 29-36</span></strong><br/>\n<span>Complete the summary below using <strong>NO MORE THAN TWO WORDS</strong> from the passage.</span></p><p><span>Marte &amp; Notarnicola define the spontaneous sporting games of children as activities of (29) …………… Because today sport is often decided and (30) …………… by parents, children lose their autonomy. A first imbalance occurs because (31) ………….. are out of the city and often crowded, whilst there are a limited number of open recreational areas where children can play spontaneously.</span></p><p><span>Children should discover and learn about sports themselves. The second imbalance occurs because they start early (32) …………….. training very young and participate in only (33) ………….. specific activity. Children often give up a sport because of negative (34) …………….. It is important that trainers avoid excessive criticism of young children, who should have (35) ……………… at sporting activities. Another reason that children may give up sport is the attitudes of their parents. This third imbalance occurs as parents exert (36) ………….. on children to win rather than to enjoy sport.</span></p>",
@@ -467,7 +538,9 @@ const test: PracticeTest = {
                 "it means they can learn to swim and ride a bike",
                 "it puts them in charge of what they do and when they do it",
                 "it relieves the parents from transporting their children to sports"
-              ]
+              ],
+              "explanation": "Adult-organised sport is criticised for 'denying them an opportunity of autonomy and independence', showing free play matters because it lets children direct their own time, matching C.",
+              "evidence": "denying them an opportunity of autonomy and independence"
             },
             {
               "id": "q38",
@@ -478,7 +551,9 @@ const test: PracticeTest = {
                 "offering a range of different sports in each sports club",
                 "offering sporting tuition to pre-school children",
                 "making children play outside regularly"
-              ]
+              ],
+              "explanation": "The passage recommends 'sports clubs which offer multidisciplinary sports training', giving children a range of sports to try, matching B.",
+              "evidence": "sports clubs which offer multidisciplinary sports training"
             },
             {
               "id": "q39",
@@ -489,7 +564,9 @@ const test: PracticeTest = {
                 "experience of failure as well as success",
                 "experience of being reserves as well as first choice team members",
                 "the opportunity to mix socially with their peers at sport"
-              ]
+              ],
+              "explanation": "The passage says primary-aged children's 'main desire is to have fun and socialise' at sport, matching D, mixing socially with peers.",
+              "evidence": "main desire is to have fun and socialise"
             },
             {
               "id": "q40",
@@ -500,7 +577,9 @@ const test: PracticeTest = {
                 "playing sport is an important part of children’s development",
                 "children need to learn that sport is about losing as well as winning",
                 "children can be psychologically and physiologically damaged by sport"
-              ]
+              ],
+              "explanation": "The final paragraph calls sport 'a source of learning, progress and pleasure; an additional way of enriching life', showing the author values it as part of development, matching B.",
+              "evidence": "a source of learning, progress and pleasure"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>37. Children’s expression of this ‘freedom’ is important because</span><br/>\n<span><strong>A</strong> it allows them to be lazy.</span><br/>\n<span><strong>B</strong> it means they can learn to swim and ride a bike.</span><br/>\n<span><strong>C</strong> it puts them in charge of what they do and when they do it.</span><br/>\n<span><strong>D</strong> it relieves the parents from transporting their children to sports.</span></p><p><span>38. Ways of allowing children to develop this ‘freedom’ include</span><br/>\n<span><strong>A</strong> making transport to sports clubs free.</span><br/>\n<span><strong>B</strong> offering a range of different sports in each sports club.</span><br/>\n<span><strong>C</strong> offering sporting tuition to pre-school children.</span><br/>\n<span><strong>D</strong> making children play outside regularly.</span></p><p><span>39. To encourage young children to continue with sport, we should give them</span><br/>\n<span><strong>A</strong> accurate feedback about their ability at sport.</span><br/>\n<span><strong>B</strong> experience of failure as well as success.</span><br/>\n<span><strong>C</strong> experience of being reserves as well as first choice team members.</span><br/>\n<span><strong>D</strong> the opportunity to mix socially with their peers at sport.</span></p><p><span>40. The author believes that</span><br/>\n<span><strong>A</strong> children’s sport should be organised by experts, not parents.</span><br/>\n<span><strong>B</strong> playing sport is an important part of children’s development.</span><br/>\n<span><strong>C</strong> children need to learn that sport is about losing as well as winning.</span><br/>\n<span><strong>D</strong> children can be psychologically and physiologically damaged by sport.</span></p>"

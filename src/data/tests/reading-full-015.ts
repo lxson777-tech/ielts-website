@@ -59,43 +59,57 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "rehabilitation of offenders",
               "before": "………….. than to their incarceration. Closure of prisons in the Netherlands",
-              "after": ""
+              "after": "",
+              "explanation": "The opening comparison credits falling crime to rehabilitating offenders rather than to locking them up.",
+              "evidence": "a move towards rehabilitation of offenders and decreasing crime has seen a reduction in incarceration rates."
             },
             {
               "id": "q2",
               "answer": "has been accelerating",
               "before": "………………. at an unprecedented rate over recent years. Against",
-              "after": ""
+              "after": "",
+              "explanation": "Dutch prison closures have sped up sharply in recent years, with 19 closures in 2014 alone.",
+              "evidence": "the Dutch reform of the prison system has been accelerating at a phenomenal pace, with 19 of the prisons being shut down in 2014 alone."
             },
             {
               "id": "q3",
               "answer": "all expectations",
               "before": "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
-              "after": ""
+              "after": "",
+              "explanation": "Crime is falling in the Netherlands as prisons close, defying what pro-incarceration supporters would expect.",
+              "evidence": "Defying all expectations of the pro-incarceration lobbyists, crime rates in the Netherlands are also actually decreasing"
             },
             {
               "id": "q4",
               "answer": "question the validity",
               "before": "………………. of such a practice. In fact, incarceration may serve to fuel rather",
-              "after": ""
+              "after": "",
+              "explanation": "These figures lead many people to doubt whether incarceration actually works.",
+              "evidence": "many are now beginning to question the validity of incarceration as a method of reforming offenders."
             },
             {
               "id": "q5",
               "answer": "than alleviate",
               "before": "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
-              "after": ""
+              "after": "",
+              "explanation": "The passage argues prison terms may create crime rather than reduce it.",
+              "evidence": "serving a prison term tends to create rather than alleviate the problem of crime."
             },
             {
               "id": "q6",
               "answer": "more effective alternatives",
               "before": "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
-              "after": ""
+              "after": "",
+              "explanation": "The 1990 Conservative white paper proposed community sentences as cheaper, better alternatives to prison.",
+              "evidence": "there should be a range of community-based sentences which would be cheaper and more effective alternatives to prison."
             },
             {
               "id": "q7",
               "answer": "social and economic",
               "before": "………………. influences",
-              "after": ""
+              "after": "",
+              "explanation": "The punitive approach ignores the social and economic causes behind crime.",
+              "evidence": "Such an approach overlooks social and economic factors that can play an integral role in the incidence of crime."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>A decrease in crime in the Netherlands and parts of the US is attributable more to the (1) ………….. than to their incarceration.</span></p><p><span>Closure of prisons in the Netherlands (2) ………………. at an unprecedented rate over recent years.</span></p><p><span>Against (3) ……………… , the Netherlands are seeing a drop in crime along with the closure of prisons.</span></p><p><span>Since statistics do not support the argument for incarceration this has made many (4) ………………. of such a practice.</span></p><p><span>In fact, incarceration may serve to fuel rather (5) ……………… crime, thereby defeating the purpose of such a punishment.</span></p><p><span>In recognition of the fact that custodial sentences achieve little, less costly and (6) ……….. were put forward by the Conservatives in 1990.</span></p><p><span>Crime is not only down to individual behaviour but is also a result of (7) ………………. influences.</span></p>",
@@ -162,32 +176,43 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "False",
-              "textHtml": "There are signs that custodial sentences are becoming less popular in the UK"
+              "textHtml": "There are signs that custodial sentences are becoming less popular in the UK",
+              "explanation": "This is False: the UK's prison population has kept rising by 3.6 percent a year, and the country has taken the hardest line in Europe, so custodial sentences are not becoming less popular.",
+              "evidence": "the UK's prison population has increased by an average rate of 3.6% per year since 1993... the UK has adopted the most hardline approach to offenders."
             },
             {
               "id": "q9",
               "answer": "False",
-              "textHtml": "The English judicial system stands to benefit from incarcerating offenders"
+              "textHtml": "The English judicial system stands to benefit from incarcerating offenders",
+              "explanation": "This is False: the passage argues incarceration is costly and fails to deliver results, so the system does not benefit from it.",
+              "evidence": "the average prison place costs the taxpayer £37,648 per year – a hefty sum for a service that fails to deliver"
             },
             {
               "id": "q10",
               "answer": "True",
-              "textHtml": "Custodial sentences are intended primarily to reform prisoners"
+              "textHtml": "Custodial sentences are intended primarily to reform prisoners",
+              "explanation": "The passage discusses incarceration as a method that is meant to reform offenders, even though it argues this purpose is not being achieved in practice.",
+              "evidence": "many are now beginning to question the validity of incarceration as a method of reforming offenders."
             },
             {
               "id": "q11",
               "answer": "True",
-              "textHtml": "Factors other than an individual’s guilt are rarely taken into account by the English judicial system"
+              "textHtml": "Factors other than an individual’s guilt are rarely taken into account by the English judicial system",
+              "explanation": "Overlooking social and economic factors implies the English system rarely weighs anything beyond individual guilt.",
+              "evidence": "Such an approach overlooks social and economic factors that can play an integral role in the incidence of crime."
             },
             {
               "id": "q12",
               "answer": "Not given",
-              "textHtml": "A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life"
+              "textHtml": "A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life",
+              "explanation": "The passage reports that imprisoned mothers' adult children are more likely to be convicted than imprisoned fathers' children, but stops short of calling this a proven causal link, so there is no clear information confirming one.",
+              "evidence": "adult children of imprisoned mothers are more likely to be convicted of a crime than adult children of imprisoned fathers."
             },
             {
               "id": "q13",
               "answer": "Not given",
-              "textHtml": "Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice"
+              "textHtml": "Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice",
+              "explanation": "The passage gives a statistic comparing outcomes for mothers' and fathers' children but never explains this through role-modelling, so there is no information on this."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in the text? For questions 8-13, write</span></p><p><span><strong>TRUE</strong>                         if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                        if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>            if there is no information on this</span></p><p><span>8. There are signs that custodial sentences are becoming less popular in the UK.</span><br/>\n<span>9. The English judicial system stands to benefit from incarcerating offenders.</span><br/>\n<span>10. Custodial sentences are intended primarily to reform prisoners.</span><br/>\n<span>11. Factors other than an individual’s guilt are rarely taken into account by the English judicial system.</span><br/>\n<span>12. A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life.</span><br/>\n<span>13. Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice.</span></p>"
@@ -235,7 +260,9 @@ const test: PracticeTest = {
               "id": "q14",
               "answer": "moral or philosophical",
               "before": "…………….. realm. Italian scientist, Lombroso proposes a",
-              "after": ""
+              "after": "",
+              "explanation": "Before the 19th century, criminality was seen as a moral or philosophical matter.",
+              "evidence": "Prior to the 19th century, criminality was considered more of a moral or philosophical issue."
             },
             {
               "id": "q15",
@@ -244,7 +271,9 @@ const test: PracticeTest = {
                 "biological disposition"
               ],
               "before": "………………. to criminality. A biological theory of criminality presupposes that such a condition is",
-              "after": ""
+              "after": "",
+              "explanation": "Lombroso proposed that criminal behaviour came from a physiological, biological disposition.",
+              "evidence": "Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons."
             },
             {
               "id": "q16",
@@ -253,13 +282,17 @@ const test: PracticeTest = {
                 "inherited"
               ],
               "before": "……………… Criminal types are claimed to be",
-              "after": ""
+              "after": "",
+              "explanation": "Lombroso claimed criminality was heritable, passed down biologically.",
+              "evidence": "Lombroso claimed that criminality was heritable."
             },
             {
               "id": "q17",
               "answer": "characterised by",
               "before": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a",
-              "after": ""
+              "after": "",
+              "explanation": "Criminal types were said to be marked by primitive, atavistic physical features.",
+              "evidence": "Such people, he claimed, exhibited 'atavistic' or primitive features"
             },
             {
               "id": "q18",
@@ -268,43 +301,57 @@ const test: PracticeTest = {
                 "biological basis"
               ],
               "before": "……………… to criminality. Body types are",
-              "after": ""
+              "after": "",
+              "explanation": "Sheldon, like Lombroso, proposed a hereditary, biological basis for criminality through body type.",
+              "evidence": "Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour."
             },
             {
               "id": "q19",
               "answer": "associated with",
               "before": "……………… particular dispositions. Mesomorphs are types considered to have",
-              "after": ""
+              "after": "",
+              "explanation": "Each physical body type was linked with a distinct personality.",
+              "evidence": "Each physical type, Sheldon claimed, was associated with a distinct personality and temperament."
             },
             {
               "id": "q20",
               "answer": "criminal tendencies",
               "before": "……………….. 1960s",
-              "after": ""
+              "after": "",
+              "explanation": "Sheldon claimed the muscular mesomorph type had criminal tendencies.",
+              "evidence": "those corresponding to this physical type had criminal tendencies."
             },
             {
               "id": "q21",
               "answer": "Chromosomal abnormality",
               "before": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more",
-              "after": ""
+              "after": "",
+              "explanation": "In the 1960s, chromosomal abnormality became the new proposed biological cause of criminality.",
+              "evidence": "hereditary tendencies were linked to genetic defect or chromosomal abnormality."
             },
             {
               "id": "q22",
               "answer": "masculine and aggressive",
               "before": "………………… males. The proposed link between criminality and genotype is",
-              "after": ""
+              "after": "",
+              "explanation": "An extra Y chromosome was hypothesised to make men more masculine and aggressive.",
+              "evidence": "having an extra male 'Y' chromosome should make a man more masculine and aggressive."
             },
             {
               "id": "q23",
               "answer": "severely undermined by",
               "before": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by",
-              "after": ""
+              "after": "",
+              "explanation": "Epps' 1995 study seriously undermined the chromosome theory of criminality.",
+              "evidence": "this somewhat weak hypothesis was severely undermined by the study of Epps in 1995."
             },
             {
               "id": "q24",
               "answer": "environmental and social",
               "before": "……………… elements",
-              "after": ""
+              "after": "",
+              "explanation": "Today, biological factors are seen as moderated by environmental and social influences.",
+              "evidence": "it seems to be at least tempered by environmental and social factors to a large extent."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-24</span></strong><br/>\n<span>Complete the timeline diagram below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><strong><span>1876</span></strong><br/>\n<span>No longer is criminality confined to a (14) …………….. realm.</span></p><p><span>Italian scientist, Lombroso proposes a (15) ………………. to criminality.</span></p><p><span>A biological theory of criminality presupposes that such a condition is (16) ………………</span></p><p><span>Criminal types are claimed to be (17) ………………. distinctive ‘atavistic’ or primitive features.</span></p><p><strong><span>1949</span></strong><br/>\n<span>In common with Lombroso, Sheldon proposes a (18) ……………… to criminality.</span></p><p><span>Body types are (19) ……………… particular dispositions.</span></p><p><span>Mesomorphs are types considered to have (20) ………………..</span></p><p><strong><span>1960s</span></strong><br/>\n<span>(21) ……………. is now implicated in a biological disposition towards criminality.</span></p><p><span>An additional ‘Y’ chromosome is associated with more (22) ………………… males.</span></p><p><span>The proposed link between criminality and genotype is (23) …………………. Epps’ study of 1995.</span></p><p><strong><span>Today</span></strong><br/>\n<span>A purely biological basis to criminality is discredited.</span></p><p><span>Genetic factors are thought to be moderated by (24) ……………… elements.</span></p>",
@@ -322,7 +369,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-303-q25-q26"
+              "answerPairId": "reading-303-q25-q26",
+              "explanation": "The closing paragraph shows biology's role in criminality is now downplayed in favour of environment and society, while raised testosterone in mesomorphs offers some partial support for Sheldon's theory.",
+              "evidence": "If biological predisposition does play a role in criminality, it seems to be at least tempered by environmental and social factors to a large extent."
             },
             {
               "id": "q26",
@@ -331,7 +380,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-303-q25-q26"
+              "answerPairId": "reading-303-q25-q26",
+              "explanation": "The closing paragraph shows biology's role in criminality is now downplayed in favour of environment and society, while raised testosterone in mesomorphs offers some partial support for Sheldon's theory.",
+              "evidence": "an increased level of testosterone associated with a mesomorphic build could explain such a biological disposition towards criminality"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose two letters, A-E.</span></p><p><span><strong>A</strong> Overwhelming evidence exists in support of a biological predisposition towards crime.</span><br/>\n<span><strong>B</strong> Lombroso’s experimental work has been completely discredited by modern scientists.</span><br/>\n<span><strong>C</strong> Modern criminologists believe that Lombroso hindered rather than helped the advance of criminology.</span><br/>\n<span><strong>D</strong> Recently there has been a shift away from the emphasis of biological factors as a basis of criminality.</span><br/>\n<span><strong>E</strong> Biological evidence may partially support Sheldon’s theory of somatotypes.</span></p>",
@@ -357,7 +408,8 @@ const test: PracticeTest = {
               "value": "E",
               "label": "Biological evidence may partially support Sheldon’s theory of somatotypes"
             }
-          ]
+          ],
+          "explanationHtml": "<p>The closing paragraph shows the emphasis has shifted away from a purely biological explanation of crime towards environmental and social factors, while raised testosterone in mesomorphs is offered as partial biological support for Sheldon's theory.</p>"
         }
       ]
     },
@@ -402,37 +454,49 @@ const test: PracticeTest = {
               "id": "q27",
               "answer": "means",
               "before": "…………….. yet is available to analyse it. Fingerprints are not used",
-              "after": ""
+              "after": "",
+              "explanation": "DNA evidence went unexamined because the means to test it, forensic DNA testing, did not yet exist.",
+              "evidence": "the means to thoroughly analyse such evidence through DNA testing was light years away still."
             },
             {
               "id": "q28",
               "answer": "for identification purposes",
               "before": "…………….. Only one of the Ripper’s",
-              "after": ""
+              "after": "",
+              "explanation": "Fingerprinting for identification was only theorised in 1880 and not put into practice until 1896, too late for the Ripper case.",
+              "evidence": "he outlined for the first time the possibility of using fingerprints for identification purposes."
             },
             {
               "id": "q29",
               "answer": "victims",
               "before": "…………… is photographed at the crime scene. Images taken are",
-              "after": ""
+              "after": "",
+              "explanation": "Only one of the Ripper's victims, Mary Kelly, was photographed at the crime scene.",
+              "evidence": "the officers leading the investigation at the time saw fit to only photograph one of the Ripper's victims"
             },
             {
               "id": "q30",
               "answer": "centred on",
               "before": "……………… capturing the victim’s eyes. Vital written evidence is",
-              "after": ""
+              "after": "",
+              "explanation": "The photographs focused mainly on the victim's eyes rather than the wider scene.",
+              "evidence": "photographs of the victim were more centred on photographing her eyes"
             },
             {
               "id": "q31",
               "answer": "removed",
               "before": "……………. on the orders of a police investigator. Investigators representing rival",
-              "after": ""
+              "after": "",
+              "explanation": "A police investigator ordered the scrawled message removed before it could be properly examined.",
+              "evidence": "the investigating officer ordered that it be removed as it was thought to implicate the Jews"
             },
             {
               "id": "q32",
               "answer": "law enforcement agencies",
               "before": "…………………. fail to exchange information",
-              "after": ""
+              "after": "",
+              "explanation": "Rivalry between the City and Metropolitan Police forces delayed the exchange of information.",
+              "evidence": "in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the diagram below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span><img alt=\"\" class=\"alignnone size-medium wp-image-12051\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" fetchpriority=\"high\" height=\"294\" src=\"/ielts-website/pics/reading/imported/test-303-1.webp\" width=\"300\"/></span></p><p><span>DNA is left unexamined as no (27) …………….. yet is available to analyse it.</span></p><p><span>Fingerprints are not used (28) ……………..</span></p><p><span>Only one of the Ripper’s (29) …………… is photographed at the crime scene.</span></p><p><span>Images taken are (30) ……………… capturing the victim’s eyes.</span></p><p><span>Vital written evidence is (31) ……………. on the orders of a police investigator.</span></p><p><span>Investigators representing rival (32) …………………. fail to exchange information.</span></p>",
@@ -447,19 +511,25 @@ const test: PracticeTest = {
               "id": "q33",
               "answer": "evade capture",
               "before": "…………… against the odds. Only on closer investigation does the reason become more apparent. Often a",
-              "after": ""
+              "after": "",
+              "explanation": "The overall puzzle the passage explores is how the Ripper evaded capture despite intense public and police attention.",
+              "evidence": "why did the Ripper evade capture and why was no one even charged with the five murders"
             },
             {
               "id": "q34",
               "answer": "crime scene",
               "before": "………………. was disturbed, destroying vital evidence within it. Only later, with",
-              "after": ""
+              "after": "",
+              "explanation": "Evidence was disturbed at the crime scene, such as the removed written message, destroying potential clues.",
+              "evidence": "this action may have destroyed vital clues."
             },
             {
               "id": "q35",
               "answer": "the publication of",
               "before": "……………. a book by Hans Gross, were more scientific investigative methods introduced. Until then there was a lack of knowledge of",
-              "after": ""
+              "after": "",
+              "explanation": "Modern forensic method only began with Hans Gross's 1893 handbook, published after the murders.",
+              "evidence": "it was only with the publication of Hans Gross' 'A Handbook for Examining Magistrates, Police Officials, Military Police, etc.' in 1893 that the foundation for forensic science was laid."
             },
             {
               "id": "q36",
@@ -468,7 +538,9 @@ const test: PracticeTest = {
                 "forensic science"
               ],
               "before": "……………….. In 1896 Sir Francis Galton used a",
-              "after": ""
+              "after": "",
+              "explanation": "Before Gross's book, investigators lacked knowledge of modern forensic techniques.",
+              "evidence": "floundered in its ignorance of modern forensic techniques."
             },
             {
               "id": "q37",
@@ -477,13 +549,17 @@ const test: PracticeTest = {
                 "new-found"
               ],
               "before": "……………… method known as dactyloscopy. This method was to greatly aid the police in identifying criminals. Curiously, investigative methods known to police at the time were often not employed. Crime scene photography was rarely",
-              "after": ""
+              "after": "",
+              "explanation": "Galton applied the new fingerprinting method, dactyloscopy, in 1896.",
+              "evidence": "Using the new-found method of 'dactyloscopy' (later known as fingerprinting) he employed the technique to successfully identify criminals."
             },
             {
               "id": "q38",
               "answer": "standard practice",
               "before": "…………. for example",
-              "after": ""
+              "after": "",
+              "explanation": "Photographing the crime scene was not standard practice at the time.",
+              "evidence": "Photographing the crime scene was not exactly standard practice of the time but it was a known procedure."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 33-38</span></strong><br/>\n<span>Complete the notes below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>What is so startling about the Ripper case is how the murderer managed to (33) …………… against the odds.</span></p><p><span>Only on closer investigation does the reason become more apparent.</span></p><p><span>Often a (34) ………………. was disturbed, destroying vital evidence within it.</span></p><p><span>Only later, with (35) ……………. a book by Hans Gross, were more scientific investigative methods introduced.</span></p><p><span>Until then there was a lack of knowledge of (36) ………………..</span></p><p><span>In 1896 Sir Francis Galton used a (37) ……………… method known as dactyloscopy.</span></p><p><span>This method was to greatly aid the police in identifying criminals.</span></p><p><span>Curiously, investigative methods known to police at the time were often not employed.</span></p><p><span>Crime scene photography was rarely (38) …………. for example.</span></p>",
@@ -501,7 +577,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-303-q39-q40"
+              "answerPairId": "reading-303-q39-q40",
+              "explanation": "Limited forensic knowledge likely affected the case's outcome, and despite rivalry between police forces, they were united in distrusting the Press.",
+              "evidence": "police distrust if the Press led to limited information being released to the newspapers."
             },
             {
               "id": "q40",
@@ -510,7 +588,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-303-q39-q40"
+              "answerPairId": "reading-303-q39-q40",
+              "explanation": "Limited forensic knowledge likely affected the case's outcome, and despite rivalry between police forces, they were united in distrusting the Press.",
+              "evidence": "in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 39-40</span></strong><br/>\n<span>Choose two letters, A-E.</span></p><p><span><strong>A</strong> Limited forensic knowledge probably affected the outcome of the Ripper case.</span><br/>\n<span><strong>B</strong> The Ripper murders convinced the police of a need for more sophisticated investigative methods.</span><br/>\n<span><strong>C</strong> Disagreement existed amongst the police as to what information should be released to the Press.</span><br/>\n<span><strong>D</strong> Whilst rivalry existed amongst the police, they were united in their dislike of the Press.</span><br/>\n<span><strong>E</strong> The police investigating the Ripper murders made good use of what techniques were available to them at the time.</span></p>",
@@ -536,7 +616,8 @@ const test: PracticeTest = {
               "value": "E",
               "label": "The police investigating the Ripper murders made good use of what techniques were available to them at the time"
             }
-          ]
+          ],
+          "explanationHtml": "<p>The passage argues that limited forensic knowledge at the time probably affected the case's outcome, and that although the City and Metropolitan Police forces were rivals, they were united in distrusting the Press with information.</p>"
         }
       ]
     }

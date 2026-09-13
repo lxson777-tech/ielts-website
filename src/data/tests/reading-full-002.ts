@@ -59,43 +59,57 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Dust",
               "before": "………………… out o lower the temperature of its",
-              "after": ""
+              "after": "",
+              "explanation": "The second paragraph says the nostrils ‘filter out dust’, giving the exact word needed for what they keep out.",
+              "evidence": "they filter out dust and cool the blood during hot, dry summers"
             },
             {
               "id": "q2",
               "answer": "Blood",
               "before": "…………………..in summer o warm the air entering its lungs in winter • grows a thick",
-              "after": ""
+              "after": "",
+              "explanation": "The same sentence says the nostrils ‘cool the blood during hot, dry summers’, matching this gap about what they lower the temperature of.",
+              "evidence": "they filter out dust and cool the blood during hot, dry summers"
             },
             {
               "id": "q3",
               "answer": "Coat",
               "before": "……………….. in winter, which it loses in spring Reasons for population decline • poaching, especially for the",
-              "after": ""
+              "after": "",
+              "explanation": "The second paragraph mentions ‘a heavy winter coat that the saiga sheds when the weather warms up’, giving the word for this gap.",
+              "evidence": "a heavy winter coat that the saiga sheds when the weather warms up"
             },
             {
               "id": "q4",
               "answer": "Horns",
               "before": "……………… of male saiga • expansion of farms and settlements, causing o reduction in the size of the saiga’s",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph explains poachers target ‘their horns’ because male saiga horns are prized in traditional medicine, giving this gap’s word.",
+              "evidence": "their horns are highly prized by traditional medicine practitioners"
             },
             {
               "id": "q5",
               "answer": "Habitat",
               "before": "……………. o loss of access to the",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph opens with ‘loss of habitat, as a result of agricultural expansion and human settlement’, matching this gap.",
+              "evidence": "Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement"
             },
             {
               "id": "q6",
               "answer": "Routes",
               "before": "……………… which they use for migration • various forms of disease, leading to mass mortality events • climate change, causing the disappearance of",
-              "after": ""
+              "after": "",
+              "explanation": "The same paragraph refers to ‘the seasonal migration routes’ that barriers can block, giving the word for this gap.",
+              "evidence": "can block the seasonal migration routes of this transboundary species"
             },
             {
               "id": "q7",
               "answer": "Streams",
               "before": "………………. which the saiga relied on",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says ‘many of the smaller streams that the species normally depended on have dried up’, matching this gap.",
+              "evidence": "many of the smaller streams that the species normally depended on have dried up and vanished"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.</span></p><p><strong><span>The saiga</span></strong></p><p><span>Adaptations</span><br/>\n<span>• has a large bulbous nose with swollen nostrils that</span><br/>\n<span>o keep (1) ………………… out</span><br/>\n<span>o lower the temperature of its (2) …………………..in summer</span><br/>\n<span>o warm the air entering its lungs in winter</span><br/>\n<span>• grows a thick (3) ……………….. in winter, which it loses in spring</span></p><p><span>Reasons for population decline</span><br/>\n<span>• poaching, especially for the (4) ……………… of male saiga</span><br/>\n<span>• expansion of farms and settlements, causing</span><br/>\n<span>o reduction in the size of the saiga’s (5) …………….</span><br/>\n<span>o loss of access to the (6) ……………… which they use for migration</span><br/>\n<span>• various forms of disease, leading to mass mortality events</span><br/>\n<span>• climate change, causing the disappearance of (7) ………………. which the saiga relied on</span></p>",
@@ -109,32 +123,42 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "False",
-              "textHtml": "Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan"
+              "textHtml": "Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan",
+              "explanation": "The first paragraph says Kazakhstan alone holds ‘well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest’, so numbers are far from even. This contradicts the statement.",
+              "evidence": "estimated to be home to well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest"
             },
             {
               "id": "q9",
               "answer": "False",
-              "textHtml": "For most of the 20th century, the population of saiga were falling"
+              "textHtml": "For most of the 20th century, the population of saiga were falling",
+              "explanation": "The third paragraph says ‘numbers steadily recovered throughout most of the 20th century’, contradicting the claim that the population was falling for most of that century.",
+              "evidence": "numbers steadily recovered throughout most of the 20th century"
             },
             {
               "id": "q10",
               "answer": "True",
-              "textHtml": "Efforts to protect rhinos in Africa had a significant effect on saiga populations"
+              "textHtml": "Efforts to protect rhinos in Africa had a significant effect on saiga populations",
+              "explanation": "The fourth paragraph says conservationists encouraging saiga horn use as a rhino alternative caused poaching to reach ‘epidemic levels’, so the rhino-protection effort clearly affected saiga numbers.",
+              "evidence": "misguided conservationists tried to relieve the pressure on threatened African rhinos by actively encouraging the use of saiga horns in traditional medicine as an alternative to those of rhinos"
             },
             {
               "id": "q11",
               "answer": "Not given",
-              "textHtml": "Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world"
+              "textHtml": "Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world",
+              "explanation": "The passage discusses climate threats to the saiga alone and never compares Central Asia with other regions of the world, so this is not given."
             },
             {
               "id": "q12",
               "answer": "True",
-              "textHtml": "The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals"
+              "textHtml": "The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals",
+              "explanation": "The eighth paragraph says the initiative aims ‘to protect and restore Kazakhstan’s steppe… ecosystems and the many species they support, including… the saiga’, confirming several animals benefit.",
+              "evidence": "to protect and restore Kazakhstan’s steppe, semi-desert and desert ecosystems and the many species they support, including the critically endangered saiga"
             },
             {
               "id": "q13",
               "answer": "Not given",
-              "textHtml": "The Altyn Dala Conservation Initiative’s recognition as a World Restoration Flagship project attracted additional international funding for the scheme"
+              "textHtml": "The Altyn Dala Conservation Initiative’s recognition as a World Restoration Flagship project attracted additional international funding for the scheme",
+              "explanation": "The passage mentions the UN recognition but never says it brought in extra international funding, so this is not given."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                        if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                      if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                           if there is no information on this</span></p><p><span>8. Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan.</span><br/>\n<span>9. For most of the 20th century, the population of saiga were falling.</span><br/>\n<span>10. Efforts to protect rhinos in Africa had a significant effect on saiga populations.</span><br/>\n<span>11. Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world.</span><br/>\n<span>12. The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals.</span><br/>\n<span>13. The Altyn Dala Conservation Initiative’s recognition as a World Restoration Flagship project attracted additional international funding for the scheme.</span></p>"
@@ -190,27 +214,35 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "Not given",
-              "textHtml": "The population of Dar es Salaam is rising more rapidly than was previously predicted"
+              "textHtml": "The population of Dar es Salaam is rising more rapidly than was previously predicted",
+              "explanation": "The passage gives UN and Global Cities Institute projections for the future, but it never says the population is growing faster than these forecasts predicted, so this is not given."
             },
             {
               "id": "q15",
               "answer": "False",
-              "textHtml": "Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city"
+              "textHtml": "Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city",
+              "explanation": "The second paragraph says most residents live in ‘single-storey informal settlements’, not high-rise blocks, contradicting the statement.",
+              "evidence": "four out of five of its people live in single-storey informal settlements on the spreading edges of the city"
             },
             {
               "id": "q16",
               "answer": "Not given",
-              "textHtml": "Residents have been consulted about their views on the suburban rail line in Dar es Salaam"
+              "textHtml": "Residents have been consulted about their views on the suburban rail line in Dar es Salaam",
+              "explanation": "The passage only describes the rail line’s limited coverage; it never mentions residents being consulted about it, so this is not given."
             },
             {
               "id": "q17",
               "answer": "True",
-              "textHtml": "The majority of the present residential development in Dar es Salaam is unplanned"
+              "textHtml": "The majority of the present residential development in Dar es Salaam is unplanned",
+              "explanation": "The fourth paragraph says growth happens on the periphery and ‘nearly all takes place informally without any agreed strategy’, confirming most development is unplanned.",
+              "evidence": "nearly all takes place informally without any agreed strategy"
             },
             {
               "id": "q18",
               "answer": "False",
-              "textHtml": "Dar es Salaam’s authorities have decided to follow the public transport plan adopted by a large number of African cities"
+              "textHtml": "Dar es Salaam’s authorities have decided to follow the public transport plan adopted by a large number of African cities",
+              "explanation": "The fifth paragraph says Dar es Salaam is ‘unlike many cities on the continent’ in not building a metro, so it has not followed the approach most other African cities chose, contradicting the statement.",
+              "evidence": "Unlike many cities on the continent, Dar es Salaam isn’t trying to build a metro"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 14-18 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                if there is no information on this</span></p><p><span>14. The population of Dar es Salaam is rising more rapidly than was previously predicted.</span><br/>\n<span>15. Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city.</span><br/>\n<span>16. Residents have been consulted about their views on the suburban rail line in Dar es Salaam.</span><br/>\n<span>17. The majority of the present residential development in Dar es Salaam is unplanned.</span><br/>\n<span>18. Dar es Salaam’s authorities have decided to follow the public transport plan adopted by a large number of African cities.</span></p>"
@@ -224,49 +256,65 @@ const test: PracticeTest = {
               "id": "q19",
               "answer": "Lanes",
               "before": "………………. to cut down on delays • passengers pay fares before",
-              "after": ""
+              "after": "",
+              "explanation": "The sixth paragraph says the buses run on ‘bus lanes separated from other traffic… to reduce stoppages’, giving the word for this gap.",
+              "evidence": "runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages"
             },
             {
               "id": "q20",
               "answer": "Boarding",
               "before": "………………. • passengers in",
-              "after": ""
+              "after": "",
+              "explanation": "The same paragraph says ‘ticket purchase and control takes place at stations prior to boarding’, matching this gap.",
+              "evidence": "Ticket purchase and control takes place at stations prior to boarding"
             },
             {
               "id": "q21",
               "answer": "Wheelchairs",
               "before": "…………………. can use every part of the system Problems • the temperature control is sometimes not activated in order to reduce",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says the step-free buses make the route ‘accessible to people using wheelchairs’, giving the word for this gap.",
+              "evidence": "the entire route is accessible to people using wheelchairs or who are travelling with baby buggies"
             },
             {
               "id": "q22",
               "answer": "Fuel",
               "before": "………………. use • insufficient number of vehicles are available due to the effects of a severe",
-              "after": ""
+              "after": "",
+              "explanation": "Paulas George complains that ‘drivers often refuse to turn on the air conditioning to save fuel’, matching this gap.",
+              "evidence": "drivers often refuse to turn on the air conditioning to save fuel"
             },
             {
               "id": "q23",
               "answer": "Flood",
               "before": "………………… • passengers are unable to use",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says there is ‘a shortage of buses after a serious flood at the main depot’, giving the word for this gap.",
+              "evidence": "A shortage of buses after a serious flood at the main depot during the rainy season"
             },
             {
               "id": "q24",
               "answer": "Smartcards",
               "before": "……………….. because some equipment is out of action • tickets have to be checked manually at station",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says ‘smartcards can’t be used as the mechanical readers aren’t working’, matching this gap about equipment failure.",
+              "evidence": "Smartcards can’t be used as the mechanical readers aren’t working either"
             },
             {
               "id": "q25",
               "answer": "Gates",
               "before": "……………. •",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says ‘staff stand by the gates and tear tickets as people enter’, giving the word for this gap.",
+              "evidence": "Staff stand by the gates and tear tickets as people enter"
             },
             {
               "id": "q26",
               "answer": "Queues",
               "before": "………………. frequently build up during rush hours",
-              "after": ""
+              "after": "",
+              "explanation": "The passage concludes ‘as a result, queues are considerable at peak times’, matching this final gap.",
+              "evidence": "As a result, queues are considerable at peak times"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 19-26</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span><br/>\n<span>Write your answers in boxes 19-26 on your answer sheet.</span></p><p><strong><span>Dar es Salaam’s DART Bus Rapid Transit system</span></strong></p><p><strong><span>Features</span></strong><br/>\n<span>• the buses use designated (19) ………………. to cut down on delays</span><br/>\n<span>• passengers pay fares before (20) ……………….</span><br/>\n<span>• passengers in (21) …………………. can use every part of the system</span></p><p><strong><span>Problems</span></strong><br/>\n<span>• the temperature control is sometimes not activated in order to reduce (22) ………………. use</span><br/>\n<span>• insufficient number of vehicles are available due to the effects of a severe (23) …………………</span><br/>\n<span>• passengers are unable to use (24) ……………….. because some equipment is out of action</span><br/>\n<span>• tickets have to be checked manually at station (25) …………….</span><br/>\n<span>• (26) ………………. frequently build up during rush hours</span></p>",
@@ -326,7 +374,9 @@ const test: PracticeTest = {
                 "outlining some aspects of prehistory which are still poorly understood",
                 "summarising some attitudes towards recent archaeological revelations",
                 "giving an overview of some current disagreements among archaeologists"
-              ]
+              ],
+              "explanation": "The second paragraph opens ‘Two things stand out to me’ before listing key shifts in our understanding of prehistory, matching option A.",
+              "evidence": "Two things stand out to me"
             },
             {
               "id": "q28",
@@ -337,7 +387,9 @@ const test: PracticeTest = {
                 "innovation can come from a variety of sources",
                 "not all technological advancements are positive",
                 "the path of evolution can often be unpredictable"
-              ]
+              ],
+              "explanation": "The sixth paragraph uses mobile phones to illustrate that ‘evolution usually works by incremental steps and so does technology’, matching option A, that developments happen gradually.",
+              "evidence": "Evolution usually works by incremental steps and so does technology"
             },
             {
               "id": "q29",
@@ -348,7 +400,9 @@ const test: PracticeTest = {
                 "questioning the authenticity of evidence used in earlier research",
                 "conducting research into how prehistoric societies were organised",
                 "reevaluating research influenced by outdated beliefs about society"
-              ]
+              ],
+              "explanation": "The seventh paragraph explains this ‘stuff’ as patriarchal views that ‘fed into their research’, so unpicking it means reassessing research shaped by outdated beliefs, matching option D.",
+              "evidence": "Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research"
             },
             {
               "id": "q30",
@@ -359,7 +413,9 @@ const test: PracticeTest = {
                 "We should not judge past societies by the standards of modern society",
                 "We still have much to learn about how societies have evolved over history",
                 "There is more than one way to interpret evidence about societies in prehistoric times"
-              ]
+              ],
+              "explanation": "The final paragraph says inequality and patriarchy ‘aren’t inevitable… we can choose differently’, suggesting studying the past could help build a fairer society, matching option A.",
+              "evidence": "prehistory shows us that we can choose differently"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>27. What is the writer doing in the second paragraph?</span><br/>\n<span><strong>A</strong> pinpointing some key changes in our understanding of prehistory</span><br/>\n<span><strong>B</strong> outlining some aspects of prehistory which are still poorly understood</span><br/>\n<span><strong>C</strong> summarising some attitudes towards recent archaeological revelations</span><br/>\n<span><strong>D</strong> giving an overview of some current disagreements among archaeologists</span></p><p><span>28. In the sixth paragraph, the writer mentions mobile phones to make the point that</span><br/>\n<span><strong>A</strong> most developments happen in a gradual way.</span><br/>\n<span><strong>B</strong> innovation can come from a variety of sources.</span><br/>\n<span><strong>C</strong> not all technological advancements are positive.</span><br/>\n<span><strong>D</strong> the path of evolution can often be unpredictable.</span></p><p><span>29. In the seventh paragraph, the phrase ‘unpick this stuff’ refers to the task of</span><br/>\n<span><strong>A</strong> assessing the impact of certain recent research findings.</span><br/>\n<span><strong>B</strong> questioning the authenticity of evidence used in earlier research.</span><br/>\n<span><strong>C</strong> conducting research into how prehistoric societies were organised.</span><br/>\n<span><strong>D</strong> reevaluating research influenced by outdated beliefs about society.</span></p><p><span>30. What does the writer suggest in the final paragraph?</span><br/>\n<span><strong>A</strong> Studying past societies could help us create a fairer society today.</span><br/>\n<span><strong>B</strong> We should not judge past societies by the standards of modern society.</span><br/>\n<span><strong>C</strong> We still have much to learn about how societies have evolved over history.</span><br/>\n<span><strong>D</strong> There is more than one way to interpret evidence about societies in prehistoric times.</span></p>"
@@ -373,25 +429,33 @@ const test: PracticeTest = {
               "id": "q31",
               "answer": "E",
               "before": "The findings at Kalambo Falls revealed that",
-              "after": ""
+              "after": "",
+              "explanation": "The Kalambo Falls logs were deliberately shaped and interlocked by a pre-Homo sapiens hominin, showing sophisticated workmanship existed before our species, matching ending E.",
+              "evidence": "researchers found buried logs that had been shaped with stone tools so that they interlocked"
             },
             {
               "id": "q32",
               "answer": "F",
               "before": "Evidence from high-altitude regions suggests that",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says Denisovans lived on high-altitude heights long before modern humans were thought to settle such places, matching ending F.",
+              "evidence": "extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions"
             },
             {
               "id": "q33",
               "answer": "D",
               "before": "An academic publication from June 2023 shows that",
-              "after": ""
+              "after": "",
+              "explanation": "The June 2023 meta-analysis found ‘women hunted in 80 per cent’ of foraging societies, overturning the old ‘Man the Hunter’ idea about who found food, matching ending D.",
+              "evidence": "a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them"
             },
             {
               "id": "q34",
               "answer": "B",
               "before": "Analysis of a 4000-year-old Iberian leader indicates that 70 A Homo sapiens emerged at an earlier point in time than experts previously believed. B previous assumptions about who had power in the prehistoric world were inaccurate. C gender roles in extinct hominin species were different from those in Homo sapiens societies. D experts may have been mistaken about who looked for food in early human communities. E Homo sapiens was probably not the only species capable of sophisticated workmanship. F other species managed to survive in harsh environments before the arrival of Homo sapiens",
-              "after": ""
+              "after": "",
+              "explanation": "The Iberian leader long assumed male turned out to be female, showing earlier assumptions about prehistoric power-holders were wrong, matching ending B.",
+              "evidence": "an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 31-34</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.</span></p><p><span>31. The findings at Kalambo Falls revealed that</span><br/>\n<span>32. Evidence from high-altitude regions suggests that</span><br/>\n<span>33. An academic publication from June 2023 shows that</span><br/>\n<span>34. Analysis of a 4000-year-old Iberian leader indicates that 70</span></p><p><span><strong>A</strong> Homo sapiens emerged at an earlier point in time than experts previously believed.</span><br/>\n<span><strong>B</strong> previous assumptions about who had power in the prehistoric world were inaccurate.</span><br/>\n<span><strong>C</strong> gender roles in extinct hominin species were different from those in Homo sapiens societies.</span><br/>\n<span><strong>D</strong> experts may have been mistaken about who looked for food in early human communities.</span><br/>\n<span><strong>E</strong> Homo sapiens was probably not the only species capable of sophisticated workmanship.</span><br/>\n<span><strong>F</strong> other species managed to survive in harsh environments before the arrival of Homo sapiens.</span></p>"
@@ -404,32 +468,42 @@ const test: PracticeTest = {
             {
               "id": "q35",
               "answer": "No",
-              "textHtml": "It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created"
+              "textHtml": "It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created",
+              "explanation": "The passage says ‘even earlier species, such as Homo erectus, may also have made art’, so Neanderthal paintings were probably not the first artwork, contradicting the statement.",
+              "evidence": "Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells"
             },
             {
               "id": "q36",
               "answer": "Not given",
-              "textHtml": "It is very rare to find prehistoric artwork carved onto shells"
+              "textHtml": "It is very rare to find prehistoric artwork carved onto shells",
+              "explanation": "The passage mentions Homo erectus possibly engraving shells but never says how common or rare such finds are, so this is not given."
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "The methods which the researchers used to examine the Rising Star cave system were rather unconventional"
+              "textHtml": "The methods which the researchers used to examine the Rising Star cave system were rather unconventional",
+              "explanation": "The passage describes how the Rising Star results were released unconventionally, but it never describes the methods used to examine the cave system itself, so this is not given."
             },
             {
               "id": "q38",
               "answer": "Yes",
-              "textHtml": "It is unclear how old the etchings in the Rising Star cave system are"
+              "textHtml": "It is unclear how old the etchings in the Rising Star cave system are",
+              "explanation": "The passage says the cave etchings ‘have yet to be firmly dated’, confirming their age is unclear.",
+              "evidence": "though these have yet to be firmly dated"
             },
             {
               "id": "q39",
               "answer": "Yes",
-              "textHtml": "The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them"
+              "textHtml": "The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them",
+              "explanation": "The passage says the dispute ‘has only been heightened by the way the results were released’, confirming the publicity method added to the controversy.",
+              "evidence": "The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper"
             },
             {
               "id": "q40",
               "answer": "No",
-              "textHtml": "The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art"
+              "textHtml": "The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art",
+              "explanation": "The writer says small brain size ‘is a distraction’ and that other properties like wiring ‘are surely equally important’, downplaying brain size as the key factor, contradicting the statement.",
+              "evidence": "I think the species’ small brains are a distraction"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 35-40</span></strong><br/>\n<span>Do the following statements agree with the views of the writer in reading passage? </span><span>In boxes 35-40 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                   if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                     if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                   if it is impossible to say what the writer thinks about this</span></p><p><span>35. It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created.</span><br/>\n<span>36. It is very rare to find prehistoric artwork carved onto shells.</span><br/>\n<span>37. The methods which the researchers used to examine the Rising Star cave system were rather unconventional.</span><br/>\n<span>38. It is unclear how old the etchings in the Rising Star cave system are.</span><br/>\n<span>39. The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them.</span><br/>\n<span>40. The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art.</span></p>"

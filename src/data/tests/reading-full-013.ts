@@ -59,31 +59,41 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "E",
               "before": "The agenda of current British prison systems is primarily",
-              "after": ""
+              "after": "",
+              "explanation": "Current UK prisons are built for security and control rather than rehabilitation.",
+              "evidence": "Britain's 'new Victorian' prisons are designed for security and control rather than for the rehabilitation and education"
             },
             {
               "id": "q2",
               "answer": "B",
               "before": "The primary role of prisons should he",
-              "after": ""
+              "after": "",
+              "explanation": "The passage argues, through the illiteracy statistics, that prisons should focus on rehabilitation and education.",
+              "evidence": "without education and skills few will be able to build meaningful lives away from crime"
             },
             {
               "id": "q3",
               "answer": "G",
               "before": "The new prison scheme will focus on",
-              "after": ""
+              "after": "",
+              "explanation": "The new scheme centres on the 'Learning Prison' concept, a learning environment rather than a purely punitive one.",
+              "evidence": "to support the wider concept of the 'Learning Prison'"
             },
             {
               "id": "q4",
               "answer": "C",
               "before": "Existing prison architecture causes",
-              "after": ""
+              "after": "",
+              "explanation": "Overcrowding caused by current prison design hampers education and lowers morale.",
+              "evidence": "overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale."
             },
             {
               "id": "q5",
               "answer": "A",
               "before": "The positive results of reducing the number of prisoners in one space include A. improved security, supervision and education. B. rehabilitation and education. C. reduced educational opportunities and morale D. reduced risk of self harm. E. security and control. F. an alternative prison model G. a learning environment rather than a punitive compound H. organisation, management and funding",
-              "after": ""
+              "after": "",
+              "explanation": "Smaller house groupings free up staff time for supervision and put education facilities within easy reach.",
+              "evidence": "the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-5</span></strong><br/>\n<span>Complete each sentence with the correct ending, A – H, below. Write the correct letter A – H in spaces 1-5 below.</span></p><p><span>1. The agenda of current British prison systems is primarily</span><br/>\n<span>2. The primary role of prisons should he</span><br/>\n<span>3. The new prison scheme will focus on</span><br/>\n<span>4. Existing prison architecture causes</span><br/>\n<span>5. The positive results of reducing the number of prisoners in one space include</span></p><p><span>A. improved security, supervision and education.</span><br/>\n<span>B. rehabilitation and education.</span><br/>\n<span>C. reduced educational opportunities and morale</span><br/>\n<span>D. reduced risk of self harm.</span><br/>\n<span>E. security and control.</span><br/>\n<span>F. an alternative prison model</span><br/>\n<span>G. a learning environment rather than a punitive compound</span><br/>\n<span>H. organisation, management and funding.</span></p>"
@@ -102,7 +112,9 @@ const test: PracticeTest = {
                 "a lot of money is invested into educating offenders",
                 "there is an increasing population of offenders in the UK",
                 "the government is getting tougher on offenders"
-              ]
+              ],
+              "explanation": "The extra prison places are needed because the population of offenders keeps growing.",
+              "evidence": "the prison population is continuing to grow at an alarming rate"
             },
             {
               "id": "q7",
@@ -113,7 +125,9 @@ const test: PracticeTest = {
                 "boost self-esteem and social behaviour",
                 "allow prisoners more living space",
                 "increase running costs within prisons"
-              ]
+              ],
+              "explanation": "The cell redesign raises the bed to free up floor space below for storage and study, giving prisoners more usable room than a conventional cell.",
+              "evidence": "the bed is placed lengthways along the external wall at a higher level, freeing up space below."
             },
             {
               "id": "q8",
@@ -124,7 +138,9 @@ const test: PracticeTest = {
                 "is inexpensive",
                 "will eliminate the need for supervision",
                 "is, primarily, to make prisoners more comfortable"
-              ]
+              ],
+              "explanation": "The passage opens by saying reform of the penal system must start with redesigning the buildings.",
+              "evidence": "Any transformation of the penal system must start with the redesign of prison buildings."
             },
             {
               "id": "q9",
@@ -135,7 +151,9 @@ const test: PracticeTest = {
                 "for the improvement of the inmates’ hygiene",
                 "to allow room below for storage and shelves",
                 "to make room for sliding doors"
-              ]
+              ],
+              "explanation": "Raising the bed frees the space beneath it for storage and shelving.",
+              "evidence": "the bed is placed lengthways along the external wall at a higher level, freeing up space below. Storage is built next to where they sleep"
             }
           ],
           "legendHtml": "<p><strong><span>Question 6-9</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>6. The proposal to create 12,000 new prison places, within the next few years, indicates that</span><br/>\n<span><strong>A</strong> prison cells are too small.</span><br/>\n<span><strong>B</strong> a lot of money is invested into educating offenders.</span><br/>\n<span><strong>C</strong> there is an increasing population of offenders in the UK.</span><br/>\n<span><strong>D</strong> the government is getting tougher on offenders.</span></p><p><span>7. The proposed changes to prison architecture are designed primarily to</span><br/>\n<span><strong>A</strong> improve the aesthetic value of the building.</span><br/>\n<span><strong>B</strong> boost self-esteem and social behaviour.</span><br/>\n<span><strong>C</strong> allow prisoners more living space.</span><br/>\n<span><strong>D</strong> increase running costs within prisons.</span></p><p><span>8. The project to reform the penal system in the UK</span><br/>\n<span><strong>A</strong> must begin by altering the prisons’ designs.</span><br/>\n<span><strong>B</strong> is inexpensive.</span><br/>\n<span><strong>C</strong> will eliminate the need for supervision.</span><br/>\n<span><strong>D</strong> is, primarily, to make prisoners more comfortable.</span></p><p><span>9. Why is the bed placed lengthways along the external wall at high level?</span><br/>\n<span><strong>A</strong> to make room below for washing facilities</span><br/>\n<span><strong>B</strong> for the improvement of the inmates’ hygiene</span><br/>\n<span><strong>C</strong> to allow room below for storage and shelves</span><br/>\n<span><strong>D</strong> to make room for sliding doors</span></p>"
@@ -152,25 +170,33 @@ const test: PracticeTest = {
                 "external area"
               ],
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Each house is arranged so its building has its own discrete external area for sport, games or gardening.",
+              "evidence": "each with a discrete external area that can be productively used for sport, games or gardening"
             },
             {
               "id": "q11",
               "answer": "Bed",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "The redesigned cell places the bed along the external wall at a higher level.",
+              "evidence": "the bed is placed lengthways along the external wall at a higher level"
             },
             {
               "id": "q12",
               "answer": "Storage",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Storage is built next to where the bed is, beneath the raised sleeping area.",
+              "evidence": "Storage is built next to where they sleep"
             },
             {
               "id": "q13",
               "answer": "Sliding doors",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Each cell connects to its neighbouring buddy cell through sliding doors.",
+              "evidence": "Each cell is paired with a neighbouring 'buddy' cell linked by sliding doors"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 10-13</span></strong><br/>\n<span>Label the diagram, below. Write <strong>NO MORE THAN THREE WORDS</strong> from, the passage for each answer.</span><br/>\n<span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/ielts-website/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p>",
@@ -242,37 +268,49 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "True",
-              "textHtml": "To be eligible to take part in the Special Olympics, the athlete has to be not only less than intellectually capable, but must also be lacking in a number of other functions"
+              "textHtml": "To be eligible to take part in the Special Olympics, the athlete has to be not only less than intellectually capable, but must also be lacking in a number of other functions",
+              "explanation": "Eligibility requires sub-average intellectual functioning together with limitations in other adaptive skill areas, not intellectual limitation alone.",
+              "evidence": "characterised by significantly sub-average intellectual functioning, existing concurrently with related limitations in two or more of the following applicable adaptive skill areas"
             },
             {
               "id": "q15",
               "answer": "False",
-              "textHtml": "People with intellectual disabilities never improve their lives"
+              "textHtml": "People with intellectual disabilities never improve their lives",
+              "explanation": "This is False: the passage says life functioning generally improves with appropriate, sustained support.",
+              "evidence": "With appropriate support over a sustained period, the life functioning of the person with mental retardation will generally improve."
             },
             {
               "id": "q16",
               "answer": "Not given",
-              "textHtml": "Down Syndrome participants often excel in their chosen field of athletic activity"
+              "textHtml": "Down Syndrome participants often excel in their chosen field of athletic activity",
+              "explanation": "The passage never comments on how well Down Syndrome athletes perform, so there is no information on this."
             },
             {
               "id": "q17",
               "answer": "True",
-              "textHtml": "If you have Down Syndrome, your neck may be at risk of damage in certain spoils"
+              "textHtml": "If you have Down Syndrome, your neck may be at risk of damage in certain spoils",
+              "explanation": "Atlantoaxial Instability puts the neck at risk in activities that hyperextend or flex it.",
+              "evidence": "This condition exposes Down Syndrome individuals to the heightened possibility of a neck injury"
             },
             {
               "id": "q18",
               "answer": "False",
-              "textHtml": "People with Down Syndrome cannot participate in any swimming events"
+              "textHtml": "People with Down Syndrome cannot participate in any swimming events",
+              "explanation": "This is False: only specific strokes and dive starts are restricted, so other swimming events remain open.",
+              "evidence": "such individuals shall not be permitted to participate in sport training and competitions which... include: the butterfly stroke and diving starts in swimming"
             },
             {
               "id": "q19",
               "answer": "False",
-              "textHtml": "All people with intellectual disabilities need the written permission of a parent or guardian in order to participate"
+              "textHtml": "All people with intellectual disabilities need the written permission of a parent or guardian in order to participate",
+              "explanation": "This is False: written guardian permission is only required for minors diagnosed with Atlantoaxial Instability, not for all people with intellectual disabilities.",
+              "evidence": "such athlete shall be allowed to participate in the activities listed in 1) above only if the athlete submits written certification from two physicians combined with an acknowledgment of the risks signed by the adult athlete or his/her parent or guardian if the athlete is a minor."
             },
             {
               "id": "q20",
               "answer": "Not given",
-              "textHtml": "Participation in sports helps people with intellectual disabilities lo improve their communication and social skills"
+              "textHtml": "Participation in sports helps people with intellectual disabilities lo improve their communication and social skills",
+              "explanation": "The passage never states that sports participation improves communication or social skills, so there is no information on this."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-20</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 14-20 below, write</span></p><p><span><strong>TRUE</strong>                       if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                      if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>          if there is no information on this</span></p><p><span>14. To be eligible to take part in the Special Olympics, the athlete has to be not only less than intellectually capable, but must also be lacking in a number of other functions.</span><br/>\n<span>15. People with intellectual disabilities never improve their lives.</span><br/>\n<span>16. Down Syndrome participants often excel in their chosen field of athletic activity.</span><br/>\n<span>17. If you have Down Syndrome, your neck may be at risk of damage in certain spoils.</span><br/>\n<span>18. People with Down Syndrome cannot participate in any swimming events.</span><br/>\n<span>19. All people with intellectual disabilities need the written permission of a parent or guardian in order to participate.</span><br/>\n<span>20. Participation in sports helps people with intellectual disabilities lo improve their communication and social skills.</span></p>"
@@ -291,7 +329,9 @@ const test: PracticeTest = {
                 "to provide information for future candidates",
                 "to promote awareness in the general population of the plight of disabled people",
                 "to list the problems intellectually disabled people have"
-              ]
+              ],
+              "explanation": "The document sets out eligibility rules, which serves to inform potential future participants.",
+              "evidence": "To be eligible for participation in the Special Olympics an individual with an intellectual disability must agree to observe and abide by the SOC Sports Rules."
             },
             {
               "id": "q22",
@@ -302,7 +342,9 @@ const test: PracticeTest = {
                 "ambiguous",
                 "controversial",
                 "non-discriminatory"
-              ]
+              ],
+              "explanation": "The policy explicitly bars exclusion on grounds like gender, race or religion, making it non-discriminatory.",
+              "evidence": "No person shall, on the grounds of gender, race, religion, colour, national origin or financial constraint be excluded from participation"
             },
             {
               "id": "q23",
@@ -313,7 +355,9 @@ const test: PracticeTest = {
                 "Sufferers of the condition outnumber those with physical disabilities",
                 "In most cases, the cause of the condition cannot be determined",
                 "It may be determined by race, education, or social and economic background"
-              ]
+              ],
+              "explanation": "The final paragraph states the specific cause is unknown in three quarters of cases.",
+              "evidence": "in three-quarters of the cases the specific cause is unknown."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 21-23</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>21. What were the objectives of the Special Olympics document?</span><br/>\n<span><strong>A</strong> to inform the public about what they are to expect from the Special Olympics</span><br/>\n<span><strong>B</strong> to provide information for future candidates</span><br/>\n<span><strong>C</strong> to promote awareness in the general population of the plight of disabled people</span><br/>\n<span><strong>D</strong> to list the problems intellectually disabled people have</span></p><p><span>22. What word best describes the Special Olympics participation policy?</span><br/>\n<span><strong>A</strong> inconsistent</span><br/>\n<span><strong>B</strong> ambiguous</span><br/>\n<span><strong>C</strong> controversial</span><br/>\n<span><strong>D</strong> non-discriminatory</span></p><p><span>23. What does the passage say about intellectual disability in the last paragraph?</span><br/>\n<span><strong>A</strong> The majority of cases are inherited.</span><br/>\n<span><strong>B</strong> Sufferers of the condition outnumber those with physical disabilities.</span><br/>\n<span><strong>C</strong> In most cases, the cause of the condition cannot be determined.</span><br/>\n<span><strong>D</strong> It may be determined by race, education, or social and economic background.</span></p>"
@@ -331,7 +375,9 @@ const test: PracticeTest = {
                 "F"
               ],
               "textHtml": "",
-              "answerPairId": "reading-305-q24-q26"
+              "answerPairId": "reading-305-q24-q26",
+              "explanation": "About 15 percent (roughly one in seven) of people with Down Syndrome have Atlantoaxial Instability, one of the three facts mentioned about the condition.",
+              "evidence": "up to 15 percent of individuals with Down Syndrome have a defect in the cervical vertebrae C-1 and C-2 in the neck"
             },
             {
               "id": "q25",
@@ -341,7 +387,9 @@ const test: PracticeTest = {
                 "F"
               ],
               "textHtml": "",
-              "answerPairId": "reading-305-q24-q26"
+              "answerPairId": "reading-305-q24-q26",
+              "explanation": "A minor with Atlantoaxial Instability needs written certification and a guardian's signed acknowledgment to take part in listed sports such as soccer, one of the three facts mentioned about the condition.",
+              "evidence": "written certification from two physicians combined with an acknowledgment of the risks signed by the adult athlete or his/her parent or guardian if the athlete is a minor."
             },
             {
               "id": "q26",
@@ -351,7 +399,9 @@ const test: PracticeTest = {
                 "F"
               ],
               "textHtml": "",
-              "answerPairId": "reading-305-q24-q26"
+              "answerPairId": "reading-305-q24-q26",
+              "explanation": "Individuals can continue in most sports that do not stress the neck without any special conditions, one of the three facts mentioned about the condition.",
+              "evidence": "Accredited Programmes may allow all individuals with Down Syndrome to continue in most Special Olympics sports training and competition activities."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Which <strong>THREE</strong> of the following facts relating to Down Syndrome are mentioned? Choose THREE letters A – F.</span></p><p><span><strong>A</strong> It is thought that about one Down Syndrome person in every seven has Atlantoaxial Instability</span><br/>\n<span><strong>B</strong> A person with Down Syndrome cannot participate in any winter competitions.</span><br/>\n<span><strong>C</strong> Down Syndrome sufferers with Atlantoaxial Instability who are minors need permission from a guardian to play soccer.</span><br/>\n<span><strong>D</strong> Down Syndrome sufferers are unable to flex the upper spine.</span><br/>\n<span><strong>E</strong> Down Syndrome athletes need to wear a neck brace to participate in the Special Olympics.</span><br/>\n<span><strong>F</strong> Down Syndrome athletes can take part in sports that do not directly affect the neck or spine without any preconditions being fulfilled.</span></p>",
@@ -432,25 +482,33 @@ const test: PracticeTest = {
               "id": "q27",
               "answer": "D",
               "before": "An upward trend in violence perpetrated against non-national minority groups by radical nationals",
-              "after": ""
+              "after": "",
+              "explanation": "The passage says increased violence against non-nationals has been seen in many parts of the world.",
+              "evidence": "there has been a marked increase in discrimination and violence directed against migrants, refugees and other non-nationals by extremist groups in many parts of the world."
             },
             {
               "id": "q28",
               "answer": "A",
               "before": "Racism differs from xenophobia in that victims of the former",
-              "after": ""
+              "after": "",
+              "explanation": "Racism is based on visible physical differences between victim and perpetrator.",
+              "evidence": "racism generally implies distinction based on difference in physical characteristics, such as skin colour, hair type, facial features"
             },
             {
               "id": "q29",
               "answer": "F",
               "before": "Where racism occurs, the dominant group promotes a hierarchical system in which it",
-              "after": ""
+              "after": "",
+              "explanation": "Racism places the dominant group in a position of control over other sections of society.",
+              "evidence": "Racism is an ideological construct that assigns a certain race and/or ethnic group, to a position of power over others"
             },
             {
               "id": "q30",
               "answer": "C",
               "before": "Persons not considered to be culturally or physically distinct from the majority A. are always culturally or physically distinct from the perpetrators of the acts of wrongdoing. B. tend to share a likeness with the perpetrators of the crime C. may still find themselves the victims of xenophobic behaviour. D. has been observed in many different parts of the world. E. will eventually reach a position of total submission. F. has a controlling hand in the affairs of one or more of the other sections of society",
-              "after": ""
+              "after": "",
+              "explanation": "Xenophobia can target people who share ancestry or physical traits with the majority if they are still seen as outsiders.",
+              "evidence": "manifestations of xenophobia occur against people of identical physical characteristics, even of shared ancestry, when such people arrive, return or migrate"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Complete each sentence with the correct ending, A – F, below. Write the correct letter, A – F, in the spaces below.</span></p><p><span>27. An upward trend in violence perpetrated against non-national minority groups by radical nationals</span><br/>\n<span>28. Racism differs from xenophobia in that victims of the former</span><br/>\n<span>29. Where racism occurs, the dominant group promotes a hierarchical system in which it</span><br/>\n<span>30. Persons not considered to be culturally or physically distinct from the majority</span></p><p><span>A. are always culturally or physically distinct from the perpetrators of the acts of wrongdoing.</span><br/>\n<span>B. tend to share a likeness with the perpetrators of the crime</span><br/>\n<span>C. may still find themselves the victims of xenophobic behaviour.</span><br/>\n<span>D. has been observed in many different parts of the world.</span><br/>\n<span>E. will eventually reach a position of total submission.</span><br/>\n<span>F. has a controlling hand in the affairs of one or more of the other sections of society.</span></p>"
@@ -469,7 +527,9 @@ const test: PracticeTest = {
                 "refugees",
                 "internal migrants",
                 "immigrant workers"
-              ]
+              ],
+              "explanation": "The passage's figures show 80 to 97 million immigrant workers, the largest of the migrant groups listed.",
+              "evidence": "Many of these, 80-97 million, are estimated to be migrant workers with members of their families."
             },
             {
               "id": "q32",
@@ -480,7 +540,9 @@ const test: PracticeTest = {
                 "governments are finding it difficult to stop racism and xenophobia",
                 "the exploitation of minority groups deters others from migrating",
                 "xenophobia does not exist within minority groups"
-              ]
+              ],
+              "explanation": "The passage shows governments struggling as they confront rising discrimination in increasingly multi-ethnic societies.",
+              "evidence": "As governments grapple with the new realities of their multi-ethnic societies, there has been a marked increase in discrimination and violence"
             },
             {
               "id": "q33",
@@ -491,7 +553,9 @@ const test: PracticeTest = {
                 "the number of migrants is increasing at an alarming rate",
                 "migrants don’t complain about being abused",
                 "only serious cases are documented"
-              ]
+              ],
+              "explanation": "The lack of systematic documentation makes the true scale of abuse impossible to measure.",
+              "evidence": "The lack of any systematic documentation or research over time makes it unclear whether there is a real increase in the level of abuse"
             },
             {
               "id": "q34",
@@ -502,7 +566,9 @@ const test: PracticeTest = {
                 "create the problem",
                 "deny there is a problem",
                 "are eager to solve the problem"
-              ]
+              ],
+              "explanation": "Authorities sometimes deny that racial discrimination and xenophobia exist.",
+              "evidence": "The extent of racial discrimination and xenophobia is often played down and sometimes denied by authorities."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 31-34</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>31. Which of the following migrants are there more of?</span><br/>\n<span><strong>A</strong> internally displaced persons</span><br/>\n<span><strong>B</strong> refugees</span><br/>\n<span><strong>C</strong> internal migrants</span><br/>\n<span><strong>D</strong> immigrant workers</span></p><p><span>32. The author of the text believes that</span><br/>\n<span><strong>A</strong> racism is inevitable when people emigrate.</span><br/>\n<span><strong>B</strong> governments are finding it difficult to stop racism and xenophobia.</span><br/>\n<span><strong>C</strong> the exploitation of minority groups deters others from migrating.</span><br/>\n<span><strong>D</strong> xenophobia does not exist within minority groups.</span></p><p><span>33. There is no real way of knowing how many migrants are discriminated against because</span><br/>\n<span><strong>A</strong> not all racial abuse cases are documented or looked into.</span><br/>\n<span><strong>B</strong> the number of migrants is increasing at an alarming rate.</span><br/>\n<span><strong>C</strong> migrants don’t complain about being abused.</span><br/>\n<span><strong>D</strong> only serious cases are documented.</span></p><p><span>34. People in authority sometimes</span><br/>\n<span><strong>A</strong> exaggerate the seriousness of the problem.</span><br/>\n<span><strong>B</strong> create the problem.</span><br/>\n<span><strong>C</strong> deny there is a problem.</span><br/>\n<span><strong>D</strong> are eager to solve the problem.</span></p>"
@@ -515,32 +581,41 @@ const test: PracticeTest = {
             {
               "id": "q35",
               "answer": "Not given",
-              "textHtml": "Most migrants flee their country of origin because of political or social disorder"
+              "textHtml": "Most migrants flee their country of origin because of political or social disorder",
+              "explanation": "The passage gives migration categories and figures but never states that political or social disorder is the main reason people flee, so there is no information on this."
             },
             {
               "id": "q36",
               "answer": "True",
-              "textHtml": "Most internal migrants leave the countryside for the cities"
+              "textHtml": "Most internal migrants leave the countryside for the cities",
+              "explanation": "The passage describes internal migration as mainly rural to urban.",
+              "evidence": "the tens of millions more of internal migrants, mainly rural to urban, in countries around the world."
             },
             {
               "id": "q37",
               "answer": "True",
-              "textHtml": "Governments are often reluctant to acknowledge that racial discrimination and xenophobia exist"
+              "textHtml": "Governments are often reluctant to acknowledge that racial discrimination and xenophobia exist",
+              "explanation": "The passage says authorities often play down or deny that discrimination and xenophobia exist.",
+              "evidence": "The extent of racial discrimination and xenophobia is often played down and sometimes denied by authorities."
             },
             {
               "id": "q38",
               "answer": "Not given",
-              "textHtml": "Migrants are exploited and abused because they create a sense of insecurity for extremist groups"
+              "textHtml": "Migrants are exploited and abused because they create a sense of insecurity for extremist groups",
+              "explanation": "The passage never explains extremist groups' motives in terms of insecurity, so there is no information on this."
             },
             {
               "id": "q39",
               "answer": "Not given",
-              "textHtml": "People who are racist or xenophobic are uneducated and hostile"
+              "textHtml": "People who are racist or xenophobic are uneducated and hostile",
+              "explanation": "The passage never characterises racist or xenophobic people as uneducated, so there is no information on this."
             },
             {
               "id": "q40",
               "answer": "False",
-              "textHtml": "People returning to their country of ancestry do not face xenophobia"
+              "textHtml": "People returning to their country of ancestry do not face xenophobia",
+              "explanation": "This is False: xenophobia can still target people returning to a country their ancestors came from.",
+              "evidence": "manifestations of xenophobia occur against people of identical physical characteristics, even of shared ancestry, when such people arrive, return or migrate to states or areas where occupants consider them outsiders."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 35-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 35 – 40 below, write</span></p><p><span><strong>TRUE</strong>                           if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                         if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>              if there is no information on this</span></p><p><span>35. Most migrants flee their country of origin because of political or social disorder.</span><br/>\n<span>36. Most internal migrants leave the countryside for the cities.</span><br/>\n<span>37. Governments are often reluctant to acknowledge that racial discrimination and xenophobia exist.</span><br/>\n<span>38. Migrants are exploited and abused because they create a sense of insecurity for extremist groups.</span><br/>\n<span>39. People who are racist or xenophobic are uneducated and hostile.</span><br/>\n<span>40. People returning to their country of ancestry do not face xenophobia.</span></p>"

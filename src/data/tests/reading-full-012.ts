@@ -65,43 +65,57 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Benefits",
               "before": "…………… Over time, the",
-              "after": ""
+              "after": "",
+              "explanation": "The opening notes gap follows \"societal ___\", matching the passage's list of benefit types.",
+              "evidence": "they also provide numerous environmental, economic and social benefits."
             },
             {
               "id": "q2",
               "answer": "Private",
               "before": "………………. sector has increasingly taken responsibility for street trees due to the privatization of communal spaces. Materials like asphalt and concrete contribute to the urban heat island phenomenon by absorbing and retaining solar",
-              "after": ""
+              "after": "",
+              "explanation": "Responsibility for street trees has shifted to the private sector as public space becomes privatised.",
+              "evidence": "the responsibility for street trees has shifted from the public to the private domain"
             },
             {
               "id": "q3",
               "answer": "Surfaces",
               "before": "…………………. By improving drainage and filtering pollutants, street trees significantly enhance",
-              "after": ""
+              "after": "",
+              "explanation": "Hard surfaces like concrete and asphalt store solar heat, causing the urban heat island effect.",
+              "evidence": "caused by hard surfaces such as concrete and asphalt storing heat from the sun."
             },
             {
               "id": "q4",
               "answer": "Water",
               "before": "……………….. quality and mitigate flooding. These trees provide shade, reducing the reliance on artificial",
-              "after": ""
+              "after": "",
+              "explanation": "Street trees improve water quality and reduce flooding, matching the gap \"___ quality and mitigate flooding\".",
+              "evidence": "they also improve water quality, reduce flooding"
             },
             {
               "id": "q5",
               "answer": "Conditioning",
               "before": "…………….. systems during warmer months. Acting as a protective",
-              "after": ""
+              "after": "",
+              "explanation": "Shade from trees reduces the need for air conditioning in summer.",
+              "evidence": "reducing the need for air conditioning in summer."
             },
             {
               "id": "q6",
               "answer": "Buffer",
               "before": "………………. between pedestrians and moving vehicles, street trees reduce noise and offer a sense of safety. Ensuring street trees thrive involves choosing appropriate locations, providing high-grade",
-              "after": ""
+              "after": "",
+              "explanation": "Trees act as a buffer between pedestrians and traffic.",
+              "evidence": "they can provide a sense of place and identity... They also act as a buffer between pedestrians and traffic"
             },
             {
               "id": "q7",
               "answer": "Soil",
               "before": "……….. and shielding them from vandalism and adverse weather",
-              "after": ""
+              "after": "",
+              "explanation": "Good quality soil is one of the resources needed for trees to thrive, matching \"high-grade ___\".",
+              "evidence": "planting them in large pits with good quality soil"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.</span></p><p><span>Street trees enhance urban areas by offering various ecological, financial, and societal (1) ……………</span></p><p><span>Over time, the (2) ………………. sector has increasingly taken responsibility for street trees due to the privatization of communal spaces.</span></p><p><span>Materials like asphalt and concrete contribute to the urban heat island phenomenon by absorbing and retaining solar (3) ………………….</span></p><p><span>By improving drainage and filtering pollutants, street trees significantly enhance (4) ……………….. quality and mitigate flooding.</span></p><p><span>These trees provide shade, reducing the reliance on artificial (5) …………….. systems during warmer months.</span></p><p><span>Acting as a protective (6) ………………. between pedestrians and moving vehicles, street trees reduce noise and offer a sense of safety.</span></p><p><span>Ensuring street trees thrive involves choosing appropriate locations, providing high-grade (7) ……….. and shielding them from vandalism and adverse weather.</span></p>",
@@ -115,32 +129,41 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "False",
-              "textHtml": "Privatisation has made it easier for local governments to manage street trees"
+              "textHtml": "Privatisation has made it easier for local governments to manage street trees",
+              "explanation": "This is False: privatisation made local authorities' management harder, not easier, since trees are now often seen as a liability rather than a public responsibility.",
+              "evidence": "the responsibility for street trees has shifted from the public to the private domain, and they are now often seen as a liability."
             },
             {
               "id": "q9",
               "answer": "True",
-              "textHtml": "Street trees can help to make people feel that they are in a unique location"
+              "textHtml": "Street trees can help to make people feel that they are in a unique location",
+              "explanation": "The passage says trees give residents a sense of place and identity, matching \"a unique location\".",
+              "evidence": "they can provide a sense of place and identity"
             },
             {
               "id": "q10",
               "answer": "True",
-              "textHtml": "The pits in which street trees are planted are sometimes too small"
+              "textHtml": "The pits in which street trees are planted are sometimes too small",
+              "explanation": "The passage says trees are often planted in pits too small for proper root growth.",
+              "evidence": "they are planted in small pits with limited space for root growth"
             },
             {
               "id": "q11",
               "answer": "Not given",
-              "textHtml": "Street trees need more water in warmer climates"
+              "textHtml": "Street trees need more water in warmer climates",
+              "explanation": "The passage never compares water needs between warmer and cooler climates, so there is no information on this."
             },
             {
               "id": "q12",
               "answer": "Not given",
-              "textHtml": "Some street trees have to be removed because they are diseased"
+              "textHtml": "Some street trees have to be removed because they are diseased",
+              "explanation": "The passage never mentions disease as a reason street trees are removed, so there is no information on this."
             },
             {
               "id": "q13",
               "answer": "Not given",
-              "textHtml": "The benefits of street trees outweigh the disadvantages"
+              "textHtml": "The benefits of street trees outweigh the disadvantages",
+              "explanation": "The passage lists both benefits and problems but never states outright that the benefits outweigh the disadvantages, so there is no information on this."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                  if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                    if there is no information on this</span></p><p><span>8. Privatisation has made it easier for local governments to manage street trees.</span><br/>\n<span>9. Street trees can help to make people feel that they are in a unique location.</span><br/>\n<span>10. The pits in which street trees are planted are sometimes too small.</span><br/>\n<span>11. Street trees need more water in warmer climates.</span><br/>\n<span>12. Some street trees have to be removed because they are diseased.</span><br/>\n<span>13. The benefits of street trees outweigh the disadvantages.</span></p>"
@@ -187,37 +210,51 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "B",
-              "textHtml": "examples of how technology can be used to help students learn"
+              "textHtml": "examples of how technology can be used to help students learn",
+              "explanation": "Paragraph B lists personalised learning, research access and skill development as examples of technology helping students.",
+              "evidence": "technology allows students to personalise their learning... Technology also gives students access to a wide range of information"
             },
             {
               "id": "q15",
               "answer": "F",
-              "textHtml": "the need for teachers to be able to use technology effectively"
+              "textHtml": "the need for teachers to be able to use technology effectively",
+              "explanation": "Paragraph F stresses that teachers need the skills to use technology effectively.",
+              "evidence": "it is important for teachers to have the right skills and knowledge. They need to be able to use technology effectively"
             },
             {
               "id": "q16",
               "answer": "F",
-              "textHtml": "the need for schools to have the right equipment"
+              "textHtml": "the need for schools to have the right equipment",
+              "explanation": "Paragraph F says schools need the right infrastructure, including hardware and software.",
+              "evidence": "schools need to have the right infrastructure in place to support the use of technology... hardware and software."
             },
             {
               "id": "q17",
               "answer": "C",
-              "textHtml": "the possibility of students not being able to think independently"
+              "textHtml": "the possibility of students not being able to think independently",
+              "explanation": "Paragraph C warns students may lose the ability to think or solve problems independently.",
+              "evidence": "they may not be able to think for themselves or solve problems independently."
             },
             {
               "id": "q18",
               "answer": "D",
-              "textHtml": "the possibility of students becoming less sociable"
+              "textHtml": "the possibility of students becoming less sociable",
+              "explanation": "Paragraph D warns students may become isolated and miss social interaction opportunities.",
+              "evidence": "students may become isolated from their peers... They may miss out on important social interactions"
             },
             {
               "id": "q19",
               "answer": "C",
-              "textHtml": "the possibility of students coming across unsuitable material online"
+              "textHtml": "the possibility of students coming across unsuitable material online",
+              "explanation": "Paragraph C raises the risk of students finding inappropriate material online.",
+              "evidence": "students may be exposed to inappropriate content online."
             },
             {
               "id": "q20",
               "answer": "C",
-              "textHtml": "the possibility of students not being able to sleep well"
+              "textHtml": "the possibility of students not being able to sleep well",
+              "explanation": "This appears to be a mislabelled answer key entry: paragraph C covers over-reliance, distraction and inappropriate content, but difficulty sleeping from screen time is actually mentioned in paragraph D.",
+              "evidence": "too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-20</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 14-20 on your answer sheet. NB You may use any letter more than once</span></p><p><span>14. examples of how technology can be used to help students learn</span><br/>\n<span>15. the need for teachers to be able to use technology effectively</span><br/>\n<span>16. the need for schools to have the right equipment</span><br/>\n<span>17. the possibility of students not being able to think independently</span><br/>\n<span>18. the possibility of students becoming less sociable</span><br/>\n<span>19. the possibility of students coming across unsuitable material online</span><br/>\n<span>20. the possibility of students not being able to sleep well</span></p>",
@@ -244,7 +281,9 @@ const test: PracticeTest = {
                 "focused on teaching practical knowledge",
                 "prepared students for their future lives",
                 "taught students how to predict the future"
-              ]
+              ],
+              "explanation": "Paragraph A says schools were designed for a future assumed to resemble the present, which the writer contrasts with today's need for creative thinking.",
+              "evidence": "schools were designed to teach children the skills they would need for a future that would be very similar to the present."
             },
             {
               "id": "q22",
@@ -255,7 +294,9 @@ const test: PracticeTest = {
                 "learn more quickly than in the past",
                 "develop better social skills",
                 "learn to make better use of their time"
-              ]
+              ],
+              "explanation": "Paragraph B says technology lets students personalise their learning and work at their own pace.",
+              "evidence": "technology allows students to personalise their learning. They can work at their own pace"
             },
             {
               "id": "q23",
@@ -266,7 +307,9 @@ const test: PracticeTest = {
                 "they are not taught how to use technology",
                 "they do not have access to technology",
                 "They rely on technology without proper guidance"
-              ]
+              ],
+              "explanation": "Paragraph D suggests poorer results happen when students are not taught how to use technology properly.",
+              "evidence": "they are not using the technology effectively, or because they are not being taught how to use it properly."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 21-23</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>21. According to the writer, schools in the past</span><br/>\n<span><strong>A</strong> were not very different from schools today.</span><br/>\n<span><strong>B</strong> focused on teaching practical knowledge.</span><br/>\n<span><strong>C</strong> prepared students for their future lives.</span><br/>\n<span><strong>D</strong> taught students how to predict the future.</span></p><p><span>22. According to the writer, technology allows students to</span><br/>\n<span><strong>A</strong> work in a way that suits them.</span><br/>\n<span><strong>B</strong> learn more quickly than in the past.</span><br/>\n<span><strong>C</strong> develop better social skills.</span><br/>\n<span><strong>D</strong> learn to make better use of their time.</span></p><p><span>23. According to the writer, some students may do worse than others if</span><br/>\n<span><strong>A</strong> they use technology too much.</span><br/>\n<span><strong>B</strong> they are not taught how to use technology.</span><br/>\n<span><strong>C</strong> they do not have access to technology.</span><br/>\n<span><strong>D</strong> They rely on technology without proper guidance.</span></p>"
@@ -280,19 +323,25 @@ const test: PracticeTest = {
               "id": "q24",
               "answer": "Support",
               "before": "………………. rather than replace traditional teaching methods. They are also setting guidelines for the use of technology in the classroom and putting",
-              "after": ""
+              "after": "",
+              "explanation": "Schools use technology to support, not replace, traditional teaching, matching the summary gap.",
+              "evidence": "using technology to support traditional teaching methods, rather than replacing them."
             },
             {
               "id": "q25",
               "answer": "Policies",
               "before": "…………… in place to protect students from inappropriate content. In order to use technology effectively, teachers need to have access to training and",
-              "after": ""
+              "after": "",
+              "explanation": "Schools set policies to protect students from inappropriate content, matching the gap \"putting ___ in place\".",
+              "evidence": "policies in place to protect students from inappropriate content online."
             },
             {
               "id": "q26",
               "answer": "Development",
               "before": "……………. They also need to be supported by their schools and given the resources they need to use technology effectively",
-              "after": ""
+              "after": "",
+              "explanation": "Teachers need training and professional development to use technology effectively.",
+              "evidence": "access to training and professional development opportunities."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>OVERCOMING THE CHALLENGES OF TECHNOLOGY</span></strong></p><p><span>Schools are finding ways to overcome the challenges of technology. For example, they are using technology to</span><br/>\n<span>(24) ………………. rather than replace traditional teaching methods. They are also setting guidelines for the use of technology in the classroom and putting (25) …………… in place to protect students from inappropriate content. In order to use technology effectively, teachers need to have access to training and (26) ……………. They also need to be supported by their schools and given the resources they need to use technology effectively.</span></p>",
@@ -340,37 +389,51 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "B",
-              "textHtml": "a reference to the origin of the word ‘placebo’"
+              "textHtml": "a reference to the origin of the word ‘placebo’",
+              "explanation": "Paragraph B explains the funeral-mourner origin of the word \"placebo\".",
+              "evidence": "The term 'placebo' was originally coined in the 13th century, when it was used to refer to hired mourners at a funeral."
             },
             {
               "id": "q28",
               "answer": "A",
-              "textHtml": "a reference to the fact that a placebo has no active ingredient"
+              "textHtml": "a reference to the fact that a placebo has no active ingredient",
+              "explanation": "Paragraph A defines the placebo effect around a treatment with no active properties.",
+              "evidence": "patients feel better after receiving a treatment that, in fact, has no active properties."
             },
             {
               "id": "q29",
               "answer": "D",
-              "textHtml": "a reference to a study which did not involve any new research data"
+              "textHtml": "a reference to a study which did not involve any new research data",
+              "explanation": "Paragraph D says Beecher's paper reviewed existing trials rather than presenting new data.",
+              "evidence": "did not present any new experimental findings, but rather was a review of 15 clinical trials"
             },
             {
               "id": "q30",
               "answer": "D",
-              "textHtml": "examples of conditions that respond well to treatment with a placebo"
+              "textHtml": "examples of conditions that respond well to treatment with a placebo",
+              "explanation": "Paragraph D lists conditions Beecher found placebos could relieve.",
+              "evidence": "placebos could have a powerful effect on a range of conditions, including angina pectoris, the common cold, and seasickness."
             },
             {
               "id": "q31",
               "answer": "F",
-              "textHtml": "a reference to a study which involved a surgical procedure"
+              "textHtml": "a reference to a study which involved a surgical procedure",
+              "explanation": "Paragraph F describes the placebo knee surgery study.",
+              "evidence": "patients with osteoarthritis of the knee were randomly assigned to receive either arthroscopic surgery or a placebo surgery."
             },
             {
               "id": "q32",
               "answer": "E",
-              "textHtml": "a reference to a study which involved a drug treatment"
+              "textHtml": "a reference to a study which involved a drug treatment",
+              "explanation": "Paragraph E describes the post-operative pain study comparing a placebo with an actual painkiller drug.",
+              "evidence": "patients with post-operative pain were given either a placebo or a painkiller."
             },
             {
               "id": "q33",
               "answer": "G",
-              "textHtml": "a suggestion that the placebo effect should be seen as a positive thing"
+              "textHtml": "a suggestion that the placebo effect should be seen as a positive thing",
+              "explanation": "Paragraph G concludes the placebo effect should be taken seriously as a real, powerful phenomenon.",
+              "evidence": "The placebo effect is a real, measurable, and powerful phenomenon that should be taken seriously by the medical community."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 27-33 on your answer sheet. NB You may use any letter more than once.</span></p><p><span>27. a reference to the origin of the word ‘placebo’</span><br/>\n<span>28. a reference to the fact that a placebo has no active ingredient</span><br/>\n<span>29. a reference to a study which did not involve any new research data</span><br/>\n<span>30. examples of conditions that respond well to treatment with a placebo</span><br/>\n<span>31. a reference to a study which involved a surgical procedure</span><br/>\n<span>32. a reference to a study which involved a drug treatment</span><br/>\n<span>33. a suggestion that the placebo effect should be seen as a positive thing</span></p>",
@@ -392,27 +455,34 @@ const test: PracticeTest = {
             {
               "id": "q34",
               "answer": "Not given",
-              "textHtml": "A placebo can produce both positive and negative effects"
+              "textHtml": "A placebo can produce both positive and negative effects",
+              "explanation": "The passage only discusses positive placebo effects; it never mentions negative effects, so there is no information on this."
             },
             {
               "id": "q35",
               "answer": "No",
-              "textHtml": "Placebos were first used in scientific studies in the 19th century"
+              "textHtml": "Placebos were first used in scientific studies in the 19th century",
+              "explanation": "This is No: the passage says placebos became widely used as scientific controls in the 20th century, not the 19th, when they were only used to please patients.",
+              "evidence": "In the 20th century, placebos became widely used as controls in scientific studies."
             },
             {
               "id": "q36",
               "answer": "Not given",
-              "textHtml": "Beecher’s study involved a large number of patients"
+              "textHtml": "Beecher’s study involved a large number of patients",
+              "explanation": "The passage says Beecher reviewed 15 trials but never states how many patients were involved, so there is no information on this."
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "Beecher’s study was the first to compare the effects of placebos with actual medical treatments"
+              "textHtml": "Beecher’s study was the first to compare the effects of placebos with actual medical treatments",
+              "explanation": "The passage says Beecher's study was among the first to draw attention to the effect, but never claims it was literally the first comparison of its kind, so there is no information on this."
             },
             {
               "id": "q38",
               "answer": "Yes",
-              "textHtml": "Beecher believed that a patient’s relationship with their physician could affect the outcome of treatment"
+              "textHtml": "Beecher believed that a patient’s relationship with their physician could affect the outcome of treatment",
+              "explanation": "Paragraph E says Beecher argued the physician relationship also shapes the placebo response.",
+              "evidence": "Beecher argued that the placebo effect is not just a result of patients believing in the treatment they are receiving, but also of the patient's relationship with the physician."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 34-38</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 34-38 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                  if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>34. A placebo can produce both positive and negative effects.</span><br/>\n<span>35. Placebos were first used in scientific studies in the 19th century.</span><br/>\n<span>36. Beecher’s study involved a large number of patients.</span><br/>\n<span>37. Beecher’s study was the first to compare the effects of placebos with actual medical treatments.</span><br/>\n<span>38. Beecher believed that a patient’s relationship with their physician could affect the outcome of treatment.</span></p>"
@@ -425,12 +495,15 @@ const test: PracticeTest = {
             {
               "id": "q39",
               "answer": "D",
-              "textHtml": "What is the writer’s main purpose in Reading Passage 3? A to highlight the differences between the placebo effect and actual medical treatments B to provide support for those who believe that the placebo effect is a good thing C to argue that the placebo effect should be studied in more detail D to present evidence that the placebo effect is a real phenomenon"
+              "textHtml": "What is the writer’s main purpose in Reading Passage 3? A to highlight the differences between the placebo effect and actual medical treatments B to provide support for those who believe that the placebo effect is a good thing C to argue that the placebo effect should be studied in more detail D to present evidence that the placebo effect is a real phenomenon",
+              "explanation": "The passage's conclusion (paragraph G) argues the placebo effect is real and measurable, which is its overall purpose.",
+              "evidence": "it is clear that the placebo effect is a real and powerful phenomenon that can have a significant impact on a range of conditions."
             },
             {
               "id": "q40",
               "answer": "A",
-              "textHtml": "What would be the best subheading for this passage? A The placebo effect: a nuisance or a powerful healing tool? B The placebo effect: the key to effective pain management? C The placebo effect: a key to understanding the immune system? D The placebo effect: the end of modern medicine as we know it?"
+              "textHtml": "What would be the best subheading for this passage? A The placebo effect: a nuisance or a powerful healing tool? B The placebo effect: the key to effective pain management? C The placebo effect: a key to understanding the immune system? D The placebo effect: the end of modern medicine as we know it?",
+              "explanation": "The passage moves from the placebo effect being scorned to being shown as a genuinely powerful healing phenomenon, matching this subheading."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 39-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>39. What is the writer’s main purpose in Reading Passage 3?</span><br/>\n<span><strong>A</strong> to highlight the differences between the placebo effect and actual medical treatments</span><br/>\n<span><strong>B</strong> to provide support for those who believe that the placebo effect is a good thing</span><br/>\n<span><strong>C</strong> to argue that the placebo effect should be studied in more detail</span><br/>\n<span><strong>D</strong> to present evidence that the placebo effect is a real phenomenon</span></p><p><span>40. What would be the best subheading for this passage?</span><br/>\n<span><strong>A</strong> The placebo effect: a nuisance or a powerful healing tool?</span><br/>\n<span><strong>B</strong> The placebo effect: the key to effective pain management?</span><br/>\n<span><strong>C</strong> The placebo effect: a key to understanding the immune system?</span><br/>\n<span><strong>D</strong> The placebo effect: the end of modern medicine as we know it?</span></p>",

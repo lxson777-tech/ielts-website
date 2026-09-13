@@ -62,37 +62,49 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Tail",
               "before": "……………. Movement • have fewer neck bones than most mammals • need to use their",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 1 says the manatee has a broad, rounded tail while the dugong has a fluked one like a whale, so tail is the differently shaped part.",
+              "evidence": "However, the manatee has a broad, rounded tail, whereas the dugong’s is fluked, like that of a whale."
             },
             {
               "id": "q2",
               "answer": "Flippers",
               "before": "…………… to help to turn their bodies around in order to look sideways • sense vibrations in the water by means of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 says a manatee must turn its whole body to look sideways, steering with its flippers.",
+              "evidence": "To see something on its left or its right, a manatee must turn its entire body, steering with its flippers."
             },
             {
               "id": "q3",
               "answer": "Hair",
               "before": "………………. on their skin Feeding • eat mainly aquatic vegetation, such as",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 says manatees have hairs on their skin that help them sense vibrations in the water.",
+              "evidence": "They also have some hairs covering their bodies which help them sense vibrations in the water around them."
             },
             {
               "id": "q4",
               "answer": "Seagrasses",
               "before": "………… • grasp and pull up plants with their",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 3 says seagrasses and other marine plants make up most of a manatee's diet.",
+              "evidence": "Seagrasses and other marine plants make up most of a manatee’s diet."
             },
             {
               "id": "q5",
               "answer": "Lips",
               "before": "…………… Breathing • come to the surface for air every 2-4 minutes when awake and every 15-20 while sleeping • may regulate the",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 4 says manatees use their lips like a pair of hands to tear food from the seafloor.",
+              "evidence": "Instead of having incisors to grasp their food, manatees have lips which function like a pair of hands to help tear food away from the seafloor."
             },
             {
               "id": "q6",
               "answer": "Buoyancy",
               "before": "………… of their bodies by using muscles of diaphragm to store air internally",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says manatees may use their diaphragm and breathing to adjust their buoyancy.",
+              "evidence": "It’s thought that manatees use their muscular diaphragm and breathing to adjust their buoyancy."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-6</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer.</span></p><p><strong><span>Manatees</span></strong></p><p><strong><span>Appearance</span></strong><br/>\n<span>• look similar to dugongs, but with a differently shaped (1) …………….</span></p><p><strong><span>Movement</span></strong><br/>\n<span>• have fewer neck bones than most mammals</span><br/>\n<span>• need to use their (2) …………… to help to turn their bodies around in order to look sideways</span><br/>\n<span>• sense vibrations in the water by means of (3) ………………. on their skin</span></p><p><strong><span>Feeding</span></strong><br/>\n<span>• eat mainly aquatic vegetation, such as (4) …………</span><br/>\n<span>• grasp and pull up plants with their (5) ……………</span></p><p><strong><span>Breathing</span></strong><br/>\n<span>• come to the surface for air every 2-4 minutes when awake and every 15-20 while sleeping</span><br/>\n<span>• may regulate the (6) ………… of their bodies by using muscles of diaphragm to store air internally</span></p>",
@@ -106,37 +118,48 @@ const test: PracticeTest = {
             {
               "id": "q7",
               "answer": "True",
-              "textHtml": "West Indian manatees can be found in a variety of different aquatic habitats"
+              "textHtml": "West Indian manatees can be found in a variety of different aquatic habitats",
+              "explanation": "Paragraph 6 says the West Indian manatee moves between mangroves, reefs, rivers, lakes and lagoons, confirming a variety of habitats.",
+              "evidence": "It moves between fresh water and salt water, taking advantage of coastal mangroves and coral reefs, rivers, lakes and inland lagoons."
             },
             {
               "id": "q8",
               "answer": "Not given",
-              "textHtml": "The Florida manatee lives in warmer waters than the Antillean manatee"
+              "textHtml": "The Florida manatee lives in warmer waters than the Antillean manatee",
+              "explanation": "Paragraph 6 gives a temperature threshold for the Florida manatee but never compares its water temperature with the Antillean manatee's, so this cannot be confirmed."
             },
             {
               "id": "q9",
               "answer": "False",
-              "textHtml": "The African manatee’s range is limited to coastal waters between the West African countries of Mauritania and Angola"
+              "textHtml": "The African manatee’s range is limited to coastal waters between the West African countries of Mauritania and Angola",
+              "explanation": "Paragraph 7 says the African manatee also uses rivers and is seen in landlocked countries, so its range is not limited to coastal waters.",
+              "evidence": "The species also makes use of rivers, with the mammals seen in landlocked countries such as Mali and Niger."
             },
             {
               "id": "q10",
               "answer": "Not given",
-              "textHtml": "The extent of the loss of Amazonian manatees in the mid-twentieth century was only revealed many years later"
+              "textHtml": "The extent of the loss of Amazonian manatees in the mid-twentieth century was only revealed many years later",
+              "explanation": "Paragraph 9 gives the number of Amazonian manatees killed between 1935 and 1954 but never says when this figure became known, so the timing is not stated."
             },
             {
               "id": "q11",
               "answer": "True",
-              "textHtml": "It is predicted that West Indian manatee populations will fall in the coming decades"
+              "textHtml": "It is predicted that West Indian manatee populations will fall in the coming decades",
+              "explanation": "Paragraph 10 says both West Indian subspecies are expected to decline by 20 percent over the next 40 years.",
+              "evidence": "Both are also expected to undergo a decline of 20% over the next 40 years."
             },
             {
               "id": "q12",
               "answer": "Not given",
-              "textHtml": "The risk to manatees from entanglement and plastic consumption increased significantly in the period 2009-2020"
+              "textHtml": "The risk to manatees from entanglement and plastic consumption increased significantly in the period 2009-2020",
+              "explanation": "Paragraph 10 gives a total count of cases over 2009 to 2020 but does not say the risk increased significantly during that period."
             },
             {
               "id": "q13",
               "answer": "True",
-              "textHtml": "There is some legislation in place which aims to reduce the likelihood of boat strikes on manatees in Florida"
+              "textHtml": "There is some legislation in place which aims to reduce the likelihood of boat strikes on manatees in Florida",
+              "explanation": "Paragraph 10 says laws in parts of Florida now limit boat speeds in winter to protect manatees.",
+              "evidence": "However, laws in certain parts of Florida now limit boat speeds during winter, allowing slow-moving manatees more time to respond."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 7-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>7. West Indian manatees can be found in a variety of different aquatic habitats.</span><br/>\n<span>8. The Florida manatee lives in warmer waters than the Antillean manatee.</span><br/>\n<span>9. The African manatee’s range is limited to coastal waters between the West African countries of Mauritania and Angola.</span><br/>\n<span>10. The extent of the loss of Amazonian manatees in the mid-twentieth century was only revealed many years later.</span><br/>\n<span>11. It is predicted that West Indian manatee populations will fall in the coming decades.</span><br/>\n<span>12. The risk to manatees from entanglement and plastic consumption increased significantly in the period 2009-2020.</span><br/>\n<span>13. There is some legislation in place which aims to reduce the likelihood of boat strikes on manatees in Florida.</span></p>"
@@ -186,17 +209,23 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "B",
-              "textHtml": "mention of false assumptions about why people procrastinate"
+              "textHtml": "mention of false assumptions about why people procrastinate",
+              "explanation": "Paragraph B says procrastination is not due to laziness or poor time management, correcting a popular but false assumption.",
+              "evidence": "Contrary to popular belief, procrastination is not due to laziness or poor time management."
             },
             {
               "id": "q15",
               "answer": "F",
-              "textHtml": "reference to the realisation that others also procrastinate"
+              "textHtml": "reference to the realisation that others also procrastinate",
+              "explanation": "The closing paragraph reminds readers they are not the first or last person to procrastinate, which is the realisation that others do it too.",
+              "evidence": "We should remind ourselves that we’re not the first person to procrastinate, nor the last."
             },
             {
               "id": "q16",
               "answer": "B",
-              "textHtml": "neurological evidence of a link between procrastination and emotion"
+              "textHtml": "neurological evidence of a link between procrastination and emotion",
+              "explanation": "Paragraph B cites brain imaging showing threat detection and emotion regulation areas differ in chronic procrastinators, neurological evidence linking procrastination to emotion.",
+              "evidence": "Research involving brain imaging has found that areas of the brain linked to detection of threats and emotion regulation are actually different in people who chronically procrastinate compared to those who don’t procrastinate frequently."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-16</span></strong><br/>\n<span>Reading passage has six paragraphs, A-F. Which paragraph contains the following information? NB You may use any letter more than once.</span></p><p><span>14. mention of false assumptions about why people procrastinate</span><br/>\n<span>15. reference to the realisation that others also procrastinate</span><br/>\n<span>16. neurological evidence of a link between procrastination and emotion</span></p>",
@@ -218,37 +247,49 @@ const test: PracticeTest = {
               "id": "q17",
               "answer": "Laziness",
               "before": "……………… Others believe it to be the result of an inability to organise time efficiently. But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B opens by rejecting the popular belief that procrastination is due to laziness or poor time management.",
+              "evidence": "Contrary to popular belief, procrastination is not due to laziness or poor time management."
             },
             {
               "id": "q18",
               "answer": "Anxious",
               "before": "……………. when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says a task that threatens our self-worth or makes us anxious is more likely to be put off.",
+              "evidence": "If just thinking about the task threatens our sense of self-worth or makes us anxious, we will be more likely to put it off."
             },
             {
               "id": "q19",
               "answer": "Threats",
               "before": "………………. Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says brain regions linked to detecting threats and regulating emotion differ in frequent procrastinators.",
+              "evidence": "Research involving brain imaging has found that areas of the brain linked to detection of threats and emotion regulation are actually different in people who chronically procrastinate compared to those who don’t procrastinate frequently."
             },
             {
               "id": "q20",
               "answer": "Exams",
               "before": "……………. might be a typical example of one such task. People who are likely to procrastinate tend to be either",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C gives preparing for exams as an example of an emotionally loaded, difficult task people put off.",
+              "evidence": "Tasks that are emotionally loaded or difficult, such as preparing for exams, are prime candidates for procrastination."
             },
             {
               "id": "q21",
               "answer": "Perfectionists",
               "before": "……………. or those with low self-esteem. Procrastination is only a short-term measure for managing emotions. It’s often followed by a feeling of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C says perfectionists, who fear harsh judgement of their work, are prone to procrastinate.",
+              "evidence": "Another group of people who tend to procrastinate are perfectionists, who worry their work will be judged harshly by others."
             },
             {
               "id": "q22",
               "answer": "Guilt",
               "before": "……………, which worsens our mood and leads to more procrastination",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C says procrastinators are often left with a sense of guilt that worsens their mood.",
+              "evidence": "Afterwards, people tend to be left with a sense of guilt that not only increases their negative mood, but also reinforces their tendency to procrastinate."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 17-22</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>What makes us procrastinate?</span></strong></p><p><span>Many people think that procrastination is the result of (17) ……………… Others believe it to be the result of an inability to organise time efficiently.</span></p><p><span>But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel (18) ……………. when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying (19) ……………….</span></p><p><span>Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take (20) ……………. might be a typical example of one such task.</span></p><p><span>People who are likely to procrastinate tend to be either (21) ……………. or those with low self-esteem.</span></p><p><span>Procrastination is only a short-term measure for managing emotions. It’s often followed by a feeling of (22) ……………, which worsens our mood and leads to more procrastination.</span></p>",
@@ -266,7 +307,9 @@ const test: PracticeTest = {
                 "C"
               ],
               "textHtml": "",
-              "answerPairId": "reading-311-q23-q24"
+              "answerPairId": "reading-311-q23-q24",
+              "explanation": "Paragraph D says frequent procrastinators had less annual income and less employment stability than others.",
+              "evidence": "In fact, in one US survey of over 22,000 employees, participants who said they regularly procrastinated had less annual income and less employment stability."
             },
             {
               "id": "q24",
@@ -275,7 +318,9 @@ const test: PracticeTest = {
                 "C"
               ],
               "textHtml": "",
-              "answerPairId": "reading-311-q23-q24"
+              "answerPairId": "reading-311-q23-q24",
+              "explanation": "Paragraph D says frequent procrastinators had less annual income and less employment stability than others.",
+              "evidence": "In fact, in one US survey of over 22,000 employees, participants who said they regularly procrastinated had less annual income and less employment stability."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 23 and 24</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> comparisons between employees who often procrastinate and those who do not are mentioned in the text?</span><br/>\n<span>A. Their salaries are lower.</span><br/>\n<span>B. The quality of their work is inferior.</span><br/>\n<span>C. They don’t keep their jobs for as long.</span><br/>\n<span>D. They don’t enjoy their working lives as much.</span><br/>\n<span>E. They have poorer relationships with colleagues.</span></p>",
@@ -315,7 +360,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-311-q25-q26"
+              "answerPairId": "reading-311-q25-q26",
+              "explanation": "Paragraph F and the paragraph after it recommend not being overly critical of ourselves and fending off distractions that pull focus from the task.",
+              "evidence": "There are a number of evidence-based strategies that can help us fend off distractions that can occupy our minds when we should be focusing on the thing we should be getting on with."
             },
             {
               "id": "q26",
@@ -324,7 +371,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-311-q25-q26"
+              "answerPairId": "reading-311-q25-q26",
+              "explanation": "Paragraph F and the paragraph after it recommend not being overly critical of ourselves and fending off distractions that pull focus from the task.",
+              "evidence": "There are a number of evidence-based strategies that can help us fend off distractions that can occupy our minds when we should be focusing on the thing we should be getting on with."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 25 and 26</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> recommendations for getting out of a cycle of procrastination does the writer give?</span><br/>\n<span>A. not judging ourselves harshly</span><br/>\n<span>B. setting ourselves manageable aims</span><br/>\n<span>C. rewarding ourselves for tasks achieved</span><br/>\n<span>D. prioritising tasks according to their importance</span><br/>\n<span>E. avoiding things that stop us concentrating on our tasks</span></p>",
@@ -397,32 +446,42 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "No",
-              "textHtml": "When DeJesus first used ABS, he shared decision-making about strikes with it"
+              "textHtml": "When DeJesus first used ABS, he shared decision-making about strikes with it",
+              "explanation": "Paragraph 1 says DeJesus had decisions fed to him through an earpiece rather than judging strikes himself, so he did not share the decision, ABS made it alone.",
+              "evidence": "Instead of making any judgments himself about a strike*, DeJesus had decisions fed to him through an earpiece, connected to a modified missile-tracking system."
             },
             {
               "id": "q28",
               "answer": "Yes",
-              "textHtml": "MLB considered it necessary to amend the size of the strike zone when criticisms were received from players"
+              "textHtml": "MLB considered it necessary to amend the size of the strike zone when criticisms were received from players",
+              "explanation": "Paragraph 4 says after players complained about strange calls, MLB decided to tweak the dimensions of the zone.",
+              "evidence": "In response, MLB decided to tweak the dimensions of the zone, and the following year the consensus was that ABS is profoundly consistent."
             },
             {
               "id": "q29",
               "answer": "Not given",
-              "textHtml": "MLB is keen to justify the money spent on improving the accuracy of ABS’s calculations"
+              "textHtml": "MLB is keen to justify the money spent on improving the accuracy of ABS’s calculations",
+              "explanation": "The passage never mentions how much ABS cost or whether MLB wanted to justify that spending, so there is no information on this."
             },
             {
               "id": "q30",
               "answer": "No",
-              "textHtml": "The hundred-mile-an-hour fastball led to a more exciting style of play"
+              "textHtml": "The hundred-mile-an-hour fastball led to a more exciting style of play",
+              "explanation": "Paragraph 6 says the fast fastball flattened the game into strikeouts, walks and home runs, a style lacking action, so it made play less exciting, not more.",
+              "evidence": "It flattened the game into strikeouts, walks, and home runs-a type of play lacking much action."
             },
             {
               "id": "q31",
               "answer": "Not given",
-              "textHtml": "The differing proposals for alterations to the baseball bat led to fierce debate on Sword’s team"
+              "textHtml": "The differing proposals for alterations to the baseball bat led to fierce debate on Sword’s team",
+              "explanation": "Paragraph 7 says the team considered changing bats among other fixes but never mentions any fierce debate over this."
             },
             {
               "id": "q32",
               "answer": "Yes",
-              "textHtml": "ABSmakes changes to the shape of the strike zone feasible"
+              "textHtml": "ABSmakes changes to the shape of the strike zone feasible",
+              "explanation": "Sword says any strike zone shape, even one shaped like Texas, can be loaded into ABS, confirming the shape can be changed.",
+              "evidence": "“It might be a triangle, or a blob, or something shaped like Texas."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage?</span></p><p><span><strong>YES</strong>                                 if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                    if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>27. When DeJesus first used ABS, he shared decision-making about strikes with it.</span><br/>\n<span>28. MLB considered it necessary to amend the size of the strike zone when criticisms were received from players.</span><br/>\n<span>29. MLB is keen to justify the money spent on improving the accuracy of ABS’s calculations.</span><br/>\n<span>30. The hundred-mile-an-hour fastball led to a more exciting style of play.</span><br/>\n<span>31. The differing proposals for alterations to the baseball bat led to fierce debate on Sword’s team.</span><br/>\n<span>32.ABSmakes changes to the shape of the strike zone feasible.</span></p>"
@@ -436,31 +495,41 @@ const test: PracticeTest = {
               "id": "q33",
               "answer": "F",
               "before": "…………… The umpire’s job had, at one time, required a",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 says MLB wanted human umpires to announce calls just as they had done in the past, their former role.",
+              "evidence": "Major League Baseball (MLB), who had commissioned the system, wanted human umpires to announce the calls, just as they would have done in the past."
             },
             {
               "id": "q34",
               "answer": "D",
               "before": "…………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 says calling a strike used to be a judgment call by the umpire, a subjective assessment.",
+              "evidence": "Previously, calling a strike was a judgment call on the part of the umpire."
             },
             {
               "id": "q35",
               "answer": "H",
               "before": "………… extending approximately from the batter’s knee to his chest. In the past,",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 describes the strike zone as an imaginary zone from the knees to the chest, the perceived area a pitch must cross.",
+              "evidence": "Even if the batter does not hit the ball, a pitch that passes through the ‘strike zone’ (an imaginary zone about seventeen inches wide, stretching from the batter’s knees to the middle of his chest) is considered a strike."
             },
             {
               "id": "q36",
               "answer": "B",
               "before": "……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 3 says countless arguments took place between managers and umpires over the strike zone, that is, numerous disputes.",
+              "evidence": "For a hundred and fifty years or so, the strike zone has been the game’s animating force-countless arguments between a team’s manager and the umpire have taken place over its boundaries and whether a ball had crossed through it."
             },
             {
               "id": "q37",
               "answer": "G",
               "before": "…………… A. pitch boundary B. numerous disputes C. team tactics D. subjective assessment E. widespread approval F. former roles G. total silence H. perceived area",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 says nobody said a word when DeJesus announced the first robo-umpire calls, total silence.",
+              "evidence": "Nobody said a word."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 33-37</span></strong><br/>\n<span>Complete the summary using the list of phrases, A-H, below.</span></p><p><strong><span>Calls by the umpire</span></strong></p><p><span>Even after ABS was developed, MLB still wanted human umpires to shout out decisions as they had in their (33) …………… The umpire’s job had, at one time, required a (34) …………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a (35) ………… extending approximately from the batter’s knee to his chest. In the past, (36) ……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with (37) ……………</span></p><p><span>A. pitch boundary</span><br/>\n<span>B. numerous disputes</span><br/>\n<span>C. team tactics</span><br/>\n<span>D. subjective assessment</span><br/>\n<span>E. widespread approval</span><br/>\n<span>F. former roles</span><br/>\n<span>G. total silence</span><br/>\n<span>H. perceived area</span></p>"
@@ -479,7 +548,9 @@ const test: PracticeTest = {
                 "It may reduce some of the appeal of the game",
                 "It will lead to the disappearance of human umpires",
                 "It may increase calls for the rules of baseball to be changed"
-              ]
+              ],
+              "explanation": "Viola says the old system let a pitcher and umpire have a dialogue, which ABS's strict precision removes, suggesting the game loses some of its appeal.",
+              "evidence": "There was a dialogue between pitcher and umpire."
             },
             {
               "id": "q39",
@@ -490,7 +561,9 @@ const test: PracticeTest = {
                 "was intended to keep up with developments in other sports",
                 "was a response to changing attitudes about the role of sport",
                 "was an attempt to ensure baseball retained a young audience"
-              ]
+              ],
+              "explanation": "Sword says executives fear losing younger fans, so ABS was meant to help baseball keep a young audience.",
+              "evidence": "According to Sword, ABS was part of a larger project to make baseball more exciting since executives are terrified of losing younger fans, as has been the case with horse racing and boxing."
             },
             {
               "id": "q40",
@@ -501,7 +574,9 @@ const test: PracticeTest = {
                 "to argue that people have unrealistic expectations of sport",
                 "to indicate that accuracy is not the same thing as enjoyment",
                 "to suggest that the number of baseball fans needs to increase"
-              ]
+              ],
+              "explanation": "Noe and Russo both suggest that perfect accuracy is not the same as enjoyment, since Russo says perfect would be weird and boring.",
+              "evidence": "I think perfect would be weird."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 38-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>38. What does the writer suggest about ABS in the fifth paragraph?</span><br/>\n<span>A. It is bound to make key decisions that are wrong.</span><br/>\n<span>B. It may reduce some of the appeal of the game.</span><br/>\n<span>C. It will lead to the disappearance of human umpires.</span><br/>\n<span>D. It may increase calls for the rules of baseball to be changed.</span></p><p><span>39. Morgan Sword says that the introduction of ABS</span><br/>\n<span>A. was regarded as an experiment without a guaranteed outcome.</span><br/>\n<span>B. was intended to keep up with developments in other sports.</span><br/>\n<span>C. was a response to changing attitudes about the role of sport.</span><br/>\n<span>D. was an attempt to ensure baseball retained a young audience.</span></p><p><span>40. Why does the writer include the views of Noe and Russo?</span><br/>\n<span>A. to show that attitudes to technology vary widely</span><br/>\n<span>B. to argue that people have unrealistic expectations of sport</span><br/>\n<span>C. to indicate that accuracy is not the same thing as enjoyment</span><br/>\n<span>D. to suggest that the number of baseball fans needs to increase</span></p>"

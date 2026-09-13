@@ -62,31 +62,41 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Rats",
               "before": "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
-              "after": ""
+              "after": "",
+              "explanation": "The second paragraph describes research on rats, whose brain patterns while running a maze matched those seen in REM sleep, so ‘Rats’ is the animal in this row of the table.",
+              "evidence": "researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep"
             },
             {
               "id": "q2",
               "answer": "Visual",
               "before": "…………. input may have been dreaming of flying Whales and dolphins · still have",
-              "after": ""
+              "after": "",
+              "explanation": "The third paragraph says REM activity was high in regions ‘processing visual information’, matching the word needed for what the pigeons’ brains were dealing with.",
+              "evidence": "REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying"
             },
             {
               "id": "q3",
               "answer": "Half",
               "before": "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph says whales and dolphins ‘do not shut down their entire brain… but only half of it, keeping the rest awake’, giving the word for this gap.",
+              "evidence": "do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake"
             },
             {
               "id": "q4",
               "answer": "Temperature",
               "before": "… their dreams are probably not very",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph explains they avoid REM sleep because ‘animals are more vulnerable to extremes of temperature’ during it, matching this gap.",
+              "evidence": "during REM sleep animals are more vulnerable to extremes of temperature"
             },
             {
               "id": "q5",
               "answer": "Vivid",
               "before": "…………",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph says whales and dolphins ‘may only experience non-REM dreams, which are less vivid’, giving the word for this final gap.",
+              "evidence": "they may only experience non-REM dreams, which are less vivid"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-5</span></strong><br/>\n<span>Complete the table below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.</span></p><table><tbody><tr><td colspan=\"3\"><span><strong>Research into sleep and dreaming</strong></span></td></tr><tr><td></td><td width=\"198\"><strong><span>Research findings</span></strong></td><td width=\"198\"><strong><span>Comment</span></strong></td></tr><tr><td width=\"198\"><span>Humans</span></td><td width=\"198\"><span>·       humans experience REM sleep and non-REM sleep</span><p><span>·       in REM sleep, the eyes and muscles move</span></p></td><td width=\"198\"></td></tr><tr><td width=\"198\"><span>(1) ………………   </span></td><td width=\"198\"><span>·       similar brain patterns were observed when active and sleeping</span></td><td width=\"198\"><span>indicative of dreaming</span></td></tr><tr><td width=\"198\"><span>Pigeons</span></td><td width=\"198\"><span>·       when sleeping, pigeons displayed activity in parts of the brain that deal with (2) …………. input</span></td><td width=\"198\"><span>may have been dreaming of flying</span></td></tr><tr><td width=\"198\"><span>Whales and dolphins</span></td><td width=\"198\"><span>·       still have (3) ………..their brain awake when they sleep</span><p><span>·       don’t experience REM sleep, as this could affect their sensitivity to<strong>              </strong>(4) <strong>…</strong></span></p></td><td width=\"198\"><span>their dreams are probably not very (5) …………<strong>  </strong></span></td></tr></tbody></table>",
@@ -139,42 +149,55 @@ const test: PracticeTest = {
             {
               "id": "q6",
               "answer": "True",
-              "textHtml": "Dreaming about past experiences helps us to create lasting memories of them"
+              "textHtml": "Dreaming about past experiences helps us to create lasting memories of them",
+              "explanation": "The fifth paragraph says ‘when events are replayed in dreams, this helps to integrate memories into longer-term storage’, confirming the statement.",
+              "evidence": "when events are replayed in dreams, this helps to integrate memories into longer-term storage"
             },
             {
               "id": "q7",
               "answer": "False",
-              "textHtml": "It is now possible to tell what type of dream a dog is having"
+              "textHtml": "It is now possible to tell what type of dream a dog is having",
+              "explanation": "The sixth paragraph admits ‘we don’t know if there is an internal experience… that comes along with’ a dog’s twitching, contradicting the claim that we can now tell what dogs dream about.",
+              "evidence": "we don’t know if there is an internal experience of chasing rabbits that comes along with that"
             },
             {
               "id": "q8",
               "answer": "Not given",
-              "textHtml": "David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses"
+              "textHtml": "David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses",
+              "explanation": "The passage describes what happened during Scheel’s documentary but never says it influenced other researchers’ work on octopuses, so this is not given."
             },
             {
               "id": "q9",
               "answer": "False",
-              "textHtml": "While it was asleep, the octopus called Costello reacted as if it was hunting"
+              "textHtml": "While it was asleep, the octopus called Costello reacted as if it was hunting",
+              "explanation": "Costello behaved ‘as though he were being attacked by a predator’, a defensive reaction, not one that suggests he was hunting, contradicting the statement.",
+              "evidence": "squirted ink as though he were being attacked by a predator"
             },
             {
               "id": "q10",
               "answer": "True",
-              "textHtml": "Scheel believes more research into octopuses’ dreams should be carried out"
+              "textHtml": "Scheel believes more research into octopuses’ dreams should be carried out",
+              "explanation": "Scheel says brain imaging ‘is needed to show that the octopuses are replaying sequences… in dreams’, implying he believes more research is required.",
+              "evidence": "he argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams"
             },
             {
               "id": "q11",
               "answer": "False",
-              "textHtml": "We may soon be able to share the dreams of other human beings"
+              "textHtml": "We may soon be able to share the dreams of other human beings",
+              "explanation": "The passage says ‘we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too’, directly contradicting the idea that we may soon share human dreams.",
+              "evidence": "we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too"
             },
             {
               "id": "q12",
               "answer": "Not given",
-              "textHtml": "Hearing may be an important part of the dreams of some animals"
+              "textHtml": "Hearing may be an important part of the dreams of some animals",
+              "explanation": "The passage mentions smell for dogs and vibrations for spiders as dominant senses, but it never discusses hearing in animal dreams, so this is not given."
             },
             {
               "id": "q13",
               "answer": "Not given",
-              "textHtml": "Interest in the reasons why humans dream has increased greatly in recent times"
+              "textHtml": "Interest in the reasons why humans dream has increased greatly in recent times",
+              "explanation": "The passage never discusses whether interest in why humans dream has grown over time, so this is not given."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 6-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 6-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                   if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                 if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN                   </strong> if there is no information on this</span></p><p><span>6. Dreaming about past experiences helps us to create lasting memories of them.</span><br/>\n<span>7. It is now possible to tell what type of dream a dog is having.</span><br/>\n<span>8. David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses.</span><br/>\n<span>9. While it was asleep, the octopus called Costello reacted as if it was hunting.</span><br/>\n<span>10. Scheel believes more research into octopuses’ dreams should be carried out.</span><br/>\n<span>11. We may soon be able to share the dreams of other human beings.</span><br/>\n<span>12. Hearing may be an important part of the dreams of some animals.</span><br/>\n<span>13. Interest in the reasons why humans dream has increased greatly in recent times.</span></p>"
@@ -221,32 +244,44 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "E",
-              "textHtml": "a mention of the uncertainty regarding the purpose of certain objects"
+              "textHtml": "a mention of the uncertainty regarding the purpose of certain objects",
+              "explanation": "Paragraph E says of the figurines that ‘their precise function is not known’, matching this heading about uncertain purpose.",
+              "evidence": "their precise function is not known"
             },
             {
               "id": "q15",
               "answer": "G",
-              "textHtml": "the likelihood that a climatic factor increased the problems Mapungubwe faced"
+              "textHtml": "the likelihood that a climatic factor increased the problems Mapungubwe faced",
+              "explanation": "Paragraph G says the decline may have been ‘brought to a crisis point by a series of droughts’, a climatic factor.",
+              "evidence": "a situation that may have been brought to a crisis point by a series of droughts"
             },
             {
               "id": "q16",
               "answer": "C",
-              "textHtml": "a mention of the location where members of the king’s family are thought to have lived"
+              "textHtml": "a mention of the location where members of the king’s family are thought to have lived",
+              "explanation": "Paragraph C says the grander outlying residences ‘probably belonged to male relatives of the king’, matching this heading.",
+              "evidence": "some grander residences dotted around the outskirts of Babandyanalo, and these probably belonged to male relatives of the king"
             },
             {
               "id": "q17",
               "answer": "D",
-              "textHtml": "a reference to people who brought goods by ship"
+              "textHtml": "a reference to people who brought goods by ship",
+              "explanation": "Paragraph D refers to ‘merchants travelling from India by sea’, matching people who brought goods by ship.",
+              "evidence": "merchants travelling from India by sea"
             },
             {
               "id": "q18",
               "answer": "B",
-              "textHtml": "an estimate of the size to which the Mapungubwe community grew"
+              "textHtml": "an estimate of the size to which the Mapungubwe community grew",
+              "explanation": "Paragraph B gives the figure that Mapungubwe’s ‘total population at its peak in the mid-13th century was around 5,000 people’.",
+              "evidence": "The total population of Mapungubwe at its peak in the mid-13th century was around 5,000 people"
             },
             {
               "id": "q19",
               "answer": "A",
-              "textHtml": "a mention of agricultural produce being exchanged for other items"
+              "textHtml": "a mention of agricultural produce being exchanged for other items",
+              "explanation": "Paragraph A says farming ‘brought plenty of food and a surplus that could be traded for needed goods’, matching agricultural produce exchanged for other items.",
+              "evidence": "a surplus that could be traded for needed goods"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information?</span><br/>\n<span>Write the correct letter, A-G, in boxes 14-19 on your answer sheet.</span></p><p><span>14. a mention of the uncertainty regarding the purpose of certain objects</span><br/>\n<span>15. the likelihood that a climatic factor increased the problems Mapungubwe faced</span><br/>\n<span>16. a mention of the location where members of the king’s family are thought to have lived</span><br/>\n<span>17. a reference to people who brought goods by ship</span><br/>\n<span>18. an estimate of the size to which the Mapungubwe community grew</span><br/>\n<span>19. a mention of agricultural produce being exchanged for other items</span></p>",
@@ -272,7 +307,8 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-317-q20-q21"
+              "answerPairId": "reading-317-q20-q21",
+              "explanation": "Paragraph F says the gold objects ‘were all found at the royal burial site’ (B) and that the decoration technique was ‘found nowhere else except Great Zimbabwe’ (D), so B and D are the two correct statements."
             },
             {
               "id": "q21",
@@ -281,7 +317,8 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-317-q20-q21"
+              "answerPairId": "reading-317-q20-q21",
+              "explanation": "Paragraph F says the gold objects ‘were all found at the royal burial site’ (B) and that the decoration technique was ‘found nowhere else except Great Zimbabwe’ (D), so B and D are the two correct statements."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 20 and 21 on your answer sheet</span></p><p><span>The archaeological record reveals information about gold and the kingdom of Mapungubwe. Which TWO pieces of information are mentioned by the writer?</span><br/>\n<span><strong>A</strong> Not everyone in Mapungubwe used gold as a form of payment.</span><br/>\n<span><strong>B</strong> Items of gold were placed close to where Mapungubwe kings were buried.</span><br/>\n<span><strong>C</strong> The most valuable item discovered in Mapungubwe was a sceptre made of gold.</span><br/>\n<span><strong>D</strong> The way gold was decorated in Mapungubwe was also practised in another kingdom.</span><br/>\n<span><strong>E</strong> Working with gold was a respected occupation in the Mapungubwe community.</span></p>",
@@ -307,7 +344,8 @@ const test: PracticeTest = {
               "value": "E",
               "label": "Working with gold was a respected occupation in the Mapungubwe community"
             }
-          ]
+          ],
+          "explanationHtml": "<p>Paragraph F says the gold objects ‘were all found at the royal burial site’ (B) and that the decoration technique was ‘found nowhere else except Great Zimbabwe’ (D), so <strong>B</strong> and <strong>D</strong> are the two correct statements.</p>"
         },
         {
           "title": "Questions 22-26",
@@ -318,31 +356,41 @@ const test: PracticeTest = {
               "id": "q22",
               "answer": "Prosperity",
               "before": "………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects,",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says large-scale pottery production ‘is another indicator of the prosperity of Mapungubwe society’, matching this gap.",
+              "evidence": "is another indicator of the prosperity of Mapungubwe society"
             },
             {
               "id": "q23",
               "answer": "Whistles",
               "before": "………………. and figures of various animals, as well as models of people with stretched",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E lists ‘ceramic discs, and whistles’ among the finds, matching this gap.",
+              "evidence": "There are also ceramic discs, and whistles"
             },
             {
               "id": "q24",
               "answer": "Bodies",
               "before": "…………………. It is possible that these had a role in ceremonies to honour",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E describes figures of humans ‘with elongated bodies and short limbs’, matching this gap.",
+              "evidence": "small figures of highly stylised humans with elongated bodies and short limbs"
             },
             {
               "id": "q25",
               "answer": "Ancestors",
               "before": "……………………. In addition, pieces of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E suggests the figures ‘may have been used in ceremonies as offerings to ancestors’, matching this gap.",
+              "evidence": "The figures may have been used in ceremonies as offerings to ancestors"
             },
             {
               "id": "q26",
               "answer": "Jewellery",
               "before": "………………….. made from a local metal have been found at the site",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E mentions ‘small jewellery items made from locally sourced copper’, matching this final gap.",
+              "evidence": "small jewellery items made from locally sourced copper"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 22-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 22-26 on your answer sheet.</span></p><p><strong><span>Archaeological discoveries</span></strong></p><p><span>The Mapungubwe community’s (22) ………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects, (23) ………………. and figures of various animals, as well as models of people with stretched (24) …………………. It is possible that these had a role in ceremonies to honour (25) ……………………. In addition, pieces of (26) ………………….. made from a local metal have been found at the site.</span></p>",
@@ -414,7 +462,9 @@ const test: PracticeTest = {
                 "describing a public perception of Al",
                 "outlining some possible benefits of Al",
                 "highlighting the breadth of the influence of Al"
-              ]
+              ],
+              "explanation": "The first paragraph describes ‘hysteria about the future of artificial intelligence’ and sensationalist headlines, matching option B, describing a public perception of AI.",
+              "evidence": "hysteria about the future of artificial intelligence (AI) is everywhere"
             },
             {
               "id": "q28",
@@ -425,7 +475,9 @@ const test: PracticeTest = {
                 "specifies its probable origins",
                 "mentions its chief supporters",
                 "weighs up some pros and cons"
-              ]
+              ],
+              "explanation": "The second paragraph warns AI solutionism ‘jeopardises the value of machine intelligence by disregarding important AI safety principles’, matching option A, pointing out a risk.",
+              "evidence": "this mindset actually jeopardises the value of machine intelligence by disregarding important AI safety principles"
             },
             {
               "id": "q29",
@@ -436,7 +488,9 @@ const test: PracticeTest = {
                 "have misunderstood the function of the machine-learning sector",
                 "be unaware of the challenges of implementing national Al initiatives",
                 "be too keen to enter the race to dominate the machine-learning sector"
-              ]
+              ],
+              "explanation": "The fourth paragraph says politicians ‘do not understand’ that adding a neural network will not automatically solve a problem, matching option C, being unaware of implementation challenges.",
+              "evidence": "what many politicians do not understand is that simply adding a neural network to a problem will not automatically mean that you’ll find a solution"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-29</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-29 on your answer sheet.</span></p><p><span>27. What is the writer doing in the first paragraph?</span><br/>\n<span><strong>A</strong> predicting the future impact of Al</span><br/>\n<span><strong>B</strong> describing a public perception of Al</span><br/>\n<span><strong>C</strong> outlining some possible benefits of Al</span><br/>\n<span><strong>D</strong> highlighting the breadth of the influence of Al</span></p><p><span>28. When discussing Al solutionism in the second paragraph, the writer</span><br/>\n<span><strong>A</strong> points out a risk involved.</span><br/>\n<span><strong>B</strong> specifies its probable origins.</span><br/>\n<span><strong>C</strong> mentions its chief supporters.</span><br/>\n<span><strong>D</strong> weighs up some pros and cons.</span></p><p><span>29. In the fourth paragraph, the writer suggests that many politicians may</span><br/>\n<span><strong>A</strong> have failed to appreciate the true potential of Al initiatives.</span><br/>\n<span><strong>B</strong> have misunderstood the function of the machine-learning sector.</span><br/>\n<span><strong>C</strong> be unaware of the challenges of implementing national Al initiatives.</span><br/>\n<span><strong>D</strong> be too keen to enter the race to dominate the machine-learning sector.</span></p>"
@@ -449,32 +503,44 @@ const test: PracticeTest = {
             {
               "id": "q30",
               "answer": "F",
-              "textHtml": "……………… Most public sector organisations have not set up the necessary"
+              "textHtml": "……………… Most public sector organisations have not set up the necessary",
+              "explanation": "The passage says adding a neural network to government ‘does not mean it will be instantaneously more inclusive or fair’, which this summary paraphrases as promoting ‘equality’ (F).",
+              "evidence": "adding a neural network to a system of government does not mean it will be instantaneously more inclusive or fair"
             },
             {
               "id": "q31",
               "answer": "G",
-              "textHtml": "……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs"
+              "textHtml": "……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs",
+              "explanation": "The passage says the public sector ‘does not have the appropriate data infrastructure’, matching option G, ‘framework’.",
+              "evidence": "the public sector typically does not have the appropriate data infrastructure to support advanced machine learning"
             },
             {
               "id": "q32",
               "answer": "I",
-              "textHtml": "………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the"
+              "textHtml": "………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the",
+              "explanation": "The passage says departments ‘each require special permissions to be accessed’, matching option I, ‘approval’.",
+              "evidence": "each require special permissions to be accessed"
             },
             {
               "id": "q33",
               "answer": "C",
-              "textHtml": "………………………………. to take full advantage of machine intelligence. The medical profession experimented with an Al programme, but their experts had little faith in its"
+              "textHtml": "………………………………. to take full advantage of machine intelligence. The medical profession experimented with an Al programme, but their experts had little faith in its",
+              "explanation": "The passage says the public sector ‘lacks the human talent with the right technological capabilities’, matching option C, ‘skills’.",
+              "evidence": "lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence"
             },
             {
               "id": "q34",
               "answer": "A",
-              "textHtml": "………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing"
+              "textHtml": "………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing",
+              "explanation": "The passage says doctors ‘found it hard to trust the machine’, matching option A, ‘reliability’.",
+              "evidence": "human experts found it hard to trust the machine"
             },
             {
               "id": "q35",
               "answer": "D",
-              "textHtml": "…………….. within the legal profession. A reliability B funding C skills D prejudices E computers F equality G framework H confidentiality I approval"
+              "textHtml": "…………….. within the legal profession. A reliability B funding C skills D prejudices E computers F equality G framework H confidentiality I approval",
+              "explanation": "The passage says the sentencing algorithm ‘was found to amplify structural racial discrimination’, matching option D, ‘prejudices’.",
+              "evidence": "The system was found to amplify structural racial discrimination"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 30-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-l, below. Write the correct letter, A-l, in boxes 30-35 on your answer sheet.</span></p><p><strong><span>AS in government, medicine and the law</span></strong></p><p><span>Neural networks are a promising area of A! technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote (30) ………………</span></p><p><span>Most public sector organisations have not set up the necessary (31) ……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs (32) ………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the (33) ………………………………. to take full advantage of machine intelligence.</span></p><p><span>The medical profession experimented with an Al programme, but their experts had little faith in its (34) ………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing (35) …………….. within the legal profession.</span></p><p><span><strong>A</strong> reliability</span><br/>\n<span><strong>B</strong> funding</span><br/>\n<span><strong>C</strong> skills</span><br/>\n<span><strong>D</strong> prejudices</span><br/>\n<span><strong>E</strong> computers</span><br/>\n<span><strong>F</strong> equality</span><br/>\n<span><strong>G</strong> framework</span><br/>\n<span><strong>H</strong> confidentiality</span><br/>\n<span><strong>I</strong> approval</span></p>",
@@ -498,22 +564,29 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "No",
-              "textHtml": "Stuart Russell’s proposals regarding the use of Al are impractical"
+              "textHtml": "Stuart Russell’s proposals regarding the use of Al are impractical",
+              "explanation": "Russell is described as advocating ‘a more sensible and realistic approach that focuses on simple everyday applications’, the opposite of impractical, contradicting the statement.",
+              "evidence": "advocated a more sensible and realistic approach that focuses on simple everyday applications of AI"
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "Rodney Brooks’ view has attracted unfair criticism from supporters of Al"
+              "textHtml": "Rodney Brooks’ view has attracted unfair criticism from supporters of Al",
+              "explanation": "The passage quotes Brooks’ view but never mentions any unfair criticism directed at him, so this is not given."
             },
             {
               "id": "q38",
               "answer": "No",
-              "textHtml": "Nowadays, the need to protect Al systems is always taken into account when they are set up"
+              "textHtml": "Nowadays, the need to protect Al systems is always taken into account when they are set up",
+              "explanation": "The passage says AI security ‘remains an often overlooked topic when machine learning systems are installed’, contradicting the claim that protection is always considered.",
+              "evidence": "AI security remains an often overlooked topic when machine learning systems are installed"
             },
             {
               "id": "q39",
               "answer": "Yes",
-              "textHtml": "In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use"
+              "textHtml": "In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use",
+              "explanation": "The passage says ‘we need to have a discussion about AI ethics and the distrust that many people have towards machine learning’, confirming the statement.",
+              "evidence": "we need to have a discussion about AI ethics and the distrust that many people have towards machine learning"
             }
           ],
           "legendHtml": "<p><strong><span>Questions 36-39</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                     if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                       if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                   if it is impossible to say what the writer thinks about this</span></p><p><span>36. Stuart Russell’s proposals regarding the use of Al are impractical.</span><br/>\n<span>37. Rodney Brooks’ view has attracted unfair criticism from supporters of Al.</span><br/>\n<span>38. Nowadays, the need to protect Al systems is always taken into account when they are set up.</span><br/>\n<span>39. In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use.</span></p>"
@@ -532,7 +605,9 @@ const test: PracticeTest = {
                 "Why Al may not be the answer to our problems",
                 "Why governments should not invest in Al systems",
                 "How Al could improve the efficiency of the public sector"
-              ]
+              ],
+              "explanation": "The final paragraph concludes ‘there is no AI solution for everything’, matching option B, that AI may not be the answer to our problems.",
+              "evidence": "there is no AI solution for everything"
             }
           ],
           "legendHtml": "<p><strong><span>Question 40</span></strong><br/>\n<span>Choose the correct letter. A, B, C or D.</span></p><p><span>40. What would be a suitable subtitle for reading passage?</span><br/>\n<span><strong>A</strong> How to make the most of what Al has to offer</span><br/>\n<span><strong>B</strong> Why Al may not be the answer to our problems</span><br/>\n<span><strong>C</strong> Why governments should not invest in Al systems</span><br/>\n<span><strong>D</strong> How Al could improve the efficiency of the public sector</span></p>"

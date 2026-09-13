@@ -68,43 +68,57 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Potatoes",
               "before": "……………, using a method of freezing then drying. 1851, USA •",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 2 says Andean people froze potatoes overnight, then trampled and dried them, matching the method of freezing then drying.",
+              "evidence": "They froze them overnight, then trampled them to squeeze out the moisture, then dried them in the sun."
             },
             {
               "id": "q2",
               "answer": "Butter",
               "before": "……………… was kept cool by ice during transportation in specially adapted trains. 1880, Australia • Two kinds of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 3 says railroads sent butter from Ogdensburg to Boston in ice filled insulated rail cars in 1851.",
+              "evidence": "In 1851, railroads first began putting blocks of ice in insulated rail cars to send butter from Ogdensburg, New York, to Boston."
             },
             {
               "id": "q3",
               "answer": "Meat",
               "before": "………………… were the first frozen food shipped to England. 1917 onwards, USA • Clarence Birdseye introduced innovations including: o quick-freezing methods, so that",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 5 says a shipment of Australian beef and mutton, both meat, was sent frozen to England in 1880.",
+              "evidence": "In 1880, a shipment of Australian beef and mutton was sent, frozen, to England."
             },
             {
               "id": "q4",
               "answer": "Crystals",
               "before": "………… did not spoil the food. o packaging products with",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 8 says Birdseye's quick freezing techniques reduced the damage caused by ice crystals forming in the food.",
+              "evidence": "He developed quick-freezing techniques that reduced the damage that crystals caused, as well as the technique of freezing the product in the package it was to be sold in."
             },
             {
               "id": "q5",
               "answer": "Cellophane",
               "before": "……………., so the product was visible. Early 1940s, USA • Frozen food became popular because of a shortage of",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 8 says Birdseye introduced cellophane packaging so shoppers could see the quality of the product inside.",
+              "evidence": "He also introduced the use of cellophane, the first transparent material for food packaging, which allowed consumers to see the quality of the product."
             },
             {
               "id": "q6",
               "answer": "Tin",
               "before": "……………… 1950s, USA • A large number of homes now had a",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 10 says tin was rationed for the war effort, so frozen food, which needed none, became popular instead.",
+              "evidence": "Canned foods were rationed to save tin for the war effort, while frozen foods were abundant and cheap."
             },
             {
               "id": "q7",
               "answer": "Refrigerator",
               "before": "……………",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph 10 says that by 1953, 33 million US families owned a refrigerator.",
+              "evidence": "By 1953, 33 million US families owned a refrigerator, and manufacturers were gradually increasing the size of the freezer compartments in them."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The history of frozen food</span></strong></p><p><strong><span>2,000 years ago, South America</span></strong><br/>\n<span>People conserved the nutritional value of (1) ……………, using a method of freezing then drying.</span></p><p><strong><span>1851, USA</span></strong><br/>\n<span>• (2) ……………… was kept cool by ice during transportation in specially adapted trains.</span></p><p><strong><span>1880, Australia</span></strong><br/>\n<span>• Two kinds of (3) ………………… were the first frozen food shipped to England.</span></p><p><strong><span>1917 onwards, USA</span></strong><br/>\n<span>• Clarence Birdseye introduced innovations including:</span><br/>\n<span>o quick-freezing methods, so that (4) ………… did not spoil the food.</span><br/>\n<span>o packaging products with (5) ……………., so the product was visible.</span></p><p><strong><span>Early 1940s, USA</span></strong><br/>\n<span>• Frozen food became popular because of a shortage of (6) ………………</span></p><p><strong><span>1950s, USA</span></strong><br/>\n<span>• A large number of homes now had a (7) ……………</span></p>",
@@ -118,32 +132,42 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Not given",
-              "textHtml": "The ice transportation business made some Boston ship owners very wealthy in the early 1800s"
+              "textHtml": "The ice transportation business made some Boston ship owners very wealthy in the early 1800s",
+              "explanation": "Paragraph 3 mentions Boston ship owners transporting ice but never says whether this made them wealthy, so there is no information either way."
             },
             {
               "id": "q9",
               "answer": "True",
-              "textHtml": "A disadvantage of the freezing process invented in Australia was that it affected the taste of food"
+              "textHtml": "A disadvantage of the freezing process invented in Australia was that it affected the taste of food",
+              "explanation": "Paragraph 5 says the freezing process burst cells inside the food and spoilt the flavour and texture, confirming the taste was affected.",
+              "evidence": "During the freezing process, crystals formed within the cells of the food, and when the ice expanded and the cells burst, this spoilt the flavor and texture of the food."
             },
             {
               "id": "q10",
               "answer": "False",
-              "textHtml": "Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish"
+              "textHtml": "Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish",
+              "explanation": "Paragraph 6 says Birdseye went to Labrador to trap and trade furs, and only became fascinated with the Inuit method after arriving, so learning to freeze fish was not his original aim.",
+              "evidence": "In 1912, a biology student in Massachusetts, USA, named Clarence Birdseye, ran out of money and went to Labrador in Canada to trap and trade furs."
             },
             {
               "id": "q11",
               "answer": "True",
-              "textHtml": "Swanson Foods invested a great deal of money in the promotion of the TV Dinner"
+              "textHtml": "Swanson Foods invested a great deal of money in the promotion of the TV Dinner",
+              "explanation": "Paragraph 11 says Swanson launched the TV Dinner with a clever name and a huge advertising budget, showing heavy investment in promotion.",
+              "evidence": "In 1954, the company adapted some of Birdseye’s freezing techniques, and with the help of a clever name and a huge advertising budget, it launched the first ‘TV Dinner’."
             },
             {
               "id": "q12",
               "answer": "False",
-              "textHtml": "Swanson Foods developed a new style of container for the launch of the TV Dinner"
+              "textHtml": "Swanson Foods developed a new style of container for the launch of the TV Dinner",
+              "explanation": "Paragraph 11 says the meal was served in the same tray already used by airlines, so the container was not newly designed for the launch.",
+              "evidence": "This consisted of frozen turkey, potatoes and vegetables served in the same segmented aluminum tray that was used by airlines."
             },
             {
               "id": "q13",
               "answer": "Not given",
-              "textHtml": "The US frozen food industry is currently the largest in the world"
+              "textHtml": "The US frozen food industry is currently the largest in the world",
+              "explanation": "The passage gives figures only for the US industry and never compares them with other countries, so being the largest in the world cannot be confirmed."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                if there is no information on this</span></p><p><span>8. The ice transportation business made some Boston ship owners very wealthy in the early 1800s.</span><br/>\n<span>9. A disadvantage of the freezing process invented in Australia was that it affected the taste of food.</span><br/>\n<span>10. Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish.</span><br/>\n<span>11. Swanson Foods invested a great deal of money in the promotion of the TV Dinner.</span><br/>\n<span>12. Swanson Foods developed a new style of container for the launch of the TV Dinner.</span><br/>\n<span>13. The US frozen food industry is currently the largest in the world.</span></p>"
@@ -193,32 +217,44 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "v",
-              "textHtml": "Paragraph A"
+              "textHtml": "Paragraph A",
+              "explanation": "Paragraph A explains the zoo wants to show visitors how wonderful reefs are and to highlight conservation research, two distinct educational aims.",
+              "evidence": "‘Coral reefs are the most diverse ecosystems on Earth and we want to show people how wonderful they are,’ said Paul Pearce-Kelly, senior curator of invertebrates and fish at the Zoological Society of London."
             },
             {
               "id": "q15",
               "answer": "ii",
-              "textHtml": "Paragraph B"
+              "textHtml": "Paragraph B",
+              "explanation": "Paragraph B describes coral polyps and algae helping each other, the polyps getting protection and the algae providing nutrients, a cooperative relationship.",
+              "evidence": "This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0."
             },
             {
               "id": "q16",
               "answer": "iv",
-              "textHtml": "Paragraph C"
+              "textHtml": "Paragraph C",
+              "explanation": "Paragraph C reports David Attenborough disputing the common comparison of reefs to rainforests.",
+              "evidence": "As a result, coral reefs are often described as the ‘rainforests of the sea’, though the comparison is dismissed by some naturalists, including David Attenborough."
             },
             {
               "id": "q17",
               "answer": "vii",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D lists threats to reefs and warns over 90 percent could be lost by 2050, a warning of trouble to come.",
+              "evidence": "As a result, vast areas – including massive chunks of Australia’s Great Barrier Reef – have already been destroyed, and scientists advise that more than 90% of reefs could be lost by 2050 unless urgent action is taken to tackle global heating and greenhouse gas emissions."
             },
             {
               "id": "q18",
               "answer": "iii",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E describes scientists researching hardy coral and better breeding methods to reduce the damage, in other words working to lessen the problems.",
+              "evidence": "However, scientists are trying to pinpoint hardy types of coral that could survive our overheated oceans, and some of this research will be carried out at London Zoo."
             },
             {
               "id": "q19",
               "answer": "vi",
-              "textHtml": "Paragraph F"
+              "textHtml": "Paragraph F",
+              "explanation": "Paragraph F says showing this progress to the public encourages belief that reefs can be saved, which is promoting hope.",
+              "evidence": "‘The crucial point is that the progress we make in making coral better able to survive in a warming world can be shown to the public and encourage them to believe that we can do something to save the planet’s reefs,’ said Pearce-Kelly."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading Passage 2 has six sections, A-F. </span><span>Choose the correct heading for each section from the list of headings below.</span></p><p><span>i. Tried and tested solutions</span><br/>\n<span>ii. Cooperation beneath the waves</span><br/>\n<span>iii. Working to lessen the problems</span><br/>\n<span>iv. Disagreement about the accuracy of a certain phrase</span><br/>\n<span>v. Two clear educational goals</span><br/>\n<span>vi. Promoting hope</span><br/>\n<span>vii. A warning of further trouble ahead</span></p><p><span>14. Paragraph A</span><br/>\n<span>15. Paragraph B</span><br/>\n<span>16. Paragraph C</span><br/>\n<span>17. Paragraph D</span><br/>\n<span>18. Paragraph E</span><br/>\n<span>19. Paragraph F</span></p>",
@@ -244,7 +280,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-312-q20-q21"
+              "answerPairId": "reading-312-q20-q21",
+              "explanation": "Paragraph D lists pollution by humans and changes in ocean currents among the threats, matching contamination from waste and altered water flow.",
+              "evidence": "Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction."
             },
             {
               "id": "q21",
@@ -253,7 +291,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-312-q20-q21"
+              "answerPairId": "reading-312-q20-q21",
+              "explanation": "Paragraph D lists pollution by humans and changes in ocean currents among the threats, matching contamination from waste and altered water flow.",
+              "evidence": "Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of these causes of damage to coral reefs are mentioned by the writer of the text?</span></p><p><span>A. a rising number of extreme storms</span><br/>\n<span>B. the removal of too many fish from the sea</span><br/>\n<span>C. the contamination of the sea from waste</span><br/>\n<span>D. increased disease among marine species</span><br/>\n<span>E. alterations in the usual flow of water in the seas</span></p>",
@@ -293,7 +333,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-312-q22-q23"
+              "answerPairId": "reading-312-q22-q23",
+              "explanation": "Paragraph E says scientists are researching which corals cope best in warm, acidic water and trying to speed up their breeding rate.",
+              "evidence": "One aim will be to carry out research on species to find those that can survive best in warm, acidic waters."
             },
             {
               "id": "q23",
@@ -302,7 +344,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-312-q22-q23"
+              "answerPairId": "reading-312-q22-q23",
+              "explanation": "Paragraph E says scientists are researching which corals cope best in warm, acidic water and trying to speed up their breeding rate.",
+              "evidence": "One aim will be to carry out research on species to find those that can survive best in warm, acidic waters."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 22 and 23</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of the following statements are true of the researchers at London Zoo?</span></p><p><span>A. They are hoping to expand the numbers of different corals being bred in laboratories.</span><br/>\n<span>B. They want to identify corals that can cope well with the changed sea conditions.</span><br/>\n<span>C. They are looking at ways of creating artificial reefs that corals could grow on.</span><br/>\n<span>D. They are trying out methods that would speed up reproduction in some corals.</span><br/>\n<span>E. They are investigating materials that might protect reefs from higher temperatures.</span></p>",
@@ -339,19 +383,25 @@ const test: PracticeTest = {
               "id": "q24",
               "answer": "Tentacles",
               "before": "Corals have a number of ……………… which they use to collect their food",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says polyps have tentacles for capturing small marine creatures as food.",
+              "evidence": "Corals are composed of tiny animals, known as polyps, with tentacles for capturing small marine creatures in the sea water."
             },
             {
               "id": "q25",
               "answer": "Protection",
               "before": "Algae gain ……………… from being inside the coral",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says the algae living inside corals get protection in return for providing nutrients from sunlight.",
+              "evidence": "These polyps are transparent but get their brilliant tones of pink, orange, blue, green, etc. from algae that live within them, which in turn get protection, while their photosynthesising of the sun’s rays provides nutrients for the polyps."
             },
             {
               "id": "q26",
               "answer": "Colour",
               "before": "Increases in the warmth of the sea water can remove the ………………. from coral",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says rising temperatures trigger bleaching events that strip reefs of their colour.",
+              "evidence": "Rising ocean temperatures are triggering bleaching events that strip reefs of their colour and eventually kill them."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>24. Corals have a number of ……………… which they use to collect their food.</span><br/>\n<span>25. Algae gain ……………… from being inside the coral.</span><br/>\n<span>26. Increases in the warmth of the sea water can remove the ………………. from coral.</span></p>",
@@ -414,37 +464,51 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "A",
-              "textHtml": "For our own safety, humans will need to restrict the abilities of robots"
+              "textHtml": "For our own safety, humans will need to restrict the abilities of robots",
+              "explanation": "Rees says robots should be kept as no more than idiot savants that cannot outwit us, showing a wish to limit their abilities for safety.",
+              "evidence": "I think we should ensure that robots remain as no more than “idiot savants” lacking the capacity to outwit us, even though they may greatly surpass us in the ability to calculate and process information."
             },
             {
               "id": "q28",
               "answer": "C",
-              "textHtml": "The risk of robots harming us is less serious than humans believe it to be"
+              "textHtml": "The risk of robots harming us is less serious than humans believe it to be",
+              "explanation": "Richardson says robots have never actually challenged human supremacy, so she sees the danger as smaller than people fear.",
+              "evidence": "We need to ask why fears of artificial intelligence and robots persist; none have in fact risen up and challenged human supremacy."
             },
             {
               "id": "q29",
               "answer": "B",
-              "textHtml": "It will take many decades for robot intelligence to be as imaginative as human intelligence"
+              "textHtml": "It will take many decades for robot intelligence to be as imaginative as human intelligence",
+              "explanation": "Wolpert says reaching human like creative intelligence within the next 50 years would be highly ambitious, meaning it will take a long time.",
+              "evidence": "Expecting a machine close to the creative intelligence of a human within the next 50 years would be highly ambitious."
             },
             {
               "id": "q30",
               "answer": "A",
-              "textHtml": "We may have to start considering whether we are treating robots fairly"
+              "textHtml": "We may have to start considering whether we are treating robots fairly",
+              "explanation": "Rees asks whether we should feel guilty about exploiting advanced robots or worry if they are bored, raising the question of fair treatment.",
+              "evidence": "… Should we feel guilty about exploiting [sophisticated robots]?"
             },
             {
               "id": "q31",
               "answer": "B",
-              "textHtml": "Robots are probably of more help to us on Earth than in space"
+              "textHtml": "Robots are probably of more help to us on Earth than in space",
+              "explanation": "Wolpert says gathering resources nearer to home would be a better use of robots than colonising other planets.",
+              "evidence": "Using robots to gather resources nearer to home would seem to be a better use of our robotic tools."
             },
             {
               "id": "q32",
               "answer": "A",
-              "textHtml": "The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists"
+              "textHtml": "The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists",
+              "explanation": "Rees says it is better to read first rate science fiction than second rate science, since it is no more likely to be wrong.",
+              "evidence": "I sometimes advise students that it’s better to read first-rate science fiction than second-rate science – more stimulating, and perhaps no more likely to be wrong."
             },
             {
               "id": "q33",
               "answer": "C",
-              "textHtml": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson"
+              "textHtml": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson",
+              "explanation": "Richardson says many people welcome machine intelligence, showing some look forward to robots becoming smarter.",
+              "evidence": "In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Look at the following statements and the list of experts below. Match each statement with the correct expert, A, B or C. NB You may use any letter more than once.</span></p><p><span>27. For our own safety, humans will need to restrict the abilities of robots.</span><br/>\n<span>28. The risk of robots harming us is less serious than humans believe it to be.</span><br/>\n<span>29. It will take many decades for robot intelligence to be as imaginative as human intelligence.</span><br/>\n<span>30. We may have to start considering whether we are treating robots fairly.</span><br/>\n<span>31. Robots are probably of more help to us on Earth than in space.</span><br/>\n<span>32. The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists.</span><br/>\n<span>33. There are those who look forward to robots developing greater intelligence.</span></p><p><strong><span>List of Experts</span></strong><br/>\n<span>A. Martin Rees</span><br/>\n<span>B. Daniel Wolpert</span><br/>\n<span>C. Kathleen Richardson</span></p>",
@@ -463,19 +527,22 @@ const test: PracticeTest = {
               "id": "q34",
               "answer": "C",
               "before": "Richardson and Rees express similar views regarding the ethical aspect of",
-              "after": ""
+              "after": "",
+              "explanation": "Both experts raise ethical worries about changing other planets for human benefit, Rees wanting a protected status and Richardson calling colonisation morally dubious."
             },
             {
               "id": "q35",
               "answer": "B",
               "before": "Rees and Wolpert share an opinion about the extent of",
-              "after": ""
+              "after": "",
+              "explanation": "Both Rees and Wolpert describe machine intelligence as advanced only in narrow, limited ways so far, agreeing on how far progress has really come."
             },
             {
               "id": "q36",
               "answer": "D",
               "before": "Wolpert disagrees with Richardson on the question of A. robots to explore outer space. B. advances made in machine intelligence so far. C. changes made to other planets for our own benefit. D. the harm already done by artificial intelligence",
-              "after": ""
+              "after": "",
+              "explanation": "Wolpert says artificial intelligence has already caused damage through computer viruses, while Richardson says robots have never actually threatened humans, so the two disagree here."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 34-36</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-D, below.</span></p><p><span>34. Richardson and Rees express similar views regarding the ethical aspect of</span><br/>\n<span>35. Rees and Wolpert share an opinion about the extent of</span><br/>\n<span>36. Wolpert disagrees with Richardson on the question of</span></p><p><span>A. robots to explore outer space.</span><br/>\n<span>B. advances made in machine intelligence so far.</span><br/>\n<span>C. changes made to other planets for our own benefit.</span><br/>\n<span>D. the harm already done by artificial intelligence.</span></p>"
@@ -494,7 +561,9 @@ const test: PracticeTest = {
                 "It is the result of our inclination to attribute human characteristics to non-human entities",
                 "It has its origins in basic misunderstandings about how inanimate objects function",
                 "It demonstrates a key difference between human intelligence and machine intelligence"
-              ]
+              ],
+              "explanation": "Richardson says our fear comes from personifying machines, imagining they think as we do, which means attributing human traits to non-human things.",
+              "evidence": "In her view, it stems from humans’ tendency to personify inanimate objects: we create machines based on representations of ourselves, imagine that machines think and behave as we do, and therefore see them as an autonomous threat."
             },
             {
               "id": "q38",
@@ -505,7 +574,9 @@ const test: PracticeTest = {
                 "robots having abilities which humans do not",
                 "artificial intelligence developing independent thought",
                 "artificial intelligence taking over every aspect of our lives"
-              ]
+              ],
+              "explanation": "Rees worries that computer networks could behave like a single brain with a mind of its own, in other words developing independent thought.",
+              "evidence": "And another worry is that we are increasingly dependent on computer networks, and that these could behave like a single “brain” with a mind of its own, and with goals that may be contrary to human welfare."
             },
             {
               "id": "q39",
@@ -516,7 +587,9 @@ const test: PracticeTest = {
                 "how fundamental robots are to the science fiction genre",
                 "how the image of robots in science fiction has changed over time",
                 "how reactions to similar portrayals of robots in science fiction may vary"
-              ]
+              ],
+              "explanation": "Wolpert notes that science fiction almost never imagines a future without robots, showing how central they are to the genre.",
+              "evidence": "Interestingly, almost no science fiction envisages a future without robots."
             },
             {
               "id": "q40",
@@ -527,7 +600,9 @@ const test: PracticeTest = {
                 "outlining ways in which one has impacted on the other",
                 "recommending a change of approach in how people view them",
                 "explaining why scientists have a different perspective on them from other people"
-              ]
+              ],
+              "explanation": "Richardson explains that the line between reality and fiction is not clear cut and suggests bringing the two together, which is recommending a change of approach.",
+              "evidence": "‘But the divide is not so clear cut, and that is why the worlds seem to collide at times,’ she said."
             }
           ],
           "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>37. What point does Richardson make about fear of machines?</span><br/>\n<span>A. It has grown alongside the development of ever more advanced robots.</span><br/>\n<span>B. It is the result of our inclination to attribute human characteristics to non-human entities.</span><br/>\n<span>C. It has its origins in basic misunderstandings about how inanimate objects function.</span><br/>\n<span>D. It demonstrates a key difference between human intelligence and machine intelligence.</span></p><p><span>38. What potential advance does Rees see as a cause for concern?</span><br/>\n<span>A. robots outnumbering people</span><br/>\n<span>B. robots having abilities which humans do not</span><br/>\n<span>C. artificial intelligence developing independent thought</span><br/>\n<span>D. artificial intelligence taking over every aspect of our lives</span></p><p><span>39. What does Wolpert emphasise in his response to the question about science fiction?</span><br/>\n<span>A. how science fiction influences our attitudes to robots</span><br/>\n<span>B. how fundamental robots are to the science fiction genre</span><br/>\n<span>C. how the image of robots in science fiction has changed over time</span><br/>\n<span>D. how reactions to similar portrayals of robots in science fiction may vary</span></p><p><span>40. What is Richardson doing in her comment about reality and fantasy?</span><br/>\n<span>A. warning people not to confuse one with the other</span><br/>\n<span>B. outlining ways in which one has impacted on the other</span><br/>\n<span>C. recommending a change of approach in how people view them</span><br/>\n<span>D. explaining why scientists have a different perspective on them from other people</span></p>"
