@@ -251,9 +251,9 @@ const test: PracticeTest = {
             },
             {
               "id": "q20",
-              "answer": "C",
+              "answer": "D",
               "textHtml": "the possibility of students not being able to sleep well",
-              "explanation": "This appears to be a mislabelled answer key entry: paragraph C covers over-reliance, distraction and inappropriate content, but difficulty sleeping from screen time is actually mentioned in paragraph D.",
+              "explanation": "Paragraph D is the one that mentions sleep: it says too much screen time can lead to eye strain, headaches and difficulty sleeping. Paragraph C covers over-reliance, distraction and unsuitable content, and never mentions sleep.",
               "evidence": "too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping."
             }
           ],
@@ -264,7 +264,8 @@ const test: PracticeTest = {
             "C",
             "D",
             "E",
-            "F"
+            "F",
+            "G"
           ]
         },
         {

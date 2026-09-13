@@ -1014,4 +1014,19 @@
       width: 6.5rem;
     }
   }
+
+  /* Auto-generated listening transcripts (tools/apply_listening_transcripts.py).
+     .ts marks each paragraph's timestamp, .transcript-note is the disclaimer
+     that recognition may contain small errors. */
+  .transcript-note {
+    color: var(--color-ink-muted);
+    font-size: 0.78rem;
+    font-style: italic;
+  }
+  .ts {
+    margin-right: 0.5rem;
+    color: var(--color-ink-muted);
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-size: 0.85em;
+  }
 }

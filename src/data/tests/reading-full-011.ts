@@ -83,9 +83,9 @@ const test: PracticeTest = {
             },
             {
               "id": "q6",
-              "answer": "True",
+              "answer": "Not given",
               "textHtml": "The leaves of the baobab tree can be used to make a medicinal sauce",
-              "explanation": "The passage says leaves are used both as a medicine and as a sauce, though it never links the two into one \"medicinal sauce\", so this answer is arguably a stretch from the source text.",
+              "explanation": "The passage says the leaves can be used as a medicine, and then, two sentences later, that they can also be used as a sauce for food. It never says the sauce itself is medicinal, so the passage neither confirms nor denies a medicinal sauce.",
               "evidence": "They are rich in iron and can be used as a medicine... The leaves can also be used as a sauce for food."
             },
             {
@@ -232,7 +232,8 @@ const test: PracticeTest = {
             "A",
             "B",
             "C",
-            "D"
+            "D",
+            "E"
           ]
         },
         {
@@ -485,7 +486,8 @@ const test: PracticeTest = {
             "F",
             "G",
             "H",
-            "I"
+            "I",
+            "J"
           ]
         },
         {
@@ -526,7 +528,8 @@ const test: PracticeTest = {
             "G",
             "H",
             "I",
-            "J"
+            "J",
+            "K"
           ]
         },
         {

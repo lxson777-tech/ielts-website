@@ -587,10 +587,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q29",
-              "answer": "Not given",
+              "answer": "False",
               "textHtml": "Approaches to art therapy can be broadly considered to be creative or psychoanalytic; however, practitioners tend to avoid combining the two schools of practice",
-              "explanation": "Paragraph 3 confirms the two approaches, psychoanalytic and creative, but only says there is 'a degree of overlap' between them, it does not state whether practitioners actively avoid combining them.",
-              "evidence": "a degree of overlap occurring between the two"
+              "explanation": "Paragraph 3 says the two practices 'were not incompatible, a degree of overlap occurring between the two', and then gives an example of one patient's work serving both purposes at once. That contradicts the claim that practitioners avoid combining them.",
+              "evidence": "The two practices, however, were not incompatible, a degree of overlap occurring between the two."
             },
             {
               "id": "q30",

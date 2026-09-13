@@ -146,10 +146,13 @@ const test: PracticeTest = {
             },
             {
               "id": "q12",
-              "answer": "Standardized",
+              "answer": [
+                "Standardised",
+                "Standardized"
+              ],
               "before": "……….. 16th century AD The English Renaissance The English language gained many",
               "after": "",
-              "explanation": "Paragraph E says Caxton's printed books helped English spelling become standardised. Note the passage spells this word with an s, while the stored answer uses standardized with a z, so a student typing the passage's own spelling could be marked wrong.",
+              "explanation": "Paragraph E says Caxton's printed books helped English spelling become standardised, so the missing word is 'standardised'. The American spelling is accepted too.",
               "evidence": "Caxton published many books in English, which helped it to be standardised more and expand the English vocabulary by introducing words such as canon, catholic, chapter, and history."
             },
             {
@@ -314,7 +317,8 @@ const test: PracticeTest = {
             "E",
             "F",
             "G",
-            "H"
+            "H",
+            "I"
           ]
         },
         {
@@ -354,7 +358,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 23-26",
           "type": "table-completion",
-          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 23-26",
+          "instructionHtml": "Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 23-26",
           "questions": [
             {
               "id": "q23",
@@ -369,7 +373,7 @@ const test: PracticeTest = {
               "answer": "Charging stations",
               "before": "……………. for electric cars and designing adaptable parking zones. The",
               "after": "",
-              "explanation": "Paragraph H lists charging stations for electric vehicles as part of the infrastructure cities should add. Note this stored answer is two words even though the instructions say one word only.",
+              "explanation": "Paragraph H says cities should add charging stations for electric vehicles as part of the infrastructure for self-driving cars. The group's word limit is two words, because no single word from the passage carries this meaning.",
               "evidence": "This could include designated parking areas that serve both conventional and self-driving cars, as well as charging stations for electric vehicles."
             },
             {
@@ -389,8 +393,8 @@ const test: PracticeTest = {
               "evidence": "To ensure a smooth shift, cities must adopt proactive policies that balance technology with sustainable urban design."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 23-26</span></p><p><strong><span>FUTURE PARKING SOLUTIONS</span></strong></p><p><span>To prepare for the arrival of self-driving cars, cities should focus on reducing parking availability. This can be achieved by raising the (23) ………………. of parking or by limiting the number of spaces. Additionally, urban planners should modify infrastructure to support autonomous vehicles by incorporating (24) ……………. for electric cars and designing adaptable parking zones.</span></p><p><span>The (25) ………………. from conventional cars to self-driving vehicles will require strategic planning. Cities must implement policies that ensure minimal disruption during this process. Long-term urban development should prioritize integrating self-driving technology by establishing suitable road networks and smart traffic systems. In the future, (26) ……………… must rethink their policies to create sustainable and efficient urban environments.</span></p>",
-          "wordLimit": 1,
+          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer. Write your answers in boxes 23-26</span></p><p><strong><span>FUTURE PARKING SOLUTIONS</span></strong></p><p><span>To prepare for the arrival of self-driving cars, cities should focus on reducing parking availability. This can be achieved by raising the (23) ………………. of parking or by limiting the number of spaces. Additionally, urban planners should modify infrastructure to support autonomous vehicles by incorporating (24) ……………. for electric cars and designing adaptable parking zones.</span></p><p><span>The (25) ………………. from conventional cars to self-driving vehicles will require strategic planning. Cities must implement policies that ensure minimal disruption during this process. Long-term urban development should prioritize integrating self-driving technology by establishing suitable road networks and smart traffic systems. In the future, (26) ……………… must rethink their policies to create sustainable and efficient urban environments.</span></p>",
+          "wordLimit": 2,
           "table": {
             "rows": [
               [
@@ -470,7 +474,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 27-33",
           "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 27-33 on your answer sheet.",
+          "instructionHtml": "Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-33 on your answer sheet.",
           "questions": [
             {
               "id": "q27",
@@ -522,7 +526,7 @@ const test: PracticeTest = {
               "evidence": "It is possible that the evolution of language was driven by the need for humans to communicate with one another in order to cooperate and form social groups."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 27-33 on your answer sheet.</span></p><p><span>27. The emergence of syntax allowed humans to communicate more complex ideas.</span><br/>\n<span>28. A biological explanation for language evolution is linked to the development of certain brain areas.</span><br/>\n<span>29. Understanding how language is used in different situations helped humans communicate effectively.</span><br/>\n<span>30. The first stage of language development involved simple vocalizations for basic communication.</span><br/>\n<span>31. A possible connection exists between language development and tool usage among humans.</span><br/>\n<span>32. The reason humans are the only species to have developed language is still debated.</span><br/>\n<span>33. Language may have evolved due to the necessity of social interactions and cooperation.</span></p>",
+          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-33 on your answer sheet.</span></p><p><span>27. The emergence of syntax allowed humans to communicate more complex ideas.</span><br/>\n<span>28. A biological explanation for language evolution is linked to the development of certain brain areas.</span><br/>\n<span>29. Understanding how language is used in different situations helped humans communicate effectively.</span><br/>\n<span>30. The first stage of language development involved simple vocalizations for basic communication.</span><br/>\n<span>31. A possible connection exists between language development and tool usage among humans.</span><br/>\n<span>32. The reason humans are the only species to have developed language is still debated.</span><br/>\n<span>33. Language may have evolved due to the necessity of social interactions and cooperation.</span></p>",
           "options": [
             "A",
             "B",
@@ -532,7 +536,8 @@ const test: PracticeTest = {
             "F",
             "G",
             "H",
-            "I"
+            "I",
+            "J"
           ]
         },
         {
@@ -558,10 +563,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q36",
-              "answer": "Entences",
+              "answer": "Sentences",
               "before": "……………… allowing more complex meanings to be expressed",
               "after": "",
-              "explanation": "Paragraph G says syntax made it possible to combine words into sentences that express complex meanings. Note the stored answer is missing its first letter and should read Sentences.",
+              "explanation": "Paragraph G says syntax is what allows us to combine words into sentences that convey complex meanings, so the missing word is 'sentences'.",
               "evidence": "Syntax is the set of rules that govern the structure of sentences, and it is what allows us to combine words into sentences that convey complex meanings."
             }
           ],

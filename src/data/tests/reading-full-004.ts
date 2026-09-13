@@ -87,7 +87,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q4",
-              "answer": "Journal",
+              "answer": [
+                "Journals",
+                "Journal"
+              ],
               "before": "………………. showed they liked Old Master paintings, but they were expensive to buy • their early purchases were safe, popular paintings • the first Impressionist paintings they bought showed places in",
               "after": "",
               "explanation": "The fifth paragraph says ‘the sisters’ journals reveal their preference for Old Master paintings’, matching this gap.",

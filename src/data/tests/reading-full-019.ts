@@ -457,7 +457,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q30",
-              "answer": "Organized",
+              "answer": [
+                "Organised",
+                "Organized"
+              ],
               "before": "…………… by parents, children lose their autonomy. A first imbalance occurs because",
               "after": "",
               "explanation": "The passage says parents are now 'organising sport for children... and often deciding for them', matching the gap.",

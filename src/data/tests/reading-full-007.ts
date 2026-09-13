@@ -76,7 +76,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q3",
-              "answer": "Hair",
+              "answer": [
+                "Hairs",
+                "Hair"
+              ],
               "before": "………………. on their skin Feeding • eat mainly aquatic vegetation, such as",
               "after": "",
               "explanation": "Paragraph 2 says manatees have hairs on their skin that help them sense vibrations in the water.",

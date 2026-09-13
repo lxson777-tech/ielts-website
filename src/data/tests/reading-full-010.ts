@@ -78,16 +78,16 @@ const test: PracticeTest = {
             },
             {
               "id": "q5",
-              "answer": "Not given",
+              "answer": "False",
               "textHtml": "The US Department of Energy has developed a smart card for its employees",
-              "explanation": "Paragraph 3 says the Department of Energy is only planning to provide smart cards, so whether one has actually been developed is not stated.",
+              "explanation": "Paragraph 3 says the Department of Energy 'is planning to do the same', which means it has not done it yet. A claim that it has already developed a card for its employees is therefore contradicted by the passage.",
               "evidence": "In the United States, the Department of Defense has provided smart cards to its 4.3 million employees, and the Department of Energy is planning to do the same."
             },
             {
               "id": "q6",
-              "answer": "Treu",
+              "answer": "True",
               "textHtml": "In France, people’s medical records are stored on a smart card",
-              "explanation": "Paragraph 4 says everyone in France now has a smart card containing a complete medical history. Note the stored answer is misspelt and should read True.",
+              "explanation": "Paragraph 4 says everyone in France now has a smart card containing a complete medical history, which is exactly what the statement says.",
               "evidence": "In France, for example, everyone now has a smart card containing a complete medical history, which can be accessed immediately by a doctor or pharmacist."
             },
             {
@@ -237,7 +237,8 @@ const test: PracticeTest = {
             "A",
             "B",
             "C",
-            "D"
+            "D",
+            "E"
           ]
         },
         {
@@ -271,10 +272,13 @@ const test: PracticeTest = {
             },
             {
               "id": "q22",
-              "answer": "Reinserted",
+              "answer": [
+                "Reinsertion",
+                "Reinserted"
+              ],
               "before": "……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body",
               "after": "",
-              "explanation": "Paragraph C describes ex vivo therapy as altering cells outside the body before they go back into the patient. Note the passage uses the word reinsertion, not the stored form reinserted.",
+              "explanation": "Paragraph C says ex vivo gene therapy involves the reinsertion of the genetically altered cells back into the patient. The gap comes straight after 'the', so it needs the noun 'reinsertion'.",
               "evidence": "Ex vivo gene therapy involves the transfer of genes in cultured cells and reinsertion of the genetically altered cells back into the patient."
             }
           ],
@@ -459,10 +463,13 @@ const test: PracticeTest = {
             },
             {
               "id": "q37",
-              "answer": "Changeable",
+              "answer": [
+                "Changeable",
+                "Changing"
+              ],
               "before": "………………… tend to do better than other students. Students who have been told that they are",
               "after": "",
-              "explanation": "Paragraph 7 says students who believe intelligence can change tend to do better than those who think it is fixed. Note the passage says can change rather than the stored word changeable.",
+              "explanation": "Paragraph 7 says students who believe that intelligence can change tend to do better than those who think it is fixed. The gap follows 'is', so it needs an adjective: 'changeable' or 'changing'.",
               "evidence": "For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies."
             },
             {
@@ -484,12 +491,12 @@ const test: PracticeTest = {
             {
               "id": "q40",
               "answer": [
-                "learning style",
-                "style"
+                "Style",
+                "Learning style"
               ],
               "before": "…………………",
               "after": "",
-              "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style.",
+              "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style. The instruction allows one word only, so the answer to write is 'style'.",
               "evidence": "They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style."
             }
           ],

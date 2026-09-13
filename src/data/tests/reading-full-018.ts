@@ -463,8 +463,7 @@ const test: PracticeTest = {
           "options": [
             "A",
             "B",
-            "C",
-            "D"
+            "C"
           ]
         },
         {

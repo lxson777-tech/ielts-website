@@ -545,12 +545,12 @@ const test: PracticeTest = {
             {
               "id": "q37",
               "answer": [
-                "fingerprint-ing",
-                "new-found"
+                "New-found",
+                "Fingerprinting"
               ],
               "before": "……………… method known as dactyloscopy. This method was to greatly aid the police in identifying criminals. Curiously, investigative methods known to police at the time were often not employed. Crime scene photography was rarely",
               "after": "",
-              "explanation": "Galton applied the new fingerprinting method, dactyloscopy, in 1896.",
+              "explanation": "The passage calls dactyloscopy 'the new-found method', and says it later became known as fingerprinting, so either word fits the gap.",
               "evidence": "Using the new-found method of 'dactyloscopy' (later known as fingerprinting) he employed the technique to successfully identify criminals."
             },
             {

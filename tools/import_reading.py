@@ -41,6 +41,161 @@ NUMBERS = list(LOCAL_TO_SOURCE.values())
 ORIGIN = "https://practicepteonline.com"
 PERMISSION = "Reused with publisher permission confirmed by Alex on 2026-09-11."
 
+# --- Corrections to the publisher's answer key -------------------------------
+#
+# The publisher's key is the default, and `validate_reading.py` re-reads the
+# source pages to prove we still match it. These two tables are the ONLY
+# sanctioned way to disagree with the source: an examiner adjudicated the
+# question against the passage, the correction is recorded here with its
+# reason, and both the importer and the validator read the tables, so a
+# re-import keeps the fix and validation still passes.
+#
+# Add an entry only when the passage settles the point. Everything else stays
+# as the publisher wrote it.
+#
+# ANSWER_OVERRIDES: (local test number, question id) -> {answer, reason}.
+# `answer` is stored exactly as given: a string, or a list of accepted
+# spellings (the scorer accepts any member, comparing case-insensitively).
+ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
+    # --- Plain typos in the published key ---
+    (9, "q36"): {
+        "answer": "Sentences",
+        "reason": "The published key reads 'Entences'. The passage word is 'sentences'; the key lost its first letter.",
+    },
+    (10, "q6"): {
+        "answer": "True",
+        "reason": "The published key reads 'Treu', which is not one of the three permitted True/False/Not Given answers.",
+    },
+    (15, "q37"): {
+        "answer": ["New-found", "Fingerprinting"],
+        "reason": "The published key reads 'fingerprint-ing/new-found'. The hyphen is a line-break artefact, and the scorer treats 'fingerprint-ing' as two words, so nobody typing 'fingerprinting' could score. The passage reads 'the new-found method of dactyloscopy (later known as fingerprinting)', so both forms are accepted with the hyphen removed.",
+    },
+    # --- The key's spelling or word form differs from the passage's ---
+    (9, "q12"): {
+        "answer": ["Standardised", "Standardized"],
+        "reason": "The instruction says ONE WORD ONLY from the passage, and the passage spells it 'standardised'. The publisher's American spelling is kept as an accepted alternative.",
+    },
+    (19, "q30"): {
+        "answer": ["Organised", "Organized"],
+        "reason": "The passage reads 'organising sport for children', so a student copying from the passage writes 'organised'. The publisher's American spelling is kept as an accepted alternative.",
+    },
+    (4, "q4"): {
+        "answer": ["Journals", "Journal"],
+        "reason": "The passage reads 'The sisters' journals reveal their preference', so the word copied from the passage is the plural. The publisher's singular is kept as an accepted alternative.",
+    },
+    (7, "q3"): {
+        "answer": ["Hairs", "Hair"],
+        "reason": "The passage reads 'some hairs covering their bodies'. Both the plural from the passage and the publisher's singular fit the gap.",
+    },
+    (10, "q22"): {
+        "answer": ["Reinsertion", "Reinserted"],
+        "reason": "The gap reads 'before the (22) ...... into the patient', which needs a noun. The passage supplies one: 'reinsertion of the genetically altered cells back into the patient'. The publisher's 'reinserted' does not fit the gap grammatically but is kept as an accepted alternative so nobody who trusted the printed key is penalised.",
+    },
+    (10, "q37"): {
+        "answer": ["Changeable", "Changing"],
+        "reason": "The gap reads 'students who believe that intelligence is (37) ......', which needs an adjective. The passage only offers the phrase 'intelligence can change', so no single passage word fits. Both adjectival forms a student could reasonably produce are accepted.",
+    },
+    (10, "q40"): {
+        "answer": ["Style", "Learning style"],
+        "reason": "The instruction says ONE WORD ONLY, so the attainable answer is 'style'. The publisher's two-word 'learning style' stays accepted, but is no longer the headline answer, since it breaks the group's own word limit.",
+    },
+    # --- The passage contradicts or fails to support the published key ---
+    (10, "q5"): {
+        "answer": "False",
+        "reason": "Statement: 'The US Department of Energy has developed a smart card for its employees.' The passage says the Department of Defense has provided smart cards and 'the Department of Energy is planning to do the same'. A department that is still planning to act has not yet acted, so the claim is contradicted, not merely unmentioned. Published key: Not Given.",
+    },
+    (16, "q29"): {
+        "answer": "False",
+        "reason": "Statement: practitioners 'tend to avoid combining the two schools of practice'. The passage says 'The two practices, however, were not incompatible, a degree of overlap occurring between the two', and then gives an example of one patient's work serving both purposes at once. That contradicts the statement. Published key: Not Given.",
+    },
+    (11, "q6"): {
+        "answer": "Not given",
+        "reason": "Statement: 'The leaves of the baobab tree can be used to make a medicinal sauce.' The passage lists the two uses separately: 'They are rich in iron and can be used as a medicine' and, two sentences later, 'The leaves can also be used as a sauce for food'. It never says the sauce itself is medicinal, so the combined claim is unsupported rather than confirmed. Published key: True.",
+    },
+    (12, "q20"): {
+        "answer": "D",
+        "reason": "Question: 'the possibility of students not being able to sleep well'. Paragraph D is the one that mentions sleep: 'too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping'. Paragraph C covers over-reliance, distraction and inappropriate content, and never mentions sleep. Published key: C, which repeats the (correct) answer to question 19.",
+    },
+}
+
+# GROUP_OVERRIDES: (local test number, group title) -> corrections to the
+# group itself. Supported keys:
+#   options          replaces the shared letter list students choose from
+#   wordLimit        replaces the group's stated word limit
+#   textReplacements list of (old, new) applied to instructionHtml and legendHtml
+#   reason           why the correction was made
+GROUP_OVERRIDES: dict[tuple[int, str], dict] = {
+    (9, "Questions 14-19"): {
+        "options": list("ABCDEFGHI"),
+        "reason": "The instruction says the passage has nine paragraphs, A-I, and it does, but the option list stopped at H.",
+    },
+    (9, "Questions 27-33"): {
+        "options": list("ABCDEFGHIJ"),
+        "textReplacements": [
+            ("seven paragraphs, A-G", "ten paragraphs, A-J"),
+            ("the correct letter, A-G,", "the correct letter, A-J,"),
+        ],
+        "reason": "The instruction claimed seven paragraphs, A-G, but the passage runs A to J and the key itself uses G and I. The instruction text and the option list are corrected to A-J.",
+    },
+    (9, "Questions 23-26"): {
+        "wordLimit": 2,
+        "textReplacements": [("ONE WORD ONLY", "NO MORE THAN TWO WORDS")],
+        "reason": "The only answer the passage supports for question 24 is 'charging stations'. The passage phrase is 'charging stations for electric vehicles', and 'stations' on its own drops the meaning the gap needs, so the group's stated limit is raised to two words instead. The other three answers in the group are single words and are unaffected.",
+    },
+    (10, "Questions 14-18"): {
+        "options": list("ABCDE"),
+        "reason": "The instruction says the passage has five sections, A-E, and it does, but the option list stopped at D.",
+    },
+    (11, "Questions 14-18"): {
+        "options": list("ABCDE"),
+        "reason": "The instruction says the passage has five paragraphs, A-E, and it does, but the option list stopped at D.",
+    },
+    (11, "Questions 27-32"): {
+        "options": list("ABCDEFGHIJ"),
+        "reason": "The instruction says the passage has ten paragraphs, A-J, and it does, but the option list stopped at I.",
+    },
+    (11, "Questions 33-35"): {
+        "options": list("ABCDEFGHIJK"),
+        "reason": "The word list printed with the summary runs A to K (K is 'temperature'), but the option list stopped at J.",
+    },
+    (12, "Questions 14-20"): {
+        "options": list("ABCDEFG"),
+        "reason": "The instruction says the passage has seven paragraphs, A-G, and it does, but the option list stopped at F.",
+    },
+    (18, "Questions 28-33"): {
+        "options": list("ABC"),
+        "reason": "The task matches people A-C and only three people are listed, but the option list offered a fourth letter, D, that answers no question.",
+    },
+}
+
+
+def override_answer(local_number: int, question_id: str, source_answer: str):
+    """The answer we store for this question: the adjudicated correction when
+    one is recorded, otherwise the publisher's key. Shared by the importer and
+    the validator so the two can never drift apart."""
+    fix = ANSWER_OVERRIDES.get((local_number, question_id))
+    return fix["answer"] if fix else normalise_answer(source_answer)
+
+
+def apply_overrides(test: dict, local_number: int) -> None:
+    """Apply the adjudicated corrections to a freshly built test, in place."""
+    for part in test["parts"]:
+        for group in part["groups"]:
+            fix = GROUP_OVERRIDES.get((local_number, group["title"]))
+            if fix:
+                if "options" in fix:
+                    group["options"] = list(fix["options"])
+                if "wordLimit" in fix:
+                    group["wordLimit"] = fix["wordLimit"]
+                for old, new in fix.get("textReplacements", []):
+                    for field in ("instructionHtml", "legendHtml"):
+                        if field in group:
+                            group[field] = group[field].replace(old, new)
+            for question in group["questions"]:
+                answer_fix = ANSWER_OVERRIDES.get((local_number, question["id"]))
+                if answer_fix:
+                    question["answer"] = answer_fix["answer"]
+
 
 def clean(text: str) -> str:
     return " ".join(text.replace("\xa0", " ").replace("�", "’").split())
@@ -411,10 +566,43 @@ def build(number: int, local_number: int | None = None) -> dict:
         "source": {"name": "IELTS MASTER / PracticePTEOnline", "url": url, "permission": PERMISSION},
         "parts": parts,
     }
+    apply_overrides(test, local_number)
     question_ids = [q["id"] for p in parts for g in p["groups"] for q in g["questions"]]
     if question_ids != [f"q{i}" for i in range(1, 41)]:
         raise RuntimeError(f"Test {number}: question ranges produce {question_ids}")
     return test
+
+
+def carry_over_teaching_notes(test: dict, path: Path) -> None:
+    """Copy the teacher-written `explanation` / `evidence` notes out of the
+    existing file and back into the freshly built test. The importer parses
+    only what the publisher's page contains, so without this a re-import would
+    silently wipe every review note that was written by hand afterwards."""
+    if not path.exists():
+        return
+    raw = path.read_text(encoding="utf-8")
+    try:
+        previous = json.JSONDecoder().raw_decode(raw[raw.index("= {") + 2:])[0]
+    except (ValueError, json.JSONDecodeError):
+        return
+    notes = {
+        question["id"]: {key: question[key] for key in ("explanation", "evidence") if key in question}
+        for part in previous.get("parts", [])
+        for group in part.get("groups", [])
+        for question in group.get("questions", [])
+    }
+    group_notes = {
+        group.get("title"): group["explanationHtml"]
+        for part in previous.get("parts", [])
+        for group in part.get("groups", [])
+        if "explanationHtml" in group
+    }
+    for part in test["parts"]:
+        for group in part["groups"]:
+            if group["title"] in group_notes:
+                group.setdefault("explanationHtml", group_notes[group["title"]])
+            for question in group["questions"]:
+                question.update(notes.get(question["id"], {}))
 
 
 def main() -> None:
@@ -422,6 +610,7 @@ def main() -> None:
     for local_number, number in LOCAL_TO_SOURCE.items():
         test = build(number, local_number)
         path = DATA / f"reading-full-{local_number:03d}.ts"
+        carry_over_teaching_notes(test, path)
         path.write_text(
             "import type { PracticeTest } from '../../lib/tests/schema';\n\n"
             f"const test: PracticeTest = {json.dumps(test, ensure_ascii=False, indent=2)};\n\nexport default test;\n",

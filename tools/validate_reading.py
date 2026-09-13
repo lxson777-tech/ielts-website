@@ -21,6 +21,8 @@ def load(path: Path) -> dict:
 def main() -> None:
     failures = []
     total = 0
+    overridden = 0
+    seen_group_overrides = set()
     for local_number, source_number in import_reading.LOCAL_TO_SOURCE.items():
         path = ROOT / "src" / "data" / "tests" / f"reading-full-{local_number:03d}.ts"
         test = load(path)
@@ -33,10 +35,14 @@ def main() -> None:
             failures.append(f"{path.name}: source URL mismatch")
         if len(test["parts"]) != 3 or [q["id"] for q in questions] != [f"q{i}" for i in range(1, 41)]:
             failures.append(f"{path.name}: expected three passages and sequential q1-q40")
+        # The publisher's key is the expectation, except where an examiner
+        # recorded a correction in import_reading.ANSWER_OVERRIDES. Both tools
+        # go through override_answer(), so the stored answers, a re-import and
+        # this check can never disagree about what the answer should be.
         pair_expected = {}
         for index, question in enumerate(questions):
             if question.get("answerPairId"):
-                normalized = import_reading.normalise_answer(source_answers[index])
+                normalized = import_reading.override_answer(local_number, question["id"], source_answers[index])
                 normalized_values = normalized if isinstance(normalized, list) else [normalized]
                 values = [piece.strip() for value in normalized_values for piece in re.split(r"\s*,\s*", value)]
                 pair_expected.setdefault(question["answerPairId"], set()).update(values)
@@ -44,13 +50,25 @@ def main() -> None:
             expected = source_answers[index]
             actual = question["answer"]
             values = actual if isinstance(actual, list) else [actual]
-            expected_values = [value.strip() for value in re.split(r"\s*,\s*", expected)]
+            if (local_number, question["id"]) in import_reading.ANSWER_OVERRIDES:
+                overridden += 1
             if question.get("answerPairId"):
                 if set(values) != pair_expected[question["answerPairId"]]:
                     failures.append(f"{path.name} q{index + 1}: unordered answer differs from source key")
-            elif actual != import_reading.normalise_answer(expected):
+            elif actual != import_reading.override_answer(local_number, question["id"], expected):
                 failures.append(f"{path.name} q{index + 1}: answer differs from source key")
         for group in groups:
+            fix = import_reading.GROUP_OVERRIDES.get((local_number, group["title"]))
+            if fix:
+                seen_group_overrides.add((local_number, group["title"]))
+                if "options" in fix and group.get("options") != list(fix["options"]):
+                    failures.append(f"{path.name} {group['title']}: option list does not match the recorded correction")
+                if "wordLimit" in fix and group.get("wordLimit") != fix["wordLimit"]:
+                    failures.append(f"{path.name} {group['title']}: word limit does not match the recorded correction")
+                for old, new in fix.get("textReplacements", []):
+                    for field in ("instructionHtml", "legendHtml"):
+                        if old in group.get(field, ""):
+                            failures.append(f"{path.name} {group['title']}: {field} still says '{old}' instead of '{new}'")
             html = group.get("legendHtml", "")
             if not html:
                 failures.append(f"{path.name} {group['title']}: source task layout missing")
@@ -84,9 +102,19 @@ def main() -> None:
         emitted_passages = [part["stimulus"] for part in test["parts"]]
         if emitted_passages != rebuilt_passages:
             failures.append(f"{path.name}: emitted passage content differs from the cached source parse")
+    # A correction that no longer matches any question or group is a stale
+    # entry: it would quietly stop protecting anything, so fail loudly instead.
+    if overridden != len(import_reading.ANSWER_OVERRIDES):
+        failures.append(f"{len(import_reading.ANSWER_OVERRIDES) - overridden} answer correction(s) match no question")
+    for key in import_reading.GROUP_OVERRIDES:
+        if key not in seen_group_overrides:
+            failures.append(f"group correction {key} matches no question group")
     if failures:
         raise SystemExit("\n".join(failures))
-    print(f"Validated 20 imported Reading tests, {total} source-keyed questions, passages, layouts, and local assets.")
+    print(
+        f"Validated 20 imported Reading tests, {total} source-keyed questions, passages, layouts, and local assets. "
+        f"{overridden} answer(s) and {len(seen_group_overrides)} question group(s) carry a recorded correction to the publisher's key."
+    )
 
 
 if __name__ == "__main__":
