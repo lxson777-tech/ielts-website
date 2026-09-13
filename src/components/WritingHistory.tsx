@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { getWritingAttempts, onProgressChange, type WritingAttempt } from '../lib/progress';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 
@@ -105,6 +105,9 @@ function BandChart({ rows }: { rows: Row[] }) {
 
 export default function WritingHistory() {
   const [rows, setRows] = useState<Row[] | null>(null);
+  // Index (within the displayed, newest-first list) of the row whose saved
+  // essay text is expanded below it. One at a time keeps the table scannable.
+  const [openEssay, setOpenEssay] = useState<number | null>(null);
 
   useEffect(() => {
     setRows(getWritingAttempts());
@@ -134,21 +137,53 @@ export default function WritingHistory() {
               <th className="px-4 py-2.5 font-semibold">Task</th>
               <th className="px-4 py-2.5 font-semibold">Words</th>
               <th className="px-4 py-2.5 font-semibold">Band</th>
+              <th className="px-4 py-2.5 font-semibold">
+                <span className="sr-only">Essay</span>
+              </th>
             </tr>
           </thead>
           <tbody>
             {[...rows].reverse().map((r, i) => (
-              <tr key={i} className="border-t border-border transition-colors hover:bg-surface-alt">
-                <td className="px-4 py-2.5 text-ink-muted">{fmtDate(r.attempt.at)}</td>
-                <td className="px-4 py-2.5 font-medium">{promptTitle(r.promptId)}</td>
-                <td className="px-4 py-2.5">{r.attempt.wordCount}</td>
-                <td className="px-4 py-2.5">
-                  <span className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-bold text-brand">
-                    {r.attempt.overallBand.toFixed(1)}
-                  </span>
-                  {!r.attempt.live && <span className="ml-1.5 text-xs text-ink-muted">(sample)</span>}
-                </td>
-              </tr>
+              <Fragment key={i}>
+                <tr className="border-t border-border transition-colors hover:bg-surface-alt">
+                  <td className="px-4 py-2.5 text-ink-muted">{fmtDate(r.attempt.at)}</td>
+                  <td className="px-4 py-2.5 font-medium">{promptTitle(r.promptId)}</td>
+                  <td className="px-4 py-2.5">{r.attempt.wordCount}</td>
+                  <td className="px-4 py-2.5">
+                    <span className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-bold text-brand">
+                      {r.attempt.overallBand.toFixed(1)}
+                    </span>
+                    {!r.attempt.live && <span className="ml-1.5 text-xs text-ink-muted">(sample)</span>}
+                  </td>
+                  <td className="px-4 py-2.5 text-right">
+                    {r.attempt.essay ? (
+                      <button
+                        type="button"
+                        onClick={() => setOpenEssay(openEssay === i ? null : i)}
+                        aria-expanded={openEssay === i}
+                        className="whitespace-nowrap text-xs font-semibold text-brand hover:underline"
+                      >
+                        {openEssay === i ? 'Hide essay' : 'View essay'}
+                      </button>
+                    ) : (
+                      // Attempts recorded before essays were saved have no text to show.
+                      <span className="text-xs text-ink-muted" title="This attempt was recorded before essays were saved.">
+                        n/a
+                      </span>
+                    )}
+                  </td>
+                </tr>
+                {openEssay === i && r.attempt.essay && (
+                  <tr className="border-t border-border bg-surface-alt/60">
+                    <td colSpan={5} className="px-4 py-4">
+                      <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">Your answer</p>
+                      <p className="max-h-80 overflow-y-auto whitespace-pre-wrap text-[0.9rem] leading-relaxed">
+                        {r.attempt.essay}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </tbody>
         </table>

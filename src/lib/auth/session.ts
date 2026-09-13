@@ -32,6 +32,17 @@ export async function getCurrentUser(): Promise<User | null> {
   return data.user ?? null;
 }
 
+/** The current Supabase access token, for sending as `Authorization: Bearer
+    <token>` to a Worker that verifies the student server-side (e.g. the
+    live examiner's paid OpenAI path). Null when there's no active session,
+    or when accounts aren't configured at all. */
+export async function getAccessToken(): Promise<string | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const { data } = await sb.auth.getSession();
+  return data.session?.access_token ?? null;
+}
+
 /** Standard email + password sign-in. */
 export async function signInWithPassword(email: string, password: string): Promise<{ error?: string }> {
   const sb = getSupabase();

@@ -1,6 +1,8 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
+import { VOCABULARY_PARTS } from '../../data/vocabulary';
 import raw from '../../content/lesson-bodies/vocabulary.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
@@ -8,4 +10,13 @@ const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 <LessonLayout slug="vocabulary">
   <Fragment set:html={body} />
+
+  <PartGrid
+    id="topics"
+    tag="Learn Each Topic"
+    heading="Topic Lists"
+    intro="Each topic has its own lesson. A word table with meanings and examples, key collocations, essay phrases, and a gap-fill exercise. Start with Conjunctions & Linking Words: every other lesson here assumes you can join ideas. After that the topics run from most to least common in the exam."
+    basePath="vocabulary"
+    parts={VOCABULARY_PARTS}
+  />
 </LessonLayout>

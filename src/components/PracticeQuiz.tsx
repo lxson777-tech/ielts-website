@@ -37,6 +37,11 @@ function scoreMessage(correct: number, total: number): string {
 }
 
 export default function PracticeQuiz({ set }: Props) {
+  /* 'select' questions were built for Matching Headings, where the dropdown
+     picks a paragraph. Matching Sentence Endings reuses the same control to
+     pick an ending, so the noun is configurable and defaults to the original. */
+  const selectNoun = set.selectNoun ?? 'paragraph';
+  const selectNounTitle = selectNoun.charAt(0).toUpperCase() + selectNoun.slice(1);
   // null = unanswered; otherwise the given answer (locked)
   const [given, setGiven] = useState<(string | null)[]>(() => set.questions.map(() => null));
   const [drafts, setDrafts] = useState<string[]>(() => set.questions.map(() => ''));
@@ -172,7 +177,7 @@ export default function PracticeQuiz({ set }: Props) {
                     value={locked ? g : ''}
                     disabled={locked}
                     onChange={(e) => lock(i, e.target.value)}
-                    aria-label={`Paragraph for ${q.prompt}`}
+                    aria-label={`${selectNoun} for ${q.prompt}`}
                     className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors ${
                       locked
                         ? right
@@ -182,11 +187,11 @@ export default function PracticeQuiz({ set }: Props) {
                     }`}
                   >
                     <option value="" disabled>
-                      Choose paragraph…
+                      Choose {selectNoun}…
                     </option>
                     {q.options!.map((opt) => (
                       <option key={opt.value} value={opt.value}>
-                        {opt.label ?? `Paragraph ${opt.value}`}
+                        {opt.label ?? `${selectNounTitle} ${opt.value}`}
                       </option>
                     ))}
                   </select>

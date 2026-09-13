@@ -11,8 +11,18 @@ export interface SavedPlan {
   /** ISO yyyy-mm-dd, or '' when the student hasn't booked a date */
   testDate: string;
   createdAt: string; // ISO datetime
-  /** indices of completed steps, flattened across the whole plan in order */
+  /** LEGACY. Indices into the old hand-written study-plan step list, which the
+      course replaced. Position-based, so the numbers stopped meaning anything
+      the moment the steps changed: never read this. Kept only so plans written
+      by the previous version still parse and still sync, rather than being
+      dropped on load. New completion goes in doneKeys. */
   done: number[];
+  /** Completed course steps, by stable key (a progress key like
+      'reading-paraphrase', or an 'extra:' key). Keys survive reordering,
+      which is exactly what `done` failed to do. Lessons are not stored here:
+      their completion is read from progress.lessons, the single source of
+      truth. In practice this holds only the exam-readiness extras. */
+  doneKeys?: string[];
 }
 
 const listeners = new Set<() => void>();
@@ -72,7 +82,11 @@ export function mergeStudyPlans(a: SavedPlan | null, b: SavedPlan | null): Saved
   if (!b) return a;
   const samePlan = a.targetBand === b.targetBand && a.testDate === b.testDate && a.createdAt === b.createdAt;
   if (samePlan) {
-    return { ...a, done: [...new Set([...a.done, ...b.done])].sort((x, y) => x - y) };
+    return {
+      ...a,
+      done: [...new Set([...a.done, ...b.done])].sort((x, y) => x - y),
+      doneKeys: [...new Set([...(a.doneKeys ?? []), ...(b.doneKeys ?? [])])].sort(),
+    };
   }
   return a.createdAt >= b.createdAt ? a : b;
 }
@@ -80,16 +94,6 @@ export function mergeStudyPlans(a: SavedPlan | null, b: SavedPlan | null): Saved
 /* ── Plan generation ────────────────────────────────────────────────────────
    Pulled in from StudyPlan.tsx so the account dashboard can compute "X% of
    your plan done" without duplicating the tier/stage logic. */
-
-export interface PlanStep {
-  label: string;
-  href?: string;
-}
-export interface PlanStage {
-  title: string;
-  blurb: string;
-  steps: PlanStep[];
-}
 
 export type PlanTier = 'sprint' | 'month' | 'season' | 'foundation';
 
@@ -116,103 +120,4 @@ export function planTierFor(days: number | null): PlanTier {
   if (days <= 35) return 'month';
   if (days <= 90) return 'season';
   return 'foundation';
-}
-
-// Reusable, real-feature steps referenced across the tiers.
-const S = {
-  diagReading: { label: 'Diagnostic: take a full timed Reading test to see your starting band', href: '/tests' },
-  diagWriting: { label: 'Diagnostic: write one Task 2 essay in the Writing Checker for an AI band', href: '/trainers/writing' },
-  readingOverview: { label: 'Study the Reading Overview: formats, timing and every question type', href: '/lessons/reading-task1' },
-  writingOverview: { label: 'Study the Writing Overview and the Task 2 method', href: '/lessons/writing' },
-  speakingOverview: { label: 'Study the Speaking Overview: all three parts and how they are marked', href: '/lessons/speaking' },
-  vocab: { label: 'Learn a vocabulary topic set, and check the Word of the Day daily', href: '/lessons/vocabulary' },
-  readingTrainer: { label: 'Do a 20-minute Reading Trainer drill, starting with your weakest question type', href: '/trainers/reading' },
-  writingChecker: { label: 'Write an essay in the Writing Checker and apply every correction it gives', href: '/trainers/writing' },
-  speakingTrainer: { label: 'Practice one Speaking part in the Speaking Trainer with the structure cheat-sheet', href: '/trainers/speaking' },
-  speakingExaminer: { label: 'Do a full mock with the Live AI Examiner and read the band feedback', href: '/speaking/examiner' },
-  mockReading: { label: 'Sit a fresh full Reading test under strict exam timing', href: '/tests' },
-  review: { label: 'Review your score history and re-target whichever skill is lagging', href: '/account' },
-} satisfies Record<string, PlanStep>;
-
-export function buildStudyPlanStages(days: number | null): PlanStage[] {
-  const tier = planTierFor(days);
-
-  if (tier === 'sprint') {
-    return [
-      {
-        title: 'Days 1-2 · Know where you stand',
-        blurb: 'No cramming yet. Measure first so the next days aim at the right gaps.',
-        steps: [S.diagReading, S.diagWriting, S.readingOverview],
-      },
-      {
-        title: 'Days 3-9 · Rotate the skills',
-        blurb: 'One focused session per skill per day. Fast trainers, not full exams.',
-        steps: [S.readingTrainer, S.writingChecker, S.speakingTrainer, S.speakingExaminer, S.vocab],
-      },
-      {
-        title: 'Final days · Rehearse under pressure',
-        blurb: 'Simulate exam day and tidy up your weakest paper.',
-        steps: [S.mockReading, S.review, S.writingChecker],
-      },
-    ];
-  }
-
-  if (tier === 'month') {
-    return [
-      {
-        title: 'Week 1 · Diagnose and learn the exam',
-        blurb: 'Find your baseline and learn exactly how each paper is scored.',
-        steps: [S.diagReading, S.diagWriting, S.readingOverview, S.writingOverview, S.speakingOverview],
-      },
-      {
-        title: 'Weeks 2-3 · Build each skill',
-        blurb: 'Daily focused practice, rotating skills, applying feedback each time.',
-        steps: [S.readingTrainer, S.writingChecker, S.speakingTrainer, S.vocab],
-      },
-      {
-        title: 'Week 4 · Mock and refine',
-        blurb: 'Full timed practice, then target whatever is still below your goal.',
-        steps: [S.mockReading, S.speakingExaminer, S.review],
-      },
-    ];
-  }
-
-  if (tier === 'season') {
-    return [
-      {
-        title: 'Month 1 · Foundations',
-        blurb: 'Learn every paper thoroughly and start steady vocabulary building.',
-        steps: [S.readingOverview, S.writingOverview, S.speakingOverview, S.vocab, S.diagReading],
-      },
-      {
-        title: 'Month 2 · Deliberate practice',
-        blurb: 'Drill each skill several times a week and act on the AI feedback.',
-        steps: [S.readingTrainer, S.writingChecker, S.speakingTrainer, S.diagWriting],
-      },
-      {
-        title: 'Final stretch · Exam conditions',
-        blurb: 'Regular full mocks and targeted fixes for your weakest skill.',
-        steps: [S.mockReading, S.speakingExaminer, S.review],
-      },
-    ];
-  }
-
-  // foundation (no date, or 3+ months)
-  return [
-    {
-      title: 'Stage 1 · Learn the exam',
-      blurb: 'Work through every skill overview so nothing on test day is a surprise.',
-      steps: [S.readingOverview, S.writingOverview, S.speakingOverview, S.vocab],
-    },
-    {
-      title: 'Stage 2 · Practice steadily',
-      blurb: 'A little every day beats cramming. Rotate skills and build vocabulary.',
-      steps: [S.readingTrainer, S.writingChecker, S.speakingTrainer, S.diagReading, S.diagWriting],
-    },
-    {
-      title: 'Stage 3 · Test yourself',
-      blurb: "Once you're comfortable, sit full mocks and keep re-targeting weak spots.",
-      steps: [S.mockReading, S.speakingExaminer, S.review],
-    },
-  ];
 }

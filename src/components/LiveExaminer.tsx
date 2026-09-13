@@ -17,26 +17,34 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import type { CueCard, SpeakingCriterionKey, SpeakingGradeResult } from '../lib/speaking/schema';
+import type { User } from '@supabase/supabase-js';
+import type { CueCard, SpeakingCriterionKey, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
-import { MicCapture, ExaminerPlayback } from '../lib/speaking/live/audio';
-import { ExaminerSession, type TranscriptTurn } from '../lib/speaking/live/session';
+import { openExaminerLink, fetchLiveConfig, type ExaminerLink, type LiveConfig } from '../lib/speaking/live/link';
+import type { TranscriptTurn } from '../lib/speaking/live/session';
+import type { DirectorCue } from '../lib/speaking/live/cues';
 import {
   buildExamPlan,
   buildSystemInstruction,
   buildDrillPlan,
   buildDrillSystemInstruction,
+  planRequestFor,
   CLOSING_PHRASE,
   EXAMINER_NAME,
   type DrillMode,
 } from '../lib/speaking/live/script';
 import { gradeInterview, gradingAvailable, FULL_TEST_EXPECTED_MIN_MS } from '../lib/speaking/live/grade';
 import { recordSpeakingAttempt } from '../lib/progress';
+import { isAuthConfigured } from '../lib/auth/supabase';
+import { onAuthChange, getAccessToken } from '../lib/auth/session';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import BandReport from './BandReport';
-import SpeakingStructureGuide from './SpeakingStructureGuide';
+import SpeakingCoachPanel from './SpeakingCoachPanel';
+import SpeakingPartCards from './SpeakingPartCards';
+import IdeaHints from './IdeaHints';
+import AuthModal from './AuthModal';
 
 const TOKEN_URL: string | undefined = import.meta.env?.PUBLIC_LIVE_EXAMINER_URL;
 
@@ -88,6 +96,20 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
   const [finalTranscript, setFinalTranscript] = useState<TranscriptTurn[]>([]);
   const [gradeStep, setGradeStep] = useState(0);
+  const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
+  const [configError, setConfigError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  /* ── sign-in gate (openai only) ───────────────────────────────────────
+     The paid OpenAI path requires a signed-in student; Gemini stays free
+     and unauthenticated. requiresSignIn comes from the Worker, not a local
+     guess, so this tracks whatever the currently-configured provider needs. */
+  useEffect(() => onAuthChange(setUser), []);
+  const requiresSignIn = liveConfig?.requiresSignIn === true;
+  const authConfigured = isAuthConfigured();
+  const needsSignIn = requiresSignIn && authConfigured && !user;
+  const authUnavailable = requiresSignIn && !authConfigured;
 
   useEffect(() => {
     if (phase !== 'grading') return;
@@ -98,13 +120,13 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     return () => clearInterval(i);
   }, [phase]);
 
-  /** Only the cue card is needed after setup (for the on-screen card). */
-  const planRef = useRef<{ cueCard?: CueCard } | null>(null);
+  /** What the UI needs after setup: the on-screen cue card, plus the drawn
+      topic's vocabulary for the drills' coach panel. */
+  const planRef = useRef<{ cueCard?: CueCard; vocab?: TopicVocab[] } | null>(null);
   const modeRef = useRef<LiveMode>('full');
   const titleRef = useRef('Live mock speaking test');
-  const sessionRef = useRef<ExaminerSession | null>(null);
-  const micRef = useRef<MicCapture | null>(null);
-  const playbackRef = useRef<ExaminerPlayback | null>(null);
+  const linkRef = useRef<ExaminerLink | null>(null);
+  const startingRef = useRef(false);
   const streamRef = useRef<MediaStream | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const recChunksRef = useRef<BlobPart[]>([]);
@@ -137,10 +159,35 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
   /** Reads the ref through a call so TS doesn't narrow it across awaits. */
   const stageIs = (s: Stage) => stageRef.current === s;
 
-  /* ── session start ─────────────────────────────────────────────────── */
+  /* ── provider config ────────────────────────────────────────────────
+     Which link (Gemini or OpenAI) this site is wired to, fetched once from
+     the token Worker. Not fetched in ?preview mode, since preview never
+     opens a real connection. A failure here does not block starting the
+     test: startTest re-fetches so a transient error can be retried. */
+  useEffect(() => {
+    if (!TOKEN_URL) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('preview')) return;
+    let cancelled = false;
+    fetchLiveConfig(TOKEN_URL)
+      .then((cfg) => {
+        if (!cancelled) setLiveConfig(cfg);
+      })
+      .catch((e) => {
+        if (!cancelled) setConfigError(e instanceof Error ? e.message : 'Could not reach the live examiner service.');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* session start */
 
   async function startTest(m: LiveMode = 'full') {
     if (!TOKEN_URL) return;
+    if (needsSignIn || authUnavailable) return;
+    if (startingRef.current || !(phase === 'menu' || phase === 'report' || phase === 'error')) return;
+    startingRef.current = true;
     modeRef.current = m;
     setError(null);
     setNotice(null);
@@ -152,6 +199,20 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     setCaption('');
     setResult(null);
 
+    let config = liveConfig;
+    if (!config) {
+      try {
+        config = await fetchLiveConfig(TOKEN_URL);
+        setLiveConfig(config);
+        setConfigError(null);
+      } catch (e) {
+        startingRef.current = false;
+        setPhase('menu');
+        setError(e instanceof Error ? e.message : 'Could not reach the live examiner service.');
+        return;
+      }
+    }
+
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({
@@ -160,6 +221,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
       });
     } catch {
+      startingRef.current = false;
       setPhase('menu');
       setError('Microphone access is required. Please allow the permission and try again.');
       return;
@@ -167,16 +229,6 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     streamRef.current = stream;
 
     try {
-      // Audio contexts are created close to the button click so mobile
-      // browsers treat them as user-initiated.
-      const playback = new ExaminerPlayback();
-      await playback.start();
-      playbackRef.current = playback;
-
-      const mic = new MicCapture();
-      await mic.start(stream, (chunk) => sessionRef.current?.sendAudioChunk(chunk));
-      micRef.current = mic;
-
       const mime = pickMimeType();
       const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
       rec.ondataavailable = (e) => {
@@ -186,70 +238,84 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
       recActiveSinceRef.current = performance.now();
       recorderRef.current = rec;
 
+      const provider = config.provider;
       let instruction: string;
+      let request: ReturnType<typeof planRequestFor>;
       if (m === 'full') {
         const plan = buildExamPlan();
         planRef.current = { cueCard: plan.cueCard };
         titleRef.current = 'Live mock speaking test';
-        instruction = buildSystemInstruction(plan);
+        instruction = buildSystemInstruction(plan, provider);
+        request = planRequestFor(plan);
       } else {
         const plan = buildDrillPlan(m);
-        planRef.current = { cueCard: plan.cueCard };
+        planRef.current = { cueCard: plan.cueCard, vocab: plan.part1Topic?.vocab ?? plan.cueCard?.vocab };
         titleRef.current = plan.title;
-        instruction = buildDrillSystemInstruction(plan);
+        instruction = buildDrillSystemInstruction(plan, provider);
+        request = planRequestFor(plan);
       }
 
-      const session = await ExaminerSession.connect(TOKEN_URL, instruction, {
-        onAudio: (chunk) => playbackRef.current?.enqueue(chunk),
-        onInterrupted: () => playbackRef.current?.flush(),
-        onTranscript: onTranscriptUpdate,
-        onClosed: (reason, wasClean) => {
-          if (endedRef.current) return;
-          // The conversation died under us — salvage a report from whatever
-          // was said rather than throwing the attempt away.
-          setNotice(`The connection ended early (${wasClean ? reason || 'closed' : 'network problem'}). Grading what we have…`);
-          void finishTest();
-        },
-        onError: () => {
-          /* transient — onClosed decides what actually matters */
+      const accessToken = await getAccessToken();
+
+      linkRef.current = await openExaminerLink({
+        endpoint: TOKEN_URL,
+        config,
+        stream,
+        plan: request,
+        instruction,
+        mode: m,
+        accessToken,
+        cb: {
+          onTranscript: onTranscriptUpdate,
+          onClosed: (reason, wasClean) => {
+            if (endedRef.current) return;
+            // The conversation died under us — salvage a report from whatever
+            // was said rather than throwing the attempt away.
+            setNotice(`The connection ended early (${wasClean ? reason || 'closed' : 'network problem'}). Grading what we have…`);
+            void finishTest();
+          },
+          onError: () => {
+            /* transient — onClosed decides what actually matters */
+          },
         },
       });
-      sessionRef.current = session;
     } catch (e) {
+      const rec = recorderRef.current;
+      if (rec && rec.state !== 'inactive') rec.stop();
       cleanupAudio();
+      startingRef.current = false;
       setPhase('menu');
       setError(e instanceof Error ? e.message : 'Could not start the examiner session.');
       return;
     }
 
+    startingRef.current = false;
     setPhase('interview');
 
     const startedAt = performance.now();
     every(() => setElapsedS(Math.round((performance.now() - startedAt) / 1000)), 1000);
-    every(() => setExaminerTalking(playbackRef.current?.isSpeaking() ?? false), 250);
+    every(() => setExaminerTalking(linkRef.current?.isSpeaking() ?? false), 250);
     startOrbLoop();
 
     if (m === 'full') {
       setStageBoth('part1');
-      sessionRef.current.sendDirectorNote('The candidate is seated and ready. Begin the test now with the introduction.');
+      void linkRef.current?.direct({ type: 'begin' });
       later(() => void beginPart2(), PART2_AT_MS);
-      later(() => endEarly('The test time is over.'), HARD_STOP_MS);
+      later(() => endEarly('time'), HARD_STOP_MS);
     } else if (m === 'part1') {
       setStageBoth('part1');
-      sessionRef.current.sendDirectorNote('The candidate is seated and ready. Greet them briefly and begin the Part 1 questions now.');
-      later(() => endEarly('The drill time is over.'), DRILL_MAX_MS);
-      later(() => endEarly('The drill time is over.'), DRILL_HARD_STOP_MS);
+      void linkRef.current?.direct({ type: 'begin' });
+      later(() => endEarly('time'), DRILL_MAX_MS);
+      later(() => endEarly('time'), DRILL_HARD_STOP_MS);
     } else if (m === 'part2') {
       // Straight to the cue card: same prep → talk flow as the full test.
-      void startPart2Flow(
-        'The candidate is seated and ready. Greet them briefly, then introduce the cue card exactly as scripted, ending with "Your one minute starts now." Then wait in complete silence.',
-      );
-      later(() => endEarly('The drill time is over.'), DRILL_HARD_STOP_MS);
+      void startPart2Flow({ type: 'begin' });
+      later(() => endEarly('time'), DRILL_HARD_STOP_MS);
     } else {
       setStageBoth('part3');
-      sessionRef.current.sendDirectorNote('The candidate is seated and ready. Greet them briefly and begin the discussion now.');
-      later(() => endEarly('The drill time is over.'), DRILL_MAX_MS);
-      later(() => endEarly('The drill time is over.'), DRILL_HARD_STOP_MS);
+      void linkRef.current?.direct({ type: 'begin' });
+      later(() => endEarly('time'), DRILL_MAX_MS);
+      later(() => endEarly('time'), DRILL_HARD_STOP_MS);
     }
   }
 
@@ -263,7 +329,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
       if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
       setStageBoth('wrapup');
       void (async () => {
-        await playbackRef.current?.waitUntilDone();
+        await linkRef.current?.waitUntilQuiet();
         await finishTest();
       })();
     }
@@ -287,7 +353,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     const deadline = performance.now() + maxMs;
     let heardSpeech = false;
     while (performance.now() < deadline && !endedRef.current) {
-      const speaking = playbackRef.current?.isSpeaking() ?? false;
+      const speaking = linkRef.current?.isSpeaking() ?? false;
       if (speaking) heardSpeech = true;
       else if (heardSpeech) return;
       await new Promise((r) => setTimeout(r, 250));
@@ -296,22 +362,20 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
 
   async function beginPart2() {
     if (stageRef.current !== 'part1' || endedRef.current) return;
-    await startPart2Flow(
-      'Part 1 is over. Introduce the Part 2 cue card now exactly as scripted, ending with "Your one minute starts now." Then wait in complete silence.',
-    );
+    await startPart2Flow({ type: 'part2_intro' });
   }
 
   /** Cue-card intro → prep minute → talk. Shared by the full test (after
       Part 1) and the Part 2 drill (right after the greeting). */
-  async function startPart2Flow(directorNote: string) {
+  async function startPart2Flow(cue: DirectorCue) {
     if (endedRef.current) return;
     setStageBoth('part2prep');
-    sessionRef.current?.sendDirectorNote(directorNote);
+    void linkRef.current?.direct(cue);
     // Let the examiner finish reading the cue-card intro before the minute starts.
     await waitForExaminerQuiet(30_000);
     if (endedRef.current || !stageIs('part2prep')) return;
 
-    if (micRef.current) micRef.current.muted = true;
+    linkRef.current?.setMicMuted(true);
     pauseRecorder();
     let left = Math.round(PREP_MS / 1000);
     setPrepSecondsLeft(left);
@@ -327,44 +391,34 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
 
   function beginPart2Talk() {
     if (endedRef.current || stageRef.current !== 'part2prep') return;
-    if (micRef.current) micRef.current.muted = false;
+    linkRef.current?.setMicMuted(false);
     resumeRecorder();
     setStageBoth('part2talk');
-    sessionRef.current?.sendDirectorNote('The preparation minute is over. Invite the candidate to start speaking now.');
+    void linkRef.current?.direct({ type: 'part2_talk' });
     later(() => beginPart3(true), TALK_MAX_MS + 15_000); // +15s for the invite itself
   }
 
   function beginPart3(timeUp: boolean) {
     if (endedRef.current || stageRef.current !== 'part2talk') return;
 
-    // Part 2 drill: there is no Part 3 — rounding-off question, then conclude.
+    // Part 2 drill: there is no Part 3, rounding-off question, then conclude.
     if (modeRef.current === 'part2') {
       setStageBoth('wrapup');
-      sessionRef.current?.sendDirectorNote(
-        timeUp
-          ? 'Two minutes are up. If the candidate is still speaking, stop them politely ("Thank you."). Ask the one rounding-off question, wait for the answer, then conclude the drill with the official closing line and say nothing more.'
-          : 'The candidate has finished their talk. Ask the one rounding-off question, wait for the answer, then conclude the drill with the official closing line and say nothing more.',
-      );
+      void linkRef.current?.direct({ type: 'part2_end', timeUp });
       // If the closing line never comes (model hiccup), end anyway.
       forceEndTimerRef.current = setTimeout(() => void finishTest(), PART2_WRAPUP_FALLBACK_MS);
       return;
     }
 
     setStageBoth('part3');
-    sessionRef.current?.sendDirectorNote(
-      timeUp
-        ? 'Two minutes are up. If the candidate is still speaking, stop them politely ("Thank you."). Ask the rounding-off question if you have not, then begin the Part 3 discussion.'
-        : 'The candidate has finished their talk. Ask the rounding-off question, then begin the Part 3 discussion.',
-    );
-    later(() => endEarly('The test time is over.'), PART3_MAX_MS);
+    void linkRef.current?.direct({ type: 'part2_end', timeUp });
+    later(() => endEarly('time'), PART3_MAX_MS);
   }
 
-  function endEarly(reason: string) {
+  function endEarly(reason: 'time' | 'candidate') {
     if (endedRef.current || stageRef.current === 'wrapup') return;
     setStageBoth('wrapup');
-    sessionRef.current?.sendDirectorNote(
-      `${reason} Conclude the test now with the official closing line, then say nothing more.`,
-    );
+    void linkRef.current?.direct({ type: 'conclude', reason });
     // If the closing phrase never arrives (model hiccup), end anyway.
     forceEndTimerRef.current = setTimeout(() => void finishTest(), FORCE_END_GRACE_MS);
   }
@@ -413,10 +467,11 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     timersRef.current = [];
     intervalsRef.current = [];
 
-    const transcript = sessionRef.current?.transcript() ?? [];
+    const transcript = linkRef.current?.transcript() ?? [];
     setFinalTranscript([...transcript]);
-    sessionRef.current?.close();
-    sessionRef.current = null;
+    const link = linkRef.current;
+    linkRef.current = null;
+    if (link) await link.close();
 
     const recording = await stopRecorder();
     cleanupAudio();
@@ -468,10 +523,6 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
   }
 
   function cleanupAudio() {
-    void micRef.current?.stop();
-    micRef.current = null;
-    void playbackRef.current?.stop();
-    playbackRef.current = null;
     if (streamRef.current) {
       releaseMic(streamRef.current);
       streamRef.current = null;
@@ -486,8 +537,9 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     timersRef.current = [];
     intervalsRef.current = [];
     if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
-    sessionRef.current?.close();
-    sessionRef.current = null;
+    const link = linkRef.current;
+    linkRef.current = null;
+    void link?.close();
     const rec = recorderRef.current;
     if (rec && rec.state !== 'inactive') rec.stop();
     cleanupAudio();
@@ -511,11 +563,16 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
       return;
     }
     previewRef.current = true;
-    planRef.current = buildExamPlan();
+    const previewPlan = buildExamPlan();
     const isPart2Preview = params.get('preview') === 'part2';
-    // In the drills variant, preview as a drill so the structure
-    // cheat-sheet renders too.
+    // In the drills variant, preview as a drill so the coach panel renders
+    // too — with the vocab a real drill of that mode would draw (Part 1 from
+    // the topic, Part 2 from the cue card), or the preview misrepresents it.
     if (variant === 'drills') modeRef.current = isPart2Preview ? 'part2' : 'part1';
+    planRef.current = {
+      cueCard: previewPlan.cueCard,
+      vocab: isPart2Preview ? previewPlan.cueCard.vocab : previewPlan.part1Topics[0]?.vocab,
+    };
     setPhase('interview');
     if (isPart2Preview) {
       // ?preview=part2 renders the cue-card stage (card + prep notes + orb).
@@ -541,10 +598,10 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     let exSmooth = 0;
     let meSmooth = 0;
     const step = () => {
-      if (endedRef.current && !playbackRef.current) return;
+      if (endedRef.current && !linkRef.current) return;
       if (reduced) return;
-      let exL = playbackRef.current?.level() ?? 0;
-      let meL = micRef.current?.level() ?? 0;
+      let exL = linkRef.current?.outputLevel() ?? 0;
+      let meL = linkRef.current?.micLevel() ?? 0;
       if (previewRef.current) {
         const t = performance.now();
         const talking = Math.floor(t / 4500) % 2 === 0;
@@ -660,8 +717,9 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
           {variant === 'drills' ? (
             <>
               Pick a part. {EXAMINER_NAME} asks questions out loud, listens to your answers, and follows up on
-              what <em>you</em> say, exactly like the real test, just one part at a time. You'll get a band report
-              at the end.
+              what <em>you</em> say, exactly like the real test, just one part at a time. A coach panel with the
+              answer structure, useful phrases, and topic vocabulary stays beside you, and you'll get a band
+              report at the end.
             </>
           ) : (
             <>
@@ -676,7 +734,36 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
           <li>· Speak naturally, the examiner waits while you think</li>
           <li>· You can ask her to repeat or rephrase a question</li>
         </ul>
+        {needsSignIn && (
+          <div className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-3 text-xs text-ink-muted">
+            <p>Sign in to use the live examiner (this keeps the paid voice service for real students).</p>
+            <button
+              type="button"
+              onClick={() => setShowAuthModal(true)}
+              className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
+            >
+              Sign in
+            </button>
+          </div>
+        )}
+        {authUnavailable && (
+          <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+            The live examiner needs accounts to be enabled on this site.
+          </p>
+        )}
+        {liveConfig && (
+          <p className="mx-auto mt-3 max-w-md text-xs text-ink-muted">
+            {liveConfig.provider === 'openai'
+              ? `Voice conversation by OpenAI GPT-Live (${liveConfig.model}). Your voice is streamed to OpenAI during the interview, the recording is then sent to Google Gemini for the band report.`
+              : `Voice conversation by Google Gemini Live (${liveConfig.model}). Your voice is streamed to Google during the interview and for the band report.`}
+          </p>
+        )}
         {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
+        {configError && (
+          <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+            The live examiner service could not be reached: {configError}. You can still try to start.
+          </p>
+        )}
         {!TOKEN_URL && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
             ⚠ The live examiner is not configured on this site yet (PUBLIC_LIVE_EXAMINER_URL).
@@ -684,33 +771,8 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
         )}
         {variant === 'drills' ? (
           <>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => void startTest('part1')}
-                disabled={!TOKEN_URL}
-                className="rounded-button bg-brand px-6 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Part 1 practice
-              </button>
-              <button
-                type="button"
-                onClick={() => void startTest('part2')}
-                disabled={!TOKEN_URL}
-                className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Part 2 practice
-              </button>
-              <button
-                type="button"
-                onClick={() => void startTest('part3')}
-                disabled={!TOKEN_URL}
-                className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Part 3 practice
-              </button>
-            </div>
-            <p className="mt-3 text-xs text-ink-muted">
+            <SpeakingPartCards onStart={(m) => void startTest(m)} disabled={!TOKEN_URL || needsSignIn || authUnavailable} />
+            <p className="mt-4 text-xs text-ink-muted">
               {SPEAKING_PART1_TOPICS.length} Part 1 topics · {SPEAKING_CUE_CARDS.length} cue cards · free
             </p>
           </>
@@ -718,12 +780,13 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
           <button
             type="button"
             onClick={() => void startTest()}
-            disabled={!TOKEN_URL}
+            disabled={!TOKEN_URL || needsSignIn || authUnavailable}
             className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
             Start the interview
           </button>
         )}
+        {showAuthModal && <AuthModal initialMode="signin" onClose={() => setShowAuthModal(false)} />}
       </div>
     );
   } else if (phase === 'connecting') {
@@ -789,6 +852,9 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
   } else {
   /* ── the interview screen ── */
   const cue = planRef.current?.cueCard;
+  /* Drills get the coach beside the stage; the full mock test stays
+     exam-clean, no coaching aids, like the real thing. */
+  const drillMethod = variant === 'drills' && modeRef.current !== 'full' ? DRILL_METHOD[modeRef.current] : null;
   const stageLabel =
     stage === 'part1' ? 'Part 1 · Interview' :
     stage === 'part2prep' ? 'Part 2 · Preparation' :
@@ -806,6 +872,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     (stage === 'part2prep' || stage === 'part2talk' || (stage === 'wrapup' && modeRef.current === 'part2'));
 
   content = (
+    <div className={drillMethod ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-4' : ''}>
     <div className="space-y-4">
       <style>{LX_STYLES}</style>
 
@@ -822,6 +889,11 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
               </li>
             ))}
           </ul>
+          {drillMethod && cue.ideas && cue.ideas.length > 0 && (
+            <div className="mt-3">
+              <IdeaHints ideas={cue.ideas} label="Stuck? Ideas for this card" />
+            </div>
+          )}
           {stage === 'part2prep' && (
             <textarea
               value={notes}
@@ -930,7 +1002,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
           )}
           <button
             type="button"
-            onClick={() => endEarly('The candidate has asked to finish.')}
+            onClick={() => endEarly('candidate')}
             className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold text-ink-muted hover:bg-surface-alt"
           >
             End test early
@@ -938,13 +1010,17 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
         </div>
       </div>
 
-      {/* Drills keep the trainer's structure cheat-sheet on screen — that
-          coaching aid is what distinguishes practice from the mock test. */}
-      {variant === 'drills' && modeRef.current !== 'full' && (
-        <SpeakingStructureGuide method={DRILL_METHOD[modeRef.current]} />
-      )}
-
       {notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
+    </div>
+
+    {/* Drills keep a coach beside the stage: a structure to follow, phrases
+        to reach for, topic vocab to drop in. That coaching aid is what
+        distinguishes practice from the mock test. */}
+    {drillMethod && (
+      <div className="mt-4 lg:sticky lg:top-20 lg:mt-0">
+        <SpeakingCoachPanel method={drillMethod} vocab={planRef.current?.vocab} />
+      </div>
+    )}
     </div>
   );
   }

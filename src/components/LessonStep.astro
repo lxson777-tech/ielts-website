@@ -1,0 +1,59 @@
+---
+/* "Lesson 3 of 8" plus a segmented track, shown at the top of every lesson
+   page inside a section. Position comes from the part's index in its
+   registry (see sequence() in lessons.ts), so it always agrees with the
+   overview grid and the prev/next links at the foot of the page.
+
+   The track is decorative: it marks where this lesson sits in the section,
+   not how much the student has completed. Completion lives in localStorage
+   and is painted client-side on the overview cards instead. */
+
+interface Props {
+  order: number;
+  of: number;
+  /** Section name for the accessible label, e.g. 'Reading'. */
+  section: string;
+}
+
+const { order, of, section } = Astro.props;
+---
+
+<div class="lesson-step" aria-label={`Lesson ${order} of ${of} in ${section}`}>
+  <span class="lesson-step-label">Lesson {order} of {of}</span>
+  <span class="lesson-step-track" aria-hidden="true">
+    {Array.from({ length: of }, (_, i) => <span class:list={['lesson-step-tick', i < order && 'is-done']} />)}
+  </span>
+</div>
+
+<style>
+  .lesson-step {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .lesson-step-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--skill, var(--color-brand));
+    white-space: nowrap;
+  }
+  .lesson-step-track {
+    display: flex;
+    gap: 3px;
+    flex: 1;
+    min-width: 80px;
+  }
+  .lesson-step-tick {
+    height: 3px;
+    flex: 1;
+    border-radius: 999px;
+    background: var(--color-border);
+  }
+  .lesson-step-tick.is-done {
+    background: var(--skill, var(--color-brand));
+  }
+</style>

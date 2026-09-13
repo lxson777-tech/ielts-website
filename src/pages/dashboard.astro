@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LearningDashboard from '../components/LearningDashboard';
+---
+<BaseLayout title="Dashboard · IELTS is EZ" description="Your IELTS preparation dashboard.">
+  <LearningDashboard client:load />
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/platform-pages.css';
+</style>

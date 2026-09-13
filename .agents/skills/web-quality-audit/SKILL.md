@@ -164,9 +164,5 @@ When performing an audit, structure findings as:
 
 ## References
 
-For detailed guidelines on specific areas:
-- [Performance Optimization](../performance/SKILL.md)
-- [Core Web Vitals](../core-web-vitals/SKILL.md)
-- [Accessibility](../accessibility/SKILL.md)
-- [SEO](../seo/SKILL.md)
-- [Best Practices](../best-practices/SKILL.md)
+This standalone copy includes the checklist above. The original sibling specialist skills are not installed here. Use available browser and audit tools for the requested checks, consult their current official documentation when needed, and report which checks actually ran. A checklist inspection is not a measured Lighthouse result. Do not require a missing sibling skill to continue.
+

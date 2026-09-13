@@ -14,15 +14,15 @@ const liveConfigured = !!import.meta.env.PUBLIC_LIVE_EXAMINER_URL;
 
 <BaseLayout
   title="Speaking Trainer · IELTS Portal"
-  description="Practice IELTS Speaking Part 1, 2 or 3 as a live voice conversation with an AI examiner, one part at a time, with a structure cheat-sheet and a full band report."
+  description="Practice IELTS Speaking Part 1, 2 or 3 as a live voice conversation with an AI examiner, with an interactive coach panel of structures, phrases and topic vocabulary, and a full band report."
 >
   <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <SectionHeading
       eyebrow="Speaking"
       title="Speaking Trainer"
       subtitle={liveConfigured
-        ? 'Pick a part and talk to the AI examiner in a real voice conversation. She asks the questions out loud, follows up on your answers, and grades you on the four official IELTS Speaking criteria.'
-        : 'Pick a part. Questions are read aloud, record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria.'}
+        ? 'Pick a part and talk to the AI examiner in a real voice conversation. She asks the questions out loud, follows up on your answers, and grades you on the four official IELTS Speaking criteria, while a coach panel keeps structures, phrases and topic vocabulary at hand.'
+        : 'Pick a part. Record your answers with your microphone and an AI examiner grades you on the four official IELTS Speaking criteria, while a coach panel keeps structures, phrases and topic vocabulary at hand.'}
     />
     {liveConfigured ? <LiveExaminer client:load variant="drills" /> : <SpeakingTester client:load />}
 

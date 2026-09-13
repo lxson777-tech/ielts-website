@@ -18,6 +18,11 @@ export interface PracticeSet {
   title: string;
   /** Optional short instruction shown above the questions. */
   intro?: string;
+  /** What a 'select' question is choosing, used in the dropdown placeholder,
+      its accessible label and the default option text. Defaults to
+      'paragraph' since Matching Headings was the first set to use one;
+      Matching Sentence Endings sets it to 'ending'. */
+  selectNoun?: string;
   /** Optional labelled diagram: numbered pins overlaid on an image, one per
       text question (in order). x/y are percentages of the image box. */
   diagram?: {
@@ -34,6 +39,9 @@ const TFNG = [
   { value: 'Not Given' },
 ];
 
+/* Yes/No/Not Given is a separate official question type from True/False/Not
+   Given: it asks about the writer's views rather than the passage's facts.
+   Kept as its own option set so the buttons read the way the exam does. */
 const YNNG = [
   { value: 'Yes' },
   { value: 'No' },

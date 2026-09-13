@@ -8,7 +8,7 @@
    transcript — so Pronunciation can be judged from what was really said. */
 
 import { useRef, useState } from 'react';
-import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult } from '../lib/speaking/schema';
+import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
 import type { StructureMethod } from '../data/speaking-structure-guides';
@@ -17,7 +17,9 @@ import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../
 import { toAnsweredClip, gradeSpeaking } from '../lib/speaking/grader';
 import { recordSpeakingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
-import SpeakingStructureGuide from './SpeakingStructureGuide';
+import SpeakingCoachPanel from './SpeakingCoachPanel';
+import SpeakingPartCards from './SpeakingPartCards';
+import IdeaHints from './IdeaHints';
 
 type Mode = 'part1' | 'part2' | 'part3';
 type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report';
@@ -30,6 +32,8 @@ interface Turn {
   maxMs: number;
   prepMs?: number;
   isMonologue?: boolean;
+  /** tap-to-reveal idea angles for this question (from the prompt bank) */
+  ideas?: string[];
 }
 
 interface CollectedClip {
@@ -51,6 +55,7 @@ export default function SpeakingTester() {
   const [notes, setNotes] = useState('');
   const [micError, setMicError] = useState<string | null>(null);
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
+  const [vocab, setVocab] = useState<TopicVocab[] | undefined>(undefined);
 
   const streamRef = useRef<MediaStream | null>(null);
   const recordingRef = useRef<RecordingHandle | null>(null);
@@ -86,14 +91,16 @@ export default function SpeakingTester() {
       const topic = SPEAKING_PART1_TOPICS.find((t) => t.id === id) ?? SPEAKING_PART1_TOPICS[0]!;
       promptTitleRef.current = topic.topic;
       setPromptTitle(topic.topic);
+      setVocab(topic.vocab);
       cueCardRef.current = null;
-      turns = topic.questions.map((q) => ({ question: q.text, maxMs: 45_000 }));
+      turns = topic.questions.map((q) => ({ question: q.text, maxMs: 45_000, ideas: q.ideas }));
       expectedMinMsRef.current = turns.length * 15_000;
     } else {
       const id = nextInRotation('ielts.rotation.speaking-part23.v1', SPEAKING_CUE_CARDS.map((c) => c.id));
       const cue = SPEAKING_CUE_CARDS.find((c) => c.id === id) ?? SPEAKING_CUE_CARDS[0]!;
       promptTitleRef.current = cue.topic;
       setPromptTitle(cue.topic);
+      setVocab(cue.vocab);
       cueCardRef.current = { topic: cue.topic, bullets: cue.bullets };
       if (m === 'part2') {
         turns = [
@@ -102,11 +109,12 @@ export default function SpeakingTester() {
             maxMs: 120_000,
             prepMs: 60_000,
             isMonologue: true,
+            ideas: cue.ideas,
           },
         ];
         expectedMinMsRef.current = 60_000;
       } else {
-        turns = cue.part3Questions.map((q) => ({ question: q.text, maxMs: 60_000 }));
+        turns = cue.part3Questions.map((q) => ({ question: q.text, maxMs: 60_000, ideas: q.ideas }));
         expectedMinMsRef.current = turns.length * 20_000;
       }
     }
@@ -342,36 +350,15 @@ export default function SpeakingTester() {
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking</p>
           <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Speaking Test</h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-            Pick a part. Questions are read aloud, record your answer with your microphone, and an AI examiner
-            grades you on the four official IELTS Speaking criteria.
+            Pick a part. Each question appears on screen, you record your answer with your microphone, and an AI
+            examiner grades you on the four official IELTS Speaking criteria. A coach panel with the answer
+            structure, useful phrases, and topic vocabulary stays beside you.
           </p>
           {micError && (
             <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
           )}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => void startMode('part1')}
-              className="rounded-button bg-brand px-6 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover"
-            >
-              Part 1 practice
-            </button>
-            <button
-              type="button"
-              onClick={() => void startMode('part2')}
-              className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt"
-            >
-              Part 2 practice
-            </button>
-            <button
-              type="button"
-              onClick={() => void startMode('part3')}
-              className="rounded-button border border-border px-6 py-3 font-display text-base font-bold transition-colors hover:bg-surface-alt"
-            >
-              Part 3 practice
-            </button>
-          </div>
-          <p className="mt-3 text-xs text-ink-muted">
+          <SpeakingPartCards onStart={(m) => void startMode(m)} />
+          <p className="mt-4 text-xs text-ink-muted">
             {SPEAKING_PART1_TOPICS.length} Part 1 topics · {SPEAKING_CUE_CARDS.length} cue cards · free
           </p>
         </div>
@@ -381,8 +368,10 @@ export default function SpeakingTester() {
 
   /* ── In-progress screens: asking / prepping / listening / grading ── */
   const remainingMs = Math.max(0, (turnsRef.current[turnIndex]?.maxMs ?? 0) - elapsedMs);
+  const currentIdeas = turnsRef.current[turnIndex]?.ideas;
   return (
-    <div className="screen-in space-y-4">
+    <div className="screen-in lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-4">
+    <div className="space-y-4">
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
@@ -393,9 +382,12 @@ export default function SpeakingTester() {
           </span>
         </div>
         <p className="mt-3 text-[1.05rem] font-semibold leading-relaxed">{currentQuestion}</p>
+        {currentIdeas && currentIdeas.length > 0 && (
+          <div className="mt-3">
+            <IdeaHints key={turnIndex} ideas={currentIdeas} />
+          </div>
+        )}
       </div>
-
-      <SpeakingStructureGuide method={STRUCTURE_METHOD[mode!]} />
 
       {phase === 'asking' && (
         <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
@@ -454,6 +446,13 @@ export default function SpeakingTester() {
           <p className="text-sm text-ink-muted">Grading your answer…</p>
         </div>
       )}
+    </div>
+
+    {/* The coach: remounts per question so the stage checklist starts fresh
+        for every answer (one A.R.E./OREO pass per question). */}
+    <div className="mt-4 lg:sticky lg:top-20 lg:mt-0">
+      <SpeakingCoachPanel key={`${promptTitle}-${turnIndex}`} method={STRUCTURE_METHOD[mode!]} vocab={vocab} />
+    </div>
     </div>
   );
 }

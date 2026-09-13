@@ -44,3 +44,27 @@ drop trigger if exists user_state_touch on public.user_state;
 create trigger user_state_touch
   before update on public.user_state
   for each row execute function public.touch_user_state_updated_at();
+
+-- Live examiner (paid GPT-Live sessions): one row per session, written only by
+-- the live-examiner Worker with the service role key. Used for per-student and
+-- site-wide limits and for validating stage directions. No client policies:
+-- RLS is on and nothing is granted, so the anon key can neither read nor write.
+create table if not exists public.live_examiner_sessions (
+  id                  uuid primary key default gen_random_uuid(),
+  user_id             uuid not null references auth.users (id) on delete cascade,
+  provider            text not null,
+  mode                text not null,
+  provider_session_id text unique,
+  stage               text not null default 'created',
+  created_at          timestamptz not null default now(),
+  ended_at            timestamptz,
+  last_cue_at         timestamptz
+);
+alter table public.live_examiner_sessions enable row level security;
+create index if not exists live_examiner_sessions_user_created on public.live_examiner_sessions (user_id, created_at desc);
+create index if not exists live_examiner_sessions_created on public.live_examiner_sessions (created_at desc);
+
+-- The Worker needs SUPABASE_URL and the service_role key as Worker secrets
+-- (npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY from workers/live-examiner)
+-- to read and write this table. Never put the service role key in the site
+-- itself, it bypasses Row-Level Security entirely and must stay server-side.

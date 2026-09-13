@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import LessonStep from '../../../components/LessonStep.astro';
 import PracticeQuiz from '../../../components/PracticeQuiz';
 import { withBase } from '../../../lib/url';
 import { LISTENING_PARTS } from '../../../data/listening';
@@ -8,11 +9,11 @@ import { LISTENING_PRACTICE } from '../../../data/listening-practice';
 export function getStaticPaths() {
   return LISTENING_PARTS.map((part, i) => ({
     params: { part: part.slug },
-    props: { part, prev: LISTENING_PARTS[i - 1] ?? null, next: LISTENING_PARTS[i + 1] ?? null },
+    props: { part, order: i + 1, of: LISTENING_PARTS.length, prev: LISTENING_PARTS[i - 1] ?? null, next: LISTENING_PARTS[i + 1] ?? null },
   }));
 }
 
-const { part, prev, next } = Astro.props;
+const { part, order, of, prev, next } = Astro.props;
 
 const fragments = import.meta.glob<string>('../../../content/lesson-bodies/listening-*.html', {
   query: '?raw',
@@ -32,6 +33,8 @@ const practice = LISTENING_PRACTICE[part.slug];
   meta={{ title: part.title, description: part.blurb, skill: 'listening' }}
   parent={{ label: 'Listening', href: overviewUrl }}
 >
+  <LessonStep order={order} of={of} section="Listening" />
+
   <Fragment set:html={body} />
 
   {practice && <PracticeQuiz client:load set={practice} />}

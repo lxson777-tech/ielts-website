@@ -67,3 +67,37 @@ runs anonymously — nothing breaks.
 The only personal data stored is the sign-in email (in Supabase's `auth.users`)
 and the student's own study plan/scores. No sensitive data. Keep it that way —
 some candidates are minors.
+
+## Live examiner sessions table
+
+A second table, `live_examiner_sessions`, backs the paid GPT-Live-1 voice
+examiner (`workers/live-examiner`). It is unrelated to the account-sync
+`user_state` table above and uses a different access model:
+
+- **One row per voice session** (`id`, `user_id`, `provider`, `mode`,
+  `provider_session_id`, `stage`, `created_at`, `ended_at`, `last_cue_at`),
+  written only by the live-examiner Worker, never by the browser.
+- **No client policies.** Row-Level Security is turned on and nothing is
+  granted, so the `anon` key shipped in the browser can neither read nor
+  write it. Every read and write goes through the Worker using the
+  **service role key**, which bypasses RLS by design.
+- **What it's for**: verifying a signed-in student before creating a paid
+  session, enforcing per-student and site-wide daily/concurrency limits
+  across every Worker instance, and validating that a mid-session stage
+  direction (Part 1 → Part 2, end test, ...) is a legal transition from the
+  session's last recorded stage.
+
+If your project was set up before this table existed, **re-run step 2**
+(SQL Editor → paste the whole of `schema.sql` → Run) — it's additive and
+idempotent, it won't touch `user_state` or its policies.
+
+The service role key belongs **only** as a Worker secret, never in the site:
+
+```sh
+cd workers/live-examiner
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+```
+
+Find it at Dashboard → **Project Settings → API → `service_role` `secret`**.
+Unlike the `anon` key, this key must never reach the browser or a public
+repo, it has no RLS restriction at all.

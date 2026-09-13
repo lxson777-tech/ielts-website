@@ -8,16 +8,16 @@
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
   /* ── Surfaces & text ───────────────────────────────────── */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f7f8fb;
-  --color-border: #e6e8ef;
-  --color-ink: #101828;
-  --color-ink-muted: #5b6472;
+  --color-surface: #fffefa;
+  --color-surface-alt: #f8f7f3;
+  --color-border: #dedfd7;
+  --color-ink: #202522;
+  --color-ink-muted: #69706c;
 
   /* ── Brand ─────────────────────────────────────────────── */
-  --color-brand: #4f46e5;
-  --color-brand-hover: #4338ca;
-  --color-brand-tint: #eef2ff;
+  --color-brand: #c94b38;
+  --color-brand-hover: #a93d2d;
+  --color-brand-tint: #fbe9e4;
 
   /* ── Per-skill accents ─────────────────────────────────── */
   --color-reading: #e0532f;
@@ -44,8 +44,8 @@
   --radius-button: 10px;
 
   /* ── Elevation ─────────────────────────────────────────── */
-  --shadow-card: 0 1px 3px rgb(16 24 40 / 0.06), 0 1px 2px rgb(16 24 40 / 0.04);
-  --shadow-card-hover: 0 12px 24px -6px rgb(16 24 40 / 0.12), 0 2px 6px rgb(16 24 40 / 0.06);
+  --shadow-card: 0 1px 2px rgb(32 37 34 / 0.05), 0 8px 24px rgb(32 37 34 / 0.035);
+  --shadow-card-hover: 0 18px 38px -12px rgb(32 37 34 / 0.18), 0 2px 6px rgb(32 37 34 / 0.05);
 }
 
 /* Skill theming: components read these two variables; a wrapper sets them
@@ -799,7 +799,7 @@
     overflow: hidden;
     border: 1px solid var(--color-border);
     border-radius: 0.65rem;
-    background: var(--color-surface);
+    background: var(--color-surface-alt);
   }
   .listening-source-note-row {
     min-width: 0;

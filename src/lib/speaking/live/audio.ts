@@ -8,7 +8,11 @@
    ExaminerPlayback — the model streams 24 kHz PCM16 back; chunks are queued
    gap-free on a dedicated 24 kHz AudioContext. flush() drops everything
    scheduled (used when the model is interrupted mid-sentence). Both halves
-   expose a 0-1 level for the talking-orb animation. */
+   expose a 0-1 level for the talking-orb animation.
+
+   StreamLevelMeter and RemoteAudioOutput below serve the same orb/level
+   needs for the OpenAI WebRTC path, where audio arrives as a live
+   MediaStream instead of base64 PCM chunks over a data channel. */
 
 const TARGET_IN_RATE = 16000;
 const OUT_RATE = 24000;
@@ -204,5 +208,143 @@ export class ExaminerPlayback {
     this.ctx = null;
     this.gain = null;
     this.analyser = null;
+  }
+}
+
+/** Normalized time-domain RMS of a byte analyser buffer, scaled roughly like
+    MicCapture.level() above (same "*4" headroom so orb animations driven by
+    either class feel consistent). */
+function rmsLevel(buf: Uint8Array): number {
+  let sum = 0;
+  for (let i = 0; i < buf.length; i++) {
+    const centered = (buf[i]! - 128) / 128;
+    sum += centered * centered;
+  }
+  return Math.min(1, Math.sqrt(sum / buf.length) * 4);
+}
+
+/** A 0-1 loudness meter on an arbitrary MediaStream (used for the OpenAI
+    path's microphone level, since that audio never passes through
+    MicCapture). Never connected to the destination, so it never echoes. */
+export class StreamLevelMeter {
+  private ctx: AudioContext | null = null;
+  private analyser: AnalyserNode | null = null;
+  private source: MediaStreamAudioSourceNode | null = null;
+  private buf: Uint8Array<ArrayBuffer> | null = null;
+
+  async start(stream: MediaStream): Promise<void> {
+    this.ctx = new AudioContext();
+    await this.ctx.resume();
+    this.analyser = this.ctx.createAnalyser();
+    this.analyser.fftSize = 256;
+    this.buf = new Uint8Array(this.analyser.frequencyBinCount);
+    this.source = this.ctx.createMediaStreamSource(stream);
+    this.source.connect(this.analyser);
+  }
+
+  /** 0-1 loudness right now. */
+  level(): number {
+    if (!this.analyser || !this.buf) return 0;
+    this.analyser.getByteTimeDomainData(this.buf);
+    return rmsLevel(this.buf);
+  }
+
+  async stop(): Promise<void> {
+    this.source?.disconnect();
+    if (this.ctx && this.ctx.state !== 'closed') await this.ctx.close();
+    this.source = null;
+    this.analyser = null;
+    this.buf = null;
+    this.ctx = null;
+  }
+}
+
+const REMOTE_SPEAKING_THRESHOLD = 0.04;
+const REMOTE_SPEAKING_HOLD_MS = 350;
+const REMOTE_POLL_INTERVAL_MS = 100;
+
+/** Plays the examiner's remote WebRTC audio track and exposes the same
+    isSpeaking/level surface ExaminerPlayback gives the Gemini path.
+
+    Routing the stream through a hidden, autoplaying <audio> element is
+    required, not decorative: Chrome will not deliver a remote WebRTC track
+    into the Web Audio graph (createMediaStreamSource) unless it is also
+    attached to a media element and played, even one whose own output is
+    never connected to the speakers directly. */
+export class RemoteAudioOutput {
+  private ctx: AudioContext | null = null;
+  private analyser: AnalyserNode | null = null;
+  private source: MediaStreamAudioSourceNode | null = null;
+  private audioEl: HTMLAudioElement | null = null;
+  private buf: Uint8Array<ArrayBuffer> | null = null;
+  private lastLoudAt = 0;
+  private pollTimer: ReturnType<typeof setInterval> | null = null;
+
+  async start(stream: MediaStream): Promise<void> {
+    const audio = new Audio();
+    audio.autoplay = true;
+    audio.srcObject = stream;
+    this.audioEl = audio;
+    await audio.play().catch(() => {
+      /* Autoplay can be blocked until a user gesture; the session is
+         already started from one (the candidate pressed Start), so this is
+         a defensive no-op rather than the expected path. */
+    });
+
+    this.ctx = new AudioContext();
+    await this.ctx.resume();
+    this.analyser = this.ctx.createAnalyser();
+    this.analyser.fftSize = 256;
+    this.buf = new Uint8Array(this.analyser.frequencyBinCount);
+    this.source = this.ctx.createMediaStreamSource(stream);
+    this.source.connect(this.analyser);
+
+    // Keeps lastLoudAt fresh even if nobody polls level() for a while (the
+    // orb only reads it on its own animation frame).
+    this.pollTimer = setInterval(() => this.level(), REMOTE_POLL_INTERVAL_MS);
+  }
+
+  /** 0-1 output loudness right now, for the orb. Also updates the internal
+      "last loud at" timestamp isSpeaking() relies on. */
+  level(): number {
+    if (!this.analyser || !this.buf) return 0;
+    this.analyser.getByteTimeDomainData(this.buf);
+    const value = rmsLevel(this.buf);
+    if (value > REMOTE_SPEAKING_THRESHOLD) this.lastLoudAt = Date.now();
+    return value;
+  }
+
+  /** True if the output was above the loudness threshold at any point in the
+      last REMOTE_SPEAKING_HOLD_MS, so brief gaps between words don't read as
+      "done talking". */
+  isSpeaking(): boolean {
+    return Date.now() - this.lastLoudAt < REMOTE_SPEAKING_HOLD_MS;
+  }
+
+  /** Resolves once the examiner audio has finished playing, or maxMs elapses
+      (a bound so a stuck detector can never hang the caller forever). */
+  async waitUntilDone(maxMs = 8000): Promise<void> {
+    const deadline = Date.now() + maxMs;
+    while (this.isSpeaking() && Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 150));
+    }
+  }
+
+  async stop(): Promise<void> {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
+    this.source?.disconnect();
+    if (this.ctx && this.ctx.state !== 'closed') await this.ctx.close();
+    if (this.audioEl) {
+      this.audioEl.pause();
+      this.audioEl.srcObject = null;
+    }
+    this.audioEl = null;
+    this.source = null;
+    this.analyser = null;
+    this.buf = null;
+    this.ctx = null;
   }
 }
