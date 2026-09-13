@@ -33,27 +33,37 @@ export const listeningFull019: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "accountant"
+              "answer": "accountant",
+              "explanation": "At 01:26 Selina says \"I'm an accountant, but I'm between jobs at the moment\", and the interviewer notes that as her occupation.",
+              "evidence": "I'm an accountant, but I'm between jobs at the moment"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "over 50"
+              "answer": "over 50",
+              "explanation": "At 01:43 Selina is given the age bands and settles on \"Over 50. I think we can safely say\".",
+              "evidence": "Over 50. I think we can safely say"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "family"
+              "answer": "family",
+              "explanation": "At 01:54 Selina clarifies \"No, it's a family membership\", not a single membership.",
+              "evidence": "No, it's a family membership"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "9"
+              "answer": "9",
+              "explanation": "At 02:20 the interviewer first guesses eight years, but Selina corrects herself: \"Oh, I remember now. It's nine, definitely\".",
+              "evidence": "Oh, I remember now. It's nine, definitely"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "doctor"
+              "answer": "doctor",
+              "explanation": "At 02:45 Selina says she was recommended by \"Actually, my doctor\", not by an advert or a friend.",
+              "evidence": "Actually, my doctor"
             },
             {
               "id": "q6",
@@ -61,7 +71,9 @@ export const listeningFull019: PracticeTest = {
               "answer": [
                 "pool",
                 "swimming pool"
-              ]
+              ],
+              "explanation": "At 04:01 the interviewer asks if \"the swimming pool is the facility you make most use of\" and Selina agrees, \"fair to say that\".",
+              "evidence": "the swimming pool is the facility you make most use of"
             },
             {
               "id": "q7",
@@ -69,22 +81,30 @@ export const listeningFull019: PracticeTest = {
               "answer": [
                 "pay",
                 "pay extra"
-              ]
+              ],
+              "explanation": "At 04:29 Selina says the reason she avoids the tennis courts is that she is \"not happy having to pay extra for that privilege\".",
+              "evidence": "not happy having to pay extra for that privilege"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "social events"
+              "answer": "social events",
+              "explanation": "At 04:38 Selina says her suggestion is to \"see more social events\", not just games or classes.",
+              "evidence": "I'd like to see more social events"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "air conditioning"
+              "answer": "air conditioning",
+              "explanation": "At 05:08 the interviewer suggests \"air conditioning\" for the hot gym, and Selina confirms \"that's exactly what I mean\".",
+              "evidence": "Air conditioning. That's exactly what I mean"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "restaurant"
+              "answer": "restaurant",
+              "explanation": "At 05:34 Selina complains \"it's a shame the restaurant isn't open in the evening\" at weekends, and at 05:46 suggests they \"open it later on those days\".",
+              "evidence": "it's a shame the restaurant isn't open in the evening"
             }
           ],
           "wordLimit": 2
@@ -111,32 +131,44 @@ export const listeningFull019: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 08:39 the trainer says you \"put a line of them along the top from one end of the pit to the other\", referring to the sticks (E) laid over the pit.",
+              "evidence": "you have to put a line of them along the top"
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "F"
+              "answer": "F",
+              "explanation": "Immediately after, at 08:39, \"you take some large stones and arrange them on top\" of the sticks, matching stones (F).",
+              "evidence": "you take some large stones and arrange them on top"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 09:01 once the fire burns through, the trainer says to \"brush away any pieces of hot ash from the stones\", matching ash (B).",
+              "evidence": "brush away any pieces of hot ash from the stones"
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "In the same line at 09:01, \"you cover the whole pit with a thick layer of grass\", matching grass (D).",
+              "evidence": "you cover the whole pit with a thick layer of grass"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 09:30 after the food parcels go on, the trainer says to \"cover the whole thing with earth\", matching earth (C).",
+              "evidence": "cover the whole thing with earth"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "In the same line at 09:30, after removing the stick you \"pour a bit of water into the opening\", matching water (G).",
+              "evidence": "pour a bit of water into the opening"
             }
           ],
           "options": [
@@ -161,7 +193,9 @@ export const listeningFull019: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test19-q17-q18"
+              "answerPairId": "test19-q17-q18",
+              "explanation": "At 10:55 the trainer describes the bamboo leaning \"with the top propped up by a forked stick\" and the fire lit underneath the bottom section, matching B, and at 11:30 the steam \"cooks it\", matching E.",
+              "evidence": "light a fire underneath that section to heat the water"
             },
             {
               "id": "q18",
@@ -170,7 +204,9 @@ export const listeningFull019: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test19-q17-q18"
+              "answerPairId": "test19-q17-q18",
+              "explanation": "At 10:55 the trainer describes the bamboo leaning \"with the top propped up by a forked stick\" and the fire lit underneath the bottom section, matching B, and at 11:30 the steam \"cooks it\", matching E.",
+              "evidence": "the steam coming up the bamboo through the holes you made cooks it"
             }
           ],
           "choices": [
@@ -195,7 +231,8 @@ export const listeningFull019: PracticeTest = {
               "label": "It cooks food by steaming it."
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "<p>At 10:55 the trainer describes the bamboo oven: the top is “propped up by a forked stick” while the fire is lit underneath the bottom section (B), and at 11:30 the rising steam “cooks it” (E), so the correct pair is B and E.</p>"
         },
         {
           "title": "Questions 19-20",
@@ -209,7 +246,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "D"
               ],
-              "answerPairId": "test19-q19-q20"
+              "answerPairId": "test19-q19-q20",
+              "explanation": "At 11:59 the trainer warns that \"any amount of cooking won't make poisonous varieties any safer to eat\" (A), and at 12:27 that some poisonous fungi are \"very similar in appearance to certain edible varieties\" (D).",
+              "evidence": "any amount of cooking won't make poisonous varieties any safer to eat"
             },
             {
               "id": "q20",
@@ -218,7 +257,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "D"
               ],
-              "answerPairId": "test19-q19-q20"
+              "answerPairId": "test19-q19-q20",
+              "explanation": "At 11:59 the trainer warns that \"any amount of cooking won't make poisonous varieties any safer to eat\" (A), and at 12:27 that some poisonous fungi are \"very similar in appearance to certain edible varieties\" (D).",
+              "evidence": "very similar in appearance to certain edible varieties"
             }
           ],
           "choices": [
@@ -243,7 +284,8 @@ export const listeningFull019: PracticeTest = {
               "label": "Fungi which cannot be identified should only be eaten in small quantities."
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "<p>At 11:59 the trainer warns that “any amount of cooking won't make poisonous varieties any safer to eat” (A), and at 12:27 that some poisonous fungi are “very similar in appearance to certain edible varieties” (D), so the correct pair is A and D.</p>"
         }
       ]
     },
@@ -272,7 +314,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:18 Phoebe says she chose her topic because \"I came across a book written by experienced teachers on student attitudes\", matching answer C.",
+              "evidence": "I came across a book written by experienced teachers"
             },
             {
               "id": "q22",
@@ -282,7 +326,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:36 Phoebe says her question was \"whether very strict teachers made teenagers less motivated\", matching answer A, teacher discipline.",
+              "evidence": "whether very strict teachers made teenagers less motivated"
             },
             {
               "id": "q23",
@@ -292,7 +338,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:56 Phoebe says she was most struck by \"the significant gender differences\", since \"girls were more impatient\" than boys, matching answer B.",
+              "evidence": "the significant gender differences"
             },
             {
               "id": "q24",
@@ -302,7 +350,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:44 Phoebe concludes it's good if teachers \"allow lessons to go their own ways\" rather than sticking rigidly to a plan, matching answer A, flexible planning.",
+              "evidence": "it's great if they also allow lessons to go their own ways"
             },
             {
               "id": "q25",
@@ -312,7 +362,9 @@ export const listeningFull019: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:16 Tony praises Phoebe for \"already stepping back from the experience and thinking about what you've learned about research\", matching answer B.",
+              "evidence": "stepping back from the experience and thinking about what you've learned"
             }
           ]
         },
@@ -324,27 +376,37 @@ export const listeningFull019: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "Observing lessons",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 18:20 Phoebe says \"it was afterwards that the grueling work started\" making sense of her observation notes, matching processing data (E) for lesson observation.",
+              "evidence": "making sense of analyzing your observation notes"
             },
             {
               "id": "q27",
               "textHtml": "Interviewing teachers",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "At 18:36 Phoebe says for interviews she \"wanted to make sure I used a high-quality recorder\" and \"had to wait until one became available\", matching getting hold of equipment (G).",
+              "evidence": "I used a high-quality recorder to make transcription easier"
             },
             {
               "id": "q28",
               "textHtml": "Interviewing pupils",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 19:06 Phoebe says a teacher was \"worried about the ethics\" of interviewing pupils and \"it took a while for him to agree\", matching obtaining permission (A).",
+              "evidence": "worried about the ethics... it took a while for him to agree"
             },
             {
               "id": "q29",
               "textHtml": "Using questionnaires",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 19:20 Phoebe says she shared the questionnaire work with another student but they \"had such different agendas\", matching working collaboratively (D).",
+              "evidence": "we had such different agendas"
             },
             {
               "id": "q30",
               "textHtml": "Taking photographs",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 19:49 Phoebe says she wanted \"each snap to have a purpose\" and found that difficult, matching deciding on a suitable focus (B).",
+              "evidence": "I wanted each snap to have a purpose"
             }
           ],
           "options": [
@@ -379,52 +441,72 @@ export const listeningFull019: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Juniper was one of the first plants to colonise Britain after the last",
-              "answer": "ice age"
+              "answer": "ice age",
+              "explanation": "At 22:01 the speaker says Juniper was \"amongst the first species of plants to establish itself in Britain in the period following the most recent ice age\".",
+              "evidence": "the most recent ice age"
             },
             {
               "id": "q32",
               "textHtml": "Its smoke is virtually so juniper wood was used as fuel in illegal activities.",
-              "answer": "invisible"
+              "answer": "invisible",
+              "explanation": "At 22:20 the speaker says Juniper's smoke \"is all but invisible\" when burnt, which is why it suited illicit fires.",
+              "evidence": "the smoke given off is all but invisible"
             },
             {
               "id": "q33",
               "textHtml": "Oils from the plant were used to prevent spreading.",
-              "answer": "infections"
+              "answer": "infections",
+              "explanation": "At 22:39 the speaker says oils were sprayed in hospital wards \"to try to prevent the spread of infection\".",
+              "evidence": "to try to prevent the spread of infection"
             },
             {
               "id": "q34",
               "textHtml": "Nowadays, its berries are widely used to food and drink Ecology",
-              "answer": "flavor"
+              "answer": "flavor",
+              "explanation": "At 22:56 the speaker says Juniper berries are \"used to flavour a variety of meat dishes and also drinks\".",
+              "evidence": "used to flavour a variety of meat dishes"
             },
             {
               "id": "q35",
               "textHtml": "Juniper plants also support several species of insects and Problems",
-              "answer": "fungi"
+              "answer": "fungi",
+              "explanation": "At 23:13 the speaker says losing Juniper bushes would \"radically affect many different insect and also fungus species\".",
+              "evidence": "many different insect and also fungus species"
             },
             {
               "id": "q36",
               "textHtml": "In current juniper populations, ratios of the are poor.",
-              "answer": "sexes"
+              "answer": "sexes",
+              "explanation": "At 23:29 the speaker says a survey found that \"ratios between the sexes are unbalanced\" in present-day populations.",
+              "evidence": "ratios between the sexes are unbalanced"
             },
             {
               "id": "q37",
               "textHtml": "Many of the bushes in each group are of the same age so of whole populations is rapid. Solutions",
-              "answer": "extinction"
+              "answer": "extinction",
+              "explanation": "At 24:11 the speaker says bushes of the same age dying together leads to \"swift extinction of whole populations\".",
+              "evidence": "swift extinction of whole populations"
             },
             {
               "id": "q38",
               "textHtml": "Plantlife is trialling novel techniques across areas of England.",
-              "answer": "lowland"
+              "answer": "lowland",
+              "explanation": "At 24:26 the speaker says Plantlife's new techniques are \"focusing on lowland regions of England\".",
+              "evidence": "focusing on lowland regions of England"
             },
             {
               "id": "q39",
               "textHtml": "One measure is to introduce for seedlings.",
-              "answer": "shelter"
+              "answer": "shelter",
+              "explanation": "In the same line at 24:26, the first measure is to \"provide shelters for the seedlings\" in established areas.",
+              "evidence": "provide shelters for the seedlings"
             },
             {
               "id": "q40",
               "textHtml": "A further step is to plant from healthy bushes.",
-              "answer": "cuttings"
+              "answer": "cuttings",
+              "explanation": "At 24:44 the speaker says numbers are bolstered \"by the planting of cuttings which have been taken from healthy bushes elsewhere\".",
+              "evidence": "the planting of cuttings which have been taken from healthy bushes"
             }
           ],
           "wordLimit": 2

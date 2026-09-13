@@ -33,27 +33,37 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "10"
+              "answer": "10",
+              "explanation": "At 02:22 Zara reads that the Bailey Library is open \"from half past eight in the morning until ten o'clock in the evening, Mondays to Fridays\", so it closes at 10 pm.",
+              "evidence": "until ten o'clock in the evening, Mondays to Fridays"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "royal parade"
+              "answer": "royal parade",
+              "explanation": "At 03:12 Tim says the Brown Library is close to Stratton Street, and Zara adds it is also near \"Royal Parade\", the second location detail needed.",
+              "evidence": "Stratton Street, and Royal Parade"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "biomedical"
+              "answer": "biomedical",
+              "explanation": "At 03:44 Zara reveals the Brown Library is \"only open to biomedical students\", which rules it out despite its long opening hours.",
+              "evidence": "only open to biomedical students"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "360"
+              "answer": "360",
+              "explanation": "At 04:17 Tim reads the RMIT Library's full address as \"level five, building eight, 360 Swan Street\", giving 360 as the missing number.",
+              "evidence": "level five, building eight, 360 Swan Street"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "6"
+              "answer": "6",
+              "explanation": "At 04:32 Zara says the RMIT Library \"closes at six o'clock on Saturdays and Sundays\", giving the weekend closing time.",
+              "evidence": "closes at six o'clock on Saturdays and Sundays"
             }
           ],
           "wordLimit": 2
@@ -66,27 +76,37 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "bookit"
+              "answer": "bookit",
+              "explanation": "At 05:51 Tim tells Zara she first needs \"to log on to book it\" on the bookings page, so the first step is logging on to Book It.",
+              "evidence": "you need to log on to book it"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "password"
+              "answer": "password",
+              "explanation": "Just after logging on, at 06:01, the site is \"asking me for my student ID and my password\", so the second detail needed is the password.",
+              "evidence": "asking me for my student ID and my password"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "location"
+              "answer": "location",
+              "explanation": "At 06:25 Tim says that once the PC resource type is chosen, \"what you need to do is click on location\".",
+              "evidence": "click on location"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "view"
+              "answer": "view",
+              "explanation": "At 06:59 the booking will not confirm until Zara is told \"it's got to go into view options\", the word needed for step four.",
+              "evidence": "it's got to go into view options"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "schedule"
+              "answer": "schedule",
+              "explanation": "At 07:23 Zara confirms \"there's my name on the booking schedule\", showing the booking was completed successfully.",
+              "evidence": "there's my name on the booking schedule"
             }
           ],
           "wordLimit": 1
@@ -120,7 +140,9 @@ export const listeningFull016: PracticeTest = {
                   "C"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "At 09:29 the guide says Doors Open \"takes place every year in September\" (annual, A) and entry has \"absolutely no charge\" (free, C); it is not week-long and not a spring event.",
+              "evidence": "takes place every year in September... absolutely no charge"
             }
           ],
           "choices": [
@@ -162,7 +184,9 @@ export const listeningFull016: PracticeTest = {
                   "C"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "At 09:09 the guide says it is \"here in Edinburgh\" (A), and at 09:48 notes the Observatory has taken part \"for more than 20 years\", so it regularly joins Doors Open (C).",
+              "evidence": "here in Edinburgh... involved in this event for more than 20 years"
             }
           ],
           "choices": [
@@ -204,7 +228,9 @@ export const listeningFull016: PracticeTest = {
                   "D"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "At 10:04 the guide says planetarium shows run \"throughout the day\", and at 10:25 confirms they \"run four times both today and tomorrow, Sunday\" (C and D).",
+              "evidence": "run four times both today and tomorrow, Sunday"
             }
           ],
           "choices": [
@@ -246,7 +272,9 @@ export const listeningFull016: PracticeTest = {
                   "C"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "At 10:25 morning tickets are \"available on a first come first served basis, here at the information point\" (C), while afternoon tickets need booking (10:51), so tickets must be booked ahead (A).",
+              "evidence": "available on a first come first served basis, here at the information point"
             }
           ],
           "choices": [
@@ -281,32 +309,44 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "The tour of the telescope dome includes access to the of the building",
-              "answer": "roof"
+              "answer": "roof",
+              "explanation": "At 11:34 the guide says the telescope dome tour lets visitors \"get onto the roof\".",
+              "evidence": "get onto the roof"
             },
             {
               "id": "q16",
               "textHtml": "Tour participants are advised to have suitable",
-              "answer": "shoes"
+              "answer": "shoes",
+              "explanation": "At 11:55 the guide tells the group to wear their \"most comfortable shoes\" before the climb.",
+              "evidence": "wearing your most comfortable shoes"
             },
             {
               "id": "q17",
               "textHtml": "Visitors to the Crawford Collection can see items from the astronomical on display",
-              "answer": "library"
+              "answer": "library",
+              "explanation": "At 12:10 the guide explains the Crawford Collection \"is an astronomical library\", so visitors see items from that library.",
+              "evidence": "the Crawford collection is an astronomical library"
             },
             {
               "id": "q18",
               "textHtml": "The children’s craft workshops take place in the",
-              "answer": "visitor centre"
+              "answer": "visitor centre",
+              "explanation": "At 12:32 the guide places the children's craft workshop \"here in the visitor centre\".",
+              "evidence": "craft workshop for children here in the visitor centre"
             },
             {
               "id": "q19",
               "textHtml": "During the craft workshops children can construct a model of a",
-              "answer": "telescope"
+              "answer": "telescope",
+              "explanation": "At 12:51 the guide says children make \"their very own model of a telescope\" during the workshop.",
+              "evidence": "their very own model of a telescope"
             },
             {
               "id": "q20",
               "textHtml": "Children also have the opportunity to colour a",
-              "answer": "planet"
+              "answer": "planet",
+              "explanation": "Immediately after, at 12:51, children also get to \"colour their very own planet\".",
+              "evidence": "colour their very own planet"
             }
           ],
           "wordLimit": 2
@@ -338,7 +378,9 @@ export const listeningFull016: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test16-q21-q23"
+              "answerPairId": "test16-q21-q23",
+              "explanation": "At 15:59 the speaker lists \"dead satellites to loose metal screws\" and \"tiny particles of paint\", naming satellites (F), metal screws (D) and paint (E) as the examples given.",
+              "evidence": "dead satellites to loose metal screws... tiny particles of paint"
             },
             {
               "id": "q22",
@@ -348,7 +390,9 @@ export const listeningFull016: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test16-q21-q23"
+              "answerPairId": "test16-q21-q23",
+              "explanation": "At 15:59 the speaker lists \"dead satellites to loose metal screws\" and \"tiny particles of paint\", naming satellites (F), metal screws (D) and paint (E) as the examples given.",
+              "evidence": "dead satellites to loose metal screws... tiny particles of paint"
             },
             {
               "id": "q23",
@@ -358,7 +402,9 @@ export const listeningFull016: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test16-q21-q23"
+              "answerPairId": "test16-q21-q23",
+              "explanation": "At 15:59 the speaker lists \"dead satellites to loose metal screws\" and \"tiny particles of paint\", naming satellites (F), metal screws (D) and paint (E) as the examples given.",
+              "evidence": "dead satellites to loose metal screws... tiny particles of paint"
             }
           ],
           "choices": [
@@ -391,7 +437,8 @@ export const listeningFull016: PracticeTest = {
               "label": "whole rackets"
             }
           ],
-          "selectCount": 3
+          "selectCount": 3,
+          "explanationHtml": "<p>At 15:59 the speaker lists “dead satellites to loose metal screws” and “tiny particles of paint”, so the three examples mentioned are satellites (F), metal screws (D) and paint (E).</p>"
         },
         {
           "title": "Questions 24-26",
@@ -401,17 +448,23 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 16:56 Ruth says \"28 per cent is from China\", matching the 28% row to country letter A.",
+              "evidence": "28 per cent is from China"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 16:56 Ruth says \"just under actually 29 per cent is from America\", matching the 29% row to the United States, letter E.",
+              "evidence": "29 per cent is from America"
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 16:43 Ruth says \"over a third, 37 per cent to be exact, comes from Russia\", matching the 37% row to letter D.",
+              "evidence": "37 per cent to be exact, comes from Russia"
             }
           ],
           "options": [
@@ -430,22 +483,30 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 19:17 Ruth says UARS \"weighed 5,700 kilos\" and adds it was \"about the same as a double-decker bus\", matching option B.",
+              "evidence": "about the same as a double-decker bus"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 19:53 Ruth says Skylab \"fell into the Indian Ocean and the deserts of Western Australia\", so it ended up in the desert, option C.",
+              "evidence": "the deserts of Western Australia"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "In the same line at 19:53, Ruth adds \"that particular space junk weighed 100 tons\", giving Skylab's weight as option G.",
+              "evidence": "that particular space junk weighed 100 tons"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "H"
+              "answer": "H",
+              "explanation": "At 20:14 Ruth says Mir \"fell to Earth in 2001\" and \"plunged straight into the South Pacific\", matching option H.",
+              "evidence": "it plunged straight into the South Pacific"
             }
           ],
           "options": [
@@ -482,27 +543,37 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "dead"
+              "answer": "dead",
+              "explanation": "At 23:01 the lecturer says this area is \"the decompression zone or the dead zone\", so the alternative name is the dead zone.",
+              "evidence": "the decompression zone or the dead zone"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "stock"
+              "answer": "stock",
+              "explanation": "At 23:42 the lecturer says the area is \"pretty much clear of stock altogether\", so it is free of stock.",
+              "evidence": "pretty much clear of stock altogether"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "adjust"
+              "answer": "adjust",
+              "explanation": "At 23:23 the lecturer explains customers recover from outside, adding \"this is where they adjust\", matching the purpose given.",
+              "evidence": "this is where they adjust"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "dwell"
+              "answer": "dwell",
+              "explanation": "At 24:42 the lecturer names the area near the front door \"what we call the dwell zone\".",
+              "evidence": "what we call the dwell zone"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "offers"
+              "answer": "offers",
+              "explanation": "At 25:06 the lecturer says the power aisle is where \"the strongest offers are displayed\".",
+              "evidence": "the strongest offers are displayed"
             }
           ],
           "wordLimit": 2
@@ -515,27 +586,37 @@ export const listeningFull016: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "They are referred to as distress goods",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 26:33 the lecturer says flowers (grouped with newspapers) are \"known as distress goods\", items bought on impulse, so the answer is D.",
+              "evidence": "known as distress goods"
             },
             {
               "id": "q37",
               "textHtml": "They are always located at the front of the supermarket",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 25:49 the lecturer says fruit and vegetables \"are always located towards the front\" to give a healthy image, so the answer is A.",
+              "evidence": "they're always located towards the front"
             },
             {
               "id": "q38",
               "textHtml": "They are referred to as destination goods",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 26:49 the lecturer says everyday items like \"bread or milk or cereals\" are \"always placed right at the back\", later called destination goods, so the answer is B.",
+              "evidence": "always placed right at the back of the supermarket"
             },
             {
               "id": "q39",
               "textHtml": "They are normally located below eye level",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 28:03 the lecturer says cheap items like tinned food are \"normally placed very low on the shelves\", below eye level, so the answer is C.",
+              "evidence": "normally placed very low on the shelves"
             },
             {
               "id": "q40",
               "textHtml": "They are often located at the check-out",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 28:44 the lecturer gives sunglasses as a checkout example: \"the checkout is an ideal place to display sunglasses\", so the answer is E.",
+              "evidence": "the checkout is an ideal place to display sunglasses"
             }
           ]
         }

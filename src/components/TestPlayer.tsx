@@ -374,9 +374,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                 </p>
               )}
               {submitted && stimulus.transcriptHtml && (
-                <details className="mt-7 rounded-card border border-border bg-surface p-4">
-                  <summary className="cursor-pointer text-sm font-semibold text-brand">Review transcript</summary>
-                  <Html className="mt-2 text-sm" html={stimulus.transcriptHtml} />
+                <details className="mt-7 rounded-card border border-border bg-surface-alt p-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-[var(--skill,var(--color-brand))]">Review transcript</summary>
+                  <Html className="mt-2 text-sm leading-relaxed text-ink-muted" html={stimulus.transcriptHtml} />
                 </details>
               )}
             </div>
@@ -1308,15 +1308,22 @@ function ListeningAudio({
       ? `This drill covers ${partNumber != null ? `Part ${partNumber}` : 'one part'} of the recording (${fmtClock(startSeconds)} to ${fmtClock(endSeconds ?? duration)}).`
       : null;
 
+  // Before a full exam's recording is started, this bar is the candidate's
+  // only cue that pressing the button is a real, one-shot exam action, so it
+  // gets a touch more room to read as a considered instruction rather than a
+  // throwaway toolbar control. Once playing, it settles back to the same
+  // compact bar the drill uses.
+  const examGate = attemptKind === 'full' && !started;
+
   return (
     <section
-      className="shrink-0 border-b border-border bg-surface-alt px-3 py-2.5 sm:px-4"
+      className={`shrink-0 border-b border-border bg-surface-alt px-3 sm:px-4 ${examGate ? 'py-4' : 'py-2.5'}`}
       aria-label="Listening recording"
       data-testid="listening-audio-player"
     >
       <div className="mx-auto flex max-w-5xl flex-col gap-2 sm:flex-row sm:items-center">
         <div className="shrink-0 sm:w-44">
-          <p className="text-xs font-bold uppercase tracking-wider text-brand">
+          <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,var(--color-brand))]">
             {attemptKind === 'drill' ? 'Drill recording' : 'Full recording'}
           </p>
           <p className="text-xs text-ink-muted">
@@ -1361,7 +1368,7 @@ function ListeningAudio({
                 type="button"
                 onClick={startRecording}
                 disabled={status !== 'ready'}
-                className="rounded-button bg-brand px-4 py-1.5 text-sm font-bold text-white hover:bg-brand-hover disabled:opacity-50"
+                className="rounded-button bg-[var(--skill,var(--color-brand))] px-5 py-2 font-display text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
               >
                 ▶ Start recording
               </button>

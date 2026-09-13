@@ -21,9 +21,13 @@ export default function StrategyPanel({ skill, type }: { skill: TestSkill; type:
   return (
     <Accordion
       className="mb-4 rounded-card border border-border bg-surface-alt p-4"
-      summary={`How to approach ${strategy.label}`}
+      // Accordion's own trigger text is a fixed brand colour; wrapping the
+      // label in its own span with the ambient skill accent keeps this
+      // helper panel reading as "coaching", not the fixed brand red that
+      // otherwise looks identical to a wrong-answer state right below it.
+      summary={<span className="text-[var(--skill,var(--color-brand))]">{`How to approach ${strategy.label}`}</span>}
     >
-      <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm">
+      <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm text-ink-muted">
         {strategy.steps.map((step, i) => (
           <li key={i}>{step}</li>
         ))}
@@ -31,7 +35,7 @@ export default function StrategyPanel({ skill, type }: { skill: TestSkill; type:
       {strategy.traps.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {strategy.traps.map((trap, i) => (
-            <span key={i} className="rounded-full bg-error-tint px-2.5 py-0.5 text-xs font-semibold text-error">
+            <span key={i} className="rounded-full bg-warning-tint px-2.5 py-0.5 text-xs font-semibold text-warning">
               ⚠ {trap}
             </span>
           ))}

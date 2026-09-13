@@ -33,27 +33,37 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Melissa"
+              "answer": "Melissa",
+              "explanation": "At 01:10 Keith gives his wife's name as Melissa Waters.",
+              "evidence": "Her name is Melissa Waters"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "30"
+              "answer": "30",
+              "explanation": "At 01:23 Keith says his wife is 30 years old.",
+              "evidence": "my wife's 30"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "cinema"
+              "answer": "cinema",
+              "explanation": "At 01:38 Keith adds cinema and history to their list of interests.",
+              "evidence": "We're interested in cinema and history"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "11,000"
+              "answer": "11,000",
+              "explanation": "At 01:47 Keith gives $11,000 as the top of their budget range.",
+              "evidence": "between $7,000 and $11,000"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "14 nights"
+              "answer": "14 nights",
+              "explanation": "At 02:08 Keith says they want at least 14 nights on board.",
+              "evidence": "at least 14 nights on the ship"
             }
           ],
           "wordLimit": 3
@@ -66,12 +76,16 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "flights"
+              "answer": "flights",
+              "explanation": "At 03:18 Penny says flights to Barcelona are extra, not included in the $10,500 price.",
+              "evidence": "the flights to get to Barcelona will be extra"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "lectures"
+              "answer": "lectures",
+              "explanation": "At 03:35 Penny mentions destination lectures as part of the Maria Cristina's activities.",
+              "evidence": "there are also lectures on the places where you will be visiting"
             },
             {
               "id": "q8",
@@ -79,12 +93,16 @@ export const listeningFull015: PracticeTest = {
               "answer": [
                 "insurance",
                 "travel insurance"
-              ]
+              ],
+              "explanation": "At 03:56 Penny says travel insurance is included in the Maria Cristina package.",
+              "evidence": "Travel insurance is incorporated within the price"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "9,000"
+              "answer": "9,000",
+              "explanation": "At 04:14 Penny gives $9,000 as the Sea Queen's price, including flights.",
+              "evidence": "This costs $9,000 for both of you"
             },
             {
               "id": "q10",
@@ -92,7 +110,9 @@ export const listeningFull015: PracticeTest = {
               "answer": [
                 "pool",
                 "swimming pool"
-              ]
+              ],
+              "explanation": "At 04:28 Penny says the Sea Queen also has a swimming pool plus gym.",
+              "evidence": "There is a swimming pool and gym"
             }
           ],
           "wordLimit": 2
@@ -119,27 +139,37 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "The Read for All charity especially targets parents.",
-              "answer": "low income"
+              "answer": "low income",
+              "explanation": "At 06:56 Jake says the charity especially targets low-income parents.",
+              "evidence": "chiefly low-income parents"
             },
             {
               "id": "q12",
               "textHtml": "The Read for All charity mainly tries to contact parents at",
-              "answer": "hospitals"
+              "answer": "hospitals",
+              "explanation": "At 07:08 Jake says hospitals are the main place they reach parents.",
+              "evidence": "Our key focus is at hospitals where children are born"
             },
             {
               "id": "q13",
               "textHtml": "Parents who want help with finding books can go to the Read for All charity’s centre or visit their",
-              "answer": "website"
+              "answer": "website",
+              "explanation": "At 07:46 Jake says parents can visit the centre or the website for help finding books.",
+              "evidence": "come to our center or website"
             },
             {
               "id": "q14",
               "textHtml": "The Read for All charity’s app costs to download to a smartphone.",
-              "answer": "a dollar"
+              "answer": "a dollar",
+              "explanation": "At 08:15 Jake says the app costs only a dollar to download.",
+              "evidence": "It only cost a dollar"
             },
             {
               "id": "q15",
               "textHtml": "families can also benefit the Read for All charity in terms of improving English for the whole family.",
-              "answer": "immigrant"
+              "answer": "immigrant",
+              "explanation": "At 08:44 Jake says immigrant families also benefit through improved English.",
+              "evidence": "immigrant families can read or listen to the stories"
             }
           ],
           "wordLimit": 2
@@ -157,7 +187,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:34 Jake says a single donor provides most of the charity's funding.",
+              "evidence": "one particular donor who supplies... at least 60%"
             },
             {
               "id": "q17",
@@ -167,7 +199,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:20 Jake directs listeners to the website's donations icon.",
+              "evidence": "an icon on the homepage labeled donations"
             },
             {
               "id": "q18",
@@ -177,7 +211,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:42 Jake says the charity can cover volunteers' travel costs if they provide receipts.",
+              "evidence": "pay for some modest expenditure incurred for travel... if we can get receipts"
             }
           ]
         },
@@ -189,12 +225,16 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q19",
               "textHtml": "Cinema",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 11:18 Jake places the cinema on the corner of the second right turn off Bellard Street (an image-based map question, not fully verifiable from audio alone).",
+              "evidence": "there's a cinema on the corner"
             },
             {
               "id": "q20",
               "textHtml": "Main town post office",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "At 11:41 Jake says the post office sits directly opposite the charity's office (an image-based map question, not fully verifiable from audio alone).",
+              "evidence": "the main town post office which is right opposite our offices"
             }
           ],
           "options": [
@@ -234,12 +274,16 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "oil prices"
+              "answer": "oil prices",
+              "explanation": "At 13:33 Amy says her essay subject is oil prices and the car industry.",
+              "evidence": "how global oil prices have affected the car industry"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "citations"
+              "answer": "citations",
+              "explanation": "At 13:56 Amy says citing her sources correctly is her main problem.",
+              "evidence": "creating the citations in the correct way"
             },
             {
               "id": "q23",
@@ -247,17 +291,23 @@ export const listeningFull015: PracticeTest = {
               "answer": [
                 "sheet",
                 "guidance sheet"
-              ]
+              ],
+              "explanation": "At 14:22 Mr Stevenson tells Amy to check the guidance sheet on the department website.",
+              "evidence": "a guidance sheet that details all the procedures"
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "immigration"
+              "answer": "immigration",
+              "explanation": "At 15:04 William says his topic is how immigration affects employment in the Northern Territory.",
+              "evidence": "effects of immigration on employment figures"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "revision"
+              "answer": "revision",
+              "explanation": "At 15:32 Mr Stevenson recommends William focus on revision to cut his essay's length.",
+              "evidence": "work on the task of revision"
             }
           ],
           "wordLimit": 2
@@ -275,7 +325,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:33 Anna says she was delayed because she became ill.",
+              "evidence": "I got ill and I spent quite a few days in bed"
             },
             {
               "id": "q27",
@@ -285,7 +337,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:11 Mr Stevenson suggests Anna use his dedicated evening study sessions.",
+              "evidence": "my special evening work sessions"
             },
             {
               "id": "q28",
@@ -295,7 +349,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:24 Mr Stevenson says a doctor's note is needed to support an extension request.",
+              "evidence": "you need to supply a doctor's note"
             },
             {
               "id": "q29",
@@ -305,7 +361,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:08 Anna's first idea was Australian government tax breaks encouraging overseas investment.",
+              "evidence": "tax breaks offered by the Australian government can stimulate overseas investment"
             },
             {
               "id": "q30",
@@ -315,7 +373,9 @@ export const listeningFull015: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:37 Anna's second idea was a historical trade overview between Australia and New Zealand.",
+              "evidence": "a historical overview of imports and exports between Australia and New Zealand"
             }
           ]
         }
@@ -341,27 +401,37 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "The Sumerians",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 21:34 the lecturer says the Sumerians used carved seals to identify ownership.",
+              "evidence": "created seals... to identify possession"
             },
             {
               "id": "q32",
               "textHtml": "The Roman Emperor Valentinian",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 21:57 the lecturer credits Emperor Valentinian III with the earliest surviving handwritten signature.",
+              "evidence": "earliest actual handwriting signature... Valentinian III"
             },
             {
               "id": "q33",
               "textHtml": "Camilo Baldi",
-              "answer": "F"
+              "answer": "F",
+              "explanation": "At 22:15 the lecturer says Camilo Baldi's book began the science later called graphology.",
+              "evidence": "Camila Baldi wrote a book"
             },
             {
               "id": "q34",
               "textHtml": "Jean Michon",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 22:38 the lecturer says Michon founded societies, magazines and an academy, building graphology as a social movement.",
+              "evidence": "He formed Graphological Societies, published magazines and founded an academy"
             },
             {
               "id": "q35",
               "textHtml": "Wilheim Preyer",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 23:31 Preyer is quoted saying handwriting is brainwriting, linking writing to brain function.",
+              "evidence": "writing originates in the brain... handwriting is actually brainwriting"
             }
           ],
           "options": [
@@ -382,7 +452,9 @@ export const listeningFull015: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "obsolete"
+              "answer": "obsolete",
+              "explanation": "At 23:31 the lecturer says technology may have made the handwritten signature obsolete.",
+              "evidence": "made the handwritten signature obsolete"
             },
             {
               "id": "q37",
@@ -390,17 +462,23 @@ export const listeningFull015: PracticeTest = {
               "answer": [
                 "mark",
                 "physical mark"
-              ]
+              ],
+              "explanation": "At 24:18 the lecturer says the law required a signature to leave a physical mark, which e-signatures lack.",
+              "evidence": "leave a physical mark or trace"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "framework"
+              "answer": "framework",
+              "explanation": "At 24:48 the lecturer says the UN created a framework in 1996 for e-commerce rules.",
+              "evidence": "developed the framework"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "equal treatment"
+              "answer": "equal treatment",
+              "explanation": "At 25:06 the lecturer says the framework gave e-contracts equal treatment to paper ones.",
+              "evidence": "receive equal treatment to paper contracts"
             },
             {
               "id": "q40",
@@ -408,7 +486,9 @@ export const listeningFull015: PracticeTest = {
               "answer": [
                 "verification",
                 "legal verification"
-              ]
+              ],
+              "explanation": "At 25:23 the lecturer says a handwritten e-signature helps legal verification and adds a human touch.",
+              "evidence": "enhance legal verification"
             }
           ],
           "wordLimit": 2

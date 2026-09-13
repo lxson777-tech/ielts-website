@@ -33,52 +33,72 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Simmons"
+              "answer": "Simmons",
+              "explanation": "At 01:38 the caller gives his surname as Simmons (the transcript's letter-spelling is garbled).",
+              "evidence": "Michael Simmons"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "ocean drive"
+              "answer": "ocean drive",
+              "explanation": "At 02:07 Michael gives his previous address as 319 Ocean Drive.",
+              "evidence": "319 Ocean Drive"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "unlimited"
+              "answer": "unlimited",
+              "explanation": "At 02:33 Michael says his data allowance is unlimited after a recent upgrade.",
+              "evidence": "it's unlimited"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "24 months"
+              "answer": "24 months",
+              "explanation": "At 02:57 Michael says he is now on the 24 month plan, having switched from the 12 month one.",
+              "evidence": "switched to the 24 month plan"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "white"
+              "answer": "white",
+              "explanation": "At 03:20 Michael confirms his mother's maiden name is White.",
+              "evidence": "It's white. White as in the color? Yes."
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "goldfish"
+              "answer": "goldfish",
+              "explanation": "At 03:44 Michael says his first pet was a goldfish.",
+              "evidence": "It was actually a goldfish"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "30 June"
+              "answer": "30 June",
+              "explanation": "At 03:44 Natasha notes the new password was sent on the 30th of June.",
+              "evidence": "the date, 30th of June"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "cable"
+              "answer": "cable",
+              "explanation": "At 04:47 Natasha confirms she will send Michael a new cable.",
+              "evidence": "You need a new cable"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "home phone"
+              "answer": "home phone",
+              "explanation": "At 05:10 Michael agrees to cancel his Home Phone service.",
+              "evidence": "cancel that Home Phone for you"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "security"
+              "answer": "security",
+              "explanation": "At 05:42 Michael signs up for the security pack, declining the parenting pack.",
+              "evidence": "It's called the security pack"
             }
           ],
           "wordLimit": 2
@@ -105,32 +125,44 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Alarm",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 07:50 Ron says the alarm is right by the back door, next to the light switch.",
+              "evidence": "that is where the alarm is situated"
             },
             {
               "id": "q12",
               "textHtml": "Garage key",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 08:05 Ron says extra keys, including the garage key, hang in the hallway cupboard.",
+              "evidence": "hanging on a hook inside the cupboard in the hallway"
             },
             {
               "id": "q13",
               "textHtml": "Laundry detergent",
-              "answer": "H"
+              "answer": "H",
+              "explanation": "At 08:41 Ron says the laundry detergent is kept under the kitchen sink.",
+              "evidence": "under the kitchen sink"
             },
             {
               "id": "q14",
               "textHtml": "Beach towels",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 08:58 Ron says beach towels sit in a basket on top of the washing machine.",
+              "evidence": "a pile of beach towels in a basket on the washing machine"
             },
             {
               "id": "q15",
               "textHtml": "Bath towels",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 09:11 Ron says the newer bath towels are kept in the hot water cupboard.",
+              "evidence": "in the hot water cupboard on the shelf"
             },
             {
               "id": "q16",
               "textHtml": "Light bulbs",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "At 09:28 Ron says spare light bulbs are kept in the bedroom.",
+              "evidence": "spare light bulbs in a shoe box... in the bedroom"
             }
           ],
           "options": [
@@ -153,22 +185,30 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "tourists"
+              "answer": "tourists",
+              "explanation": "At 10:48 Ron says weekend parking is hard because the town is swamped with tourists.",
+              "evidence": "swamped with tourists"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "monday"
+              "answer": "monday",
+              "explanation": "At 11:02 Ron says the Early History Museum is closed on Mondays.",
+              "evidence": "it's not open on Mondays"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "happy dragon"
+              "answer": "happy dragon",
+              "explanation": "At 11:26 Ron recommends the Happy Dragon for Chinese food.",
+              "evidence": "the Happy Dragon has excellent food"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "3231190"
+              "answer": "3231190",
+              "explanation": "At 11:40 Ron gives 3231190 as the pizzeria's takeaway phone number.",
+              "evidence": "Phone 3231190 for pizza"
             }
           ],
           "wordLimit": 2
@@ -200,7 +240,9 @@ export const listeningFull014: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:04 Joanne says the company's strong industry reputation was why she accepted.",
+              "evidence": "widely recognised leader in the industry"
             },
             {
               "id": "q22",
@@ -210,7 +252,9 @@ export const listeningFull014: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:44 Joanne says the work wasn't related to her economics studies.",
+              "evidence": "It just wasn't relevant to what I've been studying"
             },
             {
               "id": "q23",
@@ -220,7 +264,9 @@ export const listeningFull014: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:16 Joanne says observing how the workplace runs day to day was the highlight.",
+              "evidence": "get a real sense of how a company... runs"
             },
             {
               "id": "q24",
@@ -230,7 +276,9 @@ export const listeningFull014: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:51 Joanne says the tight budget, not the hours, was the hardest part.",
+              "evidence": "getting by on such a tight budget"
             },
             {
               "id": "q25",
@@ -240,7 +288,9 @@ export const listeningFull014: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:19 Joanne says the internship made her reconsider her career direction.",
+              "evidence": "reconsidering whether this industry is really for me"
             }
           ]
         },
@@ -252,27 +302,37 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "documents"
+              "answer": "documents",
+              "explanation": "At 17:12 Joanne says sorting out documents is the first step for applicants.",
+              "evidence": "students need to get their documents sorted"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "shortlist"
+              "answer": "shortlist",
+              "explanation": "At 17:47 she says students should narrow their research down into a shortlist.",
+              "evidence": "put together a short list"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "tailor"
+              "answer": "tailor",
+              "explanation": "At 18:20 she says applicants should tailor each application to the specific position.",
+              "evidence": "alter their applications so that they refer to the individual needs"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "call"
+              "answer": "call",
+              "explanation": "At 18:39 she says following up with a phone call works better than an email.",
+              "evidence": "It's best to call each company"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "ask questions"
+              "answer": "ask questions",
+              "explanation": "At 19:12 Joanne says asking questions in the interview matters most.",
+              "evidence": "the most important thing is actually to ask questions"
             }
           ],
           "wordLimit": 2
@@ -299,52 +359,72 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "actions"
+              "answer": "actions",
+              "explanation": "At 21:24 the lecturer says actions help make these changes happen.",
+              "evidence": "how different sorts of actions can facilitate... these changes"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "policies"
+              "answer": "policies",
+              "explanation": "At 22:03 the lecturer says the applied approach examines specific policies.",
+              "evidence": "looking at specific policies"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "housing"
+              "answer": "housing",
+              "explanation": "At 22:42 the lecturer names housing as the second urbanisation issue alongside employment.",
+              "evidence": "the other is housing"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "statistics"
+              "answer": "statistics",
+              "explanation": "At 23:25 the lecturer says students learn to gather both statistics and textual data.",
+              "evidence": "sessions on how to gather statistics"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "evaluate"
+              "answer": "evaluate",
+              "explanation": "At 23:40 the lecturer says students must learn to critically evaluate their findings.",
+              "evidence": "critically evaluate your findings"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "cooperate"
+              "answer": "cooperate",
+              "explanation": "At 23:59 the lecturer says teamwork means learning to cooperate on the research project.",
+              "evidence": "learn how to cooperate as a team"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "economic"
+              "answer": "economic",
+              "explanation": "At 24:18 the lecturer says 1950s development studies was dominated by economic concerns.",
+              "evidence": "economic concerns were at the forefront"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "critical"
+              "answer": "critical",
+              "explanation": "At 24:58 the lecturer says the field grew increasingly critical of the establishment in the 1970s.",
+              "evidence": "grew increasingly critical of established practices"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "gender"
+              "answer": "gender",
+              "explanation": "At 25:21 the lecturer names gender inequality as one of the new 1970s concerns.",
+              "evidence": "problems with inequalities in terms of gender"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "loans"
+              "answer": "loans",
+              "explanation": "At 25:41 the lecturer says small loans are a recent small-scale economic practice.",
+              "evidence": "making tiny loans... to help women"
             }
           ],
           "wordLimit": 1

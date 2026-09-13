@@ -36,52 +36,72 @@ export const listeningFull003: PracticeTest = {
               "answer": [
                 "answer phone",
                 "answering phone"
-              ]
+              ],
+              "explanation": "At 01:51 the caller learns the job \"is answering the phone\", not washing up or waiting tables.",
+              "evidence": "It's answering the phone"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "Hillsdunne road"
+              "answer": "Hillsdunne road",
+              "explanation": "At 02:44 the address is spelled \"H-I-L-S-D-U-N-E Road\"; the recording's spelling differs slightly from the answer key's \"Hillsdunne\".",
+              "evidence": "H-I-L-S-D-U-N-E Road"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "library"
+              "answer": "library",
+              "explanation": "At 02:44 the nearest bus stop is \"just beside the library\".",
+              "evidence": "just beside the library"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "4.45"
+              "answer": "4.45",
+              "explanation": "At 03:17 the pay is confirmed as \"£4.45 an hour\".",
+              "evidence": "£4.45 an hour"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "national holidays"
+              "answer": "national holidays",
+              "explanation": "At 04:21 there is \"extra pay for working on national holidays\".",
+              "evidence": "extra pay for working on national holidays"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "after 11'o clock"
+              "answer": "after 11'o clock",
+              "explanation": "At 04:21 they \"drive you home\" if \"you're working after 11 o'clock\".",
+              "evidence": "working after 11 o'clock, we drive you home"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "clear voice"
+              "answer": "clear voice",
+              "explanation": "At 04:43 the restaurant wants \"a clear voice, which you obviously do have\".",
+              "evidence": "a clear voice"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "think quickly"
+              "answer": "think quickly",
+              "explanation": "At 04:43 an applicant \"must be able to think quickly\".",
+              "evidence": "able to think quickly"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "22 october"
+              "answer": "22 october",
+              "explanation": "At 05:09 they settle on \"Thursday's OK. That'll be 22nd of October.\"",
+              "evidence": "That'll be 22nd of October"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "Manuja"
+              "answer": "Manuja",
+              "explanation": "At 05:36 she spells her surname: \"Samira Manuja... M-A-N-U-J-A.\"",
+              "evidence": "Samira Manuja"
             }
           ],
           "wordLimit": 3
@@ -108,32 +128,44 @@ export const listeningFull003: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "branch"
+              "answer": "branch",
+              "explanation": "At 07:35 the presenter says Sports World is \"the branch of a Danish sports goods company\" opening again.",
+              "evidence": "the branch of a Danish sports goods company"
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "west"
+              "answer": "west",
+              "explanation": "At 07:35 the new branch is \"in the shopping centre to the west of Bradcaster\".",
+              "evidence": "to the west of Bradcaster"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "clothing"
+              "answer": "clothing",
+              "explanation": "At 08:00 the first three floors have \"a huge range of sports clothing as well as equipment\".",
+              "evidence": "a huge range of sports clothing"
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "10"
+              "answer": "10",
+              "explanation": "At 08:00 they \"promise to get it for you in 10 days\" if an item is not in stock.",
+              "evidence": "get it for you in 10 days"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "running"
+              "answer": "running",
+              "explanation": "At 08:24 the shop \"particularly focus[es] on running\" and claims the widest equipment range.",
+              "evidence": "particularly focus on running"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "bags"
+              "answer": "bags",
+              "explanation": "At 08:24 \"a whole section of the third floor is devoted to sports bags\".",
+              "evidence": "a whole section of the third floor is devoted to sports bags"
             }
           ],
           "wordLimit": 1
@@ -151,7 +183,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:37 the champion \"will be staying around until about midday\" after the 9am opening, i.e. Saturday morning only.",
+              "evidence": "staying around until about midday"
             },
             {
               "id": "q18",
@@ -161,7 +195,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 11:05 \"the first person to get all the questions correct gets a years free membership of the... gym\".",
+              "evidence": "get all the questions correct gets a years free membership"
             }
           ]
         },
@@ -177,7 +213,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "E"
               ],
-              "answerPairId": "test3-q19-q20"
+              "answerPairId": "test3-q19-q20",
+              "explanation": "At 11:05 the fitness test is \"available at half price for this month only\", one of the two correct features.",
+              "evidence": "available at half price for this month only"
             },
             {
               "id": "q20",
@@ -186,7 +224,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "E"
               ],
-              "answerPairId": "test3-q19-q20"
+              "answerPairId": "test3-q19-q20",
+              "explanation": "At 11:05 there are \"only a limited number of places available\", so a booking is needed, the second correct feature.",
+              "evidence": "only a limited number of places available"
             }
           ],
           "choices": [
@@ -211,7 +251,8 @@ export const listeningFull003: PracticeTest = {
               "label": "It is cheaper this month"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "At 11:05 the speaker says the fitness test is \"available at half price for this month only\" (E) and that \"there are only a limited number of places available for this, so to make a booking phone 560341\" (A, you need to reserve a place)."
         }
       ]
     },
@@ -240,7 +281,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:06 Spiros says he did \"quite a good job because my overall style was quite professional\".",
+              "evidence": "my overall style was quite professional"
             },
             {
               "id": "q22",
@@ -250,7 +293,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:32 Hiroko is surprised the others \"didn't worry about their presentation style or keeping eye contact with their audience\".",
+              "evidence": "keeping eye contact with their audience"
             },
             {
               "id": "q23",
@@ -260,7 +305,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:56 Hiroko says after her presentation \"I didn't feel any real sense of satisfaction\".",
+              "evidence": "didn't feel any real sense of satisfaction"
             },
             {
               "id": "q24",
@@ -270,7 +317,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:56 Spiros says \"I am not so pleased with my actual performance right now in tutorials\".",
+              "evidence": "not so pleased with my actual performance"
             },
             {
               "id": "q25",
@@ -280,7 +329,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:18 Spiros says the other students \"are very familiar with each other\", so they let each other into discussion.",
+              "evidence": "they are very familiar with each other"
             },
             {
               "id": "q26",
@@ -290,7 +341,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:31 Hiroko says she has \"been trying to speak up more and I just jump in\".",
+              "evidence": "trying to speak up more"
             },
             {
               "id": "q27",
@@ -300,7 +353,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:56 Hiroko says she had \"to turn to the books and journals\" to understand lectures.",
+              "evidence": "turn to the books and journals"
             },
             {
               "id": "q28",
@@ -310,7 +365,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:21 Spiros says \"my reading speed is still quite slow\".",
+              "evidence": "reading speed is still quite slow"
             },
             {
               "id": "q29",
@@ -320,7 +377,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:12 Hiroko says \"we didn't read anything about engineering\", her own subject.",
+              "evidence": "we didn't read anything about engineering"
             },
             {
               "id": "q30",
@@ -330,7 +389,9 @@ export const listeningFull003: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 19:01 Hiroko says she would have felt better \"working on reading from my own field\".",
+              "evidence": "working on reading from my own field"
             }
           ]
         }
@@ -359,7 +420,9 @@ export const listeningFull003: PracticeTest = {
               "answer": [
                 "tide",
                 "tides"
-              ]
+              ],
+              "explanation": "At 21:28 the lecturer says \"sometimes the tide goes out suddenly confusing the animals\".",
+              "evidence": "the tide goes out suddenly confusing the animals"
             },
             {
               "id": "q32",
@@ -368,17 +431,23 @@ export const listeningFull003: PracticeTest = {
                 "hearing",
                 "ear",
                 "ears"
-              ]
+              ],
+              "explanation": "At 21:54 marine animals \"rely heavily on their hearing to navigate\", and parasites infest their ears.",
+              "evidence": "rely heavily on their hearing to navigate"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "plants and animals"
+              "answer": "plants and animals",
+              "explanation": "At 22:18 toxins \"originate from plants or animals\" that whales eat.",
+              "evidence": "originate from plants or animals"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "feeding"
+              "answer": "feeding",
+              "explanation": "At 23:16 stomach checks showed \"most had not been feeding\" when the whales stranded.",
+              "evidence": "most had not been feeding"
             },
             {
               "id": "q35",
@@ -386,27 +455,37 @@ export const listeningFull003: PracticeTest = {
               "answer": [
                 "noise",
                 "noises"
-              ]
+              ],
+              "explanation": "At 23:40 \"noises such as those caused by military exercises\" are linked to strandings.",
+              "evidence": "Noises such as those caused by military exercises"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "healthy"
+              "answer": "healthy",
+              "explanation": "At 24:03 in the Bahamas case \"all the stranded animals were healthy\".",
+              "evidence": "all the stranded animals were healthy"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "group"
+              "answer": "group",
+              "explanation": "At 24:29 the animals \"were spread out\" along the coast, not found \"in a group\".",
+              "evidence": "it is more common for the animals to be found in a group"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "social"
+              "answer": "social",
+              "explanation": "At 24:55 \"the toothed whales, are the group that strand the most frequently\", the most social species.",
+              "evidence": "the toothed whales, are the group that strand the most frequently"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "leader"
+              "answer": "leader",
+              "explanation": "At 24:55 in the 1994 case \"apart from the leader, all the others had been healthy\".",
+              "evidence": "apart from the leader, all the others had been healthy"
             },
             {
               "id": "q40",
@@ -414,7 +493,9 @@ export const listeningFull003: PracticeTest = {
               "answer": [
                 "network",
                 "networks"
-              ]
+              ],
+              "explanation": "At 25:21 the lecturer recommends a book on \"stranding networks\" established worldwide.",
+              "evidence": "Stranding networks have been established around the world"
             }
           ],
           "wordLimit": 3

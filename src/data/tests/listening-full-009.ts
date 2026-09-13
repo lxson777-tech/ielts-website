@@ -33,12 +33,16 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "busines"
+              "answer": "busines",
+              "explanation": "At 01:46 the student says she is doing a degree in business studies; the answer key's spelling 'busines' looks like a typo for 'business'.",
+              "evidence": "I'm doing a degree in business studies"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "third"
+              "answer": "third",
+              "explanation": "At 01:55 the student says she is in the third year of her course, having taken a year off.",
+              "evidence": "I'm in the third year because I took last year off"
             }
           ],
           "wordLimit": 3
@@ -51,17 +55,23 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "sports centre"
+              "answer": "sports centre",
+              "explanation": "At 02:06 the advisor describes a receptionist job at the sports centre, which clashes with her evening lectures.",
+              "evidence": "working at the reception desk at the sport centre"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "cleaner"
+              "answer": "cleaner",
+              "explanation": "At 02:33 the advisor describes a cleaning position at the childcare centre, starting at 6am.",
+              "evidence": "a position for a cleaner at the childcare centre"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "library"
+              "answer": "library",
+              "explanation": "At 02:50 the advisor corrects himself: the clerical assistant job is in the library, not the computer lab.",
+              "evidence": "No, it's in the library. Not the lab"
             }
           ],
           "wordLimit": 2
@@ -74,27 +84,37 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "international house"
+              "answer": "international house",
+              "explanation": "At 04:20 the student says she lives in International House, a postgraduate hall of residence.",
+              "evidence": "postgraduate students, you know, international house"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "B659"
+              "answer": "B659",
+              "explanation": "At 04:28 the student first says room B569, then corrects herself to B659.",
+              "evidence": "No, sorry, B659. I always get that wrong"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "office assistant"
+              "answer": "office assistant",
+              "explanation": "At 04:45 the advisor describes an office assistant role at the English Language Centre.",
+              "evidence": "a position for an office assistant at the English Language Centre"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "answer phone"
+              "answer": "answer phone",
+              "explanation": "At 05:05 the advisor says the duties include responding to enquiries and answering the phone.",
+              "evidence": "deal with student inquiries and answer the phone"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "11.30"
+              "answer": "11.30",
+              "explanation": "At 05:33 they settle on 11.30 for the interview, since the student is busy at 10.",
+              "evidence": "How about 11.30"
             }
           ],
           "wordLimit": 3
@@ -126,7 +146,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 07:24 the speaker says the 10 day holiday includes eight days of actual walking.",
+              "evidence": "with eight days actual walking"
             },
             {
               "id": "q12",
@@ -136,7 +158,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 08:02 the speaker says 65% of the sponsorship money goes to the charity after expenses.",
+              "evidence": "that leaves 65% guaranteed to go to the charity"
             },
             {
               "id": "q13",
@@ -146,7 +170,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 08:26 the speaker says each walker's sponsorship money goes to help one individual pupil.",
+              "evidence": "will go to help an individual special needs pupil"
             },
             {
               "id": "q14",
@@ -156,7 +182,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:12 the speaker says walkers need to be extremely fit before the trek starts, though there is time to train beforehand.",
+              "evidence": "you will need to be extremely fit"
             },
             {
               "id": "q15",
@@ -166,7 +194,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:30 walkers carry only a small rucksack for the day, while local assistants carry the rest, so only some belongings are carried.",
+              "evidence": "you only walk with a small rucksack with needs for the day"
             },
             {
               "id": "q16",
@@ -176,7 +206,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:46 the speaker says the Samira region has a long tradition of carpet making.",
+              "evidence": "famous for centuries for making beautiful carpets"
             }
           ]
         },
@@ -188,22 +220,30 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "forest"
+              "answer": "forest",
+              "explanation": "At 11:15 the speaker says day three is spent walking through the Katiba forest all day.",
+              "evidence": "walking through the enormous Katiba forest"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "temple"
+              "answer": "temple",
+              "explanation": "At 11:33 the speaker describes day six's visit to the Kumi temple with old carvings.",
+              "evidence": "the spectacular Kumi temple, with twelve century carvings"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "waterfall"
+              "answer": "waterfall",
+              "explanation": "At 11:33 the speaker says day eight ends with a swim in the Pate Falls waterfall.",
+              "evidence": "culminating in a swim in the Pate Falls"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "village"
+              "answer": "village",
+              "explanation": "At 11:54 the speaker says day nine includes a visit to a village known for red blankets.",
+              "evidence": "spent in a village where they make some of the gorgeous red blankets"
             }
           ],
           "wordLimit": 1
@@ -230,12 +270,16 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "cigar"
+              "answer": "cigar",
+              "explanation": "At 13:49 the speaker describes the robotic float as shaped like a cigar.",
+              "evidence": "it looks a bit like a cigar"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "13 countries"
+              "answer": "13 countries",
+              "explanation": "At 14:32 the speaker says scientists from 13 countries have worked on the project so far.",
+              "evidence": "scientists from 13 countries have been taking part in the project"
             }
           ],
           "wordLimit": 2
@@ -248,17 +292,23 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "activated"
+              "answer": "activated",
+              "explanation": "At 15:04 the speaker says the float is dropped in the ocean and then activated by satellite, the first step shown in the diagram.",
+              "evidence": "activated from a satellite"
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "50km"
+              "answer": "50km",
+              "explanation": "At 15:04 the speaker says the float can drift an average of 50 kilometres while submerged.",
+              "evidence": "the average is 50 kilometers"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "temperature"
+              "answer": "temperature",
+              "explanation": "At 15:24 the speaker says the float records changes in temperature as it rises to the surface.",
+              "evidence": "the change is in temperature"
             }
           ],
           "wordLimit": 1
@@ -271,27 +321,37 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "understanding of El Nino",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 16:52 the speaker says float data is already confirming our understanding of El Nino, so this applies at present.",
+              "evidence": "is being confirmed by float data"
             },
             {
               "id": "q27",
               "textHtml": "understanding of climate change",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 16:52 the speaker says climate change findings are part of an ongoing study still a long way off, so this is long term future.",
+              "evidence": "but the results are still a long way off"
             },
             {
               "id": "q28",
               "textHtml": "naval rescues",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 17:17 the speaker says advising the Navy on rescues is happening right now, so this applies at present.",
+              "evidence": "we can advise the Navy on search and rescue missions"
             },
             {
               "id": "q29",
               "textHtml": "sustainable fishing practices",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 17:36 the speaker says results for sustainable fishing practices will be seen quite soon, so this is the near future.",
+              "evidence": "We'll be seeing the results of that quite soon"
             },
             {
               "id": "q30",
               "textHtml": "crop selection",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 18:06 the speaker agrees that using float data to guide crop selection is still a long way in the future.",
+              "evidence": "this concept is still a long way in the future"
             }
           ]
         }
@@ -322,7 +382,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 20:30 the speaker says even luxurious surroundings can feel empty and dispiriting, matching option B.",
+              "evidence": "even the most expensive surroundings can seem empty in dispiriting"
             },
             {
               "id": "q32",
@@ -332,7 +394,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 20:54 the speaker says luxury hotels overlook guests' need to feel at home in a comfortable, familiar environment.",
+              "evidence": "the need to feel at home in surroundings which are both familiar and inviting"
             },
             {
               "id": "q33",
@@ -342,7 +406,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 21:31 the speaker says the research covered a wide range of hotel types, not just luxury chains.",
+              "evidence": "covered a whole range of different hotel types"
             },
             {
               "id": "q34",
@@ -352,7 +418,9 @@ export const listeningFull009: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:06 the speaker says the outside environment simply did not matter, meaning it has no effect.",
+              "evidence": "what was outside the hotel building simply didn't matter"
             }
           ]
         },
@@ -364,32 +432,44 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "business"
+              "answer": "business",
+              "explanation": "At 22:35 the speaker describes a company providing luxury serviced apartments aimed at business travellers.",
+              "evidence": "provide clients with luxury service departments"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "kitchen"
+              "answer": "kitchen",
+              "explanation": "At 23:10 the speaker says the apartments include a stylish kitchen for guests to use.",
+              "evidence": "a sleek modern kitchen that allows guests to cook and entertain"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "world"
+              "answer": "world",
+              "explanation": "At 23:10 the speaker says the company hopes to set a lasting trend throughout the world.",
+              "evidence": "establish a trend all over the world"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "escape"
+              "answer": "escape",
+              "explanation": "At 23:48 the speaker says traditional hotels attract guests by offering an escape from routine life.",
+              "evidence": "need to escape the predictability of their everyday lives"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "baby"
+              "answer": "baby",
+              "explanation": "At 24:25 the speaker compares being pampered at a hotel to being cared for like a baby.",
+              "evidence": "return to being a baby when everything was done for us"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "chocolate"
+              "answer": "chocolate",
+              "explanation": "At 24:52 the speaker mentions the chocolate left on the pillow as one of the small treats hotels use.",
+              "evidence": "the chocolate on your pillow at night"
             }
           ],
           "wordLimit": 1

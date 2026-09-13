@@ -33,32 +33,44 @@ export const listeningFull013: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "19.75"
+              "answer": "19.75",
+              "explanation": "At 01:47 Lewis gives Bingley's rate as $19.75 a night, in US dollars.",
+              "evidence": "it's $19.75 a night, that's US dollars"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "theme"
+              "answer": "theme",
+              "explanation": "At 02:03 Lewis says Bingley's runs theme nights every weekend.",
+              "evidence": "they have theme nights every weekend"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "quiet"
+              "answer": "quiet",
+              "explanation": "At 02:52 Lewis describes Chalet Lodge's setting as a quiet alpine one.",
+              "evidence": "a quiet alpine setting"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "children"
+              "answer": "children",
+              "explanation": "At 03:10 Lewis says Chalet Lodge is children friendly.",
+              "evidence": "it's children friendly"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "breakfast"
+              "answer": "breakfast",
+              "explanation": "At 03:26 Lewis says Globetrotters' price includes breakfast, unlike the other two.",
+              "evidence": "that includes breakfast"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "sky-dive"
+              "answer": "sky-dive",
+              "explanation": "At 03:45 Lewis corrects Jacinta: guests can win a chance at a skydive, it isn't free.",
+              "evidence": "you can win a chance to do a skydive"
             }
           ],
           "wordLimit": 3
@@ -71,22 +83,30 @@ export const listeningFull013: PracticeTest = {
             {
               "id": "q7",
               "textHtml": "bungee jump",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 04:54 Lewis says he will only watch the bungee jump, so it is Jacinta alone who does it.",
+              "evidence": "I'll watch"
             },
             {
               "id": "q8",
               "textHtml": "white-water rafting",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 05:21 both agree to go white-water rafting together.",
+              "evidence": "I'm on for that if you are"
             },
             {
               "id": "q9",
               "textHtml": "jet-boat ride",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 05:43 Lewis says he doesn't mind doing the jet-boat ride alone, since Jacinta isn't keen.",
+              "evidence": "I don't mind going on my own"
             },
             {
               "id": "q10",
               "textHtml": "trekking on wilderness trail",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 06:05 they agree together that they don't want to miss the trekking.",
+              "evidence": "we ought to do some trekking"
             }
           ]
         }
@@ -117,7 +137,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 08:52 Jack says many Londoners grew up never being allowed to cycle.",
+              "evidence": "a whole generation of people have grown up not being allowed by their parents to cycle"
             },
             {
               "id": "q12",
@@ -127,7 +149,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:10 Jack says they train people by riding the actual roads the rider will use.",
+              "evidence": "teaching them to ride on the actual roads they'll use"
             },
             {
               "id": "q13",
@@ -137,7 +161,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:31 Jack says advanced courses build confidence with complicated intersections and road systems.",
+              "evidence": "complicated intersections and things like that"
             },
             {
               "id": "q14",
@@ -147,7 +173,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:10 Jack says CitiCyclist favours riders using the road confidently rather than being segregated.",
+              "evidence": "teach people to use as much road space as they need to travel safely"
             }
           ]
         },
@@ -164,7 +192,9 @@ export const listeningFull013: PracticeTest = {
                 "local councils",
                 "companies"
               ],
-              "answerPairId": "test13-q15-q17"
+              "answerPairId": "test13-q15-q17",
+              "explanation": "At 10:55 Jack lists schools as one of the three organisation types they train.",
+              "evidence": "cycle training activities at schools"
             },
             {
               "id": "q16",
@@ -174,7 +204,9 @@ export const listeningFull013: PracticeTest = {
                 "local councils",
                 "companies"
               ],
-              "answerPairId": "test13-q15-q17"
+              "answerPairId": "test13-q15-q17",
+              "explanation": "At 11:12 Jack adds local councils as a second organisation type they train.",
+              "evidence": "training courses for employees and staff of local councils"
             },
             {
               "id": "q17",
@@ -184,7 +216,9 @@ export const listeningFull013: PracticeTest = {
                 "local councils",
                 "companies"
               ],
-              "answerPairId": "test13-q15-q17"
+              "answerPairId": "test13-q15-q17",
+              "explanation": "At 11:30 Jack adds companies as the third organisation type they work with.",
+              "evidence": "developing training courses in companies"
             }
           ],
           "wordLimit": 3
@@ -197,17 +231,23 @@ export const listeningFull013: PracticeTest = {
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "02075624028"
+              "answer": "02075624028",
+              "explanation": "At 11:50 Jack gives the phone number 020-7562-4028 for booking.",
+              "evidence": "phone us on 020-7562-4028"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "27.50"
+              "answer": "27.50",
+              "explanation": "At 12:12 Jack gives £27.50 per hour as the one-to-one lesson cost.",
+              "evidence": "£27.50 per hour for one-to-one lessons"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "3 hours"
+              "answer": "3 hours",
+              "explanation": "At 12:27 Jack says a typical course of road training usually takes three hours.",
+              "evidence": "a course of road training usually takes three hours"
             }
           ],
           "wordLimit": 3
@@ -234,17 +274,23 @@ export const listeningFull013: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "What do Sharon and Xiao Li agree was the strongest aspect of their presentation?",
-              "answer": "technique"
+              "answer": "technique",
+              "explanation": "At 14:58 both agree technique, their slide design, was the strongest part.",
+              "evidence": "our technique was generally good"
             },
             {
               "id": "q22",
               "textHtml": "Which part of their presentation was Xiao Li least happy with?",
-              "answer": "questions"
+              "answer": "questions",
+              "explanation": "At 15:42 Xiao Li says the question time was the part he was least happy with.",
+              "evidence": "the problem was the questions"
             },
             {
               "id": "q23",
               "textHtml": "Which section does Sharon feel they should have discussed in more depth?",
-              "answer": "solutions"
+              "answer": "solutions",
+              "explanation": "At 16:01 Sharon says the solutions section seemed weak and needed more depth.",
+              "evidence": "the section on solutions seemed rather weak"
             }
           ],
           "wordLimit": 3
@@ -262,7 +308,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:27 they say they were surprised the class felt they spoke too fast.",
+              "evidence": "hard to understand because we were talking quite fast"
             },
             {
               "id": "q25",
@@ -272,7 +320,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:56 feedback on the slides conflicted: some wanted more text, others liked them as they were.",
+              "evidence": "we could have had more on the slides... but other people said the slides were good"
             },
             {
               "id": "q26",
@@ -282,7 +332,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:27 they say the class saw their two-country data collection as the point of difference.",
+              "evidence": "we'd done research on both Northern Ireland and China"
             },
             {
               "id": "q27",
@@ -292,7 +344,9 @@ export const listeningFull013: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:44 onward the tutor gives content 5 (correcting himself from four), then structure 4 and technique 4; the matching bar chart is image-based and not verifiable from the audio alone.",
+              "evidence": "I'm giving you four marks for content, five."
             }
           ]
         },
@@ -307,17 +361,23 @@ export const listeningFull013: PracticeTest = {
               "answer": [
                 "end",
                 "ending"
-              ]
+              ],
+              "explanation": "At 19:25 the tutor says the presentation's ending felt sudden.",
+              "evidence": "your ending was rather abrupt"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "limitation"
+              "answer": "limitation",
+              "explanation": "At 19:41 the tutor praises their discussion of the limitations of their results.",
+              "evidence": "you explained their limitations"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "literature"
+              "answer": "literature",
+              "explanation": "At 19:55 the tutor suggests expanding the literature review (the transcript garbles this phrase slightly).",
+              "evidence": "flesh out the literature of you a bit"
             }
           ],
           "wordLimit": 1
@@ -344,17 +404,23 @@ export const listeningFull013: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "clean and safe"
+              "answer": "clean and safe",
+              "explanation": "At 22:17 the speaker says a healthy city needs a clean and safe environment.",
+              "evidence": "a healthy city must provide a clean environment which is also safe"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "basic needs"
+              "answer": "basic needs",
+              "explanation": "At 22:31 the speaker says a healthy city must meet all inhabitants' basic needs.",
+              "evidence": "satisfy its inhabitants basic needs"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "local government"
+              "answer": "local government",
+              "explanation": "At 22:52 the speaker says the whole community should be involved in local government.",
+              "evidence": "The final point['s] to do with local government"
             }
           ],
           "wordLimit": 3
@@ -367,37 +433,51 @@ export const listeningFull013: PracticeTest = {
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "residents"
+              "answer": "residents",
+              "explanation": "At 24:04 the speaker says the residents themselves constructed the infrastructure.",
+              "evidence": "the residents did this, the people who actually lived there"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "economic"
+              "answer": "economic",
+              "explanation": "At 24:22 the speaker says the community contracts also improved economic chances.",
+              "evidence": "it improved their chances from an economic point of view"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "secondary schools"
+              "answer": "secondary schools",
+              "explanation": "At 25:00 the speaker says secondary school graduates organised the garbage collection.",
+              "evidence": "students who had graduated from secondary school"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "films"
+              "answer": "films",
+              "explanation": "At 25:00 the speaker names films as part of the public education campaign, alongside discussion groups.",
+              "evidence": "showing films and setting up discussion groups"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "women's centre"
+              "answer": "women's centre",
+              "explanation": "At 25:41 the speaker says the Egypt project was based at a women's centre.",
+              "evidence": "based in a women's centre"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "skills"
+              "answer": "skills",
+              "explanation": "At 26:02 the speaker says the women were given equipment after learning sewing and weaving skills.",
+              "evidence": "once they'd learned these skills, they were given the equipment"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "status"
+              "answer": "status",
+              "explanation": "At 26:23 the speaker says the project raised the young women's status and quality of life.",
+              "evidence": "these young women have greater status in the community"
             }
           ],
           "wordLimit": 3

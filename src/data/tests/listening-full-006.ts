@@ -33,27 +33,37 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "John Petterson"
+              "answer": "John Petterson",
+              "explanation": "At 01:34 the caller spells his surname letter by letter: P-E-double T-E-R-double S-O-N, giving John Petterson.",
+              "evidence": "P, E, double T, E, R, double S, O, N"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "12"
+              "answer": "12",
+              "explanation": "At 02:08 the officer says the maximum class size is 12, though usually only nine or ten students attend.",
+              "evidence": "The maximum class size is 12"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "5"
+              "answer": "5",
+              "explanation": "At 02:36 he confirms the course runs three weeks with five hours of study a day on weekdays.",
+              "evidence": "five hours a day, two hours only on Saturday"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "Bed and breakfast"
+              "answer": "Bed and breakfast",
+              "explanation": "At 03:07 he says staying with a family is cheapest, while the bed and breakfast option costs a bit more, making it the most expensive choice.",
+              "evidence": "the bed and breakfast is a bit more money"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "8th June"
+              "answer": "8th June",
+              "explanation": "At 04:02 he confirms the Berlin course starts a week after Hamburg's, on the eighth of June.",
+              "evidence": "That's the eighth of June"
             }
           ],
           "wordLimit": 3
@@ -70,7 +80,9 @@ export const listeningFull006: PracticeTest = {
                 "C",
                 "E"
               ],
-              "answerPairId": "test6-q6-q7"
+              "answerPairId": "test6-q6-q7",
+              "explanation": "At 05:14 he says the student will need the course textbooks, which the school does not supply.",
+              "evidence": "you'll need our text books"
             },
             {
               "id": "q7",
@@ -79,7 +91,9 @@ export const listeningFull006: PracticeTest = {
                 "C",
                 "E"
               ],
-              "answerPairId": "test6-q6-q7"
+              "answerPairId": "test6-q6-q7",
+              "explanation": "At 05:44 he adds that a good dictionary is also needed, alongside the textbooks already mentioned.",
+              "evidence": "you will need a good dictionary"
             }
           ],
           "choices": [
@@ -104,7 +118,8 @@ export const listeningFull006: PracticeTest = {
               "label": "textbooks"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "<p>The centre already provides computers, computer disks and translation exercises. At 05:14 and 05:44 the officer says the student still needs to buy <strong>textbooks</strong> and a <strong>dictionary</strong>, so the correct choices are C and E.</p>"
         },
         {
           "title": "Questions 8-10",
@@ -114,17 +129,23 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q8",
               "textHtml": "Without the student discount, the course costs Euros.",
-              "answer": "550"
+              "answer": "550",
+              "explanation": "At 06:14 he quotes the full course price as 550 euros, before the student discount is applied.",
+              "evidence": "it's 550 euros"
             },
             {
               "id": "q9",
               "textHtml": "Payment can be made by credit card or by",
-              "answer": "Bank transfer"
+              "answer": "Bank transfer",
+              "explanation": "At 06:14 he explains that since the caller has no credit card, he can pay by bank transfer instead.",
+              "evidence": "You can pay by bank transfer"
             },
             {
               "id": "q10",
               "textHtml": "To get a free course you need to find other people.",
-              "answer": "Five"
+              "answer": "Five",
+              "explanation": "At 06:42 he explains that for every five people the caller recruits, one course place is free.",
+              "evidence": "for every five people you find, one goes free"
             }
           ],
           "wordLimit": 3
@@ -151,27 +172,37 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Ministers and officials put the of the agriculture business first.",
-              "answer": "Profits"
+              "answer": "Profits",
+              "explanation": "At 08:47 the speaker says ministers and officials put the profits of the agriculture business before people's well-being.",
+              "evidence": "put the profits of the agriculture business before"
             },
             {
               "id": "q12",
               "textHtml": "Hormones make cattle thus making meat production more profitable.",
-              "answer": "Grow faster"
+              "answer": "Grow faster",
+              "explanation": "At 09:13 the speaker says hormones are given to cattle to make them grow faster, boosting profits.",
+              "evidence": "to make them grow faster"
             },
             {
               "id": "q13",
               "textHtml": "The use of hormones was banned over ago in Europe.",
-              "answer": "20 years"
+              "answer": "20 years",
+              "explanation": "At 09:39 the speaker says the hormones were banned in Europe over 20 years ago.",
+              "evidence": "over 20 years ago they were banned in Europe"
             },
             {
               "id": "q14",
               "textHtml": "The USA and Canada asked the WTO to declare the ban",
-              "answer": "Illegal"
+              "answer": "Illegal",
+              "explanation": "At 10:03 the speaker says the USA and Canada asked the WTO to declare the European ban illegal.",
+              "evidence": "declare the ban illegal"
             },
             {
               "id": "q15",
               "textHtml": "A Danish study shows that hormones are over more dangerous than was previously thought.",
-              "answer": "200 times"
+              "answer": "200 times",
+              "explanation": "At 10:29 the speaker cites a Danish study showing the hormones are 200 times more dangerous than previously thought.",
+              "evidence": "growth hormones are 200 times more dangerous"
             }
           ],
           "wordLimit": 3
@@ -184,12 +215,16 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "Imported"
+              "answer": "Imported",
+              "explanation": "At 10:56 the speaker says the government has not been testing beef that is imported, despite being legally required to.",
+              "evidence": "not been testing beef which is imported"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "40%"
+              "answer": "40%",
+              "explanation": "At 11:42 the speaker says about 40% of beef eaten in Britain is imported, some of it from Brazil.",
+              "evidence": "about 40% of the beef British people eat comes from abroad"
             },
             {
               "id": "q18",
@@ -197,17 +232,23 @@ export const listeningFull006: PracticeTest = {
               "answer": [
                 "hormones",
                 "growth hormones"
-              ]
+              ],
+              "explanation": "At 11:42 the speaker says Brazil officially does not allow the use of growth hormones.",
+              "evidence": "does not allow the use of growth hormones"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "Large stockpile"
+              "answer": "Large stockpile",
+              "explanation": "At 12:07 the speaker says EU inspectors found a large stockpile of the banned substance on a Brazilian farm.",
+              "evidence": "a large stockpile of this banned substance"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "A rare form"
+              "answer": "A rare form",
+              "explanation": "At 12:07 the speaker says the chocolate company's sweets were contaminated with a rare form of salmonella.",
+              "evidence": "contaminated with a rare form of salmonella"
             }
           ],
           "wordLimit": 3
@@ -234,27 +275,37 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "Decline"
+              "answer": "Decline",
+              "explanation": "At 14:41 Jake says people who bring work home every night tend to peak early and then go into decline.",
+              "evidence": "peak early and then go into decline"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "Strict limits"
+              "answer": "Strict limits",
+              "explanation": "At 15:06 Jake says high achievers work hard, but within strict limits, unlike workaholics.",
+              "evidence": "ready to work hard, but with in strict limits"
             },
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "A career"
+              "answer": "A career",
+              "explanation": "At 15:06 Amanda says it is important to choose a career you enjoy, not just one that pays well.",
+              "evidence": "important to choose a career which you enjoy"
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "Two-thirds"
+              "answer": "Two-thirds",
+              "explanation": "At 15:31 Amanda says top achievers spend over two thirds of their working hours doing preferred work.",
+              "evidence": "spend over two thirds of their working hours"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "Internal satisfaction"
+              "answer": "Internal satisfaction",
+              "explanation": "At 15:31 Amanda says top achievers want internal satisfaction, not just external rewards such as pay or promotion.",
+              "evidence": "They want internal satisfaction"
             }
           ],
           "wordLimit": 3
@@ -272,7 +323,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:45 Jake explains a top achiever takes a risk only after weighing whether they could cope if it went wrong, so they do accept possible failure.",
+              "evidence": "he could salvage the situation if it all went wrong"
             },
             {
               "id": "q27",
@@ -282,7 +335,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:12 Jake says perfectionists are so obsessed with getting things exactly right that they produce very little work.",
+              "evidence": "obsessed with perfection that they actually turn out very little work"
             },
             {
               "id": "q28",
@@ -292,7 +347,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:40 Jake says top achievers do not see mistakes as failures, instead learning from them.",
+              "evidence": "they learn from them, so they can do better next time"
             },
             {
               "id": "q29",
@@ -302,7 +359,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:58 Jake says top achievers are team players rather than loners, working well with others.",
+              "evidence": "top achievers tend to be team players rather than loners"
             },
             {
               "id": "q30",
@@ -312,7 +371,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:58 Jake says loners cannot delegate and end up having to do everything themselves.",
+              "evidence": "they must do everything themselves"
             }
           ]
         }
@@ -343,7 +404,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 21:24 the speaker says bright light exposure suppressed patients' production of melatonin.",
+              "evidence": "suppress their production of the darkness related hormone called melatonin"
             },
             {
               "id": "q32",
@@ -353,7 +416,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 21:51 the speaker says melatonin's exact role in SAD has not been pinned down, so it is not fully understood.",
+              "evidence": "melatonin's precise role in sad has not been pinned down"
             },
             {
               "id": "q33",
@@ -363,7 +428,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:19 the speaker says subsyndromal SAD affects twice as many people as full SAD, making it more common.",
+              "evidence": "twice this number suffer the milder condition called sub-syndramal sad"
             },
             {
               "id": "q34",
@@ -373,7 +440,9 @@ export const listeningFull006: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:46 the speaker says nearly 80% of sufferers are women and onset is typically around age 20, matching a young woman.",
+              "evidence": "Nearly 80% of sad victims are women"
             }
           ]
         },
@@ -385,17 +454,23 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q35",
               "textHtml": "Depression probably has a as it seems to run in the family.",
-              "answer": "Genetic component"
+              "answer": "Genetic component",
+              "explanation": "At 23:11 the speaker says the family link in SAD suggests the depression has a genetic component.",
+              "evidence": "suggesting that the depression has a genetic component"
             },
             {
               "id": "q36",
               "textHtml": "Many SAD sufferers have a craving.",
-              "answer": "Carbohydrate"
+              "answer": "Carbohydrate",
+              "explanation": "At 23:36 the speaker describes carbohydrate craving as a common symptom of SAD.",
+              "evidence": "carbohydrate craving, a common symptom"
             },
             {
               "id": "q37",
               "textHtml": "Serotonin has a effect on the brain.",
-              "answer": "Soothing"
+              "answer": "Soothing",
+              "explanation": "At 23:36 the speaker calls serotonin a soothing chemical, describing its calming effect on the brain.",
+              "evidence": "a soothing chemical called serotonin"
             },
             {
               "id": "q38",
@@ -403,17 +478,23 @@ export const listeningFull006: PracticeTest = {
               "answer": [
                 "winter",
                 "the winter"
-              ]
+              ],
+              "explanation": "At 24:01 the speaker says the brain's serotonin system may struggle to regulate itself during the winter.",
+              "evidence": "problems regulating itself during the winter"
             },
             {
               "id": "q39",
               "textHtml": "Some neurotransmitters may be in certain cases.",
-              "answer": "Inadequate"
+              "answer": "Inadequate",
+              "explanation": "At 24:27 the speaker says dopamine, another neurotransmitter, may be inadequate in some SAD sufferers.",
+              "evidence": "may be inadequate in certain cases"
             },
             {
               "id": "q40",
               "textHtml": "Many SAD patients put on fat in late autumn, just as",
-              "answer": "Hibernations"
+              "answer": "Hibernations",
+              "explanation": "At 24:54 the speaker compares SAD sufferers putting on fat in autumn to hibernating animals like bears and squirrels.",
+              "evidence": "roughly the time when such hibernators as bears and squirrels do"
             }
           ],
           "wordLimit": 2

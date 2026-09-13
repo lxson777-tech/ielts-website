@@ -38,7 +38,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 01:32 Mr Jones tells Rebecca \"we've only just moved to Los Angeles two days ago\", matching answer C.",
+              "evidence": "we've only just moved to Los Angeles two days ago"
             }
           ]
         },
@@ -50,7 +52,9 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q2",
               "textHtml": "When does Mr. Jones have to go to his office?",
-              "answer": "next monday"
+              "answer": "next monday",
+              "explanation": "At 01:48 Mr Jones says \"I don't have to go into office until next Monday\".",
+              "evidence": "I don't have to go into office until next Monday"
             }
           ],
           "wordLimit": 2
@@ -68,7 +72,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 01:48 Mr Jones says \"my companies were in real estate\" (a transcript slip for \"my company's in real estate\"), matching answer C.",
+              "evidence": "my companies were in real estate"
             }
           ]
         },
@@ -80,12 +86,16 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "9"
+              "answer": "9",
+              "explanation": "At 02:21 Rebecca suggests \"nine a.m. Thursday\", confirmed again at 03:12, giving 9 as the hour.",
+              "evidence": "Would nine a.m. Thursday be convenient?"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "thursday"
+              "answer": "thursday",
+              "explanation": "At 02:21 and again at 03:12 the appointment is confirmed as \"nine a.m. Thursday\".",
+              "evidence": "So nine a.m. Thursday"
             }
           ],
           "wordLimit": 1
@@ -103,7 +113,9 @@ export const listeningFull020: PracticeTest = {
                 "urine",
                 "ECG"
               ],
-              "answerPairId": "test20-q6-q8"
+              "answerPairId": "test20-q6-q8",
+              "explanation": "At 03:36 Rebecca lists what Blue Cross needs, including \"blood pressure, standard blood and urine tests... ECG\"; the answer key accepts blood pressure, urine and ECG as the three tests.",
+              "evidence": "Blood pressure, standard blood and urine tests... ECG"
             },
             {
               "id": "q7",
@@ -113,7 +125,9 @@ export const listeningFull020: PracticeTest = {
                 "urine",
                 "ECG"
               ],
-              "answerPairId": "test20-q6-q8"
+              "answerPairId": "test20-q6-q8",
+              "explanation": "At 03:36 Rebecca lists what Blue Cross needs, including \"blood pressure, standard blood and urine tests... ECG\"; the answer key accepts blood pressure, urine and ECG as the three tests.",
+              "evidence": "Blood pressure, standard blood and urine tests... ECG"
             },
             {
               "id": "q8",
@@ -123,7 +137,9 @@ export const listeningFull020: PracticeTest = {
                 "urine",
                 "ECG"
               ],
-              "answerPairId": "test20-q6-q8"
+              "answerPairId": "test20-q6-q8",
+              "explanation": "At 03:36 Rebecca lists what Blue Cross needs, including \"blood pressure, standard blood and urine tests... ECG\"; the answer key accepts blood pressure, urine and ECG as the three tests.",
+              "evidence": "Blood pressure, standard blood and urine tests... ECG"
             }
           ],
           "wordLimit": 3
@@ -136,12 +152,16 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "8055230296"
+              "answer": "8055230296",
+              "explanation": "At 04:36 Mr Jones gives his home number as \"area called 805-523-0296\" (a mishearing of \"area code\"), giving 8055230296.",
+              "evidence": "my home number is area called 805-523-0296"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "Rebecca"
+              "answer": "Rebecca",
+              "explanation": "At 01:32 Rebecca introduces herself: \"my name's Rebecca. I'm Doctor Ritter's secretary\".",
+              "evidence": "my name's Rebecca. I'm Doctor Ritter's secretary"
             }
           ],
           "wordLimit": 1
@@ -168,7 +188,9 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Mr. Smith manages group tours to Australia, New Zealand and the",
-              "answer": "southsea islands"
+              "answer": "southsea islands",
+              "explanation": "At 06:29 Rick Smith says he manages tours \"to Australia, New Zealand and the South Sea Islands\".",
+              "evidence": "New Zealand and the South Sea Islands"
             },
             {
               "id": "q12",
@@ -176,12 +198,16 @@ export const listeningFull020: PracticeTest = {
               "answer": [
                 "research",
                 "market research"
-              ]
+              ],
+              "explanation": "At 06:53 Rick says the new tour came \"after doing some market research\" that showed demand for a longer trip.",
+              "evidence": "after doing some market research"
             },
             {
               "id": "q13",
               "textHtml": "From the Five Seasons Hotel Sydney, one can clearly see a harbor, a bridge and",
-              "answer": "opera house"
+              "answer": "opera house",
+              "explanation": "At 07:58 Rick says the hotel has \"fantastic views of Sydney Harbour, the famous Opera House and Sydney Harbour Bridge\", giving the third landmark.",
+              "evidence": "the famous Opera House and Sydney Harbour Bridge"
             }
           ],
           "wordLimit": 3
@@ -199,7 +225,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 08:25 Rick says to beat jet lag \"it's best to get out and do something energetic\", matching answer C.",
+              "evidence": "it's best to get out and do something energetic"
             }
           ]
         },
@@ -211,7 +239,9 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "A wombat looks like a with two short legs.",
-              "answer": "bear"
+              "answer": "bear",
+              "explanation": "At 09:20 Rick says a wombat \"looks like a bear with short legs\".",
+              "evidence": "looks like a bear with short legs"
             }
           ],
           "wordLimit": 1
@@ -229,7 +259,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:20 Rick says after the Olympic site \"we'll take a cruise down the Parramatta River... into Sydney Harbour\", so the group returns by boat, answer B.",
+              "evidence": "we'll take a cruise down the Parramatta River"
             }
           ]
         },
@@ -241,7 +273,9 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "How high will the seaplane fly over Bondi Beach?",
-              "answer": "500 feet"
+              "answer": "500 feet",
+              "explanation": "At 10:34 Rick says the seaplane gives a view of Bondi Beach \"from 500 feet in the air\".",
+              "evidence": "Bondi Beach from 500 feet in the air"
             }
           ],
           "wordLimit": 1
@@ -254,12 +288,16 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "greek"
+              "answer": "greek",
+              "explanation": "At 11:36 Rick says Australian cities offer \"Greek, Chinese, Mexican\" food among others, giving Greek as one of the missing cuisines.",
+              "evidence": "Greek, Chinese, Mexican, you name it"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "mexican"
+              "answer": "mexican",
+              "explanation": "In the same line at 11:36, Rick lists \"Greek, Chinese, Mexican\" cuisine, giving Mexican as the other missing cuisine.",
+              "evidence": "Greek, Chinese, Mexican, you name it"
             }
           ],
           "wordLimit": 1
@@ -272,7 +310,9 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q20",
               "textHtml": "After Sydney, what is the destination on the tour itinerary?",
-              "answer": "melbourne"
+              "answer": "melbourne",
+              "explanation": "At 12:03 Rick says \"then we'll move on to Melbourne\" after Sydney.",
+              "evidence": "then we'll move on to Melbourne"
             }
           ],
           "wordLimit": 1
@@ -304,7 +344,9 @@ export const listeningFull020: PracticeTest = {
                 "C",
                 "D"
               ],
-              "answerPairId": "test20-q21-q23"
+              "answerPairId": "test20-q21-q23",
+              "explanation": "At 13:56 Ann explains \"we can't afford to employ someone to help her\" (C) and \"the neighbours are all too busy\" (D), on top of her mother being ill (A); the doctor's advice (B) and computer games (E) are not her reasons.",
+              "evidence": "we can't afford to employ someone to help her. The neighbours are all too busy"
             },
             {
               "id": "q22",
@@ -314,7 +356,9 @@ export const listeningFull020: PracticeTest = {
                 "C",
                 "D"
               ],
-              "answerPairId": "test20-q21-q23"
+              "answerPairId": "test20-q21-q23",
+              "explanation": "At 13:56 Ann explains \"we can't afford to employ someone to help her\" (C) and \"the neighbours are all too busy\" (D), on top of her mother being ill (A); the doctor's advice (B) and computer games (E) are not her reasons.",
+              "evidence": "we can't afford to employ someone to help her. The neighbours are all too busy"
             },
             {
               "id": "q23",
@@ -324,7 +368,9 @@ export const listeningFull020: PracticeTest = {
                 "C",
                 "D"
               ],
-              "answerPairId": "test20-q21-q23"
+              "answerPairId": "test20-q21-q23",
+              "explanation": "At 13:56 Ann explains \"we can't afford to employ someone to help her\" (C) and \"the neighbours are all too busy\" (D), on top of her mother being ill (A); the doctor's advice (B) and computer games (E) are not her reasons.",
+              "evidence": "we can't afford to employ someone to help her. The neighbours are all too busy"
             }
           ],
           "choices": [
@@ -349,7 +395,8 @@ export const listeningFull020: PracticeTest = {
               "label": "she spends too much time playing computer games"
             }
           ],
-          "selectCount": 3
+          "selectCount": 3,
+          "explanationHtml": "<p>At 13:56 Ann says “we can't afford to employ someone to help her” (C) and “the neighbours are all too busy” (D), alongside her mother being ill (A); the doctor's advice (B) and computer games (E) belong to a different part of the conversation, so the correct letters are A, C and D.</p>"
         },
         {
           "title": "Questions 24-25",
@@ -359,12 +406,16 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "social studies"
+              "answer": "social studies",
+              "explanation": "At 14:20 Bill says he read about the experiment \"in social studies at high school\".",
+              "evidence": "read about in social studies at high school"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "personalities"
+              "answer": "personalities",
+              "explanation": "In the same line at 14:20, Bill says the topic is \"how wearing a uniform can change people's personalities\".",
+              "evidence": "how wearing a uniform can change people's personalities"
             }
           ],
           "wordLimit": 2
@@ -382,7 +433,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:56 Bill says he thinks the professor \"was from the University of California at Los Angeles\", matching answer B.",
+              "evidence": "the University of California at Los Angeles"
             },
             {
               "id": "q27",
@@ -392,7 +445,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:46 Bill says the police took the students \"to a school building that had been made to look like\" a prison, so the real location was a school, answer A.",
+              "evidence": "the cops took them to a school building that had been made to look like the inside of a prison"
             }
           ]
         },
@@ -408,7 +463,9 @@ export const listeningFull020: PracticeTest = {
                 "B",
                 "C"
               ],
-              "answerPairId": "test20-q28-q29"
+              "answerPairId": "test20-q28-q29",
+              "explanation": "At 16:32 Bill says the guard students came from \"different schools\" (B), \"because otherwise the ones who thought they'd been arrested might have realized it was the experiment\" (C).",
+              "evidence": "Different schools... might have realized it was the experiment they had signed up for"
             },
             {
               "id": "q29",
@@ -417,7 +474,9 @@ export const listeningFull020: PracticeTest = {
                 "B",
                 "C"
               ],
-              "answerPairId": "test20-q28-q29"
+              "answerPairId": "test20-q28-q29",
+              "explanation": "At 16:32 Bill says the guard students came from \"different schools\" (B), \"because otherwise the ones who thought they'd been arrested might have realized it was the experiment\" (C).",
+              "evidence": "Different schools... might have realized it was the experiment they had signed up for"
             }
           ],
           "choices": [
@@ -442,7 +501,8 @@ export const listeningFull020: PracticeTest = {
               "label": "the professor did not want them to know each other"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "<p>At 16:32 Bill explains the students dressed as guards came from “different schools” (B), so that the arrested students would not realise it was the experiment they had signed up for (C), giving the pair B and C.</p>"
         },
         {
           "title": "Question 30",
@@ -452,7 +512,9 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q30",
               "textHtml": "Bill says the ‘prisons’ started having",
-              "answer": "nervous breakdown"
+              "answer": "nervous breakdown",
+              "explanation": "At 16:58 Bill says the students who thought they were prisoners \"started having nervous breakdowns\".",
+              "evidence": "started having nervous breakdowns"
             }
           ],
           "wordLimit": 2
@@ -483,7 +545,9 @@ export const listeningFull020: PracticeTest = {
                 "C",
                 "E"
               ],
-              "answerPairId": "test20-q31-q32"
+              "answerPairId": "test20-q31-q32",
+              "explanation": "At 19:02 the lecturer says he will cover \"different types of advertising\" and \"different types of message\", matching message (C) and advertising (E) as the two things his talk promotes types of.",
+              "evidence": "different types of advertising. Different types of message"
             },
             {
               "id": "q32",
@@ -492,7 +556,9 @@ export const listeningFull020: PracticeTest = {
                 "C",
                 "E"
               ],
-              "answerPairId": "test20-q31-q32"
+              "answerPairId": "test20-q31-q32",
+              "explanation": "At 19:02 the lecturer says he will cover \"different types of advertising\" and \"different types of message\", matching message (C) and advertising (E) as the two things his talk promotes types of.",
+              "evidence": "different types of advertising. Different types of message"
             }
           ],
           "choices": [
@@ -517,7 +583,8 @@ export const listeningFull020: PracticeTest = {
               "label": "advertising"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "<p>At 19:02 the lecturer says tonight's talk covers “different types of advertising. Different types of message”, so the two things he introduces types of are advertising (E) and message (C).</p>"
         },
         {
           "title": "Questions 33-34",
@@ -527,12 +594,16 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "type"
+              "answer": "type",
+              "explanation": "At 20:09 the lecturer says it is essential to use \"the right type of advertising with the right message\", giving type as the missing word.",
+              "evidence": "the right type of advertising with the right message"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "message"
+              "answer": "message",
+              "explanation": "In the same line at 20:09, the lecturer says advertising needs \"the right type of advertising with the right message\", giving message as the second missing word.",
+              "evidence": "the right type of advertising with the right message"
             }
           ],
           "wordLimit": 3
@@ -550,7 +621,9 @@ export const listeningFull020: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 20:57 the lecturer says advertisers want to change people's attitudes and, in most cases, their \"buying habits\", matching answer A.",
+              "evidence": "maybe they're buying habits"
             }
           ]
         },
@@ -562,27 +635,37 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "products"
+              "answer": "products",
+              "explanation": "At 21:49 the lecturer says \"consumers buy these products primarily because they recognize the brand name\", giving products as the missing word.",
+              "evidence": "consumers buy these products primarily because they recognize the brand name"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "brewery"
+              "answer": "brewery",
+              "explanation": "At 22:24 the lecturer imagines \"what if shell had bought a brewery\", giving brewery as the missing word.",
+              "evidence": "what if shell had bought a brewery"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "grandads old air"
+              "answer": "grandads old air",
+              "explanation": "At 22:24 the lecturer names the imaginary beer \"Grand Dads Old Ale\"; the stored answer \"grandads old air\" misspells ale as air, which looks like an error in the answer key rather than the transcript.",
+              "evidence": "marketed a beer they called Grand Dads Old Ale"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "message"
+              "answer": "message",
+              "explanation": "At 23:37 the lecturer says San Fran Video Store handed out \"little cards with the same message on them\", giving message as the missing word.",
+              "evidence": "little cards with the same message on them"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "list"
+              "answer": "list",
+              "explanation": "In the same line at 23:37, the cards also carried \"a list of the store locations\", giving list as the second missing word.",
+              "evidence": "plus a list of the store locations"
             }
           ],
           "wordLimit": 3

@@ -36,17 +36,23 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "waiter",
                 "waiters"
-              ]
+              ],
+              "explanation": "At 01:41 the hotel is \"looking for waiters at the moment\".",
+              "evidence": "looking for waiters at the moment"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "day off"
+              "answer": "day off",
+              "explanation": "At 02:02 staff can negotiate which day off they want, but \"it has to be the same one every week\".",
+              "evidence": "the same one every week"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "break"
+              "answer": "break",
+              "explanation": "At 02:24 pay is \"£5.50 an hour, and that includes a break\".",
+              "evidence": "that includes a break"
             },
             {
               "id": "q4",
@@ -54,7 +60,9 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "meal",
                 "free meal"
-              ]
+              ],
+              "explanation": "At 02:24 staff \"can get a meal in the hotel... no charge for it\".",
+              "evidence": "get a meal in the hotel"
             },
             {
               "id": "q5",
@@ -62,22 +70,30 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "dark",
                 "dark colored"
-              ]
+              ],
+              "explanation": "At 03:34 the uniform needs \"a white shirt... and dark trousers\", not supplied.",
+              "evidence": "dark trousers"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "jacket"
+              "answer": "jacket",
+              "explanation": "At 03:34 \"you have to wear a jacket, but the hotel lends you that\".",
+              "evidence": "the hotel lends you that"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "28 June"
+              "answer": "28 June",
+              "explanation": "At 03:55 the starting date is \"the 28th [of June], in time for the summer\".",
+              "evidence": "the 28th in time for the summer"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "Urwin"
+              "answer": "Urwin",
+              "explanation": "At 04:15 the manager's name is spelled \"U-R-W-I-N\", i.e. Urwin, though the recording hears it as \"Erwin\".",
+              "evidence": "That's U-R-W-I-N"
             },
             {
               "id": "q9",
@@ -85,12 +101,16 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "12.00 pm",
                 "noon"
-              ]
+              ],
+              "explanation": "At 04:15 she \"starts checking the rooms at midday\", so the caller should ring \"before then\".",
+              "evidence": "starts checking the rooms at midday"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "reference"
+              "answer": "reference",
+              "explanation": "At 04:36 the caller is told \"she will ask you for a reference\".",
+              "evidence": "she will ask you for a reference"
             }
           ],
           "wordLimit": 2
@@ -122,7 +142,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 06:57 residents are \"mainly worried about traffic... the increasing speed of cars near schools\".",
+              "evidence": "the increasing speed of cars near schools"
             },
             {
               "id": "q12",
@@ -132,7 +154,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 07:34 the power company \"agreed to move the power lines underground\".",
+              "evidence": "move the power lines underground"
             },
             {
               "id": "q13",
@@ -142,7 +166,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 08:01 \"the power company have agreed to bear the cost of this themselves\".",
+              "evidence": "the power company have agreed to bear the cost"
             }
           ]
         },
@@ -154,37 +180,51 @@ export const listeningFull004: PracticeTest = {
             {
               "id": "q14",
               "textHtml": "Trees",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 09:06 trees go \"just to the right of the supermarket in Days Road\".",
+              "evidence": "just to the right of the supermarket in Days Road"
             },
             {
               "id": "q15",
               "textHtml": "Wider footpaths",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 09:06 \"the pavements on the corner of Carberry and Thomas Street will be widened\".",
+              "evidence": "the pavements on the corner of Carberry and Thomas Street will be widened"
             },
             {
               "id": "q16",
               "textHtml": "Coloured road surface",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "At 09:28 the entrance to Thomas Street from Days Road \"will be painted red\".",
+              "evidence": "will be painted red"
             },
             {
               "id": "q17",
               "textHtml": "New sign",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 09:49 \"a keep clear sign will be erected at the junction of Evelyn Street and Hill Street\".",
+              "evidence": "a keep clear sign will be erected"
             },
             {
               "id": "q18",
               "textHtml": "Traffic lights",
-              "answer": "F"
+              "answer": "F",
+              "explanation": "At 09:49 traffic lights go \"halfway down Hill Street where it crosses Days Road\".",
+              "evidence": "install traffic lights halfway down Hill Street"
             },
             {
               "id": "q19",
               "textHtml": "Artwork",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 10:13 the artwork goes on \"the wall of a building on the other side of Hill Street from the supermarket\".",
+              "evidence": "paintings on the wall of a building"
             },
             {
               "id": "q20",
               "textHtml": "Children’s playground",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 10:13 the playground is \"at the other end of Hill Street close to the intersection with Carberry Street\".",
+              "evidence": "a new children's playground"
             }
           ],
           "options": [
@@ -224,7 +264,9 @@ export const listeningFull004: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test4-q21-q22"
+              "answerPairId": "test4-q21-q22",
+              "explanation": "At 13:13 Jeannie says her parents \"took pity on me\", i.e. family willing to help.",
+              "evidence": "they took pity on me"
             },
             {
               "id": "q22",
@@ -233,7 +275,9 @@ export const listeningFull004: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test4-q21-q22"
+              "answerPairId": "test4-q21-q22",
+              "explanation": "At 12:55 a former boss \"said they'd make a contribution\" to her course fees.",
+              "evidence": "he said they'd make a contribution"
             }
           ],
           "choices": [
@@ -258,7 +302,8 @@ export const listeningFull004: PracticeTest = {
               "label": "A former employer is providing partial funding"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "At 12:55 Jeannie says her old boss \"said they'd make a contribution\" (E, a former employer) and at 13:13 that her parents \"took pity on me\" (B, family willing to help), after the council and government funding fell through."
         },
         {
           "title": "Questions 23-24",
@@ -272,7 +317,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "C"
               ],
-              "answerPairId": "test4-q23-q24"
+              "answerPairId": "test4-q23-q24",
+              "explanation": "At 13:59 Jeannie says of singing \"I don't think the conductor stretches us enough\", so she is not sufficiently challenged.",
+              "evidence": "the conductor stretches us enough"
             },
             {
               "id": "q24",
@@ -281,7 +328,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "C"
               ],
-              "answerPairId": "test4-q23-q24"
+              "answerPairId": "test4-q23-q24",
+              "explanation": "At 13:59 with debating, \"with all the rehearsing I'm doing, something has to go\", i.e. no time.",
+              "evidence": "something has to go"
             }
           ],
           "choices": [
@@ -306,7 +355,8 @@ export const listeningFull004: PracticeTest = {
               "label": "She does not think she is any good at the activity"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "At 13:59 Jeannie says she will give up singing because \"I don't think the conductor stretches us enough\" (A, not sufficiently challenged), and debating because \"something has to go\" with all her drama rehearsing (C, not enough time)."
         },
         {
           "title": "Questions 25-26",
@@ -321,7 +371,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:43 Dan says other students say \"clever things that I could never think of\", making him feel inferior.",
+              "evidence": "clever things that I could never think of"
             },
             {
               "id": "q26",
@@ -331,7 +383,9 @@ export const listeningFull004: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:04 Jeannie says her tutor \"gives me lots of feedback and advice, so I've got much better at writing essays\".",
+              "evidence": "much better at writing essays"
             }
           ]
         },
@@ -343,12 +397,16 @@ export const listeningFull004: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "priorities"
+              "answer": "priorities",
+              "explanation": "At 16:21 they discuss revision \"priorities based on what's most likely to come up\".",
+              "evidence": "sort out your revision priorities"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "timetable"
+              "answer": "timetable",
+              "explanation": "At 16:21 \"you also need a timetable to see how you can fit everything in\".",
+              "evidence": "you also need a timetable"
             },
             {
               "id": "q29",
@@ -356,7 +414,9 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "tasks",
                 "small tasks"
-              ]
+              ],
+              "explanation": "At 16:37 the advice is to \"break down your revision into small tasks and allocate them to specific days\".",
+              "evidence": "break down your revision into small tasks"
             },
             {
               "id": "q30",
@@ -364,7 +424,9 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "paragraph",
                 "single paragraph"
-              ]
+              ],
+              "explanation": "At 16:50 Jeannie says \"as I revised each topic, I write a single paragraph about it\".",
+              "evidence": "write a single paragraph about it"
             }
           ],
           "wordLimit": 2
@@ -391,32 +453,44 @@ export const listeningFull004: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "figures revealing bones",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 20:32 the modern \"X-ray\" style \"makes a feature of the internal skeleton\", i.e. bones.",
+              "evidence": "makes a feature of the internal skeleton"
             },
             {
               "id": "q32",
               "textHtml": "rounded figures",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 20:32 the yam style \"featured much curvier figures\" resembling the vegetable, i.e. rounded.",
+              "evidence": "much curvier figures"
             },
             {
               "id": "q33",
               "textHtml": "figures with parts missing",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 20:32 modern paintings show Europeans \"without any hands\", i.e. parts missing.",
+              "evidence": "painting the Europeans without any hands"
             },
             {
               "id": "q34",
               "textHtml": "figures smaller than life size",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 21:13 \"the dynamic figures are painted in miniature\", smaller than life size.",
+              "evidence": "the dynamic figures are painted in miniature"
             },
             {
               "id": "q35",
               "textHtml": "sea creatures",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 21:13 \"fish didn't start to appear in paintings until the yam period\", i.e. sea creatures.",
+              "evidence": "fish didn't start to appear in paintings until the yam period"
             },
             {
               "id": "q36",
               "textHtml": "plants Painting Styles",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 21:49 in the yam tradition Aborigines began \"including vegetables in their diet as these feature prominently\", i.e. plants.",
+              "evidence": "including vegetables in their diet"
             }
           ],
           "options": [
@@ -436,7 +510,9 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "animal",
                 "creature"
-              ]
+              ],
+              "explanation": "At 22:35 the project aims \"to locate the animal that the very first painters base their image on\".",
+              "evidence": "locate the animal that the very first painters base their image on"
             },
             {
               "id": "q38",
@@ -444,17 +520,23 @@ export const listeningFull004: PracticeTest = {
               "answer": [
                 "sea",
                 "water level"
-              ]
+              ],
+              "explanation": "At 22:35 the ice age's end brought \"the sea levels rising and creeping steadily inland\".",
+              "evidence": "the sea levels rising and creeping steadily inland"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "hunting"
+              "answer": "hunting",
+              "explanation": "At 23:00 this disrupted \"traditional patterns of life, hunting in particular\".",
+              "evidence": "hunting in particular"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "creation"
+              "answer": "creation",
+              "explanation": "At 23:37 Aborigines \"see the rainbow serpent as a symbol of creation\".",
+              "evidence": "a symbol of creation"
             }
           ],
           "wordLimit": 2

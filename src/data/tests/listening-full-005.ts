@@ -33,17 +33,23 @@ export const listeningFull005: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "central"
+              "answer": "central",
+              "explanation": "At 02:00 the customer says \"it'd be nice to be central\".",
+              "evidence": "it'd be nice to be central"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "600"
+              "answer": "600",
+              "explanation": "At 02:14 they could \"go up to six hundred pounds if we have to\".",
+              "evidence": "go up to six hundred pounds"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "2 years"
+              "answer": "2 years",
+              "explanation": "At 02:30 they are \"at college here for two years\" and do not want to move during that time.",
+              "evidence": "at college here for two years"
             }
           ],
           "wordLimit": 1
@@ -56,27 +62,37 @@ export const listeningFull005: PracticeTest = {
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "garage"
+              "answer": "garage",
+              "explanation": "At 02:49 Oakington Avenue \"doesn't have a garage\", though you can park on the road.",
+              "evidence": "doesn't have a garage"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "garden"
+              "answer": "garden",
+              "explanation": "At 03:11 Mead Street has \"a big garden. I don't think we could cope with that.\"",
+              "evidence": "a big garden. I don't think we could cope with that"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "study"
+              "answer": "study",
+              "explanation": "At 03:25 Hamilton Road \"has a study\" as well as a living room, kitchen and diner.",
+              "evidence": "it has a study"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "noisy"
+              "answer": "noisy",
+              "explanation": "At 03:48 the customer worries Hamilton Road \"will be very noisy\".",
+              "evidence": "that'll be very noisy"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "595"
+              "answer": "595",
+              "explanation": "At 04:01 Devon Close is \"five hundred and ninety-five a month\".",
+              "evidence": "five hundred and ninety-five a month"
             }
           ],
           "wordLimit": 1
@@ -93,7 +109,9 @@ export const listeningFull005: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test5-q9-q10"
+              "answerPairId": "test5-q9-q10",
+              "explanation": "At 05:25 there is \"a plan to replace the existing concert hall with a larger one\", so a concert hall already exists.",
+              "evidence": "replace the existing concert hall with a larger one"
             },
             {
               "id": "q10",
@@ -102,7 +120,9 @@ export const listeningFull005: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test5-q9-q10"
+              "answerPairId": "test5-q9-q10",
+              "explanation": "At 05:06 \"the swimming pool's already opened ahead of schedule\", so it is already available.",
+              "evidence": "the swimming pool's already opened ahead of schedule"
             }
           ],
           "choices": [
@@ -127,7 +147,8 @@ export const listeningFull005: PracticeTest = {
               "label": "swimming pool"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "At 05:06 the swimming pool has \"already opened ahead of schedule\" (E) and at 05:25 there is already \"the existing concert hall\", soon to be replaced by a larger one (B); the museum, cinema and sports centre are all still under construction or closed."
         }
       ]
     },
@@ -151,32 +172,44 @@ export const listeningFull005: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "classical music concerts"
+              "answer": "classical music concerts",
+              "explanation": "At 07:31 the centre is \"famous throughout the world as one of the major venues for classical music\".",
+              "evidence": "one of the major venues for classical music"
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "bookshop"
+              "answer": "bookshop",
+              "explanation": "At 07:49 facilities include \"three restaurants and a bookshop\".",
+              "evidence": "three restaurants and a bookshop"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "planned"
+              "answer": "planned",
+              "explanation": "At 08:10 the centre \"was planned in the 60s, built in the 70s\".",
+              "evidence": "planned in the 60s"
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "1983"
+              "answer": "1983",
+              "explanation": "At 08:34 it \"eventually opened to the public in 1983\".",
+              "evidence": "opened to the public in 1983"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "city council"
+              "answer": "city council",
+              "explanation": "At 08:34 \"it's run by the city council\".",
+              "evidence": "it's run by the city council"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "363"
+              "answer": "363",
+              "explanation": "At 08:55 \"the centre has opened 363 days of the year\".",
+              "evidence": "opened 363 days of the year"
             }
           ],
           "wordLimit": 3
@@ -189,22 +222,30 @@ export const listeningFull005: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "garden hall"
+              "answer": "garden hall",
+              "explanation": "At 09:38 the Magic Flute is on \"in the garden hall\".",
+              "evidence": "It's in the garden hall"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "three lives"
+              "answer": "three lives",
+              "explanation": "At 10:10 the Canadian film is \"called Three Lives\".",
+              "evidence": "that's called Three Lives"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "4.50"
+              "answer": "4.50",
+              "explanation": "At 10:10 tickets for the film \"cost just £4.50\".",
+              "evidence": "tickets cost just £4.50"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "faces of China"
+              "answer": "faces of China",
+              "explanation": "At 10:31 the exhibition is \"a collection of Chinese art, called Faces of China\".",
+              "evidence": "called Faces of China"
             }
           ],
           "wordLimit": 3
@@ -236,7 +277,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 13:17 Paul's main idea was \"to find out more about the way people lived there\".",
+              "evidence": "the way people lived there"
             },
             {
               "id": "q22",
@@ -246,7 +289,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:02 he chose \"tourism, taking tourists for walks around the volcanoes\".",
+              "evidence": "tourism, taking tourists for walks around the volcanoes"
             },
             {
               "id": "q23",
@@ -256,7 +301,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:19 he says of the farm project \"I never really knew whether I'd be needed or not\", wanting \"more of a proper structure\".",
+              "evidence": "I never really knew whether I'd be needed or not"
             },
             {
               "id": "q24",
@@ -266,7 +313,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:00 he says once villagers grew \"less suspicious, we really connected with each other in a meaningful way\", i.e. trust.",
+              "evidence": "we really connected with each other in a meaningful way"
             },
             {
               "id": "q25",
@@ -276,7 +325,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:10 his manager \"gave me lots of advice and guidance\".",
+              "evidence": "gave me lots of advice and guidance"
             },
             {
               "id": "q26",
@@ -286,7 +337,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:48 he says \"they gave me all the equipment I needed, even a laptop\", which surprised him.",
+              "evidence": "even a laptop"
             }
           ]
         },
@@ -298,22 +351,30 @@ export const listeningFull005: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Gender studies in Latin America",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 16:58 he would only take gender studies \"if it was to do with people in the villages\", so as offered he will not.",
+              "evidence": "people in the villages rather than those in the public sphere"
             },
             {
               "id": "q28",
               "textHtml": "Second language acquisition",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 17:12 he says of second language acquisition \"I'll put that down as a definite then\".",
+              "evidence": "put that down as a definite then"
             },
             {
               "id": "q29",
               "textHtml": "Indigenous women’s lives",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 17:12 exam questions for indigenous women's lives \"changed my mind\", so he will decide \"later\".",
+              "evidence": "that changed my mind"
             },
             {
               "id": "q30",
               "textHtml": "Portuguese language studies",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 17:42 on Portuguese he says \"I'd much sooner do something else then\".",
+              "evidence": "much sooner do something else then"
             }
           ],
           "options": [
@@ -349,7 +410,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 20:23 repeating success \"is less glamorous... but it actually happens more often\" than pure innovation.",
+              "evidence": "it actually happens more often"
             },
             {
               "id": "q32",
@@ -359,7 +422,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 20:57 research \"hasn't been confined to the United States\", and studies broadly agree most attempts fail.",
+              "evidence": "hasn't been confined to the United States"
             },
             {
               "id": "q33",
@@ -369,7 +434,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 21:48 consulting an expert \"can be used if you want to gain a rough understanding of a particular system\".",
+              "evidence": "can be used if you want to gain a rough understanding"
             },
             {
               "id": "q34",
@@ -379,7 +446,9 @@ export const listeningFull005: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:39 some details \"may be difficult to describe, learned on the job... impossible to describe in a way that's helpful\".",
+              "evidence": "may be difficult to describe"
             }
           ]
         },
@@ -394,32 +463,44 @@ export const listeningFull005: PracticeTest = {
               "answer": [
                 "combination",
                 "system"
-              ]
+              ],
+              "explanation": "At 23:33 one mistake is \"trying to use the best parts of various different systems... creating the perfect combination\".",
+              "evidence": "creating the perfect combination"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "safety"
+              "answer": "safety",
+              "explanation": "At 24:27 an overlooked disadvantage is that \"the modifications might compromise safety in some way\".",
+              "evidence": "compromise safety in some way"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "attitude"
+              "answer": "attitude",
+              "explanation": "At 24:52 the fix involves \"adjusting attitudes, first of all\".",
+              "evidence": "adjusting attitudes, first of all"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "control"
+              "answer": "control",
+              "explanation": "At 24:52 it also means \"exerting strict controls on the organizational and operational systems\".",
+              "evidence": "exerting strict controls"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "factory"
+              "answer": "factory",
+              "explanation": "At 25:13 they copy \"the physical characteristics of the factory\" closely.",
+              "evidence": "the physical characteristics of the factory"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "skills"
+              "answer": "skills",
+              "explanation": "At 25:13 they also duplicate \"the skills that the original employees had\".",
+              "evidence": "the skills that the original employees had"
             }
           ],
           "wordLimit": 1

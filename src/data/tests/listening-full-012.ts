@@ -33,12 +33,16 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Saturday 25"
+              "answer": "Saturday 25",
+              "explanation": "At 01:19 Susan corrects herself from the 18th to the following Saturday, the 25th.",
+              "evidence": "No, sorry. I meant the following Saturday, the 25th."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "55"
+              "answer": "55",
+              "explanation": "At 01:43 the guest count moves from 40 to 60 before settling at 55.",
+              "evidence": "I think it's back to 55 now"
             },
             {
               "id": "q3",
@@ -46,7 +50,9 @@ export const listeningFull012: PracticeTest = {
               "answer": [
                 "knives",
                 "forks"
-              ]
+              ],
+              "explanation": "At 02:16 Susan adds five dozen sets of knives and forks to the order.",
+              "evidence": "knives and forks too, five dozen sets"
             },
             {
               "id": "q4",
@@ -54,37 +60,51 @@ export const listeningFull012: PracticeTest = {
               "answer": [
                 "chairs",
                 "garden chairs"
-              ]
+              ],
+              "explanation": "At 02:52 Susan chooses 40 of the stackable plastic garden chairs.",
+              "evidence": "stackable plastic garden chairs"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "ice buckets"
+              "answer": "ice buckets",
+              "explanation": "At 03:18 Susan asks for six ice buckets to keep the drinks cold.",
+              "evidence": "six ice buckets for keeping the drinks cold"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "same day"
+              "answer": "same day",
+              "explanation": "At 04:40 the clerk names the cheaper option the same day package.",
+              "evidence": "That's called the same day package"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "home delivery"
+              "answer": "home delivery",
+              "explanation": "At 05:04 the clerk describes the $50 charge as the home delivery charge.",
+              "evidence": "an extra home delivery charge of $50"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "$3.50"
+              "answer": "$3.50",
+              "explanation": "At 05:21 the clerk gives $3.50 as the replacement cost for a small glass.",
+              "evidence": "small glasses are $3.50"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "Susan Millins"
+              "answer": "Susan Millins",
+              "explanation": "At 06:03 Susan spells her surname as Millins, not Miller as the clerk first guessed.",
+              "evidence": "It's M-I-L-L-I-N-S."
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "3987695"
+              "answer": "3987695",
+              "explanation": "At 06:31 Susan gives the number 084-398-7695, so the digits after 084 are 3987695.",
+              "evidence": "The phone number is 084-398-7695."
             }
           ],
           "wordLimit": 2
@@ -111,27 +131,37 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "feed on the guardrail beside the path",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 08:27 the guide says cockroaches feed on the droppings on the guardrails.",
+              "evidence": "the guardrails... covered with these droppings, and this makes a feast for the cockroaches"
             },
             {
               "id": "q12",
               "textHtml": "are dangerous to people",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 08:48 the guide warns the green centipedes have a poisonous bite.",
+              "evidence": "these centipedes have a very nasty poisonous bite"
             },
             {
               "id": "q13",
               "textHtml": "collect in large groups",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 09:39 the guide says the bats cluster together in large numbers on the walls.",
+              "evidence": "clustered high up against the walls, maybe a hundred or two hundred together"
             },
             {
               "id": "q14",
               "textHtml": "fly only at night",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 09:57 the guide says the bats sleep all day and hunt only at night.",
+              "evidence": "leave the cave in a massive flock on their nightly hunt"
             },
             {
               "id": "q15",
               "textHtml": "live on the roof of the cave",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 10:32 the guide says the swifts nest high up on the cave's ceiling.",
+              "evidence": "The swifts make nests usually higher up on the ceiling of the cave"
             }
           ],
           "options": [
@@ -149,12 +179,16 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q16",
               "textHtml": "What is the guano from the caves used for?",
-              "answer": "fertilizer"
+              "answer": "fertilizer",
+              "explanation": "At 11:37 the guide says the guano is valuable as fertiliser.",
+              "evidence": "The guano is very valuable as fertilizer"
             },
             {
               "id": "q17",
               "textHtml": "What are the birds’ nests from the cave used for?",
-              "answer": "soup"
+              "answer": "soup",
+              "explanation": "At 11:58 the guide says the harvested nests are the main ingredient in bird's nest soup.",
+              "evidence": "the main ingredient in bird's nests soup"
             }
           ],
           "wordLimit": 1
@@ -170,12 +204,16 @@ export const listeningFull012: PracticeTest = {
               "answer": [
                 "light",
                 "torch"
-              ]
+              ],
+              "explanation": "At 12:37 the guide reminds visitors to bring a working light/torch into the cave.",
+              "evidence": "insisted you bring a working light"
             },
             {
               "id": "q19",
               "textHtml": "wear a and a hat.",
-              "answer": "jacket"
+              "answer": "jacket",
+              "explanation": "At 12:48 the guide tells visitors to put on a waterproof jacket.",
+              "evidence": "put your waterproof jacket on now"
             },
             {
               "id": "q20",
@@ -183,7 +221,9 @@ export const listeningFull012: PracticeTest = {
               "answer": [
                 "trails",
                 "path"
-              ]
+              ],
+              "explanation": "At 13:30 the guide insists visitors keep to the marked trails at all times.",
+              "evidence": "You absolutely must follow the marked trails"
             }
           ],
           "wordLimit": 2
@@ -215,7 +255,9 @@ export const listeningFull012: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:34 Mr Hadstone thanks Mary for volunteering to run the field trip project.",
+              "evidence": "thanks for volunteering to run this project"
             },
             {
               "id": "q22",
@@ -225,7 +267,9 @@ export const listeningFull012: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:14 he says planning is mainly about anticipating and managing dangers.",
+              "evidence": "consider the dangers and come up with ways of countering or avoiding them"
             },
             {
               "id": "q23",
@@ -235,7 +279,9 @@ export const listeningFull012: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:48 he says leaders must develop a well-thought-out hazard management plan.",
+              "evidence": "a well-thought-out hazard management plan"
             }
           ]
         },
@@ -247,12 +293,16 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Mary’s plan must consider such as local rain or wind, the land and the party members.",
-              "answer": "factors"
+              "answer": "factors",
+              "explanation": "At 17:31 Mr Hadstone names weather, terrain and group makeup as the significant factors.",
+              "evidence": "we call those the significant factors"
             },
             {
               "id": "q25",
               "textHtml": "Mary’s plan does not need to consider things such as tropical storms or serious illnesses, which are known as",
-              "answer": "events"
+              "answer": "events",
+              "explanation": "At 17:54 he calls hazards like hurricanes or major disease unlikely events.",
+              "evidence": "The official name for those is unlikely events"
             }
           ],
           "wordLimit": 2
@@ -265,27 +315,37 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "raincoat"
+              "answer": "raincoat",
+              "explanation": "At 18:56 Mary adds a raincoat to the warm clothing needed for bad weather.",
+              "evidence": "a raincoat too, of course"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "compass"
+              "answer": "compass",
+              "explanation": "At 19:23 they add a compass to the hiking kit alongside the first aid kit and map.",
+              "evidence": "a compass too"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "flash flood"
+              "answer": "flash flood",
+              "explanation": "At 19:59 Mr Hadstone lists flash flood alongside avalanche and mudslide as routes to avoid.",
+              "evidence": "an avalanche or a mudslide or a flash flood"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "experience"
+              "answer": "experience",
+              "explanation": "At 20:36 he says to consider the group's physical strength and experience.",
+              "evidence": "the physical strength and experience of the party"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "student drivers"
+              "answer": "student drivers",
+              "explanation": "At 21:00 he says not to let student drivers be responsible for transport.",
+              "evidence": "don't allow student drivers to bring their own cars"
             }
           ],
           "wordLimit": 2
@@ -312,22 +372,30 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "ear drum"
+              "answer": "ear drum",
+              "explanation": "At 23:22 the lecturer describes sound reaching the eardrum, labelled in image one.",
+              "evidence": "channeled through the ear canal to the eardrum"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "auditory nerve"
+              "answer": "auditory nerve",
+              "explanation": "At 23:43 the lecturer says the inner ear cells pass signals on to the auditory nerve.",
+              "evidence": "transfer this information to the auditory nerve"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "speech processor"
+              "answer": "speech processor",
+              "explanation": "At 24:25 the lecturer names the speech processor behind the microphone in image two.",
+              "evidence": "its associated speech processor, which is a tiny computer"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "receiver"
+              "answer": "receiver",
+              "explanation": "At 24:43 the lecturer points to the surgically implanted receiver under the skin.",
+              "evidence": "a surgically implanted receiver"
             }
           ],
           "wordLimit": 2
@@ -340,32 +408,44 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "amplify"
+              "answer": "amplify",
+              "explanation": "At 25:24 the lecturer says hearing aids simply amplify normal sound waves.",
+              "evidence": "amplify the normal sound waves"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "sound signals"
+              "answer": "sound signals",
+              "explanation": "At 26:02 the lecturer says the brain gets different sound signals from an implant, so users must relearn hearing.",
+              "evidence": "The sound signals that the brain receives from an implant are quite different"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "speech therapy"
+              "answer": "speech therapy",
+              "explanation": "At 26:45 the lecturer says implant users need ongoing speech therapy alongside lip-reading and sign language.",
+              "evidence": "augment this with speech therapy"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "natural hearing"
+              "answer": "natural hearing",
+              "explanation": "At 27:25 the lecturer warns surgery can remove any natural hearing the person still had.",
+              "evidence": "remove any natural hearing that the deaf person still retains"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "duration"
+              "answer": "duration",
+              "explanation": "At 27:44 the lecturer names duration of deafness as the most important selection factor.",
+              "evidence": "the duration of the deafness"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "disease"
+              "answer": "disease",
+              "explanation": "At 28:20 the lecturer says disease is what can damage the cochlea's nerve cells.",
+              "evidence": "nerve cells are affected by disease"
             }
           ],
           "wordLimit": 2

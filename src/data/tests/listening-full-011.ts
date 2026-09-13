@@ -33,52 +33,72 @@ export const listeningFull011: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Kramer"
+              "answer": "Kramer",
+              "explanation": "At 01:01 the caller spells his surname: \"It's Kramer, Harold Kramer... K-R-A-M-E-R.\"",
+              "evidence": "It's Kramer, Harold Kramer."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "58"
+              "answer": "58",
+              "explanation": "At 01:19 he gives the house number as 58, before Fulton Avenue.",
+              "evidence": "number 58, Fulton Avenue, apartment 12"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "residential"
+              "answer": "residential",
+              "explanation": "At 01:33 Ms Jones confirms the service type is residential, not business.",
+              "evidence": "the type of phone service you want is residential, not business"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "office manager"
+              "answer": "office manager",
+              "explanation": "At 01:48 Harold corrects Ms Jones: he is not a doctor, he is the office manager.",
+              "evidence": "I'm the office manager"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "6375559014"
+              "answer": "6375559014",
+              "explanation": "At 01:48 he gives his work number as 637-555-9014, read as one string of digits.",
+              "evidence": "637-555-9014"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "nine years"
+              "answer": "nine years",
+              "explanation": "At 02:23 Harold first says eight years, then corrects himself to nine years.",
+              "evidence": "No, nine. That's right. Nine years."
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "long distance"
+              "answer": "long distance",
+              "explanation": "At 02:51 Ms Jones notes down the long distance service after Harold agrees to it.",
+              "evidence": "I'll put you down for long distance service"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "internet"
+              "answer": "internet",
+              "explanation": "At 03:33 Harold declines voicemail but asks to add internet service as well as phone.",
+              "evidence": "Please put me down for internet as well as phone service."
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "friday"
+              "answer": "friday",
+              "explanation": "At 03:33 they try Tuesday and Wednesday first; Harold agrees to Friday once it's offered.",
+              "evidence": "I could send someone on Friday."
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "morning"
+              "answer": "morning",
+              "explanation": "At 04:01 Harold says morning works best for the installation visit.",
+              "evidence": "Morning would be best."
             }
           ],
           "wordLimit": 2
@@ -110,7 +130,9 @@ export const listeningFull011: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 05:32 Cynthia says the fair has moved from the fairgrounds to City Park.",
+              "evidence": "we've moved the Fair to City Park"
             },
             {
               "id": "q12",
@@ -120,7 +142,9 @@ export const listeningFull011: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 05:51 Cynthia corrects the host: the fair begins Friday evening, not morning.",
+              "evidence": "it won't begin until that evening"
             },
             {
               "id": "q13",
@@ -130,7 +154,9 @@ export const listeningFull011: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 05:51 Cynthia says the opening event is a dance performance, replacing the usual parade.",
+              "evidence": "this year our opening event will be a special dance performance"
             },
             {
               "id": "q14",
@@ -141,7 +167,8 @@ export const listeningFull011: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "This question's prompt was omitted from the published question paper, so it is shown but does not count toward the score."
             }
           ]
         },
@@ -153,32 +180,44 @@ export const listeningFull011: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "clown"
+              "answer": "clown",
+              "explanation": "At 07:06 Cynthia mentions a clown show on Saturday afternoon, matching the table's slot.",
+              "evidence": "a clown show on Saturday afternoon"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "concert"
+              "answer": "concert",
+              "explanation": "At 07:06 she describes a concert by the lake as the Saturday evening event.",
+              "evidence": "a concert by the lake"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "singing"
+              "answer": "singing",
+              "explanation": "At 07:28 Cynthia says Sunday afternoon features a singing contest.",
+              "evidence": "There'll be a singing contest in the afternoon"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "international"
+              "answer": "international",
+              "explanation": "At 07:51 she says international food is served at the food court all weekend.",
+              "evidence": "international food will be served"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "games"
+              "answer": "games",
+              "explanation": "At 07:51 she mentions special games for children at different spots all weekend.",
+              "evidence": "special games for children at different locations"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "crafts"
+              "answer": "crafts",
+              "explanation": "At 08:16 she says there is an area set aside with crafts for sale all weekend.",
+              "evidence": "there will be crafts for sale"
             }
           ],
           "wordLimit": 1
@@ -205,17 +244,23 @@ export const listeningFull011: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "university catalog"
+              "answer": "university catalog",
+              "explanation": "At 09:38 the advisor says to first read the university catalogue to find matching courses.",
+              "evidence": "read the university catalogue"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "a summary"
+              "answer": "a summary",
+              "explanation": "At 10:07 the advisor explains the student should write a summary of their work experience.",
+              "evidence": "write a summary of your work experience"
             },
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "work supervisor"
+              "answer": "work supervisor",
+              "explanation": "At 10:07 she says to submit the summary with a letter from the work supervisor.",
+              "evidence": "a letter from your work supervisor"
             }
           ],
           "wordLimit": 2
@@ -228,27 +273,37 @@ export const listeningFull011: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "university catalog",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 10:43 the advisor says a spare copy of the catalogue can be picked up from the library.",
+              "evidence": "you can get one from the library"
             },
             {
               "id": "q25",
               "textHtml": "application for admission form",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 11:09 she says the application for admission form is available at the admissions office.",
+              "evidence": "Those are available in the admissions office"
             },
             {
               "id": "q26",
               "textHtml": "requirements list",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 11:28 she says the requirements lists are kept in the counselling centre.",
+              "evidence": "requirements lists for all university programs here in the counseling center"
             },
             {
               "id": "q27",
               "textHtml": "recommendation forms",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 11:47 she says recommendation forms are available at the admissions office.",
+              "evidence": "recommendation forms are available in the admissions office"
             },
             {
               "id": "q28",
               "textHtml": "job listings",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 11:47 she says job listings can be accessed from computers in the library.",
+              "evidence": "access the job listings from the computers in the library"
             }
           ]
         },
@@ -265,7 +320,9 @@ export const listeningFull011: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 12:12 she confirms full-time students qualify for the work-study program.",
+              "evidence": "you'll qualify for the work study program"
             },
             {
               "id": "q30",
@@ -275,7 +332,9 @@ export const listeningFull011: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 12:12 she says financial assistance requires an appointment with a counsellor.",
+              "evidence": "make an appointment with a counselor"
             }
           ]
         }
@@ -301,12 +360,16 @@ export const listeningFull011: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "forested area"
+              "answer": "forested area",
+              "explanation": "At 12:36 the lecturer says black bears range across forested areas of North America.",
+              "evidence": "forested areas of North America"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "plant foods"
+              "answer": "plant foods",
+              "explanation": "At 13:46 the lecturer says plant foods make up 90 percent of the bear's diet.",
+              "evidence": "plant foods make up 90% of the bear's diet"
             },
             {
               "id": "q33",
@@ -314,17 +377,23 @@ export const listeningFull011: PracticeTest = {
               "answer": [
                 "insects",
                 "fish"
-              ]
+              ],
+              "explanation": "At 13:46 the lecturer names insects and fish as the animal foods bears also eat.",
+              "evidence": "animal foods, such as insects and fish"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "the winter"
+              "answer": "the winter",
+              "explanation": "At 13:46 the lecturer says cubs are born the following winter after spring mating.",
+              "evidence": "bear cubs aren't born until the following winter"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "25 years"
+              "answer": "25 years",
+              "explanation": "At 14:24 the lecturer gives a wild lifespan of up to 25 years for black bears.",
+              "evidence": "Wild black bears can live as long as 25 years"
             }
           ],
           "wordLimit": 2
@@ -337,27 +406,37 @@ export const listeningFull011: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "Has a patch of light fur on its chest",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 15:14 the lecturer says black bears, not grizzlies, have the lighter chest patch.",
+              "evidence": "black bears, however, have a patch of fur on their chests that's lighter"
             },
             {
               "id": "q37",
               "textHtml": "Weighs 225 kilos",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 15:46 the lecturer gives 225 kilos as the grizzly bear's average weight.",
+              "evidence": "grizzly bears are usually heavier with an average weight of 225 kilos"
             },
             {
               "id": "q38",
               "textHtml": "Has a shoulder hump",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 15:46 the lecturer says the digging-muscle shoulder hump belongs to grizzlies, absent in black bears.",
+              "evidence": "This hump is absent in black bears"
             },
             {
               "id": "q39",
               "textHtml": "Has pointed ears",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 16:21 the lecturer says black bears have the longer, more pointed ears.",
+              "evidence": "black bears... have a straighter profile and longer more pointed ears"
             },
             {
               "id": "q40",
               "textHtml": "Has shorter claws",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 16:21 the lecturer says black bears have shorter claws, suited for climbing trees.",
+              "evidence": "Black bears have shorter claws, which are better suited for climbing trees"
             }
           ]
         }

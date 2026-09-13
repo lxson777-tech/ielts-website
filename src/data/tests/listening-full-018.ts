@@ -33,42 +33,58 @@ export const listeningFull018: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "sports"
+              "answer": "sports",
+              "explanation": "At 00:58 Craig says Phil Parrott \"is a teacher\" and \"he teaches sports\", giving his subject.",
+              "evidence": "he's just qualified and he teaches sports"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "energetic"
+              "answer": "energetic",
+              "explanation": "At 01:07 Craig says Phil \"certainly sounded energetic\", the special requirement noted for him.",
+              "evidence": "he certainly sounded energetic"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "big room"
+              "answer": "big room",
+              "explanation": "At 01:31 Craig says Phil \"needs a big room because he's got lots of sports equipment\".",
+              "evidence": "he needs a big room because he's got lots of sports equipment"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "spencer"
+              "answer": "spencer",
+              "explanation": "At 01:42 Craig corrects the spelling of the second caller's surname: \"Spender? No, Spencer. C-E-R\", confirming Spencer.",
+              "evidence": "Spender? No, Spencer. C-E-R"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "hardworking"
+              "answer": "hardworking",
+              "explanation": "At 02:17 Craig says he got the impression David \"was a hard-working kind of person who doesn't go out all that much\".",
+              "evidence": "he was a hard-working kind of person"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "engineer"
+              "answer": "engineer",
+              "explanation": "At 03:05 Craig introduces the third caller, Leo Norris, saying \"he's an engineer\".",
+              "evidence": "he's an engineer"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "competitive, stressed"
+              "answer": "competitive, stressed",
+              "explanation": "At 03:41 Craig says Leo \"is certainly not competitive or stressed\", matching the special requirement column.",
+              "evidence": "he's certainly not competitive or stressed"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "bicycle"
+              "answer": "bicycle",
+              "explanation": "At 03:55 Craig says Leo \"wanted to check if there was somewhere safe for his bicycle\".",
+              "evidence": "somewhere safe for his bicycle"
             }
           ],
           "wordLimit": 3
@@ -81,12 +97,16 @@ export const listeningFull018: PracticeTest = {
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "07776872433"
+              "answer": "07776872433",
+              "explanation": "At 04:11 Craig reads Leo's mobile number as \"O, 777-687-2433\"; the leading \"O\" is the transcript mishearing the digit zero, giving 07776872433.",
+              "evidence": "It's O, 777-687-2433"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "28 september"
+              "answer": "28 september",
+              "explanation": "At 04:30 Craig confirms Leo wants to move in on \"the 28th of September\", earlier than his current rent runs out.",
+              "evidence": "He said the 28th of September"
             }
           ],
           "wordLimit": 3
@@ -118,7 +138,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 05:45 the speaker says there \"will be a chance for you to ask questions over tea and coffee in the lobby afterwards\", matching answer B.",
+              "evidence": "a chance for you to ask questions over tea and coffee in the lobby"
             },
             {
               "id": "q12",
@@ -128,7 +150,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 06:08 the speaker says Nick Noble considered a newspaper advert or a billboard, but \"it was the radio that he decided on\", matching answer A.",
+              "evidence": "it was the radio that he decided on to reach the most people"
             },
             {
               "id": "q13",
@@ -138,7 +162,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 06:51 the speaker says the club \"grew from a dozen or so friends and enthusiasts\", so it began with about 12 members, matching answer A.",
+              "evidence": "grew from a dozen or so friends and enthusiasts"
             },
             {
               "id": "q14",
@@ -148,7 +174,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 07:20 the speaker says the club caters \"for all levels of maturity and both genders\" who have moderate fitness, matching answer C.",
+              "evidence": "cater for all levels of maturity and both genders"
             }
           ]
         },
@@ -160,32 +188,44 @@ export const listeningFull018: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "tramping"
+              "answer": "tramping",
+              "explanation": "At 09:02 the speaker says \"tramping is arranged for Tuesdays and Saturdays\", matching the activity for that row.",
+              "evidence": "tramping is arranged for Tuesdays and Saturdays"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "walks"
+              "answer": "walks",
+              "explanation": "At 09:28 the speaker says \"walks are arranged for every Thursday and every Sunday\", matching the day pattern already given.",
+              "evidence": "walks are arranged for every Thursday and every Sunday"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "organiser"
+              "answer": "organiser",
+              "explanation": "At 09:53 the speaker says to \"get in touch with the walking organizer to confirm your participation\", giving the contact person.",
+              "evidence": "get in touch with the walking organizer"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "variable"
+              "answer": "variable",
+              "explanation": "At 09:53 the speaker says the wanderers' activity length \"is variable\", matching the duration column for that row.",
+              "evidence": "the length of these activities is variable"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "mystery"
+              "answer": "mystery",
+              "explanation": "At 11:02 the speaker introduces \"our mystery weekends\", the activity named in that row.",
+              "evidence": "these are our mystery weekends"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "chairman"
+              "answer": "chairman",
+              "explanation": "At 11:27 the speaker says to call the \"chairman of the committee\" for more information on the mystery weekends.",
+              "evidence": "call the chairman of the committee"
             }
           ],
           "wordLimit": 1
@@ -217,7 +257,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 13:46 the tutor says the emphasis must be on \"the future development of television as a cultural phenomenon\", matching answer C.",
+              "evidence": "the future development of television as a cultural phenomenon"
             },
             {
               "id": "q22",
@@ -227,7 +269,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:20 the student says video games compete most at present, but at 14:32 predicts \"the phone will present the greatest threat\" in future, matching answer C, mobile phones.",
+              "evidence": "I think the phone will present the greatest threat then"
             },
             {
               "id": "q23",
@@ -237,7 +281,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:52 the tutor says \"the average program might be ten minutes\", matching answer C.",
+              "evidence": "the average program might be ten minutes"
             },
             {
               "id": "q24",
@@ -247,7 +293,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:18 the student says \"the media studies section will be closed for a week\" once the sociology section reopens, matching answer B.",
+              "evidence": "the media studies section will be closed for a week"
             },
             {
               "id": "q25",
@@ -257,7 +305,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:54 they agree to \"make a complaint directly to the premises committee\" rather than the students' union, matching answer A.",
+              "evidence": "make a complaint directly to the premises committee"
             },
             {
               "id": "q26",
@@ -267,7 +317,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:28 the tutor explains the Reprographics Office \"won't send copies to you\" but will send them \"directly to me\", the tutor, matching answer C.",
+              "evidence": "they won't send copies to you"
             }
           ]
         },
@@ -279,22 +331,30 @@ export const listeningFull018: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "What does the tutor compare homemade videos with?",
-              "answer": "a podcast"
+              "answer": "a podcast",
+              "explanation": "At 17:21 the tutor says \"each video is a television version of a podcast\" when describing homemade videos.",
+              "evidence": "each video is a television version of a podcast"
             },
             {
               "id": "q28",
               "textHtml": "What is the title of Mrs Jone’s lecture?",
-              "answer": "culture and society"
+              "answer": "culture and society",
+              "explanation": "At 17:31 the tutor says Mrs Jones \"is giving a lecture on culture and society\", giving the lecture's title.",
+              "evidence": "a lecture on culture and society"
             },
             {
               "id": "q29",
               "textHtml": "Where is the lecture?",
-              "answer": "university theatre"
+              "answer": "university theatre",
+              "explanation": "In the same line at 17:31, the tutor says the lecture is \"in the University Theatre\".",
+              "evidence": "in the University Theatre"
             },
             {
               "id": "q30",
               "textHtml": "When is the final date for the assignment?",
-              "answer": "4 July"
+              "answer": "4 July",
+              "explanation": "At 18:13 the tutor says to \"finish the assignment by the 4th of July\".",
+              "evidence": "finish the assignment by the 4th of July"
             }
           ],
           "wordLimit": 3
@@ -321,32 +381,44 @@ export const listeningFull018: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Samuel Wells before Scholastic House opened in",
-              "answer": "died (in 1900)"
+              "answer": "died (in 1900)",
+              "explanation": "At 20:03 the principal says \"Wells died in 1900 before he could see the college in action\".",
+              "evidence": "Wells died in 1900 before he could see the college in action"
             },
             {
               "id": "q32",
               "textHtml": "There were original students.",
-              "answer": "10"
+              "answer": "10",
+              "explanation": "In the same line at 20:03, the principal says Scholastic House \"began operating in 1903 with 10 students\".",
+              "evidence": "began operating in 1903 with 10 students"
             },
             {
               "id": "q33",
               "textHtml": "Scholastic House became in",
-              "answer": "co-educational"
+              "answer": "co-educational",
+              "explanation": "At 20:23 the principal says the college \"has been co-educational since 1963\".",
+              "evidence": "it has been co-educational since 1963"
             },
             {
               "id": "q34",
               "textHtml": "One of these students became a prominent",
-              "answer": "teacher"
+              "answer": "teacher",
+              "explanation": "At 20:56 the principal says the most famous graduate \"became a university teacher\", matching the missing word.",
+              "evidence": "became a university teacher"
             },
             {
               "id": "q35",
               "textHtml": "Scholastic House experienced difficulties during",
-              "answer": "the great war"
+              "answer": "the great war",
+              "explanation": "At 21:13 the principal says the college \"ran into hard times during the period of the Great War, 1914 to 1918\".",
+              "evidence": "ran into hard times during the period of the Great War"
             },
             {
               "id": "q36",
               "textHtml": "The college has a tradition of learning and",
-              "answer": "tolerance"
+              "answer": "tolerance",
+              "explanation": "At 21:47 the principal says the college built \"a reputation for learning and for tolerance of opposing views\".",
+              "evidence": "a reputation for learning and for tolerance of opposing views"
             },
             {
               "id": "q37",
@@ -354,7 +426,9 @@ export const listeningFull018: PracticeTest = {
               "answer": [
                 "topics",
                 "issues"
-              ]
+              ],
+              "explanation": "At 22:02 the principal says \"topics which were controversial at the time have been discussed\"; the transcript's \"1927\" at 21:47 looks like a mishearing of the question paper's 1972, a recognition error, not a change to the answer (topics).",
+              "evidence": "topics which were controversial at the time have been discussed"
             }
           ],
           "wordLimit": 3
@@ -372,7 +446,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:43 the principal says the legitimate reason for debating is that it \"casts light upon the topic in question and informs the debate\", matching answer A.",
+              "evidence": "casts light upon the topic in question and informs the debate"
             },
             {
               "id": "q39",
@@ -382,7 +458,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:59 the principal says \"our scientists have outstripped our philosophers\", meaning science is ahead of philosophy, matching answer C.",
+              "evidence": "our scientists have outstripped our philosophers"
             },
             {
               "id": "q40",
@@ -392,7 +470,9 @@ export const listeningFull018: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 23:40 the principal urges students to continue \"this tradition of querying where our world is going\", matching answer B, asking questions.",
+              "evidence": "this tradition of querying where our world is going"
             }
           ]
         }

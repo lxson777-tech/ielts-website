@@ -38,7 +38,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 01:15 the officer says a TFN is \"a unique number we issue to individuals and organizations to help administer tax collection and other government systems\", matching C, not just tax.",
+              "evidence": "administer tax collection and other government systems"
             },
             {
               "id": "q2",
@@ -48,7 +50,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 01:15 the officer warns that without one \"you'll have more tax withheld from your wages or salary\", so the applicant would be taxed at a higher rate, answer A.",
+              "evidence": "you'll have more tax withheld from your wages or salary"
             },
             {
               "id": "q3",
@@ -58,7 +62,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 02:15 the woman says she now has \"a permanent migrant visa\", which grants indefinite stay, matching answer A rather than a work or student visa.",
+              "evidence": "so now I have a permanent migrant visa"
             },
             {
               "id": "q4",
@@ -68,7 +74,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 02:15 the officer says \"once you have a file number, you never need to reapply\", even if circumstances change later, matching B, issued only once.",
+              "evidence": "once you have a file number, you never need to reapply"
             }
           ]
         },
@@ -80,27 +88,37 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "JGW1100536"
+              "answer": "JGW1100536",
+              "explanation": "At 03:31 the woman reads her passport number letter by letter as \"J, G, W, double one, double zero, five, three, six\", giving JGW1100536.",
+              "evidence": "J, G, W, double one, double zero, five, three, six"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "harbor drive"
+              "answer": "harbor drive",
+              "explanation": "At 04:04 she gives her address as \"one, three, three, nine, harbor drive, Hollywell\", so the missing street name is Harbor Drive.",
+              "evidence": "one, three, three, nine, harbor drive, Hollywell"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "pearce"
+              "answer": "pearce",
+              "explanation": "At 04:33 the officer guesses the landlady's name is spelled \"P-I-E-R-C-E\", but the woman corrects him: \"No, it's P-E-A-R-C-E\", giving the spelling Pearce.",
+              "evidence": "No, it's P-E-A-R-C-E"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "miss"
+              "answer": "miss",
+              "explanation": "At 05:03 she confirms she is not married and says \"Put me down as Miss\", giving her title for the form.",
+              "evidence": "Put me down as Miss"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "first name"
+              "answer": "first name",
+              "explanation": "At 05:34 the officer asks if Mary is used \"as a first name\" and she says \"Yes\", so the note reads Mary equals first name.",
+              "evidence": "As a first name? Yes"
             },
             {
               "id": "q10",
@@ -109,7 +127,9 @@ export const listeningFull017: PracticeTest = {
                 "15",
                 "11",
                 "1983"
-              ]
+              ],
+              "explanation": "At 05:34 she gives her date of birth in day, month, year order as \"the 15th of November, 1983\", so the form reads 15/11/1983.",
+              "evidence": "the 15th of November, 1983"
             }
           ],
           "wordLimit": 2
@@ -136,27 +156,37 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "military"
+              "answer": "military",
+              "explanation": "At 08:45 the speaker says the Online Family Norris program \"bars things like military and social websites\", giving the missing word military.",
+              "evidence": "bars things like military and social websites"
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "educate"
+              "answer": "educate",
+              "explanation": "At 09:16 the speaker says the best way to keep children safe is \"to educate them and keep an eye on them\", giving the missing verb educate.",
+              "evidence": "the best way to keep children safe is to educate them"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "personal information"
+              "answer": "personal information",
+              "explanation": "At 09:41 the speaker says children should \"never provide personal information, such as where they live or what their phone number is\".",
+              "evidence": "never provide personal information"
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "postings"
+              "answer": "postings",
+              "explanation": "At 10:39 the speaker warns teenagers that \"whatever postings they put on the web will remain accessible forever\", giving the missing word postings.",
+              "evidence": "postings they put on the web will remain accessible forever"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "bullying"
+              "answer": "bullying",
+              "explanation": "At 11:40 the speaker says \"bullying on social sites is another thing to look out for\", giving the missing word bullying.",
+              "evidence": "bullying on social sites is another thing to look out for"
             },
             {
               "id": "q16",
@@ -164,7 +194,9 @@ export const listeningFull017: PracticeTest = {
               "answer": [
                 "research",
                 "homework"
-              ]
+              ],
+              "explanation": "At 12:07 the speaker says teenagers are \"mostly networking on social sites, or completing research\" for homework, giving research (or homework) as the missing word.",
+              "evidence": "networking on social sites, or completing research"
             }
           ],
           "wordLimit": 2
@@ -177,12 +209,16 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "compete"
+              "answer": "compete",
+              "explanation": "At 12:35 the speaker says on MathTutor.com children \"practice mathematics... while they compete against other children from all over the world\", giving compete.",
+              "evidence": "while they compete against other children from all over the world"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "play games"
+              "answer": "play games",
+              "explanation": "At 13:26 the speaker says on spellcity.com children \"type them in and play games to learn\" the spelling words, giving the activity play games.",
+              "evidence": "type them in and play games to learn them"
             },
             {
               "id": "q19",
@@ -190,12 +226,16 @@ export const listeningFull017: PracticeTest = {
               "answer": [
                 "sing",
                 "sing songs"
-              ]
+              ],
+              "explanation": "At 13:55 the speaker says on the typing site users \"learn to touch type as they sing along with songs\", giving the activity sing (songs).",
+              "evidence": "learn to touch type as they sing along with songs"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "worksheets"
+              "answer": "worksheets",
+              "explanation": "At 14:25 the speaker names the last site \"coolresources.com\", where parents \"download worksheets to extend their children\", so the website is coolresources.com.",
+              "evidence": "It's called coolresources.com"
             }
           ],
           "wordLimit": 2
@@ -227,7 +267,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 16:53 Cleo says they will \"exhibit our findings in the form of a poster\", matching answer A.",
+              "evidence": "exhibit our findings in the form of a poster"
             },
             {
               "id": "q22",
@@ -237,7 +279,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 17:48 Ted says \"a random sample from foreign students on campus might give us a better range of answers\", matching answer C.",
+              "evidence": "a random sample from foreign students on campus"
             },
             {
               "id": "q23",
@@ -247,7 +291,9 @@ export const listeningFull017: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 18:16 Ted suggests they \"asked each respondent to place them in order of importance\", so students will rank the answers, matching B.",
+              "evidence": "place them in order of importance"
             }
           ]
         },
@@ -259,27 +305,37 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "chance to travel"
+              "answer": "chance to travel",
+              "explanation": "At 18:42 they agree reason two is \"study abroad gives you the chance to travel\".",
+              "evidence": "study abroad gives you the chance to travel"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "develop new skills"
+              "answer": "develop new skills",
+              "explanation": "At 19:10 they phrase the next reason as \"study abroad will compel you to develop new skills\".",
+              "evidence": "study abroad will compel you to develop new skills"
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "learn about yourself"
+              "answer": "learn about yourself",
+              "explanation": "At 20:03 they settle on \"study abroad provides the opportunity to learn about yourself\" for this reason.",
+              "evidence": "study abroad provides the opportunity to learn about yourself"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "study different subjects"
+              "answer": "study different subjects",
+              "explanation": "Straight after, at 20:03, they simplify the academic reason to \"the opportunity to study different subjects\".",
+              "evidence": "Make it the opportunity to study different subjects"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "employment opportunities"
+              "answer": "employment opportunities",
+              "explanation": "At 20:55 Ted proposes \"study abroad enhances employment opportunities\" as a further reason.",
+              "evidence": "study abroad enhances employment opportunities"
             }
           ],
           "wordLimit": 3
@@ -292,12 +348,16 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 22:20 Cleo reports the National Geographic survey found it \"was Sweden that came out on top\"; the letter-option box for questions 29-30 was not captured in the source, so this is inferred from context, not a visible label A-H.",
+              "evidence": "it was Sweden that came out on top"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "At 23:16 Ted notes the USA scored \"only two points above Mexico, which was ranked last\"; the letter-option box for questions 29-30 was not captured in the source, so this is inferred from context, not a visible label A-H.",
+              "evidence": "only two points above Mexico, which was ranked last"
             }
           ]
         }
@@ -323,7 +383,9 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "1768"
+              "answer": "1768",
+              "explanation": "At 26:10 the lecturer says Peale \"painted this portrait in 1768\", Pitt as a Roman Senator, giving the date for slide 1.",
+              "evidence": "he painted this portrait in 1768"
             },
             {
               "id": "q32",
@@ -331,27 +393,37 @@ export const listeningFull017: PracticeTest = {
               "answer": [
                 "first",
                 "first ever"
-              ]
+              ],
+              "explanation": "At 27:05 the lecturer says Peale \"painted the first ever portrait of George Washington\" in 1772, giving the missing description.",
+              "evidence": "painted the first ever portrait of George Washington"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "warmth"
+              "answer": "warmth",
+              "explanation": "In the same passage at 27:05, the lecturer says the Peale family portrait shows \"the exuberance of the family and their warmth towards one another\".",
+              "evidence": "the exuberance of the family and their warmth towards one another"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "staircase group"
+              "answer": "staircase group",
+              "explanation": "At 28:06 the lecturer names slide 4 \"this painting, the staircase group, 1795\".",
+              "evidence": "this painting, the staircase group, 1795"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "daughter"
+              "answer": "daughter",
+              "explanation": "At 28:36 the lecturer says Rachel Weeping shows his first wife \"crying over the death of one of their children, their daughter Margaret\".",
+              "evidence": "crying over the death of one of their children, their daughter Margaret"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "1822"
+              "answer": "1822",
+              "explanation": "At 29:03 the lecturer says the portrait of his brother James \"was painted much later than the others, in 1822\".",
+              "evidence": "this was painted much later than the others, in 1822"
             }
           ],
           "wordLimit": 2
@@ -364,22 +436,30 @@ export const listeningFull017: PracticeTest = {
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "inventor"
+              "answer": "inventor",
+              "explanation": "At 29:35 the lecturer says Peale \"was also an inventor, who gained patents for a fireplace\" among other things, giving the missing word inventor.",
+              "evidence": "he was also an inventor, who gained patents for a fireplace"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "manuscript"
+              "answer": "manuscript",
+              "explanation": "At 30:07 the lecturer says the Polygraph desk \"could make several copies of a manuscript at once\", giving the missing word manuscript.",
+              "evidence": "could make several copies of a manuscript at once"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "bicycle"
+              "answer": "bicycle",
+              "explanation": "At 30:36 the lecturer describes the velocipede as \"a precursor to the bicycle\", giving the missing word bicycle.",
+              "evidence": "a velocipede, which is a precursor to the bicycle"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "exhibit"
+              "answer": "exhibit",
+              "explanation": "At 31:07 the lecturer calls the mastodon skeleton \"his most magnificent exhibit\", giving the missing word exhibit.",
+              "evidence": "his most magnificent exhibit, however, was the complete skeleton"
             }
           ],
           "wordLimit": 1

@@ -33,17 +33,23 @@ export const listeningFull001: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "300"
+              "answer": "300",
+              "explanation": "At 02:42 the agent says Blue Bay is \"only 300 metres\" from the beach, giving the missing distance.",
+              "evidence": "only 300 metres"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "sunshade"
+              "answer": "sunshade",
+              "explanation": "At 03:10 the agent corrects himself: \"I think you meant the sunshade apartments.\"",
+              "evidence": "I think you meant the sunshade apartments"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "balcony"
+              "answer": "balcony",
+              "explanation": "At 04:08 the agent says the Grand has Greek paintings in every room \"and a balcony outside\".",
+              "evidence": "and a balcony outside"
             },
             {
               "id": "q4",
@@ -51,12 +57,16 @@ export const listeningFull001: PracticeTest = {
               "answer": [
                 "forest",
                 "forests"
-              ]
+              ],
+              "explanation": "At 04:33 the agent says the Grand overlooks an area where \"there are forests all round\".",
+              "evidence": "there are forests all round"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "319"
+              "answer": "319",
+              "explanation": "At 04:33 the agent gives the Grand's price as \"319 pounds at that time\".",
+              "evidence": "319 pounds at that time"
             }
           ],
           "wordLimit": 1
@@ -69,27 +79,37 @@ export const listeningFull001: PracticeTest = {
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "10,000"
+              "answer": "10,000",
+              "explanation": "At 06:24 the agent says the cancellation cover is \"our maximum is £10,000\".",
+              "evidence": "our maximum is £10,000"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "relative"
+              "answer": "relative",
+              "explanation": "At 06:24 the agent says the hospital benefit also lets \"a relative to travel to your holiday resort\".",
+              "evidence": "allow a relative to travel to your holiday resort"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "missed"
+              "answer": "missed",
+              "explanation": "At 06:52 the agent discusses \"Miss Departure\" cover, paying up to £1,000; the transcript mishears \"missed departure\".",
+              "evidence": "Don't you have Miss Departure?"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "item"
+              "answer": "item",
+              "explanation": "At 07:18 the agent caps personal belongings cover at \"not more than £500 for a single item\".",
+              "evidence": "not more than £500 for a single item"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "Ludlow"
+              "answer": "Ludlow",
+              "explanation": "At 07:34 the assistant manager spells his surname: \"Ben, Ludlow. That's L-U-D-L-O-W.\"",
+              "evidence": "Ben, Ludlow. That's L-U-D-L-O-W"
             }
           ],
           "wordLimit": 1
@@ -121,7 +141,9 @@ export const listeningFull001: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:15 Simon says the idea came after \"I went on a trip to a theme park near Birmingham and decided we could do a much better job.\"",
+              "evidence": "a trip to a theme park near Birmingham"
             },
             {
               "id": "q12",
@@ -131,7 +153,9 @@ export const listeningFull001: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:42 Simon says they opened only in July, \"our driest month\", so wet weather was not expected.",
+              "evidence": "our driest month"
             },
             {
               "id": "q13",
@@ -141,7 +165,9 @@ export const listeningFull001: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 11:08 Simon says \"a million and a half people have been through our doors since we opened\", matching 1,500,000 visitors.",
+              "evidence": "A million and a half people have been through our doors"
             }
           ]
         },
@@ -153,27 +179,37 @@ export const listeningFull001: PracticeTest = {
             {
               "id": "q14",
               "textHtml": "Simon",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 12:07 Simon says he now \"only concern[s] myself with looking after the mechanical side of things, keeping the trains going\", i.e. engine maintenance.",
+              "evidence": "looking after the mechanical side of things, keeping the trains going"
             },
             {
               "id": "q15",
               "textHtml": "Liz",
-              "answer": "H"
+              "answer": "H",
+              "explanation": "At 12:07 Simon says Liz \"devotes all her energies to recruiting and supporting the large squadron of workers\", i.e. staffing.",
+              "evidence": "recruiting and supporting the large squadron of workers"
             },
             {
               "id": "q16",
               "textHtml": "Sarah",
-              "answer": "F"
+              "answer": "F",
+              "explanation": "At 12:37 Simon says Sarah \"make[s] sure the visitors are kept fed and watered\", i.e. food and drink.",
+              "evidence": "kept fed and watered"
             },
             {
               "id": "q17",
               "textHtml": "Duncan",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 12:37 Simon says Duncan took over \"the area of construction\", i.e. building.",
+              "evidence": "taking over from me and the area of construction"
             },
             {
               "id": "q18",
               "textHtml": "Judith   Area of work",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "At 13:01 Simon says Judith \"joined the team in charge of retail\", i.e. sales.",
+              "evidence": "joined the team in charge of retail"
             }
           ],
           "options": [
@@ -195,12 +231,16 @@ export const listeningFull001: PracticeTest = {
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "120"
+              "answer": "120",
+              "explanation": "At 13:23 Simon gives the go-kart arena's size as \"120 square metres in area\".",
+              "evidence": "120 square metres in area"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "5-12"
+              "answer": "5-12",
+              "explanation": "At 13:49 Simon says they \"wanted to enable 5 to 12 year olds to use the go-karts\".",
+              "evidence": "enable 5 to 12 year olds to use the go-karts"
             }
           ],
           "wordLimit": 1
@@ -227,52 +267,72 @@ export const listeningFull001: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "fishing industry"
+              "answer": "fishing industry",
+              "explanation": "At 16:06 Caroline confirms her topic area is \"the fishing industry\".",
+              "evidence": "It's the fishing industry"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "statistics"
+              "answer": "statistics",
+              "explanation": "At 16:06 Caroline says she is \"coping well with statistics and I'm never bored by it\".",
+              "evidence": "coping well with statistics"
             },
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "note-taking"
+              "answer": "note-taking",
+              "explanation": "At 16:35 Caroline admits she is \"very weak at note taking\".",
+              "evidence": "very weak at note taking"
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "confidence"
+              "answer": "confidence",
+              "explanation": "At 17:50 the tutor says peer group discussion \"really helps build confidence\".",
+              "evidence": "It really helps build confidence"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "ideas"
+              "answer": "ideas",
+              "explanation": "At 18:10 the tutor warns that in peer groups everyone \"seems to share the same ideas\", which then repeat in the dissertations.",
+              "evidence": "share the same ideas. They keep being repeated"
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "student support"
+              "answer": "student support",
+              "explanation": "At 18:10 the tutor suggests \"a service called Student Support\" with a structured programme.",
+              "evidence": "a service called Student Support"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "places"
+              "answer": "places",
+              "explanation": "At 18:10 the tutor warns that for Student Support \"there are only a few places\".",
+              "evidence": "there are only a few places"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "general"
+              "answer": "general",
+              "explanation": "At 18:35 the tutor says study skills books \"are sometimes too general\".",
+              "evidence": "sometimes too general"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "3 times"
+              "answer": "3 times",
+              "explanation": "At 18:58 the tutor advises \"read everything three times\" to fix notes in mind.",
+              "evidence": "Read everything three times"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "25"
+              "answer": "25",
+              "explanation": "At 20:00 they agree on the date: \"We'll go for the 25th then.\"",
+              "evidence": "We'll go for the 25th then"
             }
           ],
           "wordLimit": 2
@@ -304,7 +364,9 @@ export const listeningFull001: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:24 the lecturer says the owners' \"chief aim was to create somewhere that was as environmentally friendly as possible\".",
+              "evidence": "as environmentally friendly as possible"
             },
             {
               "id": "q32",
@@ -314,7 +376,9 @@ export const listeningFull001: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 22:51 the lecturer says of the quarry site: \"The price was relatively low.\"",
+              "evidence": "The price was relatively low"
             }
           ]
         },
@@ -326,22 +390,30 @@ export const listeningFull001: PracticeTest = {
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "glass"
+              "answer": "glass",
+              "explanation": "At 23:53 the lecturer says the south-facing side \"was made of a double layer of very strong glass\".",
+              "evidence": "a double layer of very strong glass"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "insulation"
+              "answer": "insulation",
+              "explanation": "At 23:53 the lecturer says foam was added \"to increase the insulation\".",
+              "evidence": "to increase the insulation"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "windows"
+              "answer": "windows",
+              "explanation": "At 24:29 the lecturer says light is spread by \"lots of mirrors and windows inside the house\".",
+              "evidence": "lots of mirrors and windows inside the house"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "electricity"
+              "answer": "electricity",
+              "explanation": "At 24:59 the lecturer says the house may \"generate an electricity surplus\" to sell to the grid.",
+              "evidence": "generate an electricity surplus"
             },
             {
               "id": "q37",
@@ -349,22 +421,30 @@ export const listeningFull001: PracticeTest = {
               "answer": [
                 "floor",
                 "floors"
-              ]
+              ],
+              "explanation": "At 24:59 the lecturer says \"the floors are made of reclaimed wood\".",
+              "evidence": "the floors are made of reclaimed wood"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "waste"
+              "answer": "waste",
+              "explanation": "At 25:31 the lecturer says household waste \"is dealt with organically\", filtered through reed beds.",
+              "evidence": "the system for dealing with the waste produced in the house"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "concrete"
+              "answer": "concrete",
+              "explanation": "At 25:59 the lecturer says construction \"had to use massive amounts of concrete\", which harmed the environment.",
+              "evidence": "massive amounts of concrete"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "15 years"
+              "answer": "15 years",
+              "explanation": "At 26:32 the lecturer says the environmental debt \"will only take 15 years\" to clear.",
+              "evidence": "this will only take 15 years"
             }
           ],
           "wordLimit": 2

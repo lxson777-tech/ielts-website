@@ -33,37 +33,51 @@ export const listeningFull002: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Bhatt"
+              "answer": "Bhatt",
+              "explanation": "At 01:56 the student spells her surname \"A-N-U-B-H-A-T\"; the recording gives one T where the answer key has \"Bhatt\".",
+              "evidence": "A-N-U-B-H-A-T"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "31 March"
+              "answer": "31 March",
+              "explanation": "At 01:56 she gives her date of birth as \"31st of March, 1972\".",
+              "evidence": "31st of March, 1972"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "nursing"
+              "answer": "nursing",
+              "explanation": "At 01:56 she says \"I'm doing a course in nursing.\"",
+              "evidence": "a course in nursing"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "2"
+              "answer": "2",
+              "explanation": "At 01:56 she says the course is three years but \"I'd only like to stay in Hall for two.\"",
+              "evidence": "I'd only like to stay in Hall for two"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "meat"
+              "answer": "meat",
+              "explanation": "At 02:56 she says \"I don't take red meat. No red meat.\"",
+              "evidence": "I don't take red meat"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "bedsit"
+              "answer": "bedsit",
+              "explanation": "At 03:57 she decides \"the bed sit sounds the best option.\"",
+              "evidence": "the bed sit sounds the best option"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "theatre"
+              "answer": "theatre",
+              "explanation": "At 04:37 she says \"I love the theatre\", alongside badminton.",
+              "evidence": "I love the theatre"
             },
             {
               "id": "q8",
@@ -71,17 +85,23 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "mature",
                 "older"
-              ]
+              ],
+              "explanation": "At 04:49 she says she would prefer \"a hall where there are other mature students\".",
+              "evidence": "other mature students"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "town"
+              "answer": "town",
+              "explanation": "At 04:49 she adds \"I'd prefer to be out of town.\"",
+              "evidence": "I'd prefer to be out of town"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "shared"
+              "answer": "shared",
+              "explanation": "At 05:10 she wants \"somewhere with a shared area, a TV room\".",
+              "evidence": "somewhere with a shared area, a TV room"
             }
           ],
           "wordLimit": 1
@@ -108,7 +128,9 @@ export const listeningFull002: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "trees"
+              "answer": "trees",
+              "explanation": "At 07:57 the speaker says Holt Island \"is noted for its great range of trees\".",
+              "evidence": "noted for its great range of trees"
             },
             {
               "id": "q12",
@@ -116,12 +138,16 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "Friday",
                 "Sunday"
-              ]
+              ],
+              "explanation": "At 08:17 he says the island \"is only open to the public from Friday to Sunday\".",
+              "evidence": "open to the public from Friday to Sunday"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "farm"
+              "answer": "farm",
+              "explanation": "At 08:17 he says Longfield has \"a modern replica of a farm from over 2000 years ago\".",
+              "evidence": "a modern replica of a farm"
             }
           ],
           "wordLimit": 3
@@ -139,7 +165,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 09:58 Monday's activity has visitors \"practice the technique of using them as coloured [dyes] for cloth\" (transcribed as \"eyes\").",
+              "evidence": "practice the technique of using them as coloured eyes for cloth"
             },
             {
               "id": "q15",
@@ -149,7 +177,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:22 he says for Wednesday \"you'll need to phone the park ranger a few days ahead\", i.e. book in advance.",
+              "evidence": "phone the park ranger a few days ahead"
             },
             {
               "id": "q16",
@@ -159,7 +189,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 10:47 he tells Saturday volunteers to wear \"something that you don't mind getting dirty or torn\".",
+              "evidence": "something that you don't mind getting dirty or torn"
             }
           ]
         },
@@ -171,22 +203,30 @@ export const listeningFull002: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 11:16 he places \"a bird hide to the west of\" the lake, at the end of a path.",
+              "evidence": "a bird hide to the west of it"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "I"
+              "answer": "I",
+              "explanation": "At 11:16 he says \"there's a dog walking area in the southern part\" of the park.",
+              "evidence": "a dog walking area in the southern part"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "F"
+              "answer": "F",
+              "explanation": "At 11:40 he says the flower garden is \"the circular area on the map surrounded by paths\".",
+              "evidence": "the flower garden that's the circular area"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "At 11:40 he places \"a wooded area in the western section of the park between two paths\".",
+              "evidence": "a wooded area in the western section"
             }
           ],
           "options": [
@@ -228,7 +268,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:17 the student rep says students see the centre as \"a pretty major component of their course\".",
+              "evidence": "a pretty major component of their course"
             },
             {
               "id": "q22",
@@ -238,7 +280,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:41 the director suggests \"relocating the self-access center to the main university library building\".",
+              "evidence": "relocating the self-access center to the main university library"
             },
             {
               "id": "q23",
@@ -248,7 +292,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:05 the rep says their worry is \"not being able to go to a teacher for advice\".",
+              "evidence": "not being able to go to a teacher for advice"
             },
             {
               "id": "q24",
@@ -258,7 +304,9 @@ export const listeningFull002: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 15:53 the director says the issue is \"time[-]tabling a teacher to be in there outside class hours\".",
+              "evidence": "tabling a teacher to be in there outside class hours"
             }
           ]
         },
@@ -270,17 +318,23 @@ export const listeningFull002: PracticeTest = {
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "reading"
+              "answer": "reading",
+              "explanation": "At 17:19 the rep says students want \"reading resources\" labelled more clearly by level.",
+              "evidence": "reading resources. So I think we need to label them more clearly"
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "CD"
+              "answer": "CD",
+              "explanation": "At 17:19 the director says \"the CD section especially needs to be more current.\"",
+              "evidence": "The CD section especially needs to be more current"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "workbooks"
+              "answer": "workbooks",
+              "explanation": "At 18:07 they discuss \"introducing some workbooks\" broken into separate laminated pages.",
+              "evidence": "introducing some workbooks"
             },
             {
               "id": "q28",
@@ -288,12 +342,16 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "timetable",
                 "schedule"
-              ]
+              ],
+              "explanation": "At 18:07 the director will \"talk to the teachers... agreement on a timetable to supervise the centre\".",
+              "evidence": "a timetable to supervise the centre"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "alarm"
+              "answer": "alarm",
+              "explanation": "At 18:32 they agree: \"What about putting in an alarm? Good idea.\"",
+              "evidence": "putting in an alarm"
             },
             {
               "id": "q30",
@@ -301,7 +359,9 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "email",
                 "emails"
-              ]
+              ],
+              "explanation": "At 18:32 the director wants to \"limit the access to email\" for personal computer use.",
+              "evidence": "limit the access to email"
             }
           ],
           "wordLimit": 2
@@ -328,7 +388,9 @@ export const listeningFull002: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "central"
+              "answer": "central",
+              "explanation": "At 21:34 the lecturer says power culture \"needs a central source of power to be effective\".",
+              "evidence": "a central source of power to be effective"
             },
             {
               "id": "q32",
@@ -336,12 +398,16 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "conversation",
                 "conversations"
-              ]
+              ],
+              "explanation": "At 21:34 the lecturer says communication \"usually takes the form of conversations\" rather than meetings.",
+              "evidence": "takes the form of conversations"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "effectively"
+              "answer": "effectively",
+              "explanation": "At 21:59 the lecturer says the organisation \"doesn't always act effectively because it depends too much on one or two people\".",
+              "evidence": "doesn't always act effectively"
             },
             {
               "id": "q34",
@@ -349,12 +415,16 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "risk",
                 "risks"
-              ]
+              ],
+              "explanation": "At 22:27 the lecturer says the right employee \"is happy to take risks\", with job security a low priority.",
+              "evidence": "happy to take risks"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "levels"
+              "answer": "levels",
+              "explanation": "At 22:27 the lecturer says role culture is found in large companies \"which have lots of different levels in them\".",
+              "evidence": "lots of different levels"
             },
             {
               "id": "q36",
@@ -362,27 +432,37 @@ export const listeningFull002: PracticeTest = {
               "answer": [
                 "description",
                 "descriptions"
-              ]
+              ],
+              "explanation": "At 22:56 the lecturer gives examples like \"specific job descriptions, rules for discipline\".",
+              "evidence": "specific job descriptions, rules for discipline"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "technical"
+              "answer": "technical",
+              "explanation": "At 23:23 the lecturer says it succeeds \"where technical expertise is important\".",
+              "evidence": "where technical expertise is important"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "change"
+              "answer": "change",
+              "explanation": "At 23:23 the lecturer says the culture is \"very slow to recognize the need for change\".",
+              "evidence": "slow to recognize the need for change"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "responsibility"
+              "answer": "responsibility",
+              "explanation": "At 23:52 the lecturer says such employees \"don't particularly want to have responsibility\".",
+              "evidence": "don't particularly want to have responsibility"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "flexible"
+              "answer": "flexible",
+              "explanation": "At 24:24 the lecturer says one benefit of task culture \"is that it's flexible\".",
+              "evidence": "one of the major benefits of this culture is that it's flexible"
             }
           ],
           "wordLimit": 1

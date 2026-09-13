@@ -33,17 +33,23 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Keiko"
+              "answer": "Keiko",
+              "explanation": "At 01:29 the student spells her first name: K-E-I-K-O.",
+              "evidence": "It's Keiko. K-E-I-K-O"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "JO6337"
+              "answer": "JO6337",
+              "explanation": "At 02:13 the officer reads back the passport number as J-O-6-3-7.",
+              "evidence": "Your passport number is J-O-6-3-7"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "4 months"
+              "answer": "4 months",
+              "explanation": "At 02:13 the student says she plans to stay with the homestay family for about four months.",
+              "evidence": "About four months. Longer if I like it"
             },
             {
               "id": "q4",
@@ -51,7 +57,9 @@ export const listeningFull008: PracticeTest = {
               "answer": [
                 "English",
                 "English studies"
-              ]
+              ],
+              "explanation": "At 02:13 the student says she is enrolled in the advanced English studies course.",
+              "evidence": "enrolled for 20 weeks in the advanced English studies"
             },
             {
               "id": "q5",
@@ -59,12 +67,16 @@ export const listeningFull008: PracticeTest = {
               "answer": [
                 "children",
                 "young children"
-              ]
+              ],
+              "explanation": "At 02:50 the student says she does not want young children in the family, preferring adults around her own age.",
+              "evidence": "I like young children. But I'd like to be with older people"
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "pets"
+              "answer": "pets",
+              "explanation": "At 03:23 the student says she has no objection to pets, since she works with animals as a vet.",
+              "evidence": "I am a veterinarian so that's fine. The more the better"
             }
           ],
           "wordLimit": 3
@@ -77,22 +89,30 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q7",
               "textHtml": "What does the student particularly like to eat?",
-              "answer": "seafood"
+              "answer": "seafood",
+              "explanation": "At 04:18 the student says she particularly likes seafood.",
+              "evidence": "I really like seafood"
             },
             {
               "id": "q8",
               "textHtml": "What sport does the student play?",
-              "answer": "tennis"
+              "answer": "tennis",
+              "explanation": "At 04:18 the student says she now plays tennis at weekends, having given up handball.",
+              "evidence": "Now I play tennis on the weekend with my friends"
             },
             {
               "id": "q9",
               "textHtml": "What mode of transport does the student prefer?",
-              "answer": "trains"
+              "answer": "trains",
+              "explanation": "At 04:50 the student says she prefers trains to buses because they are faster.",
+              "evidence": "I like catching the train. They are much faster"
             },
             {
               "id": "q10",
               "textHtml": "When will the student find out her homestay address?",
-              "answer": "that afternoon"
+              "answer": "that afternoon",
+              "explanation": "At 04:50 the officer says he will give the student her homestay address that afternoon.",
+              "evidence": "I'll give you details this afternoon"
             }
           ],
           "wordLimit": 2
@@ -124,7 +144,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 07:09 Sally asks everyone to wear comfortable shoes and keep up the pace, indicating a walking tour.",
+              "evidence": "wearing your most comfortable shoes and that you can keep up the pace"
             },
             {
               "id": "q12",
@@ -134,7 +156,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 07:09 Sally says the park space was originally warehouses and storehouses, industrial buildings.",
+              "evidence": "was originally warehouses and storehouses"
             },
             {
               "id": "q13",
@@ -144,7 +168,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 07:35 Sally says residents wanted the site for outdoor leisure activities, not housing or a sports complex.",
+              "evidence": "wanted open space for outdoor activities rather than housing"
             },
             {
               "id": "q14",
@@ -154,7 +180,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 08:02 Sally says the Tower is the centre point of the formal gardens.",
+              "evidence": "is the centre point for the formal gardens"
             }
           ]
         },
@@ -166,17 +194,23 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "car park"
+              "answer": "car park",
+              "explanation": "At 09:39 Sally points out the car park near the Olympic site train lines, matching this label on the plan.",
+              "evidence": "There is also a car park but it only holds a limited number of cars"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "rose garden"
+              "answer": "rose garden",
+              "explanation": "At 10:06 Sally points out the rose garden to the west of the Tower.",
+              "evidence": "smell the flowers and the rose garden"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "cafe"
+              "answer": "cafe",
+              "explanation": "At 10:06 Sally points out the cafe near the lake, visible through the trees.",
+              "evidence": "you can see the cafe which has lovely views across the water"
             }
           ],
           "wordLimit": 2
@@ -189,17 +223,23 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "cycling"
+              "answer": "cycling",
+              "explanation": "At 10:32 Sally says the mangroves boardwalk is mostly used for cycling rather than viewing plant life.",
+              "evidence": "it's more often used for cycling and is very popular with the local clubs"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "biology lesson"
+              "answer": "biology lesson",
+              "explanation": "At 10:55 Sally says the outdoor classroom by the frog pond is mainly used by primary schools for biology lessons.",
+              "evidence": "used by primary schools for biology lessons"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "viewing shelter"
+              "answer": "viewing shelter",
+              "explanation": "At 11:22 Sally says the viewing shelter at the waterbird refuge is popular with bird watchers.",
+              "evidence": "the park's viewing shelter is a favourite spot for bird watchers"
             }
           ],
           "wordLimit": 2
@@ -226,12 +266,16 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "5"
+              "answer": "5",
+              "explanation": "At 13:30 they confirm the 15 minute presentation is followed by five minutes for questions.",
+              "evidence": "And five minutes for questions"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "assessed"
+              "answer": "assessed",
+              "explanation": "At 13:30 they confirm this presentation will not be assessed, since it is their first one.",
+              "evidence": "is this one going to be assessed? No not this time round"
             }
           ],
           "wordLimit": 1
@@ -244,22 +288,30 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q23",
               "textHtml": "Geographical Location",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 13:55 Trevor confirms they will definitely cover the geographical location.",
+              "evidence": "say something about the geographical location"
             },
             {
               "id": "q24",
               "textHtml": "Economy",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "At 14:22 they leave the decision on covering the economy for later, so it might be included.",
+              "evidence": "let's think about that one later shall we"
             },
             {
               "id": "q25",
               "textHtml": "Overview of Education System",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "At 14:46 they confirm the overview of the education system will definitely be included.",
+              "evidence": "general overview of education? Of course"
             },
             {
               "id": "q26",
               "textHtml": "Role of English Language",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "At 14:46 Trevor says the role of English language belongs in a different seminar, so it will not be included.",
+              "evidence": "goes in the language policy seminar"
             }
           ]
         },
@@ -271,17 +323,23 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "media room"
+              "answer": "media room",
+              "explanation": "At 15:40 they agree to get the overhead projector from the media room.",
+              "evidence": "We'll get that from the media room"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "resources room"
+              "answer": "resources room",
+              "explanation": "At 16:01 they say the map of West Africa is already available in the resources room.",
+              "evidence": "There's one in the resources room"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "embassy"
+              "answer": "embassy",
+              "explanation": "At 16:23 they decide to get literacy statistics from the embassy.",
+              "evidence": "Why don't we call the embassy"
             },
             {
               "id": "q30",
@@ -289,7 +347,9 @@ export const listeningFull008: PracticeTest = {
               "answer": [
                 "statistics",
                 "stat"
-              ]
+              ],
+              "explanation": "At 16:23 they agree the embassy will also supply statistics on school places.",
+              "evidence": "We can find our statistics on school places from them as well"
             }
           ],
           "wordLimit": 2
@@ -321,7 +381,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 19:08 the lecturer says the main focus is how MSG enhances the flavour of food, matching option B.",
+              "evidence": "more importantly how does it enhance the flavor of food"
             },
             {
               "id": "q32",
@@ -331,7 +393,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 19:41 the lecturer says scientists identified the flavour ingredient in kombu as glutamate in 1908.",
+              "evidence": "discovered to be glutamate by scientists"
             },
             {
               "id": "q33",
@@ -341,7 +405,9 @@ export const listeningFull008: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 20:10 the lecturer says 1956 saw production speed improve and industrial output increase dramatically.",
+              "evidence": "industrial production increased dramatically"
             }
           ]
         },
@@ -353,37 +419,51 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "water"
+              "answer": "water",
+              "explanation": "At 20:10 the lecturer says MSG is 9.6% water, alongside glutamate and sodium.",
+              "evidence": "9.6% water"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "meat"
+              "answer": "meat",
+              "explanation": "At 20:51 the lecturer says glutamate occurs naturally in protein foods such as meat and cheese.",
+              "evidence": "food such as meat and cheese"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "cheese"
+              "answer": "cheese",
+              "explanation": "At 20:51 the lecturer lists cheese, alongside meat, as a food naturally containing glutamate.",
+              "evidence": "food such as meat and cheese"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "fifth taste"
+              "answer": "fifth taste",
+              "explanation": "At 21:22 the lecturer says Ikeda identified a fifth taste in 1908, which MSG is thought to intensify.",
+              "evidence": "identified a fifth taste"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "common"
+              "answer": "common",
+              "explanation": "At 21:54 the lecturer says our ability to detect glutamate makes sense because it is so common naturally.",
+              "evidence": "the amino acid which is most common in natural foods"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "bitterness"
+              "answer": "bitterness",
+              "explanation": "At 22:24 the lecturer says bitterness signals the presence of toxins in food.",
+              "evidence": "bitterness he says alerts us to toxins in the food"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "minerals"
+              "answer": "minerals",
+              "explanation": "At 22:24 the lecturer says saltiness tells us a food contains minerals.",
+              "evidence": "saltiness signals the presence of minerals"
             }
           ],
           "wordLimit": 2

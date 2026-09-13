@@ -38,7 +38,9 @@ export const listeningFull007: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 01:44 Nina says there was a video with festival highlights on a stand in the library lobby, matching option C.",
+              "evidence": "a video with all the highlights of the festival"
             },
             {
               "id": "q2",
@@ -48,7 +50,9 @@ export const listeningFull007: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 02:09 George says sitting at the back lets you hear the performance better, matching option B.",
+              "evidence": "if you sit at the back, you can actually hear the whole thing better"
             }
           ]
         },
@@ -60,17 +64,23 @@ export const listeningFull007: PracticeTest = {
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "48 north avenue"
+              "answer": "48 north avenue",
+              "explanation": "At 02:37 George gives his address as 48 North Avenue, Westsea.",
+              "evidence": "48 North Avenue"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "WS62YH"
+              "answer": "WS62YH",
+              "explanation": "At 02:37 Nina reads the postcode letter by letter: W-S-6-2-Y-H.",
+              "evidence": "W-S-6-2-Y-H"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "01674553242"
+              "answer": "01674553242",
+              "explanation": "At 03:55 George reads out his phone number; the automatic transcript cuts off partway through the digits, but the answer key gives the full number as 01674553242.",
+              "evidence": "01674-5532"
             },
             {
               "id": "q6",
@@ -78,7 +88,9 @@ export const listeningFull007: PracticeTest = {
               "answer": [
                 "drinks",
                 "refreshments"
-              ]
+              ],
+              "explanation": "At 04:26 George reads that the singer's ticket price includes drinks in the garden.",
+              "evidence": "6 pounds includes drinks in the garden"
             },
             {
               "id": "q7",
@@ -86,22 +98,30 @@ export const listeningFull007: PracticeTest = {
               "answer": [
                 "pianist",
                 "piano player"
-              ]
+              ],
+              "explanation": "At 04:26 Nina asks about the pianist performing on 22 June, filling the table's event column.",
+              "evidence": "How about the pianist on the 22nd of June"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "10.50"
+              "answer": "10.50",
+              "explanation": "At 04:53 Nina reads the ticket price for the Spanish dance and guitar concert as 10 pounds 50.",
+              "evidence": "10 pounds, 50. A ticket"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "4"
+              "answer": "4",
+              "explanation": "At 04:53 they agree to book four tickets for the Spanish dance and guitar concert.",
+              "evidence": "We'll need to book four"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "50%"
+              "answer": "50%",
+              "explanation": "At 04:53 George notes that children, students and senior citizens get a 50% discount on all tickets.",
+              "evidence": "get a 50% discount on everything"
             }
           ],
           "wordLimit": 2
@@ -128,27 +148,37 @@ export const listeningFull007: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "The museum closes at p.m. on Mondays.",
-              "answer": "1.30"
+              "answer": "1.30",
+              "explanation": "At 06:58 the officer says the museum closes at 1.30pm on Mondays, earlier than its usual 8pm.",
+              "evidence": "on Mondays when we close at 1.30 p.m."
             },
             {
               "id": "q12",
               "textHtml": "The museum is not open on",
-              "answer": "25 December"
+              "answer": "25 December",
+              "explanation": "At 06:58 the officer says the museum is closed only on 25 December each year.",
+              "evidence": "closed is on the 25th of December"
             },
             {
               "id": "q13",
               "textHtml": "School groups are met by tour guides in the",
-              "answer": "car parking"
+              "answer": "car parking",
+              "explanation": "At 07:23 the officer says tour guides meet school groups in the car park, not the exhibition area.",
+              "evidence": "One or more of the tour guides will welcome you there"
             },
             {
               "id": "q14",
               "textHtml": "The whole visit takes 90 minutes, including minutes for the guided tour.",
-              "answer": "45"
+              "answer": "45",
+              "explanation": "At 07:47 the officer says the 90 minute visit includes 45 minutes for the guided tour.",
+              "evidence": "45 minutes for the guided tour"
             },
             {
               "id": "q15",
               "textHtml": "There are behind the museum where students can have lunch.",
-              "answer": "tables"
+              "answer": "tables",
+              "explanation": "At 08:14 the officer says there are tables behind the museum where students can eat their own packed lunch.",
+              "evidence": "there are tables and students can bring their own lunch"
             }
           ],
           "wordLimit": 2
@@ -166,7 +196,9 @@ export const listeningFull007: PracticeTest = {
                 "F",
                 "G"
               ],
-              "answerPairId": "test7-q16-q18"
+              "answerPairId": "test7-q16-q18",
+              "explanation": "At 09:55 the officer confirms cameras are allowed, since students may take photographs.",
+              "evidence": "We do allow students to take photographs"
             },
             {
               "id": "q17",
@@ -176,7 +208,9 @@ export const listeningFull007: PracticeTest = {
                 "F",
                 "G"
               ],
-              "answerPairId": "test7-q16-q18"
+              "answerPairId": "test7-q16-q18",
+              "explanation": "At 09:32 the officer says students need something to write with, that is a pen, for the quiz handouts.",
+              "evidence": "they'll need to bring something to write with"
             },
             {
               "id": "q18",
@@ -186,7 +220,9 @@ export const listeningFull007: PracticeTest = {
                 "F",
                 "G"
               ],
-              "answerPairId": "test7-q16-q18"
+              "answerPairId": "test7-q16-q18",
+              "explanation": "At 09:32 the officer says the museum provides worksheets, handouts with questions and quizzes.",
+              "evidence": "handouts, with questions and quizzes on them"
             }
           ],
           "choices": [
@@ -219,7 +255,8 @@ export const listeningFull007: PracticeTest = {
               "label": "worksheets"
             }
           ],
-          "selectCount": 3
+          "selectCount": 3,
+          "explanationHtml": "<p>At 09:32 and 09:55 the officer says the museum provides worksheets, students need to bring a pen to write with, and cameras are allowed for photographs, so the answers are C (cameras), F (pens) and G (worksheets). Food, drink and bags must be checked into the cloakroom instead.</p>"
         },
         {
           "title": "Questions 19-20",
@@ -233,7 +270,9 @@ export const listeningFull007: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test7-q19-q20"
+              "answerPairId": "test7-q19-q20",
+              "explanation": "At 10:20 the officer says students can watch short dinosaur documentaries in the theatrette.",
+              "evidence": "continuous screenings of short documentaries about dinosaurs"
             },
             {
               "id": "q20",
@@ -242,7 +281,9 @@ export const listeningFull007: PracticeTest = {
                 "B",
                 "E"
               ],
-              "answerPairId": "test7-q19-q20"
+              "answerPairId": "test7-q19-q20",
+              "explanation": "At 10:44 the officer says students can play dinosaur computer games in the IT centre.",
+              "evidence": "access to CD-ROMs with a range of dinosaur games"
             }
           ],
           "choices": [
@@ -267,7 +308,8 @@ export const listeningFull007: PracticeTest = {
               "label": "play computer games"
             }
           ],
-          "selectCount": 2
+          "selectCount": 2,
+          "explanationHtml": "<p>At 10:20 the officer describes short film screenings in the theatrette, and at 10:44 computer games in the IT centre, so the answers are B (watch films) and E (play computer games). The old activity room for model-making and egg-hunting is currently closed.</p>"
         }
       ]
     },
@@ -296,7 +338,9 @@ export const listeningFull007: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 13:05 the tutor says some parts of the proposal could have been better sequenced, matching option A.",
+              "evidence": "things which could have been better sequenced"
             },
             {
               "id": "q22",
@@ -306,7 +350,9 @@ export const listeningFull007: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 13:42 the tutor asks Sandra to cut down her long, complex sentences, matching option C.",
+              "evidence": "cut them down a bit, can you"
             },
             {
               "id": "q23",
@@ -316,7 +362,9 @@ export const listeningFull007: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:15 the tutor says Sandra's points were not clearly listed and suggests numbering or bullet points, matching option A.",
+              "evidence": "listing ideas clearly is important"
             },
             {
               "id": "q24",
@@ -326,7 +374,9 @@ export const listeningFull007: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 14:38 Sandra says her interest began with the cowboy films she was shown as a child.",
+              "evidence": "I was subjected to seeing all the epics"
             }
           ]
         },
@@ -343,7 +393,9 @@ export const listeningFull007: PracticeTest = {
                 "C",
                 "F"
               ],
-              "answerPairId": "test7-q25-q27"
+              "answerPairId": "test7-q25-q27",
+              "explanation": "At 16:17 Sandra says the proposal should focus on the area's geographical features, the plateau and cliffs.",
+              "evidence": "the sandstone plateau and cliffs themselves"
             },
             {
               "id": "q26",
@@ -353,7 +405,9 @@ export const listeningFull007: PracticeTest = {
                 "C",
                 "F"
               ],
-              "answerPairId": "test7-q25-q27"
+              "answerPairId": "test7-q25-q27",
+              "explanation": "At 17:23 the tutor asks Sandra to add plant and animal life to the proposal.",
+              "evidence": "something about the local wildlife and vegetation"
             },
             {
               "id": "q27",
@@ -363,7 +417,9 @@ export const listeningFull007: PracticeTest = {
                 "C",
                 "F"
               ],
-              "answerPairId": "test7-q25-q27"
+              "answerPairId": "test7-q25-q27",
+              "explanation": "At 16:59 the tutor says the field trip activities students could do need to be more central to the proposal.",
+              "evidence": "what the students on the trip could actually do when they get there"
             }
           ],
           "choices": [
@@ -396,7 +452,8 @@ export const listeningFull007: PracticeTest = {
               "label": "social history"
             }
           ],
-          "selectCount": 3
+          "selectCount": 3,
+          "explanationHtml": "<p>The tutor keeps geographical features (16:17), field trip activities (16:59) and plant and animal life (17:23), but drops climate change, tourism, myths and social history as not directly relevant, so the answers are B, C and F.</p>"
         },
         {
           "title": "Questions 28-30",
@@ -406,17 +463,23 @@ export const listeningFull007: PracticeTest = {
             {
               "id": "q28",
               "textHtml": "The tribal park covers hectares.",
-              "answer": "12,000"
+              "answer": "12,000",
+              "explanation": "At 18:21 Sandra says the tribal park covers 12,000 hectares.",
+              "evidence": "12,000 hectares"
             },
             {
               "id": "q29",
               "textHtml": "Sandra suggests that they share the for transport.",
-              "answer": "horses"
+              "answer": "horses",
+              "explanation": "At 18:48 Sandra suggests hiring horses to trek around the park instead of jeeps.",
+              "evidence": "hire horses instead and trek around on those"
             },
             {
               "id": "q30",
               "textHtml": "She says they could also explore the local",
-              "answer": "caves"
+              "answer": "caves",
+              "explanation": "At 19:09 Sandra says there are also caves worth exploring locally.",
+              "evidence": "There are several caves"
             }
           ],
           "wordLimit": 1
@@ -443,12 +506,16 @@ export const listeningFull007: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "surface"
+              "answer": "surface",
+              "explanation": "At 21:39 the lecturer says geography teaches us about processes affecting the Earth's surface.",
+              "evidence": "continue to affect the Earth's surface"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "environment"
+              "answer": "environment",
+              "explanation": "At 21:39 the lecturer describes the relationship between environment and the population living there.",
+              "evidence": "relationships that develop between a particular environment and the people that live there"
             },
             {
               "id": "q33",
@@ -456,42 +523,58 @@ export const listeningFull007: PracticeTest = {
               "answer": [
                 "impact",
                 "effects"
-              ]
+              ],
+              "explanation": "At 22:03 the lecturer says the second branch studies human lifestyles and their impact on the planet.",
+              "evidence": "the impact of those on our planet"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "urban"
+              "answer": "urban",
+              "explanation": "At 23:14 the lecturer lists urban geography among the specific study areas, just before cartography.",
+              "evidence": "And urban geography"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "problems"
+              "answer": "problems",
+              "explanation": "At 23:42 the lecturer says geography helps us identify the problems associated with our surroundings.",
+              "evidence": "identify all the problems that relate to them"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "images"
+              "answer": "images",
+              "explanation": "At 24:12 the lecturer says geographers collect images of the Earth's surface using computer and satellite technology.",
+              "evidence": "We also need images of the Earth's surface"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "patterns"
+              "answer": "patterns",
+              "explanation": "At 24:37 the lecturer says analysing data means looking for patterns, such as cause and effect.",
+              "evidence": "We need to look for patterns"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "distortion"
+              "answer": "distortion",
+              "explanation": "At 25:50 the lecturer says a flat, two-dimensional map will always show some distortion.",
+              "evidence": "a certain degree of distortion on a map"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "traffic"
+              "answer": "traffic",
+              "explanation": "At 26:13 the lecturer says aerial photos can show traffic density, alongside vegetation and sea-floor detail.",
+              "evidence": "how much traffic is on the roads at a given time"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "weather"
+              "answer": "weather",
+              "explanation": "At 26:39 the lecturer says Landsat pictures are used for monitoring weather conditions, among other things.",
+              "evidence": "information they give us about the weather"
             }
           ],
           "wordLimit": 1

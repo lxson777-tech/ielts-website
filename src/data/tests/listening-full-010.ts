@@ -33,22 +33,30 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "february"
+              "answer": "february",
+              "explanation": "At 00:46 the receptionist confirms the stay begins on 13 February.",
+              "evidence": "So that's February 13th and 14th"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "one"
+              "answer": "one",
+              "explanation": "At 01:12 the caller says it will be just her, meaning one guest.",
+              "evidence": "how many guests will there be? Just me"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "Wilson"
+              "answer": "Wilson",
+              "explanation": "At 01:12 the caller gives her surname as Wilson, spelling it out.",
+              "evidence": "It's Roxanne Wilson, W-I-L-S-O-N"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "2336189872"
+              "answer": "2336189872",
+              "explanation": "At 01:37 the caller reads her credit card number digit by digit; the automatic transcript repeats the last four digits, but the answer key gives 2336189872.",
+              "evidence": "2, 3, 3, 6, 1, 8, 9, 8, 7, 2"
             }
           ],
           "wordLimit": 1
@@ -66,7 +74,9 @@ export const listeningFull010: PracticeTest = {
                 "F",
                 "G"
               ],
-              "answerPairId": "test10-q5-q7"
+              "answerPairId": "test10-q5-q7",
+              "explanation": "At 02:52 the receptionist recommends the shopping mall, two bus stops from the hotel.",
+              "evidence": "We have a large shopping mall just two bus stops away"
             },
             {
               "id": "q6",
@@ -76,7 +86,9 @@ export const listeningFull010: PracticeTest = {
                 "F",
                 "G"
               ],
-              "answerPairId": "test10-q5-q7"
+              "answerPairId": "test10-q5-q7",
+              "explanation": "At 03:19 the receptionist recommends a nearby restaurant across the street from the park.",
+              "evidence": "There's a nice restaurant very near"
             },
             {
               "id": "q7",
@@ -86,7 +98,9 @@ export const listeningFull010: PracticeTest = {
                 "F",
                 "G"
               ],
-              "answerPairId": "test10-q5-q7"
+              "answerPairId": "test10-q5-q7",
+              "explanation": "At 03:19 the caller plans to walk in the park after lunch, since the restaurant sits right across from it.",
+              "evidence": "I can have lunch, then walk in the park afterwards"
             }
           ],
           "choices": [
@@ -119,7 +133,8 @@ export const listeningFull010: PracticeTest = {
               "label": "park"
             }
           ],
-          "selectCount": 3
+          "selectCount": 3,
+          "explanationHtml": "<p>The receptionist rules out the art museum, since the caller does not enjoy art, and the science museum is closed in winter. She then recommends the shopping mall (02:52), a restaurant (03:19) and the park right across from it, so the answers are C, F and G.</p>"
         },
         {
           "title": "Questions 8-10",
@@ -134,7 +149,9 @@ export const listeningFull010: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 03:43 the caller says she will arrive at the airport after 10pm, at night.",
+              "evidence": "I'll be arriving quite late after 10 p.m."
             },
             {
               "id": "q9",
@@ -144,7 +161,9 @@ export const listeningFull010: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 03:43 the caller decides to take the subway, since it runs until midnight and is fastest.",
+              "evidence": "The subway runs until midnight. Oh, good. Then I'll do that"
             },
             {
               "id": "q10",
@@ -154,7 +173,9 @@ export const listeningFull010: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "At 03:43 the receptionist confirms the front desk stays open until 2am.",
+              "evidence": "The front desk stays open until two"
             }
           ]
         }
@@ -180,12 +201,16 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "18"
+              "answer": "18",
+              "explanation": "At 05:16 the guide says the adult all-day pass costs $18.",
+              "evidence": "The all-day bus pass costs $18 for adults"
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "9"
+              "answer": "9",
+              "explanation": "At 05:16 the guide says children aged 5 to 12 pay half the $18 adult fare, so $9.",
+              "evidence": "Children between the ages of 5 and 12 pay half the adult fare"
             }
           ]
         },
@@ -197,17 +222,23 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "hill park"
+              "answer": "hill park",
+              "explanation": "At 05:43 the guide says the first stop on the tour is Hill Park.",
+              "evidence": "the bus goes to the first stop Hill Park"
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "bay bridge"
+              "answer": "bay bridge",
+              "explanation": "At 05:43 the guide names the third stop as Bay Bridge.",
+              "evidence": "the third stop, Bay Bridge"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "green street"
+              "answer": "green street",
+              "explanation": "At 05:43 the guide names the fifth and final stop as Green Street.",
+              "evidence": "the fifth and last stop is at Green Street"
             }
           ],
           "wordLimit": 2
@@ -220,27 +251,37 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "view"
+              "answer": "view",
+              "explanation": "At 06:07 the guide says the first stop offers a spectacular view of the bay.",
+              "evidence": "you can enjoy a spectacular view of the bay"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "boats"
+              "answer": "boats",
+              "explanation": "At 06:07 the guide says visitors can look at the boats at the fishing docks.",
+              "evidence": "you can walk around and look at the boats"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "eat"
+              "answer": "eat",
+              "explanation": "At 06:51 the guide says visitors can eat fresh fish at the third stop's seafood restaurants.",
+              "evidence": "You can eat fresh fish here prepared in the traditional local way"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "baskets"
+              "answer": "baskets",
+              "explanation": "At 07:14 the guide recommends buying handmade baskets at the shopping district stop.",
+              "evidence": "purchase some of our city's famous handmade baskets"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "theatre"
+              "answer": "theatre",
+              "explanation": "At 07:14 the guide says the final stop is the historic theatre building.",
+              "evidence": "you can visit one of the oldest buildings in our city, the theatre"
             }
           ],
           "wordLimit": 1
@@ -267,17 +308,23 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "When is the research project due?",
-              "answer": "in three weeks"
+              "answer": "in three weeks",
+              "explanation": "At 07:56 the students say the research project is due in three weeks.",
+              "evidence": "I know, only three more weeks"
             },
             {
               "id": "q22",
               "textHtml": "Where will the students conduct the interviews?",
-              "answer": "a shopping mall"
+              "answer": "a shopping mall",
+              "explanation": "At 08:46 they agree to interview shoppers at the shopping mall rather than the department store.",
+              "evidence": "I think the shopping mall would be a better place"
             },
             {
               "id": "q23",
               "textHtml": "How many interviews will they complete all together?",
-              "answer": "thirty"
+              "answer": "thirty",
+              "explanation": "At 08:46 they confirm the professor requires at least 30 interviews in total.",
+              "evidence": "She said at least 30"
             }
           ],
           "wordLimit": 3
@@ -290,37 +337,51 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "a government study"
+              "answer": "a government study",
+              "explanation": "At 10:09 they plan to read a government study on spending habits before designing their questionnaire.",
+              "evidence": "compare our results to the results of a government study"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "design the questionnaire"
+              "answer": "design the questionnaire",
+              "explanation": "At 10:09 they agree that after reading the government study, they will design the questionnaire.",
+              "evidence": "read that first and then design our questionnaire"
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "professor's approval"
+              "answer": "professor's approval",
+              "explanation": "At 10:32 they note the professor must approve the questionnaire before interviews start.",
+              "evidence": "the professor said she had to approve our questionnaire first"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "conduct interviews"
+              "answer": "conduct interviews",
+              "explanation": "At 10:32 they plan to conduct the interviews once the questionnaire is approved.",
+              "evidence": "we'll get her approval and then conduct the interviews"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "analyse the results"
+              "answer": "analyse the results",
+              "explanation": "At 10:53 they plan to meet the day after interviews to analyse the results.",
+              "evidence": "get together the next day to analyze the results"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "charts"
+              "answer": "charts",
+              "explanation": "At 11:19 they decide to prepare charts to present their results clearly.",
+              "evidence": "prepare some charts showing our results"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "class presentation"
+              "answer": "class presentation",
+              "explanation": "At 11:19 they conclude the final step is giving the class presentation.",
+              "evidence": "All that will be left to do is give the class presentation"
             }
           ],
           "wordLimit": 3
@@ -347,52 +408,72 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "Alcott was born"
+              "answer": "Alcott was born",
+              "explanation": "At 12:44 the lecturer says Alcott was born in 1832.",
+              "evidence": "She was born in 1832"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "support her family"
+              "answer": "support her family",
+              "explanation": "At 13:12 the lecturer says as a teenager Alcott worked to support her family.",
+              "evidence": "she worked to support her family by taking on a variety of low paying jobs"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "her first novel"
+              "answer": "her first novel",
+              "explanation": "At 13:12 the lecturer says Alcott wrote her first novel, The Inheritance, at age 17.",
+              "evidence": "She wrote her first novel when she was just 17 years old"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "1862"
+              "answer": "1862",
+              "explanation": "At 13:36 the lecturer says Alcott enlisted as an army nurse the year after the Civil War began in 1861, that is 1862.",
+              "evidence": "The following year, she enlisted as an Army nurse"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "after the war"
+              "answer": "after the war",
+              "explanation": "At 14:03 the lecturer says Alcott published Hospital Sketches after the war ended.",
+              "evidence": "After the war, she turned the letters into a book"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "1866"
+              "answer": "1866",
+              "explanation": "At 14:03 the lecturer says Alcott returned from her European trip in 1866.",
+              "evidence": "When she returned home from Europe in 1866"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "1868"
+              "answer": "1868",
+              "explanation": "At 14:29 the lecturer says Alcott published Little Women in 1868.",
+              "evidence": "Her big break came in 1868, with the publication of her first novel for girls, Little Women"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "May"
+              "answer": "May",
+              "explanation": "At 14:56 the lecturer says Alcott's sister May died a year after marrying in 1878, matching the 1879 timeline entry.",
+              "evidence": "A year later, May died after giving birth to a daughter"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "1882"
+              "answer": "1882",
+              "explanation": "At 14:56 the lecturer says Alcott set up the Boston household in 1882, after her father's stroke.",
+              "evidence": "In 1882, Bronson Alcott suffered a stroke"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "Alcott died"
+              "answer": "Alcott died",
+              "explanation": "At 15:23 the lecturer says Alcott died in March 1888.",
+              "evidence": "She died in March of 1888, at the age of 55"
             }
           ],
           "wordLimit": 3
