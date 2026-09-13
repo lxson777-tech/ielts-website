@@ -1,0 +1,102 @@
+---
+/* Renders the "one card per lesson" grid on the Reading and Listening
+   overview pages, grouped the way READING_GROUPS / LISTENING_GROUPS say to.
+   Generic over both registries (ReadingPart/ListeningPart both carry
+   {slug, title, blurb, group}) so one component serves both overview pages
+   instead of two near-identical hand-written grids.
+
+   The "skill" group (Reading's Paraphrase Spotting lesson, the one skill
+   every question type relies on) renders as a single wide "start here" card
+   instead of a normal grid tile, so it visually reads as a different kind
+   of thing from the question-type lessons around it. Listening has no
+   "skill" group, so it never triggers this. */
+import { withBase } from '../lib/url';
+
+interface Part {
+  slug: string;
+  title: string;
+  blurb: string;
+  group: string;
+}
+
+interface Group {
+  id: string;
+  label: string;
+  blurb: string;
+}
+
+interface Props {
+  groups: Group[];
+  parts: Part[];
+  /** Link prefix, e.g. "reading" or "listening" -> "/lessons/<hrefBase>/<slug>". */
+  hrefBase: string;
+}
+
+const { groups, parts, hrefBase } = Astro.props;
+
+const pad = (n: number) => String(n + 1).padStart(2, '0');
+---
+
+<div class="flex flex-col gap-8">
+  {
+    groups.map((group) => {
+      const groupParts = parts.filter((p) => p.group === group.id);
+      if (groupParts.length === 0) return null;
+      const isStartHere = group.id === 'skill';
+      // A group of exactly 4 cards leaves one orphan on its own row at the
+      // default 3-column breakpoint, so it gets its own 4-column breakpoint
+      // instead (e.g. Listening's 4 "parts"). Every other group size keeps
+      // the standard 3-column layout.
+      const gridCols = groupParts.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2 lg:grid-cols-3';
+
+      return (
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--skill)]">{group.label}</p>
+          <p class="mt-1 text-sm text-ink-muted">{group.blurb}</p>
+
+          <div class:list={['mt-4 grid grid-cols-1 gap-4', gridCols]}>
+            {groupParts.map((part) => {
+              const num = pad(parts.findIndex((p) => p.slug === part.slug));
+              const href = withBase(`/lessons/${hrefBase}/${part.slug}`);
+
+              return isStartHere ? (
+                <a
+                  href={href}
+                  class="group col-span-full flex flex-col gap-4 rounded-card border border-[var(--skill)] bg-[var(--skill-tint)] p-6 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-card-hover sm:flex-row sm:items-center"
+                >
+                  <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--skill)] font-display text-sm font-bold text-white">
+                    {num}
+                  </span>
+                  <div class="flex-1">
+                    <p class="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--skill)]">Start here</p>
+                    <h3 class="mt-0.5 font-display text-lg font-bold text-ink">{part.title}</h3>
+                    <p class="mt-1 text-sm leading-relaxed text-ink-muted">{part.blurb}</p>
+                  </div>
+                  <span class="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full bg-[var(--skill)] px-4 py-2 font-display text-sm font-semibold text-white transition-transform duration-200 group-hover:translate-x-0.5 sm:self-center">
+                    Open lesson <span aria-hidden="true">→</span>
+                  </span>
+                </a>
+              ) : (
+                <a
+                  href={href}
+                  class="group relative flex flex-col gap-3 rounded-card border border-border bg-surface p-6 shadow-card transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[var(--skill)] hover:shadow-card-hover"
+                >
+                  <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--skill-tint)] font-display text-xs font-bold text-[var(--skill)]">
+                    {num}
+                  </span>
+                  <div>
+                    <h3 class="font-display text-base font-bold text-ink">{part.title}</h3>
+                    <p class="mt-1.5 text-sm leading-relaxed text-ink-muted">{part.blurb}</p>
+                  </div>
+                  <span class="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-[var(--skill)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    Open lesson <span aria-hidden="true">→</span>
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      );
+    })
+  }
+</div>

@@ -1,7 +1,9 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import PracticeQuiz from '../../../components/PracticeQuiz';
 import { withBase } from '../../../lib/url';
 import { LISTENING_PARTS } from '../../../data/listening';
+import { LISTENING_PRACTICE } from '../../../data/listening-practice';
 
 export function getStaticPaths() {
   return LISTENING_PARTS.map((part, i) => ({
@@ -22,6 +24,7 @@ if (!raw) throw new Error(`Missing fragment for listening part: ${part.slug}`);
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 const overviewUrl = withBase('/lessons/listening');
+const practice = LISTENING_PRACTICE[part.slug];
 ---
 
 <LessonLayout
@@ -30,6 +33,8 @@ const overviewUrl = withBase('/lessons/listening');
   parent={{ label: 'Listening', href: overviewUrl }}
 >
   <Fragment set:html={body} />
+
+  {practice && <PracticeQuiz client:load set={practice} />}
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Listening section">
     {
@@ -44,7 +49,7 @@ const overviewUrl = withBase('/lessons/listening');
     }
     <a href={overviewUrl} class="group rounded-card border border-border p-4 text-center transition-colors hover:border-[var(--skill)]">
       <span class="text-xs font-semibold uppercase tracking-wide text-ink-muted">Listening</span>
-      <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">All Four Sections</span>
+      <span class="mt-1 block font-display text-sm font-bold group-hover:text-[var(--skill)]">All Listening Lessons</span>
     </a>
     {
       next ? (

@@ -4,6 +4,37 @@
 
 const KEY = 'ielts.progress.v1';
 
+/* The 2026-09 IELTS question-type restructure renamed a handful of lesson
+   slugs (see src/data/reading.ts and src/data/listening.ts): the store
+   version stays 1 since the shape of ProgressV1 hasn't changed, only some
+   of the string keys inside `lessons` — a version bump would be overkill
+   for a rename. Applied once, right where progress is read (both the local
+   copy here and the Supabase-pulled copy via mergeProgress, see
+   src/lib/auth/sync.ts) so a student who completed "Categorisation" or
+   "Section 1" before the rename doesn't lose that checkmark. Safe to run
+   on already-migrated data: a key not in this map passes through unchanged. */
+const RENAMED_LESSON_KEYS: Record<string, string> = {
+  'reading-cat': 'reading-matching-features',
+  'reading-para': 'reading-matching-information',
+  'listening-section1': 'listening-part1',
+  'listening-section2': 'listening-part2',
+  'listening-section3': 'listening-part3',
+  'listening-section4': 'listening-part4',
+};
+
+function migrateLessons(lessons: ProgressV1['lessons']): ProgressV1['lessons'] {
+  const out: ProgressV1['lessons'] = {};
+  for (const [slug, v] of Object.entries(lessons)) {
+    const migratedSlug = RENAMED_LESSON_KEYS[slug] ?? slug;
+    // If both the old and new key somehow exist (e.g. completed under the
+    // new slug on one device, the old slug on another before syncing), keep
+    // whichever was completed first rather than letting map order decide.
+    const existing = out[migratedSlug];
+    out[migratedSlug] = existing && existing.completedAt < v.completedAt ? existing : v;
+  }
+  return out;
+}
+
 export interface TestAttempt {
   at: string; // ISO datetime
   raw: number;
@@ -68,7 +99,8 @@ export function getProgress(): ProgressV1 {
     if (!raw) return structuredClone(EMPTY);
     const parsed = JSON.parse(raw);
     if (parsed?.version !== 1) return structuredClone(EMPTY);
-    return { ...structuredClone(EMPTY), ...parsed };
+    const merged: ProgressV1 = { ...structuredClone(EMPTY), ...parsed };
+    return { ...merged, lessons: migrateLessons(merged.lessons) };
   } catch {
     return structuredClone(EMPTY);
   }
@@ -220,8 +252,15 @@ export function resetProgress(): void {
     device is lost. Attempts are additive and stamped with an ISO `at`, so they
     dedupe cleanly on that timestamp; completed lessons keep the earliest date. */
 export function mergeProgress(a: ProgressV1, b: ProgressV1): ProgressV1 {
-  const lessons: ProgressV1['lessons'] = { ...b.lessons };
-  for (const [slug, v] of Object.entries(a.lessons)) {
+  // Normalise both sides first: `a` is usually already-migrated local
+  // storage (getProgress() migrates on read), but `b` is a raw Supabase
+  // pull (see src/lib/auth/sync.ts) that may still carry pre-rename keys
+  // from before this device last synced, or from another device that
+  // hasn't opened the app since the rename shipped.
+  const aLessons = migrateLessons(a.lessons);
+  const bLessons = migrateLessons(b.lessons);
+  const lessons: ProgressV1['lessons'] = { ...bLessons };
+  for (const [slug, v] of Object.entries(aLessons)) {
     const other = lessons[slug];
     lessons[slug] = other && other.completedAt < v.completedAt ? other : v;
   }

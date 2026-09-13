@@ -1,0 +1,27 @@
+---
+/* Standalone redirect: reading/cat was renamed to reading/matching-features
+   in the 2026-09 IELTS question-type restructure (see src/data/reading.ts).
+   A static route here beats the dynamic [part].astro route for this exact
+   path, so old links (search results, bookmarks) keep resolving instead of
+   404ing. Same meta-refresh + JS pattern as src/pages/tests/drills/[id].astro. */
+import { withBase } from '../../../lib/url';
+
+const target = withBase('/lessons/reading/matching-features');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <meta name="robots" content="noindex" />
+    <title>Redirecting…</title>
+    <script is:inline define:vars={{ target }}>
+      location.replace(target);
+    </script>
+  </head>
+  <body>
+    <a href={target}>Redirecting to {target}</a>
+  </body>
+</html>

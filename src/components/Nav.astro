@@ -2,10 +2,10 @@
 import { withBase } from '../lib/url';
 import AccountMenu from './AccountMenu';
 import { SKILLS, lessonsBySkill } from '../data/lessons';
-import { READING_PARTS } from '../data/reading';
+import { READING_PARTS, READING_GROUPS } from '../data/reading';
 import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
-import { LISTENING_PARTS } from '../data/listening';
+import { LISTENING_PARTS, LISTENING_GROUPS } from '../data/listening';
 
 const current = Astro.url.pathname;
 const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
@@ -37,13 +37,29 @@ interface NavLink {
   /** "Start here" method lessons — rendered as a highlighted row, distinct
       from the plain question-type links in the same group. */
   featured?: boolean;
+  /** Small uppercase label shown at the end of a featured row. Defaults to
+      "Method" (Writing's method lessons); Reading's featured lesson teaches
+      a skill rather than an essay-writing method, so it overrides this. */
+  tag?: string;
 }
 /* Each skill's type lessons, in labelled groups. Writing is split into
    its two exam tasks; every other skill has a single group. */
 const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
-  reading: [
-    { heading: 'Lessons', items: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })) },
-  ],
+  // Reading grew to 12 question-type lessons (2026-09 restructure), so it's
+  // now built from READING_GROUPS instead of one flat "Lessons" list — the
+  // dropdown already renders a heading per group (see Writing below), so
+  // this is cheap to do rather than leaving 12 items flat under one label.
+  // The "Core skill" lesson is flagged featured, same visual treatment as
+  // Writing's method lessons, since it's the one to do before the rest.
+  reading: READING_GROUPS.map((g) => ({
+    heading: g.label,
+    items: READING_PARTS.filter((p) => p.group === g.id).map((p) => ({
+      href: `/lessons/reading/${p.slug}`,
+      title: p.title,
+      featured: g.id === 'skill',
+      tag: g.id === 'skill' ? 'Skill' : undefined,
+    })),
+  })),
   writing: [
     {
       heading: 'Task 1 · Report',
@@ -57,9 +73,12 @@ const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
   speaking: [
     { heading: 'The Three Parts', items: SPEAKING_PARTS.map((p) => ({ href: `/lessons/speaking/${p.slug}`, title: p.title })) },
   ],
-  listening: [
-    { heading: 'The Four Sections', items: LISTENING_PARTS.map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })) },
-  ],
+  // Listening grew from 4 sections to 4 parts + 6 question types (2026-09
+  // restructure), same treatment as Reading above.
+  listening: LISTENING_GROUPS.map((g) => ({
+    heading: g.label,
+    items: LISTENING_PARTS.filter((p) => p.group === g.id).map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })),
+  })),
 };
 
 /* Reading/Writing/Speaking practice tools all live on the unified /tests hub
@@ -113,7 +132,10 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
                 ]}
               >
                 <span class="block h-1 bg-[var(--skill)]" aria-hidden="true"></span>
-                <div class="p-3">
+                {/* max-h/overflow-y so Reading's 13 lessons (2026-09 restructure) scroll
+                    inside the panel on short screens instead of running off-viewport;
+                    harmless no-op for the shorter skill menus. */}
+                <div class="max-h-[70vh] overflow-y-auto p-3">
                   {lessons.map((lesson) => (
                     <a
                       href={withBase(`/lessons/${lesson.slug}`)}
@@ -138,7 +160,7 @@ const practiceBySkill: Record<string, { href: string; label: string }[]> = {
                           >
                             <span aria-hidden="true">★</span>
                             {p.title}
-                            <span class="ml-auto text-[0.65rem] font-bold uppercase tracking-wide opacity-70">Method</span>
+                            <span class="ml-auto text-[0.65rem] font-bold uppercase tracking-wide opacity-70">{p.tag ?? 'Method'}</span>
                           </a>
                         ) : (
                           <a

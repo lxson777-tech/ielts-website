@@ -1,17 +1,30 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonTypeGrid from '../../components/LessonTypeGrid.astro';
 import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
 import { questionCount } from '../../lib/tests/schema';
+import { READING_GROUPS, READING_PARTS } from '../../data/reading';
 import raw from '../../content/lesson-bodies/reading-task1.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
 const readingTests = ALL_TESTS.filter((t) => t.skill === 'reading');
 const sample = readingTests[0];
+
+// The lesson-card grid is generated from READING_PARTS/READING_GROUPS rather
+// than hand-written in the fragment, so the fragment carries a marker
+// comment that gets split on and replaced with <LessonTypeGrid>.
+const CARD_MARKER = '<!-- lesson-cards -->';
+const markerIndex = body.indexOf(CARD_MARKER);
+if (markerIndex === -1) throw new Error('reading-task1.html is missing the "<!-- lesson-cards -->" marker');
+const bodyBeforeCards = body.slice(0, markerIndex);
+const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
 ---
 
 <LessonLayout slug="reading-task1">
-  <Fragment set:html={body} />
+  <Fragment set:html={bodyBeforeCards} />
+  <LessonTypeGrid groups={READING_GROUPS} parts={READING_PARTS} hrefBase="reading" />
+  <Fragment set:html={bodyAfterCards} />
 
   <hr class="divider" />
   <div class="section" id="timed-test">

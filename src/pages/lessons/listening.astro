@@ -1,11 +1,24 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonTypeGrid from '../../components/LessonTypeGrid.astro';
 import { withBase } from '../../lib/url';
+import { LISTENING_GROUPS, LISTENING_PARTS } from '../../data/listening';
 import raw from '../../content/lesson-bodies/listening.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
+
+// The lesson-card grid is generated from LISTENING_PARTS/LISTENING_GROUPS
+// rather than hand-written in the fragment, so the fragment carries a
+// marker comment that gets split on and replaced with <LessonTypeGrid>.
+const CARD_MARKER = '<!-- lesson-cards -->';
+const markerIndex = body.indexOf(CARD_MARKER);
+if (markerIndex === -1) throw new Error('listening.html is missing the "<!-- lesson-cards -->" marker');
+const bodyBeforeCards = body.slice(0, markerIndex);
+const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
 ---
 
 <LessonLayout slug="listening">
-  <Fragment set:html={body} />
+  <Fragment set:html={bodyBeforeCards} />
+  <LessonTypeGrid groups={LISTENING_GROUPS} parts={LISTENING_PARTS} hrefBase="listening" />
+  <Fragment set:html={bodyAfterCards} />
 </LessonLayout>

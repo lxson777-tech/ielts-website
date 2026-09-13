@@ -34,6 +34,12 @@ const TFNG = [
   { value: 'Not Given' },
 ];
 
+const YNNG = [
+  { value: 'Yes' },
+  { value: 'No' },
+  { value: 'Not Given' },
+];
+
 export const READING_PRACTICE: Record<string, PracticeSet> = {
   tfng: {
     title: 'Exercise. Decide: True, False, or Not Given',
@@ -130,11 +136,11 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
       alt: "Side profile of an ant with numbered pins on its body parts",
       // one marker per label question, in order (exoskeleton, thorax, antennae, mandibles, stinger)
       markers: [
-        { x: 76, y: 36 }, // 1 exoskeleton — abdomen shell
-        { x: 51, y: 41 }, // 2 thorax — middle segment
-        { x: 20, y: 29 }, // 3 antennae — upper feelers
-        { x: 19, y: 55 }, // 4 mandibles — front pincers
-        { x: 90, y: 57 }, // 5 stinger — coral rear tip
+        { x: 76, y: 36 }, // 1 exoskeleton, abdomen shell
+        { x: 51, y: 41 }, // 2 thorax, middle segment
+        { x: 20, y: 29 }, // 3 antennae, upper feelers
+        { x: 19, y: 55 }, // 4 mandibles, front pincers
+        { x: 90, y: 57 }, // 5 stinger, coral rear tip
       ],
     },
     questions: [
@@ -267,7 +273,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
     ],
   },
 
-  para: {
+  'matching-information': {
     title: 'Exercise. Which paragraph contains the information?',
     questions: [
       {
@@ -315,7 +321,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
     ],
   },
 
-  cat: {
+  'matching-features': {
     title: 'Exercise. Classify each statement',
     intro: 'A = Egyptians · B = Greeks · C = Romans',
     questions: [
@@ -501,6 +507,180 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         ],
         answer: 'B',
         explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
+      },
+    ],
+  },
+
+  ynng: {
+    title: 'Exercise. Decide: Yes, No, or Not Given',
+    intro: 'These statements test the writer’s own opinions and claims, not simple facts.',
+    questions: [
+      {
+        prompt: 'The writer believes a four-day week should become a single rule applied to every sector.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'No',
+        explanation: 'The writer says it "should never be imposed as a single national rule".',
+      },
+      {
+        prompt: 'The writer thinks different industries have a different relationship between hours worked and output.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Yes',
+        explanation: 'The writer states "every sector has a different relationship between hours worked and value produced".',
+      },
+      {
+        prompt: 'The writer states that productivity always increases when a company adopts a four-day week.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Not Given',
+        explanation: 'The claim that productivity "often stays the same or even improves" is attributed to the advocates, not stated as the writer’s own confirmed opinion, and the writer never says "always".',
+      },
+      {
+        prompt: "In the writer's opinion, many employers introduce a four-day week mainly to attract new staff rather than to improve employee wellbeing.",
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Yes',
+        explanation: 'The writer is "convinced that recruitment, not wellbeing, is the real reason many employers have adopted the change".',
+      },
+      {
+        prompt: 'The writer claims that the long-term effect of a four-day week on wages is already well understood.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'No',
+        explanation: 'The writer says "no study so far has tracked pay over the long term", the opposite of already being well understood.',
+      },
+      {
+        prompt: 'The writer has personally taken part in a four-day week trial at their own workplace.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Not Given',
+        explanation: 'The writer never mentions their own workplace or personal experience of a trial.',
+      },
+    ],
+  },
+
+  'matching-sentence-endings': {
+    title: 'Exercise. Match each sentence beginning to its correct ending',
+    intro: 'A-H below. There are more endings than beginnings, some are never used.',
+    questions: (() => {
+      const ENDINGS = [
+        { value: 'A', label: 'A) killed the bacteria growing around it' },
+        { value: 'B', label: 'B) purify or produce the substance in large quantities' },
+        { value: 'C', label: 'C) began work on extracting a usable form of the drug in 1939' },
+        { value: 'D', label: 'D) died after the limited supply of the drug ran out' },
+        { value: 'E', label: 'E) the demands of the Second World War' },
+        { value: 'F', label: 'F) refused to believe the mould had any medicinal value' },
+        { value: 'G', label: 'G) was awarded the Nobel Prize on his own' },
+        { value: 'H', label: 'H) made a full recovery within a week' },
+      ];
+      const rows: [string, string, string][] = [
+        [
+          'Fleming noticed that a mould growing in one of his culture dishes had…',
+          'A',
+          '“…producing a substance capable of killing the bacteria nearby.”',
+        ],
+        [
+          'At the time of his discovery, Fleming was unable to…',
+          'B',
+          '“…he had no way to purify or mass-produce it.”',
+        ],
+        [
+          'The Oxford team led by Florey and Chain…',
+          'C',
+          '“It was not until 1939 that a team at Oxford University… took up the challenge of extracting a stable, concentrated form of the drug.”',
+        ],
+        [
+          'The first human patient treated with penicillin…',
+          'D',
+          '“…supplies ran out before he could be fully cured, and he later died.”',
+        ],
+        [
+          'The rapid expansion of penicillin production was driven by…',
+          'E',
+          '“The outbreak of the Second World War transformed penicillin from a scientific project into a national priority.”',
+        ],
+      ];
+      return rows.map(([prompt, answer, explanation]) => ({
+        prompt,
+        kind: 'select' as const,
+        options: ENDINGS,
+        answer,
+        explanation,
+      }));
+    })(),
+  },
+
+  'summary-completion': {
+    title: 'Exercise. Complete the summary',
+    intro: 'Use NO MORE than TWO words from the passage for each gap.',
+    questions: [
+      {
+        prompt: 'Beekeeping used to happen only in the countryside, but it has now become common in ________ areas.',
+        kind: 'text',
+        answer: 'urban',
+        explanation: '“…beekeeping has spread rapidly into cities…” and the passage’s own title calls this "Urban Beekeeping".',
+      },
+      {
+        prompt: 'Cities can give bees a ________ diet, because many different plants flower throughout the year.',
+        kind: 'text',
+        answer: 'varied',
+        explanation: '“…cities can actually offer bees a more varied diet than intensively farmed countryside…”',
+      },
+      {
+        prompt: 'Hives are also used in schools as a form of ________, letting children observe bees safely.',
+        kind: 'text',
+        answer: 'environmental education',
+        explanation: '“Urban beekeeping has also become a popular tool for environmental education.”',
+      },
+      {
+        prompt: 'Some ecologists worry that too many honeybees compete with ________ species for food.',
+        kind: 'text',
+        answer: ['native bee', 'wild bee'],
+        explanation: '“…can increase competition for nectar with wild, native bee species…”',
+      },
+      {
+        prompt: 'This competition may explain a drop in ________ sightings near areas with many hives.',
+        kind: 'text',
+        answer: ['bumblebee', 'wild bumblebee'],
+        explanation: '“…sightings of wild bumblebees fell noticeably within a few years…”',
+      },
+    ],
+  },
+
+  'short-answer': {
+    title: 'Exercise. Answer the questions',
+    intro: 'Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer.',
+    questions: [
+      {
+        prompt: 'In what year was the first telescope with a clear historical record made?',
+        kind: 'text',
+        answer: '1608',
+        explanation: '“The first telescope for which a clear historical record exists was made in the Netherlands in 1608…”',
+      },
+      {
+        prompt: "By how many times could Galileo's improved telescope magnify objects?",
+        kind: 'text',
+        answer: ['twenty', 'twenty times', '20', '20 times'],
+        explanation: '“…achieving a magnification of around twenty times.”',
+      },
+      {
+        prompt: 'What did Galileo observe orbiting Jupiter in 1610?',
+        kind: 'text',
+        answer: ['four moons', 'moons'],
+        explanation: '“In 1610, he observed four moons orbiting Jupiter…”',
+      },
+      {
+        prompt: 'What term describes the telescopes used by modern observatories that orbit above the Earth?',
+        kind: 'text',
+        answer: 'space-based',
+        explanation: '“Modern observatories, including space-based instruments, still rely on mirrors rather than lenses…”',
+      },
+      {
+        prompt: 'Who built the first practical reflecting telescope, in 1668?',
+        kind: 'text',
+        answer: ['isaac newton', 'newton'],
+        explanation: '“In 1668, Isaac Newton solved this problem by building the first practical reflecting telescope…”',
       },
     ],
   },

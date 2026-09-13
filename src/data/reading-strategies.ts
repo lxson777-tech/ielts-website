@@ -1,9 +1,10 @@
 /* Strategy content ported from the "How to Approach It" sections of the
-   reading lessons (src/content/lesson-bodies/reading-*.html) — surfaced live
+   reading lessons (src/content/lesson-bodies/reading-*.html), surfaced live
    during drill practice instead of staying buried in the lesson pages. Keyed
-   by lesson rather than QuestionType directly, since several question types
-   share one lesson's technique (e.g. tfng and yes-no-notgiven are the same
-   skill under a different name). */
+   by lesson rather than QuestionType directly, since a couple of question
+   types with no dedicated lesson (multiple-answer, categorisation) borrow
+   the mechanically-closest sibling's strategy. See QUESTION_TYPE_STRATEGY
+   below for exactly which. */
 
 import type { QuestionType } from '../lib/tests/schema';
 
@@ -13,7 +14,17 @@ export interface ReadingStrategy {
   traps: string[];
 }
 
-type StrategyKey = 'tfng' | 'mc' | 'headings' | 'para' | 'sentence' | 'diagram' | 'cat';
+type StrategyKey =
+  | 'tfng'
+  | 'ynng'
+  | 'mc'
+  | 'headings'
+  | 'matching-information'
+  | 'sentence'
+  | 'sentence-endings'
+  | 'diagram'
+  | 'matching-features'
+  | 'summary';
 
 export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
   tfng: {
@@ -62,8 +73,8 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       'headings with similar wording. Look at meaning, not just words',
     ],
   },
-  para: {
-    label: 'Matching Paragraph Information',
+  'matching-information': {
+    label: 'Matching Information',
     steps: [
       'Read all the statements first and identify keywords and paraphrases.',
       'Skim the passage to get a sense of what each paragraph covers.',
@@ -103,35 +114,73 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       'misspelling technical terms',
     ],
   },
-  cat: {
-    label: 'Categorisation',
+  'matching-features': {
+    label: 'Matching Features',
     steps: [
-      'Read the categories carefully. Understand what each one represents.',
-      'Skim the passage to identify which section refers to each category.',
+      'Read the options carefully. Understand what each one represents (people, theories, places, dates, or groups).',
+      'Skim the passage to identify which section refers to each option.',
       'Read each statement and identify keywords.',
-      'Locate the relevant passage section and decide which category the information belongs to.',
+      'Locate the relevant passage section and decide which option the information belongs to.',
       "Don't panic if the same letter appears several times. That's normal.",
     ],
-    traps: ['using general knowledge. Rely only on the passage', 'assuming each category is used only once'],
+    traps: ['using general knowledge. Rely only on the passage', 'assuming each option is used only once'],
+  },
+  ynng: {
+    label: 'Yes / No / Not Given',
+    steps: [
+      'Underline words in the statement that show it is about an opinion, not a fact.',
+      'Scan for the matching part of the passage. Answers come in the same order as the passage.',
+      "Check whose opinion is being reported. A view the writer only quotes from someone else is not automatically the writer's own.",
+      'Compare the statement\'s strength to the writer\'s: an absolute claim is NO if the writer only hints at something weaker.',
+      'If the writer never states a view on the exact point, choose NOT GIVEN. Do not guess what they would probably think.',
+    ],
+    traps: [
+      "a strong opinion reported from someone else mistaken for the writer's own",
+      'assuming NOT GIVEN means the writer disagrees, when they simply never mention it',
+    ],
+  },
+  'sentence-endings': {
+    label: 'Matching Sentence Endings',
+    steps: [
+      'Read every beginning first, and check what grammatical form each one needs to continue naturally.',
+      'Read every ending too, and note its grammatical form before matching anything.',
+      'Eliminate any ending whose grammar cannot follow a given beginning, even if the topic looks related.',
+      'Scan the passage for the section covering each beginning\'s topic. Answers appear in passage order.',
+      'Confirm the surviving ending against the passage\'s actual facts, not just how fluent it sounds.',
+    ],
+    traps: [
+      'an ending that fits grammatically but contradicts the passage',
+      'two endings that both sound plausible for the same beginning',
+    ],
+  },
+  summary: {
+    label: 'Summary, Note, Table & Flow-chart Completion',
+    steps: [
+      'Read the whole summary, notes, table, or flow-chart first, ignoring the gaps, to see what part of the passage it retells.',
+      'For each gap, decide what kind of word is missing (a noun, a number, a process, a name?).',
+      'Find the matching section in the passage. It usually keeps the same order as the gaps.',
+      'If choosing from a box, compare each remaining option carefully. More than one may look tempting.',
+      'Reread the completed sentence or step to check it makes grammatical sense and matches the passage.',
+    ],
+    traps: ['writing a paraphrase instead of the passage\'s exact word', 'going over the stated word limit'],
   },
 };
 
-/* yes-no-notgiven, sentence-endings, table-completion, multiple-answer and
-   matching-features have no dedicated lesson — they borrow the
-   mechanically-closest sibling's strategy. matching-features → cat is
-   confirmed by reading-cat.html itself ("Also called Classification or
-   Matching Features"). */
+/* multiple-answer has no dedicated lesson, it borrows the
+   mechanically-closest sibling's strategy (mc). categorisation has no
+   dedicated lesson either, it is the older name for matching-features and
+   borrows that lesson's strategy directly. */
 export const QUESTION_TYPE_STRATEGY: Record<QuestionType, StrategyKey> = {
   tfng: 'tfng',
-  'yes-no-notgiven': 'tfng',
+  'yes-no-notgiven': 'ynng',
   'multiple-choice': 'mc',
   'multiple-answer': 'mc',
   'matching-headings': 'headings',
-  'paragraph-matching': 'para',
+  'paragraph-matching': 'matching-information',
   'sentence-completion': 'sentence',
-  'sentence-endings': 'sentence',
+  'sentence-endings': 'sentence-endings',
   'diagram-labelling': 'diagram',
-  'table-completion': 'diagram',
-  categorisation: 'cat',
-  'matching-features': 'cat',
+  'table-completion': 'summary',
+  categorisation: 'matching-features',
+  'matching-features': 'matching-features',
 };
