@@ -12,5 +12,7 @@ const { test } = Astro.props;
 ---
 
 <BaseLayout title={`${test.title} · IELTS ${test.skill === 'reading' ? 'Reading' : 'Listening'} Test`} bare>
-  <TestPlayer client:load test={test} hubUrl={withBase('/tests')} />
+  <div class={`skill-${test.skill}`}>
+    <TestPlayer client:load test={test} hubUrl={withBase('/tests')} />
+  </div>
 </BaseLayout>

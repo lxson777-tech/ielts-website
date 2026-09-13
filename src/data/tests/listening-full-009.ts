@@ -33,8 +33,8 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "busines",
-              "explanation": "At 01:46 the student says she is doing a degree in business studies; the answer key's spelling 'busines' looks like a typo for 'business'.",
+              "answer": "business",
+              "explanation": "At 01:46 the student says she is doing a degree in business studies. The published key spelled this 'busines'; that typo is corrected here so the correct spelling scores.",
               "evidence": "I'm doing a degree in business studies"
             },
             {

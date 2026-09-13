@@ -160,6 +160,31 @@ PAIRS = {
     (5, 9): ("test5-q9-q10", ["B", "E"]), (5, 10): ("test5-q9-q10", ["B", "E"]),
 }
 
+# --- Corrections to the publisher's answer key -------------------------------
+#
+# The publisher's key is the default. These are the ONLY sanctioned way to
+# disagree with it: a teacher adjudicated the question against the transcript,
+# the correction is recorded here with its reason, and the importer reads this
+# table, so a re-import keeps the fix. Mirrors ANSWER_OVERRIDES in
+# tools/import_reading.py. See docs/listening-sources.md.
+#
+# Add an entry only when the transcript settles the point. Everything else
+# stays as the publisher wrote it.
+#
+# ANSWER_OVERRIDES: (test number, question id) -> {answer, reason}. `answer`
+# is stored exactly as given: a string, or a list of accepted forms (the
+# scorer accepts any member, comparing case-insensitively).
+ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
+    (9, "q1"): {
+        "answer": "business",
+        "reason": "The published key reads 'busines'. The transcript has the student say 'I'm doing a degree in business studies', so the correct spelling is stored instead of the publisher's typo, and the misspelling is not taught.",
+    },
+    (20, "q38"): {
+        "answer": ["Grandad's Old Ale", "grandads old ale"],
+        "reason": "The published key reads 'grandads old air', misspelling ale as air. The transcript has the lecturer say 'a beer they called Grand Dads Old Ale'. Both the apostrophe and no-apostrophe spellings are accepted since normalizeAnswer() only strips leading/trailing quote characters, not an apostrophe in the middle of a word.",
+    },
+}
+
 # Canonical values copied from the publisher's answer panels. Keeping these
 # explicit lets the importer detect accidental source-key drift in review.
 ANSWERS = {
@@ -1005,6 +1030,9 @@ def make_group(n: int, section_index: int, group_index: int, meta: tuple[int, in
     pair_id = f"test{n}-q{first}-q{last}" if unordered else None
     for number in range(first, last + 1):
         accepted = pooled_answers if unordered else normalise_answer(ANSWERS[n][number - 1])
+        override = ANSWER_OVERRIDES.get((n, f"q{number}"))
+        if override:
+            accepted = override["answer"] if isinstance(override["answer"], list) else [override["answer"]]
         q: dict[str, object] = {"id": f"q{number}", "textHtml": escape(prompt_for(section_text, number)), "answer": accepted if len(accepted) > 1 else accepted[0]}
         if (n, number) in UNSCORED_SOURCE_QUESTIONS:
             q["scored"] = False

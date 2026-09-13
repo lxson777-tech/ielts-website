@@ -649,8 +649,11 @@ export const listeningFull020: PracticeTest = {
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "grandads old air",
-              "explanation": "At 22:24 the lecturer names the imaginary beer \"Grand Dads Old Ale\"; the stored answer \"grandads old air\" misspells ale as air, which looks like an error in the answer key rather than the transcript.",
+              "answer": [
+                "Grandad's Old Ale",
+                "grandads old ale"
+              ],
+              "explanation": "At 22:24 the lecturer names the imaginary beer \"Grand Dads Old Ale\", a play on Shell selling beer instead of oil. The published key read \"grandads old air\", misspelling ale as air; that typo is corrected here to accept both the apostrophe and no-apostrophe spellings a student would type.",
               "evidence": "marketed a beer they called Grand Dads Old Ale"
             },
             {
