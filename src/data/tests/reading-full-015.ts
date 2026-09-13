@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-308",
+  "id": "reading-full-015",
   "skill": "reading",
-  "title": "Academic Reading Test 308",
+  "title": "Academic Reading Test 15",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-308/",
+    "url": "https://practicepteonline.com/ielts-reading-test-303/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,120 +17,180 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "THE SMART CARD",
+        "title": "Prison: The Solution or the Problem?",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>The invention of the microchip in the 1960s revolutionised the computer industry. Microchips are also used in thousands of other products, including smart cards. These look and function like the familiar magnetic-stripe credit cards, but they have a microchip embedded inside them that can store information. The smart card was the brainchild of two French inventors, Roland Moreno and Michel Ugon, who developed the technology in the mid-1970s. The first cards were tested in several French cities in the early 1980s and the technology was subsequently adopted by banks throughout Europe. Smart cards are now a part of everyday life in Europe, where they are used for a wide range of purposes, including paying for public transport, making small purchases over the counter, and banking by telephone. The European Union has adopted the technology as the standard for all its future credit cards.</span>"
+            "html": "<span>In the Netherlands and parts of the USA such as Johnson County, a move towards rehabilitation of offenders and decreasing crime has seen a reduction in incarceration rates. Bucking this trend, the UK’s prison population has increased by an average rate of 3.6% per year since 1993. As the situation currently stands, England’s and Wales’ incarceration rate is 148 per 100,000 compared to 98 in France, 82 in the Netherlands and 79 in Germany. Without a shadow of a doubt, out of all European countries, the UK has adopted the most hardline approach to offenders.</span>"
           },
           {
-            "html": "<span>Smart cards are only just beginning to be introduced in the United States, where the older magnetic-stripe technology is still the norm. The new technology is considered to be much more secure than the magnetic-stripe card, which is vulnerable to fraud. The microchip embedded in the smart card can be programmed to allow the cardholder to access many different systems. One card can be used for various types of banking transactions, for example, and as a phone card. It can also serve as an electronic purse, storing a cash balance for small purchases and recording phone and ATM transactions. It can also be used as a security pass to give the cardholder access to restricted areas.</span>"
+            "html": "<span>The trend towards imposing prison sentences on offenders in the UK is made to seem all the more harsh since the Dutch Justice Ministry is actively in the process of systematically closing down prisons. In the period between 2010-2015, 28 prisons were closed in total. If anything, the Dutch reform of the prison system has been accelerating at a phenomenal pace, with 19 of the prisons being shut down in 2014 alone.</span>"
           },
           {
-            "html": "<span>The smart card may well replace keys, money, and identity cards in the future. In the United States, the Department of Defense has provided smart cards to its 4.3 million employees, and the Department of Energy is planning to do the same. Many of the nation’s hospitals and health-care facilities are also adopting the technology.</span>"
+            "html": "<span>As would be expected, closures of prisons in the Netherlands have led to a drop in the numbers of incarcerated offenders. This is also largely due to the fact that those convicted are choosing electronic tagging instead of incarceration. However, there is more to these statistics than meets the eye. Defying all expectations of the pro-incarceration lobbyists, crime rates in the Netherlands are also actually decreasing in direct proportion to the closure of prisons.</span>"
           },
           {
-            "html": "<span>One of the most significant uses of the smart card is in providing people with access to their own health records. In France, for example, everyone now has a smart card containing a complete medical history, which can be accessed immediately by a doctor or pharmacist. The card, which is the size of a credit card, has a microchip embedded in it that contains the patient’s medical history, including allergies, blood type, and details of any current medical conditions. The card also contains information about the patient’s health-insurance provider. The card can be used to store medical records, prescriptions, and details of medical appointments.</span>"
+            "html": "<span>With such statistics laid bare for all to see, many are now beginning to question the validity of incarceration as a method of reforming offenders. All the more so since the average prison place costs the taxpayer £37,648 per year – a hefty sum for a service that fails to deliver, especially since there are vastly cheaper and more effective methods to deal with offenders. Allowing offenders to be tagged electronically rather than be incarcerated would save around £35 million per year for every 1000 convicted offenders. Serving a probation or community service order would also be 12 times less costly than the average prison placement for an offender.</span>"
           },
           {
-            "html": "<span>In the United States, the Health Insurance Portability and Accountability Act (HIPAA) is driving the demand for smart cards. The Act requires health-care providers to protect the privacy of patients’ medical information and to take measures to protect the security of sensitive information. Smart cards are considered one of the best ways of meeting these requirements.</span>"
+            "html": "<span>More tellingly, a decreased incidence of relapse into criminal behaviour when offenders receive a community sentence, rather than a custodial one, has been revealed in re-offending statistics issued by the UK Ministry of Justice. There is definitely an argument that serving a prison term tends to create rather than alleviate the problem of crime. As a Conservative white paper concluded in 1990, ‘We know that prison is an expensive way of making bad people worse.’ Interestingly, the report also argued that there should be a range of community-based sentences which would be cheaper and more effective alternatives to prison.</span>"
           },
           {
-            "html": "<span>The technology is also being used to improve the security of the US passport card. The card is a wallet-sized document that can be used instead of the traditional passport booklet when US citizens cross the border by land or sea between the United States and Canada, Mexico, the Caribbean, or Bermuda. The card has a microchip embedded in it that contains a unique number linking the card to a government database containing the cardholder’s personal information.</span>"
+            "html": "<span>Quite apart from the cost and relative ineffectiveness of incarceration is the short-sightedness of imposing a custodial sentence in the first place. A punitive system of incarceration presupposes that the prisoner needs to be punished for bad behaviour. Since the prisoner is considered answerable for their behaviour, it is believed that they are also completely responsible for their actions. Such an approach overlooks social and economic factors that can play an integral role in the incidence of crime. Such an oversight only serves to perpetuate crime and punish offenders who need help rather than a penal sentence.</span>"
           },
           {
-            "html": "<span>Smart cards are also used in public-transport systems around the world. In Hong Kong, for example, the Octopus card is used by millions of commuters every day. The card is a plastic smart card containing a microchip that can be loaded with cash and used to pay for travel on the city’s underground railway system. The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores.</span>"
+            "html": "<span>It would do no harm for the UK to look to the Netherlands for an example in reducing crime through addressing social problems as a key to reducing incarceration. In the Netherlands, the focus is on deterring crime by investing in social services rather than seeking purely to punish the offender. In addition, those who do offend are helped with rehabilitation programmes.</span>"
+          },
+          {
+            "html": "<span>Overlooking the social circumstances of the offender can also be detrimental to children’s welfare, especially if a mother is convicted and given a custodial sentence. Often childcare arrangements are not in place when custodial sentences are handed down to mothers caring for children. In fact, research suggests that more than half of the women who go to court are not expecting a custodial sentence, leading to provisions made for the children being haphazard at best. The number of children who fall foul of the custodial system in this way totals a staggering 17,000 per year. Worse still, figures show that adult children of imprisoned mothers are more likely to be convicted of a crime than adult children of imprisoned fathers. Viewing the offender and their crime in isolation and disregarding all other social and environmental factors is therefore mistaken, if not downright morally reprehensible.</span>"
+          },
+          {
+            "html": "<span>All evidence would seem to point to a much needed shake-up of the English penal system. As things stand, there are too many losers and no identifiable winners. It was Dostoevsky who said: ‘The degree of civilisation in a society is revealed by entering its prisons.’ Maybe we would do better to go one step further and amend his quotation to ‘The degree of civilisation in a society is revealed by not having prisons and instead by addressing social issues in society itself.’</span>"
           }
         ]
       },
       "groups": [
         {
           "title": "Questions 1-7",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write",
+          "type": "table-completion",
+          "instructionHtml": "Complete the sentences below. Choose NO MORE THAN THREE WORDS from the passage for each answer.",
           "questions": [
             {
               "id": "q1",
-              "answer": "False",
-              "textHtml": "The smart card was developed by two French inventors in the 1960s"
+              "answer": "rehabilitation of offenders",
+              "before": "………….. than to their incarceration. Closure of prisons in the Netherlands",
+              "after": ""
             },
             {
               "id": "q2",
-              "answer": "True",
-              "textHtml": "The microchips in smart cards can store information"
+              "answer": "has been accelerating",
+              "before": "………………. at an unprecedented rate over recent years. Against",
+              "after": ""
             },
             {
               "id": "q3",
-              "answer": "Not given",
-              "textHtml": "The European Union wants all its citizens to use smart cards"
+              "answer": "all expectations",
+              "before": "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
+              "after": ""
             },
             {
               "id": "q4",
-              "answer": "True",
-              "textHtml": "The US Department of Defense has provided smart cards to its employees"
+              "answer": "question the validity",
+              "before": "………………. of such a practice. In fact, incarceration may serve to fuel rather",
+              "after": ""
             },
             {
               "id": "q5",
-              "answer": "Not given",
-              "textHtml": "The US Department of Energy has developed a smart card for its employees"
+              "answer": "than alleviate",
+              "before": "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
+              "after": ""
             },
             {
               "id": "q6",
-              "answer": "Treu",
-              "textHtml": "In France, people’s medical records are stored on a smart card"
+              "answer": "more effective alternatives",
+              "before": "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
+              "after": ""
             },
             {
               "id": "q7",
-              "answer": "True",
-              "textHtml": "The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy"
+              "answer": "social and economic",
+              "before": "………………. influences",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 1-7<br/>\n</strong></span><span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE    </strong>              if the statement agrees with the information<br/>\n</span><span><strong>FALSE</strong>                 if the statement contradicts the information<br/>\n</span><span><strong>NOT GIVEN</strong>         if there is no information on this       </span></p><p><span>1. The smart card was developed by two French inventors in the 1960s.<br/>\n</span><span>2. The microchips in smart cards can store information.<br/>\n</span><span>3. The European Union wants all its citizens to use smart cards.<br/>\n</span><span>4. The US Department of Defense has provided smart cards to its employees.<br/>\n</span><span>5. The US Department of Energy has developed a smart card for its employees.<br/>\n</span><span>6. In France, people’s medical records are stored on a smart card.<br/>\n</span><span>7.The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>A decrease in crime in the Netherlands and parts of the US is attributable more to the (1) ………….. than to their incarceration.</span></p><p><span>Closure of prisons in the Netherlands (2) ………………. at an unprecedented rate over recent years.</span></p><p><span>Against (3) ……………… , the Netherlands are seeing a drop in crime along with the closure of prisons.</span></p><p><span>Since statistics do not support the argument for incarceration this has made many (4) ………………. of such a practice.</span></p><p><span>In fact, incarceration may serve to fuel rather (5) ……………… crime, thereby defeating the purpose of such a punishment.</span></p><p><span>In recognition of the fact that custodial sentences achieve little, less costly and (6) ……….. were put forward by the Conservatives in 1990.</span></p><p><span>Crime is not only down to individual behaviour but is also a result of (7) ………………. influences.</span></p>",
+          "wordLimit": 3,
+          "table": {
+            "rows": [
+              [
+                "………….. than to their incarceration. Closure of prisons in the Netherlands",
+                {
+                  "questionId": "q1"
+                },
+                ""
+              ],
+              [
+                "………………. at an unprecedented rate over recent years. Against",
+                {
+                  "questionId": "q2"
+                },
+                ""
+              ],
+              [
+                "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
+                {
+                  "questionId": "q3"
+                },
+                ""
+              ],
+              [
+                "………………. of such a practice. In fact, incarceration may serve to fuel rather",
+                {
+                  "questionId": "q4"
+                },
+                ""
+              ],
+              [
+                "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
+                {
+                  "questionId": "q5"
+                },
+                ""
+              ],
+              [
+                "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
+                {
+                  "questionId": "q6"
+                },
+                ""
+              ],
+              [
+                "………………. influences",
+                {
+                  "questionId": "q7"
+                },
+                ""
+              ]
+            ]
+          }
         },
         {
           "title": "Questions 8-13",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the notes below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in the text? For questions 8-13, write",
           "questions": [
             {
               "id": "q8",
-              "answer": "Medical appointments",
-              "before": "…………………. – to store",
-              "after": ""
+              "answer": "False",
+              "textHtml": "There are signs that custodial sentences are becoming less popular in the UK"
             },
             {
               "id": "q9",
-              "answer": "Prescriptions",
-              "before": "………………… Use of smart cards in the United States – to improve the security of the US passport card – to provide a",
-              "after": ""
+              "answer": "False",
+              "textHtml": "The English judicial system stands to benefit from incarcerating offenders"
             },
             {
               "id": "q10",
-              "answer": "Unique number",
-              "before": "…………………. between the card and a government database Use of smart cards in Hong Kong – to pay for travel on the city’s underground railway system – to pay for travel on",
-              "after": ""
+              "answer": "True",
+              "textHtml": "Custodial sentences are intended primarily to reform prisoners"
             },
             {
               "id": "q11",
-              "answer": "Buses",
-              "before": "………………….. ,",
-              "after": ""
+              "answer": "True",
+              "textHtml": "Factors other than an individual’s guilt are rarely taken into account by the English judicial system"
             },
             {
               "id": "q12",
-              "answer": "Ferries",
-              "before": "……………….. and",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life"
             },
             {
               "id": "q13",
-              "answer": "Trams",
-              "before": "……………",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 8-13<br/>\n</strong></span><span>Complete the notes below. Choose <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.</span></p><p><span><strong>THE SMART CARD</strong></span></p><p><span><strong>Functions of smart cards<br/>\n</strong></span><span>– store information<br/>\n</span><span>– allow the cardholder to access different systems</span></p><p><span><strong>Different uses of smart cards<br/>\n</strong></span><span>– to make small purchases<br/>\n</span><span>– to record phone and ATM transactions<br/>\n</span><span>– as a security pass</span></p><p><span><strong>Use of smart cards in France<br/>\n</strong></span><span>– to provide people with access to their own health records<br/>\n</span><span>– to store medical records and details about (8) ………………….<br/>\n</span><span>– to store (9) …………………</span></p><p><span><strong>Use of smart cards in the United States<br/>\n</strong></span><span>– to improve the security of the US passport card<br/>\n</span><span>– to provide a (10) …………………. between the card and a government database</span></p><p><span><strong>Use of smart cards in Hong Kong<br/>\n</strong></span><span>– to pay for travel on the city’s underground railway system<br/>\n</span><span>– to pay for travel on (11) ………………….. , (12) ……………….. and (13) …………….</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "wordLimit": 3
+          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in the text? For questions 8-13, write</span></p><p><span><strong>TRUE</strong>                         if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                        if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>            if there is no information on this</span></p><p><span>8. There are signs that custodial sentences are becoming less popular in the UK.</span><br/>\n<span>9. The English judicial system stands to benefit from incarcerating offenders.</span><br/>\n<span>10. Custodial sentences are intended primarily to reform prisoners.</span><br/>\n<span>11. Factors other than an individual’s guilt are rarely taken into account by the English judicial system.</span><br/>\n<span>12. A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life.</span><br/>\n<span>13. Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice.</span></p>"
         }
       ]
     },
@@ -139,132 +199,165 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "GENE THERAPY",
+        "title": "Physiology and Criminality",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> Gene therapy is the introduction of genes into existing cells to prevent or cure a wide range of diseases. The most common form of gene therapy involves using DNA that encodes a functional, therapeutic gene to replace a mutated gene. Gene therapy was first conceptualised in 1972, with the authors urging caution before commencing human gene therapy studies. The first attempt, an unsuccessful one, at modifying human DNA was performed in 1980 by Martin Cline. The first successful nuclear gene transfer in humans, approved by the National Institutes of Health, was performed in May 1989. The first therapeutic use of gene transfer as well as the first direct insertion of human DNA into the nuclear genome was performed by French Anderson in a trial starting in September 1990. The first commercial gene therapy, Gendicine, was approved in China in 2003 for the treatment of certain cancers. In 2011, Neovasculgen was registered in Russia as the first-in-class gene-therapy drug for treatment of peripheral artery disease, including critical limb ischemia. In 2012, Glybera, a treatment for a rare inherited disorder, lipoprotein lipase deficiency, was approved by the European Commission.</span>"
+            "html": "<span>Prior to the 19th century, criminality was considered more of a moral or philosophical issue. Only with the advent of Italian anthropologist Cesare Lombroso did the subject of criminality take a more scientific turn. With the publication of his theories of criminal behaviour, Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons.</span>"
           },
           {
-            "html": "<span><strong>B</strong> Although the technology is still in its infancy, it has been used with some success. It is a potential therapy for a number of diseases (such as cystic fibrosis, sickle cell anaemia, adrenoleukodystrophy and haemophilia) as well as several inherited retinal diseases. Current gene therapy has primarily focused on treating individuals by targeting the therapy to somatic (body) cells, such as bone marrow cells. Gene therapy may be classified into the two following types:</span>"
+            "html": "<span>In his ‘atavistic form’ theory published in 1876, Lombroso claimed that criminality was heritable. He proposed that a distinct biological class of people were prone to criminality. Such people, he claimed, exhibited ‘atavistic’ or primitive features and were ‘throwbacks’, bearing physical resemblances to Man’s predecessors, the Neanderthals. Characterised by a strong, well-defined jaw and heavy brow, they certainly had little to recommend them in the beauty stakes. With such features, coupled with a tendency towards criminal behaviour, Lombroso’s atavistic type was certainly not cut out for social success. Just for good measure, Lombroso also included other distinguishing features to identify criminals, such as bloodshot eyes and curly hair for murderers and thick lips and protruding ears for sex offenders. It has to be wondered, given the unusual appearance with which they were credited, how such individuals would have got close enough to their victims to begin with and, more to the point, how any such criminals hoped to get away with their crime, seeing as they were so readily identifiable.</span>"
           },
           {
-            "html": "<span>Somatic gene therapy: In somatic gene therapy, the therapeutic genes are transferred into the somatic cells (cells that do not make sperm or eggs) of a patient. Any modifications and effects will be restricted to the individual patient only, and will not be inherited by the patient’s offspring or later generations. Somatic gene therapy represents mainstream basic and clinical research, in which therapeutic DNA is used to treat disease.</span>"
+            "html": "<span>In hindsight, Lombroso’s hypothesis seems ludicrous and deeply flawed. One major failing in Lombroso’s theory of an atavistic type is that no proper controls were used in studies designed to support his hypothesis. All individuals were confined to a criminal population, no comparison being made at the time with non-criminal control groups. Secondly, the concept of what constitutes a crime is in itself a social construct and can vary cross-culturally and over time. Therefore, the argument that criminal behaviour is inherited is hard to sustain. Finally, in the light of modern genetic research, complex behaviours are not considered to be controlled by single genes, thereby completely ruling out any possibility of inherited criminality.</span>"
           },
           {
-            "html": "<span>Germline gene therapy: In germline gene therapy, germ cells (sperm or eggs) are modified by the introduction of functional genes, which are ordinarily integrated into their genomes. The change due to therapy would therefore be heritable and would be passed on to later generations. In some jurisdictions, germline gene therapy is the only feasible option for some diseases; however, this option is fraught with many bio-ethical considerations. For the present, germline gene therapy is prohibited for application in human beings, at least for the foreseeable future, in most countries.</span>"
+            "html": "<span>Surprisingly, given his strong conviction of a biological disposition towards criminality, Lombroso later modified his views to admit environmental influences in determining criminal behaviour. Such views now form the basis of contemporary theories of criminality. In recognition of this fact, contemporary criminologists have bestowed on Lombroso the honorary title ‘the father of criminology’. Furthermore, despite scientific failings in his experimental approach, Lombroso is to be credited with shifting the study of criminal behaviour from a moral basis to an empirical one, thereby placing the study of criminology on a more scientific footing.</span>"
           },
           {
-            "html": "<span><strong>C</strong> Gene therapy may be classified into two types, ex vivo and in vivo, on the basis of the method of delivery of genes. Ex vivo gene therapy involves the transfer of genes in cultured cells and reinsertion of the genetically altered cells back into the patient. In vivo gene therapy is the direct delivery of genes into the cells of a particular tissue in the body. The in vivo gene delivery can be divided into two categories: the therapeutic gene is directly injected into the body tissues; the therapeutic DNA is delivered to the target cells through the circulation.</span>"
+            "html": "<span>The argument for a biological basis to criminality resurfaced, however, nearly a century later with Sheldon’s theory of somatotypes. In 1949, Sheldon advanced the theory that individuals fell within three broad physical types: the ectomorph, mesomorph and endomorph. The ectomorph was essentially thin, the mesomorph muscular and athletic, whilst the endomorph type was said to be fat and rather lethargic. Each physical type, Sheldon claimed, was associated with a distinct personality and temperament. Ectomorphs were characterised by a solitary and restrained nature, whilst mesomorphs were said to be adventurous and endomorphs relaxed and pleasure-loving. Unfortunately for the mesomorphs, Sheldon also claimed that those corresponding to this physical type had criminal tendencies. By linking inherited physical types with personality, Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour. Sheldon’s studies of mesomorphic college students did to some extent confirm his theory as did a later study conducted by Putwain and Sammons as recently as 2002. In partial support of Sheldon’s theory, an increased level of testosterone associated with a mesomorphic build could explain such a biological disposition towards criminality associated with a particular body type. However, social prejudices and self-fulfilling prophecies could also be at play in the above average correlation between mesomorphic types and criminal behaviour in society.</span>"
           },
           {
-            "html": "<span><strong>D</strong> Gene therapy uses sections of DNA (usually genes) to treat or prevent disease. The DNA is carefully selected to correct the effect of a mutated gene that is causing disease. The technique was first developed in 1972 but has, so far, had limited success in treating human diseases. For example, in 1999, 18-year-old Jesse Gelsinger died after undergoing gene therapy for ornithine transcarbamylase deficiency, and in 2002 it was reported that two children treated for X-linked severe combined immunodeficiency (X-SCID) in a clinical trial in 1999 had developed leukaemia. However, more than 1,800 gene therapy clinical trials have been conducted since the technique was first developed. Gene therapy can be used to modify cells inside or outside the body. When it’s done inside the body, a doctor will inject the vector carrying the gene directly into the patient. This method is useful when only certain tissues require correction. When it’s done outside the body, doctors will take a sample of the patient’s cells and expose them to the vector in a laboratory. The corrected cells are then returned to the patient. This approach is more useful when only a few cells need to be corrected.</span>"
+            "html": "<span>Following on from Sheldon’s hypothesis, a further argument for a biological disposition to criminality was proposed in the 1960s. This time, hereditary tendencies were linked to genetic defect or chromosomal abnormality. Variations of the normal ‘XY’ genetic component or genotype of males were hypothesised to determine criminal behaviour from homicide to violent crime. The theory was based on the unproven assumption that possession of an extra ‘X’ chromosome ‘feminises’ a man and so conversely having an extra male ‘Y’ chromosome should make a man more masculine and aggressive. However, this somewhat weak hypothesis was severely undermined by the study of Epps in 1995. Epps demonstrated that possessing an extra ‘Y’ chromosome, as in the ‘XYY’ genotype, made an individual no more likely to commit violent crime than anyone else. The further finding that testosterone levels amongst ‘XYY’ men are no different from ‘XY’ men and that the former are no more aggressive than the latter sounded the final death knell for the hypothesis of a criminal type determined by genotype alone.</span>"
           },
           {
-            "html": "<span><strong>E</strong> Gene therapy has the potential to eliminate and prevent hereditary diseases such as cystic fibrosis and is a possible cure for heart disease, AIDS and cancer. The technology is still in its infancy. If the defects in the gene are corrected, these diseases could be treated. Gene therapy could have the potential to cure many genetic disorders. However, there are concerns that the wide range use of gene therapy in human beings is not safe.</span>"
+            "html": "<span>At least those who place trust in rehabilitation programmes to reform criminal types can now breathe a sigh of relief. It would seem that the rather pessimistic prognosis for individuals born with a certain physique or genotype no longer holds credence in scientific circles. If biological predisposition does play a role in criminality, it seems to be at least tempered by environmental and social factors to a large extent.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-18",
-          "type": "paragraph-matching",
-          "instructionHtml": "Questions 14-18",
+          "title": "Questions 14-24",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the timeline diagram below. Write NO MORE THAN THREE WORDS from the passage for each answer.",
           "questions": [
             {
               "id": "q14",
-              "answer": "A",
-              "textHtml": "a reference to a person who resisted the use of gene therapy on humans"
+              "answer": "moral or philosophical",
+              "before": "…………….. realm. Italian scientist, Lombroso proposes a",
+              "after": ""
             },
             {
               "id": "q15",
-              "answer": "A",
-              "textHtml": "a reference to the early failure of a gene therapy trial"
+              "answer": [
+                "physiological disposition",
+                "biological disposition"
+              ],
+              "before": "………………. to criminality. A biological theory of criminality presupposes that such a condition is",
+              "after": ""
             },
             {
               "id": "q16",
-              "answer": "C",
-              "textHtml": "a reference to different methods of delivering gene therapy"
+              "answer": [
+                "heritable",
+                "inherited"
+              ],
+              "before": "……………… Criminal types are claimed to be",
+              "after": ""
             },
             {
               "id": "q17",
-              "answer": "B",
-              "textHtml": "a reference to the ethical concerns surrounding inheritable gene therapy"
+              "answer": "characterised by",
+              "before": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a",
+              "after": ""
             },
             {
               "id": "q18",
-              "answer": "D",
-              "textHtml": "mention of the total recorded attempts to apply gene therapy in clinical research"
-            }
-          ],
-          "legendHtml": "<p><span><strong>Questions 14-18</strong></span></p><p><span>Reading passage 2 has five sections, A-E. Which section contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB: You may use any letter more than once</span></p><p><span>14. a reference to a person who resisted the use of gene therapy on humans<br/>\n</span><span>15. a reference to the early failure of a gene therapy trial<br/>\n</span><span>16. a reference to different methods of delivering gene therapy.<br/>\n</span><span>17. a reference to the ethical concerns surrounding inheritable gene therapy.<br/>\n</span><span>18. mention of the total recorded attempts to apply gene therapy in clinical research.</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D"
-          ]
-        },
-        {
-          "title": "Questions 19-22",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 19-22 on your answer sheet.",
-          "questions": [
+              "answer": [
+                "hereditary aspect",
+                "biological basis"
+              ],
+              "before": "……………… to criminality. Body types are",
+              "after": ""
+            },
             {
               "id": "q19",
-              "answer": "Somatic",
-              "before": "……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future",
+              "answer": "associated with",
+              "before": "……………… particular dispositions. Mesomorphs are types considered to have",
               "after": ""
             },
             {
               "id": "q20",
-              "answer": "Generations",
-              "before": "……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain",
+              "answer": "criminal tendencies",
+              "before": "……………….. 1960s",
               "after": ""
             },
             {
               "id": "q21",
-              "answer": "Diseases",
-              "before": "…………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the",
+              "answer": "Chromosomal abnormality",
+              "before": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more",
               "after": ""
             },
             {
               "id": "q22",
-              "answer": "Reinserted",
-              "before": "……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body",
+              "answer": "masculine and aggressive",
+              "before": "………………… males. The proposed link between criminality and genotype is",
               "after": ""
-            }
-          ],
-          "legendHtml": "<p><span><strong>Questions 19-22<br/>\n</strong></span><span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 19-22 on your answer sheet.</span></p><p><span><strong>TYPES OF GENE THERAPY</strong></span><span><strong> </strong></span></p><p><span>Gene therapy can be classified as either somatic or germline. In somatic gene therapy, the (19) ……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future (20) ……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain (21) …………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the (22) ……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body.</span></p>",
-          "wordLimit": 1
-        },
-        {
-          "title": "Questions 23-26",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 23-26 on your answer sheet, write",
-          "questions": [
+            },
             {
               "id": "q23",
-              "answer": "True",
-              "textHtml": "The first gene therapy trial on humans was unsuccessful"
+              "answer": "severely undermined by",
+              "before": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by",
+              "after": ""
             },
             {
               "id": "q24",
-              "answer": "Not given",
-              "textHtml": "So far, gene therapy has only been used on adults"
-            },
+              "answer": "environmental and social",
+              "before": "……………… elements",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 14-24</span></strong><br/>\n<span>Complete the timeline diagram below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><strong><span>1876</span></strong><br/>\n<span>No longer is criminality confined to a (14) …………….. realm.</span></p><p><span>Italian scientist, Lombroso proposes a (15) ………………. to criminality.</span></p><p><span>A biological theory of criminality presupposes that such a condition is (16) ………………</span></p><p><span>Criminal types are claimed to be (17) ………………. distinctive ‘atavistic’ or primitive features.</span></p><p><strong><span>1949</span></strong><br/>\n<span>In common with Lombroso, Sheldon proposes a (18) ……………… to criminality.</span></p><p><span>Body types are (19) ……………… particular dispositions.</span></p><p><span>Mesomorphs are types considered to have (20) ………………..</span></p><p><strong><span>1960s</span></strong><br/>\n<span>(21) ……………. is now implicated in a biological disposition towards criminality.</span></p><p><span>An additional ‘Y’ chromosome is associated with more (22) ………………… males.</span></p><p><span>The proposed link between criminality and genotype is (23) …………………. Epps’ study of 1995.</span></p><p><strong><span>Today</span></strong><br/>\n<span>A purely biological basis to criminality is discredited.</span></p><p><span>Genetic factors are thought to be moderated by (24) ……………… elements.</span></p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 25-26",
+          "type": "multiple-answer",
+          "instructionHtml": "Choose two letters, A-E.",
+          "questions": [
             {
               "id": "q25",
-              "answer": "Not given",
-              "textHtml": "X-SCID is more common in boys than girls"
+              "answer": [
+                "D",
+                "E"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-303-q25-q26"
             },
             {
               "id": "q26",
-              "answer": "True",
-              "textHtml": "The corrected cells are then returned to the patient"
+              "answer": [
+                "D",
+                "E"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-303-q25-q26"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 23-26<br/>\n</strong></span><span>Do the following statements agree with the information given in reading passage? In boxes 23-26 on your answer sheet, write</span></p><p><span><strong>TRUE    </strong>              if the statement agrees with the information<br/>\n</span><span><strong>FALSE</strong>                 if the statement contradicts the information<br/>\n</span><span><strong>NOT GIVEN</strong>         if there is no information on this       </span></p><p><span>23. The first gene therapy trial on humans was unsuccessful.<br/>\n</span><span>24. So far, gene therapy has only been used on adults.<br/>\n</span><span>25. X-SCID is more common in boys than girls.<br/>\n</span><span>26.The corrected cells are then returned to the patient.</span><br/> <br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose two letters, A-E.</span></p><p><span><strong>A</strong> Overwhelming evidence exists in support of a biological predisposition towards crime.</span><br/>\n<span><strong>B</strong> Lombroso’s experimental work has been completely discredited by modern scientists.</span><br/>\n<span><strong>C</strong> Modern criminologists believe that Lombroso hindered rather than helped the advance of criminology.</span><br/>\n<span><strong>D</strong> Recently there has been a shift away from the emphasis of biological factors as a basis of criminality.</span><br/>\n<span><strong>E</strong> Biological evidence may partially support Sheldon’s theory of somatotypes.</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "Overwhelming evidence exists in support of a biological predisposition towards crime"
+            },
+            {
+              "value": "B",
+              "label": "Lombroso’s experimental work has been completely discredited by modern scientists"
+            },
+            {
+              "value": "C",
+              "label": "Modern criminologists believe that Lombroso hindered rather than helped the advance of criminology"
+            },
+            {
+              "value": "D",
+              "label": "Recently there has been a shift away from the emphasis of biological factors as a basis of criminality"
+            },
+            {
+              "value": "E",
+              "label": "Biological evidence may partially support Sheldon’s theory of somatotypes"
+            }
+          ]
         }
       ]
     },
@@ -273,152 +366,177 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "THE MYTH OF LEARNING STYLES",
+        "title": "Jack the Ripper: A Bungled Investigation?",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>The idea that teaching methods should match a student’s particular learning style — their personal way of learning — is popular with teachers and students alike. But the evidence suggests it may not be helpful.</span>"
+            "html": "<span>Few murder enquiries have stirred the public imagination to such an extent as those relating to Jack the Ripper. The report of murders worthy of a depraved savage simultaneously appalled and enthralled Victorian society as the 19th century came to a close. The unleashing of a serial killer onto the London scene caught police unprepared as did the unprecedented brutality of the killings which earned their perpetrator the nickname ‘Jack the Ripper’. So, given the heightened public interest and the existence of a police force more competent than ever before since the formation of the Metropolitan Police in 1829, it has to be asked: why did the Ripper evade capture and why was no one even charged with the five murders attributed to the Ripper?</span>"
           },
           {
-            "html": "<span>The concept of learning styles is one of the most influential — and widely criticized — theories in education. It is the idea that each person finds it easier to learn through a particular method of instruction. Some people, for example, are thought to learn better when they’re taught visually; others, when instruction is auditory, or through movement, and so on.</span>"
+            "html": "<span>Conspiracy theorists would have us believe that the identity of the Ripper was, contrary to public belief, unmasked by police. However, the truth about the Ripper’s identity proved so unpalatable that it had to be hushed up. Far-fetched as it may seem, Queen Victoria’s grandson, Prince Albert Victor, was thought by some to be the Ripper himself. Whilst he did frequent places of ill repute, there is no tangible evidence to support this somewhat sensationalist theory. In fact, the Ripper may have successfully evaded the police for far more prosaic reasons.</span>"
           },
           {
-            "html": "<span>The idea is popular in part because it reflects the intuition of teachers and students. Everyone knows from personal experience that some kinds of learning feel easier than others, and that they may prefer one way of learning over another. And it is also popular because it claims to be based on science. The idea of learning styles was developed in the 1970s, as psychologists and educational theorists were trying to understand how people learn. The idea that different people learn information in different ways was appealing, and it soon became clear that many people had strong preferences about how they liked information to be presented. In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’. All the students would then be asked to learn something, with half the visual learners being taught visually, and half being taught aurally. The auditory learners would also be split into the two groups. If the theory was correct, the visual learners should do better when taught visually, and the auditory learners should do better when taught aurally.</span>"
+            "html": "<span>Back in 1888, when the Ripper began his reign of terror in the streets of Whitechapel, forensic science was barely in its infancy. Rudimentary knowledge existed as to the necessity of keeping a murder scene intact to preserve vital clues but the means to thoroughly analyse such evidence through DNA testing was light years away still. In fact it was only with the publication of Hans Gross’ ‘A Handbook for Examining Magistrates, Police Officials, Military Police, etc.’ in 1893 that the foundation for forensic science was laid. It was too late, however, to help the Ripper investigation that floundered in its ignorance of modern forensic techniques.</span>"
           },
           {
-            "html": "<span>But that’s not what psychologists found. As early as 2004, a review of the evidence by cognitive scientists found that the great majority of studies did not provide any evidence supporting the idea that matching the material to a student’s particular learning style was helpful. More recently, a team of psychologists led by Daniel Willingham at the University of Virginia has examined the evidence for learning styles again. They found that the vast majority of studies either found no evidence for the theory, or actually contradicted it. As the researchers point out, people may have preferences about how they learn, but that doesn’t mean that they will learn better when the teaching matches those preferences.</span>"
+            "html": "<span>The Ripper investigation also just missed out on developments in fingerprint identification that might have led police to the identity of the Ripper. Nearly a decade prior to the first Ripper murder, Dr. Henry Faulds had published a letter in the scientific journal Nature in 1880. In the letter he outlined for the first time the possibility of using fingerprints for identification purposes. It was only in 1896 that Sir Francis Galton, Inspector General of Bengal Police, sought to put theory into practice. Using the new-found method of ‘dactyloscopy’ (later known as fingerprinting) he employed the technique to successfully identify criminals. Again, new technology arrived just too late for the Ripper investigators.</span>"
           },
           {
-            "html": "<span>There are several possible explanations for these findings. One is that some students might not actually have a ‘style’ that is strong enough to affect their learning. Another possibility is that students do have preferences about how they learn, but these preferences don’t affect their learning. A third possibility is that students do have preferences, and these preferences do affect their learning, but only because they have learned less well through other methods in the past.</span>"
+            "html": "<span>Whilst investigative police could not be blamed for a lack of forensic knowledge, their failure to apply known investigative methods to the crime scene certainly smacked of incompetence. Photographing the crime scene was not exactly standard practice of the time but it was a known procedure. Unfortunately the officers leading the investigation at the time saw fit to only photograph one of the Ripper’s victims, a certain Mary Kelly, at the crime scene. Even more bizarrely, photographs of the victim were more centred on photographing her eyes to the neglect of all else. The reason for ‘forlorn hope’ as cited by Inspector Walter Dew was that the imprint of the Ripper might have been recorded on the victim’s retina at the time of her death. No conclusions were drawn from the undertaking.</span>"
           },
           {
-            "html": "<span>But the most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves a mix of visual learning (such as watching the instructor), auditory learning (listening to instructions), and hands-on learning (actually driving the car). In a 2009 article in the journal Psychological Science in the Public Interest, psychologists Harold Pashler, Mark McDaniel, Doug Rohrer and Robert Bjork argued that the learning-styles approach is not only unsupported by science, but may actually be harmful, because it leads teachers to teach students in ways that are not very effective. For example, a student who is a ‘visual learner’ might be encouraged to learn only through visual materials, and never to practice learning by listening, reading or acting.</span>"
+            "html": "<span>Another more serious criticism that has been levelled at the investigative police at the time is their deliberate tampering with evidence. It is well-known that a semi-illiterate message was scrawled above one of the Ripper’s victims. However, before it could be properly analysed, the investigating officer ordered that it be removed as it was thought to implicate the Jews and racial repercussions were feared. the motive was well-intended but this action may have destroyed vital clues.</span>"
           },
           {
-            "html": "<span>The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence. In recent years, a great deal of research has shown that people’s attitudes to learning can have a large impact on how much they learn. For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies. Similarly, students who have been told that they are ‘visual learners’ might put less effort into tasks that are based on reading or listening. This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’.</span>"
-          },
-          {
-            "html": "<span>Despite the lack of evidence for learning styles, the idea is still very popular. A 2014 study of more than 400 teachers in the UK and the Netherlands found that more than 90 percent of them believed that people learn better if they are taught in their preferred learning style, and that the majority of them used learning styles as a method of instruction. In the US, a 2017 survey of more than 300 teachers found that 96 percent of them agreed with the idea of learning styles, and 24 percent of them used it to guide their teaching.</span>"
-          },
-          {
-            "html": "<span>The idea of learning styles is also popular among students. In a 2018 study, researchers asked more than 600 students in the US about their beliefs about learning. They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style.</span>"
-          },
-          {
-            "html": "<span>The evidence is clear: matching teaching to a student’s particular learning style is unlikely to lead to better learning. It may in fact be holding students back.</span>"
+            "html": "<span>A final problem was the lack of co-operation that existed not just between the Press and the police but also between law enforcement agencies themselves. With regard to the former problem, police distrust if the Press led to limited information being released to the newspapers. This was due to a fear that information made public could alert a suspect or waste time in throwing up false leads. Unfortunately, if information had been circulated in the public arena, important information might have been uncovered and would have led to the arrest of the Ripper. As regards the law enforcement agencies, in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information and so further hinder proceedings.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-31",
-          "type": "yes-no-notgiven",
-          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 27-31 on your answer sheet, write",
+          "title": "Questions 27-32",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the diagram below. Write NO MORE THAN THREE WORDS from the passage for each answer.",
           "questions": [
             {
               "id": "q27",
-              "answer": "Yes",
-              "textHtml": "Teachers and students’ personal experiences contribute to the popularity of the learning styles concept"
+              "answer": "means",
+              "before": "…………….. yet is available to analyse it. Fingerprints are not used",
+              "after": ""
             },
             {
               "id": "q28",
-              "answer": "Not given",
-              "textHtml": "Research into learning styles was popular in the 1970s"
+              "answer": "for identification purposes",
+              "before": "…………….. Only one of the Ripper’s",
+              "after": ""
             },
             {
               "id": "q29",
-              "answer": "No",
-              "textHtml": "Psychologists found evidence for the idea of learning styles as early as 2004"
+              "answer": "victims",
+              "before": "…………… is photographed at the crime scene. Images taken are",
+              "after": ""
             },
             {
               "id": "q30",
-              "answer": "No",
-              "textHtml": "The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles"
+              "answer": "centred on",
+              "before": "……………… capturing the victim’s eyes. Vital written evidence is",
+              "after": ""
             },
             {
               "id": "q31",
-              "answer": "Yes",
-              "textHtml": "Students may learn better when they are taught using methods they are not familiar with"
-            }
-          ],
-          "legendHtml": "<p><span><strong>Questions 27-31<br/>\n</strong></span><span>Do the following statements agree with the claims of the writer in reading passage? In boxes 27-31 on your answer sheet, write</span></p><p><span><strong>YES       </strong>              if the statement agrees with the views of the writer<br/>\n</span><span><strong>NO</strong>                       if the statement contradicts the views of the writer<br/>\n</span><span><strong>NOT GIVEN</strong>         if it is impossible to say what the writer thinks about this            </span></p><p><span>27. Teachers and students’ personal experiences contribute to the popularity of the learning styles concept.<br/>\n</span><span>28. Research into learning styles was popular in the 1970s.<br/>\n</span><span>29. Psychologists found evidence for the idea of learning styles as early as 2004.<br/>\n</span><span>30. The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles.<br/>\n</span><span>31. Students may learn better when they are taught using methods they are not familiar with.</span></p>"
-        },
-        {
-          "title": "Questions 32-35",
-          "type": "matching-features",
-          "instructionHtml": "Complete the summary using the list of words, A-F, below. Write the correct letter, A-F, in boxes 32-35 on your answer sheet.",
-          "questions": [
-            {
-              "id": "q32",
-              "answer": "E",
-              "textHtml": "………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their"
+              "answer": "removed",
+              "before": "……………. on the orders of a police investigator. Investigators representing rival",
+              "after": ""
             },
             {
+              "id": "q32",
+              "answer": "law enforcement agencies",
+              "before": "…………………. fail to exchange information",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the diagram below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span><img alt=\"\" class=\"alignnone size-medium wp-image-12051\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" fetchpriority=\"high\" height=\"294\" src=\"/ielts-website/pics/reading/imported/test-303-1.webp\" width=\"300\"/></span></p><p><span>DNA is left unexamined as no (27) …………….. yet is available to analyse it.</span></p><p><span>Fingerprints are not used (28) ……………..</span></p><p><span>Only one of the Ripper’s (29) …………… is photographed at the crime scene.</span></p><p><span>Images taken are (30) ……………… capturing the victim’s eyes.</span></p><p><span>Vital written evidence is (31) ……………. on the orders of a police investigator.</span></p><p><span>Investigators representing rival (32) …………………. fail to exchange information.</span></p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 33-38",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Write NO MORE THAN THREE WORDS from the passage for each answer.",
+          "questions": [
+            {
               "id": "q33",
-              "answer": "D",
-              "textHtml": "…………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past. The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and"
+              "answer": "evade capture",
+              "before": "…………… against the odds. Only on closer investigation does the reason become more apparent. Often a",
+              "after": ""
             },
             {
               "id": "q34",
-              "answer": "C",
-              "textHtml": "…………………. The learning-styles approach is not only unsupported by science, but may actually be"
+              "answer": "crime scene",
+              "before": "………………. was disturbed, destroying vital evidence within it. Only later, with",
+              "after": ""
             },
             {
               "id": "q35",
-              "answer": "A",
-              "textHtml": "……………. A harmful B ability C hands-on learning D learning E preference F useful"
-            }
-          ],
-          "legendHtml": "<p><span><strong>Questions 32-35<br/>\n</strong></span><span>Complete the summary using the list of words, A-F, below. Write the correct letter, A-F, in boxes 32-35 on your answer sheet.</span></p><p><span><strong>EXPLANATIONS FOR THE FINDINGS</strong></span></p><p><span>One explanation is that some students might not have a strong enough (32) ………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their (33) …………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past.</span></p><p><span>The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and (34) ………………….</span></p><p><span>The learning-styles approach is not only unsupported by science, but may actually be (35) …………….</span></p><p><span><strong>A</strong> harmful<br/>\n</span><span><strong>B</strong> ability<br/>\n</span><span><strong>C</strong> hands-on learning<br/>\n</span><span><strong>D</strong> learning<br/>\n</span><span><strong>E</strong> preference<br/>\n</span><span><strong>F</strong> useful</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F"
-          ]
-        },
-        {
-          "title": "Questions 36-40",
-          "type": "sentence-completion",
-          "instructionHtml": "Questions 36-40",
-          "questions": [
+              "answer": "the publication of",
+              "before": "……………. a book by Hans Gross, were more scientific investigative methods introduced. Until then there was a lack of knowledge of",
+              "after": ""
+            },
             {
               "id": "q36",
-              "answer": "Intelligence",
-              "before": "…………………. Students who believe that intelligence is",
+              "answer": [
+                "modern forensic techniques",
+                "forensic science"
+              ],
+              "before": "……………….. In 1896 Sir Francis Galton used a",
               "after": ""
             },
             {
               "id": "q37",
-              "answer": "Changeable",
-              "before": "………………… tend to do better than other students. Students who have been told that they are",
+              "answer": [
+                "fingerprint-ing",
+                "new-found"
+              ],
+              "before": "……………… method known as dactyloscopy. This method was to greatly aid the police in identifying criminals. Curiously, investigative methods known to police at the time were often not employed. Crime scene photography was rarely",
               "after": ""
             },
             {
               "id": "q38",
-              "answer": "Visual",
-              "before": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a",
+              "answer": "standard practice",
+              "before": "…………. for example",
               "after": ""
-            },
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 33-38</span></strong><br/>\n<span>Complete the notes below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>What is so startling about the Ripper case is how the murderer managed to (33) …………… against the odds.</span></p><p><span>Only on closer investigation does the reason become more apparent.</span></p><p><span>Often a (34) ………………. was disturbed, destroying vital evidence within it.</span></p><p><span>Only later, with (35) ……………. a book by Hans Gross, were more scientific investigative methods introduced.</span></p><p><span>Until then there was a lack of knowledge of (36) ………………..</span></p><p><span>In 1896 Sir Francis Galton used a (37) ……………… method known as dactyloscopy.</span></p><p><span>This method was to greatly aid the police in identifying criminals.</span></p><p><span>Curiously, investigative methods known to police at the time were often not employed.</span></p><p><span>Crime scene photography was rarely (38) …………. for example.</span></p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 39-40",
+          "type": "multiple-answer",
+          "instructionHtml": "Choose two letters, A-E.",
+          "questions": [
             {
               "id": "q39",
-              "answer": "Mix",
-              "before": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular",
-              "after": ""
+              "answer": [
+                "A",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-303-q39-q40"
             },
             {
               "id": "q40",
               "answer": [
-                "learning style",
-                "style"
+                "A",
+                "D"
               ],
-              "before": "…………………",
-              "after": ""
+              "textHtml": "",
+              "answerPairId": "reading-303-q39-q40"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 36-40</strong></span></p><p><span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 36-40 on your answer sheet.</span></p><p><span>The idea of learning styles can give students the wrong idea about their level of (36) …………………. Students who believe that intelligence is (37) ………………… tend to do better than other students.</span></p><p><span>Students who have been told that they are (38) …………………… learners might not try so hard to learn by reading or listening.</span></p><p><span>Research has shown that students who use a (39) ………………….. of learning methods often learn more effectively.</span></p><p><span>In a 2018 study, 78 percent of students said that they had a particular (40) …………………</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "wordLimit": 1
+          "legendHtml": "<p><strong><span>Questions 39-40</span></strong><br/>\n<span>Choose two letters, A-E.</span></p><p><span><strong>A</strong> Limited forensic knowledge probably affected the outcome of the Ripper case.</span><br/>\n<span><strong>B</strong> The Ripper murders convinced the police of a need for more sophisticated investigative methods.</span><br/>\n<span><strong>C</strong> Disagreement existed amongst the police as to what information should be released to the Press.</span><br/>\n<span><strong>D</strong> Whilst rivalry existed amongst the police, they were united in their dislike of the Press.</span><br/>\n<span><strong>E</strong> The police investigating the Ripper murders made good use of what techniques were available to them at the time.</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "Limited forensic knowledge probably affected the outcome of the Ripper case"
+            },
+            {
+              "value": "B",
+              "label": "The Ripper murders convinced the police of a need for more sophisticated investigative methods"
+            },
+            {
+              "value": "C",
+              "label": "Disagreement existed amongst the police as to what information should be released to the Press"
+            },
+            {
+              "value": "D",
+              "label": "Whilst rivalry existed amongst the police, they were united in their dislike of the Press"
+            },
+            {
+              "value": "E",
+              "label": "The police investigating the Ripper murders made good use of what techniques were available to them at the time"
+            }
+          ]
         }
       ]
     }

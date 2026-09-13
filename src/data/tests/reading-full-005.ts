@@ -1,457 +1,479 @@
-import type { PracticeTest, TestPart } from '../../lib/tests/schema';
+import type { PracticeTest } from '../../lib/tests/schema';
 
-/* Academic Reading — Full Test 5. Original material, full exam length,
-   realistic type weighting. Includes one diagram-labelling group (honeybee)
-   so the type appears in the set without being overused. */
-
-// ── Passage 1 — The Honey Bee (Q1-13) ───────────────────────────────────────
-const passage1: TestPart = {
-  label: 'Passage 1',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 1',
-    title: 'The Language of Bees',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 1-13</strong>, which are based on Reading Passage 1 below.',
-    paragraphs: [
-      { label: 'A', html: 'A honey bee colony is one of the most highly organised societies in the natural world. A single hive may contain fifty thousand bees, nearly all of them female workers, together with one egg-laying queen and, in summer, a few hundred male drones. No single bee is in charge; the queen does not give orders, but simply lays eggs. Yet out of the countless small actions of thousands of individuals, each following simple rules, there emerges a colony that can regulate its own temperature, defend itself, raise its young and gather food with a precision that has astonished scientists for centuries.' },
-      { label: 'B', html: 'Like all insects, the body of a worker bee is divided into three main sections. At the front is the head, which carries two long, jointed antennae that serve as the bee’s principal organs of smell and touch, and a pair of large compound eyes. Behind the head is the middle section, the thorax, to which are attached the two pairs of wings and the six legs. At the rear is the abdomen, which contains most of the bee’s internal organs and ends, in the workers, in a sharp sting used to defend the colony. The whole body is covered in fine branched hairs, to which grains of pollen readily cling.' },
-      { label: 'C', html: 'The bee’s most famous task is the gathering of nectar and pollen from flowers. A worker may visit many hundreds of flowers on a single trip, sucking up nectar through a long tongue and packing pollen into special baskets on her hind legs. Back at the hive, the nectar is passed from bee to bee and slowly thickened into honey, which is stored in the wax cells of the comb as food for the winter. In carrying pollen from flower to flower, the bee also fertilises the plants it visits, and this service, performed without intention, is worth far more to human agriculture than the honey itself.' },
-      { label: 'D', html: 'The greatest puzzle, however, was how a colony manages to direct its foragers to the best sources of food, sometimes several kilometres away. The answer, discovered by the Austrian scientist Karl von Frisch in the twentieth century, is one of the most remarkable findings in all of biology. A bee that has found a rich patch of flowers returns to the hive and performs a curious dance on the vertical surface of the comb, and the details of this dance tell the other bees where to fly.' },
-      { label: 'E', html: 'For a source close to the hive, the bee performs a simple “round dance”, running in circles, which tells the others only that food is near. For a more distant source, she performs the famous “waggle dance”, running in a straight line while shaking her body, then circling back to repeat it. The direction of the straight run, measured against the vertical, indicates the direction of the food relative to the sun, while the length of the run and the number of waggles indicate how far away it is. Other bees crowd around, feeling the dance in the darkness of the hive, and then fly off in the direction it describes.' },
-      { label: 'F', html: 'Von Frisch’s claim that a mere insect could communicate such precise information was at first met with disbelief, but decades of careful experiment have confirmed it beyond doubt. The dance of the bees remains one of the few known examples of a genuine symbolic language outside human beings. A way of referring to something distant and absent, using signs whose meaning is shared by the whole community. In the small, dark world of the hive, evolution has produced a solution to the problem of communication that is, in its way, as elegant as our own.' },
-    ],
+const test: PracticeTest = {
+  "id": "reading-full-005",
+  "skill": "reading",
+  "title": "Academic Reading Test 5",
+  "description": "A complete three-passage Academic Reading practice test with 40 questions.",
+  "durationMinutes": 60,
+  "source": {
+    "name": "IELTS MASTER / PracticePTEOnline",
+    "url": "https://practicepteonline.com/ielts-reading-test-313/",
+    "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
-  groups: [
+  "parts": [
     {
-      title: 'Questions 1-5',
-      type: 'diagram-labelling',
-      wordLimit: 1,
-      instructionHtml:
-        'Label the diagram of a worker bee below. Choose <strong>ONE WORD ONLY</strong> from the passage for each pin.',
-      diagram: {
-        image: '/pics/reading/bee-diagram.png',
-        alt: 'Side view of a worker honey bee with numbered pins on its body parts',
-        markers: [
-          { x: 24, y: 28 }, // 1 antennae
-          { x: 31, y: 44 }, // 2 head
-          { x: 48, y: 40 }, // 3 thorax
-          { x: 55, y: 62 }, // 4 legs
-          { x: 82, y: 55 }, // 5 abdomen
-        ],
+      "label": "Passage 1",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 1",
+        "title": "Georgia O’Keeffe",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>For seven decades, Georgia O’Keeffe (1887-1986) was a major figure in American art. Remarkably, she remained independent from shifting art trends and her work stayed true to her own vision, which was based on finding the essential, abstract forms in nature. With exceptionally keen powers of observation and great finesse with a paintbrush, she recorded subtle nuances of colour, shape, and light that enlivened her paintings and attracted a wide audience.</span>"
+          },
+          {
+            "html": "<span>Born in 1887 near Sun Prairie, Wisconsin to cattle breeders Francis and Ida O’Keeffe, Georgia was raised on their farm along with her six siblings. By the time she graduated from high school in 1905, she had determined to make her way as an artist. She studied the techniques of traditional painting at the Art Institute of Chicago school (1905) and the Art Students League of New York (1907-8). After attending university and then training college, she became an art teacher and taught in elementary schools, high schools, and colleges in Virginia, Texas, and South Carolina from 1911 to 1918.</span>"
+          },
+          {
+            "html": "<span>During this period, O’Keeffe began to experiment with creating abstract compositions in charcoal, and produced a series of innovative drawings that led her art in a new direction. She sent some of these drawings to a friend in New York, who showed them to art collector and photographer Alfred Stieglitz in January 1916.</span>"
+          },
+          {
+            "html": "<span>Stieglitz was impressed, and exhibited the drawings later that year at his gallery on Fifth Avenue, New York City, where the works of many avant-garde artists and photographers were introduced to the American public. With Stieglitz’s encouragement and promise of financial support, O’Keeffe arrived in New York in June 1918 to begin a career as an artist. For the next three decades, Stieglitz vigorously promoted her work in twenty-two solo exhibitions and numerous group installations. The two were married in 1924. The ups and downs of their personal and professional relationship were recorded in Stieglitz’s celebrated black-and-white portraits of O’Keeffe, taken over the course of twenty years (1917-37).</span>"
+          },
+          {
+            "html": "<span>By the mid-1920s, O’Keeffe was recognized as one of America’s most important and successful artists, widely known for the architectural pictures that dramatically depict the soaring skyscrapers of New York. But most often, she painted botanical subjects, inspired by annual trips to the Stieglitz family summer home. In her magnified images depicting flowers, begun in 1924, O’Keeffe brings the viewer right into the picture.</span>"
+          },
+          {
+            "html": "<span>Enlarging the tiniest details to fill an entire metre-wide canvas emphasized their shapes and lines and made them appear abstract. Such daring compositions helped establish O’Keeffe’s reputation as an innovative modernist.<br/>\n</span><br/>\n<span>In 1929, O’Keeffe made her first extended trip to the state of New Mexico. It was a visit that had a lasting impact on her life, and an immediate effect on her work. Over the next two decades she made almost annual trips to New Mexico, staying up to six months there, painting in relative solitude, then returning to New York each winter to exhibit the new work at Stieglitz’s gallery. This pattern continued until she moved permanently to New Mexico in 1949.</span>"
+          },
+          {
+            "html": "<span>There, O’Keeffe found new inspiration: at first, it was the numerous sun-bleached bones she came across in the state’s rugged terrain that sparked her imagination. Two of her earliest and most celebrated Southwestern paintings exquisitely reproduce a cow skull’s weathered surfaces, jagged edges, and irregular openings. Later, she also explored another variation on this theme in her large series of Pelvis pictures, which focused on the contrasts between convex and concave surfaces, and solid and open spaces.</span>"
+          },
+          {
+            "html": "<span>However, it was the region’s spectacular landscape, with its unusual geological formations, vivid colours, clarity of light, and exotic vegetation, that held the artist’s imagination for more than four decades. Often, she painted the rocks, cliffs, and mountains in striking close-up, just as she had done with her botanical subjects. O’Keeffe eventually owned two homes in New Mexico – the first, her summer retreat at Ghost Ranch, was nestled beneath 200-metre cliffs, while the second, used as her winter residence, was in the small town of Abiquiu. While both locales provided a wealth of imagery for her paintings, one feature of the Abiquiu house – the large walled patio with its black door – was particularly inspirational. In more than thirty pictures between 1946 and 1960, she reinvented the patio into an abstract arrangement of geometric shapes.<br/>\n</span><br/>\n<span>From the 1950s into the 1970s, O’Keeffe travelled widely, making trips to Asia, the Middle East, and Europe. Flying in planes inspired her last two major series – aerial views of rivers and expansive paintings of the sky viewed from just above clouds. In both series, O’Keeffe increased the size of her canvases, sometimes to mural proportions, reflecting perhaps her newly expanded view of the world. When in 1965 she successfully translated one of her cloud motifs to a monumental canvas measuring 6 metres in length (with the help of assistants), it was an enormous challenge and a special feat for an artist nearing eighty years of age.</span>"
+          },
+          {
+            "html": "<span>The last two decades of the artist’s life were relatively unproductive as ill health and blindness hindered her ability to work. O’Keeffe died in 1986 at the age of ninety-eight, but her rich legacy of some 900 paintings has continued to attract subsequent generations of artists and art lovers who derive inspiration from these very American images.</span>"
+          }
+        ]
       },
-      questions: [
+      "groups": [
         {
-          id: 'q1',
-          answer: ['antennae', 'antenna'],
-          explanation: 'The two long, jointed feelers on the head are the antennae.',
-          evidence: 'the head, which carries two long, jointed antennae that serve as the bee’s principal organs of smell and touch.',
+          "title": "Questions 1-7",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer.",
+          "questions": [
+            {
+              "id": "q1",
+              "answer": "Teacher",
+              "before": "…………… in various places in the USA • created drawings using",
+              "after": ""
+            },
+            {
+              "id": "q2",
+              "answer": "Charcoal",
+              "before": "………………. which were exhibited in New York City • moved to New York and became famous for her paintings of the city’s",
+              "after": ""
+            },
+            {
+              "id": "q3",
+              "answer": "Skyscrapers",
+              "before": "………… • produced a series of innovative close-up paintings of",
+              "after": ""
+            },
+            {
+              "id": "q4",
+              "answer": "Flowers",
+              "before": "……………. • went to New Mexico and was initially inspired to paint the many",
+              "after": ""
+            },
+            {
+              "id": "q5",
+              "answer": "Bones",
+              "before": "………………. that could be found there • continued to paint various features that together formed the dramatic",
+              "after": ""
+            },
+            {
+              "id": "q6",
+              "answer": "Landscape",
+              "before": "………………… of New Mexico for over forty years • travelled widely by plane in later years, and painted pictures of clouds and",
+              "after": ""
+            },
+            {
+              "id": "q7",
+              "answer": "Rivers",
+              "before": "…………… seen from above",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The life and work of Georgia O’Keeffe</span></strong></p><p><span>• studied art, then worked as a (1) …………… in various places in the USA</span><br/>\n<span>• created drawings using (2) ………………. which were exhibited in New York City</span><br/>\n<span>• moved to New York and became famous for her paintings of the city’s (3) …………</span><br/>\n<span>• produced a series of innovative close-up paintings of (4) …………….</span><br/>\n<span>• went to New Mexico and was initially inspired to paint the many (5) ………………. that could be found there</span><br/>\n<span>• continued to paint various features that together formed the dramatic (6) ………………… of New Mexico for over forty years</span><br/>\n<span>• travelled widely by plane in later years, and painted pictures of clouds and (7) …………… seen from above</span></p>",
+          "wordLimit": 1
         },
         {
-          id: 'q2',
-          answer: 'head',
-          explanation: 'The front section, carrying the antennae and compound eyes, is the head.',
-          evidence: 'At the front is the head, which carries two long, jointed antennae... and a pair of large compound eyes.',
-        },
-        {
-          id: 'q3',
-          answer: 'thorax',
-          explanation: 'The middle section, to which the wings and legs attach, is the thorax.',
-          evidence: 'Behind the head is the middle section, the thorax, to which are attached the two pairs of wings and the six legs.',
-        },
-        {
-          id: 'q4',
-          answer: ['legs', 'leg'],
-          explanation: 'The six limbs attached to the thorax are the legs.',
-          evidence: 'the thorax, to which are attached the two pairs of wings and the six legs.',
-        },
-        {
-          id: 'q5',
-          answer: 'abdomen',
-          explanation: 'The rear section, holding most internal organs and ending in the sting, is the abdomen.',
-          evidence: 'At the rear is the abdomen, which contains most of the bee’s internal organs and ends, in the workers, in a sharp sting.',
-        },
-      ],
+          "title": "Questions 8-13",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage?",
+          "questions": [
+            {
+              "id": "q8",
+              "answer": "False",
+              "textHtml": "Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career"
+            },
+            {
+              "id": "q9",
+              "answer": "True",
+              "textHtml": "When O’Keeffe finished high school, she had already made her mind up about the career that she wanted"
+            },
+            {
+              "id": "q10",
+              "answer": "False",
+              "textHtml": "Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City"
+            },
+            {
+              "id": "q11",
+              "answer": "True",
+              "textHtml": "O’Keeffe was the subject of Stieglitz’s photographic work for many years"
+            },
+            {
+              "id": "q12",
+              "answer": "Not given",
+              "textHtml": "O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works"
+            },
+            {
+              "id": "q13",
+              "answer": "Not given",
+              "textHtml": "O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>               if there is no information on this</span></p><p><span>8. Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career.</span><br/>\n<span>9. When O’Keeffe finished high school, she had already made her mind up about the career that she wanted.</span><br/>\n<span>10. Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City.</span><br/>\n<span>11. O’Keeffe was the subject of Stieglitz’s photographic work for many years.</span><br/>\n<span>12. O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works.</span><br/>\n<span>13. O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life.</span></p>"
+        }
+      ]
     },
     {
-      title: 'Questions 6-9',
-      type: 'sentence-completion',
-      wordLimit: 2,
-      instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
-      questions: [
+      "label": "Passage 2",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 2",
+        "title": "Adapting to the effects of climate change",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span><strong>A</strong> All around the world, nations are already preparing for, and adapting to, climate change and its impacts. Even if we stopped all C02 emissions tomorrow, we would continue to see the impact of the C02 already released since industrial times, with scientists forecasting that global warming would continue for around 40 years. In the meantime, ice caps would continue to melt and sea levels rise. Some countries and regions will suffer more extreme impacts from these changes than others. It’s in these places that innovation is thriving.</span>"
+          },
+          {
+            "html": "<span><strong>B</strong> In Miami Beach, Florida, USA, seawater isn’t just breaching the island city’s walls, it’s seeping up through the ground, so the only way to save the city is to lift it up above sea level. Starting in the lowest and most vulnerable neighbourhoods, roads have been raised by as much as 61 centimetres. The elevation work was carried out as part of Miami Beach’s ambitious but much-needed stormwater- management programme. In addition to the road adaptations, the city has set up new pumps that can remove up to 75,000 litres of water per minute. In the face of floods, climate-mitigation strategies have often been overlooked, says Yanira Pineda, a senior sustainability coordinator. She knows that they’re essential and that the job is far from over. ‘We know that in 20, 30, 40 years, we’ll need to go back in there and adjust to the changing environment,’ she says.</span>"
+          },
+          {
+            "html": "<span><strong>C</strong> Seawalls are a staple strategy for many coastal communities, but on the soft, muddy northern shores of Java, Indonesia, they frequently collapse, further exacerbating coastal erosion. There have been many attempts to restore the island’s coastal mangroves: ecosystems of trees and shrubs that help defend coastal areas by trapping sediment in their net-like root systems, elevating the sea bed and dampening the energy of waves and tidal currents. But Susanna Toi of the not-for-profit organisation Wetlands International says that, while hugely popular, the majority of mangrove-planting projects fail. So, Wetlands International started out with a different approach, building semi-permeable dams, made from bamboo poles and brushwood, to mimic the role of mangrove roots and create favourable conditions for mangroves to grow back naturally. The programme has seen moderate success, mainly in areas with less subsidence. ‘Unfortunately, traditional infrastructure is often single-solution focused,’ says Tol. ‘For long-term success, it’s critical that we transition towards multifunctional approaches that embed natural processes and that engage and benefit communities and local decision-makers.’</span>"
+          },
+          {
+            "html": "<span><strong>D</strong> As the floodwaters rose in the rice fields of the Mekong Delta in September 2018, four small houses rose with them. Homes in this part of Vietnam are traditionally built on stilts but these ones had been built to float. The modifications were made by the Buoyant Foundation Project, a not-for-profit organisation that has been researching and retrofitting amphibious houses since 2006. ‘When I started this,’ explains founder Elizabeth English, ‘climate change was not on the tip of everybody’s tongue, but this technology is becoming necessary in places that didn’t previously need it.’ It’s much cheaper than permanently elevating houses, English explains – about a third of what it would cost to completely replace a building’s foundations. It also avoids the problem of taller houses being at greater risk from wind damage. Another plus comes from the fact that amphibious structures can be sensitively adapted to meet cultural needs and match the kind of houses that are already common in a community.</span>"
+          },
+          {
+            "html": "<span><strong>E</strong> Bangladesh is especially vulnerable to climate change. Most of the country is less than a metre above sea level and 80 per cent of its land lies on floodplains. ‘Almost 35 million people living on the coastal belt of Bangladesh are currently affected by soil and water salinity,’ says Raisa Chowdhury of the international development organisation ICCO Cooperation. Rather than fighting against it, one project is helping communities adapt to salt-affected soils. ICCO Cooperation has been working with 10,000 farmers in Bangladesh to start cultivating naturally </span><span>salt-tolerant crops in the region. Certain varieties of carrot, potato, kohlrabi, cabbage and beetroot have been found to be better suited to salty soil than the rice and wheat that is typically grown there. Chowdhury says that the results are very visible, comparing a barren plot of land to the ‘beautiful, lush green vegetable garden’ sitting beside it, in which he and his team have been working with the farmers. Since the project began, farmers trained in saline agriculture have reported increases of two to three more harvests per year.</span>"
+          },
+          {
+            "html": "<span><strong>F</strong> Greg Spotts from Los Angeles (LA) in the USA is chief sustainability officer of the city’s street services department. He leads the Cool Streets LA programme, a series of pilot projects, which include the planting of trees and the installation of a ‘cool pavement’ system, designed to help reach the city’s goal of bringing down its average temperature by 1.5°C. ‘Urban cooling is literally a matter of life and death for our future in LA,’ says Spotts. Using a Geographic Information System data mapping tool, the programme identified streets with low tree canopy cover in three of the city’s neighbourhoods and covered them with a light-grey, light-reflecting coating, which had already been shown to lower road surface temperature in Los Angeles by 6°C. Spotts says one of these streets, in the Winnetka neighbourhood of San Fernando Valley, can now be seen as a pale crescent, the only cool spot on an otherwise red thermal image, from the International Space Station.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q6',
-          before: 'Almost all the bees in a hive are female',
-          after: '.',
-          answer: 'workers',
-          explanation: 'Nearly all the bees in a hive are female workers.',
-          evidence: 'A single hive may contain fifty thousand bees, nearly all of them female workers.',
+          "title": "Questions 14-17",
+          "type": "paragraph-matching",
+          "instructionHtml": "Reading passage has six paragraphs, A-F. Which paragraph contains the following information?",
+          "questions": [
+            {
+              "id": "q14",
+              "answer": "C",
+              "textHtml": "how a type of plant functions as a natural protection for coastlines"
+            },
+            {
+              "id": "q15",
+              "answer": "A",
+              "textHtml": "a prediction about how long it could take to stop noticing the effects of climate change"
+            },
+            {
+              "id": "q16",
+              "answer": "D",
+              "textHtml": "a reference to the fact that a solution is particularly cost-effective"
+            },
+            {
+              "id": "q17",
+              "answer": "F",
+              "textHtml": "a mention of a technology used to locate areas most in need of intervention"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 14-17</span></strong><br/>\n<span>Reading passage has six paragraphs, A-F. Which paragraph contains the following information?</span></p><p><span>14. how a type of plant functions as a natural protection for coastlines</span><br/>\n<span>15. a prediction about how long it could take to stop noticing the effects of climate change</span><br/>\n<span>16. a reference to the fact that a solution is particularly cost-effective</span><br/>\n<span>17. a mention of a technology used to locate areas most in need of intervention</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
-          id: 'q7',
-          before: 'A bee packs pollen into baskets on its hind',
-          after: '.',
-          answer: 'legs',
-          explanation: 'Pollen is packed into special baskets on the bee’s hind legs.',
-          evidence: 'packing pollen into special baskets on her hind legs.',
+          "title": "Questions 18-22",
+          "type": "table-completion",
+          "instructionHtml": "Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer.",
+          "questions": [
+            {
+              "id": "q18",
+              "answer": "Pumps",
+              "before": "The stormwater-management programme in Miami Beach has involved the installation of efficient ……………",
+              "after": ""
+            },
+            {
+              "id": "q19",
+              "answer": "Dams",
+              "before": "The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia",
+              "after": ""
+            },
+            {
+              "id": "q20",
+              "answer": "Float",
+              "before": "As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can …………",
+              "after": ""
+            },
+            {
+              "id": "q21",
+              "answer": "Crops",
+              "before": "Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content",
+              "after": ""
+            },
+            {
+              "id": "q22",
+              "answer": "Trees",
+              "before": "A project in LA has increased the number of ……………… on the city’s streets",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 18-22</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>18. The stormwater-management programme in Miami Beach has involved the installation of efficient …………….</span><br/>\n<span>19. The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia.</span><br/>\n<span>20. As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can ………….</span><br/>\n<span>21. Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content.</span><br/>\n<span>22. A project in LA has increased the number of ……………… on the city’s streets.</span></p>",
+          "wordLimit": 1,
+          "table": {
+            "rows": [
+              [
+                "The stormwater-management programme in Miami Beach has involved the installation of efficient ……………",
+                {
+                  "questionId": "q18"
+                },
+                ""
+              ],
+              [
+                "The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia",
+                {
+                  "questionId": "q19"
+                },
+                ""
+              ],
+              [
+                "As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can …………",
+                {
+                  "questionId": "q20"
+                },
+                ""
+              ],
+              [
+                "Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content",
+                {
+                  "questionId": "q21"
+                },
+                ""
+              ],
+              [
+                "A project in LA has increased the number of ……………… on the city’s streets",
+                {
+                  "questionId": "q22"
+                },
+                ""
+              ]
+            ]
+          }
         },
         {
-          id: 'q8',
-          before: 'For a source close to the hive, a bee performs a',
-          after: 'dance.',
-          answer: 'round',
-          explanation: 'For a nearby source the bee performs a simple round dance.',
-          evidence: 'For a source close to the hive, the bee performs a simple “round dance”, running in circles.',
-        },
-        {
-          id: 'q9',
-          before: 'The waggle dance shows direction relative to the',
-          after: '.',
-          answer: 'sun',
-          explanation: 'The direction of the straight run indicates the food’s direction relative to the sun.',
-          evidence: 'The direction of the straight run, measured against the vertical, indicates the direction of the food relative to the sun.',
-        },
-      ],
+          "title": "Questions 23-26",
+          "type": "matching-features",
+          "instructionHtml": "Look at the following statements and the list of people below. Match each statement with the correct person, A-E.",
+          "questions": [
+            {
+              "id": "q23",
+              "answer": "B",
+              "textHtml": "It is essential to adopt strategies which involve and help residents of the region"
+            },
+            {
+              "id": "q24",
+              "answer": "E",
+              "textHtml": "Interventions which reduce heat are absolutely vital for our survival in this location"
+            },
+            {
+              "id": "q25",
+              "answer": "A",
+              "textHtml": "More work will need to be done in future decades to deal with the impact of rising water levels"
+            },
+            {
+              "id": "q26",
+              "answer": "C",
+              "textHtml": "The number of locations requiring action to adapt to flooding has grown in recent years. List of People A. Yanira Pineda B. Susanna Toi C. Elizabeth English D. Raisa Chowdhury E. Greg Spotts"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A-E.</span></p><p><span>23. It is essential to adopt strategies which involve and help residents of the region.</span><br/>\n<span>24. Interventions which reduce heat are absolutely vital for our survival in this location.</span><br/>\n<span>25. More work will need to be done in future decades to deal with the impact of rising water levels.</span><br/>\n<span>26. The number of locations requiring action to adapt to flooding has grown in recent years.</span></p><p><strong><span>List of People</span></strong></p><p><span>A. Yanira Pineda</span><br/>\n<span>B. Susanna Toi</span><br/>\n<span>C. Elizabeth English</span><br/>\n<span>D. Raisa Chowdhury</span><br/>\n<span>E. Greg Spotts</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
+        }
+      ]
     },
     {
-      title: 'Questions 10-13',
-      type: 'tfng',
-      instructionHtml:
-        'Do the following statements agree with the information in Reading Passage 1? Write <strong>True</strong>, <strong>False</strong> or <strong>Not Given</strong>.',
-      questions: [
+      "label": "Passage 3",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 3",
+        "title": "A new role for livestock guard dogs",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>Livestock guard dogs, traditionally used to protect farm animals from predators, are now being used to protect the predators themselves.</span>"
+          },
+          {
+            "html": "<span><strong>A</strong> For thousands of years, livestock guard dogs worked alongside shepherds to protect their sheep, goats and cattle from predators such as wolves and bears. But in the 19th and 20th centuries, when such predators were largely exterminated, most guard dogs lost their jobs. In recent years, however, as increased efforts have been made to protect wild animals, predators have become more widespread again. As a result, farmers once more need to protect their livestock, and guard dogs are enjoying an unexpected revival.</span>"
+          },
+          {
+            "html": "<span><strong>B</strong> Today there are around 50 breeds of guard dogs on duty in various parts of the world. These dogs are raised from an early age with the animals they will be watching and eventually these animals become the dog’s family. The dogs will place themselves between the livestock and any threat, barking loudly. If necessary, they will chase away predators, but often their mere presence is sufficient. Their initial training is to make them understand that livestock is going to be their life,’ says Dan Macon, a shepherd with three guard dogs. ‘A fluffy white puppy is fun to be around, but too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog.’</span>"
+          },
+          {
+            "html": "<span><strong>C</strong> The evidence indicates that guard dogs are highly effective. For example, in Portugal, biologist Silvia Ribeiro has found that more than 90 per cent of the farmers participating in a programme to train and use guard dogs to protect their herds against attack from wolves rate the performance of the dogs as very good or excellent. In a study carried out in Australia by Linda van Bommel and Chris Johnson at the University of Tasmania, more than 65 per cent of herders reported that predation stopped completely after they got the dogs, and almost all the rest saw a decrease in attacks. ‘If they are managed and used properly, livestock guard dogs are the most efficient control method that we have in terms of the amount of livestock that they save from predation,’ says van Bommel.</span>"
+          },
+          {
+            "html": "<span><strong>D</strong> But today’s guard dogs also have a new role – to help preserve the predators. It is hoped that reductions in livestock losses can make farmers more tolerant of predators and less likely to kill them. In Namibia, more than 90 per cent of cheetahs live outside protected areas, close to humans raising livestock. As a result, the cheetahs are often held responsible for animal losses, and large numbers have been killed by farmers. When guard dogs were introduced, more than 90 per cent of farmers reported a dramatic reduction in livestock losses, and said that as a result they were less likely to kill predators. Julie Young, at Utah State University in the US, believes this result applies widely. ‘There is common ground from the livestock perspective and from the conservation perspective,’ she says. ‘If ranchers don’t have a dead cow, they will not make a call to apply for a permit to kill a wolf.’</span>"
+          },
+          {
+            "html": "<span><strong>E</strong> Looking at all the published evidence, Bethany Smith at Nottingham Trent University in the UK found that up to 88 per cent of farmers said they no longer killed predators after using dogs – but warned that such self-reported results must be taken with a pinch of salt. What’s more, it is possible that livestock guard dogs merely displace predators to unprotected neighbouring properties, where their fate isn’t recorded. ‘In some regions, we work with almost every farmer, but in others only one or two have dogs,’ says Ribeiro. ‘If we are not working with everybody, we are transferring the wolf pressure to the neighbour’s herd and he can use poison and kill an entire pack of wolves.’</span>"
+          },
+          {
+            "html": "<span><strong>F</strong> Another concern is whether there may be unintended ecological effects of using guard dogs. Studies suggest that reducing deaths of one type of predator may have a negative impact on other species. The extent of this problem isn’t known, but the consequences are clear in Namibia. Cheetahs aren’t the only species that cause sheep and goat losses there: other predators also attack livestock. In 2015, researchers reported that in spite of the impact farmers obtaining guard dogs had on cheetahs, the number of jackals killed by dogs and people actually increased. Guard dogs have other ecological impacts too. They have been found to spread diseases to wild animals, including endangered Ethiopian wolves. They may also compete with other carnivores for food. And by creating a ‘landscape of fear’, their mere presence can influence the behaviour of prey animals.</span>"
+          },
+          {
+            "html": "<span><strong>G</strong> The evidence so far, however, indicates that these consequences aren’t always negative. Guard dogs can deliver unexpected benefits by protecting vulnerable wildlife from predators. For example, their presence has been found to protect birds which build their nests on the ground in fields, where foxes would normally raid them. Indeed, Australian researchers are now using dogs to enhance biodiversity and create refuges for species threatened by predation. So if we can get this right, there may be a bright future for guard dogs in promoting harmonious coexistence between humans and wildlife.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q10',
-          textHtml: 'The queen bee directs the work of the colony.',
-          answer: 'False',
-          explanation: 'The passage says no bee is in charge and the queen does not give orders. She simply lays eggs.',
-          evidence: 'No single bee is in charge; the queen does not give orders, but simply lays eggs.',
+          "title": "Questions 27-31",
+          "type": "paragraph-matching",
+          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.",
+          "questions": [
+            {
+              "id": "q27",
+              "answer": "D",
+              "textHtml": "an example of how one predator has been protected by the introduction of livestock guard dogs"
+            },
+            {
+              "id": "q28",
+              "answer": "G",
+              "textHtml": "an optimistic suggestion about the possible positive developments in the use of livestock guard dogs"
+            },
+            {
+              "id": "q29",
+              "answer": "B",
+              "textHtml": "a description of how the methods used by livestock guard dogs help to keep predators away"
+            },
+            {
+              "id": "q30",
+              "answer": "C",
+              "textHtml": "claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds"
+            },
+            {
+              "id": "q31",
+              "answer": "B",
+              "textHtml": "a reference to how livestock guard dogs gain their skills"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 27-31</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.</span></p><p><span>27. an example of how one predator has been protected by the introduction of livestock guard dogs</span><br/>\n<span>28.an optimistic suggestion about the possible positive developments in the use of livestock guard dogs</span><br/>\n<span>29.a description of how the methods used by livestock guard dogs help to keep predators away</span><br/>\n<span>30. claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds</span><br/>\n<span>31. a reference to how livestock guard dogs gain their skills</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ]
         },
         {
-          id: 'q11',
-          textHtml: 'Pollination is worth more to farming than the honey bees produce.',
-          answer: 'True',
-          explanation: 'The passage says the pollination service is worth far more to agriculture than the honey itself.',
-          evidence: 'this service, performed without intention, is worth far more to human agriculture than the honey itself.',
+          "title": "Questions 32-36",
+          "type": "matching-features",
+          "instructionHtml": "Look at the following statements and the list of people below. Match each statement with the correct person, A – E.",
+          "questions": [
+            {
+              "id": "q32",
+              "answer": "D",
+              "textHtml": "The use of guard dogs may save the lives of both livestock and wild animals"
+            },
+            {
+              "id": "q33",
+              "answer": "E",
+              "textHtml": "Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate"
+            },
+            {
+              "id": "q34",
+              "answer": "B",
+              "textHtml": "There may be negative results if the use of livestock guard dogs is not sufficiently widespread"
+            },
+            {
+              "id": "q35",
+              "answer": "C",
+              "textHtml": "Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled"
+            },
+            {
+              "id": "q36",
+              "answer": "A",
+              "textHtml": "Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog. List of people A. Dan Macon B. Silvia Ribeiro C. Linda van Bommel D. Julie Young E. Bethany Smith"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 32 – 36</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A – E.</span></p><p><span>32. The use of guard dogs may save the lives of both livestock and wild animals.</span><br/>\n<span>33. Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate.</span><br/>\n<span>34. There may be negative results if the use of livestock guard dogs is not sufficiently widespread.</span><br/>\n<span>35. Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled.</span><br/>\n<span>36. Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog.</span></p><p><strong><span>List of people</span></strong></p><p><span>A. Dan Macon</span><br/>\n<span>B. Silvia Ribeiro</span><br/>\n<span>C. Linda van Bommel</span><br/>\n<span>D. Julie Young</span><br/>\n<span>E. Bethany Smith </span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
         },
         {
-          id: 'q12',
-          textHtml: 'Von Frisch’s discovery was immediately accepted by other scientists.',
-          answer: 'False',
-          explanation: 'His claim was at first met with disbelief. Only later confirmed by experiment.',
-          evidence: 'Von Frisch’s claim that a mere insect could communicate such precise information was at first met with disbelief.',
-        },
-        {
-          id: 'q13',
-          textHtml: 'Bees can perform the waggle dance in complete darkness.',
-          answer: 'True',
-          explanation: 'Other bees feel the dance in the darkness of the hive, so it works without light.',
-          evidence: 'Other bees crowd around, feeling the dance in the darkness of the hive.',
-        },
-      ],
-    },
-  ],
+          "title": "Questions 37-40",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
+          "questions": [
+            {
+              "id": "q37",
+              "answer": "Jackals",
+              "before": "…………… In addition, it has been suggested that the dogs could have",
+              "after": ""
+            },
+            {
+              "id": "q38",
+              "answer": "Diseases",
+              "before": "……… which may affect other species, and that they may reduce the amount of",
+              "after": ""
+            },
+            {
+              "id": "q39",
+              "answer": "Food",
+              "before": "…………… available to certain wild animals. On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as",
+              "after": ""
+            },
+            {
+              "id": "q40",
+              "answer": "Foxes",
+              "before": "……………",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Unintended ecological effects of using guard dogs</span></strong></p><p><span>In Namibia, livestock guard dogs have been used to protect domestic animals from attacks by cheetahs.</span><br/>\n<span>This has led to a rise in the deaths of other predators, particularly (37) ……………</span><br/>\n<span>In addition, it has been suggested that the dogs could have (38) ……… which may affect other species, and that they may reduce the amount of (39) …………… available to certain wild animals.</span><br/>\n<span>On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as (40) ……………</span></p>",
+          "wordLimit": 1
+        }
+      ]
+    }
+  ]
 };
 
-// ── Passage 2 — The Material That Changed the World (Q14-26) ─────────────────
-const passage2: TestPart = {
-  label: 'Passage 2',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 2',
-    title: 'The Material That Changed the World',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 14-26</strong>, which are based on Reading Passage 2 below.',
-    paragraphs: [
-      { label: 'A', html: 'It is difficult to imagine modern life without plastic. It is in our phones and our packaging, our clothes and our cars, our hospitals and our homes. Cheap, light, waterproof and endlessly mouldable, it is one of the most useful families of materials ever created. Yet plastic as we know it is barely a century old, and the story of its rise, and of the problems it has brought, is a lesson in how a single invention can transform the world in ways its creators never foresaw.' },
-      { label: 'B', html: 'The first fully synthetic plastic was created in 1907 by a Belgian-born chemist, Leo Baekeland, who was searching for a substitute for shellac, a natural resin then used to insulate electrical wiring. The hard, mouldable material he produced, which he called Bakelite, could be shaped into almost any form and did not conduct electricity, catch fire easily or dissolve in common liquids. It was quickly used for everything from telephones to radios to jewellery, and it opened the door to a flood of new synthetic materials in the decades that followed.' },
-      { label: 'C', html: 'What all these materials share is their basic structure. A plastic is made of very long molecules called polymers, in which the same small unit is repeated thousands of times, like beads on an immensely long string. It is this chain-like structure that gives plastics their useful combination of strength and flexibility. By varying the units and the way the chains are arranged, chemists can produce materials as different as a soft plastic bag and a rigid pipe, tuning the properties to almost any purpose.' },
-      { label: 'D', html: 'The great advantage of plastic (its durability) is also the source of its greatest problem. Because the long polymer chains are so difficult for natural processes to break down, plastic does not rot away as wood or paper does. A plastic bottle discarded today may still exist, in some form, in five hundred years. As production has soared, so has waste, and enormous quantities of discarded plastic now litter the land and, above all, the sea, where it harms wildlife and slowly breaks into tiny fragments that enter the food chain.' },
-      { label: 'E', html: 'Solutions are being pursued along several lines at once. Some researchers are developing plastics designed to break down safely, made from plant materials rather than oil. Others focus on recycling, though this is harder than it sounds, since the many different types of plastic must be sorted and cannot easily be mixed. Most promising of all, perhaps, are recently discovered microbes and enzymes that can digest certain plastics, offering the hope that one day our waste might be broken down and its raw materials reused rather than simply buried or burned.' },
-      { label: 'F', html: 'The deeper lesson of plastic is about the double edge of technology. The same qualities that make a material wonderfully useful can, at a large enough scale, make it a serious danger, and the full consequences of an invention may take generations to appear. Plastic will not, and probably should not, be abandoned; it is too valuable for that. But its history is a reminder that every powerful new material demands to be handled with a care that its first enthusiastic users rarely imagine.' },
-    ],
-  },
-  groups: [
-    {
-      title: 'Questions 14-18',
-      type: 'matching-headings',
-      instructionHtml:
-        'Reading Passage 2 has six paragraphs, A-F. Choose the correct heading for paragraphs <strong>B-F</strong>. (Paragraph A is an introduction.)',
-      legendHtml:
-        '<strong>List of Headings</strong><br>i&nbsp; The problem of a material that lasts<br>ii&nbsp; The first artificial plastic<br>iii&nbsp; A wider lesson about technology<br>iv&nbsp; How plastic is recycled abroad<br>v&nbsp; What plastics are made of<br>vi&nbsp; The search for answers<br>vii&nbsp; The dangers of natural resins<br>viii&nbsp; Plastic in the human body',
-      options: ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii'],
-      questions: [
-        {
-          id: 'q14',
-          textHtml: 'Paragraph B',
-          answer: 'ii',
-          explanation: 'Paragraph B describes Baekeland creating Bakelite, the first fully synthetic plastic. Heading ii.',
-          evidence: 'The first fully synthetic plastic was created in 1907 by a Belgian-born chemist, Leo Baekeland.',
-        },
-        {
-          id: 'q15',
-          textHtml: 'Paragraph C',
-          answer: 'v',
-          explanation: 'Paragraph C explains what plastics are made of (long polymer chains), heading v.',
-          evidence: 'A plastic is made of very long molecules called polymers, in which the same small unit is repeated thousands of times.',
-        },
-        {
-          id: 'q16',
-          textHtml: 'Paragraph D',
-          answer: 'i',
-          explanation: 'Paragraph D is about the problem of a material that lasts (plastic does not rot and becomes waste), heading i.',
-          evidence: 'The great advantage of plastic (its durability) is also the source of its greatest problem.',
-        },
-        {
-          id: 'q17',
-          textHtml: 'Paragraph E',
-          answer: 'vi',
-          explanation: 'Paragraph E describes the search for answers: biodegradable plastics, recycling, and plastic-eating microbes. Heading vi.',
-          evidence: 'Solutions are being pursued along several lines at once.',
-        },
-        {
-          id: 'q18',
-          textHtml: 'Paragraph F',
-          answer: 'iii',
-          explanation: 'Paragraph F draws the wider lesson about the double edge of technology. Heading iii.',
-          evidence: 'The deeper lesson of plastic is about the double edge of technology.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 19-22',
-      type: 'sentence-completion',
-      wordLimit: 2,
-      instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
-      questions: [
-        {
-          id: 'q19',
-          before: 'The first synthetic plastic, called',
-          after: ', was made in 1907.',
-          answer: 'Bakelite',
-          explanation: 'The hard, mouldable material Baekeland produced was called Bakelite.',
-          evidence: 'The hard, mouldable material he produced, which he called Bakelite.',
-        },
-        {
-          id: 'q20',
-          before: 'Baekeland was looking for a substitute for a natural resin called',
-          after: '.',
-          answer: 'shellac',
-          explanation: 'He was searching for a substitute for shellac, used to insulate wiring.',
-          evidence: 'who was searching for a substitute for shellac, a natural resin then used to insulate electrical wiring.',
-        },
-        {
-          id: 'q21',
-          before: 'Plastics are made of long molecules known as',
-          after: '.',
-          answer: 'polymers',
-          explanation: 'Plastics are made of very long molecules called polymers.',
-          evidence: 'A plastic is made of very long molecules called polymers.',
-        },
-        {
-          id: 'q22',
-          before: 'Some scientists are studying microbes and',
-          after: 'that can digest plastic.',
-          answer: 'enzymes',
-          explanation: 'Researchers are studying microbes and enzymes that can digest certain plastics.',
-          evidence: 'recently discovered microbes and enzymes that can digest certain plastics.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 23-26',
-      type: 'multiple-choice',
-      instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
-      questions: [
-        {
-          id: 'q23',
-          textHtml: 'What gives plastics their mix of strength and flexibility?',
-          options: ['their colour', 'their chain-like molecular structure', 'the oil they are made from', 'their low cost'],
-          answer: 'B',
-          explanation: 'It is the long, chain-like polymer structure that gives plastics strength and flexibility.',
-          evidence: 'It is this chain-like structure that gives plastics their useful combination of strength and flexibility.',
-        },
-        {
-          id: 'q24',
-          textHtml: 'Why does plastic waste last so long?',
-          options: ['It is buried too deep.', 'Its polymer chains resist natural breakdown.', 'There is too much of it.', 'It is mixed with metal.'],
-          answer: 'B',
-          explanation: 'The long polymer chains are hard for natural processes to break down, so plastic does not rot.',
-          evidence: 'Because the long polymer chains are so difficult for natural processes to break down, plastic does not rot away as wood or paper does.',
-        },
-        {
-          id: 'q25',
-          textHtml: 'One reason recycling plastic is difficult is that',
-          options: ['it is too valuable.', 'different types cannot easily be mixed.', 'it breaks down too fast.', 'microbes eat it first.'],
-          answer: 'B',
-          explanation: 'The many different types of plastic must be sorted and cannot easily be mixed.',
-          evidence: 'the many different types of plastic must be sorted and cannot easily be mixed.',
-        },
-        {
-          id: 'q26',
-          textHtml: 'The main point of the final paragraph is that',
-          options: ['plastic should be banned.', 'useful materials can also be dangerous at scale.', 'plastic has no real uses.', 'technology is always harmful.'],
-          answer: 'B',
-          explanation: 'The lesson is technology’s double edge: the qualities that make a material useful can make it dangerous at scale.',
-          evidence: 'The same qualities that make a material wonderfully useful can, at a large enough scale, make it a serious danger.',
-        },
-      ],
-    },
-  ],
-};
-
-// ── Passage 3 — Rethinking the Exam (Q27-40) ────────────────────────────────
-const passage3: TestPart = {
-  label: 'Passage 3',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 3',
-    title: 'Rethinking the Exam',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 27-40</strong>, which are based on Reading Passage 3 below.',
-    paragraphs: [
-      { label: 'A', html: 'The written examination, in which candidates sit in silence and answer questions from memory under strict time limits, is so familiar a part of education that it can seem a permanent and natural feature of learning. In fact it is a relatively recent invention, and one that a growing number of educators believe has outlived its usefulness. To understand the debate now surrounding examinations, it helps to remember that they were designed to solve a particular problem, and to ask whether that problem is still the one we face.' },
-      { label: 'B', html: 'The modern written exam spread in the nineteenth century, and its great virtue was fairness. Before it, places at universities and posts in the civil service were often handed out through personal connection and privilege. A standardised written test, marked without knowledge of who had written it, offered a way to select people by ability rather than birth. For all its faults, the exam was a genuinely democratic instrument, and in many parts of the world it still performs this function, opening doors to talented students who would otherwise be overlooked.' },
-      { label: 'C', html: 'Critics argue, however, that the exam measures a narrow and increasingly outdated set of skills. It rewards above all the ability to memorise information and to recall it quickly under pressure. Precisely the tasks that computers now perform far better than any human. The abilities that matter most in modern working life, such as creativity, collaboration and the capacity to find and judge information, are exactly those that a silent, solitary, closed-book test is least able to assess. We may, the critics suggest, be selecting and training people for a world that no longer exists.' },
-      { label: 'D', html: 'There is also concern about the effect of exams on learning itself. When a test carries high stakes, both students and teachers tend to focus narrowly on what will be examined, a process often called “teaching to the test”. Knowledge is crammed for the occasion and forgotten soon after; subjects that are not examined are neglected; and the anxiety that exams produce can harm the very students it is meant to sort, particularly those who know the material but perform poorly under pressure. The exam, in this view, distorts the education it is supposed to measure.' },
-      { label: 'E', html: 'Defenders of examinations reply that the alternatives are worse. Continuous assessment, in which a student’s coursework counts towards their final grade, sounds attractive but is far easier to manipulate: work can be copied, bought or completed with too much help from others, and the anonymity that makes exams fair is lost. A timed test, whatever its limitations, at least guarantees that the work is the student’s own, produced under identical conditions for everyone. Remove that guarantee, defenders warn, and the fairness that was the exam’s original purpose collapses.' },
-      { label: 'F', html: 'The likeliest future is neither the abolition of exams nor their unchanged survival, but a gradual broadening of how we judge learning. Written tests may remain for those things they measure well, while projects, presentations and practical work assess the skills they cannot reach. The real lesson of the debate is that no single method can capture everything worth knowing about a student, and that the exam, so long treated as the natural measure of ability, is only one tool among several. Valuable for some purposes, and quite unsuited to others.' },
-    ],
-  },
-  groups: [
-    {
-      title: 'Questions 27-31',
-      type: 'yes-no-notgiven',
-      instructionHtml:
-        'Do the following statements agree with the views of the writer in Reading Passage 3? Write <strong>Yes</strong>, <strong>No</strong> or <strong>Not Given</strong>.',
-      questions: [
-        {
-          id: 'q27',
-          textHtml: 'The written exam has existed for most of human history.',
-          answer: 'No',
-          explanation: 'The writer says the exam is a relatively recent invention, not an ancient one.',
-          evidence: 'In fact it is a relatively recent invention, and one that a growing number of educators believe has outlived its usefulness.',
-        },
-        {
-          id: 'q28',
-          textHtml: 'Exams originally helped to make selection fairer.',
-          answer: 'Yes',
-          explanation: 'The writer says the exam’s great virtue was fairness. Selecting by ability rather than birth.',
-          evidence: 'A standardised written test, marked without knowledge of who had written it, offered a way to select people by ability rather than birth.',
-        },
-        {
-          id: 'q29',
-          textHtml: 'Exams should be abolished completely.',
-          answer: 'No',
-          explanation: 'The writer expects a broadening of assessment, not abolition. Written tests will remain for what they measure well.',
-          evidence: 'The likeliest future is neither the abolition of exams nor their unchanged survival, but a gradual broadening of how we judge learning.',
-        },
-        {
-          id: 'q30',
-          textHtml: 'Online exams are easier to cheat in than paper ones.',
-          answer: 'Not Given',
-          explanation: 'The passage discusses continuous assessment and coursework, but never mentions online exams at all.',
-        },
-        {
-          id: 'q31',
-          textHtml: 'No single method can measure everything about a student.',
-          answer: 'Yes',
-          explanation: 'The writer states directly that no single method can capture everything worth knowing about a student.',
-          evidence: 'no single method can capture everything worth knowing about a student.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 32-36',
-      type: 'sentence-endings',
-      instructionHtml: 'Complete each sentence with the correct ending. Write the correct letter, A-G.',
-      legendHtml:
-        '<strong>A</strong>&nbsp; select people by ability rather than birth.<br><strong>B</strong>&nbsp; the skills computers now perform better than humans.<br><strong>C</strong>&nbsp; students and teachers focus narrowly on what will be tested.<br><strong>D</strong>&nbsp; it guarantees the work is the student’s own.<br><strong>E</strong>&nbsp; a broader mix of methods is likely.<br><strong>F</strong>&nbsp; exams should be made longer.<br><strong>G</strong>&nbsp; coursework is always more accurate.',
-      options: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-      questions: [
-        {
-          id: 'q32',
-          textHtml: 'The original purpose of the written exam was to',
-          answer: 'A',
-          explanation: 'The exam was designed to select people by ability rather than birth (ending A).',
-          evidence: 'offered a way to select people by ability rather than birth.',
-        },
-        {
-          id: 'q33',
-          textHtml: 'Critics say exams mainly reward',
-          answer: 'B',
-          explanation: 'Critics say exams reward memorising and quick recall. The very tasks computers now do better (ending B).',
-          evidence: 'It rewards above all the ability to memorise information and to recall it quickly under pressure. Precisely the tasks that computers now perform far better than any human.',
-        },
-        {
-          id: 'q34',
-          textHtml: 'When a test has high stakes,',
-          answer: 'C',
-          explanation: 'High stakes make students and teachers focus narrowly on what will be examined (ending C).',
-          evidence: 'both students and teachers tend to focus narrowly on what will be examined, a process often called “teaching to the test”.',
-        },
-        {
-          id: 'q35',
-          textHtml: 'Defenders value the timed exam because',
-          answer: 'D',
-          explanation: 'Defenders say a timed test at least guarantees the work is the student’s own (ending D).',
-          evidence: 'A timed test, whatever its limitations, at least guarantees that the work is the student’s own.',
-        },
-        {
-          id: 'q36',
-          textHtml: 'The writer predicts that in future',
-          answer: 'E',
-          explanation: 'The writer predicts a gradual broadening. A mix of methods rather than exams alone (ending E).',
-          evidence: 'a gradual broadening of how we judge learning. Written tests may remain... while projects, presentations and practical work assess the skills they cannot reach.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 37-40',
-      type: 'multiple-choice',
-      instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
-      questions: [
-        {
-          id: 'q37',
-          textHtml: 'Before written exams, university places were often given out according to',
-          options: ['ability and merit.', 'personal connection and privilege.', 'written tests.', 'age.'],
-          answer: 'B',
-          explanation: 'Before the exam, places and posts were often handed out through personal connection and privilege.',
-          evidence: 'places at universities and posts in the civil service were often handed out through personal connection and privilege.',
-        },
-        {
-          id: 'q38',
-          textHtml: 'Which skills do critics say exams are least able to measure?',
-          options: ['memory and recall', 'creativity and collaboration', 'speed and accuracy', 'spelling and grammar'],
-          answer: 'B',
-          explanation: 'Critics say a silent, solitary, closed-book test is least able to assess creativity, collaboration and judging information.',
-          evidence: 'such as creativity, collaboration and the capacity to find and judge information, are exactly those that a silent, solitary, closed-book test is least able to assess.',
-        },
-        {
-          id: 'q39',
-          textHtml: '“Teaching to the test” refers to',
-          options: ['making tests easier.', 'focusing only on what will be examined.', 'testing teachers.', 'removing exams.'],
-          answer: 'B',
-          explanation: 'Teaching to the test is when students and teachers focus narrowly on what will be examined.',
-          evidence: 'both students and teachers tend to focus narrowly on what will be examined, a process often called “teaching to the test”.',
-        },
-        {
-          id: 'q40',
-          textHtml: 'What is the main objection defenders raise against continuous assessment?',
-          options: ['It is too difficult.', 'It can be manipulated and is less fair.', 'It takes too long.', 'It favours weak students.'],
-          answer: 'B',
-          explanation: 'Defenders object that coursework is far easier to manipulate (copied, bought or over-helped), losing the exam’s fairness.',
-          evidence: 'Continuous assessment... is far easier to manipulate: work can be copied, bought or completed with too much help from others.',
-        },
-      ],
-    },
-  ],
-};
-
-export const readingFull005: PracticeTest = {
-  id: 'reading-full-005',
-  skill: 'reading',
-  title: 'Academic Reading. Full Test 5',
-  description: 'A complete 60-minute Academic Reading exam: three passages on the language of bees, the story of plastic and the future of exams, 40 questions across the full range of question types.',
-  durationMinutes: 60,
-  parts: [passage1, passage2, passage3],
-};
+export default test;

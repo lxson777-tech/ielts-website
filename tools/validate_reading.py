@@ -21,7 +21,7 @@ def load(path: Path) -> dict:
 def main() -> None:
     failures = []
     total = 0
-    for local_number, source_number in enumerate(import_reading.NUMBERS, 6):
+    for local_number, source_number in import_reading.LOCAL_TO_SOURCE.items():
         path = ROOT / "src" / "data" / "tests" / f"reading-full-{local_number:03d}.ts"
         test = load(path)
         url, body = import_reading.fetch(source_number)
@@ -79,7 +79,7 @@ def main() -> None:
                 relative = src.removeprefix("/ielts-website/")
                 if not src.startswith("/ielts-website/pics/reading/imported/") or not (ROOT / "public" / relative).exists():
                     failures.append(f"{path.name} {part['label']}: missing local image {src}")
-        rebuilt = import_reading.build(source_number)
+        rebuilt = import_reading.build(source_number, local_number)
         rebuilt_passages = [part["stimulus"] for part in rebuilt["parts"]]
         emitted_passages = [part["stimulus"] for part in test["parts"]]
         if emitted_passages != rebuilt_passages:

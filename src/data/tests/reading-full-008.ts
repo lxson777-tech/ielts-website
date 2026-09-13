@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-317",
+  "id": "reading-full-008",
   "skill": "reading",
-  "title": "Academic Reading Test 317",
+  "title": "Academic Reading Test 8",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-317/",
+    "url": "https://practicepteonline.com/ielts-reading-test-310/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,167 +17,130 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "Do animals dream?",
+        "title": "THE KAKAPO",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Studies using electrodes attached to the heads of sleepers have shown that when we sleep, we do so in two ways that alternate throughout the night. The first is rapid eye movement (REM) or active sleep. During this stage our eyes move, even though our eyelids are closed. Our muscles also twitch slightly, though they are largely paralysed so we don’t hurt ourselves. In contrast, we also engage in non-REM sleep, during which we barely move at all. Most dream states, and certainly those with the most vivid dreams, happen during REM sleep.</span>"
+            "html": "<span>The kakapo is a nocturnal, flightless parrot that is critically endangered and one of New Zealand’s unique treasures</span>"
           },
           {
-            "html": "<span>There’s some evidence that other mammals may also dream. For example, researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze.</span>"
+            "html": "<span>The kakapo, also known as the owl parrot, is a large, forest-dwelling bird, with a pale owl-like face. Up to 64 cm in length, it has predominantly yellow-green feathers, forward-facing eyes, a large grey beak, large blue feet, and relatively short wings and tail. It is the world’s only flightless parrot, and is also possibly one of the world’s longest-living birds, with a reported lifespan of up to 100 years.</span>"
           },
           {
-            "html": "<span>But finding evidence of dreaming in non-mammals has proved more difficult. Their brains are very different from those of humans, and it can often be difficult to record their activity while they are sleeping. Recently, however, researchers succeeded in recording brain activity in sleeping pigeons. As in mammals, the recordings revealed both REM and non-REM sleep. Intriguingly, REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying, which suggests that this may possibly be what the pigeons were dreaming about.</span>"
+            "html": "<span>Kakapo are solitary birds and tend to occupy the same home range for many years. They forage on the ground and climb high into trees. They often leap from trees and flap their wings, but at best manage a controlled descent to the ground. They are entirely vegetarian, with their diet including the leaves, roots and bark of trees as well as bulbs, and fern fronds.</span>"
           },
           {
-            "html": "<span>That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom. For example, sponges don’t have brains, so they lack the machinery for dreaming. There are also some animals with unusual sleep patterns. These include whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake. They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid. This is surprising because we tend to think of whales and dolphins as having complex inner lives. It’s thought that they don’t experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature.</span>"
+            "html": "<span>Kakap6 breed in summer and autumn, but only in years when food is plentiful. Males play no part in incubation or chick-rearing – females alone incubate eggs and feed the chicks. The 1-4 eggs are laid in soil, which is repeatedly turned over before and during incubation. The female kakapo has to spend long periods away from the nest searching for food, which leaves the unattended eggs and chicks particularly vulnerable to predators.</span>"
           },
           {
-            "html": "<span>Nevertheless, in many cases REM sleep does seem to have benefits. Growing evidence from birds and mammals suggests that REM sleep and dreaming are important for forming memories and learning. It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage. As soon as animals evolved moderately complex lifestyles, they would have needed to dream in order to manage these lifestyles.</span>"
+            "html": "<span>Before humans arrived, kakapo were common throughout New Zealand’s forests. However, this all changed with the arrival of the first Polynesian settlers about 700 years ago. For the early settlers, the flightless kakapo was easy prey. They ate its meat and used its feathers to make soft cloaks. With them came the Polynesian dog and rat, which also preyed on kakapo. By the time European colonisers arrived in the early 1800s, kakapo had become confined to the central North Island and forested parts of the South Island. The fall in kakapo numbers was accelerated by European colonisation. A great deal of habitat was lost through forest clearance, and introduced species such as deer depleted the remaining forests of food. Other predators such as cats, stoats and two more species of rat were also introduced. The kakapo were in serious trouble.</span>"
           },
           {
-            "html": "<span>However, we still don’t understand how this outward behaviour relates to internal experience. It seems impossible to know what it is like to be a rat or a pigeon, let alone imagine their dreamscapes. We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don’t know if there is an internal experience of chasing rabbits that comes along with that.</span>"
+            "html": "<span>In 1894, the New Zealand government launched its first attempt to save the kakapo. Conservationist Richard Henry led an effort to relocate several hundred of the birds to predator-free Resolution Island in Fiordland. Unfortunately, the island didn’t remain predator free – stoats arrived within six years, eventually destroying the kakapo population. By the mid-1900s, the kakapo was practically a lost species. Only a few clung to life in the most isolated parts of New Zealand.</span>"
           },
           {
-            "html": "<span>Another non-human dreamer offers insight here. In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room. At one point, in the middle of the night, Heidi seemed to dream: her limbs and head moved, and her skin rapidly changed colour, as though she was pursuing a crab.</span>"
+            "html": "<span>From 1949 to 1973, the newly formed New Zealand Wildlife Service made over 60 expeditions to find kakapo, focusing mainly on Fiordland. Six were caught, but there were no females amongst them and all but one died within a few months of captivity. In 1974, a new initiative was launched, and by 1977,18 more kakapo were found in Fiordland. However, there were still no females. In 1977, a large population of males was spotted in Rakiura – a large island free from stoats, ferrets and weasels. There were about 200 individuals, and in 1980 it was confirmed females were also present. These birds have been the foundation of all subsequent work in managing the species.</span>"
           },
           {
-            "html": "<span>Similarly, a report recently emerged of a sleeping octopus apparently having a nightmare. Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator. The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams.</span>"
+            "html": "<span>Unfortunately, predation by feral cats on Rakiura Island led to a rapid decline in kakapo numbers. As a result, during 1980-97, the surviving population was evacuated to three island sanctuaries: Codfish Island, Maud Island and Little Barrier Island. However, breeding success was hard to achieve. Rats were found to be a major predator of kakapo chicks and an insufficient number of chicks survived to offset adult mortality. By 1995, although at least 12 chicks had been produced on the islands, only three had survived. The kakapo population had dropped to 51 birds. The critical situation prompted an urgent review of kakapo management in New Zealand.</span>"
           },
           {
-            "html": "<span>The trouble is that we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too. But we can try to imagine what these dreamscapes are like by meeting animals on their own terms. For example, vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations.</span>"
+            "html": "<span>In 1996, a new Recovery Plan was launched, together with a specialist advisory group called the Kakapo Scientific and Technical Advisory Committee and a higher amount of funding. Renewed steps were taken to control predators on the three islands. Cats were eradicated from Little Barrier Island in 1980, and possums were eradicated from Codfish Island by 1986. However, the population did not start to increase until rats were removed from all three islands, and the birds were more intensively managed. This involved moving the birds between islands, supplementary feeding of adults and rescuing and hand-raising any failing chicks. After the first five years of the Recovery Plan, the population was on target. By 2000, five new females had been produced, and the total population had grown to 62 birds. For the first time, there was cautious optimism for the future of kakapo and by June 2020, a total of 210 birds was recorded.</span>"
           },
           {
-            "html": "<span>It is likely that dreaming has served multiple purposes since the first complex animals evolved. And if this is the case, it is possible that better understanding of these purposes might shed light on the true purpose of our own dreams.</span>"
+            "html": "<span>Today, kakapo management continues to be guided by the kakapo Recovery Plan. Its key goals are: minimise the loss of genetic diversity in the kakapo population, restore or maintain sufficient habitat to accommodate the expected increase in the kakapo population, and ensure stakeholders continue to be fully engaged in the preservation of the species.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 1-5",
-          "type": "table-completion",
-          "instructionHtml": "Complete the table below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.",
+          "title": "Questions 1-6",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 1-6 on your answer sheet, write",
           "questions": [
             {
               "id": "q1",
-              "answer": "Rats",
-              "before": "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
-              "after": ""
+              "answer": "False",
+              "textHtml": "There are other parrots that share the kakapo’s inability to fly"
             },
             {
               "id": "q2",
-              "answer": "Visual",
-              "before": "…………. input may have been dreaming of flying Whales and dolphins · still have",
-              "after": ""
+              "answer": "False",
+              "textHtml": "Adult kakapo produce chicks every year"
             },
             {
               "id": "q3",
-              "answer": "Half",
-              "before": "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
-              "after": ""
+              "answer": "False",
+              "textHtml": "Adult male kakapo bring food back to nesting females"
             },
             {
               "id": "q4",
-              "answer": "Temperature",
-              "before": "… their dreams are probably not very",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "The Polynesian rat was a greater threat to the kakapo than Polynesian settlers"
             },
             {
               "id": "q5",
-              "answer": "Vivid",
-              "before": "…………",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 1-5</span></strong><br/>\n<span>Complete the table below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.</span></p><table><tbody><tr><td colspan=\"3\"><span><strong>Research into sleep and dreaming</strong></span></td></tr><tr><td></td><td width=\"198\"><strong><span>Research findings</span></strong></td><td width=\"198\"><strong><span>Comment</span></strong></td></tr><tr><td width=\"198\"><span>Humans</span></td><td width=\"198\"><span>·       humans experience REM sleep and non-REM sleep</span><p><span>·       in REM sleep, the eyes and muscles move</span></p></td><td width=\"198\"></td></tr><tr><td width=\"198\"><span>(1) ………………   </span></td><td width=\"198\"><span>·       similar brain patterns were observed when active and sleeping</span></td><td width=\"198\"><span>indicative of dreaming</span></td></tr><tr><td width=\"198\"><span>Pigeons</span></td><td width=\"198\"><span>·       when sleeping, pigeons displayed activity in parts of the brain that deal with (2) …………. input</span></td><td width=\"198\"><span>may have been dreaming of flying</span></td></tr><tr><td width=\"198\"><span>Whales and dolphins</span></td><td width=\"198\"><span>·       still have (3) ………..their brain awake when they sleep</span><p><span>·       don’t experience REM sleep, as this could affect their sensitivity to<strong>              </strong>(4) <strong>…</strong></span></p></td><td width=\"198\"><span>their dreams are probably not very (5) …………<strong>  </strong></span></td></tr></tbody></table>",
-          "wordLimit": 1,
-          "table": {
-            "rows": [
-              [
-                "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
-                {
-                  "questionId": "q1"
-                },
-                ""
-              ],
-              [
-                "…………. input may have been dreaming of flying Whales and dolphins · still have",
-                {
-                  "questionId": "q2"
-                },
-                ""
-              ],
-              [
-                "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
-                {
-                  "questionId": "q3"
-                },
-                ""
-              ],
-              [
-                "… their dreams are probably not very",
-                {
-                  "questionId": "q4"
-                },
-                ""
-              ],
-              [
-                "…………",
-                {
-                  "questionId": "q5"
-                },
-                ""
-              ]
-            ]
-          }
-        },
-        {
-          "title": "Questions 6-13",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 6-13 on your answer sheet, write",
-          "questions": [
+              "answer": "True",
+              "textHtml": "Kakapo were transferred from Rakiura Island to other locations because they were at risk from feral cats"
+            },
             {
               "id": "q6",
               "answer": "True",
-              "textHtml": "Dreaming about past experiences helps us to create lasting memories of them"
-            },
+              "textHtml": "One Recovery Plan initiative that helped increase the kakapo population size was caring for struggling young birds"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1-6</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-6 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                         if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                        if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>             if there is no information on this</span></p><p><span>1. There are other parrots that share the kakapo’s inability to fly.</span><br/>\n<span>2. Adult kakapo produce chicks every year.</span><br/>\n<span>3. Adult male kakapo bring food back to nesting females.</span><br/>\n<span>4. The Polynesian rat was a greater threat to the kakapo than Polynesian settlers.</span><br/>\n<span>5. Kakapo were transferred from Rakiura Island to other locations because they were at risk from feral cats.</span><br/>\n<span>6. One Recovery Plan initiative that helped increase the kakapo population size was caring for struggling young birds.</span></p>"
+        },
+        {
+          "title": "Questions 7-13",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Choose ONE WORD AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 7-13 on your answer sheet.",
+          "questions": [
             {
               "id": "q7",
-              "answer": "False",
-              "textHtml": "It is now possible to tell what type of dream a dog is having"
+              "answer": "Bulbs",
+              "before": "……………… • nests are created in",
+              "after": ""
             },
             {
               "id": "q8",
-              "answer": "Not given",
-              "textHtml": "David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses"
+              "answer": "Soil",
+              "before": "……………… where eggs are laid. Arrival of Polynesian settlers • the",
+              "after": ""
             },
             {
               "id": "q9",
-              "answer": "False",
-              "textHtml": "While it was asleep, the octopus called Costello reacted as if it was hunting"
+              "answer": "Feathers",
+              "before": "………… of the kakapo were used to make clothes. Arrival of European colonisers •",
+              "after": ""
             },
             {
               "id": "q10",
-              "answer": "True",
-              "textHtml": "Scheel believes more research into octopuses’ dreams should be carried out"
+              "answer": "Deer",
+              "before": "…………… were an animal which they introduced that ate the kakapo’s food sources. Protecting kakapo • Richard Henry, a conservationist, tried to protect the kakapo. • a definite sighting of female kakapo on Rakiura Island was reported in the year",
+              "after": ""
             },
             {
               "id": "q11",
-              "answer": "False",
-              "textHtml": "We may soon be able to share the dreams of other human beings"
+              "answer": "1980",
+              "before": "……………. • the Recovery Plan included an increase in",
+              "after": ""
             },
             {
               "id": "q12",
-              "answer": "Not given",
-              "textHtml": "Hearing may be an important part of the dreams of some animals"
+              "answer": "Funding",
+              "before": "………………. • a current goal of the Recovery Plan is to maintain the involvement of",
+              "after": ""
             },
             {
               "id": "q13",
-              "answer": "Not given",
-              "textHtml": "Interest in the reasons why humans dream has increased greatly in recent times"
+              "answer": "Stakeholders",
+              "before": "…………………. in kakapo protection",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 6-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 6-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                   if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                 if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN                   </strong> if there is no information on this</span></p><p><span>6. Dreaming about past experiences helps us to create lasting memories of them.</span><br/>\n<span>7. It is now possible to tell what type of dream a dog is having.</span><br/>\n<span>8. David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses.</span><br/>\n<span>9. While it was asleep, the octopus called Costello reacted as if it was hunting.</span><br/>\n<span>10. Scheel believes more research into octopuses’ dreams should be carried out.</span><br/>\n<span>11. We may soon be able to share the dreams of other human beings.</span><br/>\n<span>12. Hearing may be an important part of the dreams of some animals.</span><br/>\n<span>13. Interest in the reasons why humans dream has increased greatly in recent times.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 7-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer. Write your answers in boxes 7-13 on your answer sheet.</span></p><p><strong><span>New Zealand’s kakapo</span></strong></p><p><strong><span>A type of parrot:</span></strong><br/>\n<span>• diet consists of fern fronds, various parts of a tree and (7) ………………</span><br/>\n<span>• nests are created in (8) ……………… where eggs are laid.</span></p><p><strong><span>Arrival of Polynesian settlers</span></strong><br/>\n<span>• the (9) ………… of the kakapo were used to make clothes.</span></p><p><strong><span>Arrival of European colonisers</span></strong><br/>\n<span>• (10) …………… were an animal which they introduced that ate the kakapo’s food sources.</span></p><p><strong><span>Protecting kakapo</span></strong><br/>\n<span>• Richard Henry, a conservationist, tried to protect the kakapo.</span><br/>\n<span>• a definite sighting of female kakapo on Rakiura Island was reported in the year (11) …………….</span><br/>\n<span>• the Recovery Plan included an increase in (12) ……………….</span><br/>\n<span>• a current goal of the Recovery Plan is to maintain the involvement of (13) …………………. in kakapo protection.</span></p>",
+          "wordLimit": 1
         }
       ]
     },
@@ -186,70 +149,68 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "Mapungubwe Located in southern Africa just below the Limpopo River, the kingdom of Mapungubwe, flourished between the 11th and 13th century CE",
+        "title": "To Britain",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> Mapungubwe, which was one of the first states in southern Africa, was formed by Bantu-speaking peoples who were farmers. The area controlled by the rulers of Mapungubwe had at its heart a large sandstone plateau, which was easily defended due to its inaccessibility. As with other kingdoms in the region of southern Africa, cattle herding and other types of farming brought plenty of food and a surplus that could be traded for needed goods. Archaeology has revealed extensive layers of bones and manure, which indicate that from the 9th century CE there were large cattle herds, the traditional source of political power in southern African communities. The archaeological record for the 10th century shows a marked increase in the number of domesticated cattle in the area as well as cotton cultivation and weaving, as indicated by abundant finds of spindle whorls.</span>"
+            "html": "<span>Mark Rowe investigates attempts to reintroduce elms to Britain</span>"
           },
           {
-            "html": "<span><strong>B</strong> The total population of Mapungubwe at its peak in the mid-13th century was around 5,000 people. The chief or king of Mapungubwe was likely the wealthiest individual in the society, and would have owned more cattle and precious materials than anyone else. The king and his advisers dwelt in a stone enclosure composed of stone walls and housing built on the highest level of the community’s territory, a natural sandstone hill which is some 30 metres high and 100 metres in length. Occupation on the hill dates from the 11th century and the entire complex was surrounded by a wooden palisade, as indicated by postholes made in the rock. The rest of the community lived in mud and thatch housing spread out below the hill, although there is one stone structure here. </span><span>This settlement, known as Babandyanalo, covers around 5 hectares (12.3 acres) and predates the hilltop structures.</span>"
+            "html": "<span><strong>A</strong> Around 25 million elms, accounting for 90% of all elm trees in the UK, died during the 1960s and ’70s of Dutch elm disease. In the aftermath, the elm, once so dominant in the British landscape, was largely forgotten. However, there’s now hope the elm may be reintroduced to the countryside of central and southern England. Any reintroduction will start from a very low base. ‘The impact of the disease is difficult to picture if you hadn’t seen what was there before,’ says Matt Elliot of the Woodland Trust. ‘You look at old photographs from the 1960s and it’s only then that you realise the impact [elms had] … They were significant, large trees … then they were gone.’</span>"
           },
           {
-            "html": "<span><strong>C</strong> The kings of Mapungubwe were buried at the top of the hill site in a demarcated area away from the dwellings, while other members of the community were buried at the surrounding valley level. A wooden staircase connected the two levels, the sockets for the steps being clearly visible in the sandstone cliff face. There were some grander residences dotted around the outskirts of Babandyanalo, and these probably belonged to male relatives of the king. There are many other smaller but still impressive sites across the Mapungubwe plateau, which are located anywhere from 15 to 100 kilometres from the major hill site. Containing stone residences and walls, they likely belonged to local chiefs who acted as servants to the king.</span>"
+            "html": "<span><strong>B</strong> The disease is caused by a fungus that blocks the elms’ vascular (water, nutrient and food transport) system, causing branches to wilt and die. A first epidemic, which occurred in the 1920s, gradually died down, but in the ’70s a second epidemic was triggered by shipments of elm from Canada. The wood came in the form of logs destined for boat building and its intact bark was perfect for the elm bark beetles that spread the deadly fungus. This time, the beetles carried a much more virulent strain that destroyed the vast majority of British elms.</span>"
           },
           {
-            "html": "<span><strong>D</strong> The Mapungubwe plateau has a very high number of carnivore animal remains and ivory splinters, suggesting that the skins of these large animals and ivory elephant tusks were accumulated, probably for trade with coastal areas reached by the Limpopo River. The presence of glass beads, almost certainly from India, indicate there was trade of some sort with other states on the coast who, in turn, traded with merchants travelling from India by sea. Mapungubwe also benefited from locally-sourced copper and the gold trade as it passed from the kingdom of Great Zimbabwe (12-15th century), situated to the north of Mapungubwe, to the coastal city of Kosala. It is likely that trade links led to a strengthening of political authority in order to control and even monopolise these lucrative interregional connections.</span>"
+            "html": "<span><strong>C</strong> Today, elms still exist in the southern English countryside but mostly only in low hedgerows between fields. ‘We have millions of small elms in hedgerows but they get targeted by the beetle as soon as they reach a certain size,’ says Karen Russell, co-author of the report ‘Where we are with elm’. Once the trunk of the elm reaches 10-15 centimetres or so in diameter, it becomes a perfect size for beetles to lay eggs and for the fungus to take hold. Yet mature specimens have been identified, in counties such as Cambridgeshire, that are hundreds of years old, and have mysteriously escaped the epidemic. The key, Russell says, is to identify and study those trees that have survived and work out why they stood tall when millions of others succumbed. Nevertheless, opportunities are limited as the number of these mature survivors is relatively small. ‘What are the reasons for their survival?’ asks Russell. ‘Avoidance, tolerance, resistance? We don’t know where the balance lies between the three. I don’t see how it can be entirely down to luck.’</span>"
           },
           {
-            "html": "<span><strong>E</strong> Archaeological discoveries reveal that pottery was produced on a scale large enough to suggest the presence of professional potters, and is another indicator of the prosperity of Mapungubwe society. Archaeological finds include spherical vessels with short necks, beakers, and bowls, many of which have decorative stamps. There are also ceramic discs, and whistles. In addition, cattle, sheep, and goat figurines, and small figures of highly stylised humans with elongated bodies and short limbs have been found. The figures may have been used in ceremonies as offerings to ancestors, but their precise function is not known. Other discoveries include small jewellery items made from locally sourced copper.</span>"
+            "html": "<span><strong>D</strong> For centuries, elm ran a close second to oak as the hardwood tree of choice in Britain and was in many instances the most prominent tree in the landscape. Not only was elm common in European forests, it became a key component of birch, ash and hazel woodlands. The use of elm is thought to go back to the Bronze Age, when it was widely used for tools. Elm was also the preferred material for shields and early swords. In the 18th century, it was planted more widely and its wood was used for items such as storage crates and flooring. It was also suitable for items that experienced high levels of impact and was used to build the keel of the 19th-century sailing ship Cutty Sark as well as mining equipment.</span>"
           },
           {
-            "html": "<span><strong>F</strong> Beautifully decorated artefacts made of gold have also been found at Mapungubwe. A type of decoration, found nowhere else except Great Zimbabwe, involved the crafting of gold into small rectangular sheets and carving geometrical patterns into it. These sheets were then used to cover wooden objects (which have not survived) using small tacks, also made of gold. One such object that has been discovered may have been a sceptre, while additional evidence of local gold-working is a rhinoceros figurine made from small hammered sheets, and thousands of small gold beads. These objects were all found at the royal burial site and date to c. 1150. They are the first known indicators that gold had an intrinsic value of its own (as opposed to that of a currency) in southern Africa.</span>"
+            "html": "<span><strong>E</strong> Given how ingrained elm is in British culture, it’s unsurprising the tree has many advocates. Amongst them is Peter Bourne of the National Elm Collection in Brighton. ‘I saw Dutch elm disease unfold as a small boy,’ he says. ‘The elm seemed to be part of rural England, but I remember watching trees just lose their leaves and that really stayed with me.’ Today, the city of Brighton’s elms total about 17,000. Local factors appear to have contributed to their survival. Strong winds from the sea make it difficult for the determined elm bark beetle to attack this coastal city’s elm population. However, the situation is precarious. ‘The beetles can just march in if we’re not careful, as the threat is right on our doorstep,’ says Bourne.</span>"
           },
           {
-            "html": "<span><strong>G</strong> The kingdom of Mapungubwe was already in decline by the late 13th century, probably because overpopulation placed too much stress on local resources, a situation that may have been brought to a crisis point by a series of droughts. Trade routes may also have shifted northwards. Certainly, the areas that now prospered were to the north, such as Great Zimbabwe.</span>"
+            "html": "<span><strong>F</strong> Any prospect of the elm returning relies heavily on trees being either resistant to, or tolerant of, the disease. This means a widespread reintroduction would involve existing or new hybrid strains derived from resistant, generally non-native elm species. A new generation of seedlings have been bred and tested to see if they can withstand the fungus by cutting a small slit on the bark and injecting a tiny amount of the pathogen. The effects are very quick,’ says Russell. ‘You return in four to six weeks and trees that are resistant show no symptoms, whereas those that are susceptible show leaf loss and may even have died completely.’</span>"
+          },
+          {
+            "html": "<span><strong>G</strong> All of this raises questions of social acceptance, acknowledges Russell. ‘If we’re putting elm back into the landscape, a small element of it is not native – are we bothered about that?’ For her, the environmental case for reintroducing elm is strong. ‘They will host wildlife, which is a good thing.’ Others are more wary. ‘On the face of it, it seems like a good idea,’ says Elliot. The problem, he suggests, is that, ‘You’re replacing a native species with a horticultural analogue*. You’re effectively cloning.’ There’s also the risk of introducing new diseases. Rather than plant new elms, the Woodland Trust emphasises providing space to those elms that have survived independently. ‘Sometimes the best thing you can do is just give nature time to recover… over time, you might get resistance,’ says Elliot.</span><br/>\n<span>* horticultural analogue: a cultivated plant species that is genetically similar to an existing species</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-19",
+          "title": "Questions 14-18",
           "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 14-19 on your answer sheet.",
+          "instructionHtml": "Reading passage has seven sections, A-G. Which section contains the following information? NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q14",
-              "answer": "E",
-              "textHtml": "a mention of the uncertainty regarding the purpose of certain objects"
+              "answer": "C",
+              "textHtml": "reference to the research problems that arise from there being only a few surviving large elms"
             },
             {
               "id": "q15",
               "answer": "G",
-              "textHtml": "the likelihood that a climatic factor increased the problems Mapungubwe faced"
+              "textHtml": "details of a difference of opinion about the value of reintroducing elms to Britain"
             },
             {
               "id": "q16",
-              "answer": "C",
-              "textHtml": "a mention of the location where members of the king’s family are thought to have lived"
+              "answer": "B",
+              "textHtml": "reference to how Dutch elm disease was brought into Britain"
             },
             {
               "id": "q17",
-              "answer": "D",
-              "textHtml": "a reference to people who brought goods by ship"
+              "answer": "E",
+              "textHtml": "a description of the conditions that have enabled a location in Britain to escape Dutch elm disease"
             },
             {
               "id": "q18",
-              "answer": "B",
-              "textHtml": "an estimate of the size to which the Mapungubwe community grew"
-            },
-            {
-              "id": "q19",
-              "answer": "A",
-              "textHtml": "a mention of agricultural produce being exchanged for other items"
+              "answer": "C",
+              "textHtml": "reference to the stage at which young elms become vulnerable to Dutch elm disease"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information?</span><br/>\n<span>Write the correct letter, A-G, in boxes 14-19 on your answer sheet.</span></p><p><span>14. a mention of the uncertainty regarding the purpose of certain objects</span><br/>\n<span>15. the likelihood that a climatic factor increased the problems Mapungubwe faced</span><br/>\n<span>16. a mention of the location where members of the king’s family are thought to have lived</span><br/>\n<span>17. a reference to people who brought goods by ship</span><br/>\n<span>18. an estimate of the size to which the Mapungubwe community grew</span><br/>\n<span>19. a mention of agricultural produce being exchanged for other items</span></p>",
+          "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Reading passage has seven sections, A-G. Which section contains the following information? NB You may use any letter more than once.</span></p><p><span>14. reference to the research problems that arise from there being only a few surviving large elms</span><br/>\n<span>15. details of a difference of opinion about the value of reintroducing elms to Britain</span><br/>\n<span>16. reference to how Dutch elm disease was brought into Britain</span><br/>\n<span>17. a description of the conditions that have enabled a location in Britain to escape Dutch elm disease</span><br/>\n<span>18.reference to the stage at which young elms become vulnerable to Dutch elm disease</span></p>",
           "options": [
             "A",
             "B",
@@ -261,91 +222,68 @@ const test: PracticeTest = {
           ]
         },
         {
-          "title": "Questions 20-21",
-          "type": "multiple-answer",
-          "instructionHtml": "and 21 Choose TWO letters, A-E. Write the correct letters in boxes 20 and 21 on your answer sheet",
+          "title": "Questions 19-23",
+          "type": "matching-features",
+          "instructionHtml": "Look at the following statements and the list of people below. Match each statement with the correct person, A, B, or C. NB You may use any letter more than once.",
           "questions": [
             {
+              "id": "q19",
+              "answer": "B",
+              "textHtml": "If a tree gets infected with Dutch elm disease, the damage rapidly becomes visible"
+            },
+            {
               "id": "q20",
-              "answer": [
-                "B",
-                "D"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-317-q20-q21"
+              "answer": "A",
+              "textHtml": "It may be better to wait and see if the mature elms that have survived continue to flourish"
             },
             {
               "id": "q21",
-              "answer": [
-                "B",
-                "D"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-317-q20-q21"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 20 and 21 on your answer sheet</span></p><p><span>The archaeological record reveals information about gold and the kingdom of Mapungubwe. Which TWO pieces of information are mentioned by the writer?</span><br/>\n<span><strong>A</strong> Not everyone in Mapungubwe used gold as a form of payment.</span><br/>\n<span><strong>B</strong> Items of gold were placed close to where Mapungubwe kings were buried.</span><br/>\n<span><strong>C</strong> The most valuable item discovered in Mapungubwe was a sceptre made of gold.</span><br/>\n<span><strong>D</strong> The way gold was decorated in Mapungubwe was also practised in another kingdom.</span><br/>\n<span><strong>E</strong> Working with gold was a respected occupation in the Mapungubwe community.</span></p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "Not everyone in Mapungubwe used gold as a form of payment"
+              "answer": "B",
+              "textHtml": "There must be an explanation for the survival of some mature elms"
             },
-            {
-              "value": "B",
-              "label": "Items of gold were placed close to where Mapungubwe kings were buried"
-            },
-            {
-              "value": "C",
-              "label": "The most valuable item discovered in Mapungubwe was a sceptre made of gold"
-            },
-            {
-              "value": "D",
-              "label": "The way gold was decorated in Mapungubwe was also practised in another kingdom"
-            },
-            {
-              "value": "E",
-              "label": "Working with gold was a respected occupation in the Mapungubwe community"
-            }
-          ]
-        },
-        {
-          "title": "Questions 22-26",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 22-26 on your answer sheet.",
-          "questions": [
             {
               "id": "q22",
-              "answer": "Prosperity",
-              "before": "………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects,",
-              "after": ""
+              "answer": "C",
+              "textHtml": "We need to be aware that insects carrying Dutch elm disease are not very far away"
             },
             {
               "id": "q23",
-              "answer": "Whistles",
-              "before": "………………. and figures of various animals, as well as models of people with stretched",
-              "after": ""
-            },
+              "answer": "A",
+              "textHtml": "You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was. List of People A. Matt Elliot B. Karen Russell C. Peter Bourne"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 19-23</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A, B, or C. NB You may use any letter more than once.</span></p><p><span>19. If a tree gets infected with Dutch elm disease, the damage rapidly becomes visible.</span><br/>\n<span>20. It may be better to wait and see if the mature elms that have survived continue to flourish.</span><br/>\n<span>21. There must be an explanation for the survival of some mature elms.</span><br/>\n<span>22. We need to be aware that insects carrying Dutch elm disease are not very far away.</span><br/>\n<span>23. You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was.</span></p><p><strong><span>List of People</span></strong><br/>\n<span>A. Matt Elliot</span><br/>\n<span>B. Karen Russell</span><br/>\n<span>C. Peter Bourne</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "title": "Questions 24-26",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
+          "questions": [
             {
               "id": "q24",
-              "answer": "Bodies",
-              "before": "…………………. It is possible that these had a role in ceremonies to honour",
+              "answer": "Oak",
+              "before": "………… Starting in the Bronze Age, many tools were made from elm and people also used it to make weapons. In the 18th century, it was grown to provide wood for boxes and",
               "after": ""
             },
             {
               "id": "q25",
-              "answer": "Ancestors",
-              "before": "……………………. In addition, pieces of",
+              "answer": "Flooring",
+              "before": "…………… Due to its strength, elm was often used for mining equipment and the Cutty Sark’s",
               "after": ""
             },
             {
               "id": "q26",
-              "answer": "Jewellery",
-              "before": "………………….. made from a local metal have been found at the site",
+              "answer": "Keel",
+              "before": "……………… was also constructed from elm",
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 22-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 22-26 on your answer sheet.</span></p><p><strong><span>Archaeological discoveries</span></strong></p><p><span>The Mapungubwe community’s (22) ………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects, (23) ………………. and figures of various animals, as well as models of people with stretched (24) …………………. It is possible that these had a role in ceremonies to honour (25) ……………………. In addition, pieces of (26) ………………….. made from a local metal have been found at the site.</span></p><p><br/>\n<br/>\n<br/> </p>",
+          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Uses of a popular tree</span></strong></p><p><span>For hundreds of years, the only tree that was more popular in Britain than elm was (24) ………… Starting in the Bronze Age, many tools were made from elm and people also used it to make weapons. In the 18th century, it was grown to provide wood for boxes and (25) …………… Due to its strength, elm was often used for mining equipment and the Cutty Sark’s (26) ……………… was also constructed from elm.</span></p>",
           "wordLimit": 1
         }
       ]
@@ -355,187 +293,167 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "Artificial Intelligence",
+        "title": "How stress affects our judgement",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>In many countries in the West, hysteria about the future of artificial intelligence (AI) is everywhere. There seems to be no shortage of sensationalist news about how AI could cure diseases, accelerate human innovation and improve human creativity. Just looking at the media headlines, you might think that we are already living in a future where AI has infiltrated every aspect of society.</span>"
+            "html": "<span>Some of the most important decisions of our lives occur while we’re feeling stressed and anxious. From medical decisions to financial and professional ones, we are all sometimes required to weigh up information under stressful conditions. But do we become better or worse at processing and using information under such circumstances?</span>"
           },
           {
-            "html": "<span>While it is undeniable that AI has opened up a wealth of promising opportunities, it has also led to the emergence of a mindset that can be best described as AI solutionism’. This is the philosophy that, given enough data, machine learning algorithms can solve all of humanity’s problems. But, in fact, instead of supporting AI progress, this mindset actually jeopardises the value of machine intelligence by disregarding important AI safety principles and setting unrealistic expectations about what AI can really do for humanity.</span>"
+            "html": "<span>My colleague and I, both neuroscientists, wanted to investigate how the mind operates under stress, so we visited some local fire stations. Firefighters’ workdays vary quite a bit. Some are pretty relaxed; they’ll spend their time washing the truck, cleaning equipment, cooking meals and reading. Other days can be hectic, with numerous life-threatening incidents to attend to; they’ll enter burning homes to rescue trapped residents, and assist with medical emergencies. These ups and downs presented the perfect setting for an experiment on how people’s ability to use information changes when they feel under pressure.</span>"
           },
           {
-            "html": "<span>In only a few years, AI solutionism has made its way from the technology evangelists’ mouths in Silicon Valley in California to the minds of government officials and policymakers around the world. The pendulum has swung from the dystopian notion that AI will destroy humanity to the utopian belief that our algorithmic saviour is here.</span>"
+            "html": "<span>We found that perceived threat acted as a trigger for a stress reaction that made the task of processing information easier for the firefighters – but only as long as it conveyed bad news.</span>"
           },
           {
-            "html": "<span>We are now seeing governments pledge support to national AI initiatives and compete in a technological race to dominate the burgeoning machine-learning sector. While many politicians proclaim the transformative effects of the coming AI revolution’, they fail to realise the complexity around deploying advanced machine learning systems in the real world.</span>"
+            "html": "<span>This is how we arrived at these results. We asked the firefighters to estimate their likelihood of experiencing 40 different adverse events in their life, such as being involved in an accident or becoming a victim of card fraud. We then gave them either good news (that their likelihood of experiencing these events was lower than they’d thought) or bad news (that it was higher) and asked them to provide new estimates.</span>"
           },
           {
-            "html": "<span>One of the most promising varieties of AI technologies are neural networks. This form of machine learning is loosely modelled on the neuronal structure of the human brain, but on a much smaller scale. But what many politicians do not understand is that simply adding a neural network to a problem will not automatically mean that you’ll find a solution. Similarly, adding a neural network to a system of government does not mean it will be instantaneously more inclusive or fair.</span>"
+            "html": "<span>People are normally quite optimistic – they will ignore bad news and embrace the good. This is what happened when the firefighters were relaxed; but when they were under stress, a different pattern emerged. Under these conditions, they became hyper-vigilant to bad news, even when it had nothing to do with their job (such as learning that the likelihood of card fraud was higher than they’d thought), and altered their beliefs in response. In contrast, stress didn’t change how they responded to good news (such as learning that the likelihood of card fraud was lower than they’d thought).</span>"
           },
           {
-            "html": "<span>AI systems need a lot of data to function, but the public sector typically does not have the appropriate data infrastructure to support advanced machine learning. Most of the data remains stored in offline archives. The few digitised sources of data that exist tend to be buried in bureaucracy. More often than not, data is spread across different government departments that each require special permissions to be accessed. Above all, the public sector typically lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence.</span>"
+            "html": "<span>Back in our lab, we observed the same pattern in students who were told they had to give a surprise public speech, which would be judged by a panel, recorded and posted online. Sure enough, their cortisol levels spiked, their heart rates went up and they suddenly became better at processing unrelated, yet alarming, information about rates of disease and violence.</span>"
           },
           {
-            "html": "<span>For these reasons, the sensationalism over AI has attracted many critics. Stuart Russell, a professor of computer science at the University of California, Berkeley, has long advocated a more sensible and realistic approach that focuses on simple everyday applications of AI instead of the hypothetical takeover by super-intelligent robots. Similarly, Rodney Brooks, professor of robotics at Massachusetts Institute of Technology, writes that ‘almost all innovations in robotics and AI take far, far, longer to be really widely deployed than people in the field and outside the field imagine’.</span>"
+            "html": "<span>When we experience stressful events, a physiological change is triggered that causes us to take in warnings and focus on what might go wrong. Brain imaging reveals that this ‘switch’ is related to a sudden boost in a neural signal important for learning, specifically in response to unexpected warning signs, such as faces expressing fear.</span>"
           },
           {
-            "html": "<span>One of the many difficulties in deploying machine learning systems is that AI is extremely susceptible to adversarial attacks. This means that a malicious AI can target another AI to make it behave in a certain way, such as forcing it to make wrong predictions. Many researchers have warned against the rolling out of AI without appropriate security standards and defence mechanisms. Still, AI security remains an often overlooked topic when machine learning systems are installed.</span>"
+            "html": "<span>Such neural engineering could have helped prehistoric humans to survive. When our ancestors found themselves surrounded by hungry animals, they would have benefited from an increased ability to learn about hazards. In a safe environment, however, it would have been wasteful to be on high alert constantly. So, a neural switch that automatically increases or decreases our ability to process warnings in response to changes in our environment could have been useful. In fact, people with clinical depression and anxiety seem unable to switch away from a state in which they absorb all the negative messages around them.</span>"
           },
           {
-            "html": "<span>If we are to reap the benefits and minimise the potential harms of AI, we must start thinking about how machine learning can be meaningfully applied to specific areas of government, business and society. This means we need to have a discussion about AI ethics and the distrust that many people have towards machine learning.</span>"
+            "html": "<span>It is also important to realise that stress travels rapidly from one person to the next. If a co-worker is stressed, we are more likely to tense up and feel stressed ourselves. We don’t even need to be in the same room with someone for their emotions to influence our behaviour. Studies show that if we observe positive feeds on social media, such as images of a pink sunset, we are more likely to post uplifting messages ourselves. If we observe negative posts, such as complaints about a long queue at the coffee shop, we will in turn create more negative posts. In some ways, many of us now live as if we are in danger, constantly ready to tackle demanding emails and text messages, and respond to news alerts and comments on social media. Repeatedly checking your phone, according to a survey conducted by the American Psychological Association, is related to stress. In other words, a pre-programmed physiological reaction, which evolution has equipped us with to help us avoid famished predators, is now being triggered by an online post. Social media posting, according to one study, raises your pulse, makes you sweat, and enlarges your pupils more than most daily activities.</span>"
           },
           {
-            "html": "<span>Most importantly, we need to be aware of the limitations of AI and where people still need to take the lead. Instead of painting an unrealistic picture of the power of AI, it is important to take a step back and separate the actual technological capabilities of AI from fantasy.</span>"
+            "html": "<span>The fact that stress increases the likelihood that we will focus more on alarming messages, together with the fact that it spreads extremely rapidly, can create collective fear that is not always justified. After a stressful public event, such as a natural disaster or major financial crash, there is often a wave of alarming information in traditional and social media, which individuals become very aware of. But that has the effect of exaggerating existing danger. And so, a reliable pattern emerges – stress is triggered, spreading from one person to the next, which temporarily enhances the likelihood that people will take in negative reports, which increases stress further. As a result, trips are cancelled, even if the disaster took place across the globe; stocks are sold, even when holding on is the best thing to do.</span>"
           },
           {
-            "html": "<span>The medical profession has also recognised the drawbacks to AI. The IBM Watson for Oncology programme was a piece of AI that was meant to help doctors treat cancer. Even though it was developed to deliver the best recommendations, human experts found it hard to trust the machine. As a result, the AI programme was abandoned in most hospitals where it was trialled.</span>"
-          },
-          {
-            "html": "<span>Similar difficulties arose in the legal domain when algorithms were used in courts in the US to sentence criminals. An algorithm calculated risk assessment scores and advised judges on the sentencing. The system was found to amplify structural racial discrimination and was later abandoned.</span>"
-          },
-          {
-            "html": "<span>There are some crucial lessons here for everyone aiming to boost investments in national AI programmes. These examples demonstrate that there is no AI solution for everything. Using AI simply for the sake of AI may not always be productive or useful, and not every issue is best addressed by applying machine intelligence to it. All solutions come with a cost and not everything that can be automated should be.</span>"
+            "html": "<span>The good news, however, is that positive emotions, such as hope, are contagious too, and are powerful in inducing people to act to find solutions. Being aware of the close relationship between people’s emotional state and how they process information can help us frame our messages more effectively and become conscientious agents of change.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-29",
+          "title": "Questions 27-30",
           "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-29 on your answer sheet.",
+          "instructionHtml": "Choose the correct letter, A, B, C or D.",
           "questions": [
             {
               "id": "q27",
-              "answer": "B",
-              "textHtml": "What is the writer doing in the first paragraph?",
+              "answer": "C",
+              "textHtml": "In the first paragraph, the writer introduces the topic of the text by",
               "options": [
-                "predicting the future impact of Al",
-                "describing a public perception of Al",
-                "outlining some possible benefits of Al",
-                "highlighting the breadth of the influence of Al"
+                "defining some commonly used terms",
+                "questioning a widely held assumption",
+                "mentioning a challenge faced by everyone",
+                "specifying a situation which makes us most anxious"
               ]
             },
             {
               "id": "q28",
               "answer": "A",
-              "textHtml": "When discussing Al solutionism in the second paragraph, the writer",
+              "textHtml": "What point does the writer make about firefighters in the second paragraph?",
               "options": [
-                "points out a risk involved",
-                "specifies its probable origins",
-                "mentions its chief supporters",
-                "weighs up some pros and cons"
+                "The regular changes of stress levels in their working lives make them ideal study subjects",
+                "The strategies they use to handle stress are of particular interest to researchers",
+                "The stressful nature of their job is typical of many public service professions",
+                "Their personalities make them especially well-suited to working under stress"
               ]
             },
             {
               "id": "q29",
-              "answer": "C",
-              "textHtml": "In the fourth paragraph, the writer suggests that many politicians may",
+              "answer": "D",
+              "textHtml": "What is the writer doing in the fourth paragraph?",
               "options": [
-                "have failed to appreciate the true potential of Al initiatives",
-                "have misunderstood the function of the machine-learning sector",
-                "be unaware of the challenges of implementing national Al initiatives",
-                "be too keen to enter the race to dominate the machine-learning sector"
+                "explaining their findings",
+                "justifying their approach",
+                "setting out their objectives",
+                "describing their methodology"
+              ]
+            },
+            {
+              "id": "q30",
+              "answer": "C",
+              "textHtml": "In the seventh paragraph, the writer describes a mechanism in the brain which",
+              "options": [
+                "enables people to respond more quickly to stressful situations",
+                "results in increased ability to control our levels of anxiety",
+                "produces heightened sensitivity to indications of external threats",
+                "is activated when there is a need to communicate a sense of danger"
               ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-29</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-29 on your answer sheet.</span></p><p><span>27. What is the writer doing in the first paragraph?</span><br/>\n<span><strong>A</strong> predicting the future impact of Al</span><br/>\n<span><strong>B</strong> describing a public perception of Al</span><br/>\n<span><strong>C</strong> outlining some possible benefits of Al</span><br/>\n<span><strong>D</strong> highlighting the breadth of the influence of Al</span></p><p><span>28. When discussing Al solutionism in the second paragraph, the writer</span><br/>\n<span><strong>A</strong> points out a risk involved.</span><br/>\n<span><strong>B</strong> specifies its probable origins.</span><br/>\n<span><strong>C</strong> mentions its chief supporters.</span><br/>\n<span><strong>D</strong> weighs up some pros and cons.</span></p><p><span>29. In the fourth paragraph, the writer suggests that many politicians may</span><br/>\n<span><strong>A</strong> have failed to appreciate the true potential of Al initiatives.</span><br/>\n<span><strong>B</strong> have misunderstood the function of the machine-learning sector.</span><br/>\n<span><strong>C</strong> be unaware of the challenges of implementing national Al initiatives.</span><br/>\n<span><strong>D</strong> be too keen to enter the race to dominate the machine-learning sector.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>27. In the first paragraph, the writer introduces the topic of the text by</span><br/>\n<span>A. defining some commonly used terms.</span><br/>\n<span>B. questioning a widely held assumption.</span><br/>\n<span>C. mentioning a challenge faced by everyone.</span><br/>\n<span>D. specifying a situation which makes us most anxious.</span></p><p><span>28. What point does the writer make about firefighters in the second paragraph?</span><br/>\n<span>A. The regular changes of stress levels in their working lives make them ideal study subjects.</span><br/>\n<span>B. The strategies they use to handle stress are of particular interest to researchers.</span><br/>\n<span>C. The stressful nature of their job is typical of many public service professions.</span><br/>\n<span>D. Their personalities make them especially well-suited to working under stress.</span></p><p><span>29. What is the writer doing in the fourth paragraph?</span><br/>\n<span>A. explaining their findings</span><br/>\n<span>B. justifying their approach</span><br/>\n<span>C. setting out their objectives</span><br/>\n<span>D. describing their methodology</span></p><p><span>30. In the seventh paragraph, the writer describes a mechanism in the brain which</span><br/>\n<span>A. enables people to respond more quickly to stressful situations.</span><br/>\n<span>B. results in increased ability to control our levels of anxiety.</span><br/>\n<span>C. produces heightened sensitivity to indications of external threats.</span><br/>\n<span>D. is activated when there is a need to communicate a sense of danger.</span></p>"
         },
         {
-          "title": "Questions 30-35",
-          "type": "matching-features",
-          "instructionHtml": "Complete the summary using the list of words, A-l, below. Write the correct letter, A-l, in boxes 30-35 on your answer sheet.",
+          "title": "Questions 31-35",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete each sentence with the correct ending, A-G, below.",
           "questions": [
             {
-              "id": "q30",
-              "answer": "F",
-              "textHtml": "……………… Most public sector organisations have not set up the necessary"
-            },
-            {
               "id": "q31",
-              "answer": "G",
-              "textHtml": "……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs"
+              "answer": "B",
+              "before": "At times when they were relaxed, the firefighters usually",
+              "after": ""
             },
             {
               "id": "q32",
-              "answer": "I",
-              "textHtml": "………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the"
+              "answer": "G",
+              "before": "The researchers noted that when the firefighters were stressed, they",
+              "after": ""
             },
             {
               "id": "q33",
-              "answer": "C",
-              "textHtml": "………………………………. to take full advantage of machine intelligence. The medical profession experimented with an Al programme, but their experts had little faith in its"
+              "answer": "F",
+              "before": "When the firefighters were told good news, they always",
+              "after": ""
             },
             {
               "id": "q34",
-              "answer": "A",
-              "textHtml": "………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing"
+              "answer": "E",
+              "before": "The students’ cortisol levels and heart rates were affected when the researchers",
+              "after": ""
             },
             {
               "id": "q35",
               "answer": "D",
-              "textHtml": "…………….. within the legal profession. A reliability B funding C skills D prejudices E computers F equality G framework H confidentiality I approval"
+              "before": "In both experiments, negative information was processed better when the subjects A. made them feel optimistic. B. took relatively little notice of bad news. C. responded to negative and positive information in the same way. D. were feeling under stress. E. put them in a stressful situation. F. behaved in a similar manner, regardless of the circumstances. G. thought it more likely that they would experience something bad",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 30-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-l, below. Write the correct letter, A-l, in boxes 30-35 on your answer sheet.</span></p><p><strong><span>AS in government, medicine and the law</span></strong></p><p><span>Neural networks are a promising area of A! technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote (30) ………………</span></p><p><span>Most public sector organisations have not set up the necessary (31) ……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs (32) ………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the (33) ………………………………. to take full advantage of machine intelligence.</span></p><p><span>The medical profession experimented with an Al programme, but their experts had little faith in its (34) ………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing (35) …………….. within the legal profession.</span></p><p><span><strong>A</strong> reliability</span><br/>\n<span><strong>B</strong> funding</span><br/>\n<span><strong>C</strong> skills</span><br/>\n<span><strong>D</strong> prejudices</span><br/>\n<span><strong>E</strong> computers</span><br/>\n<span><strong>F</strong> equality</span><br/>\n<span><strong>G</strong> framework</span><br/>\n<span><strong>H</strong> confidentiality</span><br/>\n<span><strong>I</strong> approval</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I"
-          ]
+          "legendHtml": "<p><strong><span>Questions 31-35</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-G, below.</span></p><p><span>31. At times when they were relaxed, the firefighters usually</span><br/>\n<span>32. The researchers noted that when the firefighters were stressed, they</span><br/>\n<span>33. When the firefighters were told good news, they always</span><br/>\n<span>34. The students’ cortisol levels and heart rates were affected when the researchers</span><br/>\n<span>35. In both experiments, negative information was processed better when the subjects</span></p><p><span>A. made them feel optimistic.</span><br/>\n<span>B. took relatively little notice of bad news.</span><br/>\n<span>C. responded to negative and positive information in the same way.</span><br/>\n<span>D. were feeling under stress.</span><br/>\n<span>E. put them in a stressful situation.</span><br/>\n<span>F. behaved in a similar manner, regardless of the circumstances.</span><br/>\n<span>G. thought it more likely that they would experience something bad.</span></p>"
         },
         {
-          "title": "Questions 36-39",
+          "title": "Questions 36-40",
           "type": "yes-no-notgiven",
-          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage?",
           "questions": [
             {
               "id": "q36",
-              "answer": "No",
-              "textHtml": "Stuart Russell’s proposals regarding the use of Al are impractical"
+              "answer": "Yes",
+              "textHtml": "The tone of the content we post on social media tends to reflect the nature of the posts in our feeds"
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "Rodney Brooks’ view has attracted unfair criticism from supporters of Al"
+              "textHtml": "Phones have a greater impact on our stress levels than other electronic media devices"
             },
             {
               "id": "q38",
               "answer": "No",
-              "textHtml": "Nowadays, the need to protect Al systems is always taken into account when they are set up"
+              "textHtml": "The more we read about a stressful public event on social media, the less able we are to take the information in"
             },
             {
               "id": "q39",
               "answer": "Yes",
-              "textHtml": "In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 36-39</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                     if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                       if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                   if it is impossible to say what the writer thinks about this</span></p><p><span>36. Stuart Russell’s proposals regarding the use of Al are impractical.</span><br/>\n<span>37. Rodney Brooks’ view has attracted unfair criticism from supporters of Al.</span><br/>\n<span>38. Nowadays, the need to protect Al systems is always taken into account when they are set up.</span><br/>\n<span>39. In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use.</span></p>"
-        },
-        {
-          "title": "Question 40",
-          "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter. A, B, C or D.",
-          "questions": [
+              "textHtml": "Stress created by social media posts can lead us to take unnecessary precautions"
+            },
             {
               "id": "q40",
-              "answer": "B",
-              "textHtml": "What would be a suitable subtitle for reading passage?",
-              "options": [
-                "How to make the most of what Al has to offer",
-                "Why Al may not be the answer to our problems",
-                "Why governments should not invest in Al systems",
-                "How Al could improve the efficiency of the public sector"
-              ]
+              "answer": "Yes",
+              "textHtml": "Our tendency to be affected by other people’s moods can be used in a positive way"
             }
           ],
-          "legendHtml": "<p><strong><span>Question 40</span></strong><br/>\n<span>Choose the correct letter. A, B, C or D.</span></p><p><span>40. What would be a suitable subtitle for reading passage?</span><br/>\n<span><strong>A</strong> How to make the most of what Al has to offer</span><br/>\n<span><strong>B</strong> Why Al may not be the answer to our problems</span><br/>\n<span><strong>C</strong> Why governments should not invest in Al systems</span><br/>\n<span><strong>D</strong> How Al could improve the efficiency of the public sector</span></p>"
+          "legendHtml": "<p><strong><span>Questions 36-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>YES</strong>                                  if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                     if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                 if it is impossible to say what the writer thinks about this</span></p><p><span>36. The tone of the content we post on social media tends to reflect the nature of the posts in our feeds.</span><br/>\n<span>37. Phones have a greater impact on our stress levels than other electronic media devices.</span><br/>\n<span>38. The more we read about a stressful public event on social media, the less able we are to take the information in.</span><br/>\n<span>39. Stress created by social media posts can lead us to take unnecessary precautions.</span><br/>\n<span>40. Our tendency to be affected by other people’s moods can be used in a positive way.</span></p>"
         }
       ]
     }

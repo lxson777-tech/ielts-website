@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-312",
+  "id": "reading-full-011",
   "skill": "reading",
-  "title": "Academic Reading Test 312",
+  "title": "Academic Reading Test 11",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-312/",
+    "url": "https://practicepteonline.com/ielts-reading-test-307/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,136 +17,117 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "Frozen Food",
+        "title": "THE BAOBAB TREE",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>A US perspective on the development of the frozen food industry</span>"
+            "html": "<span>The baobab tree is an icon of the African continent. It can live for over a thousand years and is a vital source of food, water and shelter for indigenous peoples and wildlife alike. Given the tree’s many practical uses, it is not surprising that the baobab features so prominently in traditional African folklore.</span>"
           },
           {
-            "html": "<span>At some point in history, humans discovered that ice preserved food. There is evidence that winter ice was stored to preserve food in the summer as far back as 10,000 years ago. Two thousand years ago, the inhabitants of South America’s Andean mountains had a unique means of conserving potatoes for later consumption. They froze them overnight, then trampled them to squeeze out the moisture, then dried them in the sun. This preserved their nutritional value-if not their aesthetic appeal.</span>"
+            "html": "<span>The baobab is a prehistoric species which predates both mankind and the splitting of the continents over 200 million years ago. It belongs to the genus Adansonia, which contains nine species. These are found in the drier parts of Africa, Madagascar, India, Sri Lanka and Australia. Of the nine species, six are native to Madagascar, two to mainland Africa and one to Australia. The African and Australian baobabs look very similar, even though they are not the same species. Baobabs grow in 32 African countries. In West Africa, the baobab’s presence is often an indication of a human settlement nearby. The tree is most frequently found in dry, hot savannahs of sub-Saharan Africa, where the climate is extremely arid and rainfall is seasonal.</span>"
           },
           {
-            "html": "<span>Natural ice remained the main form of refrigeration until late in the 19th century. In the early 1800s, ship owners from Boston, USA, had enormous blocks of Arctic ice towed all over the Atlantic for the purpose of food preservation. In 1851, railroads first began putting blocks of ice in insulated rail cars to send butter from Ogdensburg, New York, to Boston.</span>"
+            "html": "<span>The baobab is a deciduous tree, which means that it loses its leaves during the dry season. It is a succulent, which means that during the rainy season it absorbs and stores water in its vast trunk. This water enables it to produce a nutrient-dense fruit in the dry season when all around is dry and arid. The trunk has a diameter of 10-14 metres and the tree has a height of 18-25 metres. The baobab tree is a strange looking tree that grows in low-lying areas in Africa. Its trunk is very wide and it has large white flowers that bloom at night. Its leaves are finger-like in shape. The baobab is a very versatile tree. Its leaves, bark, fruit and trunk are all useful to humans and animals.</span>"
           },
           {
-            "html": "<span>Finally, in 1870, Australian inventors found a way to make ‘mechanical ice’. They used a compressor to force a gas-ammonia at first and later Freon-through a condenser. The compressed gas gave up some of its heat as it moved through the condenser. Then the gas was released quickly into a low-pressure evaporator coil where it became liquid and cold. Air was blown over the evaporator coil and then this cooled air passed into an insulated compartment, lowering its temperature to freezing point.</span>"
+            "html": "<span>The baobab’s fruit is large and oval-shaped and it contains a mass of seeds. It is a rich source of vitamin C and its pulp can be used to make a refreshing drink. The pulp can also be used to treat fever, diarrhoea and malaria. The pulp can be stored until it is needed. The seeds of the fruit can be used to produce oil. This oil is used to protect the skin and it is also used in the cosmetic industry. The leaves of the baobab are also useful. They can be eaten fresh or they can be dried and stored. They are rich in iron and can be used as a medicine. The leaves can be used to treat asthma, insect bites and several other ailments. The leaves can also be used as a sauce for food. The bark of the baobab is also useful. It can be used to make cloth and rope. The bark can also be used to make musical instruments, waterproof hats and fishing lines. The bark has also been used to protect young plants from animals. The bark of the baobab is also used to treat fever. The trunk of the baobab is very wide and it can be used as a shelter. It is also used for storage and it can also be used as a source of water in dry periods. The baobab can also be used to make a variety of things such as musical instruments, handcrafts, pots to grow plants in, and many other useful items. The tree also provides shade for animals and humans. The tree is also a source of fuel and is used as a firebreak as well.</span>"
           },
           {
-            "html": "<span>Initially, this process was invented to keep Australian beer cool even in hot weather. But Australian cattlemen were quick to realize that, if they could put this new invention on a ship, they could export meat across the oceans. In 1880, a shipment of Australian beef and mutton was sent, frozen, to England. While the food frozen this way was still palatable, there was some deterioration. During the freezing process, crystals formed within the cells of the food, and when the ice expanded and the cells burst, this spoilt the flavor and texture of the food.</span>"
+            "html": "<span>The baobab is also known as the ‘tree of life’ because it can provide shelter, clothing, food, and water for the animal and human inhabitants of the African savannah regions. The tree is also an important source of food for many different creatures such as insects and animals. The flowers provide food for fruit bats, which play an important role in pollinating the flowers. The seeds are eaten by various mammals such as baboons, monkeys and warthogs. Elephants and eland eat the bark of the baobab tree. The flowers provide food for birds, bees and other insects. The baobab tree is home to snakes and tree frogs. The tree is also home to bush babies, which feed on the flowers. The tree is also home to birds such as the mottled spinetail, the grey-headed parrot and the mottled swift. The tree is also host to the African honey bee.</span>"
           },
           {
-            "html": "<span>The modern frozen food industry began with the indigenous Inuit people of Canada. In 1912, a biology student in Massachusetts, USA, named Clarence Birdseye, ran out of money and went to Labrador in Canada to trap and trade furs. While he was there, he became fascinated with how the Inuit would quickly freeze fish in the Arctic air. The fish looked and tasted fresh even months later.</span>"
-          },
-          {
-            "html": "<span>Birdseye returned to the USA in 1917 and began developing mechanical freezers capable of quick-freezing food. Birdseye methodically kept inventing better freezers and gradually built a business selling frozen fish from Gloucester, Massachusetts. In 1929, his business was sold and became General Foods, but he stayed with the company as director of research, and his division continued to innovate.</span>"
-          },
-          {
-            "html": "<span>Birdseye was responsible for several key innovations that made the frozen food industry possible. He developed quick-freezing techniques that reduced the damage that crystals caused, as well as the technique of freezing the product in the package it was to be sold in. He also introduced the use of cellophane, the first transparent material for food packaging, which allowed consumers to see the quality of the product. Birdseye products also came in convenient size packages that could be prepared with a minimum of effort.</span>"
-          },
-          {
-            "html": "<span>But there were still obstacles. In the 1930s, few grocery stores could afford to buy freezers for a market that wasn’t established yet. So, Birdseye leased inexpensive freezer cases to them. He also leased insulated railroad cars so that he could ship his products nationwide. However, few consumers had freezers large enough or efficient enough to take advantage of the products.</span>"
-          },
-          {
-            "html": "<span>Sales increased in the early 1940s, when World War II gave a boost to the frozen food industry because tin was being used for munitions. Canned foods were rationed to save tin for the war effort, while frozen foods were abundant and cheap. Finally, by the 1950s, refrigerator technology had developed far enough to make these appliances affordable for the average family. By 1953, 33 million US families owned a refrigerator, and manufacturers were gradually increasing the size of the freezer compartments in them.</span>"
-          },
-          {
-            "html": "<span>1950s families were also looking for convenience at mealtimes, so the moment was right for the arrival of the TV Dinner’. Swanson Foods was a large, nationally recognized producer of canned and frozen poultry. In 1954, the company adapted some of Birdseye’s freezing techniques, and with the help of a clever name and a huge advertising budget, it launched the first ‘TV Dinner’. This consisted of frozen turkey, potatoes and vegetables served in the same segmented aluminum tray that was used by airlines. The product was an instant success. Within a year, Swanson had sold 13 million TV dinners. American consumers couldn’t resist the combination of a trusted brand name, a single-serving package and the convenience of a meal that could be ready after only 25 minutes in a hot oven. By 1959, Americans were spending $2.7 billion annually on frozen foods, and half a billion of that was spent on ready-prepared meals such as the TV Dinner.</span>"
-          },
-          {
-            "html": "<span>Today, the US frozen food industry has a turnover of over $67 billion annually, with $26.6 billion of that sold to consumers for home consumption. The remaining $40 billion in frozen food sales come through restaurants, cafeterias, hospitals and schools, and that represents a third of the total food service sales.</span>"
+            "html": "<span>The baobab tree is under threat because of the increasing human population. The trees are being cut down for their bark, which is used to make rope, mats and baskets. The trees are also being cut down to make way for farmland. The baobab is also under threat from climate change.</span>"
           }
         ]
       },
       "groups": [
         {
           "title": "Questions 1-7",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q1",
+              "answer": "False",
+              "textHtml": "The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths"
+            },
+            {
+              "id": "q2",
+              "answer": "False",
+              "textHtml": "Baobab trees are only found on the African continent"
+            },
+            {
+              "id": "q3",
+              "answer": "True",
+              "textHtml": "In West Africa, the presence of a baobab tree often indicates nearby human settlements"
+            },
+            {
+              "id": "q4",
+              "answer": "False",
+              "textHtml": "Baobab trees are commonly found in humid tropical rainforests"
+            },
+            {
+              "id": "q5",
+              "answer": "True",
+              "textHtml": "The baobab stores water in its trunk during the rainy season to survive dry periods"
+            },
+            {
+              "id": "q6",
+              "answer": "True",
+              "textHtml": "The leaves of the baobab tree can be used to make a medicinal sauce"
+            },
+            {
+              "id": "q7",
+              "answer": "False",
+              "textHtml": "Baobab trees are pollinated exclusively by fruit bats"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                 if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                               if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                    if there is no information on this</span></p><p><span>1. The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths.</span><br/>\n<span>2. Baobab trees are only found on the African continent.</span><br/>\n<span>3. In West Africa, the presence of a baobab tree often indicates nearby human settlements.</span><br/>\n<span>4. Baobab trees are commonly found in humid tropical rainforests.</span><br/>\n<span>5. The baobab stores water in its trunk during the rainy season to survive dry periods.</span><br/>\n<span>6. The leaves of the baobab tree can be used to make a medicinal sauce.</span><br/>\n<span>7. Baobab trees are pollinated exclusively by fruit bats.</span></p>"
+        },
+        {
+          "title": "Questions 8-13",
           "type": "sentence-completion",
           "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer.",
           "questions": [
             {
-              "id": "q1",
-              "answer": "Potatoes",
-              "before": "……………, using a method of freezing then drying. 1851, USA •",
-              "after": ""
-            },
-            {
-              "id": "q2",
-              "answer": "Butter",
-              "before": "……………… was kept cool by ice during transportation in specially adapted trains. 1880, Australia • Two kinds of",
-              "after": ""
-            },
-            {
-              "id": "q3",
-              "answer": "Meat",
-              "before": "………………… were the first frozen food shipped to England. 1917 onwards, USA • Clarence Birdseye introduced innovations including: o quick-freezing methods, so that",
-              "after": ""
-            },
-            {
-              "id": "q4",
-              "answer": "Crystals",
-              "before": "………… did not spoil the food. o packaging products with",
-              "after": ""
-            },
-            {
-              "id": "q5",
-              "answer": "Cellophane",
-              "before": "……………., so the product was visible. Early 1940s, USA • Frozen food became popular because of a shortage of",
-              "after": ""
-            },
-            {
-              "id": "q6",
-              "answer": "Tin",
-              "before": "……………… 1950s, USA • A large number of homes now had a",
-              "after": ""
-            },
-            {
-              "id": "q7",
-              "answer": "Refrigerator",
-              "before": "……………",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The history of frozen food</span></strong></p><p><strong><span>2,000 years ago, South America</span></strong><br/>\n<span>People conserved the nutritional value of (1) ……………, using a method of freezing then drying.</span></p><p><strong><span>1851, USA</span></strong><br/>\n<span>• (2) ……………… was kept cool by ice during transportation in specially adapted trains.</span></p><p><strong><span>1880, Australia</span></strong><br/>\n<span>• Two kinds of (3) ………………… were the first frozen food shipped to England.</span></p><p><strong><span>1917 onwards, USA</span></strong><br/>\n<span>• Clarence Birdseye introduced innovations including:</span><br/>\n<span>o quick-freezing methods, so that (4) ………… did not spoil the food.</span><br/>\n<span>o packaging products with (5) ……………., so the product was visible.</span></p><p><strong><span>Early 1940s, USA</span></strong><br/>\n<span>• Frozen food became popular because of a shortage of (6) ………………</span></p><p><strong><span>1950s, USA</span></strong><br/>\n<span>• A large number of homes now had a (7) ……………</span></p>",
-          "wordLimit": 1
-        },
-        {
-          "title": "Questions 8-13",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage?",
-          "questions": [
-            {
               "id": "q8",
-              "answer": "Not given",
-              "textHtml": "The ice transportation business made some Boston ship owners very wealthy in the early 1800s"
+              "answer": "Sauce",
+              "before": "…………. Bark – can be used to make cloth and musical instruments – can be used to protect",
+              "after": ""
             },
             {
               "id": "q9",
-              "answer": "True",
-              "textHtml": "A disadvantage of the freezing process invented in Australia was that it affected the taste of food"
+              "answer": "Plants",
+              "before": "…………… and to treat fever Trunk – can provide",
+              "after": ""
             },
             {
               "id": "q10",
-              "answer": "False",
-              "textHtml": "Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish"
+              "answer": "Shelter",
+              "before": "……………… and water – can be used to make",
+              "after": ""
             },
             {
               "id": "q11",
-              "answer": "True",
-              "textHtml": "Swanson Foods invested a great deal of money in the promotion of the TV Dinner"
+              "answer": "Pots",
+              "before": "……………. General – provides",
+              "after": ""
             },
             {
               "id": "q12",
-              "answer": "False",
-              "textHtml": "Swanson Foods developed a new style of container for the launch of the TV Dinner"
+              "answer": "Shade",
+              "before": "………………. for animals and humans – can be used to make",
+              "after": ""
             },
             {
               "id": "q13",
-              "answer": "Not given",
-              "textHtml": "The US frozen food industry is currently the largest in the world"
+              "answer": "Fuel",
+              "before": "…………… to burn",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                if there is no information on this</span></p><p><span>8. The ice transportation business made some Boston ship owners very wealthy in the early 1800s.</span><br/>\n<span>9. A disadvantage of the freezing process invented in Australia was that it affected the taste of food.</span><br/>\n<span>10. Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish.</span><br/>\n<span>11. Swanson Foods invested a great deal of money in the promotion of the TV Dinner.</span><br/>\n<span>12. Swanson Foods developed a new style of container for the launch of the TV Dinner.</span><br/>\n<span>13. The US frozen food industry is currently the largest in the world.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>USES OF THE BAOBAB TREE</span></strong></p><p><span>Fruit</span><br/>\n<span>– contains a lot of vitamin C</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be stored for a long time</span><br/>\n<span>– seeds can be used to produce oil</span></p><p><span>Leaves</span><br/>\n<span>– can be used fresh or dried</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be used to make a (8) ………….</span></p><p><span>Bark</span><br/>\n<span>– can be used to make cloth and musical instruments</span><br/>\n<span>– can be used to protect (9) ……………</span><br/>\n<span>and to treat fever</span></p><p><span>Trunk</span><br/>\n<span>– can provide (10) ……………… and water</span><br/>\n<span>– can be used to make (11) …………….</span></p><p><span>General</span><br/>\n<span>– provides (12) ………………. for animals and humans</span><br/>\n<span>– can be used to make (13) …………… to burn</span></p>",
+          "wordLimit": 1
         }
       ]
     },
@@ -155,207 +136,199 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "Can the planet’s coral reefs be saved?",
+        "title": "THE BIRTH OF THE 10,000-HOUR RULE",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> Conservationists have put the final touches to a giant artificial reef they have been assembling at the world-renowned Zoological Society of London (London Zoo). Samples of the planet’s most spectacular corals – vivid green branching coral, yellow scroll, blue ridge and many more species – have been added to the giant tank along with fish that thrive in their presence: blue tang, clownfish and many others. The reef is in the zoo’s new gallery, Tiny Giants, which is dedicated to the minuscule invertebrate creatures that sustain life across the planet. The coral reef tank and its seven-metre-wide window form the core of the exhibition.</span>"
+            "html": "<span>A study on violinists in the early 1990s inspired the idea that 10,000 hours of practice is the key to success</span>"
           },
           {
-            "html": "<span>‘Coral reefs are the most diverse ecosystems on Earth and we want to show people how wonderful they are,’ said Paul Pearce-Kelly, senior curator of invertebrates and fish at the Zoological Society of London. ‘However, we also want to highlight the research and conservation efforts that are now being carried out to try to save them from the threat of global warming.’ They want people to see what is being done to try to save these wonders.</span>"
+            "html": "<span><strong>A</strong> The so-called 10,000-hour rule can be traced back to a 1993 paper, ‘The Role of Deliberate Practice in the Acquisition of Expert Performance’, co-authored by a Swedish psychologist and a US psychological scientist. The paper is one of the most cited in its field. Its most striking claim is that the difference between expert performers and normal adults is not due to innate talent, but rather is a reflection of the amount of deliberate practice they have undergone. ‘Many characteristics once believed to reflect innate talent are actually the result of intense practice extended for a minimum of 10 years,’ the authors wrote. They concluded: ‘The maximal level of performance for individuals in a given domain is not attained automatically as a function of extended experience, but the level of performance can be increased even by highly experienced individuals as a result of deliberate efforts to improve.’</span>"
           },
           {
-            "html": "<span><strong>B</strong> Corals are composed of tiny animals, known as polyps, with tentacles for capturing small marine creatures in the sea water. These polyps are transparent but get their brilliant tones of pink, orange, blue, green, etc. from algae that live within them, which in turn get protection, while their photosynthesising of the sun’s rays provides nutrients for the polyps. This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0.1% of the planet’s ocean bed while providing homes for more than 25% of marine species, including fish, molluscs, sponges and shellfish.</span>"
+            "html": "<span><strong>B</strong> The study looked at three groups of violinists at the Music Academy of West Berlin, in Germany. The authors set out to find out what had caused the ‘best’ violinists to be better than the merely ‘good’ ones, who were in turn better than the ‘least accomplished’ ones. All of the violinists were asked how much they had practised, alone, with a teacher, and with others, every week, ever since they had first picked up a violin. What they found was that by the age of 20, the best violinists had practised an average of 10,000 hours, the good ones had practised 8,000 hours, and the least skilled had practised 4,000 hours. The psychologists concluded that what mattered was not the time spent obtaining any old experience, but the amount of time spent on ‘deliberate practice’, which they defined as an effortful activity designed to improve individual target performance. The authors also noted that the most accomplished individuals in their study had each followed the same learning structure, and had all acquired their skills in a similar way: ‘All of the expert violinists had started playing at approximately five years of age, and had selected a music teacher who was a violinist. All of them had been admitted to a music academy by eight years of age, where they had been taught by skillful violin teachers. All of them had started solo practice at around the age of eight. All of them had been rated very highly by their violin teachers at the music academy, and had given their first public performance at around the age of eight.’</span>"
           },
           {
-            "html": "<span><strong>C</strong> As a result, coral reefs are often described as the ‘rainforests of the sea’, though the comparison is dismissed by some naturalists, including David Attenborough. ‘People say you cannot beat the rainforest,’ Attenborough has stated. ‘But that is simply not true. You go there and the first thing you think is: where… are the birds? Where are the animals? They are hiding in the trees, of course. No, if you want beauty and wildlife, you want a coral reef. Put on a mask and stick your head under the water. The sight is mind-blowing.’</span>"
+            "html": "<span><strong>C</strong> The theory of deliberate practice was popularised by the writer Malcolm Gladwell, who argued that talent is irrelevant to performance in his book Outliers, published in 2008. ‘The striking thing about Ericsson’s study is that he and his colleagues couldn’t find any “naturals”, musicians who floated effortlessly to the top while practising a fraction of the time their peers did. Nor could they find any “grinds”, people who worked harder than everyone else, yet just didn’t have what it takes to break the top ranks,’ he wrote. ‘Their research suggests that once a musician has enough ability to get into a top music school, the thing that distinguishes one performer from another is how hard he or she works. That’s it. And what’s more, the people at the very top don’t work just harder or even much harder than everyone else. They work much, much harder.’</span>"
           },
           {
-            "html": "<span><strong>D</strong> Unfortunately, these majestic sights are now under very serious threat, with the most immediate problem coming in the form of thermal stress. Rising ocean temperatures are triggering bleaching events that strip reefs of their colour and eventually kill them. And that is just the start. Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction. As a result, vast areas – including massive chunks of Australia’s Great Barrier Reef – have already been destroyed, and scientists advise that more than 90% of reefs could be lost by 2050 unless urgent action is taken to tackle global heating and greenhouse gas emissions.</span>"
+            "html": "<span><strong>D</strong> But while Ericsson and his colleagues had found a correlation between the number of hours spent on deliberate practice and the level of expertise achieved, their research didn’t determine whether practice was the cause of that expertise. The idea that 10,000 hours of practice will make you an expert is appealing, not least because it suggests that anyone can achieve anything if they just work hard enough. But while practice is undeniably important, it is not the only factor that contributes to performance. In 2014, a group of psychologists led by Brooke Macnamara of Princeton University re-analysed data from all of the studies they could find on the relationship between deliberate practice and performance in various domains, including music, sports and education, and estimated that the average amount that practice contributes to mastery of these is just 12 percent. That leaves a lot of the variance in expert performance unexplained, which means factors other than practice must be involved.</span>"
           },
           {
-            "html": "<span>Pearce-Kelly says that coral reefs have to survive really harsh conditions – wave erosion and other factors. And ‘when things start to go wrong in the oceans, then corals will be the first to react. And that is exactly what we are seeing now. Coral reefs are dying and they are telling us that all is not well with our planet.’</span>"
-          },
-          {
-            "html": "<span><strong>E</strong> However, scientists are trying to pinpoint hardy types of coral that could survive our overheated oceans, and some of this research will be carried out at London Zoo. ‘Behind our… coral reef tank we have built laboratories where scientists will be studying coral species,’ said Pearce-Kelly. One aim will be to carry out research on species to find those that can survive best in warm, acidic waters. Another will be to try to increase coral breeding rates. ‘Coral spawn just once a year,’ he added. ‘However, aquarium-based research has enabled some corals to spawn artificially, which can assist coral reef restoration efforts. And if this can be extended for all species, we could consider the launching of coral-spawning programmes several times a year. That would be a big help in restoring blighted reefs.’</span>"
-          },
-          {
-            "html": "<span><strong>F</strong> Research in these fields is being conducted in laboratories around the world, with the London Zoo centre linked to this global network. Studies carried out in one centre can then be tested in others. The resulting young coral can then be displayed in the tank in Tiny Giants. ‘The crucial point is that the progress we make in making coral better able to survive in a warming world can be shown to the public and encourage them to believe that we can do something to save the planet’s reefs,’ said Pearce-Kelly. ‘Saving our coral reefs is now a critically important ecological goal.’</span>"
+            "html": "<span><strong>E</strong> In a rejoinder, Ericsson argues that Macnamara’s analysis actually showed the opposite of what she claimed. In each of the domains she looked at, he says, practice was the single most important factor in predicting a person’s level of expertise. The problem, he argues, is that Macnamara’s analysis looked at the total number of hours of practice undertaken by the participants in the studies she reviewed, rather than the number of hours of deliberate practice. ‘The paper is important because it shows that the amount of time with relevant experience is not a good predictor of attained performance,’ he says. ‘But it does not invalidate the body of research on deliberate practice, nor its utility as the most important predictor of expertise.’</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-19",
-          "type": "matching-headings",
-          "instructionHtml": "Reading Passage 2 has six sections, A-F. Choose the correct heading for each section from the list of headings below.",
+          "title": "Questions 14-18",
+          "type": "paragraph-matching",
+          "instructionHtml": "Reading passage has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q14",
-              "answer": "v",
-              "textHtml": "Paragraph A"
+              "answer": "A",
+              "textHtml": "a reference to the time when a distinction was first made between two types of skills"
             },
             {
               "id": "q15",
-              "answer": "ii",
-              "textHtml": "Paragraph B"
+              "answer": "D",
+              "textHtml": "a reference to what a particular investigation failed to do"
             },
             {
               "id": "q16",
-              "answer": "iv",
-              "textHtml": "Paragraph C"
+              "answer": "C",
+              "textHtml": "a reference to the influence of the 10,000-hour rule outside the field of music"
             },
             {
               "id": "q17",
-              "answer": "vii",
-              "textHtml": "Paragraph D"
+              "answer": "B",
+              "textHtml": "A reference to how the study compared achievement levels based on practice time"
             },
             {
               "id": "q18",
-              "answer": "iii",
-              "textHtml": "Paragraph E"
-            },
-            {
-              "id": "q19",
-              "answer": "vi",
-              "textHtml": "Paragraph F"
+              "answer": "D",
+              "textHtml": "a reference to a claim that was made without sufficient evidence"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading Passage 2 has six sections, A-F. </span><span>Choose the correct heading for each section from the list of headings below.</span></p><p><span>i. Tried and tested solutions</span><br/>\n<span>ii. Cooperation beneath the waves</span><br/>\n<span>iii. Working to lessen the problems</span><br/>\n<span>iv. Disagreement about the accuracy of a certain phrase</span><br/>\n<span>v. Two clear educational goals</span><br/>\n<span>vi. Promoting hope</span><br/>\n<span>vii. A warning of further trouble ahead</span></p><p><span>14. Paragraph A</span><br/>\n<span>15. Paragraph B</span><br/>\n<span>16. Paragraph C</span><br/>\n<span>17. Paragraph D</span><br/>\n<span>18. Paragraph E</span><br/>\n<span>19. Paragraph F</span></p>",
+          "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Reading passage has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.</span></p><p><span>14. a reference to the time when a distinction was first made between two types of skills</span><br/>\n<span>15. a reference to what a particular investigation failed to do</span><br/>\n<span>16. a reference to the influence of the 10,000-hour rule outside the field of music</span><br/>\n<span>17. A reference to how the study compared achievement levels based on practice time.</span><br/>\n<span>18. a reference to a claim that was made without sufficient evidence</span></p>",
           "options": [
-            "i",
-            "ii",
-            "iii",
-            "iv",
-            "v",
-            "vi",
-            "vii"
+            "A",
+            "B",
+            "C",
+            "D"
           ]
         },
         {
-          "title": "Questions 20-21",
-          "type": "multiple-answer",
-          "instructionHtml": "and 21",
+          "title": "Questions 19-22",
+          "type": "matching-features",
+          "instructionHtml": "Look at the following statements (Questions 19-22) and the list of researchers below. Match each statement with the correct researcher, A, B or C. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.",
           "questions": [
             {
+              "id": "q19",
+              "answer": "A",
+              "textHtml": "Their research involved innovative methods of measuring practice among participants"
+            },
+            {
               "id": "q20",
-              "answer": [
-                "C",
-                "E"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-312-q20-q21"
+              "answer": "B",
+              "textHtml": "They made claims about the significance of practice which were not justified"
             },
             {
               "id": "q21",
+              "answer": "C",
+              "textHtml": "They devised a sophisticated way of measuring the development of expertise"
+            },
+            {
+              "id": "q22",
+              "answer": "C",
+              "textHtml": "Their research generated an unexpected result"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 19-22</span></strong><br/>\n<span>Look at the following statements (Questions 19-22) and the list of researchers below. Match each statement with the correct researcher, A, B or C. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.</span></p><p><strong><span>List of Researchers</span></strong><br/>\n<span>A. Ericsson and colleagues</span><br/>\n<span>B. Malcolm Gladwell</span><br/>\n<span>C. Brooke Macnamara and colleagues</span></p><p><span>19. Their research involved innovative methods of measuring practice among participants.</span><br/>\n<span>20. They made claims about the significance of practice which were not justified.</span><br/>\n<span>21. They devised a sophisticated way of measuring the development of expertise.</span><br/>\n<span>22. Their research generated an unexpected result.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "title": "Questions 23-24",
+          "type": "multiple-answer",
+          "instructionHtml": "Choose TWO letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q23",
+              "answer": [
+                "A",
+                "C"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-307-q23-q24"
+            },
+            {
+              "id": "q24",
+              "answer": [
+                "A",
+                "C"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-307-q23-q24"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 23-24</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the study of violinists undertaken by Ericsson and his colleagues?</span></p><p><span><strong>A</strong> It was widely regarded as original.</span><br/>\n<span><strong>B</strong> Its aims were innovative.</span><br/>\n<span><strong>C</strong> It produced some unexpected findings.</span><br/>\n<span><strong>D</strong> It called into question the methods of other researchers.</span><br/>\n<span><strong>E</strong> Its scope was very limited.</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "It was widely regarded as original"
+            },
+            {
+              "value": "B",
+              "label": "Its aims were innovative"
+            },
+            {
+              "value": "C",
+              "label": "It produced some unexpected findings"
+            },
+            {
+              "value": "D",
+              "label": "It called into question the methods of other researchers"
+            },
+            {
+              "value": "E",
+              "label": "Its scope was very limited"
+            }
+          ]
+        },
+        {
+          "title": "Questions 25-26",
+          "type": "multiple-answer",
+          "instructionHtml": "Choose TWO letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q25",
               "answer": [
                 "C",
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-312-q20-q21"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of these causes of damage to coral reefs are mentioned by the writer of the text?</span></p><p><span>A. a rising number of extreme storms</span><br/>\n<span>B. the removal of too many fish from the sea</span><br/>\n<span>C. the contamination of the sea from waste</span><br/>\n<span>D. increased disease among marine species</span><br/>\n<span>E. alterations in the usual flow of water in the seas</span></p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "a rising number of extreme storms"
-            },
-            {
-              "value": "B",
-              "label": "the removal of too many fish from the sea"
-            },
-            {
-              "value": "C",
-              "label": "the contamination of the sea from waste"
-            },
-            {
-              "value": "D",
-              "label": "increased disease among marine species"
-            },
-            {
-              "value": "E",
-              "label": "alterations in the usual flow of water in the seas"
-            }
-          ]
-        },
-        {
-          "title": "Questions 22-23",
-          "type": "multiple-answer",
-          "instructionHtml": "and 23",
-          "questions": [
-            {
-              "id": "q22",
-              "answer": [
-                "B",
-                "D"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-312-q22-q23"
-            },
-            {
-              "id": "q23",
-              "answer": [
-                "B",
-                "D"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-312-q22-q23"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 22 and 23</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of the following statements are true of the researchers at London Zoo?</span></p><p><span>A. They are hoping to expand the numbers of different corals being bred in laboratories.</span><br/>\n<span>B. They want to identify corals that can cope well with the changed sea conditions.</span><br/>\n<span>C. They are looking at ways of creating artificial reefs that corals could grow on.</span><br/>\n<span>D. They are trying out methods that would speed up reproduction in some corals.</span><br/>\n<span>E. They are investigating materials that might protect reefs from higher temperatures.</span></p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "They are hoping to expand the numbers of different corals being bred in laboratories"
-            },
-            {
-              "value": "B",
-              "label": "They want to identify corals that can cope well with the changed sea conditions"
-            },
-            {
-              "value": "C",
-              "label": "They are looking at ways of creating artificial reefs that corals could grow on"
-            },
-            {
-              "value": "D",
-              "label": "They are trying out methods that would speed up reproduction in some corals"
-            },
-            {
-              "value": "E",
-              "label": "They are investigating materials that might protect reefs from higher temperatures"
-            }
-          ]
-        },
-        {
-          "title": "Questions 24-26",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer.",
-          "questions": [
-            {
-              "id": "q24",
-              "answer": "Tentacles",
-              "before": "Corals have a number of ……………… which they use to collect their food",
-              "after": ""
-            },
-            {
-              "id": "q25",
-              "answer": "Protection",
-              "before": "Algae gain ……………… from being inside the coral",
-              "after": ""
+              "answerPairId": "reading-307-q25-q26"
             },
             {
               "id": "q26",
-              "answer": "Colour",
-              "before": "Increases in the warmth of the sea water can remove the ………………. from coral",
-              "after": ""
+              "answer": [
+                "C",
+                "E"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-307-q25-q26"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>24. Corals have a number of ……………… which they use to collect their food.</span><br/>\n<span>25. Algae gain ……………… from being inside the coral.</span><br/>\n<span>26. Increases in the warmth of the sea water can remove the ………………. from coral.</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "wordLimit": 1
+          "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the theory of deliberate practice?</span></p><p><span><strong>A</strong> It was developed by combining data from several studies.</span><br/>\n<span><strong>B</strong> It is the only theory to attempt to calculate the number of hours required for expertise.</span><br/>\n<span><strong>C</strong> It is the first theory to link the acquisition of expertise with the number of hours spent practising.</span><br/>\n<span><strong>D</strong> It fails to take account of individual differences.</span><br/>\n<span><strong>E</strong> It has been challenged by some researchers.</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "It was developed by combining data from several studies"
+            },
+            {
+              "value": "B",
+              "label": "It is the only theory to attempt to calculate the number of hours required for expertise"
+            },
+            {
+              "value": "C",
+              "label": "It is the first theory to link the acquisition of expertise with the number of hours spent practising"
+            },
+            {
+              "value": "D",
+              "label": "It fails to take account of individual differences"
+            },
+            {
+              "value": "E",
+              "label": "It has been challenged by some researchers"
+            }
+          ]
         }
       ]
     },
@@ -364,173 +337,158 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "Robots and us",
+        "title": "NUCLEAR FUSION: THE KEY TO LIMITLESS CLEAN ENERGY?",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Three leaders in their fields answer questions about our relationships with robot.</span>"
+            "html": "<span><strong>A</strong> In December 2022, scientists at a laboratory in California announced a major breakthrough in nuclear fusion research. For the first time ever, scientists had managed to produce a nuclear fusion reaction that generated more energy than it consumed. The result was hailed as a major step forward in the development of nuclear fusion as a new source of energy. But what is nuclear fusion, and why is it so important?</span>"
           },
           {
-            "html": "<span>When asked ‘Should robots be used to colonies other planets?’, cosmology and astrophysics Professor Martin Rees said he believed the solar system would be mapped by robotic craft by the end of the century. ‘The next step would be mining of asteroids, enabling fabrication of large structures in space without having to bring all the raw materials from Earth…. I think this is more realistic and benign than the… “terraforming”* of planets.’ He maintains that colonised planets ‘should be preserved with a status that is analogous to Antarctica here on Earth.’</span>"
+            "html": "<span><strong>B</strong> When we think of nuclear power, we usually think of nuclear fission, the process of splitting the nucleus of an atom into two or more smaller nuclei. This is the reaction that occurs in nuclear power stations today. However, nuclear fission has a number of disadvantages. The fuel used is radioactive, and there is always a risk of nuclear accidents, such as the one that occurred at the Chernobyl nuclear power plant in 1986. In addition, nuclear fission produces radioactive waste, which remains dangerous for thousands of years and is difficult to dispose of safely. Nuclear fusion, on the other hand, is the process of fusing two atomic nuclei together to form a single heavier nucleus. This is the process that occurs in the sun and other stars. The reaction releases a huge amount of energy, and the fuel used is not radioactive. This makes nuclear fusion a potentially limitless source of clean energy.</span>"
           },
           {
-            "html": "<span>On the question of using robots to colonise other planets and exploit mineral resources, engineering Professor Daniel Wolpert replied, ‘I don’t see a pressing need to colonise other planets unless we can bring [these] resources back to Earth. The vast majority of Earth is currently inaccessible to us. Using robots to gather resources nearer to home would seem to be a better use of our robotic tools.’</span>"
+            "html": "<span><strong>C</strong> The potential benefits of nuclear fusion are enormous. It could provide a virtually limitless supply of clean energy, with none of the problems associated with nuclear fission. It could help to reduce our reliance on fossil fuels, and therefore help to combat climate change. It could also provide energy security, as the fuel used in nuclear fusion is abundant and widely available. However, there are significant challenges to be overcome before nuclear fusion can become a viable source of energy.</span>"
           },
           {
-            "html": "<span>Meanwhile, for anthropology Professor Kathleen Richardson, the idea of ‘colonisation’ of other planets seemed morally dubious: ‘I think whether we do something on Earth or on Mars we should always do it in the spirit of a genuine interest in “the Other”, not to impose a particular model, but to meet “the Other”.’</span>"
+            "html": "<span><strong>D</strong> One of the biggest challenges is the high temperature and pressure required to achieve nuclear fusion. In order to fuse atomic nuclei together, they must be heated to temperatures of millions of degrees Celsius. This requires a huge amount of energy, and it is difficult to find materials that can withstand such high temperatures. In addition, the nuclei must be held together at high pressure for a long enough time to allow the fusion reaction to occur. This is difficult to achieve, as the high temperature and pressure tend to cause the nuclei to fly apart.</span>"
           },
           {
-            "html": "<span>In response to the second question, ‘How soon will machine intelligence outstrip human intelligence?’, Rees mentions robots that are advanced enough to beat humans at chess, but then goes on to say, ‘Robots are still limited in their ability to sense their environment: they can’t yet recognise and move the pieces on a real chessboard as cleverly as a child can. Later this century, however, their more advanced successors may relate to their surroundings, and to people, as adeptly as we do. Moral questions then arise. … Should we feel guilty about exploiting [sophisticated robots]? Should we fret if they are underemployed, frustrated, or bored?’</span>"
+            "html": "<span><strong>E</strong> Another challenge is the cost of nuclear fusion research. The equipment and research required to achieve nuclear fusion are extremely expensive, and the cost of research and development is high. This has led to concerns that nuclear fusion may not be economically viable, and that the money spent on research could be better spent on other forms of clean energy.</span>"
           },
           {
-            "html": "<span>Wolpert’s response to the question about machine intelligence outstripping human intelligence was this: ‘In a limited sense it already has. Machines can already navigate, remember and search for items with an ability that far outstrips humans. However, there is no machine that can identify visual objects or speech with the reliability and flexibility of humans…. Expecting a machine close to the creative intelligence of a human within the next 50 years would be highly ambitious.’</span>"
+            "html": "<span><strong>F</strong> Despite these challenges, there has been significant progress in nuclear fusion research in recent years. Scientists have developed a number of different approaches to achieving nuclear fusion, and have made significant advances in understanding the physics of the process. The recent breakthrough in California is just one example of the progress that has been made.</span>"
           },
           {
-            "html": "<span>Richardson believes that our fear of machines becoming too advanced has more to do with human nature than anything intrinsic to the machines themselves. In her view, it stems from humans’ tendency to personify inanimate objects: we create machines based on representations of ourselves, imagine that machines think and behave as we do, and therefore see them as an autonomous threat. ‘One of the consequences of thinking that the problem lies with machines is that …. we tend to imagine they are greater and more powerful than they really are and subsequently they become so.’</span>"
+            "html": "<span><strong>G</strong> One of the most promising approaches to achieving nuclear fusion is the use of magnetic confinement. In this approach, a plasma of hydrogen nuclei is confined within a magnetic field and heated to the required temperature. The magnetic field helps to keep the nuclei close together, increasing the chances of fusion occurring. This approach has been used in a number of experimental fusion reactors, and has shown promise in achieving the conditions required for nuclear fusion.</span>"
           },
           {
-            "html": "<span>This led on to the third question, ‘Should we be scared by advances in artificial intelligence?’ To this question, Rees replied, ‘Those who should be worried are the futurologists who believe in the so-called “singularity”.** … And another worry is that we are increasingly dependent on computer networks, and that these could behave like a single “brain” with a mind of its own, and with goals that may be contrary to human welfare. I think we should ensure that robots remain as no more than “idiot savants” lacking the capacity to outwit us, even though they may greatly surpass us in the ability to calculate and process information.’</span>"
+            "html": "<span><strong>H</strong> Another approach is inertial confinement, in which a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. The compression and heating cause the nuclei to fuse together, releasing energy. This approach has also shown promise, and has been used in a number of experimental fusion reactors.</span>"
           },
           {
-            "html": "<span>Wolpert’s response was to say that we have already seen the damaging effects of artificial intelligence in the form of computer viruses. ‘But in this case,’ he says, ‘the real intelligence is the malicious designer. Critically, the benefits of computers outweigh the damage that computer viruses cause. Similarly, while there may be misuses of robotics in the near future, the benefits that they will bring are likely to outweigh these negative aspects.’</span>"
+            "html": "<span><strong>I</strong> Despite the progress that has been made, there is still a long way to go before nuclear fusion can become a viable source of energy. Scientists need to find ways to achieve the required temperature and pressure more efficiently, and to develop materials that can withstand the extreme conditions. They also need to find ways to reduce the cost of nuclear fusion research, such as by having cheaper, more durable materials for some components like the first wall and divertors.</span>"
           },
           {
-            "html": "<span>Richardson’s response to this question was this: ‘We need to ask why fears of artificial intelligence and robots persist; none have in fact risen up and challenged human supremacy.’ She believes that as robots have never shown themselves to be a threat to humans, it seems unlikely that they ever will. In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence.’ </span><span>In answer to the fourth question, ‘What can science fiction tell us about robotics?’, Rees replied, ‘I sometimes advise students that it’s better to read first-rate science fiction than second-rate science – more stimulating, and perhaps no more likely to be wrong.’</span>"
-          },
-          {
-            "html": "<span>As his response, Wolpert commented, ‘Science fiction has often been remarkable at predicting the future Science fiction has painted a vivid spectrum of possible futures, from cute and helpful robots to dystopian robotic societies. Interestingly, almost no science fiction envisages a future without robots.’</span>"
-          },
-          {
-            "html": "<span>Finally, on the question of science fiction, Richardson pointed out that in modern society, people tend to think there is reality on the one hand, and fiction and fantasy on the other. She then explained that the division did not always exist, and that scientists and technologists made this separation because they wanted to carve out the sphere of their work. ‘But the divide is not so clear cut, and that is why the worlds seem to collide at times,’ she said. ‘In some cases, we need to bring these different understandings together to get a whole perspective. Perhaps then, we won’t be so frightened that something we create as a copy of ourselves will be a [threat] to us.’</span><br/>\n<span>* terraforming: modifying a planet’s atmosphere to suit human needs</span><br/>\n<span>** singularity: the point when robots will be able to start creating ever more sophisticated versions of themselves</span>"
+            "html": "<span><strong>J</strong> In conclusion, nuclear fusion has the potential to be a virtually limitless source of clean energy, with none of the problems associated with nuclear fission. However, there are significant challenges to be overcome before it can become a viable source of energy. Scientists need to find ways to achieve the required conditions more efficiently, and to reduce the cost of research. Despite these challenges, there has been significant progress in nuclear fusion research in recent years, and the recent breakthrough in California is just one example of this progress. With continued research and development, nuclear fusion could become a major source of energy in the future.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-33",
-          "type": "matching-features",
-          "instructionHtml": "Look at the following statements and the list of experts below. Match each statement with the correct expert, A, B or C. NB You may use any letter more than once.",
+          "title": "Questions 27-32",
+          "type": "paragraph-matching",
+          "instructionHtml": "Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.",
           "questions": [
             {
               "id": "q27",
-              "answer": "A",
-              "textHtml": "For our own safety, humans will need to restrict the abilities of robots"
+              "answer": "B",
+              "textHtml": "a description of the method used by stars to generate energy"
             },
             {
               "id": "q28",
-              "answer": "C",
-              "textHtml": "The risk of robots harming us is less serious than humans believe it to be"
+              "answer": "B",
+              "textHtml": "a description of the process used to produce energy in nuclear power plants today"
             },
             {
               "id": "q29",
               "answer": "B",
-              "textHtml": "It will take many decades for robot intelligence to be as imaginative as human intelligence"
+              "textHtml": "an explanation of the advantages of nuclear fusion over nuclear fission"
             },
             {
               "id": "q30",
-              "answer": "A",
-              "textHtml": "We may have to start considering whether we are treating robots fairly"
+              "answer": "D",
+              "textHtml": "a reference to the difficulty of achieving the conditions required for nuclear fusion"
             },
             {
               "id": "q31",
-              "answer": "B",
-              "textHtml": "Robots are probably of more help to us on Earth than in space"
+              "answer": "A",
+              "textHtml": "a reference to a nuclear fusion experiment that has been successful"
             },
             {
               "id": "q32",
-              "answer": "A",
-              "textHtml": "The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists"
-            },
-            {
-              "id": "q33",
-              "answer": "C",
-              "textHtml": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson"
+              "answer": "I",
+              "textHtml": "a mention of the need to find a way of making nuclear fusion research more affordable"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Look at the following statements and the list of experts below. Match each statement with the correct expert, A, B or C. NB You may use any letter more than once.</span></p><p><span>27. For our own safety, humans will need to restrict the abilities of robots.</span><br/>\n<span>28. The risk of robots harming us is less serious than humans believe it to be.</span><br/>\n<span>29. It will take many decades for robot intelligence to be as imaginative as human intelligence.</span><br/>\n<span>30. We may have to start considering whether we are treating robots fairly.</span><br/>\n<span>31. Robots are probably of more help to us on Earth than in space.</span><br/>\n<span>32. The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists.</span><br/>\n<span>33. There are those who look forward to robots developing greater intelligence.</span></p><p><strong><span>List of Experts</span></strong><br/>\n<span>A. Martin Rees</span><br/>\n<span>B. Daniel Wolpert</span><br/>\n<span>C. Kathleen Richardson</span></p>",
+          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.</span></p><p><span>27. a description of the method used by stars to generate energy</span><br/>\n<span>28. a description of the process used to produce energy in nuclear power plants today</span><br/>\n<span>29. an explanation of the advantages of nuclear fusion over nuclear fission</span><br/>\n<span>30. a reference to the difficulty of achieving the conditions required for nuclear fusion</span><br/>\n<span>31. a reference to a nuclear fusion experiment that has been successful</span><br/>\n<span>32. a mention of the need to find a way of making nuclear fusion research more affordable</span></p>",
           "options": [
             "A",
             "B",
-            "C"
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I"
           ]
         },
         {
-          "title": "Questions 34-36",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete each sentence with the correct ending, A-D, below.",
+          "title": "Questions 33-35",
+          "type": "matching-features",
+          "instructionHtml": "Complete the summary using the list of words, A-K, below. Write the correct letter, A-K, in boxes 33-35 on your answer sheet.",
           "questions": [
             {
+              "id": "q33",
+              "answer": "A",
+              "textHtml": "……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental"
+            },
+            {
               "id": "q34",
-              "answer": "C",
-              "before": "Richardson and Rees express similar views regarding the ethical aspect of",
-              "after": ""
+              "answer": "D",
+              "textHtml": "……………….. showing potential for generating fusion energy. INERTIAL CONFINEMENT In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the"
             },
             {
               "id": "q35",
               "answer": "B",
-              "before": "Rees and Wolpert share an opinion about the extent of",
-              "after": ""
-            },
-            {
-              "id": "q36",
-              "answer": "D",
-              "before": "Wolpert disagrees with Richardson on the question of A. robots to explore outer space. B. advances made in machine intelligence so far. C. changes made to other planets for our own benefit. D. the harm already done by artificial intelligence",
-              "after": ""
+              "textHtml": "………….. are fused together, releasing a significant amount of energy. A. plasma B. nuclei C. energy D. reactors E. fusion F. reaction G. hydrogen H. atoms I. nuclear fission J. nuclear fusion K. temperature"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 34-36</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-D, below.</span></p><p><span>34. Richardson and Rees express similar views regarding the ethical aspect of</span><br/>\n<span>35. Rees and Wolpert share an opinion about the extent of</span><br/>\n<span>36. Wolpert disagrees with Richardson on the question of</span></p><p><span>A. robots to explore outer space.</span><br/>\n<span>B. advances made in machine intelligence so far.</span><br/>\n<span>C. changes made to other planets for our own benefit.</span><br/>\n<span>D. the harm already done by artificial intelligence.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 33-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-K, below. Write the correct letter, A-K, in boxes 33-35 on your answer sheet.</span></p><p><strong><span>MAGNETIC CONFINEMENT</span></strong></p><p><span>In the magnetic confinement approach, a (33) ……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental (34) ……………….. showing potential for generating fusion energy.</span></p><p><strong><span>INERTIAL CONFINEMENT</span></strong></p><p><span>In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the (35) ………….. are fused together, releasing a significant amount of energy.</span></p><p><span>A. plasma</span><br/>\n<span>B. nuclei</span><br/>\n<span>C. energy</span><br/>\n<span>D. reactors</span><br/>\n<span>E. fusion</span><br/>\n<span>F. reaction</span><br/>\n<span>G. hydrogen</span><br/>\n<span>H. atoms</span><br/>\n<span>I. nuclear fission</span><br/>\n<span>J. nuclear fusion</span><br/>\n<span>K. temperature</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J"
+          ]
         },
         {
-          "title": "Questions 37-40",
-          "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter, A, B, C or D.",
+          "title": "Questions 36-40",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write",
           "questions": [
             {
+              "id": "q36",
+              "answer": "False",
+              "textHtml": "The California experiment was the first time nuclear fusion had ever been achieved"
+            },
+            {
               "id": "q37",
-              "answer": "B",
-              "textHtml": "What point does Richardson make about fear of machines?",
-              "options": [
-                "It has grown alongside the development of ever more advanced robots",
-                "It is the result of our inclination to attribute human characteristics to non-human entities",
-                "It has its origins in basic misunderstandings about how inanimate objects function",
-                "It demonstrates a key difference between human intelligence and machine intelligence"
-              ]
+              "answer": "True",
+              "textHtml": "Nuclear fusion could help to reduce the world’s dependence on fossil fuels"
             },
             {
               "id": "q38",
-              "answer": "C",
-              "textHtml": "What potential advance does Rees see as a cause for concern?",
-              "options": [
-                "robots outnumbering people",
-                "robots having abilities which humans do not",
-                "artificial intelligence developing independent thought",
-                "artificial intelligence taking over every aspect of our lives"
-              ]
+              "answer": "False",
+              "textHtml": "The fuel used in nuclear fusion is rare and hard to find"
             },
             {
               "id": "q39",
-              "answer": "B",
-              "textHtml": "What does Wolpert emphasise in his response to the question about science fiction?",
-              "options": [
-                "how science fiction influences our attitudes to robots",
-                "how fundamental robots are to the science fiction genre",
-                "how the image of robots in science fiction has changed over time",
-                "how reactions to similar portrayals of robots in science fiction may vary"
-              ]
+              "answer": "False",
+              "textHtml": "The high cost of nuclear fusion is solely attributed to its equipment"
             },
             {
               "id": "q40",
-              "answer": "C",
-              "textHtml": "What is Richardson doing in her comment about reality and fantasy?",
-              "options": [
-                "warning people not to confuse one with the other",
-                "outlining ways in which one has impacted on the other",
-                "recommending a change of approach in how people view them",
-                "explaining why scientists have a different perspective on them from other people"
-              ]
+              "answer": "Not given",
+              "textHtml": "The basic physics behind nuclear fusion is more advanced than scientists once thought"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>37. What point does Richardson make about fear of machines?</span><br/>\n<span>A. It has grown alongside the development of ever more advanced robots.</span><br/>\n<span>B. It is the result of our inclination to attribute human characteristics to non-human entities.</span><br/>\n<span>C. It has its origins in basic misunderstandings about how inanimate objects function.</span><br/>\n<span>D. It demonstrates a key difference between human intelligence and machine intelligence.</span></p><p><span>38. What potential advance does Rees see as a cause for concern?</span><br/>\n<span>A. robots outnumbering people</span><br/>\n<span>B. robots having abilities which humans do not</span><br/>\n<span>C. artificial intelligence developing independent thought</span><br/>\n<span>D. artificial intelligence taking over every aspect of our lives</span></p><p><span>39. What does Wolpert emphasise in his response to the question about science fiction?</span><br/>\n<span>A. how science fiction influences our attitudes to robots</span><br/>\n<span>B. how fundamental robots are to the science fiction genre</span><br/>\n<span>C. how the image of robots in science fiction has changed over time</span><br/>\n<span>D. how reactions to similar portrayals of robots in science fiction may vary</span></p><p><span>40. What is Richardson doing in her comment about reality and fantasy?</span><br/>\n<span>A. warning people not to confuse one with the other</span><br/>\n<span>B. outlining ways in which one has impacted on the other</span><br/>\n<span>C. recommending a change of approach in how people view them</span><br/>\n<span>D. explaining why scientists have a different perspective on them from other people</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 36-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>36. The California experiment was the first time nuclear fusion had ever been achieved.</span><br/>\n<span>37. Nuclear fusion could help to reduce the world’s dependence on fossil fuels.</span><br/>\n<span>38. The fuel used in nuclear fusion is rare and hard to find.</span><br/>\n<span>39. The high cost of nuclear fusion is solely attributed to its equipment.</span><br/>\n<span>40. The basic physics behind nuclear fusion is more advanced than scientists once thought.</span></p>"
         }
       ]
     }

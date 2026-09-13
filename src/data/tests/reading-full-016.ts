@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-307",
+  "id": "reading-full-016",
   "skill": "reading",
-  "title": "Academic Reading Test 307",
+  "title": "Academic Reading Test 16",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-307/",
+    "url": "https://practicepteonline.com/ielts-reading-test-302/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,117 +17,220 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "THE BAOBAB TREE",
+        "title": "Art or Craft?",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>The baobab tree is an icon of the African continent. It can live for over a thousand years and is a vital source of food, water and shelter for indigenous peoples and wildlife alike. Given the tree’s many practical uses, it is not surprising that the baobab features so prominently in traditional African folklore.</span>"
+            "html": "<span>Down the centuries, craftsmen have been held to be distinct from artists. Craftsmen, such as woodworkers and plasterers, belonged to their own guild, whilst the artist was regarded as a more solitary being confined to an existence in a studio or attic. In addition, whilst craftsmen could rely on a reasonably steady income, artists were often living such a hand-to-mouth existence that the term ‘starving artist’ became a byword to describe the impoverished existence of artists generally. Even today, the lifestyles of the craftsman and the artist could not be more different. However, what exactly separates craft from art from both a practical and a philosophical view?</span>"
           },
           {
-            "html": "<span>The baobab is a prehistoric species which predates both mankind and the splitting of the continents over 200 million years ago. It belongs to the genus Adansonia, which contains nine species. These are found in the drier parts of Africa, Madagascar, India, Sri Lanka and Australia. Of the nine species, six are native to Madagascar, two to mainland Africa and one to Australia. The African and Australian baobabs look very similar, even though they are not the same species. Baobabs grow in 32 African countries. In West Africa, the baobab’s presence is often an indication of a human settlement nearby. The tree is most frequently found in dry, hot savannahs of sub-Saharan Africa, where the climate is extremely arid and rainfall is seasonal.</span>"
+            "html": "<span>One of the main distinctions between art and craft resides in the nature of the finished product or piece. Essentially, the concept of craft is historically associated with the production of useful or practical products. Art, on the other hand, is not restricted by the confines of practicality. The craftsman’s teapot or vase should normally be able to hold tea or flowers while the artist’s work is typically without utilitarian function. In fact, the very reason for art and its existence is purely to ‘be’, hence the furlined teacup created by Dada artist, Meret Oppenheim. The ‘cup’ as such was quite obviously never intended for practical use any more than a chocolate teapot might have been.</span>"
           },
           {
-            "html": "<span>The baobab is a deciduous tree, which means that it loses its leaves during the dry season. It is a succulent, which means that during the rainy season it absorbs and stores water in its vast trunk. This water enables it to produce a nutrient-dense fruit in the dry season when all around is dry and arid. The trunk has a diameter of 10-14 metres and the tree has a height of 18-25 metres. The baobab tree is a strange looking tree that grows in low-lying areas in Africa. Its trunk is very wide and it has large white flowers that bloom at night. Its leaves are finger-like in shape. The baobab is a very versatile tree. Its leaves, bark, fruit and trunk are all useful to humans and animals.</span>"
+            "html": "<span>Artistry in craftsmanship is therefore merely a byproduct, since the primary focus is on what something does, not what it is. The reverse is true for art. Artistic products appeal purely at the level of the imagination. As the celebrated philosopher, Kant, stated, ‘At its best, art cultivates and expands the human spirit.’ Whether the artist responsible for a piece of art has sufficient talent to achieve this is another matter. The goal of all artists nevertheless remains the same: to produce a work that simultaneously transcends the mundane and uplifts the viewer. In contrast, the world of the craftsman and his work remain lodged firmly in the practicality of the everyday world. An object produced by an artist is therefore fundamentally different from the one produced by a craftsman.</span>"
           },
           {
-            "html": "<span>The baobab’s fruit is large and oval-shaped and it contains a mass of seeds. It is a rich source of vitamin C and its pulp can be used to make a refreshing drink. The pulp can also be used to treat fever, diarrhoea and malaria. The pulp can be stored until it is needed. The seeds of the fruit can be used to produce oil. This oil is used to protect the skin and it is also used in the cosmetic industry. The leaves of the baobab are also useful. They can be eaten fresh or they can be dried and stored. They are rich in iron and can be used as a medicine. The leaves can be used to treat asthma, insect bites and several other ailments. The leaves can also be used as a sauce for food. The bark of the baobab is also useful. It can be used to make cloth and rope. The bark can also be used to make musical instruments, waterproof hats and fishing lines. The bark has also been used to protect young plants from animals. The bark of the baobab is also used to treat fever. The trunk of the baobab is very wide and it can be used as a shelter. It is also used for storage and it can also be used as a source of water in dry periods. The baobab can also be used to make a variety of things such as musical instruments, handcrafts, pots to grow plants in, and many other useful items. The tree also provides shade for animals and humans. The tree is also a source of fuel and is used as a firebreak as well.</span>"
+            "html": "<span>Differences between the two disciplines of art and craft extend also to the process required to produce the finished object. The British philosopher R.G. Collingwood, who set out a list of criteria that distinguish art from craft, focused on the distinction between the two disciplines in their ‘planning and execution’. With a craft, Collingwood argued, the ‘result to be obtained is preconceived or thought out before being arrived at.’ The craftsman, Collingwood says, ‘knows what he wants to make before he makes it’. This foreknowledge, according to Collingwood, must not be vague but precise. In fact, such planning is considered to be ‘indispensable’ to craft. In this respect, craft is essentially different from art. Art is placed by Collingwood at the other end of the creative continuum, the creation of art being described as a process that evolves non-deterministically. The artist is, therefore, just as unaware as anyone else as to what the end product of creation will be, when he is actually in the process of creating. Contrast this with the craftsman who already knows what the end product will look like before he or she has even begun to create it.</span>"
           },
           {
-            "html": "<span>The baobab is also known as the ‘tree of life’ because it can provide shelter, clothing, food, and water for the animal and human inhabitants of the African savannah regions. The tree is also an important source of food for many different creatures such as insects and animals. The flowers provide food for fruit bats, which play an important role in pollinating the flowers. The seeds are eaten by various mammals such as baboons, monkeys and warthogs. Elephants and eland eat the bark of the baobab tree. The flowers provide food for birds, bees and other insects. The baobab tree is home to snakes and tree frogs. The tree is also home to bush babies, which feed on the flowers. The tree is also home to birds such as the mottled spinetail, the grey-headed parrot and the mottled swift. The tree is also host to the African honey bee.</span>"
+            "html": "<span>Since the artist is not following a set of standard rules in the process of creation, he or she has no guidelines like the craftsman. Whilst the table or chair created by the craftsman, for example, has to conform to certain expectations in appearance and design, no such limitations are imposed on the artist. For it is the artist alone who, through a trial-and-error approach, will create the final object.</span>"
           },
           {
-            "html": "<span>The baobab tree is under threat because of the increasing human population. The trees are being cut down for their bark, which is used to make rope, mats and baskets. The trees are also being cut down to make way for farmland. The baobab is also under threat from climate change.</span>"
+            "html": "<span>The object merely evolves over time. Whereas the craftsman can fairly accurately predict when a product will be finished taking technical procedures into account, the artist can do no such thing. The artist is at the mercy of inspiration alone and quite apart from not being able to have a projected finishing date, may never be able to guarantee that the object will be finished at all. Unfinished symphonies by great composers and works of literature never completed by their authors testify to this.</span>"
+          },
+          {
+            "html": "<span>Having no definite end-goal in mind, the emphasis on the finished product that is true of craftsmanship is placed Instead on the act of creation itself with the artist. The creation of the work of art is an exploration and a struggle and path of discovery for the artist. It could be said that the artist is producing as much for himself as for those who will view the finished product. This act of creation is very distinct from the production of an object that is crafted, therefore. The goal of making craftwork is monetary compensation. Craft is produced for purchase and is essentially a money-generating industry. Any craftsman who followed the artistic approach to creation would soon be out of a job. Craftsmen are expected to deliver, artists are not. This is probably the most fundamental difference that separates the craftsman from the artist.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 1-7",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write",
+          "title": "Questions 1-10",
+          "type": "table-completion",
+          "instructionHtml": "Complete the table below. Write10 answers from the box and write the correct letter, A-L, next to questions 1-10.",
           "questions": [
             {
               "id": "q1",
-              "answer": "False",
-              "textHtml": "The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths"
+              "answer": [
+                "A",
+                "D"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-1-3"
             },
             {
               "id": "q2",
-              "answer": "False",
-              "textHtml": "Baobab trees are only found on the African continent"
+              "answer": [
+                "B",
+                "C"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-2-4"
             },
             {
               "id": "q3",
-              "answer": "True",
-              "textHtml": "In West Africa, the presence of a baobab tree often indicates nearby human settlements"
+              "answer": [
+                "A",
+                "D"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-1-3"
             },
             {
               "id": "q4",
-              "answer": "False",
-              "textHtml": "Baobab trees are commonly found in humid tropical rainforests"
+              "answer": [
+                "B",
+                "C"
+              ],
+              "before": "…………… Act of Creation/ Production",
+              "after": "",
+              "answerPairId": "reading-302-2-4"
             },
             {
               "id": "q5",
-              "answer": "True",
-              "textHtml": "The baobab stores water in its trunk during the rainy season to survive dry periods"
+              "answer": [
+                "F",
+                "G",
+                "J"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-5-7-9"
             },
             {
               "id": "q6",
-              "answer": "True",
-              "textHtml": "The leaves of the baobab tree can be used to make a medicinal sauce"
+              "answer": [
+                "E",
+                "H",
+                "I"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-6-8-10"
             },
             {
               "id": "q7",
-              "answer": "False",
-              "textHtml": "Baobab trees are pollinated exclusively by fruit bats"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                 if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                               if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                    if there is no information on this</span></p><p><span>1. The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths.</span><br/>\n<span>2. Baobab trees are only found on the African continent.</span><br/>\n<span>3. In West Africa, the presence of a baobab tree often indicates nearby human settlements.</span><br/>\n<span>4. Baobab trees are commonly found in humid tropical rainforests.</span><br/>\n<span>5. The baobab stores water in its trunk during the rainy season to survive dry periods.</span><br/>\n<span>6. The leaves of the baobab tree can be used to make a medicinal sauce.</span><br/>\n<span>7. Baobab trees are pollinated exclusively by fruit bats.</span></p>"
-        },
-        {
-          "title": "Questions 8-13",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer.",
-          "questions": [
+              "answer": [
+                "F",
+                "G",
+                "J"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-5-7-9"
+            },
             {
               "id": "q8",
-              "answer": "Sauce",
-              "before": "…………. Bark – can be used to make cloth and musical instruments – can be used to protect",
-              "after": ""
+              "answer": [
+                "E",
+                "H",
+                "I"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-6-8-10"
             },
             {
               "id": "q9",
-              "answer": "Plants",
-              "before": "…………… and to treat fever Trunk – can provide",
-              "after": ""
+              "answer": [
+                "F",
+                "G",
+                "J"
+              ],
+              "before": "……………",
+              "after": "",
+              "answerPairId": "reading-302-5-7-9"
             },
             {
               "id": "q10",
-              "answer": "Shelter",
-              "before": "……………… and water – can be used to make",
-              "after": ""
-            },
-            {
-              "id": "q11",
-              "answer": "Pots",
-              "before": "……………. General – provides",
-              "after": ""
-            },
-            {
-              "id": "q12",
-              "answer": "Shade",
-              "before": "………………. for animals and humans – can be used to make",
-              "after": ""
-            },
-            {
-              "id": "q13",
-              "answer": "Fuel",
-              "before": "…………… to burn",
-              "after": ""
+              "answer": [
+                "E",
+                "H",
+                "I"
+              ],
+              "before": "…………… A the finished object appeals on an emotional and spiritual level B the final product has no pretensions to being anything more than it appears C only a functional use is considered for the finished object D no practical purpose as such is envisaged for the created object E the process of creation is merely a means to an end F whether or not there is an end product, the product itself is secondary to the process of creation G not having to adhere to a set of rules, the process is a matter of experimentation H there is no margin of error for experimentation, all of the process following a set of guidelines I its goal is defined from the outset J the process is fluid and undefined K it is useful but not commercially viable L the production process is a mixture of following rules and experimentation",
+              "after": "",
+              "answerPairId": "reading-302-6-8-10"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>USES OF THE BAOBAB TREE</span></strong></p><p><span>Fruit</span><br/>\n<span>– contains a lot of vitamin C</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be stored for a long time</span><br/>\n<span>– seeds can be used to produce oil</span></p><p><span>Leaves</span><br/>\n<span>– can be used fresh or dried</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be used to make a (8) ………….</span></p><p><span>Bark</span><br/>\n<span>– can be used to make cloth and musical instruments</span><br/>\n<span>– can be used to protect (9) ……………</span><br/>\n<span>and to treat fever</span></p><p><span>Trunk</span><br/>\n<span>– can provide (10) ……………… and water</span><br/>\n<span>– can be used to make (11) …………….</span></p><p><span>General</span><br/>\n<span>– provides (12) ………………. for animals and humans</span><br/>\n<span>– can be used to make (13) …………… to burn</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "wordLimit": 1
+          "legendHtml": "<p><strong><span>Questions 1-10</span></strong><br/>\n<span>Complete the table below. Write10 answers from the box and write the correct letter, A-L, next to questions 1-10.</span></p><table><tbody><tr><td></td><td><span><strong>Art</strong></span></td><td><span><strong>Craft</strong></span></td></tr><tr><td rowspan=\"2\"><span>End product</span></td><td><span>(1) ……………</span></td><td><span>(2) ……………</span></td></tr><tr><td><span>(3) ……………</span></td><td><span>(4) ……………</span></td></tr><tr><td rowspan=\"3\"><span>Act of Creation/ Production</span></td><td><span>(5) ……………</span></td><td><span>(6) ……………</span></td></tr><tr><td><span>(7) ……………</span></td><td><span>(8) ……………</span></td></tr><tr><td><span>(9) ……………</span></td><td><span>(10) ……………</span></td></tr></tbody></table><p><span><strong>A</strong> the finished object appeals on an emotional and spiritual level</span><br/>\n<span><strong>B</strong> the final product has no pretensions to being anything more than it appears</span><br/>\n<span><strong>C</strong> only a functional use is considered for the finished object</span><br/>\n<span><strong>D</strong> no practical purpose as such is envisaged for the created object</span><br/>\n<span><strong>E</strong> the process of creation is merely a means to an end</span><br/>\n<span><strong>F</strong> whether or not there is an end product, the product itself is secondary to the process of creation</span><br/>\n<span><strong>G</strong> not having to adhere to a set of rules, the process is a matter of experimentation</span><br/>\n<span><strong>H</strong> there is no margin of error for experimentation, all of the process following a set of guidelines</span><br/>\n<span><strong>I</strong> its goal is defined from the outset</span><br/>\n<span><strong>J</strong> the process is fluid and undefined</span><br/>\n<span><strong>K</strong> it is useful but not commercially viable</span><br/>\n<span><strong>L</strong> the production process is a mixture of following rules and experimentation</span></p>",
+          "table": {
+            "rows": [
+              [
+                "……………",
+                {
+                  "questionId": "q1"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q2"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q3"
+                },
+                ""
+              ],
+              [
+                "…………… Act of Creation/ Production",
+                {
+                  "questionId": "q4"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q5"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q6"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q7"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q8"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q9"
+                },
+                ""
+              ],
+              [
+                "…………… A the finished object appeals on an emotional and spiritual level B the final product has no pretensions to being anything more than it appears C only a functional use is considered for the finished object D no practical purpose as such is envisaged for the created object E the process of creation is merely a means to an end F whether or not there is an end product, the product itself is secondary to the process of creation G not having to adhere to a set of rules, the process is a matter of experimentation H there is no margin of error for experimentation, all of the process following a set of guidelines I its goal is defined from the outset J the process is fluid and undefined K it is useful but not commercially viable L the production process is a mixture of following rules and experimentation",
+                {
+                  "questionId": "q10"
+                },
+                ""
+              ]
+            ]
+          }
         }
       ]
     },
@@ -136,199 +239,234 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "THE BIRTH OF THE 10,000-HOUR RULE",
+        "title": "Salvador Dali",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>A study on violinists in the early 1990s inspired the idea that 10,000 hours of practice is the key to success</span>"
+            "html": "<span>Few with even a passing knowledge of the art world are likely not to have heard of Salvador Dali, the eccentric and avant-garde exponent of the Surrealist movement. Love him or loathe him, Dali’s work has achieved enduring worldwide fame as his name and work have become virtually synonymous with Surrealism itself. The artist’s melting clock image is surely one of the most iconic paintings of the art world, whilst Dali’s antics have become the stuff of anecdotes.</span>"
           },
           {
-            "html": "<span><strong>A</strong> The so-called 10,000-hour rule can be traced back to a 1993 paper, ‘The Role of Deliberate Practice in the Acquisition of Expert Performance’, co-authored by a Swedish psychologist and a US psychological scientist. The paper is one of the most cited in its field. Its most striking claim is that the difference between expert performers and normal adults is not due to innate talent, but rather is a reflection of the amount of deliberate practice they have undergone. ‘Many characteristics once believed to reflect innate talent are actually the result of intense practice extended for a minimum of 10 years,’ the authors wrote. They concluded: ‘The maximal level of performance for individuals in a given domain is not attained automatically as a function of extended experience, but the level of performance can be increased even by highly experienced individuals as a result of deliberate efforts to improve.’</span>"
+            "html": "<span>Born into a middle-class family in the Catalonian town of Figueres in north-eastern Spain, Dali (or Salvador Felipe Jacinto Dali Domenech, to give him his full name) aimed high from the beginning. In the artist’s 1942 autobiography entitled ‘The Secret Life of Salvador Dali’, the artist wrote: ‘At the age of six I wanted to be a cook. At seven I wanted to be Napoleon. And my ambition has been growing steadily ever since.’ Such ambition and self-belief matured into full-blown arrogance in later years. An example of this is amply shown on an occasion when the artist felt the examiners of the Madrid Academy he was attending were well below par.</span>"
           },
           {
-            "html": "<span><strong>B</strong> The study looked at three groups of violinists at the Music Academy of West Berlin, in Germany. The authors set out to find out what had caused the ‘best’ violinists to be better than the merely ‘good’ ones, who were in turn better than the ‘least accomplished’ ones. All of the violinists were asked how much they had practised, alone, with a teacher, and with others, every week, ever since they had first picked up a violin. What they found was that by the age of 20, the best violinists had practised an average of 10,000 hours, the good ones had practised 8,000 hours, and the least skilled had practised 4,000 hours. The psychologists concluded that what mattered was not the time spent obtaining any old experience, but the amount of time spent on ‘deliberate practice’, which they defined as an effortful activity designed to improve individual target performance. The authors also noted that the most accomplished individuals in their study had each followed the same learning structure, and had all acquired their skills in a similar way: ‘All of the expert violinists had started playing at approximately five years of age, and had selected a music teacher who was a violinist. All of them had been admitted to a music academy by eight years of age, where they had been taught by skillful violin teachers. All of them had started solo practice at around the age of eight. All of them had been rated very highly by their violin teachers at the music academy, and had given their first public performance at around the age of eight.’</span>"
+            "html": "<span>To a degree, his undeniably impressive and precocious talent excused his conceit. He was only 14 when his first works were exhibited as part of a show in Figueres. Then three years later he was admitted to the Royal Academy of Fine Arts of San Fernando, in Madrid. However, it wasn’t long before Dali’s highly developed sense of self-worth (or conceit, depending on how you view the artist) came to the fore and also affected the course of his life. Believing himself way superior to the Academy tutors, who nevertheless refused to grant him a degree, the rebellious artist left for Paris. There he hoped to avail himself of knowledge that he believed his tutors were not adequate to impart. He soon made the acquaintance of the French surrealists Jean Arp, Rene Magritte and Max Ernst and this would prove a turning point in Dali’s artistic life.</span>"
           },
           {
-            "html": "<span><strong>C</strong> The theory of deliberate practice was popularised by the writer Malcolm Gladwell, who argued that talent is irrelevant to performance in his book Outliers, published in 2008. ‘The striking thing about Ericsson’s study is that he and his colleagues couldn’t find any “naturals”, musicians who floated effortlessly to the top while practising a fraction of the time their peers did. Nor could they find any “grinds”, people who worked harder than everyone else, yet just didn’t have what it takes to break the top ranks,’ he wrote. ‘Their research suggests that once a musician has enough ability to get into a top music school, the thing that distinguishes one performer from another is how hard he or she works. That’s it. And what’s more, the people at the very top don’t work just harder or even much harder than everyone else. They work much, much harder.’</span>"
+            "html": "<span>Already familiar with the psychoanalytic theories of Sigmund Freud, Dali was to witness how the French surrealists were attempting to capture Freud’s ideas in paint. The whole world of the unconscious sublimated into dreams was to become the content of these artists’ work and later that of Dali’s, too. International acclaim followed shortly after. In 1933 he enjoyed solo exhibitions in Paris and New York City, becoming, as one exhibition curator put it, ‘Surrealism’s most exotic and prominent figure’. Praise continued to be heaped on Dali as French poet and critic, Andre Breton, the leader of the Surrealist movement gave the artist his blessing to continue carrying the torch for the artistic movement, writing that Dali’s name was ‘synonymous with revelation in the most resplendent sense of the word’.</span>"
           },
           {
-            "html": "<span><strong>D</strong> But while Ericsson and his colleagues had found a correlation between the number of hours spent on deliberate practice and the level of expertise achieved, their research didn’t determine whether practice was the cause of that expertise. The idea that 10,000 hours of practice will make you an expert is appealing, not least because it suggests that anyone can achieve anything if they just work hard enough. But while practice is undeniably important, it is not the only factor that contributes to performance. In 2014, a group of psychologists led by Brooke Macnamara of Princeton University re-analysed data from all of the studies they could find on the relationship between deliberate practice and performance in various domains, including music, sports and education, and estimated that the average amount that practice contributes to mastery of these is just 12 percent. That leaves a lot of the variance in expert performance unexplained, which means factors other than practice must be involved.</span>"
+            "html": "<span>Dali’s surrealist paintings were packed with Freudian imagery: staircases, keys, dripping candles, in addition to a whole host of personally relevant symbolism such as grasshoppers and ants that captured his phobias on canvas. Despite Dali’s overt adulation for Freud, a meeting with the grandmaster of psychoanalysis proved somewhat unfortunate. On the occasion that Dali met Freud, he proceeded to sketch the latter in earnest. However, something about Dali’s fervid attitude must have alarmed the psychoanalyst as he is said to have whispered to others in the room, ‘The boy looks like a fanatic.’</span>"
           },
           {
-            "html": "<span><strong>E</strong> In a rejoinder, Ericsson argues that Macnamara’s analysis actually showed the opposite of what she claimed. In each of the domains she looked at, he says, practice was the single most important factor in predicting a person’s level of expertise. The problem, he argues, is that Macnamara’s analysis looked at the total number of hours of practice undertaken by the participants in the studies she reviewed, rather than the number of hours of deliberate practice. ‘The paper is important because it shows that the amount of time with relevant experience is not a good predictor of attained performance,’ he says. ‘But it does not invalidate the body of research on deliberate practice, nor its utility as the most important predictor of expertise.’</span>"
+            "html": "<span>Sometimes Dali came across as not only mad but also unintelligible, at least as far as his paintings were concerned. One work, ‘The Persistence of Memory’, was particularly singled out for the sheer confusion it caused amongst its viewers. Featuring melting clocks, swarming ants and a mollusc that was the deflated head of Dali in disguise, the images were so puzzling that one critic urged readers to ‘page Dr. Freud’ to uncover the meaning of the canvas. His work was, if nothing else, provocative and powerful.</span>"
+          },
+          {
+            "html": "<span>With the passing years, Dali became ever more infatuated with money, admitting to a ‘pure, vertical, mystical, gothic love of cash’. Accordingly, he indiscriminately endorsed a host of products for French and American TV commercials. Fie also never failed to promote himself and displayed increasingly exhibitionist behaviour as time went on. Most notably, he once turned up for a lecture in Paris in a Rolls Royce stuffed with cauliflowers. Fie obviously believed the slogan of one of his advertising campaigns for Braniff Airlines, where he declares ‘If you got it, flaunt it.’ As a more positive outcome of his love for money, Dali took on increasingly diverse projects, ranging from set design to designing clothes and jewellery. His critics, however, believed that early on in his career his love for money exceeded his dedication to producing great art, resulting in Dali producing ‘awful junk’ after 1939, according to one art critic.</span>"
+          },
+          {
+            "html": "<span>Despite a lukewarm reception from critics, Dali’s public popularity never declined. In 1974, at 70 years old, the Dali Theatre Museum opened in his hometown, Figueres. More of a surrealist happening than a museum, one exhibit was a long black Cadillac that rained inside itself whenever a visitor dropped a coin into the slot. Even today hundreds of thousands of visitors still tour the museum each year. Whatever your opinion of him, at least Dali is unlikely to ever be forgotten.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-18",
-          "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.",
+          "title": "Questions 11-13",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete each sentence with the correct ending, A-E, below.",
+          "questions": [
+            {
+              "id": "q11",
+              "answer": "C",
+              "before": "Dali displayed a precocious talent from an early age; however, he was aware",
+              "after": ""
+            },
+            {
+              "id": "q12",
+              "answer": "E",
+              "before": "Encountering the French Surrealist painters in Paris",
+              "after": ""
+            },
+            {
+              "id": "q13",
+              "answer": "D",
+              "before": "Dali’s artistic legacy is secure although",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 11-13</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-E, below.</span></p><p><span><strong>A</strong> of certain limitations in his artistic skills that became evident in his later works.</span><br/>\n<span><strong>B</strong> Introduced Dali to the psychoanalytic movement for the first time</span><br/>\n<span><strong>C</strong> his artistic studies needed to be supplemented by going to Paris to meet the Surrealist artists.</span><br/>\n<span><strong>D</strong> dome art critics are less impressed with his work than the general public.</span><br/>\n<span><strong>E</strong> inspired Dali to focus on the psychoanalytic content of his artwork.</span></p><p><span>Write the correct letter, A-E, next to questions 11-13.</span></p><p><span>11. Dali displayed a precocious talent from an early age; however, he was aware</span><br/>\n<span>12. Encountering the French Surrealist painters in Paris</span><br/>\n<span>13. Dali’s artistic legacy is secure although</span></p>"
+        },
+        {
+          "title": "Questions 14-16",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C or D",
           "questions": [
             {
               "id": "q14",
-              "answer": "A",
-              "textHtml": "a reference to the time when a distinction was first made between two types of skills"
+              "answer": "D",
+              "textHtml": "Dali’s departure for Paris was",
+              "options": [
+                "inspired by a desire to learn about psychoanalysis",
+                "a result of being disgraced at the Madrid Academy",
+                "to blame for his failure to complete his Academy degree",
+                "a quest for self-improvement"
+              ]
             },
             {
               "id": "q15",
-              "answer": "D",
-              "textHtml": "a reference to what a particular investigation failed to do"
+              "answer": "B",
+              "textHtml": "Dali came to represent the Surrealist movement",
+              "options": [
+                "due to a personal endorsement by fellow artist, Andre Breton",
+                "because he depicted the most memorable images of Surrealism",
+                "as he had a better understanding of psychoanalysis than his fellow artists",
+                "since he was no more talented, as an artist, than his peers"
+              ]
             },
             {
               "id": "q16",
-              "answer": "C",
-              "textHtml": "a reference to the influence of the 10,000-hour rule outside the field of music"
-            },
+              "answer": "B",
+              "textHtml": "Dali’s work was",
+              "options": [
+                "accessible to those with an understanding of psychoanalysis",
+                "loaded with secret symbolism",
+                "more a channel for personal expression than a financial undertaking",
+                "to prove more popular as Dali grew older"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 14-16</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D</span></p><p><span>14. Dali’s departure for Paris was</span><br/>\n<span><strong>A</strong> inspired by a desire to learn about psychoanalysis.</span><br/>\n<span><strong>B</strong> a result of being disgraced at the Madrid Academy.</span><br/>\n<span><strong>C</strong> to blame for his failure to complete his Academy degree.</span><br/>\n<span><strong>D</strong> a quest for self-improvement.</span></p><p><span>15. Dali came to represent the Surrealist movement</span><br/>\n<span><strong>A</strong> due to a personal endorsement by fellow artist, Andre Breton.</span><br/>\n<span><strong>B</strong> because he depicted the most memorable images of Surrealism.</span><br/>\n<span><strong>C</strong> as he had a better understanding of psychoanalysis than his fellow artists.</span><br/>\n<span><strong>D</strong> since he was no more talented, as an artist, than his peers.</span></p><p><span>16. Dali’s work was</span><br/>\n<span><strong>A</strong> accessible to those with an understanding of psychoanalysis.</span><br/>\n<span><strong>B</strong> loaded with secret symbolism.</span><br/>\n<span><strong>C</strong> more a channel for personal expression than a financial undertaking.</span><br/>\n<span><strong>D</strong> to prove more popular as Dali grew older.</span></p>"
+        },
+        {
+          "title": "Questions 17-18",
+          "type": "multiple-answer",
+          "instructionHtml": "There are two correct answers. Choose two letters from A, B, C, D and E.",
+          "questions": [
             {
               "id": "q17",
-              "answer": "B",
-              "textHtml": "A reference to how the study compared achievement levels based on practice time"
+              "answer": [
+                "C",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-302-q17-q18"
             },
             {
               "id": "q18",
-              "answer": "D",
-              "textHtml": "a reference to a claim that was made without sufficient evidence"
+              "answer": [
+                "C",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-302-q17-q18"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Reading passage has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.</span></p><p><span>14. a reference to the time when a distinction was first made between two types of skills</span><br/>\n<span>15. a reference to what a particular investigation failed to do</span><br/>\n<span>16. a reference to the influence of the 10,000-hour rule outside the field of music</span><br/>\n<span>17. A reference to how the study compared achievement levels based on practice time.</span><br/>\n<span>18. a reference to a claim that was made without sufficient evidence</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D"
+          "legendHtml": "<p><strong><span>Questions 17-18</span></strong><br/>\n<span>There are two correct answers. Choose two letters from A, B, C, D and E.</span></p><p><span>What is Dali most likely to be remembered for?</span></p><p><span><strong>A</strong> his contribution to the field of psychoanalysis</span><br/>\n<span><strong>B</strong> his diverse output of artistic works</span><br/>\n<span><strong>C</strong> his inappropriate behaviour and eccentricity</span><br/>\n<span><strong>D</strong> his striking and unusual paintings</span><br/>\n<span><strong>E</strong> his attempt to create popular accessible works</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "his contribution to the field of psychoanalysis"
+            },
+            {
+              "value": "B",
+              "label": "his diverse output of artistic works"
+            },
+            {
+              "value": "C",
+              "label": "his inappropriate behaviour and eccentricity"
+            },
+            {
+              "value": "D",
+              "label": "his striking and unusual paintings"
+            },
+            {
+              "value": "E",
+              "label": "his attempt to create popular accessible works"
+            }
           ]
         },
         {
-          "title": "Questions 19-22",
-          "type": "matching-features",
-          "instructionHtml": "Look at the following statements (Questions 19-22) and the list of researchers below. Match each statement with the correct researcher, A, B or C. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.",
+          "title": "Questions 19-21",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C or D.",
           "questions": [
             {
               "id": "q19",
-              "answer": "A",
-              "textHtml": "Their research involved innovative methods of measuring practice among participants"
+              "answer": "C",
+              "textHtml": "What does the writer convey about Dali’s childhood and student days?",
+              "options": [
+                "his inability to pursue a goal until its conclusion",
+                "his mental instability, evident in his grandiose ambitions",
+                "his supreme confidence in his own abilities",
+                "his obviously superior intelligence"
+              ]
             },
             {
               "id": "q20",
-              "answer": "B",
-              "textHtml": "They made claims about the significance of practice which were not justified"
+              "answer": "C",
+              "textHtml": "Why did critics turn against Dali?",
+              "options": [
+                "It was a reaction to his increasingly obscure works",
+                "He was devoting more time to TV commercials than painting",
+                "His work no longer did justice to his talent",
+                "His obsession with Surrealism overshadowed his work"
+              ]
             },
             {
               "id": "q21",
-              "answer": "C",
-              "textHtml": "They devised a sophisticated way of measuring the development of expertise"
-            },
-            {
-              "id": "q22",
-              "answer": "C",
-              "textHtml": "Their research generated an unexpected result"
+              "answer": "D",
+              "textHtml": "What does the writer convey about his own attitude towards Dali’s life and work?",
+              "options": [
+                "He believes that despite promising beginnings, Dali wasted his talents",
+                "In his opinion, few artists have made such an impact as Dali during his lifetime",
+                "He thinks that people focused more on Dali’s exhibitionist behaviour than his talent",
+                "He believes that despite his failings, Dali has left an enduring legacy"
+              ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 19-22</span></strong><br/>\n<span>Look at the following statements (Questions 19-22) and the list of researchers below. Match each statement with the correct researcher, A, B or C. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.</span></p><p><strong><span>List of Researchers</span></strong><br/>\n<span>A. Ericsson and colleagues</span><br/>\n<span>B. Malcolm Gladwell</span><br/>\n<span>C. Brooke Macnamara and colleagues</span></p><p><span>19. Their research involved innovative methods of measuring practice among participants.</span><br/>\n<span>20. They made claims about the significance of practice which were not justified.</span><br/>\n<span>21. They devised a sophisticated way of measuring the development of expertise.</span><br/>\n<span>22. Their research generated an unexpected result.</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C"
-          ]
+          "legendHtml": "<p><strong><span>Questions 19-21</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>19. What does the writer convey about Dali’s childhood and student days?</span><br/>\n<span><strong>A</strong> his inability to pursue a goal until its conclusion</span><br/>\n<span><strong>B</strong> his mental instability, evident in his grandiose ambitions</span><br/>\n<span><strong>C</strong> his supreme confidence in his own abilities</span><br/>\n<span><strong>D</strong> his obviously superior intelligence</span></p><p><span>20. Why did critics turn against Dali?</span><br/>\n<span><strong>A</strong> It was a reaction to his increasingly obscure works.</span><br/>\n<span><strong>B</strong> He was devoting more time to TV commercials than painting.</span><br/>\n<span><strong>C</strong> His work no longer did justice to his talent.</span><br/>\n<span><strong>D</strong> His obsession with Surrealism overshadowed his work.</span></p><p><span>21. What does the writer convey about his own attitude towards Dali’s life and work?</span><br/>\n<span><strong>A</strong> He believes that despite promising beginnings, Dali wasted his talents.</span><br/>\n<span><strong>B</strong> In his opinion, few artists have made such an impact as Dali during his lifetime.</span><br/>\n<span><strong>C</strong> He thinks that people focused more on Dali’s exhibitionist behaviour than his talent.</span><br/>\n<span><strong>D</strong> He believes that despite his failings, Dali has left an enduring legacy.</span></p>"
         },
         {
-          "title": "Questions 23-24",
-          "type": "multiple-answer",
-          "instructionHtml": "Choose TWO letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.",
+          "title": "Questions 22-26",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the summary below. Use NO MORE THAN TWO WORDS from the passage for each answer.",
           "questions": [
+            {
+              "id": "q22",
+              "answer": "Worldwide fame",
+              "before": "……………. becoming the figurehead of the Surrealist movement. His sheer",
+              "after": ""
+            },
             {
               "id": "q23",
               "answer": [
-                "A",
-                "C"
+                "Ambition",
+                "self-belief"
               ],
-              "textHtml": "",
-              "answerPairId": "reading-307-q23-q24"
+              "before": "…………….. which for some might have been interpreted as arrogance, led him to believe he was capable of achieving anything. Moving to France, where he encountered Surrealist artists, was a",
+              "after": ""
             },
             {
               "id": "q24",
-              "answer": [
-                "A",
-                "C"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-307-q23-q24"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 23-24</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the study of violinists undertaken by Ericsson and his colleagues?</span></p><p><span><strong>A</strong> It was widely regarded as original.</span><br/>\n<span><strong>B</strong> Its aims were innovative.</span><br/>\n<span><strong>C</strong> It produced some unexpected findings.</span><br/>\n<span><strong>D</strong> It called into question the methods of other researchers.</span><br/>\n<span><strong>E</strong> Its scope was very limited.</span></p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "It was widely regarded as original"
+              "answer": "Turning point",
+              "before": "…………… in his life. Dali’s work was chiefly inspired by Freud’s",
+              "after": ""
             },
-            {
-              "value": "B",
-              "label": "Its aims were innovative"
-            },
-            {
-              "value": "C",
-              "label": "It produced some unexpected findings"
-            },
-            {
-              "value": "D",
-              "label": "It called into question the methods of other researchers"
-            },
-            {
-              "value": "E",
-              "label": "Its scope was very limited"
-            }
-          ]
-        },
-        {
-          "title": "Questions 25-26",
-          "type": "multiple-answer",
-          "instructionHtml": "Choose TWO letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.",
-          "questions": [
             {
               "id": "q25",
-              "answer": [
-                "C",
-                "E"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-307-q25-q26"
+              "answer": "Psychoanalytic",
+              "before": "……………. theories. However, as Dali became increasingly infatuated with money, the standard of his art declined. Despite the fact that his work is of varying quality, Dali will never",
+              "after": ""
             },
             {
               "id": "q26",
-              "answer": [
-                "C",
-                "E"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-307-q25-q26"
+              "answer": "Be forgotten",
+              "before": "…………………",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the theory of deliberate practice?</span></p><p><span><strong>A</strong> It was developed by combining data from several studies.</span><br/>\n<span><strong>B</strong> It is the only theory to attempt to calculate the number of hours required for expertise.</span><br/>\n<span><strong>C</strong> It is the first theory to link the acquisition of expertise with the number of hours spent practising.</span><br/>\n<span><strong>D</strong> It fails to take account of individual differences.</span><br/>\n<span><strong>E</strong> It has been challenged by some researchers.</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "It was developed by combining data from several studies"
-            },
-            {
-              "value": "B",
-              "label": "It is the only theory to attempt to calculate the number of hours required for expertise"
-            },
-            {
-              "value": "C",
-              "label": "It is the first theory to link the acquisition of expertise with the number of hours spent practising"
-            },
-            {
-              "value": "D",
-              "label": "It fails to take account of individual differences"
-            },
-            {
-              "value": "E",
-              "label": "It has been challenged by some researchers"
-            }
-          ]
+          "legendHtml": "<p><strong><span>Questions 22-26</span></strong><br/>\n<span>Complete the summary below. Use <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</span></p><p><span>Dali has managed to achieve (22) ……………. becoming the figurehead of the Surrealist movement. His sheer (23) …………….. which for some might have been interpreted as arrogance, led him to believe he was capable of achieving anything. Moving to France, where he encountered Surrealist artists, was a (24) …………… in his life. Dali’s work was chiefly inspired by Freud’s (25) ……………. theories. However, as Dali became increasingly infatuated with money, the standard of his art declined. Despite the fact that his work is of varying quality, Dali will never (26) …………………</span></p>",
+          "wordLimit": 2
         }
       ]
     },
@@ -337,158 +475,151 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "NUCLEAR FUSION: THE KEY TO LIMITLESS CLEAN ENERGY?",
+        "title": "The Beginnings of Art Therapy",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> In December 2022, scientists at a laboratory in California announced a major breakthrough in nuclear fusion research. For the first time ever, scientists had managed to produce a nuclear fusion reaction that generated more energy than it consumed. The result was hailed as a major step forward in the development of nuclear fusion as a new source of energy. But what is nuclear fusion, and why is it so important?</span>"
+            "html": "<span>Art therapy is a relative newcomer to the therapeutic field. Art therapy as a profession began in the mid-20th century, arising independently in English-speaking and European countries. Many of the early practitioners of art therapy acknowledged the influence of a variety of disciplines on their practices, ranging from psychoanalysis through to aesthetics and early childhood education. However, the roots of art as therapy go back as far as the late 18th century, when arts were used in the ‘moral treatment’ of psychiatric patients.</span>"
           },
           {
-            "html": "<span><strong>B</strong> When we think of nuclear power, we usually think of nuclear fission, the process of splitting the nucleus of an atom into two or more smaller nuclei. This is the reaction that occurs in nuclear power stations today. However, nuclear fission has a number of disadvantages. The fuel used is radioactive, and there is always a risk of nuclear accidents, such as the one that occurred at the Chernobyl nuclear power plant in 1986. In addition, nuclear fission produces radioactive waste, which remains dangerous for thousands of years and is difficult to dispose of safely. Nuclear fusion, on the other hand, is the process of fusing two atomic nuclei together to form a single heavier nucleus. This is the process that occurs in the sun and other stars. The reaction releases a huge amount of energy, and the fuel used is not radioactive. This makes nuclear fusion a potentially limitless source of clean energy.</span>"
+            "html": "<span>It wasn’t until 1942, however, that the British artist Adrian Hill coined the term ‘art therapy’, as he was recovering from tuberculosis in a sanatorium. He discovered that therapeutic benefits could be derived from drawing and painting whilst recovering. Art, he claimed, could become therapeutic since it was capable of ‘completely engrossing the mind… releasing the creative energy of the frequently inhibited patient’. This effect, argued Hill, could in turn help the patient as it would ‘build up a strong defence against his misfortunes’.</span>"
           },
           {
-            "html": "<span><strong>C</strong> The potential benefits of nuclear fusion are enormous. It could provide a virtually limitless supply of clean energy, with none of the problems associated with nuclear fission. It could help to reduce our reliance on fossil fuels, and therefore help to combat climate change. It could also provide energy security, as the fuel used in nuclear fusion is abundant and widely available. However, there are significant challenges to be overcome before nuclear fusion can become a viable source of energy.</span>"
+            "html": "<span>In 1964, the British Association of Art Therapists was founded. Proponents of art therapy fell into one of two categories: those who believed that the therapeutic effect of art lay in its effectiveness as a psychoanalytic tool to assess a patient through their drawings and those who held the belief that art-making was an end in itself, the creative process acting therapeutically on the patient. The two practices, however, were not incompatible, a degree of overlap occurring between the two. A patient, for example, could produce work that could be analysed for content and forms of self-expression but which could also be a creative outlet at the same time.</span>"
           },
           {
-            "html": "<span><strong>D</strong> One of the biggest challenges is the high temperature and pressure required to achieve nuclear fusion. In order to fuse atomic nuclei together, they must be heated to temperatures of millions of degrees Celsius. This requires a huge amount of energy, and it is difficult to find materials that can withstand such high temperatures. In addition, the nuclei must be held together at high pressure for a long enough time to allow the fusion reaction to occur. This is difficult to achieve, as the high temperature and pressure tend to cause the nuclei to fly apart.</span>"
+            "html": "<strong><span>Who Benefits from Art Therapy</span></strong>"
           },
           {
-            "html": "<span><strong>E</strong> Another challenge is the cost of nuclear fusion research. The equipment and research required to achieve nuclear fusion are extremely expensive, and the cost of research and development is high. This has led to concerns that nuclear fusion may not be economically viable, and that the money spent on research could be better spent on other forms of clean energy.</span>"
+            "html": "<span>Art therapy in all its forms has proved effective in the treatment of individuals suffering with a wide range of difficulties or disabilities. These include emotional, behavioural or mental health problems, learning or physical disabilities. These include emotional, behaviour or mental health problems, learning or physical disabilities, neurological conditions and physical illness. Therapy can be provided on a group or individual basis according to the clients’ needs. Whether the approach adopted by the therapist is oriented towards a psychoanalytic or creative approach, the effect of therapy is multifold. Partaking in art therapy can raise a patient’s self-awareness and enable them to deal with stress and traumatic experience. In addition, art therapy sessions can enhance a patient’s cognitive abilities and help the patient enjoy the life-affirming pleasures of making art.</span>"
           },
           {
-            "html": "<span><strong>F</strong> Despite these challenges, there has been significant progress in nuclear fusion research in recent years. Scientists have developed a number of different approaches to achieving nuclear fusion, and have made significant advances in understanding the physics of the process. The recent breakthrough in California is just one example of the progress that has been made.</span>"
+            "html": "<strong><span>What an Art Therapy Session Involves</span></strong>"
           },
           {
-            "html": "<span><strong>G</strong> One of the most promising approaches to achieving nuclear fusion is the use of magnetic confinement. In this approach, a plasma of hydrogen nuclei is confined within a magnetic field and heated to the required temperature. The magnetic field helps to keep the nuclei close together, increasing the chances of fusion occurring. This approach has been used in a number of experimental fusion reactors, and has shown promise in achieving the conditions required for nuclear fusion.</span>"
+            "html": "<span>Typically, an art therapy session is fundamentally different from an art class in that the individual is encouraged to focus more on their internal feelings and to express them, rather than portray external objects. Although some traditional art classes may ask participants to draw from their imagination, in art therapy the patient’s inner world of images, feelings, thoughts and ideas are always of primary importance to the experience. Any type of visual art and medium can be employed in the therapeutic process including painting, drawing, sculpture, photography and digital art.</span>"
           },
           {
-            "html": "<span><strong>H</strong> Another approach is inertial confinement, in which a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. The compression and heating cause the nuclei to fuse together, releasing energy. This approach has also shown promise, and has been used in a number of experimental fusion reactors.</span>"
+            "html": "<span>Art therapy sessions are usually held by skilled and qualified professionals. The presence primarily of the therapist is to be in attendance, guiding and encouraging artistic expression in the patient, in accordance with the original meaning of the word for therapy derived from the Greek word ‘therapeia’, meaning ‘being attentive to’.</span>"
           },
           {
-            "html": "<span><strong>I</strong> Despite the progress that has been made, there is still a long way to go before nuclear fusion can become a viable source of energy. Scientists need to find ways to achieve the required temperature and pressure more efficiently, and to develop materials that can withstand the extreme conditions. They also need to find ways to reduce the cost of nuclear fusion research, such as by having cheaper, more durable materials for some components like the first wall and divertors.</span>"
+            "html": "<strong><span>The Regulation of Art Therapy</span></strong>"
           },
           {
-            "html": "<span><strong>J</strong> In conclusion, nuclear fusion has the potential to be a virtually limitless source of clean energy, with none of the problems associated with nuclear fission. However, there are significant challenges to be overcome before it can become a viable source of energy. Scientists need to find ways to achieve the required conditions more efficiently, and to reduce the cost of research. Despite these challenges, there has been significant progress in nuclear fusion research in recent years, and the recent breakthrough in California is just one example of this progress. With continued research and development, nuclear fusion could become a major source of energy in the future.</span>"
+            "html": "<span>Requirements for those wishing to become an art therapist vary from country to country. In the USA, where entry to the profession is highly regulated, a master’s degree in art therapy is essential. In addition, those applying for such a post must have taken courses in a variety of studio art disciplines in order to demonstrate artistic proficiency. On completion of the master’s degree, candidates also have to complete a minimum of 1000 hours of direct client contact post-graduation that is approved by the American Art Therapy Association (AATA).</span>"
+          },
+          {
+            "html": "<span>However, whilst entry to the profession is strictly regulated in the USA, the same does not hold true for other countries. The problem is that art therapy is still considered a developing field. As such, until it becomes truly established as a therapy, its practice and application will remain unregulated in many countries for some time yet.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-32",
-          "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.",
+          "title": "Questions 27-33",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in the text? For questions 27-33, write:",
           "questions": [
             {
               "id": "q27",
-              "answer": "B",
-              "textHtml": "a description of the method used by stars to generate energy"
+              "answer": "Not given",
+              "textHtml": "The artist Adrian Hill was strongly influenced by psychoanalytic theories when formulating his ideas on art therapy"
             },
             {
               "id": "q28",
-              "answer": "B",
-              "textHtml": "a description of the process used to produce energy in nuclear power plants today"
+              "answer": "True",
+              "textHtml": "Twentieth-century art therapy focuses on treating a client’s mental or physical health problems rather than dealing with moral issues"
             },
             {
               "id": "q29",
-              "answer": "B",
-              "textHtml": "an explanation of the advantages of nuclear fusion over nuclear fission"
+              "answer": "Not given",
+              "textHtml": "Approaches to art therapy can be broadly considered to be creative or psychoanalytic; however, practitioners tend to avoid combining the two schools of practice"
             },
             {
               "id": "q30",
-              "answer": "D",
-              "textHtml": "a reference to the difficulty of achieving the conditions required for nuclear fusion"
+              "answer": "Not given",
+              "textHtml": "Clients who respond best to art therapy have a previous background in art"
             },
             {
               "id": "q31",
-              "answer": "A",
-              "textHtml": "a reference to a nuclear fusion experiment that has been successful"
+              "answer": "True",
+              "textHtml": "Art therapy sessions are more concerned with expression through art than on the created art itself"
             },
             {
               "id": "q32",
-              "answer": "I",
-              "textHtml": "a mention of the need to find a way of making nuclear fusion research more affordable"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.</span></p><p><span>27. a description of the method used by stars to generate energy</span><br/>\n<span>28. a description of the process used to produce energy in nuclear power plants today</span><br/>\n<span>29. an explanation of the advantages of nuclear fusion over nuclear fission</span><br/>\n<span>30. a reference to the difficulty of achieving the conditions required for nuclear fusion</span><br/>\n<span>31. a reference to a nuclear fusion experiment that has been successful</span><br/>\n<span>32. a mention of the need to find a way of making nuclear fusion research more affordable</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I"
-          ]
-        },
-        {
-          "title": "Questions 33-35",
-          "type": "matching-features",
-          "instructionHtml": "Complete the summary using the list of words, A-K, below. Write the correct letter, A-K, in boxes 33-35 on your answer sheet.",
-          "questions": [
-            {
-              "id": "q33",
-              "answer": "A",
-              "textHtml": "……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental"
+              "answer": "False",
+              "textHtml": "Many art therapists are insufficiently qualified as they are not aware of the regulations regarding the practice of art therapy"
             },
             {
+              "id": "q33",
+              "answer": "False",
+              "textHtml": "Art therapy sessions involve limited interaction between therapist and client"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Do the following statements agree with the information given in the text? For questions 27-33, write:</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>27. The artist Adrian Hill was strongly influenced by psychoanalytic theories when formulating his ideas on art therapy.</span><br/>\n<span>28. Twentieth-century art therapy focuses on treating a client’s mental or physical health problems rather than dealing with moral issues.</span><br/>\n<span>29. Approaches to art therapy can be broadly considered to be creative or psychoanalytic; however, practitioners tend to avoid combining the two schools of practice.</span><br/>\n<span>30. Clients who respond best to art therapy have a previous background in art.</span><br/>\n<span>31. Art therapy sessions are more concerned with expression through art than on the created art itself.</span><br/>\n<span>32. Many art therapists are insufficiently qualified as they are not aware of the regulations regarding the practice of art therapy.</span><br/>\n<span>33. Art therapy sessions involve limited interaction between therapist and client.</span></p>"
+        },
+        {
+          "title": "Questions 34-37",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the sentences below. Choose NO MORE THAN THREE WORDS from the passage for each answer.",
+          "questions": [
+            {
               "id": "q34",
-              "answer": "D",
-              "textHtml": "……………….. showing potential for generating fusion energy. INERTIAL CONFINEMENT In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the"
+              "answer": "Variety of",
+              "before": "…………….. influences. Artist Adrian Hill realised the",
+              "after": ""
             },
             {
               "id": "q35",
-              "answer": "B",
-              "textHtml": "………….. are fused together, releasing a significant amount of energy. A. plasma B. nuclei C. energy D. reactors E. fusion F. reaction G. hydrogen H. atoms I. nuclear fission J. nuclear fusion K. temperature"
+              "answer": "Therapeutic benefits",
+              "before": "………………. of art as therapy, and coined the term ‘art therapy’ in 1942. Those supporting art therapy advised a psychoanalytic approach or alternatively one that placed more emphasis on the",
+              "after": ""
+            },
+            {
+              "id": "q36",
+              "answer": "Creative process",
+              "before": "……………….. itself. Whilst theories behind art therapy may differ, they are",
+              "after": ""
+            },
+            {
+              "id": "q37",
+              "answer": "Not incompatible",
+              "before": "……………….. in practice",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 33-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-K, below. Write the correct letter, A-K, in boxes 33-35 on your answer sheet.</span></p><p><strong><span>MAGNETIC CONFINEMENT</span></strong></p><p><span>In the magnetic confinement approach, a (33) ……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental (34) ……………….. showing potential for generating fusion energy.</span></p><p><strong><span>INERTIAL CONFINEMENT</span></strong></p><p><span>In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the (35) ………….. are fused together, releasing a significant amount of energy.</span></p><p><span>A. plasma</span><br/>\n<span>B. nuclei</span><br/>\n<span>C. energy</span><br/>\n<span>D. reactors</span><br/>\n<span>E. fusion</span><br/>\n<span>F. reaction</span><br/>\n<span>G. hydrogen</span><br/>\n<span>H. atoms</span><br/>\n<span>I. nuclear fission</span><br/>\n<span>J. nuclear fusion</span><br/>\n<span>K. temperature</span></p>",
+          "legendHtml": "<p><strong><span>Questions 34-37</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>The early pioneers of art therapy admitted that their beliefs had been shaped by a (34) …………….. influences. Artist Adrian Hill realised the (35) ………………. of art as therapy, and coined the term ‘art therapy’ in 1942. Those supporting art therapy advised a psychoanalytic approach or alternatively one that placed more emphasis on the (36) ……………….. itself. Whilst theories behind art therapy may differ, they are (37) ……………….. in practice.</span></p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 38-40",
+          "type": "matching-features",
+          "instructionHtml": "Complete the summary with the list of words, A-F. Write the correct letter, A-F, in spaces 38-40 below.",
+          "questions": [
+            {
+              "id": "q38",
+              "answer": "B",
+              "textHtml": "……………….. resistance to psychological and social stresses. Hill considered that"
+            },
+            {
+              "id": "q39",
+              "answer": "D",
+              "textHtml": "…………………. patients would particularly benefit from having an artistic outlet. Art therapy then developed into two types of practice, one emphasising a psychoanalytic approach and the other a more"
+            },
+            {
+              "id": "q40",
+              "answer": "E",
+              "textHtml": "………………. one. Today there is often an overlap between the two practices"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 38-40</span></strong><br/>\n<span>Complete the summary with the list of words, A-F. Write the correct letter, A-F, in spaces 38-40 below.</span></p><p><span><strong>A</strong> capable</span><br/>\n<span><strong>B</strong> strong</span><br/>\n<span><strong>C</strong> keen</span><br/>\n<span><strong>D</strong> inhibited</span><br/>\n<span><strong>E</strong> creative</span><br/>\n<span><strong>F</strong> therapeutic</span></p><p><strong><span>How Art Therapy Evolved into Its Modern Form</span></strong></p><p><span>Modern-day art therapy has its beginnings in the 1940s. Adrian Hill, one of its early pioneers, realised that art therapy was effective in helping patients create a (38) ……………….. resistance to psychological and social stresses. Hill considered that (39) …………………. patients would particularly benefit from having an artistic outlet. Art therapy then developed into two types of practice, one emphasising a psychoanalytic approach and the other a more (40) ………………. one. Today there is often an overlap between the two practices.</span></p>",
           "options": [
             "A",
             "B",
             "C",
             "D",
             "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J"
+            "F"
           ]
-        },
-        {
-          "title": "Questions 36-40",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write",
-          "questions": [
-            {
-              "id": "q36",
-              "answer": "False",
-              "textHtml": "The California experiment was the first time nuclear fusion had ever been achieved"
-            },
-            {
-              "id": "q37",
-              "answer": "True",
-              "textHtml": "Nuclear fusion could help to reduce the world’s dependence on fossil fuels"
-            },
-            {
-              "id": "q38",
-              "answer": "False",
-              "textHtml": "The fuel used in nuclear fusion is rare and hard to find"
-            },
-            {
-              "id": "q39",
-              "answer": "False",
-              "textHtml": "The high cost of nuclear fusion is solely attributed to its equipment"
-            },
-            {
-              "id": "q40",
-              "answer": "Not given",
-              "textHtml": "The basic physics behind nuclear fusion is more advanced than scientists once thought"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 36-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>36. The California experiment was the first time nuclear fusion had ever been achieved.</span><br/>\n<span>37. Nuclear fusion could help to reduce the world’s dependence on fossil fuels.</span><br/>\n<span>38. The fuel used in nuclear fusion is rare and hard to find.</span><br/>\n<span>39. The high cost of nuclear fusion is solely attributed to its equipment.</span><br/>\n<span>40. The basic physics behind nuclear fusion is more advanced than scientists once thought.</span></p><p><br/>\n<br/>\n<br/> </p>"
         }
       ]
     }

@@ -1,9 +1,9 @@
 import type { PracticeTest } from '../../lib/tests/schema';
-import { readingFull001 } from './reading-full-001';
-import { readingFull002 } from './reading-full-002';
-import { readingFull003 } from './reading-full-003';
-import { readingFull004 } from './reading-full-004';
-import { readingFull005 } from './reading-full-005';
+import readingFull001 from './reading-full-001';
+import readingFull002 from './reading-full-002';
+import readingFull003 from './reading-full-003';
+import readingFull004 from './reading-full-004';
+import readingFull005 from './reading-full-005';
 import readingFull006 from './reading-full-006';
 import readingFull007 from './reading-full-007';
 import readingFull008 from './reading-full-008';
@@ -19,11 +19,6 @@ import readingFull017 from './reading-full-017';
 import readingFull018 from './reading-full-018';
 import readingFull019 from './reading-full-019';
 import readingFull020 from './reading-full-020';
-import readingFull021 from './reading-full-021';
-import readingFull022 from './reading-full-022';
-import readingFull023 from './reading-full-023';
-import readingFull024 from './reading-full-024';
-import readingFull025 from './reading-full-025';
 import { listeningFull001 } from './listening-full-001';
 import { listeningFull002 } from './listening-full-002';
 import { listeningFull003 } from './listening-full-003';
@@ -69,11 +64,6 @@ export const ALL_TESTS: PracticeTest[] = [
   readingFull018,
   readingFull019,
   readingFull020,
-  readingFull021,
-  readingFull022,
-  readingFull023,
-  readingFull024,
-  readingFull025,
   listeningFull001,
   listeningFull002,
   listeningFull003,

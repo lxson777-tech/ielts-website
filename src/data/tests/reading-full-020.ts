@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-303",
+  "id": "reading-full-020",
   "skill": "reading",
-  "title": "Academic Reading Test 303",
+  "title": "Academic Reading Test 20",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-303/",
+    "url": "https://practicepteonline.com/ielts-reading-test-298/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,180 +17,155 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "Prison: The Solution or the Problem?",
+        "title": "Sleeping on the job",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>In the Netherlands and parts of the USA such as Johnson County, a move towards rehabilitation of offenders and decreasing crime has seen a reduction in incarceration rates. Bucking this trend, the UK’s prison population has increased by an average rate of 3.6% per year since 1993. As the situation currently stands, England’s and Wales’ incarceration rate is 148 per 100,000 compared to 98 in France, 82 in the Netherlands and 79 in Germany. Without a shadow of a doubt, out of all European countries, the UK has adopted the most hardline approach to offenders.</span>"
+            "html": "<span>North Americans are not a people of the siesta. There is a tendency to associate afternoon naps with laziness and non-productivity. Latin Americans and some in European cultures take a different view. In Mexico and Greece, for example, it is customary to close businesses between noon and about 4:00 pm – siesta time. Recent studies are showing that if you can take a 15 to 30-minute nap while at work in the afternoon, you’ll be more alert, more energetic, happier doing what you do, more productive and therefore more likely to get ahead. Napping on the job is not yet a trend but there is serious talk in academic circles about the merits of ‘power napping’.</span>"
           },
           {
-            "html": "<span>The trend towards imposing prison sentences on offenders in the UK is made to seem all the more harsh since the Dutch Justice Ministry is actively in the process of systematically closing down prisons. In the period between 2010-2015, 28 prisons were closed in total. If anything, the Dutch reform of the prison system has been accelerating at a phenomenal pace, with 19 of the prisons being shut down in 2014 alone.</span>"
+            "html": "<span>By some estimate, the average American collects an annual ‘sleep debt’ of 500 hours – subtracting from an assumed norm of eight hours a night. Two out of three Americans get less than eight hours of sleep a night during the work week, according to a recent study by the National Sleep Foundation in Washington. Forty percent say they’re so tired that it interferes with their daily activities. Sleep researcher William Anthony, a professor of psychology at Boston University, says fatigue is a significant problem in modern society. He says sleepiness is a leading cause of auto accidents, second only to drunkenness. All that drowsiness costs an estimated $18 billion annually in lost productivity. ‘We have a simple message,’ says Professor Anthony. ‘People should be allowed to nap at their breaks. The rationale is a productivity one – workers are sleepy, and when they’re sleepy on the job they’re not productive.’</span>"
           },
           {
-            "html": "<span>As would be expected, closures of prisons in the Netherlands have led to a drop in the numbers of incarcerated offenders. This is also largely due to the fact that those convicted are choosing electronic tagging instead of incarceration. However, there is more to these statistics than meets the eye. Defying all expectations of the pro-incarceration lobbyists, crime rates in the Netherlands are also actually decreasing in direct proportion to the closure of prisons.</span>"
+            "html": "<span>Some companies are encouraging sleep at work, primarily for safety. The Metropolitan Transit Authority, which runs the New York subway system and two suburban railroads, is considering power naps for its train operators and bus drivers. Another railway has started letting its train operators take nap breaks of up to 45 minutes but only when trains are stopped at designated spots off the main lines and dispatchers have been notified. Some overseas air carriers permit airline pilots, when not on duty, to nap in the cockpit. Airlines in the United States have not accepted this practice yet.</span>"
           },
           {
-            "html": "<span>With such statistics laid bare for all to see, many are now beginning to question the validity of incarceration as a method of reforming offenders. All the more so since the average prison place costs the taxpayer £37,648 per year – a hefty sum for a service that fails to deliver, especially since there are vastly cheaper and more effective methods to deal with offenders. Allowing offenders to be tagged electronically rather than be incarcerated would save around £35 million per year for every 1000 convicted offenders. Serving a probation or community service order would also be 12 times less costly than the average prison placement for an offender.</span>"
+            "html": "<span>According to the Encyclopedia of Sleep and Dreaming: ‘There is a biologically-based tendency to fall asleep in mid-afternoon just as there is a tendency to fall asleep at night. Moreover, if sleep the night before is reduced or disturbed for any reason, a nap the subsequent afternoon is not only more likely to occur, but it can also relieve sleepiness and increase alertness.’ The nap zone, documented in numerous studies, is typically between noon and 3:00 pm. Some people power through this natural slowdown with caffeine or sugar but if employers allowed naps, the benefits would be improvements in mood and performance, especially in mid-afternoon. Workers would concentrate better and persevere in tasks longer. Workers commonly sneak naps even without permission but some companies have begun encouraging naps as part of their policies on boosting production. One US distributor is opening a 2,000-square-foot nap facility that provides beds for up to 20 of its 225 workers at a time. A company in Japan sets up tents in business offices, provides eyeshades and ear plugs, and encourages employees to snooze in the middle of the work day. According to Professor Anthony, ‘You’re not going to see napping at traditional types of operations … but in 21st century-style operations, this isn’t going to be a perk. It’s going to have more to do with productivity. Smart employers are understanding that their employees need rest to do their best.’</span>"
           },
           {
-            "html": "<span>More tellingly, a decreased incidence of relapse into criminal behaviour when offenders receive a community sentence, rather than a custodial one, has been revealed in re-offending statistics issued by the UK Ministry of Justice. There is definitely an argument that serving a prison term tends to create rather than alleviate the problem of crime. As a Conservative white paper concluded in 1990, ‘We know that prison is an expensive way of making bad people worse.’ Interestingly, the report also argued that there should be a range of community-based sentences which would be cheaper and more effective alternatives to prison.</span>"
-          },
-          {
-            "html": "<span>Quite apart from the cost and relative ineffectiveness of incarceration is the short-sightedness of imposing a custodial sentence in the first place. A punitive system of incarceration presupposes that the prisoner needs to be punished for bad behaviour. Since the prisoner is considered answerable for their behaviour, it is believed that they are also completely responsible for their actions. Such an approach overlooks social and economic factors that can play an integral role in the incidence of crime. Such an oversight only serves to perpetuate crime and punish offenders who need help rather than a penal sentence.</span>"
-          },
-          {
-            "html": "<span>It would do no harm for the UK to look to the Netherlands for an example in reducing crime through addressing social problems as a key to reducing incarceration. In the Netherlands, the focus is on deterring crime by investing in social services rather than seeking purely to punish the offender. In addition, those who do offend are helped with rehabilitation programmes.</span>"
-          },
-          {
-            "html": "<span>Overlooking the social circumstances of the offender can also be detrimental to children’s welfare, especially if a mother is convicted and given a custodial sentence. Often childcare arrangements are not in place when custodial sentences are handed down to mothers caring for children. In fact, research suggests that more than half of the women who go to court are not expecting a custodial sentence, leading to provisions made for the children being haphazard at best. The number of children who fall foul of the custodial system in this way totals a staggering 17,000 per year. Worse still, figures show that adult children of imprisoned mothers are more likely to be convicted of a crime than adult children of imprisoned fathers. Viewing the offender and their crime in isolation and disregarding all other social and environmental factors is therefore mistaken, if not downright morally reprehensible.</span>"
-          },
-          {
-            "html": "<span>All evidence would seem to point to a much needed shake-up of the English penal system. As things stand, there are too many losers and no identifiable winners. It was Dostoevsky who said: ‘The degree of civilisation in a society is revealed by entering its prisons.’ Maybe we would do better to go one step further and amend his quotation to ‘The degree of civilisation in a society is revealed by not having prisons and instead by addressing social issues in society itself.’</span>"
+            "html": "<span>Some suspect that corporate naptime, like other perks, is just a way to keep people at the office longer. On the other hand, growing flexibility in hours, for some workers, is allowing nap times to become more common. With eleven million Americans telecommuting and another forty million winking out of their bonus full- or part-time, office hours are basically as long as you can stay awake. One thing is sure: longer commutes, more intense, stressful workday and higher production demands are taking a toll. So, with Americans sleeping less and working longer hours, some employers are warming up to the idea that a little nap in the middle of the day can be good for business.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 1-7",
-          "type": "table-completion",
-          "instructionHtml": "Complete the sentences below. Choose NO MORE THAN THREE WORDS from the passage for each answer.",
+          "title": "Question 1",
+          "type": "multiple-choice",
+          "instructionHtml": "Circle the correct answer A-D.",
           "questions": [
             {
               "id": "q1",
-              "answer": "rehabilitation of offenders",
-              "before": "………….. than to their incarceration. Closure of prisons in the Netherlands",
-              "after": ""
-            },
+              "answer": "D",
+              "textHtml": "According to the passage, which of the following statements is supported by recent research?",
+              "options": [
+                "Napping is an indicator of laziness",
+                "Two thirds of Americans sleep too much",
+                "Napping in the workplace is a current trend",
+                "Short naps at work increase productivity"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1</span></strong><br/>\n<span>Circle the correct answer A-D.</span></p><p><span>1. According to the passage, which of the following statements is supported by recent research?</span><br/>\n<span><strong>A</strong> Napping is an indicator of laziness.</span><br/>\n<span><strong>B</strong> Two thirds of Americans sleep too much.</span><br/>\n<span><strong>C</strong> Napping in the workplace is a current trend.</span><br/>\n<span><strong>D</strong> Short naps at work increase productivity.</span></p>"
+        },
+        {
+          "title": "Questions 2-6",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements reflect the claims of the writer in Passage? Write",
+          "questions": [
             {
               "id": "q2",
-              "answer": "has been accelerating",
-              "before": "………………. at an unprecedented rate over recent years. Against",
-              "after": ""
+              "answer": "No",
+              "textHtml": "The number one cause of car accidents is fatigue"
             },
             {
               "id": "q3",
-              "answer": "all expectations",
-              "before": "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "People who nap in the afternoon are lazy"
             },
             {
               "id": "q4",
-              "answer": "question the validity",
-              "before": "………………. of such a practice. In fact, incarceration may serve to fuel rather",
-              "after": ""
+              "answer": "Yes",
+              "textHtml": "A nap in the middle of the day can improve your mood"
             },
             {
               "id": "q5",
-              "answer": "than alleviate",
-              "before": "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "People who nap regularly live longer"
             },
             {
               "id": "q6",
-              "answer": "more effective alternatives",
-              "before": "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
+              "answer": "No",
+              "textHtml": "The majority of Americans sleep at least eight hours a night"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 2-6</span></strong><br/>\n<span>Do the following statements reflect the claims of the writer in Passage? Write</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                  if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>2. The number one cause of car accidents is fatigue.</span><br/>\n<span>3. People who nap in the afternoon are lazy.</span><br/>\n<span>4. A nap in the middle of the day can improve your mood.</span><br/>\n<span>5. People who nap regularly live longer.</span><br/>\n<span>6. The majority of Americans sleep at least eight hours a night.</span></p>"
+        },
+        {
+          "title": "Questions 7-9",
+          "type": "sentence-completion",
+          "instructionHtml": "Choose one phrase from the list in the box (A-F) to complete each of the following sentences.",
+          "questions": [
+            {
+              "id": "q7",
+              "answer": "F",
+              "before": "Humans are biologically programmed to",
               "after": ""
             },
             {
-              "id": "q7",
-              "answer": "social and economic",
-              "before": "………………. influences",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>A decrease in crime in the Netherlands and parts of the US is attributable more to the (1) ………….. than to their incarceration.</span></p><p><span>Closure of prisons in the Netherlands (2) ………………. at an unprecedented rate over recent years.</span></p><p><span>Against (3) ……………… , the Netherlands are seeing a drop in crime along with the closure of prisons.</span></p><p><span>Since statistics do not support the argument for incarceration this has made many (4) ………………. of such a practice.</span></p><p><span>In fact, incarceration may serve to fuel rather (5) ……………… crime, thereby defeating the purpose of such a punishment.</span></p><p><span>In recognition of the fact that custodial sentences achieve little, less costly and (6) ……….. were put forward by the Conservatives in 1990.</span></p><p><span>Crime is not only down to individual behaviour but is also a result of (7) ………………. influences.</span></p>",
-          "wordLimit": 3,
-          "table": {
-            "rows": [
-              [
-                "………….. than to their incarceration. Closure of prisons in the Netherlands",
-                {
-                  "questionId": "q1"
-                },
-                ""
-              ],
-              [
-                "………………. at an unprecedented rate over recent years. Against",
-                {
-                  "questionId": "q2"
-                },
-                ""
-              ],
-              [
-                "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
-                {
-                  "questionId": "q3"
-                },
-                ""
-              ],
-              [
-                "………………. of such a practice. In fact, incarceration may serve to fuel rather",
-                {
-                  "questionId": "q4"
-                },
-                ""
-              ],
-              [
-                "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
-                {
-                  "questionId": "q5"
-                },
-                ""
-              ],
-              [
-                "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
-                {
-                  "questionId": "q6"
-                },
-                ""
-              ],
-              [
-                "………………. influences",
-                {
-                  "questionId": "q7"
-                },
-                ""
-              ]
-            ]
-          }
-        },
-        {
-          "title": "Questions 8-13",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in the text? For questions 8-13, write",
-          "questions": [
-            {
               "id": "q8",
-              "answer": "False",
-              "textHtml": "There are signs that custodial sentences are becoming less popular in the UK"
+              "answer": "B",
+              "before": "Employees of some progressive companies are encouraged to",
+              "after": ""
             },
             {
               "id": "q9",
-              "answer": "False",
-              "textHtml": "The English judicial system stands to benefit from incarcerating offenders"
-            },
+              "answer": "E",
+              "before": "Traditional employers are likely to A. drink coffee to stay awake during the afternoon B. have a nap during breaks C. fall asleep when they are bored D. sneak naps without permission E. resist the trend toward napping F. fall asleep in the afternoon",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 7-9</span></strong><br/>\n<span>Choose one phrase from the list in the box (A-F) to complete each of the following sentences.</span></p><p><span>7. Humans are biologically programmed to</span><br/>\n<span>8. Employees of some progressive companies are encouraged to</span><br/>\n<span>9. Traditional employers are likely to</span></p><p><span>A. drink coffee to stay awake during the afternoon</span><br/>\n<span>B. have a nap during breaks</span><br/>\n<span>C. fall asleep when they are bored</span><br/>\n<span>D. sneak naps without permission</span><br/>\n<span>E. resist the trend toward napping</span><br/>\n<span>F. fall asleep in the afternoon</span></p>"
+        },
+        {
+          "title": "Questions 10-11",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the following sentences using NO MORE THAN THREE WORDS from the passage.",
+          "questions": [
             {
               "id": "q10",
-              "answer": "True",
-              "textHtml": "Custodial sentences are intended primarily to reform prisoners"
+              "answer": "Safety",
+              "before": "………….. On some airlines, pilots can sleep in the cockpit if",
+              "after": ""
             },
             {
               "id": "q11",
-              "answer": "True",
-              "textHtml": "Factors other than an individual’s guilt are rarely taken into account by the English judicial system"
-            },
+              "answer": "Not on duty",
+              "before": "…………",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 10-11</span></strong><br/>\n<span>Complete the following sentences using <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><p><span>In the transportation industry, napping is a matter of (10) …………..</span></p><p><span>On some airlines, pilots can sleep in the cockpit if (11) …………..</span></p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 12-13",
+          "type": "multiple-choice",
+          "instructionHtml": "Circle the correct answer A-D.",
+          "questions": [
             {
               "id": "q12",
-              "answer": "Not given",
-              "textHtml": "A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life"
+              "answer": "D",
+              "textHtml": "According to the writer, in America the workplace is becoming …",
+              "options": [
+                "less flexible",
+                "more exciting",
+                "less demanding",
+                "more stressful"
+              ]
             },
             {
               "id": "q13",
-              "answer": "Not given",
-              "textHtml": "Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice"
+              "answer": "C",
+              "textHtml": "According to the writer, what is the main reason why employers support the idea of naps at work?",
+              "options": [
+                "for health reasons",
+                "to promote safety",
+                "to increase productivity",
+                "to encourage creativity"
+              ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in the text? For questions 8-13, write</span></p><p><span><strong>TRUE</strong>                         if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                        if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>            if there is no information on this</span></p><p><span>8. There are signs that custodial sentences are becoming less popular in the UK.</span><br/>\n<span>9. The English judicial system stands to benefit from incarcerating offenders.</span><br/>\n<span>10. Custodial sentences are intended primarily to reform prisoners.</span><br/>\n<span>11. Factors other than an individual’s guilt are rarely taken into account by the English judicial system.</span><br/>\n<span>12. A proven link exists between mothers receiving a custodial sentence and their offspring committing crimes in later life.</span><br/>\n<span>13. Mothers who receive a custodial sentence are worse role models for their children than fathers who receive similar justice.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 12-13</span></strong><br/>\n<span>Circle the correct answer A-D.</span></p><p><span>12. According to the writer, in America the workplace is becoming …</span><br/>\n<span><strong>A</strong> less flexible.</span><br/>\n<span><strong>B</strong> more exciting.</span><br/>\n<span><strong>C</strong> less demanding.</span><br/>\n<span><strong>D</strong> more stressful.</span></p><p><span>13. According to the writer, what is the main reason why employers support the idea of naps at work?</span><br/>\n<span><strong>A</strong> for health reasons</span><br/>\n<span><strong>B</strong> to promote safety</span><br/>\n<span><strong>C</strong> to increase productivity</span><br/>\n<span><strong>D</strong> to encourage creativity</span></p>"
         }
       ]
     },
@@ -199,164 +174,139 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "Physiology and Criminality",
+        "title": "Homeopathy",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Prior to the 19th century, criminality was considered more of a moral or philosophical issue. Only with the advent of Italian anthropologist Cesare Lombroso did the subject of criminality take a more scientific turn. With the publication of his theories of criminal behaviour, Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons.</span>"
+            "html": "<span><strong>A</strong>. Homeopathy is an alternative system of medicine, founded in the early 19th century by a German physician, Dr. Samuel Hahnemann. Since 1980, homeopathy has experienced a strong resurgence of interest in North and South America as well as in Europe. Surveys indicate that more than a third of French physicians have prescribed homeopathic remedies and almost 50 percent of British physicians have referred patients for homeopathic treatment.</span>"
           },
           {
-            "html": "<span>In his ‘atavistic form’ theory published in 1876, Lombroso claimed that criminality was heritable. He proposed that a distinct biological class of people were prone to criminality. Such people, he claimed, exhibited ‘atavistic’ or primitive features and were ‘throwbacks’, bearing physical resemblances to Man’s predecessors, the Neanderthals. Characterised by a strong, well-defined jaw and heavy brow, they certainly had little to recommend them in the beauty stakes. With such features, coupled with a tendency towards criminal behaviour, Lombroso’s atavistic type was certainly not cut out for social success. Just for good measure, Lombroso also included other distinguishing features to identify criminals, such as bloodshot eyes and curly hair for murderers and thick lips and protruding ears for sex offenders. It has to be wondered, given the unusual appearance with which they were credited, how such individuals would have got close enough to their victims to begin with and, more to the point, how any such criminals hoped to get away with their crime, seeing as they were so readily identifiable.</span>"
+            "html": "<span><strong>B</strong>. Hahnemann’s discovery of the principle of homeopathy was accidental. After taking some quinine, he noticed that he developed malaria-like symptoms. Since malaria patients were treated with quinine, he speculated that possibly malaria is cured by quinine because it causes malaria-like symptoms in healthy people. He decided to explore his theory by testing other substances used as medicine at the time, such as arsenic and belladonna. His tests were conducted by either taking the substances internally himself or by administering them to healthy volunteers and then recording all of the symptoms the volunteers experienced. He continued his experiments on a wide range of natural substances, often toxic. These recorded results created ‘drug pictures’ which formed the basis for the new system of medicine. The next step was to give the tested substances to patients suffering from the same group of symptoms represented by the drug picture recorded. The results were incredible. People were being cured from diseases that had never been cured before. He condensed his theory into a single Latin phrase: similia similibus curentur (let likes be cured by likes). This means that a disease can be cured by a medicine which produces in a healthy person symptoms similar to those experienced by the patient.</span>"
           },
           {
-            "html": "<span>In hindsight, Lombroso’s hypothesis seems ludicrous and deeply flawed. One major failing in Lombroso’s theory of an atavistic type is that no proper controls were used in studies designed to support his hypothesis. All individuals were confined to a criminal population, no comparison being made at the time with non-criminal control groups. Secondly, the concept of what constitutes a crime is in itself a social construct and can vary cross-culturally and over time. Therefore, the argument that criminal behaviour is inherited is hard to sustain. Finally, in the light of modern genetic research, complex behaviours are not considered to be controlled by single genes, thereby completely ruling out any possibility of inherited criminality.</span>"
+            "html": "<span><strong>C</strong>. The process of making remedies is very precise. A homeopathic remedy is normally a single substance. The substances may be made from plants, minerals and even animals, for example snake venom and cuttlefish ink. To make remedies, the raw material is dissolved in a mixture that contains approximately 90% alcohol and 10% water. The mixture is left to stand for 2 to 4 weeks, shaken occasionally then strained. The resulting liquid or tincture is then diluted according to very specific measures to a factor of 1:100. For example, to produce a remedy called 1c potency or strength, one drop of the tincture is added to 99 drops of alcohol/water mixture. To produce a 2c potency, one drop of the 1c mixture is added to 99 drops of alcohol/water mixture. Between each mixture the remedy is shaken vigorously. Hahnemann believed that through this process, the energy of the substance was released. Once the remedy has been diluted beyond a 12c potency, it is unlikely that even a molecule of the original substance remains. Yet, ironically, the more dilute the remedy, the stronger it is. This makes no sense in light of present-day science but regardless of what science tells us is impossible, in practice, the higher the dilution the stronger and more lasting the effect.</span>"
           },
           {
-            "html": "<span>Surprisingly, given his strong conviction of a biological disposition towards criminality, Lombroso later modified his views to admit environmental influences in determining criminal behaviour. Such views now form the basis of contemporary theories of criminality. In recognition of this fact, contemporary criminologists have bestowed on Lombroso the honorary title ‘the father of criminology’. Furthermore, despite scientific failings in his experimental approach, Lombroso is to be credited with shifting the study of criminal behaviour from a moral basis to an empirical one, thereby placing the study of criminology on a more scientific footing.</span>"
+            "html": "<span><strong>D</strong>. It is this use of high dilutions that has given rise to controversy. Many conventional doctors claim that homeopathy functions only as a placebo because the dosage is so small. However, the clinical experience of homeopathy shows that this tiny dose can be effective: it works on unconscious people and infants, and it even works on animals. Controlled clinical studies performed by medical researchers are demonstrating that homeopathy can be an effective method of treatment for many diseases.</span>"
           },
           {
-            "html": "<span>The argument for a biological basis to criminality resurfaced, however, nearly a century later with Sheldon’s theory of somatotypes. In 1949, Sheldon advanced the theory that individuals fell within three broad physical types: the ectomorph, mesomorph and endomorph. The ectomorph was essentially thin, the mesomorph muscular and athletic, whilst the endomorph type was said to be fat and rather lethargic. Each physical type, Sheldon claimed, was associated with a distinct personality and temperament. Ectomorphs were characterised by a solitary and restrained nature, whilst mesomorphs were said to be adventurous and endomorphs relaxed and pleasure-loving. Unfortunately for the mesomorphs, Sheldon also claimed that those corresponding to this physical type had criminal tendencies. By linking inherited physical types with personality, Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour. Sheldon’s studies of mesomorphic college students did to some extent confirm his theory as did a later study conducted by Putwain and Sammons as recently as 2002. In partial support of Sheldon’s theory, an increased level of testosterone associated with a mesomorphic build could explain such a biological disposition towards criminality associated with a particular body type. However, social prejudices and self-fulfilling prophecies could also be at play in the above average correlation between mesomorphic types and criminal behaviour in society.</span>"
+            "html": "<span><strong>E</strong>. The most important part of homeopathic treatment lies in the lengthy interview which the homeopath conducts with the patient. The idea behind this one to two hour consultation is to build up a psychological, emotional and physical history of the patient, to discover the underlying patterns of disease. The homeopath then decides which medicine to prescribe based on the closest match between the patient’s symptoms and the known symptoms elicited by the medicine in a healthy body. A single dose is given for the shortest period of time necessary to stimulate the body’s healing power.</span>"
           },
           {
-            "html": "<span>Following on from Sheldon’s hypothesis, a further argument for a biological disposition to criminality was proposed in the 1960s. This time, hereditary tendencies were linked to genetic defect or chromosomal abnormality. Variations of the normal ‘XY’ genetic component or genotype of males were hypothesised to determine criminal behaviour from homicide to violent crime. The theory was based on the unproven assumption that possession of an extra ‘X’ chromosome ‘feminises’ a man and so conversely having an extra male ‘Y’ chromosome should make a man more masculine and aggressive. However, this somewhat weak hypothesis was severely undermined by the study of Epps in 1995. Epps demonstrated that possessing an extra ‘Y’ chromosome, as in the ‘XYY’ genotype, made an individual no more likely to commit violent crime than anyone else. The further finding that testosterone levels amongst ‘XYY’ men are no different from ‘XY’ men and that the former are no more aggressive than the latter sounded the final death knell for the hypothesis of a criminal type determined by genotype alone.</span>"
+            "html": "<span><strong>F</strong>. How does the concept of homeopathy differ from that of conventional medicine? Very simply, homeopathy attempts to stimulate the body to recover itself. Instead of looking upon the symptoms as something wrong which must be set right, the homeopath sees them as signs of the way the body is attempting to help itself. Another basic difference between conventional medical therapy and homeopathy is in the role of medication. In much of conventional therapy the illness is controlled through regular use of medical substances. If the medication is withdrawn, the person returns to illness. For example, a person who takes a pill for high blood pressure every day is not undergoing a cure but is only controlling the symptoms. Homeopathy’s aim is the cure: ‘The complete restoration of perfect health,’ as Dr. Hahnemann said.</span>"
           },
           {
-            "html": "<span>At least those who place trust in rehabilitation programmes to reform criminal types can now breathe a sigh of relief. It would seem that the rather pessimistic prognosis for individuals born with a certain physique or genotype no longer holds credence in scientific circles. If biological predisposition does play a role in criminality, it seems to be at least tempered by environmental and social factors to a large extent.</span>"
+            "html": "<span><strong>G</strong>. Homeopathy has made significant progress in treating diseases which orthodox medicine finds difficult. Best at dealing with inflammatory conditions such as arthritis, skin conditions, migraines and respiratory problems linked to allergies, it has also proved highly successful at treating asthma. But homeopathy is not an appropriate treatment for degenerative diseases such as emphysema. It cannot treat diseases which destroy tissue, although it can still be beneficial if used in combination with other treatments. Two of the main advantages of homeotherapy are the low cost of the medications and the rarity of adverse reactions. The medicines are inexpensive, safe, and easy to use, so people can learn to handle many of the common illnesses for which they currently seek medical help. The resulting savings in costs and the increase in personal independence represent a significant contribution to health care.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-24",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the timeline diagram below. Write NO MORE THAN THREE WORDS from the passage for each answer.",
+          "title": "Questions 14-19",
+          "type": "matching-headings",
+          "instructionHtml": "The reading passage has 7 sections A-G. Choose the most suitable headings for sections B-G from the list of headings (i-x).",
           "questions": [
             {
               "id": "q14",
-              "answer": "moral or philosophical",
-              "before": "…………….. realm. Italian scientist, Lombroso proposes a",
-              "after": ""
+              "answer": "v",
+              "textHtml": "Section B"
             },
             {
               "id": "q15",
-              "answer": [
-                "physiological disposition",
-                "biological disposition"
-              ],
-              "before": "………………. to criminality. A biological theory of criminality presupposes that such a condition is",
-              "after": ""
+              "answer": "vii",
+              "textHtml": "Section C"
             },
             {
               "id": "q16",
-              "answer": [
-                "heritable",
-                "inherited"
-              ],
-              "before": "……………… Criminal types are claimed to be",
-              "after": ""
+              "answer": "viii",
+              "textHtml": "Section D"
             },
             {
               "id": "q17",
-              "answer": "characterised by",
-              "before": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a",
-              "after": ""
+              "answer": "x",
+              "textHtml": "Section E"
             },
             {
               "id": "q18",
-              "answer": [
-                "hereditary aspect",
-                "biological basis"
-              ],
-              "before": "……………… to criminality. Body types are",
-              "after": ""
+              "answer": "iii",
+              "textHtml": "Section F"
             },
             {
               "id": "q19",
-              "answer": "associated with",
-              "before": "……………… particular dispositions. Mesomorphs are types considered to have",
-              "after": ""
-            },
+              "answer": "ix",
+              "textHtml": "Section G"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>The reading passage has 7 sections A-G. Choose the most suitable headings for sections B-G from the list of headings (i-x).</span></p><p><span>There are more headings than sections so you will not use all of them.</span></p><p><span>List of Headings</span><br/>\n<span>i. The future of homeopathy</span><br/>\n<span>ii. Concerns about homeopathy</span><br/>\n<span>iii. Comparison with traditional western medicine</span><br/>\n<span>iv. Dr. S. Hahnemann</span><br/>\n<span>v. Theoretical and experimental basis</span><br/>\n<span>vi. Revival of homeopathy</span><br/>\n<span>vii. Preparation of medicines</span><br/>\n<span>viii. Debate over effectiveness</span><br/>\n<span>ix. Advantages and limitations of homeopathy</span><br/>\n<span>x. Aspects of treatment</span></p><p><span>14. Section B</span><br/>\n<span>15. Section C</span><br/>\n<span>16. Section D</span><br/>\n<span>17. Section E</span><br/>\n<span>18. Section F</span><br/>\n<span>19. Section G</span></p>",
+          "options": [
+            "i",
+            "ii",
+            "iii",
+            "iv",
+            "v",
+            "vi",
+            "vii",
+            "viii",
+            "ix",
+            "x"
+          ]
+        },
+        {
+          "title": "Questions 20-22",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the description below. Choose NO MORE THAN THREE WORDS from the passage for each answer.",
+          "questions": [
             {
               "id": "q20",
-              "answer": "criminal tendencies",
-              "before": "……………….. 1960s",
+              "answer": "Water",
+              "before": "…………….. then left to stand for 2-4 weeks. This mixture is strained to produce a tincture which can be diluted. 1 drop of this tincture is added to 99 drops of alcohol/water. The mixture is then",
               "after": ""
             },
             {
               "id": "q21",
-              "answer": "Chromosomal abnormality",
-              "before": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more",
+              "answer": "Shaken",
+              "before": "…………. vigorously. This produces a remedy with a potency of 1c. As the remedy becomes more diluted, it gets",
               "after": ""
             },
             {
               "id": "q22",
-              "answer": "masculine and aggressive",
-              "before": "………………… males. The proposed link between criminality and genotype is",
-              "after": ""
-            },
-            {
-              "id": "q23",
-              "answer": "severely undermined by",
-              "before": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by",
-              "after": ""
-            },
-            {
-              "id": "q24",
-              "answer": "environmental and social",
-              "before": "……………… elements",
+              "answer": "Stronger",
+              "before": "……………",
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-24</span></strong><br/>\n<span>Complete the timeline diagram below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><strong><span>1876</span></strong><br/>\n<span>No longer is criminality confined to a (14) …………….. realm.</span></p><p><span>Italian scientist, Lombroso proposes a (15) ………………. to criminality.</span></p><p><span>A biological theory of criminality presupposes that such a condition is (16) ………………</span></p><p><span>Criminal types are claimed to be (17) ………………. distinctive ‘atavistic’ or primitive features.</span></p><p><strong><span>1949</span></strong><br/>\n<span>In common with Lombroso, Sheldon proposes a (18) ……………… to criminality.</span></p><p><span>Body types are (19) ……………… particular dispositions.</span></p><p><span>Mesomorphs are types considered to have (20) ………………..</span></p><p><strong><span>1960s</span></strong><br/>\n<span>(21) ……………. is now implicated in a biological disposition towards criminality.</span></p><p><span>An additional ‘Y’ chromosome is associated with more (22) ………………… males.</span></p><p><span>The proposed link between criminality and genotype is (23) …………………. Epps’ study of 1995.</span></p><p><strong><span>Today</span></strong><br/>\n<span>A purely biological basis to criminality is discredited.</span></p><p><span>Genetic factors are thought to be moderated by (24) ……………… elements.</span></p>",
+          "legendHtml": "<p><strong><span>Questions 20-22</span></strong><br/>\n<span>Complete the description below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><strong><span>Making a homeopathic remedy</span></strong></p><p><span>The remedies come from plant, animal and mineral sources.</span></p><p><span>A single product is mixed with alcohol and (20) …………….. then left to stand for 2-4 weeks.</span></p><p><span>This mixture is strained to produce a tincture which can be diluted.</span></p><p><span>1 drop of this tincture is added to 99 drops of alcohol/water.</span></p><p><span>The mixture is then (21) …………. vigorously.</span></p><p><span>This produces a remedy with a potency of 1c.</span></p><p><span>As the remedy becomes more diluted, it gets (22) ……………..</span></p>",
           "wordLimit": 3
         },
         {
-          "title": "Questions 25-26",
-          "type": "multiple-answer",
-          "instructionHtml": "Choose two letters, A-E.",
+          "title": "Questions 23-26",
+          "type": "matching-features",
+          "instructionHtml": "Complete the summary. Choose your answers from the box below.",
           "questions": [
             {
+              "id": "q23",
+              "answer": "Heal itself",
+              "textHtml": "……………. The uses of medication differ also. Many types of conventional medication"
+            },
+            {
+              "id": "q24",
+              "answer": "Control symptoms",
+              "textHtml": "……………. but if the medicine is taken away, the illness returns. The intention of homeopathy is to bring about a complete cure. Homeopathic remedies are"
+            },
+            {
               "id": "q25",
-              "answer": [
-                "D",
-                "E"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-303-q25-q26"
+              "answer": "Cheaper",
+              "textHtml": "……………… than conventional medicine and have fewer"
             },
             {
               "id": "q26",
-              "answer": [
-                "D",
-                "E"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-303-q25-q26"
+              "answer": "Side effects",
+              "textHtml": "……………… List of words Cheaper Cure Heal itself Illness Treatments Getting better Control symptoms More expensive Side effects Stronger Healthy Patients"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose two letters, A-E.</span></p><p><span><strong>A</strong> Overwhelming evidence exists in support of a biological predisposition towards crime.</span><br/>\n<span><strong>B</strong> Lombroso’s experimental work has been completely discredited by modern scientists.</span><br/>\n<span><strong>C</strong> Modern criminologists believe that Lombroso hindered rather than helped the advance of criminology.</span><br/>\n<span><strong>D</strong> Recently there has been a shift away from the emphasis of biological factors as a basis of criminality.</span><br/>\n<span><strong>E</strong> Biological evidence may partially support Sheldon’s theory of somatotypes.</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "Overwhelming evidence exists in support of a biological predisposition towards crime"
-            },
-            {
-              "value": "B",
-              "label": "Lombroso’s experimental work has been completely discredited by modern scientists"
-            },
-            {
-              "value": "C",
-              "label": "Modern criminologists believe that Lombroso hindered rather than helped the advance of criminology"
-            },
-            {
-              "value": "D",
-              "label": "Recently there has been a shift away from the emphasis of biological factors as a basis of criminality"
-            },
-            {
-              "value": "E",
-              "label": "Biological evidence may partially support Sheldon’s theory of somatotypes"
-            }
+          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Complete the summary. Choose your answers from the box below.</span></p><p><span>Homeopathy differs from conventional medicine in a number of ways. Conventional medicine views symptoms as an indication of something wrong in the body whereas homeopathy sees them as signs that the body is attempting to (23) ……………. The uses of medication differ also. Many types of conventional medication (24) ……………. but if the medicine is taken away, the illness returns. The intention of homeopathy is to bring about a complete cure. Homeopathic remedies are (25) ……………… than conventional medicine and have fewer (26) ………………</span></p><p><strong><span>List of words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Cheaper</span></td><td width=\"119\"><span>Cure</span></td><td width=\"119\"><span>Heal itself</span></td><td width=\"119\"><span>Illness</span></td><td width=\"119\"><span>Treatments</span></td></tr><tr><td width=\"119\"><span>Getting better</span></td><td width=\"119\"><span>Control symptoms</span></td><td width=\"119\"><span>More expensive</span></td><td width=\"119\"><span>Side effects</span></td><td width=\"119\"><span>Stronger</span></td></tr><tr><td width=\"119\"><span>Healthy</span></td><td width=\"119\"><span>Patients</span></td><td width=\"119\"></td><td width=\"119\"></td><td width=\"119\"></td></tr></tbody></table>",
+          "options": [
+            "A"
           ]
         }
       ]
@@ -366,177 +316,159 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "Jack the Ripper: A Bungled Investigation?",
+        "title": "The hemp revival",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Few murder enquiries have stirred the public imagination to such an extent as those relating to Jack the Ripper. The report of murders worthy of a depraved savage simultaneously appalled and enthralled Victorian society as the 19th century came to a close. The unleashing of a serial killer onto the London scene caught police unprepared as did the unprecedented brutality of the killings which earned their perpetrator the nickname ‘Jack the Ripper’. So, given the heightened public interest and the existence of a police force more competent than ever before since the formation of the Metropolitan Police in 1829, it has to be asked: why did the Ripper evade capture and why was no one even charged with the five murders attributed to the Ripper?</span>"
+            "html": "<span>The hemp plant, one of the world’s oldest industrial resources, is back. The rediscovery of this renewable resource is making it the fibre of choice for future textiles, personal care products, building materials, paper and fuel.</span>"
           },
           {
-            "html": "<span>Conspiracy theorists would have us believe that the identity of the Ripper was, contrary to public belief, unmasked by police. However, the truth about the Ripper’s identity proved so unpalatable that it had to be hushed up. Far-fetched as it may seem, Queen Victoria’s grandson, Prince Albert Victor, was thought by some to be the Ripper himself. Whilst he did frequent places of ill repute, there is no tangible evidence to support this somewhat sensationalist theory. In fact, the Ripper may have successfully evaded the police for far more prosaic reasons.</span>"
+            "html": "<span>Hemp has been grown for paper, textiles, food and medicine throughout human history. The earliest known woven fabric, made of hemp, dates back to the eighth millennium (8000-7000 BC). The majority of all sails, clothes, tents, rugs, towels, paper, rope, twine, art canvas, paints, varnishes and lighting oil were made from hemp. Hemp seeds were regularly used as a source of food and protein for centuries.</span>"
           },
           {
-            "html": "<span>Back in 1888, when the Ripper began his reign of terror in the streets of Whitechapel, forensic science was barely in its infancy. Rudimentary knowledge existed as to the necessity of keeping a murder scene intact to preserve vital clues but the means to thoroughly analyse such evidence through DNA testing was light years away still. In fact it was only with the publication of Hans Gross’ ‘A Handbook for Examining Magistrates, Police Officials, Military Police, etc.’ in 1893 that the foundation for forensic science was laid. It was too late, however, to help the Ripper investigation that floundered in its ignorance of modern forensic techniques.</span>"
+            "html": "<span>Hemp’s drastic decline in use and importance within a matter of fifty years is widely considered to have been brought about by the timber and petrochemical industries in America. By the mid- 1930s, changes in technology were beginning to impact on the hemp industry. Mechanical stripping equipment and machines to conserve hemp’s high-cellulose pulp became available and affordable. Timber and paper holding companies stood to lose billions of dollars if hemp were to be grown on a large scale. A resurgence of the hemp industry also threatened the emerging petro-chemical companies which had patented the chemicals for pulp processing. Newspaper articles began to appear, linking hemp with violent crime. The term used, however, was ‘marijuana’ to distance it from hemp used for industrial purposes. Because few people realised that marijuana and hemp came from the same plant species, virtually nobody suspected that the Marijuana Prohibition of 1938 would destroy the hemp industry.</span>"
           },
           {
-            "html": "<span>The Ripper investigation also just missed out on developments in fingerprint identification that might have led police to the identity of the Ripper. Nearly a decade prior to the first Ripper murder, Dr. Henry Faulds had published a letter in the scientific journal Nature in 1880. In the letter he outlined for the first time the possibility of using fingerprints for identification purposes. It was only in 1896 that Sir Francis Galton, Inspector General of Bengal Police, sought to put theory into practice. Using the new-found method of ‘dactyloscopy’ (later known as fingerprinting) he employed the technique to successfully identify criminals. Again, new technology arrived just too late for the Ripper investigators.</span>"
+            "html": "<span>Supporting the theory that marijuana was banned to destroy the hemp industry were two articles written just before the Marijuana Prohibition, claiming that hemp was on the verge of becoming a super crop. These articles, which appeared in well-respected magazines, praised the usefulness and potential of hemp. ‘Hemp can be used to produce more than 25,000 products’, and ‘hemp will prove, for both farmer and public, the most profitable and desirable crop that can be grown.’ This was the first time that ‘billion dollar’ was used to describe the value of a crop. Less than one year after these articles were written, the Marijuana Prohibition took effect. To what extent a conspiracy was involved is still being debated, but the important thing is that for thousands of years, hemp was used extensively. Then over a short period, it became illegal in many parts of the world.</span>"
           },
           {
-            "html": "<span>Whilst investigative police could not be blamed for a lack of forensic knowledge, their failure to apply known investigative methods to the crime scene certainly smacked of incompetence. Photographing the crime scene was not exactly standard practice of the time but it was a known procedure. Unfortunately the officers leading the investigation at the time saw fit to only photograph one of the Ripper’s victims, a certain Mary Kelly, at the crime scene. Even more bizarrely, photographs of the victim were more centred on photographing her eyes to the neglect of all else. The reason for ‘forlorn hope’ as cited by Inspector Walter Dew was that the imprint of the Ripper might have been recorded on the victim’s retina at the time of her death. No conclusions were drawn from the undertaking.</span>"
+            "html": "<span>Now, however, the focus is on the development of hemp as an industrial resource. Initially, a distinction needs to be made between the two types of hemp. ‘Cannabis has evolved into two basic species. Plants grown for fibre and seed are universally called hemp. Cannabis grown for its drug content is commonly called marijuana or drug cannabis. Drug-type cannabis varies widely in THC content from approximately 1-2% in unselected strains to 10% in the best modern varieties.’ (as cited from Watson 1994). Hemp contains virtually none of the active ingredients of drug-type cannabis (THC). It is not feasible to ‘get high’ on hemp, and most marijuana produces very low-quality fibre. Hemp should never be confused with marijuana, as their roles cannot be reversed.</span>"
           },
           {
-            "html": "<span>Another more serious criticism that has been levelled at the investigative police at the time is their deliberate tampering with evidence. It is well-known that a semi-illiterate message was scrawled above one of the Ripper’s victims. However, before it could be properly analysed, the investigating officer ordered that it be removed as it was thought to implicate the Jews and racial repercussions were feared. the motive was well-intended but this action may have destroyed vital clues.</span>"
+            "html": "<span>It is evident that hemp is an extraordinary fibre. Both stems and seeds can be utilised. Most significantly, hemp can be grown without pesticides and herbicides. The plant also has the ability to suppress weeds and soil-borne diseases. Based on the hemp industries which have been established overseas, there is a large demand for hemp products and hemp is proving to be a highly profitable industry. On an annual basis, one acre of hemp will produce as much fibre as 2 to 3 acres of cotton. The fibre is stronger and softer than cotton, lasts twice as long and will not mildew. Cotton grows only in warm climates and requires more water and more fertiliser than hemp as well as large quantities of pesticide and herbicide.</span>"
           },
           {
-            "html": "<span>A final problem was the lack of co-operation that existed not just between the Press and the police but also between law enforcement agencies themselves. With regard to the former problem, police distrust if the Press led to limited information being released to the newspapers. This was due to a fear that information made public could alert a suspect or waste time in throwing up false leads. Unfortunately, if information had been circulated in the public arena, important information might have been uncovered and would have led to the arrest of the Ripper. As regards the law enforcement agencies, in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information and so further hinder proceedings.</span>"
+            "html": "<span>Hemp can also be used to produce fibreboard that is stronger and lighter than wood, and is fire retardant. Unlike paper from wood pulp, hemp paper contains no dioxin, or other toxic residue, and a single acre of hemp can produce the same amount of paper as four acres of trees. The trees take 20 years to harvest and hemp takes a single season. In warm climates hemp can be harvested two or even three times a year. On an annual basis, one acre of hemp will produce as much paper as 2 to 4 acres of trees. From tissue paper to cardboard, all types of paper products can be produced from hemp. The quality of hemp paper is superior to tree-based paper. Hemp paper will last hundreds of years without degrading and it can be recycled many more times than tree-based paper.</span>"
+          },
+          {
+            "html": "<span>Today, industrialised nations around the world are waking up to the enormous potential of hemp. While some countries, like China and India, have never had laws against hemp cultivation, others are legalising industrial hemp after many years of lumping it together with marijuana. The products and fabrics that are emerging from the international hemp industry are finding strong demand in an eco-aware global community. Hemp is indeed an agricultural crop for the twenty-first century.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-32",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the diagram below. Write NO MORE THAN THREE WORDS from the passage for each answer.",
+          "title": "Questions 27-31",
+          "type": "matching-features",
+          "instructionHtml": "Re-order the following letters (A-F) to show the sequence of events according to the passage.",
           "questions": [
             {
               "id": "q27",
-              "answer": "means",
-              "before": "…………….. yet is available to analyse it. Fingerprints are not used",
-              "after": ""
+              "answer": "F",
+              "textHtml": "……"
             },
             {
               "id": "q28",
-              "answer": "for identification purposes",
-              "before": "…………….. Only one of the Ripper’s",
-              "after": ""
+              "answer": "A",
+              "textHtml": "……"
             },
             {
               "id": "q29",
-              "answer": "victims",
-              "before": "…………… is photographed at the crime scene. Images taken are",
-              "after": ""
+              "answer": "E",
+              "textHtml": "……"
             },
             {
               "id": "q30",
-              "answer": "centred on",
-              "before": "……………… capturing the victim’s eyes. Vital written evidence is",
-              "after": ""
+              "answer": "B",
+              "textHtml": "……"
             },
             {
               "id": "q31",
-              "answer": "removed",
-              "before": "……………. on the orders of a police investigator. Investigators representing rival",
+              "answer": "D",
+              "textHtml": "………"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 27-31</span></strong><br/>\n<span>Re-order the following letters (A-F) to show the sequence of events according to the passage.</span></p><p><span>A. Timber and petro-chemical industries threatened</span><br/>\n<span>B. Articles praise hemp as a potential billion dollar crop</span><br/>\n<span>C. Widespread cultivation of hemp (Example)</span><br/>\n<span>D. Prohibition of marijuana</span><br/>\n<span>E. Newspaper articles link hemp to violent crime</span><br/>\n<span>F. Development of stripping machines</span></p><p><span>The first one has been done for you as an example.</span></p><p><span>Example: C</span><br/>\n<span>(27) ……..</span><br/>\n<span>(28) …….</span><br/>\n<span>(29) …….</span><br/>\n<span>(30) …….</span><br/>\n<span>(31) ………</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
+        },
+        {
+          "title": "Questions 32-33",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the following using NO MORE THAN THREE WORDS from the passage.",
+          "questions": [
+            {
+              "id": "q32",
+              "answer": "Low quality",
+              "before": "………….. Drug content No active substances named",
               "after": ""
             },
             {
-              "id": "q32",
-              "answer": "law enforcement agencies",
-              "before": "…………………. fail to exchange information",
+              "id": "q33",
+              "answer": "THC",
+              "before": "…… Up to 10%",
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the diagram below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span><img alt=\"\" class=\"alignnone size-medium wp-image-12051\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" fetchpriority=\"high\" height=\"294\" src=\"/ielts-website/pics/reading/imported/test-303-1.webp\" width=\"300\"/></span></p><p><span>DNA is left unexamined as no (27) …………….. yet is available to analyse it.</span></p><p><span>Fingerprints are not used (28) ……………..</span></p><p><span>Only one of the Ripper’s (29) …………… is photographed at the crime scene.</span></p><p><span>Images taken are (30) ……………… capturing the victim’s eyes.</span></p><p><span>Vital written evidence is (31) ……………. on the orders of a police investigator.</span></p><p><span>Investigators representing rival (32) …………………. fail to exchange information.</span></p>",
+          "legendHtml": "<p><strong><span>Questions 32-33</span></strong><br/>\n<span>Complete the following using <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><table><tbody><tr><td width=\"104\"></td><td width=\"227\"><span><strong>Hemp</strong></span></td><td width=\"263\"><span><strong>Marijuana </strong></span></td></tr><tr><td width=\"104\"><span><strong>Fibre</strong></span></td><td width=\"227\"><span>Strong and durable</span></td><td width=\"263\"><span>(32)…………..</span></td></tr><tr><td width=\"104\"><span><strong>Drug content</strong></span></td><td width=\"227\"><span>No active substances named (33) ……</span></td><td width=\"263\"><span>Up to 10%</span></td></tr></tbody></table>",
           "wordLimit": 3
         },
         {
-          "title": "Questions 33-38",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the notes below. Write NO MORE THAN THREE WORDS from the passage for each answer.",
+          "title": "Questions 34-39",
+          "type": "categorisation",
+          "instructionHtml": "From the information given in the passage, classify the following (34-39) as characteristic of:",
           "questions": [
             {
-              "id": "q33",
-              "answer": "evade capture",
-              "before": "…………… against the odds. Only on closer investigation does the reason become more apparent. Often a",
-              "after": ""
-            },
-            {
               "id": "q34",
-              "answer": "crime scene",
-              "before": "………………. was disturbed, destroying vital evidence within it. Only later, with",
-              "after": ""
+              "answer": "A",
+              "textHtml": "mildew-resistant"
             },
             {
               "id": "q35",
-              "answer": "the publication of",
-              "before": "……………. a book by Hans Gross, were more scientific investigative methods introduced. Until then there was a lack of knowledge of",
-              "after": ""
+              "answer": "B",
+              "textHtml": "dioxin is a by-product of processing"
             },
             {
               "id": "q36",
-              "answer": [
-                "modern forensic techniques",
-                "forensic science"
-              ],
-              "before": "……………….. In 1896 Sir Francis Galton used a",
-              "after": ""
+              "answer": "A",
+              "textHtml": "can be harvested more than once a year"
             },
             {
               "id": "q37",
-              "answer": [
-                "fingerprint-ing",
-                "new-found"
-              ],
-              "before": "……………… method known as dactyloscopy. This method was to greatly aid the police in identifying criminals. Curiously, investigative methods known to police at the time were often not employed. Crime scene photography was rarely",
-              "after": ""
+              "answer": "C",
+              "textHtml": "large amounts of fertiliser needed"
             },
             {
               "id": "q38",
-              "answer": "standard practice",
-              "before": "…………. for example",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 33-38</span></strong><br/>\n<span>Complete the notes below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>What is so startling about the Ripper case is how the murderer managed to (33) …………… against the odds.</span></p><p><span>Only on closer investigation does the reason become more apparent.</span></p><p><span>Often a (34) ………………. was disturbed, destroying vital evidence within it.</span></p><p><span>Only later, with (35) ……………. a book by Hans Gross, were more scientific investigative methods introduced.</span></p><p><span>Until then there was a lack of knowledge of (36) ………………..</span></p><p><span>In 1896 Sir Francis Galton used a (37) ……………… method known as dactyloscopy.</span></p><p><span>This method was to greatly aid the police in identifying criminals.</span></p><p><span>Curiously, investigative methods known to police at the time were often not employed.</span></p><p><span>Crime scene photography was rarely (38) …………. for example.</span></p>",
-          "wordLimit": 3
-        },
-        {
-          "title": "Questions 39-40",
-          "type": "multiple-answer",
-          "instructionHtml": "Choose two letters, A-E.",
-          "questions": [
+              "answer": "A",
+              "textHtml": "fire-retardant properties"
+            },
             {
               "id": "q39",
-              "answer": [
-                "A",
-                "D"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-303-q39-q40"
-            },
-            {
-              "id": "q40",
-              "answer": [
-                "A",
-                "D"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-303-q39-q40"
+              "answer": "C",
+              "textHtml": "requires mild temperature"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 39-40</span></strong><br/>\n<span>Choose two letters, A-E.</span></p><p><span><strong>A</strong> Limited forensic knowledge probably affected the outcome of the Ripper case.</span><br/>\n<span><strong>B</strong> The Ripper murders convinced the police of a need for more sophisticated investigative methods.</span><br/>\n<span><strong>C</strong> Disagreement existed amongst the police as to what information should be released to the Press.</span><br/>\n<span><strong>D</strong> Whilst rivalry existed amongst the police, they were united in their dislike of the Press.</span><br/>\n<span><strong>E</strong> The police investigating the Ripper murders made good use of what techniques were available to them at the time.</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "selectCount": 2,
-          "choices": [
-            {
-              "value": "A",
-              "label": "Limited forensic knowledge probably affected the outcome of the Ripper case"
-            },
-            {
-              "value": "B",
-              "label": "The Ripper murders convinced the police of a need for more sophisticated investigative methods"
-            },
-            {
-              "value": "C",
-              "label": "Disagreement existed amongst the police as to what information should be released to the Press"
-            },
-            {
-              "value": "D",
-              "label": "Whilst rivalry existed amongst the police, they were united in their dislike of the Press"
-            },
-            {
-              "value": "E",
-              "label": "The police investigating the Ripper murders made good use of what techniques were available to them at the time"
-            }
+          "legendHtml": "<p><strong><span>Questions 34-39</span></strong><br/>\n<span>From the information given in the passage, classify the following (34-39) as characteristic of:</span></p><p><span>A. Hemp</span><br/>\n<span>B. Wood</span><br/>\n<span>C. Cotton</span></p><p><span>34. mildew-resistant</span><br/>\n<span>35. dioxin is a by-product of processing</span><br/>\n<span>36. can be harvested more than once a year</span><br/>\n<span>37. large amounts of fertiliser needed</span><br/>\n<span>38. fire-retardant properties</span><br/>\n<span>39. requires mild temperature</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
           ]
+        },
+        {
+          "title": "Question 40",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct answer A-D.",
+          "questions": [
+            {
+              "id": "q40",
+              "answer": "B",
+              "textHtml": "The main purpose of this article is",
+              "options": [
+                "to criticise government policy on hemp",
+                "to show the economic benefits of hemp",
+                "to compare hemp and marijuana",
+                "to promote research into new uses of hemp"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 40</span></strong><br/>\n<span>Choose the correct answer A-D.</span></p><p><span>40. The main purpose of this article is</span><br/>\n<span><strong>A</strong> to criticise government policy on hemp.</span><br/>\n<span><strong>B</strong> to show the economic benefits of hemp.</span><br/>\n<span><strong>C</strong> to compare hemp and marijuana.</span><br/>\n<span><strong>D</strong> to promote research into new uses of hemp.</span></p>"
         }
       ]
     }

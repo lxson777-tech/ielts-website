@@ -52,13 +52,13 @@ const importedListeningAnswerHashes = [
   '707edbe339e6523420f1ddd10adc4852c1247be18dddb032026f5df3ba85b0d6',
 ];
 
-test('catalog contains five distinct reading tests and twenty distinct listening tests', () => {
+test('catalog contains twenty distinct reading tests and twenty distinct listening tests', () => {
   const ids = ALL_TESTS.map((testRecord) => testRecord.id);
   assert.equal(new Set(ids).size, ids.length, 'test ids must be unique');
 
   const reading = ALL_TESTS.filter((testRecord) => testRecord.skill === 'reading');
   const listening = ALL_TESTS.filter((testRecord) => testRecord.skill === 'listening');
-  assert.equal(reading.length, 5);
+  assert.equal(reading.length, 20);
   assert.equal(listening.length, 20);
 
   const readingFingerprints = reading.map((testRecord) => JSON.stringify(testRecord.parts));
@@ -75,7 +75,7 @@ test('every listening test has four sections and exactly q1 through q40 once', (
     assert.equal(testRecord.parts.length, 4, `${testRecord.id} must have four sections`);
     assert.deepEqual(
       testRecord.parts.map((part) => part.label),
-      ['Section 1', 'Section 2', 'Section 3', 'Section 4'],
+      ['Part 1', 'Part 2', 'Part 3', 'Part 4'],
       `${testRecord.id} section labels`,
     );
     assert.equal(questionCount(testRecord), 40, `${testRecord.id} question count`);

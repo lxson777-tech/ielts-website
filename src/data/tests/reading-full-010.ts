@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-313",
+  "id": "reading-full-010",
   "skill": "reading",
-  "title": "Academic Reading Test 313",
+  "title": "Academic Reading Test 10",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-313/",
+    "url": "https://practicepteonline.com/ielts-reading-test-308/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,127 +17,120 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "Georgia O’Keeffe",
+        "title": "THE SMART CARD",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>For seven decades, Georgia O’Keeffe (1887-1986) was a major figure in American art. Remarkably, she remained independent from shifting art trends and her work stayed true to her own vision, which was based on finding the essential, abstract forms in nature. With exceptionally keen powers of observation and great finesse with a paintbrush, she recorded subtle nuances of colour, shape, and light that enlivened her paintings and attracted a wide audience.</span>"
+            "html": "<span>The invention of the microchip in the 1960s revolutionised the computer industry. Microchips are also used in thousands of other products, including smart cards. These look and function like the familiar magnetic-stripe credit cards, but they have a microchip embedded inside them that can store information. The smart card was the brainchild of two French inventors, Roland Moreno and Michel Ugon, who developed the technology in the mid-1970s. The first cards were tested in several French cities in the early 1980s and the technology was subsequently adopted by banks throughout Europe. Smart cards are now a part of everyday life in Europe, where they are used for a wide range of purposes, including paying for public transport, making small purchases over the counter, and banking by telephone. The European Union has adopted the technology as the standard for all its future credit cards.</span>"
           },
           {
-            "html": "<span>Born in 1887 near Sun Prairie, Wisconsin to cattle breeders Francis and Ida O’Keeffe, Georgia was raised on their farm along with her six siblings. By the time she graduated from high school in 1905, she had determined to make her way as an artist. She studied the techniques of traditional painting at the Art Institute of Chicago school (1905) and the Art Students League of New York (1907-8). After attending university and then training college, she became an art teacher and taught in elementary schools, high schools, and colleges in Virginia, Texas, and South Carolina from 1911 to 1918.</span>"
+            "html": "<span>Smart cards are only just beginning to be introduced in the United States, where the older magnetic-stripe technology is still the norm. The new technology is considered to be much more secure than the magnetic-stripe card, which is vulnerable to fraud. The microchip embedded in the smart card can be programmed to allow the cardholder to access many different systems. One card can be used for various types of banking transactions, for example, and as a phone card. It can also serve as an electronic purse, storing a cash balance for small purchases and recording phone and ATM transactions. It can also be used as a security pass to give the cardholder access to restricted areas.</span>"
           },
           {
-            "html": "<span>During this period, O’Keeffe began to experiment with creating abstract compositions in charcoal, and produced a series of innovative drawings that led her art in a new direction. She sent some of these drawings to a friend in New York, who showed them to art collector and photographer Alfred Stieglitz in January 1916.</span>"
+            "html": "<span>The smart card may well replace keys, money, and identity cards in the future. In the United States, the Department of Defense has provided smart cards to its 4.3 million employees, and the Department of Energy is planning to do the same. Many of the nation’s hospitals and health-care facilities are also adopting the technology.</span>"
           },
           {
-            "html": "<span>Stieglitz was impressed, and exhibited the drawings later that year at his gallery on Fifth Avenue, New York City, where the works of many avant-garde artists and photographers were introduced to the American public. With Stieglitz’s encouragement and promise of financial support, O’Keeffe arrived in New York in June 1918 to begin a career as an artist. For the next three decades, Stieglitz vigorously promoted her work in twenty-two solo exhibitions and numerous group installations. The two were married in 1924. The ups and downs of their personal and professional relationship were recorded in Stieglitz’s celebrated black-and-white portraits of O’Keeffe, taken over the course of twenty years (1917-37).</span>"
+            "html": "<span>One of the most significant uses of the smart card is in providing people with access to their own health records. In France, for example, everyone now has a smart card containing a complete medical history, which can be accessed immediately by a doctor or pharmacist. The card, which is the size of a credit card, has a microchip embedded in it that contains the patient’s medical history, including allergies, blood type, and details of any current medical conditions. The card also contains information about the patient’s health-insurance provider. The card can be used to store medical records, prescriptions, and details of medical appointments.</span>"
           },
           {
-            "html": "<span>By the mid-1920s, O’Keeffe was recognized as one of America’s most important and successful artists, widely known for the architectural pictures that dramatically depict the soaring skyscrapers of New York. But most often, she painted botanical subjects, inspired by annual trips to the Stieglitz family summer home. In her magnified images depicting flowers, begun in 1924, O’Keeffe brings the viewer right into the picture.</span>"
+            "html": "<span>In the United States, the Health Insurance Portability and Accountability Act (HIPAA) is driving the demand for smart cards. The Act requires health-care providers to protect the privacy of patients’ medical information and to take measures to protect the security of sensitive information. Smart cards are considered one of the best ways of meeting these requirements.</span>"
           },
           {
-            "html": "<span>Enlarging the tiniest details to fill an entire metre-wide canvas emphasized their shapes and lines and made them appear abstract. Such daring compositions helped establish O’Keeffe’s reputation as an innovative modernist.<br/>\n</span><br/>\n<span>In 1929, O’Keeffe made her first extended trip to the state of New Mexico. It was a visit that had a lasting impact on her life, and an immediate effect on her work. Over the next two decades she made almost annual trips to New Mexico, staying up to six months there, painting in relative solitude, then returning to New York each winter to exhibit the new work at Stieglitz’s gallery. This pattern continued until she moved permanently to New Mexico in 1949.</span>"
+            "html": "<span>The technology is also being used to improve the security of the US passport card. The card is a wallet-sized document that can be used instead of the traditional passport booklet when US citizens cross the border by land or sea between the United States and Canada, Mexico, the Caribbean, or Bermuda. The card has a microchip embedded in it that contains a unique number linking the card to a government database containing the cardholder’s personal information.</span>"
           },
           {
-            "html": "<span>There, O’Keeffe found new inspiration: at first, it was the numerous sun-bleached bones she came across in the state’s rugged terrain that sparked her imagination. Two of her earliest and most celebrated Southwestern paintings exquisitely reproduce a cow skull’s weathered surfaces, jagged edges, and irregular openings. Later, she also explored another variation on this theme in her large series of Pelvis pictures, which focused on the contrasts between convex and concave surfaces, and solid and open spaces.</span>"
-          },
-          {
-            "html": "<span>However, it was the region’s spectacular landscape, with its unusual geological formations, vivid colours, clarity of light, and exotic vegetation, that held the artist’s imagination for more than four decades. Often, she painted the rocks, cliffs, and mountains in striking close-up, just as she had done with her botanical subjects. O’Keeffe eventually owned two homes in New Mexico – the first, her summer retreat at Ghost Ranch, was nestled beneath 200-metre cliffs, while the second, used as her winter residence, was in the small town of Abiquiu. While both locales provided a wealth of imagery for her paintings, one feature of the Abiquiu house – the large walled patio with its black door – was particularly inspirational. In more than thirty pictures between 1946 and 1960, she reinvented the patio into an abstract arrangement of geometric shapes.<br/>\n</span><br/>\n<span>From the 1950s into the 1970s, O’Keeffe travelled widely, making trips to Asia, the Middle East, and Europe. Flying in planes inspired her last two major series – aerial views of rivers and expansive paintings of the sky viewed from just above clouds. In both series, O’Keeffe increased the size of her canvases, sometimes to mural proportions, reflecting perhaps her newly expanded view of the world. When in 1965 she successfully translated one of her cloud motifs to a monumental canvas measuring 6 metres in length (with the help of assistants), it was an enormous challenge and a special feat for an artist nearing eighty years of age.</span>"
-          },
-          {
-            "html": "<span>The last two decades of the artist’s life were relatively unproductive as ill health and blindness hindered her ability to work. O’Keeffe died in 1986 at the age of ninety-eight, but her rich legacy of some 900 paintings has continued to attract subsequent generations of artists and art lovers who derive inspiration from these very American images.</span>"
+            "html": "<span>Smart cards are also used in public-transport systems around the world. In Hong Kong, for example, the Octopus card is used by millions of commuters every day. The card is a plastic smart card containing a microchip that can be loaded with cash and used to pay for travel on the city’s underground railway system. The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores.</span>"
           }
         ]
       },
       "groups": [
         {
           "title": "Questions 1-7",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer.",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write",
           "questions": [
             {
               "id": "q1",
-              "answer": "Teacher",
-              "before": "…………… in various places in the USA • created drawings using",
-              "after": ""
+              "answer": "False",
+              "textHtml": "The smart card was developed by two French inventors in the 1960s"
             },
             {
               "id": "q2",
-              "answer": "Charcoal",
-              "before": "………………. which were exhibited in New York City • moved to New York and became famous for her paintings of the city’s",
-              "after": ""
+              "answer": "True",
+              "textHtml": "The microchips in smart cards can store information"
             },
             {
               "id": "q3",
-              "answer": "Skyscrapers",
-              "before": "………… • produced a series of innovative close-up paintings of",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "The European Union wants all its citizens to use smart cards"
             },
             {
               "id": "q4",
-              "answer": "Flowers",
-              "before": "……………. • went to New Mexico and was initially inspired to paint the many",
-              "after": ""
+              "answer": "True",
+              "textHtml": "The US Department of Defense has provided smart cards to its employees"
             },
             {
               "id": "q5",
-              "answer": "Bones",
-              "before": "………………. that could be found there • continued to paint various features that together formed the dramatic",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "The US Department of Energy has developed a smart card for its employees"
             },
             {
               "id": "q6",
-              "answer": "Landscape",
-              "before": "………………… of New Mexico for over forty years • travelled widely by plane in later years, and painted pictures of clouds and",
-              "after": ""
+              "answer": "Treu",
+              "textHtml": "In France, people’s medical records are stored on a smart card"
             },
             {
               "id": "q7",
-              "answer": "Rivers",
-              "before": "…………… seen from above",
-              "after": ""
+              "answer": "True",
+              "textHtml": "The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The life and work of Georgia O’Keeffe</span></strong></p><p><span>• studied art, then worked as a (1) …………… in various places in the USA</span><br/>\n<span>• created drawings using (2) ………………. which were exhibited in New York City</span><br/>\n<span>• moved to New York and became famous for her paintings of the city’s (3) …………</span><br/>\n<span>• produced a series of innovative close-up paintings of (4) …………….</span><br/>\n<span>• went to New Mexico and was initially inspired to paint the many (5) ………………. that could be found there</span><br/>\n<span>• continued to paint various features that together formed the dramatic (6) ………………… of New Mexico for over forty years</span><br/>\n<span>• travelled widely by plane in later years, and painted pictures of clouds and (7) …………… seen from above</span></p>",
-          "wordLimit": 1
+          "legendHtml": "<p><span><strong>Questions 1-7<br/>\n</strong></span><span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE    </strong>              if the statement agrees with the information<br/>\n</span><span><strong>FALSE</strong>                 if the statement contradicts the information<br/>\n</span><span><strong>NOT GIVEN</strong>         if there is no information on this       </span></p><p><span>1. The smart card was developed by two French inventors in the 1960s.<br/>\n</span><span>2. The microchips in smart cards can store information.<br/>\n</span><span>3. The European Union wants all its citizens to use smart cards.<br/>\n</span><span>4. The US Department of Defense has provided smart cards to its employees.<br/>\n</span><span>5. The US Department of Energy has developed a smart card for its employees.<br/>\n</span><span>6. In France, people’s medical records are stored on a smart card.<br/>\n</span><span>7.The Health Insurance Portability and Accountability Act requires health-care providers to protect patients’ privacy.</span></p>"
         },
         {
           "title": "Questions 8-13",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage?",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.",
           "questions": [
             {
               "id": "q8",
-              "answer": "False",
-              "textHtml": "Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career"
+              "answer": "Medical appointments",
+              "before": "…………………. – to store",
+              "after": ""
             },
             {
               "id": "q9",
-              "answer": "True",
-              "textHtml": "When O’Keeffe finished high school, she had already made her mind up about the career that she wanted"
+              "answer": "Prescriptions",
+              "before": "………………… Use of smart cards in the United States – to improve the security of the US passport card – to provide a",
+              "after": ""
             },
             {
               "id": "q10",
-              "answer": "False",
-              "textHtml": "Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City"
+              "answer": "Unique number",
+              "before": "…………………. between the card and a government database Use of smart cards in Hong Kong – to pay for travel on the city’s underground railway system – to pay for travel on",
+              "after": ""
             },
             {
               "id": "q11",
-              "answer": "True",
-              "textHtml": "O’Keeffe was the subject of Stieglitz’s photographic work for many years"
+              "answer": "Buses",
+              "before": "………………….. ,",
+              "after": ""
             },
             {
               "id": "q12",
-              "answer": "Not given",
-              "textHtml": "O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works"
+              "answer": "Ferries",
+              "before": "……………….. and",
+              "after": ""
             },
             {
               "id": "q13",
-              "answer": "Not given",
-              "textHtml": "O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life"
+              "answer": "Trams",
+              "before": "……………",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>               if there is no information on this</span></p><p><span>8. Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career.</span><br/>\n<span>9. When O’Keeffe finished high school, she had already made her mind up about the career that she wanted.</span><br/>\n<span>10. Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City.</span><br/>\n<span>11. O’Keeffe was the subject of Stieglitz’s photographic work for many years.</span><br/>\n<span>12. O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works.</span><br/>\n<span>13. O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><span><strong>Questions 8-13<br/>\n</strong></span><span>Complete the notes below. Choose <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.</span></p><p><span><strong>THE SMART CARD</strong></span></p><p><span><strong>Functions of smart cards<br/>\n</strong></span><span>– store information<br/>\n</span><span>– allow the cardholder to access different systems</span></p><p><span><strong>Different uses of smart cards<br/>\n</strong></span><span>– to make small purchases<br/>\n</span><span>– to record phone and ATM transactions<br/>\n</span><span>– as a security pass</span></p><p><span><strong>Use of smart cards in France<br/>\n</strong></span><span>– to provide people with access to their own health records<br/>\n</span><span>– to store medical records and details about (8) ………………….<br/>\n</span><span>– to store (9) …………………</span></p><p><span><strong>Use of smart cards in the United States<br/>\n</strong></span><span>– to improve the security of the US passport card<br/>\n</span><span>– to provide a (10) …………………. between the card and a government database</span></p><p><span><strong>Use of smart cards in Hong Kong<br/>\n</strong></span><span>– to pay for travel on the city’s underground railway system<br/>\n</span><span>– to pay for travel on (11) ………………….. , (12) ……………….. and (13) …………….</span></p>",
+          "wordLimit": 3
         }
       ]
     },
@@ -146,57 +139,236 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "Adapting to the effects of climate change",
+        "title": "GENE THERAPY",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> All around the world, nations are already preparing for, and adapting to, climate change and its impacts. Even if we stopped all C02 emissions tomorrow, we would continue to see the impact of the C02 already released since industrial times, with scientists forecasting that global warming would continue for around 40 years. In the meantime, ice caps would continue to melt and sea levels rise. Some countries and regions will suffer more extreme impacts from these changes than others. It’s in these places that innovation is thriving.</span>"
+            "html": "<span><strong>A</strong> Gene therapy is the introduction of genes into existing cells to prevent or cure a wide range of diseases. The most common form of gene therapy involves using DNA that encodes a functional, therapeutic gene to replace a mutated gene. Gene therapy was first conceptualised in 1972, with the authors urging caution before commencing human gene therapy studies. The first attempt, an unsuccessful one, at modifying human DNA was performed in 1980 by Martin Cline. The first successful nuclear gene transfer in humans, approved by the National Institutes of Health, was performed in May 1989. The first therapeutic use of gene transfer as well as the first direct insertion of human DNA into the nuclear genome was performed by French Anderson in a trial starting in September 1990. The first commercial gene therapy, Gendicine, was approved in China in 2003 for the treatment of certain cancers. In 2011, Neovasculgen was registered in Russia as the first-in-class gene-therapy drug for treatment of peripheral artery disease, including critical limb ischemia. In 2012, Glybera, a treatment for a rare inherited disorder, lipoprotein lipase deficiency, was approved by the European Commission.</span>"
           },
           {
-            "html": "<span><strong>B</strong> In Miami Beach, Florida, USA, seawater isn’t just breaching the island city’s walls, it’s seeping up through the ground, so the only way to save the city is to lift it up above sea level. Starting in the lowest and most vulnerable neighbourhoods, roads have been raised by as much as 61 centimetres. The elevation work was carried out as part of Miami Beach’s ambitious but much-needed stormwater- management programme. In addition to the road adaptations, the city has set up new pumps that can remove up to 75,000 litres of water per minute. In the face of floods, climate-mitigation strategies have often been overlooked, says Yanira Pineda, a senior sustainability coordinator. She knows that they’re essential and that the job is far from over. ‘We know that in 20, 30, 40 years, we’ll need to go back in there and adjust to the changing environment,’ she says.</span>"
+            "html": "<span><strong>B</strong> Although the technology is still in its infancy, it has been used with some success. It is a potential therapy for a number of diseases (such as cystic fibrosis, sickle cell anaemia, adrenoleukodystrophy and haemophilia) as well as several inherited retinal diseases. Current gene therapy has primarily focused on treating individuals by targeting the therapy to somatic (body) cells, such as bone marrow cells. Gene therapy may be classified into the two following types:</span>"
           },
           {
-            "html": "<span><strong>C</strong> Seawalls are a staple strategy for many coastal communities, but on the soft, muddy northern shores of Java, Indonesia, they frequently collapse, further exacerbating coastal erosion. There have been many attempts to restore the island’s coastal mangroves: ecosystems of trees and shrubs that help defend coastal areas by trapping sediment in their net-like root systems, elevating the sea bed and dampening the energy of waves and tidal currents. But Susanna Toi of the not-for-profit organisation Wetlands International says that, while hugely popular, the majority of mangrove-planting projects fail. So, Wetlands International started out with a different approach, building semi-permeable dams, made from bamboo poles and brushwood, to mimic the role of mangrove roots and create favourable conditions for mangroves to grow back naturally. The programme has seen moderate success, mainly in areas with less subsidence. ‘Unfortunately, traditional infrastructure is often single-solution focused,’ says Tol. ‘For long-term success, it’s critical that we transition towards multifunctional approaches that embed natural processes and that engage and benefit communities and local decision-makers.’</span>"
+            "html": "<span>Somatic gene therapy: In somatic gene therapy, the therapeutic genes are transferred into the somatic cells (cells that do not make sperm or eggs) of a patient. Any modifications and effects will be restricted to the individual patient only, and will not be inherited by the patient’s offspring or later generations. Somatic gene therapy represents mainstream basic and clinical research, in which therapeutic DNA is used to treat disease.</span>"
           },
           {
-            "html": "<span><strong>D</strong> As the floodwaters rose in the rice fields of the Mekong Delta in September 2018, four small houses rose with them. Homes in this part of Vietnam are traditionally built on stilts but these ones had been built to float. The modifications were made by the Buoyant Foundation Project, a not-for-profit organisation that has been researching and retrofitting amphibious houses since 2006. ‘When I started this,’ explains founder Elizabeth English, ‘climate change was not on the tip of everybody’s tongue, but this technology is becoming necessary in places that didn’t previously need it.’ It’s much cheaper than permanently elevating houses, English explains – about a third of what it would cost to completely replace a building’s foundations. It also avoids the problem of taller houses being at greater risk from wind damage. Another plus comes from the fact that amphibious structures can be sensitively adapted to meet cultural needs and match the kind of houses that are already common in a community.</span>"
+            "html": "<span>Germline gene therapy: In germline gene therapy, germ cells (sperm or eggs) are modified by the introduction of functional genes, which are ordinarily integrated into their genomes. The change due to therapy would therefore be heritable and would be passed on to later generations. In some jurisdictions, germline gene therapy is the only feasible option for some diseases; however, this option is fraught with many bio-ethical considerations. For the present, germline gene therapy is prohibited for application in human beings, at least for the foreseeable future, in most countries.</span>"
           },
           {
-            "html": "<span><strong>E</strong> Bangladesh is especially vulnerable to climate change. Most of the country is less than a metre above sea level and 80 per cent of its land lies on floodplains. ‘Almost 35 million people living on the coastal belt of Bangladesh are currently affected by soil and water salinity,’ says Raisa Chowdhury of the international development organisation ICCO Cooperation. Rather than fighting against it, one project is helping communities adapt to salt-affected soils. ICCO Cooperation has been working with 10,000 farmers in Bangladesh to start cultivating naturally </span><span>salt-tolerant crops in the region. Certain varieties of carrot, potato, kohlrabi, cabbage and beetroot have been found to be better suited to salty soil than the rice and wheat that is typically grown there. Chowdhury says that the results are very visible, comparing a barren plot of land to the ‘beautiful, lush green vegetable garden’ sitting beside it, in which he and his team have been working with the farmers. Since the project began, farmers trained in saline agriculture have reported increases of two to three more harvests per year.</span>"
+            "html": "<span><strong>C</strong> Gene therapy may be classified into two types, ex vivo and in vivo, on the basis of the method of delivery of genes. Ex vivo gene therapy involves the transfer of genes in cultured cells and reinsertion of the genetically altered cells back into the patient. In vivo gene therapy is the direct delivery of genes into the cells of a particular tissue in the body. The in vivo gene delivery can be divided into two categories: the therapeutic gene is directly injected into the body tissues; the therapeutic DNA is delivered to the target cells through the circulation.</span>"
           },
           {
-            "html": "<span><strong>F</strong> Greg Spotts from Los Angeles (LA) in the USA is chief sustainability officer of the city’s street services department. He leads the Cool Streets LA programme, a series of pilot projects, which include the planting of trees and the installation of a ‘cool pavement’ system, designed to help reach the city’s goal of bringing down its average temperature by 1.5°C. ‘Urban cooling is literally a matter of life and death for our future in LA,’ says Spotts. Using a Geographic Information System data mapping tool, the programme identified streets with low tree canopy cover in three of the city’s neighbourhoods and covered them with a light-grey, light-reflecting coating, which had already been shown to lower road surface temperature in Los Angeles by 6°C. Spotts says one of these streets, in the Winnetka neighbourhood of San Fernando Valley, can now be seen as a pale crescent, the only cool spot on an otherwise red thermal image, from the International Space Station.</span>"
+            "html": "<span><strong>D</strong> Gene therapy uses sections of DNA (usually genes) to treat or prevent disease. The DNA is carefully selected to correct the effect of a mutated gene that is causing disease. The technique was first developed in 1972 but has, so far, had limited success in treating human diseases. For example, in 1999, 18-year-old Jesse Gelsinger died after undergoing gene therapy for ornithine transcarbamylase deficiency, and in 2002 it was reported that two children treated for X-linked severe combined immunodeficiency (X-SCID) in a clinical trial in 1999 had developed leukaemia. However, more than 1,800 gene therapy clinical trials have been conducted since the technique was first developed. Gene therapy can be used to modify cells inside or outside the body. When it’s done inside the body, a doctor will inject the vector carrying the gene directly into the patient. This method is useful when only certain tissues require correction. When it’s done outside the body, doctors will take a sample of the patient’s cells and expose them to the vector in a laboratory. The corrected cells are then returned to the patient. This approach is more useful when only a few cells need to be corrected.</span>"
+          },
+          {
+            "html": "<span><strong>E</strong> Gene therapy has the potential to eliminate and prevent hereditary diseases such as cystic fibrosis and is a possible cure for heart disease, AIDS and cancer. The technology is still in its infancy. If the defects in the gene are corrected, these diseases could be treated. Gene therapy could have the potential to cure many genetic disorders. However, there are concerns that the wide range use of gene therapy in human beings is not safe.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-17",
+          "title": "Questions 14-18",
           "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has six paragraphs, A-F. Which paragraph contains the following information?",
+          "instructionHtml": "Questions 14-18",
           "questions": [
             {
               "id": "q14",
-              "answer": "C",
-              "textHtml": "how a type of plant functions as a natural protection for coastlines"
+              "answer": "A",
+              "textHtml": "a reference to a person who resisted the use of gene therapy on humans"
             },
             {
               "id": "q15",
               "answer": "A",
-              "textHtml": "a prediction about how long it could take to stop noticing the effects of climate change"
+              "textHtml": "a reference to the early failure of a gene therapy trial"
             },
             {
               "id": "q16",
-              "answer": "D",
-              "textHtml": "a reference to the fact that a solution is particularly cost-effective"
+              "answer": "C",
+              "textHtml": "a reference to different methods of delivering gene therapy"
             },
             {
               "id": "q17",
-              "answer": "F",
-              "textHtml": "a mention of a technology used to locate areas most in need of intervention"
+              "answer": "B",
+              "textHtml": "a reference to the ethical concerns surrounding inheritable gene therapy"
+            },
+            {
+              "id": "q18",
+              "answer": "D",
+              "textHtml": "mention of the total recorded attempts to apply gene therapy in clinical research"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-17</span></strong><br/>\n<span>Reading passage has six paragraphs, A-F. Which paragraph contains the following information?</span></p><p><span>14. how a type of plant functions as a natural protection for coastlines</span><br/>\n<span>15. a prediction about how long it could take to stop noticing the effects of climate change</span><br/>\n<span>16. a reference to the fact that a solution is particularly cost-effective</span><br/>\n<span>17. a mention of a technology used to locate areas most in need of intervention</span></p>",
+          "legendHtml": "<p><span><strong>Questions 14-18</strong></span></p><p><span>Reading passage 2 has five sections, A-E. Which section contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB: You may use any letter more than once</span></p><p><span>14. a reference to a person who resisted the use of gene therapy on humans<br/>\n</span><span>15. a reference to the early failure of a gene therapy trial<br/>\n</span><span>16. a reference to different methods of delivering gene therapy.<br/>\n</span><span>17. a reference to the ethical concerns surrounding inheritable gene therapy.<br/>\n</span><span>18. mention of the total recorded attempts to apply gene therapy in clinical research.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        },
+        {
+          "title": "Questions 19-22",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 19-22 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q19",
+              "answer": "Somatic",
+              "before": "……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future",
+              "after": ""
+            },
+            {
+              "id": "q20",
+              "answer": "Generations",
+              "before": "……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain",
+              "after": ""
+            },
+            {
+              "id": "q21",
+              "answer": "Diseases",
+              "before": "…………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the",
+              "after": ""
+            },
+            {
+              "id": "q22",
+              "answer": "Reinserted",
+              "before": "……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><span><strong>Questions 19-22<br/>\n</strong></span><span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 19-22 on your answer sheet.</span></p><p><span><strong>TYPES OF GENE THERAPY</strong></span><span><strong> </strong></span></p><p><span>Gene therapy can be classified as either somatic or germline. In somatic gene therapy, the (19) ……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future (20) ……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain (21) …………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the (22) ……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body.</span></p>",
+          "wordLimit": 1
+        },
+        {
+          "title": "Questions 23-26",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 23-26 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q23",
+              "answer": "True",
+              "textHtml": "The first gene therapy trial on humans was unsuccessful"
+            },
+            {
+              "id": "q24",
+              "answer": "Not given",
+              "textHtml": "So far, gene therapy has only been used on adults"
+            },
+            {
+              "id": "q25",
+              "answer": "Not given",
+              "textHtml": "X-SCID is more common in boys than girls"
+            },
+            {
+              "id": "q26",
+              "answer": "True",
+              "textHtml": "The corrected cells are then returned to the patient"
+            }
+          ],
+          "legendHtml": "<p><span><strong>Questions 23-26<br/>\n</strong></span><span>Do the following statements agree with the information given in reading passage? In boxes 23-26 on your answer sheet, write</span></p><p><span><strong>TRUE    </strong>              if the statement agrees with the information<br/>\n</span><span><strong>FALSE</strong>                 if the statement contradicts the information<br/>\n</span><span><strong>NOT GIVEN</strong>         if there is no information on this       </span></p><p><span>23. The first gene therapy trial on humans was unsuccessful.<br/>\n</span><span>24. So far, gene therapy has only been used on adults.<br/>\n</span><span>25. X-SCID is more common in boys than girls.<br/>\n</span><span>26.The corrected cells are then returned to the patient.</span><br/> <br/>\n<br/>\n<br/> </p>"
+        }
+      ]
+    },
+    {
+      "label": "Passage 3",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 3",
+        "title": "THE MYTH OF LEARNING STYLES",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>The idea that teaching methods should match a student’s particular learning style — their personal way of learning — is popular with teachers and students alike. But the evidence suggests it may not be helpful.</span>"
+          },
+          {
+            "html": "<span>The concept of learning styles is one of the most influential — and widely criticized — theories in education. It is the idea that each person finds it easier to learn through a particular method of instruction. Some people, for example, are thought to learn better when they’re taught visually; others, when instruction is auditory, or through movement, and so on.</span>"
+          },
+          {
+            "html": "<span>The idea is popular in part because it reflects the intuition of teachers and students. Everyone knows from personal experience that some kinds of learning feel easier than others, and that they may prefer one way of learning over another. And it is also popular because it claims to be based on science. The idea of learning styles was developed in the 1970s, as psychologists and educational theorists were trying to understand how people learn. The idea that different people learn information in different ways was appealing, and it soon became clear that many people had strong preferences about how they liked information to be presented. In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’. All the students would then be asked to learn something, with half the visual learners being taught visually, and half being taught aurally. The auditory learners would also be split into the two groups. If the theory was correct, the visual learners should do better when taught visually, and the auditory learners should do better when taught aurally.</span>"
+          },
+          {
+            "html": "<span>But that’s not what psychologists found. As early as 2004, a review of the evidence by cognitive scientists found that the great majority of studies did not provide any evidence supporting the idea that matching the material to a student’s particular learning style was helpful. More recently, a team of psychologists led by Daniel Willingham at the University of Virginia has examined the evidence for learning styles again. They found that the vast majority of studies either found no evidence for the theory, or actually contradicted it. As the researchers point out, people may have preferences about how they learn, but that doesn’t mean that they will learn better when the teaching matches those preferences.</span>"
+          },
+          {
+            "html": "<span>There are several possible explanations for these findings. One is that some students might not actually have a ‘style’ that is strong enough to affect their learning. Another possibility is that students do have preferences about how they learn, but these preferences don’t affect their learning. A third possibility is that students do have preferences, and these preferences do affect their learning, but only because they have learned less well through other methods in the past.</span>"
+          },
+          {
+            "html": "<span>But the most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves a mix of visual learning (such as watching the instructor), auditory learning (listening to instructions), and hands-on learning (actually driving the car). In a 2009 article in the journal Psychological Science in the Public Interest, psychologists Harold Pashler, Mark McDaniel, Doug Rohrer and Robert Bjork argued that the learning-styles approach is not only unsupported by science, but may actually be harmful, because it leads teachers to teach students in ways that are not very effective. For example, a student who is a ‘visual learner’ might be encouraged to learn only through visual materials, and never to practice learning by listening, reading or acting.</span>"
+          },
+          {
+            "html": "<span>The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence. In recent years, a great deal of research has shown that people’s attitudes to learning can have a large impact on how much they learn. For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies. Similarly, students who have been told that they are ‘visual learners’ might put less effort into tasks that are based on reading or listening. This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’.</span>"
+          },
+          {
+            "html": "<span>Despite the lack of evidence for learning styles, the idea is still very popular. A 2014 study of more than 400 teachers in the UK and the Netherlands found that more than 90 percent of them believed that people learn better if they are taught in their preferred learning style, and that the majority of them used learning styles as a method of instruction. In the US, a 2017 survey of more than 300 teachers found that 96 percent of them agreed with the idea of learning styles, and 24 percent of them used it to guide their teaching.</span>"
+          },
+          {
+            "html": "<span>The idea of learning styles is also popular among students. In a 2018 study, researchers asked more than 600 students in the US about their beliefs about learning. They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style.</span>"
+          },
+          {
+            "html": "<span>The evidence is clear: matching teaching to a student’s particular learning style is unlikely to lead to better learning. It may in fact be holding students back.</span>"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 27-31",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 27-31 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q27",
+              "answer": "Yes",
+              "textHtml": "Teachers and students’ personal experiences contribute to the popularity of the learning styles concept"
+            },
+            {
+              "id": "q28",
+              "answer": "Not given",
+              "textHtml": "Research into learning styles was popular in the 1970s"
+            },
+            {
+              "id": "q29",
+              "answer": "No",
+              "textHtml": "Psychologists found evidence for the idea of learning styles as early as 2004"
+            },
+            {
+              "id": "q30",
+              "answer": "No",
+              "textHtml": "The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles"
+            },
+            {
+              "id": "q31",
+              "answer": "Yes",
+              "textHtml": "Students may learn better when they are taught using methods they are not familiar with"
+            }
+          ],
+          "legendHtml": "<p><span><strong>Questions 27-31<br/>\n</strong></span><span>Do the following statements agree with the claims of the writer in reading passage? In boxes 27-31 on your answer sheet, write</span></p><p><span><strong>YES       </strong>              if the statement agrees with the views of the writer<br/>\n</span><span><strong>NO</strong>                       if the statement contradicts the views of the writer<br/>\n</span><span><strong>NOT GIVEN</strong>         if it is impossible to say what the writer thinks about this            </span></p><p><span>27. Teachers and students’ personal experiences contribute to the popularity of the learning styles concept.<br/>\n</span><span>28. Research into learning styles was popular in the 1970s.<br/>\n</span><span>29. Psychologists found evidence for the idea of learning styles as early as 2004.<br/>\n</span><span>30. The team of psychologists led by Daniel Willingham found evidence for the idea of learning styles.<br/>\n</span><span>31. Students may learn better when they are taught using methods they are not familiar with.</span></p>"
+        },
+        {
+          "title": "Questions 32-35",
+          "type": "matching-features",
+          "instructionHtml": "Complete the summary using the list of words, A-F, below. Write the correct letter, A-F, in boxes 32-35 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q32",
+              "answer": "E",
+              "textHtml": "………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their"
+            },
+            {
+              "id": "q33",
+              "answer": "D",
+              "textHtml": "…………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past. The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and"
+            },
+            {
+              "id": "q34",
+              "answer": "C",
+              "textHtml": "…………………. The learning-styles approach is not only unsupported by science, but may actually be"
+            },
+            {
+              "id": "q35",
+              "answer": "A",
+              "textHtml": "……………. A harmful B ability C hands-on learning D learning E preference F useful"
+            }
+          ],
+          "legendHtml": "<p><span><strong>Questions 32-35<br/>\n</strong></span><span>Complete the summary using the list of words, A-F, below. Write the correct letter, A-F, in boxes 32-35 on your answer sheet.</span></p><p><span><strong>EXPLANATIONS FOR THE FINDINGS</strong></span></p><p><span>One explanation is that some students might not have a strong enough (32) ………………. to affect their learning. Another possibility is that students may have preferences about how they learn, but these do not affect their (33) …………………. A third possibility is that students’ preferences do affect their learning, but only because they have learned less well through other methods in the past.</span></p><p><span>The most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves visual learning, auditory learning and (34) ………………….</span></p><p><span>The learning-styles approach is not only unsupported by science, but may actually be (35) …………….</span></p><p><span><strong>A</strong> harmful<br/>\n</span><span><strong>B</strong> ability<br/>\n</span><span><strong>C</strong> hands-on learning<br/>\n</span><span><strong>D</strong> learning<br/>\n</span><span><strong>E</strong> preference<br/>\n</span><span><strong>F</strong> useful</span></p>",
           "options": [
             "A",
             "B",
@@ -207,268 +379,45 @@ const test: PracticeTest = {
           ]
         },
         {
-          "title": "Questions 18-22",
-          "type": "table-completion",
-          "instructionHtml": "Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer.",
+          "title": "Questions 36-40",
+          "type": "sentence-completion",
+          "instructionHtml": "Questions 36-40",
           "questions": [
-            {
-              "id": "q18",
-              "answer": "Pumps",
-              "before": "The stormwater-management programme in Miami Beach has involved the installation of efficient ……………",
-              "after": ""
-            },
-            {
-              "id": "q19",
-              "answer": "Dams",
-              "before": "The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia",
-              "after": ""
-            },
-            {
-              "id": "q20",
-              "answer": "Float",
-              "before": "As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can …………",
-              "after": ""
-            },
-            {
-              "id": "q21",
-              "answer": "Crops",
-              "before": "Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content",
-              "after": ""
-            },
-            {
-              "id": "q22",
-              "answer": "Trees",
-              "before": "A project in LA has increased the number of ……………… on the city’s streets",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 18-22</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>18. The stormwater-management programme in Miami Beach has involved the installation of efficient …………….</span><br/>\n<span>19. The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia.</span><br/>\n<span>20. As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can ………….</span><br/>\n<span>21. Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content.</span><br/>\n<span>22. A project in LA has increased the number of ……………… on the city’s streets.</span></p>",
-          "wordLimit": 1,
-          "table": {
-            "rows": [
-              [
-                "The stormwater-management programme in Miami Beach has involved the installation of efficient ……………",
-                {
-                  "questionId": "q18"
-                },
-                ""
-              ],
-              [
-                "The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia",
-                {
-                  "questionId": "q19"
-                },
-                ""
-              ],
-              [
-                "As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can …………",
-                {
-                  "questionId": "q20"
-                },
-                ""
-              ],
-              [
-                "Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content",
-                {
-                  "questionId": "q21"
-                },
-                ""
-              ],
-              [
-                "A project in LA has increased the number of ……………… on the city’s streets",
-                {
-                  "questionId": "q22"
-                },
-                ""
-              ]
-            ]
-          }
-        },
-        {
-          "title": "Questions 23-26",
-          "type": "matching-features",
-          "instructionHtml": "Look at the following statements and the list of people below. Match each statement with the correct person, A-E.",
-          "questions": [
-            {
-              "id": "q23",
-              "answer": "B",
-              "textHtml": "It is essential to adopt strategies which involve and help residents of the region"
-            },
-            {
-              "id": "q24",
-              "answer": "E",
-              "textHtml": "Interventions which reduce heat are absolutely vital for our survival in this location"
-            },
-            {
-              "id": "q25",
-              "answer": "A",
-              "textHtml": "More work will need to be done in future decades to deal with the impact of rising water levels"
-            },
-            {
-              "id": "q26",
-              "answer": "C",
-              "textHtml": "The number of locations requiring action to adapt to flooding has grown in recent years. List of People A. Yanira Pineda B. Susanna Toi C. Elizabeth English D. Raisa Chowdhury E. Greg Spotts"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A-E.</span></p><p><span>23. It is essential to adopt strategies which involve and help residents of the region.</span><br/>\n<span>24. Interventions which reduce heat are absolutely vital for our survival in this location.</span><br/>\n<span>25. More work will need to be done in future decades to deal with the impact of rising water levels.</span><br/>\n<span>26. The number of locations requiring action to adapt to flooding has grown in recent years.</span></p><p><strong><span>List of People</span></strong></p><p><span>A. Yanira Pineda</span><br/>\n<span>B. Susanna Toi</span><br/>\n<span>C. Elizabeth English</span><br/>\n<span>D. Raisa Chowdhury</span><br/>\n<span>E. Greg Spotts</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ]
-        }
-      ]
-    },
-    {
-      "label": "Passage 3",
-      "stimulus": {
-        "kind": "passage",
-        "label": "Reading Passage 3",
-        "title": "A new role for livestock guard dogs",
-        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
-        "paragraphs": [
-          {
-            "html": "<span>Livestock guard dogs, traditionally used to protect farm animals from predators, are now being used to protect the predators themselves.</span>"
-          },
-          {
-            "html": "<span><strong>A</strong> For thousands of years, livestock guard dogs worked alongside shepherds to protect their sheep, goats and cattle from predators such as wolves and bears. But in the 19th and 20th centuries, when such predators were largely exterminated, most guard dogs lost their jobs. In recent years, however, as increased efforts have been made to protect wild animals, predators have become more widespread again. As a result, farmers once more need to protect their livestock, and guard dogs are enjoying an unexpected revival.</span>"
-          },
-          {
-            "html": "<span><strong>B</strong> Today there are around 50 breeds of guard dogs on duty in various parts of the world. These dogs are raised from an early age with the animals they will be watching and eventually these animals become the dog’s family. The dogs will place themselves between the livestock and any threat, barking loudly. If necessary, they will chase away predators, but often their mere presence is sufficient. Their initial training is to make them understand that livestock is going to be their life,’ says Dan Macon, a shepherd with three guard dogs. ‘A fluffy white puppy is fun to be around, but too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog.’</span>"
-          },
-          {
-            "html": "<span><strong>C</strong> The evidence indicates that guard dogs are highly effective. For example, in Portugal, biologist Silvia Ribeiro has found that more than 90 per cent of the farmers participating in a programme to train and use guard dogs to protect their herds against attack from wolves rate the performance of the dogs as very good or excellent. In a study carried out in Australia by Linda van Bommel and Chris Johnson at the University of Tasmania, more than 65 per cent of herders reported that predation stopped completely after they got the dogs, and almost all the rest saw a decrease in attacks. ‘If they are managed and used properly, livestock guard dogs are the most efficient control method that we have in terms of the amount of livestock that they save from predation,’ says van Bommel.</span>"
-          },
-          {
-            "html": "<span><strong>D</strong> But today’s guard dogs also have a new role – to help preserve the predators. It is hoped that reductions in livestock losses can make farmers more tolerant of predators and less likely to kill them. In Namibia, more than 90 per cent of cheetahs live outside protected areas, close to humans raising livestock. As a result, the cheetahs are often held responsible for animal losses, and large numbers have been killed by farmers. When guard dogs were introduced, more than 90 per cent of farmers reported a dramatic reduction in livestock losses, and said that as a result they were less likely to kill predators. Julie Young, at Utah State University in the US, believes this result applies widely. ‘There is common ground from the livestock perspective and from the conservation perspective,’ she says. ‘If ranchers don’t have a dead cow, they will not make a call to apply for a permit to kill a wolf.’</span>"
-          },
-          {
-            "html": "<span><strong>E</strong> Looking at all the published evidence, Bethany Smith at Nottingham Trent University in the UK found that up to 88 per cent of farmers said they no longer killed predators after using dogs – but warned that such self-reported results must be taken with a pinch of salt. What’s more, it is possible that livestock guard dogs merely displace predators to unprotected neighbouring properties, where their fate isn’t recorded. ‘In some regions, we work with almost every farmer, but in others only one or two have dogs,’ says Ribeiro. ‘If we are not working with everybody, we are transferring the wolf pressure to the neighbour’s herd and he can use poison and kill an entire pack of wolves.’</span>"
-          },
-          {
-            "html": "<span><strong>F</strong> Another concern is whether there may be unintended ecological effects of using guard dogs. Studies suggest that reducing deaths of one type of predator may have a negative impact on other species. The extent of this problem isn’t known, but the consequences are clear in Namibia. Cheetahs aren’t the only species that cause sheep and goat losses there: other predators also attack livestock. In 2015, researchers reported that in spite of the impact farmers obtaining guard dogs had on cheetahs, the number of jackals killed by dogs and people actually increased. Guard dogs have other ecological impacts too. They have been found to spread diseases to wild animals, including endangered Ethiopian wolves. They may also compete with other carnivores for food. And by creating a ‘landscape of fear’, their mere presence can influence the behaviour of prey animals.</span>"
-          },
-          {
-            "html": "<span><strong>G</strong> The evidence so far, however, indicates that these consequences aren’t always negative. Guard dogs can deliver unexpected benefits by protecting vulnerable wildlife from predators. For example, their presence has been found to protect birds which build their nests on the ground in fields, where foxes would normally raid them. Indeed, Australian researchers are now using dogs to enhance biodiversity and create refuges for species threatened by predation. So if we can get this right, there may be a bright future for guard dogs in promoting harmonious coexistence between humans and wildlife.</span>"
-          }
-        ]
-      },
-      "groups": [
-        {
-          "title": "Questions 27-31",
-          "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.",
-          "questions": [
-            {
-              "id": "q27",
-              "answer": "D",
-              "textHtml": "an example of how one predator has been protected by the introduction of livestock guard dogs"
-            },
-            {
-              "id": "q28",
-              "answer": "G",
-              "textHtml": "an optimistic suggestion about the possible positive developments in the use of livestock guard dogs"
-            },
-            {
-              "id": "q29",
-              "answer": "B",
-              "textHtml": "a description of how the methods used by livestock guard dogs help to keep predators away"
-            },
-            {
-              "id": "q30",
-              "answer": "C",
-              "textHtml": "claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds"
-            },
-            {
-              "id": "q31",
-              "answer": "B",
-              "textHtml": "a reference to how livestock guard dogs gain their skills"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 27-31</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.</span></p><p><span>27. an example of how one predator has been protected by the introduction of livestock guard dogs</span><br/>\n<span>28.an optimistic suggestion about the possible positive developments in the use of livestock guard dogs</span><br/>\n<span>29.a description of how the methods used by livestock guard dogs help to keep predators away</span><br/>\n<span>30. claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds</span><br/>\n<span>31. a reference to how livestock guard dogs gain their skills</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G"
-          ]
-        },
-        {
-          "title": "Questions 32-36",
-          "type": "matching-features",
-          "instructionHtml": "Look at the following statements and the list of people below. Match each statement with the correct person, A – E.",
-          "questions": [
-            {
-              "id": "q32",
-              "answer": "D",
-              "textHtml": "The use of guard dogs may save the lives of both livestock and wild animals"
-            },
-            {
-              "id": "q33",
-              "answer": "E",
-              "textHtml": "Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate"
-            },
-            {
-              "id": "q34",
-              "answer": "B",
-              "textHtml": "There may be negative results if the use of livestock guard dogs is not sufficiently widespread"
-            },
-            {
-              "id": "q35",
-              "answer": "C",
-              "textHtml": "Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled"
-            },
             {
               "id": "q36",
-              "answer": "A",
-              "textHtml": "Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog. List of people A. Dan Macon B. Silvia Ribeiro C. Linda van Bommel D. Julie Young E. Bethany Smith"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 32 – 36</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A – E.</span></p><p><span>32. The use of guard dogs may save the lives of both livestock and wild animals.</span><br/>\n<span>33. Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate.</span><br/>\n<span>34. There may be negative results if the use of livestock guard dogs is not sufficiently widespread.</span><br/>\n<span>35. Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled.</span><br/>\n<span>36. Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog.</span></p><p><strong><span>List of people</span></strong></p><p><span>A. Dan Macon</span><br/>\n<span>B. Silvia Ribeiro</span><br/>\n<span>C. Linda van Bommel</span><br/>\n<span>D. Julie Young</span><br/>\n<span>E. Bethany Smith </span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ]
-        },
-        {
-          "title": "Questions 37-40",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
-          "questions": [
+              "answer": "Intelligence",
+              "before": "…………………. Students who believe that intelligence is",
+              "after": ""
+            },
             {
               "id": "q37",
-              "answer": "Jackals",
-              "before": "…………… In addition, it has been suggested that the dogs could have",
+              "answer": "Changeable",
+              "before": "………………… tend to do better than other students. Students who have been told that they are",
               "after": ""
             },
             {
               "id": "q38",
-              "answer": "Diseases",
-              "before": "……… which may affect other species, and that they may reduce the amount of",
+              "answer": "Visual",
+              "before": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a",
               "after": ""
             },
             {
               "id": "q39",
-              "answer": "Food",
-              "before": "…………… available to certain wild animals. On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as",
+              "answer": "Mix",
+              "before": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular",
               "after": ""
             },
             {
               "id": "q40",
-              "answer": "Foxes",
-              "before": "……………",
+              "answer": [
+                "learning style",
+                "style"
+              ],
+              "before": "…………………",
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Unintended ecological effects of using guard dogs</span></strong></p><p><span>In Namibia, livestock guard dogs have been used to protect domestic animals from attacks by cheetahs.</span><br/>\n<span>This has led to a rise in the deaths of other predators, particularly (37) ……………</span><br/>\n<span>In addition, it has been suggested that the dogs could have (38) ……… which may affect other species, and that they may reduce the amount of (39) …………… available to certain wild animals.</span><br/>\n<span>On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as (40) ……………</span></p><p><br/>\n<br/>\n<br/> </p>",
+          "legendHtml": "<p><span><strong>Questions 36-40</strong></span></p><p><span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 36-40 on your answer sheet.</span></p><p><span>The idea of learning styles can give students the wrong idea about their level of (36) …………………. Students who believe that intelligence is (37) ………………… tend to do better than other students.</span></p><p><span>Students who have been told that they are (38) …………………… learners might not try so hard to learn by reading or listening.</span></p><p><span>Research has shown that students who use a (39) ………………….. of learning methods often learn more effectively.</span></p><p><span>In a 2018 study, 78 percent of students said that they had a particular (40) …………………</span></p>",
           "wordLimit": 1
         }
       ]

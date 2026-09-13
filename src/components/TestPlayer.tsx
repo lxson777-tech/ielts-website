@@ -5,7 +5,7 @@ import { bandEstimate, bandMidpoint, isCorrect, questionCount, scoredQuestionIds
 import { recordTestAttempt } from '../lib/progress';
 import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
 import Html from './Html';
-import ReadingStrategyPanel from './ReadingStrategyPanel';
+import StrategyPanel from './StrategyPanel';
 
 interface Props {
   test: PracticeTest;
@@ -248,7 +248,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
 
   /* ── Instructions gate — timer does not run until Start ── */
   if (!started) {
-    return <InstructionsScreen test={test} hubUrl={hubUrl} onStart={start} />;
+    return <InstructionsScreen test={test} hubUrl={hubUrl} onStart={start} attemptKind={attemptKind} />;
   }
 
   return (
@@ -290,7 +290,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
       </header>
 
       {test.skill === 'listening' && (
-        <PersistentAudio src={sharedAudioSrc ? asset(sharedAudioSrc) : undefined} />
+        <ListeningAudio
+          src={sharedAudioSrc ? asset(sharedAudioSrc) : undefined}
+          attemptKind={attemptKind}
+          startSeconds={stimulus.kind === 'audio' ? stimulus.startSeconds : undefined}
+          endSeconds={stimulus.kind === 'audio' ? stimulus.endSeconds : undefined}
+          drillPartNumber={attemptKind === 'drill' ? drillPartNumber(test.id) : null}
+        />
       )}
 
       {/* ── Mobile pane switcher — the split pane below is too cramped on a
@@ -413,7 +419,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                       html={group.legendHtml}
                     />
                   )}
-                  {attemptKind === 'drill' && test.skill === 'reading' && <ReadingStrategyPanel type={group.type} />}
+                  {attemptKind === 'drill' && <StrategyPanel skill={test.skill} type={group.type} />}
                   {group.type === 'diagram-labelling' && group.diagram && (
                     <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
                   )}
@@ -1220,15 +1226,87 @@ function Highlightable({
   );
 }
 
-function PersistentAudio({ src }: { src?: string }) {
+/** Drill ids are always built by drills.ts as `${sourceTestId}-drill-p${n}`,
+    so the 1-based part number can be read straight off the id instead of the
+    part's own (differently-worded, being renamed elsewhere) label string. */
+function drillPartNumber(testId: string): number | null {
+  const m = testId.match(/-drill-p(\d+)$/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+function fmtClock(seconds: number): string {
+  const s = Math.max(0, Math.floor(seconds));
+  return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
+}
+
+/** The shared listening recording, in one of two very different modes per
+    the house rule "trainers coach with every aid, tests are bare exam
+    conditions":
+    - drill: full native controls (play/pause/seek/replay). If the part
+      carries startSeconds it seeks there on load and shows which slice of
+      the recording this drill covers; if it carries endSeconds it pauses
+      there automatically (seeking further is still allowed).
+    - full: bare exam conditions. A single "Start recording" button plays the
+      whole recording once from the beginning; no seek bar, no pause, no
+      replay, native controls are not rendered at all. */
+function ListeningAudio({
+  src,
+  attemptKind,
+  startSeconds,
+  endSeconds,
+  drillPartNumber: partNumber,
+}: {
+  src?: string;
+  attemptKind: 'full' | 'drill';
+  startSeconds?: number;
+  endSeconds?: number;
+  drillPartNumber: number | null;
+}) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error');
   const [retry, setRetry] = useState(0);
+  const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   function retryLoad() {
     if (!src) return;
     setStatus('loading');
+    setStarted(false);
+    setEnded(false);
     setRetry((n) => n + 1);
   }
+
+  function handleLoadedMetadata() {
+    setStatus('ready');
+    const el = audioRef.current;
+    if (!el) return;
+    setDuration(el.duration || 0);
+    if (attemptKind === 'drill' && startSeconds != null) {
+      el.currentTime = startSeconds;
+      setCurrentTime(startSeconds);
+    }
+  }
+
+  function handleTimeUpdate() {
+    const el = audioRef.current;
+    if (!el) return;
+    setCurrentTime(el.currentTime);
+    if (attemptKind === 'drill' && endSeconds != null && el.currentTime >= endSeconds) {
+      el.pause();
+    }
+  }
+
+  function startRecording() {
+    setStarted(true);
+    audioRef.current?.play();
+  }
+
+  const rangeNote =
+    attemptKind === 'drill' && startSeconds != null
+      ? `This drill covers ${partNumber != null ? `Part ${partNumber}` : 'one part'} of the recording (${fmtClock(startSeconds)} to ${fmtClock(endSeconds ?? duration)}).`
+      : null;
 
   return (
     <section
@@ -1238,27 +1316,68 @@ function PersistentAudio({ src }: { src?: string }) {
     >
       <div className="mx-auto flex max-w-5xl flex-col gap-2 sm:flex-row sm:items-center">
         <div className="shrink-0 sm:w-44">
-          <p className="text-xs font-bold uppercase tracking-wider text-brand">Full recording</p>
-          <p className="text-xs text-ink-muted">Practice mode, replay is available</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">
+            {attemptKind === 'drill' ? 'Drill recording' : 'Full recording'}
+          </p>
+          <p className="text-xs text-ink-muted">
+            {attemptKind === 'drill' ? 'Pause and replay freely' : 'Plays once, exam conditions'}
+          </p>
         </div>
-        {src ? (
+
+        {src && attemptKind === 'drill' && (
           <audio
             key={retry}
+            ref={audioRef}
             controls
             controlsList="nodownload noplaybackrate"
             preload="metadata"
             src={src}
             className="h-10 w-full min-w-0 shrink-0 sm:w-auto sm:flex-1"
-            aria-label="Full listening test recording"
-            onCanPlay={() => setStatus('ready')}
+            aria-label="Drill recording"
+            onLoadedMetadata={handleLoadedMetadata}
+            onTimeUpdate={handleTimeUpdate}
             onError={() => setStatus('error')}
           />
-        ) : (
-          <div className="flex-1" />
         )}
+
+        {src && attemptKind === 'full' && (
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            {/* No `controls`: bare exam conditions render only the button and
+                readout below, never native seek/pause/replay affordances. */}
+            <audio
+              key={retry}
+              ref={audioRef}
+              preload="metadata"
+              src={src}
+              className="hidden"
+              aria-hidden="true"
+              onLoadedMetadata={handleLoadedMetadata}
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={() => setEnded(true)}
+              onError={() => setStatus('error')}
+            />
+            {!started ? (
+              <button
+                type="button"
+                onClick={startRecording}
+                disabled={status !== 'ready'}
+                className="rounded-button bg-brand px-4 py-1.5 text-sm font-bold text-white hover:bg-brand-hover disabled:opacity-50"
+              >
+                ▶ Start recording
+              </button>
+            ) : (
+              <span className="font-mono text-sm font-semibold text-ink" aria-live="polite">
+                {ended ? 'Recording finished' : 'Recording playing'} · {fmtClock(currentTime)} / {fmtClock(duration)}
+              </span>
+            )}
+          </div>
+        )}
+
+        {!src && <div className="flex-1" />}
+
         <div className="min-h-5 shrink-0 text-xs sm:w-36 sm:text-right" aria-live="polite">
           {status === 'loading' && <span className="text-ink-muted">Loading recording...</span>}
-          {status === 'ready' && <span className="text-success">Recording ready</span>}
+          {status === 'ready' && !started && attemptKind === 'drill' && <span className="text-success">Recording ready</span>}
           {status === 'error' && (
             <span className="text-error">
               Recording unavailable.{' '}
@@ -1271,6 +1390,7 @@ function PersistentAudio({ src }: { src?: string }) {
           )}
         </div>
       </div>
+      {rangeNote && <p className="mx-auto mt-1.5 max-w-5xl text-xs text-ink-muted">{rangeNote}</p>}
     </section>
   );
 }
@@ -1360,10 +1480,12 @@ function InstructionsScreen({
   test,
   hubUrl,
   onStart,
+  attemptKind,
 }: {
   test: PracticeTest;
   hubUrl: string;
   onStart: () => void;
+  attemptKind: 'full' | 'drill';
 }) {
   const listening = test.skill === 'listening';
   const partLabel = listening ? 'parts' : 'passages';
@@ -1423,8 +1545,14 @@ function InstructionsScreen({
             <li className="flex gap-2.5">
               <span aria-hidden="true" className="shrink-0">🎧</span>
               <span>
-                This is practice mode. The full recording will not start by itself, and you can pause or replay it using the audio controls.
-                Refreshing keeps your answers and running timer, but restarts the recording from the beginning.
+                {attemptKind === 'drill' ? (
+                  <>This is a single-part drill. You can <strong>play, pause, seek and replay</strong> the recording as many times as you like while you practise.</>
+                ) : (
+                  <>
+                    This is exam conditions: press <strong>Start recording</strong> when ready and it plays <strong>once</strong>, from the beginning, with no pausing, seeking or replaying.
+                    Refreshing keeps your answers and running timer, but restarts the recording from the beginning.
+                  </>
+                )}
               </span>
             </li>
           ) : (

@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-304",
+  "id": "reading-full-019",
   "skill": "reading",
-  "title": "Academic Reading Test 304",
+  "title": "Academic Reading Test 19",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-304/",
+    "url": "https://practicepteonline.com/ielts-reading-test-299/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,185 +17,139 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "Hello Happiness",
+        "title": "Frogwatch",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Ask 100 people what would make them happy, and a sizeable majority would say “winning the lottery.” Yet, if they won a vast fortune, within a year they would be back to their previous level of happiness. The fact is that money has many uses, but more money does not mean more happiness. Surveys carried out in recent years by leading psychologists and sociologists all confirm that while individuals may increase their material wealth during the course of their lifetime, this has no bearing on their well-being. And what is true for individuals can be applied on a larger scale to the world population. Statistically, wealthier nations do not achieve higher scores on the happiness-ometer than developing or underdeveloped nations. Once the basic criteria of adequate shelter and nutrition are satisfied, increased wealth plays no significant role. So why the obsession with getting rich? The answer, say researchers, is simple. Call it jealousy, competitiveness, or just keeping up with the Joneses, however well we are doing, there is always someone else who is doing better. Just as we acquire a new $25,000 car, our neighbour parks his brand spanking new $40,000 set of wheels in his drive, causing us much consternation, but fuelling us with new aspirations in the process. And so the cycle continues. Money, or material wealth, may be a prime mover, but it is not the foundation of our well-being.</span>"
+            "html": "<span>Frogwatch, a remarkable success story started in Western Australia, is the brainchild of Dr. Ken Aplin. His work, as the curator of reptiles and frogs in the Western Australian Museum, invoked long field trips and he wondered if a community-based frog-monitoring network could help him keep track of frogs. Through such a network, ordinary untrained members of the community could learn about frog habitats, observe the numbers and kinds of frogs in their local area, and report this information to the museum.</span>"
           },
           {
-            "html": "<span>If money isn’t the key to happiness, then what is? In all 44 countries surveyed by a prominent research centre, family life provided the greatest source of satisfaction. Married people live on average three years longer and enjoy greater physical and psychological health than the unmarried and, surprisingly, couples in a cohabitational relationship. Having a family enhances well-being, and spending more time with one’s family helps even more. Social interaction among families, neighbourhoods, workplaces, communities and religious groups correlates strongly with subjective well-being. In fact, the degree of individuals’ social connections is the best benchmark of their happiness.</span>"
+            "html": "<span>Launched in 1995, Frogwatch recently gained its 3221st member, and many people say that this is the best thing the museum has ever done. Each participant receives a ‘Frogwatch Kit’ – a regular newsletter, an audio tape of frog calls and identification sheets. Recently, Frogwatch membership increased dramatically when a mysterious parasitic fungus disease began attacking frogs nationwide. Although research is not yet complete, scientists suspect the fungus originated overseas, perhaps in South America, where frogs have died in catastrophic numbers from a fungus disease genetically similar to the Australian organism.</span>"
           },
           {
-            "html": "<span>Friendship is another major factor. Indeed, to return to the dollar-equals-happiness equation, in one survey, having a friend converted into $50,000 worth of happiness, and confirms the well-known phenomenon that loneliness can lead to depression. Work is another area central to well-being, and certain features correlate highly with happiness. These include autonomy over how, where, and at what pace work is done, trust between employer and employee, fair treatment, and active participation in the making of decisions. Occupationally, happiness tends to be more common among professionals and managers, that is, people who are in control of the work they do, rather than subservient to their bosses, inequality implies less control for those who are in the weaker position, although there are more risks of losing their privileges for those in the stronger position.</span>"
+            "html": "<span>Researchers in Western Australia needed to know how widespread the infection was in the state’s frog populations. So Aplin sent an ‘F-file’ (frog fungus facts) alert to Frogwatch members, requesting their help. He asked them to deliver him dead or dying frogs. More than 2,000 frogs have now been examined, half from the museum’s existing collection. Aplin once thought the fungus had arrived in Western Australia in only the past year or two, but tests now suggest it has been there since the late 1980s.</span>"
           },
           {
-            "html": "<span>Control of one’s life in general is also key. Happiness is clearly correlated with the presence of favourable events such as promotion or marriage, and the absence of troubles or bad luck such as accidents, being laid off or conflicts. These events on their own signal the success or failure to reach one’s goals, and therefore the control one has. On a national level, the more that governments recognise individual preferences, the happier their citizens will be. Choice, and citizens’ belief that they can affect the political process, increase subjective well-being. Furthermore, evidence exists for an association between unhappiness and poor health: people from underdeveloped countries are among the unhappiest in the world, and their life expectancy has been falling steadily. People are more satisfied in societies which minimally restrict their freedom of action, in other words, where they are in control rather than being controlled. Happy people are characterised by the belief that they are able to control their situation, whereas unhappy people tend to believe that they are a victim of fate. Happy people are also more psychologically resilient, assertive and open to experience.</span>"
+            "html": "<span>Frogwatch has proved to be Abe perfect link to the public and Aplin has become a total convert to community participation. He’s now aiming for a network of 15,000 Frogwatch members as the museum can’t afford to use professional resources to monitor frog populations. Much of the frog habitat is on private land, and without community support, monitoring the frogs would be impossible.</span>"
           },
           {
-            "html": "<span>But how good is the evidence for this alternative viewpoint then – that happiness, and not financial status, contributes to good health, and long life? A study of nuns, spanning seven decades, supports this theory. Autobiographies written by the nuns in their early 1920s were scored for positive and negative emotions. Nuns expressing the most positive emotions lived on average ten years longer than those expressing the least positive emotions. Happy people, it seems, are much less likely to fall ill and die than unhappy people.</span>"
+            "html": "<span>Not everyone is convinced by the ‘feelgood’ popularity of Frogwatch. While Aplin believes even tiny backyard ponds can help to significantly improve frog numbers, Dr. Dale Roberts isn’t so sure, A senior zoology lecturer at the University of WA, Roberts agrees the program has tapped into the public’s enthusiasm for frogs, but he warns that strong public awareness does not amount to sound science.</span>"
           },
           {
-            "html": "<span>But what must we do to be happy? Experts cite the old maxim “be happy with what you’ve got.” Look around you, they say, and identify the positive factors in your life. Concentrating on the negative aspects of one’s life is a no-no, and so is worrying. Worrying is a negative thinking habit that is nearly always about something that lies in the future. It stems, apparently, from our cave dwelling days, when we had to think on a day-to-day basis about how and where to find food and warmth, for example. But in the modern world, worrying simply undermines our ability to enjoy life in the present. More often than not, the things we worry about never come to pass anyway. Just as important is not to dwell on the past – past mistakes, bad experiences, missed opportunities and so on.</span>"
+            "html": "<span>He argues that getting the public to send in pages of observations is a good thing, but giving these reports credibility may not be valid scientifically. In addition, he’s not convinced that Frogwatch’s alarmist message about the danger of fungal infection is valid either. In Western Australia, for example, there was a long summer and very late drenching rains, that year, following two equally dry years. So, he argues, there are other things that might have precipitated the deaths. He questions what could be done about it anyway. If it’s already widespread, it may not be worth the cost and effort of doing anything about it. Even if it’s causing high death rates, he says he can still find every frog species found over the past ten years in the south-west of Australia.</span>"
           },
           {
-            "html": "<span>What else can we do? Well, engage in a loving relationship with another adult, and work hard to sustain it. Try to plan frequent interactions with your family, friends and neighbours (in that order). Make sure you’re not working so hard that you’ve no time left for personal relationships and leisure. If you are, leave your job voluntarily to become self-employed, but don’t get sacked — that’s more damaging to well-being than the loss of a spouse, and its effects last longer. In your spare time, join a club, volunteer for community service, or take up religion.</span>"
+            "html": "<span>Roberts argues that Western Australia is different. Unlike most other states, species are still being discovered there; the disappearances of frog types in Queensland and New South Wales, are not occurring in Western Australia, although three south-west species are on the endangered list. Roberts believes that no amount of garden ponds in Perth will help those species, which live in isolated habitats targeted for development.</span>"
           },
           {
-            "html": "<span>If none of the above works, then vote for a political party with the same agenda as the King of Bhutan, who announced that his nation’s objective is national happiness.</span>"
+            "html": "<span>Aplin’s response is that increasing the number of frog-friendly habitats is important for the very reason that many Western Australian frog species are found in small, highly restricted locations. He argues that pesticide-free gardens and ponds can offer a greater chance of survival to animals battling habitat disturbance, environmental pollutants, climatic variations, and now fungal disease. Aplin’s opinion is that they should use the precautionary principle in cases where they don’t yet know enough about the situation. Usually diseases sort themselves out naturally and some frog fauna will co-evolve with the fungus. Given time some balance may be restored, but in the shorter term, they are seeing negative impacts.</span>"
+          },
+          {
+            "html": "<span>The nationwide spread of the chytrid fungus is being mapped by Dr. Rick Speare, a specialist in amphibian disease at James Cook University. Speare also tests the accuracy of Aplin’s fungus diagnoses and says Frogwatch is ‘an amazing and under-acknowledged system … the best program in Australia for harnessing public interest in frog biology… There are a lot of eyes out there looking for dead or sick frogs, beyond the power of any biologist to collect.’</span>"
+          },
+          {
+            "html": "<span>Aplin argues that they should never underestimate the importance of having a community base, especially when governments want to cut research funds, ‘People can protest in ways that a handful of scientists hiding in a laboratory can’t do. For just about every environmental problem, community involvement is fundamental.’ Furthermore, Frogwatch is proving to be a social phenomenon as much as anything else. It seems ordinary people know that frogs are a measure of the environment’s health.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 1-3",
-          "type": "multiple-answer",
-          "instructionHtml": "Choose THREE letters A – H. Circle the correct letters, A – H, below. NB Your answers may be given in any order.",
+          "title": "Questions 1-6",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements reflect the claims of the writer of the passage? Write",
           "questions": [
             {
               "id": "q1",
-              "answer": [
-                "C",
-                "E",
-                "G"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-304-q1-q3"
+              "answer": "No",
+              "textHtml": "Frogwatch members need a basic level of scientific training"
             },
             {
               "id": "q2",
-              "answer": [
-                "C",
-                "E",
-                "G"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-304-q1-q3"
+              "answer": "Not given",
+              "textHtml": "All Frogwatch members live in Western Australia"
             },
             {
               "id": "q3",
-              "answer": [
-                "C",
-                "E",
-                "G"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-304-q1-q3"
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 1-3</span></strong><br/>\n<span>Choose THREE letters A – H. Circle the correct letters, A – H, below. NB Your answers may be given in any order.</span></p><p><span>Which <strong>THREE</strong> of the following statements are true, according to the text?</span></p><p><span><strong>A</strong> Money can bring misery.</span><br/>\n<span><strong>B</strong> Wealthier nations place more emphasis on happiness than poorer ones.</span><br/>\n<span><strong>C</strong> Securing a place to live is a basic human need.</span><br/>\n<span><strong>D</strong> The desire for social status is global phenomenon.</span><br/>\n<span><strong>E</strong> An unmarried people living together are less likely to be happy than a married people.</span><br/>\n<span><strong>F</strong> The less responsibility one has, the happier one is.</span><br/>\n<span><strong>G</strong> Involvement in policy making can increase well-being.</span><br/>\n<span><strong>H</strong> Our prehistoric ancestors were happier than we are.</span></p>",
-          "selectCount": 3,
-          "choices": [
-            {
-              "value": "A",
-              "label": "Money can bring misery"
+              "answer": "No",
+              "textHtml": "Frogwatch has proved that frogs are disappearing because of a fungus"
             },
-            {
-              "value": "B",
-              "label": "Wealthier nations place more emphasis on happiness than poorer ones"
-            },
-            {
-              "value": "C",
-              "label": "Securing a place to live is a basic human need"
-            },
-            {
-              "value": "D",
-              "label": "The desire for social status is global phenomenon"
-            },
-            {
-              "value": "E",
-              "label": "An unmarried people living together are less likely to be happy than a married people"
-            },
-            {
-              "value": "F",
-              "label": "The less responsibility one has, the happier one is"
-            },
-            {
-              "value": "G",
-              "label": "Involvement in policy making can increase well-being"
-            },
-            {
-              "value": "H",
-              "label": "Our prehistoric ancestors were happier than we are"
-            }
-          ]
-        },
-        {
-          "title": "Questions 4-7",
-          "type": "matching-features",
-          "instructionHtml": "Complete the summary using the list of words, A -I, below. Write the correct letter, A – I in the spaces below.",
-          "questions": [
             {
               "id": "q4",
-              "answer": "F",
-              "textHtml": "……………. your bank balance won’t make you happier. Once the basic criteria of a roof over your head and food on the table have been met, money ceases to play a part. One of the most important factors in achieving happiness is the extent of our social"
+              "answer": "No",
+              "textHtml": "Scientists in WA have examined about two thousand frogs collected by Frogwatch"
             },
             {
               "id": "q5",
-              "answer": "B",
-              "textHtml": "………………. – our relationships with family, friends, colleagues and so on. Equally important is the amount of"
+              "answer": "Yes",
+              "textHtml": "The frog fungus disease has been in Western Australia for more than ten years"
             },
             {
               "id": "q6",
-              "answer": "D",
-              "textHtml": "…………………. we have, either in our personal life, working life, or even in our ability to influence the political"
-            },
-            {
-              "id": "q7",
-              "answer": "G",
-              "textHtml": "………………. that our country embarks on"
+              "answer": "Yes",
+              "textHtml": "New species of frogs have been found in Western Australia recently"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 4-7</span></strong><br/>\n<span>Complete the summary using the list of words, A -I, below. Write the correct letter, A – I in the spaces below.</span></p><p><span>A. episode</span><br/>\n<span>B. interaction</span><br/>\n<span>C. cooperation</span><br/>\n<span>D. control</span><br/>\n<span>E. number</span><br/>\n<span>F. level</span><br/>\n<span>G. course</span><br/>\n<span>H. conflict</span><br/>\n<span>I. limit</span></p><p><span>Money can buy you just about anything, but not. it seems, happiness. Whether on a personal or national (4) ……………. your bank balance won’t make you happier. Once the basic criteria of a roof over your head and food on the table have been met, money ceases to play a part. One of the most important factors in achieving happiness is the extent of our social (5) ………………. – our relationships with family, friends, colleagues and so on. Equally important is the amount of (6) …………………. we have, either in our personal life, working life, or even in our ability to influence the political (7) ………………. that our country embarks on.</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I"
-          ]
+          "legendHtml": "<p><strong><span>Questions 1-6</span></strong><br/>\n<span>Do the following statements reflect the claims of the writer of the passage? Write</span></p><p><span><strong>YES</strong>                             if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                               if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>           if it is impossible to say what the writer thinks about this</span></p><p><span>1. Frogwatch members need a basic level of scientific training.</span><br/>\n<span>2. All Frogwatch members live in Western Australia.</span><br/>\n<span>3. Frogwatch has proved that frogs are disappearing because of a fungus.</span><br/>\n<span>4. Scientists in WA have examined about two thousand frogs collected by Frogwatch.</span><br/>\n<span>5. The frog fungus disease has been in Western Australia for more than ten years.</span><br/>\n<span>6. New species of frogs have been found in Western Australia recently.</span></p>"
         },
         {
-          "title": "Questions 8-13",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In spaces 8-13 below write",
+          "title": "Questions 7-12",
+          "type": "matching-features",
+          "instructionHtml": "The reading passage describes the opinions of Dr, Ken Aplin, Dr. Dale Roberts and Dr. Rick Speare in relation to strategies for frog conservation. Match one of the researchers A-C to each of the statements below. There may be more than one correct answer.",
           "questions": [
             {
+              "id": "q7",
+              "answer": "B",
+              "textHtml": "Although the involvement of large numbers of people is encouraging, this does not guarantee scientifically valid data"
+            },
+            {
               "id": "q8",
-              "answer": "Not given",
-              "textHtml": "People from underdeveloped nations try to attain the same standard of living as those from developed nations"
+              "answer": "A",
+              "textHtml": "The development of frog-friendly backyards will help to conserve frog species"
             },
             {
               "id": "q9",
-              "answer": "True",
-              "textHtml": "Seeing what others have makes people want to have it too"
+              "answer": "A",
+              "textHtml": "Although it is possible that frogs will adapt to fungal and other problems in the long term, we should take precautions in case this does not occur"
             },
             {
               "id": "q10",
-              "answer": "Not given",
-              "textHtml": "The larger the family is, the happier the parents will probably be"
+              "answer": "B",
+              "textHtml": "As there may be many other explanations for recent frog deaths, it is not worth spending a great deal of time and money studying this fungus"
             },
             {
               "id": "q11",
-              "answer": "False",
-              "textHtml": "One’s attitude to life has no influence on one’s health"
+              "answer": "B",
+              "textHtml": "Because of the unique geography of Western Australia,most frog species in this State are not in danger of extinction"
             },
             {
               "id": "q12",
-              "answer": "True",
-              "textHtml": "Instinct can be a barrier to happiness"
-            },
-            {
-              "id": "q13",
-              "answer": "False",
-              "textHtml": "Family and friends rank equally as sources of happiness"
+              "answer": [
+                "A",
+                "C"
+              ],
+              "textHtml": "Frogwatch has greater potential for frog observation than is possible by the scientific community"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 8-13 below write</span></p><p><span><strong>TRUE</strong>                        if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                      if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN         </strong> if there is no information on this</span></p><p><span>8. People from underdeveloped nations try to attain the same standard of living as those from developed nations.</span><br/>\n<span>9. Seeing what others have makes people want to have it too.</span><br/>\n<span>10. The larger the family is, the happier the parents will probably be.</span><br/>\n<span>11. One’s attitude to life has no influence on one’s health.</span><br/>\n<span>12. Instinct can be a barrier to happiness.</span><br/>\n<span>13. Family and friends rank equally as sources of happiness.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 7-12</span></strong><br/>\n<span>The reading passage describes the opinions of Dr, Ken Aplin, Dr. Dale Roberts and Dr. Rick Speare in relation to strategies for frog conservation. Match one of the researchers A-C to each of the statements below. There may be more than one correct answer.</span></p><p><span>Write:</span></p><p><span>A – for Dr. Aplin</span></p><p><span>B – for Dr. Roberts</span></p><p><span>C – for Dr. Speare</span></p><p><span>7. Although the involvement of large numbers of people is encouraging, this does not guarantee scientifically valid data.</span><br/>\n<span>8. The development of frog-friendly backyards will help to conserve frog species.</span><br/>\n<span>9. Although it is possible that frogs will adapt to fungal and other problems in the long term, we should take precautions in case this does not occur.</span><br/>\n<span>10. As there may be many other explanations for recent frog deaths, it is not worth spending a great deal of time and money studying this fungus.</span><br/>\n<span>11. Because of the unique geography of Western Australia,most frog species in this State are not in danger of extinction.</span><br/>\n<span>12. Frogwatch has greater potential for frog observation than is possible by the scientific community.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "title": "Question 13",
+          "type": "sentence-completion",
+          "instructionHtml": "Write the appropriate letter A-D.",
+          "questions": [
+            {
+              "id": "q13",
+              "answer": "B",
+              "before": "The main purpose of Frogwatch is . A for people to collect and deliver dead or dying frogs to scientists. B for people to observe and collect information about frog populations for scientists. C for people to allow scientists onto their private land to look at frog habitats. D for people to set up ponds in their gardens as habitat for frogs",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 13</span></strong><br/>\n<span>Write the appropriate letter A-D.</span></p><p><span>13. The main purpose of Frogwatch is .</span><br/>\n<span><strong>A</strong> for people to collect and deliver dead or dying frogs to scientists.</span><br/>\n<span><strong>B</strong> for people to observe and collect information about frog populations for scientists.</span><br/>\n<span><strong>C</strong> for people to allow scientists onto their private land to look at frog habitats.</span><br/>\n<span><strong>D</strong> for people to set up ponds in their gardens as habitat for frogs.</span></p>"
         }
       ]
     },
@@ -204,70 +158,68 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "One Who Hopes",
+        "title": "Just relax",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> Language lovers, just like music lovers, enjoy variety. For the latter there’s Mozart, The Rolling Stones and Beyonce. For the former there’s English, French, Swahili, Urdu… the list is endless. But what about those poor overworked students who find learning difficult, confusing languages a drudge? Wouldn’t it put a smile on their faces if there were just one simple, easy-to-learn tongue that would cut their study time by years? Well, of course, it exists. It’s called Esperanto, and it’s been around for more than 120 years. Esperanto is the most widely spoken artificially constructed international language. The name derives from Doktoro Esperanto, the pseudonym under which L. L. Zamenhof first published his Unua Libro in 1887. The phrase itself means ‘one who hopes’. Zamenhof’s goal was to create an easy and flexible language as a universal second language to promote peace and international understanding.</span>"
+            "html": "<span><strong>A</strong>. Hypnosis is an intriguing and fascinating process. A trance-like mental state is induced in one person by another, who appears to have the power to command that person to obey instructions without question. Hypnotic experiences were described by the ancient Egyptians and Greeks, whilst references to deep sleep and anaesthesia have been found in the Bible and in the Jewish Talmud. In the mid-1700s, Franz Mesmer, an Austrian physician, developed his theory of ‘animal magnestism’, which was the belief that the cause of disease was the ‘improper distribution of invisible magnetic fluids’. Mesmer used water tubs and magnetic wands to direct these supposed fluids to his patients. In 1784, a French commission studied Mesmer’s claims, and concluded that these ‘cures’ were only imagined by the patients. However, people continued to believe in this process of ‘mesmerism’ and it was soon realised that successful results could be achieved, but without the need for magnets and water.</span>"
           },
           {
-            "html": "<span><strong>B</strong> Zamenhof, after ten years of developing his brainchild from the late 1870s to the early 1880s, had the first Esperanto grammar published in Warsaw in July 1887. The number of speakers grew rapidly over the next few decades, at first primarily in the Russian empire and Eastern Europe, then in Western Europe and the Americas, China, and Japan. In the early years, speakers of Esperanto kept in contact primarily through correspondence and periodicals, but since 1905 world congresses have been held on five continents every year except during the two World Wars. Latest estimates for the numbers of Esperanto speakers are around 2 million. Put in percentage terms, that’s about 0.03% of the world’s population – no staggering figure, comparatively speaking. One reason is that Esperanto has no official status in any country, but it is an optional subject on the curriculum of several state education systems. It is widely estimated that it can be learned in anywhere between a quarter to a twentieth of the time required for other languages.</span>"
+            "html": "<span><strong>B</strong>. The term hypnotism was first used by James Braid, a British physician who studied suggestion and hypnosis in the mid-1800s. He demonstrated that hypnosis differed from sleep, that it was a physiological response and not the result of secret powers. During this same period, James Esdaile, a Scottish doctor working in India, used hypnotism instead of anaesthetic in over 200 major surgical operations, including leg amputations. Later that century, a French neurologist, Jean Charcot, successfully experimented with hypnosis in his clinic for nervous disorders.</span>"
           },
           {
-            "html": "<span><strong>C</strong> As a constructed language, Esperanto is not genealogically related to any ethnic language. Whilst it is described as ‘a language lexically predominantly Romanic’, the phonology, grammar, vocabulary, and semantics are based on the western Indo-European languages. For those of us who are not naturally predisposed to tucking languages under our belts, it is an easy language to learn. It has 5 vowels and 23 consonants. It has one simple way of conjugating all of its verbs. Words are often made from many other roots, making the number of words which one must memorise much smaller. The language is phonetic, and the rules of pronunciation are very simple, so that everyone knows how to pronounce a written word and vice-versa, and word order follows a standard, logical pattern. Through prefixing and suffixing, Esperanto makes it easy to identify words as nouns, verbs, adjectives, adverbs, direct objects and so on, by means of easy-to-spot endings. All this makes for easy language learning. What’s more, several research studies demonstrate that studying Esperanto before another foreign language speeds up and improves the learning of the other language. This is presumably because learning subsequent foreign languages is easier than learning one’s first, while the use of a grammatically simple and culturally flexible language like Esperanto softens the blow of learning one’s first foreign language. In one study, a group of European high school students studied Esperanto for one year, then French for three years, and ended up with a significantly better command of French than a control group who had studied French for all four years.</span>"
+            "html": "<span><strong>C</strong>. Since then, scientists have shown that the state of hypnosis is a natural human behaviour, which can affect psychological, social and/or physical experiences. The effects of hypnotism depend on the ability, willingness and motivation of the person being hypnotised. Although hypnosis has been compared to dreaming and sleepwalking, it is not actually related to sleep. It involves a more active and intense mental concentration of the person being hypnotised. Hypnotised people can talk, write, and walk about and they are usually fully aware of what is being said and done.</span>"
           },
           {
-            "html": "<span><strong>D</strong> Needless to say, the language has its critics. Some point to the Eastern European features of the language as being harsh and difficult to pronounce, and argue that Esperanto has an artificial feel to it, without the flow of a natural tongue, and that by nature of its artificiality, it is impossible to become emotionally involved with the language. Others cite its lack of cultural history, indigenous literature – “no one has ever written a novel straight into Esperanto” – together with its minimal vocabulary and its inability to express all the necessary philosophical, emotional and psychological concepts.</span>"
+            "html": "<span><strong>D</strong>. There are various techniques used to induce hypnosis. The best-known is a series of simple suggestions repeated continuously in the same tone of voice. The subject is instructed to focus their attention on an object or fixed point, while being told to relax, breathe deeply, and allow the eyelids to grow heavy and close. As the person responds, their state of attention changes, and this altered state often leads to other changes. For example, the person may experience different levels of awareness, consciousness, imagination, memory and reasoning or become more responsive to suggestions. Additional phenomena may be produced or eliminated such as blushing, sweating, paralysis, muscle tension or anaesthesia. Although these changes can occur with hypnosis, none of these experiences is unique to it. People who are very responsive to hypnosis are also more responsive to suggestions when they are not hypnotised. This responsiveness increases during hypnotism. This explains why hypnosis takes only a few seconds for some, whilst other people cannot be easily hypnotised,</span>"
           },
           {
-            "html": "<span><strong>E</strong> The champions of Esperanto – Esperantists – disagree. They claim that it is a language in which a great body of world literature has appeared in translation: in poetry, novels, literary journals, and, to rebut the accusation that it is not a ‘real’ language, point out that it is frequently used at international meetings which draw hundreds and thousands of participants. Moreover, on an international scale, it is most useful – and fair – for neutral communication. That means that communication through Esperanto does not give advantages to the members of any particular people or culture, but provides an ethos of equality of rights, tolerance and true internationalism.</span>"
+            "html": "<span><strong>E</strong>. It is a common misunderstanding that hypnotists are able to force people to perform criminal or any other acts against their will. In fact, subjects can resist suggestions, and they retain their ability to distinguish right from wrong. This misunderstanding is often the result of public performances where subjects perform ridiculous or highly embarrassing actions at the command of the hypnotist. These people are usually instructed not to recall their behaviour after re-emerging from the hypnotic state, so it appears that they were powerless while hypnotised. The point to remember, however, is that these individuals chose to participate, and the success of hypnotism depends on the willingness of a person to be hypnotised.</span>"
           },
           {
-            "html": "<span><strong>F</strong> Esperantists further claim that Esperanto has the potential – were it universally taught for a year or two throughout the world – to empower ordinary people to communicate effectively worldwide on a scale that far exceeds that which is attainable today by only the most linguistically brilliant among us. It offers the opportunity to improve communication in business, diplomacy, scholarship and other fields so that those who speak many different native languages will be able to participate fluently in international conferences and chat comfortably with each other after the formal presentations are made. Nowadays that privilege is often restricted to native speakers of English and those who have special talents and opportunities for learning English as a foreign language.</span>"
+            "html": "<span><strong>F</strong>. Interestingly, there are different levels of hypnosis achievable. Thus deep hypnosis can be induced to allow anaesthesia for surgery, childbirth or dentistry. This contrasts to a lighter state of hypnosis, which deeply relaxes the patient who will then follow simple directions. This latter state may be used to treat mental health problems, as it allows patients to feel calm while simultaneously thinking about distressing feelings or painful memories. Thus patients can learn new responses to situations or come up with solutions to problems. This can help recovery from psychological conditions such as anxiety, depression or phobias. Sometimes, after traumatic incidents, memory of the events may be blocked. For example, some soldiers develop amnesia [loss of memory] as a result of their experiences during wartime. Through hypnosis these repressed memories can be retrieved and treated. A variation of this treatment involves age regression, when the hypnotist takes the patient back to a specific age. In this way patients may remember events and feelings from that time, which may be affecting their current well-being.</span>"
           },
           {
-            "html": "<span><strong>G</strong> What Esperanto does offer in concrete terms is the potential of saving billions of dollars which are now being spent on translators and interpreters, billions which would be freed up to serve the purposes of governments and organisations that spend so much of their resources to change words from one language into the words of others. Take, for example, the enormously costly conferences, meetings and documentation involved in the European Union parliamentary and administrative procedures – all funded, essentially, by tax payers. And instead of the World Health Organisation, and all NGOs for that matter, devoting enormous sums to provide interpreters and translations, they would be able to devote those huge amounts of money to improving the health of stricken populations throughout the world.</span>"
+            "html": "<span><strong>G</strong>. Physicians also have made use of the ability of a hypnotised person to remain in a given position for long periods of time. In one case, doctors had to graft skin onto a patient’s badly damaged foot. First, skin from the person’s abdomen was grafted onto his arm; then the graft was transferred to his foot. With hypnosis, the patient held his arm tightly in position over his abdomen for three weeks, then over his foot for four weeks. Even though these positions were unusual, the patient at no time felt uncomfortable!</span>"
+          },
+          {
+            "html": "<span><strong>H</strong>. Hypnosis occasionally has been used with witnesses and victims of crime to enable people to remember important clues, such as a criminal’s physical appearance or other significant details that might help to solve a crime. However, as people can both lie and make mistakes while hypnotised, the use of hypnotism in legal situations can cause serious problems. Also hypnosis cannot make a person divulge secret information if they don’t want to. This was confirmed by the Council on Scientific Affairs of the American Medical Association, which, in 1985 reported that memories refreshed through hypnosis may include inaccurate information, false memories, and confabulation (fact and fantasy combined).</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-19",
+          "title": "Questions 14-18",
           "type": "matching-headings",
-          "instructionHtml": "Reading passage has seven paragraphs, A – G. Choose the correct heading for paragraphs B – G from the list of headings below. Write the correct number i – ix in spaces 14-19 below.",
+          "instructionHtml": "The passage has eight sections A-H. Choose the most suitable heading for sections B-F from the list of headings below. Write the appropriate numbers (i-x).",
           "questions": [
             {
               "id": "q14",
-              "answer": "v",
-              "textHtml": "Paragraph B"
+              "answer": "iii",
+              "textHtml": "Section B"
             },
             {
               "id": "q15",
-              "answer": "viii",
-              "textHtml": "Paragraph C"
+              "answer": "ii",
+              "textHtml": "Section C"
             },
             {
               "id": "q16",
-              "answer": "iii",
-              "textHtml": "Paragraph D"
+              "answer": "vi",
+              "textHtml": "Section D"
             },
             {
               "id": "q17",
-              "answer": "vi",
-              "textHtml": "Paragraph E"
+              "answer": "vii",
+              "textHtml": "Section E"
             },
             {
               "id": "q18",
-              "answer": "i",
-              "textHtml": "Paragraph F"
-            },
-            {
-              "id": "q19",
-              "answer": "ii",
-              "textHtml": "Paragraph G"
+              "answer": "ix",
+              "textHtml": "Section F List of Headings i. Use of hypnotism in criminal cases ii. The normality of hypnotised subjects’ behaviour iii. Early medical experiments with hypnotism iv. Early association of hypnosis with psychology v. Dangers of hypnotism vi. How to hypnotise vii. Hypnosis and free will viii. Difference between mesmerism and hypnotism ix. Therapeutic uses of hypnosis x. Origins of hypnosis (Example)"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading passage has seven paragraphs, A – G. Choose the correct heading for paragraphs B – G from the list of headings below. Write the correct number i – ix in spaces 14-19 below.</span></p><p><span>i. A non-exclusive language</span><br/>\n<span>ii. Fewer languages, more results</span><br/>\n<span>iii. Language is personal</span><br/>\n<span>iv. What’s fashionable in language</span><br/>\n<span>v. From the written word to the spoken word</span><br/>\n<span>vi. A real language</span><br/>\n<span>vii. Harmony through language</span><br/>\n<span>viii. The mechanics of a language</span><br/>\n<span>ix. The challenge of translation</span></p><p><span>14. Paragraph B</span><br/>\n<span>15. Paragraph C</span><br/>\n<span>16. Paragraph D</span><br/>\n<span>17. Paragraph E</span><br/>\n<span>18. Paragraph F</span><br/>\n<span>19. Paragraph G</span></p>",
+          "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>The passage has eight sections A-H. Choose the most suitable heading for sections B-F from the list of headings below. Write the appropriate numbers (i-x).</span></p><p><span>14. Section B</span><br/>\n<span>15. Section C</span><br/>\n<span>16. Section D</span><br/>\n<span>17. Section E</span><br/>\n<span>18. Section F</span></p><p><strong><span>List of Headings</span></strong><br/>\n<span>i. Use of hypnotism in criminal cases</span><br/>\n<span>ii. The normality of hypnotised subjects’ behaviour</span><br/>\n<span>iii. Early medical experiments with hypnotism</span><br/>\n<span>iv. Early association of hypnosis with psychology</span><br/>\n<span>v. Dangers of hypnotism</span><br/>\n<span>vi. How to hypnotise</span><br/>\n<span>vii. Hypnosis and free will</span><br/>\n<span>viii. Difference between mesmerism and hypnotism</span><br/>\n<span>ix. Therapeutic uses of hypnosis</span><br/>\n<span>x. Origins of hypnosis (Example)</span></p>",
           "options": [
             "i",
             "ii",
@@ -277,77 +229,120 @@ const test: PracticeTest = {
             "vi",
             "vii",
             "viii",
-            "ix"
+            "ix",
+            "x"
           ]
         },
         {
-          "title": "Questions 20-22",
-          "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter A, B, C or D.",
+          "title": "Questions 19-23",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes on the history of hypnosis using NO MORE THAN THREE WORDS from the passage.",
           "questions": [
             {
+              "id": "q19",
+              "answer": "Bible",
+              "before": "…………. Even when Mesmer’s",
+              "after": ""
+            },
+            {
               "id": "q20",
-              "answer": "C",
-              "textHtml": "What advantage is there to learning Esperanto as one’s first foreign language?",
-              "options": [
-                "Its pronunciation rules follow those of most European languages",
-                "There are no grammar rules to learn",
-                "It can make the learning of other foreign languages less complicated",
-                "Its verbs are not conjugated"
-              ]
+              "answer": "Magnets and water",
+              "before": "………….. were not used, successful results occurred without them. Braid identified hypnosis as a natural",
+              "after": ""
             },
             {
               "id": "q21",
-              "answer": "D",
-              "textHtml": "What do its critics say of Esperanto?",
-              "options": [
-                "It is only used in artificial situations",
-                "It requires emotional involvement",
-                "It cannot translate works of literature",
-                "It lacks depth of expression"
-              ]
+              "answer": [
+                "Physiological",
+                "human"
+              ],
+              "before": "……….. response, rather than magical or mystical. Early psychological studies showed the difference between sleep and hypnosis. Successful hypnosis requires the subject’s active",
+              "after": ""
             },
             {
               "id": "q22",
-              "answer": "B",
-              "textHtml": "How could Esperanto help on a global level?",
-              "options": [
-                "It would eliminate the need for conferences",
-                "More aid money would reach those who need it",
-                "The world population would be speaking only one language",
-                "More funds could be made available for learning foreign languages"
-              ]
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 20-22</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>20. What advantage is there to learning Esperanto as one’s first foreign language?</span><br/>\n<span><strong>A</strong> Its pronunciation rules follow those of most European languages.</span><br/>\n<span><strong>B</strong> There are no grammar rules to learn.</span><br/>\n<span><strong>C</strong> It can make the learning of other foreign languages less complicated.</span><br/>\n<span><strong>D</strong> Its verbs are not conjugated.</span></p><p><span>21. What do its critics say of Esperanto?</span><br/>\n<span><strong>A</strong> It is only used in artificial situations.</span><br/>\n<span><strong>B</strong> It requires emotional involvement.</span><br/>\n<span><strong>C</strong> It cannot translate works of literature.</span><br/>\n<span><strong>D</strong> It lacks depth of expression.</span></p><p><span>22. How could Esperanto help on a global level?</span><br/>\n<span><strong>A</strong> It would eliminate the need for conferences.</span><br/>\n<span><strong>B</strong> More aid money would reach those who need it.</span><br/>\n<span><strong>C</strong> The world population would be speaking only one language.</span><br/>\n<span><strong>D</strong> More funds could be made available for learning foreign languages.</span></p>"
-        },
-        {
-          "title": "Questions 23-26",
-          "type": "yes-no-notgiven",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In spaces 23-26 below, write",
-          "questions": [
-            {
-              "id": "q23",
-              "answer": "Yes",
-              "textHtml": "Supporters of Esperanto say it gives everyone an equal voice"
+              "answer": [
+                "mental concentration",
+                "concentration"
+              ],
+              "before": "…………. Consequently subjects can speak or move around and are",
+              "after": ""
             },
             {
+              "id": "q23",
+              "answer": [
+                "fully aware",
+                "aware"
+              ],
+              "before": "………… of their surroundings",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 19-23</span></strong><br/>\n<span>Complete the notes on the history of hypnosis using <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><p><span>References to hypnotism can be found in both the Talmud and the (19) …………. Even when Mesmer’s</span><br/>\n<span>(20) ………….. were not used, successful results occurred without them. Braid identified hypnosis as a natural</span></p><p><span>(21) ……….. response, rather than magical or mystical. Early psychological studies showed the difference between sleep and hypnosis. Successful hypnosis requires the subject’s active (22) …………. Consequently subjects can speak or move around and are (23) ………… of their surroundings.</span></p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 24-28",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter A-D.",
+          "questions": [
+            {
               "id": "q24",
-              "answer": "No",
-              "textHtml": "Esperanto is the only artificially-constructed language"
+              "answer": "A",
+              "textHtml": "In order to induce hypnosis, the hypnotist will",
+              "options": [
+                "encourage the person to relax using a repetitively even tone of voice",
+                "say a specific set of words in a special tone of voice",
+                "say any words but in a particular tone of voice",
+                "encourage the person to relax while focussing on a slowly moving object"
+              ]
             },
             {
               "id": "q25",
-              "answer": "Not given",
-              "textHtml": "Esperanto can be learned as part of a self-study course"
+              "answer": "D",
+              "textHtml": "Hypnotised subjects can be instructed to",
+              "options": [
+                "do something they have previously said is against their wishes",
+                "demonstrate physical strength they would normally not have",
+                "reveal confidential information against their will",
+                "do something that they would normally be opposed to doing"
+              ]
             },
             {
               "id": "q26",
-              "answer": "Yes",
-              "textHtml": "Esperanto can be used equally in formal and casual situations"
+              "answer": "B",
+              "textHtml": "Past events are recalled under hypnosis",
+              "options": [
+                "to entertain the hypnotist",
+                "to allow subjects to reassess them without distress",
+                "to help the subjects improve their memories",
+                "to make the subject feel younger"
+              ]
+            },
+            {
+              "id": "q27",
+              "answer": "D",
+              "textHtml": "After surgery, hypnosis may be used",
+              "options": [
+                "to make drugs unnecessary",
+                "to keep the patient mobile",
+                "to make the patient forget to move",
+                "to minimise patient’s discomfort while immobile"
+              ]
+            },
+            {
+              "id": "q28",
+              "answer": "C",
+              "textHtml": "The American Medical Association reported that",
+              "options": [
+                "people lie when giving evidence under hypnosis",
+                "people should be hypnotised before giving evidence",
+                "evidence given when hypnotised may be unreliable",
+                "secret evidence can be obtained through hypnosis"
+              ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 23-26 below, write</span></p><p><span><strong>YES</strong>                           if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                             if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>           if it is impossible to say what the writer thinks about this</span></p><p><span>23. Supporters of Esperanto say it gives everyone an equal voice.</span><br/>\n<span>24. Esperanto is the only artificially-constructed language.</span><br/>\n<span>25. Esperanto can be learned as part of a self-study course.</span><br/>\n<span>26. Esperanto can be used equally in formal and casual situations.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 24-28</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>24. In order to induce hypnosis, the hypnotist will</span><br/>\n<span><strong>A</strong> encourage the person to relax using a repetitively even tone of voice.</span><br/>\n<span><strong>B</strong> say a specific set of words in a special tone of voice.</span><br/>\n<span><strong>C</strong> say any words but in a particular tone of voice.</span><br/>\n<span><strong>D</strong> encourage the person to relax while focussing on a slowly moving object.</span></p><p><span>25. Hypnotised subjects can be instructed to</span><br/>\n<span><strong>A</strong> do something they have previously said is against their wishes.</span><br/>\n<span><strong>B</strong> demonstrate physical strength they would normally not have.</span><br/>\n<span><strong>C</strong> reveal confidential information against their will.</span><br/>\n<span><strong>D</strong> do something that they would normally be opposed to doing.</span></p><p><span>26. Past events are recalled under hypnosis</span><br/>\n<span><strong>A</strong> to entertain the hypnotist.</span><br/>\n<span><strong>B</strong> to allow subjects to reassess them without distress.</span><br/>\n<span><strong>C</strong> to help the subjects improve their memories.</span><br/>\n<span><strong>D</strong> to make the subject feel younger.</span></p><p><span>27. After surgery, hypnosis may be used</span><br/>\n<span><strong>A</strong> to make drugs unnecessary.</span><br/>\n<span><strong>B</strong> to keep the patient mobile.</span><br/>\n<span><strong>C</strong> to make the patient forget to move.</span><br/>\n<span><strong>D</strong> to minimise patient’s discomfort while immobile.</span></p><p><span>28. The American Medical Association reported that</span><br/>\n<span><strong>A</strong> people lie when giving evidence under hypnosis.</span><br/>\n<span><strong>B</strong> people should be hypnotised before giving evidence.</span><br/>\n<span><strong>C</strong> evidence given when hypnotised may be unreliable.</span><br/>\n<span><strong>D</strong> secret evidence can be obtained through hypnosis.</span></p>"
         }
       ]
     },
@@ -356,153 +351,159 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "LONG-TERM FORECAST: HOT AND DRY",
+        "title": "Kids and Sport",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span><strong>A</strong> Melting land ice in the Arctic is set to cause a global rise in sea levels, leading to disastrous effects for both man and wildlife. Many species worldwide are threatened with extinction, and low-lying islands and land masses will disappear entirely. But the havoc wreaked by the effect of greenhouse gases won’t be confined to just too much water, but the absence of it, as well. In other words, desertification. A decrease in the total amount of rainfall in arid and semi-arid areas could increase the total area of drylands worldwide, and thus the total amount of land potentially at risk from desertification.</span>"
+            "html": "<span>Two Italian psychologists, Vincenzo Marte and Giovanni Notarnicola, describe the traditional spontaneous practice of sport by children -climbing trees, riding a bicycle along quiet roads, racing their friends across the fields – as an activity of freedom, a special activity of discovery and learning. In the case of free sporting activity, the child’s time is given up entirely to the activity, as can be seen in the endless games of football young children play, which may then be followed by bicycle races and/or a swim in the river, for example.</span>"
           },
           {
-            "html": "<span><strong>B</strong> Desertification is officially recognised as land degradation in arid, semi-arid and dry sub-humid areas resulting from various factors including climatic variations and human activities. This degradation of formerly productive land is a complex process. It involves multiple causes, and it proceeds at varying rates in different climates. Desertification may intensify a general climatic trend, or initiate a change in local climate, both leading towards greater aridity. The more arid conditions associated with desertification accelerate the depletion of vegetation and soils. Land degradation occurs all over the world, but it is only referred to as desertification when it takes place in drylands. This is because these areas are especially prone to more permanent damage as different areas of degraded land spread and merge together to form desert-like conditions.</span>"
+            "html": "<span>Today, however, children’s discovery of sport has become very different. It is often parents who take their children, when they are very young, to the swimming pool or to the sports grounds or sports halls. Children’s first experience of sport thus takes place as an organised activity, which they see as organisation of their free time. By organising sport for children, and often deciding for them, we unfortunately create an imbalance preventing them from managing their own play/sports time, thus denying them an opportunity of autonomy and independence as was possible in the past.</span>"
           },
           {
-            "html": "<span><strong>C</strong> Global warming brought about by increasing greenhouse gas levels in the atmosphere is expected to increase the variability of weather conditions and extreme events. Many dryland areas face increasingly low and erratic rainfalls, coupled with soil erosion by wind and the drying-up of water resources through increased regional temperatures. Deforestation can also reduce rainfall in certain areas, increasing the threat of desertification. It is not yet possible, despite sophisticated technology, to identify with an acceptable degree of reliability those parts of the Earth where desertification will occur. Existing drylands, which cover over 40% of the total land area of the world, most significantly in Africa and Asia, will probably be most at risk from climate change. These areas already experience low rainfall, and any that falls is usually in the form of short, erratic, high-intensity storms. In addition, such areas also suffer from land degradation due to over-cultivation, overgrazing, deforestation and poor irrigation practices.</span>"
+            "html": "<span>The first possible reason for the imbalance in the practice of sport by children is therefore linked to the urban society we live in today. We need not regret the past; it is rather a question of knowing how to recreate this freedom in our towns and in the country, where sport is increasingly based on organised leisure activities. Doing one sport is now the rule in clubs. Sports grounds are often on the outskirts of cities, and are overcrowded and invariably enclosed, while recreational areas such as parks or hard-packed surfaces, are very few and far between. How can we find the balance of a varied and spontaneous relationship to sport under such conditions?</span>"
           },
           {
-            "html": "<span><strong>D</strong> It is a misconception that droughts cause desertification. Droughts are common in arid and semi-arid lands. Well-managed lands can recover from drought when the rains return. Continued land abuse during droughts, however, increases land degradation. Nor does desertification occur in linear, easily definable patterns. Deserts advance erratically, forming patches on their borders. Areas far from natural deserts can degrade quickly to barren soil, rock, or sand through poor land management. The presence of a nearby desert has no direct relationship to desertification. Unfortunately, an area undergoing desertification is brought to public attention only after the process is well underway. Often little or no data are available to indicate the previous state of the ecosystem or the rate of degradation. Scientists still question whether desertification, as a process of global change, is permanent or how and when it can be halted or reversed.</span>"
+            "html": "<span>Some interesting answers have already been suggested, which take into account the need to recreate this freedom. Marte and Notarnicola have shown that children who have experienced such freedom were considered by sports trainers to be more capable when they joined organised sport aged 12-13. Their study concluded that no formal training, no matter how early in life it took place, could replace these first experiences.</span>"
           },
           {
-            "html": "<span><strong>E</strong> But desertification will not be limited to the drylands of Africa and Asia. According to the environmental organisation Greenpeace, the Mediterranean will suffer substantially, too. If current trends in emissions of greenhouse gases continue, global temperatures are expected to rise faster over the next century than over any time during the last 10,000 years. Significant uncertainties surround predictions of regional climate changes, but it is likely that the Mediterranean region will also warm significantly, increasing the frequency and severity of droughts across the region. As the world warms, global sea levels will rise as oceans expand and glaciers melt. Around much of the Mediterranean basin, sea levels could rise by close to 1m by 2100. As a result, some low-lying coastal areas would be lost through flooding or erosion, while rivers and coastal aquifers would become more salty. The worst affected areas will be the Nile Delta, Venice in Italy and Thessaloniki in Greece, two major cities where local subsidence means that sea levels could rise by at least one-and-a-half times as much as elsewhere.</span>"
+            "html": "<span>Measures which would reverse this imbalance include: increasing the number of sports facilities which encourage self-organisation by the children, and also setting up unstructured playing areas with little in the way of equipment. Areas where street sport can be practised need to be established and sports clubs which offer multidisciplinary sports training should be supported. Children should be offered pre-school activities where they can discover different sports.</span>"
           },
           {
-            "html": "<span><strong>F</strong> The consequences of all this, says Greenpeace, are far-reaching, and the picture is a gloomy one. Livestock production would suffer due to a deterioration in the quality of rangeland. Yields of grains and other crops could decrease substantially across the Mediterranean region due to increased frequency of drought. Crop production would be further threatened by increases in competition for water and the prevalence of pests and diseases and land loss through desertification and sea-level rise. The combination of heat and pollution would lead to an upsurge in respiratory illness among urban populations, while extreme weather events could increase death and injury rates. Water shortages and damaged infrastructure would increase the risk of cholera and dysentery, while higher temperatures would increase the incidence of infectious diseases, such as malaria and dengue fever. Serious social disruption could occur as millions are forced from their homelands as a result of desertification, poor harvests and sea-level rise, while international disputes over shared water resources could turn into conflict.</span>"
+            "html": "<span>For children, sports remain a special kind of discovery and learning, no matter how much adults limit and control the practice of early intensive training. Here is the second example of imbalance in children’s sport. Today, sport is practised with early intensive training from the youngest possible age. Sometimes this is even before the age of six and is usually one specific sport within an organised framework. When adult-style competitions are introduced at an early age, the conditions which encourage a balanced development of children through sport are no longer respected.</span>"
           },
           {
-            "html": "<span><strong>G</strong> Future climate change could critically undermine efforts for sustainable development in the Mediterranean region through its impacts on the environment and social and economic well-being. While in many respects climate change exacerbates existing problems instead of creating new ones, the sheer magnitude of the potential problem means it cannot be ignored. There is some scope for adaptation, but the fact that many measures would be beneficial irrespective of climate change suggests that radical changes in our policies and practices will be needed. It is also vital that developed countries meet their obligations to assist adaptation in developing countries through access to know-how and financial assistance. Ultimately, however, the long-term sustainability of the Mediterranean region requires keeping climate change within tolerable bounds. Current understanding of safe limits points to the need for prompt international agreement – and action – to make the drastic cuts in emissions of greenhouse gases required to stabilise atmospheric concentrations of these gases.</span>"
+            "html": "<span>Today, early intensive training is much more widely on offer. Many sports organisations claim that they are forced to do this type of training because of what is called ‘the golden age’ to acquire the physical skills. It is considered unthinkable for a young skater or gymnast to miss this period, because if they did so, they would fall so far behind the best, that they could never hope to catch up. Faced with this demand for early ability, it is important that a safety net is put in place to maximise the benefits and minimise the disadvantages of such intensive training.</span>"
+          },
+          {
+            "html": "<span>Why do very young children give up sport? The most common reason for leaving a sport is to change to another sport, which in itself is no bad thing. However, children may leave a sport because they believe that they have received too much criticism and too many negative assessments. We know that young children, up to the age of eleven or twelve, cannot assess their own level of competence. They believe that if they are making an effort, then this in itself is a sign of their competence. We also know that young children are particularly sensitive to criticism from adults or peers. Trainers must therefore pay particular attention to this and avoid excessive criticism. They should also avoid any strategies that discriminate against the child: for example in team sports, naming first choice players and reserves. It should be remembered that primary school children’s main desire is to have fun and socialise. The desire to improve and become a good competitor will develop later. This brief example shows that knowledge of child development is indispensable for those who take care of children at this age. It is up to trainers, sports doctors and psychologists to implement the measures necessary to limit this excessive early practice of sport by children.</span>"
+          },
+          {
+            "html": "<span>A third source of imbalance which threatens children and sport is parental attitudes. The American psychologist, Rainer Martens, emphasises that, ‘too often children’s joy of sports is destroyed by adults who want glory through victory.’ Several studies have shown that parental pressure is high on the list of reasons why children leave sport. The presence of mothers and fathers can prevent children from considering sport as their own, where they can learn to master technical difficulties, manage interpersonal relations, and experience success and failure. As Martens highlights, ‘adults are solely to blame if joy and sadness become synonymous, to a child, with victory or defeat.’</span>"
+          },
+          {
+            "html": "<span>If the children make the decisions, this ensures that they enjoy being a child in sport, and are relaxed with their development as human beings. We need only observe the activity in a school playground, where games are organised on an improvised playing field, to understand that children show genetic traces of the hunter instinct, which naturally leads them to physical activity. Sport is included as something they want, and which they identify both as a means of release and as a form of self-expression. By acting as a route to self-discovery, sport gives children both the opportunity to know their limits, and to acquire tools which will allow them to surpass them. Playing sport is a source of learning, progress and pleasure; an additional way of enriching life.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-32",
+          "title": "Questions 29-36",
           "type": "sentence-completion",
-          "instructionHtml": "Complete the flow-chart below. Write NO MORE THAN THREE WORDS for each answer.",
+          "instructionHtml": "Complete the summary below using NO MORE THAN TWO WORDS from the passage.",
           "questions": [
             {
-              "id": "q27",
-              "answer": "Varying rates",
-              "before": "",
-              "after": ""
-            },
-            {
-              "id": "q28",
-              "answer": "Intensify",
-              "before": "",
-              "after": ""
-            },
-            {
               "id": "q29",
-              "answer": "Initiate",
-              "before": "",
+              "answer": "Freedom",
+              "before": "…………… Because today sport is often decided and",
               "after": ""
             },
             {
               "id": "q30",
-              "answer": "Aridity",
-              "before": "",
+              "answer": "Organized",
+              "before": "…………… by parents, children lose their autonomy. A first imbalance occurs because",
               "after": ""
             },
             {
               "id": "q31",
-              "answer": "Vegetation",
-              "before": "",
+              "answer": [
+                "Sports grounds",
+                "sports halls"
+              ],
+              "before": "………….. are out of the city and often crowded, whilst there are a limited number of open recreational areas where children can play spontaneously. Children should discover and learn about sports themselves. The second imbalance occurs because they start early",
               "after": ""
             },
             {
               "id": "q32",
-              "answer": "Soils",
-              "before": "",
+              "answer": [
+                "Intensive",
+                "sports"
+              ],
+              "before": "…………….. training very young and participate in only",
               "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the flow-chart below. Write <strong>NO MORE THAN THREE WORDS</strong> for each answer.</span><br/>\n<span><img alt=\"\" class=\"wp-image-12096 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 335px) 100vw, 335px\" decoding=\"async\" fetchpriority=\"high\" height=\"286\" src=\"/ielts-website/pics/reading/imported/test-304-1.webp\" width=\"335\"/></span></p>",
-          "wordLimit": 3
-        },
-        {
-          "title": "Questions 33-36",
-          "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has seven paragraphs, A – G. Which paragraph contains the following information? Write the correct letter A – G in spaces 33 – 36 below.",
-          "questions": [
+            },
             {
               "id": "q33",
-              "answer": "G",
-              "textHtml": "Human intervention is a potential solution to potential disaster"
+              "answer": "One",
+              "before": "………….. specific activity. Children often give up a sport because of negative",
+              "after": ""
             },
             {
               "id": "q34",
-              "answer": "E",
-              "textHtml": "The rate of climate change is set to accelerate dramatically"
+              "answer": [
+                "Assessments",
+                "criticism"
+              ],
+              "before": "…………….. It is important that trainers avoid excessive criticism of young children, who should have",
+              "after": ""
             },
             {
               "id": "q35",
-              "answer": "D",
-              "textHtml": "There is seldom enough information available in some areas to track how fast the effects of climate change have happened in the past"
+              "answer": "Fun",
+              "before": "……………… at sporting activities. Another reason that children may give up sport is the attitudes of their parents. This third imbalance occurs as parents exert",
+              "after": ""
             },
             {
               "id": "q36",
-              "answer": "B",
-              "textHtml": "Desertification is attributable to a number of factors"
+              "answer": "Pressure",
+              "before": "………….. on children to win rather than to enjoy sport",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 33-36</span></strong><br/>\n<span>Reading passage has seven paragraphs, A – G. Which paragraph contains the following information? Write the correct letter A – G in spaces 33 – 36 below.</span></p><p><span>33. Human intervention is a potential solution to potential disaster.</span><br/>\n<span>34. The rate of climate change is set to accelerate dramatically.</span><br/>\n<span>35. There is seldom enough information available in some areas to track how fast the effects of climate change have happened in the past.</span><br/>\n<span>36. Desertification is attributable to a number of factors.</span></p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G"
-          ]
+          "legendHtml": "<p><strong><span>Questions 29-36</span></strong><br/>\n<span>Complete the summary below using <strong>NO MORE THAN TWO WORDS</strong> from the passage.</span></p><p><span>Marte &amp; Notarnicola define the spontaneous sporting games of children as activities of (29) …………… Because today sport is often decided and (30) …………… by parents, children lose their autonomy. A first imbalance occurs because (31) ………….. are out of the city and often crowded, whilst there are a limited number of open recreational areas where children can play spontaneously.</span></p><p><span>Children should discover and learn about sports themselves. The second imbalance occurs because they start early (32) …………….. training very young and participate in only (33) ………….. specific activity. Children often give up a sport because of negative (34) …………….. It is important that trainers avoid excessive criticism of young children, who should have (35) ……………… at sporting activities. Another reason that children may give up sport is the attitudes of their parents. This third imbalance occurs as parents exert (36) ………….. on children to win rather than to enjoy sport.</span></p>",
+          "wordLimit": 2
         },
         {
           "title": "Questions 37-40",
-          "type": "matching-features",
-          "instructionHtml": "Complete the summary with the list of words A – I below. Write the correct letter A – I in spaces 37-40 below.",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter A-D.",
           "questions": [
             {
               "id": "q37",
-              "answer": "E",
-              "textHtml": "……………… Another consequence of global warming is"
+              "answer": "C",
+              "textHtml": "Children’s expression of this ‘freedom’ is important because",
+              "options": [
+                "it allows them to be lazy",
+                "it means they can learn to swim and ride a bike",
+                "it puts them in charge of what they do and when they do it",
+                "it relieves the parents from transporting their children to sports"
+              ]
             },
             {
               "id": "q38",
-              "answer": "G",
-              "textHtml": "…………….. which affects areas known as"
+              "answer": "B",
+              "textHtml": "Ways of allowing children to develop this ‘freedom’ include",
+              "options": [
+                "making transport to sports clubs free",
+                "offering a range of different sports in each sports club",
+                "offering sporting tuition to pre-school children",
+                "making children play outside regularly"
+              ]
             },
             {
               "id": "q39",
-              "answer": "C",
-              "textHtml": "……………….. These areas are subject to irregular weather patterns, but also suffer from human intervention or neglect, such as inadequate or inefficient"
+              "answer": "D",
+              "textHtml": "To encourage young children to continue with sport, we should give them",
+              "options": [
+                "accurate feedback about their ability at sport",
+                "experience of failure as well as success",
+                "experience of being reserves as well as first choice team members",
+                "the opportunity to mix socially with their peers at sport"
+              ]
             },
             {
               "id": "q40",
-              "answer": "A",
-              "textHtml": "……….. systems. A. irrigation B. cooling C. drylands D. cause E. loss F. abuse G. desertification H. deserts I. emission"
+              "answer": "B",
+              "textHtml": "The author believes that",
+              "options": [
+                "children’s sport should be organised by experts, not parents",
+                "playing sport is an important part of children’s development",
+                "children need to learn that sport is about losing as well as winning",
+                "children can be psychologically and physiologically damaged by sport"
+              ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Complete the summary with the list of words A – I below. Write the correct letter A – I in spaces 37-40 below.</span></p><p><span>Climate change may have catastrophic effects on the human and animal world. As glaciers melt, sea levels will rise, causing extensive flooding and land (37) ……………… Another consequence of global warming is (38) …………….. which affects areas known as (39) ……………….. These areas are subject to irregular weather patterns, but also suffer from human intervention or neglect, such as inadequate or inefficient (40) ……….. </span><span>systems.</span></p><p><span>A. irrigation</span><br/>\n<span>B. cooling</span><br/>\n<span>C. drylands</span><br/>\n<span>D. cause</span><br/>\n<span>E. loss</span><br/>\n<span>F. abuse</span><br/>\n<span>G. desertification</span><br/>\n<span>H. deserts</span><br/>\n<span>I. emission</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I"
-          ]
+          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>37. Children’s expression of this ‘freedom’ is important because</span><br/>\n<span><strong>A</strong> it allows them to be lazy.</span><br/>\n<span><strong>B</strong> it means they can learn to swim and ride a bike.</span><br/>\n<span><strong>C</strong> it puts them in charge of what they do and when they do it.</span><br/>\n<span><strong>D</strong> it relieves the parents from transporting their children to sports.</span></p><p><span>38. Ways of allowing children to develop this ‘freedom’ include</span><br/>\n<span><strong>A</strong> making transport to sports clubs free.</span><br/>\n<span><strong>B</strong> offering a range of different sports in each sports club.</span><br/>\n<span><strong>C</strong> offering sporting tuition to pre-school children.</span><br/>\n<span><strong>D</strong> making children play outside regularly.</span></p><p><span>39. To encourage young children to continue with sport, we should give them</span><br/>\n<span><strong>A</strong> accurate feedback about their ability at sport.</span><br/>\n<span><strong>B</strong> experience of failure as well as success.</span><br/>\n<span><strong>C</strong> experience of being reserves as well as first choice team members.</span><br/>\n<span><strong>D</strong> the opportunity to mix socially with their peers at sport.</span></p><p><span>40. The author believes that</span><br/>\n<span><strong>A</strong> children’s sport should be organised by experts, not parents.</span><br/>\n<span><strong>B</strong> playing sport is an important part of children’s development.</span><br/>\n<span><strong>C</strong> children need to learn that sport is about losing as well as winning.</span><br/>\n<span><strong>D</strong> children can be psychologically and physiologically damaged by sport.</span></p>"
         }
       ]
     }

@@ -1,428 +1,545 @@
-import type { PracticeTest, TestPart } from '../../lib/tests/schema';
+import type { PracticeTest } from '../../lib/tests/schema';
 
-/* Academic Reading — Full Test 3. Original material, full exam length
-   (~800 words/passage), realistic type weighting, no diagram. */
-
-// ── Passage 1 — The First Farmers (Q1-13) ───────────────────────────────────
-const passage1: TestPart = {
-  label: 'Passage 1',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 1',
-    title: 'The First Farmers',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 1-13</strong>, which are based on Reading Passage 1 below.',
-    paragraphs: [
-      { label: 'A', html: 'For the greater part of human history, our ancestors fed themselves by hunting wild animals and gathering wild plants. They moved from place to place with the seasons, following the herds and harvesting whatever ripened, and they lived in small, mobile groups. Then, around twelve thousand years ago, something changed that would transform human life more completely than almost any event before or since: in a handful of places, quite independently, people began to farm. They planted seeds, tended the growing crops and bred animals in captivity, and in doing so they set humanity on the road to villages, cities and everything that followed.' },
-      { label: 'B', html: 'The earliest and best-documented of these transformations took place in the Fertile Crescent, a broad arc of well-watered land stretching from the eastern Mediterranean coast round to the Persian Gulf. Here, some ten to twelve thousand years ago, people began to cultivate wild wheat and barley and to keep sheep, goats, pigs and cattle. Farming was not, however, invented only once. It arose separately in China, where rice and millet were domesticated; in Central America, the home of maize, beans and squash; in the Andes, with the potato; and in still other regions. That so many peoples, with no contact between them, hit upon the same idea suggests that farming was a response to pressures and opportunities that many human groups faced at around the same time.' },
-      { label: 'C', html: 'Exactly why people took up farming remains a matter of debate, for at first glance the switch seems a poor bargain. Studies of ancient skeletons show that early farmers were often less healthy than the hunter-gatherers who came before them. They were frequently shorter, showed more signs of disease and of wear from repetitive labour, and depended on a narrower range of foods, which left them vulnerable when a single crop failed. A hunter-gatherer, by contrast, enjoyed a varied diet and, according to some estimates, worked fewer hours to obtain it. Why, then, would anyone choose the harder, hungrier life of the field?' },
-      { label: 'D', html: 'Part of the answer is that no one chose it, at least not as a deliberate plan. The change happened so slowly, over hundreds of generations, that the people living through it can hardly have noticed the direction in which they were travelling. A group that gathered wild grains might, without any grand intention, begin to protect the most productive plants, then to sow a few seeds near their camp, then to return each year to tend them. Each small step made sense on its own terms. Only in hindsight do these steps add up to a revolution. Climate change at the end of the last ice age, which made some regions warmer and wetter, may also have created conditions in which wild grains grew thickly enough to be worth harvesting in bulk.' },
-      { label: 'E', html: 'Whatever its causes, farming had one overwhelming consequence: it produced more food from a given area of land than hunting and gathering ever could. This did not necessarily make individuals healthier or happier, but it allowed far more of them to live in the same space. Populations grew, and grew again. Because a farming family could produce more food than it needed to survive, a surplus became possible for the first time, and with a surplus came the possibility of specialists, such as potters, weavers, priests and soldiers, who did not grow their own food at all. The dense, settled, layered societies we call civilisation were built on this foundation.' },
-      { label: 'F', html: 'Farming reshaped the living world as well as human society. The wild plants and animals that people chose to cultivate were gradually altered by generations of selective breeding until many of them could no longer survive without human care. Modern maize, with its fat cobs, cannot even scatter its own seeds. In taking control of a few species, humanity tied its fate to theirs, and transformed vast stretches of forest and grassland into fields. The world we live in today, for better and worse, is very largely the creation of those first, unremembered farmers.' },
-    ],
+const test: PracticeTest = {
+  "id": "reading-full-003",
+  "skill": "reading",
+  "title": "Academic Reading Test 3",
+  "description": "A complete three-passage Academic Reading practice test with 40 questions.",
+  "durationMinutes": 60,
+  "source": {
+    "name": "IELTS MASTER / PracticePTEOnline",
+    "url": "https://practicepteonline.com/ielts-reading-test-317/",
+    "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
-  groups: [
+  "parts": [
     {
-      title: 'Questions 1-5',
-      type: 'paragraph-matching',
-      options: ['A', 'B', 'C', 'D', 'E', 'F'],
-      instructionHtml:
-        'Reading Passage 1 has six paragraphs, <strong>A-F</strong>. Which paragraph contains the following information?',
-      questions: [
+      "label": "Passage 1",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 1",
+        "title": "Do animals dream?",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>Studies using electrodes attached to the heads of sleepers have shown that when we sleep, we do so in two ways that alternate throughout the night. The first is rapid eye movement (REM) or active sleep. During this stage our eyes move, even though our eyelids are closed. Our muscles also twitch slightly, though they are largely paralysed so we don’t hurt ourselves. In contrast, we also engage in non-REM sleep, during which we barely move at all. Most dream states, and certainly those with the most vivid dreams, happen during REM sleep.</span>"
+          },
+          {
+            "html": "<span>There’s some evidence that other mammals may also dream. For example, researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze.</span>"
+          },
+          {
+            "html": "<span>But finding evidence of dreaming in non-mammals has proved more difficult. Their brains are very different from those of humans, and it can often be difficult to record their activity while they are sleeping. Recently, however, researchers succeeded in recording brain activity in sleeping pigeons. As in mammals, the recordings revealed both REM and non-REM sleep. Intriguingly, REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying, which suggests that this may possibly be what the pigeons were dreaming about.</span>"
+          },
+          {
+            "html": "<span>That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom. For example, sponges don’t have brains, so they lack the machinery for dreaming. There are also some animals with unusual sleep patterns. These include whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake. They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid. This is surprising because we tend to think of whales and dolphins as having complex inner lives. It’s thought that they don’t experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature.</span>"
+          },
+          {
+            "html": "<span>Nevertheless, in many cases REM sleep does seem to have benefits. Growing evidence from birds and mammals suggests that REM sleep and dreaming are important for forming memories and learning. It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage. As soon as animals evolved moderately complex lifestyles, they would have needed to dream in order to manage these lifestyles.</span>"
+          },
+          {
+            "html": "<span>However, we still don’t understand how this outward behaviour relates to internal experience. It seems impossible to know what it is like to be a rat or a pigeon, let alone imagine their dreamscapes. We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don’t know if there is an internal experience of chasing rabbits that comes along with that.</span>"
+          },
+          {
+            "html": "<span>Another non-human dreamer offers insight here. In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room. At one point, in the middle of the night, Heidi seemed to dream: her limbs and head moved, and her skin rapidly changed colour, as though she was pursuing a crab.</span>"
+          },
+          {
+            "html": "<span>Similarly, a report recently emerged of a sleeping octopus apparently having a nightmare. Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator. The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams.</span>"
+          },
+          {
+            "html": "<span>The trouble is that we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too. But we can try to imagine what these dreamscapes are like by meeting animals on their own terms. For example, vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations.</span>"
+          },
+          {
+            "html": "<span>It is likely that dreaming has served multiple purposes since the first complex animals evolved. And if this is the case, it is possible that better understanding of these purposes might shed light on the true purpose of our own dreams.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q1',
-          textHtml: 'evidence that early farmers were less healthy than hunter-gatherers',
-          answer: 'C',
-          explanation: 'Paragraph C cites skeleton studies showing farmers were shorter, more diseased and more worn than hunter-gatherers.',
-          evidence: 'Studies of ancient skeletons show that early farmers were often less healthy than the hunter-gatherers who came before them.',
+          "title": "Questions 1-5",
+          "type": "table-completion",
+          "instructionHtml": "Complete the table below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q1",
+              "answer": "Rats",
+              "before": "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
+              "after": ""
+            },
+            {
+              "id": "q2",
+              "answer": "Visual",
+              "before": "…………. input may have been dreaming of flying Whales and dolphins · still have",
+              "after": ""
+            },
+            {
+              "id": "q3",
+              "answer": "Half",
+              "before": "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
+              "after": ""
+            },
+            {
+              "id": "q4",
+              "answer": "Temperature",
+              "before": "… their dreams are probably not very",
+              "after": ""
+            },
+            {
+              "id": "q5",
+              "answer": "Vivid",
+              "before": "…………",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1-5</span></strong><br/>\n<span>Complete the table below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.</span></p><table><tbody><tr><td colspan=\"3\"><span><strong>Research into sleep and dreaming</strong></span></td></tr><tr><td></td><td width=\"198\"><strong><span>Research findings</span></strong></td><td width=\"198\"><strong><span>Comment</span></strong></td></tr><tr><td width=\"198\"><span>Humans</span></td><td width=\"198\"><span>·       humans experience REM sleep and non-REM sleep</span><p><span>·       in REM sleep, the eyes and muscles move</span></p></td><td width=\"198\"></td></tr><tr><td width=\"198\"><span>(1) ………………   </span></td><td width=\"198\"><span>·       similar brain patterns were observed when active and sleeping</span></td><td width=\"198\"><span>indicative of dreaming</span></td></tr><tr><td width=\"198\"><span>Pigeons</span></td><td width=\"198\"><span>·       when sleeping, pigeons displayed activity in parts of the brain that deal with (2) …………. input</span></td><td width=\"198\"><span>may have been dreaming of flying</span></td></tr><tr><td width=\"198\"><span>Whales and dolphins</span></td><td width=\"198\"><span>·       still have (3) ………..their brain awake when they sleep</span><p><span>·       don’t experience REM sleep, as this could affect their sensitivity to<strong>              </strong>(4) <strong>…</strong></span></p></td><td width=\"198\"><span>their dreams are probably not very (5) …………<strong>  </strong></span></td></tr></tbody></table>",
+          "wordLimit": 1,
+          "table": {
+            "rows": [
+              [
+                "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
+                {
+                  "questionId": "q1"
+                },
+                ""
+              ],
+              [
+                "…………. input may have been dreaming of flying Whales and dolphins · still have",
+                {
+                  "questionId": "q2"
+                },
+                ""
+              ],
+              [
+                "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
+                {
+                  "questionId": "q3"
+                },
+                ""
+              ],
+              [
+                "… their dreams are probably not very",
+                {
+                  "questionId": "q4"
+                },
+                ""
+              ],
+              [
+                "…………",
+                {
+                  "questionId": "q5"
+                },
+                ""
+              ]
+            ]
+          }
         },
         {
-          id: 'q2',
-          textHtml: 'the idea that farming developed without anyone intending it',
-          answer: 'D',
-          explanation: 'Paragraph D argues no one chose farming as a deliberate plan. The change was too slow to notice.',
-          evidence: 'Part of the answer is that no one chose it, at least not as a deliberate plan. The change happened so slowly, over hundreds of generations, that the people living through it can hardly have noticed.',
-        },
-        {
-          id: 'q3',
-          textHtml: 'how farming allowed people who did not grow food to exist',
-          answer: 'E',
-          explanation: 'Paragraph E explains that the food surplus made specialists possible. Potters, weavers, priests and soldiers who grew no food.',
-          evidence: 'with a surplus came the possibility of specialists, such as potters, weavers, priests and soldiers, who did not grow their own food at all.',
-        },
-        {
-          id: 'q4',
-          textHtml: 'examples of crops domesticated in different regions of the world',
-          answer: 'B',
-          explanation: 'Paragraph B lists rice and millet in China, maize, beans and squash in Central America, and the potato in the Andes.',
-          evidence: 'It arose separately in China, where rice and millet were domesticated; in Central America, the home of maize, beans and squash; in the Andes, with the potato.',
-        },
-        {
-          id: 'q5',
-          textHtml: 'the effect of farming on the plants and animals themselves',
-          answer: 'F',
-          explanation: 'Paragraph F describes how selective breeding altered the cultivated species until many could not survive without human care.',
-          evidence: 'The wild plants and animals that people chose to cultivate were gradually altered by generations of selective breeding until many of them could no longer survive without human care.',
-        },
-      ],
+          "title": "Questions 6-13",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 6-13 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q6",
+              "answer": "True",
+              "textHtml": "Dreaming about past experiences helps us to create lasting memories of them"
+            },
+            {
+              "id": "q7",
+              "answer": "False",
+              "textHtml": "It is now possible to tell what type of dream a dog is having"
+            },
+            {
+              "id": "q8",
+              "answer": "Not given",
+              "textHtml": "David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses"
+            },
+            {
+              "id": "q9",
+              "answer": "False",
+              "textHtml": "While it was asleep, the octopus called Costello reacted as if it was hunting"
+            },
+            {
+              "id": "q10",
+              "answer": "True",
+              "textHtml": "Scheel believes more research into octopuses’ dreams should be carried out"
+            },
+            {
+              "id": "q11",
+              "answer": "False",
+              "textHtml": "We may soon be able to share the dreams of other human beings"
+            },
+            {
+              "id": "q12",
+              "answer": "Not given",
+              "textHtml": "Hearing may be an important part of the dreams of some animals"
+            },
+            {
+              "id": "q13",
+              "answer": "Not given",
+              "textHtml": "Interest in the reasons why humans dream has increased greatly in recent times"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 6-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 6-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                   if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                 if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN                   </strong> if there is no information on this</span></p><p><span>6. Dreaming about past experiences helps us to create lasting memories of them.</span><br/>\n<span>7. It is now possible to tell what type of dream a dog is having.</span><br/>\n<span>8. David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses.</span><br/>\n<span>9. While it was asleep, the octopus called Costello reacted as if it was hunting.</span><br/>\n<span>10. Scheel believes more research into octopuses’ dreams should be carried out.</span><br/>\n<span>11. We may soon be able to share the dreams of other human beings.</span><br/>\n<span>12. Hearing may be an important part of the dreams of some animals.</span><br/>\n<span>13. Interest in the reasons why humans dream has increased greatly in recent times.</span></p>"
+        }
+      ]
     },
     {
-      title: 'Questions 6-9',
-      type: 'sentence-completion',
-      wordLimit: 2,
-      instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
-      questions: [
+      "label": "Passage 2",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 2",
+        "title": "Mapungubwe Located in southern Africa just below the Limpopo River, the kingdom of Mapungubwe, flourished between the 11th and 13th century CE",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span><strong>A</strong> Mapungubwe, which was one of the first states in southern Africa, was formed by Bantu-speaking peoples who were farmers. The area controlled by the rulers of Mapungubwe had at its heart a large sandstone plateau, which was easily defended due to its inaccessibility. As with other kingdoms in the region of southern Africa, cattle herding and other types of farming brought plenty of food and a surplus that could be traded for needed goods. Archaeology has revealed extensive layers of bones and manure, which indicate that from the 9th century CE there were large cattle herds, the traditional source of political power in southern African communities. The archaeological record for the 10th century shows a marked increase in the number of domesticated cattle in the area as well as cotton cultivation and weaving, as indicated by abundant finds of spindle whorls.</span>"
+          },
+          {
+            "html": "<span><strong>B</strong> The total population of Mapungubwe at its peak in the mid-13th century was around 5,000 people. The chief or king of Mapungubwe was likely the wealthiest individual in the society, and would have owned more cattle and precious materials than anyone else. The king and his advisers dwelt in a stone enclosure composed of stone walls and housing built on the highest level of the community’s territory, a natural sandstone hill which is some 30 metres high and 100 metres in length. Occupation on the hill dates from the 11th century and the entire complex was surrounded by a wooden palisade, as indicated by postholes made in the rock. The rest of the community lived in mud and thatch housing spread out below the hill, although there is one stone structure here. </span><span>This settlement, known as Babandyanalo, covers around 5 hectares (12.3 acres) and predates the hilltop structures.</span>"
+          },
+          {
+            "html": "<span><strong>C</strong> The kings of Mapungubwe were buried at the top of the hill site in a demarcated area away from the dwellings, while other members of the community were buried at the surrounding valley level. A wooden staircase connected the two levels, the sockets for the steps being clearly visible in the sandstone cliff face. There were some grander residences dotted around the outskirts of Babandyanalo, and these probably belonged to male relatives of the king. There are many other smaller but still impressive sites across the Mapungubwe plateau, which are located anywhere from 15 to 100 kilometres from the major hill site. Containing stone residences and walls, they likely belonged to local chiefs who acted as servants to the king.</span>"
+          },
+          {
+            "html": "<span><strong>D</strong> The Mapungubwe plateau has a very high number of carnivore animal remains and ivory splinters, suggesting that the skins of these large animals and ivory elephant tusks were accumulated, probably for trade with coastal areas reached by the Limpopo River. The presence of glass beads, almost certainly from India, indicate there was trade of some sort with other states on the coast who, in turn, traded with merchants travelling from India by sea. Mapungubwe also benefited from locally-sourced copper and the gold trade as it passed from the kingdom of Great Zimbabwe (12-15th century), situated to the north of Mapungubwe, to the coastal city of Kosala. It is likely that trade links led to a strengthening of political authority in order to control and even monopolise these lucrative interregional connections.</span>"
+          },
+          {
+            "html": "<span><strong>E</strong> Archaeological discoveries reveal that pottery was produced on a scale large enough to suggest the presence of professional potters, and is another indicator of the prosperity of Mapungubwe society. Archaeological finds include spherical vessels with short necks, beakers, and bowls, many of which have decorative stamps. There are also ceramic discs, and whistles. In addition, cattle, sheep, and goat figurines, and small figures of highly stylised humans with elongated bodies and short limbs have been found. The figures may have been used in ceremonies as offerings to ancestors, but their precise function is not known. Other discoveries include small jewellery items made from locally sourced copper.</span>"
+          },
+          {
+            "html": "<span><strong>F</strong> Beautifully decorated artefacts made of gold have also been found at Mapungubwe. A type of decoration, found nowhere else except Great Zimbabwe, involved the crafting of gold into small rectangular sheets and carving geometrical patterns into it. These sheets were then used to cover wooden objects (which have not survived) using small tacks, also made of gold. One such object that has been discovered may have been a sceptre, while additional evidence of local gold-working is a rhinoceros figurine made from small hammered sheets, and thousands of small gold beads. These objects were all found at the royal burial site and date to c. 1150. They are the first known indicators that gold had an intrinsic value of its own (as opposed to that of a currency) in southern Africa.</span>"
+          },
+          {
+            "html": "<span><strong>G</strong> The kingdom of Mapungubwe was already in decline by the late 13th century, probably because overpopulation placed too much stress on local resources, a situation that may have been brought to a crisis point by a series of droughts. Trade routes may also have shifted northwards. Certainly, the areas that now prospered were to the north, such as Great Zimbabwe.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q6',
-          before: 'Farming began around',
-          after: 'thousand years ago.',
-          answer: 'twelve',
-          explanation: 'The passage dates the change to around twelve thousand years ago.',
-          evidence: 'Then, around twelve thousand years ago, something changed that would transform human life... people began to farm.',
+          "title": "Questions 14-19",
+          "type": "paragraph-matching",
+          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 14-19 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q14",
+              "answer": "E",
+              "textHtml": "a mention of the uncertainty regarding the purpose of certain objects"
+            },
+            {
+              "id": "q15",
+              "answer": "G",
+              "textHtml": "the likelihood that a climatic factor increased the problems Mapungubwe faced"
+            },
+            {
+              "id": "q16",
+              "answer": "C",
+              "textHtml": "a mention of the location where members of the king’s family are thought to have lived"
+            },
+            {
+              "id": "q17",
+              "answer": "D",
+              "textHtml": "a reference to people who brought goods by ship"
+            },
+            {
+              "id": "q18",
+              "answer": "B",
+              "textHtml": "an estimate of the size to which the Mapungubwe community grew"
+            },
+            {
+              "id": "q19",
+              "answer": "A",
+              "textHtml": "a mention of agricultural produce being exchanged for other items"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information?</span><br/>\n<span>Write the correct letter, A-G, in boxes 14-19 on your answer sheet.</span></p><p><span>14. a mention of the uncertainty regarding the purpose of certain objects</span><br/>\n<span>15. the likelihood that a climatic factor increased the problems Mapungubwe faced</span><br/>\n<span>16. a mention of the location where members of the king’s family are thought to have lived</span><br/>\n<span>17. a reference to people who brought goods by ship</span><br/>\n<span>18. an estimate of the size to which the Mapungubwe community grew</span><br/>\n<span>19. a mention of agricultural produce being exchanged for other items</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ]
         },
         {
-          id: 'q7',
-          before: 'In the Fertile Crescent, people cultivated wild wheat and',
-          after: '.',
-          answer: 'barley',
-          explanation: 'Wheat and barley were the crops first cultivated in the Fertile Crescent.',
-          evidence: 'Here, some ten to twelve thousand years ago, people began to cultivate wild wheat and barley.',
+          "title": "Questions 20-21",
+          "type": "multiple-answer",
+          "instructionHtml": "and 21 Choose TWO letters, A-E. Write the correct letters in boxes 20 and 21 on your answer sheet",
+          "questions": [
+            {
+              "id": "q20",
+              "answer": [
+                "B",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-317-q20-q21"
+            },
+            {
+              "id": "q21",
+              "answer": [
+                "B",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-317-q20-q21"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 20 and 21 on your answer sheet</span></p><p><span>The archaeological record reveals information about gold and the kingdom of Mapungubwe. Which TWO pieces of information are mentioned by the writer?</span><br/>\n<span><strong>A</strong> Not everyone in Mapungubwe used gold as a form of payment.</span><br/>\n<span><strong>B</strong> Items of gold were placed close to where Mapungubwe kings were buried.</span><br/>\n<span><strong>C</strong> The most valuable item discovered in Mapungubwe was a sceptre made of gold.</span><br/>\n<span><strong>D</strong> The way gold was decorated in Mapungubwe was also practised in another kingdom.</span><br/>\n<span><strong>E</strong> Working with gold was a respected occupation in the Mapungubwe community.</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "Not everyone in Mapungubwe used gold as a form of payment"
+            },
+            {
+              "value": "B",
+              "label": "Items of gold were placed close to where Mapungubwe kings were buried"
+            },
+            {
+              "value": "C",
+              "label": "The most valuable item discovered in Mapungubwe was a sceptre made of gold"
+            },
+            {
+              "value": "D",
+              "label": "The way gold was decorated in Mapungubwe was also practised in another kingdom"
+            },
+            {
+              "value": "E",
+              "label": "Working with gold was a respected occupation in the Mapungubwe community"
+            }
+          ]
         },
         {
-          id: 'q8',
-          before: 'In Central America, farmers domesticated maize, beans and',
-          after: '.',
-          answer: 'squash',
-          explanation: 'Central America is named as the home of maize, beans and squash.',
-          evidence: 'in Central America, the home of maize, beans and squash.',
-        },
-        {
-          id: 'q9',
-          before: 'A farming surplus made possible the appearance of',
-          after: 'such as potters and priests.',
-          answer: 'specialists',
-          explanation: 'The surplus allowed specialists who did not grow their own food.',
-          evidence: 'with a surplus came the possibility of specialists, such as potters, weavers, priests and soldiers, who did not grow their own food at all.',
-        },
-      ],
+          "title": "Questions 22-26",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 22-26 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q22",
+              "answer": "Prosperity",
+              "before": "………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects,",
+              "after": ""
+            },
+            {
+              "id": "q23",
+              "answer": "Whistles",
+              "before": "………………. and figures of various animals, as well as models of people with stretched",
+              "after": ""
+            },
+            {
+              "id": "q24",
+              "answer": "Bodies",
+              "before": "…………………. It is possible that these had a role in ceremonies to honour",
+              "after": ""
+            },
+            {
+              "id": "q25",
+              "answer": "Ancestors",
+              "before": "……………………. In addition, pieces of",
+              "after": ""
+            },
+            {
+              "id": "q26",
+              "answer": "Jewellery",
+              "before": "………………….. made from a local metal have been found at the site",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 22-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 22-26 on your answer sheet.</span></p><p><strong><span>Archaeological discoveries</span></strong></p><p><span>The Mapungubwe community’s (22) ………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects, (23) ………………. and figures of various animals, as well as models of people with stretched (24) …………………. It is possible that these had a role in ceremonies to honour (25) ……………………. In addition, pieces of (26) ………………….. made from a local metal have been found at the site.</span></p>",
+          "wordLimit": 1
+        }
+      ]
     },
     {
-      title: 'Questions 10-13',
-      type: 'tfng',
-      instructionHtml:
-        'Do the following statements agree with the information in Reading Passage 1? Write <strong>True</strong>, <strong>False</strong> or <strong>Not Given</strong>.',
-      questions: [
+      "label": "Passage 3",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 3",
+        "title": "Artificial Intelligence",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>In many countries in the West, hysteria about the future of artificial intelligence (AI) is everywhere. There seems to be no shortage of sensationalist news about how AI could cure diseases, accelerate human innovation and improve human creativity. Just looking at the media headlines, you might think that we are already living in a future where AI has infiltrated every aspect of society.</span>"
+          },
+          {
+            "html": "<span>While it is undeniable that AI has opened up a wealth of promising opportunities, it has also led to the emergence of a mindset that can be best described as AI solutionism’. This is the philosophy that, given enough data, machine learning algorithms can solve all of humanity’s problems. But, in fact, instead of supporting AI progress, this mindset actually jeopardises the value of machine intelligence by disregarding important AI safety principles and setting unrealistic expectations about what AI can really do for humanity.</span>"
+          },
+          {
+            "html": "<span>In only a few years, AI solutionism has made its way from the technology evangelists’ mouths in Silicon Valley in California to the minds of government officials and policymakers around the world. The pendulum has swung from the dystopian notion that AI will destroy humanity to the utopian belief that our algorithmic saviour is here.</span>"
+          },
+          {
+            "html": "<span>We are now seeing governments pledge support to national AI initiatives and compete in a technological race to dominate the burgeoning machine-learning sector. While many politicians proclaim the transformative effects of the coming AI revolution’, they fail to realise the complexity around deploying advanced machine learning systems in the real world.</span>"
+          },
+          {
+            "html": "<span>One of the most promising varieties of AI technologies are neural networks. This form of machine learning is loosely modelled on the neuronal structure of the human brain, but on a much smaller scale. But what many politicians do not understand is that simply adding a neural network to a problem will not automatically mean that you’ll find a solution. Similarly, adding a neural network to a system of government does not mean it will be instantaneously more inclusive or fair.</span>"
+          },
+          {
+            "html": "<span>AI systems need a lot of data to function, but the public sector typically does not have the appropriate data infrastructure to support advanced machine learning. Most of the data remains stored in offline archives. The few digitised sources of data that exist tend to be buried in bureaucracy. More often than not, data is spread across different government departments that each require special permissions to be accessed. Above all, the public sector typically lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence.</span>"
+          },
+          {
+            "html": "<span>For these reasons, the sensationalism over AI has attracted many critics. Stuart Russell, a professor of computer science at the University of California, Berkeley, has long advocated a more sensible and realistic approach that focuses on simple everyday applications of AI instead of the hypothetical takeover by super-intelligent robots. Similarly, Rodney Brooks, professor of robotics at Massachusetts Institute of Technology, writes that ‘almost all innovations in robotics and AI take far, far, longer to be really widely deployed than people in the field and outside the field imagine’.</span>"
+          },
+          {
+            "html": "<span>One of the many difficulties in deploying machine learning systems is that AI is extremely susceptible to adversarial attacks. This means that a malicious AI can target another AI to make it behave in a certain way, such as forcing it to make wrong predictions. Many researchers have warned against the rolling out of AI without appropriate security standards and defence mechanisms. Still, AI security remains an often overlooked topic when machine learning systems are installed.</span>"
+          },
+          {
+            "html": "<span>If we are to reap the benefits and minimise the potential harms of AI, we must start thinking about how machine learning can be meaningfully applied to specific areas of government, business and society. This means we need to have a discussion about AI ethics and the distrust that many people have towards machine learning.</span>"
+          },
+          {
+            "html": "<span>Most importantly, we need to be aware of the limitations of AI and where people still need to take the lead. Instead of painting an unrealistic picture of the power of AI, it is important to take a step back and separate the actual technological capabilities of AI from fantasy.</span>"
+          },
+          {
+            "html": "<span>The medical profession has also recognised the drawbacks to AI. The IBM Watson for Oncology programme was a piece of AI that was meant to help doctors treat cancer. Even though it was developed to deliver the best recommendations, human experts found it hard to trust the machine. As a result, the AI programme was abandoned in most hospitals where it was trialled.</span>"
+          },
+          {
+            "html": "<span>Similar difficulties arose in the legal domain when algorithms were used in courts in the US to sentence criminals. An algorithm calculated risk assessment scores and advised judges on the sentencing. The system was found to amplify structural racial discrimination and was later abandoned.</span>"
+          },
+          {
+            "html": "<span>There are some crucial lessons here for everyone aiming to boost investments in national AI programmes. These examples demonstrate that there is no AI solution for everything. Using AI simply for the sake of AI may not always be productive or useful, and not every issue is best addressed by applying machine intelligence to it. All solutions come with a cost and not everything that can be automated should be.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q10',
-          textHtml: 'Farming was invented in only one place and spread from there.',
-          answer: 'False',
-          explanation: 'The passage says farming was "not... invented only once". It arose separately in several regions with no contact.',
-          evidence: 'Farming was not, however, invented only once. It arose separately in China... in Central America... in the Andes... and in still other regions.',
+          "title": "Questions 27-29",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-29 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q27",
+              "answer": "B",
+              "textHtml": "What is the writer doing in the first paragraph?",
+              "options": [
+                "predicting the future impact of Al",
+                "describing a public perception of Al",
+                "outlining some possible benefits of Al",
+                "highlighting the breadth of the influence of Al"
+              ]
+            },
+            {
+              "id": "q28",
+              "answer": "A",
+              "textHtml": "When discussing Al solutionism in the second paragraph, the writer",
+              "options": [
+                "points out a risk involved",
+                "specifies its probable origins",
+                "mentions its chief supporters",
+                "weighs up some pros and cons"
+              ]
+            },
+            {
+              "id": "q29",
+              "answer": "C",
+              "textHtml": "In the fourth paragraph, the writer suggests that many politicians may",
+              "options": [
+                "have failed to appreciate the true potential of Al initiatives",
+                "have misunderstood the function of the machine-learning sector",
+                "be unaware of the challenges of implementing national Al initiatives",
+                "be too keen to enter the race to dominate the machine-learning sector"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 27-29</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-29 on your answer sheet.</span></p><p><span>27. What is the writer doing in the first paragraph?</span><br/>\n<span><strong>A</strong> predicting the future impact of Al</span><br/>\n<span><strong>B</strong> describing a public perception of Al</span><br/>\n<span><strong>C</strong> outlining some possible benefits of Al</span><br/>\n<span><strong>D</strong> highlighting the breadth of the influence of Al</span></p><p><span>28. When discussing Al solutionism in the second paragraph, the writer</span><br/>\n<span><strong>A</strong> points out a risk involved.</span><br/>\n<span><strong>B</strong> specifies its probable origins.</span><br/>\n<span><strong>C</strong> mentions its chief supporters.</span><br/>\n<span><strong>D</strong> weighs up some pros and cons.</span></p><p><span>29. In the fourth paragraph, the writer suggests that many politicians may</span><br/>\n<span><strong>A</strong> have failed to appreciate the true potential of Al initiatives.</span><br/>\n<span><strong>B</strong> have misunderstood the function of the machine-learning sector.</span><br/>\n<span><strong>C</strong> be unaware of the challenges of implementing national Al initiatives.</span><br/>\n<span><strong>D</strong> be too keen to enter the race to dominate the machine-learning sector.</span></p>"
         },
         {
-          id: 'q11',
-          textHtml: 'Some experts think hunter-gatherers worked fewer hours than farmers.',
-          answer: 'True',
-          explanation: '"According to some estimates" hunter-gatherers worked fewer hours to obtain their food. The passage attributes exactly this view to some experts.',
-          evidence: 'A hunter-gatherer, by contrast, enjoyed a varied diet and, according to some estimates, worked fewer hours to obtain it.',
+          "title": "Questions 30-35",
+          "type": "matching-features",
+          "instructionHtml": "Complete the summary using the list of words, A-l, below. Write the correct letter, A-l, in boxes 30-35 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q30",
+              "answer": "F",
+              "textHtml": "……………… Most public sector organisations have not set up the necessary"
+            },
+            {
+              "id": "q31",
+              "answer": "G",
+              "textHtml": "……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs"
+            },
+            {
+              "id": "q32",
+              "answer": "I",
+              "textHtml": "………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the"
+            },
+            {
+              "id": "q33",
+              "answer": "C",
+              "textHtml": "………………………………. to take full advantage of machine intelligence. The medical profession experimented with an Al programme, but their experts had little faith in its"
+            },
+            {
+              "id": "q34",
+              "answer": "A",
+              "textHtml": "………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing"
+            },
+            {
+              "id": "q35",
+              "answer": "D",
+              "textHtml": "…………….. within the legal profession. A reliability B funding C skills D prejudices E computers F equality G framework H confidentiality I approval"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 30-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-l, below. Write the correct letter, A-l, in boxes 30-35 on your answer sheet.</span></p><p><strong><span>AS in government, medicine and the law</span></strong></p><p><span>Neural networks are a promising area of A! technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote (30) ………………</span></p><p><span>Most public sector organisations have not set up the necessary (31) ……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs (32) ………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the (33) ………………………………. to take full advantage of machine intelligence.</span></p><p><span>The medical profession experimented with an Al programme, but their experts had little faith in its (34) ………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing (35) …………….. within the legal profession.</span></p><p><span><strong>A</strong> reliability</span><br/>\n<span><strong>B</strong> funding</span><br/>\n<span><strong>C</strong> skills</span><br/>\n<span><strong>D</strong> prejudices</span><br/>\n<span><strong>E</strong> computers</span><br/>\n<span><strong>F</strong> equality</span><br/>\n<span><strong>G</strong> framework</span><br/>\n<span><strong>H</strong> confidentiality</span><br/>\n<span><strong>I</strong> approval</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I"
+          ]
         },
         {
-          id: 'q12',
-          textHtml: 'The end of the ice age made every region warmer and wetter.',
-          answer: 'False',
-          explanation: 'The passage says climate change made SOME regions warmer and wetter. "Every region" contradicts this.',
-          evidence: 'Climate change at the end of the last ice age, which made some regions warmer and wetter.',
+          "title": "Questions 36-39",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q36",
+              "answer": "No",
+              "textHtml": "Stuart Russell’s proposals regarding the use of Al are impractical"
+            },
+            {
+              "id": "q37",
+              "answer": "Not given",
+              "textHtml": "Rodney Brooks’ view has attracted unfair criticism from supporters of Al"
+            },
+            {
+              "id": "q38",
+              "answer": "No",
+              "textHtml": "Nowadays, the need to protect Al systems is always taken into account when they are set up"
+            },
+            {
+              "id": "q39",
+              "answer": "Yes",
+              "textHtml": "In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 36-39</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                     if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                       if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                   if it is impossible to say what the writer thinks about this</span></p><p><span>36. Stuart Russell’s proposals regarding the use of Al are impractical.</span><br/>\n<span>37. Rodney Brooks’ view has attracted unfair criticism from supporters of Al.</span><br/>\n<span>38. Nowadays, the need to protect Al systems is always taken into account when they are set up.</span><br/>\n<span>39. In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use.</span></p>"
         },
         {
-          id: 'q13',
-          textHtml: 'Modern maize is unable to spread its seeds without human help.',
-          answer: 'True',
-          explanation: 'The passage states modern maize cannot even scatter its own seeds.',
-          evidence: 'Modern maize, with its fat cobs, cannot even scatter its own seeds.',
-        },
-      ],
-    },
-  ],
+          "title": "Question 40",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter. A, B, C or D.",
+          "questions": [
+            {
+              "id": "q40",
+              "answer": "B",
+              "textHtml": "What would be a suitable subtitle for reading passage?",
+              "options": [
+                "How to make the most of what Al has to offer",
+                "Why Al may not be the answer to our problems",
+                "Why governments should not invest in Al systems",
+                "How Al could improve the efficiency of the public sector"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Question 40</span></strong><br/>\n<span>Choose the correct letter. A, B, C or D.</span></p><p><span>40. What would be a suitable subtitle for reading passage?</span><br/>\n<span><strong>A</strong> How to make the most of what Al has to offer</span><br/>\n<span><strong>B</strong> Why Al may not be the answer to our problems</span><br/>\n<span><strong>C</strong> Why governments should not invest in Al systems</span><br/>\n<span><strong>D</strong> How Al could improve the efficiency of the public sector</span></p>"
+        }
+      ]
+    }
+  ]
 };
 
-// ── Passage 2 — How Birds Find Their Way (Q14-26) ───────────────────────────
-const passage2: TestPart = {
-  label: 'Passage 2',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 2',
-    title: 'How Birds Find Their Way',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 14-26</strong>, which are based on Reading Passage 2 below.',
-    paragraphs: [
-      { label: 'A', html: 'Each autumn, billions of birds leave the places where they were born and travel enormous distances to warmer regions, only to return the following spring. Some of these journeys are almost beyond belief. The Arctic tern flies from pole to pole and back again each year, a round trip of some seventy thousand kilometres. A small songbird weighing no more than a few coins may cross an entire ocean without stopping. For centuries people wondered how creatures with such tiny brains could find their way across the globe, often returning to the very same hedge or barn they left months before. Only recently has science begun to piece together the answer.' },
-      { label: 'B', html: 'It turns out that birds do not rely on a single method but combine several, much as a sailor might use both the stars and a compass. On clear days, many species navigate by the sun, adjusting for the fact that it moves across the sky as the hours pass. To do this they need an accurate sense of time, an internal clock that tells them where the sun should be at any given moment. Experiments in which birds were kept under artificial lighting, so that their internal clocks were shifted, showed that the birds then set off in the wrong direction by a predictable amount. Powerful evidence that the sun and their sense of time work together.' },
-      { label: 'C', html: 'At night, when the sun is unavailable, many migrating birds steer by the stars instead. In a classic series of experiments, young birds were raised inside a planetarium, a domed theatre in which patterns of artificial stars can be projected onto the ceiling. The birds learned to orient themselves by the artificial sky, and when the projected stars were rotated, the birds changed direction accordingly. They appeared to fix on the still point around which the northern stars seem to turn, rather than on any single star, which would be a reliable guide even as the seasons changed.' },
-      { label: 'D', html: 'Perhaps the most remarkable of a bird’s tools is its ability to sense the Earth’s magnetic field, an invisible force that a human being cannot feel at all. This magnetic sense allows birds to find their way even on overcast nights when neither sun nor stars can be seen. Exactly how they do it is still not fully understood, but there are two leading ideas. One suggests that tiny particles of a magnetic mineral in the birds’ bodies act like a compass needle. The other, stranger idea is that a special chemical reaction in the birds’ eyes, triggered by light, is affected by the magnetic field, so that the birds may in some sense actually see it.' },
-      { label: 'E', html: 'These methods guide a bird in a general direction, but they do not by themselves explain how it locates one particular nesting site. For this, birds seem to rely on a kind of map built from local landmarks and, remarkably, from smell. Experiments with homing pigeons whose sense of smell was blocked found that they became far worse at finding their way home, suggesting that the birds learn the characteristic odours carried on the winds from different directions and use them to work out where they are.' },
-      { label: 'F', html: 'What allows all this to work is that the different systems back one another up. If clouds hide the stars, the magnetic sense takes over; when the bird nears home, landmarks and smells guide it in. Young birds inherit a rough sense of the direction and distance they should travel, but they refine and correct it through experience, learning the details of their route over successive journeys. Far from being a single mysterious gift, birds’ navigation is a layered system, each part covering for the weaknesses of the others.' },
-    ],
-  },
-  groups: [
-    {
-      title: 'Questions 14-18',
-      type: 'matching-headings',
-      instructionHtml:
-        'Reading Passage 2 has six paragraphs, A-F. Choose the correct heading for paragraphs <strong>B-F</strong>. (Paragraph A is an introduction.)',
-      legendHtml:
-        '<strong>List of Headings</strong><br>i&nbsp; Using the position of the sun<br>ii&nbsp; Which birds travel furthest<br>iii&nbsp; Finding an exact location by smell and landmark<br>iv&nbsp; Steering by the night sky<br>v&nbsp; A sense humans do not possess<br>vi&nbsp; How the different methods support each other<br>vii&nbsp; The dangers faced during migration<br>viii&nbsp; Teaching birds to navigate',
-      options: ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii'],
-      questions: [
-        {
-          id: 'q14',
-          textHtml: 'Paragraph B',
-          answer: 'i',
-          explanation: 'Paragraph B is about navigating by the sun with the help of an internal clock. Heading i.',
-          evidence: 'On clear days, many species navigate by the sun, adjusting for the fact that it moves across the sky as the hours pass.',
-        },
-        {
-          id: 'q15',
-          textHtml: 'Paragraph C',
-          answer: 'iv',
-          explanation: 'Paragraph C describes steering by the stars at night, tested in planetarium experiments. Heading iv.',
-          evidence: 'At night, when the sun is unavailable, many migrating birds steer by the stars instead.',
-        },
-        {
-          id: 'q16',
-          textHtml: 'Paragraph D',
-          answer: 'v',
-          explanation: 'Paragraph D is about the magnetic sense (a force humans cannot feel), heading v.',
-          evidence: 'its ability to sense the Earth’s magnetic field, an invisible force that a human being cannot feel at all.',
-        },
-        {
-          id: 'q17',
-          textHtml: 'Paragraph E',
-          answer: 'iii',
-          explanation: 'Paragraph E explains how birds pinpoint one exact site using landmarks and smell. Heading iii.',
-          evidence: 'For this, birds seem to rely on a kind of map built from local landmarks and, remarkably, from smell.',
-        },
-        {
-          id: 'q18',
-          textHtml: 'Paragraph F',
-          answer: 'vi',
-          explanation: 'Paragraph F describes how the different systems back one another up. Heading vi.',
-          evidence: 'What allows all this to work is that the different systems back one another up.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 19-23',
-      type: 'multiple-answer',
-      instructionHtml:
-        'Which <strong>FIVE</strong> of the following are mentioned in the passage as ways birds find their way? Choose five.',
-      selectCount: 5,
-      choices: [
-        { value: 'A', label: 'the position of the sun' },
-        { value: 'B', label: 'the patterns of the stars at night' },
-        { value: 'C', label: 'the temperature of the air' },
-        { value: 'D', label: 'the Earth’s magnetic field' },
-        { value: 'E', label: 'the sound of the sea' },
-        { value: 'F', label: 'landmarks on the ground' },
-        { value: 'G', label: 'smells carried on the wind' },
-        { value: 'H', label: 'following larger, older birds' },
-      ],
-      explanationHtml:
-        'Five methods are described: the position of the sun (paragraph B), the star patterns at night (C), the Earth’s magnetic field (D), and, for finding the exact site, landmarks and smells carried on the wind (E). The temperature of the air, the sound of the sea and following larger, older birds are never mentioned.',
-      questions: [
-        { id: 'q19', answer: ['A', 'B', 'D', 'F', 'G'] },
-        { id: 'q20', answer: ['A', 'B', 'D', 'F', 'G'] },
-        { id: 'q21', answer: ['A', 'B', 'D', 'F', 'G'] },
-        { id: 'q22', answer: ['A', 'B', 'D', 'F', 'G'] },
-        { id: 'q23', answer: ['A', 'B', 'D', 'F', 'G'] },
-      ],
-    },
-    {
-      title: 'Questions 24-26',
-      type: 'multiple-choice',
-      instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
-      questions: [
-        {
-          id: 'q24',
-          textHtml: 'Shifting birds’ internal clocks with artificial light caused them to',
-          options: ['stop flying altogether.', 'head in the wrong direction.', 'navigate more accurately.', 'ignore the sun.'],
-          answer: 'B',
-          explanation: 'With their internal clocks shifted, the birds set off in the wrong direction by a predictable amount.',
-          evidence: 'the birds then set off in the wrong direction by a predictable amount. Powerful evidence that the sun and their sense of time work together.',
-        },
-        {
-          id: 'q25',
-          textHtml: 'In the planetarium experiments, birds oriented themselves by',
-          options: ['a single bright star.', 'the moon.', 'the still point the northern stars turn around.', 'the edge of the dome.'],
-          answer: 'C',
-          explanation: 'The birds fixed on the still point the northern stars turn around, not on any single star.',
-          evidence: 'They appeared to fix on the still point around which the northern stars seem to turn, rather than on any single star.',
-        },
-        {
-          id: 'q26',
-          textHtml: 'When pigeons’ sense of smell was blocked, they',
-          options: ['found their way home more easily.', 'became worse at finding home.', 'flew in circles.', 'relied only on the sun.'],
-          answer: 'B',
-          explanation: 'Pigeons whose smell was blocked became far worse at finding their way home.',
-          evidence: 'Experiments with homing pigeons whose sense of smell was blocked found that they became far worse at finding their way home.',
-        },
-      ],
-    },
-  ],
-};
-
-// ── Passage 3 — Does Money Make Us Happy? (Q27-40) ──────────────────────────
-const passage3: TestPart = {
-  label: 'Passage 3',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 3',
-    title: 'Does Money Make Us Happy?',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 27-40</strong>, which are based on Reading Passage 3 below.',
-    paragraphs: [
-      { label: 'A', html: 'Few questions have occupied thinkers for as long as whether money can buy happiness, and in recent decades economists and psychologists have finally begun to study it with hard data rather than mere opinion. The results are more interesting, and more useful, than the old clichés on either side. Money, it turns out, matters for happiness a great deal. But not in the simple, unlimited way that advertisers would have us believe, and not always in the ways we expect.' },
-      { label: 'B', html: 'The clearest finding is that, at low incomes, more money makes a large difference. For someone who cannot reliably afford food, heating or medical care, additional income removes real sources of misery, and their reported wellbeing rises sharply as their situation improves. This is hardly surprising. What is more striking is what happens higher up the scale. As income continues to rise, each extra amount buys less and less additional happiness, until eventually the curve flattens out almost completely. Beyond the point where basic needs and a few comforts are met, a great deal more money produces only a very little more contentment.' },
-      { label: 'C', html: 'One reason for this is that human beings judge their circumstances not in absolute terms but by comparison with others. A salary that would have felt like riches a decade ago, or in a poorer country, can feel merely ordinary once we are surrounded by people who earn more. The economist Richard Easterlin drew attention to a puzzle that now bears his name: although richer people within a country tend to be happier than poorer ones, whole countries do not necessarily become happier as they grow wealthier over time. As everyone’s income rises together, the comparisons that drive our sense of how well we are doing simply shift upward with them, and the extra wealth brings less lasting satisfaction than we imagine.' },
-      { label: 'D', html: 'How we spend money may matter more than how much we have. A growing body of research suggests that spending on experiences, such as a trip, a concert, or a meal with friends, tends to bring more lasting happiness than spending the same sum on possessions. Possessions quickly become part of the ordinary background of our lives and cease to give pleasure, a process psychologists call adaptation. Experiences, by contrast, live on in memory, often growing rosier with time, and they are frequently shared with others, which deepens their value. The new car thrills us for a month; the holiday is retold for years.' },
-      { label: 'E', html: 'Perhaps the most surprising finding of all is that spending money on other people reliably makes us happier than spending it on ourselves. In carefully controlled experiments, people given a sum of money and told to spend it on someone else reported greater happiness at the end of the day than those told to spend it on themselves. Regardless of the amount involved. This effect appears across very different cultures and income levels, which suggests that it reflects something deep in human nature rather than a quirk of one society.' },
-      { label: 'F', html: 'None of this means that money is unimportant, a comforting thing the well-off sometimes tell the poor. For those in real need, more money is one of the surest routes to a better life, and no amount of clever spending can substitute for enough of it. But for the many people whose basic needs are already met, the evidence carries a genuinely useful lesson. The route to greater happiness lies less in earning ever more, and more in how that money is used: on experiences rather than things, on others as well as ourselves, and with an awareness of the endless, restless comparisons that can rob us of contentment we already have.' },
-    ],
-  },
-  groups: [
-    {
-      title: 'Questions 27-31',
-      type: 'yes-no-notgiven',
-      instructionHtml:
-        'Do the following statements agree with the views of the writer in Reading Passage 3? Write <strong>Yes</strong>, <strong>No</strong> or <strong>Not Given</strong>.',
-      questions: [
-        {
-          id: 'q27',
-          textHtml: 'Money makes almost no difference to the happiness of the poor.',
-          answer: 'No',
-          explanation: 'The writer says the opposite. At low incomes more money makes a large difference.',
-          evidence: 'The clearest finding is that, at low incomes, more money makes a large difference.',
-        },
-        {
-          id: 'q28',
-          textHtml: 'How people spend money can matter more than how much they have.',
-          answer: 'Yes',
-          explanation: 'The writer states directly that how we spend money may matter more than how much we have.',
-          evidence: 'How we spend money may matter more than how much we have.',
-        },
-        {
-          id: 'q29',
-          textHtml: 'Governments should raise taxes on the wealthy.',
-          answer: 'Not Given',
-          explanation: 'The passage is about personal happiness and spending; it never discusses taxation or government policy.',
-        },
-        {
-          id: 'q30',
-          textHtml: 'Telling poor people that money is unimportant is misguided.',
-          answer: 'Yes',
-          explanation: 'The writer calls the idea that money is unimportant "a comforting thing the well-off sometimes tell the poor" and insists money is a sure route out of need. So he agrees it is misguided.',
-          evidence: 'None of this means that money is unimportant, a comforting thing the well-off sometimes tell the poor.',
-        },
-        {
-          id: 'q31',
-          textHtml: 'Comparing ourselves with others can reduce our contentment.',
-          answer: 'Yes',
-          explanation: 'The writer warns of the restless comparisons that can rob us of contentment we already have.',
-          evidence: 'an awareness of the endless, restless comparisons that can rob us of contentment we already have.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 32-36',
-      type: 'sentence-endings',
-      instructionHtml: 'Complete each sentence with the correct ending. Write the correct letter, A-G.',
-      legendHtml:
-        '<strong>A</strong>&nbsp; each extra amount adds less and less happiness.<br><strong>B</strong>&nbsp; whole countries do not always grow happier as they get richer.<br><strong>C</strong>&nbsp; it tends to bring more lasting happiness than buying things.<br><strong>D</strong>&nbsp; people feel happier than when they spend on themselves.<br><strong>E</strong>&nbsp; it removes real sources of misery.<br><strong>F</strong>&nbsp; happiness becomes impossible to measure.<br><strong>G</strong>&nbsp; possessions become more valuable over time.',
-      options: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-      questions: [
-        {
-          id: 'q32',
-          textHtml: 'For people on very low incomes, more money is valuable because',
-          answer: 'E',
-          explanation: 'For the poor, additional income removes real sources of misery (ending E).',
-          evidence: 'additional income removes real sources of misery, and their reported wellbeing rises sharply as their situation improves.',
-        },
-        {
-          id: 'q33',
-          textHtml: 'Once basic needs are met,',
-          answer: 'A',
-          explanation: 'Beyond basic needs, each extra amount buys less and less additional happiness (ending A).',
-          evidence: 'each extra amount buys less and less additional happiness, until eventually the curve flattens out almost completely.',
-        },
-        {
-          id: 'q34',
-          textHtml: 'The puzzle named after Easterlin is that',
-          answer: 'B',
-          explanation: 'The Easterlin puzzle: whole countries do not necessarily become happier as they grow wealthier (ending B).',
-          evidence: 'whole countries do not necessarily become happier as they grow wealthier over time.',
-        },
-        {
-          id: 'q35',
-          textHtml: 'When money is spent on experiences,',
-          answer: 'C',
-          explanation: 'Spending on experiences tends to bring more lasting happiness than buying things (ending C).',
-          evidence: 'spending on experiences... tends to bring more lasting happiness than spending the same sum on possessions.',
-        },
-        {
-          id: 'q36',
-          textHtml: 'When people spend money on others,',
-          answer: 'D',
-          explanation: 'People told to spend on someone else reported greater happiness than those spending on themselves (ending D).',
-          evidence: 'people given a sum of money and told to spend it on someone else reported greater happiness at the end of the day than those told to spend it on themselves.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 37-40',
-      type: 'multiple-choice',
-      instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
-      questions: [
-        {
-          id: 'q37',
-          textHtml: 'What does the writer say about the happiness curve as income rises?',
-          options: ['It rises steadily without limit.', 'It eventually flattens out.', 'It falls at high incomes.', 'It never rises at all.'],
-          answer: 'B',
-          explanation: 'As income rises, the curve eventually flattens out almost completely.',
-          evidence: 'each extra amount buys less and less additional happiness, until eventually the curve flattens out almost completely.',
-        },
-        {
-          id: 'q38',
-          textHtml: 'The process of “adaptation” explains why',
-          options: ['experiences are quickly forgotten.', 'possessions stop giving pleasure.', 'the poor stay unhappy.', 'people give money away.'],
-          answer: 'B',
-          explanation: 'Adaptation is why possessions become ordinary background and cease to give pleasure.',
-          evidence: 'Possessions quickly become part of the ordinary background of our lives and cease to give pleasure, a process psychologists call adaptation.',
-        },
-        {
-          id: 'q39',
-          textHtml: 'The experiments on spending money on others are notable because the effect',
-          options: ['only worked with large sums.', 'appeared across different cultures.', 'disappeared over time.', 'applied only to rich people.'],
-          answer: 'B',
-          explanation: 'The effect appears across very different cultures and income levels, whatever the amount.',
-          evidence: 'This effect appears across very different cultures and income levels, which suggests that it reflects something deep in human nature.',
-        },
-        {
-          id: 'q40',
-          textHtml: 'The main lesson of the final paragraph is that greater happiness comes from',
-          options: ['earning as much as possible.', 'how money is used, not just how much there is.', 'avoiding all comparison with others.', 'never spending on possessions.'],
-          answer: 'B',
-          explanation: 'The lesson is that happiness comes less from earning more and more from how the money is used.',
-          evidence: 'The route to greater happiness lies less in earning ever more, and more in how that money is used.',
-        },
-      ],
-    },
-  ],
-};
-
-export const readingFull003: PracticeTest = {
-  id: 'reading-full-003',
-  skill: 'reading',
-  title: 'Academic Reading. Full Test 3',
-  description: 'A complete 60-minute Academic Reading exam: three passages on early farming, bird navigation and the psychology of money, 40 questions across the full range of question types.',
-  durationMinutes: 60,
-  parts: [passage1, passage2, passage3],
-};
+export default test;

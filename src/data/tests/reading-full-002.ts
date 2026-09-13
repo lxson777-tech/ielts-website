@@ -1,431 +1,442 @@
-import type { PracticeTest, TestPart } from '../../lib/tests/schema';
+import type { PracticeTest } from '../../lib/tests/schema';
 
-/* Academic Reading — Full Test 2. Original material. Weighted like the real
-   exam (TFNG/MC/completion/matching-heavy, no diagram) and exercising the
-   newer types: Yes/No/Not Given, matching features, multiple-answer, and
-   matching sentence endings. */
-
-// ── Passage 1 — The Origins of Writing (Q1-13) ──────────────────────────────
-const passage1: TestPart = {
-  label: 'Passage 1',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 1',
-    title: 'The Origins of Writing',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 1-13</strong>, which are based on Reading Passage 1 below.',
-    paragraphs: [
-      { label: 'A', html: 'Writing is one of humanity’s most powerful and far-reaching inventions, and yet for the overwhelming majority of our history people managed perfectly well without it. For tens of thousands of years, all human knowledge (every story, law, recipe and genealogy) was carried entirely in living memory and passed from one person to the next by word of mouth. Skilled reciters could hold astonishing quantities of information in their heads. The earliest known writing did not appear until around 5,000 years ago, remarkably recently in the span of human existence, and when it finally did appear it was invented for a strikingly unromantic reason. It was created not to record poetry, prayers or history, as we might imagine, but simply to keep track of trade, to note who owed what to whom.' },
-      { label: 'B', html: 'The first true writing system emerged in Mesopotamia, the fertile region between the Tigris and Euphrates rivers where some of the world’s earliest cities grew up. As those cities expanded and their commerce became steadily more complex, the merchants, priests and officials who ran them needed a reliable way to record how much grain had been placed in a store or how many animals had changed hands in a deal. Human memory alone was no longer enough. They began pressing marks into small tablets of wet clay using the cut end of a reed, producing the distinctive wedge-shaped script that we now call cuneiform. At first these marks were simple pictures of the things they represented (a drawing of an ox stood for an ox), but over many generations they gradually became more abstract, until the symbols stood for spoken sounds as well as for objects, and could be combined to write almost anything that could be said.' },
-      { label: 'C', html: 'A quite separate system, the hieroglyphics of ancient Egypt, developed at roughly the same period, apparently without any borrowing from Mesopotamia. Egyptian scribes carved elaborate and beautiful picture-signs onto the stone walls of temples and tombs, and wrote far more quickly, in a simplified hand, on papyrus, a smooth, paper-like material made by pressing together strips cut from a tall plant that grew along the banks of the Nile. Because learning the hundreds of separate signs took many years of patient training, the ability to read and write was restricted to a small and privileged class of professional scribes. These men enjoyed high social status, were excused from the heavy manual labour demanded of ordinary people, and were exempt from paying taxes, powerful incentives that made a scribe’s training a much sought-after path to advancement.' },
-      { label: 'D', html: 'Writing was not invented only once. It arose independently in several other parts of the world, among peoples who could have had no contact with one another. In ancient China, the earliest surviving examples appear on so-called oracle bones. The polished shoulder blades of oxen and the flat under-shells of turtles, which were heated until they cracked and then used by diviners to predict the future. In Central America, entirely separately, the Maya developed a sophisticated and fully expressive script of their own long before any Europeans arrived on their shores. The striking fact that writing was invented afresh in these widely scattered places strongly suggests that it is not a lucky one-off accident but rather a natural response to the practical demands of any complex, organised, city-building society.' },
-      { label: 'E', html: 'The single invention that finally made writing truly accessible to ordinary people, however, was the alphabet. All the earlier systems shared one great drawback: they required the learner to memorise an enormous number of separate signs, which kept literacy in the hands of a trained few. An alphabet solves this at a stroke by representing the individual sounds of a language with a small and manageable set of letters. Usually fewer than thirty in total. The first alphabets were devised by Semitic-speaking peoples in the Middle East, and were later refined and spread by the Phoenicians, a nation of seafaring traders whose ships carried the useful idea to ports all around the Mediterranean. The Greeks then made one crucial improvement, adding separate signs for the vowel sounds, and from that Greek alphabet descend, by a long and winding route, the majority of the scripts in use across Europe today.' },
-      { label: 'F', html: 'The consequences of this string of inventions are almost impossible to overstate. Writing allowed laws to be fixed and recorded so that they no longer depended on a ruler’s memory or whim; it allowed knowledge to be stored safely and transmitted, unchanged, across many generations; and it allowed ideas to travel far beyond the small circle of people who first thought of them, reaching readers in distant places and distant centuries. Without it, the slow, patient accumulation of learning on which every later civilisation was built (its science, its literature, its history) would quite simply have been impossible.' },
-    ],
+const test: PracticeTest = {
+  "id": "reading-full-002",
+  "skill": "reading",
+  "title": "Academic Reading Test 2",
+  "description": "A complete three-passage Academic Reading practice test with 40 questions.",
+  "durationMinutes": 60,
+  "source": {
+    "name": "IELTS MASTER / PracticePTEOnline",
+    "url": "https://practicepteonline.com/ielts-reading-test-318/",
+    "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
-  groups: [
+  "parts": [
     {
-      title: 'Questions 1-5',
-      type: 'paragraph-matching',
-      options: ['A', 'B', 'C', 'D', 'E', 'F'],
-      instructionHtml:
-        'Reading Passage 1 has six paragraphs, <strong>A-F</strong>. Which paragraph contains the following information?',
-      questions: [
+      "label": "Passage 1",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 1",
+        "title": "Saving the saiga",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>The saiga, a species of antelope native to Central Asia, once roamed the vast grasslands of this region in enormous herds, many millions strong. Regrettably, such spectacular sights are a thing of the past. Today, the saiga is largely confined to a single country: Kazakhstan. This country is estimated to be home to well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest.</span>"
+          },
+          {
+            "html": "<span>The saiga is perfectly adapted to the tough conditions of the remote wilderness of the steppes of Central Asia. One such adaptation is its bizarre bulbous nose, which enables the animal to survive the extreme seasonal temperature swings of the region. The swollen nostrils of the nose serve several purposes: they filter out dust and cool the blood during hot, dry summers, and they warm the cold air before it enters the saiga’s lungs in winter. Other seasonal adaptations include a heavy winter coat that the saiga sheds when the weather warms up.</span>"
+          },
+          {
+            "html": "<span>Despite these superb adaptations to harsh conditions, the saiga has no defence against the threats posed by humans. It was almost driven to extinction by hunters in the 19th century. Legal protection ensured its survival for a while, and numbers steadily recovered throughout most of the 20th century. But the respite was only temporary. </span><span>In the ten years following the break-up of the former Soviet Union in 1991, over 95% of the global population was lost – one of the fastest examples of species loss ever recorded for a mammal.</span>"
+          },
+          {
+            "html": "<span>The dramatic decline during this decade was due to illegal poaching on an industrial scale. Male saiga are a particular target, because their horns are highly prized by traditional medicine practitioners. Poaching reached epidemic levels after misguided conservationists tried to relieve the pressure on threatened African rhinos by actively encouraging the use of saiga horns in traditional medicine as an alternative to those of rhinos. Male saiga were almost wiped out, leading to a population crash from which the species has been struggling to recover ever since.</span>"
+          },
+          {
+            "html": "<span>Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement. Physical barriers such as railways, pipelines and fences can block the seasonal migration routes of this transboundary species. In the worst cases, herds may starve to death after being trapped.</span>"
+          },
+          {
+            "html": "<span>Then there is the risk of disease. In 2015, an outbreak of haemorrhagic septicaemia, caused by the normally harmless bacterium Pasteurella multocida, killed over 75% of the global adult saiga population in just three weeks. In 2017, 60% of the Mongolian saiga population – a subspecies found nowhere else in the world – was killed by a virus that spilled over from livestock. These so-called mass mortality events represent an unpredictable and serious threat to the species.</span>"
+          },
+          {
+            "html": "<span>Climate change poses a further threat. Although well adapted to cold winters and hot summers, saiga struggle to cope with temperature extremes and unpredictable fluctuations in climate. Experts believe that unusually warm weather may have triggered the 2015 mass mortality event. The steppe region has also become increasingly arid in recent years, and many of the smaller streams that the species normally depended on have dried up and vanished.</span>"
+          },
+          {
+            "html": "<span>Recent efforts to save the saiga have been spearheaded by the Altyn Dala Conservation Initiative, a project led by the Association for the Conservation of Biodiversity of Kazakhstan, working in partnership with the Kazakh government’s Committee for Forestry and Wildlife, Frankfurt Zoological Society and Fauna and Flora, an international conservation charity. Its purpose is to protect and restore Kazakhstan’s steppe, semi-desert and desert ecosystems and the many species they support, including the critically endangered saiga. In 2022 the United Nations recognised the initiative as a World Restoration Flagship project, an accolade reserved for the ten best examples of large-scale ecosystem restoration around the globe.</span>"
+          },
+          {
+            "html": "<span>So, how many saiga are there now? By 2000, the global saiga population had hit an all time low of just 21,000 individuals. There was some recovery in the first decade of the new millennium but this was then crushed by devastating mass mortality events that saw the loss of hundreds of thousands of the species. But thanks to the intervention of the Altyn Dala Conservation Initiative, the most recent episodes in the ongoing story of the saiga have been relatively uplifting. Three years ago, the Ustyurt Plateau population in Kazakhstan experienced its largest mass birth of saiga calves in many years. An aerial census two years ago recorded an estimated 842,000 saiga across Kazakhstan as a whole, and according to an aerial survey earlier this year, the saiga population in Kazakhstan now exceeds 1.9 million. The world’s strangest-looking antelope remains critically endangered, but the direction of travel is positive.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q1',
-          textHtml: 'the original practical purpose of writing',
-          answer: 'A',
-          explanation: 'Paragraph A says writing was invented not for poetry or history but simply to keep track of trade.',
-          evidence: 'It was created not to record poetry, prayers or history, as we might imagine, but simply to keep track of trade. To note who owed what to whom.',
+          "title": "Questions 1-7",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q1",
+              "answer": "Dust",
+              "before": "………………… out o lower the temperature of its",
+              "after": ""
+            },
+            {
+              "id": "q2",
+              "answer": "Blood",
+              "before": "…………………..in summer o warm the air entering its lungs in winter • grows a thick",
+              "after": ""
+            },
+            {
+              "id": "q3",
+              "answer": "Coat",
+              "before": "……………….. in winter, which it loses in spring Reasons for population decline • poaching, especially for the",
+              "after": ""
+            },
+            {
+              "id": "q4",
+              "answer": "Horns",
+              "before": "……………… of male saiga • expansion of farms and settlements, causing o reduction in the size of the saiga’s",
+              "after": ""
+            },
+            {
+              "id": "q5",
+              "answer": "Habitat",
+              "before": "……………. o loss of access to the",
+              "after": ""
+            },
+            {
+              "id": "q6",
+              "answer": "Routes",
+              "before": "……………… which they use for migration • various forms of disease, leading to mass mortality events • climate change, causing the disappearance of",
+              "after": ""
+            },
+            {
+              "id": "q7",
+              "answer": "Streams",
+              "before": "………………. which the saiga relied on",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.</span></p><p><strong><span>The saiga</span></strong></p><p><span>Adaptations</span><br/>\n<span>• has a large bulbous nose with swollen nostrils that</span><br/>\n<span>o keep (1) ………………… out</span><br/>\n<span>o lower the temperature of its (2) …………………..in summer</span><br/>\n<span>o warm the air entering its lungs in winter</span><br/>\n<span>• grows a thick (3) ……………….. in winter, which it loses in spring</span></p><p><span>Reasons for population decline</span><br/>\n<span>• poaching, especially for the (4) ……………… of male saiga</span><br/>\n<span>• expansion of farms and settlements, causing</span><br/>\n<span>o reduction in the size of the saiga’s (5) …………….</span><br/>\n<span>o loss of access to the (6) ……………… which they use for migration</span><br/>\n<span>• various forms of disease, leading to mass mortality events</span><br/>\n<span>• climate change, causing the disappearance of (7) ………………. which the saiga relied on</span></p>",
+          "wordLimit": 1
         },
         {
-          id: 'q2',
-          textHtml: 'a description of a wedge-shaped script',
-          answer: 'B',
-          explanation: 'Paragraph B describes the wedge-shaped marks pressed into clay, called cuneiform.',
-          evidence: 'producing the distinctive wedge-shaped script that we now call cuneiform.',
-        },
-        {
-          id: 'q3',
-          textHtml: 'a writing system used to foretell the future',
-          answer: 'D',
-          explanation: 'Paragraph D describes Chinese oracle bones, used by diviners to predict the future.',
-          evidence: 'oracle bones... which were heated until they cracked and then used by diviners to predict the future.',
-        },
-        {
-          id: 'q4',
-          textHtml: 'how the idea of the alphabet was carried around the Mediterranean',
-          answer: 'E',
-          explanation: 'Paragraph E says the Phoenicians’ ships carried the alphabet to ports all around the Mediterranean.',
-          evidence: 'the Phoenicians, a nation of seafaring traders whose ships carried the useful idea to ports all around the Mediterranean.',
-        },
-        {
-          id: 'q5',
-          textHtml: 'the wide-ranging effects of writing on civilisation',
-          answer: 'F',
-          explanation: 'Paragraph F sets out the consequences: fixed laws, stored knowledge, and ideas travelling across places and centuries.',
-          evidence: 'The consequences of this string of inventions are almost impossible to overstate.',
-        },
-      ],
+          "title": "Questions 8-13",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q8",
+              "answer": "False",
+              "textHtml": "Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan"
+            },
+            {
+              "id": "q9",
+              "answer": "False",
+              "textHtml": "For most of the 20th century, the population of saiga were falling"
+            },
+            {
+              "id": "q10",
+              "answer": "True",
+              "textHtml": "Efforts to protect rhinos in Africa had a significant effect on saiga populations"
+            },
+            {
+              "id": "q11",
+              "answer": "Not given",
+              "textHtml": "Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world"
+            },
+            {
+              "id": "q12",
+              "answer": "True",
+              "textHtml": "The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals"
+            },
+            {
+              "id": "q13",
+              "answer": "Not given",
+              "textHtml": "The Altyn Dala Conservation Initiative’s recognition as a World Restoration Flagship project attracted additional international funding for the scheme"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                        if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                      if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                           if there is no information on this</span></p><p><span>8. Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan.</span><br/>\n<span>9. For most of the 20th century, the population of saiga were falling.</span><br/>\n<span>10. Efforts to protect rhinos in Africa had a significant effect on saiga populations.</span><br/>\n<span>11. Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world.</span><br/>\n<span>12. The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals.</span><br/>\n<span>13. The Altyn Dala Conservation Initiative’s recognition as a World Restoration Flagship project attracted additional international funding for the scheme.</span></p>"
+        }
+      ]
     },
     {
-      title: 'Questions 6-9',
-      type: 'sentence-completion',
-      wordLimit: 2,
-      instructionHtml: 'Complete the sentences. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',
-      questions: [
+      "label": "Passage 2",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 2",
+        "title": "The problems of getting around the city of Dar es Salaam",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>Dar es Salaam in Tanzania is one of the fastest growing cities in Africa. Its population has increased eightfold since 1980 and swells by half a million people every year. United Nations projections anticipate it will become a megacity within seven years as its population passes 10 million, reaching 13.4 million by 2035. Daniel Hoornweg for the Global Cities Institute forecasts the city could be home to an incredible 73.7 million people by 2100.</span>"
+          },
+          {
+            "html": "<span>Today, four out of five of its people live in single-storey informal settlements on the spreading edges of the city, where the journey to and from the centre regularly takes over two hours. It can be longer if rain turns the dirt roads to mud.</span>"
+          },
+          {
+            "html": "<span>Even in the middle of the day, traffic frequently slows to a stop without warning. It is not unusual for cars and minibuses to queue for 20 minutes at a key intersection. A single suburban rail line serves residents in a few areas to the south but is tiny in the context of the wider city. Outside the centre many rely on boda boda (motorbike taxis) to navigate the narrow side streets and potholed mud roads that make up much of the metropolis. Their safety record is scandalous.</span>"
+          },
+          {
+            "html": "<span>Dar es Salaam’s reliance on four arterial roads into the city is a legacy of the colonial government that planned the city at the start of the 20th century to cater for a population of 35,000. Most of the current growth is made up of young people arriving from the countryside to find work, and as the population has exploded, Dar es Salaam has grown around those four highways. Nearly all the expansion is happening on the periphery, and nearly all takes place informally without any agreed strategy.</span>"
+          },
+          {
+            "html": "<span>But Dar es Salaam is pinning its hopes on a solution that could offer a different model for Africa’s megacities, giving them an alternative to a future controlled by the private car. Unlike many cities on the continent, Dar es Salaam isn’t trying to build a metro. It has chosen a less exciting but cheaper and more achievable method: the bus.</span>"
+          },
+          {
+            "html": "<span>The DART bus rapid transit (BRT) system runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages. Ticket purchase and control takes place at stations prior to boarding and the buses are step-free, which means the entire route is accessible to people using wheelchairs or who are travelling with baby buggies.</span>"
+          },
+          {
+            "html": "<span>‘The new buses are much, much better,’ says Paulas George, a young IT worker. He takes the bus every day and it has cut his journey time by two-thirds. He says it is not perfect, though, complaining that drivers often refuse to turn on the air conditioning to save fuel.</span>"
+          },
+          {
+            "html": "<span>That is not the only problem. A shortage of buses after a serious flood at the main depot during the rainy season means the system is carrying 200,000 people a day – half the expected capacity. Smartcards can’t be used as the mechanical readers aren’t working either, forcing passengers to buy individual paper tickets for every journey. Each is printed with a scannable QR code, but there are no scanners. Staff stand by the gates and tear tickets as people enter. As a result, queues are considerable at peak times.</span>"
+          },
+          {
+            "html": "<span>Morogoro Road to the north-west of the city was phase I of the BRT project. Phases II and III will install bus lanes along Nyerere Road to the south-west and Kilwa Road to the south. Construction on both routes is due to start imminently. Phase IV, towards Bagamoyo in the north, is in the preliminary design stage. ‘Much of the city will have access to a world-class transport system within the space of a few years,’ says Chris Kost, the Africa director of ITDP (the Institute for Transportation and Development Policy). All phases are being planned to high standards and, once complete, a third of city residents will be within a short walk of the BRT network.</span>"
+          },
+          {
+            "html": "<span>The ITDP regrets Africa’s obsession with metros. ‘With a metro, an international firm will often just parachute in its own system,’ says Kost. ‘Bus rapid transit allows existing stakeholders to get involved. That’s what we did in Dar es Salaam and what we’re planning in Nairobi, where the bus bodies will be built in the city and local operators will look after tickets, fare collection and IT …Bus rapid transit has been transformational for Dar es Salaam. For millions of people in African cities, this is their best hope of ever being connected.’</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q6',
-          before: 'The earliest writing appeared roughly',
-          after: 'years ago.',
-          answer: ['5,000', 'five thousand'],
-          explanation: 'The passage dates the earliest known writing to around 5,000 years ago.',
-          evidence: 'The earliest known writing did not appear until around 5,000 years ago, remarkably recently in the span of human existence.',
+          "title": "Questions 14-18",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 14-18 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q14",
+              "answer": "Not given",
+              "textHtml": "The population of Dar es Salaam is rising more rapidly than was previously predicted"
+            },
+            {
+              "id": "q15",
+              "answer": "False",
+              "textHtml": "Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city"
+            },
+            {
+              "id": "q16",
+              "answer": "Not given",
+              "textHtml": "Residents have been consulted about their views on the suburban rail line in Dar es Salaam"
+            },
+            {
+              "id": "q17",
+              "answer": "True",
+              "textHtml": "The majority of the present residential development in Dar es Salaam is unplanned"
+            },
+            {
+              "id": "q18",
+              "answer": "False",
+              "textHtml": "Dar es Salaam’s authorities have decided to follow the public transport plan adopted by a large number of African cities"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 14-18 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                if there is no information on this</span></p><p><span>14. The population of Dar es Salaam is rising more rapidly than was previously predicted.</span><br/>\n<span>15. Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city.</span><br/>\n<span>16. Residents have been consulted about their views on the suburban rail line in Dar es Salaam.</span><br/>\n<span>17. The majority of the present residential development in Dar es Salaam is unplanned.</span><br/>\n<span>18. Dar es Salaam’s authorities have decided to follow the public transport plan adopted by a large number of African cities.</span></p>"
         },
         {
-          id: 'q7',
-          before: 'In Mesopotamia, marks were pressed into wet',
-          after: 'tablets.',
-          answer: 'clay',
-          explanation: 'Marks were pressed into small tablets of wet clay with the cut end of a reed.',
-          evidence: 'They began pressing marks into small tablets of wet clay using the cut end of a reed.',
-        },
-        {
-          id: 'q8',
-          before: 'Egyptian scribes wrote on',
-          after: ', made from a river plant.',
-          answer: 'papyrus',
-          explanation: 'Scribes wrote quickly on papyrus, made from a plant growing along the Nile.',
-          evidence: 'wrote far more quickly, in a simplified hand, on papyrus. A smooth, paper-like material made by pressing together strips cut from a tall plant that grew along the banks of the Nile.',
-        },
-        {
-          id: 'q9',
-          before: 'The Greeks improved the alphabet by adding signs for',
-          after: '.',
-          answer: 'vowels',
-          explanation: 'The Greeks’ crucial improvement was adding separate signs for the vowel sounds.',
-          evidence: 'The Greeks then made one crucial improvement, adding separate signs for the vowel sounds.',
-        },
-      ],
+          "title": "Questions 19-26",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 19-26 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q19",
+              "answer": "Lanes",
+              "before": "………………. to cut down on delays • passengers pay fares before",
+              "after": ""
+            },
+            {
+              "id": "q20",
+              "answer": "Boarding",
+              "before": "………………. • passengers in",
+              "after": ""
+            },
+            {
+              "id": "q21",
+              "answer": "Wheelchairs",
+              "before": "…………………. can use every part of the system Problems • the temperature control is sometimes not activated in order to reduce",
+              "after": ""
+            },
+            {
+              "id": "q22",
+              "answer": "Fuel",
+              "before": "………………. use • insufficient number of vehicles are available due to the effects of a severe",
+              "after": ""
+            },
+            {
+              "id": "q23",
+              "answer": "Flood",
+              "before": "………………… • passengers are unable to use",
+              "after": ""
+            },
+            {
+              "id": "q24",
+              "answer": "Smartcards",
+              "before": "……………….. because some equipment is out of action • tickets have to be checked manually at station",
+              "after": ""
+            },
+            {
+              "id": "q25",
+              "answer": "Gates",
+              "before": "……………. •",
+              "after": ""
+            },
+            {
+              "id": "q26",
+              "answer": "Queues",
+              "before": "………………. frequently build up during rush hours",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 19-26</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span><br/>\n<span>Write your answers in boxes 19-26 on your answer sheet.</span></p><p><strong><span>Dar es Salaam’s DART Bus Rapid Transit system</span></strong></p><p><strong><span>Features</span></strong><br/>\n<span>• the buses use designated (19) ………………. to cut down on delays</span><br/>\n<span>• passengers pay fares before (20) ……………….</span><br/>\n<span>• passengers in (21) …………………. can use every part of the system</span></p><p><strong><span>Problems</span></strong><br/>\n<span>• the temperature control is sometimes not activated in order to reduce (22) ………………. use</span><br/>\n<span>• insufficient number of vehicles are available due to the effects of a severe (23) …………………</span><br/>\n<span>• passengers are unable to use (24) ……………….. because some equipment is out of action</span><br/>\n<span>• tickets have to be checked manually at station (25) …………….</span><br/>\n<span>• (26) ………………. frequently build up during rush hours</span></p>",
+          "wordLimit": 1
+        }
+      ]
     },
     {
-      title: 'Questions 10-13',
-      type: 'tfng',
-      instructionHtml:
-        'Do the following statements agree with the information in Reading Passage 1? Write <strong>True</strong>, <strong>False</strong> or <strong>Not Given</strong>.',
-      questions: [
+      "label": "Passage 3",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 3",
+        "title": "Rethinking the Past",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>It is by now a truism that the story of human evolution is being rethought. Discoveries have come thick and fast over the last decade or so, and these have forced us to rethink many crucial points, such as how old our species is – about 300,000 years old as opposed to 200.0 – and what extinct hominins, such as our cousins the Neanderthals, were really like. But because there are so many species and eras involved, it’s hard to discern the common threads linking them.</span>"
+          },
+          {
+            "html": "<span>However, I do think it’s possible to draw out some overall messages from the blizzard of archaeological finds in recent years. Two things stand out to me. One is the growing evidence that many supposedly ‘advanced’ behaviours, such as architecture and art, can be traced much further back in time than we thought, often to hominin species that existed before modern humans. And the other is that we have badly misunderstood gender roles in prehistoric societies, imposing patriarchal values onto cultures that had very different ideas about how women should behave.</span>"
+          },
+          {
+            "html": "<span>Let’s start with architecture. At Kalambo Falls in Zambia, researchers found buried logs that had been shaped with stone tools so that they interlocked. They seem to have once been part of a larger structure, perhaps a building. This would be unsurprising if they weren’t 476.0 years old. That’s almost 200,000 years before our species, Homo sapiens, evolved. Extinct hominins also managed to settle in extreme places. For instance, we now know that extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions </span><span>200.0 years ago – upending the old notion that such environments were only settled by modem humans around 3,600 years ago.</span>"
+          },
+          {
+            "html": "<span>Art also seems to have been invented by older hominins. We have had evidence for a long time now that Neanderthals painted on cave walls. Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells. By far the most contentious claim in this area is that Homo naledi made art. II. naledi lived around 250,000 years ago, making it a contemporary of our species. However, it had quite a small brain, typical of older hominins – and was therefore, according to palaeoanthropological dogma, incapable of complex behaviours. Nevertheless, in the Rising Star cave system in South Africa where the II. naledi remains were found, researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated.</span>"
+          },
+          {
+            "html": "<span>To say these claims about H. naledi are controversial is to understate the situation. Many experts say the evidence presented so far is completely inadequate to support them. The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper. My views on the H. naledi controversy are complicated. I do think more evidence is needed: in particular with regard to the dating of the etchings. At the same time, I think the species’ small brains are a distraction. Palaeoanthropologists got fixated on brain size because it was what they could see: if what you have is skeletons, then all you know about brains are their shapes and sizes. But other properties, such as the brain’s internal wiring, are surely equally important and may explain how a species like H. naledi might have been capable of complex behaviours, despite their small brains.</span>"
+          },
+          {
+            "html": "<span>In a sense, we shouldn’t be surprised that so many of these behaviours had their origins in older, extinct hominins. Evolution usually works by incremental steps and so does technology. The first birds weren’t great at flying, and the first mobile phones weren’t great at, well, anything really. The idea that there was a sudden explosion of intelligence and creativity at some point in our evolution isn’t inherently ridiculous: sometimes a system hits a tipping point and undergoes runaway change. But there was never that much evidence that human evolution worked this way. Instead, it seems the Neanderthals and many others all walked so we could run.</span>"
+          },
+          {
+            "html": "<span>One way or another, the H. naledi story is going to be an example of letting our preconceptions get in the way of the evidence. The same is true for our ideas about gender in prehistory. Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research. Today’s researchers are trying to unpick this stuff, and there have been some significant steps in recent years.</span>"
+          },
+          {
+            "html": "<span>Perhaps the most dramatic was the demolition of ‘Man the Hunter’, This was the idea, promoted for decades, that in most prehistoric societies the men went out to hunt and the women looked after the home. However, a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them. In line with this, it emerged that an ancient spear-throwing tool called an atlatl enables women to launch projectiles at the same speed as men. We have also seen growing evidence of women occupying positions of authority in ancient societies. The Viking queen Thyra may have helped unify Denmark in the 900s. Going further back, an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed, when proteins in her teeth were analysed.</span>"
+          },
+          {
+            "html": "<span>It seems that the more we find out about past societies, the more our preconceptions about the ways society ‘has to be’ turn out to be wrong. Inequality, authoritarianism and patriarchy aren’t inevitable. They’re choices, and prehistory shows us that we can choose differently.</span>"
+          }
+        ]
+      },
+      "groups": [
         {
-          id: 'q10',
-          textHtml: 'Writing was originally created to record poetry and history.',
-          answer: 'False',
-          explanation: 'The passage says the opposite: writing was created NOT to record poetry, prayers or history, but for trade.',
-          evidence: 'It was created not to record poetry, prayers or history, as we might imagine, but simply to keep track of trade.',
+          "title": "Questions 27-30",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C or D.",
+          "questions": [
+            {
+              "id": "q27",
+              "answer": "A",
+              "textHtml": "What is the writer doing in the second paragraph?",
+              "options": [
+                "pinpointing some key changes in our understanding of prehistory",
+                "outlining some aspects of prehistory which are still poorly understood",
+                "summarising some attitudes towards recent archaeological revelations",
+                "giving an overview of some current disagreements among archaeologists"
+              ]
+            },
+            {
+              "id": "q28",
+              "answer": "A",
+              "textHtml": "In the sixth paragraph, the writer mentions mobile phones to make the point that",
+              "options": [
+                "most developments happen in a gradual way",
+                "innovation can come from a variety of sources",
+                "not all technological advancements are positive",
+                "the path of evolution can often be unpredictable"
+              ]
+            },
+            {
+              "id": "q29",
+              "answer": "D",
+              "textHtml": "In the seventh paragraph, the phrase ‘unpick this stuff’ refers to the task of",
+              "options": [
+                "assessing the impact of certain recent research findings",
+                "questioning the authenticity of evidence used in earlier research",
+                "conducting research into how prehistoric societies were organised",
+                "reevaluating research influenced by outdated beliefs about society"
+              ]
+            },
+            {
+              "id": "q30",
+              "answer": "A",
+              "textHtml": "What does the writer suggest in the final paragraph?",
+              "options": [
+                "Studying past societies could help us create a fairer society today",
+                "We should not judge past societies by the standards of modern society",
+                "We still have much to learn about how societies have evolved over history",
+                "There is more than one way to interpret evidence about societies in prehistoric times"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>27. What is the writer doing in the second paragraph?</span><br/>\n<span><strong>A</strong> pinpointing some key changes in our understanding of prehistory</span><br/>\n<span><strong>B</strong> outlining some aspects of prehistory which are still poorly understood</span><br/>\n<span><strong>C</strong> summarising some attitudes towards recent archaeological revelations</span><br/>\n<span><strong>D</strong> giving an overview of some current disagreements among archaeologists</span></p><p><span>28. In the sixth paragraph, the writer mentions mobile phones to make the point that</span><br/>\n<span><strong>A</strong> most developments happen in a gradual way.</span><br/>\n<span><strong>B</strong> innovation can come from a variety of sources.</span><br/>\n<span><strong>C</strong> not all technological advancements are positive.</span><br/>\n<span><strong>D</strong> the path of evolution can often be unpredictable.</span></p><p><span>29. In the seventh paragraph, the phrase ‘unpick this stuff’ refers to the task of</span><br/>\n<span><strong>A</strong> assessing the impact of certain recent research findings.</span><br/>\n<span><strong>B</strong> questioning the authenticity of evidence used in earlier research.</span><br/>\n<span><strong>C</strong> conducting research into how prehistoric societies were organised.</span><br/>\n<span><strong>D</strong> reevaluating research influenced by outdated beliefs about society.</span></p><p><span>30. What does the writer suggest in the final paragraph?</span><br/>\n<span><strong>A</strong> Studying past societies could help us create a fairer society today.</span><br/>\n<span><strong>B</strong> We should not judge past societies by the standards of modern society.</span><br/>\n<span><strong>C</strong> We still have much to learn about how societies have evolved over history.</span><br/>\n<span><strong>D</strong> There is more than one way to interpret evidence about societies in prehistoric times.</span></p>"
         },
         {
-          id: 'q11',
-          textHtml: 'Egyptian scribes paid higher taxes than other workers.',
-          answer: 'False',
-          explanation: 'Scribes were exempt from paying taxes. They paid none, not more.',
-          evidence: 'These men enjoyed high social status, were excused from the heavy manual labour demanded of ordinary people, and were exempt from paying taxes.',
+          "title": "Questions 31-34",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q31",
+              "answer": "E",
+              "before": "The findings at Kalambo Falls revealed that",
+              "after": ""
+            },
+            {
+              "id": "q32",
+              "answer": "F",
+              "before": "Evidence from high-altitude regions suggests that",
+              "after": ""
+            },
+            {
+              "id": "q33",
+              "answer": "D",
+              "before": "An academic publication from June 2023 shows that",
+              "after": ""
+            },
+            {
+              "id": "q34",
+              "answer": "B",
+              "before": "Analysis of a 4000-year-old Iberian leader indicates that 70 A Homo sapiens emerged at an earlier point in time than experts previously believed. B previous assumptions about who had power in the prehistoric world were inaccurate. C gender roles in extinct hominin species were different from those in Homo sapiens societies. D experts may have been mistaken about who looked for food in early human communities. E Homo sapiens was probably not the only species capable of sophisticated workmanship. F other species managed to survive in harsh environments before the arrival of Homo sapiens",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 31-34</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.</span></p><p><span>31. The findings at Kalambo Falls revealed that</span><br/>\n<span>32. Evidence from high-altitude regions suggests that</span><br/>\n<span>33. An academic publication from June 2023 shows that</span><br/>\n<span>34. Analysis of a 4000-year-old Iberian leader indicates that 70</span></p><p><span><strong>A</strong> Homo sapiens emerged at an earlier point in time than experts previously believed.</span><br/>\n<span><strong>B</strong> previous assumptions about who had power in the prehistoric world were inaccurate.</span><br/>\n<span><strong>C</strong> gender roles in extinct hominin species were different from those in Homo sapiens societies.</span><br/>\n<span><strong>D</strong> experts may have been mistaken about who looked for food in early human communities.</span><br/>\n<span><strong>E</strong> Homo sapiens was probably not the only species capable of sophisticated workmanship.</span><br/>\n<span><strong>F</strong> other species managed to survive in harsh environments before the arrival of Homo sapiens.</span></p>"
         },
         {
-          id: 'q12',
-          textHtml: 'The Maya script was more advanced than Egyptian hieroglyphics.',
-          answer: 'Not Given',
-          explanation: 'The Maya script is called "sophisticated and fully expressive", but the passage never compares it with Egyptian hieroglyphics.',
-          evidence: 'the Maya developed a sophisticated and fully expressive script of their own long before any Europeans arrived on their shores.',
-        },
-        {
-          id: 'q13',
-          textHtml: 'Most scripts used in Europe today come from the Greek alphabet.',
-          answer: 'True',
-          explanation: 'The passage states that the majority of European scripts descend from the Greek alphabet.',
-          evidence: 'from that Greek alphabet descend, by a long and winding route, the majority of the scripts in use across Europe today.',
-        },
-      ],
-    },
-  ],
+          "title": "Questions 35-40",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements agree with the views of the writer in reading passage? In boxes 35-40 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q35",
+              "answer": "No",
+              "textHtml": "It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created"
+            },
+            {
+              "id": "q36",
+              "answer": "Not given",
+              "textHtml": "It is very rare to find prehistoric artwork carved onto shells"
+            },
+            {
+              "id": "q37",
+              "answer": "Not given",
+              "textHtml": "The methods which the researchers used to examine the Rising Star cave system were rather unconventional"
+            },
+            {
+              "id": "q38",
+              "answer": "Yes",
+              "textHtml": "It is unclear how old the etchings in the Rising Star cave system are"
+            },
+            {
+              "id": "q39",
+              "answer": "Yes",
+              "textHtml": "The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them"
+            },
+            {
+              "id": "q40",
+              "answer": "No",
+              "textHtml": "The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 35-40</span></strong><br/>\n<span>Do the following statements agree with the views of the writer in reading passage? </span><span>In boxes 35-40 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                   if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                     if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                   if it is impossible to say what the writer thinks about this</span></p><p><span>35. It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created.</span><br/>\n<span>36. It is very rare to find prehistoric artwork carved onto shells.</span><br/>\n<span>37. The methods which the researchers used to examine the Rising Star cave system were rather unconventional.</span><br/>\n<span>38. It is unclear how old the etchings in the Rising Star cave system are.</span><br/>\n<span>39. The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them.</span><br/>\n<span>40. The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art.</span></p>"
+        }
+      ]
+    }
+  ]
 };
 
-// ── Passage 2 — Why We Sleep (Q14-26) ───────────────────────────────────────
-const passage2: TestPart = {
-  label: 'Passage 2',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 2',
-    title: 'Why We Sleep',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 14-26</strong>, which are based on Reading Passage 2 below.',
-    paragraphs: [
-      { label: 'A', html: 'Everyone sleeps. We spend roughly a third of our entire lives doing it, and we will die far sooner from a lack of sleep than from a lack of food. And yet, for most of recorded history, sleep was dismissed as little more than a tiresome period of inactivity. A kind of nightly pause during which the body simply switched itself off and waited for morning. Modern science has overturned that lazy view completely. Far from being idle, the sleeping brain turns out to be intensely, purposefully busy, running a whole series of maintenance and housekeeping tasks that it cannot perform while we are awake. The work it does during those dark hours is now known to be essential to our physical health, to our memory, and to the steadiness of our mood.' },
-      { label: 'B', html: 'Sleep is not a single, uniform state, as it appears from the outside, but an ordered cycle of distinct stages that repeats over and over through the night. In the deepest of these stages, the brain’s electrical waves slow down dramatically and grow large and regular, and it is during this phase that the body carries out much of its physical repair, releasing hormones that heal tissue and strengthen bone. This deep sleep alternates with a very different and altogether stranger phase called REM sleep, in which the brain suddenly becomes almost as active as it is during waking life and the sleeper’s eyes dart rapidly to and fro beneath their closed lids. One complete cycle, moving down into deep sleep and back up into REM, lasts on average about ninety minutes, and a healthy sleeper passes through four or five of them in the course of a single night.' },
-      { label: 'C', html: 'One of the most important discoveries of recent decades concerns the surprising role that sleep plays in memory. The psychologist Robert Stickgold has shown, in a long series of careful experiments, that skills and facts learned during the day quietly improve overnight, even when the learner does no further practice at all, almost as if the sleeping brain were secretly rehearsing them in the dark. In one striking study, people who were allowed to sleep after learning a new task performed it markedly better the following day than an otherwise identical group who had been kept awake through the night. The clear implication is that sleep does not merely preserve our memories, holding them safe until morning, but actively works on them, strengthening the useful ones and weaving them into what we already know.' },
-      { label: 'D', html: 'Sleep also, quite literally, cleans the brain. The neuroscientist Maiken Nedergaard made the unexpected discovery that during sleep the tiny spaces between the brain’s densely packed cells actually widen, opening up channels that allow fluid to wash through the tissue and flush out the waste products that steadily build up during the busy hours of waking thought. This nightly clean-out matters a great deal, because some of those accumulated waste products are the very same substances linked to serious diseases such as Alzheimer’s. The finding has led a growing number of researchers to suspect that consistently poor sleep, sustained over many years, may be one of the factors that raises a person’s long-term risk of dementia. A sobering thought in a sleep-deprived age.' },
-      { label: 'E', html: 'The purpose of dreaming, by contrast, remains far more mysterious, and here the scientists themselves disagree. The influential sleep scientist Matthew Walker argues that REM sleep, the phase in which most vivid dreaming occurs, helps the brain to process and defuse difficult emotions, gently taking the sharp, painful edge off our most distressing memories overnight so that we wake better able to cope with them. It is, in his phrase, a form of overnight therapy. Others, however, are far less certain that dreams serve any purpose at all. Some researchers believe that dreams are simply a meaningless by-product of the brain’s intense night-time activity (random sparks thrown off by the machinery of sleep) with no real function of their own.' },
-      { label: 'F', html: 'What is genuinely beyond dispute, whatever the truth about dreams, is that going without sleep is dangerous. After even a single poor night, our powers of concentration and the soundness of our judgement both decline sharply, often without our noticing. Chronic, long-term sleep loss is worse still, and has been firmly linked by researchers to weakened immunity, to weight gain, to high blood pressure and to depression. The costs are social as well as personal: the economist Jan Vandekerckhove has estimated that tiredness among the working population drains the global economy of hundreds of billions of dollars every year, lost through accidents, mistakes and simple reductions in productivity that could easily have been avoided with proper rest.' },
-      { label: 'G', html: 'Despite this steadily mounting pile of evidence, people across the developed world are, on average, sleeping noticeably less than their grandparents did. A whole range of modern pressures conspires against a good night’s rest: the spread of cheap artificial light, ever longer and more irregular working hours, and, above all, the cool blue glow of screens consulted late into the night, which fools the brain into thinking it is still daytime and interferes with the body’s natural rhythms. Scientists increasingly warn that a society which quietly treats sleep as an optional luxury, or worse still as a sign of laziness or weakness, is storing up very serious problems for its future health.' },
-    ],
-  },
-  groups: [
-    {
-      title: 'Questions 14-19',
-      type: 'matching-headings',
-      instructionHtml:
-        'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for paragraphs <strong>B-G</strong>. (Paragraph A is an introduction.)',
-      legendHtml:
-        '<strong>List of Headings</strong><br>i&nbsp; How sleep strengthens what we learn<br>ii&nbsp; Sleep in the animal kingdom<br>iii&nbsp; The different stages of a night’s sleep<br>iv&nbsp; The best time of day to sleep<br>v&nbsp; Clearing harmful waste from the brain<br>vi&nbsp; The uncertain purpose of dreaming<br>vii&nbsp; The dangers of going without sleep<br>viii&nbsp; Why we now sleep less than before<br>ix&nbsp; How much sleep we really need',
-      options: ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'],
-      questions: [
-        {
-          id: 'q14',
-          textHtml: 'Paragraph B',
-          answer: 'iii',
-          explanation: 'Paragraph B describes the ordered cycle of distinct sleep stages (deep sleep alternating with REM), heading iii.',
-          evidence: 'Sleep is not a single, uniform state, as it appears from the outside, but an ordered cycle of distinct stages that repeats over and over through the night.',
-        },
-        {
-          id: 'q15',
-          textHtml: 'Paragraph C',
-          answer: 'i',
-          explanation: 'Paragraph C is about sleep strengthening memories (skills learned during the day improve overnight), heading i.',
-          evidence: 'skills and facts learned during the day quietly improve overnight, even when the learner does no further practice at all.',
-        },
-        {
-          id: 'q16',
-          textHtml: 'Paragraph D',
-          answer: 'v',
-          explanation: 'Paragraph D describes the brain’s nightly clean-out of waste products. Heading v.',
-          evidence: 'Sleep also, quite literally, cleans the brain... allow fluid to wash through the tissue and flush out the waste products.',
-        },
-        {
-          id: 'q17',
-          textHtml: 'Paragraph E',
-          answer: 'vi',
-          explanation: 'Paragraph E says the purpose of dreaming remains mysterious and scientists disagree. Heading vi.',
-          evidence: 'The purpose of dreaming, by contrast, remains far more mysterious, and here the scientists themselves disagree.',
-        },
-        {
-          id: 'q18',
-          textHtml: 'Paragraph F',
-          answer: 'vii',
-          explanation: 'Paragraph F lists the dangers of sleep loss: weakened immunity, weight gain, high blood pressure, depression. Heading vii.',
-          evidence: 'What is genuinely beyond dispute, whatever the truth about dreams, is that going without sleep is dangerous.',
-        },
-        {
-          id: 'q19',
-          textHtml: 'Paragraph G',
-          answer: 'viii',
-          explanation: 'Paragraph G explains why people now sleep less than their grandparents (artificial light, long hours, screens), heading viii.',
-          evidence: 'people across the developed world are, on average, sleeping noticeably less than their grandparents did.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 20-22',
-      type: 'multiple-choice',
-      instructionHtml: 'Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.',
-      questions: [
-        {
-          id: 'q20',
-          textHtml: 'During REM sleep, the brain is',
-          options: ['completely inactive.', 'almost as active as when awake.', 'busy repairing the body.', 'free of all waste.'],
-          answer: 'B',
-          explanation: 'In REM the brain becomes almost as active as during waking life. Physical repair happens in deep sleep, not REM.',
-          evidence: 'a very different and altogether stranger phase called REM sleep, in which the brain suddenly becomes almost as active as it is during waking life.',
-        },
-        {
-          id: 'q21',
-          textHtml: 'According to Nedergaard, what happens between brain cells during sleep?',
-          options: ['They shrink permanently.', 'Gaps widen so that waste can be removed.', 'New cells are formed.', 'Fluid stops flowing.'],
-          answer: 'B',
-          explanation: 'Nedergaard found the spaces between cells widen during sleep, letting fluid flush out waste. The opposite of fluid stopping.',
-          evidence: 'during sleep the tiny spaces between the brain’s densely packed cells actually widen, opening up channels that allow fluid to wash through the tissue and flush out the waste products.',
-        },
-        {
-          id: 'q22',
-          textHtml: 'What does the passage say about the purpose of dreams?',
-          options: ['It is now fully understood.', 'Scientists disagree about it.', 'Dreams have no effect on emotion.', 'Only one scientist has studied it.'],
-          answer: 'B',
-          explanation: 'The passage explicitly says scientists disagree: Walker sees "overnight therapy", others see a meaningless by-product.',
-          evidence: 'The purpose of dreaming, by contrast, remains far more mysterious, and here the scientists themselves disagree.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 23-26',
-      type: 'matching-features',
-      instructionHtml: 'Match each finding with the correct researcher. Write the correct letter, A-D.',
-      legendHtml:
-        '<strong>A</strong>&nbsp; Robert Stickgold &nbsp;·&nbsp; <strong>B</strong>&nbsp; Maiken Nedergaard &nbsp;·&nbsp; <strong>C</strong>&nbsp; Matthew Walker &nbsp;·&nbsp; <strong>D</strong>&nbsp; Jan Vandekerckhove',
-      options: ['A', 'B', 'C', 'D'],
-      questions: [
-        {
-          id: 'q23',
-          textHtml: 'Sleep may reduce the emotional pain of bad memories.',
-          answer: 'C',
-          explanation: 'Matthew Walker argues REM sleep takes the painful edge off distressing memories. "Overnight therapy".',
-          evidence: 'Matthew Walker argues that REM sleep... helps the brain to process and defuse difficult emotions, gently taking the sharp, painful edge off our most distressing memories.',
-        },
-        {
-          id: 'q24',
-          textHtml: 'A lack of sleep is very costly to the economy.',
-          answer: 'D',
-          explanation: 'Jan Vandekerckhove estimated tiredness drains the global economy of hundreds of billions of dollars a year.',
-          evidence: 'the economist Jan Vandekerckhove has estimated that tiredness among the working population drains the global economy of hundreds of billions of dollars every year.',
-        },
-        {
-          id: 'q25',
-          textHtml: 'Sleeping after learning improves later performance.',
-          answer: 'A',
-          explanation: 'Robert Stickgold’s experiments showed people who slept after learning a task performed it markedly better the next day.',
-          evidence: 'people who were allowed to sleep after learning a new task performed it markedly better the following day than an otherwise identical group who had been kept awake.',
-        },
-        {
-          id: 'q26',
-          textHtml: 'Sleep removes substances connected to brain disease.',
-          answer: 'B',
-          explanation: 'Maiken Nedergaard discovered the nightly clean-out that flushes waste products linked to diseases like Alzheimer’s.',
-          evidence: 'some of those accumulated waste products are the very same substances linked to serious diseases such as Alzheimer’s.',
-        },
-      ],
-    },
-  ],
-};
-
-// ── Passage 3 — The Value of Space Exploration (Q27-40) ─────────────────────
-const passage3: TestPart = {
-  label: 'Passage 3',
-  stimulus: {
-    kind: 'passage',
-    label: 'Reading Passage 3',
-    title: 'The Value of Space Exploration',
-    instructionHtml:
-      'You should spend about 20 minutes on <strong>Questions 27-40</strong>, which are based on Reading Passage 3 below.',
-    paragraphs: [
-      { label: 'A', html: 'Every few years, when the cost of some ambitious new space mission is announced, the same objection is raised, and it is always raised with an air of unanswerable common sense: why spend billions of pounds exploring distant, lifeless worlds when so many pressing problems remain unsolved on our own? Why fund rockets when there are hospitals to build here and mouths to feed? It is a perfectly reasonable question, and the people who ask it are certainly not fools; it deserves a far better and more honest answer than the ones it is usually given. In my own view the case for space exploration is genuinely a strong one. But, as I shall try to argue in what follows, not for the practical, pound-and-pence reasons that its supporters tend to reach for first.' },
-      { label: 'B', html: 'The most common defence of space research is that it produces useful inventions here on Earth. Its supporters like to point to satellite navigation, which now guides ships and cars unerringly across the globe, to the weather forecasting that depends entirely on instruments in orbit, and to the many medical devices that can trace their distant origins back to technology first developed for the demands of a space programme. All of this is perfectly true, and none of it should be dismissed. Yet as the central argument for exploration it is surprisingly weak, because almost any large and generously funded research effort, whatever its subject, will throw off useful spin-offs of one kind or another. If practical inventions were genuinely the only thing we were after, then the money would almost certainly be better spent on pursuing those inventions directly and deliberately, rather than merely hoping that they might emerge, by luck, as accidental by-products of a voyage to another planet.' },
-      { label: 'C', html: 'A far stronger justification for exploration is a purely scientific one. Studying other planets tells us things about our own world that we could learn in no other way, precisely because it allows us to observe, fully and dramatically played out, natural processes that here on Earth are either painfully slow or hidden from view. The thick, choking, sulphurous atmosphere of Venus, for instance, stands as a vivid natural warning of exactly where an unchecked, runaway greenhouse effect can ultimately lead a planet. The cold, dead, radiation-blasted surface of Mars, meanwhile, shows us plainly what can become of a once-warmer, wetter world after it loses the protective magnetic field that once shielded it. Neither of these sobering lessons could ever be taught half so vividly inside a laboratory. Understanding how such enormous changes came about on our nearest neighbours helps us to understand (and, one hopes, to protect) the delicate and deeply improbable set of conditions that make life on Earth possible in the first place.' },
-      { label: 'D', html: 'There is also an argument from sheer long-term survival. Some serious thinkers, including several prominent scientists, insist that humanity must eventually spread out and establish itself beyond the Earth if our species is to survive the great threats that face it over the coming ages, whether those threats come from the chance impact of an asteroid or from our own collective mistakes. I confess that I am rather less persuaded by this particular line of reasoning than many are. Building a genuinely self-sufficient human colony on Mars is so staggeringly difficult, and lies so very far off in the future, that it can be no real substitute at all for taking proper care of the one comfortable and habitable planet we already possess. Worse still, quietly treating space as a kind of insurance policy or emergency escape route may actually weaken our collective resolve to fix our problems here at home, by feeding the dangerous and comforting fantasy that we can always simply pack up and start afresh somewhere else.' },
-      { label: 'E', html: 'The best reason of all to explore space, I have come to believe, is in fact the least practical one imaginable. Exploration answers a deep, ancient and restless human need to understand our own place in the wider universe. The very same curiosity that once drove our ancestors to cross uncharted oceans in fragile boats and to map unknown continents at enormous personal risk. The gradual discovery, still going on around us, that our galaxy contains not a mere handful but literally billions of other worlds, and that some fraction of those worlds may perhaps harbour life of their own, is surely among the most profound and humbling in the entire history of human thought. To turn away from a question of that sheer magnitude, simply on the grounds that answering it does not immediately pay for itself in cash, would be to sell terribly short something essential about what it actually means to be a curious, thinking human being.' },
-      { label: 'F', html: 'None of this, I should stress, means that we ought to spend without any limit at all, or that we should ignore genuinely urgent and immediate human needs down here on Earth merely in order to gaze dreamily up at the stars. But the choice before us, when it is examined honestly and without exaggeration, is simply not the stark one between space and everything else that its critics like to imagine. The actual sums of money involved in exploration are really very small when they are set beside the truly colossal amounts that the world’s governments already spend, year after year, on a great many far less inspiring things. A wealthy civilisation that can plainly afford to lift its eyes and look outward, and yet deliberately chooses not to, has surely lost something a good deal more valuable than the modest sum of money it flatters itself it is saving.' },
-    ],
-  },
-  groups: [
-    {
-      title: 'Questions 27-31',
-      type: 'yes-no-notgiven',
-      instructionHtml:
-        'Do the following statements agree with the views of the writer in Reading Passage 3? Write <strong>Yes</strong>, <strong>No</strong> or <strong>Not Given</strong>.',
-      questions: [
-        {
-          id: 'q27',
-          textHtml: 'The usefulness of space inventions is the best argument for exploration.',
-          answer: 'No',
-          explanation: 'The writer calls the spin-off argument "surprisingly weak" as the central case. Directly against the statement.',
-          evidence: 'Yet as the central argument for exploration it is surprisingly weak, because almost any large and generously funded research effort... will throw off useful spin-offs.',
-        },
-        {
-          id: 'q28',
-          textHtml: 'Studying other planets can teach us about the Earth.',
-          answer: 'Yes',
-          explanation: 'The writer says studying other planets tells us things about our own world we could learn no other way.',
-          evidence: 'Studying other planets tells us things about our own world that we could learn in no other way.',
-        },
-        {
-          id: 'q29',
-          textHtml: 'Humanity should treat Mars as a place to escape to.',
-          answer: 'No',
-          explanation: 'The writer warns that treating space as an escape route feeds a "dangerous and comforting fantasy".',
-          evidence: 'treating space as a kind of insurance policy or emergency escape route may actually weaken our collective resolve to fix our problems here at home.',
-        },
-        {
-          id: 'q30',
-          textHtml: 'Governments spend too much on space compared with the military.',
-          answer: 'Not Given',
-          explanation: 'The writer says space sums are small beside other government spending, but never mentions the military specifically or says spending is "too much".',
-          evidence: 'The actual sums of money involved in exploration are really very small when they are set beside the truly colossal amounts that the world’s governments already spend.',
-        },
-        {
-          id: 'q31',
-          textHtml: 'The desire to explore is a fundamental part of being human.',
-          answer: 'Yes',
-          explanation: 'The writer says exploration answers a deep, ancient human need. Part of what it means to be a curious, thinking human being.',
-          evidence: 'Exploration answers a deep, ancient and restless human need to understand our own place in the wider universe.',
-        },
-      ],
-    },
-    {
-      title: 'Questions 32-36',
-      type: 'multiple-answer',
-      instructionHtml:
-        'Which <strong>FIVE</strong> of the following are mentioned in the passage as benefits of space research or things it can teach us? Choose five.',
-      selectCount: 5,
-      choices: [
-        { value: 'A', label: 'satellite navigation systems' },
-        { value: 'B', label: 'improved weather forecasting' },
-        { value: 'C', label: 'new medical devices' },
-        { value: 'D', label: 'a warning about the greenhouse effect from Venus' },
-        { value: 'E', label: 'the discovery of water on the Moon' },
-        { value: 'F', label: 'what happens when a planet loses its magnetic field' },
-        { value: 'G', label: 'faster international air travel' },
-        { value: 'H', label: 'a cure for a specific disease' },
-      ],
-      explanationHtml:
-        '<strong>A, B, C</strong> are the spin-offs in paragraph B (satellite navigation, weather forecasting, medical devices); <strong>D</strong> and <strong>F</strong> are the planetary lessons in paragraph C (Venus’s runaway greenhouse effect, Mars losing its magnetic field). <strong>E</strong> (water on the Moon), <strong>G</strong> (air travel) and <strong>H</strong> (a specific cure) are never mentioned in the passage.',
-      questions: [
-        { id: 'q32', answer: ['A', 'B', 'C', 'D', 'F'] },
-        { id: 'q33', answer: ['A', 'B', 'C', 'D', 'F'] },
-        { id: 'q34', answer: ['A', 'B', 'C', 'D', 'F'] },
-        { id: 'q35', answer: ['A', 'B', 'C', 'D', 'F'] },
-        { id: 'q36', answer: ['A', 'B', 'C', 'D', 'F'] },
-      ],
-    },
-    {
-      title: 'Questions 37-40',
-      type: 'sentence-endings',
-      instructionHtml: 'Complete each sentence with the correct ending. Write the correct letter, A-F.',
-      legendHtml:
-        '<strong>A</strong>&nbsp; a weak way to defend space exploration.<br><strong>B</strong>&nbsp; a warning about the greenhouse effect.<br><strong>C</strong>&nbsp; colonising Mars could ensure humanity’s survival.<br><strong>D</strong>&nbsp; the human need to understand the universe.<br><strong>E</strong>&nbsp; cheaper than most military spending.<br><strong>F</strong>&nbsp; impossible without international cooperation.',
-      options: ['A', 'B', 'C', 'D', 'E', 'F'],
-      questions: [
-        {
-          id: 'q37',
-          textHtml: 'The writer thinks that pointing to practical inventions is',
-          answer: 'A',
-          explanation: 'The writer accepts spin-offs are real but calls them a surprisingly weak central argument for exploration.',
-          evidence: 'Yet as the central argument for exploration it is surprisingly weak.',
-        },
-        {
-          id: 'q38',
-          textHtml: 'The thick atmosphere of Venus serves as',
-          answer: 'B',
-          explanation: 'Venus is described as a vivid natural warning of where a runaway greenhouse effect can lead.',
-          evidence: 'The thick, choking, sulphurous atmosphere of Venus, for instance, stands as a vivid natural warning of exactly where an unchecked, runaway greenhouse effect can ultimately lead a planet.',
-        },
-        {
-          id: 'q39',
-          textHtml: 'The writer is not convinced that',
-          answer: 'C',
-          explanation: 'In paragraph D the writer confesses to being "less persuaded" by the survival-through-colonisation argument.',
-          evidence: 'I confess that I am rather less persuaded by this particular line of reasoning than many are.',
-        },
-        {
-          id: 'q40',
-          textHtml: 'For the writer, the strongest reason to explore space is',
-          answer: 'D',
-          explanation: 'Paragraph E gives the writer’s best reason: the deep human need to understand our place in the universe.',
-          evidence: 'The best reason of all to explore space, I have come to believe, is in fact the least practical one imaginable. Exploration answers a deep, ancient and restless human need to understand our own place in the wider universe.',
-        },
-      ],
-    },
-  ],
-};
-
-export const readingFull002: PracticeTest = {
-  id: 'reading-full-002',
-  skill: 'reading',
-  title: 'Academic Reading. Full Test 2',
-  description: 'A complete 60-minute Academic Reading exam: three passages on writing, sleep and space exploration, 40 questions across the full range of exam question types.',
-  durationMinutes: 60,
-  parts: [passage1, passage2, passage3],
-};
+export default test;

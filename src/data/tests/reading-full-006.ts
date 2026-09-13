@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-319",
+  "id": "reading-full-006",
   "skill": "reading",
-  "title": "Academic Reading Test 319",
+  "title": "Academic Reading Test 6",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-319/",
+    "url": "https://practicepteonline.com/ielts-reading-test-312/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,138 +17,136 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "The problems and benefits created by the spread of the water hyacinth in Kenya",
+        "title": "Frozen Food",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Water hyacinth (Eichhornia crassipes), an aquatic plant native to South America, first appeared in countries in Africa in the early 1900s. Scientists there called it the ‘world’s worst aquatic weed’, after it spread from the southernmost tip of Africa in the early 1900s and started obstructing major dams and rivers.</span>"
+            "html": "<span>A US perspective on the development of the frozen food industry</span>"
           },
           {
-            "html": "<span>In east Africa the plant arrived with Belgian colonists in Rwanda, who liked the look of its glossy leaves and delicate purple flowers floating in their ponds. But by the 1980s, it had ‘escaped’ out of the country via the Kagera river and made its way downstream to Lake Victoria. There, with no natural predators and perfect temperature conditions, the plant began spreading in the open water, blocking fishing routes and providing a new habitat for disease-carrying mosquitoes.</span>"
+            "html": "<span>At some point in history, humans discovered that ice preserved food. There is evidence that winter ice was stored to preserve food in the summer as far back as 10,000 years ago. Two thousand years ago, the inhabitants of South America’s Andean mountains had a unique means of conserving potatoes for later consumption. They froze them overnight, then trampled them to squeeze out the moisture, then dried them in the sun. This preserved their nutritional value-if not their aesthetic appeal.</span>"
           },
           {
-            "html": "<span>For the women who smoke fish from the lake to sell it has meant declining income, as the boats that once brought the fish to shore by the hundreds struggle to navigate through the mass of plants. But water hyacinth isn’t their only headache. In order to smoke the fish that they buy, they must gather huge quantities of firewood, sometimes walking as far as 10km each way to collect enough to complete their work. And each day as they cook, they breathe in the thick, grey smoke. About three out of four families in Kenya depend on wood or charcoal to cook their daily meals, and the rate is even higher in rural areas, Kenya’s latest demographic and health survey shows. </span><span>Using solid fuels like these for cooking increases indoor pollution. The World Health Organization estimates that about 14,300 Kenyans die annually as a result of indoor air pollution – most of which is caused by cooking and heating sources.</span>"
+            "html": "<span>Natural ice remained the main form of refrigeration until late in the 19th century. In the early 1800s, ship owners from Boston, USA, had enormous blocks of Arctic ice towed all over the Atlantic for the purpose of food preservation. In 1851, railroads first began putting blocks of ice in insulated rail cars to send butter from Ogdensburg, New York, to Boston.</span>"
           },
           {
-            "html": "<span>Some years ago, on the shores of Lake Victoria, huge piles of water hyacinth that villagers had taken out of the water in an attempt to clear it were a common sight. But buried in those decaying waxy leaves was a renewable energy gold mine. It turns out the floating plant isn’t just good at spreading – its foliage also contains a high ratio of carbon to nitrogen. It’s a magic combination that has captivated researchers’ imaginations since as early as the 1980s when, across the world, they began to explore its potential as a biofuel. Just about 4kg of the dried plant would be enough to cater for a large family’s daily energy needs, early research predicted.</span>"
+            "html": "<span>Finally, in 1870, Australian inventors found a way to make ‘mechanical ice’. They used a compressor to force a gas-ammonia at first and later Freon-through a condenser. The compressed gas gave up some of its heat as it moved through the condenser. Then the gas was released quickly into a low-pressure evaporator coil where it became liquid and cold. Air was blown over the evaporator coil and then this cooled air passed into an insulated compartment, lowering its temperature to freezing point.</span>"
           },
           {
-            "html": "<span>In 2014, Nigerian academics announced they had got better yields of biofuel gas when they mixed the plant with chicken manure. A few years later, Kenyan scientists confirmed what their Nigerian peers and others had already found: manure worked to improve the process of converting the weed into gas.</span>"
+            "html": "<span>Initially, this process was invented to keep Australian beer cool even in hot weather. But Australian cattlemen were quick to realize that, if they could put this new invention on a ship, they could export meat across the oceans. In 1880, a shipment of Australian beef and mutton was sent, frozen, to England. While the food frozen this way was still palatable, there was some deterioration. During the freezing process, crystals formed within the cells of the food, and when the ice expanded and the cells burst, this spoilt the flavor and texture of the food.</span>"
           },
           {
-            "html": "<span>In 2018, the technology came to a village on the shore of Lake Victoria, called Dunga. The project promised a two-for-one solution to the dual menaces of the water hyacinth and dependence on firewood. The community received a pair of donated biogas digesters – machines that would transform a mix of water hyacinth and cow dung into biogas for cooking.</span>"
+            "html": "<span>The modern frozen food industry began with the indigenous Inuit people of Canada. In 1912, a biology student in Massachusetts, USA, named Clarence Birdseye, ran out of money and went to Labrador in Canada to trap and trade furs. While he was there, he became fascinated with how the Inuit would quickly freeze fish in the Arctic air. The fish looked and tasted fresh even months later.</span>"
           },
           {
-            "html": "<span>The digesters work a bit like a stomach. The mixture goes in one end – think of it as a mouth – and over the next 20 to 30 days, it goes through a fermentation process and breaks down, giving off gas that comes out the other end. From there, the clean-burning gas is passed through pipes to the point of use, just like traditional domestic gas. In Dunga, the machines produce enough gas to serve about 60% of the village’s population, it is used in domestic stoves and for other household tasks such as purifying water and incubating chicks.</span>"
+            "html": "<span>Birdseye returned to the USA in 1917 and began developing mechanical freezers capable of quick-freezing food. Birdseye methodically kept inventing better freezers and gradually built a business selling frozen fish from Gloucester, Massachusetts. In 1929, his business was sold and became General Foods, but he stayed with the company as director of research, and his division continued to innovate.</span>"
           },
           {
-            "html": "<span>The project is testing whether biogas can provide an effective alternative to firewood and charcoal in rural Kenyan communities. Results indicate that the programme seems to be working. The women who smoke the lake fish are already getting sick less often. Besides, they don’t have to devote a lot of time every day to gathering firewood, which is a great relief. As a result, they’re able to make more money for their families from other enterprises.</span>"
+            "html": "<span>Birdseye was responsible for several key innovations that made the frozen food industry possible. He developed quick-freezing techniques that reduced the damage that crystals caused, as well as the technique of freezing the product in the package it was to be sold in. He also introduced the use of cellophane, the first transparent material for food packaging, which allowed consumers to see the quality of the product. Birdseye products also came in convenient size packages that could be prepared with a minimum of effort.</span>"
           },
           {
-            "html": "<span>Kanyiva Muindi is an epidemiologist and air pollution research fellow at the African Population and Health Research Centre in Nairobi. She says families who switch to the smokeless cooking method could expect fewer respiratory diseases. Women, young girls and children are particularly vulnerable because they are the ones who cook in the kitchen or outside overfires. </span><span>How much better the biogas stoves will be for the community’s health still needs more research, says Dominic Kahumbu Wanjihia, Biogas International’s chief executive. But unless the price of the machines drops, it’s pretty clear that most communities will never be able to afford any, since they sell for about $750.</span>"
+            "html": "<span>But there were still obstacles. In the 1930s, few grocery stores could afford to buy freezers for a market that wasn’t established yet. So, Birdseye leased inexpensive freezer cases to them. He also leased insulated railroad cars so that he could ship his products nationwide. However, few consumers had freezers large enough or efficient enough to take advantage of the products.</span>"
           },
           {
-            "html": "<span>Kanyiva says affordability is a challenge worth addressing, given the huge health and environmental dangers posed by ‘dirty’ fuels such as wood, charcoal and kerosene. If biogas could become affordable on a large scale, she says it ‘would be life-changing for millions on the African continent and beyond’.</span>"
+            "html": "<span>Sales increased in the early 1940s, when World War II gave a boost to the frozen food industry because tin was being used for munitions. Canned foods were rationed to save tin for the war effort, while frozen foods were abundant and cheap. Finally, by the 1950s, refrigerator technology had developed far enough to make these appliances affordable for the average family. By 1953, 33 million US families owned a refrigerator, and manufacturers were gradually increasing the size of the freezer compartments in them.</span>"
+          },
+          {
+            "html": "<span>1950s families were also looking for convenience at mealtimes, so the moment was right for the arrival of the TV Dinner’. Swanson Foods was a large, nationally recognized producer of canned and frozen poultry. In 1954, the company adapted some of Birdseye’s freezing techniques, and with the help of a clever name and a huge advertising budget, it launched the first ‘TV Dinner’. This consisted of frozen turkey, potatoes and vegetables served in the same segmented aluminum tray that was used by airlines. The product was an instant success. Within a year, Swanson had sold 13 million TV dinners. American consumers couldn’t resist the combination of a trusted brand name, a single-serving package and the convenience of a meal that could be ready after only 25 minutes in a hot oven. By 1959, Americans were spending $2.7 billion annually on frozen foods, and half a billion of that was spent on ready-prepared meals such as the TV Dinner.</span>"
+          },
+          {
+            "html": "<span>Today, the US frozen food industry has a turnover of over $67 billion annually, with $26.6 billion of that sold to consumers for home consumption. The remaining $40 billion in frozen food sales come through restaurants, cafeterias, hospitals and schools, and that represents a third of the total food service sales.</span>"
           }
         ]
       },
       "groups": [
         {
           "title": "Questions 1-7",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer.",
           "questions": [
             {
               "id": "q1",
-              "answer": "True",
-              "textHtml": "Water hyacinth was introduced as a decorative plant in east Africa"
+              "answer": "Potatoes",
+              "before": "……………, using a method of freezing then drying. 1851, USA •",
+              "after": ""
             },
             {
               "id": "q2",
-              "answer": "False",
-              "textHtml": "Fishermen took some water hyacinth plants to Lake Victoria"
+              "answer": "Butter",
+              "before": "……………… was kept cool by ice during transportation in specially adapted trains. 1880, Australia • Two kinds of",
+              "after": ""
             },
             {
               "id": "q3",
-              "answer": "True",
-              "textHtml": "It is now difficult to force boats through the thick water hyacinth on Lake Victoria"
+              "answer": "Meat",
+              "before": "………………… were the first frozen food shipped to England. 1917 onwards, USA • Clarence Birdseye introduced innovations including: o quick-freezing methods, so that",
+              "after": ""
             },
             {
               "id": "q4",
-              "answer": "Not given",
-              "textHtml": "Chemicals produced by the water hyacinth plants are affecting the numbers offish in Lake Victoria"
+              "answer": "Crystals",
+              "before": "………… did not spoil the food. o packaging products with",
+              "after": ""
             },
             {
               "id": "q5",
-              "answer": "Not given",
-              "textHtml": "Cooking with charcoal has been proved to be even worse for people’s health than cooking with wood"
+              "answer": "Cellophane",
+              "before": "……………., so the product was visible. Early 1940s, USA • Frozen food became popular because of a shortage of",
+              "after": ""
             },
             {
               "id": "q6",
-              "answer": "False",
-              "textHtml": "People found it impossible to remove much water hyacinth from Lake Victoria"
+              "answer": "Tin",
+              "before": "……………… 1950s, USA • A large number of homes now had a",
+              "after": ""
             },
             {
               "id": "q7",
-              "answer": "True",
-              "textHtml": "Scientists started investigating the possibility of using water hyacinth to generate biogas in the last century"
+              "answer": "Refrigerator",
+              "before": "……………",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                  if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN                   </strong> if there is no information on this</span></p><p><span>1. Water hyacinth was introduced as a decorative plant in east Africa.</span><br/>\n<span>2. Fishermen took some water hyacinth plants to Lake Victoria.</span><br/>\n<span>3. It is now difficult to force boats through the thick water hyacinth on Lake Victoria.</span><br/>\n<span>4. Chemicals produced by the water hyacinth plants are affecting the numbers offish in Lake Victoria.</span><br/>\n<span>5. Cooking with charcoal has been proved to be even worse for people’s health than cooking with wood.</span><br/>\n<span>6. People found it impossible to remove much water hyacinth from Lake Victoria.</span><br/>\n<span>7. Scientists started investigating the possibility of using water hyacinth to generate biogas in the last century.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The history of frozen food</span></strong></p><p><strong><span>2,000 years ago, South America</span></strong><br/>\n<span>People conserved the nutritional value of (1) ……………, using a method of freezing then drying.</span></p><p><strong><span>1851, USA</span></strong><br/>\n<span>• (2) ……………… was kept cool by ice during transportation in specially adapted trains.</span></p><p><strong><span>1880, Australia</span></strong><br/>\n<span>• Two kinds of (3) ………………… were the first frozen food shipped to England.</span></p><p><strong><span>1917 onwards, USA</span></strong><br/>\n<span>• Clarence Birdseye introduced innovations including:</span><br/>\n<span>o quick-freezing methods, so that (4) ………… did not spoil the food.</span><br/>\n<span>o packaging products with (5) ……………., so the product was visible.</span></p><p><strong><span>Early 1940s, USA</span></strong><br/>\n<span>• Frozen food became popular because of a shortage of (6) ………………</span></p><p><strong><span>1950s, USA</span></strong><br/>\n<span>• A large number of homes now had a (7) ……………</span></p>",
+          "wordLimit": 1
         },
         {
-          "title": "Questions 8-10",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the flow-chart below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 8-10 on your answer sheet.",
+          "title": "Questions 8-13",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage?",
           "questions": [
             {
               "id": "q8",
-              "answer": "Cow dung",
-              "before": "…………….. into a digestor • Leave the mixture until the",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "The ice transportation business made some Boston ship owners very wealthy in the early 1800s"
             },
             {
               "id": "q9",
-              "answer": "Fermentation",
-              "before": "………… is completed • Capture the gas emitted by the digester and use",
-              "after": ""
+              "answer": "True",
+              "textHtml": "A disadvantage of the freezing process invented in Australia was that it affected the taste of food"
             },
             {
               "id": "q10",
-              "answer": "Pipes",
-              "before": "………….. to transport it to individual homes • Then use the gas for cooking as well as making water fit for human consumption",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 8-10</span></strong><br/>\n<span>Complete the flow-chart below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer. Write your answers in boxes 8-10 on your answer sheet.</span></p><p><span>Generating biogas for domestic use in Dunga</span><br/>\n<span>• First, place water hyacinth together with some (8) …………….. into a digestor</span><br/>\n<span>• Leave the mixture until the (9) ………… is completed</span><br/>\n<span>• Capture the gas emitted by the digester and use (10) ………….. to transport it to individual homes</span><br/>\n<span>• Then use the gas for cooking as well as making water fit for human consumption</span></p>",
-          "wordLimit": 2
-        },
-        {
-          "title": "Questions 11-13",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 11-13 on your answer sheet.",
-          "questions": [
+              "answer": "False",
+              "textHtml": "Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish"
+            },
             {
               "id": "q11",
-              "answer": "Time",
-              "before": "………………. collecting fuel • they can focus on different tasks that bring in",
-              "after": ""
+              "answer": "True",
+              "textHtml": "Swanson Foods invested a great deal of money in the promotion of the TV Dinner"
             },
             {
               "id": "q12",
-              "answer": "Money",
-              "before": "…………… • they are less likely to experience certain diseases connected to burning wood Drawbacks of changing to biogas • the",
-              "after": ""
+              "answer": "False",
+              "textHtml": "Swanson Foods developed a new style of container for the launch of the TV Dinner"
             },
             {
               "id": "q13",
-              "answer": "Price",
-              "before": "………………… of the digesters is beyond the reach of most villages",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "The US frozen food industry is currently the largest in the world"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 11-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 11-13 on your answer sheet.</span></p><p><strong><span>Cooking with biogas in Dunga</span></strong></p><p><span>Benefits for the women in the village of cooking with biogas</span><br/>\n<span>• no need for them to spend so much (11) ………………. collecting fuel</span><br/>\n<span>• they can focus on different tasks that bring in (12) ……………</span><br/>\n<span>• they are less likely to experience certain diseases connected to burning wood</span></p><p><strong><span>Drawbacks of changing to biogas</span></strong><br/>\n<span>• the (13) ………………… of the digesters is beyond the reach of most villages</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "wordLimit": 1
+          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                if there is no information on this</span></p><p><span>8. The ice transportation business made some Boston ship owners very wealthy in the early 1800s.</span><br/>\n<span>9. A disadvantage of the freezing process invented in Australia was that it affected the taste of food.</span><br/>\n<span>10. Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish.</span><br/>\n<span>11. Swanson Foods invested a great deal of money in the promotion of the TV Dinner.</span><br/>\n<span>12. Swanson Foods developed a new style of container for the launch of the TV Dinner.</span><br/>\n<span>13. The US frozen food industry is currently the largest in the world.</span></p>"
         }
       ]
     },
@@ -157,160 +155,207 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "How could multilingualism benefit India’s poorest schoolchildren?",
+        "title": "Can the planet’s coral reefs be saved?",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>The crowded and bustling streets of Delhi teem with life. Stop to listen and, above the din of rickshaws and buses, you’ll hear a multitude of languages, as more than 20 million people go about their daily lives. Many were born and raised here, and many millions more have recently made India’s capital their home, having moved from surrounding neighbourhoods, cities and states or across the country, often in the hope of gaining better jobs and a better life. Some arrive speaking fluent Hindi, the dominant language in Delhi (and the official language of government), but many arrive speaking any number of India’s 22 officially recognised languages, let alone the hundreds of regional languages in a country of more than 1.3 billion people.</span>"
+            "html": "<span><strong>A</strong> Conservationists have put the final touches to a giant artificial reef they have been assembling at the world-renowned Zoological Society of London (London Zoo). Samples of the planet’s most spectacular corals – vivid green branching coral, yellow scroll, blue ridge and many more species – have been added to the giant tank along with fish that thrive in their presence: blue tang, clownfish and many others. The reef is in the zoo’s new gallery, Tiny Giants, which is dedicated to the minuscule invertebrate creatures that sustain life across the planet. The coral reef tank and its seven-metre-wide window form the core of the exhibition.</span>"
           },
           {
-            "html": "<span>A team of researchers led by Professor Ianthi Tsimpli of Cambridge University is currently working on a project collecting data on 1,000 primary-age children in Delhi and the cities of Hyderabad and Bihar. The overriding aim of the four-year project, called ‘Multilingualism and Multiliteracy’, is to find out why in a country where multilingualism is so common (more than 255 million people in India speak at least two languages, and nearly 90 million speak three or more languages), the many benefits of speaking more than one language, observed in schools in Europe for instance, do not apply to many of India’s schoolchildren.</span>"
+            "html": "<span>‘Coral reefs are the most diverse ecosystems on Earth and we want to show people how wonderful they are,’ said Paul Pearce-Kelly, senior curator of invertebrates and fish at the Zoological Society of London. ‘However, we also want to highlight the research and conservation efforts that are now being carried out to try to save them from the threat of global warming.’ They want people to see what is being done to try to save these wonders.</span>"
           },
           {
-            "html": "<span>‘Each year across India, 600,000 children are tested, and year after year over 50% of children in Standard 5 [ten-year-olds] cannot read a Standard 2 [seven-year-olds] task fluently, and just under 50% of them cannot solve a Standard 2 subtraction task,’ says Tsimpli. She explains that low educational achievement can lead to many of these students dropping out of school – a problem disproportionately affecting female students.</span>"
+            "html": "<span><strong>B</strong> Corals are composed of tiny animals, known as polyps, with tentacles for capturing small marine creatures in the sea water. These polyps are transparent but get their brilliant tones of pink, orange, blue, green, etc. from algae that live within them, which in turn get protection, while their photosynthesising of the sun’s rays provides nutrients for the polyps. This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0.1% of the planet’s ocean bed while providing homes for more than 25% of marine species, including fish, molluscs, sponges and shellfish.</span>"
           },
           {
-            "html": "<span>Tsimpli and her colleagues are investigating whether these low learning outcomes could be caused by an Indian school system where the language that children are taught in often differs from the language used at home. The research project, which focuses on 8 to 11-year- old schoolchildren in rural and urban areas, collects data on whether the schoolchildren live in slum* or non-slum areas. Many of the children have moved from remote, rural areas to urban areas. They are so poor they have to live in slums and, as a result of migration, they may speak languages that are different from the regional language.</span>"
+            "html": "<span><strong>C</strong> As a result, coral reefs are often described as the ‘rainforests of the sea’, though the comparison is dismissed by some naturalists, including David Attenborough. ‘People say you cannot beat the rainforest,’ Attenborough has stated. ‘But that is simply not true. You go there and the first thing you think is: where… are the birds? Where are the animals? They are hiding in the trees, of course. No, if you want beauty and wildlife, you want a coral reef. Put on a mask and stick your head under the water. The sight is mind-blowing.’</span>"
           },
           {
-            "html": "<span>Having already tested 1,000 children, the researchers will now embark on retesting them. They intend to look not only at test results, but also at variables such as the standard of schooling, the environment and the teaching practices themselves. It’s possible that one of the causes of low performance is the lack of pupil-centred teaching methods; in many Indian primary schools the teacher dominates and there is little room for independent learning.</span>"
+            "html": "<span><strong>D</strong> Unfortunately, these majestic sights are now under very serious threat, with the most immediate problem coming in the form of thermal stress. Rising ocean temperatures are triggering bleaching events that strip reefs of their colour and eventually kill them. And that is just the start. Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction. As a result, vast areas – including massive chunks of Australia’s Great Barrier Reef – have already been destroyed, and scientists advise that more than 90% of reefs could be lost by 2050 unless urgent action is taken to tackle global heating and greenhouse gas emissions.</span>"
           },
           {
-            "html": "<span>Although the findings are at a preliminary stage, Tsimpli and her team have found that the medium of instruction used in schools, especially English, may hold back those children who have little familiarity with, or exposure to, the language before starting school and outside of school life. According to Tsimpli, most of the evidence from this and other projects shows that English instruction for children from low socio-economic areas might not be the best way for them to learn, at least in the first three years of primary education.</span>"
+            "html": "<span>Pearce-Kelly says that coral reefs have to survive really harsh conditions – wave erosion and other factors. And ‘when things start to go wrong in the oceans, then corals will be the first to react. And that is exactly what we are seeing now. Coral reefs are dying and they are telling us that all is not well with our planet.’</span>"
           },
           {
-            "html": "<span>‘What we would recommend for everyone, not just low socio-economic status children, would be to start learning in the language they feel comfortable learning in … English can still be used, but perhaps not as the medium of instruction in primary schools. It could, for example, be one of the subjects that are being taught alongside other subjects. We are not suggesting that English be withdrawn – that ship has sailed – but we perhaps have to think more about learner needs. There is perhaps too much uniformity in teaching and less tailoring to the children’s language abilities and needs,’ says Tsimpli.</span>"
+            "html": "<span><strong>E</strong> However, scientists are trying to pinpoint hardy types of coral that could survive our overheated oceans, and some of this research will be carried out at London Zoo. ‘Behind our… coral reef tank we have built laboratories where scientists will be studying coral species,’ said Pearce-Kelly. One aim will be to carry out research on species to find those that can survive best in warm, acidic waters. Another will be to try to increase coral breeding rates. ‘Coral spawn just once a year,’ he added. ‘However, aquarium-based research has enabled some corals to spawn artificially, which can assist coral reef restoration efforts. And if this can be extended for all species, we could consider the launching of coral-spawning programmes several times a year. That would be a big help in restoring blighted reefs.’</span>"
           },
           {
-            "html": "<span>While the preliminary results show there is no difference in general intelligence among boys and girls from slum areas versus those from urban poor backgrounds, an unanticipated finding has been that children from slum backgrounds do not seem to lag behind children from other urban poor backgrounds – and in some cases outperform them (e.g. in numeracy and literacy tasks). According to the researchers, this unexpected finding may be down to the life experiences of children growing up in slums. They are likely to mature faster and come into closer contact with the numeracy skills essential for day-to-day survival.</span>"
-          },
-          {
-            "html": "<span>The project has already caught the attention of government ministers, who are keen to use the findings of the study to inform and adjust school policy in Delhi and the wider state. ‘They are as keen as us to understand how the challenging context of deprivation can be attenuated when focusing on the languages children learn and use while at school. Our findings don’t mean you’re doomed if you’re poor. It may be that these low learning outcomes are because of the way education is provided in India, with a huge focus on Hindi and English as the mediums of instruction, to the potential detriment of children unfamiliar with those languages,’ explains Tsimpli.</span>"
-          },
-          {
-            "html": "<span>‘Language is central to the way knowledge is transferred – so the medium of instruction is obviously hugely influential. We hope to … show that problem solving, numeracy and literacy can and do improve in children who are educated in a language of instruction they know. The trick may be to bridge school skills with life skills and make use of the richness of a child’s life experience to help them learn in the most effective ways possible,’ says Tsimpli.</span>"
+            "html": "<span><strong>F</strong> Research in these fields is being conducted in laboratories around the world, with the London Zoo centre linked to this global network. Studies carried out in one centre can then be tested in others. The resulting young coral can then be displayed in the tank in Tiny Giants. ‘The crucial point is that the progress we make in making coral better able to survive in a warming world can be shown to the public and encourage them to believe that we can do something to save the planet’s reefs,’ said Pearce-Kelly. ‘Saving our coral reefs is now a critically important ecological goal.’</span>"
           }
         ]
       },
       "groups": [
         {
           "title": "Questions 14-19",
-          "type": "matching-features",
-          "instructionHtml": "Complete the summary using the list of words, A-J, below. Write the correct letter, A-J, in boxes 14-19 on your answer sheet.",
+          "type": "matching-headings",
+          "instructionHtml": "Reading Passage 2 has six sections, A-F. Choose the correct heading for each section from the list of headings below.",
           "questions": [
             {
               "id": "q14",
-              "answer": "I",
-              "textHtml": "………………… and as you walk through its streets you hear people speaking a variety of languages. Some of them have spent their entire life in Delhi, while others are"
+              "answer": "v",
+              "textHtml": "Paragraph A"
             },
             {
               "id": "q15",
-              "answer": "J",
-              "textHtml": "……………….. Whether they have come from a"
+              "answer": "ii",
+              "textHtml": "Paragraph B"
             },
             {
               "id": "q16",
-              "answer": "H",
-              "textHtml": "……………….. or have travelled from the other side of India, they have all come in search of things such as improved"
+              "answer": "iv",
+              "textHtml": "Paragraph C"
             },
             {
               "id": "q17",
-              "answer": "B",
-              "textHtml": "………………. A team of researchers led by Professor lanthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The"
+              "answer": "vii",
+              "textHtml": "Paragraph D"
             },
             {
               "id": "q18",
-              "answer": "E",
-              "textHtml": "………………. of the research is to discover why multilingual Indian schoolchildren do not experience"
+              "answer": "iii",
+              "textHtml": "Paragraph E"
             },
             {
               "id": "q19",
-              "answer": "F",
-              "textHtml": "………………….. to those that multilingual schoolchildren in Europe experience. A basic outlook B employment opportunities C wealthy visitors D distant country E primary objective F similar advantages G thriving economy J new immigrants H nearby district I dense population"
+              "answer": "vi",
+              "textHtml": "Paragraph F"
             }
           ],
-          "legendHtml": "<p><strong><span>Question 14-19</span></strong><br/>\n<span>Complete the summary using the list of words, A-J, below. Write the correct letter, A-J, in boxes 14-19 on your answer sheet.</span></p><p><strong><span>Multilingualism in Delhi</span></strong></p><p><span>The city of Delhi has a (14) ………………… and as you walk through its streets you hear people speaking a variety of languages. Some of them have spent their entire life in Delhi, while others are (15) ……………….. Whether they have come from a (16) ……………….. or have travelled from the other side of India, they have all come in search of things such as improved (17) ……………….</span></p><p><span>A team of researchers led by Professor lanthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The (18) ………………. of the research is to discover why multilingual Indian schoolchildren do not experience (19) ………………….. to those that multilingual schoolchildren in Europe experience.</span></p><p><span><strong>A</strong> basic outlook</span><br/>\n<span><strong>B</strong> employment opportunities</span><br/>\n<span><strong>C</strong> wealthy visitors</span><br/>\n<span><strong>D</strong> distant country</span><br/>\n<span><strong>E</strong> primary objective</span><br/>\n<span><strong>F</strong> similar advantages</span><br/>\n<span><strong>G</strong> thriving economy</span><br/>\n<span><strong>J</strong> new immigrants</span><br/>\n<span><strong>H</strong> nearby district</span><br/>\n<span><strong>I</strong> dense population</span></p>",
+          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading Passage 2 has six sections, A-F. </span><span>Choose the correct heading for each section from the list of headings below.</span></p><p><span>i. Tried and tested solutions</span><br/>\n<span>ii. Cooperation beneath the waves</span><br/>\n<span>iii. Working to lessen the problems</span><br/>\n<span>iv. Disagreement about the accuracy of a certain phrase</span><br/>\n<span>v. Two clear educational goals</span><br/>\n<span>vi. Promoting hope</span><br/>\n<span>vii. A warning of further trouble ahead</span></p><p><span>14. Paragraph A</span><br/>\n<span>15. Paragraph B</span><br/>\n<span>16. Paragraph C</span><br/>\n<span>17. Paragraph D</span><br/>\n<span>18. Paragraph E</span><br/>\n<span>19. Paragraph F</span></p>",
           "options": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J"
+            "i",
+            "ii",
+            "iii",
+            "iv",
+            "v",
+            "vi",
+            "vii"
           ]
         },
         {
-          "title": "Questions 20-23",
-          "type": "yes-no-notgiven",
-          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 20-23 on your answer sheet, write",
+          "title": "Questions 20-21",
+          "type": "multiple-answer",
+          "instructionHtml": "and 21",
           "questions": [
             {
               "id": "q20",
-              "answer": "No",
-              "textHtml": "Ten-year-old Indian schoolchildren tend to perform better in literacy tests than in numeracy tests"
+              "answer": [
+                "C",
+                "E"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-312-q20-q21"
             },
             {
               "id": "q21",
-              "answer": "Not given",
-              "textHtml": "Tsimpli had problems convincing some female students to take part in the study"
+              "answer": [
+                "C",
+                "E"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-312-q20-q21"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of these causes of damage to coral reefs are mentioned by the writer of the text?</span></p><p><span>A. a rising number of extreme storms</span><br/>\n<span>B. the removal of too many fish from the sea</span><br/>\n<span>C. the contamination of the sea from waste</span><br/>\n<span>D. increased disease among marine species</span><br/>\n<span>E. alterations in the usual flow of water in the seas</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "a rising number of extreme storms"
             },
             {
+              "value": "B",
+              "label": "the removal of too many fish from the sea"
+            },
+            {
+              "value": "C",
+              "label": "the contamination of the sea from waste"
+            },
+            {
+              "value": "D",
+              "label": "increased disease among marine species"
+            },
+            {
+              "value": "E",
+              "label": "alterations in the usual flow of water in the seas"
+            }
+          ]
+        },
+        {
+          "title": "Questions 22-23",
+          "type": "multiple-answer",
+          "instructionHtml": "and 23",
+          "questions": [
+            {
               "id": "q22",
-              "answer": "Yes",
-              "textHtml": "Tsimpli and her team wanted to know if there is a connection between poor academic performance and being taught in an unfamiliar language"
+              "answer": [
+                "B",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-312-q22-q23"
             },
             {
               "id": "q23",
-              "answer": "No",
-              "textHtml": "The researchers have decided against investigating the impact teaching methodology may have on learning outcomes"
+              "answer": [
+                "B",
+                "D"
+              ],
+              "textHtml": "",
+              "answerPairId": "reading-312-q22-q23"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 20-23</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 20-23 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                             if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                              if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN                         </strong> if it is impossible to say what the writer thinks about this</span></p><p><span>20. Ten-year-old Indian schoolchildren tend to perform better in literacy tests than in numeracy tests.</span><br/>\n<span>21. Tsimpli had problems convincing some female students to take part in the study.</span><br/>\n<span>22. Tsimpli and her team wanted to know if there is a connection between poor academic performance and being taught in an unfamiliar language.</span><br/>\n<span>23. The researchers have decided against investigating the impact teaching methodology may have on learning outcomes.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 22 and 23</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of the following statements are true of the researchers at London Zoo?</span></p><p><span>A. They are hoping to expand the numbers of different corals being bred in laboratories.</span><br/>\n<span>B. They want to identify corals that can cope well with the changed sea conditions.</span><br/>\n<span>C. They are looking at ways of creating artificial reefs that corals could grow on.</span><br/>\n<span>D. They are trying out methods that would speed up reproduction in some corals.</span><br/>\n<span>E. They are investigating materials that might protect reefs from higher temperatures.</span></p>",
+          "selectCount": 2,
+          "choices": [
+            {
+              "value": "A",
+              "label": "They are hoping to expand the numbers of different corals being bred in laboratories"
+            },
+            {
+              "value": "B",
+              "label": "They want to identify corals that can cope well with the changed sea conditions"
+            },
+            {
+              "value": "C",
+              "label": "They are looking at ways of creating artificial reefs that corals could grow on"
+            },
+            {
+              "value": "D",
+              "label": "They are trying out methods that would speed up reproduction in some corals"
+            },
+            {
+              "value": "E",
+              "label": "They are investigating materials that might protect reefs from higher temperatures"
+            }
+          ]
         },
         {
           "title": "Questions 24-26",
-          "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter, A, B, C or D.",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer.",
           "questions": [
             {
               "id": "q24",
-              "answer": "C",
-              "textHtml": "What point does the writer make about primary schools in India in the sixth paragraph?",
-              "options": [
-                "Exposure to English outside of school is of limited benefit",
-                "Children learn English more easily when they are well motivated",
-                "Poor children may be disadvantaged further by being instructed in English",
-                "There is little consistency across schools with regard to instruction in English"
-              ]
+              "answer": "Tentacles",
+              "before": "Corals have a number of ……………… which they use to collect their food",
+              "after": ""
             },
             {
               "id": "q25",
-              "answer": "D",
-              "textHtml": "What is Tsimpli suggesting when she uses the phrase ‘that ship has sailed’?",
-              "options": [
-                "The findings of the report may be of little help to some Indian schoolchildren",
-                "Instruction in English could be better adapted to the needs of schoolchildren",
-                "Schools have had limited success in teaching English as a separate subject",
-                "It is too late to remove English completely as a language of instruction in schools"
-              ]
+              "answer": "Protection",
+              "before": "Algae gain ……………… from being inside the coral",
+              "after": ""
             },
             {
               "id": "q26",
-              "answer": "D",
-              "textHtml": "In the eighth paragraph, what do we learn has surprised researchers?",
-              "options": [
-                "Boys and girls from low socio-economic groups have similar general intelligence levels",
-                "The age at which children move into a slum does not affect their academic performance",
-                "Slum children and children from other urban poor backgrounds have similar life experiences",
-                "The literacy and numeracy skills of slum children are not lower than those of children from other urban poor backgrounds"
-              ]
+              "answer": "Colour",
+              "before": "Increases in the warmth of the sea water can remove the ………………. from coral",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>24. What point does the writer make about primary schools in India in the sixth paragraph?</span><br/>\n<span><strong>A</strong> Exposure to English outside of school is of limited benefit.</span><br/>\n<span><strong>B</strong> Children learn English more easily when they are well motivated.</span><br/>\n<span><strong>C</strong> Poor children may be disadvantaged further by being instructed in English.</span><br/>\n<span><strong>D</strong> There is little consistency across schools with regard to instruction in English.</span></p><p><span>25. What is Tsimpli suggesting when she uses the phrase ‘that ship has sailed’?</span><br/>\n<span><strong>A</strong> The findings of the report may be of little help to some Indian schoolchildren</span><br/>\n<span><strong>B</strong> Instruction in English could be better adapted to the needs of schoolchildren</span><br/>\n<span><strong>C</strong> Schools have had limited success in teaching English as a separate subject.</span><br/>\n<span><strong>D</strong> It is too late to remove English completely as a language of instruction in schools.</span></p><p><span>26. In the eighth paragraph, what do we learn has surprised researchers?</span><br/>\n<span><strong>A</strong> Boys and girls from low socio-economic groups have similar general intelligence levels.</span><br/>\n<span><strong>B</strong> The age at which children move into a slum does not affect their academic performance.</span><br/>\n<span><strong>C</strong> Slum children and children from other urban poor backgrounds have similar life experiences.</span><br/>\n<span><strong>D</strong> The literacy and numeracy skills of slum children are not lower than those of children from other urban poor backgrounds.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>24. Corals have a number of ……………… which they use to collect their food.</span><br/>\n<span>25. Algae gain ……………… from being inside the coral.</span><br/>\n<span>26. Increases in the warmth of the sea water can remove the ………………. from coral.</span></p>",
+          "wordLimit": 1
         }
       ]
     },
@@ -319,165 +364,173 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "The Globemakers: The Curious Story of an Ancient Craft",
+        "title": "Robots and us",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>In 2008, Peter Bellerby, who lived in London, wanted to give his father a model globe for his eightieth birthday. What seemed simple enough to start with triggered an almost obsessive, decade-long journey, marked by a series of obstacles that would have deterred anyone less determined. It ended with his establishing the world’s only bespoke globemaking company.</span>"
+            "html": "<span>Three leaders in their fields answer questions about our relationships with robot.</span>"
           },
           {
-            "html": "<span>The first surprise in The Globemakers, Bellerby’s account of this impulsive enterprise, is that obtaining such a globe was not simply a matter of a quick online order and a repressed sigh at the shipping costs. After all, contrary to stubbornly held popular views of our ancestors’ geographical ignorance, we have known that the world is spherical since at least the 6th century BCE. The ancient Greek philosopher Plato in his work Phaedo likened it to a leather ball, while the accolade of producing the first recorded globe goes to the ancient Greek philosopher Crates of Mallus, who is said to have made one in around 150 BCE. Surely, Bellerby reasoned, a good-quality globe wouldn’t be difficult to find.</span>"
+            "html": "<span>When asked ‘Should robots be used to colonies other planets?’, cosmology and astrophysics Professor Martin Rees said he believed the solar system would be mapped by robotic craft by the end of the century. ‘The next step would be mining of asteroids, enabling fabrication of large structures in space without having to bring all the raw materials from Earth…. I think this is more realistic and benign than the… “terraforming”* of planets.’ He maintains that colonised planets ‘should be preserved with a status that is analogous to Antarctica here on Earth.’</span>"
           },
           {
-            "html": "<span>Nearly two millennia later, however, it seemed that the art of globemaking had been largely forgotten. Bellerby came across shoddy commercial versions designed for school classrooms and genuine antiques in auction houses that would have bust his budget. Even his trips to Morocco and India, where surely the knowledge of artisan cartographers had been preserved, drew a blank.</span>"
+            "html": "<span>On the question of using robots to colonise other planets and exploit mineral resources, engineering Professor Daniel Wolpert replied, ‘I don’t see a pressing need to colonise other planets unless we can bring [these] resources back to Earth. The vast majority of Earth is currently inaccessible to us. Using robots to gather resources nearer to home would seem to be a better use of our robotic tools.’</span>"
           },
           {
-            "html": "<span>Not one to be easily thwarted, Bellerby decided to make his own good-quality globe. In the process, almost everything that could possibly go wrong did so. Even the shape of the Earth posed a problem, as it is not quite a perfect sphere, but oblate (slightly flattened at the poles). Having decided to compromise and opt for two half-spherical pieces that could be fitted together, he was unable to discover anyone capable of casting moulds with sufficient accuracy to ensure that he would not be left with two half-spheres that were not quite the same circumference. Even after he eventually resolved this issue, extracting these from the moulds resulted in piles of cracked plaster of Paris and clouds of choking dust in the workshop he had set up at the rear of his house.</span>"
+            "html": "<span>Meanwhile, for anthropology Professor Kathleen Richardson, the idea of ‘colonisation’ of other planets seemed morally dubious: ‘I think whether we do something on Earth or on Mars we should always do it in the spirit of a genuine interest in “the Other”, not to impose a particular model, but to meet “the Other”.’</span>"
           },
           {
-            "html": "<span>This series of abortive experiments taught Bellerby a lot about the challenges of making globes, which he communicates here to the reader. Finding just the right way to prise the globes from the mould – a high-end air compressor finally did the trick – and locating the right paper and inks with which to make the gores (the sections of flat sheet mapping that are pasted onto the spherical globe) without the ink seeping out to create a mushy, unreadable mess took months and an alarming chunk out of his bank balance. Bellerby’s frustration at the painstaking process of attaching the gores to the globe surface – after having found a glue with precisely the right adhesive qualities – is palpable. Right at the end of the process, he learnt that the paper had stretched slightly and so the final one overlapped the first by a centimetre (which may not seem a great deal, but when that represents 2 per cent of the Earth’s diameter, it’s equivalent to obliterating the Himalayas or wiping out Chile).</span>"
+            "html": "<span>In response to the second question, ‘How soon will machine intelligence outstrip human intelligence?’, Rees mentions robots that are advanced enough to beat humans at chess, but then goes on to say, ‘Robots are still limited in their ability to sense their environment: they can’t yet recognise and move the pieces on a real chessboard as cleverly as a child can. Later this century, however, their more advanced successors may relate to their surroundings, and to people, as adeptly as we do. Moral questions then arise. … Should we feel guilty about exploiting [sophisticated robots]? Should we fret if they are underemployed, frustrated, or bored?’</span>"
           },
           {
-            "html": "<span>Bellerby’s account of the technical challenges of globe production is interspersed with a series of interludes on great globemakers of the past and cartographic history in general. Purists might wish for more map-making details, but Bellerby clearly found a kindred spirit in Martin Behaim. He was the Nuremberg entrepreneur who in 1492 created the Erdapfel, the world’s oldest surviving globe, beautifully finished by a workshop of painters and other craftsmen, only to find that the explorer Christopher Columbus had stumbled upon the Americas the very same year, rendering his masterpiece instantly out of date. Something of Bellerby’s unflinching ambition is reflected in the even more heroic efforts of the Italian cartographer Vincenzo Coronelli, who, in the seventeenth century, created two globes for Louis XIV of France. It took him twenty years to complete the monstrous pair, whose vast bulk – each with a diameter of around four metres – can still be admired in the National Library of France in Paris.</span>"
+            "html": "<span>Wolpert’s response to the question about machine intelligence outstripping human intelligence was this: ‘In a limited sense it already has. Machines can already navigate, remember and search for items with an ability that far outstrips humans. However, there is no machine that can identify visual objects or speech with the reliability and flexibility of humans…. Expecting a machine close to the creative intelligence of a human within the next 50 years would be highly ambitious.’</span>"
           },
           {
-            "html": "<span>Although a celebration of the revival of an ancient craft, Bellerby’s book is also a lament for the fading away of centuries-old traditions. When he embarked on his globemaking odyssey, he struggled to find artisans with the skills to make the right moulds for the globes or foundries that could shape the meridians (the metal frames which girdle globes) in just the right way. Although he finally located the right craftsmen, some simply dropping in, serendipitously, to his workshop (by now in more suitable premises than his back room), many of these have now retired or passed away.</span>"
+            "html": "<span>Richardson believes that our fear of machines becoming too advanced has more to do with human nature than anything intrinsic to the machines themselves. In her view, it stems from humans’ tendency to personify inanimate objects: we create machines based on representations of ourselves, imagine that machines think and behave as we do, and therefore see them as an autonomous threat. ‘One of the consequences of thinking that the problem lies with machines is that …. we tend to imagine they are greater and more powerful than they really are and subsequently they become so.’</span>"
           },
           {
-            "html": "<span>Bellerby’s father finally did receive his eightieth birthday present, albeit two years late. Bellerby went on to found a company which now turns out over six hundred globes a year for customers who can have their own tiny village marked or more unusual requests fulfilled. His book, beautifully illustrated with photographs of the various stages of his venture and a few illustrations of historic globes and maps, is hardly a blueprint for commercial success. But it is more than enough to stir up admiration for the craftsmanship of the great mapmakers of the past and the obsessive determination of a modern successor who revived their almost moribund art.</span>"
+            "html": "<span>This led on to the third question, ‘Should we be scared by advances in artificial intelligence?’ To this question, Rees replied, ‘Those who should be worried are the futurologists who believe in the so-called “singularity”.** … And another worry is that we are increasingly dependent on computer networks, and that these could behave like a single “brain” with a mind of its own, and with goals that may be contrary to human welfare. I think we should ensure that robots remain as no more than “idiot savants” lacking the capacity to outwit us, even though they may greatly surpass us in the ability to calculate and process information.’</span>"
+          },
+          {
+            "html": "<span>Wolpert’s response was to say that we have already seen the damaging effects of artificial intelligence in the form of computer viruses. ‘But in this case,’ he says, ‘the real intelligence is the malicious designer. Critically, the benefits of computers outweigh the damage that computer viruses cause. Similarly, while there may be misuses of robotics in the near future, the benefits that they will bring are likely to outweigh these negative aspects.’</span>"
+          },
+          {
+            "html": "<span>Richardson’s response to this question was this: ‘We need to ask why fears of artificial intelligence and robots persist; none have in fact risen up and challenged human supremacy.’ She believes that as robots have never shown themselves to be a threat to humans, it seems unlikely that they ever will. In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence.’ </span><span>In answer to the fourth question, ‘What can science fiction tell us about robotics?’, Rees replied, ‘I sometimes advise students that it’s better to read first-rate science fiction than second-rate science – more stimulating, and perhaps no more likely to be wrong.’</span>"
+          },
+          {
+            "html": "<span>As his response, Wolpert commented, ‘Science fiction has often been remarkable at predicting the future Science fiction has painted a vivid spectrum of possible futures, from cute and helpful robots to dystopian robotic societies. Interestingly, almost no science fiction envisages a future without robots.’</span>"
+          },
+          {
+            "html": "<span>Finally, on the question of science fiction, Richardson pointed out that in modern society, people tend to think there is reality on the one hand, and fiction and fantasy on the other. She then explained that the division did not always exist, and that scientists and technologists made this separation because they wanted to carve out the sphere of their work. ‘But the divide is not so clear cut, and that is why the worlds seem to collide at times,’ she said. ‘In some cases, we need to bring these different understandings together to get a whole perspective. Perhaps then, we won’t be so frightened that something we create as a copy of ourselves will be a [threat] to us.’</span><br/>\n<span>* terraforming: modifying a planet’s atmosphere to suit human needs</span><br/>\n<span>** singularity: the point when robots will be able to start creating ever more sophisticated versions of themselves</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-32",
+          "title": "Questions 27-33",
           "type": "matching-features",
-          "instructionHtml": "Complete the summary using the list of words, A-J, below. Write the correct letter, A-J, in boxes 27-32 on your answer sheet",
+          "instructionHtml": "Look at the following statements and the list of experts below. Match each statement with the correct expert, A, B or C. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q27",
-              "answer": "G",
-              "textHtml": "……………… for which he had to overcome"
+              "answer": "A",
+              "textHtml": "For our own safety, humans will need to restrict the abilities of robots"
             },
             {
               "id": "q28",
-              "answer": "J",
-              "textHtml": "…………….. He soon learnt that a straightforward"
+              "answer": "C",
+              "textHtml": "The risk of robots harming us is less serious than humans believe it to be"
             },
             {
               "id": "q29",
-              "answer": "I",
-              "textHtml": "……………….. would not be possible. Some"
+              "answer": "B",
+              "textHtml": "It will take many decades for robot intelligence to be as imaginative as human intelligence"
             },
             {
               "id": "q30",
-              "answer": "C",
-              "textHtml": "………………… that had been intended for"
+              "answer": "A",
+              "textHtml": "We may have to start considering whether we are treating robots fairly"
             },
             {
               "id": "q31",
-              "answer": "A",
-              "textHtml": "………………. were available, as were some expensive antique globes, but these were beyond his budget. He even travelled to places where people might still have the"
+              "answer": "B",
+              "textHtml": "Robots are probably of more help to us on Earth than in space"
             },
             {
               "id": "q32",
-              "answer": "E",
-              "textHtml": "…………………….. but Bellerby could not find what he wanted. A educational use B rare materials C inferior makes D product exchange markets E necessary skills F international G challenging task H memorable object I internet purchase J numerous problems"
+              "answer": "A",
+              "textHtml": "The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists"
+            },
+            {
+              "id": "q33",
+              "answer": "C",
+              "textHtml": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the summary using the list of words, A-J, below. Write the correct letter, A-J, in boxes 27-32 on your answer sheet</span></p><p><strong><span>A birthday gift</span></strong></p><p><span>Peter Bellerby’s plan to give his father a globe for his birthday was an unexpectedly (27) ……………… for which he had to overcome (28) ……………..</span></p><p><span>He soon learnt that a straightforward (29) ……………….. would not be possible. Some (30) ………………… that had been intended for (31) ………………. were available, as were some expensive antique globes, but these were beyond his budget.</span></p><p><span>He even travelled to places where people might still have the (32) …………………….. but Bellerby could not find what he wanted.</span></p><p><span><strong>A</strong> educational use</span><br/>\n<span><strong>B</strong> rare materials</span><br/>\n<span><strong>C</strong> inferior makes</span><br/>\n<span><strong>D</strong> product exchange markets</span><br/>\n<span><strong>E</strong> necessary skills</span><br/>\n<span><strong>F</strong> international</span><br/>\n<span><strong>G</strong> challenging task</span><br/>\n<span><strong>H</strong> memorable object</span><br/>\n<span><strong>I</strong> internet purchase</span><br/>\n<span><strong>J</strong> numerous problems</span></p>",
+          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Look at the following statements and the list of experts below. Match each statement with the correct expert, A, B or C. NB You may use any letter more than once.</span></p><p><span>27. For our own safety, humans will need to restrict the abilities of robots.</span><br/>\n<span>28. The risk of robots harming us is less serious than humans believe it to be.</span><br/>\n<span>29. It will take many decades for robot intelligence to be as imaginative as human intelligence.</span><br/>\n<span>30. We may have to start considering whether we are treating robots fairly.</span><br/>\n<span>31. Robots are probably of more help to us on Earth than in space.</span><br/>\n<span>32. The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists.</span><br/>\n<span>33. There are those who look forward to robots developing greater intelligence.</span></p><p><strong><span>List of Experts</span></strong><br/>\n<span>A. Martin Rees</span><br/>\n<span>B. Daniel Wolpert</span><br/>\n<span>C. Kathleen Richardson</span></p>",
           "options": [
             "A",
             "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J"
+            "C"
           ]
         },
         {
-          "title": "Questions 33-36",
-          "type": "yes-no-notgiven",
-          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 33-36 on your answer sheet, write",
+          "title": "Questions 34-36",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete each sentence with the correct ending, A-D, below.",
           "questions": [
             {
-              "id": "q33",
-              "answer": "No",
-              "textHtml": "The assumption today that people in the past knew very little about geography is correct"
-            },
-            {
               "id": "q34",
-              "answer": "Not given",
-              "textHtml": "Plato was criticised for saying the world was shaped like a leather ball"
+              "answer": "C",
+              "before": "Richardson and Rees express similar views regarding the ethical aspect of",
+              "after": ""
             },
             {
               "id": "q35",
-              "answer": "Not given",
-              "textHtml": "The globe made by Crates of Mallus was an accurate representation of the known world"
+              "answer": "B",
+              "before": "Rees and Wolpert share an opinion about the extent of",
+              "after": ""
             },
             {
               "id": "q36",
-              "answer": "Yes",
-              "textHtml": "Bellerby assumed he would have few problems locating a well-made globe"
+              "answer": "D",
+              "before": "Wolpert disagrees with Richardson on the question of A. robots to explore outer space. B. advances made in machine intelligence so far. C. changes made to other planets for our own benefit. D. the harm already done by artificial intelligence",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 33-36</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 33-36 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                         if the statement agrees with the claims of the writer</span><br/>\n<span><strong>N</strong>O                                           if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                        if it is impossible to say what the writer thinks about this</span></p><p><span>33. The assumption today that people in the past knew very little about geography is correct.</span><br/>\n<span>34. Plato was criticised for saying the world was shaped like a leather ball.</span><br/>\n<span>35. The globe made by Crates of Mallus was an accurate representation of the known world.</span><br/>\n<span>36. Bellerby assumed he would have few problems locating a well-made globe.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 34-36</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-D, below.</span></p><p><span>34. Richardson and Rees express similar views regarding the ethical aspect of</span><br/>\n<span>35. Rees and Wolpert share an opinion about the extent of</span><br/>\n<span>36. Wolpert disagrees with Richardson on the question of</span></p><p><span>A. robots to explore outer space.</span><br/>\n<span>B. advances made in machine intelligence so far.</span><br/>\n<span>C. changes made to other planets for our own benefit.</span><br/>\n<span>D. the harm already done by artificial intelligence.</span></p>"
         },
         {
           "title": "Questions 37-40",
           "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter, A, B, C or D,",
+          "instructionHtml": "Choose the correct letter, A, B, C or D.",
           "questions": [
             {
               "id": "q37",
               "answer": "B",
-              "textHtml": "When Bellerby had to attach the gores to the globe surface,",
+              "textHtml": "What point does Richardson make about fear of machines?",
               "options": [
-                "he decided it was best to work quickly",
-                "he became aware of an unexpected issue",
-                "he was worried about the quality of his materials",
-                "he nearly gave up the whole project"
+                "It has grown alongside the development of ever more advanced robots",
+                "It is the result of our inclination to attribute human characteristics to non-human entities",
+                "It has its origins in basic misunderstandings about how inanimate objects function",
+                "It demonstrates a key difference between human intelligence and machine intelligence"
               ]
             },
             {
               "id": "q38",
               "answer": "C",
-              "textHtml": "The reviewer mentions other globe makers of the past because",
+              "textHtml": "What potential advance does Rees see as a cause for concern?",
               "options": [
-                "Bellerby was particularly inspired by them",
-                "their achievements are not widely known",
-                "Bellerby had something in common with each of them",
-                "their difficulties could have been avoided"
+                "robots outnumbering people",
+                "robots having abilities which humans do not",
+                "artificial intelligence developing independent thought",
+                "artificial intelligence taking over every aspect of our lives"
               ]
             },
             {
               "id": "q39",
-              "answer": "D",
-              "textHtml": "What point is made about Bellerby in the seventh paragraph?",
+              "answer": "B",
+              "textHtml": "What does Wolpert emphasise in his response to the question about science fiction?",
               "options": [
-                "He had long working relationships with numerous craftsmen",
-                "He understands the lack of interest in traditional crafts",
-                "He appreciates the importance of careful planning",
-                "He regrets the loss of many globe-making skills"
+                "how science fiction influences our attitudes to robots",
+                "how fundamental robots are to the science fiction genre",
+                "how the image of robots in science fiction has changed over time",
+                "how reactions to similar portrayals of robots in science fiction may vary"
               ]
             },
             {
               "id": "q40",
-              "answer": "A",
-              "textHtml": "What does the reviewer say about Bellerby’s book in the final paragraph?",
+              "answer": "C",
+              "textHtml": "What is Richardson doing in her comment about reality and fantasy?",
               "options": [
-                "It does not tell you how to create a profitable business",
-                "It overlooks some important mapmakers",
-                "It fails to discuss the future of globe-making",
-                "It does not give enough details about individual customers"
+                "warning people not to confuse one with the other",
+                "outlining ways in which one has impacted on the other",
+                "recommending a change of approach in how people view them",
+                "explaining why scientists have a different perspective on them from other people"
               ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D,</span></p><p><span>37. When Bellerby had to attach the gores to the globe surface,</span><br/>\n<span><strong>A</strong> he decided it was best to work quickly.</span><br/>\n<span><strong>B</strong> he became aware of an unexpected issue.</span><br/>\n<span><strong>C</strong> he was worried about the quality of his materials.</span><br/>\n<span><strong>D</strong> he nearly gave up the whole project.</span></p><p><span>38. The reviewer mentions other globe makers of the past because</span><br/>\n<span><strong>A</strong> Bellerby was particularly inspired by them.</span><br/>\n<span><strong>B</strong> their achievements are not widely known.</span><br/>\n<span><strong>C</strong> Bellerby had something in common with each of them.</span><br/>\n<span><strong>D</strong> their difficulties could have been avoided.</span></p><p><span>39. What point is made about Bellerby in the seventh paragraph?</span><br/>\n<span><strong>A</strong> He had long working relationships with numerous craftsmen.</span><br/>\n<span><strong>B</strong> He understands the lack of interest in traditional crafts.</span><br/>\n<span><strong>C</strong> He appreciates the importance of careful planning.</span><br/>\n<span><strong>D</strong> He regrets the loss of many globe-making skills.</span></p><p><span>40. What does the reviewer say about Bellerby’s book in the final paragraph?</span><br/>\n<span><strong>A</strong> It does not tell you how to create a profitable business.</span><br/>\n<span><strong>B</strong> It overlooks some important mapmakers.</span><br/>\n<span><strong>C</strong> It fails to discuss the future of globe-making.</span><br/>\n<span><strong>D</strong> It does not give enough details about individual customers.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>37. What point does Richardson make about fear of machines?</span><br/>\n<span>A. It has grown alongside the development of ever more advanced robots.</span><br/>\n<span>B. It is the result of our inclination to attribute human characteristics to non-human entities.</span><br/>\n<span>C. It has its origins in basic misunderstandings about how inanimate objects function.</span><br/>\n<span>D. It demonstrates a key difference between human intelligence and machine intelligence.</span></p><p><span>38. What potential advance does Rees see as a cause for concern?</span><br/>\n<span>A. robots outnumbering people</span><br/>\n<span>B. robots having abilities which humans do not</span><br/>\n<span>C. artificial intelligence developing independent thought</span><br/>\n<span>D. artificial intelligence taking over every aspect of our lives</span></p><p><span>39. What does Wolpert emphasise in his response to the question about science fiction?</span><br/>\n<span>A. how science fiction influences our attitudes to robots</span><br/>\n<span>B. how fundamental robots are to the science fiction genre</span><br/>\n<span>C. how the image of robots in science fiction has changed over time</span><br/>\n<span>D. how reactions to similar portrayals of robots in science fiction may vary</span></p><p><span>40. What is Richardson doing in her comment about reality and fantasy?</span><br/>\n<span>A. warning people not to confuse one with the other</span><br/>\n<span>B. outlining ways in which one has impacted on the other</span><br/>\n<span>C. recommending a change of approach in how people view them</span><br/>\n<span>D. explaining why scientists have a different perspective on them from other people</span></p>"
         }
       ]
     }

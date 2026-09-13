@@ -51,6 +51,12 @@ export interface AudioStimulus {
   /** Sanitized original question layout shown above this part's inputs. */
   questionHtml?: string;
   transcriptHtml?: string;
+  /** Where this part's audio begins/ends inside the shared recording
+      (seconds). Used by the Listening Trainer's drill mode to jump straight
+      to a part and stop at its end, without needing a separate audio file
+      per part. Undefined means "play the whole shared recording". */
+  startSeconds?: number;
+  endSeconds?: number;
 }
 
 export type Stimulus = PassageStimulus | AudioStimulus;

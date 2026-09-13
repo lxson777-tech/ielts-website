@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import Badge from '../../../components/Badge.astro';
+import { withBase } from '../../../lib/url';
+import { ALL_LISTENING_DRILLS } from '../../../lib/tests/drills';
+import { LABELS as QUESTION_TYPE_LABELS } from '../../../components/TypeAnalytics';
+
+/* Group drills by their source test so the picker reads as "Test 1 → its
+   4 parts" rather than one flat list. */
+const bySource = new Map<string, { sourceTitle: string; drills: typeof ALL_LISTENING_DRILLS }>();
+for (const d of ALL_LISTENING_DRILLS) {
+  const bucket = bySource.get(d.sourceTestId) ?? { sourceTitle: d.sourceTitle, drills: [] };
+  bucket.drills.push(d);
+  bySource.set(d.sourceTestId, bucket);
+}
+
+/* The distinct question types a drill's single part contains, in the order
+   they appear, mapped to friendly labels for the card. */
+function typeLabels(drill: (typeof ALL_LISTENING_DRILLS)[number]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const group of drill.test.parts[0]!.groups) {
+    if (seen.has(group.type)) continue;
+    seen.add(group.type);
+    out.push(QUESTION_TYPE_LABELS[group.type] ?? group.type);
+  }
+  return out;
+}
+---
+
+<BaseLayout
+  title="Listening Trainer · IELTS Portal"
+  description="Timed single-part listening drills with live strategy coaching: practice one part of the recording at a time without a full test."
+>
+  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <a href={withBase('/trainers')} class="inline-block py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">All trainers</a>
+
+    <SectionHeading
+      eyebrow="Listening"
+      title="Listening Trainer"
+      subtitle="One part, a realistic time budget, instant scoring, and a live 'how to approach it' strategy panel for every question type. You can pause, seek and replay the recording as you practise, the same review and transcript features as a full test, without committing 40 minutes. These attempts don't count toward your full-test band history."
+    />
+
+    <div class="space-y-8">
+      {[...bySource.values()].map(({ sourceTitle, drills }) => (
+        <div class="rounded-card border border-border bg-surface p-5 shadow-card">
+          <h3 class="font-display text-base font-bold">{sourceTitle}</h3>
+          <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {drills.map((d) => (
+              <a
+                href={withBase(`/trainers/listening/${d.id}`)}
+                class="group rounded-card border border-border p-4 transition-colors hover:border-[var(--skill,var(--color-brand))]"
+              >
+                <Badge tone="skill">{`Part ${d.partIndex + 1}`}</Badge>
+                <p class="mt-2 font-display text-sm font-bold group-hover:text-[var(--skill,var(--color-brand))]">
+                  {typeLabels(d).join(', ')}
+                </p>
+                <p class="mt-1 text-xs text-ink-muted">
+                  {d.test.parts[0]!.groups.reduce((s, g) => s + g.questions.length, 0)} questions · {d.test.durationMinutes} min
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

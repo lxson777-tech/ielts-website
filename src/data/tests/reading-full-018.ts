@@ -1,14 +1,14 @@
 import type { PracticeTest } from '../../lib/tests/schema';
 
 const test: PracticeTest = {
-  "id": "reading-full-305",
+  "id": "reading-full-018",
   "skill": "reading",
-  "title": "Academic Reading Test 305",
+  "title": "Academic Reading Test 18",
   "description": "A complete three-passage Academic Reading practice test with 40 questions.",
   "durationMinutes": 60,
   "source": {
     "name": "IELTS MASTER / PracticePTEOnline",
-    "url": "https://practicepteonline.com/ielts-reading-test-305/",
+    "url": "https://practicepteonline.com/ielts-reading-test-300/",
     "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
   },
   "parts": [
@@ -17,164 +17,153 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 1",
-        "title": "PROJECT: Reform Of The Prison System In The UK",
+        "title": "Wolves, dogs and humans",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Penal progress:</span>"
+            "html": "<span>There is no doubt that dogs are the oldest of all species tamed by humans and their domestication was based on a mutually beneficial relationship with man. The conventional view is that the domestication of wolves began between 10,000 and 20,000 years ago. However, a recent ground-breaking paper by a group of international geneticists has pushed this date back by a factor of 10. Led by Dr. Robert Wayne, at the University of California, Los Angeles, the team showed that all dog breeds had only one ancestor, the wolf. They did this by analysing the genetic history through the DNA of 162 wolves from around the world and 140 domestic dogs representing 67 breeds. The research also confirms, for the first time, that dogs are descended only from wolves and do not share DNA with coyotes or jackals. The fact that our companionship with dogs now appears to go back at least 100,000 years means that this partnership may have played an important part in the development of human hunting techniques that developed 70,000 to 90,000 years ago. It also may even have affected the brain development in both species.</span>"
           },
           {
-            "html": "<span>The UK’s large prison population is fuelled by a high level of recidivism – when criminals repeatedly relapse into crime. This project for a model prison tackles issues of architecture, management and funding in an enlightened attempt to achieve lasting rehabilitation.</span>"
+            "html": "<span>The Australian veterinarian David Paxton suggests that in that period of first contact, people did not so much domesticate wolves as wolves domesticated people. Wolves may have started living at the edge of human settlements as scavengers, eating scraps of food and waste. Some learned to live with human beings in a mutually helpful way and gradually evolved into dogs. At the very least, they would have protected human settlements, and given warnings by barking at anything approaching. The wolves that evolved into dogs have been enormously successful in evolutionary terms. They are found everywhere in the inhabited world, hundreds of millions of them. The descendants of the wolves that remained wolves are now sparsely distributed, often in endangered populations.</span>"
           },
           {
-            "html": "<span>Project:</span>"
+            "html": "<span>In return for companionship and food, the early ancestor of the dog assisted humans in tracking, hunting, guarding and a variety of other activities. Eventually humans began to selectively breed these animals for specific traits. Physical characteristics changed and individual breeds began to take shape. As humans wandered across Asia and Europe, they took their dogs along, using them for additional tasks and further breeding them for selected qualities that would better enable them to perform specific duties.</span>"
           },
           {
-            "html": "<span>The penal system is one of the most direct manifestations of the power of the state, but is often also a revealing reflection of the national psyche and the public’s attitude to punishment and rehabilitation. Surprisingly, for a prosperous, progressive Western democracy, the UK has a lamentable penal record. Britain’s prison population is currently in excess of 60,000 (up 50 per cent from a decade ago) making it the second largest in Europe. The average cost of keeping an individual prisoner incarcerated for a year is £27,000 (ten times the average expenditure on a secondary school pupil in the state sector). Despite such substantial investment, over half of British prisoners re-offend within two years of release.</span>"
+            "html": "<span>According to Dr. Colin Groves, of the Department of Archaeology and Anthropology at Australian National University, early humans came to rely on dogs’ keen ability to hear, smell and see – allowing certain areas of the human brain to shrink in size relative to other areas. ‘Dogs acted as human’s alarm systems, trackers and hunting aids, garbage disposal facilities, hot-water bottles and children’s guardians and playmates. Humans provided dogs with food and security. This symbiotic relationship was stable for over 100,000 years and intensified into mutual domestication,’ said Dr. Groves. In his opinion, humans domesticated dogs and dogs domesticated humans.</span>"
           },
           {
-            "html": "<span>Such high rates of recidivism is a serious problem. It means that the prison population is continuing to grow at an alarming rate (recently by as many as 700 a week), so overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale. To ease this pressure, the UK government is investing in the prison estate at historic levels, with 12,000 new prison places proposed within the next few years. Yet, like their nineteenth-century predecessors, Britain’s ‘new Victorian’ prisons are designed for security and control rather than for the rehabilitation and education which is increasingly recognised as what prisoners need. Most are poorly educated young men under 30 (at least 60 per cent of whom are functionally illiterate and innumerate), so without education and skills few will be able to build meaningful lives away from crime, no matter how often they go to prison, or how long they spend there.</span>"
-          },
-          {
-            "html": "<span>Any transformation of the penal system must start with the redesign of prison buildings. Prison architecture has a clearly discernible effect on behaviour, operational efficiency, interaction and morale. Last year, architects Buschow Henley were commissioned by a think tank organisation working with the Home Office Prison Service to research and develop an alternative prison model that focuses more intensely on rehabilitation through a concentrated programme of intellectual, physical and social education. The model is not intended as a blueprint but rather a series of principles that might be adapted to support the wider concept of the ‘Learning Prison’ in which other aspects such as organisation, management and funding would obviously play a part. Key to this is the introduction of a system that groups together prisoners in small communities or ‘houses’ of between 30 and 40 inmates. This has two important consequences. First, the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners. Second, the system places educational and other facilities at the heart of the building, within easy reach at all times of day, reinforced by a supportive social environment. This model also enables resources to be dramatically redeployed, from a current estimated ratio of 80:20 (costs of security versus rehabilitation) to a predicted reversed figure of 20:80, freeing up much-needed funds to invest in educational programmes, thereby helping to promote rehabilitation, reduce recidivism and initiate a virtuous cycle.</span>"
-          },
-          {
-            "html": "<span>In Buschow Henley’s scheme, the proposed group size of 30-40 has the potential for social accountability – each prisoner being known within the community and personally accountable for his behaviour. Houses are semi-autonomous, not just dormitories, with communal, as opposed to centralised, facilities. Circulation is simplified and reduced. Buildings are arranged in a chess-board formation, as opposed to pavilions marooned in space, each with a discrete external area that can be productively used for sport, games or gardening with a minimum of supervision.</span>"
-          },
-          {
-            "html": "<span>Individual cells are replanned to make them less like domestic lavatories and more conducive to learning. In an inversion of the conventional layout, the bed is placed lengthways along the external wall at a higher level, freeing up space below. Storage is built next to where they sleep and each inmate is provided with a moveable table equipped with electronic tools for study. Washing facilities are contained in a small adjoining space (included in the basic 8 sqm allowance) so reducing pressure on prison staff to manage inmate hygiene and ablution. Each cell is paired with a neighbouring ‘buddy’ cell linked by sliding doors controlled by individual prisoners to mitigate the risk of self-harm.</span>"
-          },
-          {
-            "html": "<span>While this new type of prison appears to be somewhat liberal, the arrangement of spaces and functions both inside and out is actually tightly controlled. Paradoxically, however, this proscription enables a greater range of activities to take place, and makes general supervision easier. In this environment the prisoners are judged not by their degree of conformity, but by the scope of their activities and achievements, so laying the foundations for genuine rehabilitation. As Martin Narey, Director General of the UK Prison Services observes, ‘We have got to accept that prison must be a humane and constructive place, not least because all but 23 of my population are going home some day.</span>"
+            "html": "<span>Dr. Groves repealed an assertion made as early as 1914 that humans have some of the same physical characteristics as domesticated animals, the most notable being decreased brain size. The horse experienced a 16 percent reduction in brain size after domestication while pigs’ brains shrank by as much as 34 percent. The estimated brain-size reduction in domesticated dogs varies from 30 percent to 10 percent. Only in the last decade have archaeologists uncovered enough fossil evidence to establish that brain capacity in humans declined in Europe and Africa by at least 10 percent beginning about 10,000 years ago. Dr. Groves believes this reduction may have taken place as the relationship between humans and dogs intensified. The close interaction between the two species allowed for the diminishing of certain human brain functions like smell and hearing.</span>"
           }
         ]
       },
       "groups": [
         {
           "title": "Questions 1-5",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete each sentence with the correct ending, A – H, below. Write the correct letter A – H in spaces 1-5 below.",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements agree with the views of the writer of the passage? Write:",
           "questions": [
             {
               "id": "q1",
-              "answer": "E",
-              "before": "The agenda of current British prison systems is primarily",
-              "after": ""
+              "answer": "No",
+              "textHtml": "The co-existence of wolves and humans began 10,000 years ago"
             },
             {
               "id": "q2",
-              "answer": "B",
-              "before": "The primary role of prisons should he",
-              "after": ""
+              "answer": "No",
+              "textHtml": "Dogs, wolves, jackals and coyotes share a common ancestor"
             },
             {
               "id": "q3",
-              "answer": "G",
-              "before": "The new prison scheme will focus on",
-              "after": ""
+              "answer": "Yes",
+              "textHtml": "Dogs probably influenced the development of human hunting skills"
             },
             {
               "id": "q4",
-              "answer": "C",
-              "before": "Existing prison architecture causes",
-              "after": ""
+              "answer": "Yes",
+              "textHtml": "Dogs evolved from wolves which chose to live with humans"
             },
             {
               "id": "q5",
-              "answer": "A",
-              "before": "The positive results of reducing the number of prisoners in one space include A. improved security, supervision and education. B. rehabilitation and education. C. reduced educational opportunities and morale D. reduced risk of self harm. E. security and control. F. an alternative prison model G. a learning environment rather than a punitive compound H. organisation, management and funding",
-              "after": ""
+              "answer": "Not given",
+              "textHtml": "Wolves are a protected species in most parts of the world"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-5</span></strong><br/>\n<span>Complete each sentence with the correct ending, A – H, below. Write the correct letter A – H in spaces 1-5 below.</span></p><p><span>1. The agenda of current British prison systems is primarily</span><br/>\n<span>2. The primary role of prisons should he</span><br/>\n<span>3. The new prison scheme will focus on</span><br/>\n<span>4. Existing prison architecture causes</span><br/>\n<span>5. The positive results of reducing the number of prisoners in one space include</span></p><p><span>A. improved security, supervision and education.</span><br/>\n<span>B. rehabilitation and education.</span><br/>\n<span>C. reduced educational opportunities and morale</span><br/>\n<span>D. reduced risk of self harm.</span><br/>\n<span>E. security and control.</span><br/>\n<span>F. an alternative prison model</span><br/>\n<span>G. a learning environment rather than a punitive compound</span><br/>\n<span>H. organisation, management and funding.</span></p>"
+          "legendHtml": "<p><span><strong>Questions 1-5</strong></span><br/>\n<span>Do the following statements agree with the views of the writer of the passage? Write:</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                  if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>1. The co-existence of wolves and humans began 10,000 years ago.</span><br/>\n<span>2. Dogs, wolves, jackals and coyotes share a common ancestor.</span><br/>\n<span>3. Dogs probably influenced the development of human hunting skills.</span><br/>\n<span>4. Dogs evolved from wolves which chose to live with humans.</span><br/>\n<span>5. Wolves are a protected species in most parts of the world.</span></p>"
         },
         {
-          "title": "Questions 6-9",
+          "title": "Questions 6-8",
           "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter A, B, C or D.",
+          "instructionHtml": "Choose the correct letter A-D.",
           "questions": [
             {
               "id": "q6",
-              "answer": "C",
-              "textHtml": "The proposal to create 12,000 new prison places, within the next few years, indicates that",
+              "answer": "D",
+              "textHtml": "How do we know that dogs have been more successful in evolutionary terms than wolves?",
               "options": [
-                "prison cells are too small",
-                "a lot of money is invested into educating offenders",
-                "there is an increasing population of offenders in the UK",
-                "the government is getting tougher on offenders"
+                "Dogs can be trained more easily than wolves",
+                "Wolves are stronger than dogs",
+                "Humans prefer dogs to wolves",
+                "There are more dogs than wolves today"
               ]
             },
             {
               "id": "q7",
-              "answer": "C",
-              "textHtml": "The proposed changes to prison architecture are designed primarily to",
+              "answer": "B",
+              "textHtml": "As a result of domestication, the size of the human brain has …",
               "options": [
-                "improve the aesthetic value of the building",
-                "boost self-esteem and social behaviour",
-                "allow prisoners more living space",
-                "increase running costs within prisons"
+                "increased",
+                "decreased",
+                "stayed the same",
+                "become more complex"
               ]
             },
             {
               "id": "q8",
               "answer": "A",
-              "textHtml": "The project to reform the penal system in the UK",
+              "textHtml": "What can we infer from the studies of brain size and domestication?",
               "options": [
-                "must begin by altering the prisons’ designs",
-                "is inexpensive",
-                "will eliminate the need for supervision",
-                "is, primarily, to make prisoners more comfortable"
-              ]
-            },
-            {
-              "id": "q9",
-              "answer": "C",
-              "textHtml": "Why is the bed placed lengthways along the external wall at high level?",
-              "options": [
-                "to make room below for washing facilities",
-                "for the improvement of the inmates’ hygiene",
-                "to allow room below for storage and shelves",
-                "to make room for sliding doors"
+                "Domestic life is less demanding than surviving in the wild",
+                "Animals like living with humans",
+                "Domestication has made animals physically weaker",
+                "Pigs are less intelligent than dogs"
               ]
             }
           ],
-          "legendHtml": "<p><strong><span>Question 6-9</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>6. The proposal to create 12,000 new prison places, within the next few years, indicates that</span><br/>\n<span><strong>A</strong> prison cells are too small.</span><br/>\n<span><strong>B</strong> a lot of money is invested into educating offenders.</span><br/>\n<span><strong>C</strong> there is an increasing population of offenders in the UK.</span><br/>\n<span><strong>D</strong> the government is getting tougher on offenders.</span></p><p><span>7. The proposed changes to prison architecture are designed primarily to</span><br/>\n<span><strong>A</strong> improve the aesthetic value of the building.</span><br/>\n<span><strong>B</strong> boost self-esteem and social behaviour.</span><br/>\n<span><strong>C</strong> allow prisoners more living space.</span><br/>\n<span><strong>D</strong> increase running costs within prisons.</span></p><p><span>8. The project to reform the penal system in the UK</span><br/>\n<span><strong>A</strong> must begin by altering the prisons’ designs.</span><br/>\n<span><strong>B</strong> is inexpensive.</span><br/>\n<span><strong>C</strong> will eliminate the need for supervision.</span><br/>\n<span><strong>D</strong> is, primarily, to make prisoners more comfortable.</span></p><p><span>9. Why is the bed placed lengthways along the external wall at high level?</span><br/>\n<span><strong>A</strong> to make room below for washing facilities</span><br/>\n<span><strong>B</strong> for the improvement of the inmates’ hygiene</span><br/>\n<span><strong>C</strong> to allow room below for storage and shelves</span><br/>\n<span><strong>D</strong> to make room for sliding doors</span></p>"
+          "legendHtml": "<p><span><strong>Questions 6-8</strong></span><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>6. How do we know that dogs have been more successful in evolutionary terms than wolves?</span><br/>\n<span><strong>A</strong> Dogs can be trained more easily than wolves.</span><br/>\n<span><strong>B</strong> Wolves are stronger than dogs.</span><br/>\n<span><strong>C</strong> Humans prefer dogs to wolves.</span><br/>\n<span><strong>D</strong> There are more dogs than wolves today.</span></p><p><span>7. As a result of domestication, the size of the human brain has …</span><br/>\n<span><strong>A</strong> increased.</span><br/>\n<span><strong>B</strong> decreased</span><br/>\n<span><strong>C</strong> stayed the same.</span><br/>\n<span><strong>D</strong> become more complex.</span></p><p><span>8. What can we infer from the studies of brain size and domestication?</span><br/>\n<span><strong>A</strong> Domestic life is less demanding than surviving in the wild.</span><br/>\n<span><strong>B</strong> Animals like living with humans.</span><br/>\n<span><strong>C</strong> Domestication has made animals physically weaker.</span><br/>\n<span><strong>D</strong> Pigs are less intelligent than dogs.</span></p>"
         },
         {
-          "title": "Questions 10-13",
+          "title": "Question 9",
           "type": "sentence-completion",
-          "instructionHtml": "Label the diagram, below. Write NO MORE THAN THREE WORDS from, the passage for each answer.",
+          "instructionHtml": "Choose TWO WORDS from the passage for the answer.",
+          "questions": [
+            {
+              "id": "q9",
+              "answer": "Selectively breed",
+              "before": "……………… their animals for the characteristics they wanted",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><span><strong>Questions 9</strong></span><br/>\n<span>Choose <strong>TWO WORDS</strong> from the passage for the answer.</span></p><p><span>There are many different types of dogs today, because, in early times humans began to (9) ……………… their animals for the characteristics they wanted.</span></p>",
+          "wordLimit": 2
+        },
+        {
+          "title": "Questions 10-14",
+          "type": "matching-features",
+          "instructionHtml": "Match one of the researchers (A-C) to each of the findings (10-14) below.",
           "questions": [
             {
               "id": "q10",
-              "answer": [
-                "discrete external area",
-                "external area"
-              ],
-              "before": "",
-              "after": ""
+              "answer": "C",
+              "textHtml": "studied the brain size of domesticated animals"
             },
             {
               "id": "q11",
-              "answer": "Bed",
-              "before": "",
-              "after": ""
+              "answer": "B",
+              "textHtml": "claims that wolves chose to interact with humans"
             },
             {
               "id": "q12",
-              "answer": "Storage",
-              "before": "",
-              "after": ""
+              "answer": "A",
+              "textHtml": "established a new time frame for domestication of wolves"
             },
             {
               "id": "q13",
-              "answer": "Sliding doors",
-              "before": "",
-              "after": ""
+              "answer": "C",
+              "textHtml": "believes that dogs and humans domesticated each other"
+            },
+            {
+              "id": "q14",
+              "answer": "A",
+              "textHtml": "studied the DNA of wolves and dogs"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 10-13</span></strong><br/>\n<span>Label the diagram, below. Write <strong>NO MORE THAN THREE WORDS</strong> from, the passage for each answer.</span><br/>\n<span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/ielts-website/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p><p><br/>\n<br/>\n<br/> </p>",
-          "wordLimit": 3
+          "legendHtml": "<p><span><strong>Questions 10-14</strong></span><br/>\n<span>Match one of the researchers (A-C) to each of the findings (10-14) below.</span></p><p><span><strong>A</strong> Dr. Wayne</span><br/>\n<span><strong>B</strong> Dr. Paxton</span><br/>\n<span><strong>C</strong> Dr. Groves</span></p><p><span>Example: found the common ancestor of the dog <span><strong>A</strong></span></span></p><p><span>10. studied the brain size of domesticated animals</span><br/>\n<span>11. claims that wolves chose to interact with humans</span><br/>\n<span>12. established a new time frame for domestication of wolves</span><br/>\n<span>13. believes that dogs and humans domesticated each other</span><br/>\n<span>14. studied the DNA of wolves and dogs</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ]
         }
       ]
     },
@@ -183,204 +172,142 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 2",
-        "title": "Special Olympics Conditions of Participation",
+        "title": "Crop circles",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>To be eligible for participation in the Special Olympics an individual with an intellectual disability must agree to observe and abide by the SOC Sports Rules. ‘Mental Retardation’ refers to substantial limitations in present functioning. It is characterised by significantly sub-average intellectual functioning, existing concurrently with related limitations in two or more of the following applicable adaptive skill areas: communication, self-care, home living, social skills, community use, self-direction, health and safety, functional academics, leisure and work. Mental retardation manifests itself before the age of 18. The following four assumptions are essential to the application of the definition:</span>"
+            "html": "<span>The crop circle phenomenon has puzzled and mystified humanity for many years. The designs just appear, placed carefully in fields of food grains. Some are larger than football fields and highly complex in design and construction. Others are smaller and more primitive. We call them crop circles, but many of them are not circular. Some are elongated abstract designs, a few resemble insects or other known forms, and some are mixtures of lines, circles, and other shapes melded into intricate patterns. Most become visible overnight, though it has been claimed that a few have appeared within a half-hour in broad daylight.</span>"
           },
           {
-            "html": "<span>1. Valid assessment considers cultural and linguistic diversity as well as differences in communication and behavioural factors.</span>"
+            "html": "<span>Crop circles have appeared all over the world. About 10,000 instances from various countries have been reported in recent years. The first modern rash of crop circles appeared in Australia in December of 1973. A strange circular imprint appeared in a wheat field near Wokurna, a community southeast of Adelaide. Soon seven swirled circles up to 14 feet in diameter appeared in an oatfield nearby. In December of 1989, an amazing set of circles, ranging from a few inches to a few feet in diameter appeared in the wheat best west of Melbourne. As many as 90 crop circles were found. The best documented and largest modern spread of crop circles began in southern England during the summer of 1980. By the end of 1988, 112 new circles had been formed. At that time circles were being reported worldwide, 305 by the end of 1989. The total grew to an outstanding 1,000 newly-formed circles in 1990. In 1991, 200 to 300 circles were reported. Crop circles have been documented in over 30 countries, including Canada, the former Soviet Union Japan and the United States.</span>"
           },
           {
-            "html": "<span>2. The existence of limitations in adaptive skills occurs within the context of community environments typical of the individual’s age-peers and is indexed to the person’s individualised needs for support.</span>"
+            "html": "<span>Nine out of ten circles remained simple with broken stems flattened to the ground and swirled. The stalks around the circles remained completely erect. But over the years, crop circles have become much more geometrically intricate. Patterns involved multiple circles, bars, triangles, rings and spurs. Pictorial imagery also appeared. Reliable eyewitnesses have reported seeing unusual lights and hearing unidentifiable sounds while on an early-morning walk in the countryside where a crop circle showed later that day. High-pitched, warbling, noises have been recorded at the site of some crop circles. On several occasions a strange glow or a darker colouring has been seen in the sky over a crop circle. And in more than one instance, the electrical power of small planes flying overhead has been cut off abruptly. While the causal energies do not seem to harm animals, or even insects as far as we can tell, wild creatures tend to avoid the circles. Flocks of birds have been seen to split apart and fly around the perimeter to avoid going directly over a crop circle formation.</span>"
           },
           {
-            "html": "<span>3. Specific adaptive limitations often co-exist with strengths in other adaptive skills or other personal capabilities.</span>"
+            "html": "<span>Researchers have spent a great deal of time investigating different aspects of crop circles. They try to detect traces of human involvement in the circle-making, test the area of the circle itself for geophysical anomalies, and analyze the field’s grain both from within and outside the circles, searching for differences.</span>"
           },
           {
-            "html": "<span>4. With appropriate support over a sustained period, the life functioning of the person with mental retardation will generally improve.</span>"
+            "html": "<span>Dr. W. C. Levengood of BLT Research in Cambridge, Massachusetts, has analyzed many grain samples and confirmed, time after time, significant changes at the cellular level of crop circle plants. The plants in front of the circles have elongated cells and blown-out growth nodes. Seeds front the circle plants often show accelerated growth rates when they are sown, and in some instances, quite different-looking plants result. In many instances it appears that a vortex-like energy causes the plants to swirl down, flattening the design into the land. Whatever this energy is, it does not generally inhibit the plants’ growth. They continue to show normal response to the sun, raising upward over several days following the appearance of the circle. Michael Chorost of Duke University found occasions of short-lived radionuclides in the top layer of soil in some of the formations. A British government laboratory found diminished nitrogen and decreased nematode populations as well as decreased water content in the soil of a formation. Researchers have discovered other anomalies as well, such as curious embedded magnetic particles and charred tissue. Some of the plant stalks within the circles show evidence of being exposed to rapid microwave heating.</span>"
           },
           {
-            "html": "<span>The term ‘mental retardation’ is a diagnostic term used to describe the condition defined above. In keeping with the current language practised within the field, the term ‘mental retardation’ is no longer commonly used. In its place, if it is absolutely necessary to use a label, i.e. in an educational setting or in a SOC/NCCP Technical Programme, then the term that is in keeping with the current practices is a person with an intellectual disability. Special Olympics was created and developed to give individuals with an intellectual disability the opportunity to train and compete in sport activities. No person shall, on the grounds of gender, race, religion, colour, national origin or financial constraint be excluded from participation in, or be denied the benefits of, or otherwise be subjected to discrimination under any programme or activity of Special Olympics. Flexibility is left to the Local, Region/Zone, Chapter and National Special Olympics organisations for determining the eligibility of the participants because of the variety of situations and needs that exist in the many localities where Special Olympics programmes have been and will be instituted. Inclusion is preferred to exclusion when eligibility is in question. Individuals who have both an intellectual disability and multiple disabilities may participate in Special Olympics programmes and competitions.</span>"
+            "html": "<span>Scientists have attempted to explain crop circles as a result of natural processes. One popular theory accepted by many mainstream scientists and academics is known as ‘Plasma Vortex Theory’. Developed by Dr. Terence Mearden, it theorizes that electrified air (plasma), on the side of hills, becomes mini-tornadoes and screws down onto the ground, creating the circles. The theory also holds that the electrified air would cause a light to appear above the circle and therefore account for UFO sightings. Although this theory still has considerable support, it has come under fire because of the highly intricate and complex crop circle patterns that have appeared since 1991. Another theory is that the circles are all hoaxes or practical jokes. Major support came to this theory when, on September 9, 1991, two Englishmen claimed to have created approximately 250 crop circles. However, those circles were more rugged than others, and many were already suspect. It is irrational to believe that all crop circles are fake for publicity or other reasons. Many crop circles appeared long before the phenomenon pained large recognition from the public and press. Too many circles and patterns are formed each year in too many countries for them to have been hoaxes. Many crop circles show strange mathematical trails when analyzed.</span>"
           },
           {
-            "html": "<span>A. Participation by individuals with Down Syndrome who have Atlantoaxial Instability.</span>"
-          },
-          {
-            "html": "<span>There is evidence from medical research that up to 15 percent of individuals with Down Syndrome have a defect in the cervical vertebrae C-1 and C-2 in the neck. There is evidence from medical research that up to 15 percent of individuals with Down Syndrome have a defect in the cervical vertebrae C-1 and C-2 in the neck (or Atlantoaxial Instability). This condition exposes Down Syndrome individuals to the heightened possibility of a neck injury if they participate in activities that hyperextend or radically flex the neck or upper spine.</span>"
-          },
-          {
-            "html": "<span>B. SOC requires temporary restriction of individuals with Down Syndrome from participation in certain activities.</span>"
-          },
-          {
-            "html": "<span>1) Accredited Programmes may allow all individuals with Down Syndrome to continue in most Special Olympics sports training and competition activities. However, such individuals shall not be permitted to participate in sport training and competitions which, by their nature, result in hyperextension, radical flexion or direct pressure on the neck or upper spine. Such sports training and competition activities include: the butterfly stroke and diving starts in swimming, diving, pentathlon, high jump, equestrian sports, artistic gymnastics, soccer, alpine skiing and any warm-up exercise placing undue stress on the head and neck.</span>"
-          },
-          {
-            "html": "<span>2) Restriction from participation in the above-listed activities shall continue until an individual with Down Syndrome has been examined (including X-ray views of full extension and flexion of the neck) by a physician who has been briefed on the nature of the Atlantoaxial Instability condition, and the results of such an examination demonstrate that the individual does not have the Atlantoaxial Instability condition.</span>"
-          },
-          {
-            "html": "<span>3) For any individual diagnosed as having Atlantoaxial Instability condition, the examining physician shall notify the athlete’s parents or guardians of the nature and extent of the individual’s condition and such athlete shall be allowed to participate in the activities listed in 1) above only if the athlete submits written certification from two physicians combined with an acknowledgment of the risks signed by the adult athlete or his/her parent or guardian if the athlete is a minor.</span>"
-          },
-          {
-            "html": "<span>4) It is the responsibility of parents/guardians to monitor the individual and take appropriate action if neurological symptoms appear.</span>"
-          },
-          {
-            "html": "<span>Terminology note: the term intellectual disability is used to replace the clinical term of Mental Retardation. Intellectual disability is not a disease, nor should it be confused with mental illness. People with mental disabilities have both a slower rate of learning and a limited capacity to learn. They may also have difficulty managing the ordinary activities of daily living, understanding the behaviour of others, and determining their own appropriate social responses (adaptive behaviour). Children with intellectual disabilities grow into adults with intellectual disabilities; they do not remain ‘eternal children’.</span>"
-          },
-          {
-            "html": "<span>People with intellectual disabilities constitute one of the largest groups of citizens with disabilities. There are an estimated 156 million individuals in the world who have intellectual disabilities. Intellectual disability cuts across lines of race, education, and social and economic background. It can occur in anyone. Hereditary components are known to account for only a fraction of the cases of intellectual disability. There are well over 350 causes of intellectual disability and in three-quarters of the cases the specific cause is unknown. About 87 percent of all people with intellectual disabilities are mildly afflicted and in many respects are indistinguishable from people who do not have intellectual disabilities.</span>"
+            "html": "<span>The crop circle phenomenon is an enigma. Many dollars have been spent by researchers and their associations in an attempt to find a solution to this intriguing puzzle which will continue to haunt humanity until an explanation is found.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 14-20",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In spaces 14-20 below, write",
+          "title": "Questions 15-19",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements reflect the claims of the writer of this passage? Write:",
           "questions": [
             {
-              "id": "q14",
-              "answer": "True",
-              "textHtml": "To be eligible to take part in the Special Olympics, the athlete has to be not only less than intellectually capable, but must also be lacking in a number of other functions"
-            },
-            {
               "id": "q15",
-              "answer": "False",
-              "textHtml": "People with intellectual disabilities never improve their lives"
+              "answer": "No",
+              "textHtml": "Crop circles only appear in wheat fields"
             },
             {
               "id": "q16",
               "answer": "Not given",
-              "textHtml": "Down Syndrome participants often excel in their chosen field of athletic activity"
+              "textHtml": "Crop circles have never been documented in tropical countries"
             },
             {
               "id": "q17",
-              "answer": "True",
-              "textHtml": "If you have Down Syndrome, your neck may be at risk of damage in certain spoils"
+              "answer": "Yes",
+              "textHtml": "The largest number of crop circle reporting in a single year occurred in 1990"
             },
             {
               "id": "q18",
-              "answer": "False",
-              "textHtml": "People with Down Syndrome cannot participate in any swimming events"
+              "answer": "Yes",
+              "textHtml": "The patterns of crop circles have become increasingly complex over the years"
             },
             {
               "id": "q19",
-              "answer": "False",
-              "textHtml": "All people with intellectual disabilities need the written permission of a parent or guardian in order to participate"
-            },
-            {
-              "id": "q20",
-              "answer": "Not given",
-              "textHtml": "Participation in sports helps people with intellectual disabilities lo improve their communication and social skills"
+              "answer": "No",
+              "textHtml": "All crop circles are hoaxes"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-20</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 14-20 below, write</span></p><p><span><strong>TRUE</strong>                       if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                      if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>          if there is no information on this</span></p><p><span>14. To be eligible to take part in the Special Olympics, the athlete has to be not only less than intellectually capable, but must also be lacking in a number of other functions.</span><br/>\n<span>15. People with intellectual disabilities never improve their lives.</span><br/>\n<span>16. Down Syndrome participants often excel in their chosen field of athletic activity.</span><br/>\n<span>17. If you have Down Syndrome, your neck may be at risk of damage in certain spoils.</span><br/>\n<span>18. People with Down Syndrome cannot participate in any swimming events.</span><br/>\n<span>19. All people with intellectual disabilities need the written permission of a parent or guardian in order to participate.</span><br/>\n<span>20. Participation in sports helps people with intellectual disabilities lo improve their communication and social skills.</span></p>"
+          "legendHtml": "<p><span><strong>Questions 15-19</strong></span><br/>\n<span>Do the following statements reflect the claims of the writer of this passage? Write:</span></p><p><span><strong>YES</strong>                              if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>             if it is impossible to say what the writer thinks about this</span></p><p><span>15. Crop circles only appear in wheat fields.</span><br/>\n<span>16. Crop circles have never been documented in tropical countries.</span><br/>\n<span>17. The largest number of crop circle reporting in a single year occurred in 1990.</span><br/>\n<span>18. The patterns of crop circles have become increasingly complex over the years.</span><br/>\n<span>19. All crop circles are hoaxes.</span></p>"
         },
         {
-          "title": "Questions 21-23",
-          "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter A, B, C or D.",
+          "title": "Questions 20-23",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer.",
           "questions": [
             {
+              "id": "q20",
+              "answer": [
+                "southern England",
+                "England"
+              ],
+              "before": "………………, where in a single year, over one hundred circles appeared. Phenomena such as the appearance of strange lights and unusual",
+              "after": ""
+            },
+            {
               "id": "q21",
-              "answer": "B",
-              "textHtml": "What were the objectives of the Special Olympics document?",
-              "options": [
-                "to inform the public about what they are to expect from the Special Olympics",
-                "to provide information for future candidates",
-                "to promote awareness in the general population of the plight of disabled people",
-                "to list the problems intellectually disabled people have"
-              ]
+              "answer": [
+                "high-pitched noises",
+                "high-pitched sound",
+                "noises",
+                "sound"
+              ],
+              "before": "………………. sometimes occur around the sites of crop circles",
+              "after": ""
             },
             {
               "id": "q22",
-              "answer": "D",
-              "textHtml": "What word best describes the Special Olympics participation policy?",
-              "options": [
-                "inconsistent",
-                "ambiguous",
-                "controversial",
-                "non-discriminatory"
-              ]
+              "answer": [
+                "Animals",
+                "insects",
+                "wild creatures"
+              ],
+              "before": "………………. are not affected but it has been observed that birds",
+              "after": ""
             },
             {
               "id": "q23",
-              "answer": "C",
-              "textHtml": "What does the passage say about intellectual disability in the last paragraph?",
-              "options": [
-                "The majority of cases are inherited",
-                "Sufferers of the condition outnumber those with physical disabilities",
-                "In most cases, the cause of the condition cannot be determined",
-                "It may be determined by race, education, or social and economic background"
-              ]
+              "answer": "Avoid",
+              "before": "………………… flying over a formation",
+              "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 21-23</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>21. What were the objectives of the Special Olympics document?</span><br/>\n<span><strong>A</strong> to inform the public about what they are to expect from the Special Olympics</span><br/>\n<span><strong>B</strong> to provide information for future candidates</span><br/>\n<span><strong>C</strong> to promote awareness in the general population of the plight of disabled people</span><br/>\n<span><strong>D</strong> to list the problems intellectually disabled people have</span></p><p><span>22. What word best describes the Special Olympics participation policy?</span><br/>\n<span><strong>A</strong> inconsistent</span><br/>\n<span><strong>B</strong> ambiguous</span><br/>\n<span><strong>C</strong> controversial</span><br/>\n<span><strong>D</strong> non-discriminatory</span></p><p><span>23. What does the passage say about intellectual disability in the last paragraph?</span><br/>\n<span><strong>A</strong> The majority of cases are inherited.</span><br/>\n<span><strong>B</strong> Sufferers of the condition outnumber those with physical disabilities.</span><br/>\n<span><strong>C</strong> In most cases, the cause of the condition cannot be determined.</span><br/>\n<span><strong>D</strong> It may be determined by race, education, or social and economic background.</span></p>"
+          "legendHtml": "<p><span><strong>Questions 20-23</strong></span><br/>\n<span>Complete the summary below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>Since the early 1970s, over ten thousand crop circles have been reported around the world, the greatest number in (20) ………………, where in a single year, over one hundred circles appeared. Phenomena such as the appearance of strange lights and unusual (21) ………………. sometimes occur around the sites of crop circles. (22) ………………. are not affected but it has been observed that birds (23) ………………… flying over a formation.</span></p>",
+          "wordLimit": 3
         },
         {
-          "title": "Questions 24-26",
-          "type": "multiple-answer",
-          "instructionHtml": "Which THREE of the following facts relating to Down Syndrome are mentioned? Choose THREE letters A – F.",
+          "title": "Questions 24-27",
+          "type": "matching-features",
+          "instructionHtml": "Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below.",
           "questions": [
             {
               "id": "q24",
-              "answer": [
-                "A",
-                "C",
-                "F"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-305-q24-q26"
+              "answer": "C",
+              "textHtml": "changes in the structure of soil within crop circles"
             },
             {
               "id": "q25",
-              "answer": [
-                "A",
-                "C",
-                "F"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-305-q24-q26"
+              "answer": "B",
+              "textHtml": "accelerated growth of seeds from crop circles"
             },
             {
               "id": "q26",
-              "answer": [
-                "A",
-                "C",
-                "F"
-              ],
-              "textHtml": "",
-              "answerPairId": "reading-305-q24-q26"
+              "answer": "A",
+              "textHtml": "electrical charges in the air around crop circles"
+            },
+            {
+              "id": "q27",
+              "answer": "B",
+              "textHtml": "changes in cell structure of plants found in crop circles"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Which <strong>THREE</strong> of the following facts relating to Down Syndrome are mentioned? Choose THREE letters A – F.</span></p><p><span><strong>A</strong> It is thought that about one Down Syndrome person in every seven has Atlantoaxial Instability</span><br/>\n<span><strong>B</strong> A person with Down Syndrome cannot participate in any winter competitions.</span><br/>\n<span><strong>C</strong> Down Syndrome sufferers with Atlantoaxial Instability who are minors need permission from a guardian to play soccer.</span><br/>\n<span><strong>D</strong> Down Syndrome sufferers are unable to flex the upper spine.</span><br/>\n<span><strong>E</strong> Down Syndrome athletes need to wear a neck brace to participate in the Special Olympics.</span><br/>\n<span><strong>F</strong> Down Syndrome athletes can take part in sports that do not directly affect the neck or spine without any preconditions being fulfilled.</span></p><p><br/>\n<br/>\n<br/> </p>",
-          "selectCount": 3,
-          "choices": [
-            {
-              "value": "A",
-              "label": "It is thought that about one Down Syndrome person in every seven has Atlantoaxial Instability"
-            },
-            {
-              "value": "B",
-              "label": "A person with Down Syndrome cannot participate in any winter competitions"
-            },
-            {
-              "value": "C",
-              "label": "Down Syndrome sufferers with Atlantoaxial Instability who are minors need permission from a guardian to play soccer"
-            },
-            {
-              "value": "D",
-              "label": "Down Syndrome sufferers are unable to flex the upper spine"
-            },
-            {
-              "value": "E",
-              "label": "Down Syndrome athletes need to wear a neck brace to participate in the Special Olympics"
-            },
-            {
-              "value": "F",
-              "label": "Down Syndrome athletes can take part in sports that do not directly affect the neck or spine without any preconditions being fulfilled"
-            }
+          "legendHtml": "<p><span><strong>Questions 24-27</strong></span><br/>\n<span>Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below.</span></p><p><span><strong>A</strong> Dr. Mearden</span><br/>\n<span><strong>B</strong> Dr. Levengood</span><br/>\n<span><strong>C</strong> Michael Chorost</span></p><p><span>Example: observations of light in relation to crop circles <span><strong>A</strong></span></span></p><p><span>24. changes in the structure of soil within crop circles</span><br/>\n<span>25. accelerated growth of seeds from crop circles</span><br/>\n<span>26. electrical charges in the air around crop circles</span><br/>\n<span>27. changes in cell structure of plants found in crop circles</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
           ]
         }
       ]
@@ -390,160 +317,175 @@ const test: PracticeTest = {
       "stimulus": {
         "kind": "passage",
         "label": "Reading Passage 3",
-        "title": "Migrants and Refugees: Racial Discrimination and Xenophobia",
+        "title": "Are these two reporters on the same planet?",
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "<span>Today, one in every 50 human beings is a migrant worker, a refugee or asylum seeker, or an immigrant living in a foreign country. Current estimates by the United Nations and the International Organisation for Migration indicate that some 150 million people live temporarily or permanently outside their countries of origin (2.5% of the world population). Many of these, 80-97 million, are estimated to be migrant workers with members of their families. Another 12 million are refugees outside their country of origin. These figures do not include the estimated 20 million Internally Displaced Persons forcibly displaced within their own country, nor the tens of millions more of internal migrants, mainly rural to urban, in countries around the world.</span>"
+            "html": "<span>An essay by scientist, educator and environmentalist, Dr. David Suzuki</span>"
           },
           {
-            "html": "<span>Increasing ethnic and racial diversity of societies is the inevitable consequence of migration. Increasing migration means that a growing number of states have become or are becoming more multi-ethnic, and are confronted with the challenge of accommodating peoples of different cultures, races, religions and languages. Addressing the reality of increased diversity means finding political, legal, social and economic mechanisms to ensure mutual respect and to mediate relations across differences. But xenophobia and racism have become manifest in some societies which have received substantial numbers of immigrants, as workers or as asylum-seekers. In those countries the migrants have become the targets in internal disputes about national identity. In the last few decades, the emergence of new nation states has often been accompanied by ethnic exclusion.</span>"
+            "html": "<span>A number of books, articles and television programs have disputed the reality of the claimed hazards of global warming, overpopulation, deforestation and ozone depletion. Two newspaper commentaries show the profound differences of opinion on critical issues affecting the planet.</span>"
           },
           {
-            "html": "<span>As governments grapple with the new realities of their multi-ethnic societies, there has been a marked increase in discrimination and violence directed against migrants, refugees and other non-nationals by extremist groups in many parts of the world. The lack of any systematic documentation or research over time makes it unclear whether there is a real increase in the level of abuse or in the level of exposure and reporting. Unfortunately, there is more than enough anecdotal evidence to show that violations of the human rights of migrants, refugees and other non-nationals are so generalised, widespread and commonplace that they are a defining feature of international migration today.</span>"
+            "html": "<span>The first, by Robert Kaplan, has generated both fear and denial. Entitled The Coming Anarchy, the report paints a horrifying picture of the future for humanity. The author suggests that the terrible consequences of the conjunction between exploding human population and surrounding environmental degradation are already visible in Africa and parts of Southeast Asia. As society is destabilised by the AIDS epidemic, government control evaporates, national borders crumble beneath the pressure of environmental refugees and local populations revert to tribalism to settle old scores or defend against fleeing masses and bands of stateless nomads on the move.</span>"
           },
           {
-            "html": "<span>The extent of racial discrimination and xenophobia is often played down and sometimes denied by authorities. Racial discrimination is defined in international law as being: any distinction, exclusion, restriction or preference based on race, colour, descent or national or ethnic origin which has the purpose or effect of nullifying or impairing the recognition, enjoyment or exercise, on an equal footing, of human rights and fundamental freedoms in the political, economic, social, cultural or any other field of public life.</span>"
+            "html": "<span>Kaplan believes what he has seen in Africa and Southeast Asia is the beginning of a global pattern of disintegration of social, political and economic infrastructure under the impact of ecological degradation, population pressure and disease. As ecosystems collapse, this scenario could sweep the planet, first in Eastern Europe and then the industrialised countries. It is a frightening scenario, built on a serious attempt to project the aftermath of ecological destruction. It comes from a core recognition that the planet is finite and consumption has vast social, political and economic ramifications. It has also generated a great deal of discussion and controversy.</span>"
           },
           {
-            "html": "<span>Racism and xenophobia are distinct phenomena, although they often overlap. While racism generally implies distinction based on difference in physical characteristics, such as skin colour, hair type, facial features, etc, xenophobia denotes behaviour specifically based on the perception that ‘the other’ is foreign to or originates from outside the community or nation. By the standard dictionary definition, xenophobia is the intense dislike or fear of strangers or people from other countries. As a sociologist puts it, ‘xenophobia is an attitudinal orientation of hostility against non-natives in a given population.’</span>"
+            "html": "<span>Marcus Gee pronounces Kaplan’s vision ‘dead wrong’ in a major article headlined Apocalypse Deferred. Attacking the ‘doomsayers’, Gee counters with the statistics favoured by believers in the limitless benefits and potential of economic growth. Citing the spectacular improvements in human health, levels of education and literacy, availability of food and length of life even in the developing world, Gee pronounces the fivefold increase in the world economy since 1950 as the cause of this good news. He does concede that immense problems remain, from ethnic nationalism to tropical deforestation to malnutrition to cropland losses but concludes that Kaplan has exaggerated many of the crises and thus missed the broad pattern of progress.</span>"
           },
           {
-            "html": "<span>The definition of xenophobia, and its differentiation from racism and racial discrimination, is a still-evolving concept. One of the regional Preparatory Meetings for a recent World Conference suggested that:</span>"
+            "html": "<span>Focusing on statistics of the decline in child mortality and the rise in longevity, food production and adult literacy, Gee reaches the conclusion that things have never been better. Economic indicators, such as the rise in gross world product and total exports show ‘remarkable sustained and dramatic progress’. Life for the majority of the world’s citizens is getting steadily better in almost every category.</span>"
           },
           {
-            "html": "<span>– Racism is an ideological construct that assigns a certain race and/or ethnic group, to a position of power over others on the basis of physical and cultural attributes, as well as economic wealth, involving hierarchical relations where the superior race exercises domination and control over others.</span>"
+            "html": "<span>Gee’s conclusions rest heavily on economic indicators. He points out the annual 3.9 percent rise in the global economy and the more than doubling of the gross output per person, that has occurred for the past thirty years. World trade has done even better, growing by 6 percent of a product’s price in 1947 to 5 percent today.</span>"
           },
           {
-            "html": "<span>– Xenophobia describes attitudes, prejudices and behaviour that reject, exclude and often vilify persons, based on the perception that they are outsiders or foreigners in the community, society or with respect to national identity.</span>"
+            "html": "<span>Gee skips lightly over such facts as third world debt and the daily toll of 22,000 child deaths from easily preventable diseases. He also fails to mention that during this period the gulf between rich and poor countries has increased. He does acknowledge the threats of loss of topsoil and forests, pollution of the air and contamination of water. However, he concludes that there is little evidence they are serious enough to halt or even reverse human progress. Gee challenges the notion of a population crisis since there have never been as many people so well off. Furthermore, he suggests there will never be a limit to population because more people means more Einsteins to keep making life better.</span>"
           },
           {
-            "html": "<span>In many cases, it is difficult to distinguish between racism and xenophobia as motivations for behaviour, since differences in physical characteristics are often assumed to distinguish a person from the common identity. However, manifestations of xenophobia occur against people of identical physical characteristics, even of shared ancestry, when such people arrive, return or migrate to states or areas where occupants consider them outsiders.</span>"
+            "html": "<span>Gee’s outlook rests on a tiny minority of scientists who have faith in the boundless potential of science and technology to overcome the physical constraints of air, water and soil so that a much larger population can be sustained. His final proof? -the general rise in living standards along with population growth. But the relationship between changes in living standards and population is a correlation, not proof of causal connection. Gee is ignoring basic economic as well as scientific reality.</span>"
+          },
+          {
+            "html": "<span>If we inherit a bank account with a thousand dollars that earns 5% interest annually, we could withdraw fifty dollars or less each year forever. However, suppose we start to increase our withdrawals, say up to sixty dollars, then seventy dollars and more each year. For many years the account would yield cash. But it would be foolish to conclude that we could keep drawing more from the account indefinitely. Yet that is what Gee believes. As ocean fisheries around the world show, we are using up the ecological capital of the planet (biodiversity, air. water, soil) rather than living off the interest. It is a dangerous deception to believe that the human-created artifice called economies can keep the indicators rising as the life support systems of the planet continue to decline.</span>"
+          },
+          {
+            "html": "<span>The value system that dominates most of the popular media promotes the delusion that resources and the economy can continue to expand indefinitely. It also blinds the public to the urgency and credibility of warnings that an environmental crisis confronts us.</span>"
           }
         ]
       },
       "groups": [
         {
-          "title": "Questions 27-30",
-          "type": "sentence-completion",
-          "instructionHtml": "Complete each sentence with the correct ending, A – F, below. Write the correct letter, A – F, in the spaces below.",
+          "title": "Questions 28-33",
+          "type": "matching-features",
+          "instructionHtml": "Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer.",
           "questions": [
             {
-              "id": "q27",
-              "answer": "D",
-              "before": "An upward trend in violence perpetrated against non-national minority groups by radical nationals",
-              "after": ""
-            },
-            {
               "id": "q28",
-              "answer": "A",
-              "before": "Racism differs from xenophobia in that victims of the former",
-              "after": ""
+              "answer": "C",
+              "textHtml": "Our patterns of consumption are using up the ecological capital of the planet"
             },
             {
               "id": "q29",
-              "answer": "F",
-              "before": "Where racism occurs, the dominant group promotes a hierarchical system in which it",
-              "after": ""
+              "answer": "A",
+              "textHtml": "Crises beginning in the Third World will spread to developed countries"
             },
             {
               "id": "q30",
-              "answer": "C",
-              "before": "Persons not considered to be culturally or physically distinct from the majority A. are always culturally or physically distinct from the perpetrators of the acts of wrongdoing. B. tend to share a likeness with the perpetrators of the crime C. may still find themselves the victims of xenophobic behaviour. D. has been observed in many different parts of the world. E. will eventually reach a position of total submission. F. has a controlling hand in the affairs of one or more of the other sections of society",
-              "after": ""
-            }
-          ],
-          "legendHtml": "<p><strong><span>Questions 27-30</span></strong><br/>\n<span>Complete each sentence with the correct ending, A – F, below. Write the correct letter, A – F, in the spaces below.</span></p><p><span>27. An upward trend in violence perpetrated against non-national minority groups by radical nationals</span><br/>\n<span>28. Racism differs from xenophobia in that victims of the former</span><br/>\n<span>29. Where racism occurs, the dominant group promotes a hierarchical system in which it</span><br/>\n<span>30. Persons not considered to be culturally or physically distinct from the majority</span></p><p><span>A. are always culturally or physically distinct from the perpetrators of the acts of wrongdoing.</span><br/>\n<span>B. tend to share a likeness with the perpetrators of the crime</span><br/>\n<span>C. may still find themselves the victims of xenophobic behaviour.</span><br/>\n<span>D. has been observed in many different parts of the world.</span><br/>\n<span>E. will eventually reach a position of total submission.</span><br/>\n<span>F. has a controlling hand in the affairs of one or more of the other sections of society.</span></p>"
-        },
-        {
-          "title": "Questions 31-34",
-          "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter A, B, C or D.",
-          "questions": [
+              "answer": "B",
+              "textHtml": "Scientific progress will enable the planet to sustain increased population"
+            },
             {
               "id": "q31",
-              "answer": "D",
-              "textHtml": "Which of the following migrants are there more of?",
-              "options": [
-                "internally displaced persons",
-                "refugees",
-                "internal migrants",
-                "immigrant workers"
-              ]
+              "answer": "A",
+              "textHtml": "Social and political infrastructure worldwide could collapse"
             },
             {
               "id": "q32",
-              "answer": "B",
-              "textHtml": "The author of the text believes that",
-              "options": [
-                "racism is inevitable when people emigrate",
-                "governments are finding it difficult to stop racism and xenophobia",
-                "the exploitation of minority groups deters others from migrating",
-                "xenophobia does not exist within minority groups"
-              ]
+              "answer": [
+                "C",
+                "A"
+              ],
+              "textHtml": "Earth’s life support systems are at critical risk"
             },
             {
               "id": "q33",
-              "answer": "A",
-              "textHtml": "There is no real way of knowing how many migrants are discriminated against because",
-              "options": [
-                "not all racial abuse cases are documented or looked into",
-                "the number of migrants is increasing at an alarming rate",
-                "migrants don’t complain about being abused",
-                "only serious cases are documented"
-              ]
-            },
-            {
-              "id": "q34",
-              "answer": "C",
-              "textHtml": "People in authority sometimes",
-              "options": [
-                "exaggerate the seriousness of the problem",
-                "create the problem",
-                "deny there is a problem",
-                "are eager to solve the problem"
-              ]
+              "answer": "B",
+              "textHtml": "Environmental problems are not a threat to progress. A R. Kaplan, author of The Coming Anarchy B M. Gee, author of Apocalypse Deferred C D. Suzuki, author of this passage"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 31-34</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>31. Which of the following migrants are there more of?</span><br/>\n<span><strong>A</strong> internally displaced persons</span><br/>\n<span><strong>B</strong> refugees</span><br/>\n<span><strong>C</strong> internal migrants</span><br/>\n<span><strong>D</strong> immigrant workers</span></p><p><span>32. The author of the text believes that</span><br/>\n<span><strong>A</strong> racism is inevitable when people emigrate.</span><br/>\n<span><strong>B</strong> governments are finding it difficult to stop racism and xenophobia.</span><br/>\n<span><strong>C</strong> the exploitation of minority groups deters others from migrating.</span><br/>\n<span><strong>D</strong> xenophobia does not exist within minority groups.</span></p><p><span>33. There is no real way of knowing how many migrants are discriminated against because</span><br/>\n<span><strong>A</strong> not all racial abuse cases are documented or looked into.</span><br/>\n<span><strong>B</strong> the number of migrants is increasing at an alarming rate.</span><br/>\n<span><strong>C</strong> migrants don’t complain about being abused.</span><br/>\n<span><strong>D</strong> only serious cases are documented.</span></p><p><span>34. People in authority sometimes</span><br/>\n<span><strong>A</strong> exaggerate the seriousness of the problem.</span><br/>\n<span><strong>B</strong> create the problem.</span><br/>\n<span><strong>C</strong> deny there is a problem.</span><br/>\n<span><strong>D</strong> are eager to solve the problem.</span></p>"
+          "legendHtml": "<p><span><strong>Questions 28-33</strong></span><br/>\n<span>Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer.</span></p><p><span>28. Our patterns of consumption are using up the ecological capital of the planet.</span><br/>\n<span>29. Crises beginning in the Third World will spread to developed countries.</span><br/>\n<span>30. Scientific progress will enable the planet to sustain increased population.</span><br/>\n<span>31. Social and political infrastructure worldwide could collapse.</span><br/>\n<span>32. Earth’s life support systems are at critical risk.</span><br/>\n<span>33. Environmental problems are not a threat to progress.</span></p><p><span><strong>A</strong> R. Kaplan, author of The Coming Anarchy</span><br/>\n<span><strong>B</strong> M. Gee, author of Apocalypse Deferred</span><br/>\n<span><strong>C</strong> D. Suzuki, author of this passage</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
         },
         {
-          "title": "Questions 35-40",
-          "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In spaces 35 – 40 below, write",
+          "title": "Questions 34-36",
+          "type": "matching-features",
+          "instructionHtml": "Choose ONE phrase pom the list below (A-G) to complete each of the following sentences. There are more phrases than questions so you will not use all of them.",
           "questions": [
             {
+              "id": "q34",
+              "answer": "G",
+              "textHtml": "The growth of world trade"
+            },
+            {
               "id": "q35",
-              "answer": "Not given",
-              "textHtml": "Most migrants flee their country of origin because of political or social disorder"
+              "answer": "E",
+              "textHtml": "The relationship between population and standard of living"
             },
             {
               "id": "q36",
-              "answer": "True",
-              "textHtml": "Most internal migrants leave the countryside for the cities"
-            },
+              "answer": "C",
+              "textHtml": "Natural resources and the economy A have most benefited developing countries B has led to a drop in the standard of living generally C cannot continue to expand indefinitely D have decreased third world debt E shows a correlation, not cause and effect F pose a threat to human progress G has been accompanied by global economic growth"
+            }
+          ],
+          "legendHtml": "<p><span><strong>Questions 34-36</strong></span><br/>\n<span>Choose <strong>ONE</strong> phrase pom the list below (A-G) to complete each of the following sentences. There are more phrases than questions so you will not use all of them.</span></p><p><span>34. The growth of world trade</span><br/>\n<span>35. The relationship between population and standard of living</span><br/>\n<span>36. Natural resources and the economy</span></p><p><span><strong>A</strong> have most benefited developing countries</span><br/>\n<span><strong>B</strong> has led to a drop in the standard of living generally</span><br/>\n<span><strong>C</strong> cannot continue to expand indefinitely</span><br/>\n<span><strong>D</strong> have decreased third world debt</span><br/>\n<span><strong>E</strong> shows a correlation, not cause and effect</span><br/>\n<span><strong>F</strong> pose a threat to human progress</span><br/>\n<span><strong>G</strong> has been accompanied by global economic growth</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ]
+        },
+        {
+          "title": "Questions 37-40",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter A-D.",
+          "questions": [
             {
               "id": "q37",
-              "answer": "True",
-              "textHtml": "Governments are often reluctant to acknowledge that racial discrimination and xenophobia exist"
+              "answer": "A",
+              "textHtml": "Which of the following is NOT stated by Kaplan as a key contributing factor to potential global destabilisation?",
+              "options": [
+                "political corruption",
+                "collapse of ecosystems",
+                "population explosion",
+                "diseases"
+              ]
             },
             {
               "id": "q38",
-              "answer": "Not given",
-              "textHtml": "Migrants are exploited and abused because they create a sense of insecurity for extremist groups"
+              "answer": "D",
+              "textHtml": "What is the main source of Gee’s optimism?",
+              "options": [
+                "scientific and technological advances",
+                "decreasing Third World debt",
+                "the rise in the standard of living worldwide",
+                "economic growth"
+              ]
             },
             {
               "id": "q39",
-              "answer": "Not given",
-              "textHtml": "People who are racist or xenophobic are uneducated and hostile"
+              "answer": "C",
+              "textHtml": "Which of the following can we infer about the views of the author of this passage?",
+              "options": [
+                "He disagrees with both Gee and Kaplan",
+                "He supports the views of Gee",
+                "His views are closer to those of Kaplan",
+                "He thinks both Gee and Kaplan are right"
+              ]
             },
             {
               "id": "q40",
-              "answer": "False",
-              "textHtml": "People returning to their country of ancestry do not face xenophobia"
+              "answer": "A",
+              "textHtml": "The main purpose of the author in this passage is …",
+              "options": [
+                "to alert us to an environmental crisis",
+                "to educate the media",
+                "to create uncertainty about the future",
+                "to challenge current economic theory"
+              ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 35-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 35 – 40 below, write</span></p><p><span><strong>TRUE</strong>                           if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                         if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>              if there is no information on this</span></p><p><span>35. Most migrants flee their country of origin because of political or social disorder.</span><br/>\n<span>36. Most internal migrants leave the countryside for the cities.</span><br/>\n<span>37. Governments are often reluctant to acknowledge that racial discrimination and xenophobia exist.</span><br/>\n<span>38. Migrants are exploited and abused because they create a sense of insecurity for extremist groups.</span><br/>\n<span>39. People who are racist or xenophobic are uneducated and hostile.</span><br/>\n<span>40. People returning to their country of ancestry do not face xenophobia.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><span><strong>Questions 37-40</strong></span><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>37. Which of the following is NOT stated by Kaplan as a key contributing factor to potential global destabilisation?</span><br/>\n<span><strong>A</strong> political corruption</span><br/>\n<span><strong>B</strong> collapse of ecosystems</span><br/>\n<span><strong>C</strong> population explosion</span><br/>\n<span><strong>D</strong> diseases</span></p><p><span>38. What is the main source of Gee’s optimism?</span><br/>\n<span><strong>A</strong> scientific and technological advances</span><br/>\n<span><strong>B</strong> decreasing Third World debt</span><br/>\n<span><strong>C</strong> the rise in the standard of living worldwide</span><br/>\n<span><strong>D</strong> economic growth</span></p><p><span>39. Which of the following can we infer about the views of the author of this passage?</span><br/>\n<span><strong>A</strong> He disagrees with both Gee and Kaplan.</span><br/>\n<span><strong>B</strong> He supports the views of Gee.</span><br/>\n<span><strong>C</strong> His views are closer to those of Kaplan.</span><br/>\n<span><strong>D</strong> He thinks both Gee and Kaplan are right.</span></p><p><span>40. The main purpose of the author in this passage is …</span><br/>\n<span><strong>A</strong> to alert us to an environmental crisis.</span><br/>\n<span><strong>B</strong> to educate the media.</span><br/>\n<span><strong>C</strong> to create uncertainty about the future.</span><br/>\n<span><strong>D</strong> to challenge current economic theory.</span></p>"
         }
       ]
     }

@@ -21,7 +21,23 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".tmp" / "reading-source"
 DATA = ROOT / "src" / "data" / "tests"
 IMAGES = ROOT / "public" / "pics" / "reading" / "imported"
-NUMBERS = [319, 318, 317, 316, *range(313, 297, -1)]
+
+# The source catalogue was checked from the highest numbered reading page
+# downward; tests 314 and 315 don't exist at their expected URLs, so the
+# run of 20 highest available complete tests skips straight from 316 to 313.
+# Students see "Test 1" ... "Test 20" (reading-full-001.ts ... 020.ts), not
+# the publisher's page numbers, so this table is the one explicit mapping
+# from local test number to source test number. Keep it in sync with
+# docs/READING-IMPORT-RESULT.md.
+LOCAL_TO_SOURCE = {
+    1: 319, 2: 318, 3: 317, 4: 316, 5: 313,
+    6: 312, 7: 311, 8: 310, 9: 309, 10: 308,
+    11: 307, 12: 306, 13: 305, 14: 304, 15: 303,
+    16: 302, 17: 301, 18: 300, 19: 299, 20: 298,
+}
+# Source numbers in fetch order (highest first), kept for the parts of the
+# importer (fetch/build/answer_key) that only care about the source page.
+NUMBERS = list(LOCAL_TO_SOURCE.values())
 ORIGIN = "https://practicepteonline.com"
 PERMISSION = "Reused with publisher permission confirmed by Alex on 2026-09-11."
 
@@ -308,7 +324,14 @@ def make_group(number: int, first: int, last: int, nodes: list[Tag], answers: li
     return group
 
 
-def build(number: int) -> dict:
+def build(number: int, local_number: int | None = None) -> dict:
+    """Build the PracticeTest record for source page `number`. `local_number`
+    is the student-facing test number (reading-full-{local_number:03d}, "Academic
+    Reading Test {local_number}"); it defaults to the source number so callers
+    that only care about the parsed content (e.g. validate_reading.py's
+    rebuild-and-compare check) can omit it."""
+    if local_number is None:
+        local_number = number
     url, body = fetch(number)
     answers = answer_key(body, number)
     nodes = direct_nodes(body)
@@ -381,8 +404,8 @@ def build(number: int) -> dict:
             "groups": groups,
         })
     test = {
-        "id": f"reading-full-{number:03d}", "skill": "reading",
-        "title": f"Academic Reading Test {number}",
+        "id": f"reading-full-{local_number:03d}", "skill": "reading",
+        "title": f"Academic Reading Test {local_number}",
         "description": "A complete three-passage Academic Reading practice test with 40 questions.",
         "durationMinutes": 60,
         "source": {"name": "IELTS MASTER / PracticePTEOnline", "url": url, "permission": PERMISSION},
@@ -396,9 +419,9 @@ def build(number: int) -> dict:
 
 def main() -> None:
     manifest = {"selected": NUMBERS, "absentVerified": [315, 314], "tests": []}
-    for output_index, number in enumerate(NUMBERS, 6):
-        test = build(number)
-        path = DATA / f"reading-full-{output_index:03d}.ts"
+    for local_number, number in LOCAL_TO_SOURCE.items():
+        test = build(number, local_number)
+        path = DATA / f"reading-full-{local_number:03d}.ts"
         path.write_text(
             "import type { PracticeTest } from '../../lib/tests/schema';\n\n"
             f"const test: PracticeTest = {json.dumps(test, ensure_ascii=False, indent=2)};\n\nexport default test;\n",

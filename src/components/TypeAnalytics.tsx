@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
 import { getTypeStats, onProgressChange, type TypeStat } from '../lib/progress';
 
-/* Friendly labels for the schema's QuestionType keys. */
-const LABELS: Record<string, string> = {
+/* Friendly labels for the schema's QuestionType keys. Exported so other
+   views (e.g. the Listening Trainer hub, which lists which question types
+   each drill contains) can reuse the same wording instead of duplicating it. */
+export const LABELS: Record<string, string> = {
   'paragraph-matching': 'Matching Information',
   'sentence-completion': 'Sentence Completion',
   tfng: 'True / False / Not Given',
