@@ -1,7 +1,9 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
+import { READING_PARTS } from '../../data/reading';
 import { questionCount } from '../../lib/tests/schema';
 import raw from '../../content/lesson-bodies/reading-task1.html?raw';
 
@@ -12,6 +14,15 @@ const sample = readingTests[0];
 
 <LessonLayout slug="reading-task1">
   <Fragment set:html={body} />
+
+  <PartGrid
+    id="types"
+    tag="Learn Each Type"
+    heading="Lessons"
+    intro="Every reading question type has its own lesson. Strategy, worked examples, and practice with answers. They are ordered so each one builds on the last: start with Paraphrase Spotting, the skill every other type depends on."
+    basePath="reading"
+    parts={READING_PARTS}
+  />
 
   <hr class="divider" />
   <div class="section" id="timed-test">

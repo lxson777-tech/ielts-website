@@ -1,18 +1,56 @@
-// Cloudflare Worker config for the live AI examiner token service.
+// Cloudflare Worker config for the live AI examiner session broker.
 // Deploy:  npx wrangler deploy   (from this directory)
-// Secret:  npx wrangler secret put GEMINI_API_KEY
+// Secrets: npx wrangler secret put OPENAI_API_KEY             (default provider, GPT-Live-1)
+//          npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY  (required for the openai provider: auth + limits)
+//          npx wrangler secret put GEMINI_API_KEY             (rollback provider)
+// .dev.vars (gitignored) holds the same three names for local `wrangler dev`.
+// Rollback: set LIVE_PROVIDER to "gemini" (keep GEMINI_API_KEY set) and
+// redeploy if the OpenAI path misbehaves. No code change needed.
 {
   "name": "ielts-live-examiner",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
-    // Gemini Live model the browser will talk to.
+    // Which provider answers GET/POST requests: "openai" (default, GPT-Live-1
+    // over WebRTC) or "gemini" (rollback, ephemeral-token WebSocket path).
+    "LIVE_PROVIDER": "openai",
+    // OpenAI GPT-Live-1 config. Voice options besides "marin": quartz,
+    // ripple, vesper, willow, stone, gleam, meridian, beacon, delta, cinder.
+    "OPENAI_LIVE_MODEL": "gpt-live-1",
+    "OPENAI_LIVE_VOICE": "marin",
+    // Backend Responses model for delegation, e.g. "gpt-5". Empty string
+    // (default) means client-only delegation: no backend, no extra cost.
+    "OPENAI_BACKEND_MODEL": "",
+    // Gemini Live model the browser talks to when LIVE_PROVIDER is "gemini".
     // Switched 2026-07-16 from "gemini-2.5-flash-native-audio-preview-12-2025"
     // (native-audio dialog) after reports of misheard words; the newer live
     // model should hear accented speech better. Swap back if the examiner's
     // voice quality or conversational feel regresses.
     "LIVE_MODEL": "gemini-3.1-flash-live-preview",
-    // Comma-separated origins allowed to request session tokens.
-    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321,http://127.0.0.1:4321"
+    // Production origins only. Never add a local dev origin here — see
+    // LOCAL_ORIGINS below, which is scoped so it can't be abused in prod.
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
+    // Comma-separated origins additionally allowed, but ONLY when this
+    // Worker itself is being reached at localhost/127.0.0.1 (i.e. under
+    // `wrangler dev`). A deployed Worker (workers.dev or a custom domain)
+    // ignores this list entirely, so a forged "Origin: http://localhost"
+    // header sent to production is never trusted. 4321 is the site's normal
+    // dev port; 4322 is what Astro falls back to when 4321 is already busy.
+    "LOCAL_ORIGINS": "http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322",
+    // Supabase project used to verify signed-in students server-side and to
+    // store per-session bookkeeping rows for the creation/concurrency
+    // limits below. The anon key is never used here; the service role key
+    // is a Worker secret (see the top of this file), never a var.
+    "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co",
+    // Abuse/spend limits, enforced server-side against the shared
+    // `live_examiner_sessions` table (see supabase/schema.sql) so they hold
+    // across every Worker instance, not just Worker-local memory.
+    "LIVE_MAX_CONCURRENT_PER_USER": "1",
+    "LIVE_MAX_PER_USER_PER_DAY": "4",
+    "LIVE_MAX_SITE_PER_DAY": "60",
+    // How long a session with no end report still counts as "active" for
+    // the concurrency check, in minutes. Covers a student closing the tab
+    // without the app getting to call `/end`.
+    "LIVE_SESSION_TTL_MIN": "20"
   }
 }

@@ -1,0 +1,47 @@
+---
+import '../../styles/game-student.css';
+import { withBase } from '../../lib/url';
+interface Props { class?: string; title?: string; }
+const { class: className = '', title = 'IELTS student' } = Astro.props;
+const pose = (name: string) => withBase('/pics/home/student-' + name + '-v5.png');
+const rig = (name: string) => withBase('/pics/home/walk-rig/' + name + '.png');
+---
+<!-- Controller: .game-student[data-state][data-facing]. Logical ground anchor: (80,250). -->
+<svg class:list={['game-student-art', className]} viewBox="0 0 160 260" width="160" height="260" role="img" aria-label={title}>
+  <g class="gs-facing">
+    <image class="gs-pose gs-pose-idle" href={pose('idle')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>
+    <image class="gs-pose gs-pose-read" href={pose('read')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>
+    <image class="gs-pose gs-pose-listen" href={pose('listen')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>
+    <image class="gs-pose gs-pose-write" href={pose('write')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>
+    <image class="gs-pose gs-pose-speak" href={pose('speak')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>
+    <g class="gs-celebration" aria-hidden="true">
+      <path class="gs-ray gs-ray-a" d="M31 99l-9-8"/>
+      <path class="gs-ray gs-ray-b" d="M126 90l9-10"/>
+      <path class="gs-ray gs-ray-c" d="M22 126l-11 1"/>
+      <path class="gs-ray gs-ray-d" d="M137 119l12-2"/>
+      <path class="gs-confetti gs-confetti-a" d="M42 70l4 7-5 3"/>
+      <path class="gs-confetti gs-confetti-b" d="M116 62l-4 7 5 3"/>
+      <path class="gs-confetti gs-confetti-c" d="M29 154l5 3-3 6"/>
+      <path class="gs-confetti gs-confetti-d" d="M132 148l-5 3 3 6"/>
+      <path class="gs-star gs-star-a" d="M22 72l2.5 5 5.5.8-4 3.8.9 5.4-4.9-2.6-4.9 2.6.9-5.4-4-3.8 5.5-.8z"/>
+      <path class="gs-star gs-star-b" d="M138 91l2 4 4.5.6-3.2 3.1.7 4.3-4-2.1-4 2.1.7-4.3-3.2-3.1 4.5-.6z"/>
+    </g>
+    <g class="gs-walk-rig">
+      <g class="gs-leg gs-leg-back">
+        <image href={rig('front-thigh')} x="-45" width="250" height="250"/>
+        <g class="gs-shin gs-shin-back">
+          <image href={rig('front-shin')} x="-45" width="250" height="250"/>
+          <g class="gs-shoe gs-shoe-back"><image href={rig('front-shoe')} x="-45" width="250" height="250"/></g>
+        </g>
+      </g>
+      <g class="gs-leg gs-leg-front">
+        <image href={rig('front-thigh')} x="-45" width="250" height="250"/>
+        <g class="gs-shin gs-shin-front">
+          <image href={rig('front-shin')} x="-45" width="250" height="250"/>
+          <g class="gs-shoe gs-shoe-front"><image href={rig('front-shoe')} x="-45" width="250" height="250"/></g>
+        </g>
+      </g>
+      <image class="gs-walk-torso" href={rig('torso')} x="-45" width="250" height="250"/>
+    </g>
+  </g>
+</svg>

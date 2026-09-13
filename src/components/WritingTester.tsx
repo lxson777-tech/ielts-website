@@ -1,9 +1,17 @@
-/* The writing checker: start → get a rotating task → write → submit → report.
+/* The writing tool: start → get a rotating task → write → submit → report.
    Every start serves a different prompt (localStorage rotation) until the
    whole pool has been used, then the cycle restarts. Grading goes through
    gradeEssay() (heuristics + the active EssayGrader), so this component is
    provider-agnostic — it renders the same report whether the stub or a real
-   model produced the assessment. */
+   model produced the assessment.
+
+   Two variants, the same split Reading and Speaking already use:
+   variant="trainer" is the Writing Trainer at /trainers/writing — the
+   coaching playground, with the structure/language/vocab coach beside the
+   editor and a "new task" reroll. variant="checker" is the Writing Checker
+   at /writing/checker — exam conditions: the question, the clock, the word
+   count, nothing to lean on. Both end in the same band report; coaching is
+   what separates practice from a test. */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
@@ -16,6 +24,7 @@ import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
+import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
@@ -45,7 +54,8 @@ function pad(n: number): string {
   return String(n).padStart(2, '0');
 }
 
-export default function WritingTester() {
+export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
+  const coached = variant === 'trainer';
   const [module, setModule] = useState<Module>('academic');
   const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
@@ -99,6 +109,7 @@ export default function WritingTester() {
         criteria,
         wordCount,
         live: graded.grader.live,
+        essay,
       });
     } catch (err) {
       setGradingError(err instanceof Error ? err.message : 'Something went wrong while grading your essay.');
@@ -163,12 +174,18 @@ export default function WritingTester() {
           className="mx-auto w-full max-w-[150px]"
           loading="lazy"
         />
-        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Writing · AI-graded</p>
-        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Writing Test</h3>
+        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
+          {coached ? 'Writing · AI-graded' : 'Writing · Exam conditions'}
+        </p>
+        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">
+          {coached ? 'Take a Writing Test' : 'Writing Checker'}
+        </h3>
         {/* One line only — the page header above the card already explains the
             grading; repeating it here was reading as a doubled introduction. */}
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          Pick your module, then a task. A different exam-style prompt every attempt.
+          {coached
+            ? 'Pick your module, then a task. A different exam-style prompt every attempt.'
+            : 'Pick your module, then a task. Just you and the question, exactly like the real exam.'}
         </p>
 
         <div className="mx-auto mt-6 inline-flex rounded-button border border-border bg-surface-alt/60 p-1">
@@ -350,6 +367,13 @@ export default function WritingTester() {
             Take another test
           </button>
         </div>
+        <p className="text-center text-xs text-ink-muted">
+          Your essay and its scores are saved.{' '}
+          <a href={withBase('/account#writing')} className="font-semibold text-brand hover:underline">
+            Reread it any time in My progress
+          </a>
+          .
+        </p>
       </div>
     );
   }
@@ -389,7 +413,7 @@ export default function WritingTester() {
         </div>
       )}
 
-      <div className="screen-in lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-6">
+      <div className={`screen-in ${coached ? 'lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-6' : ''}`}>
         <div className="space-y-4">
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
             <div className="flex items-start justify-between gap-3">
@@ -410,12 +434,20 @@ export default function WritingTester() {
                     {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
                   </span>
                 )}
-                <button type="button" onClick={newTask} className="py-2 -my-2 text-xs font-semibold text-ink-muted hover:text-ink">
-                  ↻ New task
-                </button>
+                {/* Exam conditions: you get the question you're given. The
+                    reroll is a practice affordance, so it's trainer-only. */}
+                {coached && (
+                  <button type="button" onClick={newTask} className="py-2 -my-2 text-xs font-semibold text-ink-muted hover:text-ink">
+                    ↻ New task
+                  </button>
+                )}
               </div>
             </div>
-            <p className="mt-2 text-[0.95rem] leading-relaxed" dangerouslySetInnerHTML={{ __html: prompt.promptHtml }} />
+            {/* Via <Html> (memoized), not an inline dangerouslySetInnerHTML:
+                the writing clock re-renders this component every 500ms and
+                every keystroke, and an inline one would reparse the prompt on
+                each of those — visibly re-loading the Task 1 chart image. */}
+            <Html as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
           </div>
 
           <textarea
@@ -447,9 +479,13 @@ export default function WritingTester() {
           </div>
         </div>
 
-        <div className="mt-4 lg:sticky lg:top-24 lg:mt-0">
-          <WritingCoachPanel key={prompt.id} prompt={prompt} />
-        </div>
+        {/* The coach is what makes the trainer a trainer. The Checker is the
+            exam: question, clock, word count, nothing to lean on. */}
+        {coached && (
+          <div className="mt-4 lg:sticky lg:top-24 lg:mt-0">
+            <WritingCoachPanel key={prompt.id} prompt={prompt} />
+          </div>
+        )}
       </div>
     </>
   );

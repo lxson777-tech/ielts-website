@@ -631,6 +631,46 @@
   text-transform: uppercase;
   color: var(--accent);
 }
+/* Lesson position within its section, rendered by PartGrid into the card's
+   eyebrow line: a filled "3" pill, then a muted "of 8", then the card's own
+   eyebrow text. Sits inline rather than absolutely positioned so it can't
+   collide with the .sample-status completion tick in the top-right corner. */
+.lesson-body .sample-topic:has(.part-num) {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  /* Leave room for the completion tick so a long eyebrow never runs under it. */
+  padding-right: 1.4rem;
+}
+.lesson-body .part-num {
+  display: grid;
+  place-items: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+}
+.lesson-body .part-num-of {
+  color: var(--color-ink-muted);
+  letter-spacing: 0.08em;
+}
+/* The eyebrow proper, separated from the "3 of 8" by a hairline divider. */
+.lesson-body .part-eyebrow {
+  padding-left: 0.35rem;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-ink-muted);
+}
+.lesson-body .sample-card.featured .part-eyebrow { color: var(--accent); }
+.lesson-body .part-grid-intro {
+  font-size: 0.95rem;
+  color: var(--color-ink-muted);
+  margin-bottom: 0.5rem;
+}
 .lesson-body .sample-title {
   font-family: var(--font-display);
   font-size: 1rem;

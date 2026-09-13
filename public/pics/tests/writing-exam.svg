@@ -1,0 +1,32 @@
+<!-- 4:3 frame hugging the artwork at 88% height — see reading-exam.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="87 105 1070 802" role="img" aria-hidden="true">
+  <!-- Writing Checker: a submitted essay carrying an awarded band seal.
+       Deliberately distinct from /pics/trainers/writing-drill.png (an outlined
+       notepad being written on with a pen): here the writing is already done and
+       the focus is the graded seal, so the card reads "marked result", not
+       "compose". Palette locked to global.css — ink #101828, writing #0e9f6e. -->
+
+  <!-- Essay page -->
+  <rect x="330" y="160" width="450" height="590" rx="40"
+        fill="#ffffff" stroke="#101828" stroke-width="14" />
+
+  <!-- Title line in the skill colour, then body copy -->
+  <rect x="392" y="243" width="200" height="24" rx="12" fill="#0e9f6e" />
+  <g fill="#101828">
+    <rect x="392" y="318" width="326" height="22" rx="11" />
+    <rect x="392" y="378" width="290" height="22" rx="11" />
+    <rect x="392" y="438" width="326" height="22" rx="11" />
+    <rect x="392" y="498" width="238" height="22" rx="11" />
+    <rect x="392" y="558" width="300" height="22" rx="11" />
+  </g>
+
+  <!-- Award seal, overlapping the page's lower-right corner -->
+  <g stroke="#101828" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <!-- ribbon tails, drawn first so the medallion sits on top -->
+    <path d="M 742 676 L 700 852 L 784 806 L 812 690 Z" fill="#0e9f6e" />
+    <path d="M 862 676 L 904 852 L 820 806 L 792 690 Z" fill="#0e9f6e" />
+    <circle cx="802" cy="628" r="112" fill="#0e9f6e" />
+    <circle cx="802" cy="628" r="72" fill="#ffffff" />
+    <path d="M 766 628 L 792 656 L 840 600" fill="none" stroke-width="18" />
+  </g>
+</svg>

@@ -18,6 +18,11 @@ export interface PracticeSet {
   title: string;
   /** Optional short instruction shown above the questions. */
   intro?: string;
+  /** What a 'select' question is choosing, used in the dropdown placeholder,
+      its accessible label and the default option text. Defaults to
+      'paragraph' since Matching Headings was the first set to use one;
+      Matching Sentence Endings sets it to 'ending'. */
+  selectNoun?: string;
   /** Optional labelled diagram: numbered pins overlaid on an image, one per
       text question (in order). x/y are percentages of the image box. */
   diagram?: {
@@ -31,6 +36,15 @@ export interface PracticeSet {
 const TFNG = [
   { value: 'True' },
   { value: 'False' },
+  { value: 'Not Given' },
+];
+
+/* Yes/No/Not Given is a separate official question type from True/False/Not
+   Given: it asks about the writer's views rather than the passage's facts.
+   Kept as its own option set so the buttons read the way the exam does. */
+const YNNG = [
+  { value: 'Yes' },
+  { value: 'No' },
   { value: 'Not Given' },
 ];
 
@@ -501,6 +515,173 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         ],
         answer: 'B',
         explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
+      },
+    ],
+  },
+
+  ynng: {
+    title: 'Exercise. Decide: Yes, No, or Not Given',
+    intro: 'Do the statements agree with the views of the writer? Remember: this is about what the writer thinks, not about what is true.',
+    questions: [
+      {
+        prompt: 'The collaboration benefits claimed for open-plan offices are well supported by research.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'No',
+        explanation: 'The writer calls the picture “seductive” but “largely unsupported by the evidence”, then cites a study showing interaction fell. That is the opposite view.',
+      },
+      {
+        prompt: 'Open-plan offices are cheaper than offices with partitions.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Yes',
+        explanation: 'The writer concedes this directly: “on that narrow point they are correct”. A writer can agree with an opponent on one point and still oppose them overall.',
+      },
+      {
+        prompt: 'The cost of open-plan offices in lost productivity has been measured reliably.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'No',
+        explanation: '“The figures vary too widely to be relied upon.” The writer explicitly doubts the measurements.',
+      },
+      {
+        prompt: 'Open-plan layouts should be prohibited in new office buildings.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Not Given',
+        explanation: 'The writer criticises open-plan offices at length but never calls for a ban. Strong criticism is not the same as a specific recommendation. This is the classic YNNG trap.',
+      },
+      {
+        prompt: 'How readily the open-plan idea was accepted troubles the writer more than the fact that it was mistaken.',
+        kind: 'choice',
+        options: YNNG,
+        answer: 'Yes',
+        explanation: '“That the claim turned out to be wrong is unfortunate. That it was adopted so enthusiastically, and questioned so late, is harder to forgive.” Harder to forgive = troubles the writer more.',
+      },
+    ],
+  },
+
+  summary: {
+    title: 'Exercise. Complete the summary',
+    intro: 'Use NO MORE THAN TWO WORDS from the passage for each gap.',
+    questions: [
+      {
+        prompt: 'Beavers were hunted out of Britain for their fur and for ________, which was once used in medicine.',
+        kind: 'text',
+        answer: 'castoreum',
+        explanation: '“…prized for their fur and for castoreum, a secretion once used in medicine.”',
+      },
+      {
+        prompt: 'The loss only became clear when ________ started modelling flood risk in the 1990s.',
+        kind: 'text',
+        answer: ['hydrologists', 'hydrologists began'],
+        explanation: '“It was only when hydrologists began modelling flood risk in the 1990s…” The gap needs the people, so one word is enough.',
+      },
+      {
+        prompt: 'In the Devon trial, peak flows below the dams dropped by roughly ________ per cent.',
+        kind: 'text',
+        answer: ['thirty', '30'],
+        explanation: '“Peak flows downstream of the beaver dams fell by around thirty per cent.” Written as a word in the passage, so copy it as a word.',
+      },
+      {
+        prompt: 'Less sediment leaves the site because the ponds behind each dam act as ________.',
+        kind: 'text',
+        answer: 'settling tanks',
+        explanation: '“…the ponds behind each dam act as settling tanks.” Two words, exactly at the limit.',
+      },
+      {
+        prompt: 'Numbers of ________ roughly tripled over the five years of the study.',
+        kind: 'text',
+        answer: ['amphibians', 'amphibian'],
+        explanation: '“…with amphibian numbers roughly tripling over the study period.” Either form is accepted here, but in the exam copy the passage form exactly.',
+      },
+      {
+        prompt: 'Farmers objected because raising the water table left some of their fields ________.',
+        kind: 'text',
+        answer: 'waterlogged',
+        explanation: '“…whose fields were sometimes waterlogged where a dam had raised the local water table.”',
+      },
+    ],
+  },
+
+  endings: {
+    title: 'Exercise. Match each sentence ending',
+    intro: 'Choose the correct ending, A-F, for each sentence. There are more endings than sentences, so two are never used.',
+    selectNoun: 'ending',
+    questions: (() => {
+      const ENDINGS = [
+        { value: 'A', label: 'A) do not vent hot air into the surrounding street.' },
+        { value: 'B', label: 'B) in London in the early nineteenth century.' },
+        { value: 'C', label: 'C) because soil absorbs radiation faster than concrete does.' },
+        { value: 'D', label: 'D) up to eight degrees warmer than the land around it.' },
+        { value: 'E', label: 'E) after engineering solutions had been tried and abandoned.' },
+        { value: 'F', label: 'F) has risen even though its population has almost doubled.' },
+      ];
+      const rows: [string, string, string][] = [
+        [
+          'The urban heat island effect was first recorded',
+          'B',
+          'Luke Howard documented it “in London in 1818”, which is the early nineteenth century. B also fits grammatically after “recorded”.',
+        ],
+        [
+          'On a still, clear summer night a city centre can be',
+          'D',
+          '“…the gap between a city centre and its surrounding fields can reach eight degrees.” D is the only ending that completes a comparison.',
+        ],
+        [
+          'Street trees are better than air conditioners because they',
+          'A',
+          '“…unlike an air conditioner it does not vent hot air into the street.” Note the grammar: the beginning ends with “they”, so the ending needs a plural verb, which rules out most options.',
+        ],
+        [
+          "Singapore's tree canopy per resident",
+          'F',
+          '“…now claims more tree canopy per resident than it had in 1986, despite a near doubling of its population.”',
+        ],
+      ];
+      return rows.map(([prompt, answer, explanation]) => ({
+        prompt,
+        kind: 'select' as const,
+        options: ENDINGS,
+        answer,
+        explanation,
+      }));
+    })(),
+  },
+
+  shortanswer: {
+    title: 'Exercise. Answer the questions',
+    intro: 'Use NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer.',
+    questions: [
+      {
+        prompt: 'How far does an Arctic tern travel in a single year?',
+        kind: 'text',
+        answer: ['71,000 kilometres', '71000 kilometres', '71,000 km', 'around 71,000 kilometres'],
+        explanation: '“…cover around 71,000 kilometres in a single year.” A number plus one word, comfortably inside the limit.',
+      },
+      {
+        prompt: 'Where were the terns tagged in 2010?',
+        kind: 'text',
+        answer: 'Greenland',
+        explanation: '“Birds tagged in Greenland in 2010…” One word is the complete answer. Do not write a sentence.',
+      },
+      {
+        prompt: 'What shape is the route the birds follow rather than flying straight?',
+        kind: 'text',
+        answer: ['S-shaped', 'an S-shaped path', 'S-shaped path'],
+        explanation: '“…they trace a wide S-shaped path.” Note that the hyphenated “S-shaped” counts as a single word.',
+      },
+      {
+        prompt: 'What do the terns eat during their stop in the North Atlantic?',
+        kind: 'text',
+        answer: 'zooplankton',
+        explanation: '“Many pause for roughly one month in the North Atlantic to feed on zooplankton.”',
+      },
+      {
+        prompt: 'What age do Arctic terns commonly live to?',
+        kind: 'text',
+        answer: ['thirty', '30', 'thirty years', '30 years'],
+        explanation: '“…commonly reaching thirty years of age.”',
       },
     ],
   },

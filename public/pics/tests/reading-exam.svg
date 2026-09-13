@@ -1,0 +1,54 @@
+<!-- viewBox hugs the artwork rather than sitting in a loose 1200x900 frame, so the
+     drawing fills the card's image band instead of shrinking inside dead margin.
+     All three /pics/tests/*.svg share a 4:3 ratio with the subject at 88% of the
+     frame height, which is what keeps them optically the same size in the row. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="107 113.5 991 743" role="img" aria-hidden="true">
+  <!-- Full Reading Test: a stack of OMR answer sheets with filled bubbles.
+       Deliberately distinct from /pics/trainers/reading-drill.png (an outlined
+       open book): stacked sheets give depth, and the solid orange fills read as
+       "scored exam" rather than "study aid". Palette is locked to the design
+       tokens in global.css — ink #101828, reading #e0532f. -->
+  <g fill="none" stroke="#101828" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Sheet behind (the rest of the exam) -->
+    <rect x="345" y="165" width="470" height="590" rx="40" fill="#ffffff" />
+    <!-- Front sheet -->
+    <rect x="390" y="215" width="470" height="590" rx="40" fill="#ffffff" />
+  </g>
+
+  <!-- Header band: the "paper title" -->
+  <rect x="440" y="272" width="250" height="34" rx="17" fill="#e0532f" />
+
+  <!-- Answer rows: a question stub plus four bubbles, one shaded per row -->
+  <g>
+    <!-- row 1 -->
+    <rect x="440" y="369" width="110" height="22" rx="11" fill="#101828" />
+    <circle cx="600" cy="380" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="668" cy="380" r="25" fill="#e0532f" stroke="#101828" stroke-width="12" />
+    <circle cx="736" cy="380" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="804" cy="380" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <!-- row 2 -->
+    <rect x="440" y="449" width="110" height="22" rx="11" fill="#101828" />
+    <circle cx="600" cy="460" r="25" fill="#e0532f" stroke="#101828" stroke-width="12" />
+    <circle cx="668" cy="460" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="736" cy="460" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="804" cy="460" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <!-- row 3 -->
+    <rect x="440" y="529" width="110" height="22" rx="11" fill="#101828" />
+    <circle cx="600" cy="540" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="668" cy="540" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="736" cy="540" r="25" fill="#e0532f" stroke="#101828" stroke-width="12" />
+    <circle cx="804" cy="540" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <!-- row 4 -->
+    <rect x="440" y="609" width="110" height="22" rx="11" fill="#101828" />
+    <circle cx="600" cy="620" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="668" cy="620" r="25" fill="#e0532f" stroke="#101828" stroke-width="12" />
+    <circle cx="736" cy="620" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="804" cy="620" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <!-- row 5 -->
+    <rect x="440" y="689" width="110" height="22" rx="11" fill="#101828" />
+    <circle cx="600" cy="700" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="668" cy="700" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="736" cy="700" r="25" fill="#ffffff" stroke="#101828" stroke-width="12" />
+    <circle cx="804" cy="700" r="25" fill="#e0532f" stroke="#101828" stroke-width="12" />
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+---
+/* The Writing Checker: exam conditions. Same grading engine as the Writing
+   Trainer, but no coach panel, no idea hints, no reroll — the question, the
+   clock, and your answer. This is the writing counterpart to the full
+   Reading test at /tests and the live mock interview at /speaking/examiner;
+   /trainers/writing is the coached practice version.
+
+   This route used to be a redirect to /trainers/writing, which meant the
+   "checker" handed students the trainer's coaching aids — the one surface
+   where the practice/exam split had collapsed. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import WritingTester from '../../components/WritingTester';
+import WritingHistory from '../../components/WritingHistory';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout
+  title="Writing Checker · IELTS Portal"
+  description="Write a Task 1 or Task 2 answer under exam conditions and get an AI-graded band report against the four official IELTS Writing criteria."
+>
+  <div class="skill-writing mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="Writing"
+      title="Writing Checker"
+      subtitle="Exam conditions: you get a task and a clock, nothing else. Write your answer and an AI examiner grades it against the four official IELTS Writing criteria. Want structures, phrases and vocabulary while you write? Use the Writing Trainer instead."
+    />
+    <WritingTester client:load variant="checker" />
+
+    <p class="mt-6 text-center text-sm">
+      <a href={withBase('/trainers/writing')} class="font-semibold text-brand hover:underline">
+        Still learning the format? Practice with the coached Writing Trainer
+      </a>
+    </p>
+
+    <section id="history" class="mt-16 scroll-mt-20">
+      <SectionHeading title="Your past essays" subtitle="Saved on this device, no account needed." />
+      <WritingHistory client:load />
+    </section>
+  </div>
+</BaseLayout>

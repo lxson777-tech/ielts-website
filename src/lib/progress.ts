@@ -35,6 +35,9 @@ export interface WritingAttempt {
   wordCount: number;
   /** whether this came from the live AI grader or the offline stub */
   live: boolean;
+  /** the submitted essay text, so students can reread their answers later.
+      Optional so attempts recorded before this feature still load. */
+  essay?: string;
 }
 
 /** One graded speaking attempt. Unlike tests/writing this is a flat list, not
@@ -202,8 +205,13 @@ export function getBestWritingBand(): number | null {
   return Math.max(...all.map(({ attempt }) => attempt.overallBand));
 }
 
-export function getBestBand(testId?: string): TestAttempt | null {
-  const all = getAttempts(testId).filter(({ attempt }) => attempt.kind !== 'drill');
+export function getBestBand(
+  testId?: string,
+  skill: 'reading' | 'listening' = 'reading',
+): TestAttempt | null {
+  const all = getAttempts(testId).filter(
+    ({ attempt }) => attempt.kind !== 'drill' && (attempt.skill ?? 'reading') === skill,
+  );
   if (all.length === 0) return null;
   return all.reduce((best, cur) => (cur.attempt.band > best.band ? cur.attempt : best), all[0]!.attempt);
 }

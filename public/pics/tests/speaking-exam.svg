@@ -1,0 +1,30 @@
+<!-- 4:3 frame hugging the artwork at 88% height — see reading-exam.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="233.5 301 733 550" role="img" aria-hidden="true">
+  <!-- Live AI Examiner: an examiner headset with a live voice waveform.
+       Deliberately distinct from /pics/trainers/speaking-drill.png (an outlined
+       document with a stopwatch and speech bubble): no paper and no timer here,
+       because this card is a real-time spoken interview rather than a timed
+       prep drill. Palette locked to global.css — ink #101828, speaking #7c5cd6. -->
+
+  <g stroke="#101828" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Headband -->
+    <path d="M 422 520 A 178 178 0 0 1 778 520" fill="none" />
+
+    <!-- Live waveform, framed inside the headband -->
+    <g fill="#7c5cd6" stroke="none">
+      <rect x="493" y="423" width="24" height="64" rx="12" />
+      <rect x="538" y="395" width="24" height="120" rx="12" />
+      <rect x="583" y="367" width="24" height="176" rx="12" />
+      <rect x="628" y="395" width="24" height="120" rx="12" />
+      <rect x="673" y="423" width="24" height="64" rx="12" />
+    </g>
+
+    <!-- Ear cups -->
+    <rect x="380" y="505" width="84" height="150" rx="40" fill="#7c5cd6" />
+    <rect x="736" y="505" width="84" height="150" rx="40" fill="#7c5cd6" />
+
+    <!-- Boom mic sweeping in from the right cup -->
+    <path d="M 778 655 Q 778 762 664 778" fill="none" />
+    <circle cx="640" cy="780" r="30" fill="#7c5cd6" />
+  </g>
+</svg>

@@ -1,13 +1,47 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
 import EssayCheckerCta from '../../components/EssayCheckerCta.astro';
+import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
+import { WRITING_PARTS } from '../../data/writing';
 import raw from '../../content/lesson-bodies/writing.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
+
+/* Writing is the one section rendered as two grids. They share a single
+   1..11 numbering rather than restarting at 1, so "Lesson 7 of 11" means the
+   same thing here as it does on the lesson page's own step indicator. */
+const task1 = WRITING_PARTS.filter((p) => p.task === 'task1');
+const task2 = WRITING_PARTS.filter((p) => p.task === 'task2');
 ---
 
 <LessonLayout slug="writing">
   <Fragment set:html={body} />
+
+  <PartGrid
+    id="task1"
+    num="1"
+    tag="Task 1 · 20 minutes · 150+ words"
+    heading="Task 1: The Report (or Letter)"
+    intro="Academic candidates describe visual data; General Training candidates write a letter. Start with the universal method (one structure works for every question type), then learn what to look for in each visual."
+    basePath="writing"
+    parts={task1}
+    totalOverride={WRITING_PARTS.length}
+  />
+
+  <hr class="divider" />
+
+  <PartGrid
+    id="task2"
+    num="2"
+    tag="Task 2 · 40 minutes · 250+ words · counts double"
+    heading="Task 2: The Essay"
+    intro="The same essay task for Academic and General Training. And worth twice as much as Task 1. Start with the universal method, then learn to recognise each question type, because each demands a different structure."
+    basePath="writing"
+    parts={task2}
+    startAt={task1.length + 1}
+    totalOverride={WRITING_PARTS.length}
+  />
+
   <EssayCheckerCta task="overview" />
 </LessonLayout>

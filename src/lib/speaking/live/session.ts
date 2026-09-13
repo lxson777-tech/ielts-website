@@ -18,6 +18,8 @@ const WS_HOST = 'wss://generativelanguage.googleapis.com/ws/google.ai.generative
 export interface TranscriptTurn {
   role: 'examiner' | 'candidate';
   text: string;
+  startMs?: number;
+  endMs?: number;
 }
 
 export interface SessionCallbacks {
@@ -51,7 +53,11 @@ export class ExaminerSession {
   private turns: TranscriptTurn[] = [];
   private closedByUs = false;
 
-  private constructor(private cb: SessionCallbacks) {}
+  private cb: SessionCallbacks;
+
+  private constructor(cb: SessionCallbacks) {
+    this.cb = cb;
+  }
 
   static async connect(
     tokenEndpoint: string,

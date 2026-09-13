@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { PracticeTest, Question, QuestionGroup, TestPart } from '../lib/tests/schema';
-import { bandEstimate, bandMidpoint, isCorrect, questionCount } from '../lib/tests/schema';
+import { bandEstimate, bandMidpoint, isCorrect, questionCount, scoredQuestionIds } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
 import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
+import Html from './Html';
 import ReadingStrategyPanel from './ReadingStrategyPanel';
 
 interface Props {
@@ -17,6 +18,14 @@ interface Props {
 
 /** Base-prefixed URL for images stored under /public. */
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
+
+/** Imported question HTML stores public assets from the site root. Prefix only
+    local `src="/..."` values so diagrams also resolve when Astro is hosted
+    below a base path. */
+function questionAssets(html: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  return base ? html.replace(/\bsrc=(["'])\/(?!\/)/gi, `src=$1${base}/`) : html;
+}
 
 interface Numbered {
   question: Question;
@@ -46,6 +55,7 @@ function countWords(s: string): number {
 export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props) {
   const numbered = useMemo(() => numberQuestions(test), [test]);
   const TOTAL = numbered.length;
+  const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
 
   // Resume an in-progress session if one exists (survives refresh / tab close).
   const resumed = useMemo(
@@ -101,6 +111,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   const passageContentRef = useRef<HTMLDivElement>(null);
   const submittedRef = useRef(false);
 
+  const scoredIds = useMemo(
+    () => scoredQuestionIds(numbered.map(({ question }) => question), answers),
+    [numbered, answers],
+  );
+
   /* Review: find a question's supporting quote in the passage, highlight it and
      scroll it into view. Splits on "…"/"..." so multi-fragment quotes each get
      marked. */
@@ -128,10 +143,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     });
   }
 
-  const correctCount = useMemo(
-    () => numbered.filter(({ question }) => isCorrect(question, answers[question.id] ?? '')).length,
-    [numbered, answers],
-  );
+  const correctCount = scoredIds.size;
 
   function setAnswer(qid: string, value: string) {
     if (submittedRef.current) return;
@@ -152,19 +164,20 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     submittedRef.current = true;
     setSubmitted(true);
     setShowScore(true);
-    const raw = numbered.filter(({ question }) => isCorrect(question, answers[question.id] ?? '')).length;
+    const raw = scoredIds.size;
     const byType: Record<string, { correct: number; total: number }> = {};
     for (const { question, group } of numbered) {
+      if (question.scored === false) continue;
       const t = byType[group.type] ?? (byType[group.type] = { correct: 0, total: 0 });
       t.total += 1;
-      if (isCorrect(question, answers[question.id] ?? '')) t.correct += 1;
+      if (scoredIds.has(question.id)) t.correct += 1;
     }
     recordTestAttempt(test.id, {
       at: new Date().toISOString(),
       raw,
-      total: TOTAL,
-      band: bandMidpoint(raw, TOTAL),
-      bandLabel: bandEstimate(raw, TOTAL),
+      total: SCORED_TOTAL,
+      band: bandMidpoint(raw, SCORED_TOTAL, test.skill),
+      bandLabel: bandEstimate(raw, SCORED_TOTAL, test.skill),
       secondsUsed: test.durationMinutes * 60 - timeLeft,
       byType,
       kind: attemptKind,
@@ -224,7 +237,14 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
 
   const part = test.parts[activePart]!;
   const stimulus = part.stimulus;
+  const partItems = numbered.filter((nq) => nq.part === part);
+  const partRange = partItems.length
+    ? `Questions ${partItems[0]!.n}-${partItems[partItems.length - 1]!.n}`
+    : 'Questions';
   const timerWarn = timeLeft <= 300 && !submitted;
+  const legacyAudioPart = test.parts.find((p) => p.stimulus.kind === 'audio');
+  const sharedAudioSrc = test.audioSrc ??
+    (legacyAudioPart?.stimulus.kind === 'audio' ? legacyAudioPart.stimulus.src : undefined);
 
   /* ── Instructions gate — timer does not run until Start ── */
   if (!started) {
@@ -269,6 +289,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
         </button>
       </header>
 
+      {test.skill === 'listening' && (
+        <PersistentAudio src={sharedAudioSrc ? asset(sharedAudioSrc) : undefined} />
+      )}
+
       {/* ── Mobile pane switcher — the split pane below is too cramped on a
            phone screen, so below md each side gets the full pane, one at a
            time. ── */}
@@ -280,7 +304,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
             mobileView === 'stimulus' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
           }`}
         >
-          {stimulus.kind === 'passage' ? '📖 Passage' : '🎧 Audio'}
+          {stimulus.kind === 'passage' ? '📖 Passage' : '📄 Question paper'}
         </button>
         <button
           type="button"
@@ -289,10 +313,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
             mobileView === 'questions' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
           }`}
         >
-          ✍️ Questions{' '}
+          ✍️ {stimulus.kind === 'audio' ? 'Answer sheet' : 'Questions'}{' '}
           <span className="font-normal opacity-70">
-            {numbered.filter((nq) => nq.part === part && answers[nq.question.id]).length}/
-            {numbered.filter((nq) => nq.part === part).length}
+            {numbered.filter((nq) => nq.part === part && nq.question.scored !== false && answers[nq.question.id]).length}/
+            {numbered.filter((nq) => nq.part === part && nq.question.scored !== false).length}
           </span>
         </button>
       </div>
@@ -312,27 +336,41 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
         >
           {stimulus.kind === 'passage' ? (
             <Highlightable key={activePart} innerRef={passageContentRef} className="mx-auto max-w-2xl px-5 py-6">
-              <p
-                className="mb-4 text-sm italic text-ink-muted"
-                dangerouslySetInnerHTML={{ __html: stimulus.instructionHtml }}
-              />
+              {/* All trusted HTML here goes through <Html> (memoized) rather
+                  than an inline dangerouslySetInnerHTML: the countdown
+                  re-renders this whole player once a second, and an inline one
+                  would re-set innerHTML on every tick — reloading images,
+                  dropping the reader's text selection, and flickering. */}
+              <Html as="p" className="mb-4 text-sm italic text-ink-muted" html={stimulus.instructionHtml} />
               <p className="text-xs font-bold uppercase tracking-wider text-brand">{stimulus.label}</p>
               <h2 className="mb-4 mt-1 font-display text-2xl font-extrabold">{stimulus.title}</h2>
               {stimulus.paragraphs.map((p, i) => (
                 <p key={i} className="mb-4 text-[0.95rem] leading-relaxed">
                   {p.label && <strong className="mr-1 font-display">{p.label}.</strong>}
-                  <span dangerouslySetInnerHTML={{ __html: p.html }} />
+                  <Html as="span" html={p.html} />
                 </p>
               ))}
             </Highlightable>
           ) : (
-            <div className="mx-auto max-w-2xl px-5 py-6">
-              <p className="text-xs font-bold uppercase tracking-wider text-brand">{stimulus.label}</p>
-              <audio controls src={stimulus.src} className="mt-3 w-full" />
-              {stimulus.transcriptHtml && (
-                <details className="mt-4 rounded-card border border-border bg-surface p-4">
-                  <summary className="cursor-pointer text-sm font-semibold text-brand">Show transcript</summary>
-                  <div className="mt-2 text-sm" dangerouslySetInnerHTML={{ __html: stimulus.transcriptHtml }} />
+            <div className="mx-auto max-w-3xl px-4 py-5 sm:px-6 sm:py-7">
+              <div className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
+                <div>
+                  <h2 className="font-display text-2xl font-extrabold">Question paper</h2>
+                  <p className="mt-1 text-sm text-ink-muted">{stimulus.label}. Follow the recording and read each task carefully.</p>
+                </div>
+                <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">{partRange}</span>
+              </div>
+              {stimulus.questionHtml ? (
+                <Html className="listening-question-paper" html={questionAssets(stimulus.questionHtml)} />
+              ) : (
+                <p className="rounded-card border border-border bg-surface p-4 text-sm text-ink-muted">
+                  The question paper for this section is unavailable.
+                </p>
+              )}
+              {submitted && stimulus.transcriptHtml && (
+                <details className="mt-7 rounded-card border border-border bg-surface p-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-brand">Review transcript</summary>
+                  <Html className="mt-2 text-sm" html={stimulus.transcriptHtml} />
                 </details>
               )}
             </div>
@@ -354,26 +392,32 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
           className={`min-h-0 flex-1 overflow-y-auto md:block ${mobileView === 'questions' ? 'block' : 'hidden'}`}
         >
           <div className="mx-auto max-w-2xl px-5 py-6">
-            {part.groups.map((group) => {
+            {stimulus.kind === 'audio' && (
+              <div className="mb-7 border-b border-border pb-4">
+                <h2 className="font-display text-2xl font-extrabold">Answer sheet</h2>
+                <p className="mt-1 text-sm text-ink-muted">{stimulus.label}. Enter answers for {partRange.toLowerCase()}.</p>
+              </div>
+            )}
+            {part.groups.map((group, groupIndex) => {
               const groupQs = numbered.filter((nq) => nq.group === group);
+              const headingId = `question-group-${activePart}-${groupIndex}`;
               return (
-                <div key={group.title} className="mb-8">
-                  <h3 className="font-display text-lg font-bold">{group.title}</h3>
-                  <p
-                    className="mb-4 mt-1 text-sm text-ink-muted"
-                    dangerouslySetInnerHTML={{ __html: group.instructionHtml }}
-                  />
+                <section key={group.title} aria-labelledby={headingId} className="mb-10 last:mb-2">
+                  <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-3">
+                    <h3 id={headingId} className="font-display text-lg font-bold">{group.title}</h3>
+                    <Html as="p" className="max-w-md text-sm leading-relaxed text-ink-muted" html={group.instructionHtml} />
+                  </div>
                   {group.legendHtml && (
-                    <div
+                    <Html
                       className="mb-4 rounded-card border border-border bg-surface-alt p-3 text-sm"
-                      dangerouslySetInnerHTML={{ __html: group.legendHtml }}
+                      html={group.legendHtml}
                     />
                   )}
-                  {attemptKind === 'drill' && <ReadingStrategyPanel type={group.type} />}
+                  {attemptKind === 'drill' && test.skill === 'reading' && <ReadingStrategyPanel type={group.type} />}
                   {group.type === 'diagram-labelling' && group.diagram && (
                     <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
                   )}
-                  {group.type === 'multiple-answer' ? (
+                  {group.type === 'multiple-answer' && !group.questions.some((question) => question.multiSelect) ? (
                     <MultiAnswer group={group} slotIds={groupQs.map((nq) => nq.question.id)} answers={answers} submitted={submitted} setAnswer={setAnswer} />
                   ) : group.type === 'table-completion' && group.table ? (
                     <TableGrid
@@ -392,6 +436,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                         nq={nq}
                         value={answers[nq.question.id] ?? ''}
                         submitted={submitted}
+                        scored={scoredIds.has(nq.question.id)}
                         onChange={(v) => setAnswer(nq.question.id, v)}
                         onLocate={locateEvidence}
                         flagged={flagged.has(nq.question.id)}
@@ -399,7 +444,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                       />
                     ))
                   )}
-                </div>
+                </section>
               );
             })}
           </div>
@@ -410,7 +455,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
       <footer className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-border bg-surface px-4 py-2">
         <div className="flex gap-1">
           {test.parts.map((p, i) => {
-            const partQs = numbered.filter((nq) => nq.part === p);
+            const partQs = numbered.filter((nq) => nq.part === p && nq.question.scored !== false);
             const partAnswered = partQs.filter((nq) => answers[nq.question.id]).length;
             const complete = partAnswered === partQs.length;
             return (
@@ -438,9 +483,12 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
             {numbered
               .filter((nq) => nq.part === part)
               .map(({ question, n }) => {
+                const unavailable = question.scored === false;
                 const answered = !!answers[question.id];
-                const ok = submitted && isCorrect(question, answers[question.id] ?? '');
-                const cls = submitted
+                const ok = submitted && scoredIds.has(question.id);
+                const cls = unavailable
+                  ? 'bg-surface-alt text-ink-muted'
+                  : submitted
                   ? ok
                     ? 'bg-success text-white'
                     : 'bg-error text-white'
@@ -453,7 +501,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                     key={question.id}
                     type="button"
                     onClick={() => jumpToQuestion(question.id)}
-                    aria-label={`Jump to question ${n}${answered ? ', answered' : ', unanswered'}${isFlagged ? ', flagged for review' : ''}`}
+                    aria-label={`Jump to question ${n}${unavailable ? ', unavailable and excluded from score' : answered ? ', answered' : ', unanswered'}${isFlagged ? ', flagged for review' : ''}`}
                     className={`relative grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition-colors ${cls} ${
                       isFlagged && !submitted ? 'ring-2 ring-warning ring-offset-1 ring-offset-surface' : ''
                     }`}
@@ -493,11 +541,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
               >
                 <h2 className="font-display text-xl font-extrabold">Your Score</h2>
                 <p className="band-score-pop mt-4 font-display text-5xl font-extrabold text-brand">
-                  {correctCount} / {TOTAL}
+                  {correctCount} / {SCORED_TOTAL}
                 </p>
-                <p className="mt-2 text-ink-muted">{Math.round((correctCount / TOTAL) * 100)}% correct</p>
+                <p className="mt-2 text-ink-muted">{Math.round((correctCount / SCORED_TOTAL) * 100)}% correct</p>
                 <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
-                  Estimated Band: {bandEstimate(correctCount, TOTAL)}
+                  Estimated Band: {bandEstimate(correctCount, SCORED_TOTAL, test.skill)}
                 </p>
                 <div className="mt-6 flex justify-center gap-3">
                   <button
@@ -527,6 +575,7 @@ function QuestionItem({
   nq,
   value,
   submitted,
+  scored,
   onChange,
   onLocate,
   flagged,
@@ -535,15 +584,18 @@ function QuestionItem({
   nq: Numbered;
   value: string;
   submitted: boolean;
+  scored: boolean;
   onChange: (v: string) => void;
   onLocate?: (evidence: string) => void;
   flagged?: boolean;
   onToggleFlag?: () => void;
 }) {
   const { question: q, group, n } = nq;
-  const ok = submitted && isCorrect(q, value);
+  const ok = submitted && scored;
   const showHint = submitted && !ok;
-  const answerText = Array.isArray(q.answer) ? q.answer[0] : q.answer;
+  const answerText = q.multiSelect
+    ? q.multiSelect.correctValues.join(', ')
+    : Array.isArray(q.answer) ? q.answer[0] : q.answer;
   const overLimit = !submitted && group.wordLimit != null && countWords(value) > group.wordLimit;
 
   const stateCls = submitted
@@ -555,7 +607,7 @@ function QuestionItem({
       : 'border-border bg-surface';
 
   return (
-    <div id={`player-${q.id}`} className={`relative mb-3 rounded-card border p-4 transition-colors ${stateCls}`}>
+    <div id={`player-${q.id}`} className={`relative mb-3 scroll-mt-6 rounded-card border p-4 transition-colors ${stateCls}`}>
       {!submitted && onToggleFlag && (
         <button
           type="button"
@@ -570,7 +622,25 @@ function QuestionItem({
           🚩
         </button>
       )}
-      {group.type === 'diagram-labelling' ? (
+      {q.scored === false ? (
+        <div className="flex items-start gap-3">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface-alt text-xs font-bold text-ink-muted">
+            {n}
+          </span>
+          <p className="text-sm leading-relaxed text-ink-muted">
+            This question is missing from the published source and is excluded from your score.
+          </p>
+        </div>
+      ) : q.multiSelect ? (
+        <PerQuestionMultiAnswer
+          question={q}
+          number={n}
+          choices={group.choices ?? []}
+          value={value}
+          submitted={submitted}
+          onChange={onChange}
+        />
+      ) : group.type === 'diagram-labelling' ? (
         <div>
           <div className="flex items-center gap-3">
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
@@ -585,11 +655,11 @@ function QuestionItem({
               aria-label={`Question ${n}`}
               className="w-48 rounded-lg border border-border bg-surface px-3 py-1 text-sm font-semibold focus:border-brand"
             />
-            {q.textHtml && <span className="text-sm text-ink-muted" dangerouslySetInnerHTML={{ __html: q.textHtml }} />}
+            {q.textHtml && <Html as="span" className="text-sm text-ink-muted" html={q.textHtml} />}
           </div>
           {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} className="ml-10 mt-1" />}
         </div>
-      ) : group.type === 'sentence-completion' ? (
+      ) : group.type === 'sentence-completion' || group.type === 'table-completion' ? (
         <div>
           <div className="flex items-start gap-3">
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-tint text-xs font-bold text-brand">
@@ -615,7 +685,7 @@ function QuestionItem({
         <div>
           <p className="mb-2 text-[0.95rem]">
             <strong className="mr-1">{n}.</strong>
-            <span dangerouslySetInnerHTML={{ __html: q.textHtml ?? '' }} />
+            <Html as="span" html={q.textHtml ?? ''} />
           </p>
           <div className="space-y-1.5">
             {(q.options ?? []).map((opt, oi) => {
@@ -636,7 +706,8 @@ function QuestionItem({
                     onChange={() => onChange(letter)}
                     className="accent-[var(--color-brand)]"
                   />
-                  <strong>{letter}</strong> {opt}
+                  <strong>{letter}</strong>
+                  {opt.trim().toUpperCase() !== letter && <span>{opt}</span>}
                 </label>
               );
             })}
@@ -665,7 +736,7 @@ function QuestionItem({
           </select>
           <p className="text-[0.95rem]">
             <strong className="mr-1">{n}.</strong>
-            <span dangerouslySetInnerHTML={{ __html: q.textHtml ?? '' }} />
+            <Html as="span" html={q.textHtml ?? ''} />
           </p>
         </div>
       )}
@@ -846,9 +917,9 @@ function MultiAnswer({
         })}
       </div>
       {submitted && group.explanationHtml && (
-        <div
+        <Html
           className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm text-ink-muted"
-          dangerouslySetInnerHTML={{ __html: group.explanationHtml }}
+          html={group.explanationHtml}
         />
       )}
     </div>
@@ -1149,6 +1220,141 @@ function Highlightable({
   );
 }
 
+function PersistentAudio({ src }: { src?: string }) {
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error');
+  const [retry, setRetry] = useState(0);
+
+  function retryLoad() {
+    if (!src) return;
+    setStatus('loading');
+    setRetry((n) => n + 1);
+  }
+
+  return (
+    <section
+      className="shrink-0 border-b border-border bg-surface-alt px-3 py-2.5 sm:px-4"
+      aria-label="Listening recording"
+      data-testid="listening-audio-player"
+    >
+      <div className="mx-auto flex max-w-5xl flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="shrink-0 sm:w-44">
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">Full recording</p>
+          <p className="text-xs text-ink-muted">Practice mode, replay is available</p>
+        </div>
+        {src ? (
+          <audio
+            key={retry}
+            controls
+            controlsList="nodownload noplaybackrate"
+            preload="metadata"
+            src={src}
+            className="h-10 w-full min-w-0 shrink-0 sm:w-auto sm:flex-1"
+            aria-label="Full listening test recording"
+            onCanPlay={() => setStatus('ready')}
+            onError={() => setStatus('error')}
+          />
+        ) : (
+          <div className="flex-1" />
+        )}
+        <div className="min-h-5 shrink-0 text-xs sm:w-36 sm:text-right" aria-live="polite">
+          {status === 'loading' && <span className="text-ink-muted">Loading recording...</span>}
+          {status === 'ready' && <span className="text-success">Recording ready</span>}
+          {status === 'error' && (
+            <span className="text-error">
+              Recording unavailable.{' '}
+              {src && (
+                <button type="button" onClick={retryLoad} className="font-bold underline underline-offset-2">
+                  Retry
+                </button>
+              )}
+            </span>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** A single numbered question that requires several choices and earns one
+    mark only when the complete unordered set is correct. */
+function PerQuestionMultiAnswer({
+  question,
+  number,
+  choices,
+  value,
+  submitted,
+  onChange,
+}: {
+  question: Question;
+  number: number;
+  choices: NonNullable<QuestionGroup['choices']>;
+  value: string;
+  submitted: boolean;
+  onChange: (value: string) => void;
+}) {
+  const config = question.multiSelect!;
+  const selected = value.split('|').filter(Boolean);
+  const selectedSet = new Set(selected);
+  const correctSet = new Set(config.correctValues);
+
+  function toggle(choice: string) {
+    if (submitted) return;
+    const next = selectedSet.has(choice)
+      ? selected.filter((value) => value !== choice)
+      : selected.length < config.selectCount
+        ? [...selected, choice]
+        : selected;
+    onChange([...next].sort().join('|'));
+  }
+
+  return (
+    <div>
+      <div className="mb-3 flex items-start justify-between gap-4 pr-7">
+        <p className="text-[0.95rem] leading-relaxed">
+          <strong className="mr-1">{number}.</strong>
+          <Html as="span" html={question.textHtml ?? ''} />
+        </p>
+        <span className="shrink-0 text-xs font-semibold text-ink-muted">
+          {selected.length}/{config.selectCount} selected
+        </span>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {choices.map((choice) => {
+          const chosen = selectedSet.has(choice.value);
+          const correct = correctSet.has(choice.value);
+          const atCap = !chosen && selected.length >= config.selectCount;
+          const stateClass = submitted
+            ? correct
+              ? 'border-success bg-success-tint'
+              : chosen
+                ? 'border-error bg-error-tint'
+                : 'border-border opacity-55'
+            : chosen
+              ? 'border-brand bg-brand-tint'
+              : 'border-border hover:border-brand/50';
+          return (
+            <label
+              key={choice.value}
+              className={`flex min-h-11 items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${stateClass} ${
+                submitted ? 'cursor-default' : atCap ? 'cursor-not-allowed opacity-55' : 'cursor-pointer'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={chosen}
+                disabled={submitted || atCap}
+                onChange={() => toggle(choice.value)}
+                className="mt-0.5 accent-[var(--color-brand)]"
+              />
+              <span><strong className="mr-1">{choice.value}</strong>{choice.label}</span>
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* Full-screen instructions gate shown before the timer starts. */
 function InstructionsScreen({
   test,
@@ -1159,21 +1365,34 @@ function InstructionsScreen({
   hubUrl: string;
   onStart: () => void;
 }) {
+  const listening = test.skill === 'listening';
+  const partLabel = listening ? 'parts' : 'passages';
+  const numberedTotal = questionCount(test);
+  const scoredTotal = test.parts.reduce(
+    (total, part) => total + part.groups.reduce(
+      (groupTotal, group) => groupTotal + group.questions.filter((question) => question.scored !== false).length,
+      0,
+    ),
+    0,
+  );
+  const unavailableTotal = numberedTotal - scoredTotal;
   return (
     <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover">
-        <p className="text-xs font-bold uppercase tracking-wider text-brand">Reading Test</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">
+          {listening ? 'Listening Practice Test' : 'Reading Test'}
+        </p>
         <h1 className="mt-1 font-display text-2xl font-extrabold">{test.title}</h1>
         <p className="mt-2 text-ink-muted">{test.description}</p>
 
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-card bg-surface-alt p-3">
             <p className="font-display text-2xl font-extrabold text-brand">{test.parts.length}</p>
-            <p className="text-xs text-ink-muted">passages</p>
+            <p className="text-xs text-ink-muted">{partLabel}</p>
           </div>
           <div className="rounded-card bg-surface-alt p-3">
-            <p className="font-display text-2xl font-extrabold text-brand">{questionCount(test)}</p>
-            <p className="text-xs text-ink-muted">questions</p>
+            <p className="font-display text-2xl font-extrabold text-brand">{numberedTotal}</p>
+            <p className="text-xs text-ink-muted">numbered questions</p>
           </div>
           <div className="rounded-card bg-surface-alt p-3">
             <p className="font-display text-2xl font-extrabold text-brand">{test.durationMinutes}</p>
@@ -1192,19 +1411,38 @@ function InstructionsScreen({
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">✍️</span>
-            <span>Answer all {questionCount(test)} questions across {test.parts.length} passages, then submit. It auto-submits when time runs out.</span>
+            <span>Answer all {scoredTotal} scored questions across {test.parts.length} {partLabel}, then submit. It auto-submits when time runs out.</span>
           </li>
-          <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">🖍</span>
-            <span>Select any text in a passage to <strong>highlight</strong> it, just like the real computer test. Click a highlight to remove it.</span>
-          </li>
+          {unavailableTotal > 0 && (
+            <li className="flex gap-2.5">
+              <span aria-hidden="true" className="shrink-0">ℹ️</span>
+              <span>{unavailableTotal} numbered question is missing from the published source and is excluded from your score.</span>
+            </li>
+          )}
+          {listening ? (
+            <li className="flex gap-2.5">
+              <span aria-hidden="true" className="shrink-0">🎧</span>
+              <span>
+                This is practice mode. The full recording will not start by itself, and you can pause or replay it using the audio controls.
+                Refreshing keeps your answers and running timer, but restarts the recording from the beginning.
+              </span>
+            </li>
+          ) : (
+            <li className="flex gap-2.5">
+              <span aria-hidden="true" className="shrink-0">🖍</span>
+              <span>Select any text in a passage to <strong>highlight</strong> it, just like the real computer test. Click a highlight to remove it.</span>
+            </li>
+          )}
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">🚩</span>
             <span>Not sure about an answer? <strong>Flag it</strong> and jump back later using the numbered circles at the bottom.</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">📊</span>
-            <span>At the end you get a score, an estimated band, and a full <strong>answer review</strong>, with every question explained with the exact line from the passage.</span>
+            <span>
+              At the end you get a score, an estimated band, and a full <strong>answer review</strong>
+              {listening ? ', including the transcript.' : ', with every question explained with the exact line from the passage.'}
+            </span>
           </li>
         </ul>
 

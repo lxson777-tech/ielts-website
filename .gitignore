@@ -11,3 +11,9 @@ dist/
 .dev.vars
 .wrangler/
 graphify-out/
+
+# Social marketing agent: generated video binaries and transient render
+# requests. Job JSONs under marketing/queue/ ARE tracked — they're the
+# audit trail and the dedupe history the content agent reads.
+marketing/assets/
+marketing/render-requests/

@@ -16,7 +16,7 @@ const fmtDate = (iso: string) =>
 
 /* Single-series band-over-time line: brand hue (validated vs light surface),
    2px line, 8px markers, recessive grid, hover tooltip per point, y = 4–9. */
-function BandChart({ rows }: { rows: Row[] }) {
+function BandChart({ rows, skill }: { rows: Row[]; skill: 'reading' | 'listening' }) {
   const [hover, setHover] = useState<number | null>(null);
   if (rows.length < 2) return null;
 
@@ -71,7 +71,7 @@ function BandChart({ rows }: { rows: Row[] }) {
         <path
           d={path}
           fill="none"
-          stroke="var(--color-brand)"
+          stroke={`var(--color-${skill})`}
           strokeWidth="2"
           strokeLinejoin="round"
           pathLength={1}
@@ -91,7 +91,7 @@ function BandChart({ rows }: { rows: Row[] }) {
               cx={x(i)}
               cy={y(r.attempt.band)}
               r="4"
-              fill="var(--color-brand)"
+              fill={`var(--color-${skill})`}
               stroke="var(--color-surface)"
               strokeWidth="2"
               pointerEvents="none"
@@ -132,17 +132,28 @@ function BandChart({ rows }: { rows: Row[] }) {
   );
 }
 
-export default function ScoreHistory() {
+export default function ScoreHistory({
+  skill = 'reading',
+  showReset = true,
+}: {
+  skill?: 'reading' | 'listening';
+  showReset?: boolean;
+}) {
   const [rows, setRows] = useState<Row[] | null>(null);
 
   useEffect(() => {
     // Drills are single-passage practice, not full exams — a band estimate
     // only means something over the full 40-question mix, so keep them out
     // of the score history and band trend.
-    const load = () => setRows(getAttempts().filter((r) => r.attempt.kind !== 'drill'));
+    const load = () =>
+      setRows(
+        getAttempts().filter(
+          (r) => r.attempt.kind !== 'drill' && (r.attempt.skill ?? 'reading') === skill,
+        ),
+      );
     load();
     return onProgressChange(load);
-  }, []);
+  }, [skill]);
 
   if (rows === null) return null; // pre-hydration
 
@@ -150,7 +161,7 @@ export default function ScoreHistory() {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-8 text-center text-ink-muted">
         <p className="font-display font-semibold text-ink">No attempts yet</p>
-        <p className="mt-1 text-sm">Finish a practice test and your scores will appear here.</p>
+        <p className="mt-1 text-sm">Finish a {skill} test and your scores will appear here.</p>
       </div>
     );
   }
@@ -190,9 +201,9 @@ export default function ScoreHistory() {
         </table>
       </div>
 
-      <BandChart rows={rows} />
+      <BandChart rows={rows} skill={skill} />
 
-      <button
+      {showReset && <button
         type="button"
         onClick={() => {
           if (window.confirm('Clear all saved progress and scores on this device?')) {
@@ -203,7 +214,7 @@ export default function ScoreHistory() {
         className="mt-6 text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-error"
       >
         Reset all progress
-      </button>
+      </button>}
     </div>
   );
 }

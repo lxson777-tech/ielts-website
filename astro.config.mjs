@@ -23,10 +23,15 @@ export default defineConfig({
   // route backing the OLD path to enumerate params, which no longer exists
   // now that the page moved. That one's handled by a small standalone
   // redirect page at src/pages/tests/drills/[id].astro instead.
+  // /writing/checker is a REAL page again (src/pages/writing/checker.astro),
+  // not a redirect: the checker is the exam-conditions counterpart to the
+  // coached trainer, so pointing it at /trainers/writing handed students the
+  // coach panel on the one surface that must not have it.
+  // /speaking/checker keeps redirecting, but to the bare mock interview
+  // rather than the coached Speaking Trainer, for the same reason.
   redirects: {
     '/tests/drills': '/ielts-website/trainers/reading',
-    '/speaking/checker': '/ielts-website/trainers/speaking',
-    '/writing/checker': '/ielts-website/trainers/writing',
+    '/speaking/checker': '/ielts-website/speaking/examiner',
   },
   integrations: [react(), sitemap()],
   vite: {

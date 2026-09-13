@@ -1,364 +1,60 @@
 ---
 import { withBase } from '../lib/url';
 import AccountMenu from './AccountMenu';
-import { SKILLS, lessonsBySkill } from '../data/lessons';
-import { READING_PARTS } from '../data/reading';
-import { WRITING_PARTS } from '../data/writing';
-import { SPEAKING_PARTS } from '../data/speaking';
-import { LISTENING_PARTS } from '../data/listening';
 
 const current = Astro.url.pathname;
-const isPath = (path: string) => current === withBase(path) || current === withBase(path) + '.html';
-const skillActive = (skillId: string) =>
-  lessonsBySkill(skillId as (typeof SKILLS)[number]['id']).some((l) => isPath(`/lessons/${l.slug}`)) ||
-  current.startsWith(withBase(`/lessons/${skillId}/`));
-const testsActive = current.startsWith(withBase('/tests'));
-const trainersActive = current.startsWith(withBase('/trainers'));
-// Vocabulary lives in the "More" menu, not the main 4-skill row, so it needs
-// its own active check to light up that trigger instead of a skill dropdown.
-const vocabActive = skillActive('vocabulary');
-const moreActive = testsActive || vocabActive;
-/* The 4 primary skill dropdowns — Vocabulary is intentionally excluded here
-   (see "More" menu below) to keep the main row to 4 items instead of 5. */
-const NAV_SKILLS = SKILLS.filter((s) => s.id !== 'vocabulary');
-
-/* Every skill dropdown has the same anatomy: the overview link, a labelled
-   group of type/part lessons, and (where one exists) the practice tool. */
-const overviewLabel: Record<string, string> = {
-  'reading-task1': 'Reading Overview',
-  writing: 'Writing Overview',
-  speaking: 'Speaking Overview',
-  listening: 'Listening Overview',
+const isActive = (href: string) => {
+  const target = withBase(href);
+  if (href === '/') return current === target || current === `${target}/`;
+  return current === target || current.startsWith(`${target}/`);
 };
-
-interface NavLink {
-  href: string;
-  title: string;
-  /** "Start here" method lessons — rendered as a highlighted row, distinct
-      from the plain question-type links in the same group. */
-  featured?: boolean;
-}
-/* Each skill's type lessons, in labelled groups. Writing is split into
-   its two exam tasks; every other skill has a single group. */
-const groupsBySkill: Record<string, { heading: string; items: NavLink[] }[]> = {
-  reading: [
-    { heading: 'Lessons', items: READING_PARTS.map((p) => ({ href: `/lessons/reading/${p.slug}`, title: p.title })) },
-  ],
-  writing: [
-    {
-      heading: 'Task 1 · Report',
-      items: WRITING_PARTS.filter((p) => p.task === 'task1').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title, featured: p.featured })),
-    },
-    {
-      heading: 'Task 2 · Essay',
-      items: WRITING_PARTS.filter((p) => p.task === 'task2').map((p) => ({ href: `/lessons/writing/${p.slug}`, title: p.title, featured: p.featured })),
-    },
-  ],
-  speaking: [
-    { heading: 'The Three Parts', items: SPEAKING_PARTS.map((p) => ({ href: `/lessons/speaking/${p.slug}`, title: p.title })) },
-  ],
-  listening: [
-    { heading: 'The Four Sections', items: LISTENING_PARTS.map((p) => ({ href: `/lessons/listening/${p.slug}`, title: p.title })) },
-  ],
-};
-
-/* Reading/Writing/Speaking practice tools all live on the unified /tests hub
-   now — each skill dropdown links there instead of to its own standalone
-   checker page. */
-const practiceBySkill: Record<string, { href: string; label: string }[]> = {
-  reading: [{ href: '/tests', label: '⏱ Practice Tests' }],
-  writing: [{ href: '/tests', label: '⏱ Practice Tests' }],
-  speaking: [{ href: '/tests', label: '⏱ Practice Tests' }],
-};
+const links = [
+  { href: '/learn', label: 'Learn', fallbacks: ['/lessons', '/start'] },
+  { href: '/trainers', label: 'Practice', fallbacks: ['/trainers', '/writing'] },
+  { href: '/tests', label: 'Tests', fallbacks: ['/tests'] },
+  { href: '/speaking/examiner', label: 'AI Tutor', fallbacks: ['/speaking'] },
+];
+const linkActive = (link: (typeof links)[number]) => isActive(link.href) || link.fallbacks.some(isActive);
 ---
 
-<header class="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
-  <nav class="mx-auto flex h-16 max-w-6xl items-center px-4 sm:px-6" aria-label="Main">
-    <a href={withBase('/')} class="mr-2 flex shrink-0 items-center gap-2 font-display text-lg font-extrabold tracking-tight lg:mr-6">
-      <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand font-display text-sm font-extrabold text-white">IE</span>
-      <span class="hidden sm:inline">IELTS<span class="text-brand">Portal</span></span>
-    </a>
-
-    <div class="hidden flex-1 items-center justify-evenly md:flex">
-      {
-        NAV_SKILLS.map((skill, i) => {
-          const lessons = lessonsBySkill(skill.id);
-          const groups = groupsBySkill[skill.id] ?? [];
-          const practice = practiceBySkill[skill.id];
-          const active = skillActive(skill.id);
-          // Right-align the last panel so it never overflows the viewport.
-          const alignRight = i >= NAV_SKILLS.length - 1;
-          return (
-            <div class={`group relative skill-${skill.id}`}>
-              <button
-                type="button"
-                class:list={[
-                  'flex items-center gap-1.5 rounded-full px-3 py-2 font-display text-[0.95rem] font-bold tracking-tight transition-colors',
-                  active
-                    ? 'bg-[var(--skill-tint)] text-[var(--skill)]'
-                    : 'text-ink-muted hover:bg-[var(--skill-tint)] hover:text-[var(--skill)] group-focus-within:bg-[var(--skill-tint)] group-focus-within:text-[var(--skill)]',
-                ]}
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <span class="h-2 w-2 rounded-full bg-[var(--skill)]" aria-hidden="true"></span>
-                {skill.label}
-              </button>
-              <div
-                class:list={[
-                  alignRight ? 'right-0' : 'left-0',
-                  'invisible absolute top-full w-80 translate-y-1 overflow-hidden rounded-2xl border border-border bg-surface opacity-0 shadow-card-hover transition-all duration-150',
-                  'group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100',
-                  'group-hover:visible group-hover:translate-y-2 group-hover:opacity-100',
-                ]}
-              >
-                <span class="block h-1 bg-[var(--skill)]" aria-hidden="true"></span>
-                <div class="p-3">
-                  {lessons.map((lesson) => (
-                    <a
-                      href={withBase(`/lessons/${lesson.slug}`)}
-                      class="flex items-center gap-2.5 rounded-xl bg-[var(--skill-tint)] px-4 py-3 font-display text-[0.95rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
-                    >
-                      <span class="h-2 w-2 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
-                      {overviewLabel[lesson.slug] ?? lesson.title}
-                      <span class="ml-auto text-xs font-semibold opacity-70">Start here</span>
-                    </a>
-                  ))}
-
-                  {groups.map((g) => (
-                    <>
-                      <p class="px-4 pb-1 pt-3 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
-                        {g.heading}
-                      </p>
-                      {g.items.map((p) =>
-                        p.featured ? (
-                          <a
-                            href={withBase(p.href)}
-                            class="mb-1 flex items-center gap-2 rounded-lg bg-[var(--skill-tint)] px-4 py-2.5 text-[0.9rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
-                          >
-                            <span aria-hidden="true">★</span>
-                            {p.title}
-                            <span class="ml-auto text-[0.65rem] font-bold uppercase tracking-wide opacity-70">Method</span>
-                          </a>
-                        ) : (
-                          <a
-                            href={withBase(p.href)}
-                            class="flex items-center gap-2.5 rounded-lg px-4 py-2 text-[0.9rem] font-medium text-ink transition-colors hover:bg-[var(--skill-tint)] hover:text-[var(--skill)]"
-                          >
-                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
-                            {p.title}
-                          </a>
-                        ),
-                      )}
-                    </>
-                  ))}
-
-                  {practice && practice.length > 0 && (
-                    <div class="mt-2 border-t border-border pt-1">
-                      {practice.map((pr) => (
-                        <a
-                          href={withBase(pr.href)}
-                          class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
-                        >
-                          {pr.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })
-      }
-
-      <a
-        href={withBase('/trainers')}
-        class:list={[
-          'group inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-display text-sm font-bold tracking-tight text-white shadow-card transition-all duration-200',
-          trainersActive ? 'bg-brand-hover' : 'bg-brand hover:-translate-y-0.5 hover:bg-brand-hover hover:shadow-card-hover',
-        ]}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 transition-transform duration-300 group-hover:scale-110" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <circle cx="12" cy="12" r="5" />
-          <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-        </svg>
-        Trainers
-      </a>
-
-      {/* Start Here + Vocabulary + Tests, consolidated so the main row stays at
-          the 4 core skills instead of growing with every new feature. */}
-      <div class="group relative">
-        <button
-          type="button"
-          class:list={[
-            'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold transition-colors',
-            moreActive
-              ? 'bg-brand-tint text-brand'
-              : 'text-ink-muted hover:bg-brand-tint hover:text-brand group-focus-within:bg-brand-tint group-focus-within:text-brand',
-          ]}
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          More
-          <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 opacity-70" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-          </svg>
-        </button>
-        <div
-          class="invisible absolute right-0 top-full w-64 translate-y-1 overflow-hidden rounded-2xl border border-border bg-surface opacity-0 shadow-card-hover transition-all duration-150 group-focus-within:visible group-focus-within:translate-y-2 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-2 group-hover:opacity-100"
-        >
-          <div class="skill-vocabulary p-3">
-            <a
-              href={withBase('/start')}
-              class="mb-1 flex items-center gap-2.5 rounded-xl bg-brand-tint px-4 py-3 font-display text-[0.95rem] font-bold text-brand transition-opacity hover:opacity-80"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-              </svg>
-              Start Here
-              <span class="ml-auto text-xs font-semibold opacity-70">Study plan</span>
-            </a>
-            <a
-              href={withBase('/lessons/vocabulary')}
-              class="flex items-center gap-2.5 rounded-xl bg-[var(--skill-tint)] px-4 py-3 font-display text-[0.95rem] font-bold text-[var(--skill)] transition-opacity hover:opacity-80"
-            >
-              <span class="h-2 w-2 shrink-0 rounded-full bg-[var(--skill)]" aria-hidden="true" />
-              Vocabulary Overview
-              <span class="ml-auto text-xs font-semibold opacity-70">Start here</span>
-            </a>
-            <a
-              href={withBase('/tests')}
-              class="mt-1 flex items-center gap-3 rounded-xl px-4 py-2.5 text-[0.95rem] font-semibold text-brand transition-colors hover:bg-brand-tint"
-            >
-              ⏱ Practice Tests
-            </a>
-          </div>
-        </div>
-      </div>
+<header class="site-header">
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href={withBase('/')} class="site-wordmark" aria-label="IELTS is EZ home"><span>IELTS is</span> <span class="site-wordmark-accent">EZ</span></a>
+    <div class="site-nav-links" aria-label="Study areas">
+      {links.map((link) => <a href={withBase(link.href)} class:list={['site-nav-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
     </div>
-
-    {/* Account/login — deliberately outside the evenly-spaced group above and
-        pinned to the very right edge, since it's where a signed-in user
-        expects to find their account no matter what. */}
-    <div class="hidden md:block">
-      <AccountMenu client:load />
+    <div class="site-nav-actions">
+      <a href={withBase('/dashboard')} class="site-workspace-button">My workspace</a>
+      <div class="site-account-menu"><AccountMenu client:load /></div>
+      <button type="button" id="nav-toggle" class="site-menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile"><span></span><span></span><span></span></button>
     </div>
-
-    <button
-      type="button"
-      id="nav-toggle"
-      class="ml-auto grid h-10 w-10 place-items-center rounded-lg text-ink-muted hover:bg-surface-alt md:hidden"
-      aria-label="Open menu"
-      aria-expanded="false"
-      aria-controls="nav-mobile"
-    >
-      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <path d="M3 5h14M3 10h14M3 15h14"></path>
-      </svg>
-    </button>
   </nav>
-
-  <div id="nav-mobile-wrap" class="nav-mobile-wrap md:hidden">
-  <div class="max-h-[75dvh] overflow-y-auto">
-  <div id="nav-mobile" class="border-t border-border bg-surface px-4 pb-5">
-    <a href={withBase('/')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-ink hover:bg-surface-alt">Home</a>
-    <a
-      href={withBase('/start')}
-      class="flex items-center gap-2 rounded-lg bg-brand-tint px-3 py-2.5 font-display text-sm font-bold text-brand"
-    >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-      </svg>
-      Start Here
-    </a>
-    <a
-      href={withBase('/trainers')}
-      class="flex items-center gap-2 rounded-lg bg-brand px-3 py-2.5 font-display text-sm font-bold text-white"
-    >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="5" />
-        <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-      </svg>
-      Trainers
-    </a>
-    <a href={withBase('/tests')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
-      Practice Tests
-    </a>
-    <a href={withBase('/lessons/vocabulary')} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint">
-      Vocabulary
-    </a>
-    <div class="mt-1"><AccountMenu client:load compact /></div>
-    {
-      NAV_SKILLS.map((skill) => {
-        const practice = practiceBySkill[skill.id];
-        return (
-          <div class={`skill-${skill.id} mt-2`}>
-            <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wider" style="color: var(--skill)">
-              {skill.label}
-            </p>
-            {lessonsBySkill(skill.id).map((lesson) => (
-              <a
-                href={withBase(`/lessons/${lesson.slug}`)}
-                class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-ink hover:bg-surface-alt"
-              >
-                {overviewLabel[lesson.slug] ?? lesson.title}
-              </a>
-            ))}
-            {(groupsBySkill[skill.id] ?? []).map((g, gi, arr) => (
-              <>
-                {arr.length > 1 && (
-                  <p class="px-3 pb-0.5 pt-1.5 pl-6 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ink-muted">
-                    {g.heading}
-                  </p>
-                )}
-                {g.items.map((p) =>
-                  p.featured ? (
-                    <a
-                      href={withBase(p.href)}
-                      class="mx-3 my-0.5 flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold"
-                      style="background: var(--skill-tint); color: var(--skill)"
-                    >
-                      <span aria-hidden="true">★</span>
-                      {p.title}
-                    </a>
-                  ) : (
-                    <a
-                      href={withBase(p.href)}
-                      class="block rounded-lg px-3 py-2 pl-9 text-sm font-medium text-ink-muted hover:bg-surface-alt hover:text-ink"
-                    >
-                      {p.title}
-                    </a>
-                  ),
-                )}
-              </>
-            ))}
-            {(practice ?? []).map((pr) => (
-              <a
-                href={withBase(pr.href)}
-                class="block rounded-lg px-3 py-2 pl-6 text-sm font-semibold text-brand hover:bg-brand-tint"
-              >
-                {pr.label}
-              </a>
-            ))}
-          </div>
-        );
-      })
-    }
-  </div>
-  </div>
+  <div id="nav-mobile" class="site-mobile-menu" hidden>
+    <div class="site-mobile-menu-inner">
+      {links.map((link) => <a href={withBase(link.href)} class:list={['site-mobile-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
+      <a href={withBase('/dashboard')} class="site-mobile-workspace">My workspace</a>
+      <div class="site-mobile-account"><AccountMenu client:load compact /></div>
+    </div>
   </div>
 </header>
 
 <script>
-  const toggle = document.getElementById('nav-toggle');
-  const wrap = document.getElementById('nav-mobile-wrap');
-  toggle?.addEventListener('click', () => {
-    const open = wrap?.classList.toggle('is-open') === true;
-    toggle.setAttribute('aria-expanded', String(open));
-  });
+  function initSiteNav() {
+    const toggle = document.getElementById('nav-toggle');
+    const menu = document.getElementById('nav-mobile');
+    if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement) || toggle.dataset.ready) return;
+    toggle.dataset.ready = 'true';
+    const close = () => { menu.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open menu'); };
+    toggle.addEventListener('click', () => {
+      const opening = menu.hidden;
+      menu.hidden = !opening;
+      toggle.setAttribute('aria-expanded', String(opening));
+      toggle.setAttribute('aria-label', opening ? 'Close menu' : 'Open menu');
+      if (opening) menu.querySelector<HTMLElement>('a, button')?.focus();
+    });
+    menu.addEventListener('click', (event) => { if ((event.target as HTMLElement).closest('a')) close(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !menu.hidden) { close(); toggle.focus(); } });
+  }
+  initSiteNav();
+  document.addEventListener('astro:page-load', initSiteNav);
 </script>

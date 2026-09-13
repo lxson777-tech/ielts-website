@@ -1,167 +1,121 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/Button.astro';
-import Card from '../components/Card.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import WordOfTheDay from '../components/WordOfTheDay.astro';
+import GameStudent from '../components/home/GameStudent.astro';
 import { withBase } from '../lib/url';
-import { LESSONS, SKILLS } from '../data/lessons';
+import '../styles/home-journey.css';
+
+const skills = [
+  { skill: 'Reading', state: 'read', title: 'Find the answer without reading every word.', bullets: ['Spot paraphrases between the question and passage.', 'Understand what every question type is really asking.', 'Find and check exact evidence under time pressure.'], link: withBase('/trainers/reading'), label: 'Explore Reading practice' },
+  { skill: 'Listening', state: 'listen', title: 'Know what to listen for before it arrives.', bullets: ['Predict whether the answer is a name, number, date, or place.', 'Follow signposts and catch speakers who correct themselves.', 'Rehearse all four parts, from everyday details to academic discussion.'], link: withBase('/lessons/listening/section1'), label: 'Explore Listening lessons' },
+  { skill: 'Writing', state: 'write', title: 'Turn a blank page into a clear argument.', bullets: ['Plan Task 1 and Task 2 before the clock runs away.', 'Build supported paragraphs with a topic, explanation, and example.', 'Use AI feedback to see strengths, corrections, and your next priority.'], link: withBase('/trainers/writing'), label: 'Try AI Writing feedback' },
+  { skill: 'Speaking', state: 'speak', title: 'Speak with structure, even when you feel nervous.', bullets: ['Shape Part 1, Part 2, and Part 3 answers with simple frameworks.', 'Build natural vocabulary for common IELTS topics.', 'Practise aloud with guidance and AI voice feedback.'], link: withBase('/speaking/examiner'), label: 'Meet the AI Speaking examiner' },
+];
+
+const heroSkills = [
+  { skill: 'Reading', promise: 'Find answers without reading every word.', points: ['Spot paraphrases', 'Check exact evidence'] },
+  { skill: 'Listening', promise: 'Know what to listen for before it arrives.', points: ['Predict the answer type', 'Catch signposts and corrections'] },
+  { skill: 'Writing', promise: 'Turn a blank page into a clear argument.', points: ['Plan a strong structure', 'Improve with AI feedback'] },
+  { skill: 'Speaking', promise: 'Speak with structure when nerves appear.', points: ['Build fuller answers', 'Practise with AI voice feedback'] },
+];
 ---
 
-<BaseLayout title="IELTS Portal · Free IELTS Preparation">
-  <!-- Hero -->
-  <section class="aurora-hero border-b border-border">
-    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
-      <div>
-        <p class="mb-4 inline-block rounded-full bg-brand-tint px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
-          Free · No sign-up needed
-        </p>
-        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
-          Master IELTS,<br />one skill at a time.
-        </h1>
-        <p class="mt-4 max-w-md text-lg text-ink-muted">
-          Clear lessons for every paper, real exam question types, and timed practice tests that estimate your band score.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <Button href={withBase('/start')} variant="gradient" size="lg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-            </svg>
-            Start my IELTS preparation
-          </Button>
-          <Button href="#skills" variant="secondary" size="lg">Browse lessons</Button>
-          <Button href={withBase('/tests')} variant="secondary" size="lg">Take a practice test</Button>
+<BaseLayout title="IELTS is EZ | Your path to a stronger band" description="See how IELTS is EZ helps you learn, practise and improve across Reading, Listening, Writing and Speaking.">
+  <div class="journey scroll-story" data-scroll-story>
+    <section class="journey-hero" aria-labelledby="journey-title">
+      <div class="journey-wrap hero-grid">
+        <div class="hero-copy">
+          <p class="journey-label">AI-powered IELTS preparation</p>
+          <h1 id="journey-title">IELTS feels <span>EZ</span> when you know the <span>structure.</span></h1>
+          <p class="journey-lede">Clear methods for all four skills, guided practice, and AI feedback that shows you what to improve.</p>
+          <div class="hero-actions">
+            <div class="band-choice">
+              <p>Choose your target band</p>
+              <span>Pick your goal. We’ll show you the way.</span>
+              <div class="band-picker" role="group" aria-label="Choose your target IELTS band">{[6.5, 7, 7.5, 8].map((band) => <button type="button" data-band={band} aria-pressed={band === 7 ? 'true' : 'false'}>{band}</button>)}</div>
+              <p class="band-feedback" data-band-feedback aria-live="polite">Band 7.0 selected</p>
+            </div>
+            <a class="journey-cta" href="#reading">Start your journey</a>
+          </div>
+        </div>
+        <div class="hero-scene hero-skill-scene" data-skill-stack aria-label="How IELTS is EZ teaches each skill">
+          <div class="hero-stack-backdrop" aria-hidden="true"><span>Learn</span><span>Practise</span><span>Improve</span></div>
+          <div class="hero-skill-stack">
+            {heroSkills.map((item, index) => (
+              <article class="hero-skill-card" data-skill-card data-stack-position={index === 0 ? 'active' : index === 1 ? 'next' : index === 2 ? 'behind' : 'retiring'} data-active={index === 0 ? 'true' : 'false'} aria-hidden={index === 0 ? 'false' : 'true'}>
+                <p>IELTS skill 0{index + 1}</p>
+                <h2>{item.skill}</h2>
+                <h3>{item.promise}</h3>
+                <ul>{item.points.map((point) => <li>{point}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+          <div class="hero-stack-controls">
+            <div class="hero-stack-indicators" aria-label="Choose an IELTS skill card">{heroSkills.map((item, index) => <button type="button" data-stack-indicator={index} aria-label={`Show ${item.skill}`} aria-current={index === 0 ? 'true' : 'false'}><span></span></button>)}</div>
+          </div>
         </div>
       </div>
-      <div class="hidden justify-center md:flex">
-        <img
-          src={withBase('/pics/hero.png')}
-          alt="Student preparing for IELTS"
-          class="max-h-80 w-auto rounded-card border border-border bg-white shadow-card"
-        />
+    </section>
+
+    <section class="ai-coach ai-coach-simple" aria-labelledby="ai-coach-title">
+      <div class="journey-wrap ai-coach-grid">
+        <div class="ai-coach-copy">
+          <p class="journey-label">Your AI IELTS coach</p>
+          <h2 id="ai-coach-title">Feedback you can use.</h2>
+          <p>Write or speak, then see what is working, what is holding you back, and exactly what to improve next.</p>
+          <p class="ai-trust-line">Developed by an IELTS teacher who completed IDP training in Writing and Speaking assessment criteria.</p>
+          <ul class="ai-capabilities"><li><b>Four IELTS criteria</b><span>Estimated bands and focused comments</span></li><li><b>Real speaking feedback</b><span>Including pronunciation from your recording</span></li></ul>
+        </div>
+        <div class="ai-workspace" aria-label="Sample AI writing feedback">
+          <div class="ai-workspace-bar"><span>Sample response</span><b>AI coach feedback</b></div>
+          <div class="ai-response"><p>Universities should provide more study spaces because they are <mark>good for students</mark>.</p></div>
+          <div class="ai-annotation"><span>Make the reason specific</span><p>Explain what students can do there and why it matters.</p></div>
+          <div class="ai-improvement"><span>Stronger version</span><p>Quiet study spaces help students use gaps between classes for focused revision.</p></div>
+          <a href={withBase('/trainers/writing')}>Try AI Writing feedback</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Progress strip (hidden until localStorage has data — populated in Phase 5) -->
-  <section id="progress-strip" class="hidden border-b border-border bg-surface">
-    <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 px-4 py-4 text-sm sm:px-6">
-      <p class="font-semibold">Your progress</p>
-      <p class="text-ink-muted"><span id="progress-lessons" class="font-semibold text-ink">0</span> lessons completed</p>
-      <p class="text-ink-muted">Best reading band: <span id="progress-band" class="font-semibold text-brand">-</span></p>
-      <p id="progress-writing-band" class="hidden text-ink-muted">Best writing band: <span id="progress-writing-band-value" class="font-semibold text-brand">-</span></p>
-      <p id="progress-speaking-band" class="hidden text-ink-muted">Best speaking band: <span id="progress-speaking-band-value" class="font-semibold text-brand">-</span></p>
-      <a href={withBase('/account')} class="ml-auto font-semibold text-brand hover:text-brand-hover">View my progress</a>
-    </div>
-  </section>
-
-  <!-- Word of the day -->
-  <section class="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
-    <WordOfTheDay />
-  </section>
-
-  <!-- Skill sections -->
-  <div id="skills" class="mx-auto max-w-6xl space-y-16 px-4 py-16 sm:px-6">
-    {
-      SKILLS.map((skill) => {
-        const lessons = LESSONS.filter((l) => l.skill === skill.id);
-        if (lessons.length === 0) return null;
-        return (
-          <section class={`skill-${skill.id}`} id={skill.id} aria-labelledby={`heading-${skill.id}`}>
-            <SectionHeading eyebrow={skill.label} title={skill.label} subtitle={skill.blurb} id={`heading-${skill.id}`} />
-            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {lessons.map((lesson) => (
-                <Card
-                  title={lesson.title}
-                  href={withBase(`/lessons/${lesson.slug}`)}
-                  description={lesson.description}
-                  image={lesson.image}
-                  badge={skill.label}
-                  level={lesson.level}
-                  dataKey={lesson.slug}
-                />
-              ))}
-              {skill.id === 'reading' && (
-                <Card
-                  title="Timed Practice Tests"
-                  href={withBase('/tests')}
-                  description="Full reading passages with a real 60-minute timer and band estimate."
-                  image="/pics/reading/timed-test.png"
-                  badge="Practice"
-                />
-              )}
-              {skill.id === 'reading' && (
-                <Card
-                  title="Reading Trainer"
-                  href={withBase('/trainers/reading')}
-                  description="Short on time? One passage at a time with live strategy coaching, no full 60-minute commitment."
-                  image="/pics/reading/timed-test.png"
-                  badge="Trainer"
-                  level="Beginner"
-                />
-              )}
-              {skill.id === 'writing' && (
-                <Card
-                  title="Writing Checker"
-                  href={withBase('/tests')}
-                  description="Write an answer and get AI examiner feedback: a band for every criterion, corrections, and next-band tips."
-                  image="/pics/writing/essay-checker.png"
-                  badge="Practice"
-                />
-              )}
-              {skill.id === 'speaking' && (
-                <Card
-                  title="Live AI Examiner"
-                  href={withBase('/speaking/examiner')}
-                  description="A real voice conversation with an AI examiner, all three parts, with follow-up questions based on what you say."
-                  image="/pics/speaking/live-examiner.png"
-                  badge="Practice"
-                />
-              )}
+    <section class="skills-story" aria-labelledby="skills-title">
+      <div class="journey-wrap story-heading"><div><p class="journey-label">Inside the course</p><h2 id="skills-title">Four skills.<br />A clearer way forward.</h2></div><p class="story-target">Your target <strong data-target-label>7.0</strong></p></div>
+      <svg class="story-road-svg" aria-hidden="true"><path class="story-road-edge" data-story-path d="M 50 0 L 50 100"/><path class="story-road-dash" data-story-path-copy d="M 50 0 L 50 100"/></svg>
+      <div class="game-student story-traveller" data-story-traveller data-state="read" data-facing="right" data-path-position="0"><GameStudent /></div>
+      {skills.map((item, index) => (
+        <article class={`skill-story skill-story-${index + 1}`} id={item.skill.toLowerCase()} data-road-section data-skill-section data-skill-state={item.state}>
+          <div class="journey-wrap skill-story-grid">
+            <div class="skill-stop">
+              <button type="button" data-story-stop aria-label={`Visit ${item.skill}`}><span>0{index + 1}</span><b>{item.skill}</b></button>
             </div>
-          </section>
-        );
-      })
-    }
+            <div class="skill-copy">
+              <p class="journey-label">Skill {index + 1} of 4</p>
+              <h3>{item.skill}</h3>
+              <h4>{item.title}</h4>
+              <ul>{item.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+              <a href={item.link}>{item.label}</a>
+            </div>
+          </div>
+        </article>
+      ))}
+      <article class="skill-story skill-story-5 journey-goal" id="target-band" data-road-section data-skill-state="celebrate">
+        <div class="journey-wrap skill-story-grid">
+          <div class="skill-stop"><button type="button" data-story-stop aria-label="Visit your target band"><span>★</span><b>Target</b></button></div>
+          <div class="skill-copy goal-copy">
+            <p class="journey-label">Your journey continues</p>
+            <h3>Target <span data-target-label>7.0</span></h3>
+            <h4>Your target. Your next chapter.</h4>
+            <p>Build toward your target with a clear study plan, realistic practice, and feedback on your next step.</p>
+            <a href={withBase('/dashboard')}>Explore the full course</a>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section class="final-course-cta" aria-labelledby="final-course-title">
+      <div class="journey-wrap final-course-inner">
+        <p class="journey-label">Ready when you are</p>
+        <h2 id="final-course-title">Start your IELTS journey today.</h2>
+        <p>Get a clear plan across all four skills, realistic practice, and feedback that shows you what to improve next.</p>
+        <a href={withBase('/start')}>Build my study plan</a>
+      </div>
+    </section>
   </div>
 </BaseLayout>
-
-<script>
-  import {
-    completedLessonCount,
-    getBestBand,
-    getBestWritingBand,
-    getBestSpeakingBand,
-    isLessonComplete,
-  } from '../lib/progress';
-
-  // Progress strip — only shown once there is something to report.
-  const lessonsDone = completedLessonCount();
-  const best = getBestBand();
-  const bestWriting = getBestWritingBand();
-  const bestSpeaking = getBestSpeakingBand();
-  if (lessonsDone > 0 || best || bestWriting || bestSpeaking) {
-    document.getElementById('progress-strip')?.classList.remove('hidden');
-    document.getElementById('progress-lessons')!.textContent = String(lessonsDone);
-    if (best) document.getElementById('progress-band')!.textContent = best.bandLabel;
-    if (bestWriting) {
-      document.getElementById('progress-writing-band')?.classList.remove('hidden');
-      document.getElementById('progress-writing-band-value')!.textContent = bestWriting.toFixed(1);
-    }
-    if (bestSpeaking) {
-      document.getElementById('progress-speaking-band')?.classList.remove('hidden');
-      document.getElementById('progress-speaking-band-value')!.textContent = bestSpeaking.toFixed(1);
-    }
-  }
-
-  // Checkmark badge on completed lesson cards.
-  document.querySelectorAll<HTMLElement>('[data-key]').forEach((card) => {
-    if (!isLessonComplete(card.dataset.key!)) return;
-    const slot = card.querySelector('[data-slot="status"]');
-    if (slot) {
-      slot.innerHTML =
-        '<span class="grid h-5 w-5 place-items-center rounded-full bg-success text-[10px] font-bold text-white" title="Completed">✓</span>';
-    }
-  });
-</script>
+<script>import '../scripts/home-game';</script>

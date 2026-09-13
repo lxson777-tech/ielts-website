@@ -1,0 +1,48 @@
+.game-student-art{display:block;width:100%;height:auto;overflow:visible;contain:layout style}
+.gs-facing{transform-box:view-box;transform-origin:80px 130px}
+.game-student[data-facing='left'] .gs-facing{transform:scaleX(-1)}
+.gs-pose,.gs-walk-rig{opacity:0;pointer-events:none}
+.gs-pose{transform-box:fill-box;transform-origin:50% 96%}
+.gs-pose-idle{opacity:1}
+.game-student[data-state='walk'] .gs-pose-idle{opacity:0}
+.game-student[data-state='walk'] .gs-walk-rig{opacity:1}
+.game-student[data-state='read'] .gs-pose-idle,.game-student[data-state='listen'] .gs-pose-idle,.game-student[data-state='write'] .gs-pose-idle,.game-student[data-state='speak'] .gs-pose-idle{opacity:0}
+.game-student[data-state='read'] .gs-pose-read,.game-student[data-state='listen'] .gs-pose-listen,.game-student[data-state='write'] .gs-pose-write,.game-student[data-state='speak'] .gs-pose-speak{opacity:1}
+.gs-celebration{opacity:0;pointer-events:none;transform-box:view-box;transform-origin:80px 132px}
+.gs-ray{fill:none;stroke:#202522;stroke-width:3;stroke-linecap:round}
+.gs-confetti{fill:none;stroke:#e85d4a;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.gs-star{fill:#e85d4a}
+
+.gs-walk-rig,.gs-walk-torso,.gs-leg,.gs-shin,.gs-shoe{transform-box:view-box}
+.gs-walk-rig{transform-origin:80px 250px}
+.gs-walk-torso{transform-origin:80px 126px}
+.gs-leg-front,.gs-leg-back{transform-origin:89px 124px}.gs-shin-front,.gs-shin-back{transform-origin:101px 171px}.gs-shoe-front,.gs-shoe-back{transform-origin:101px 222px}
+.gs-leg-back{filter:brightness(.86)}
+.game-student[data-state='walk'] .gs-walk-rig{transform:translate(var(--walk-lift-x,0px),var(--walk-lift-y,0px))}
+.game-student[data-state='walk'] .gs-leg-front{transform:rotate(calc(var(--front-thigh-angle,0deg) + 14deg))}
+.game-student[data-state='walk'] .gs-shin-front{transform:rotate(calc(var(--front-knee-angle,14deg) - 14deg))}
+.game-student[data-state='walk'] .gs-shoe-front{transform:rotate(var(--front-foot-angle,0deg))}
+.game-student[data-state='walk'] .gs-leg-back{transform:translateX(-2px) rotate(calc(var(--back-thigh-angle,0deg) + 14deg))}
+.game-student[data-state='walk'] .gs-shin-back{transform:rotate(calc(var(--back-knee-angle,14deg) - 14deg))}
+.game-student[data-state='walk'] .gs-shoe-back{transform:rotate(var(--back-foot-angle,0deg))}
+
+.game-student[data-state='idle'] .gs-pose-idle{animation:gs-breathe 2.8s ease-in-out infinite}
+.game-student[data-state='think'] .gs-pose-idle{animation:gs-think 2.8s ease-in-out infinite}
+.game-student[data-state='read'] .gs-pose-read{animation:gs-book-arrive .72s cubic-bezier(.2,.8,.25,1) 1 both,gs-study-breathe 3s .72s ease-in-out infinite}
+.game-student[data-state='listen'] .gs-pose-listen{animation:gs-listen 1.25s ease-in-out infinite}
+.game-student[data-state='write'] .gs-pose-write{animation:gs-write 1.1s ease-in-out infinite}
+.game-student[data-state='speak'] .gs-pose-speak{animation:gs-speak 1.7s ease-in-out infinite}
+.game-student[data-state='celebrate'] .gs-pose-idle{opacity:0}
+.game-student[data-state='celebrate'] .gs-pose-speak{opacity:1;animation:gs-arrival .9s cubic-bezier(.2,.8,.25,1) 1 both}
+.game-student[data-state='celebrate'] .gs-celebration{animation:gs-celebration-pop .9s cubic-bezier(.2,.8,.25,1) 1 both}
+
+@keyframes gs-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.5px) scale(1.003)}}
+@keyframes gs-think{0%,100%{transform:rotate(-1deg) translateY(0)}50%{transform:rotate(1deg) translateY(-1px)}}
+@keyframes gs-book-arrive{0%{transform:translateY(8px) scale(.94);opacity:0}65%{transform:translateY(-2px) scale(1.015);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes gs-study-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
+@keyframes gs-listen{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg) translateY(-1px)}}
+@keyframes gs-write{0%,100%{transform:translateY(0)}50%{transform:translateY(1px)}}
+@keyframes gs-speak{0%,100%{transform:rotate(-.5deg)}50%{transform:rotate(.7deg) translateY(-1px)}}
+@keyframes gs-arrival{0%{transform:translateY(0) rotate(0) scale(1)}18%{transform:translateY(2px) rotate(-1deg) scale(1.015,.985)}48%{transform:translateY(-13px) rotate(2deg) scale(.985,1.02)}72%{transform:translateY(1px) rotate(-.6deg) scale(1.012,.988)}100%{transform:translateY(0) rotate(0) scale(1)}}
+@keyframes gs-celebration-pop{0%,14%{opacity:0;transform:scale(.7) rotate(-5deg)}42%{opacity:1;transform:scale(1.08) rotate(2deg)}72%{opacity:.9;transform:scale(1) rotate(0)}100%{opacity:.72;transform:scale(1) rotate(0)}}
+@media(prefers-reduced-motion:reduce){.game-student *{animation:none!important;transition:none!important}.game-student[data-state='walk'] .gs-walk-rig{transform:translateY(0)}.game-student[data-state='celebrate'] .gs-celebration{opacity:.72}}

@@ -1,6 +1,8 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
+import { SPEAKING_PARTS } from '../../data/speaking';
 import raw from '../../content/lesson-bodies/speaking.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
@@ -8,4 +10,13 @@ const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 <LessonLayout slug="speaking">
   <Fragment set:html={body} />
+
+  <PartGrid
+    id="parts"
+    tag="Learn Each Part"
+    heading="The Three Parts"
+    intro="Each part has its own lesson. Format, strategy, useful language, and practice questions with model answers. Work through them in test order, which is also easiest to hardest."
+    basePath="speaking"
+    parts={SPEAKING_PARTS}
+  />
 </LessonLayout>

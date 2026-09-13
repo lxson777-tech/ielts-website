@@ -1,6 +1,8 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
+import { LISTENING_PARTS } from '../../data/listening';
 import raw from '../../content/lesson-bodies/listening.html?raw';
 
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
@@ -8,4 +10,13 @@ const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 <LessonLayout slug="listening">
   <Fragment set:html={body} />
+
+  <PartGrid
+    id="sections"
+    tag="Learn Each Section"
+    heading="The Four Sections"
+    intro="Each recording has its own lesson. What to expect, the question types it uses, key language, and a practice simulation with answers. Work through them in test order, which is also easiest to hardest."
+    basePath="listening"
+    parts={LISTENING_PARTS}
+  />
 </LessonLayout>

@@ -1,0 +1,76 @@
+---
+/* The numbered lesson grid on a section overview page.
+
+   Replaces the hand-written <div class="samples-grid"> blocks that used to
+   live in each overview fragment and duplicate the part registries. The
+   fragments listed every lesson's title, href and eyebrow a second time, so
+   reordering a section silently desynced the overview from prev/next. Now
+   the registry is the only place a lesson's position is written down.
+
+   Cards keep class="sample-card" and a /lessons/<skill>/<slug> href because
+   LessonLayout's client script finds them by that selector and derives the
+   progress key from the last two path segments to paint completion ticks. */
+
+import { withBase } from '../lib/url';
+import { sequence, type Sequenced } from '../data/lessons';
+
+interface Props {
+  /** Anchor id, kept identical to the one the fragment used so existing
+      in-page links like href="#types" still land here. */
+  id: string;
+  tag: string;
+  heading: string;
+  intro: string;
+  /** URL segment for the section, e.g. 'reading' -> /lessons/reading/<slug> */
+  basePath: string;
+  parts: Sequenced[];
+  /** Big numeral in the section header, e.g. Writing's "1" and "2" for the
+      two exam tasks. Omitted for sections that had no numeral. */
+  num?: string;
+  /** Number the cards continuously from here. Writing renders two grids
+      (Task 1, then Task 2) that share one 1..11 sequence, so the second
+      grid starts where the first left off. */
+  startAt?: number;
+  /** Total for the "of N" label when a section is split across grids. */
+  totalOverride?: number;
+}
+
+const { id, tag, heading, intro, basePath, parts, num, startAt = 1, totalOverride } = Astro.props;
+
+const ordered = sequence(parts);
+const total = totalOverride ?? ordered.length;
+---
+
+<div class="section" id={id}>
+  <div class="section-header">
+    {num && <div class="section-num">{num}</div>}
+    <div class="section-title-block">
+      <div class="tag">{tag}</div>
+      <h2>{heading}</h2>
+    </div>
+  </div>
+  <p class="part-grid-intro">{intro}</p>
+  <div class="samples-grid">
+    {
+      ordered.map((part) => {
+        const n = startAt + part.order - 1;
+        const featured = 'featured' in part && (part as { featured?: boolean }).featured;
+        return (
+          <a
+            class:list={['sample-card', part.image && 'part-card', featured && 'featured']}
+            href={withBase(`/lessons/${basePath}/${part.slug}`)}
+          >
+            {part.image && <img src={withBase(part.image)} alt="" loading="lazy" />}
+            <span class="sample-topic">
+              <span class="part-num">{n}</span>
+              <span class="part-num-of">of {total}</span>
+              {part.eyebrow && <span class="part-eyebrow">{part.eyebrow}</span>}
+            </span>
+            <strong class="sample-title">{part.title}</strong>
+            <span class="sample-go">Open lesson &#8594;</span>
+          </a>
+        );
+      })
+    }
+  </div>
+</div>

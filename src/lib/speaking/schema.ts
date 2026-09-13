@@ -26,9 +26,19 @@ export const SPEAKING_CRITERIA: SpeakingCriterionMeta[] = [
 
 /* ── Prompt bank ────────────────────────────────────────────────────────── */
 
+/** One topic-specific vocabulary suggestion, surfaced tap-to-reveal by the
+    coach panel (same shape the writing prompts use for suggestedVocab). */
+export interface TopicVocab {
+  phrase: string;
+  meaning: string;
+  example: string;
+}
+
 export interface SpeakingQuestion {
   id: string;
   text: string;
+  /** short idea angles ("think about…") shown as tap-to-reveal hints */
+  ideas?: string[];
 }
 
 export interface Part1Topic {
@@ -36,6 +46,8 @@ export interface Part1Topic {
   part: 'part1';
   topic: string;
   questions: SpeakingQuestion[];
+  /** topic vocabulary for the coach panel's Vocab tab */
+  vocab?: TopicVocab[];
 }
 
 export interface CueCard {
@@ -45,6 +57,10 @@ export interface CueCard {
   topic: string;
   /** the "you should say" bullet points */
   bullets: string[];
+  /** angle suggestions for the talk, shown during the prep minute */
+  ideas?: string[];
+  /** theme vocabulary for the coach panel's Vocab tab (Parts 2 and 3) */
+  vocab?: TopicVocab[];
   /** Part 3 follow-up discussion questions on the same theme */
   part3Questions: SpeakingQuestion[];
 }

@@ -1,16 +1,17 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import LessonStep from '../../../components/LessonStep.astro';
 import { withBase } from '../../../lib/url';
 import { SPEAKING_PARTS } from '../../../data/speaking';
 
 export function getStaticPaths() {
   return SPEAKING_PARTS.map((part, i) => ({
     params: { part: part.slug },
-    props: { part, prev: SPEAKING_PARTS[i - 1] ?? null, next: SPEAKING_PARTS[i + 1] ?? null },
+    props: { part, order: i + 1, of: SPEAKING_PARTS.length, prev: SPEAKING_PARTS[i - 1] ?? null, next: SPEAKING_PARTS[i + 1] ?? null },
   }));
 }
 
-const { part, prev, next } = Astro.props;
+const { part, order, of, prev, next } = Astro.props;
 
 const fragments = import.meta.glob<string>('../../../content/lesson-bodies/speaking-*.html', {
   query: '?raw',
@@ -29,6 +30,8 @@ const overviewUrl = withBase('/lessons/speaking');
   meta={{ title: part.title, description: part.blurb, skill: 'speaking' }}
   parent={{ label: 'Speaking', href: overviewUrl }}
 >
+  <LessonStep order={order} of={of} section="Speaking" />
+
   <Fragment set:html={body} />
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Speaking section">

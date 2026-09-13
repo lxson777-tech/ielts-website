@@ -25,7 +25,7 @@ const trainers = [
     skill: 'speaking',
     title: 'Speaking Trainer',
     description:
-      'Practice Part 1, 2 or 3 on its own, with a structure & conjunction cheat-sheet (A.R.E. / PEEL / OREO) while you prep and answer.',
+      'Practice Part 1, 2 or 3 on its own, with a live coach panel: the answer structure (A.R.E. / PEEL / OREO), useful phrases, topic vocabulary and idea hints when you get stuck.',
     stats: `${SPEAKING_PART1_TOPICS.length} Part 1 topics · ${SPEAKING_CUE_CARDS.length} cue cards`,
     href: '/trainers/speaking',
     cta: 'Start a part',
@@ -35,7 +35,7 @@ const trainers = [
     skill: 'writing',
     title: 'Writing Trainer',
     description:
-      'Write against a rotating prompt with a live structure & language cheat-sheet for that exact question type, then get instant AI feedback.',
+      'Write against a rotating prompt with a live coach panel: the paragraph plan for that exact question type, useful phrases and topic vocabulary, then get instant AI feedback.',
     stats: `${task1Count} Task 1 prompts · ${task2Count} Task 2 prompts`,
     href: '/trainers/writing',
     cta: 'Start writing',
@@ -48,11 +48,11 @@ const trainers = [
   title="Trainers · IELTS Portal"
   description="Focused, single-skill practice drills with live strategy coaching: a lighter alternative to a full timed exam."
 >
-  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+  <div class="platform-hub mx-auto max-w-5xl px-4 py-12 sm:px-6">
     <SectionHeading
       eyebrow="Trainers"
-      title="Practice Trainers"
-      subtitle="Shorter, focused drills that coach you while you practice: a strategy panel for Reading, a structure cheat-sheet for Speaking and Writing. Want the full timed exam experience instead? Head to Practice Tests."
+      title="Focused practice"
+      subtitle="Short sessions with useful guidance on screen. Choose a skill, practise one manageable task, and use the feedback to decide what to do next."
     />
 
     <div class="grid gap-6 sm:grid-cols-3">
@@ -92,3 +92,7 @@ const trainers = [
     </p>
   </div>
 </BaseLayout>
+
+<style is:global>
+  @import '../../styles/platform-pages.css';
+</style>
