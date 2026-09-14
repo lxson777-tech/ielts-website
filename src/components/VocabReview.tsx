@@ -181,8 +181,13 @@ export default function VocabReview() {
             aria-label={flipped ? `${current.word}: definition shown, tap to hide` : `${current.word}: tap or press space to reveal the definition`}
             onClick={() => setFlipped((f) => !f)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              // Space is also handled by the document-level listener below (so it
+              // works even when focus isn't on the card). Stop it here so a
+              // focused card doesn't flip twice — once from this handler, once
+              // from that one — which would cancel back out to unflipped.
+              if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
                 e.preventDefault();
+                e.stopPropagation();
                 setFlipped((f) => !f);
               }
             }}

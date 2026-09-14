@@ -248,7 +248,9 @@ export default function ProgressReport() {
             </div>
             <div className="rounded-card border border-border bg-surface p-4">
               <p className="text-xs text-ink-muted">Days to go</p>
-              <p className="mt-1 font-display text-xl font-extrabold">{days ?? '—'}</p>
+              <p className="mt-1 font-display text-xl font-extrabold">
+                {days ?? <span className="text-sm font-normal text-ink-muted">not yet</span>}
+              </p>
             </div>
             <div className="rounded-card border border-border bg-surface p-4">
               <p className="text-xs text-ink-muted">Started</p>
@@ -328,8 +330,8 @@ export default function ProgressReport() {
                 <tr key={row.skill} className="border-t border-border">
                   <td className="px-4 py-2.5 font-medium">{row.skill}</td>
                   <td className="px-4 py-2.5">{row.count}</td>
-                  <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? '—'}</td>
-                  <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? '—'}</td>
+                  <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
+                  <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
                 </tr>
               ))}
             </tbody>

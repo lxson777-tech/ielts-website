@@ -233,7 +233,7 @@ export default function Course() {
             onSubmit={startCourse}
             className="flex flex-wrap items-end gap-3 rounded-lg border border-dashed border-border bg-surface-alt p-3.5"
           >
-            <div className="min-w-0 flex-1">
+            <div className="w-full basis-full">
               <p className="text-sm font-bold">Set your target band and exam date</p>
               <p className="mt-0.5 text-xs text-ink-muted">
                 You've already completed {status.doneLessons} lesson{status.doneLessons === 1 ? '' : 's'}. Add your
