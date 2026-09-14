@@ -11,14 +11,16 @@ export interface WorkspaceTab {
   label: string;
   /** Extra route prefixes that should light this tab up. */
   also?: string[];
+  /** Key into the icon set rendered in WorkspaceHeader.astro. */
+  icon: 'today' | 'course' | 'practice' | 'tests' | 'words';
 }
 
 export const WORKSPACE_TABS: WorkspaceTab[] = [
-  { href: '/dashboard', label: 'Today', also: ['/report'] },
-  { href: '/start', label: 'Course', also: ['/learn', '/lessons'] },
-  { href: '/trainers', label: 'Practice', also: ['/writing', '/speaking'] },
-  { href: '/tests', label: 'Tests' },
-  { href: '/review', label: 'Words' },
+  { href: '/dashboard', label: 'Today', also: ['/report'], icon: 'today' },
+  { href: '/start', label: 'Course', also: ['/learn', '/lessons'], icon: 'course' },
+  { href: '/trainers', label: 'Practice', also: ['/writing', '/speaking'], icon: 'practice' },
+  { href: '/tests', label: 'Tests', icon: 'tests' },
+  { href: '/review', label: 'Words', icon: 'words' },
 ];
 
 export interface WorkspaceMenuItem {

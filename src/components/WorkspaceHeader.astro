@@ -11,7 +11,7 @@
    that, the script at the bottom owns them, which is why each tab also
    carries its matching route prefixes in data-match. */
 import { withBase } from '../lib/url';
-import { WORKSPACE_TABS, isTabActive, toRoute } from '../lib/platform-nav';
+import { WORKSPACE_TABS, isTabActive, toRoute, type WorkspaceTab } from '../lib/platform-nav';
 import WorkspaceMenu from './WorkspaceMenu';
 
 const route = toRoute(Astro.url.pathname, import.meta.env.BASE_URL);
@@ -20,6 +20,23 @@ const tabs = WORKSPACE_TABS.map((tab) => ({
   active: isTabActive(tab, route),
   match: [tab.href, ...(tab.also ?? [])].join(' '),
 }));
+
+/* One glyph per tab, hand-drawn at a 24x24 grid so they share weight and
+   proportion. Rendered as bare markup (no outer <svg>, that wrapper is the
+   same for every tab and lives in the template below) so both the header
+   row and the phone bar can size the same paths differently. */
+const TAB_ICON_PATHS: Record<WorkspaceTab['icon'], string> = {
+  today:
+    '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M3 12h2M19 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"/>',
+  course:
+    '<circle cx="5.5" cy="17.5" r="2"/><circle cx="18.5" cy="6.5" r="2"/><path d="M7.5 17.5h6a3 3 0 0 0 0-6h-7a3 3 0 0 1-1.06-5.79"/>',
+  practice:
+    '<circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="4.75"/><circle cx="12" cy="12" r="1.25" fill="currentColor" stroke="none"/>',
+  tests:
+    '<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 11.3l1.8 1.8L14.5 9"/><path d="M9 16.5h6"/>',
+  words:
+    '<path d="M4 19V5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2Z"/><path d="M20 19V5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2Z"/>',
+};
 ---
 
 <header class="ws-header" transition:persist="ws-header">
@@ -35,7 +52,20 @@ const tabs = WORKSPACE_TABS.map((tab) => ({
           class:list={['ws-tab', { 'is-active': tab.active }]}
           aria-current={tab.active ? 'page' : undefined}
         >
-          {tab.label}
+          <svg
+            class="ws-tab-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            set:html={TAB_ICON_PATHS[tab.icon]}
+          />
+          <span class="ws-tab-label">{tab.label}</span>
         </a>
       ))}
       <span class="ws-tab-indicator" aria-hidden="true"></span>
@@ -52,8 +82,20 @@ const tabs = WORKSPACE_TABS.map((tab) => ({
       class:list={['ws-tabbar-link', { 'is-active': tab.active }]}
       aria-current={tab.active ? 'page' : undefined}
     >
+      <svg
+        class="ws-tabbar-icon"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        set:html={TAB_ICON_PATHS[tab.icon]}
+      />
       <span class="ws-tabbar-label">{tab.label}</span>
-      <span class="ws-tabbar-dot" aria-hidden="true"></span>
     </a>
   ))}
 </nav>
@@ -101,9 +143,11 @@ const tabs = WORKSPACE_TABS.map((tab) => ({
     }
 
     // offsetLeft is relative to the row (its own positioned ancestor), so no
-    // getBoundingClientRect maths and nothing that depends on scroll.
-    const left = active.offsetLeft + 4;
-    const width = Math.max(active.offsetWidth - 8, 0);
+    // getBoundingClientRect maths and nothing that depends on scroll. Spans
+    // the tab's full box (icon and label both) rather than insetting, now
+    // that the box itself varies with icon + label width per tab.
+    const left = active.offsetLeft;
+    const width = active.offsetWidth;
     indicator.style.setProperty('--ws-ind-x', `${left}px`);
     indicator.style.setProperty('--ws-ind-w', `${width}px`);
 

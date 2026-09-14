@@ -47,12 +47,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 /* The header is the one piece of chrome that survives a navigation
    (transition:persist in WorkspaceHeader.astro), so it never flashes; the
    script there re-marks the active tab and slides the indicator instead. */
-.ws-header { position: sticky; top: 0; z-index: 60; height: 56px; background: #fff; border-bottom: 1px solid var(--color-border); transition: box-shadow var(--dur-base) ease; }
+.ws-header { position: sticky; top: 0; z-index: 60; height: 60px; background: #fff; border-bottom: 1px solid var(--color-border); transition: box-shadow var(--dur-base) ease; }
 /* Lifts off the page once the student has scrolled past the first few
    pixels, so the content reads as passing underneath it. */
 .ws-header.is-scrolled { box-shadow: 0 10px 26px -18px rgb(32 37 34 / .55), 0 1px 0 rgb(32 37 34 / .03); }
-.ws-header-inner { position: relative; height: 56px; width: 100%; max-width: 1240px; margin-inline: auto; display: flex; align-items: center; gap: 16px; padding-inline: 24px; }
-.ws-wordmark { flex: none; color: var(--color-ink); font-family: var(--font-display-ui); font-size: 1.08rem; font-weight: 800; letter-spacing: -.05em; text-decoration: none; transition: opacity var(--dur-fast) ease; }
+.ws-header-inner { position: relative; height: 60px; width: 100%; max-width: 1240px; margin-inline: auto; display: flex; align-items: center; gap: 16px; padding-inline: 24px; }
+.ws-wordmark { flex: none; color: var(--color-ink); font-family: var(--font-display-ui); font-size: 1.25rem; font-weight: 800; letter-spacing: -.05em; text-decoration: none; transition: opacity var(--dur-fast) ease; }
 @media (hover: hover) { .ws-wordmark:hover { opacity: .72; } }
 .ws-wordmark-accent { color: var(--color-brand); }
 .ws-wordmark:focus-visible, .ws-avatar:focus-visible, .ws-tabbar-link:focus-visible, .ws-menu a:focus-visible, .ws-menu button:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 6px; }
@@ -60,18 +60,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
    keyboard and pointer describe the tab with the same shape. */
 .ws-tab:focus-visible { outline: 2px solid var(--color-brand); outline-offset: -9px; border-radius: 17px; }
 
-/* Centred independently of the wordmark and avatar, so the tab row does not
-   shift when a signed-in avatar shows initials instead of the placeholder. */
-.ws-tabs { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+/* Fills the space between the wordmark and the avatar (a normal flex child
+   now, not viewport-centred), so the row grows with the header instead of
+   floating at a fixed point. The 720px cap keeps five spread tabs from
+   reading as sparse on a wide screen; space-evenly does the actual spread. */
+.ws-tabs { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-evenly; max-width: 720px; margin-inline: auto; }
 /* isolation, not a z-index: it gives the tab its own stacking context so the
    hover pill (z-index -1) paints behind the label but still in front of the
    header's own white background. A bare negative z-index would slide under
    that background and vanish. */
-.ws-tab { position: relative; isolation: isolate; display: grid; place-items: center; height: 56px; padding-inline: 14px; color: var(--color-ink-muted); font-family: var(--font-display-ui); font-size: .875rem; font-weight: 500; letter-spacing: -.01em; text-decoration: none; transition: color var(--dur-base) ease; }
+.ws-tab { position: relative; isolation: isolate; display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding-inline: 14px; color: var(--color-ink-muted); font-family: var(--font-display-ui); font-size: 1rem; font-weight: 500; letter-spacing: -.01em; text-decoration: none; white-space: nowrap; transition: color var(--dur-base) ease; }
 .ws-tab::before { content: ''; position: absolute; inset: 9px 4px; z-index: -1; border-radius: 10px; background: var(--color-surface-alt); opacity: 0; transform: scale(.94); transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out-expo); }
 @media (hover: hover) { .ws-tab:hover::before { opacity: 1; transform: scale(1); } }
 .ws-tab:hover { color: var(--color-ink); }
 .ws-tab.is-active { color: var(--color-ink); font-weight: 600; }
+.ws-tab-icon { flex: none; }
+.ws-tab-label { line-height: 1; }
 /* One indicator for the whole row, moved by the header script, so changing
    tabs reads as the same mark travelling rather than two separate fades. It
    only becomes visible once it has been measured (.is-ready), which also
@@ -80,10 +84,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .ws-tabs.is-ready .ws-tab-indicator { opacity: 1; transition: transform 320ms var(--ease-out-expo), width 320ms var(--ease-out-expo), opacity var(--dur-base) ease; }
 
 .ws-account { position: relative; margin-left: auto; display: flex; align-items: center; }
-.ws-avatar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-surface-alt); color: var(--color-ink-muted); cursor: pointer; transition: border-color 200ms ease, background 200ms ease, color 200ms ease; }
+.ws-avatar { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-surface-alt); color: var(--color-ink-muted); cursor: pointer; transition: border-color 200ms ease, background 200ms ease, color 200ms ease; }
 .ws-avatar:hover { border-color: var(--color-ink-muted); color: var(--color-ink); }
-.ws-avatar svg { width: 16px; height: 16px; }
-.ws-avatar-initials { font-family: var(--font-display); font-size: .72rem; font-weight: 800; letter-spacing: .01em; color: var(--color-brand); }
+.ws-avatar svg { width: 18px; height: 18px; }
+.ws-avatar-initials { font-family: var(--font-display); font-size: .78rem; font-weight: 800; letter-spacing: .01em; color: var(--color-brand); }
 
 .ws-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 70; width: 214px; padding: 6px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; box-shadow: var(--shadow-card-hover); transform-origin: top right; animation: ws-menu-in 180ms var(--ease-out-expo) both; }
 @keyframes ws-menu-in { from { opacity: 0; transform: scale(.93) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -131,18 +135,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
   .ws-footer { padding-bottom: 24px; }
   .ws-main { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
   .ws-tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: flex; height: calc(56px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); background: #fff; border-top: 1px solid var(--color-border); }
-  .ws-tabbar-link { position: relative; flex: 1; display: grid; place-items: center; color: var(--color-ink-muted); font-family: var(--font-display-ui); font-size: .75rem; font-weight: 500; text-decoration: none; transition: color var(--dur-base) ease; }
+  /* Icon above label, both tinted together on the active tab: that reads as
+     one mark turning on, so the old dot underneath would only repeat it. */
+  .ws-tabbar-link { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--color-ink-muted); font-family: var(--font-display-ui); font-size: 11px; font-weight: 500; text-decoration: none; transition: color var(--dur-base) ease; }
   .ws-tabbar-link.is-active { color: var(--color-brand); font-weight: 600; }
-  .ws-tabbar-label { transition: transform var(--dur-base) var(--ease-out-expo); }
+  .ws-tabbar-icon { flex: none; }
+  .ws-tabbar-label { line-height: 1; transition: transform var(--dur-base) var(--ease-out-expo); }
   .ws-tabbar-link.is-active .ws-tabbar-label { transform: translateY(-1px); }
-  .ws-tabbar-dot { position: absolute; bottom: 11px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--color-brand); opacity: 0; transform: scale(.3); transition: opacity var(--dur-base) ease, transform var(--dur-base) var(--ease-out-expo); }
-  .ws-tabbar-link.is-active .ws-tabbar-dot { opacity: 1; transform: scale(1); }
   .site-mobile-menu { top: 72px; right: .5rem; left: .5rem; }
 }
-@media (min-width: 720px) and (max-width: 920px) {
-  /* relative, not static: the sliding indicator is absolutely positioned
-     inside this row and would otherwise anchor to the header instead. */
-  .ws-tabs { position: relative; left: auto; transform: none; margin-inline: auto; }
+@media (min-width: 720px) and (max-width: 1000px) {
+  /* The 720px cap on .ws-tabs would otherwise still fit here, but the label
+     shrinks a notch so five icon+label tabs keep their 14px padding without
+     crowding the wordmark or avatar. */
+  .ws-tab { font-size: 15px; }
 }
 @media (max-width: 920px) {
   .site-nav-links, .site-account-menu { display: none; }
@@ -154,7 +160,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
   .site-workspace-button { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .site-nav-link, .site-workspace-button, .ws-header, .ws-wordmark, .ws-tab, .ws-tab::before, .ws-tab-indicator, .ws-tabs.is-ready .ws-tab-indicator, .ws-avatar, .ws-menu a, .ws-menu button, .ws-tabbar-link, .ws-tabbar-label, .ws-tabbar-dot, .ws-footer a { transition-duration: 1ms; }
+  .site-nav-link, .site-workspace-button, .ws-header, .ws-wordmark, .ws-tab, .ws-tab::before, .ws-tab-indicator, .ws-tabs.is-ready .ws-tab-indicator, .ws-avatar, .ws-menu a, .ws-menu button, .ws-tabbar-link, .ws-tabbar-label, .ws-footer a { transition-duration: 1ms; }
   .site-nav-link:hover, .site-workspace-button:hover { transform: none; }
   .ws-tab::before { transform: none; }
   .ws-menu, .ws-menu-identity, .ws-menu a, .ws-menu button { animation-duration: 1ms; animation-delay: 0ms; }
