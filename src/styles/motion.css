@@ -18,21 +18,42 @@
    this file lives at the bottom. */
 
 /* ── Card / list entrance stagger ──────────────────────────────────
-   A container marks itself [data-stagger]; the script in BaseLayout
-   adds .stagger-in to each child and sets --stagger-delay. Children
-   are fully visible until that happens, so if the script never runs
-   (error, old browser, reduced motion) the page simply appears. */
+   A container marks itself [data-stagger]; its direct children rise 6px
+   into place 40ms apart, purely from these rules — no script ever writes
+   a class or inline style onto them. That matters because several
+   [data-stagger] containers (dash-cards, dash-skills-row, the plan list,
+   Course's module list) are rendered by React islands: server and client
+   markup for those elements is identical (both just carry the static
+   `data-stagger` attribute), so there is nothing pre-hydration JS could
+   touch to create a server/client mismatch. Long lists stop staggering
+   after the first dozen children so the tail never feels like it's
+   waiting its turn — it just appears. */
 @keyframes stagger-in {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.stagger-in {
+[data-stagger] > * {
   /* backwards, not both: `both` would leave the final keyframe pinned as an
      animation-origin declaration, which outranks author rules — a card that
      had staggered in could then never be lifted by :hover again. backwards
      still hides the element through its delay, which is the part we need. */
   animation: stagger-in var(--dur-slow) var(--ease-out-expo) backwards;
-  animation-delay: var(--stagger-delay, 0ms);
+}
+[data-stagger] > :nth-child(1)  { animation-delay: 0ms; }
+[data-stagger] > :nth-child(2)  { animation-delay: 40ms; }
+[data-stagger] > :nth-child(3)  { animation-delay: 80ms; }
+[data-stagger] > :nth-child(4)  { animation-delay: 120ms; }
+[data-stagger] > :nth-child(5)  { animation-delay: 160ms; }
+[data-stagger] > :nth-child(6)  { animation-delay: 200ms; }
+[data-stagger] > :nth-child(7)  { animation-delay: 240ms; }
+[data-stagger] > :nth-child(8)  { animation-delay: 280ms; }
+[data-stagger] > :nth-child(9)  { animation-delay: 320ms; }
+[data-stagger] > :nth-child(10) { animation-delay: 360ms; }
+[data-stagger] > :nth-child(11) { animation-delay: 400ms; }
+[data-stagger] > :nth-child(12) { animation-delay: 440ms; }
+/* 13th child and beyond: no entrance animation, just visible. */
+[data-stagger] > :nth-child(n + 13) {
+  animation: none;
 }
 
 /* ── Progress bars ─────────────────────────────────────────────────
@@ -185,7 +206,7 @@ input[type='radio'] {
    One block for this file: no transforms, nothing that takes time.
    Content that an animation would have revealed is left visible. */
 @media (prefers-reduced-motion: reduce) {
-  .stagger-in,
+  [data-stagger] > *,
   .bar-fill,
   [role='tabpanel'],
   .tick-svg polyline,
@@ -194,7 +215,7 @@ input[type='radio'] {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
   }
-  .stagger-in,
+  [data-stagger] > *,
   [role='tabpanel'] {
     opacity: 1;
     transform: none;
