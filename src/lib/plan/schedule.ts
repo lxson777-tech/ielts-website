@@ -34,6 +34,7 @@ import { ALL_READING_DRILLS, ALL_LISTENING_DRILLS, type DrillMeta } from '../tes
 import type { PracticeTest } from '../tests/schema';
 import { saveStudyPlan, type SavedPlan } from '../study-plan';
 import { getVocabSummary } from '../vocab-review';
+import { getVocabularyPart } from '../../data/vocabulary';
 import { addDays, daysBetween, isWeekday, parseDateKey, toLocalDateKey } from './date';
 
 export const DEFAULT_DAILY_MINUTES = 25;
@@ -153,8 +154,26 @@ function testItem(t: PracticeTest, skill: 'reading' | 'listening'): PlanItem {
   };
 }
 
-function vocabItem(): PlanItem {
-  return { id: 'vocab-review', type: 'vocab', label: 'Vocabulary review', meta: 'Quick recap', href: '/review', minutes: VOCAB_MINUTES, done: false, trackable: true };
+/** The day's vocabulary item: cycles through the course's vocabulary
+    lessons in course order (one per scheduled day, wrapping), naming and
+    linking straight to that day's topic on /review — `Vocabulary:
+    Environment & Ecology` -> `/review?topic=environment` — so opening it
+    lands directly in the relevant topic instead of the plain hub. Falls
+    back to the generic label/link on the (should-never-happen) chance the
+    course has no vocabulary lessons at all. */
+function vocabItem(dayNumber: number, vocabTopicSlugs: string[]): PlanItem {
+  const slug = vocabTopicSlugs.length ? vocabTopicSlugs[(dayNumber - 1) % vocabTopicSlugs.length]! : null;
+  const part = slug ? getVocabularyPart(slug) : undefined;
+  return {
+    id: 'vocab-review',
+    type: 'vocab',
+    label: part ? `Vocabulary: ${part.title}` : 'Vocabulary',
+    meta: 'Quick recap',
+    href: part ? `/review?topic=${part.slug}` : '/review',
+    minutes: VOCAB_MINUTES,
+    done: false,
+    trackable: true,
+  };
 }
 
 function mockItem(date: string): PlanItem {
@@ -183,6 +202,10 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
   const params = resolvePlanParams(plan);
   const lessons = courseLessons();
   const totalLessons = lessons.length;
+  // Vocabulary lesson keys are `vocabulary-<slug>`; course order here
+  // matches src/data/vocabulary.ts's VOCABULARY_PARTS order exactly, since
+  // interleaveBySkill() never reorders lessons within one skill's queue.
+  const vocabTopicSlugs = lessons.filter((l) => l.skill === 'vocabulary').map((l) => l.key.replace(/^vocabulary-/, ''));
 
   const totalCalendarDays = Math.max(1, daysBetween(params.startDate, params.examDate));
   const allDates: string[] = Array.from({ length: totalCalendarDays }, (_, i) => addDays(params.startDate, i));
@@ -262,13 +285,13 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
 
     if (isLight) {
       for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
-      if (items.length === 0) items.push(vocabItem());
+      if (items.length === 0) items.push(vocabItem(dayNumber, vocabTopicSlugs));
     } else if (isMock) {
       items.push(mockItem(date));
-      items.push(vocabItem());
+      items.push(vocabItem(dayNumber, vocabTopicSlugs));
     } else if (isReview) {
       for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
-      if (items.length < 2) items.push(vocabItem());
+      if (items.length < 2) items.push(vocabItem(dayNumber, vocabTopicSlugs));
     } else if (weekNumber >= 2 && weekNumber !== lastTestWeek) {
       lastTestWeek = weekNumber;
       const pool = nextTestSkill === 'reading' ? readingTests : listeningTests;
@@ -280,7 +303,7 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
         else listeningTestPtr++;
       }
       nextTestSkill = nextTestSkill === 'reading' ? 'listening' : 'reading';
-      items.push(vocabItem());
+      items.push(vocabItem(dayNumber, vocabTopicSlugs));
     } else {
       // Ordinary lesson day: fill the budget with lessons, a drill after
       // every two (when the skill has one and there's room), topped up with
@@ -320,9 +343,9 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
         // near-empty day. Checked before the vocab top-up below, otherwise
         // that top-up fires first and this branch never gets a chance to.
         for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
-        if (items.length === 0) items.push(vocabItem());
+        if (items.length === 0) items.push(vocabItem(dayNumber, vocabTopicSlugs));
       } else if (!compressed && items.length < 2 && items.length < 4) {
-        items.push(vocabItem());
+        items.push(vocabItem(dayNumber, vocabTopicSlugs));
       }
     }
 

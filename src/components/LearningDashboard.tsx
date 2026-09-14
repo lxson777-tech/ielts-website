@@ -12,6 +12,7 @@ import { getProgress, getTypeStats, onProgressChange, type ProgressV1 } from '..
 import { loadStudyPlan } from '../lib/study-plan';
 import { buildCourse } from '../lib/course';
 import { getVocabSummary, type VocabSummary } from '../lib/vocab-review';
+import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
 import { LABELS, practiseHref } from './TypeAnalytics';
 import PlanToday from './plan/PlanToday';
@@ -92,7 +93,6 @@ export default function LearningDashboard() {
       progress.speaking.length
     : 0;
   const vocabDue = vocab?.due ?? 0;
-  const vocabNew = vocab?.newToday ?? 0;
 
   const isNew = progress !== null && !hasPlan && done === 0 && attempts === 0;
 
@@ -130,15 +130,16 @@ export default function LearningDashboard() {
             </a>
 
             <a className="dash-card" href={withBase('/review')}>
-              <span className="dash-card-label">Words due</span>
+              <span className="dash-card-label">Words</span>
               <strong className="dash-card-title">
-                {vocabDue > 0 ? `${vocabDue} word${vocabDue === 1 ? '' : 's'}` : 'All caught up'}
+                {VOCABULARY_PARTS.length} topics, {vocab?.total ?? 0} words
               </strong>
-              <span className="dash-card-meta">
-                {vocabDue > 0
-                  ? 'Flashcards from your course topics'
-                  : `${vocabNew} new word${vocabNew === 1 ? '' : 's'} ready when you are`}
-              </span>
+              {vocabDue > 0 && (
+                <span className="dash-card-due">
+                  {vocabDue} due for flashcard practice
+                </span>
+              )}
+              <span className="dash-card-meta">Browse topics</span>
             </a>
           </div>
 

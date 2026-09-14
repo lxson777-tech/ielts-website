@@ -1,26 +1,28 @@
-/* Spaced vocabulary review session: a calm flashcard loop over the deck in
-   src/lib/vocab-review.ts. All scheduling logic (what's due, what the next
-   interval would be for each rating, where lapsed words go) lives there —
-   this component only drives one session's UI: which card is showing,
-   whether it's flipped, and the running queue.
+/* One flashcard session over a single topic's deck — the "Practise this
+   topic with flashcards" action at the bottom of a topic view in
+   VocabTopics.tsx. All scheduling logic (what's due, what the next interval
+   would be for each rating, where lapsed words go) lives in
+   src/lib/vocab-review.ts; this component only drives one session's UI:
+   which card is showing, whether it's flipped, and the running queue.
+
+   Used to be the whole /review page (topic chips, a session, a "New words
+   per day" picker). The owner's feedback was that the landing experience
+   was "weird and confusing" — VocabTopics.tsx is the plain topic browser
+   that replaced it, and this component is now a session that always opens
+   already filtered to one topic, with no chips of its own.
 
    "Again" doesn't leave the queue — it gets pushed back onto the end, so it
    resurfaces later in the same session rather than waiting for the next
    day, while the progress line ("N of M") grows to match. */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { withBase } from '../lib/url';
 import {
   getDueCards,
-  getSettings,
   getStrugglingCards,
   getVocabSummary,
   previewIntervals,
   rate,
-  setNewPerDay,
-  topics,
   type Grade,
-  type NewPerDay,
   type StrugglingCard,
   type VocabCard,
   type VocabSummary,
@@ -29,7 +31,6 @@ import {
 const GRADES: Grade[] = ['again', 'hard', 'good', 'easy'];
 const GRADE_LABEL: Record<Grade, string> = { again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' };
 const GRADE_KEY: Record<string, Grade> = { '1': 'again', '2': 'hard', '3': 'good', '4': 'easy' };
-const NEW_PER_DAY_OPTIONS: NewPerDay[] = [5, 10, 20];
 
 function formatInterval(days: number): string {
   if (days <= 0) return 'later today';
@@ -43,11 +44,8 @@ function formatInterval(days: number): string {
 
 type Phase = 'loading' | 'active' | 'finished';
 
-export default function VocabReview() {
+export default function VocabReview({ topic, onExit }: { topic: string; onExit: () => void }) {
   const [phase, setPhase] = useState<Phase>('loading');
-  const [allTopics, setAllTopics] = useState<string[]>([]);
-  const [topicFilter, setTopicFilter] = useState<string | undefined>(undefined);
-  const [newPerDay, setNewPerDayState] = useState<NewPerDay>(10);
   const [queue, setQueue] = useState<VocabCard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -55,23 +53,16 @@ export default function VocabReview() {
   const [summary, setSummary] = useState<VocabSummary | null>(null);
   const [struggling, setStruggling] = useState<StrugglingCard[]>([]);
 
-  const startSession = useCallback((topic: string | undefined) => {
-    setTopicFilter(topic);
+  // Deferred to the client so the deck (parsed at build time but scheduled
+  // against localStorage) and the browser's stored progress agree from the
+  // first render, with no server/client mismatch.
+  useEffect(() => {
     setQueue(getDueCards(topic));
     setIndex(0);
     setFlipped(false);
     setSessionCount(0);
     setPhase('active');
-  }, []);
-
-  // Initial load — deferred to the client so the deck (parsed at build time
-  // but scheduled against localStorage) and the browser's stored progress
-  // agree from the first render, with no server/client mismatch.
-  useEffect(() => {
-    setAllTopics(topics());
-    setNewPerDayState(getSettings().newPerDay);
-    startSession(undefined);
-  }, [startSession]);
+  }, [topic]);
 
   const current = queue[index];
 
@@ -79,9 +70,9 @@ export default function VocabReview() {
 
   const finishSession = useCallback(() => {
     setSummary(getVocabSummary());
-    setStruggling(getStrugglingCards());
+    setStruggling(getStrugglingCards().filter((c) => c.topic === topic));
     setPhase('finished');
-  }, []);
+  }, [topic]);
 
   const handleRate = useCallback(
     (grade: Grade) => {
@@ -125,44 +116,23 @@ export default function VocabReview() {
     return () => window.removeEventListener('keydown', onKey);
   }, [phase, flipped, current, handleRate]);
 
-  const handleNewPerDay = (n: NewPerDay) => {
-    setNewPerDay(n);
-    setNewPerDayState(n);
-    startSession(topicFilter);
+  const restart = () => {
+    setQueue(getDueCards(topic));
+    setIndex(0);
+    setFlipped(false);
+    setSessionCount(0);
+    setPhase('active');
   };
 
   return (
     <div className="vocab-review-space">
       <div className="vocab-review-head">
-        <div>
-          <p className="vocab-back-link">
-            <a href={withBase('/dashboard')}>Dashboard</a>
-          </p>
-          <h1>Vocabulary review</h1>
-          <p>Flashcards for every IELTS topic word, spaced out so the ones you know fade and the ones you don't come back sooner.</p>
-        </div>
-      </div>
-
-      <div className="vocab-chips" role="group" aria-label="Filter by topic">
-        <button type="button" className={topicFilter === undefined ? 'is-active' : ''} onClick={() => startSession(undefined)}>
-          All
-        </button>
-        {allTopics.map((t) => (
-          <button key={t} type="button" className={topicFilter === t ? 'is-active' : ''} onClick={() => startSession(t)}>
-            {t}
+        <p className="vocab-back-link">
+          <button type="button" className="vocab-text-link" onClick={onExit}>
+            {topic}
           </button>
-        ))}
-      </div>
-
-      <div className="vocab-settings">
-        <span>New words per day</span>
-        <div className="vocab-settings-options">
-          {NEW_PER_DAY_OPTIONS.map((n) => (
-            <button key={n} type="button" className={newPerDay === n ? 'is-active' : ''} onClick={() => handleNewPerDay(n)}>
-              {n}
-            </button>
-          ))}
-        </div>
+        </p>
+        <h1>Flashcards</h1>
       </div>
 
       {phase === 'loading' && <p className="vocab-hint">Loading your deck…</p>}
@@ -201,16 +171,6 @@ export default function VocabReview() {
               <div className="vocab-card-back" key={`${current.word}-back`}>
                 <p className="vocab-card-def">{current.definition}</p>
                 {current.example && <p className="vocab-card-example">“{current.example}”</p>}
-                {current.collocations && current.collocations.length > 0 && (
-                  <div className="vocab-card-colloc">
-                    <span>Collocations for {current.topic}</span>
-                    <ul>
-                      {current.collocations.map((c) => (
-                        <li key={c}>{c}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -238,7 +198,7 @@ export default function VocabReview() {
           <p>
             {sessionCount > 0
               ? `You reviewed ${sessionCount} word${sessionCount === 1 ? '' : 's'} this session.`
-              : 'Nothing is due right now. Come back tomorrow for more, or add extra new words above.'}
+              : `Nothing from ${topic} is due right now. Come back tomorrow for more.`}
           </p>
 
           <div className="vocab-summary-grid">
@@ -275,10 +235,12 @@ export default function VocabReview() {
           )}
 
           <div className="vocab-finished-actions">
-            <button type="button" onClick={() => startSession(topicFilter)}>
+            <button type="button" onClick={restart}>
               Review more
             </button>
-            <a href={withBase('/dashboard')}>Back to dashboard</a>
+            <button type="button" className="vocab-finished-secondary" onClick={onExit}>
+              Back to {topic}
+            </button>
           </div>
         </div>
       )}

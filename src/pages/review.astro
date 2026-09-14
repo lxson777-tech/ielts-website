@@ -1,9 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import VocabReview from '../components/VocabReview';
+import VocabTopics from '../components/VocabTopics';
+import { VOCABULARY_PARTS } from '../data/vocabulary';
+import { buildVocabTopicData, type VocabTopicData } from '../lib/vocab-review';
+
+// Same import.meta.glob pattern as src/pages/lessons/vocabulary/[part].astro:
+// read every topic's lesson body at build time, then hand the typed,
+// grouped result to the client island as props. Parsing never happens in
+// the browser.
+const fragments = import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const topicsData: VocabTopicData[] = VOCABULARY_PARTS.map((part) => {
+  const raw = fragments[`../content/lesson-bodies/vocabulary-${part.slug}.html`];
+  if (!raw) throw new Error(`Missing fragment for vocabulary topic: ${part.slug}`);
+  return buildVocabTopicData(raw, part.slug, part.title);
+});
 ---
-<BaseLayout title="Vocabulary Review · IELTS is EZ" description="Spaced repetition flashcards for every IELTS topic word.">
-  <VocabReview client:load />
+<BaseLayout title="Words · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
+  <VocabTopics client:load topics={topicsData} />
 </BaseLayout>
 
 <style is:global>

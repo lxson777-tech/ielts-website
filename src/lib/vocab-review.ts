@@ -99,6 +99,14 @@ const WORDS_TOPIC_TO_SLUG: Record<string, string> = {
   Work: 'work',
 };
 
+/** The reverse of the table above: lesson slug -> words.ts's short topic
+    name. Used by the topic-browser parser (below) to find which words.ts
+    entries belong to a given lesson, so it can merge in any that lesson's
+    own table is missing. */
+const SLUG_TO_WORDS_TOPIC: Record<string, string> = Object.fromEntries(
+  Object.entries(WORDS_TOPIC_TO_SLUG).map(([topic, slug]) => [slug, topic]),
+);
+
 function topicTitleForSlug(slug: string, fallback: string): string {
   return VOCABULARY_PARTS.find((p) => p.slug === slug)?.title ?? fallback;
 }
@@ -118,15 +126,21 @@ function stripTags(s: string): string {
   return decodeEntities(s.replace(/<[^>]+>/g, '')).trim();
 }
 
-/** One <table class="vocab-table"> row: word, meaning, example. */
-interface ParsedRow {
+/** One <table class="vocab-table"> row: word, meaning, example. Shared shape
+    between the flashcard deck below and the topic-browser parser further
+    down, since both read the same markup. */
+export interface VocabWordRow {
   word: string;
   meaning: string;
   example: string;
 }
 
-function parseVocabFragment(raw: string): { rows: ParsedRow[]; collocations: string[] } {
-  const rows: ParsedRow[] = [];
+/** Every <tr><td>word</td><td>meaning</td><td>example</td></tr> row in a
+    fragment of HTML, in document order. Scans the whole string with no
+    notion of nesting, so callers control scope by how much markup they
+    pass in (a whole lesson file, or just one card's inner HTML). */
+function parseTableRows(raw: string): VocabWordRow[] {
+  const rows: VocabWordRow[] = [];
   const rowRe = /<tr>\s*<td>([\s\S]*?)<\/td>\s*<td>([\s\S]*?)<\/td>\s*<td>([\s\S]*?)<\/td>\s*<\/tr>/g;
   let rowMatch: RegExpExecArray | null;
   while ((rowMatch = rowRe.exec(raw))) {
@@ -138,6 +152,11 @@ function parseVocabFragment(raw: string): { rows: ParsedRow[]; collocations: str
     const example = stripTags(rowMatch[3]!).replace(/^["“](.*)["”]$/, '$1');
     if (word && meaning) rows.push({ word, meaning, example });
   }
+  return rows;
+}
+
+function parseVocabFragment(raw: string): { rows: VocabWordRow[]; collocations: string[] } {
+  const rows = parseTableRows(raw);
 
   const collocations: string[] = [];
   const collocMatch = raw.match(/<h3>Key Collocations<\/h3>\s*<ul>([\s\S]*?)<\/ul>/);
@@ -213,6 +232,179 @@ const CARD_BY_WORD = new Map<string, VocabCard>(CARD_SET.map((c) => [c.word, c])
 
 export function topics(): string[] {
   return Array.from(new Set(CARD_SET.map((c) => c.topic))).sort((a, b) => a.localeCompare(b));
+}
+
+/* ---------------------------------------------------------------------- */
+/* Topic browser: one lesson's vocabulary, grouped the way the lesson      */
+/* teaches it, for /review's topic view (src/components/VocabTopics.tsx). */
+/*                                                                          */
+/* Parsed at build time — review.astro calls buildVocabTopicData() once    */
+/* per topic, from the same raw HTML import.meta.glob reads for the        */
+/* flashcard deck above, and passes the typed result down as props. The    */
+/* browser never re-parses lesson HTML itself.                            */
+/* ---------------------------------------------------------------------- */
+
+/** One <h3> group from a lesson, other than the top-level word table.
+    `words` for a group whose content is itself a <table class="vocab-table">
+    (the conjunctions lesson's function groups: Contrast, Addition, ...) —
+    these still count toward the topic's word total. `items` for a group
+    whose content is a plain <ul> (Key Collocations, Useful Essay Phrases) —
+    pre-sanitised inline HTML per item, kept as bullets, not counted as
+    vocabulary. Exactly one of the two is set. */
+export interface VocabCategory {
+  heading: string;
+  words?: VocabWordRow[];
+  items?: string[];
+}
+
+export interface VocabTopicData {
+  slug: string;
+  title: string;
+  /** "Words and phrases": the lesson's own top-level table (the one word
+      list not nested inside an <h3> group), plus any words.ts entries for
+      this topic that no table in the lesson already has. Empty when the
+      lesson has no top-level table of its own (conjunctions: every word
+      lives inside a function group instead) and words.ts has nothing left
+      to add. */
+  words: VocabWordRow[];
+  /** Every other <h3> group, in document order. */
+  categories: VocabCategory[];
+  /** words.length plus every category's word-row count (list-only
+      categories don't count) — the topic's total distinct vocabulary,
+      shown on the landing card and matching the lesson's own "N words"
+      eyebrow copy. */
+  wordCount: number;
+}
+
+/** A table cell sometimes spells one vocabulary item two ways at once —
+    "literacy / numeracy", "artificial intelligence (AI)", "epidemic /
+    pandemic" — so the words.ts merge (below) needs every alternative, not
+    just the cell's full text, or it re-adds "literacy" as if the lesson
+    never taught it. Strips a trailing "(...)" abbreviation, then splits on
+    "/". */
+function wordVariants(raw: string): string[] {
+  const noAbbreviation = raw.replace(/\([^)]*\)/g, '').trim();
+  return noAbbreviation
+    .split('/')
+    .map((part) => part.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+const INLINE_TAG_ALLOWLIST = new Set(['strong', 'em', 'b', 'i']);
+
+/** Strip every tag from a snippet of trusted, build-time HTML except a
+    small inline allow-list (and any attributes on those), so a list item
+    like "<strong>tackle</strong> climate change" keeps its bold word when
+    rendered with dangerouslySetInnerHTML. Entities are left alone — the
+    browser decodes them the same as any other innerHTML. */
+function sanitizeInline(html: string): string {
+  return html.replace(/<\/?([a-zA-Z0-9]+)[^>]*>/g, (match, tagName: string) => {
+    const tag = tagName.toLowerCase();
+    if (!INLINE_TAG_ALLOWLIST.has(tag)) return '';
+    return match.startsWith('</') ? `</${tag}>` : `<${tag}>`;
+  });
+}
+
+/** Every top-level <div class="card">...</div> block in a lesson fragment,
+    with its <h3> heading and inner HTML. Tracks <div> depth by hand rather
+    than a non-greedy regex, so a card whose content ever grows a nested
+    <div> still closes at the right </div> instead of truncating early. */
+function extractCardBlocks(raw: string): { heading: string; inner: string }[] {
+  const blocks: { heading: string; inner: string }[] = [];
+  const openTag = '<div class="card">';
+  let searchFrom = 0;
+  for (;;) {
+    const openIdx = raw.indexOf(openTag, searchFrom);
+    if (openIdx === -1) break;
+    const contentStart = openIdx + openTag.length;
+    const tagRe = /<div[\s>]|<\/div>/g;
+    tagRe.lastIndex = contentStart;
+    let depth = 1;
+    let contentEnd = raw.length;
+    let tagMatch: RegExpExecArray | null;
+    while ((tagMatch = tagRe.exec(raw))) {
+      if (tagMatch[0].startsWith('</div>')) {
+        depth -= 1;
+        if (depth === 0) {
+          contentEnd = tagMatch.index;
+          break;
+        }
+      } else {
+        depth += 1;
+      }
+    }
+    const inner = raw.slice(contentStart, contentEnd);
+    const headingMatch = inner.match(/<h3>([\s\S]*?)<\/h3>/);
+    blocks.push({ heading: headingMatch ? stripTags(headingMatch[1]!) : '', inner });
+    searchFrom = contentEnd;
+  }
+  return blocks;
+}
+
+/** The lesson's own top-level word table — the rows not nested inside any
+    <h3> group — or an empty list when every table in the lesson lives
+    inside a card (conjunctions). */
+function parseTopLevelTable(raw: string, firstCardIndex: number): VocabWordRow[] {
+  const tableMatch = raw.match(/<table class="vocab-table"[^>]*>([\s\S]*?)<\/table>/);
+  if (!tableMatch) return [];
+  const tableIndex = raw.indexOf(tableMatch[0]);
+  if (firstCardIndex !== -1 && tableIndex > firstCardIndex) return []; // lives inside a card instead
+  return parseTableRows(tableMatch[1]!);
+}
+
+/** Parse one vocabulary lesson's raw HTML into the typed, grouped shape the
+    topic view renders. Pure — takes the raw fragment string review.astro
+    already read via import.meta.glob, does no I/O of its own. */
+export function buildVocabTopicData(raw: string, slug: string, title: string): VocabTopicData {
+  const firstCardIndex = raw.indexOf('<div class="card">');
+  const topWords = parseTopLevelTable(raw, firstCardIndex);
+
+  const categories: VocabCategory[] = [];
+  for (const block of extractCardBlocks(raw)) {
+    if (!block.heading) continue;
+    const tableMatch = block.inner.match(/<table class="vocab-table"[^>]*>([\s\S]*?)<\/table>/);
+    if (tableMatch) {
+      const words = parseTableRows(tableMatch[1]!);
+      if (words.length) categories.push({ heading: block.heading, words });
+      continue;
+    }
+    const listMatch = block.inner.match(/<ul>([\s\S]*?)<\/ul>/);
+    if (!listMatch) continue;
+    const items: string[] = [];
+    const liRe = /<li>([\s\S]*?)<\/li>/g;
+    let liMatch: RegExpExecArray | null;
+    while ((liMatch = liRe.exec(listMatch[1]!))) {
+      const html = sanitizeInline(liMatch[1]!.trim());
+      if (html) items.push(html);
+    }
+    if (items.length) categories.push({ heading: block.heading, items });
+  }
+
+  // Every word already shown somewhere in the lesson (top-level table or a
+  // category's own table), so the words.ts merge below only adds what the
+  // lesson doesn't already teach. A handful of table entries spell the same
+  // word two ways at once ("literacy / numeracy", "artificial intelligence
+  // (AI)") — wordVariants() splits those apart so "literacy" from words.ts
+  // still matches instead of getting merged in as a spurious extra.
+  const present = new Set<string>();
+  for (const w of topWords) for (const variant of wordVariants(w.word)) present.add(variant);
+  for (const c of categories) for (const w of c.words ?? []) for (const variant of wordVariants(w.word)) present.add(variant);
+
+  const words = [...topWords];
+  const wordsTopic = SLUG_TO_WORDS_TOPIC[slug];
+  if (wordsTopic) {
+    for (const w of WORDS) {
+      if (w.topic !== wordsTopic) continue;
+      const variants = wordVariants(w.word);
+      if (variants.some((v) => present.has(v))) continue;
+      for (const v of variants) present.add(v);
+      words.push({ word: w.word, meaning: w.def, example: w.example ?? '' });
+    }
+  }
+
+  const wordCount = words.length + categories.reduce((n, c) => n + (c.words?.length ?? 0), 0);
+
+  return { slug, title, words, categories, wordCount };
 }
 
 /* ---------------------------------------------------------------------- */
