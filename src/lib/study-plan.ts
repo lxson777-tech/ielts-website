@@ -23,6 +23,22 @@ export interface SavedPlan {
       their completion is read from progress.lessons, the single source of
       truth. In practice this holds only the exam-readiness extras. */
   doneKeys?: string[];
+  /** ISO yyyy-mm-dd, the day the plan was created. Optional so plans saved
+      before the daily study-plan feature still load; src/lib/plan/schedule.ts
+      fills it in from `createdAt` the first time it sees a plan without one,
+      via ensurePlanStartDate(), and persists it so the schedule stays fixed
+      relative to when the student actually started rather than shifting
+      every time it's recomputed. */
+  startDate?: string;
+  /** Minutes the student wants to study on a study day. Optional, defaults
+      to 25 (src/lib/plan/schedule.ts DEFAULT_DAILY_MINUTES) when unset, so
+      plans saved before this field existed still load and schedule. */
+  dailyMinutes?: 15 | 25 | 40 | 60;
+  /** Which calendar days count as study days. Optional, defaults to 'daily'
+      when unset. 'weekdays' means Monday-Friday only — used both to skip
+      weekends when building the schedule and to decide which days count
+      toward the streak. */
+  studyDays?: 'daily' | 'weekdays';
 }
 
 const listeners = new Set<() => void>();

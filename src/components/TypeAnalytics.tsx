@@ -35,15 +35,17 @@ function tone(pct: number): { bar: string; text: string } {
     undefined if this skill has no lesson covering it (only possible for a
     handful of listening types with no dedicated lesson, see
     listening-strategies.ts). */
-function lessonHref(skill: 'reading' | 'listening', type: QuestionType): string | undefined {
+export function lessonHref(skill: 'reading' | 'listening', type: QuestionType): string | undefined {
   const slug = skill === 'listening' ? listeningLessonSlug(type) : readingLessonSlug(type);
   return slug ? withBase(`/lessons/${skill}/${slug}`) : undefined;
 }
 
 /** Base-prefixed URL to the trainer hub, filtered to drills that contain this
     question type (the hub reads `?type=` client-side, see
-    src/pages/trainers/{reading,listening}/index.astro). */
-function practiseHref(skill: 'reading' | 'listening', type: QuestionType): string {
+    src/pages/trainers/{reading,listening}/index.astro). Exported so the
+    results screen's "weakest type in this test" line (TestPlayer) can reuse
+    it instead of duplicating the query-string shape. */
+export function practiseHref(skill: 'reading' | 'listening', type: QuestionType): string {
   return withBase(`/trainers/${skill}?type=${encodeURIComponent(type)}`);
 }
 

@@ -1,0 +1,28 @@
+---
+/* Model-answer bank: browse Band 6/7/8 (Task 2) and Band 7/8.5 (Task 1)
+   sample essays for every writing prompt, with examiner notes and
+   highlighted phrases. Sits alongside the Writing Checker and Trainer in
+   the study-space rail (BaseLayout adds the rail automatically for any
+   /writing/* route, the same way it does for /writing/checker). */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ModelAnswers from '../../components/ModelAnswers';
+---
+
+<BaseLayout
+  title="Essay Model Answers · IELTS Portal"
+  description="Band 6, 7 and 8 model essays for every Writing Task 2 prompt, and Band 7 and 8.5 model reports and letters for every Task 1 prompt, with examiner notes and highlighted phrases."
+>
+  <div class="skill-writing mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="Writing"
+      title="Essay Model Answers"
+      subtitle="See what a Band 6, a Band 7 and a Band 8 answer actually look like for the same question, side by side if you want. Every essay comes with examiner notes on all four criteria and phrases you can hover or tap to see why they work."
+    />
+    <ModelAnswers client:load />
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../../styles/platform-pages.css';
+</style>

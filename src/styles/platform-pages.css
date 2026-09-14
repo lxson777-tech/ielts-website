@@ -37,3 +37,204 @@
 .platform-hub .skill-speaking span.inline-flex{color:var(--color-ink-muted)!important;background:var(--color-surface-alt)!important}
 .platform-hub .skill-speaking a:not([class*="bg-"]){color:var(--color-brand,#e76f51)}
 @media (max-width:760px){.test-catalog-heading{display:block}.test-catalog-heading>p{margin-top:8px}.test-catalog-columns{grid-template-columns:1fr}.test-meta{display:none}.platform-hub{padding-top:32px;padding-bottom:56px}.platform-hub>div.grid>div>div:first-of-type{height:72px}}
+
+/* Daily study plan: the "Today" card and streak strip on /dashboard
+   (src/components/plan/PlanToday.tsx, StreakBar.tsx). Same card language as
+   .dashboard-next above (white surface, 1px border, soft shadow) but a
+   slightly tighter 16px radius so the two nested lists of items read calmly
+   rather than as another hero block. */
+.plan-today,.plan-streak{border:1px solid var(--color-border);border-radius:16px;background:var(--color-surface);box-shadow:0 12px 32px rgb(32 37 34 / 5%)}
+.plan-today{padding:26px 28px;margin:0 0 28px}
+.plan-today-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.plan-today-head h2{margin:6px 0 0;font-family:var(--font-display);font-size:1.3rem;letter-spacing:-.02em}
+.plan-today-progress{color:var(--color-ink-muted);font-size:.8rem;font-weight:700;white-space:nowrap}
+.plan-today-behind{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;border-radius:12px;background:var(--color-surface-alt);color:var(--color-ink-muted);font-size:.82rem}
+.plan-today-behind-actions{display:flex;gap:16px;flex-wrap:wrap}
+.plan-today-behind-actions a,.plan-today-behind-actions button{border:0;background:none;padding:0;color:var(--color-brand,#e76f51);font-size:.78rem;font-weight:800;cursor:pointer}
+.plan-rest-note{margin:14px 0 0;color:var(--color-ink-muted);font-size:.85rem;line-height:1.55}
+.plan-today-empty .plan-rest-note{margin-top:8px}
+.plan-today-empty .coral-button{margin-top:18px}
+.plan-item-list{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.plan-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--color-border);border-radius:12px;transition:border-color .2s ease,transform .2s ease}
+.plan-item:hover{border-color:var(--color-brand,#e76f51);transform:translateY(-1px)}
+.plan-item-tick{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid var(--color-border);font-size:.68rem;font-weight:800;color:#fff;flex-shrink:0}
+.plan-item-done .plan-item-tick{background:var(--color-success,#58855e);border-color:var(--color-success,#58855e)}
+.plan-item-done .plan-item-label{color:var(--color-ink-muted);text-decoration:line-through}
+.plan-item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.plan-item-body{min-width:0;flex:1}
+.plan-item-label{display:block;font-weight:700;font-size:.88rem;color:var(--color-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-item-meta{display:block;margin-top:2px;color:var(--color-ink-muted);font-size:.73rem}
+.plan-item-minutes{flex-shrink:0;color:var(--color-ink-muted);font-size:.7rem;font-weight:800;white-space:nowrap}
+.plan-streak{padding:20px 24px;margin:0 0 44px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.plan-streak-count{display:flex;align-items:center;gap:16px}
+.plan-streak-count strong{display:block;margin-top:4px;font-family:var(--font-display);font-size:1.5rem;letter-spacing:-.02em}
+.plan-streak-count .plan-rest-note{margin:0;max-width:220px;font-size:.78rem}
+.plan-streak-dots{display:flex;gap:5px}
+.plan-streak-dot{width:9px;height:9px;border-radius:50%;background:var(--color-border)}
+.plan-streak-dot.is-met{background:var(--color-brand,#e76f51)}
+.plan-streak-dot.is-unplanned{opacity:.35}
+.plan-goal-bar{flex:1 1 160px;min-width:150px}
+.plan-goal-bar-track{height:6px;border-radius:999px;background:var(--color-surface-alt);overflow:hidden}
+.plan-goal-bar-fill{height:100%;border-radius:999px;background:var(--color-brand,#e76f51);transition:width .3s ease}
+.plan-goal-bar-label{margin:6px 0 0;color:var(--color-ink-muted);font-size:.72rem;font-weight:700}
+@media (max-width:760px){.plan-today{padding:20px}.plan-today-head{display:block}.plan-today-progress{display:block;margin-top:6px}.plan-streak{flex-direction:column;align-items:stretch;gap:16px;padding:18px}.plan-item-meta{display:none}}
+
+/* Daily study plan: the week view on /start (src/components/Course.tsx).
+   Tailwind utility classes cover the rest of that component; this handles
+   only the 7-column grid, which needs a real media-query collapse rather
+   than a Tailwind responsive variant per cell. */
+.plan-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.plan-week-day{border:1px solid var(--color-border);border-radius:12px;padding:10px 8px;min-height:118px;display:flex;flex-direction:column;gap:6px}
+.plan-week-day.is-today{border-color:var(--color-brand,#e76f51);box-shadow:0 0 0 1px var(--color-brand,#e76f51) inset}
+.plan-week-day-label{font-size:.65rem;font-weight:800;color:var(--color-ink-muted);text-transform:uppercase;letter-spacing:.05em}
+.plan-week-day-num{font-family:var(--font-display);font-size:.95rem}
+.plan-week-item{display:flex;align-items:center;gap:5px;font-size:.66rem;color:var(--color-ink-muted);overflow:hidden}
+.plan-week-item-tick{width:11px;height:11px;border-radius:50%;border:1px solid var(--color-border);flex-shrink:0;display:grid;place-items:center;font-size:.5rem;color:#fff}
+.plan-week-item.is-done .plan-week-item-tick{background:var(--color-success,#58855e);border-color:var(--color-success,#58855e)}
+.plan-week-item-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-week-empty{color:var(--color-ink-muted);font-size:.68rem}
+@media (max-width:760px){.plan-week-grid{grid-template-columns:1fr}.plan-week-day{min-height:auto}}
+
+/* vocab review */
+.vocab-review-space{max-width:640px;margin:0 auto;padding:48px 24px 80px}
+.vocab-review-head{margin-bottom:26px}
+.vocab-back-link{margin:0;color:var(--color-ink-muted);font-size:.8rem;font-weight:700}
+.vocab-back-link a:hover{color:var(--color-brand,#e76f51)}
+.vocab-review-head h1{margin:.4rem 0 0;font-family:var(--font-display);font-size:clamp(1.7rem,3.4vw,2.3rem);letter-spacing:-.03em}
+.vocab-review-head p{margin:.55rem 0 0;color:var(--color-ink-muted);font-size:.92rem;max-width:46ch;line-height:1.55}
+
+.vocab-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.vocab-chips button{border:1px solid var(--color-border);border-radius:999px;background:var(--color-surface);padding:7px 13px;color:var(--color-ink-muted);font-size:.78rem;font-weight:700;transition:border-color .15s ease,color .15s ease,background .15s ease}
+.vocab-chips button:hover{border-color:var(--color-vocabulary,#d99000)}
+.vocab-chips button.is-active{border-color:var(--color-vocabulary,#d99000);background:var(--color-vocabulary,#d99000);color:#fff}
+
+.vocab-settings{display:flex;align-items:center;gap:10px;margin-bottom:30px;color:var(--color-ink-muted);font-size:.78rem;font-weight:700}
+.vocab-settings-options{display:inline-flex;border:1px solid var(--color-border);border-radius:10px;overflow:hidden}
+.vocab-settings-options button{padding:6px 12px;color:var(--color-ink-muted);font-weight:700;font-size:.78rem}
+.vocab-settings-options button+button{border-left:1px solid var(--color-border)}
+.vocab-settings-options button.is-active{background:var(--color-vocabulary,#d99000);color:#fff}
+
+.vocab-progress{margin:0 0 14px;color:var(--color-ink-muted);font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums}
+
+.vocab-card{position:relative;min-height:280px;border:1px solid var(--color-border);border-radius:var(--radius-card,16px);background:var(--color-surface);box-shadow:0 12px 32px rgb(32 37 34 / 5%);padding:44px 32px 32px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.vocab-card:focus-visible{outline:2px solid var(--color-vocabulary,#d99000);outline-offset:3px}
+.vocab-card-topic{position:absolute;top:20px;left:20px;right:20px;text-align:center;color:var(--color-vocabulary,#d99000);font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.vocab-card-word{font-family:var(--font-display);font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:-.02em;opacity:0;transform:translateY(6px);animation:vocab-face-in .2s ease forwards}
+.vocab-card-back{width:100%;opacity:0;transform:translateY(6px);animation:vocab-face-in .2s ease forwards}
+@keyframes vocab-face-in{to{opacity:1;transform:translateY(0)}}
+.vocab-card-def{margin:0;font-size:1.05rem;line-height:1.55;color:var(--color-ink)}
+.vocab-card-example{margin:14px 0 0;color:var(--color-ink-muted);font-size:.92rem;font-style:italic;line-height:1.55}
+.vocab-card-colloc{margin-top:18px;padding-top:16px;border-top:1px solid var(--color-border);text-align:left}
+.vocab-card-colloc>span{display:block;color:var(--color-ink-muted);font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.vocab-card-colloc ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.vocab-card-colloc li{border:1px solid var(--color-border);border-radius:8px;padding:4px 9px;font-size:.78rem;color:var(--color-ink-muted)}
+
+.vocab-hint{margin:16px 0 0;text-align:center;color:var(--color-ink-muted);font-size:.8rem}
+
+.vocab-ratings{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}
+.vocab-rating{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);padding:11px 6px;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.vocab-rating:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgb(32 37 34 / 8%)}
+.vocab-rating span{font-weight:800;font-size:.84rem}
+.vocab-rating small{color:var(--color-ink-muted);font-size:.66rem}
+.vocab-rating-again{border-color:color-mix(in srgb,var(--color-error,#dc2626) 35%,var(--color-border))}
+.vocab-rating-again span{color:var(--color-error,#dc2626)}
+.vocab-rating-hard span{color:var(--color-warning,#d97706)}
+.vocab-rating-good span{color:var(--color-vocabulary,#d99000)}
+.vocab-rating-easy span{color:var(--color-success,#16a34a)}
+
+.vocab-finished{border:1px solid var(--color-border);border-radius:var(--radius-card,16px);background:var(--color-surface);padding:36px 32px;text-align:center}
+.vocab-finished h2{margin:0;font-family:var(--font-display);font-size:1.6rem;letter-spacing:-.02em}
+.vocab-finished>p{margin:10px 0 0;color:var(--color-ink-muted);font-size:.9rem;line-height:1.55}
+.vocab-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0}
+.vocab-summary-grid div{border:1px solid var(--color-border);border-radius:12px;padding:14px 8px}
+.vocab-summary-grid strong{display:block;font-family:var(--font-display);font-size:1.5rem}
+.vocab-summary-grid span{display:block;margin-top:2px;color:var(--color-ink-muted);font-size:.68rem}
+.vocab-struggle{margin-top:8px;text-align:left;border-top:1px solid var(--color-border);padding-top:20px}
+.vocab-struggle h3{margin:0 0 10px;font-family:var(--font-display);font-size:1rem}
+.vocab-struggle ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.vocab-struggle li{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--color-border);border-radius:10px;padding:9px 12px;font-size:.83rem}
+.vocab-struggle li strong{white-space:nowrap}
+.vocab-struggle li span{color:var(--color-ink-muted);text-align:right}
+.vocab-finished-actions{display:flex;justify-content:center;gap:12px;margin-top:26px;flex-wrap:wrap}
+.vocab-finished-actions button{border:0;border-radius:var(--radius-button,10px);background:var(--color-vocabulary,#d99000);color:#fff;font-weight:800;padding:11px 20px;font-size:.85rem}
+.vocab-finished-actions a{border:1px solid var(--color-border);border-radius:var(--radius-button,10px);padding:11px 20px;font-size:.85rem;font-weight:700;color:var(--color-ink-muted)}
+.vocab-finished-actions a:hover{border-color:var(--color-vocabulary,#d99000);color:var(--color-vocabulary,#d99000)}
+
+@media (prefers-reduced-motion: reduce){
+  .vocab-card-word,.vocab-card-back{animation:none;opacity:1;transform:none}
+  .vocab-rating,.vocab-chips button,.vocab-finished-actions a{transition:none}
+}
+
+@media (max-width:600px){
+  .vocab-review-space{padding:32px 16px 64px}
+  .vocab-card{min-height:240px;padding:34px 20px 24px}
+  .vocab-ratings{grid-template-columns:repeat(2,1fr)}
+  .vocab-summary-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* model answers */
+
+/* /writing/models (ModelAnswers.tsx): a two-pane library — prompt list on
+   the left, the chosen essay with hoverable highlights and a quiet criteria
+   grid on the right. Reuses the site's card language (1px border, soft
+   shadow, 16px radius) rather than inventing a new visual system. */
+.ma-layout{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start;margin-top:32px}
+
+.ma-sidebar{position:sticky;top:88px;display:flex;flex-direction:column;gap:24px;max-height:calc(100vh - 110px);overflow-y:auto;padding-right:4px}
+.ma-sidebar-title{margin:0 0 10px;font-family:var(--font-display);font-size:0.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--color-brand,#e76f51)}
+.ma-sidebar-group{margin-bottom:14px}
+.ma-sidebar-group-label{margin:0 0 4px;font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-muted)}
+.ma-sidebar-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.ma-sidebar-item{width:100%;text-align:left;padding:7px 9px;border-radius:9px;font-size:.83rem;line-height:1.35;color:var(--color-ink-muted);transition:background-color .15s ease,color .15s ease}
+.ma-sidebar-item:hover{background:var(--color-surface-alt);color:var(--color-ink)}
+.ma-sidebar-item.is-active{background:var(--color-brand-tint,#fbe9e4);color:var(--color-brand,#e76f51);font-weight:700}
+
+.ma-content{min-width:0}
+.ma-prompt-card{border:1px solid var(--color-border);border-radius:var(--radius-card);background:var(--color-surface);padding:20px 22px;box-shadow:var(--shadow-card)}
+.ma-prompt-eyebrow{margin:0 0 8px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--color-brand,#e76f51)}
+.ma-prompt-html{font-size:.95rem;line-height:1.6;color:var(--color-ink)}
+.ma-prompt-html img{border-radius:10px;border:1px solid var(--color-border)}
+
+.ma-controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
+.ma-controls-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.ma-compare-toggle{border:1px solid var(--color-border);border-radius:var(--radius-button);background:var(--color-surface);padding:9px 14px;font-size:.83rem;font-weight:700;color:var(--color-ink-muted);transition:border-color .15s ease,color .15s ease,background-color .15s ease}
+.ma-compare-toggle:hover{color:var(--color-ink);border-color:var(--color-brand,#e76f51)}
+.ma-compare-toggle.is-on{background:var(--color-brand,#e76f51);border-color:var(--color-brand,#e76f51);color:#fff}
+.ma-compare-selects{display:flex;flex-wrap:wrap;gap:14px}
+.ma-compare-selects label{display:flex;flex-direction:column;gap:4px;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-muted)}
+.ma-compare-selects select{border:1px solid var(--color-border);border-radius:var(--radius-button);background:var(--color-surface);padding:7px 10px;font-size:.85rem;font-weight:600;color:var(--color-ink)}
+
+.ma-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+
+.ma-panel{border:1px solid var(--color-border);border-radius:var(--radius-card);background:var(--color-surface);padding:22px 24px;box-shadow:var(--shadow-card)}
+.ma-panel.is-compact{padding:18px}
+.ma-panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:14px}
+.ma-band-badge{font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--color-brand,#e76f51)}
+.ma-word-count{font-size:.76rem;font-weight:700;color:var(--color-ink-muted)}
+
+.ma-essay{display:flex;flex-direction:column;gap:12px;font-size:.95rem;line-height:1.7;color:var(--color-ink)}
+.ma-panel.is-compact .ma-essay{font-size:.87rem;line-height:1.6}
+
+.ma-hl-wrap{position:relative;display:inline}
+.ma-hl{display:inline;padding:0 1px;border-radius:4px;background:var(--color-brand-tint,#fbe9e4);color:var(--color-brand-hover,#a93d2d);font:inherit;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--color-brand,#e76f51);text-underline-offset:3px}
+.ma-hl:hover,.ma-hl.is-active,.ma-hl:focus-visible{background:var(--color-brand,#e76f51);color:#fff;outline:none}
+.ma-hl-note{position:absolute;left:0;bottom:calc(100% + 8px);z-index:20;width:max-content;max-width:260px;border-radius:10px;background:var(--color-ink);color:#fff;padding:8px 11px;font-size:.76rem;line-height:1.4;font-weight:600;box-shadow:0 12px 26px rgb(32 37 34 / 18%)}
+
+.ma-criteria-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--color-border)}
+.ma-criteria-block{border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-alt);padding:12px 13px}
+.ma-criteria-label{margin:0 0 5px;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--color-ink-muted)}
+.ma-criteria-text{margin:0;font-size:.79rem;line-height:1.5;color:var(--color-ink)}
+.ma-panel.is-compact .ma-criteria-grid{grid-template-columns:1fr;gap:8px}
+
+@media (max-width:920px){
+  .ma-layout{grid-template-columns:1fr}
+  .ma-sidebar{position:static;max-height:none;overflow:visible;flex-direction:row;flex-wrap:wrap;gap:28px}
+  .ma-sidebar-section{flex:1 1 260px;min-width:220px}
+}
+@media (max-width:640px){
+  .ma-compare-grid{grid-template-columns:1fr}
+  .ma-controls{align-items:stretch}
+  .ma-controls-right{margin-left:0;justify-content:space-between}
+  .ma-criteria-grid{grid-template-columns:1fr}
+  .ma-hl-note{left:50%;transform:translateX(-50%);max-width:220px}
+}

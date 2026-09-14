@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import type { PracticeTest, Question, QuestionGroup, TestPart, TestSkill } from '../lib/tests/schema';
+import type { PracticeTest, Question, QuestionGroup, QuestionType, TestPart, TestSkill } from '../lib/tests/schema';
 import { bandEstimate, bandMidpoint, isCorrect, questionCount, scoredQuestionIds } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
 import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
+import { drillTypes } from '../lib/tests/drills';
 import Html from './Html';
 import StrategyPanel from './StrategyPanel';
+import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
 
 interface Props {
   test: PracticeTest;
@@ -14,6 +16,13 @@ interface Props {
   /** 'drill' tags the recorded attempt so it's excluded from the full-test
       band history (see progress.ts). Defaults to a full exam. */
   attemptKind?: 'full' | 'drill';
+  /** Present only when this instance is a nested "retry the ones you got
+      wrong" retake, rendered in place by the parent TestPlayer instead of a
+      new route (see buildRetakeTest below). Skips the instructions gate,
+      starts immediately, and swaps the score modal's "More Tests" link for a
+      "Back to results" button that hands the final scored ids back to the
+      parent so it can report what improved. */
+  onFinish?: (scoredIds: Set<string>) => void;
 }
 
 /** Base-prefixed URL for images stored under /public. */
@@ -43,6 +52,46 @@ function numberQuestions(test: PracticeTest): Numbered[] {
   return out;
 }
 
+/** Group types whose widget logic depends on having every slot present, so a
+    retake keeps the whole group intact whenever any one of its questions was
+    wrong (see buildRetakeTest): diagram-labelling's markers are matched to
+    items positionally, multiple-answer's slot count has to equal its
+    selectCount, and table-completion's grid would lose cells the table
+    layout still expects. Every other type is filtered question-by-question. */
+const RETAKE_WHOLE_GROUP_TYPES: QuestionType[] = ['diagram-labelling', 'table-completion', 'multiple-answer'];
+
+/** Build a coaching retake of just the questions the student got wrong or
+    left blank last attempt (feature 1). Reuses the same Question objects
+    (same ids, same answers/explanations/evidence) so scoring and the review
+    panel keep working unchanged; only which questions are included differs.
+    Same stimulus, same audio start/end seconds, always a 'drill' attempt
+    (untimed in spirit — see the generous flat duration below) so the
+    strategy panel shows and the recording gets full controls. */
+function buildRetakeTest(test: PracticeTest, wrongIds: Set<string>): PracticeTest {
+  const parts: TestPart[] = [];
+  for (const part of test.parts) {
+    const groups: QuestionGroup[] = [];
+    for (const group of part.groups) {
+      const anyWrong = group.questions.some((q) => wrongIds.has(q.id));
+      if (!anyWrong) continue;
+      if (RETAKE_WHOLE_GROUP_TYPES.includes(group.type)) {
+        groups.push(group);
+      } else {
+        groups.push({ ...group, questions: group.questions.filter((q) => wrongIds.has(q.id)) });
+      }
+    }
+    if (groups.length > 0) parts.push({ ...part, groups });
+  }
+  return {
+    ...test,
+    id: `${test.id}-retake`,
+    title: `${test.title} · Retake`,
+    description: 'A retake of just the questions you got wrong or left blank last time, untimed.',
+    durationMinutes: 60,
+    parts,
+  };
+}
+
 function pad(n: number): string {
   return String(n).padStart(2, '0');
 }
@@ -52,10 +101,11 @@ function countWords(s: string): number {
   return t ? t.split(/\s+/).length : 0;
 }
 
-export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props) {
+export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish }: Props) {
   const numbered = useMemo(() => numberQuestions(test), [test]);
   const TOTAL = numbered.length;
   const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
+  const isRetake = !!onFinish;
 
   // Resume an in-progress session if one exists (survives refresh / tab close).
   const resumed = useMemo(
@@ -63,7 +113,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     [test.id],
   );
 
-  const [started, setStarted] = useState(() => !!resumed);
+  // A retake is coaching, not a fresh exam start: it skips the instructions
+  // gate and begins straight away, same as if "Start test" had been clicked.
+  const [started, setStarted] = useState(() => !!resumed || isRetake);
   const [answers, setAnswers] = useState<Record<string, string>>(() => resumed?.answers ?? {});
   const [submitted, setSubmitted] = useState(false);
   const [showScore, setShowScore] = useState(false);
@@ -80,6 +132,22 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   // below md the passage and questions each get the full pane one at a time,
   // switched via the tab bar right under the header.
   const [mobileView, setMobileView] = useState<'stimulus' | 'questions'>('stimulus');
+  // Per-question-type breakdown from the last submit, kept for the results
+  // screen's "weakest type in this test" line (feature 2) — recomputed fresh
+  // on every submit, never merged with a prior attempt.
+  const [byTypeStats, setByTypeStats] = useState<Record<string, { correct: number; total: number }> | null>(null);
+  // Retake state (feature 1): set once the student clicks "Retry the N you
+  // got wrong" on the score modal. Rendered as a full-screen nested
+  // TestPlayer instance (see the bottom of this component) rather than a new
+  // route, so the whole review/strategy/evidence machinery is reused as-is.
+  const [retake, setRetake] = useState<{ test: PracticeTest; wrongIds: Set<string> } | null>(null);
+  const [retakeResult, setRetakeResult] = useState<{ fixed: number; total: number } | null>(null);
+  // Review-list filter (feature 3): "wrong only" hides fully-correct groups
+  // from the post-submit review, see the group-render loop below.
+  const [reviewFilter, setReviewFilter] = useState<'all' | 'wrong'>('all');
+  // j/k and arrow-key navigation between questions in the active part
+  // (feature 3), reset whenever the student switches part/passage.
+  const [activeQIndex, setActiveQIndex] = useState(0);
 
   function toggleFlag(qid: string) {
     if (submittedRef.current) return;
@@ -108,6 +176,18 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     setTimeLeft(secondsLeft(s));
     setStarted(true);
   }
+
+  /* Retake mode starts immediately (see `started`'s initializer above) but
+     still needs its own session/timer set up the same way the Start-test
+     button would have done, so the countdown and resume-on-refresh behaviour
+     both work normally within the retake. */
+  useEffect(() => {
+    if (isRetake && !resumed) {
+      const s = startSession(test);
+      setTimeLeft(secondsLeft(s));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
@@ -196,7 +276,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
       kind: attemptKind,
       skill: test.skill,
     });
+    setByTypeStats(byType);
     clearSession(); // in-progress state done; permanent attempt kept in progress history
+    // onFinish itself is wired to the score modal's "Back to results" button,
+    // not called here — the retake still shows its own score/review first.
   }
 
   const unansweredCount = numbered.filter(
@@ -245,6 +328,49 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     return () => window.removeEventListener('beforeunload', handler);
   }, [started, submitted]);
 
+  /* Reset the keyboard-nav cursor whenever the visible set of questions
+     changes (switching part/passage). */
+  useEffect(() => {
+    setActiveQIndex(0);
+  }, [activePart]);
+
+  /* j/k and arrow-key navigation between questions in the current part
+     (feature 3) — desktop-only affordance (see the hint rendered below), but
+     the listener itself works everywhere; it just does nothing useful on a
+     touch device with no keyboard. Skipped entirely while an input/select is
+     focused so it never eats a letter the student is actually typing (j and
+     k are ordinary letters in plenty of free-text answers). */
+  useEffect(() => {
+    if (!started || submitted) return;
+    // Read the active part straight off `activePart`/`test`, rather than the
+    // outer `part` const declared further down this component, so this
+    // effect (declared above that point) never references it before its
+    // assignment.
+    const currentPart = test.parts[activePart];
+    const partQs = numbered.filter((nq) => nq.part === currentPart);
+    function isTypingTarget(target: EventTarget | null): boolean {
+      const el = target as HTMLElement | null;
+      if (!el) return false;
+      const tag = el.tagName;
+      return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (isTypingTarget(e.target)) return;
+      const dir = e.key === 'j' || e.key === 'ArrowDown' ? 1 : e.key === 'k' || e.key === 'ArrowUp' ? -1 : 0;
+      if (dir === 0 || partQs.length === 0) return;
+      e.preventDefault();
+      setActiveQIndex((i) => {
+        const next = Math.max(0, Math.min(partQs.length - 1, i + dir));
+        const nq = partQs[next];
+        if (nq) jumpToQuestion(nq.question.id);
+        return next;
+      });
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [started, submitted, activePart, test, numbered]);
+
   /* Split-pane drag (desktop only). */
   function startDrag(e: React.MouseEvent) {
     e.preventDefault();
@@ -277,12 +403,47 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   const sharedAudioSrc = test.audioSrc ??
     (legacyAudioPart?.stimulus.kind === 'audio' ? legacyAudioPart.stimulus.src : undefined);
 
+  // Feature 1: how many scored questions are wrong or blank right now. Stable
+  // post-submit since inputs are disabled, so it's safe to read at click time.
+  const wrongCount = submitted ? SCORED_TOTAL - correctCount : 0;
+
+  function openRetake() {
+    const wrongIds = new Set(
+      numbered
+        .filter((nq) => nq.question.scored !== false && !scoredIds.has(nq.question.id))
+        .map((nq) => nq.question.id),
+    );
+    if (wrongIds.size === 0) return;
+    setRetake({ test: buildRetakeTest(test, wrongIds), wrongIds });
+    setShowScore(false);
+  }
+
+  // Feature 2: the weakest question type in *this* attempt, with the same
+  // lesson/practise links as the cross-test panel on /tests (TypeAnalytics).
+  const weakestType =
+    byTypeStats && wrongCount > 0
+      ? Object.entries(byTypeStats)
+          .map(([type, v]) => ({ type: type as QuestionType, ...v }))
+          .filter((r) => r.total > 0)
+          .reduce<{ type: QuestionType; correct: number; total: number } | null>(
+            (worst, r) => (!worst || r.correct / r.total < worst.correct / worst.total ? r : worst),
+            null,
+          )
+      : null;
+
   /* ── Instructions gate — timer does not run until Start ── */
   if (!started) {
     return <InstructionsScreen test={test} hubUrl={hubUrl} onStart={start} attemptKind={attemptKind} />;
   }
 
   return (
+    <>
+    {/* While a retake (feature 1) is open, the underlying results screen is
+        unmounted rather than merely covered — two TestPlayer instances open
+        at once would duplicate every question's `player-<id>` DOM id and
+        double up timers/listeners for no benefit, since the retake always
+        returns to a fresh render of this screen anyway (see onFinish below). */}
+    {!retake && (
     <div className="screen-in flex h-dvh flex-col bg-surface text-ink">
       {/* ── Top bar ── */}
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 sm:gap-3 sm:px-4">
@@ -347,6 +508,26 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                 Submit
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── "You fixed N of M" banner — shown once a nested retake (feature 1)
+           finishes and hands its result back via onFinish below. Dismissible,
+           success-toned so it doesn't read as another warning. ── */}
+      {retakeResult && (
+        <div role="status" className="shrink-0 border-b border-success/30 bg-success-tint px-4 py-3">
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-ink">
+              You fixed {retakeResult.fixed} of {retakeResult.total}.
+            </p>
+            <button
+              type="button"
+              onClick={() => setRetakeResult(null)}
+              className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm font-semibold hover:bg-surface-alt"
+            >
+              Dismiss
+            </button>
           </div>
         </div>
       )}
@@ -468,8 +649,79 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                 <p className="mt-1 text-sm text-ink-muted">{stimulus.label}. Enter answers for {partRange.toLowerCase()}.</p>
               </div>
             )}
+            {/* Desktop-only keyboard-nav hint (feature 3) — shown only while
+                actively answering, never once the test is submitted. */}
+            {!submitted && (
+              <p className="mb-4 hidden text-xs text-ink-muted md:block">
+                Tip: press <kbd className="rounded border border-border bg-surface-alt px-1 py-0.5 font-mono text-[0.7rem]">j</kbd>/<kbd className="rounded border border-border bg-surface-alt px-1 py-0.5 font-mono text-[0.7rem]">k</kbd> or the arrow keys to move between questions.
+              </p>
+            )}
+            {/* Review filter toggle (feature 3) — only meaningful once
+                there's a right/wrong state to filter on. The retry action
+                (feature 1) sits alongside it so it's still reachable once the
+                score modal has been dismissed, not just at the moment of
+                submission. */}
+            {submitted && (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs font-semibold text-ink-muted">
+                  <span>Show:</span>
+                  <div className="inline-flex rounded-full border border-border bg-surface-alt p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setReviewFilter('all')}
+                      aria-pressed={reviewFilter === 'all'}
+                      className={`rounded-full px-3 py-1 transition-colors ${
+                        reviewFilter === 'all' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+                      }`}
+                    >
+                      All
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setReviewFilter('wrong')}
+                      aria-pressed={reviewFilter === 'wrong'}
+                      className={`rounded-full px-3 py-1 transition-colors ${
+                        reviewFilter === 'wrong' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+                      }`}
+                    >
+                      Wrong only
+                    </button>
+                  </div>
+                </div>
+                {wrongCount > 0 && !isRetake && (
+                  <button
+                    type="button"
+                    onClick={openRetake}
+                    className="text-xs font-semibold text-brand hover:underline"
+                  >
+                    Retry the {wrongCount} you got wrong →
+                  </button>
+                )}
+              </div>
+            )}
             {part.groups.map((group, groupIndex) => {
               const groupQs = numbered.filter((nq) => nq.group === group);
+              const wrongOnly = submitted && reviewFilter === 'wrong';
+              // Composite widgets (diagram/table/multi-answer) keep every
+              // slot — their scoring only makes sense as a whole — so
+              // "wrong only" just hides the widget entirely once every slot
+              // in it is correct. Plain per-question groups instead filter
+              // which individual questions render.
+              const isComposite =
+                (group.type === 'diagram-labelling' && !!group.diagram) ||
+                (group.type === 'table-completion' && !!group.table) ||
+                (group.type === 'multiple-answer' && !group.questions.some((q) => q.multiSelect));
+              const visibleQs = wrongOnly
+                ? groupQs.filter((nq) => nq.question.scored !== false && !scoredIds.has(nq.question.id))
+                : groupQs;
+              if (wrongOnly) {
+                if (isComposite) {
+                  const allCorrect = groupQs.every((nq) => nq.question.scored === false || scoredIds.has(nq.question.id));
+                  if (allCorrect) return null;
+                } else if (visibleQs.length === 0) {
+                  return null;
+                }
+              }
               const headingId = `question-group-${activePart}-${groupIndex}`;
               return (
                 <section key={group.title} aria-labelledby={headingId} className="mb-10 last:mb-2">
@@ -501,7 +753,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                       skill={test.skill}
                     />
                   ) : (
-                    groupQs.map((nq) => (
+                    visibleQs.map((nq) => (
                       <QuestionItem
                         key={nq.question.id}
                         nq={nq}
@@ -619,7 +871,34 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                 <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
                   Estimated Band: {bandEstimate(correctCount, SCORED_TOTAL, test.skill)}
                 </p>
-                <div className="mt-6 flex justify-center gap-3">
+                {weakestType && (
+                  <p className="mt-4 text-left text-sm text-ink-muted">
+                    Your weakest type in this test:{' '}
+                    <strong className="text-ink">{TYPE_LABELS[weakestType.type] ?? weakestType.type}</strong>,{' '}
+                    {weakestType.correct} of {weakestType.total} correct.{' '}
+                    {lessonHref(test.skill, weakestType.type) && (
+                      <a href={lessonHref(test.skill, weakestType.type)} className="font-semibold text-brand hover:underline">
+                        Review the lesson
+                      </a>
+                    )}
+                    {lessonHref(test.skill, weakestType.type) && drillTypes(test.skill).has(weakestType.type) && ' · '}
+                    {drillTypes(test.skill).has(weakestType.type) && (
+                      <a href={practiseHref(test.skill, weakestType.type)} className="font-semibold text-brand hover:underline">
+                        Practise this type
+                      </a>
+                    )}
+                  </p>
+                )}
+                {wrongCount > 0 && !isRetake && (
+                  <button
+                    type="button"
+                    onClick={openRetake}
+                    className="mt-4 w-full rounded-button border border-brand/30 bg-brand-tint px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint/70"
+                  >
+                    Retry the {wrongCount} you got wrong
+                  </button>
+                )}
+                <div className="mt-4 flex justify-center gap-3">
                   <button
                     type="button"
                     onClick={() => setShowScore(false)}
@@ -627,12 +906,22 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                   >
                     Review Answers
                   </button>
-                  <a
-                    href={hubUrl}
-                    className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
-                  >
-                    More Tests
-                  </a>
+                  {isRetake ? (
+                    <button
+                      type="button"
+                      onClick={() => onFinish!(scoredIds)}
+                      className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+                    >
+                      Back to results
+                    </button>
+                  ) : (
+                    <a
+                      href={hubUrl}
+                      className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+                    >
+                      More Tests
+                    </a>
+                  )}
                 </div>
               </motion.div>
             </motion.div>
@@ -640,6 +929,26 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
         </AnimatePresence>
       </MotionConfig>
     </div>
+    )}
+
+    {/* ── Retake (feature 1) — a nested TestPlayer instance for just the
+         wrong/blank questions, rendered in place rather than a new route.
+         Replaces the results screen above rather than covering it (see the
+         `!retake` guard), so it's a straightforward full-screen render with
+         the same chrome as the page it's standing in for. ── */}
+    {retake && (
+      <TestPlayer
+        test={retake.test}
+        hubUrl={hubUrl}
+        attemptKind="drill"
+        onFinish={(finalScoredIds) => {
+          const fixed = [...retake.wrongIds].filter((id) => finalScoredIds.has(id)).length;
+          setRetakeResult({ fixed, total: retake.wrongIds.size });
+          setRetake(null);
+        }}
+      />
+    )}
+    </>
   );
 }
 

@@ -42,11 +42,12 @@ function drillTypes(drill: (typeof ALL_DRILLS)[number]): string[] {
     {/* Shown only when arriving via a weak-spot's "Practise this type" link
         (?type=...). Filtering happens client-side (see the script below) since
         this is a static page — the query string doesn't exist at build time. */}
-    <div id="type-filter-banner" hidden class="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-card border border-border bg-brand-tint px-4 py-3 text-sm">
-      <p>
-        Showing passages that include <strong id="type-filter-label" class="text-ink"></strong>.
-      </p>
-      <a href={withBase('/trainers/reading')} class="shrink-0 font-semibold text-brand hover:underline">Clear filter</a>
+    <div id="type-filter-banner" hidden class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-brand-tint px-4 py-3">
+      <div>
+        <h2 class="font-display text-sm font-bold text-ink">Drills with <span id="type-filter-label"></span></h2>
+        <p class="mt-0.5 text-xs text-ink-muted"><span id="type-filter-count">0</span> matching drills</p>
+      </div>
+      <a href={withBase('/trainers/reading')} class="shrink-0 text-sm font-semibold text-brand hover:underline">Show all drills</a>
     </div>
     <p id="type-filter-empty" hidden class="mb-4 rounded-card border border-dashed border-border bg-surface-alt p-4 text-center text-sm text-ink-muted">
       No drill happens to isolate this question type on its own yet — try a full reading test instead.
@@ -85,12 +86,12 @@ function drillTypes(drill: (typeof ALL_DRILLS)[number]): string[] {
     const params = new URLSearchParams(location.search);
     const type = params.get('type');
     if (type) {
-      let anyMatch = false;
+      let count = 0;
       document.querySelectorAll('[data-drill-types]').forEach((card) => {
         const types = (card.dataset.drillTypes || '').split(',').filter(Boolean);
         const match = types.includes(type);
         card.classList.toggle('hidden', !match);
-        if (match) anyMatch = true;
+        if (match) count++;
       });
       document.querySelectorAll('[data-drill-group]').forEach((group) => {
         const visible = group.querySelectorAll('[data-drill-types]:not(.hidden)').length;
@@ -98,9 +99,11 @@ function drillTypes(drill: (typeof ALL_DRILLS)[number]): string[] {
       });
       const banner = document.getElementById('type-filter-banner');
       const label = document.getElementById('type-filter-label');
+      const countEl = document.getElementById('type-filter-count');
       if (label) label.textContent = labels[type] || type;
+      if (countEl) countEl.textContent = String(count);
       if (banner) banner.hidden = false;
-      if (!anyMatch) {
+      if (count === 0) {
         const empty = document.getElementById('type-filter-empty');
         if (empty) empty.hidden = false;
       }

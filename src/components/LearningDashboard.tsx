@@ -4,6 +4,8 @@ import { withBase } from '../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
 import { loadStudyPlan, daysUntilTest } from '../lib/study-plan';
 import { buildCourse } from '../lib/course';
+import PlanToday from './plan/PlanToday';
+import StreakBar from './plan/StreakBar';
 
 export default function LearningDashboard() {
   const course = useMemo(() => buildCourse().flatMap((module) => module.lessons), []);
@@ -34,6 +36,9 @@ export default function LearningDashboard() {
         </div>
         <a className="coral-button" href={withBase(next.href)}>Continue learning <span aria-hidden="true">→</span></a>
       </div>
+
+      <PlanToday />
+      <StreakBar />
 
       <section className="dashboard-next" aria-labelledby="next-heading">
         <div className="dashboard-next-copy">

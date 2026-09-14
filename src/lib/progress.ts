@@ -85,15 +85,64 @@ export interface SpeakingAttempt {
   live: boolean;
 }
 
+/** One local calendar day's study activity, for the daily-goal bar and the
+    streak (src/lib/plan/streak.ts). Minutes are estimated per item at the
+    point of recording (see the bumpActivity() call sites below), not
+    measured wall-clock time: a lesson always counts as 12 minutes, a drill
+    10, a full test 60 (40 for listening), an essay session 40, a speaking
+    attempt 10, regardless of how long the student actually spent. Good
+    enough for "did you show up today", not a time tracker. */
+export interface DayActivity {
+  minutes: number;
+  lessons: number;
+  attempts: number;
+}
+
 export interface ProgressV1 {
   version: 1;
   lessons: Record<string, { completedAt: string }>;
   tests: Record<string, TestAttempt[]>;
   writing: Record<string, WritingAttempt[]>;
   speaking: SpeakingAttempt[];
+  /** Keyed by local YYYY-MM-DD (see src/lib/plan/date.ts toLocalDateKey).
+      Optional so progress saved before this field existed still loads: the
+      store version stays 1 (see the migration note on RENAMED_LESSON_KEYS
+      above), every reader treats a missing key as "no activity that day"
+      rather than throwing. */
+  activity?: Record<string, DayActivity>;
 }
 
-const EMPTY: ProgressV1 = { version: 1, lessons: {}, tests: {}, writing: {}, speaking: [] };
+const EMPTY: ProgressV1 = { version: 1, lessons: {}, tests: {}, writing: {}, speaking: [], activity: {} };
+
+/** Local YYYY-MM-DD for an ISO instant (or now). Kept in step with
+    src/lib/plan/date.ts's toLocalDateKey but duplicated here rather than
+    imported, so progress.ts (used everywhere, including by lesson and test
+    pages that never touch the study plan) has no dependency on src/lib/plan. */
+function localDateKey(iso?: string): string {
+  const d = iso ? new Date(iso) : new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Add to a day's activity tally in place. Callers still go through save()
+    afterwards, same as every other mutation in this file. */
+function bumpActivity(p: ProgressV1, date: string, delta: Partial<DayActivity>): void {
+  p.activity ??= {};
+  const cur = p.activity[date] ?? { minutes: 0, lessons: 0, attempts: 0 };
+  p.activity[date] = {
+    minutes: cur.minutes + (delta.minutes ?? 0),
+    lessons: cur.lessons + (delta.lessons ?? 0),
+    attempts: cur.attempts + (delta.attempts ?? 0),
+  };
+}
+
+/** The full activity log, local-date keys to minutes/lessons/attempts. */
+export function getActivity(): Record<string, DayActivity> {
+  return getProgress().activity ?? {};
+}
+
+export function getDayActivity(date: string): DayActivity {
+  return getActivity()[date] ?? { minutes: 0, lessons: 0, attempts: 0 };
+}
 
 export function getProgress(): ProgressV1 {
   if (typeof window === 'undefined') return structuredClone(EMPTY);
@@ -142,7 +191,9 @@ export function replaceProgress(p: ProgressV1): void {
 
 export function markLessonComplete(slug: string): void {
   const p = getProgress();
-  p.lessons[slug] = { completedAt: new Date().toISOString() };
+  const at = new Date().toISOString();
+  p.lessons[slug] = { completedAt: at };
+  bumpActivity(p, localDateKey(at), { minutes: 12, lessons: 1 });
   save(p);
 }
 
@@ -163,6 +214,8 @@ export function completedLessonCount(): number {
 export function recordTestAttempt(testId: string, attempt: TestAttempt): void {
   const p = getProgress();
   (p.tests[testId] ??= []).push(attempt);
+  const minutes = attempt.kind === 'drill' ? 10 : attempt.skill === 'listening' ? 40 : 60;
+  bumpActivity(p, localDateKey(attempt.at), { minutes, attempts: 1 });
   save(p);
 }
 
@@ -177,6 +230,10 @@ export function getAttempts(testId?: string): { testId: string; attempt: TestAtt
 export function recordWritingAttempt(promptId: string, attempt: WritingAttempt): void {
   const p = getProgress();
   (p.writing[promptId] ??= []).push(attempt);
+  // No real duration is recorded for a writing session, so this uses a flat
+  // estimate for a Task 2 essay (roughly the exam's own 40-minute budget for
+  // it), same spirit as the other per-item minute estimates above.
+  bumpActivity(p, localDateKey(attempt.at), { minutes: 40, attempts: 1 });
   save(p);
 }
 
@@ -191,6 +248,9 @@ export function getWritingAttempts(promptId?: string): { promptId: string; attem
 export function recordSpeakingAttempt(attempt: SpeakingAttempt): void {
   const p = getProgress();
   (p.speaking ??= []).push(attempt);
+  // Estimate: one part of the interview, not a full mock (see the flat
+  // Task-2 estimate in recordWritingAttempt for the same reasoning).
+  bumpActivity(p, localDateKey(attempt.at), { minutes: 10, attempts: 1 });
   save(p);
 }
 
@@ -293,11 +353,33 @@ export function mergeProgress(a: ProgressV1, b: ProgressV1): ProgressV1 {
     writing[id] = mergeAttempts(a.writing[id], b.writing[id]);
   }
 
+  // Activity is a running per-day tally rather than a list of dated events,
+  // so it can't dedupe on a timestamp like the attempts above. Take the max
+  // of each field per day instead of summing: the two sides are usually the
+  // same device's local copy and a stale cloud copy of it, and summing would
+  // double-count everything that already made it to the cloud. This can
+  // under-count genuine activity split across two devices on the same day,
+  // which is an acceptable trade-off for a streak indicator.
+  const activity: NonNullable<ProgressV1['activity']> = {};
+  for (const date of new Set([...Object.keys(a.activity ?? {}), ...Object.keys(b.activity ?? {})])) {
+    const av = a.activity?.[date];
+    const bv = b.activity?.[date];
+    activity[date] =
+      av && bv
+        ? {
+            minutes: Math.max(av.minutes, bv.minutes),
+            lessons: Math.max(av.lessons, bv.lessons),
+            attempts: Math.max(av.attempts, bv.attempts),
+          }
+        : (av ?? bv)!;
+  }
+
   return {
     version: 1,
     lessons,
     tests,
     writing,
     speaking: mergeAttempts(a.speaking ?? [], b.speaking ?? []),
+    activity,
   };
 }

@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CueCardBank from '../../components/CueCardBank';
+import { CUE_CARDS } from '../../data/cue-cards';
+---
+
+<BaseLayout
+  title="Cue Card Bank · IELTS Portal"
+  description={`${CUE_CARDS.length} original Speaking Part 2 cue cards covering every topic family in the real exam, each with a one-minute prep plan, a Band 7.0 model answer, Band 8 upgrade phrases, and Part 3 follow-up questions.`}
+>
+  <div class="skill-speaking mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <SectionHeading
+      eyebrow="Speaking"
+      title="Cue Card Bank"
+      subtitle={`${CUE_CARDS.length} Part 2 cue cards across every topic family that comes up in the real exam: a person, a place, an object, an event, an activity, media, a plan, and a skill. Open a card for a one-minute prep plan, a Band 7.0 model answer, Band 8 upgrade phrases, and Part 3 follow-ups, or run "Prepare and speak" for a timed rehearsal.`}
+    />
+    <CueCardBank client:load />
+  </div>
+</BaseLayout>

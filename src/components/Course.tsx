@@ -28,8 +28,11 @@ import {
 } from '../lib/study-plan';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
 import { buildCourse, courseStatus, coursePace, isLessonDone } from '../lib/course';
+import { toLocalDateKey } from '../lib/plan/date';
+import WeekView from './plan/WeekView';
 
 const TARGET_BANDS = ['5.0', '5.5', '6.0', '6.5', '7.0', '7.5', '8.0'];
+const DAILY_MINUTES_OPTIONS: NonNullable<SavedPlan['dailyMinutes']>[] = [15, 25, 40, 60];
 const MODULES = buildCourse();
 
 const SKILL_DOT: Record<string, string> = {
@@ -46,6 +49,8 @@ export default function Course() {
   const [ready, setReady] = useState(false);
   const [targetBand, setTargetBand] = useState('6.5');
   const [testDate, setTestDate] = useState('');
+  const [dailyMinutes, setDailyMinutes] = useState<NonNullable<SavedPlan['dailyMinutes']>>(25);
+  const [studyDays, setStudyDays] = useState<NonNullable<SavedPlan['studyDays']>>('daily');
 
   useEffect(() => {
     const saved = loadStudyPlan();
@@ -53,6 +58,8 @@ export default function Course() {
       setPlan(saved);
       setTargetBand(saved.targetBand);
       setTestDate(saved.testDate);
+      setDailyMinutes(saved.dailyMinutes ?? 25);
+      setStudyDays(saved.studyDays ?? 'daily');
     }
     setProgress(getProgress());
     setReady(true);
@@ -92,8 +99,11 @@ export default function Course() {
       targetBand,
       testDate,
       createdAt: new Date().toISOString(),
+      startDate: plan?.startDate ?? toLocalDateKey(new Date()),
+      dailyMinutes,
+      studyDays,
       done: [],
-      doneKeys: [],
+      doneKeys: plan?.doneKeys ?? [],
     };
     saveStudyPlan(next);
     setPlan(next);
@@ -149,6 +159,40 @@ export default function Course() {
         <p className="mt-1.5 text-xs text-ink-muted">
           No date yet? Leave it blank and work through at your own pace.
         </p>
+
+        <div className="mt-5 grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="block text-sm font-semibold" htmlFor="daily-minutes">
+              Daily study time
+            </label>
+            <select
+              id="daily-minutes"
+              value={dailyMinutes}
+              onChange={(e) => setDailyMinutes(Number(e.target.value) as NonNullable<SavedPlan['dailyMinutes']>)}
+              className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
+            >
+              {DAILY_MINUTES_OPTIONS.map((m) => (
+                <option key={m} value={m}>
+                  {m} minutes
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-semibold" htmlFor="study-days">
+              Study days
+            </label>
+            <select
+              id="study-days"
+              value={studyDays}
+              onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
+              className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
+            >
+              <option value="daily">Every day</option>
+              <option value="weekdays">Weekdays only</option>
+            </select>
+          </div>
+        </div>
 
         <button
           type="submit"
@@ -221,6 +265,33 @@ export default function Course() {
               onChange={(e) => setTestDate(e.target.value)}
               className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
             />
+            <label className="sr-only" htmlFor="daily-minutes-inline">
+              Daily study time
+            </label>
+            <select
+              id="daily-minutes-inline"
+              value={dailyMinutes}
+              onChange={(e) => setDailyMinutes(Number(e.target.value) as NonNullable<SavedPlan['dailyMinutes']>)}
+              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+            >
+              {DAILY_MINUTES_OPTIONS.map((m) => (
+                <option key={m} value={m}>
+                  {m} min/day
+                </option>
+              ))}
+            </select>
+            <label className="sr-only" htmlFor="study-days-inline">
+              Study days
+            </label>
+            <select
+              id="study-days-inline"
+              value={studyDays}
+              onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
+              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+            >
+              <option value="daily">Every day</option>
+              <option value="weekdays">Weekdays only</option>
+            </select>
             <button
               type="submit"
               className="rounded-button bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-hover"
@@ -274,6 +345,8 @@ export default function Course() {
           )}
         </p>
       </div>
+
+      <WeekView />
 
       {/* modules */}
       <div className="mt-6 space-y-6">
