@@ -33,6 +33,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 1,
     image: '/pics/reading/quiz.png',
     blurb: 'Not a question type, but the skill behind all of them: recognising the same idea in different words.',
+    minutes: 15,
   },
   {
     slug: 'mc',
@@ -41,6 +42,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/mc.png',
     blurb: 'Pick the right option and dodge the distractors designed to catch skimmers.',
+    minutes: 12,
   },
   {
     slug: 'tfng',
@@ -49,6 +51,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/tfng.png',
     blurb: 'Decide whether statements agree with the facts in the text, and learn what "Not Given" really means.',
+    minutes: 12,
   },
   {
     slug: 'ynng',
@@ -57,6 +60,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/ynng.png',
     blurb: "Decide whether statements match the writer's opinions and claims, not the facts in the text.",
+    minutes: 12,
   },
   {
     slug: 'headings',
@@ -65,6 +69,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 3,
     image: '/pics/reading/headings.png',
     blurb: 'Match each paragraph to its main idea, not just repeated words.',
+    minutes: 14,
   },
   {
     slug: 'matching-information',
@@ -73,6 +78,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/para.png',
     blurb: 'Find which paragraph contains a specific piece of information.',
+    minutes: 12,
   },
   {
     slug: 'matching-features',
@@ -81,6 +87,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 3,
     image: '/pics/reading/cat.png',
     blurb: 'Match statements to people, theories, places or dates. Some books call this classification.',
+    minutes: 13,
   },
   {
     slug: 'matching-sentence-endings',
@@ -89,6 +96,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/endings.png',
     blurb: 'Match the start of a sentence to the ending that correctly completes it, using the passage.',
+    minutes: 12,
   },
   {
     slug: 'sentence',
@@ -97,6 +105,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/sentence.png',
     blurb: 'Fill the gaps within the word limit, keeping the sentence grammatical.',
+    minutes: 10,
   },
   {
     slug: 'summary-completion',
@@ -105,6 +114,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/summary.png',
     blurb: 'Fill gaps in a summary, a set of notes, a table or a flow-chart using words taken from the passage.',
+    minutes: 13,
   },
   {
     slug: 'diagram',
@@ -113,6 +123,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 3,
     image: '/pics/reading/diagram.png',
     blurb: 'Label a diagram or process using exact words from the passage.',
+    minutes: 12,
   },
   {
     slug: 'short-answer',
@@ -121,6 +132,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/shortanswer.png',
     blurb: 'Answer questions with a word limit, taking the answer straight from the passage.',
+    minutes: 10,
   },
 ];
 

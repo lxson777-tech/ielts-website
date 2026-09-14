@@ -44,6 +44,10 @@ export interface CourseLesson {
   stage: Stage;
   /** 1-based position across the whole course, for "lesson 12 of 44". */
   position: number;
+  /** Honest estimate of time to work through this lesson, in minutes, from
+      the part's own registry entry (see Sequenced.minutes). Optional so a
+      part without one just shows no time label rather than "0 min". */
+  minutes?: number;
 }
 
 /** A non-lesson step: the exam-readiness module points at tests and trainers
@@ -78,7 +82,7 @@ const SKILL_ORDER: Skill[] = ['reading', 'listening', 'writing', 'speaking', 'vo
 
 /** Every lesson in the site, tagged with its skill and URL, in registry order. */
 function allLessons(): Omit<CourseLesson, 'position'>[] {
-  const sources: { skill: Skill; base: string; parts: { slug: string; title: string; blurb: string; stage: Stage }[] }[] = [
+  const sources: { skill: Skill; base: string; parts: { slug: string; title: string; blurb: string; stage: Stage; minutes?: number }[] }[] = [
     { skill: 'reading', base: 'reading', parts: READING_PARTS },
     { skill: 'listening', base: 'listening', parts: LISTENING_PARTS },
     { skill: 'writing', base: 'writing', parts: WRITING_PARTS },
@@ -94,6 +98,7 @@ function allLessons(): Omit<CourseLesson, 'position'>[] {
       blurb: p.blurb,
       href: `/lessons/${base}/${p.slug}`,
       stage: p.stage,
+      minutes: p.minutes,
     })),
   );
 }

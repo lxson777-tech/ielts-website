@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import LiveExaminer from '../../components/LiveExaminer';
+import { withBase } from '../../lib/url';
 ---
 
 <BaseLayout
@@ -15,5 +16,15 @@ import LiveExaminer from '../../components/LiveExaminer';
       subtitle="A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say."
     />
     <LiveExaminer client:load />
+
+    <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
+      <span class="skill-resource-card-title">Cue-card bank</span>
+      <span class="skill-resource-card-desc">24 Part 2 cue cards with model answers and follow-ups</span>
+      <span class="skill-resource-card-arrow" aria-hidden="true">→</span>
+    </a>
   </div>
 </BaseLayout>
+
+<style is:global>
+  @import '../../styles/platform-pages.css';
+</style>

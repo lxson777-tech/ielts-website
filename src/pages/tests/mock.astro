@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MockExam from '../../components/MockExam';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout
+  title="Mock Exam Day · IELTS Portal"
+  description="A full, chained IELTS sitting: Listening, then Reading, then Writing, with no breaks — the same order and pace as the real test day."
+  bare
+>
+  <MockExam client:load hubUrl={withBase('/tests')} />
+</BaseLayout>

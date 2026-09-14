@@ -4,6 +4,7 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import LiveExaminer from '../../components/LiveExaminer';
 import SpeakingTester from '../../components/SpeakingTester';
 import SpeakingHistory from '../../components/SpeakingHistory';
+import { withBase } from '../../lib/url';
 
 /* The trainer is the live examiner scoped to one part (same tech as
    /speaking/examiner). When the live token service isn't configured at
@@ -26,9 +27,19 @@ const liveConfigured = !!import.meta.env.PUBLIC_LIVE_EXAMINER_URL;
     />
     {liveConfigured ? <LiveExaminer client:load variant="drills" /> : <SpeakingTester client:load />}
 
+    <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
+      <span class="skill-resource-card-title">Cue-card bank</span>
+      <span class="skill-resource-card-desc">24 Part 2 cue cards with model answers and follow-ups</span>
+      <span class="skill-resource-card-arrow" aria-hidden="true">→</span>
+    </a>
+
     <section id="history" class="mt-16 scroll-mt-20">
       <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />
       <SpeakingHistory client:load />
     </section>
   </div>
 </BaseLayout>
+
+<style is:global>
+  @import '../../styles/platform-pages.css';
+</style>

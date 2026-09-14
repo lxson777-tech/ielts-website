@@ -4,6 +4,11 @@ import Badge from '../components/Badge.astro';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
 import { WORDS } from '../data/words';
+import { READING_PARTS } from '../data/reading';
+import { LISTENING_PARTS } from '../data/listening';
+import { WRITING_PARTS } from '../data/writing';
+import { SPEAKING_PARTS } from '../data/speaking';
+import { VOCABULARY_PARTS } from '../data/vocabulary';
 
 interface Props {
   slug: string;
@@ -18,6 +23,28 @@ const { slug, meta, parent } = Astro.props;
 const lesson = meta ? { ...meta, slug, image: '' } : getLesson(slug);
 if (!lesson) throw new Error(`Unknown lesson slug: ${slug}`);
 const skill = SKILLS.find((s) => s.id === lesson.skill)!;
+
+/* Part-lesson pages (e.g. /lessons/reading/tfng) pass `meta` rather than a
+   LESSONS entry, so they carry no `minutes` of their own — resolve it here
+   instead by matching `slug` (e.g. "reading-tfng") back to its part in the
+   matching registry. Overview pages skip this and use lesson.minutes
+   directly, already sourced from LESSONS in data/lessons.ts. */
+const PART_REGISTRIES: { base: string; parts: { slug: string; minutes?: number }[] }[] = [
+  { base: 'reading', parts: READING_PARTS },
+  { base: 'listening', parts: LISTENING_PARTS },
+  { base: 'writing', parts: WRITING_PARTS },
+  { base: 'speaking', parts: SPEAKING_PARTS },
+  { base: 'vocabulary', parts: VOCABULARY_PARTS },
+];
+function lookupPartMinutes(lessonSlug: string): number | undefined {
+  for (const { base, parts } of PART_REGISTRIES) {
+    if (!lessonSlug.startsWith(`${base}-`)) continue;
+    const part = parts.find((p) => p.slug === lessonSlug.slice(base.length + 1));
+    if (part) return part.minutes;
+  }
+  return undefined;
+}
+const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }).minutes;
 ---
 
 <BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description}>
@@ -51,7 +78,12 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
           }
           <span class="font-medium text-ink">{lesson.title}</span>
         </nav>
-        <Badge tone="skill">{skill.label}</Badge>
+        <div class="flex items-center gap-2.5">
+          <Badge tone="skill">{skill.label}</Badge>
+          {typeof minutes === 'number' && (
+            <span class="text-xs font-semibold text-ink-muted">{minutes} min</span>
+          )}
+        </div>
         <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{lesson.title}</h1>
         <p class="mt-3 max-w-2xl text-ink-muted">{lesson.description}</p>
         <!-- The floating word drifts and can't host its own panel, so its
@@ -70,15 +102,40 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
       <slot />
 
       <div class="mt-12 flex flex-col items-center gap-4 border-t border-border pt-8">
-        <button
-          type="button"
-          id="lesson-complete-btn"
-          data-slug={slug}
-          class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-success hover:text-success data-[done]:border-success data-[done]:bg-success-tint data-[done]:text-success"
-        >
-          <span data-icon>○</span>
-          <span data-label>Mark lesson as complete</span>
-        </button>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            id="lesson-complete-btn"
+            data-slug={slug}
+            class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-success hover:text-success data-[done]:border-success data-[done]:bg-success-tint data-[done]:text-success"
+          >
+            <span data-icon>○</span>
+            <span data-label>Mark lesson as complete</span>
+          </button>
+          <button
+            type="button"
+            id="lesson-save-btn"
+            data-slug={slug}
+            data-title={lesson.title}
+            class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-brand hover:text-brand data-[saved]:border-brand data-[saved]:bg-brand-tint data-[saved]:text-brand"
+          >
+            <span data-label>Save lesson</span>
+          </button>
+        </div>
+
+        <div class="w-full max-w-xl">
+          <div class="flex items-baseline justify-between gap-2">
+            <label for="lesson-notes" class="text-xs font-bold uppercase tracking-[0.1em] text-ink-muted">My notes</label>
+            <span id="lesson-notes-status" class="text-xs text-ink-muted opacity-0 transition-opacity duration-300" aria-live="polite"></span>
+          </div>
+          <textarea
+            id="lesson-notes"
+            data-slug={slug}
+            rows="4"
+            placeholder="Jot down anything you want to remember about this lesson."
+            class="mt-2 w-full resize-y rounded-card border border-border bg-surface p-3 text-sm text-ink outline-none transition-colors focus:border-brand"
+          ></textarea>
+        </div>
       </div>
     </article>
   </div>
@@ -92,67 +149,131 @@ const skill = SKILLS.find((s) => s.id === lesson.skill)!;
   import { initReadingQuiz } from '../scripts/lesson-quiz';
   import type { VocabWord } from '../scripts/vocab-quiz';
   import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
+  import { toggleBookmark, isBookmarked, setNote, getNote } from '../lib/notes';
 
-  initReadingQuiz();
+  // Module scripts only execute once, on the initial hard load — they don't
+  // re-run after a client-side (astro:transitions) navigation, and this
+  // page's own elements (the complete/save buttons, the notes box, the
+  // hero word, the quiz) are recreated fresh on every in-site nav. Wiring
+  // everything up only inside this listener (not also directly) covers
+  // both the first load and every subsequent page swap, since it fires on
+  // both (same pattern as VocabQuizInit.astro).
+  document.addEventListener('astro:page-load', () => {
+    initReadingQuiz();
 
-  // Floating vocabulary word that drifts across the hero panel — one
-  // word per lap, swapped to a new random word (never repeating the
-  // one just shown) exactly when the CSS drift animation loops, i.e.
-  // while the word is off-screen and invisible, so the swap is never
-  // visible mid-flight. It's also a [data-vocab-quiz-trigger] pointing
-  // (via aria-controls) at #lesson-hero-word-panel above — clicking it
-  // expands that inline panel with whatever word is showing at the
-  // time. The click wiring itself lives in vocab-quiz.ts (initialized
-  // once site-wide by VocabQuizInit.astro), not here.
-  const heroWord = document.getElementById('lesson-hero-word-text');
-  if (heroWord) {
-    const words: VocabWord[] = JSON.parse(heroWord.dataset.words!);
-    let last = -1;
-    const nextWord = () => {
-      let i = Math.floor(Math.random() * words.length);
-      if (words.length > 1) while (i === last) i = Math.floor(Math.random() * words.length);
-      last = i;
-      heroWord.textContent = words[i]!.word;
-    };
-    nextWord();
-    heroWord.addEventListener('animationiteration', (e) => {
-      if (e.animationName === 'lesson-hero-word-drift') nextWord();
+    // Floating vocabulary word that drifts across the hero panel — one
+    // word per lap, swapped to a new random word (never repeating the
+    // one just shown) exactly when the CSS drift animation loops, i.e.
+    // while the word is off-screen and invisible, so the swap is never
+    // visible mid-flight. It's also a [data-vocab-quiz-trigger] pointing
+    // (via aria-controls) at #lesson-hero-word-panel above — clicking it
+    // expands that inline panel with whatever word is showing at the
+    // time. The click wiring itself lives in vocab-quiz.ts (initialized
+    // once site-wide by VocabQuizInit.astro), not here.
+    const heroWord = document.getElementById('lesson-hero-word-text');
+    if (heroWord) {
+      const words: VocabWord[] = JSON.parse(heroWord.dataset.words!);
+      let last = -1;
+      const nextWord = () => {
+        let i = Math.floor(Math.random() * words.length);
+        if (words.length > 1) while (i === last) i = Math.floor(Math.random() * words.length);
+        last = i;
+        heroWord.textContent = words[i]!.word;
+      };
+      nextWord();
+      heroWord.addEventListener('animationiteration', (e) => {
+        if (e.animationName === 'lesson-hero-word-drift') nextWord();
+      });
+    }
+
+    const btn = document.getElementById('lesson-complete-btn');
+    if (btn) {
+      const slug = btn.dataset.slug!;
+      const render = (done: boolean) => {
+        btn.toggleAttribute('data-done', done);
+        btn.querySelector('[data-icon]')!.textContent = done ? '✓' : '○';
+        btn.querySelector('[data-label]')!.textContent = done
+          ? 'Lesson completed, tap to undo'
+          : 'Mark lesson as complete';
+      };
+      render(isLessonComplete(slug));
+      btn.addEventListener('click', () => {
+        const next = !isLessonComplete(slug);
+        next ? markLessonComplete(slug) : unmarkLessonComplete(slug);
+        render(next);
+      });
+    }
+
+    // Save lesson — a plain bookmark toggle (kind 'lesson'), independent of
+    // completion. Stored by notes.ts under the page's own slug/title/href
+    // so /account's Saved section can link straight back here.
+    const saveBtn = document.getElementById('lesson-save-btn');
+    if (saveBtn) {
+      const slug = saveBtn.dataset.slug!;
+      const title = saveBtn.dataset.title!;
+      const href = window.location.pathname;
+      const renderSaved = (saved: boolean) => {
+        saveBtn.toggleAttribute('data-saved', saved);
+        saveBtn.querySelector('[data-label]')!.textContent = saved ? 'Saved, tap to remove' : 'Save lesson';
+      };
+      renderSaved(isBookmarked('lesson', slug));
+      saveBtn.addEventListener('click', () => {
+        const saved = toggleBookmark('lesson', slug, { title, href });
+        renderSaved(saved);
+      });
+    }
+
+    // My notes — a free-text note per lesson, saved on blur and after a
+    // short pause in typing, so a note survives even if the student never
+    // blurs the field (e.g. they navigate away by clicking a link inside
+    // the lesson body itself).
+    const notesBox = document.getElementById('lesson-notes') as HTMLTextAreaElement | null;
+    const notesStatus = document.getElementById('lesson-notes-status');
+    if (notesBox) {
+      const slug = notesBox.dataset.slug!;
+      notesBox.value = getNote(slug);
+      let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+      let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+      const save = () => {
+        setNote(slug, notesBox.value);
+        if (notesStatus) {
+          notesStatus.textContent = 'Saved';
+          notesStatus.style.opacity = '1';
+          clearTimeout(fadeTimer);
+          fadeTimer = setTimeout(() => {
+            notesStatus.style.opacity = '0';
+            setTimeout(() => {
+              notesStatus.textContent = '';
+            }, 300);
+          }, 1500);
+        }
+      };
+      notesBox.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(save, 1000);
+      });
+      notesBox.addEventListener('blur', () => {
+        clearTimeout(debounceTimer);
+        save();
+      });
+    }
+
+    // Completion checkmarks on any "<skill> lessons" grid on this page — the
+    // per-skill overview (e.g. /lessons/writing) and the cross-links inside
+    // "start here" method lessons both use .sample-card. Resolve via the
+    // anchor's fully-qualified pathname (not the raw href) so it works
+    // whether the link is written as "writing/charts" (from the overview,
+    // one directory up) or just "charts" (from a sibling lesson page, same
+    // directory) — both resolve to the same last two path segments.
+    document.querySelectorAll<HTMLAnchorElement>('.sample-card[href]').forEach((card) => {
+      const segments = card.pathname.split('/').filter(Boolean);
+      const lessonSlug = segments.slice(-2).join('-');
+      if (!isLessonComplete(lessonSlug)) return;
+      const status = document.createElement('span');
+      status.className = 'sample-status';
+      status.title = 'Completed';
+      status.textContent = '✓';
+      card.prepend(status);
     });
-  }
-
-  const btn = document.getElementById('lesson-complete-btn');
-  if (btn) {
-    const slug = btn.dataset.slug!;
-    const render = (done: boolean) => {
-      btn.toggleAttribute('data-done', done);
-      btn.querySelector('[data-icon]')!.textContent = done ? '✓' : '○';
-      btn.querySelector('[data-label]')!.textContent = done
-        ? 'Lesson completed, tap to undo'
-        : 'Mark lesson as complete';
-    };
-    render(isLessonComplete(slug));
-    btn.addEventListener('click', () => {
-      const next = !isLessonComplete(slug);
-      next ? markLessonComplete(slug) : unmarkLessonComplete(slug);
-      render(next);
-    });
-  }
-
-  // Completion checkmarks on any "<skill> lessons" grid on this page — the
-  // per-skill overview (e.g. /lessons/writing) and the cross-links inside
-  // "start here" method lessons both use .sample-card. Resolve via the
-  // anchor's fully-qualified pathname (not the raw href) so it works
-  // whether the link is written as "writing/charts" (from the overview,
-  // one directory up) or just "charts" (from a sibling lesson page, same
-  // directory) — both resolve to the same last two path segments.
-  document.querySelectorAll<HTMLAnchorElement>('.sample-card[href]').forEach((card) => {
-    const segments = card.pathname.split('/').filter(Boolean);
-    const lessonSlug = segments.slice(-2).join('-');
-    if (!isLessonComplete(lessonSlug)) return;
-    const status = document.createElement('span');
-    status.className = 'sample-status';
-    status.title = 'Completed';
-    status.textContent = '✓';
-    card.prepend(status);
   });
 </script>

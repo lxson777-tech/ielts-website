@@ -169,11 +169,20 @@ function buildCardSet(): VocabCard[] {
     });
   }
 
-  const fragments = import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
-    query: '?raw',
-    import: 'default',
-    eager: true,
-  });
+  // import.meta.glob is a Vite/Astro build-time feature: guarded so this
+  // module can also be imported under plain Node (the tests/*.test.ts
+  // runner has no Vite plugin — see src/lib/plan/schedule.ts, which needs
+  // getVocabSummary() for the daily plan's vocabulary item). Falls back to
+  // the words.ts-only card set there; the real Astro build always has
+  // import.meta.glob and gets the full set.
+  const fragments =
+    typeof import.meta.glob === 'function'
+      ? import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
+          query: '?raw',
+          import: 'default',
+          eager: true,
+        })
+      : {};
 
   for (const path of Object.keys(fragments).sort()) {
     const match = path.match(/vocabulary-([a-z-]+)\.html$/);

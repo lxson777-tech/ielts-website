@@ -8,6 +8,8 @@ import { drillTypes } from '../lib/tests/drills';
 import Html from './Html';
 import StrategyPanel from './StrategyPanel';
 import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
+import { withBase } from '../lib/url';
+import { isBookmarked, toggleBookmark } from '../lib/notes';
 
 interface Props {
   test: PracticeTest;
@@ -99,6 +101,14 @@ function pad(n: number): string {
 function countWords(s: string): number {
   const t = s.trim();
   return t ? t.split(/\s+/).length : 0;
+}
+
+/** Strip tags and collapse whitespace, then cut to a bookmark-card-sized
+    subtitle (feature 2). Question stems carry small inline HTML (<em>,
+    <strong>), which a bookmark's subtitle has no use for. */
+function truncatePlain(html: string, max = 90): string {
+  const text = html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
 export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish }: Props) {
@@ -407,6 +417,17 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   // post-submit since inputs are disabled, so it's safe to read at click time.
   const wrongCount = submitted ? SCORED_TOTAL - correctCount : 0;
 
+  // Question bookmarks (review screen, feature 2): the base URL of this
+  // test's own page, `#q<n>` appended per question. Full tests live at
+  // /tests/<id>, drills at /trainers/<skill>/<id> (see the two page routes
+  // that render TestPlayer). Omitted for a retake (isRetake): its test id
+  // has a synthetic "-retake" suffix with no real page behind it, and the
+  // nested instance is gone as soon as the student returns to the parent
+  // results screen, so a bookmark into it wouldn't resolve to anything.
+  const bookmarkBase = isRetake
+    ? undefined
+    : withBase(attemptKind === 'drill' ? `/trainers/${test.skill}/${test.id}` : `/tests/${test.id}`);
+
   function openRetake() {
     const wrongIds = new Set(
       numbered
@@ -471,6 +492,22 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         >
           Review
         </button>
+        {/* Reopens the score modal once it's been dismissed via "Review
+            Answers" — without this there was no way back to it, which
+            mattered only for a retake/mock leg (isRetake): that's the only
+            place the modal's "Back to results" button lives, and dismissing
+            the modal otherwise stranded the flow with no way to continue.
+            Shown for every submitted test, not just isRetake, since it's a
+            harmless convenience either way. */}
+        {submitted && !showScore && (
+          <button
+            type="button"
+            onClick={() => setShowScore(true)}
+            className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt sm:px-3"
+          >
+            Score
+          </button>
+        )}
         <button
           type="button"
           onClick={requestSubmit}
@@ -765,6 +802,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                         flagged={flagged.has(nq.question.id)}
                         onToggleFlag={() => toggleFlag(nq.question.id)}
                         skill={test.skill}
+                        testId={test.id}
+                        testTitle={test.title}
+                        bookmarkHref={bookmarkBase ? `${bookmarkBase}#q${nq.n}` : undefined}
                       />
                     ))
                   )}
@@ -962,6 +1002,9 @@ function QuestionItem({
   flagged,
   onToggleFlag,
   skill,
+  testId,
+  testTitle,
+  bookmarkHref,
 }: {
   nq: Numbered;
   value: string;
@@ -972,6 +1015,13 @@ function QuestionItem({
   flagged?: boolean;
   onToggleFlag?: () => void;
   skill: TestSkill;
+  /** Feature 2 (bookmarks) — the test this question belongs to and the
+      page URL to jump back to it. bookmarkHref is undefined for a retake,
+      where there's no real page for the bookmark to point at (see the
+      caller). */
+  testId?: string;
+  testTitle?: string;
+  bookmarkHref?: string;
 }) {
   const { question: q, group, n } = nq;
   const ok = submitted && scored;
@@ -1004,6 +1054,14 @@ function QuestionItem({
         >
           🚩
         </button>
+      )}
+      {submitted && bookmarkHref && testId && (
+        <BookmarkToggle
+          id={`${testId}:${q.id}`}
+          title={`${testTitle ?? 'Test'}, Q${n}${TYPE_LABELS[group.type] ? ` (${TYPE_LABELS[group.type]})` : ''}`}
+          href={bookmarkHref}
+          subtitle={truncatePlain(q.textHtml || [q.before, q.after].filter(Boolean).join(' ___ ') || group.title)}
+        />
       )}
       {q.scored === false ? (
         <div className="flex items-start gap-3">
@@ -1139,6 +1197,40 @@ function WordLimitWarning({ value, limit, className }: { value: string; limit: n
     <p className={`text-xs font-semibold text-warning ${className ?? ''}`}>
       ⚠ {count} {count === 1 ? 'word' : 'words'}: limit is {limit}
     </p>
+  );
+}
+
+/** Feature 2 — save this question to the bookmarks list (src/lib/notes.ts)
+    for later review, independent of the flag-for-review-within-this-attempt
+    feature above. Local state mirrors notes.ts's own store so the star
+    updates immediately on click; it's re-read from notes.ts on mount rather
+    than assumed false, so revisiting a past attempt's review screen shows
+    bookmarks made earlier. */
+function BookmarkToggle({
+  id,
+  title,
+  href,
+  subtitle,
+}: {
+  id: string;
+  title: string;
+  href: string;
+  subtitle?: string;
+}) {
+  const [saved, setSaved] = useState(() => (typeof window !== 'undefined' ? isBookmarked('question', id) : false));
+  return (
+    <button
+      type="button"
+      onClick={() => setSaved(toggleBookmark('question', id, { title, href, subtitle }))}
+      aria-pressed={saved}
+      aria-label={saved ? 'Remove bookmark' : 'Bookmark this question'}
+      title={saved ? 'Remove bookmark' : 'Bookmark this question'}
+      className={`absolute right-9 top-3 text-base leading-none transition-opacity ${
+        saved ? 'opacity-100' : 'opacity-30 hover:opacity-70'
+      }`}
+    >
+      {saved ? '🔖' : '📑'}
+    </button>
   );
 }
 

@@ -14,6 +14,7 @@ export const PLATFORM_NAV_ITEMS: PlatformNavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: 'home' },
   { href: '/start', label: 'My course', icon: 'course' },
   { href: '/learn', label: 'Lessons', icon: 'book' },
+  { href: '/review', label: 'Vocabulary', icon: 'cards' },
   { href: '/trainers', label: 'Trainers', icon: 'target' },
   { href: '/tests', label: 'Mock tests', icon: 'check' },
   { href: '/speaking/examiner', label: 'AI speaking', icon: 'voice' },

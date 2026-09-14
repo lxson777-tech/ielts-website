@@ -22,6 +22,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Although, whereas, therefore, provided that. The linking words that lift Coherence and Cohesion.',
     stage: 1,
     eyebrow: '18 words · 6 functions · exercise',
+    minutes: 10,
   },
   {
     slug: 'environment',
@@ -29,6 +30,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Climate, energy and conservation. The most common essay topic of all.',
     stage: 2,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'education',
@@ -36,6 +38,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Schools, universities and lifelong learning. A Speaking Part 3 favourite.',
     stage: 2,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'technology',
@@ -43,6 +46,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Innovation, automation and digital life, with ready-made essay phrases.',
     stage: 2,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'work',
@@ -50,6 +54,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'The gig economy, redundancy and the four-day week. The most common Speaking Part 1 topic.',
     stage: 2,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'health',
@@ -57,6 +62,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Public health, lifestyle and healthcare systems vocabulary.',
     stage: 2,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'society',
@@ -64,6 +70,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Inequality, migration and cultural identity for high-band essays.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'crime',
@@ -71,6 +78,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Punishment, rehabilitation and the causes of crime. Around 1 in 10 Task 2 essays.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'government',
@@ -78,6 +86,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Taxation, public spending and the cost of living for policy-focused essays.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'ai',
@@ -85,6 +94,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Automation, machine learning and job displacement. The fastest-growing essay theme of 2026.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'social-media',
@@ -92,6 +102,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Echo chambers, influencers and screen time. A constant Speaking Part 1-3 topic.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'travel',
@@ -99,6 +110,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Overtourism, eco-tourism and transport. A Speaking and Writing regular.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'housing',
@@ -106,6 +118,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Affordability, gentrification and city planning for urban-development essays.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
   {
     slug: 'family',
@@ -113,6 +126,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: 'Family structure, childcare and generational change. A Speaking Part 1-2 staple.',
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
+    minutes: 10,
   },
 ];
 

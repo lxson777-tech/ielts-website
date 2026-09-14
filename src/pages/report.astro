@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProgressReport from '../components/ProgressReport';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout
+  title="Progress Report · IELTS Portal"
+  description="A printable summary of your study plan, lessons completed, test bands and streak, ready to save as a PDF."
+>
+  <div class="report-page platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <header class="report-print-hide mb-10 border-b border-border pb-8">
+      <p class="font-display text-xs font-extrabold uppercase tracking-[0.12em] text-brand">Progress report</p>
+      <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Your progress, one page.</h1>
+      <p class="mt-3 max-w-2xl text-ink-muted">
+        Everything from your <a href={withBase('/account')} class="font-semibold text-brand hover:underline">account page</a> laid out for printing or saving as a PDF.
+      </p>
+    </header>
+
+    <ProgressReport client:load />
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/platform-pages.css';
+</style>

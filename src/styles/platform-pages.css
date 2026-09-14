@@ -238,3 +238,66 @@
   .ma-criteria-grid{grid-template-columns:1fr}
   .ma-hl-note{left:50%;transform:translateX(-50%);max-width:220px}
 }
+
+/* Dashboard vocabulary card + library row (LearningDashboard.tsx). Same
+   card language as .dashboard-next above (white surface, 1px border, soft
+   shadow), plus a quiet row of pill links to the other study-space
+   reference material (model answers, cue cards, lessons) that don't earn a
+   spot in the rail on their own. */
+.dashboard-vocab-section{margin-bottom:52px}
+.dashboard-vocab{display:flex;align-items:center;justify-content:space-between;gap:24px;border:1px solid var(--color-border);border-radius:16px;background:var(--color-surface);padding:22px 26px;box-shadow:0 12px 32px rgb(32 37 34 / 5%)}
+.dashboard-vocab-copy p{margin:0}
+.dashboard-vocab-copy h2{margin:6px 0 0;font-family:var(--font-display);font-size:1.25rem;letter-spacing:-.02em}
+.dashboard-vocab-copy span{display:block;margin-top:6px;color:var(--color-ink-muted);font-size:.83rem}
+.dashboard-library-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.dashboard-library-row a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--color-border);border-radius:999px;background:var(--color-surface);padding:9px 16px;color:var(--color-ink-muted);font-size:.8rem;font-weight:700;transition:border-color .15s ease,color .15s ease}
+.dashboard-library-row a:hover{border-color:var(--color-brand,#e76f51);color:var(--color-brand,#e76f51)}
+@media (max-width:760px){
+  .dashboard-vocab{flex-direction:column;align-items:stretch;text-align:left}
+  .dashboard-vocab .coral-button{align-self:flex-start}
+}
+
+/* Small in-context link to a related library resource (model answers,
+   cue cards), shown under the Writing/Speaking Trainer and Checker/Examiner
+   so a student can find the reference bank without it cluttering the rail.
+   Reuses the site's card language rather than inventing a new style. */
+.skill-resource-card{display:flex;align-items:center;gap:14px;margin:22px auto 0;max-width:560px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface);padding:14px 18px;box-shadow:0 8px 20px rgb(32 37 34 / 4%);transition:border-color .15s ease,transform .15s ease}
+.skill-resource-card:hover{border-color:var(--color-brand,#e76f51);transform:translateY(-1px)}
+.skill-resource-card-title{font-weight:800;font-size:.88rem;color:var(--color-ink);white-space:nowrap}
+.skill-resource-card-desc{flex:1;min-width:0;color:var(--color-ink-muted);font-size:.8rem}
+.skill-resource-card-arrow{color:var(--color-brand,#e76f51);font-size:1rem;flex-shrink:0}
+@media (max-width:600px){
+  .skill-resource-card{flex-wrap:wrap}
+  .skill-resource-card-desc{flex-basis:100%}
+}
+
+/* Time estimate ("12 min") on a lesson library card, added inside the
+   existing .library-card-link footer row. That row was plain text before;
+   splitting it into a flex row keeps "Open lesson" pinned left and the
+   minutes label right, both still riding the card's mt-auto footer. */
+.library-card-link{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.library-card-minutes{color:var(--color-ink-muted);font-size:.72rem;font-weight:700}
+
+/* Progress report (/report, src/pages/report.astro + ProgressReport.tsx):
+   print styling for the "Print or save as PDF" button. Hides the site chrome
+   (header, footer, and the workspace rail on routes that render it) and the
+   on-screen-only controls (name field, print button, page header), and
+   reveals the print-only report title in their place. Scoped narrowly by
+   class rather than assuming a page layout, so it works whichever shell
+   BaseLayout renders for this route. */
+@media print {
+  .site-header,
+  .marketing-footer,
+  .platform-rail,
+  .report-print-hide {
+    display: none !important;
+  }
+  .report-print-only {
+    display: block !important;
+    margin-bottom: 24px;
+  }
+  .report-page {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+}

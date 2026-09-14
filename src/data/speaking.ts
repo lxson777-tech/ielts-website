@@ -18,6 +18,7 @@ export const SPEAKING_PARTS: SpeakingPart[] = [
     blurb: 'Handle the warm-up interview questions with natural, extended answers.',
     stage: 2,
     image: '/pics/speaking-part1.png',
+    minutes: 20,
   },
   {
     slug: 'part2',
@@ -25,6 +26,7 @@ export const SPEAKING_PARTS: SpeakingPart[] = [
     blurb: 'Speak for two minutes from a cue card without running dry.',
     stage: 2,
     image: '/pics/speaking-part2.png',
+    minutes: 25,
   },
   {
     slug: 'part3',
@@ -32,6 +34,7 @@ export const SPEAKING_PARTS: SpeakingPart[] = [
     blurb: 'Discuss abstract follow-up questions and show off complex language.',
     stage: 3,
     image: '/pics/speaking-part3.png',
+    minutes: 30,
   },
 ];
 

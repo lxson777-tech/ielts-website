@@ -114,6 +114,37 @@ test('getTodayPlan flags "behind" once more than 3 past study days are left undo
   assert.equal(today!.onTrack, false);
 });
 
+test('mock exams are scheduled every two weeks from week three, 150 minutes, linking to /tests/mock', () => {
+  const plan = makePlan();
+  const days = buildSchedule(plan);
+  const mockItems = days.flatMap((d) => d.items.filter((i) => i.type === 'mock').map((i) => ({ week: d.weekNumber, item: i })));
+  assert.ok(mockItems.length > 0, 'at least one mock exam is scheduled over an 8-week plan');
+  for (const { week, item } of mockItems) {
+    assert.ok(week >= 3 && (week - 3) % 2 === 0, `mock exam landed in week ${week}, expected week 3, 5, 7, ...`);
+    assert.equal(item.minutes, 150);
+    assert.equal(item.href, '/tests/mock');
+  }
+  // Exactly one per eligible week, never doubled up on the same day.
+  const weeks = mockItems.map((m) => m.week);
+  assert.equal(new Set(weeks).size, weeks.length, 'at most one mock exam per week');
+});
+
+test('markItemsDone ticks a mock exam only for a "mock-" attempt on or after its own scheduled day', () => {
+  const plan = makePlan();
+  const days = buildSchedule(plan);
+  const day = days.find((d) => d.items.some((i) => i.type === 'mock'))!;
+  const mockAttempt = (at: string) => [{ at, raw: 30, total: 40, band: 6.5, bandLabel: '6.5', secondsUsed: 100 }];
+  const progress = emptyProgress();
+
+  progress.tests['mock-1'] = mockAttempt(`${addDays(day.date, -3)}T09:00:00.000Z`);
+  const beforeMarked = markItemsDone(day.items, progress, plan.startDate!);
+  assert.equal(beforeMarked.find((i) => i.type === 'mock')!.done, false, 'an attempt before this occurrence is not enough');
+
+  progress.tests['mock-1'] = mockAttempt(`${day.date}T09:00:00.000Z`);
+  const onDayMarked = markItemsDone(day.items, progress, plan.startDate!);
+  assert.equal(onDayMarked.find((i) => i.type === 'mock')!.done, true, 'an attempt on the scheduled day ticks it');
+});
+
 test('getWeekPlan always returns exactly 7 days', () => {
   const plan = makePlan();
   const progress = emptyProgress();

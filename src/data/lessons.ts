@@ -51,6 +51,10 @@ export interface Sequenced {
   image?: string;
   /** Small line above the card title, e.g. '10 words · collocations'. */
   eyebrow?: string;
+  /** Honest estimate of time to work through this lesson, in minutes. Shown
+      as a small muted "12 min" label wherever the lesson is listed. Optional
+      so a part added without one just shows no label rather than "0 min". */
+  minutes?: number;
 }
 
 /** A part with its position within its own section resolved. */
@@ -74,6 +78,9 @@ export interface LessonMeta {
   description: string;
   image: string; // path under /pics, passed through withBase()
   level?: LessonLevel;
+  /** See Sequenced.minutes. These overview pages are shorter reads than a
+      full part lesson, hence the flat 8. */
+  minutes?: number;
 }
 
 export const SKILLS: { id: Skill; label: string; blurb: string }[] = [
@@ -92,6 +99,7 @@ export const LESSONS: LessonMeta[] = [
     description: 'How the test works, the band score table, and a lesson for every official question type.',
     image: '/pics/reading.png',
     level: 'Beginner',
+    minutes: 8,
   },
   {
     slug: 'writing',
@@ -100,6 +108,7 @@ export const LESSONS: LessonMeta[] = [
     description: 'How the test works, how examiners mark it, and a lesson for each task.',
     image: '/pics/writing/start-task.png',
     level: 'Intermediate',
+    minutes: 8,
   },
   {
     slug: 'speaking',
@@ -108,6 +117,7 @@ export const LESSONS: LessonMeta[] = [
     description: 'How the interview works, how examiners mark it, and a lesson for each part.',
     image: '/pics/speaking-part1.png',
     level: 'Intermediate',
+    minutes: 8,
   },
   {
     slug: 'listening',
@@ -116,6 +126,7 @@ export const LESSONS: LessonMeta[] = [
     description: 'How the test works, how it is scored, and a lesson for each part and every question type.',
     image: '/pics/listening.png',
     level: 'Beginner',
+    minutes: 8,
   },
   {
     slug: 'vocabulary',
@@ -124,6 +135,7 @@ export const LESSONS: LessonMeta[] = [
     description: 'Why vocabulary decides your band, a lesson per exam topic, and a quiz.',
     image: '/pics/vocabulary.png',
     level: 'All levels',
+    minutes: 8,
   },
 ];
 

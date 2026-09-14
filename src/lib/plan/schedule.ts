@@ -33,6 +33,7 @@ import { ALL_TESTS } from '../../data/tests';
 import { ALL_READING_DRILLS, ALL_LISTENING_DRILLS, type DrillMeta } from '../tests/drills';
 import type { PracticeTest } from '../tests/schema';
 import { saveStudyPlan, type SavedPlan } from '../study-plan';
+import { getVocabSummary } from '../vocab-review';
 import { addDays, daysBetween, isWeekday, parseDateKey, toLocalDateKey } from './date';
 
 export const DEFAULT_DAILY_MINUTES = 25;
@@ -42,9 +43,10 @@ const LESSON_MINUTES = 12;
 const DRILL_MINUTES = 10;
 const VOCAB_MINUTES = 5;
 const REVIEW_MINUTES = 8;
+const MOCK_MINUTES = 150;
 const TEST_MINUTES: Record<'reading' | 'listening', number> = { reading: 60, listening: 40 };
 
-export type PlanItemType = 'lesson' | 'drill' | 'test' | 'vocab' | 'review';
+export type PlanItemType = 'lesson' | 'drill' | 'test' | 'vocab' | 'review' | 'mock';
 
 export interface PlanItem {
   /** Stable id. For lessons this is the progress.lessons key; for drills and
@@ -62,10 +64,13 @@ export interface PlanItem {
   minutes: number;
   skill?: CourseLesson['skill'];
   done: boolean;
-  /** False for items with no completion signal in progress.ts yet
-      (vocabulary review — the /review page is still being built by another
-      agent). Shown like any other item, but excluded from the "behind"
-      backlog so it can never pile up with no way to clear it. */
+  /** False for items with no per-occurrence completion signal to check.
+      Currently always true: vocabulary review reads getVocabSummary() (a
+      single global "today" flag, not tied to one scheduled day) and mock
+      exams read progress.tests for a 'mock-' attempt, both in
+      markItemsDone() below. Kept as a field, rather than assumed, so a
+      future item type with no completion source yet can opt out of the
+      "behind" backlog the same way vocab review used to. */
   trackable: boolean;
 }
 
@@ -149,7 +154,11 @@ function testItem(t: PracticeTest, skill: 'reading' | 'listening'): PlanItem {
 }
 
 function vocabItem(): PlanItem {
-  return { id: 'vocab-review', type: 'vocab', label: 'Vocabulary review', meta: 'Quick recap', href: '/review', minutes: VOCAB_MINUTES, done: false, trackable: false };
+  return { id: 'vocab-review', type: 'vocab', label: 'Vocabulary review', meta: 'Quick recap', href: '/review', minutes: VOCAB_MINUTES, done: false, trackable: true };
+}
+
+function mockItem(date: string): PlanItem {
+  return { id: `mock:${date}`, type: 'mock', label: 'Full mock exam', meta: 'Timed, all four papers', href: '/tests/mock', minutes: MOCK_MINUTES, done: false, trackable: true };
 }
 
 function reviewItem(l: CourseLesson): PlanItem {
@@ -207,6 +216,26 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
   }
   const compressed = perDay > perDayLessonBudget;
 
+  // Mock exam days: once every two weeks starting week three (weeks 3, 5,
+  // 7, ...), on the Sunday of that week if it's a study day, otherwise the
+  // last study day of that week (e.g. Friday on a weekdays-only plan).
+  // Picked from workingDates so a mock exam never lands on one of the two
+  // light-review days right before the exam.
+  const weekToWorkingDates = new Map<number, string[]>();
+  for (const d of workingDates) {
+    const wk = Math.ceil((daysBetween(params.startDate, d) + 1) / 7);
+    const list = weekToWorkingDates.get(wk) ?? [];
+    list.push(d);
+    weekToWorkingDates.set(wk, list);
+  }
+  const mockDates = new Set<string>();
+  for (const [wk, dates] of weekToWorkingDates) {
+    if (wk < 3 || (wk - 3) % 2 !== 0) continue;
+    const sunday = dates.find((d) => parseDateKey(d).getDay() === 0);
+    const chosen = sunday ?? dates[dates.length - 1];
+    if (chosen) mockDates.add(chosen);
+  }
+
   let lessonPtr = 0;
   let sinceDrill = 0;
   let readingDrillPtr = 0;
@@ -227,12 +256,16 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
     const dayNumber = daysBetween(params.startDate, date) + 1;
     const weekNumber = Math.ceil(dayNumber / 7);
     const isLight = lightDates.has(date);
-    const isReview = !isLight && allowReview && dayNumber % 7 === 0;
+    const isMock = !isLight && mockDates.has(date);
+    const isReview = !isLight && !isMock && allowReview && dayNumber % 7 === 0;
     const items: PlanItem[] = [];
 
     if (isLight) {
       for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
       if (items.length === 0) items.push(vocabItem());
+    } else if (isMock) {
+      items.push(mockItem(date));
+      items.push(vocabItem());
     } else if (isReview) {
       for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
       if (items.length < 2) items.push(vocabItem());
@@ -304,8 +337,10 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
     check against the lesson it points at. A drill or test is done when an
     attempt with that id exists on or after the plan's start date (so a test
     sat before the plan even began doesn't retroactively tick a scheduled
-    repeat of it). Vocabulary review has no completion source yet, so it
-    always reports not done — see PlanItem.trackable. */
+    repeat of it). Vocabulary review reads getVocabSummary() (src/lib/vocab-
+    review.ts) instead of progress, since its store is separate. A mock exam
+    is done when any progress.tests attempt whose id starts with 'mock-'
+    lands on or after that occurrence's own scheduled day. */
 export function markItemsDone(items: PlanItem[], progress: ProgressV1, startDate: string): PlanItem[] {
   const cutoff = parseDateKey(startDate).getTime();
   return items.map((item) => {
@@ -317,6 +352,24 @@ export function markItemsDone(items: PlanItem[], progress: ProgressV1, startDate
     if (item.type === 'drill' || item.type === 'test') {
       const attempts = progress.tests[item.id] ?? [];
       const done = attempts.some((a) => new Date(a.at).getTime() >= cutoff);
+      return { ...item, done };
+    }
+    if (item.type === 'vocab') {
+      const summary = getVocabSummary();
+      const done = summary.reviewedToday > 0 || (summary.due === 0 && summary.newToday === 0);
+      return { ...item, done };
+    }
+    if (item.type === 'mock') {
+      // Recurring item: each occurrence's own scheduled day (encoded in its
+      // id, "mock:<date>") is the cutoff, not the plan's overall startDate —
+      // otherwise a mock sat before a later occurrence would retroactively
+      // tick it, the same trap markItemsDone's own startDate param exists to
+      // avoid for drills/tests.
+      const occurredOn = item.id.startsWith('mock:') ? item.id.slice('mock:'.length) : startDate;
+      const mockCutoff = parseDateKey(occurredOn).getTime();
+      const done = Object.entries(progress.tests).some(
+        ([id, attempts]) => id.startsWith('mock-') && attempts.some((a) => new Date(a.at).getTime() >= mockCutoff),
+      );
       return { ...item, done };
     }
     return item;

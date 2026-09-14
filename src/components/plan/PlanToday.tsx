@@ -16,6 +16,7 @@ const TYPE_LABEL: Record<PlanItem['type'], string> = {
   test: 'Test',
   vocab: 'Vocabulary',
   review: 'Review',
+  mock: 'Mock exam',
 };
 
 export default function PlanToday() {
