@@ -31,7 +31,7 @@ const heroSkills = [
             <div class="band-choice">
               <p>Choose your target band</p>
               <span>Pick your goal. We’ll show you the way.</span>
-              <div class="band-picker" role="group" aria-label="Choose your target IELTS band">{[6.5, 7, 7.5, 8].map((band) => <button type="button" data-band={band} aria-pressed={band === 7 ? 'true' : 'false'}>{band}</button>)}</div>
+              <div class="band-picker" role="group" aria-label="Choose your target IELTS band">{[6.5, 7, 7.5, 8, 8.5, 9].map((band) => <button type="button" data-band={band} aria-pressed={band === 7 ? 'true' : 'false'}>{band}</button>)}</div>
               <p class="band-feedback" data-band-feedback aria-live="polite">Band 7.0 selected</p>
             </div>
             <a class="journey-cta" href="#reading">Start your journey</a>

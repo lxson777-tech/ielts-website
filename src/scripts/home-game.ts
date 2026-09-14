@@ -1,7 +1,11 @@
 import { applyWalkPose } from '../lib/home/walk-gait';
+import { HOME_TARGET_BAND_KEY } from '../lib/study-plan';
 
 const SKILL_STATES = ['read', 'listen', 'write', 'speak', 'celebrate'];
-const TARGET_KEY = 'ielts.ez.targetBand';
+// Kept in study-plan.ts (not defined here) so Course.tsx can read the same
+// key without importing this file, which runs browser-only scroll/animation
+// setup as a side effect of being imported.
+const TARGET_KEY = HOME_TARGET_BAND_KEY;
 
 export function initHomeStory() {
   const root = document.querySelector<HTMLElement>('[data-scroll-story]');
@@ -29,7 +33,7 @@ export function initHomeStory() {
   const bands = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-band]'));
   const bandFeedback = root.querySelector<HTMLElement>('[data-band-feedback]');
   const setBand = (value: string) => {
-    const safe = ['6.5', '7', '7.5', '8'].includes(value) ? value : '7';
+    const safe = ['6.5', '7', '7.5', '8', '8.5', '9'].includes(value) ? value : '7';
     try { localStorage.setItem(TARGET_KEY, safe); } catch { /* Storage may be blocked. */ }
     bands.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.band === safe)));
     const selectedBandIndex = bands.findIndex((button) => button.dataset.band === safe);

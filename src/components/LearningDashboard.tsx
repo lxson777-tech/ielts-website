@@ -46,6 +46,7 @@ export default function LearningDashboard() {
   const course = useMemo(() => buildCourse().flatMap((module) => module.lessons), []);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [hasPlan, setHasPlan] = useState(false);
+  const [targetBand, setTargetBand] = useState<string | null>(null);
   const [vocab, setVocab] = useState<VocabSummary | null>(null);
   const [streak, setStreak] = useState(0);
   const [goal, setGoal] = useState<{ minutes: number; goal: number } | null>(null);
@@ -60,6 +61,7 @@ export default function LearningDashboard() {
       const plan = loadStudyPlan();
       setProgress(getProgress());
       setHasPlan(Boolean(plan));
+      setTargetBand(plan?.targetBand ?? null);
       setVocab(getVocabSummary());
       setStreak(getStreak(plan));
       setGoal(getTodayGoalProgress(plan));
@@ -104,6 +106,7 @@ export default function LearningDashboard() {
           <span>
             {' '}
             {streak} day streak, {goal.minutes} of {goal.goal} minutes today.
+            {targetBand && <> Target Band {targetBand}.</>}
           </span>
         )}
       </p>

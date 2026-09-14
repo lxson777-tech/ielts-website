@@ -1374,9 +1374,9 @@
 }
 .band-choice > p:first-child { margin: 0; font: 850 1rem/1.2 "Plus Jakarta Sans", Inter, sans-serif; letter-spacing: -.02em; }
 .band-choice > span { color: var(--muted); font-size: .78rem; }
-.band-choice .band-picker { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: .3rem; margin-top: .45rem; padding: .3rem; border: 0; border-radius: 14px; background: #f0eee8; }
-.band-choice .band-picker::before { content: ''; position: absolute; z-index: 0; top: .3rem; bottom: .3rem; left: .3rem; width: calc((100% - 1.5rem) / 4); border-radius: 11px; background: var(--ink); box-shadow: 0 7px 15px #20252224; transform: translateX(calc(var(--band-index, 1) * (100% + .3rem))); transition: transform .38s cubic-bezier(.2,.82,.22,1); }
-.band-choice .band-picker button { position: relative; z-index: 1; min-width: 0; min-height: 46px; border-radius: 11px; font-size: .92rem; transition: color .3s ease, transform .3s cubic-bezier(.2,.8,.25,1); }
+.band-choice .band-picker { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: .3rem; margin-top: .45rem; padding: .3rem; border: 0; border-radius: 14px; background: #f0eee8; }
+.band-choice .band-picker::before { content: ''; position: absolute; z-index: 0; top: .3rem; bottom: .3rem; left: .3rem; width: calc((100% - 2.1rem) / 6); border-radius: 11px; background: var(--ink); box-shadow: 0 7px 15px #20252224; transform: translateX(calc(var(--band-index, 1) * (100% + .3rem))); transition: transform .38s cubic-bezier(.2,.82,.22,1); }
+.band-choice .band-picker button { position: relative; z-index: 1; min-width: 0; min-height: 46px; border-radius: 11px; font-size: .82rem; padding: 0; transition: color .3s ease, transform .3s cubic-bezier(.2,.8,.25,1); }
 .band-choice .band-picker button:hover { background: #fff; transform: translateY(-1px); }
 .band-choice .band-picker button[aria-pressed="true"] { background: transparent; color: #fff; box-shadow: none; transform: translateY(-1px); }
 .band-feedback { min-height: 1em; margin: .25rem .1rem 0; color: var(--coral-dark); font-size: .7rem; font-weight: 800; opacity: .85; }

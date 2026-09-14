@@ -41,6 +41,42 @@ export interface SavedPlan {
   studyDays?: 'daily' | 'weekdays';
 }
 
+/** The six target bands the course now offers, one decimal place, low to
+    high. Shared by Course.tsx's two band selects so there is exactly one
+    place that list is defined. A plan saved before this changed (2026-09,
+    was 5.0-8.0) can still hold a value outside this list; see
+    loadHomeTargetBand() and the clamp-with-a-note handling in Course.tsx for
+    how that's kept from producing an invalid, unselectable <select>. */
+export const TARGET_BANDS = ['6.5', '7.0', '7.5', '8.0', '8.5', '9.0'] as const;
+export type TargetBand = (typeof TARGET_BANDS)[number];
+
+/** localStorage key the homepage hero's band picker (src/scripts/home-game.ts)
+    writes to. Read here too so Course.tsx can preselect a brand-new student's
+    band from what they already picked on the homepage, without importing
+    home-game.ts itself (that file runs browser-only scroll/animation setup
+    as a side effect of being imported, which must not happen on every page
+    that mounts Course). */
+export const HOME_TARGET_BAND_KEY = 'ielts.ez.targetBand';
+
+/** The homepage picker stores raw numbers-as-strings ('7', '8.5', not '7.0'),
+    so this normalizes to the one-decimal form TARGET_BANDS and Course.tsx's
+    selects use, and returns null for anything unset, blocked, unparsable, or
+    outside the six bands the course offers (so an old/stray value can never
+    hand Course.tsx something its own select doesn't list). */
+export function loadHomeTargetBand(): TargetBand | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(HOME_TARGET_BAND_KEY);
+    if (!raw) return null;
+    const n = Number(raw);
+    if (!Number.isFinite(n)) return null;
+    const normalized = n.toFixed(1);
+    return (TARGET_BANDS as readonly string[]).includes(normalized) ? (normalized as TargetBand) : null;
+  } catch {
+    return null;
+  }
+}
+
 const listeners = new Set<() => void>();
 
 /** Subscribe to plan writes (local edits or cloud pulls). Returns unsubscribe. */

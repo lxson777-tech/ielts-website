@@ -24,6 +24,8 @@ import {
   daysUntilTest,
   planTierFor,
   PLAN_TIER_LABEL,
+  TARGET_BANDS,
+  loadHomeTargetBand,
   type SavedPlan,
 } from '../lib/study-plan';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
@@ -31,7 +33,6 @@ import { buildCourse, courseStatus, coursePace, isLessonDone } from '../lib/cour
 import { toLocalDateKey } from '../lib/plan/date';
 import WeekView from './plan/WeekView';
 
-const TARGET_BANDS = ['5.0', '5.5', '6.0', '6.5', '7.0', '7.5', '8.0'];
 const DAILY_MINUTES_OPTIONS: NonNullable<SavedPlan['dailyMinutes']>[] = [15, 25, 40, 60];
 const MODULES = buildCourse();
 
@@ -51,15 +52,29 @@ export default function Course() {
   const [testDate, setTestDate] = useState('');
   const [dailyMinutes, setDailyMinutes] = useState<NonNullable<SavedPlan['dailyMinutes']>>(25);
   const [studyDays, setStudyDays] = useState<NonNullable<SavedPlan['studyDays']>>('daily');
+  // Set when a saved plan predates the 2026-09 band range (it held 5.0-6.0,
+  // the course now starts at 6.5): the select can't show that value since it
+  // no longer has a matching option, so it's clamped to 6.5 and this drives a
+  // note explaining why, right on the field, rather than silently swapping
+  // the student's saved target the next time they submit the form.
+  const [clampedFromBand, setClampedFromBand] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = loadStudyPlan();
     if (saved) {
       setPlan(saved);
-      setTargetBand(saved.targetBand);
+      const savedBandValid = (TARGET_BANDS as readonly string[]).includes(saved.targetBand);
+      setTargetBand(savedBandValid ? saved.targetBand : '6.5');
+      setClampedFromBand(savedBandValid ? null : saved.targetBand);
       setTestDate(saved.testDate);
       setDailyMinutes(saved.dailyMinutes ?? 25);
       setStudyDays(saved.studyDays ?? 'daily');
+    } else {
+      // A brand-new student who already picked a band in the homepage hero
+      // (src/scripts/home-game.ts) should see that choice here too, rather
+      // than the plain 6.5 default resetting what they just told us.
+      const homeBand = loadHomeTargetBand();
+      if (homeBand) setTargetBand(homeBand);
     }
     setProgress(getProgress());
     setReady(true);
@@ -136,7 +151,10 @@ export default function Course() {
         <select
           id="target-band"
           value={targetBand}
-          onChange={(e) => setTargetBand(e.target.value)}
+          onChange={(e) => {
+            setTargetBand(e.target.value);
+            setClampedFromBand(null); // they've made their own choice, the note no longer applies
+          }}
           className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
         >
           {TARGET_BANDS.map((b) => (
@@ -145,6 +163,12 @@ export default function Course() {
             </option>
           ))}
         </select>
+        {clampedFromBand && (
+          <p className="mt-1.5 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
+            Your saved target was Band {clampedFromBand}. The course now starts at Band 6.5, so we've set that here,
+            pick a different band if you'd like.
+          </p>
+        )}
 
         <label className="mt-5 block text-sm font-semibold" htmlFor="test-date">
           When is your test? <span className="font-normal text-ink-muted">(optional)</span>
@@ -239,6 +263,12 @@ export default function Course() {
                 You've already completed {status.doneLessons} lesson{status.doneLessons === 1 ? '' : 's'}. Add your
                 target so the course can pace the rest for you.
               </p>
+              {clampedFromBand && (
+                <p className="mt-1.5 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
+                  Your saved target was Band {clampedFromBand}. The course now starts at Band 6.5, so we've set that
+                  here, pick a different band if you'd like.
+                </p>
+              )}
             </div>
             <label className="sr-only" htmlFor="target-band-inline">
               Target band
@@ -246,7 +276,10 @@ export default function Course() {
             <select
               id="target-band-inline"
               value={targetBand}
-              onChange={(e) => setTargetBand(e.target.value)}
+              onChange={(e) => {
+                setTargetBand(e.target.value);
+                setClampedFromBand(null); // they've made their own choice, the note no longer applies
+              }}
               className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
             >
               {TARGET_BANDS.map((b) => (
