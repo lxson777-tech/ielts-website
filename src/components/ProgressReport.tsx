@@ -60,7 +60,7 @@ const SKILL_COLOR: Record<'reading' | 'listening' | 'writing' | 'speaking', stri
 };
 
 const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 interface TrendPoint {
   at: string;

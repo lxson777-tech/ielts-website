@@ -15,7 +15,7 @@ import { SPEAKING_PARTS } from '../data/speaking';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 
 const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const PART_REGISTRIES: { base: string; parts: { slug: string; title: string }[] }[] = [
   { base: 'reading', parts: READING_PARTS },

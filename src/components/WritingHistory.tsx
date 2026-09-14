@@ -12,7 +12,7 @@ function promptTitle(id: string): string {
 }
 
 const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 /* Single-series band-over-time line, same visual language as ScoreHistory's
    BandChart but plotting overallBand instead of a raw-score band. */

@@ -83,7 +83,7 @@ export const CUE_CARDS: CueCard[] = [
     ],
     upgrades: [
       { phrase: "who's actually my mother's younger sister", note: 'a natural relative clause in the opening line shows grammatical range without sounding rehearsed' },
-      { phrase: 'what always strikes me is', note: 'a stronger way to introduce an observation than a flat "I think"' },
+      { phrase: 'What always strikes me is', note: 'a stronger way to introduce an observation than a flat "I think"' },
       { phrase: 'even when the ovens break down', note: 'a concrete example beats a vague generalisation like "even when things go wrong"' },
       { phrase: "she's proof that", note: 'a confident closing structure that avoids a stock "in conclusion"' },
       { phrase: 'as forgiving with myself as she is with everyone else', note: 'an as...as comparison that ties the talk back to the speaker, not just the person described' },
@@ -230,7 +230,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'puts my own worries into perspective', note: 'an idiomatic phrase for describing an emotional effect' },
       { phrase: 'slightly out of the way', note: 'softer and more natural than "far" or "hidden"' },
       { phrase: 'sounds small, but it makes a real difference', note: 'a concession structure that adds nuance to a simple habit' },
-      { phrase: 'when I took a wrong turn... and ended up walking', note: 'mixing past simple with ended up + gerund shows tense range' },
+      { phrase: 'took a wrong turn on the way home and ended up walking through it', note: 'past simple followed by ended up plus a gerund, a natural way to show tense range' },
     ],
     roundingOff: [
       { q: 'Do you ever take anyone there with you?', a: "Rarely, it's really my time alone." },
@@ -275,8 +275,8 @@ export const CUE_CARDS: CueCard[] = [
     ],
     upgrades: [
       { phrase: "didn't look real", note: 'a natural exaggeration that sounds spoken, not written' },
-      { phrase: 'rather than rushing... rather than somewhere like Tokyo', note: 'repeating a rather than structure shows controlled comparison across the talk' },
-      { phrase: 'from what I understand', note: 'a natural hedge for speculating about a place you have not visited yet' },
+      { phrase: 'rather than rushing between famous landmarks', note: 'a rather than structure, repeated later in the talk, that keeps the comparison controlled' },
+      { phrase: 'From what I understand', note: 'a natural hedge for speculating about a place you have not visited yet' },
       { phrase: 'high on the list', note: 'an informal idiom for priority' },
       { phrase: "it's been on my list for years now", note: 'a natural closing line that avoids a flat "in conclusion"' },
     ],
@@ -374,7 +374,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: "not completely cut off", note: 'a natural way to add a limitation to a claim, showing nuance' },
       { phrase: 'lose my train of thought', note: 'an idiomatic phrase for describing distraction' },
       { phrase: 'create my own quiet space', note: 'figurative language that sounds natural rather than literal' },
-      { phrase: 'a fairly small object, but it has had more impact than almost anything else I own', note: 'a but contrast for a strong, memorable ending' },
+      { phrase: "a fairly small object, but it's probably had more impact on my daily routine", note: 'a but contrast for a strong, memorable ending' },
     ],
     roundingOff: [
       { q: 'Would you recommend them to a friend?', a: 'Yes, especially anyone who studies in a noisy flat.' },
@@ -414,7 +414,7 @@ export const CUE_CARDS: CueCard[] = [
     ],
     model: [
       "I'd like to talk about an old pocket watch that belonged to my grandfather, which my grandmother gave me on my eighteenth birthday, a couple of years after he'd passed away.",
-      "It's not a particularly valuable object in financial terms; the metal casing is slightly worn, and it doesn't even keep perfect time anymore. My grandmother gave it to me quite unexpectedly, actually, during a fairly ordinary family dinner. She just placed it in front of me and said he would have wanted me to have it, since I was named after him in a sense, sharing his middle name.",
+      "It's not a particularly valuable object in financial terms; the metal casing is slightly worn, and it doesn't even keep perfect time any more. My grandmother gave it to me quite unexpectedly, actually, during a fairly ordinary family dinner. She just placed it in front of me and said he would have wanted me to have it, since I was named after him in a sense, sharing his middle name.",
       "What made the gift so meaningful wasn't really the object itself, but the story attached to it. Apparently he carried it through some genuinely difficult years, and my grandmother told me a couple of stories that evening I'd honestly never heard before. I don't wear it or use it day to day, it mostly stays in a drawer in my room, but I take it out every so often, especially around his birthday, and just hold it for a minute or two. Looking back, I think it taught me that the best gifts aren't necessarily the most expensive ones; they're the ones that carry a piece of someone else's history along with them.",
     ],
     upgrades: [
@@ -454,14 +454,14 @@ export const CUE_CARDS: CueCard[] = [
     },
     notes: [
       'old denim jacket',
-      'bought secondhand at a market',
+      'bought second-hand at a market',
       'wear it most of autumn',
       'fits oddly but comfortable',
       'got compliments, feels like "me"',
       'why: comfort plus individuality',
     ],
     model: [
-      "The item of clothing I'd like to describe is a denim jacket I bought secondhand from a small market stall a couple of years ago. It's nothing special to look at, honestly, slightly faded and a bit too big in the shoulders, but it's become one of my favourite things to wear.",
+      "The item of clothing I'd like to describe is a denim jacket I bought second-hand from a small market stall a couple of years ago. It's nothing special to look at, honestly, slightly faded and a bit too big in the shoulders, but it's become one of my favourite things to wear.",
       "I picked it up almost by accident; I wasn't actually looking for a jacket that day, but the stallholder was closing up and gave me a good price, so I tried it on and just liked how it felt. I tend to wear it throughout autumn, mostly, over a jumper when it's not quite cold enough for a proper coat yet.",
       "In terms of why I like it so much, I think it's partly comfort, it's been washed so many times that the fabric feels almost soft rather than stiff, unlike a lot of new denim. But it's also because it doesn't look like anything else I own; a few people have actually stopped me to ask where I got it, which never happens with clothes I buy new. It sounds a bit silly, but wearing it genuinely makes me feel more like myself than most of my wardrobe does, maybe because it wasn't chosen to match a trend, it was chosen because it just felt right at the time.",
     ],
@@ -469,17 +469,17 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'nothing special to look at, honestly', note: 'a natural understatement before a positive turn later in the talk' },
       { phrase: 'almost by accident', note: 'a natural phrase for describing an unplanned purchase' },
       { phrase: 'unlike a lot of new denim', note: 'a comparative clause that adds specific, concrete detail' },
-      { phrase: 'it sounds a bit silly, but', note: 'a hedge that softens a personal, emotional claim' },
+      { phrase: 'It sounds a bit silly, but', note: 'a hedge that softens a personal, emotional claim' },
       { phrase: 'chosen because it just felt right', note: 'a natural closing line that avoids a flat "in conclusion"' },
     ],
     roundingOff: [
       { q: 'Do you still wear it often?', a: 'Yes, all through autumn most years.' },
-      { q: 'Do you prefer buying new or secondhand clothes?', a: 'Secondhand, generally, for the character it has.' },
+      { q: 'Do you prefer buying new or second-hand clothes?', a: 'Second-hand, generally, for the character it has.' },
     ],
     part3: [
       {
-        q: 'Why do you think secondhand clothing has become more popular recently?',
-        a: "I'd say it's a mix of cost and awareness about the environment. Secondhand items are usually cheaper than buying new, which matters a lot to younger people especially, but there's also growing concern about how much waste the fashion industry produces. Buying secondhand feels like a small, practical way of reducing that impact without giving up on personal style. Social media has probably helped too, since secondhand finds are now shared and celebrated rather than hidden.",
+        q: 'Why do you think second-hand clothing has become more popular recently?',
+        a: "I'd say it's a mix of cost and awareness about the environment. Second-hand items are usually cheaper than buying new, which matters a lot to younger people especially, but there's also growing concern about how much waste the fashion industry produces. Buying second-hand feels like a small, practical way of reducing that impact without giving up on personal style. Social media has probably helped too, since second-hand finds are now shared and celebrated rather than hidden.",
       },
       {
         q: "Do you think clothing says something about a person's personality?",
@@ -517,7 +517,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'genuinely enormous', note: 'an intensifier that sounds spoken rather than written' },
       { phrase: 'within about ten minutes', note: 'a precise timing detail that adds realism to the story' },
       { phrase: "regardless of who they'd come with", note: 'a past perfect clause after regardless of for grammatical range' },
-      { phrase: 'actively part of, rather than watching from a distance', note: 'a contrast structure that makes a strong, memorable closing point' },
+      { phrase: 'something you were actively part of from the moment you arrived', note: 'the second half of a contrast structure that makes a strong, memorable closing point' },
     ],
     roundingOff: [
       { q: 'Do you go to this festival every year?', a: "Most years, if I'm in the city." },
@@ -565,7 +565,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'given the weather', note: 'a concise reason clause, natural spoken shorthand' },
       { phrase: "things I'd genuinely never have learned otherwise", note: 'a third conditional style structure for grammatical range' },
       { phrase: 'in the grand scheme of things', note: 'a natural idiom for minimising something while still valuing it' },
-      { phrase: 'that small change... has stayed with me', note: 'a reflective closing line that avoids a flat conclusion' },
+      { phrase: 'that small change in our relationship has stayed with me', note: 'a reflective closing line that avoids a flat conclusion' },
     ],
     roundingOff: [
       { q: 'Do you still see this neighbour?', a: 'Yes, we say hello most days now.' },
@@ -660,7 +660,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'understandably', note: 'a one-word adverb that adds nuance without needing a full clause' },
       { phrase: 'on top of the usual uncertainty', note: 'a natural way to layer complexity into an answer' },
       { phrase: 'going back and forth', note: 'an idiomatic phrase for indecision' },
-      { phrase: 'more excited imagining myself... than I was imagining...', note: 'a comparative structure with parallel gerunds' },
+      { phrase: 'more excited imagining myself studying it than I was imagining the salary', note: 'a comparative structure built on two parallel gerunds' },
       { phrase: "the honest one, and that's ultimately what settled it", note: 'a reflective, slightly philosophical closing line' },
     ],
     roundingOff: [
@@ -755,7 +755,7 @@ export const CUE_CARDS: CueCard[] = [
     upgrades: [
       { phrase: 'badly, it has to be said', note: 'a self-deprecating aside that sounds naturally spoken' },
       { phrase: 'without really understanding the rules at first', note: 'an honest admission that adds authenticity to the story' },
-      { phrase: 'you genuinely never know... until the final whistle', note: 'an idiomatic sporting phrase used naturally in context' },
+      { phrase: "you genuinely never know what's going to happen until the final whistle", note: 'an idiomatic sporting phrase used naturally in context' },
       { phrase: 'completely unlike watching on television', note: 'a comparative structure for vivid contrast' },
       { phrase: 'something consistent to talk about', note: 'a reflective closing that links the sport to the relationship' },
     ],
@@ -801,7 +801,7 @@ export const CUE_CARDS: CueCard[] = [
       "In terms of why I enjoy it, the physical side matters, obviously, it's good exercise and a nice contrast to sitting at a desk all week. But honestly, what keeps me going back is more about the mental shift; there's something about being surrounded by mountains rather than buildings that genuinely changes how I think, conversations with my friends feel different out there too, slower and more honest somehow, without the usual distractions of the city pulling our attention away. Some of the most memorable conversations I've had over the past couple of years happened halfway up a trail rather than anywhere more obvious, which says a lot about why I keep making the effort to go.",
     ],
     upgrades: [
-      { phrase: 'weather permitting', note: 'a concise, natural conditional phrase' },
+      { phrase: 'when the weather cooperates', note: 'a concise, natural way of adding a condition without a full if clause' },
       { phrase: "admittedly isn't always the case", note: 'an honest hedge that adds realism to the plan' },
       { phrase: 'mental shift', note: 'an abstract noun phrase for describing a psychological effect' },
       { phrase: 'slower and more honest somehow', note: 'a natural, slightly vague intensifier that sounds spoken rather than written' },
@@ -851,9 +851,9 @@ export const CUE_CARDS: CueCard[] = [
     upgrades: [
       { phrase: 'slightly more obliged to finish it than I might have otherwise', note: 'an honest, self-aware admission that adds authenticity' },
       { phrase: 'piecing together the full picture gradually', note: 'a figurative phrase describing narrative structure' },
-      { phrase: 'without anyone fully realising it', note: 'a phrase reused later in the reflection as a cohesive device' },
+      { phrase: 'without anyone fully realising it', note: 'an idea echoed a sentence later, which quietly ties the two halves of the point together' },
       { phrase: 'fast for me', note: 'a natural, personal comparison rather than a general statement' },
-      { phrase: 'stayed with me the longest', note: 'an idiomatic closing phrase for describing lasting impact' },
+      { phrase: 'kept wanting to know how the different timelines would eventually connect', note: 'a closing line that explains the appeal rather than simply calling the book good' },
     ],
     roundingOff: [
       { q: 'Would you recommend this book to others?', a: 'Yes, especially to anyone who enjoys family stories.' },
@@ -996,7 +996,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'sorted within the next six months or so', note: 'a natural, slightly vague time frame appropriate for describing a future plan' },
       { phrase: "rather not put that pressure entirely on my parents", note: 'considerate, mature reasoning that adds depth to the answer' },
       { phrase: 'largely on my own terms', note: 'an idiomatic phrase for independence' },
-      { phrase: 'nerves about... but mostly excitement about...', note: 'a balanced contrast structure for expressing mixed feelings' },
+      { phrase: 'nerves about whether everything will actually come together in time, but mostly excitement', note: 'a balanced contrast structure for expressing mixed feelings' },
       { phrase: 'the first concrete step', note: 'a closing phrase that frames the exam within a bigger picture' },
     ],
     roundingOff: [

@@ -12,7 +12,7 @@ function testTitle(id: string): string {
 }
 
 const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 /* Single-series band-over-time line: brand hue (validated vs light surface),
    2px line, 8px markers, recessive grid, hover tooltip per point, y = 4–9. */

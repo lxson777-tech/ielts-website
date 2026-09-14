@@ -17,6 +17,31 @@ import Tabs, { type TabDef } from './Tabs';
 
 type PrepPhase = 'idle' | 'prep' | 'speaking' | 'done';
 
+/** Shuffle glyph for the "Random card" buttons, inline SVG (currentColor)
+    rather than the 🔀 emoji so it inherits the button's ink color and stays
+    inside the restrained, no-emoji icon system used across the workspace. */
+function ShuffleIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="16 3 21 3 21 8" />
+      <line x1="4" y1="20" x2="21" y2="3" />
+      <polyline points="21 16 21 21 16 21" />
+      <line x1="15" y1="15" x2="21" y2="21" />
+      <line x1="4" y1="4" x2="9" y2="9" />
+    </svg>
+  );
+}
+
 const DETAIL_TABS: TabDef[] = [
   { id: 'plan', label: 'Plan' },
   { id: 'model', label: 'Model answer' },
@@ -151,9 +176,9 @@ export default function CueCardBank() {
               <button
                 type="button"
                 onClick={pickRandom}
-                className="rounded-button border border-border px-5 py-2.5 text-sm font-semibold hover:bg-surface-alt"
+                className="inline-flex items-center gap-1.5 rounded-button border border-border px-5 py-2.5 text-sm font-semibold hover:bg-surface-alt"
               >
-                🔀 Random card
+                <ShuffleIcon /> Random card
               </button>
               <label className="ml-auto flex items-center gap-2 text-xs text-ink-muted">
                 <input
@@ -318,9 +343,9 @@ export default function CueCardBank() {
         <button
           type="button"
           onClick={pickRandom}
-          className="shrink-0 rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
         >
-          🔀 Random card
+          <ShuffleIcon /> Random card
         </button>
       </div>
 

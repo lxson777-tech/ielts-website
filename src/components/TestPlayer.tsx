@@ -38,6 +38,26 @@ function questionAssets(html: string): string {
   return base ? html.replace(/\bsrc=(["'])\/(?!\/)/gi, `src=$1${base}/`) : html;
 }
 
+/** Icons for the mobile stimulus/questions tab switcher, inline SVG
+    (currentColor) instead of emoji so the active-tab text color alone
+    carries the state, matching the rest of the icon system. */
+function BookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z" />
+      <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5A2.5 2.5 0 0 1 20 21V5.5Z" />
+    </svg>
+  );
+}
+function PencilIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m17 3 4 4-11.5 11.5-5 1 1-5L17 3Z" />
+      <path d="m14.5 5.5 4 4" />
+    </svg>
+  );
+}
+
 interface Numbered {
   question: Question;
   group: QuestionGroup;
@@ -586,20 +606,20 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         <button
           type="button"
           onClick={() => setMobileView('stimulus')}
-          className={`flex-1 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
+          className={`flex flex-1 items-center justify-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
             mobileView === 'stimulus' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
           }`}
         >
-          {stimulus.kind === 'passage' ? '📖 Passage' : '📄 Question paper'}
+          <BookIcon /> {stimulus.kind === 'passage' ? 'Passage' : 'Question paper'}
         </button>
         <button
           type="button"
           onClick={() => setMobileView('questions')}
-          className={`flex-1 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
+          className={`flex flex-1 items-center justify-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
             mobileView === 'questions' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
           }`}
         >
-          ✍️ {stimulus.kind === 'audio' ? 'Answer sheet' : 'Questions'}{' '}
+          <PencilIcon /> {stimulus.kind === 'audio' ? 'Answer sheet' : 'Questions'}{' '}
           <span className="font-normal opacity-70">
             {numbered.filter((nq) => nq.part === part && nq.question.scored !== false && answers[nq.question.id]).length}/
             {numbered.filter((nq) => nq.part === part && nq.question.scored !== false).length}
@@ -1225,11 +1245,19 @@ function BookmarkToggle({
       aria-pressed={saved}
       aria-label={saved ? 'Remove bookmark' : 'Bookmark this question'}
       title={saved ? 'Remove bookmark' : 'Bookmark this question'}
-      className={`absolute right-9 top-3 text-base leading-none transition-opacity ${
-        saved ? 'opacity-100' : 'opacity-30 hover:opacity-70'
+      className={`absolute right-9 top-3 leading-none transition-colors ${
+        saved ? 'text-brand' : 'text-ink-muted opacity-40 hover:opacity-80'
       }`}
     >
-      {saved ? '🔖' : '📑'}
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path
+          d="M6 3.5h12a.5.5 0 0 1 .5.5v16.5l-6.5-4-6.5 4V4a.5.5 0 0 1 .5-.5Z"
+          fill={saved ? 'currentColor' : 'none'}
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+        />
+      </svg>
     </button>
   );
 }

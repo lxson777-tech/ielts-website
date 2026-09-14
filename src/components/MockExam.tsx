@@ -45,6 +45,43 @@ function fmtClock(seconds: number): string {
   return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
 }
 
+/** Icons for the "what to expect" list on the start screen, inline SVG
+    (currentColor) instead of emoji so they sit quietly in text-ink-muted
+    like every other icon in the workspace rather than four different
+    platform emoji colours. */
+function ListeningIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" />
+    </svg>
+  );
+}
+function ReadingIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z" />
+      <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5A2.5 2.5 0 0 1 20 21V5.5Z" />
+    </svg>
+  );
+}
+function WritingIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m17 3 4 4-11.5 11.5-5 1 1-5L17 3Z" />
+      <path d="m14.5 5.5 4 4" />
+    </svg>
+  );
+}
+function NoGradingIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m6.5 17.5 11-11" />
+    </svg>
+  );
+}
+
 /** One random-ish pick, stable for the lifetime of this mock sitting
     (computed once via useState's lazy initializer, not re-rolled on every
     render). A real rotation store (see src/lib/rotation.ts, used by the
@@ -281,32 +318,32 @@ function StartScreen({
         <p className="text-xs font-bold uppercase tracking-wider text-brand">Mock Exam Day</p>
         <h1 className="mt-1 font-display text-2xl font-extrabold">A full IELTS sitting, back to back</h1>
         <p className="mt-2 text-ink-muted">
-          Listening, then Reading, then Writing — the same order and pace as the real test day, with no breaks in
+          Listening, then Reading, then Writing, the same order and pace as the real test day, with no breaks in
           between.
         </p>
 
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">🎧</span>
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><ListeningIcon /></span>
             <span>
               <strong>Listening</strong> (about 30 minutes, plus time at the end to check your answers). The
               recording plays <strong>once</strong>, exam conditions.
             </span>
           </li>
           <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">📖</span>
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><ReadingIcon /></span>
             <span><strong>Reading</strong> (60 minutes), straight after.</span>
           </li>
           <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">✍️</span>
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><WritingIcon /></span>
             <span>
               <strong>Writing</strong> (60 minutes): Task 1 and Task 2 share one clock, a suggested 20 minutes on
               Task 1 and 40 on Task 2, same as the real exam.
             </span>
           </li>
           <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">🚫</span>
-            <span>No AI grading during the mock — Writing is scored later, in the Writing Checker.</span>
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><NoGradingIcon /></span>
+            <span>No AI grading during the mock, Writing is scored later, in the Writing Checker.</span>
           </li>
         </ul>
 
@@ -456,7 +493,7 @@ function WritingLeg({
       <div className="mx-auto w-full max-w-3xl flex-1 space-y-8 px-4 py-6 sm:px-6">
         <p className="rounded-card border border-border bg-surface-alt px-4 py-3 text-sm text-ink-muted">
           Suggested timing: about <strong>{task1?.suggestedMinutes ?? 20} minutes</strong> on Task 1, then{' '}
-          <strong>{task2?.suggestedMinutes ?? 40} minutes</strong> on Task 2. One clock for both — split it however
+          <strong>{task2?.suggestedMinutes ?? 40} minutes</strong> on Task 2. One clock for both, split it however
           suits you, then submit when you're done or when time runs out.
         </p>
 
@@ -540,7 +577,7 @@ function ResultsScreen({
       <h1 className="mt-1 font-display text-2xl font-extrabold">You've finished the sitting</h1>
       <p className="mt-2 text-ink-muted">
         Listening and Reading are scored the same way as a normal full test. Writing and Speaking aren't
-        auto-scored here, so there's no single combined overall band — get real feedback on your essays in the
+        auto-scored here, so there's no single combined overall band. Get real feedback on your essays in the
         Writing Checker.
       </p>
 

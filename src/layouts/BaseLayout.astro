@@ -32,7 +32,7 @@ const canonicalUrl = new URL(withBase(Astro.url.pathname), Astro.site).toString(
 const absoluteOgImage = new URL(withBase(ogImage), Astro.site).toString();
 
 const route = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
-const appPrefixes = ['/dashboard', '/start', '/learn', '/lessons', '/trainers', '/tests', '/speaking', '/writing', '/account', '/review'];
+const appPrefixes = ['/dashboard', '/start', '/learn', '/lessons', '/trainers', '/tests', '/speaking', '/writing', '/account', '/review', '/report'];
 const isAppRoute = !bare && appPrefixes.some((prefix) => route === prefix || route.startsWith(`${prefix}/`));
 
 const jsonLd = {

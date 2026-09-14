@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getSpeakingAttempts, onProgressChange, type SpeakingAttempt } from '../lib/progress';
 
 const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const MODE_LABEL: Record<SpeakingAttempt['mode'], string> = {
   part1: 'Part 1',
