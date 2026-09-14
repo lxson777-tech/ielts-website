@@ -2,6 +2,8 @@
 
 Imported on 2026-09-11 with publisher reuse permission confirmed by Alex.
 
+**Licence:** publisher permission confirmed by Alex on 2026-09-11 for reuse and on 2026-09-14 for paid access.
+
 The source catalogue was checked from the highest numbered reading page downward. Tests 314 and 315 do not exist at their expected URLs. The 20 highest available complete tests are therefore 319, 318, 317, 316, and 313 through 298.
 
 On 2026-09-13 the five original AI-written Reading tests (reading-full-001.ts through 005.ts) were removed, since the 20 imported tests replace them as the full Reading catalogue. The imported tests were renumbered so students see "Academic Reading Test 1" through "Test 20" instead of the publisher's page numbers: reading-full-006.ts became reading-full-001.ts, and so on through reading-full-025.ts becoming reading-full-020.ts. The `source` field (name, URL, permission) on each test is untouched, so the publisher URL below is still the definitive record of provenance; the explicit local-to-source mapping also lives in one place in code, as the `LOCAL_TO_SOURCE` table in `tools/import_reading.py`.

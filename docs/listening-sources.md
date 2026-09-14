@@ -2,6 +2,8 @@
 
 The 20 full listening tests come from [PracticePTEOnline](https://practicepteonline.com/), one numbered source page per test. Alex confirmed permission from the publisher on 2026-09-11 to reuse these free materials on the IELTS Portal.
 
+**Licence:** publisher permission confirmed by Alex on 2026-09-11 for reuse and on 2026-09-14 for paid access.
+
 Tests 1 to 5 and 7 to 14, plus 16 to 20, use the numbered URL pattern `https://practicepteonline.com/ielts-listening-test-N/`. Two older pages use different canonical addresses:
 
 - [IELTS Listening Test 6](https://practicepteonline.com/ielts-listening-6/). The apparent `/ielts-listening-test-6/` address redirects to unrelated Test 60.
