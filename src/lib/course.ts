@@ -36,6 +36,9 @@ export interface CourseLesson {
   skill: Skill;
   skillLabel: string;
   title: string;
+  /** The part's real description, from its registry (reading.ts, listening.ts,
+      etc.). Callers should show this rather than inventing generic copy. */
+  blurb: string;
   /** Unprefixed path; callers apply withBase(). */
   href: string;
   stage: Stage;
@@ -75,7 +78,7 @@ const SKILL_ORDER: Skill[] = ['reading', 'listening', 'writing', 'speaking', 'vo
 
 /** Every lesson in the site, tagged with its skill and URL, in registry order. */
 function allLessons(): Omit<CourseLesson, 'position'>[] {
-  const sources: { skill: Skill; base: string; parts: { slug: string; title: string; stage: Stage }[] }[] = [
+  const sources: { skill: Skill; base: string; parts: { slug: string; title: string; blurb: string; stage: Stage }[] }[] = [
     { skill: 'reading', base: 'reading', parts: READING_PARTS },
     { skill: 'listening', base: 'listening', parts: LISTENING_PARTS },
     { skill: 'writing', base: 'writing', parts: WRITING_PARTS },
@@ -88,6 +91,7 @@ function allLessons(): Omit<CourseLesson, 'position'>[] {
       skill,
       skillLabel: SKILL_LABEL[skill],
       title: p.title,
+      blurb: p.blurb,
       href: `/lessons/${base}/${p.slug}`,
       stage: p.stage,
     })),

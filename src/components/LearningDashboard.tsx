@@ -2,18 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { SKILLS } from '../data/lessons';
 import { withBase } from '../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
-import { loadStudyPlan } from '../lib/study-plan';
+import { loadStudyPlan, daysUntilTest } from '../lib/study-plan';
 import { buildCourse } from '../lib/course';
 
 export default function LearningDashboard() {
   const course = useMemo(() => buildCourse().flatMap((module) => module.lessons), []);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [target, setTarget] = useState<string | null>(null);
+  const [daysToGo, setDaysToGo] = useState<number | null>(null);
   useEffect(() => {
     setProgress(getProgress());
     const savedPlan = loadStudyPlan();
     const homepageBand = window.localStorage.getItem('ielts.ez.targetBand');
     setTarget(savedPlan?.targetBand ?? homepageBand ?? null);
+    setDaysToGo(savedPlan?.testDate ? daysUntilTest(savedPlan.testDate) : null);
     return onProgressChange(() => setProgress(getProgress()));
   }, []);
   const done = progress ? course.filter((lesson) => progress.lessons[lesson.key]).length : 0;
@@ -40,7 +42,7 @@ export default function LearningDashboard() {
           <p>{next.skillLabel} lesson {next.position} of {course.length}, designed to move you one clear step closer to your target.</p>
           <a className="text-link" href={withBase(next.href)}>{done ? 'Continue this lesson' : 'Start your first lesson'} <span aria-hidden="true">→</span></a>
         </div>
-        <div className="dashboard-target"><span>Target band</span><strong>{target ? target : 'Set yours'}</strong><a href={withBase('/start')}>{target ? 'Change plan' : 'Create a plan'} <span aria-hidden="true">↗</span></a></div>
+        <div className="dashboard-target"><span>Target band</span><strong>{target ? target : 'Set yours'}</strong>{daysToGo !== null && <small>{daysToGo} day{daysToGo === 1 ? '' : 's'} to go</small>}<a href={withBase('/start')}>{target ? 'Change plan' : 'Create a plan'} <span aria-hidden="true">↗</span></a></div>
       </section>
 
       <section aria-labelledby="progress-heading">

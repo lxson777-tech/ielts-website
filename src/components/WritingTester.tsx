@@ -18,7 +18,7 @@ import type { EssayPrompt } from '../lib/writing/schema';
 import type { GradeResult } from '../lib/writing/schema';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
 import { countWords } from '../lib/writing/mechanics';
-import { gradeEssay } from '../lib/writing/grader';
+import { gradeEssay, isGraderConfigured } from '../lib/writing/grader';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
@@ -91,7 +91,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const wordCount = useMemo(() => countWords(essay), [essay]);
 
   async function submit() {
-    if (!prompt || grading) return;
+    if (!prompt || grading || !isGraderConfigured()) return;
     setGrading(true);
     setGradingStep(0);
     setGradingError(null);
@@ -111,8 +111,13 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         live: graded.grader.live,
         essay,
       });
-    } catch (err) {
-      setGradingError(err instanceof Error ? err.message : 'Something went wrong while grading your essay.');
+    } catch {
+      // The button is disabled whenever isGraderConfigured() is false, so any
+      // error reaching here happened after a real request went out — network,
+      // timeout, or the Worker itself failing. Show one calm, specific
+      // message rather than surfacing the raw error (which might read like a
+      // permanent "not configured" state the student can't do anything about).
+      setGradingError('We could not reach the grading service. Your essay is safe on this page; try again in a minute.');
     } finally {
       if (gradingIntervalRef.current) clearInterval(gradingIntervalRef.current);
       setGrading(false);
@@ -458,9 +463,15 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
           />
 
+          {!isGraderConfigured() && (
+            <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+              ⚠ AI feedback is not available on this build (PUBLIC_GRADER_URL is not set). You can still write and time
+              yourself, but essays can't be graded here yet.
+            </p>
+          )}
           {gradingError && (
             <div className="rounded-card border border-error/30 bg-error-tint px-4 py-3 text-sm text-error">
-              ⚠ Couldn't grade your essay. {gradingError.replace(/\.?$/, '.')} Please try again in a moment.
+              ⚠ {gradingError}
             </div>
           )}
 
@@ -471,7 +482,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             <button
               type="button"
               onClick={submit}
-              disabled={wordCount === 0}
+              disabled={wordCount === 0 || !isGraderConfigured()}
               className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
               Check my essay

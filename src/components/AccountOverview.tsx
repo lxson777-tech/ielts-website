@@ -11,7 +11,6 @@ import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
 import {
-  completedLessonCount,
   getBestBand,
   getBestWritingBand,
   getBestSpeakingBand,
@@ -19,12 +18,10 @@ import {
 } from '../lib/progress';
 import { loadStudyPlan, onStudyPlanChange, daysUntilTest, type SavedPlan } from '../lib/study-plan';
 import { buildCourse, courseStatus, type CourseStatus } from '../lib/course';
-import { LESSONS } from '../data/lessons';
 
 const MODULES = buildCourse();
 
 interface Stats {
-  lessonsDone: number;
   readingBand: string | null;
   writingBand: number | null;
   speakingBand: number | null;
@@ -35,7 +32,6 @@ interface Stats {
 
 function readStats(): Stats {
   return {
-    lessonsDone: completedLessonCount(),
     readingBand: getBestBand()?.bandLabel ?? null,
     writingBand: getBestWritingBand(),
     speakingBand: getBestSpeakingBand(),
@@ -122,7 +118,7 @@ export default function AccountOverview() {
 
       {/* ── At a glance ── */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile label={`Lessons done (of ${LESSONS.length})`} value={String(stats.lessonsDone)} />
+        <StatTile label={`Lessons done (of ${course.totalLessons})`} value={String(course.doneLessons)} />
         <StatTile label="Best reading band" value={stats.readingBand ?? '-'} accent="var(--color-reading)" />
         <StatTile label="Best writing band" value={stats.writingBand?.toFixed(1) ?? '-'} accent="var(--color-writing)" />
         <StatTile label="Best speaking band" value={stats.speakingBand?.toFixed(1) ?? '-'} accent="var(--color-speaking)" />
@@ -159,12 +155,16 @@ export default function AccountOverview() {
         </div>
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-dashed border-border bg-surface-alt p-5">
-          <p className="text-sm text-ink-muted">You haven't started the course yet.</p>
+          <p className="text-sm text-ink-muted">
+            {course.doneLessons > 0
+              ? `You have completed ${course.doneLessons} lesson${course.doneLessons === 1 ? '' : 's'}. Set a target band to build your plan.`
+              : "You haven't started the course yet."}
+          </p>
           <a
             href={withBase('/start')}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Start the course
+            {course.doneLessons > 0 ? 'Set your target' : 'Start the course'}
           </a>
         </div>
       )}

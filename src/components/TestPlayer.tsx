@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import type { PracticeTest, Question, QuestionGroup, TestPart } from '../lib/tests/schema';
+import type { PracticeTest, Question, QuestionGroup, TestPart, TestSkill } from '../lib/tests/schema';
 import { bandEstimate, bandMidpoint, isCorrect, questionCount, scoredQuestionIds } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
 import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
@@ -73,6 +73,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   const [activePart, setActivePart] = useState(0);
   const [splitPct, setSplitPct] = useState(50);
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
+  // Inline "you have N unanswered, submit anyway?" confirmation (not a modal —
+  // see requestSubmit()). Cleared whenever the student goes back to answering.
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
   // Mobile only: the split pane doesn't fit comfortably on a phone screen, so
   // below md the passage and questions each get the full pane one at a time,
   // switched via the tab bar right under the header.
@@ -109,6 +112,12 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
   const mainRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
   const passageContentRef = useRef<HTMLDivElement>(null);
+  // Listening's equivalent of passageContentRef: the rendered transcript text,
+  // used by locateEvidence to jump to a review item's evidence line. Wrapped
+  // around the transcript's <Html>, not the whole <details>, so the search
+  // never matches the "Review transcript" summary text itself.
+  const transcriptContentRef = useRef<HTMLDivElement>(null);
+  const transcriptDetailsRef = useRef<HTMLDetailsElement>(null);
   const submittedRef = useRef(false);
 
   const scoredIds = useMemo(
@@ -116,12 +125,16 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
     [numbered, answers],
   );
 
-  /* Review: find a question's supporting quote in the passage, highlight it and
-     scroll it into view. Splits on "…"/"..." so multi-fragment quotes each get
-     marked. */
+  /* Review: find a question's supporting quote in the passage (reading) or
+     transcript (listening), highlight it and scroll it into view. Splits on
+     "…"/"..." so multi-fragment quotes each get marked. */
   function locateEvidence(evidence: string) {
-    const root = passageContentRef.current;
+    const isListening = test.skill === 'listening';
+    const root = isListening ? transcriptContentRef.current : passageContentRef.current;
     if (!root) return;
+    // The transcript lives inside a collapsed <details>; open it so the
+    // highlighted line is actually visible before scrolling to it.
+    if (isListening && transcriptDetailsRef.current) transcriptDetailsRef.current.open = true;
     root.querySelectorAll('mark.ielts-evidence').forEach(unwrap);
     const fragments = evidence
       .split(/\s*(?:\.\.\.|…)\s*/)
@@ -184,6 +197,24 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
       skill: test.skill,
     });
     clearSession(); // in-progress state done; permanent attempt kept in progress history
+  }
+
+  const unansweredCount = numbered.filter(
+    ({ question }) => question.scored !== false && !answers[question.id],
+  ).length;
+
+  /* Submit-button handler: the real computer-delivered exam flags unanswered
+     questions before it will lock in the attempt, so a mis-click doesn't
+     silently burn the whole test. Auto-submit at time-up calls handleSubmit()
+     directly and skips this — there's nothing to "go back" to once the clock
+     hits zero. */
+  function requestSubmit() {
+    if (submittedRef.current) return;
+    if (unansweredCount > 0) {
+      setConfirmSubmit(true);
+      return;
+    }
+    handleSubmit();
   }
 
   /* Timer — runs only once started, auto-submits at zero. */
@@ -281,13 +312,44 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
         </button>
         <button
           type="button"
-          onClick={handleSubmit}
+          onClick={requestSubmit}
           disabled={submitted}
           className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 sm:px-4"
         >
           Submit ➤
         </button>
       </header>
+
+      {/* ── Unanswered-question confirmation — a calm inline panel, not a
+           dialog, so it reads as part of the page rather than an interruption. ── */}
+      {confirmSubmit && !submitted && (
+        <div
+          role="alert"
+          className="shrink-0 border-b border-warning/30 bg-warning-tint px-4 py-3"
+        >
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-ink">
+              You have {unansweredCount} unanswered {unansweredCount === 1 ? 'question' : 'questions'}. Submit anyway?
+            </p>
+            <div className="flex shrink-0 gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmSubmit(false)}
+                className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm font-semibold hover:bg-surface-alt"
+              >
+                Go back
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="rounded-button bg-brand px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-hover"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {test.skill === 'listening' && (
         <ListeningAudio
@@ -374,9 +436,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                 </p>
               )}
               {submitted && stimulus.transcriptHtml && (
-                <details className="mt-7 rounded-card border border-border bg-surface-alt p-4">
+                <details ref={transcriptDetailsRef} className="mt-7 rounded-card border border-border bg-surface-alt p-4">
                   <summary className="cursor-pointer text-sm font-semibold text-[var(--skill,var(--color-brand))]">Review transcript</summary>
-                  <Html className="mt-2 text-sm leading-relaxed text-ink-muted" html={stimulus.transcriptHtml} />
+                  <div ref={transcriptContentRef}>
+                    <Html className="mt-2 text-sm leading-relaxed text-ink-muted" html={stimulus.transcriptHtml} />
+                  </div>
                 </details>
               )}
             </div>
@@ -434,6 +498,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                       wordLimit={group.wordLimit}
                       setAnswer={setAnswer}
                       onLocate={locateEvidence}
+                      skill={test.skill}
                     />
                   ) : (
                     groupQs.map((nq) => (
@@ -447,6 +512,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full' }: Props
                         onLocate={locateEvidence}
                         flagged={flagged.has(nq.question.id)}
                         onToggleFlag={() => toggleFlag(nq.question.id)}
+                        skill={test.skill}
                       />
                     ))
                   )}
@@ -586,6 +652,7 @@ function QuestionItem({
   onLocate,
   flagged,
   onToggleFlag,
+  skill,
 }: {
   nq: Numbered;
   value: string;
@@ -595,6 +662,7 @@ function QuestionItem({
   onLocate?: (evidence: string) => void;
   flagged?: boolean;
   onToggleFlag?: () => void;
+  skill: TestSkill;
 }) {
   const { question: q, group, n } = nq;
   const ok = submitted && scored;
@@ -747,7 +815,7 @@ function QuestionItem({
         </div>
       )}
       {submitted && (showHint || q.explanation || q.evidence) && (
-        <AnswerReview q={q} ok={ok} answerText={answerText} onLocate={onLocate} className="sm:ml-10" />
+        <AnswerReview q={q} ok={ok} answerText={answerText} onLocate={onLocate} skill={skill} className="sm:ml-10" />
       )}
     </div>
   );
@@ -773,12 +841,14 @@ function AnswerReview({
   ok,
   answerText,
   onLocate,
+  skill,
   className,
 }: {
   q: Question;
   ok: boolean;
   answerText: string;
   onLocate?: (evidence: string) => void;
+  skill: TestSkill;
   className?: string;
 }) {
   return (
@@ -798,7 +868,7 @@ function AnswerReview({
               onClick={() => onLocate(q.evidence!)}
               className="mt-1 inline-flex items-center gap-1 py-2 -my-1 text-xs font-semibold text-brand hover:underline"
             >
-              🔍 Show in passage
+              🔍 {skill === 'listening' ? 'Show in transcript' : 'Show in passage'}
             </button>
           )}
         </div>
@@ -945,6 +1015,7 @@ function TableGrid({
   wordLimit,
   setAnswer,
   onLocate,
+  skill,
 }: {
   table: NonNullable<QuestionGroup['table']>;
   items: Numbered[];
@@ -953,6 +1024,7 @@ function TableGrid({
   wordLimit?: number;
   setAnswer: (qid: string, value: string) => void;
   onLocate?: (evidence: string) => void;
+  skill: TestSkill;
 }) {
   const byId = new Map(items.map((nq) => [nq.question.id, nq]));
 
@@ -1027,6 +1099,7 @@ function TableGrid({
               ok={ok}
               answerText={answerText}
               onLocate={onLocate}
+              skill={skill}
               className="mx-3 my-2"
             />
           );

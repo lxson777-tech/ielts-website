@@ -184,3 +184,27 @@ export const QUESTION_TYPE_STRATEGY: Record<QuestionType, StrategyKey> = {
   categorisation: 'matching-features',
   'matching-features': 'matching-features',
 };
+
+/** Reading lesson slug (under /lessons/reading/<slug>, see
+    src/data/reading.ts's READING_PARTS) that teaches each strategy — lets the
+    weak-spot panel link straight from a question type to the lesson that
+    covers it. multiple-answer and categorisation link to the lesson for the
+    sibling strategy they borrow, same as above. */
+export const STRATEGY_LESSON_SLUG: Record<StrategyKey, string> = {
+  tfng: 'tfng',
+  ynng: 'ynng',
+  mc: 'mc',
+  headings: 'headings',
+  'matching-information': 'matching-information',
+  sentence: 'sentence',
+  'sentence-endings': 'matching-sentence-endings',
+  diagram: 'diagram',
+  'matching-features': 'matching-features',
+  summary: 'summary-completion',
+};
+
+/** The reading lesson slug for a question type, ready to drop into
+    `/lessons/reading/${slug}`. */
+export function readingLessonSlug(type: QuestionType): string {
+  return STRATEGY_LESSON_SLUG[QUESTION_TYPE_STRATEGY[type]];
+}

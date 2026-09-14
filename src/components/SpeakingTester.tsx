@@ -14,7 +14,7 @@ import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prom
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { nextInRotation } from '../lib/rotation';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../lib/speaking/recorder';
-import { toAnsweredClip, gradeSpeaking } from '../lib/speaking/grader';
+import { toAnsweredClip, gradeSpeaking, isSpeakingGraderConfigured } from '../lib/speaking/grader';
 import { recordSpeakingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
@@ -71,6 +71,7 @@ export default function SpeakingTester() {
   const readyResolveRef = useRef<(() => void) | null>(null);
 
   async function startMode(m: Mode) {
+    if (!isSpeakingGraderConfigured()) return; // the start cards are disabled for this too; belt and braces
     setMicError(null);
     let stream: MediaStream;
     try {
@@ -212,7 +213,10 @@ export default function SpeakingTester() {
         releaseMic(streamRef.current);
         streamRef.current = null;
       }
-      setMicError('Something went wrong while grading your answer. Your recording could not be assessed, please try again.');
+      // isSpeakingGraderConfigured() gates the Start cards, so any failure
+      // reaching here happened after a real request went out — network,
+      // timeout, or the Worker itself failing, not a missing config.
+      setMicError('We could not reach the grading service. Please try again in a minute.');
       setPhase('menu');
     }
   }
@@ -357,7 +361,12 @@ export default function SpeakingTester() {
           {micError && (
             <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
           )}
-          <SpeakingPartCards onStart={(m) => void startMode(m)} />
+          {!isSpeakingGraderConfigured() && (
+            <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+              ⚠ AI feedback is not available on this build (PUBLIC_SPEAKING_GRADER_URL is not set).
+            </p>
+          )}
+          <SpeakingPartCards onStart={(m) => void startMode(m)} disabled={!isSpeakingGraderConfigured()} />
           <p className="mt-4 text-xs text-ink-muted">
             {SPEAKING_PART1_TOPICS.length} Part 1 topics · {SPEAKING_CUE_CARDS.length} cue cards · free
           </p>

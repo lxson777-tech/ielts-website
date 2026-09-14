@@ -26,6 +26,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .site-mobile-link { min-height: 44px; padding: .75rem .9rem; border-radius: 14px; color: var(--color-ink-muted); font-family: var(--font-display); font-size: .95rem; font-weight: 700; text-decoration: none; }
 .site-mobile-link:hover, .site-mobile-link.is-active { background: var(--color-brand-tint); color: var(--color-ink); }
 .site-mobile-workspace { margin-top: .4rem; }
+.site-mobile-section-label { margin: .5rem .9rem .1rem; color: var(--color-ink-muted); font-family: var(--font-display); font-size: .66rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .site-mobile-account { margin-top: .25rem; }
 .site-mobile-account button { color: var(--color-ink); }
 

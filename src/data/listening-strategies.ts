@@ -147,3 +147,27 @@ export const LISTENING_QUESTION_TYPE_STRATEGY: Partial<Record<QuestionType, List
   categorisation: 'categorisation',
   'diagram-labelling': 'diagram',
 };
+
+/** Listening lesson slug (under /lessons/listening/<slug>, see
+    src/data/listening.ts's LISTENING_PARTS) that teaches each strategy —
+    lets the weak-spot panel link straight from a question type to the
+    lesson that covers it. No listening lesson names multiple-answer or
+    categorisation directly, so both link to the closest sibling: choosing
+    from options (multiple-choice) and sorting into groups (matching). */
+export const STRATEGY_LESSON_SLUG: Record<ListeningStrategyKey, string> = {
+  sentence: 'sentence-completion',
+  mc: 'multiple-choice',
+  table: 'form-completion',
+  'multiple-answer': 'multiple-choice',
+  'matching-features': 'matching',
+  categorisation: 'matching',
+  diagram: 'map-labelling',
+};
+
+/** The listening lesson slug for a question type, ready to drop into
+    `/lessons/listening/${slug}` — or undefined if the type doesn't occur in
+    the listening data (see LISTENING_QUESTION_TYPE_STRATEGY above). */
+export function listeningLessonSlug(type: QuestionType): string | undefined {
+  const key = LISTENING_QUESTION_TYPE_STRATEGY[type];
+  return key ? STRATEGY_LESSON_SLUG[key] : undefined;
+}

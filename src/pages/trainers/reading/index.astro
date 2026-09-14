@@ -4,6 +4,7 @@ import SectionHeading from '../../../components/SectionHeading.astro';
 import Badge from '../../../components/Badge.astro';
 import { withBase } from '../../../lib/url';
 import { ALL_DRILLS } from '../../../lib/tests/drills';
+import { LABELS as QUESTION_TYPE_LABELS } from '../../../components/TypeAnalytics';
 
 /* Group drills by their source test so the picker reads as "Test 1 → its
    3 passages" rather than one flat list of 15. */
@@ -12,6 +13,16 @@ for (const d of ALL_DRILLS) {
   const bucket = bySource.get(d.sourceTestId) ?? { sourceTitle: d.sourceTitle, drills: [] };
   bucket.drills.push(d);
   bySource.set(d.sourceTestId, bucket);
+}
+
+/* The distinct question types a drill's single passage contains, used to
+   power the `?type=` filter from TypeAnalytics' "Practise this type" link
+   (see the inline script below — this is a static page, so filtering by a
+   query param has to happen client-side, after load). */
+function drillTypes(drill: (typeof ALL_DRILLS)[number]): string[] {
+  const seen = new Set<string>();
+  for (const group of drill.test.parts[0]!.groups) seen.add(group.type);
+  return [...seen];
 }
 ---
 
@@ -28,9 +39,22 @@ for (const d of ALL_DRILLS) {
       subtitle="One passage, one realistic time budget, instant scoring, and a live 'how to approach it' strategy panel for every question type, the same review and evidence features as a full test, without committing 60 minutes. These attempts don't count toward your full-test band history."
     />
 
+    {/* Shown only when arriving via a weak-spot's "Practise this type" link
+        (?type=...). Filtering happens client-side (see the script below) since
+        this is a static page — the query string doesn't exist at build time. */}
+    <div id="type-filter-banner" hidden class="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-card border border-border bg-brand-tint px-4 py-3 text-sm">
+      <p>
+        Showing passages that include <strong id="type-filter-label" class="text-ink"></strong>.
+      </p>
+      <a href={withBase('/trainers/reading')} class="shrink-0 font-semibold text-brand hover:underline">Clear filter</a>
+    </div>
+    <p id="type-filter-empty" hidden class="mb-4 rounded-card border border-dashed border-border bg-surface-alt p-4 text-center text-sm text-ink-muted">
+      No drill happens to isolate this question type on its own yet — try a full reading test instead.
+    </p>
+
     <div class="rounded-card border border-border bg-surface shadow-card divide-y divide-border">
       {[...bySource.values()].map(({ sourceTitle, drills }) => (
-        <div class="p-4 sm:p-5">
+        <div class="p-4 sm:p-5" data-drill-group>
           <div class="mb-3 flex items-baseline justify-between gap-3">
             <h3 class="font-display text-sm font-bold">{sourceTitle}</h3>
             <span class="shrink-0 text-xs font-semibold text-ink-muted">{drills.length} passages</span>
@@ -39,6 +63,7 @@ for (const d of ALL_DRILLS) {
             {drills.map((d) => (
               <a
                 href={withBase(`/trainers/reading/${d.id}`)}
+                data-drill-types={drillTypes(d).join(',')}
                 class="group flex flex-col gap-1 rounded-lg border border-border p-3 transition-colors hover:border-[var(--skill,var(--color-brand))]"
               >
                 <Badge tone="skill" class="self-start">{d.test.parts[0]!.label}</Badge>
@@ -55,4 +80,30 @@ for (const d of ALL_DRILLS) {
       ))}
     </div>
   </div>
+
+  <script define:vars={{ labels: QUESTION_TYPE_LABELS }}>
+    const params = new URLSearchParams(location.search);
+    const type = params.get('type');
+    if (type) {
+      let anyMatch = false;
+      document.querySelectorAll('[data-drill-types]').forEach((card) => {
+        const types = (card.dataset.drillTypes || '').split(',').filter(Boolean);
+        const match = types.includes(type);
+        card.classList.toggle('hidden', !match);
+        if (match) anyMatch = true;
+      });
+      document.querySelectorAll('[data-drill-group]').forEach((group) => {
+        const visible = group.querySelectorAll('[data-drill-types]:not(.hidden)').length;
+        group.classList.toggle('hidden', visible === 0);
+      });
+      const banner = document.getElementById('type-filter-banner');
+      const label = document.getElementById('type-filter-label');
+      if (label) label.textContent = labels[type] || type;
+      if (banner) banner.hidden = false;
+      if (!anyMatch) {
+        const empty = document.getElementById('type-filter-empty');
+        if (empty) empty.hidden = false;
+      }
+    }
+  </script>
 </BaseLayout>

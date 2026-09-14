@@ -1,8 +1,11 @@
-/* The grader seam for Speaking. Mirrors src/lib/writing/grader.ts: StubGrader
-   fabricates a plausible-but-honest offline result so the flow is clickable
-   end-to-end with no API key; RemoteGrader POSTs to a Cloudflare Worker that
-   holds the Gemini key and grades the actual audio. Swapping providers is a
-   one-file change: implement SpeakingGrader and return it from getGrader(). */
+/* The grader seam for Speaking. Mirrors src/lib/writing/grader.ts: there is no
+   offline fallback — RemoteGrader POSTs to a Cloudflare Worker that holds the
+   Gemini key and grades the actual audio, and any failure (unconfigured,
+   unreachable, malformed response) propagates so the UI can say so plainly
+   instead of quietly handing back a fabricated band. The UI checks
+   isSpeakingGraderConfigured() up front (Live Examiner's pattern) so a
+   student never spends several minutes recording only to discover afterwards
+   that grading was never available. */
 
 import type {
   AudioMechanicsReport,
@@ -13,58 +16,13 @@ import type {
   SpeakingGradeResult,
   SpeakingGrader,
 } from './schema';
-import { overallSpeakingBand, toSpeakingBand } from './schema';
+import { overallSpeakingBand } from './schema';
 import { analyzeAudio } from './mechanics';
 import { blobToBase64 } from './recorder';
 
-/* Sample grader — NOT a real assessment. Fluency & Coherence is the one
-   criterion with a genuine offline signal (pacing/silence from the acoustic
-   heuristics); Lexical Resource, Grammar and Pronunciation cannot be judged
-   without a model actually listening to the audio, so this never fabricates
-   a verdict for them — it says so plainly via `live: false`. */
-class StubSpeakingGrader implements SpeakingGrader {
-  readonly name = 'Sample grader (offline)';
-  readonly live = false;
-
-  async grade(_attempt: SpeakingAttempt, m: AudioMechanicsReport): Promise<SpeakingAssessment> {
-    const fluencyCoherence = this.fluencyFromAcoustics(m);
-    const neutral = (label: string): SpeakingCriterionScore => ({
-      band: 6,
-      comment: `[sample] ${label} can't be judged offline. This needs a model listening to your recording. Connect the AI examiner for a real assessment.`,
-    });
-
-    return {
-      criteria: {
-        fluencyCoherence,
-        lexicalResource: neutral('Vocabulary range'),
-        grammaticalRange: neutral('Grammatical accuracy'),
-        pronunciation: neutral('Pronunciation'),
-      },
-      moments: [],
-      strengths: m.underLength ? [] : ['Spoke for the full suggested length'],
-      improvements: m.underLength
-        ? [`Aim for closer to ${Math.round(m.expectedMinMs / 1000)} seconds`]
-        : ['Enable AI grading to get real feedback on vocabulary, grammar and pronunciation'],
-    };
-  }
-
-  private fluencyFromAcoustics(m: AudioMechanicsReport): SpeakingCriterionScore {
-    let band = 6.5;
-    if (m.underLength) band -= 1;
-    if (m.longestSilenceMs > 4000) band -= 1;
-    else if (m.estSilenceRatio > 0.4) band -= 0.5;
-    const note = m.underLength
-      ? 'Response was shorter than the suggested length, which limits how much can be judged.'
-      : m.longestSilenceMs > 4000
-        ? 'A long pause was detected. Real fluency means keeping ideas flowing even while thinking.'
-        : 'Reasonable pacing based on timing alone. A real examiner also judges how ideas connect.';
-    return { band: toSpeakingBand(Math.round(band)), comment: `[sample] ${note}` };
-  }
-}
-
 /* Remote grader — POSTs to our Cloudflare Worker, which holds the API key and
-   sends the actual audio to Gemini. Any failure throws and gradeSpeaking()
-   falls back to the stub. */
+   sends the actual audio to Gemini. Any failure throws, and gradeSpeaking()
+   lets it propagate rather than falling back to anything fabricated. */
 class RemoteSpeakingGrader implements SpeakingGrader {
   readonly name = 'AI examiner';
   readonly live = true;
@@ -111,14 +69,13 @@ function wireMechanics(m: AudioMechanicsReport) {
   };
 }
 
-const stub = new StubSpeakingGrader();
-
 const SPEAKING_GRADER_URL: string | undefined = import.meta.env?.PUBLIC_SPEAKING_GRADER_URL;
 
-/** Returns the active grader: the AI examiner when PUBLIC_SPEAKING_GRADER_URL
-    is set at build time, otherwise the offline stub. */
-export function getSpeakingGrader(): SpeakingGrader {
-  return SPEAKING_GRADER_URL ? new RemoteSpeakingGrader(SPEAKING_GRADER_URL) : stub;
+/** Whether an AI examiner is available on this build at all — checked by the
+    UI so it can disable the "Start" cards up front instead of taking the
+    student through several minutes of recording only to fail at the end. */
+export function isSpeakingGraderConfigured(): boolean {
+  return !!SPEAKING_GRADER_URL;
 }
 
 /** Raw recorded clips (Blob) → base64 AnsweredClip, ready for the grader. */
@@ -135,29 +92,24 @@ export async function toAnsweredClip(question: string, seg: { blob: Blob; mimeTy
     clip (a representative sample for the silence/pacing heuristic — audio
     containers from separate MediaRecorder sessions can't be concatenated and
     decoded as one stream), overwrite its duration/underLength with the real
-    total across every clip in the attempt, hand the attempt to the active
-    grader, and assemble the full result. Falls back to the stub on any
-    failure so the student always gets a report. */
+    total across every clip in the attempt, hand the attempt to the AI
+    examiner, and assemble the full result. Any failure — missing config,
+    network, quota, a malformed response — propagates so the caller can tell
+    the student grading failed rather than showing a fabricated band. */
 export async function gradeSpeaking(
   attempt: SpeakingAttempt,
   clips: { blob: Blob; durationMs: number }[],
   expectedMinMs: number,
 ): Promise<SpeakingGradeResult> {
+  if (!SPEAKING_GRADER_URL) throw new Error('The AI examiner is not configured for this site yet.');
   const totalDurationMs = clips.reduce((a, c) => a + c.durationMs, 0);
   const primary = clips.reduce((a, b) => (b.durationMs > a.durationMs ? b : a));
   const mechanics = await analyzeAudio(primary.blob, expectedMinMs);
   mechanics.totalDurationMs = totalDurationMs;
   mechanics.underLength = totalDurationMs < expectedMinMs;
 
-  let grader = getSpeakingGrader();
-  let assessment: SpeakingAssessment;
-  try {
-    assessment = await grader.grade(attempt, mechanics);
-  } catch {
-    if (grader === stub) throw new Error('Grading failed');
-    grader = stub;
-    assessment = await stub.grade(attempt, mechanics);
-  }
+  const grader: SpeakingGrader = new RemoteSpeakingGrader(SPEAKING_GRADER_URL);
+  const assessment = await grader.grade(attempt, mechanics);
   return {
     ...assessment,
     mechanics,

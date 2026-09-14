@@ -10,7 +10,7 @@
    of its parts is no longer unseen. Worth it for the pacing practice; flag to
    the user if this becomes a problem once more tests are authored. */
 
-import type { PracticeTest } from './schema';
+import type { PracticeTest, QuestionType, TestSkill } from './schema';
 import { ALL_TESTS } from '../../data/tests';
 
 export interface DrillMeta {
@@ -102,4 +102,15 @@ export const ALL_DRILLS: DrillMeta[] = ALL_READING_DRILLS;
 
 export function getDrill(id: string): DrillMeta | undefined {
   return ALL_READING_DRILLS.find((d) => d.id === id) ?? ALL_LISTENING_DRILLS.find((d) => d.id === id);
+}
+
+/** Every question type covered by at least one drill for a skill — used to
+    decide whether a weak-spot's "Practise this type" link has anywhere to
+    send the student (a type can appear in the full tests without a
+    single-part drill happening to isolate it). */
+export function drillTypes(skill: TestSkill): Set<QuestionType> {
+  const drills = skill === 'listening' ? ALL_LISTENING_DRILLS : ALL_READING_DRILLS;
+  const types = new Set<QuestionType>();
+  for (const d of drills) for (const group of d.test.parts[0]!.groups) types.add(group.type);
+  return types;
 }

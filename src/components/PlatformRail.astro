@@ -1,17 +1,9 @@
 ---
 import { withBase } from '../lib/url';
+import { PLATFORM_NAV_ITEMS, isPlatformNavActive } from '../lib/platform-nav';
 const current = Astro.url.pathname;
-const items = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'home' }, { href: '/start', label: 'My course', icon: 'course' },
-  { href: '/learn', label: 'Lessons', icon: 'book' }, { href: '/trainers', label: 'Trainers', icon: 'target' },
-  { href: '/tests', label: 'Mock tests', icon: 'check' }, { href: '/speaking/examiner', label: 'AI speaking', icon: 'voice' },
-  { href: '/account', label: 'Account', icon: 'user' },
-];
-const isActive = (href: string) => {
-  const path = withBase(href);
-  if (href === '/learn' && current.startsWith(withBase('/lessons'))) return true;
-  return current === path || current.startsWith(`${path}/`);
-};
+const items = PLATFORM_NAV_ITEMS;
+const isActive = (href: string) => isPlatformNavActive(href, current, withBase);
 const paths: Record<string, string> = {
   home: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10M9 20v-6h6v6"/>', course: '<path d="M5 4.5h10.5A2.5 2.5 0 0 1 18 7v12H7a2 2 0 0 1-2-2V4.5Z"/><path d="M7 15h11M9 8h5"/>',
   book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5A2.5 2.5 0 0 1 20 21V5.5Z"/>', target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m14 10 6-6"/>',

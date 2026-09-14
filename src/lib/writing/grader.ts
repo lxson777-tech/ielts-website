@@ -49,6 +49,14 @@ class RemoteGrader implements EssayGrader {
 
 const GRADER_URL: string | undefined = import.meta.env?.PUBLIC_GRADER_URL;
 
+/** Whether an AI examiner is available on this build at all — checked by the
+    UI so it can disable grading up front (Live Examiner's pattern) instead of
+    letting the student write a full essay and only then discover it can't be
+    marked. */
+export function isGraderConfigured(): boolean {
+  return !!GRADER_URL;
+}
+
 /** The single entry point the UI calls: run the free heuristic layer, hand its
     signals to the AI examiner, and assemble the full result. Any failure —
     missing config, network, quota, a malformed response — propagates so the

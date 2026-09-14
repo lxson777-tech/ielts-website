@@ -76,6 +76,16 @@ export default function Course() {
 
   if (!ready) return null; // avoid a hydration flash
 
+  const prog = progress ?? getProgress();
+  const status = courseStatus(MODULES, prog);
+  // A student who worked through lessons from /learn before ever visiting
+  // /start has already started, even with no saved plan. Showing them a
+  // blank onboarding form would bury that progress, so only someone with
+  // zero completed lessons and no plan sees it; everyone else sees the
+  // course itself; with an inline strip asking for a target when there's
+  // no plan yet.
+  const hasProgress = status.doneLessons > 0;
+
   function startCourse(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const next: SavedPlan = {
@@ -98,8 +108,8 @@ export default function Course() {
     setPlan(next);
   }
 
-  /* ── Start screen ── */
-  if (!plan) {
+  /* ── Start screen: only for a genuinely new student ── */
+  if (!plan && !hasProgress) {
     return (
       <form
         onSubmit={startCourse}
@@ -150,31 +160,75 @@ export default function Course() {
     );
   }
 
-  /* ── The course ── */
-  const prog = progress ?? getProgress();
-  const days = daysUntilTest(plan.testDate);
+  /* ── The course, with or without a saved plan yet ── */
+  const days = plan ? daysUntilTest(plan.testDate) : null;
   const tier = planTierFor(days);
-  const status = courseStatus(MODULES, prog);
   const pace = coursePace(days, MODULES);
-  const doneKeys = plan.doneKeys ?? [];
+  const doneKeys = plan?.doneKeys ?? [];
 
   return (
     <div className="mx-auto max-w-2xl">
       {/* summary header */}
       <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">
-            {PLAN_TIER_LABEL[tier]}
-          </span>
-          <span className="text-sm text-ink-muted">
-            Target <strong className="text-ink">Band {plan.targetBand}</strong>
-            {days !== null && (
-              <>
-                {' '}· <strong className="text-ink">{days}</strong> day{days === 1 ? '' : 's'} to go
-              </>
-            )}
-          </span>
-        </div>
+        {plan ? (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">
+              {PLAN_TIER_LABEL[tier]}
+            </span>
+            <span className="text-sm text-ink-muted">
+              Target <strong className="text-ink">Band {plan.targetBand}</strong>
+              {days !== null && (
+                <>
+                  {' '}· <strong className="text-ink">{days}</strong> day{days === 1 ? '' : 's'} to go
+                </>
+              )}
+            </span>
+          </div>
+        ) : (
+          <form
+            onSubmit={startCourse}
+            className="flex flex-wrap items-end gap-3 rounded-lg border border-dashed border-border bg-surface-alt p-3.5"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold">Set your target band and exam date</p>
+              <p className="mt-0.5 text-xs text-ink-muted">
+                You've already completed {status.doneLessons} lesson{status.doneLessons === 1 ? '' : 's'}. Add your
+                target so the course can pace the rest for you.
+              </p>
+            </div>
+            <label className="sr-only" htmlFor="target-band-inline">
+              Target band
+            </label>
+            <select
+              id="target-band-inline"
+              value={targetBand}
+              onChange={(e) => setTargetBand(e.target.value)}
+              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+            >
+              {TARGET_BANDS.map((b) => (
+                <option key={b} value={b}>
+                  Band {b}
+                </option>
+              ))}
+            </select>
+            <label className="sr-only" htmlFor="test-date-inline">
+              Test date (optional)
+            </label>
+            <input
+              id="test-date-inline"
+              type="date"
+              value={testDate}
+              onChange={(e) => setTestDate(e.target.value)}
+              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="rounded-button bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-hover"
+            >
+              Set plan
+            </button>
+          </form>
+        )}
 
         <div className="mt-4">
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
@@ -298,9 +352,10 @@ export default function Course() {
                         <input
                           type="checkbox"
                           checked={checked}
+                          disabled={!plan}
                           onChange={() => toggleExtra(extra.key)}
                           aria-label={`Mark complete: ${extra.label}`}
-                          className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-brand)]"
+                          className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-brand)] disabled:opacity-40"
                         />
                         <span className={`text-sm ${checked ? 'text-ink-muted line-through' : 'text-ink'}`}>
                           {extra.label}{' '}
@@ -322,13 +377,15 @@ export default function Course() {
         <p className="text-xs text-ink-muted">
           Lessons tick themselves off when you mark them complete on the lesson page.
         </p>
-        <button
-          type="button"
-          onClick={() => setPlan(null)}
-          className="-my-2 py-2 text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
-        >
-          Change my target or test date
-        </button>
+        {plan && (
+          <button
+            type="button"
+            onClick={() => setPlan(null)}
+            className="-my-2 py-2 text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
+          >
+            Change my target or test date
+          </button>
+        )}
       </div>
     </div>
   );
