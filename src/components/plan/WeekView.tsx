@@ -7,8 +7,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../../lib/progress';
-import { loadStudyPlan, onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
-import { ensurePlanStartDate, getWeekPlan } from '../../lib/plan/schedule';
+import { onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
+import { loadOrCreateStudyPlan, getWeekPlan } from '../../lib/plan/schedule';
 import { parseDateKey, toLocalDateKey } from '../../lib/plan/date';
 
 const DAY_LABEL = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -55,12 +55,11 @@ export default function WeekView() {
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
 
   useEffect(() => {
-    const saved = loadStudyPlan();
-    setPlan(saved ? ensurePlanStartDate(saved) : null);
+    setPlan(loadOrCreateStudyPlan());
     setProgress(getProgress());
     setReady(true);
     const offPlan = onStudyPlanChange(() => {
-      setPlan(loadStudyPlan());
+      setPlan(loadOrCreateStudyPlan());
       setSelectedWeek(null);
     });
     const offProgress = onProgressChange(() => setProgress(getProgress()));

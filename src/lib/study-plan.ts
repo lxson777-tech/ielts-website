@@ -39,6 +39,12 @@ export interface SavedPlan {
       weekends when building the schedule and to decide which days count
       toward the streak. */
   studyDays?: 'daily' | 'weekdays';
+  /** True only for the plan the app fabricates on a student's first visit
+      (see createDefaultPlan() in src/lib/plan/schedule.ts) — never set once
+      they've actually saved the settings strip's editor, even if they left
+      every field unchanged. Drives the settings strip's quiet "set your
+      exam date" hint instead of treating a guess as a real choice. */
+  defaulted?: boolean;
 }
 
 /** The six target bands the course now offers, one decimal place, low to

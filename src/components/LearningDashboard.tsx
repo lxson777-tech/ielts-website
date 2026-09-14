@@ -9,8 +9,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { SKILLS } from '../data/lessons';
 import { withBase } from '../lib/url';
 import { getProgress, getTypeStats, onProgressChange, type ProgressV1 } from '../lib/progress';
-import { loadStudyPlan } from '../lib/study-plan';
-import { buildCourse } from '../lib/course';
+import { buildCourse, courseStatus } from '../lib/course';
+import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
 import { getVocabSummary, type VocabSummary } from '../lib/vocab-review';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
@@ -73,9 +73,9 @@ function weakestType(): { label: string; href: string; percent: number } | null 
 }
 
 export default function LearningDashboard() {
-  const course = useMemo(() => buildCourse().flatMap((module) => module.lessons), []);
+  const MODULES = useMemo(() => buildCourse(), []);
+  const course = useMemo(() => MODULES.flatMap((module) => module.lessons), [MODULES]);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
-  const [hasPlan, setHasPlan] = useState(false);
   const [targetBand, setTargetBand] = useState<string | null>(null);
   const [vocab, setVocab] = useState<VocabSummary | null>(null);
   const [streak, setStreak] = useState(0);
@@ -85,13 +85,14 @@ export default function LearningDashboard() {
 
   // Everything is read after mount: the stores are localStorage-backed, so
   // the server render and the first client render must agree on "nothing
-  // yet" or hydration mismatches.
+  // yet" or hydration mismatches. A plan always exists from the first visit
+  // (loadOrCreateStudyPlan fabricates and persists a default one), so the
+  // dashboard never has to fall back to a stripped-down "brand new" view.
   useEffect(() => {
     const read = () => {
-      const plan = loadStudyPlan();
+      const plan = loadOrCreateStudyPlan();
       setProgress(getProgress());
-      setHasPlan(Boolean(plan));
-      setTargetBand(plan?.targetBand ?? null);
+      setTargetBand(plan.targetBand);
       setVocab(getVocabSummary());
       setStreak(getStreak(plan));
       setGoal(getTodayGoalProgress(plan));
@@ -114,26 +115,18 @@ export default function LearningDashboard() {
     return () => window.removeEventListener('focus', refresh);
   }, []);
 
-  const done = progress ? course.filter((lesson) => progress.lessons[lesson.key]).length : 0;
-  const next = useMemo(
-    () => course.find((lesson) => !progress?.lessons[lesson.key]) ?? course[0]!,
-    [course, progress],
-  );
-  const attempts = progress
-    ? Object.values(progress.tests).reduce((sum, list) => sum + list.length, 0) +
-      Object.values(progress.writing).reduce((sum, list) => sum + list.length, 0) +
-      progress.speaking.length
-    : 0;
+  // The single source of truth for "what's next": the same courseStatus()
+  // call Course.tsx uses for its own Continue button, so the two can never
+  // disagree on which lesson comes next.
+  const status = useMemo(() => (progress ? courseStatus(MODULES, progress) : null), [MODULES, progress]);
   const vocabDue = vocab?.due ?? 0;
-
-  const isNew = progress !== null && !hasPlan && done === 0 && attempts === 0;
   const shownStreak = useCountUp(streak);
 
   return (
     <div className="dash">
       <p className="dash-greeting">
         {hour === null ? 'Welcome back.' : `${greeting(hour)}.`}
-        {!isNew && goal && (
+        {goal && (
           <span>
             {' '}
             <span className="count-up">{shownStreak}</span> day streak, {goal.minutes} of {goal.goal} minutes
@@ -145,71 +138,73 @@ export default function LearningDashboard() {
 
       <PlanToday />
 
-      {!isNew && (
-        <>
-          <div className="dash-cards" data-stagger>
-            <a className="dash-card" href={withBase(next.href)}>
-              <span className="dash-card-label">Continue course</span>
-              <strong className="dash-card-title">{next.title}</strong>
-              <span className="dash-card-meta">
-                {next.skillLabel}, {done} of {course.length} lessons done
-              </span>
-            </a>
+      <div className="dash-cards" data-stagger>
+        {status?.next ? (
+          <a className="dash-card" href={withBase(status.next.href)}>
+            <span className="dash-card-label">Continue course</span>
+            <strong className="dash-card-title">{status.next.title}</strong>
+            <span className="dash-card-meta">
+              {status.next.skillLabel}, {status.doneLessons} of {status.totalLessons} lessons done
+            </span>
+          </a>
+        ) : (
+          <a className="dash-card" href={withBase('/start')}>
+            <span className="dash-card-label">Continue course</span>
+            <strong className="dash-card-title">Course complete</strong>
+            <span className="dash-card-meta">
+              {status ? `${status.doneLessons} of ${status.totalLessons} lessons done` : ''}
+            </span>
+          </a>
+        )}
 
-            <a className="dash-card" href={weak ? weak.href : withBase('/tests')}>
-              <span className="dash-card-label">Weakest area</span>
-              <strong className="dash-card-title">{weak ? weak.label : 'Not enough practice yet'}</strong>
-              <span className="dash-card-meta">
-                {weak ? `${weak.percent}% correct, practise this type` : 'Take a test and we will find it'}
-              </span>
-            </a>
+        <a className="dash-card" href={weak ? weak.href : withBase('/tests')}>
+          <span className="dash-card-label">Weakest area</span>
+          <strong className="dash-card-title">{weak ? weak.label : 'Not enough practice yet'}</strong>
+          <span className="dash-card-meta">
+            {weak ? `${weak.percent}% correct, practise this type` : 'Take a test and we will find it'}
+          </span>
+        </a>
 
-            <a className="dash-card" href={withBase('/review')}>
-              <span className="dash-card-label">Vocabulary</span>
-              <strong className="dash-card-title">
-                {VOCABULARY_PARTS.length} topics, {vocab?.total ?? 0} words
-              </strong>
-              {vocabDue > 0 && (
-                <span className="dash-card-due">
-                  {vocabDue} due for flashcard practice
+        <a className="dash-card" href={withBase('/review')}>
+          <span className="dash-card-label">Vocabulary</span>
+          <strong className="dash-card-title">
+            {VOCABULARY_PARTS.length} topics, {vocab?.total ?? 0} words
+          </strong>
+          {vocabDue > 0 && <span className="dash-card-due">{vocabDue} due for flashcard practice</span>}
+          <span className="dash-card-meta">Browse topics</span>
+        </a>
+      </div>
+
+      <section className="dash-skills" aria-labelledby="dash-skills-heading">
+        <h2 id="dash-skills-heading" className="dash-skills-heading">
+          Skills
+        </h2>
+        <div className="dash-skills-row" data-stagger>
+          {SKILLS.map((skill) => {
+            const total = course.filter((lesson) => lesson.skill === skill.id).length;
+            const finished = course.filter(
+              (lesson) => lesson.skill === skill.id && progress?.lessons[lesson.key],
+            ).length;
+            const percent = total ? Math.round((finished / total) * 100) : 0;
+            return (
+              <a
+                key={skill.id}
+                className={`dash-skill skill-${skill.id}`}
+                href={withBase(`/learn?skill=${skill.id}`)}
+                aria-label={`${skill.label}, ${finished} of ${total} lessons complete`}
+              >
+                <span className="dash-skill-name">{skill.label}</span>
+                <span className="dash-skill-track">
+                  <span className="dash-skill-fill bar-fill" style={{ width: `${percent}%` }} />
                 </span>
-              )}
-              <span className="dash-card-meta">Browse topics</span>
-            </a>
-          </div>
-
-          <section className="dash-skills" aria-labelledby="dash-skills-heading">
-            <h2 id="dash-skills-heading" className="dash-skills-heading">
-              Skills
-            </h2>
-            <div className="dash-skills-row" data-stagger>
-              {SKILLS.map((skill) => {
-                const total = course.filter((lesson) => lesson.skill === skill.id).length;
-                const finished = course.filter(
-                  (lesson) => lesson.skill === skill.id && progress?.lessons[lesson.key],
-                ).length;
-                const percent = total ? Math.round((finished / total) * 100) : 0;
-                return (
-                  <a
-                    key={skill.id}
-                    className={`dash-skill skill-${skill.id}`}
-                    href={withBase(`/learn?skill=${skill.id}`)}
-                    aria-label={`${skill.label}, ${finished} of ${total} lessons complete`}
-                  >
-                    <span className="dash-skill-name">{skill.label}</span>
-                    <span className="dash-skill-track">
-                      <span className="dash-skill-fill bar-fill" style={{ width: `${percent}%` }} />
-                    </span>
-                    <span className="dash-skill-count">
-                      {finished}/{total}
-                    </span>
-                  </a>
-                );
-              })}
-            </div>
-          </section>
-        </>
-      )}
+                <span className="dash-skill-count">
+                  {finished}/{total}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }

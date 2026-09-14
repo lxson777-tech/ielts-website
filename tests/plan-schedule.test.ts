@@ -1,8 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildSchedule, markItemsDone, getTodayPlan, getWeekPlan, resolvePlanParams } from '../src/lib/plan/schedule.ts';
+import {
+  buildSchedule,
+  markItemsDone,
+  getTodayPlan,
+  getWeekPlan,
+  resolvePlanParams,
+  createDefaultPlan,
+} from '../src/lib/plan/schedule.ts';
 import { getStreak, getLast14Days, isPlannedStudyDay } from '../src/lib/plan/streak.ts';
-import { addDays } from '../src/lib/plan/date.ts';
+import { addDays, toLocalDateKey } from '../src/lib/plan/date.ts';
 import type { SavedPlan } from '../src/lib/study-plan.ts';
 import type { ProgressV1 } from '../src/lib/progress.ts';
 
@@ -173,4 +180,31 @@ test('getLast14Days always returns 14 entries ending today', () => {
 
 test('getStreak with no activity logged is zero, never negative or throwing', () => {
   assert.equal(getStreak(null, new Date(`${START}T12:00:00`)), 0);
+});
+
+test('createDefaultPlan fabricates a usable plan: today as start date, no exam date, 25 min a day, marked defaulted', () => {
+  const plan = createDefaultPlan();
+  assert.equal(plan.startDate, toLocalDateKey(new Date()), 'start date is today, in local time, not shifted by UTC');
+  assert.equal(plan.testDate, '', 'no exam date yet, so the 8-week default pace applies');
+  assert.equal(plan.dailyMinutes, 25);
+  assert.equal(plan.studyDays, 'daily');
+  assert.equal(plan.defaulted, true);
+  assert.ok(plan.targetBand, 'falls back to a target band even with no homepage pick to read (band 7.0 in the browser)');
+});
+
+test('a fresh store (a brand new student, nothing saved yet) still yields a non-empty Today', () => {
+  const plan = createDefaultPlan();
+  const progress = emptyProgress();
+  const today = getTodayPlan(plan, progress, new Date(`${plan.startDate}T12:00:00`));
+  assert.ok(today, 'Today is never null once a plan exists, default or not');
+  assert.ok(today!.items.length >= 2 && today!.items.length <= 4, 'Today lists a normal day worth of items immediately, no onboarding form first');
+  assert.equal(today!.dayNumber, 1);
+});
+
+test('resolvePlanParams on a defaulted plan still falls back to 25 minutes and every day', () => {
+  const plan = createDefaultPlan();
+  const params = resolvePlanParams(plan);
+  assert.equal(params.dailyMinutes, 25);
+  assert.equal(params.studyDays, 'daily');
+  assert.equal(params.examDate, addDays(plan.startDate!, 56), '8-week default pace when no exam date is set');
 });

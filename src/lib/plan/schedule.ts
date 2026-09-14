@@ -32,7 +32,7 @@ import type { ProgressV1 } from '../progress';
 import { ALL_TESTS } from '../../data/tests';
 import { ALL_READING_DRILLS, ALL_LISTENING_DRILLS, type DrillMeta } from '../tests/drills';
 import type { PracticeTest } from '../tests/schema';
-import { saveStudyPlan, type SavedPlan } from '../study-plan';
+import { loadStudyPlan, saveStudyPlan, loadHomeTargetBand, type SavedPlan } from '../study-plan';
 import { getVocabSummary } from '../vocab-review';
 import { getVocabularyPart } from '../../data/vocabulary';
 import { addDays, daysBetween, isWeekday, parseDateKey, toLocalDateKey } from './date';
@@ -112,6 +112,43 @@ export function ensurePlanStartDate(plan: SavedPlan): SavedPlan {
   const next: SavedPlan = { ...plan, startDate };
   saveStudyPlan(next);
   return next;
+}
+
+/** Build a fresh default plan for a student who has never saved one: start
+    date is today (persisted immediately, see loadOrCreateStudyPlan, so it
+    never drifts on a later visit), target band is whatever the homepage
+    hero already picked or 7.0, no exam date (the 8-week default pace this
+    module already falls back to), 25 minutes a day, every day. Marked
+    `defaulted` so the settings strip can offer a quiet hint instead of
+    treating this guess as a choice the student actually made. Pure — call
+    loadOrCreateStudyPlan() to also persist it. */
+export function createDefaultPlan(): SavedPlan {
+  return {
+    targetBand: loadHomeTargetBand() ?? '7.0',
+    testDate: '',
+    createdAt: new Date().toISOString(),
+    startDate: toLocalDateKey(new Date()),
+    dailyMinutes: DEFAULT_DAILY_MINUTES,
+    studyDays: 'daily',
+    done: [],
+    doneKeys: [],
+    defaulted: true,
+  };
+}
+
+/** Load the saved plan, or create and persist a default one (see
+    createDefaultPlan) so Today, the streak, the week view and the
+    dashboard cards all work from the very first visit — no onboarding
+    form, ever. An old plan that predates the startDate field still gets
+    one stamped on, via ensurePlanStartDate, the same as a brand new
+    default plan already has. SSR-safe: returns an unpersisted default
+    without touching storage when there is no window. */
+export function loadOrCreateStudyPlan(): SavedPlan {
+  const existing = loadStudyPlan();
+  if (existing) return ensurePlanStartDate(existing);
+  const created = createDefaultPlan();
+  if (typeof window !== 'undefined') saveStudyPlan(created);
+  return created;
 }
 
 function courseLessons(): CourseLesson[] {

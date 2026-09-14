@@ -7,8 +7,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../../lib/progress';
-import { loadStudyPlan, onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
-import { ensurePlanStartDate, getTodayPlan, type PlanItem } from '../../lib/plan/schedule';
+import { onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
+import { loadOrCreateStudyPlan, getTodayPlan, type PlanItem } from '../../lib/plan/schedule';
+import { getPlanSummary } from '../../lib/plan/summary';
 
 const TYPE_LABEL: Record<PlanItem['type'], string> = {
   lesson: 'Lesson',
@@ -26,15 +27,15 @@ export default function PlanToday() {
   const [dismissedBehind, setDismissedBehind] = useState(false);
 
   useEffect(() => {
-    const saved = loadStudyPlan();
-    // First render of a plan saved before this feature (or before its own
-    // creation ever set one): stamp a start date onto it so the schedule
-    // stays anchored, rather than recomputing "day 1" on every visit.
-    setPlan(saved ? ensurePlanStartDate(saved) : null);
+    // A plan always exists from the first visit: loadOrCreateStudyPlan()
+    // hands back the saved one, or fabricates and persists a default (see
+    // createDefaultPlan in src/lib/plan/schedule.ts) so Today is never
+    // blank and there is no onboarding form to fill in first.
+    setPlan(loadOrCreateStudyPlan());
     setProgress(getProgress());
     setReady(true);
     const offPlan = onStudyPlanChange(() => {
-      setPlan(loadStudyPlan());
+      setPlan(loadOrCreateStudyPlan());
       setDismissedBehind(false);
     });
     const offProgress = onProgressChange(() => setProgress(getProgress()));
@@ -55,21 +56,13 @@ export default function PlanToday() {
 
   const today = useMemo(() => (plan && progress ? getTodayPlan(plan, progress) : null), [plan, progress]);
 
-  if (!ready) return null;
+  // A plan always exists once ready (see the mount effect), and getTodayPlan
+  // only returns null when there is no plan, so this pair can't actually
+  // split in practice — kept as a guard so TypeScript (and a future caller)
+  // never has to assume it.
+  if (!ready || !plan || !today) return null;
 
-  if (!plan || !today) {
-    return (
-      <section className="plan-today plan-today-empty" aria-labelledby="today-heading">
-        <h2 id="today-heading">Start with a plan</h2>
-        <p className="plan-rest-note">
-          Tell us your target band and exam date, and we will lay out a day by day plan that fits around them.
-        </p>
-        <a className="coral-button" href={withBase('/start')}>
-          Create my plan
-        </a>
-      </section>
-    );
-  }
+  const summary = getPlanSummary(plan);
 
   return (
     <section className="plan-today" aria-labelledby="today-heading">
@@ -79,6 +72,14 @@ export default function PlanToday() {
           Day {today.dayNumber} of {today.totalDays}, {today.onTrack ? 'on track' : `${today.daysBehind} day${today.daysBehind === 1 ? '' : 's'} behind`}
         </span>
       </div>
+
+      <p className="plan-today-strip">
+        {summary.text}
+        {summary.hint && <span className="plan-today-strip-hint"> · {summary.hint}</span>}
+        <a href={withBase('/start')} className="plan-today-strip-change">
+          Change
+        </a>
+      </p>
 
       {today.behindMessage && !dismissedBehind && (
         <div className="plan-today-behind">

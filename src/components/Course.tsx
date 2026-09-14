@@ -18,19 +18,18 @@
 import { useEffect, useState } from 'react';
 import { withBase } from '../lib/url';
 import {
-  loadStudyPlan,
   saveStudyPlan,
   onStudyPlanChange,
   daysUntilTest,
   planTierFor,
   PLAN_TIER_LABEL,
   TARGET_BANDS,
-  loadHomeTargetBand,
   type SavedPlan,
 } from '../lib/study-plan';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
 import { buildCourse, courseStatus, coursePace, isLessonDone } from '../lib/course';
-import { toLocalDateKey } from '../lib/plan/date';
+import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
+import { getPlanSummary } from '../lib/plan/summary';
 import WeekView from './plan/WeekView';
 
 const DAILY_MINUTES_OPTIONS: NonNullable<SavedPlan['dailyMinutes']>[] = [15, 25, 40, 60];
@@ -48,6 +47,7 @@ export default function Course() {
   const [plan, setPlan] = useState<SavedPlan | null>(null);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [ready, setReady] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
   const [targetBand, setTargetBand] = useState('6.5');
   const [testDate, setTestDate] = useState('');
   const [dailyMinutes, setDailyMinutes] = useState<NonNullable<SavedPlan['dailyMinutes']>>(25);
@@ -59,34 +59,41 @@ export default function Course() {
   // the student's saved target the next time they submit the form.
   const [clampedFromBand, setClampedFromBand] = useState<string | null>(null);
 
+  function seedEditorFields(saved: SavedPlan) {
+    const savedBandValid = (TARGET_BANDS as readonly string[]).includes(saved.targetBand);
+    setTargetBand(savedBandValid ? saved.targetBand : '6.5');
+    setClampedFromBand(savedBandValid ? null : saved.targetBand);
+    setTestDate(saved.testDate);
+    setDailyMinutes(saved.dailyMinutes ?? 25);
+    setStudyDays(saved.studyDays ?? 'daily');
+  }
+
   useEffect(() => {
-    const saved = loadStudyPlan();
-    if (saved) {
-      setPlan(saved);
-      const savedBandValid = (TARGET_BANDS as readonly string[]).includes(saved.targetBand);
-      setTargetBand(savedBandValid ? saved.targetBand : '6.5');
-      setClampedFromBand(savedBandValid ? null : saved.targetBand);
-      setTestDate(saved.testDate);
-      setDailyMinutes(saved.dailyMinutes ?? 25);
-      setStudyDays(saved.studyDays ?? 'daily');
-    } else {
-      // A brand-new student who already picked a band in the homepage hero
-      // (src/scripts/home-game.ts) should see that choice here too, rather
-      // than the plain 6.5 default resetting what they just told us.
-      const homeBand = loadHomeTargetBand();
-      if (homeBand) setTargetBand(homeBand);
-    }
+    // A plan always exists from the first visit: loadOrCreateStudyPlan()
+    // hands back the saved one, or fabricates and persists a default (see
+    // createDefaultPlan in src/lib/plan/schedule.ts) so the course never
+    // opens on a blank onboarding form.
+    setPlan(loadOrCreateStudyPlan());
     setProgress(getProgress());
     setReady(true);
     // Keep in step with both stores: a cloud pull can rewrite either, and
     // finishing a lesson in another tab must re-tick this list.
-    const offPlan = onStudyPlanChange(() => setPlan(loadStudyPlan()));
+    const offPlan = onStudyPlanChange(() => setPlan(loadOrCreateStudyPlan()));
     const offProgress = onProgressChange(() => setProgress(getProgress()));
     return () => {
       offPlan();
       offProgress();
     };
   }, []);
+
+  // Re-seed the editor's fields whenever the plan changes from outside (a
+  // cloud pull, another tab, the initial load) while the editor itself is
+  // closed - never mid-edit, that would blow away what the student just
+  // typed.
+  useEffect(() => {
+    if (plan && !showEditor) seedEditorFields(plan);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plan]);
 
   // Returning from a lesson is a normal back-navigation, which may be served
   // from the bfcache without remounting. Re-read on focus so the tick appears.
@@ -96,240 +103,144 @@ export default function Course() {
     return () => window.removeEventListener('focus', refresh);
   }, []);
 
-  if (!ready) return null; // avoid a hydration flash
+  if (!ready || !plan) return null; // avoid a hydration flash; plan always exists once ready
+  // A stable non-null alias: the guard above narrows `plan` for this render,
+  // but TypeScript won't carry that into the closures below (they could, in
+  // principle, run after a later render where it's null again — it never
+  // actually does, since loadOrCreateStudyPlan() always returns a plan, but
+  // the alias says so in a way the type checker can verify too).
+  const activePlan = plan;
 
   const prog = progress ?? getProgress();
   const status = courseStatus(MODULES, prog);
-  // A student who worked through lessons from /learn before ever visiting
-  // /start has already started, even with no saved plan. Showing them a
-  // blank onboarding form would bury that progress, so only someone with
-  // zero completed lessons and no plan sees it; everyone else sees the
-  // course itself; with an inline strip asking for a target when there's
-  // no plan yet.
-  const hasProgress = status.doneLessons > 0;
+  const summary = getPlanSummary(activePlan);
 
-  function startCourse(e: React.FormEvent<HTMLFormElement>) {
+  /* Settings, not onboarding: saving re-paces the plan in place (start date
+     and doneKeys carry over unchanged, everything else is recomputed from
+     the new settings) rather than gating the course behind a form. */
+  function saveSettings(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const next: SavedPlan = {
-      targetBand,
-      testDate,
-      createdAt: new Date().toISOString(),
-      startDate: plan?.startDate ?? toLocalDateKey(new Date()),
-      dailyMinutes,
-      studyDays,
-      done: [],
-      doneKeys: plan?.doneKeys ?? [],
-    };
+    const next: SavedPlan = { ...activePlan, targetBand, testDate, dailyMinutes, studyDays, defaulted: false };
     saveStudyPlan(next);
     setPlan(next);
+    setShowEditor(false);
   }
 
   function toggleExtra(key: string) {
-    if (!plan) return;
-    const current = plan.doneKeys ?? [];
+    const current = activePlan.doneKeys ?? [];
     const doneKeys = current.includes(key) ? current.filter((k) => k !== key) : [...current, key];
-    const next = { ...plan, doneKeys };
+    const next = { ...activePlan, doneKeys };
     saveStudyPlan(next);
     setPlan(next);
   }
 
-  /* ── Start screen: only for a genuinely new student ── */
-  if (!plan && !hasProgress) {
-    return (
-      <form
-        onSubmit={startCourse}
-        className="mx-auto max-w-xl rounded-card border border-border bg-surface p-6 shadow-card sm:p-8"
-      >
-        <h2 className="font-display text-xl font-extrabold">Start the course</h2>
-        <p className="mt-1 text-sm text-ink-muted">
-          Every lesson on the site, in the order that works. Two quick questions and we'll set your pace.
-        </p>
+  const days = daysUntilTest(plan.testDate);
+  const tier = planTierFor(days);
+  const pace = coursePace(days, MODULES);
+  const doneKeys = plan.doneKeys ?? [];
 
-        <label className="mt-6 block text-sm font-semibold" htmlFor="target-band">
-          What band are you aiming for?
-        </label>
-        <select
-          id="target-band"
-          value={targetBand}
-          onChange={(e) => {
-            setTargetBand(e.target.value);
-            setClampedFromBand(null); // they've made their own choice, the note no longer applies
-          }}
-          className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
-        >
-          {TARGET_BANDS.map((b) => (
-            <option key={b} value={b}>
-              Band {b}
-            </option>
-          ))}
-        </select>
+  return (
+    <div className="mx-auto max-w-2xl">
+      {/* settings strip, then progress, then the week view, then the modules */}
+      <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">
+              {PLAN_TIER_LABEL[tier]}
+            </span>
+            <span className="text-sm text-ink-muted">{summary.text}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowEditor((v) => !v)}
+            className="shrink-0 rounded-button border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt"
+          >
+            {showEditor ? 'Close' : 'Change'}
+          </button>
+        </div>
+
+        {summary.hint && !showEditor && <p className="mt-2 text-xs text-ink-muted">{summary.hint}</p>}
+
         {clampedFromBand && (
-          <p className="mt-1.5 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
+          <p className="mt-2 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
             Your saved target was Band {clampedFromBand}. The course now starts at Band 6.5, so we've set that here,
             pick a different band if you'd like.
           </p>
         )}
 
-        <label className="mt-5 block text-sm font-semibold" htmlFor="test-date">
-          When is your test? <span className="font-normal text-ink-muted">(optional)</span>
-        </label>
-        <input
-          id="test-date"
-          type="date"
-          value={testDate}
-          onChange={(e) => setTestDate(e.target.value)}
-          className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
-        />
-        <p className="mt-1.5 text-xs text-ink-muted">
-          No date yet? Leave it blank and work through at your own pace.
-        </p>
-
-        <div className="mt-5 grid gap-5 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-semibold" htmlFor="daily-minutes">
-              Daily study time
-            </label>
-            <select
-              id="daily-minutes"
-              value={dailyMinutes}
-              onChange={(e) => setDailyMinutes(Number(e.target.value) as NonNullable<SavedPlan['dailyMinutes']>)}
-              className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
-            >
-              {DAILY_MINUTES_OPTIONS.map((m) => (
-                <option key={m} value={m}>
-                  {m} minutes
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold" htmlFor="study-days">
-              Study days
-            </label>
-            <select
-              id="study-days"
-              value={studyDays}
-              onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
-              className="mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 font-semibold focus:border-brand focus:outline-none"
-            >
-              <option value="daily">Every day</option>
-              <option value="weekdays">Weekdays only</option>
-            </select>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="mt-7 w-full rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white transition-colors hover:bg-brand-hover"
-        >
-          Start my course
-        </button>
-      </form>
-    );
-  }
-
-  /* ── The course, with or without a saved plan yet ── */
-  const days = plan ? daysUntilTest(plan.testDate) : null;
-  const tier = planTierFor(days);
-  const pace = coursePace(days, MODULES);
-  const doneKeys = plan?.doneKeys ?? [];
-
-  return (
-    <div className="mx-auto max-w-2xl">
-      {/* summary header */}
-      <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
-        {plan ? (
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">
-              {PLAN_TIER_LABEL[tier]}
-            </span>
-            <span className="text-sm text-ink-muted">
-              Target <strong className="text-ink">Band {plan.targetBand}</strong>
-              {days !== null && (
-                <>
-                  {' '}· <strong className="text-ink">{days}</strong> day{days === 1 ? '' : 's'} to go
-                </>
-              )}
-            </span>
-          </div>
-        ) : (
+        {showEditor && (
           <form
-            onSubmit={startCourse}
-            className="flex flex-wrap items-end gap-3 rounded-lg border border-dashed border-border bg-surface-alt p-3.5"
+            onSubmit={saveSettings}
+            className="mt-4 flex flex-wrap items-end gap-3 rounded-lg border border-dashed border-border bg-surface-alt p-3.5"
           >
-            <div className="w-full basis-full">
-              <p className="text-sm font-bold">Set your target band and exam date</p>
-              <p className="mt-0.5 text-xs text-ink-muted">
-                You've already completed {status.doneLessons} lesson{status.doneLessons === 1 ? '' : 's'}. Add your
-                target so the course can pace the rest for you.
-              </p>
-              {clampedFromBand && (
-                <p className="mt-1.5 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
-                  Your saved target was Band {clampedFromBand}. The course now starts at Band 6.5, so we've set that
-                  here, pick a different band if you'd like.
-                </p>
-              )}
+            <div>
+              <label className="block text-xs font-semibold" htmlFor="target-band-inline">
+                Target band
+              </label>
+              <select
+                id="target-band-inline"
+                value={targetBand}
+                onChange={(e) => {
+                  setTargetBand(e.target.value);
+                  setClampedFromBand(null); // they've made their own choice, the note no longer applies
+                }}
+                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+              >
+                {TARGET_BANDS.map((b) => (
+                  <option key={b} value={b}>
+                    Band {b}
+                  </option>
+                ))}
+              </select>
             </div>
-            <label className="sr-only" htmlFor="target-band-inline">
-              Target band
-            </label>
-            <select
-              id="target-band-inline"
-              value={targetBand}
-              onChange={(e) => {
-                setTargetBand(e.target.value);
-                setClampedFromBand(null); // they've made their own choice, the note no longer applies
-              }}
-              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-            >
-              {TARGET_BANDS.map((b) => (
-                <option key={b} value={b}>
-                  Band {b}
-                </option>
-              ))}
-            </select>
-            <label className="sr-only" htmlFor="test-date-inline">
-              Test date (optional)
-            </label>
-            <input
-              id="test-date-inline"
-              type="date"
-              value={testDate}
-              onChange={(e) => setTestDate(e.target.value)}
-              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-            />
-            <label className="sr-only" htmlFor="daily-minutes-inline">
-              Daily study time
-            </label>
-            <select
-              id="daily-minutes-inline"
-              value={dailyMinutes}
-              onChange={(e) => setDailyMinutes(Number(e.target.value) as NonNullable<SavedPlan['dailyMinutes']>)}
-              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-            >
-              {DAILY_MINUTES_OPTIONS.map((m) => (
-                <option key={m} value={m}>
-                  {m} min/day
-                </option>
-              ))}
-            </select>
-            <label className="sr-only" htmlFor="study-days-inline">
-              Study days
-            </label>
-            <select
-              id="study-days-inline"
-              value={studyDays}
-              onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
-              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-            >
-              <option value="daily">Every day</option>
-              <option value="weekdays">Weekdays only</option>
-            </select>
+            <div>
+              <label className="block text-xs font-semibold" htmlFor="test-date-inline">
+                Exam date <span className="font-normal text-ink-muted">(optional)</span>
+              </label>
+              <input
+                id="test-date-inline"
+                type="date"
+                value={testDate}
+                onChange={(e) => setTestDate(e.target.value)}
+                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold" htmlFor="daily-minutes-inline">
+                Daily study time
+              </label>
+              <select
+                id="daily-minutes-inline"
+                value={dailyMinutes}
+                onChange={(e) => setDailyMinutes(Number(e.target.value) as NonNullable<SavedPlan['dailyMinutes']>)}
+                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+              >
+                {DAILY_MINUTES_OPTIONS.map((m) => (
+                  <option key={m} value={m}>
+                    {m} min/day
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold" htmlFor="study-days-inline">
+                Study days
+              </label>
+              <select
+                id="study-days-inline"
+                value={studyDays}
+                onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
+                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+              >
+                <option value="daily">Every day</option>
+                <option value="weekdays">Weekdays only</option>
+              </select>
+            </div>
             <button
               type="submit"
               className="rounded-button bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-hover"
             >
-              Set plan
+              Save
             </button>
           </form>
         )}
@@ -363,7 +274,7 @@ export default function Course() {
           </a>
         ) : (
           <p className="mt-5 rounded-button bg-success-tint px-5 py-3 text-sm font-semibold text-success">
-            Every lesson complete. Move on to Exam readiness below. 🎉
+            Every lesson complete. Move on to Exam readiness below.
           </p>
         )}
 
@@ -463,7 +374,6 @@ export default function Course() {
                         <input
                           type="checkbox"
                           checked={checked}
-                          disabled={!plan}
                           onChange={() => toggleExtra(extra.key)}
                           aria-label={`Mark complete: ${extra.label}`}
                           className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-brand)] disabled:opacity-40"
@@ -484,20 +394,9 @@ export default function Course() {
         })}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-ink-muted">
-          Lessons tick themselves off when you mark them complete on the lesson page.
-        </p>
-        {plan && (
-          <button
-            type="button"
-            onClick={() => setPlan(null)}
-            className="-my-2 py-2 text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
-          >
-            Change my target or test date
-          </button>
-        )}
-      </div>
+      <p className="mt-6 text-xs text-ink-muted">
+        Lessons tick themselves off when you mark them complete on the lesson page.
+      </p>
     </div>
   );
 }
