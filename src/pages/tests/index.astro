@@ -53,7 +53,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
       </span>
     </a>
 
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid gap-6 md:grid-cols-2" data-stagger>
       <div id="reading-tests" class="skill-reading group relative flex scroll-mt-24 flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover">
         <span class="absolute inset-x-0 top-0 z-10 h-1 bg-[var(--skill)]" aria-hidden="true"></span>
         <div class="flex h-40 items-center justify-center border-b border-border/60 bg-[var(--skill-tint)] p-5">

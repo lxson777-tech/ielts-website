@@ -1,10 +1,17 @@
 import { useState } from 'react';
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 
-/** Button + animated-height panel — replaces native <details>/<summary> for
-    cases that want a smooth expand/collapse instead of the browser's instant
-    snap (mirrors the JS-driven animation BaseLayout gives .lesson-body
-    details, for React-rendered accordions outside that scope). */
+/** Button + smoothly growing panel — replaces native <details>/<summary> for
+    cases that want a real expand/collapse instead of the browser's instant
+    snap (mirrors the animation BaseLayout gives .lesson-body details, for
+    React-rendered accordions outside that scope).
+
+    The height comes from the grid-template-rows 0fr → 1fr trick shared with
+    the rest of the site (.grid-reveal in global.css): the browser animates
+    to the content's natural height without anything measuring it, and the
+    panel stays in the DOM so its contents are never re-created on open.
+    GOTCHA (same as everywhere else this trick is used): the clip wrapper
+    must carry min-h-0 and overflow-hidden and must have no padding of its
+    own, or the collapsed track never reaches zero. */
 export default function Accordion({
   summary,
   children,
@@ -17,39 +24,30 @@ export default function Accordion({
   const [open, setOpen] = useState(false);
 
   return (
-    <MotionConfig reducedMotion="user">
-      <div className={className}>
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          className="flex w-full items-center justify-between gap-2 text-left text-sm font-semibold text-brand"
+    <div className={className}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 text-left text-sm font-semibold text-brand"
+      >
+        <span>{summary}</span>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 transition-transform duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+            open ? 'rotate-180' : ''
+          }`}
         >
-          <span>{summary}</span>
-          <motion.span
-            animate={{ rotate: open ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-            aria-hidden="true"
-            className="shrink-0"
-          >
-            ▾
-          </motion.span>
-        </button>
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.div
-              key="content"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              style={{ overflow: 'hidden' }}
-            >
-              {children}
-            </motion.div>
-          )}
-        </AnimatePresence>
+          ▾
+        </span>
+      </button>
+      {/* Collapsed content stays in the DOM for the animation, so it is taken
+          out of the tab order and the accessibility tree while it is shut. */}
+      <div className={`grid-reveal ${open ? 'is-open' : ''}`}>
+        <div className="min-h-0 overflow-hidden">
+          <div inert={!open}>{children}</div>
+        </div>
       </div>
-    </MotionConfig>
+    </div>
   );
 }

@@ -95,7 +95,7 @@ export default function PlanToday() {
       {today.items.length === 0 ? (
         <p className="plan-rest-note">Nothing scheduled today. A rest day is fine, your plan adjusts.</p>
       ) : (
-        <ul className="plan-item-list">
+        <ul className="plan-item-list" data-stagger>
           {today.items.map((item) => (
             <li key={item.id}>
               <a
@@ -103,8 +103,14 @@ export default function PlanToday() {
                 className={`plan-item${item.done ? ' plan-item-done' : ''}`}
                 aria-label={`${item.label}, ${TYPE_LABEL[item.type]}, ${item.minutes} minutes${item.done ? ', done' : ''}`}
               >
+                {/* The tick strokes itself in when an item is marked done, and
+                    the circle fills to green underneath it. */}
                 <span className="plan-item-tick" aria-hidden="true">
-                  {item.done ? '✓' : ''}
+                  {item.done && (
+                    <svg className="tick-svg" viewBox="0 0 24 24">
+                      <polyline points="4,12.6 9.6,18.2 20,6.4" pathLength={1} />
+                    </svg>
+                  )}
                 </span>
                 {item.skill && <span className="plan-item-dot" style={{ background: `var(--color-${item.skill})` }} aria-hidden="true" />}
                 <span className="plan-item-body">

@@ -18,7 +18,7 @@ const clamped = Math.max(0, Math.min(100, value));
   )}
   <div class="h-2 overflow-hidden rounded-full bg-surface-alt" role="progressbar" aria-valuenow={clamped} aria-valuemin="0" aria-valuemax="100">
     <div
-      class="h-full rounded-full bg-[var(--skill,var(--color-brand))] transition-[width] duration-500"
+      class="bar-fill h-full rounded-full bg-[var(--skill,var(--color-brand))] transition-[width] duration-500"
       style={`width:${clamped}%`}
     >
     </div>

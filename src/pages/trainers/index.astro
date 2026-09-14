@@ -65,7 +65,7 @@ const trainers = [
       subtitle="Short sessions with useful guidance on screen. Choose a skill, practise one manageable task, and use the feedback to decide what to do next."
     />
 
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
       {trainers.map((t) => (
         <div class={`skill-${t.skill} group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover`}>
           <span class="absolute inset-x-0 top-0 z-10 h-1 bg-[var(--skill)]" aria-hidden="true"></span>

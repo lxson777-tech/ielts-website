@@ -44,20 +44,40 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .site-mobile-account button { color: var(--color-ink); }
 
 /* ── Workspace shell (app routes) ──────────────────────────────────── */
-.ws-header { position: sticky; top: 0; z-index: 60; height: 56px; background: #fff; border-bottom: 1px solid var(--color-border); }
+/* The header is the one piece of chrome that survives a navigation
+   (transition:persist in WorkspaceHeader.astro), so it never flashes; the
+   script there re-marks the active tab and slides the indicator instead. */
+.ws-header { position: sticky; top: 0; z-index: 60; height: 56px; background: #fff; border-bottom: 1px solid var(--color-border); transition: box-shadow var(--dur-base) ease; }
+/* Lifts off the page once the student has scrolled past the first few
+   pixels, so the content reads as passing underneath it. */
+.ws-header.is-scrolled { box-shadow: 0 10px 26px -18px rgb(32 37 34 / .55), 0 1px 0 rgb(32 37 34 / .03); }
 .ws-header-inner { position: relative; height: 56px; width: 100%; max-width: 1240px; margin-inline: auto; display: flex; align-items: center; gap: 16px; padding-inline: 24px; }
-.ws-wordmark { flex: none; color: var(--color-ink); font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; letter-spacing: -.045em; text-decoration: none; }
+.ws-wordmark { flex: none; color: var(--color-ink); font-family: var(--font-display-ui); font-size: 1.08rem; font-weight: 800; letter-spacing: -.05em; text-decoration: none; transition: opacity var(--dur-fast) ease; }
+@media (hover: hover) { .ws-wordmark:hover { opacity: .72; } }
 .ws-wordmark-accent { color: var(--color-brand); }
-.ws-wordmark:focus-visible, .ws-tab:focus-visible, .ws-avatar:focus-visible, .ws-tabbar-link:focus-visible, .ws-menu a:focus-visible, .ws-menu button:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 6px; }
+.ws-wordmark:focus-visible, .ws-avatar:focus-visible, .ws-tabbar-link:focus-visible, .ws-menu a:focus-visible, .ws-menu button:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 6px; }
+/* The focus ring traces the same pill the hover background draws, so
+   keyboard and pointer describe the tab with the same shape. */
+.ws-tab:focus-visible { outline: 2px solid var(--color-brand); outline-offset: -9px; border-radius: 17px; }
 
 /* Centred independently of the wordmark and avatar, so the tab row does not
    shift when a signed-in avatar shows initials instead of the placeholder. */
 .ws-tabs { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
-.ws-tab { position: relative; display: grid; place-items: center; height: 56px; padding-inline: 14px; color: var(--color-ink-muted); font-size: .875rem; font-weight: 600; text-decoration: none; transition: color 200ms ease; }
-.ws-tab::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 0; height: 2px; border-radius: 2px 2px 0 0; background: var(--color-brand); opacity: 0; transition: opacity 200ms ease; }
+/* isolation, not a z-index: it gives the tab its own stacking context so the
+   hover pill (z-index -1) paints behind the label but still in front of the
+   header's own white background. A bare negative z-index would slide under
+   that background and vanish. */
+.ws-tab { position: relative; isolation: isolate; display: grid; place-items: center; height: 56px; padding-inline: 14px; color: var(--color-ink-muted); font-family: var(--font-display-ui); font-size: .875rem; font-weight: 500; letter-spacing: -.01em; text-decoration: none; transition: color var(--dur-base) ease; }
+.ws-tab::before { content: ''; position: absolute; inset: 9px 4px; z-index: -1; border-radius: 10px; background: var(--color-surface-alt); opacity: 0; transform: scale(.94); transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out-expo); }
+@media (hover: hover) { .ws-tab:hover::before { opacity: 1; transform: scale(1); } }
 .ws-tab:hover { color: var(--color-ink); }
-.ws-tab.is-active { color: var(--color-ink); font-weight: 700; }
-.ws-tab.is-active::after { opacity: 1; }
+.ws-tab.is-active { color: var(--color-ink); font-weight: 600; }
+/* One indicator for the whole row, moved by the header script, so changing
+   tabs reads as the same mark travelling rather than two separate fades. It
+   only becomes visible once it has been measured (.is-ready), which also
+   stops it sliding in from the left edge on first paint. */
+.ws-tab-indicator { position: absolute; left: 0; bottom: 0; height: 2px; width: var(--ws-ind-w, 0px); border-radius: 2px 2px 0 0; background: var(--color-brand); opacity: 0; transform: translate3d(var(--ws-ind-x, 0px), 0, 0); pointer-events: none; transition: opacity var(--dur-base) ease; }
+.ws-tabs.is-ready .ws-tab-indicator { opacity: 1; transition: transform 320ms var(--ease-out-expo), width 320ms var(--ease-out-expo), opacity var(--dur-base) ease; }
 
 .ws-account { position: relative; margin-left: auto; display: flex; align-items: center; }
 .ws-avatar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-surface-alt); color: var(--color-ink-muted); cursor: pointer; transition: border-color 200ms ease, background 200ms ease, color 200ms ease; }
@@ -65,7 +85,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .ws-avatar svg { width: 16px; height: 16px; }
 .ws-avatar-initials { font-family: var(--font-display); font-size: .72rem; font-weight: 800; letter-spacing: .01em; color: var(--color-brand); }
 
-.ws-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 70; width: 214px; padding: 6px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; box-shadow: var(--shadow-card-hover); }
+.ws-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 70; width: 214px; padding: 6px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; box-shadow: var(--shadow-card-hover); transform-origin: top right; animation: ws-menu-in 180ms var(--ease-out-expo) both; }
+@keyframes ws-menu-in { from { opacity: 0; transform: scale(.93) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+/* Each row follows the panel by 20ms, so the menu unrolls rather than
+   appearing whole. --i is set per item by WorkspaceMenu. */
+@keyframes ws-menu-item-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+.ws-menu-identity, .ws-menu a, .ws-menu button { animation: ws-menu-item-in 180ms var(--ease-out-expo) both; animation-delay: calc(var(--i, 0) * 20ms); }
 .ws-menu-identity { margin: 0; padding: 8px 10px 10px; }
 .ws-menu-identity span { display: block; color: var(--color-ink-muted); font-size: .7rem; }
 .ws-menu-identity strong { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; font-weight: 700; }
@@ -73,6 +98,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .ws-menu-identity + .ws-menu-group { margin-top: 0; padding-top: 6px; border-top: 1px solid var(--color-border); }
 .ws-menu a, .ws-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 9px; background: none; color: var(--color-ink); font: inherit; font-size: .84rem; font-weight: 600; text-align: left; text-decoration: none; cursor: pointer; transition: background 200ms ease, color 200ms ease; }
 .ws-menu a:hover, .ws-menu button:hover { background: var(--color-surface-alt); }
+.ws-menu-identity strong, .ws-avatar-initials { font-family: var(--font-display-ui); }
 
 .ws-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .ws-page { flex: 1; width: 100%; max-width: 880px; margin-inline: auto; padding: 40px 24px 72px; }
@@ -105,12 +131,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
   .ws-footer { padding-bottom: 24px; }
   .ws-main { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
   .ws-tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: flex; height: calc(56px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); background: #fff; border-top: 1px solid var(--color-border); }
-  .ws-tabbar-link { flex: 1; display: grid; place-items: center; color: var(--color-ink-muted); font-size: .75rem; font-weight: 600; text-decoration: none; transition: color 200ms ease; }
-  .ws-tabbar-link.is-active { color: var(--color-brand); font-weight: 700; }
+  .ws-tabbar-link { position: relative; flex: 1; display: grid; place-items: center; color: var(--color-ink-muted); font-family: var(--font-display-ui); font-size: .75rem; font-weight: 500; text-decoration: none; transition: color var(--dur-base) ease; }
+  .ws-tabbar-link.is-active { color: var(--color-brand); font-weight: 600; }
+  .ws-tabbar-label { transition: transform var(--dur-base) var(--ease-out-expo); }
+  .ws-tabbar-link.is-active .ws-tabbar-label { transform: translateY(-1px); }
+  .ws-tabbar-dot { position: absolute; bottom: 11px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--color-brand); opacity: 0; transform: scale(.3); transition: opacity var(--dur-base) ease, transform var(--dur-base) var(--ease-out-expo); }
+  .ws-tabbar-link.is-active .ws-tabbar-dot { opacity: 1; transform: scale(1); }
   .site-mobile-menu { top: 72px; right: .5rem; left: .5rem; }
 }
 @media (min-width: 720px) and (max-width: 920px) {
-  .ws-tabs { position: static; transform: none; margin-inline: auto; }
+  /* relative, not static: the sliding indicator is absolutely positioned
+     inside this row and would otherwise anchor to the header instead. */
+  .ws-tabs { position: relative; left: auto; transform: none; margin-inline: auto; }
 }
 @media (max-width: 920px) {
   .site-nav-links, .site-account-menu { display: none; }
@@ -122,5 +154,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
   .site-workspace-button { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .site-nav-link, .site-workspace-button, .ws-tab, .ws-tab::after, .ws-avatar, .ws-menu a, .ws-menu button, .ws-tabbar-link, .ws-footer a { transition: none; }
+  .site-nav-link, .site-workspace-button, .ws-header, .ws-wordmark, .ws-tab, .ws-tab::before, .ws-tab-indicator, .ws-tabs.is-ready .ws-tab-indicator, .ws-avatar, .ws-menu a, .ws-menu button, .ws-tabbar-link, .ws-tabbar-label, .ws-tabbar-dot, .ws-footer a { transition-duration: 1ms; }
+  .site-nav-link:hover, .site-workspace-button:hover { transform: none; }
+  .ws-tab::before { transform: none; }
+  .ws-menu, .ws-menu-identity, .ws-menu a, .ws-menu button { animation-duration: 1ms; animation-delay: 0ms; }
+  .ws-tabbar-link.is-active .ws-tabbar-label { transform: none; }
+}
+
+
+/* ── Workspace typography ───────────────────────────────────────────
+   The app shell speaks in Bricolage Grotesque: the wordmark, the five
+   tabs, and the headings on the pages those tabs lead to. Migrated
+   lesson bodies are deliberately left out — they were written against
+   the marketing display face and their own type scale, and swapping it
+   under them would change hundreds of pages nobody asked to change. */
+.ws-page :is(h1, h2, h3, h4, h5, h6):not(.lesson-body *):not(.prose-lesson *) {
+  font-family: var(--font-display-ui);
+  letter-spacing: -0.02em;
 }

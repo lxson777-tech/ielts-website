@@ -1,0 +1,215 @@
+/* Shared motion vocabulary.
+
+   Everything here is either (a) a class a component opts into, or (b) a
+   rule on a role/attribute that is already meaningful. Nothing in this
+   file moves anything by itself on page load except where the matching
+   script has already run, so a failed script never leaves content
+   invisible: the animation classes all start from a visible state, or
+   are only added by JS after it is safely running.
+
+   Two rules the whole file obeys:
+   • Animate transform and opacity only (the one exception is the
+     grid-template-rows trick for height, which is what it is for).
+   • Every duration comes from --dur-fast / --dur-base / --dur-slow, and
+     every ease-out from --ease-out-expo, unless a spec value says
+     otherwise (320ms indicator, 600ms bars, 200ms cross-fades).
+
+   Tokens are defined in global.css. The single reduced-motion block for
+   this file lives at the bottom. */
+
+/* ── Card / list entrance stagger ──────────────────────────────────
+   A container marks itself [data-stagger]; the script in BaseLayout
+   adds .stagger-in to each child and sets --stagger-delay. Children
+   are fully visible until that happens, so if the script never runs
+   (error, old browser, reduced motion) the page simply appears. */
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stagger-in {
+  /* backwards, not both: `both` would leave the final keyframe pinned as an
+     animation-origin declaration, which outranks author rules — a card that
+     had staggered in could then never be lifted by :hover again. backwards
+     still hides the element through its delay, which is the part we need. */
+  animation: stagger-in var(--dur-slow) var(--ease-out-expo) backwards;
+  animation-delay: var(--stagger-delay, 0ms);
+}
+
+/* ── Progress bars ─────────────────────────────────────────────────
+   Grow from nothing to their value on first paint. scaleX, not width:
+   the element already carries its real width (so the layout, and any
+   later width transition, is untouched) and the growth itself costs
+   the compositor nothing. */
+@keyframes bar-fill-in {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.bar-fill {
+  transform-origin: left center;
+  animation: bar-fill-in 600ms var(--ease-out-expo) backwards;
+}
+
+/* ── Tab panels ────────────────────────────────────────────────────
+   Model answers, cue cards, and anything else built on Tabs.tsx swap
+   panels by unmounting one and mounting the next, so a plain entrance
+   animation reads as a cross-fade. */
+@keyframes panel-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+[role='tabpanel'] {
+  animation: panel-fade-in 200ms var(--ease-out-expo) backwards;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────
+   One lift on hover, one press on click. Applied to the Button
+   component and to the hand-rolled buttons that predate it. */
+.btn-motion {
+  transition:
+    transform var(--dur-fast) var(--ease-out-expo),
+    box-shadow var(--dur-fast) ease,
+    background-color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+@media (hover: hover) {
+  .btn-motion:hover { transform: translateY(-1px); }
+}
+.btn-motion:active { transform: scale(0.98); transition-duration: 90ms; }
+
+/* ── Drawn tick ────────────────────────────────────────────────────
+   The stroke of a checkmark drawing itself in, used by the plan's done
+   circles and the course's lesson list. pathLength="1" on the polyline
+   normalises the dash maths, so the same rule fits any tick size. */
+@keyframes tick-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+.tick-svg {
+  width: 62%;
+  height: 62%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tick-svg polyline {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: tick-draw var(--dur-base) var(--ease-out-expo) backwards;
+}
+
+/* ── "Mark lesson as complete" ─────────────────────────────────────
+   The button's own state change is the reward, so the icon pops and
+   the label slides a hair as it swaps. Both classes are added by the
+   layout's script and removed on animationend, so the animation can
+   replay on every toggle. */
+@keyframes complete-icon-pop {
+  0%   { transform: scale(0.4) rotate(-18deg); opacity: 0.3; }
+  60%  { transform: scale(1.14) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes complete-label-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#lesson-complete-btn [data-icon] {
+  display: inline-grid;
+  place-items: center;
+  width: 1em;
+  line-height: 1;
+}
+#lesson-complete-btn.is-toggling [data-icon] {
+  animation: complete-icon-pop 360ms var(--ease-out-expo) backwards;
+}
+#lesson-complete-btn.is-toggling [data-label] {
+  display: inline-block;
+  animation: complete-label-in 200ms var(--ease-out-expo) backwards;
+}
+
+/* ── Native checkboxes and radios ──────────────────────────────────
+   Left as real form controls (restyling them from scratch is how you lose
+   keyboard and screen-reader behaviour), but the flick from empty to
+   checked is softened so it matches everything around it. */
+input[type='checkbox'],
+input[type='radio'] {
+  transition:
+    background-color var(--dur-base) ease,
+    border-color var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
+}
+
+/* ── Test player: sliding question indicator ───────────────────────
+   The numbered circles at the foot of the player get one shared accent
+   bar that travels to whichever question the student is on, instead of
+   each circle lighting up independently. Measured and positioned by
+   TestPlayer; hidden until it has a measurement. */
+.tp-qnav {
+  position: relative;
+}
+.tp-qnav-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 2px solid var(--color-brand);
+  opacity: 0;
+  transform: translate3d(var(--tp-x, 0px), var(--tp-y, 0px), 0);
+  transition: opacity var(--dur-fast) ease;
+  pointer-events: none;
+}
+.tp-qnav.is-ready .tp-qnav-bar {
+  opacity: 1;
+  transition:
+    transform 320ms var(--ease-out-expo),
+    opacity var(--dur-fast) ease;
+}
+
+/* Timer digits must not reflow the bar as the seconds change. */
+.tp-timer {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Count-up number ───────────────────────────────────────────────
+   The streak on the dashboard. The digits are written by JS, so this
+   only has to hold the width steady while they change. */
+.count-up {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────
+   One block for this file: no transforms, nothing that takes time.
+   Content that an animation would have revealed is left visible. */
+@media (prefers-reduced-motion: reduce) {
+  .stagger-in,
+  .bar-fill,
+  [role='tabpanel'],
+  .tick-svg polyline,
+  #lesson-complete-btn.is-toggling [data-icon],
+  #lesson-complete-btn.is-toggling [data-label] {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+  .stagger-in,
+  [role='tabpanel'] {
+    opacity: 1;
+    transform: none;
+  }
+  .bar-fill {
+    transform: none;
+  }
+  .btn-motion,
+  input[type='checkbox'],
+  input[type='radio'],
+  .tp-qnav.is-ready .tp-qnav-bar {
+    transition-duration: 1ms;
+  }
+  .btn-motion:hover,
+  .btn-motion:active {
+    transform: none;
+  }
+}

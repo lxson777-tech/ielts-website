@@ -201,6 +201,13 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
         const next = !isLessonComplete(slug);
         next ? markLessonComplete(slug) : unmarkLessonComplete(slug);
         render(next);
+        // Replay the icon pop and the label fade on every press, not just
+        // the first: removing the class and reading offsetWidth forces the
+        // browser to finish the old animation before the new one starts,
+        // which is the only reliable way to restart a CSS animation.
+        btn.classList.remove('is-toggling');
+        void btn.offsetWidth;
+        btn.classList.add('is-toggling');
       });
     }
 

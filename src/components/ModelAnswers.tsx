@@ -187,17 +187,28 @@ function CriteriaGrid({ model }: { model: ModelAnswer }) {
 function EssayPanel({
   model,
   compact,
+  asTabPanel,
   activeHighlight,
   setActiveHighlight,
 }: {
   model: ModelAnswer;
   compact?: boolean;
+  /** Single-band view only: the band buttons above are a real tab list, so
+      the essay below them is the tab panel they control. Naming it as one
+      completes the aria wiring Tabs already points at, and picks up the
+      shared 200ms panel cross-fade when the band changes. */
+  asTabPanel?: boolean;
   activeHighlight: string | null;
   setActiveHighlight: (key: string | null) => void;
 }) {
   const wordCount = useMemo(() => countWords(model.text.join(' ')), [model]);
   return (
-    <div className={`ma-panel${compact ? ' is-compact' : ''}`}>
+    <div
+      className={`ma-panel${compact ? ' is-compact' : ''}`}
+      {...(asTabPanel
+        ? { role: 'tabpanel', id: `tabpanel-${model.band}`, 'aria-labelledby': `tab-${model.band}` }
+        : {})}
+    >
       <div className="ma-panel-head">
         <span className="ma-band-badge">Band {fmtBand(model.band)}</span>
         <span className="ma-word-count" data-testid="word-count">
@@ -306,7 +317,13 @@ export default function ModelAnswers() {
         </div>
 
         {!compare ? (
-          <EssayPanel model={modelForBand(band)} activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />
+          <EssayPanel
+            key={band}
+            model={modelForBand(band)}
+            asTabPanel
+            activeHighlight={activeHighlight}
+            setActiveHighlight={setActiveHighlight}
+          />
         ) : (
           <div className="ma-compare-grid">
             <EssayPanel model={modelForBand(bandA)} compact activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />

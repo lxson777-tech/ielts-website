@@ -67,6 +67,12 @@ export default function WorkspaceMenu() {
   const initials = initialsFor(user?.email ?? undefined);
   const authAvailable = isAuthConfigured();
 
+  // Each row in the open menu follows the one above it by 20ms. The count is
+  // reset per render and handed out in JSX order, so the delays stay correct
+  // however many groups (or the signed-in identity line) happen to be shown.
+  let staggerIndex = 0;
+  const step = () => staggerIndex++;
+
   return (
     <div className="ws-account" ref={wrapRef}>
       <button
@@ -94,7 +100,7 @@ export default function WorkspaceMenu() {
       {open && (
         <div className="ws-menu" role="menu">
           {user?.email && (
-            <p className="ws-menu-identity">
+            <p className="ws-menu-identity" style={{ '--i': step() } as React.CSSProperties}>
               <span>Signed in as</span>
               <strong>{user.email}</strong>
             </p>
@@ -102,7 +108,13 @@ export default function WorkspaceMenu() {
           {WORKSPACE_MENU.map((group, i) => (
             <div className="ws-menu-group" key={i}>
               {group.map((item) => (
-                <a key={item.href} role="menuitem" href={withBase(item.href)} onClick={() => setOpen(false)}>
+                <a
+                  key={item.href}
+                  role="menuitem"
+                  href={withBase(item.href)}
+                  style={{ '--i': step() } as React.CSSProperties}
+                  onClick={() => setOpen(false)}
+                >
                   {item.label}
                 </a>
               ))}
@@ -114,6 +126,7 @@ export default function WorkspaceMenu() {
                 <button
                   type="button"
                   role="menuitem"
+                  style={{ '--i': step() } as React.CSSProperties}
                   onClick={() => {
                     setOpen(false);
                     void signOut();
@@ -125,6 +138,7 @@ export default function WorkspaceMenu() {
                 <button
                   type="button"
                   role="menuitem"
+                  style={{ '--i': step() } as React.CSSProperties}
                   onClick={() => {
                     setOpen(false);
                     setModalOpen(true);

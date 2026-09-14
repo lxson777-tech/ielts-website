@@ -78,7 +78,7 @@ const jsonLd = {
     {isAppRoute ? (
       <>
         <WorkspaceHeader />
-        <main class="ws-main" transition:animate="fade">
+        <main class="ws-main">
           <div class:list={['ws-page', { 'is-wide': isWide }]}><slot /></div>
           <WorkspaceFooter />
         </main>
@@ -176,6 +176,47 @@ const jsonLd = {
         initScrollReveal();
         setTimeout(revealReached, 1500);
       });
+
+      // ── Card entrance stagger ─────────────────────────────────────
+      // A container opts in with [data-stagger]; its direct children then
+      // rise 6px into place 40ms apart. The children are fully visible in
+      // the HTML — the class that hides-then-reveals them is only ever
+      // added from here, so if this script never runs (an error earlier in
+      // the bundle, an old browser, reduced motion) the page just appears
+      // with nothing missing. Long lists stop staggering after the first
+      // dozen so the tail never feels like it is waiting its turn.
+      const STAGGER_LIMIT = 12;
+
+      function initStagger() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        for (const container of document.querySelectorAll<HTMLElement>('[data-stagger]')) {
+          if (container.dataset.staggered) continue;
+          container.dataset.staggered = 'true';
+          Array.from(container.children).forEach((child, i) => {
+            if (i >= STAGGER_LIMIT || !(child instanceof HTMLElement)) return;
+            child.style.setProperty('--stagger-delay', `${i * 40}ms`);
+            child.classList.add('stagger-in');
+          });
+        }
+      }
+
+      // Most staggered rows live inside React islands, which hydrate after
+      // astro:page-load has already fired — so watch for them arriving
+      // rather than guessing at a delay. The observer only ever queues one
+      // pass per frame, and the [data-staggered] flag makes repeats free.
+      let staggerQueued = false;
+      function queueStagger() {
+        if (staggerQueued) return;
+        staggerQueued = true;
+        requestAnimationFrame(() => {
+          staggerQueued = false;
+          initStagger();
+        });
+      }
+
+      initStagger();
+      document.addEventListener('astro:page-load', initStagger);
+      new MutationObserver(queueStagger).observe(document.body, { childList: true, subtree: true });
 
       // Animated <details>/<summary> expand-collapse — covers every
       // collapsible in lesson content (worked examples, "show model

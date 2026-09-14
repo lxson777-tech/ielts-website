@@ -5,7 +5,7 @@
    a "next lesson" hero duplicating the plan) is gone, and the library links
    moved into the header's avatar menu. */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { SKILLS } from '../data/lessons';
 import { withBase } from '../lib/url';
 import { getProgress, getTypeStats, onProgressChange, type ProgressV1 } from '../lib/progress';
@@ -16,6 +16,36 @@ import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
 import { LABELS, practiseHref } from './TypeAnalytics';
 import PlanToday from './plan/PlanToday';
+
+/** Counts a number up from zero the first time it lands, then tracks it
+    exactly. The streak is the one figure on this page worth a beat of
+    attention, and a number that climbs reads as earned rather than
+    printed. Skipped entirely under reduced motion. */
+function useCountUp(target: number, duration = 600): number {
+  const [shown, setShown] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current || target <= 0) {
+      setShown(target);
+      return;
+    }
+    started.current = true;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShown(target);
+      return;
+    }
+    const from = performance.now();
+    let frame = requestAnimationFrame(function tick(now: number) {
+      const t = Math.min((now - from) / duration, 1);
+      setShown(Math.round(target * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [target, duration]);
+
+  return shown;
+}
 
 function greeting(hour: number): string {
   if (hour < 12) return 'Good morning';
@@ -97,6 +127,7 @@ export default function LearningDashboard() {
   const vocabDue = vocab?.due ?? 0;
 
   const isNew = progress !== null && !hasPlan && done === 0 && attempts === 0;
+  const shownStreak = useCountUp(streak);
 
   return (
     <div className="dash">
@@ -105,7 +136,8 @@ export default function LearningDashboard() {
         {!isNew && goal && (
           <span>
             {' '}
-            {streak} day streak, {goal.minutes} of {goal.goal} minutes today.
+            <span className="count-up">{shownStreak}</span> day streak, {goal.minutes} of {goal.goal} minutes
+            today.
             {targetBand && <> Target Band {targetBand}.</>}
           </span>
         )}
@@ -115,7 +147,7 @@ export default function LearningDashboard() {
 
       {!isNew && (
         <>
-          <div className="dash-cards">
+          <div className="dash-cards" data-stagger>
             <a className="dash-card" href={withBase(next.href)}>
               <span className="dash-card-label">Continue course</span>
               <strong className="dash-card-title">{next.title}</strong>
@@ -150,7 +182,7 @@ export default function LearningDashboard() {
             <h2 id="dash-skills-heading" className="dash-skills-heading">
               Skills
             </h2>
-            <div className="dash-skills-row">
+            <div className="dash-skills-row" data-stagger>
               {SKILLS.map((skill) => {
                 const total = course.filter((lesson) => lesson.skill === skill.id).length;
                 const finished = course.filter(
@@ -166,7 +198,7 @@ export default function LearningDashboard() {
                   >
                     <span className="dash-skill-name">{skill.label}</span>
                     <span className="dash-skill-track">
-                      <span className="dash-skill-fill" style={{ width: `${percent}%` }} />
+                      <span className="dash-skill-fill bar-fill" style={{ width: `${percent}%` }} />
                     </span>
                     <span className="dash-skill-count">
                       {finished}/{total}

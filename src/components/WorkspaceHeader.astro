@@ -1,16 +1,28 @@
 ---
 /* The whole chrome for an app route: one 56px header (wordmark, five text
    tabs, avatar menu) and, on phones, the same five tabs as a fixed bottom
-   bar. Replaces both the marketing nav and the old left rail. */
+   bar. Replaces both the marketing nav and the old left rail.
+
+   Both bars carry transition:persist, so a client-side navigation keeps the
+   exact same DOM nodes instead of swapping in a fresh copy. That is what
+   stops the header blinking mid-transition, and it is what lets the active
+   indicator slide from the old tab to the new one. The cost is that the
+   server-rendered `is-active` classes are only right on a hard load: after
+   that, the script at the bottom owns them, which is why each tab also
+   carries its matching route prefixes in data-match. */
 import { withBase } from '../lib/url';
 import { WORKSPACE_TABS, isTabActive, toRoute } from '../lib/platform-nav';
 import WorkspaceMenu from './WorkspaceMenu';
 
 const route = toRoute(Astro.url.pathname, import.meta.env.BASE_URL);
-const tabs = WORKSPACE_TABS.map((tab) => ({ ...tab, active: isTabActive(tab, route) }));
+const tabs = WORKSPACE_TABS.map((tab) => ({
+  ...tab,
+  active: isTabActive(tab, route),
+  match: [tab.href, ...(tab.also ?? [])].join(' '),
+}));
 ---
 
-<header class="ws-header">
+<header class="ws-header" transition:persist="ws-header">
   <div class="ws-header-inner">
     <a class="ws-wordmark" href={withBase('/dashboard')} aria-label="IELTS is EZ workspace">
       <span>IELTS is</span> <span class="ws-wordmark-accent">EZ</span>
@@ -19,25 +31,106 @@ const tabs = WORKSPACE_TABS.map((tab) => ({ ...tab, active: isTabActive(tab, rou
       {tabs.map((tab) => (
         <a
           href={withBase(tab.href)}
+          data-match={tab.match}
           class:list={['ws-tab', { 'is-active': tab.active }]}
           aria-current={tab.active ? 'page' : undefined}
         >
           {tab.label}
         </a>
       ))}
+      <span class="ws-tab-indicator" aria-hidden="true"></span>
     </nav>
     <WorkspaceMenu client:load />
   </div>
 </header>
 
-<nav class="ws-tabbar" aria-label="Workspace">
+<nav class="ws-tabbar" aria-label="Workspace" transition:persist="ws-tabbar">
   {tabs.map((tab) => (
     <a
       href={withBase(tab.href)}
+      data-match={tab.match}
       class:list={['ws-tabbar-link', { 'is-active': tab.active }]}
       aria-current={tab.active ? 'page' : undefined}
     >
-      {tab.label}
+      <span class="ws-tabbar-label">{tab.label}</span>
+      <span class="ws-tabbar-dot" aria-hidden="true"></span>
     </a>
   ))}
 </nav>
+
+<script>
+  import { toRoute } from '../lib/platform-nav';
+
+  const BASE = import.meta.env.BASE_URL;
+
+  function matches(prefix: string, route: string): boolean {
+    return route === prefix || route.startsWith(`${prefix}/`);
+  }
+
+  /** Re-mark the active tab in both bars, then put the sliding indicator
+      under the desktop one. Runs on every page-load because the bars are
+      persisted across navigations and would otherwise keep the previous
+      page's highlight. */
+  function syncTabs() {
+    const route = toRoute(window.location.pathname, BASE);
+
+    for (const selector of ['.ws-tab', '.ws-tabbar-link']) {
+      for (const link of document.querySelectorAll<HTMLAnchorElement>(selector)) {
+        const active = (link.dataset.match ?? '').split(' ').filter(Boolean).some((p) => matches(p, route));
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      }
+    }
+
+    moveIndicator();
+  }
+
+  /** Measure the active tab and hand its position to CSS as two custom
+      properties. Only transform and width change, so the slide itself never
+      touches layout. */
+  function moveIndicator() {
+    const row = document.querySelector<HTMLElement>('.ws-tabs');
+    const indicator = row?.querySelector<HTMLElement>('.ws-tab-indicator');
+    if (!row || !indicator) return;
+
+    const active = row.querySelector<HTMLElement>('.ws-tab.is-active');
+    if (!active) {
+      row.classList.remove('is-ready');
+      return;
+    }
+
+    // offsetLeft is relative to the row (its own positioned ancestor), so no
+    // getBoundingClientRect maths and nothing that depends on scroll.
+    const left = active.offsetLeft + 4;
+    const width = Math.max(active.offsetWidth - 8, 0);
+    indicator.style.setProperty('--ws-ind-x', `${left}px`);
+    indicator.style.setProperty('--ws-ind-w', `${width}px`);
+
+    // First placement must not animate in from the left edge: set the
+    // position, let one frame land, only then allow the transition.
+    if (!row.classList.contains('is-ready')) {
+      requestAnimationFrame(() => row.classList.add('is-ready'));
+    }
+  }
+
+  /** A hairline shadow once the page has moved under the header. */
+  function syncScrollShadow() {
+    const header = document.querySelector<HTMLElement>('.ws-header');
+    if (!header) return;
+    header.classList.toggle('is-scrolled', window.scrollY > 8);
+  }
+
+  function init() {
+    syncTabs();
+    syncScrollShadow();
+    // Web fonts land after first paint and change every tab's width, so the
+    // first measurement can be a few pixels off. Re-measure once they are in.
+    if (document.fonts?.ready) void document.fonts.ready.then(moveIndicator);
+  }
+
+  window.addEventListener('scroll', syncScrollShadow, { passive: true });
+  window.addEventListener('resize', moveIndicator, { passive: true });
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

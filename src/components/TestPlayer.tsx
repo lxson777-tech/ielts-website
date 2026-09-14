@@ -177,7 +177,14 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   const [reviewFilter, setReviewFilter] = useState<'all' | 'wrong'>('all');
   // j/k and arrow-key navigation between questions in the active part
   // (feature 3), reset whenever the student switches part/passage.
+  /* Cursor for j/k keyboard navigation within the current part. */
   const [activeQIndex, setActiveQIndex] = useState(0);
+  /* The question the student is currently on — set by the nav circles and
+     by focus landing anywhere inside a question card. Drives the single
+     accent ring that slides along the numbered circles in the footer,
+     instead of every circle having to announce itself. */
+  const [activeQId, setActiveQId] = useState<string | null>(null);
+  const qnavRef = useRef<HTMLDivElement>(null);
 
   function toggleFlag(qid: string) {
     if (submittedRef.current) return;
@@ -195,6 +202,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      view), so switch to it first and defer the scroll a frame so it's
      scrolling a pane that's actually laid out, not a display:none one. */
   function jumpToQuestion(qid: string) {
+    setActiveQId(qid);
     setMobileView('questions');
     requestAnimationFrame(() => {
       document.getElementById(`player-${qid}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -429,6 +437,29 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     ? `Questions ${partItems[0]!.n}-${partItems[partItems.length - 1]!.n}`
     : 'Questions';
   const timerWarn = timeLeft <= 300 && !submitted;
+
+  /* Park the ring on the active circle. Runs after every render that could
+     have moved one: a new active question, a part switch, or submission
+     recolouring the row. offsetLeft/offsetTop are measured against the row
+     itself, so wrapping onto a second line is handled for free. */
+  useEffect(() => {
+    const row = qnavRef.current;
+    if (!row) return;
+    const bar = row.querySelector<HTMLElement>('.tp-qnav-bar');
+    if (!bar) return;
+    const target = activeQId
+      ? row.querySelector<HTMLElement>(`[data-qid="${CSS.escape(activeQId)}"]`)
+      : null;
+    if (!target) {
+      row.classList.remove('is-ready');
+      return;
+    }
+    bar.style.setProperty('--tp-x', `${target.offsetLeft}px`);
+    bar.style.setProperty('--tp-y', `${target.offsetTop}px`);
+    if (!row.classList.contains('is-ready')) {
+      requestAnimationFrame(() => row.classList.add('is-ready'));
+    }
+  });
   const legacyAudioPart = test.parts.find((p) => p.stimulus.kind === 'audio');
   const sharedAudioSrc = test.audioSrc ??
     (legacyAudioPart?.stimulus.kind === 'audio' ? legacyAudioPart.stimulus.src : undefined);
@@ -485,7 +516,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         double up timers/listeners for no benefit, since the retake always
         returns to a fresh render of this screen anyway (see onFinish below). */}
     {!retake && (
-    <div className="screen-in flex h-dvh flex-col bg-surface text-ink">
+    <div
+      className="screen-in flex h-dvh flex-col bg-surface text-ink"
+      onFocusCapture={(e) => {
+        const card = (e.target as HTMLElement).closest?.('[id^="player-"]');
+        if (card) setActiveQId(card.id.slice('player-'.length));
+      }}
+    >
       {/* ── Top bar ── */}
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 sm:gap-3 sm:px-4">
         <a href={hubUrl} className="shrink-0 whitespace-nowrap py-2 text-sm font-semibold text-ink-muted hover:text-ink">
@@ -493,7 +530,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         </a>
         <span className="hidden truncate font-display text-sm font-bold md:block">{test.title}</span>
         <div
-          className={`mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold sm:gap-2 sm:px-4 ${
+          className={`tp-timer mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold sm:gap-2 sm:px-4 ${
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
           }`}
           role="timer"
@@ -863,7 +900,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         {/* Question indicators — current passage only */}
         <div className="ml-auto flex items-center gap-2">
           <span className="hidden text-xs font-medium text-ink-muted sm:inline">{part.label}:</span>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="tp-qnav flex flex-wrap gap-1.5" ref={qnavRef}>
+            <span className="tp-qnav-bar" aria-hidden="true" />
             {numbered
               .filter((nq) => nq.part === part)
               .map(({ question, n }) => {
@@ -884,6 +922,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                   <button
                     key={question.id}
                     type="button"
+                    data-qid={question.id}
                     onClick={() => jumpToQuestion(question.id)}
                     aria-label={`Jump to question ${n}${unavailable ? ', unavailable and excluded from score' : answered ? ', answered' : ', unanswered'}${isFlagged ? ', flagged for review' : ''}`}
                     className={`relative grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition-colors ${cls} ${

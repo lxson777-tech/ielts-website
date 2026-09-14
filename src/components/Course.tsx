@@ -343,7 +343,7 @@ export default function Course() {
           </div>
           <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-alt">
             <div
-              className="h-full rounded-full bg-brand transition-[width] duration-300"
+              className="bar-fill h-full rounded-full bg-brand transition-[width] duration-300"
               style={{ width: `${status.percent}%` }}
             />
           </div>
@@ -381,7 +381,7 @@ export default function Course() {
       <WeekView />
 
       {/* modules */}
-      <div className="mt-6 space-y-6">
+      <div className="mt-6 space-y-6" data-stagger>
         {MODULES.map((mod) => {
           const modDone = mod.lessons.filter((l) => isLessonDone(prog, l.key)).length;
           const optional = mod.stage > pace.focusThrough && mod.stage !== 4;
@@ -420,11 +420,17 @@ export default function Course() {
                         >
                           <span
                             aria-hidden="true"
-                            className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.65rem] font-bold ${
+                            className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.65rem] font-bold transition-colors duration-[240ms] ${
                               done ? 'bg-success text-white' : 'border border-border text-ink-muted'
                             }`}
                           >
-                            {done ? '✓' : lesson.position}
+                            {done ? (
+                              <svg className="tick-svg" viewBox="0 0 24 24">
+                                <polyline points="4,12.6 9.6,18.2 20,6.4" pathLength={1} />
+                              </svg>
+                            ) : (
+                              lesson.position
+                            )}
                           </span>
                           <span
                             className={`min-w-0 flex-1 truncate text-sm ${

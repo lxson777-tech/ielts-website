@@ -335,3 +335,127 @@
    page sideways on a phone. Let the item shrink; the table keeps its own
    overflow-x-auto scroller. */
 .platform-hub .grid > *{min-width:0}
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   Motion and type pass, September 2026.
+
+   Appended rather than merged into the minified rules above: these are
+   deliberate overrides of what that block sets, and keeping them in one
+   readable place makes the motion inventory auditable. Durations and
+   easing come from the tokens in global.css.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Workspace display face on the page furniture that sets its own font. */
+.dash-greeting,
+.dash-card-title,
+.dash-skills-heading,
+.dash-skill-name,
+.plan-item-label,
+.library-heading h1,
+.vocab-topic-card-title,
+.vocab-card-word,
+.library-count strong {
+  font-family: var(--font-display-ui);
+}
+
+/* Dashboard cards: 2px lift, border warms to the brand, shadow deepens. */
+.dash-card {
+  transition:
+    border-color var(--dur-base) ease,
+    background-color var(--dur-base) ease,
+    box-shadow var(--dur-base) ease,
+    transform var(--dur-base) var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .dash-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-brand) 40%, var(--color-border));
+    box-shadow: 0 14px 30px -18px rgb(32 37 34 / 0.45);
+  }
+}
+.dash-card:active {
+  transform: scale(0.99);
+  transition-duration: 90ms;
+}
+
+/* Skill rows: the name warms up and the bar thickens a hair on hover. */
+.dash-skill-track {
+  transition: height var(--dur-base) var(--ease-out-expo);
+}
+.dash-skill-fill {
+  transition: width var(--dur-base) var(--ease-out-expo);
+}
+
+/* Today's plan: rows lift on hover, and the done circle fills to green
+   under the tick that draws itself in. */
+.plan-item {
+  transition:
+    border-color var(--dur-base) ease,
+    background-color var(--dur-base) ease,
+    transform var(--dur-base) var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .plan-item:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--color-brand) 38%, var(--color-border));
+    background: var(--color-surface);
+  }
+}
+.plan-item-tick {
+  transition:
+    background-color var(--dur-base) ease,
+    border-color var(--dur-base) ease;
+}
+
+/* Flashcards: each face fades and rises 4px as it takes over. */
+.vocab-card-word,
+.vocab-card-back {
+  transform: translateY(4px);
+  animation-duration: 200ms;
+  animation-timing-function: var(--ease-out-expo);
+}
+.vocab-card {
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) ease;
+}
+@media (hover: hover) {
+  .vocab-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgb(32 37 34 / 8%);
+  }
+}
+@media (hover: hover) {
+  .vocab-topic-card:hover,
+  .vocab-rating:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-card,
+  .dash-skill-track,
+  .dash-skill-fill,
+  .plan-item,
+  .plan-item-tick,
+  .vocab-card,
+  .vocab-topic-card,
+  .vocab-rating {
+    transition-duration: 1ms;
+  }
+  .dash-card:hover,
+  .dash-card:active,
+  .plan-item:hover,
+  .vocab-card:hover,
+  .vocab-topic-card:hover,
+  .vocab-rating:hover {
+    transform: none;
+  }
+  .vocab-card-word,
+  .vocab-card-back {
+    animation-duration: 1ms;
+    opacity: 1;
+    transform: none;
+  }
+}
