@@ -4,6 +4,14 @@ Status: proposal for Alex to decide on, written 14 September 2026. Nothing in it
 
 How it was produced: four readers mapped the current code (login, site structure, features and costs, hosting limits), three researchers checked payments for a Kazakhstan business, reliable sign-in on a static site, and how paid IELTS platforms sell; three independent plans were drafted from different angles, scored by three judges, merged, then reviewed by three critics and revised. Numbers in KZT are suggestions to confirm, not decisions.
 
+## Order of work (updated 14 September 2026)
+
+1. Study platform first (My workspace): course, lessons, trainers, tests, AI feedback
+2. Public website for new users
+3. Login reliability and payments
+
+The phase estimates below still hold; only the order changed. Alex's paperwork (business registration, gateway applications, legal documents) can still start in parallel.
+
 The eight decisions and ten tasks that only Alex can do are listed at the end.
 
 ## 1. Summary
