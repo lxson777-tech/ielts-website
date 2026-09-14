@@ -346,7 +346,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                     <span className="rounded bg-error-tint px-1.5 py-0.5 font-semibold text-error line-through">
                       {c.original}
                     </span>
-                    <span aria-hidden="true">→</span>
+                    <span className="text-ink-muted">to</span>
                     <span className="rounded bg-success-tint px-1.5 py-0.5 font-semibold text-success">{c.fix}</span>
                     <span className="text-ink-muted">· {c.reason}</span>
                   </li>

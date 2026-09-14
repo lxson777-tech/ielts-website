@@ -1,0 +1,43 @@
+---
+/* The whole chrome for an app route: one 56px header (wordmark, five text
+   tabs, avatar menu) and, on phones, the same five tabs as a fixed bottom
+   bar. Replaces both the marketing nav and the old left rail. */
+import { withBase } from '../lib/url';
+import { WORKSPACE_TABS, isTabActive, toRoute } from '../lib/platform-nav';
+import WorkspaceMenu from './WorkspaceMenu';
+
+const route = toRoute(Astro.url.pathname, import.meta.env.BASE_URL);
+const tabs = WORKSPACE_TABS.map((tab) => ({ ...tab, active: isTabActive(tab, route) }));
+---
+
+<header class="ws-header">
+  <div class="ws-header-inner">
+    <a class="ws-wordmark" href={withBase('/dashboard')} aria-label="IELTS is EZ workspace">
+      <span>IELTS is</span> <span class="ws-wordmark-accent">EZ</span>
+    </a>
+    <nav class="ws-tabs" aria-label="Workspace">
+      {tabs.map((tab) => (
+        <a
+          href={withBase(tab.href)}
+          class:list={['ws-tab', { 'is-active': tab.active }]}
+          aria-current={tab.active ? 'page' : undefined}
+        >
+          {tab.label}
+        </a>
+      ))}
+    </nav>
+    <WorkspaceMenu client:load />
+  </div>
+</header>
+
+<nav class="ws-tabbar" aria-label="Workspace">
+  {tabs.map((tab) => (
+    <a
+      href={withBase(tab.href)}
+      class:list={['ws-tabbar-link', { 'is-active': tab.active }]}
+      aria-current={tab.active ? 'page' : undefined}
+    >
+      {tab.label}
+    </a>
+  ))}
+</nav>

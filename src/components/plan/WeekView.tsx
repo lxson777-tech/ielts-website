@@ -1,7 +1,7 @@
 /* The week view on /start (rendered inside Course.tsx): seven columns for
    the currently-selected week of the plan schedule (src/lib/plan/schedule.ts
    getWeekPlan), with a small strip to move between weeks. Self-contained
-   like PlanToday/StreakBar on the dashboard — renders nothing when there's
+   like PlanToday on the dashboard: renders nothing when there is
    no plan yet, so Course.tsx can mount it unconditionally. */
 
 import { useEffect, useMemo, useState } from 'react';
@@ -9,9 +9,44 @@ import { withBase } from '../../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../../lib/progress';
 import { loadStudyPlan, onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
 import { ensurePlanStartDate, getWeekPlan } from '../../lib/plan/schedule';
-import { toLocalDateKey } from '../../lib/plan/date';
+import { parseDateKey, toLocalDateKey } from '../../lib/plan/date';
 
 const DAY_LABEL = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_LABEL = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+/** en-GB style word range for the week strip, e.g. "8 to 14 September" or,
+   across a month or year boundary, "28 September to 4 October" /
+   "29 December 2026 to 4 January 2027". */
+function formatWeekRange(startDate: string, endDate: string): string {
+  const start = parseDateKey(startDate);
+  const end = parseDateKey(endDate);
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+  const startMonth = MONTH_LABEL[start.getMonth()];
+  const endMonth = MONTH_LABEL[end.getMonth()];
+  const startYear = start.getFullYear();
+  const endYear = end.getFullYear();
+  const sameMonth = startMonth === endMonth && startYear === endYear;
+
+  if (sameMonth) return `${startDay} to ${endDay} ${startMonth}`;
+
+  const startYearSuffix = startYear !== endYear ? ` ${startYear}` : '';
+  const endYearSuffix = startYear !== endYear ? ` ${endYear}` : '';
+  return `${startDay} ${startMonth}${startYearSuffix} to ${endDay} ${endMonth}${endYearSuffix}`;
+}
 
 export default function WeekView() {
   const [plan, setPlan] = useState<SavedPlan | null>(null);
@@ -64,22 +99,18 @@ export default function WeekView() {
             type="button"
             onClick={() => setSelectedWeek(Math.max(1, week.weekNumber - 1))}
             disabled={week.weekNumber <= 1}
-            aria-label="Previous week"
-            className="grid h-8 w-8 place-items-center rounded-lg border border-border text-ink-muted transition-colors hover:border-brand hover:text-brand disabled:opacity-30"
+            className="text-xs font-semibold text-ink-muted transition-colors hover:text-brand disabled:opacity-30 disabled:hover:text-ink-muted"
           >
-            <span aria-hidden="true">&larr;</span>
+            Previous week
           </button>
-          <span className="text-xs font-semibold text-ink-muted">
-            {week.startDate} &ndash; {week.endDate}
-          </span>
+          <span className="text-xs font-semibold text-ink-muted">{formatWeekRange(week.startDate, week.endDate)}</span>
           <button
             type="button"
             onClick={() => setSelectedWeek(Math.min(week.totalWeeks, week.weekNumber + 1))}
             disabled={week.weekNumber >= week.totalWeeks}
-            aria-label="Next week"
-            className="grid h-8 w-8 place-items-center rounded-lg border border-border text-ink-muted transition-colors hover:border-brand hover:text-brand disabled:opacity-30"
+            className="text-xs font-semibold text-ink-muted transition-colors hover:text-brand disabled:opacity-30 disabled:hover:text-ink-muted"
           >
-            <span aria-hidden="true">&rarr;</span>
+            Next week
           </button>
         </div>
       </div>

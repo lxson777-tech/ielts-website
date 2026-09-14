@@ -115,12 +115,12 @@ export default function TypeAnalytics({ skill = 'reading' }: { skill?: 'reading'
                   <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold">
                     {href && (
                       <a href={href} className="text-brand hover:underline">
-                        Review the lesson →
+                        Review the lesson
                       </a>
                     )}
                     {canPractise && (
                       <a href={practiseHref(skill, type)} className="text-brand hover:underline">
-                        Practise this type →
+                        Practise this type
                       </a>
                     )}
                   </div>

@@ -153,31 +153,31 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
     },
     questions: [
       {
-        prompt: "The hard covering protecting the ant's body →",
+        prompt: "The hard covering protecting the ant's body",
         kind: 'text',
         answer: 'exoskeleton',
         explanation: '“Their bodies are covered with a hard armour called the exoskeleton.”',
       },
       {
-        prompt: 'The middle section of the body, between head and abdomen →',
+        prompt: 'The middle section of the body, between head and abdomen',
         kind: 'text',
         answer: 'thorax',
         explanation: '“…the part of the body called the thorax, which is located before the head.”',
       },
       {
-        prompt: 'The sensory organs on the head, which are elbowed →',
+        prompt: 'The sensory organs on the head, which are elbowed',
         kind: 'text',
         answer: 'antennae',
         explanation: '“…elbowed antennae, which act as sensors.”',
       },
       {
-        prompt: 'The powerful biting tools on the head, also called pincers →',
+        prompt: 'The powerful biting tools on the head, also called pincers',
         kind: 'text',
         answer: 'mandibles',
         explanation: '“…powerful pincers, known as mandibles.”',
       },
       {
-        prompt: 'The rear weapon used for attack →',
+        prompt: 'The rear weapon used for attack',
         kind: 'text',
         answer: ['stinger', 'abdominal stinger'],
         explanation: '“…their rear abdominal stinger is their offensive one.”',

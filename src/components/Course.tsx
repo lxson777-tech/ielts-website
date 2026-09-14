@@ -327,7 +327,6 @@ export default function Course() {
               </span>
               <span className="block truncate font-display text-sm font-bold">{status.next.title}</span>
             </span>
-            <span aria-hidden="true" className="shrink-0 font-bold">&rarr;</span>
           </a>
         ) : (
           <p className="mt-5 rounded-button bg-success-tint px-5 py-3 text-sm font-semibold text-success">

@@ -136,7 +136,7 @@ export default function VocabReview() {
       <div className="vocab-review-head">
         <div>
           <p className="vocab-back-link">
-            <a href={withBase('/dashboard')}>&larr; Dashboard</a>
+            <a href={withBase('/dashboard')}>Dashboard</a>
           </p>
           <h1>Vocabulary review</h1>
           <p>Flashcards for every IELTS topic word, spaced out so the ones you know fade and the ones you don't come back sooner.</p>

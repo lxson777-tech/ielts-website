@@ -1,8 +1,21 @@
-/* Shared product shell for IELTS is EZ. Route pages keep ownership of their content. */
+/* Chrome for IELTS is EZ.
+
+   Two shells live here:
+   • .site-*, the marketing nav, used on the public pages (/, /blog).
+   • .ws-*, the workspace shell used on every app route: one 56px header
+               with five text tabs, a phone bottom bar, and a single centred
+               content column. It replaced the marketing nav plus left rail
+               in September 2026, because carrying both at once made every
+               study page feel busy before the student had read a word.
+
+   Route pages keep ownership of their own content. */
+
 body { background: var(--color-surface-alt); }
 h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.025em; text-wrap: balance; }
 .aurora-hero::before { background: radial-gradient(circle at 78% 12%, rgb(229 93 72 / .12), transparent 32%); filter: none; opacity: 1; mask-image: none; animation: none; }
 .aurora-hero::after { background-image: radial-gradient(rgb(32 37 34 / .11) .65px, transparent .65px); background-size: 18px 18px; opacity: .28; mask-image: linear-gradient(to bottom, black, transparent 82%); }
+
+/* ── Marketing nav (public pages only) ─────────────────────────────── */
 .site-header { position: sticky; top: 0; z-index: 50; height: 88px; padding-top: 10px; background: linear-gradient(to bottom, rgb(248 247 243 / .94), rgb(248 247 243 / .72) 72%, transparent); pointer-events: none; }
 .site-nav { width: min(100% - 2rem, 1240px); height: 64px; margin-inline: auto; display: flex; align-items: center; gap: clamp(1.25rem, 3vw, 3.5rem); padding: 0 .55rem 0 1.25rem; border: 1px solid rgb(32 37 34 / .11); border-radius: 999px; background: rgb(255 255 255 / .86); box-shadow: 0 14px 38px rgb(32 37 34 / .09), inset 0 1px rgb(255 255 255 / .9); backdrop-filter: blur(18px) saturate(1.08); pointer-events: auto; }
 .site-wordmark { flex: none; color: var(--color-ink); font-family: var(--font-display); font-size: 1.18rem; font-weight: 800; letter-spacing: -.045em; text-decoration: none; }
@@ -30,33 +43,84 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .site-mobile-account { margin-top: .25rem; }
 .site-mobile-account button { color: var(--color-ink); }
 
-.platform-shell { flex: 1; min-width: 0; display: grid; grid-template-columns: 216px minmax(0, 1fr); background: var(--color-surface-alt); }
-.platform-main { min-width: 0; background: var(--color-surface-alt); }
-.platform-content { width: 100%; min-height: calc(100dvh - 88px); }
-.platform-rail { position: sticky; top: 88px; align-self: start; height: calc(100dvh - 88px); display: flex; flex-direction: column; padding: 1.65rem .85rem 1rem; border-right: 1px solid var(--color-border); background: #f4f2ed; }
-.platform-rail-label { margin: 0 .75rem .7rem; color: var(--color-ink-muted); font-family: var(--font-display); font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
-.platform-rail-nav { display: grid; gap: .2rem; }
-.platform-rail-link { display: flex; min-height: 44px; align-items: center; gap: .75rem; padding: .65rem .75rem; border-radius: 11px; color: var(--color-ink-muted); font-size: .87rem; font-weight: 650; text-decoration: none; transition: background 160ms ease, color 160ms ease, transform 160ms ease; }
-.platform-rail-link svg { width: 19px; height: 19px; flex: none; }
-.platform-rail-link:hover { background: rgb(255 255 255 / .7); color: var(--color-ink); transform: translateX(2px); }
-.platform-rail-link.is-active { background: var(--color-surface); color: var(--color-ink); box-shadow: inset 3px 0 var(--color-brand), 0 1px 2px rgb(32 37 34 / .05); }
-.platform-rail-note { margin-top: auto; display: flex; gap: .65rem; padding: .9rem .8rem; border: 1px solid var(--color-border); border-radius: 12px; background: rgb(255 255 255 / .6); color: var(--color-ink-muted); font-size: .74rem; line-height: 1.45; }
-.platform-rail-note p { margin: 0; }
-.platform-rail-note strong { color: var(--color-ink); font-family: var(--font-display); }
-.platform-rail-note > span { color: var(--color-brand); font-weight: 800; }
+/* ── Workspace shell (app routes) ──────────────────────────────────── */
+.ws-header { position: sticky; top: 0; z-index: 60; height: 56px; background: #fff; border-bottom: 1px solid var(--color-border); }
+.ws-header-inner { position: relative; height: 56px; width: 100%; max-width: 1240px; margin-inline: auto; display: flex; align-items: center; gap: 16px; padding-inline: 24px; }
+.ws-wordmark { flex: none; color: var(--color-ink); font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; letter-spacing: -.045em; text-decoration: none; }
+.ws-wordmark-accent { color: var(--color-brand); }
+.ws-wordmark:focus-visible, .ws-tab:focus-visible, .ws-avatar:focus-visible, .ws-tabbar-link:focus-visible, .ws-menu a:focus-visible, .ws-menu button:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 6px; }
 
+/* Centred independently of the wordmark and avatar, so the tab row does not
+   shift when a signed-in avatar shows initials instead of the placeholder. */
+.ws-tabs { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+.ws-tab { position: relative; display: grid; place-items: center; height: 56px; padding-inline: 14px; color: var(--color-ink-muted); font-size: .875rem; font-weight: 600; text-decoration: none; transition: color 200ms ease; }
+.ws-tab::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 0; height: 2px; border-radius: 2px 2px 0 0; background: var(--color-brand); opacity: 0; transition: opacity 200ms ease; }
+.ws-tab:hover { color: var(--color-ink); }
+.ws-tab.is-active { color: var(--color-ink); font-weight: 700; }
+.ws-tab.is-active::after { opacity: 1; }
+
+.ws-account { position: relative; margin-left: auto; display: flex; align-items: center; }
+.ws-avatar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-surface-alt); color: var(--color-ink-muted); cursor: pointer; transition: border-color 200ms ease, background 200ms ease, color 200ms ease; }
+.ws-avatar:hover { border-color: var(--color-ink-muted); color: var(--color-ink); }
+.ws-avatar svg { width: 16px; height: 16px; }
+.ws-avatar-initials { font-family: var(--font-display); font-size: .72rem; font-weight: 800; letter-spacing: .01em; color: var(--color-brand); }
+
+.ws-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 70; width: 214px; padding: 6px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; box-shadow: var(--shadow-card-hover); }
+.ws-menu-identity { margin: 0; padding: 8px 10px 10px; }
+.ws-menu-identity span { display: block; color: var(--color-ink-muted); font-size: .7rem; }
+.ws-menu-identity strong { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; font-weight: 700; }
+.ws-menu-group + .ws-menu-group { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--color-border); }
+.ws-menu-identity + .ws-menu-group { margin-top: 0; padding-top: 6px; border-top: 1px solid var(--color-border); }
+.ws-menu a, .ws-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 9px; background: none; color: var(--color-ink); font: inherit; font-size: .84rem; font-weight: 600; text-align: left; text-decoration: none; cursor: pointer; transition: background 200ms ease, color 200ms ease; }
+.ws-menu a:hover, .ws-menu button:hover { background: var(--color-surface-alt); }
+
+.ws-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ws-page { flex: 1; width: 100%; max-width: 880px; margin-inline: auto; padding: 40px 24px 72px; }
+.ws-page.is-wide { max-width: 1100px; }
+/* The app pages were written for the old shell and each carry their own
+   centring container (mx-auto max-w-* px-4 py-12) or a *-space wrapper.
+   The column above owns that now, so flatten the page's own copy rather
+   than stacking two sets of gutters. Unlayered, so it beats Tailwind's
+   utility layer without !important. React pages sit one level deeper,
+   inside <astro-island>, hence the second selector in each pair. */
+.ws-page > .mx-auto,
+.ws-page > astro-island > .mx-auto,
+.ws-page > .library-space,
+.ws-page > astro-island > .library-space { max-width: none; margin-inline: 0; padding-block: 0; padding-inline: 0; }
+/* Flashcards read better in a narrow column than a wide one, so /review
+   keeps its own width and only gives up the duplicated padding. */
+.ws-page > astro-island > .vocab-review-space { padding-block: 0; padding-inline: 0; }
+
+.ws-footer { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 20px 24px 28px; color: var(--color-ink-muted); font-size: .76rem; }
+.ws-footer a { color: var(--color-ink-muted); text-decoration: none; transition: color 200ms ease; }
+.ws-footer a:hover { color: var(--color-ink); }
+
+/* Phone: the five tabs move to a fixed bottom bar, the header keeps only
+   the wordmark and the avatar. */
+.ws-tabbar { display: none; }
+@media (max-width: 719px) {
+  .ws-tabs { display: none; }
+  .ws-header-inner { padding-inline: 16px; }
+  .ws-page { padding: 32px 16px 40px; }
+  .ws-footer { padding-bottom: 24px; }
+  .ws-main { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  .ws-tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: flex; height: calc(56px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); background: #fff; border-top: 1px solid var(--color-border); }
+  .ws-tabbar-link { flex: 1; display: grid; place-items: center; color: var(--color-ink-muted); font-size: .75rem; font-weight: 600; text-decoration: none; transition: color 200ms ease; }
+  .ws-tabbar-link.is-active { color: var(--color-brand); font-weight: 700; }
+  .site-mobile-menu { top: 72px; right: .5rem; left: .5rem; }
+}
+@media (min-width: 720px) and (max-width: 920px) {
+  .ws-tabs { position: static; transform: none; margin-inline: auto; }
+}
 @media (max-width: 920px) {
   .site-nav-links, .site-account-menu { display: none; }
   .site-menu-toggle { display: flex; }
-  .platform-shell { display: block; }
-  .platform-rail { display: none; }
 }
 @media (max-width: 520px) {
   .site-header { height: 80px; padding-top: 8px; }
   .site-nav { width: calc(100% - 1rem); height: 60px; padding: 0 .45rem 0 1rem; }
-  .site-mobile-menu { top: 72px; right: .5rem; left: .5rem; }
   .site-workspace-button { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .site-nav-link, .site-workspace-button, .platform-rail-link { transition: none; }
+  .site-nav-link, .site-workspace-button, .ws-tab, .ws-tab::after, .ws-avatar, .ws-menu a, .ws-menu button, .ws-tabbar-link, .ws-footer a { transition: none; }
 }

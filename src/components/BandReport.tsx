@@ -93,7 +93,7 @@ export default function BandReport({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <ListCard title="✓ Strengths" items={strengths} tone="success" />
-        <ListCard title="↗ Improve next" items={improvements} tone="brand" />
+        <ListCard title="Improve next" items={improvements} tone="brand" />
       </div>
     </>
   );

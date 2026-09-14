@@ -123,7 +123,7 @@ export default function SavedItems() {
                       </div>
                       {lesson && (
                         <a href={lesson.href} className="mt-1 inline-block text-xs font-semibold text-brand hover:underline">
-                          {lesson.title} →
+                          {lesson.title}
                         </a>
                       )}
                     </li>

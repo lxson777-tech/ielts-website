@@ -1,0 +1,144 @@
+/* The avatar button at the right of the workspace header, and the compact
+   menu it opens: everything that used to live in the left sidebar but is not
+   one of the five daily tabs.
+
+   Auth plumbing is the same as AccountMenu's (which still serves the
+   marketing nav): subscribe to onAuthChange, start or stop the cloud sync,
+   and open AuthModal to sign in. startSyncForUser is idempotent per user, so
+   both islands being mounted on the same page is harmless. */
+
+import { useEffect, useRef, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
+import { withBase } from '../lib/url';
+import { isAuthConfigured } from '../lib/auth/supabase';
+import { onAuthChange, signOut } from '../lib/auth/session';
+import { startSyncForUser, stopSync } from '../lib/auth/sync';
+import { WORKSPACE_MENU } from '../lib/platform-nav';
+import AuthModal from './AuthModal';
+
+/** Up to two letters from the email's local part, e.g. alex.p@x.com -> AP. */
+function initialsFor(email: string | undefined): string {
+  if (!email) return '';
+  const local = email.split('@')[0] ?? '';
+  const parts = local.split(/[._-]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0]![0]! + parts[1]![0]!).toUpperCase();
+  return local.slice(0, 2).toUpperCase();
+}
+
+export default function WorkspaceMenu() {
+  const [user, setUser] = useState<User | null>(null);
+  const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isAuthConfigured()) return;
+    return onAuthChange((u) => {
+      setUser(u);
+      if (u) void startSyncForUser(u);
+      else stopSync();
+    });
+  }, []);
+
+  useEffect(() => {
+    if (user) setModalOpen(false);
+  }, [user]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const initials = initialsFor(user?.email ?? undefined);
+  const authAvailable = isAuthConfigured();
+
+  return (
+    <div className="ws-account" ref={wrapRef}>
+      <button
+        type="button"
+        ref={buttonRef}
+        className="ws-avatar"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={open ? 'Close menu' : 'Open menu'}
+        onClick={() => setOpen((o) => !o)}
+      >
+        {initials ? (
+          <span className="ws-avatar-initials">{initials}</span>
+        ) : (
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path
+              fillRule="evenodd"
+              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 8a7 7 0 1114 0H3z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
+      </button>
+
+      {open && (
+        <div className="ws-menu" role="menu">
+          {user?.email && (
+            <p className="ws-menu-identity">
+              <span>Signed in as</span>
+              <strong>{user.email}</strong>
+            </p>
+          )}
+          {WORKSPACE_MENU.map((group, i) => (
+            <div className="ws-menu-group" key={i}>
+              {group.map((item) => (
+                <a key={item.href} role="menuitem" href={withBase(item.href)} onClick={() => setOpen(false)}>
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          ))}
+          {authAvailable && (
+            <div className="ws-menu-group">
+              {user ? (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setOpen(false);
+                    void signOut();
+                  }}
+                >
+                  Sign out
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setOpen(false);
+                    setModalOpen(true);
+                  }}
+                >
+                  Sign in
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {modalOpen && <AuthModal onClose={() => setModalOpen(false)} />}
+    </div>
+  );
+}

@@ -60,13 +60,12 @@ export default function PlanToday() {
   if (!plan || !today) {
     return (
       <section className="plan-today plan-today-empty" aria-labelledby="today-heading">
-        <p className="platform-eyebrow">Today</p>
-        <h2 id="today-heading">Set a study plan to see today's list</h2>
+        <h2 id="today-heading">Start with a plan</h2>
         <p className="plan-rest-note">
-          Tell us your target band and exam date on Start, and we'll lay out a day-by-day plan that fits around it.
+          Tell us your target band and exam date, and we will lay out a day by day plan that fits around them.
         </p>
         <a className="coral-button" href={withBase('/start')}>
-          Create a plan <span aria-hidden="true">→</span>
+          Create my plan
         </a>
       </section>
     );
@@ -75,10 +74,7 @@ export default function PlanToday() {
   return (
     <section className="plan-today" aria-labelledby="today-heading">
       <div className="plan-today-head">
-        <div>
-          <p className="platform-eyebrow">Today</p>
-          <h2 id="today-heading">{today.finished ? 'Your plan is complete' : "Today's study list"}</h2>
-        </div>
+        <h2 id="today-heading">{today.finished ? 'Your plan is complete' : 'Today'}</h2>
         <span className="plan-today-progress">
           Day {today.dayNumber} of {today.totalDays}, {today.onTrack ? 'on track' : `${today.daysBehind} day${today.daysBehind === 1 ? '' : 's'} behind`}
         </span>
@@ -88,9 +84,7 @@ export default function PlanToday() {
         <div className="plan-today-behind">
           <span>{today.behindMessage}</span>
           <span className="plan-today-behind-actions">
-            <a href={withBase('/start')}>
-              Push back my exam date <span aria-hidden="true">→</span>
-            </a>
+            <a href={withBase('/start')}>Push back my exam date</a>
             <button type="button" onClick={() => setDismissedBehind(true)}>
               Keep this lighter plan
             </button>

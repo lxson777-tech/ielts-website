@@ -534,7 +534,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           disabled={submitted}
           className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 sm:px-4"
         >
-          Submit ➤
+          Submit
         </button>
       </header>
 
@@ -751,7 +751,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                     onClick={openRetake}
                     className="text-xs font-semibold text-brand hover:underline"
                   >
-                    Retry the {wrongCount} you got wrong →
+                    Retry the {wrongCount} you got wrong
                   </button>
                 )}
               </div>

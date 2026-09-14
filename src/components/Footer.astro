@@ -13,7 +13,7 @@ const columns = [
       <p>Clear IELTS preparation that helps you know what to study next.</p>
     </div>
     {columns.map((column) => <div><p class="marketing-footer-heading">{column.title}</p><ul>{column.links.map((link) => <li><a href={withBase(link.href)}>{link.label}</a></li>)}</ul></div>)}
-    <div><p class="marketing-footer-heading">Your space</p><a href={withBase('/dashboard')} class="footer-workspace-link">Open workspace <span aria-hidden="true">↗</span></a></div>
+    <div><p class="marketing-footer-heading">Your space</p><a href={withBase('/dashboard')} class="footer-workspace-link">Open workspace</a></div>
   </div>
   <div class="marketing-footer-base"><span>© {year} IELTS is EZ</span><span>Made for focused learners.</span></div>
 </footer>

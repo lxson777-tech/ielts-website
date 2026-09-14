@@ -1,7 +1,6 @@
 ---
 import { withBase } from '../lib/url';
 import AccountMenu from './AccountMenu';
-import { PLATFORM_NAV_ITEMS, isPlatformNavActive } from '../lib/platform-nav';
 
 const current = Astro.url.pathname;
 const isActive = (href: string) => {
@@ -16,7 +15,6 @@ const links = [
   { href: '/speaking/examiner', label: 'AI Tutor', fallbacks: ['/speaking'] },
 ];
 const linkActive = (link: (typeof links)[number]) => isActive(link.href) || link.fallbacks.some(isActive);
-const isPlatformActive = (href: string) => isPlatformNavActive(href, current, withBase);
 ---
 
 <header class="site-header">
@@ -34,8 +32,7 @@ const isPlatformActive = (href: string) => isPlatformNavActive(href, current, wi
   <div id="nav-mobile" class="site-mobile-menu" hidden>
     <div class="site-mobile-menu-inner">
       {links.map((link) => <a href={withBase(link.href)} class:list={['site-mobile-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
-      <p class="site-mobile-section-label">Your study space</p>
-      {PLATFORM_NAV_ITEMS.map((item) => <a href={withBase(item.href)} class:list={['site-mobile-link', { 'is-active': isPlatformActive(item.href) }]} aria-current={isPlatformActive(item.href) ? 'page' : undefined}>{item.label}</a>)}
+      <a href={withBase('/dashboard')} class="site-mobile-workspace">My workspace</a>
       <div class="site-mobile-account"><AccountMenu client:load compact /></div>
     </div>
   </div>

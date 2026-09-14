@@ -486,7 +486,7 @@ function WritingLeg({
           onClick={onFinish}
           className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover sm:px-4"
         >
-          Finish Writing ➤
+          Finish Writing
         </button>
       </header>
 
@@ -597,7 +597,7 @@ function ResultsScreen({
           href={withBase('/writing/checker')}
           className="mt-6 inline-block rounded-button bg-brand px-5 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
         >
-          Get AI feedback on these essays →
+          Get AI feedback on these essays
         </a>
       ) : (
         <p className="mt-6 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
@@ -607,7 +607,7 @@ function ResultsScreen({
 
       <div className="mt-8">
         <a href={hubUrl} className="text-sm font-semibold text-brand hover:underline">
-          ← Back to Tests
+          Back to Tests
         </a>
       </div>
     </div>

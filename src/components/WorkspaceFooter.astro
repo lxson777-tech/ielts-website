@@ -1,0 +1,11 @@
+---
+/* One quiet line at the foot of an app route. The full marketing footer
+   stays on the public pages only. Help points back at the public site,
+   which is where the centre explains the course and how to reach it. */
+import { withBase } from '../lib/url';
+---
+
+<footer class="ws-footer">
+  <span>IELTS is EZ</span>
+  <a href={withBase('/')}>Help</a>
+</footer>

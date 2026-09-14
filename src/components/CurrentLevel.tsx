@@ -64,7 +64,7 @@ function SkillRow({ level }: { level: SkillLevel }) {
           href={withBase(practice.href)}
           className="shrink-0 text-xs font-semibold text-brand hover:text-brand-hover"
         >
-          {practice.label} →
+          {practice.label}
         </a>
       </div>
     );

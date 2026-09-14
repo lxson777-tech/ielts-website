@@ -49,7 +49,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         </p>
       </div>
       <span class="shrink-0 rounded-button bg-brand px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
-        Start Mock Exam Day →
+        Start Mock Exam Day
       </span>
     </a>
 
@@ -242,7 +242,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <h3>{group.label}<span>{group.tests.length} exams</span></h3>
             <ul>
               {group.tests.map((test, index) => (
-                <li><a href={withBase(`/tests/${test.id}`)}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`} <span aria-hidden="true">→</span></span></a></li>
+                <li><a href={withBase(`/tests/${test.id}`)}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`}</span></a></li>
               ))}
             </ul>
           </div>
