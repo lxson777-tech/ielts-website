@@ -1,4 +1,4 @@
-/* /review ("Words"): a plain topic browser, replacing the flashcard-first
+/* /review ("Vocabulary"): a plain topic browser, replacing the flashcard-first
    landing page the owner found "weird and confusing". Pick a topic, see
    every word for it with its meaning and example, grouped the way the
    lesson itself teaches it, no flipping required. Flashcards are still
@@ -140,7 +140,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
         <p className="vocab-back-link">
           <a href={withBase('/dashboard')}>Dashboard</a>
         </p>
-        <h1>Words</h1>
+        <h1>Vocabulary</h1>
         <p>Every IELTS topic, its vocabulary, meanings and examples. Pick a topic to see it all at once.</p>
       </div>
 

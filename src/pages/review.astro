@@ -20,7 +20,7 @@ const topicsData: VocabTopicData[] = VOCABULARY_PARTS.map((part) => {
   return buildVocabTopicData(raw, part.slug, part.title);
 });
 ---
-<BaseLayout title="Words · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
+<BaseLayout title="Vocabulary · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
   <VocabTopics client:load topics={topicsData} />
 </BaseLayout>
 

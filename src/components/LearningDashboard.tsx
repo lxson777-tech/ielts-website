@@ -165,7 +165,7 @@ export default function LearningDashboard() {
             </a>
 
             <a className="dash-card" href={withBase('/review')}>
-              <span className="dash-card-label">Words</span>
+              <span className="dash-card-label">Vocabulary</span>
               <strong className="dash-card-title">
                 {VOCABULARY_PARTS.length} topics, {vocab?.total ?? 0} words
               </strong>

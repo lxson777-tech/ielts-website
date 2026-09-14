@@ -20,7 +20,7 @@ export const WORKSPACE_TABS: WorkspaceTab[] = [
   { href: '/start', label: 'Course', also: ['/learn', '/lessons'], icon: 'course' },
   { href: '/trainers', label: 'Practice', also: ['/writing', '/speaking'], icon: 'practice' },
   { href: '/tests', label: 'Tests', icon: 'tests' },
-  { href: '/review', label: 'Words', icon: 'words' },
+  { href: '/review', label: 'Vocabulary', icon: 'words' },
 ];
 
 export interface WorkspaceMenuItem {
