@@ -59,6 +59,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const [gradingStep, setGradingStep] = useState(0);
   const gradingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Lightbox for the Task 1 chart: the imported prompt markup hard-caps the
+  // image at 560px inline, and students need to read exact numbers off it,
+  // so a click opens it full-size instead of asking them to squint.
+  const [lightboxImg, setLightboxImg] = useState<{ src: string; alt: string } | null>(null);
+
   // Elapsed time — starts the moment the task begins, exactly like the real
   // exam clock (it doesn't wait for the first keystroke).
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -83,6 +88,27 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
   const wordCount = useMemo(() => countWords(essay), [essay]);
 
+  useEffect(() => {
+    if (!lightboxImg) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setLightboxImg(null);
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightboxImg]);
+
+  /* Event delegation on the prompt card: the prompt body is raw HTML from
+     the data files (rendered via <Html>), so there's no per-image React
+     handler to attach — a click anywhere in the card that landed on an
+     <img> opens the lightbox. */
+  function handlePromptClick(e: React.MouseEvent<HTMLDivElement>) {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'IMG') {
+      const img = target as HTMLImageElement;
+      setLightboxImg({ src: img.src, alt: img.alt });
+    }
+  }
+
   async function submit() {
     if (!prompt || grading || !isGraderConfigured()) return;
     setGrading(true);
@@ -103,6 +129,24 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         wordCount,
         live: graded.grader.live,
         essay,
+        promptTitle: prompt.title,
+        task: prompt.task,
+        report: {
+          criteria: graded.criteria,
+          moments: graded.moments,
+          strengths: graded.strengths,
+          improvements: graded.improvements,
+          actionPlan: graded.actionPlan,
+          mechanics: {
+            wordCount: graded.mechanics.wordCount,
+            sentenceCount: graded.mechanics.sentenceCount,
+            lexicalDiversity: graded.mechanics.lexicalDiversity,
+            linkingDevices: graded.mechanics.linkingDevices,
+            underLength: graded.mechanics.underLength,
+            notes: graded.mechanics.notes,
+          },
+          grader: graded.grader,
+        },
       });
     } catch {
       // The button is disabled whenever isGraderConfigured() is false, so any
@@ -160,7 +204,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       },
     ];
     return (
-      <div className="screen-in relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+      <div className="screen-in relative mx-auto max-w-5xl overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <img
           src={withBase('/pics/writing/start-task.png')}
@@ -220,7 +264,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   /* ── 2b. Grading in progress ── */
   if (grading) {
     return (
-      <div className="screen-in relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
+      <div className="screen-in relative mx-auto max-w-5xl overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
         <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
           <span
@@ -267,7 +311,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   if (result) {
     const m = result.mechanics;
     return (
-      <div className="screen-in space-y-6">
+      <div className="screen-in mx-auto max-w-5xl space-y-6">
         <BandReport
           title={prompt.title}
           overallBand={result.overallBand}
@@ -388,9 +432,12 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         </div>
       )}
 
-      <div className={`screen-in ${coached ? 'lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-6' : ''}`}>
+      <div className={`screen-in ${coached ? 'lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-8' : ''}`}>
         <div className="space-y-4">
-          <div className="rounded-card border border-border bg-surface p-5 shadow-card">
+          <div
+            className="writing-prompt max-w-[820px] rounded-card border border-border bg-surface p-5 shadow-card"
+            onClick={handlePromptClick}
+          >
             <div className="flex items-start justify-between gap-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
                 {prompt.task === 'task2' ? 'Writing Task 2' : 'Writing Task 1'}{' '}
@@ -421,6 +468,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                 every keystroke, and an inline one would reparse the prompt on
                 each of those — visibly re-loading the Task 1 chart image. */}
             <Html as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
+            {prompt.promptHtml.includes('<img') && (
+              <p className="mt-2 text-xs font-medium text-ink-muted">View larger: click the chart to open it full-size.</p>
+            )}
           </div>
 
           <textarea
@@ -466,6 +516,31 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           </div>
         )}
       </div>
+
+      {lightboxImg && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={lightboxImg.alt || 'Chart, larger view'}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setLightboxImg(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxImg(null)}
+            aria-label="Close"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-2xl leading-none text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            ×
+          </button>
+          <img
+            src={lightboxImg.src}
+            alt={lightboxImg.alt}
+            className="max-h-[95vh] max-w-[95vw] rounded-lg object-contain shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </>
   );
 }

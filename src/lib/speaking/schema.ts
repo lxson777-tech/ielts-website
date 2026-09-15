@@ -50,6 +50,8 @@ export interface Part1Topic {
   questions: SpeakingQuestion[];
   /** topic vocabulary for the coach panel's Vocab tab */
   vocab?: TopicVocab[];
+  /** which IELTS question-pool window this topic was reported in, e.g. "2026 Jan to Apr" */
+  period?: string;
 }
 
 export interface CueCard {
@@ -65,6 +67,8 @@ export interface CueCard {
   vocab?: TopicVocab[];
   /** Part 3 follow-up discussion questions on the same theme */
   part3Questions: SpeakingQuestion[];
+  /** which IELTS question-pool window this cue card was reported in, e.g. "2026 May to Aug" */
+  period?: string;
 }
 
 export type SpeakingPrompt = Part1Topic | CueCard;

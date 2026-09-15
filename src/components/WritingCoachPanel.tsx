@@ -1,18 +1,23 @@
 /* Writing checker sidebar: a tabbed coach instead of one accordion that dumps
-   the whole structure guide as a wall of text. Plan is an interactive
-   paragraph checklist, Language groups the functional phrases as chips,
-   Vocabulary surfaces the prompt's topic-specific suggestedVocab as
-   tap-to-reveal cards, Avoid keeps the common-mistakes chips. Mount with a
-   `key={prompt.id}` from the caller so switching tasks resets all local UI
-   state (active tab, checked/expanded rows, revealed cards) for free. */
+   the whole structure guide as a wall of text. "This question" is a plan
+   specific to the exact prompt the student is answering (src/data/writing-plans.ts,
+   generated per-question by tools/generate_writing_plans.py) — it is the
+   default tab whenever a plan exists for this prompt. Structure is the old
+   generic Plan tab (per essay TYPE, not per question), Language groups the
+   functional phrases as chips, Vocabulary surfaces the prompt's topic-specific
+   suggestedVocab as tap-to-reveal cards, Avoid keeps the common-mistakes chips.
+   Mount with a `key={prompt.id}` from the caller so switching tasks resets all
+   local UI state (active tab, checked/expanded rows, revealed cards) for free. */
 
 import { useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
 import { WRITING_STRUCTURES, PROMPT_VARIANT_STRUCTURE } from '../data/writing-structures';
+import { getWritingPlan } from '../data/writing-plans';
 import Tabs, { type TabDef } from './Tabs';
 
 const TABS: TabDef[] = [
-  { id: 'plan', label: 'Plan' },
+  { id: 'question', label: 'This question' },
+  { id: 'structure', label: 'Structure' },
   { id: 'language', label: 'Language' },
   { id: 'vocab', label: 'Vocabulary' },
   { id: 'avoid', label: 'Avoid' },
@@ -28,11 +33,15 @@ function toggle(set: Set<string>, value: string): Set<string> {
 export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
   const structureKey = PROMPT_VARIANT_STRUCTURE[prompt.variant];
   const guide = structureKey ? WRITING_STRUCTURES[structureKey] : null;
+  const plan = getWritingPlan(prompt.id);
 
-  const [active, setActive] = useState('plan');
+  const [active, setActive] = useState(plan ? 'question' : 'structure');
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [planChecked, setPlanChecked] = useState<Set<string>>(new Set());
+  const [planExpanded, setPlanExpanded] = useState<Set<string>>(new Set());
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  const [planVocabRevealed, setPlanVocabRevealed] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!guide) return null;
@@ -54,8 +63,150 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
       <h3 className="font-display text-sm font-bold">Writing coach: {guide.label}</h3>
       <Tabs tabs={TABS} active={active} onChange={setActive} className="mt-3" />
 
-      {active === 'plan' && (
-        <div id="tabpanel-plan" role="tabpanel" aria-labelledby="tab-plan" className="mt-4">
+      {active === 'question' && !plan && (
+        <div id="tabpanel-question" role="tabpanel" aria-labelledby="tab-question" className="mt-4 rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-ink-muted">
+          A plan for this question is coming.
+        </div>
+      )}
+
+      {active === 'question' && plan && (
+        <div id="tabpanel-question" role="tabpanel" aria-labelledby="tab-question" className="mt-4 space-y-3">
+          <div className="rounded-lg bg-brand-tint/60 p-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-brand">{plan.questionType}</p>
+            <p className="mt-1 text-sm text-ink-muted">{plan.whatItAsks}</p>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
+              {plan.task === 'task1' ? 'Key features' : 'Key points'}
+            </p>
+            <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
+              {plan.keyPoints.map((k, i) => (
+                <li key={i} className="flex gap-2">
+                  <span aria-hidden="true">·</span>
+                  <span>{k}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {plan.task === 'task1' && plan.overview && (
+            <div className="rounded-lg border border-border bg-surface-alt/60 p-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Overview sentence</p>
+              <p className="mt-1 text-sm italic text-ink">{plan.overview}</p>
+            </div>
+          )}
+
+          {plan.task === 'task2' && plan.position && (
+            <div className="rounded-lg border border-border bg-surface-alt/60 p-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Suggested position</p>
+              <p className="mt-1 text-sm text-ink">{plan.position}</p>
+            </div>
+          )}
+
+          <div className="space-y-2">
+            {plan.paragraphs.map((p) => {
+              const isChecked = planChecked.has(p.label);
+              const isOpen = planExpanded.has(p.label);
+              return (
+                <div key={p.label} className="rounded-lg border border-border">
+                  <div className="flex items-center gap-2 px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => setPlanChecked((s) => toggle(s, p.label))}
+                      className="h-4 w-4 shrink-0 rounded border-border text-brand focus:ring-brand"
+                      aria-label={`Mark "${p.label}" done`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPlanExpanded((s) => toggle(s, p.label))}
+                      aria-expanded={isOpen}
+                      className="flex flex-1 items-center justify-between gap-2 text-left text-sm font-semibold"
+                    >
+                      <span className={isChecked ? 'text-ink-muted line-through' : ''}>{p.label}</span>
+                      <span aria-hidden="true" className="shrink-0 text-ink-muted">
+                        {isOpen ? '▾' : '▸'}
+                      </span>
+                    </button>
+                  </div>
+                  {/* The clip wrapper must stay padding-free: padding on it sets a
+                      floor on the collapsed 0fr track and leaks clipped text. */}
+                  <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
+                    <div className="min-h-0 overflow-hidden">
+                      <div className="space-y-2 px-3 pb-3 pl-9">
+                        <p className="text-sm text-ink-muted">{p.goal}</p>
+                        <ul className="space-y-1 text-sm text-ink-muted">
+                          {p.tips.map((tip, i) => (
+                            <li key={i} className="flex gap-2">
+                              <span aria-hidden="true">·</span>
+                              <span>{tip}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="rounded border-l-2 border-brand/40 bg-brand-tint/40 px-2 py-1.5 font-mono text-xs italic text-ink-muted">
+                          {p.starter}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Vocabulary for this topic</p>
+            <div className="mt-1.5 grid items-start gap-2 sm:grid-cols-2">
+              {plan.vocabulary.map((v) => {
+                const isOpen = planVocabRevealed.has(v.phrase);
+                return (
+                  <div
+                    key={v.phrase}
+                    className="rounded-lg border border-[var(--color-vocabulary)]/25 bg-[var(--color-vocabulary-tint)]/60 p-2.5"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setPlanVocabRevealed((s) => toggle(s, v.phrase))}
+                      aria-expanded={isOpen}
+                      className="flex w-full items-center justify-between gap-2 text-left text-sm font-bold text-[var(--color-vocabulary)]"
+                    >
+                      <span>{v.phrase}</span>
+                      <span aria-hidden="true" className="shrink-0">
+                        {isOpen ? '▾' : '▸'}
+                      </span>
+                    </button>
+                    <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
+                      <div className="min-h-0 overflow-hidden">
+                        <p className="pt-1.5 text-sm text-ink-muted">{v.use}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Pitfalls on this question</p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {plan.pitfalls.map((m, i) => (
+                <span key={i} className="rounded-full bg-error-tint px-2.5 py-0.5 text-xs font-semibold text-error">
+                  ⚠ {m}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-xs text-ink-muted">
+            <span className="font-bold uppercase tracking-wider">Timing. </span>
+            {plan.timing}
+          </p>
+        </div>
+      )}
+
+      {active === 'structure' && (
+        <div id="tabpanel-structure" role="tabpanel" aria-labelledby="tab-structure" className="mt-4">
           {guide.notes && guide.notes.length > 0 && (
             <div className="mb-3 rounded-lg bg-brand-tint/60 p-3">
               <p className="text-xs font-bold uppercase tracking-wider text-brand">What to look for</p>

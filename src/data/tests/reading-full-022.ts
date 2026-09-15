@@ -74,7 +74,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-3</span></strong><br/>\n<span>Answer the following questions using <strong>NO MORE THAN ONE WORDS AND/OR A NUMBER</strong> from the passage.</span></p><p><span>1. How old was Juliane at the time of the crash?</span><br/>\n<span>2. What is her occupation now?</span><br/>\n<span>3. What was the cause of the plane crash?</span></p>",
+          "legendHtml": "<p><span>1. How old was Juliane at the time of the crash?</span><br/>\n<span>2. What is her occupation now?</span><br/>\n<span>3. What was the cause of the plane crash?</span></p>",
           "wordLimit": 1
         },
         {
@@ -151,16 +151,16 @@ const test: PracticeTest = {
             {
               "id": "q10",
               "answer": "D",
-              "textHtml": "How was she finally rescued? A",
+              "textHtml": "How was she finally rescued?",
               "options": [
-                "search party found her in the jungle",
+                "A search party found her in the jungle",
                 "Native hunters found her",
                 "She signaled to a plane from the river",
                 "She reached a campsite along the river"
               ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 4-10</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>4. What happened to the plane?</span><br/>\n<span><strong>A</strong> It broke apart in the air</span><br/>\n<span><strong>B</strong> It hit trees and exploded.</span><br/>\n<span><strong>C</strong> It crashed into a mountainside.</span><br/>\n<span><strong>D</strong> It hit the ground and burst into flames.</span></p><p><span>5. Which of the following did NOT help to slow her fall?</span><br/>\n<span><strong>A</strong> an updraft caused by storm clouds</span><br/>\n<span><strong>B</strong> hitting vines</span><br/>\n<span><strong>C</strong> the section of seats to which she was attached</span><br/>\n<span><strong>D</strong> a parachute</span></p><p><span>6. Which of the following injuries did she sustain?</span><br/>\n<span><strong>A</strong> a broken foot</span><br/>\n<span><strong>B</strong> a broken arm</span><br/>\n<span><strong>C</strong> concussion</span><br/>\n<span><strong>D</strong> cuts on her head</span></p><p><span>7. What, helped her to survive?</span><br/>\n<span><strong>A</strong> Knowledge of the jungle</span><br/>\n<span><strong>B</strong> a map showing the location of the river</span><br/>\n<span><strong>C</strong> appropriate clothing and shoes</span><br/>\n<span><strong>D</strong> food supplies from the plane</span></p><p><span>8. What was the biggest threat to her survival?</span><br/>\n<span><strong>A</strong> infected wounds</span><br/>\n<span><strong>B</strong> sting rays</span><br/>\n<span><strong>C</strong> starvation</span><br/>\n<span><strong>D</strong> crocodiles</span></p><p><span>9. How long was she lost in the jungle?</span><br/>\n<span><strong>A</strong> 3 days</span><br/>\n<span><strong>B</strong> 5 days</span><br/>\n<span><strong>C</strong> 10 days</span><br/>\n<span><strong>D</strong> 15 days</span></p><p><span>10. How was she finally rescued?</span><br/>\n<span><strong>A</strong> A search party found her in the jungle.</span><br/>\n<span><strong>B</strong> Native hunters found her.</span><br/>\n<span><strong>C</strong> She signaled to a plane from the river.</span><br/>\n<span><strong>D</strong> She reached a campsite along the river.</span></p>"
+          "legendHtml": "<p><span>10. How was she finally rescued?</span></p>"
         },
         {
           "title": "Questions 11-14",
@@ -188,7 +188,7 @@ const test: PracticeTest = {
               "textHtml": "Juliane suffered nightmares for many years as a result of her experience"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 11-14</span></strong><br/>\n<span>Do the following statements agree with the views of the writer in this passage? Write</span></p><p><span><strong>YES</strong>                            if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                              if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>          if it is impossible to say what the writer thinks about this</span></p><p><span>11. Other survivors of the crash were found in the jungle.</span><br/>\n<span>12. Juliane was upset when she re-visited the crash site.</span><br/>\n<span>13. Wings of Hope is the name given to a memorial statue.</span><br/>\n<span>14. Juliane suffered nightmares for many years as a result of her experience.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         }
       ]
     },
@@ -258,7 +258,7 @@ const test: PracticeTest = {
               "textHtml": "strongest silk"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 15-19</span></strong><br/>\n<span>Classify the following as relating to:</span></p><p><span><strong>A</strong> the silk of bombyx mori</span><br/>\n<span><strong>B</strong> dragline silk of nephila clavipes</span><br/>\n<span><strong>C</strong> capture silk of nephila clavipes</span></p><p><span>15. forms the framework of a web</span><br/>\n<span>16. most elastic silk</span><br/>\n<span>17. allows predator to drop and catch prey</span><br/>\n<span>18. single strand can be up to 900 metres long</span><br/>\n<span>19. strongest silk</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> the silk of bombyx mori</span><br/>\n<span><strong>B</strong> dragline silk of nephila clavipes</span><br/>\n<span><strong>C</strong> capture silk of nephila clavipes</span></p>",
           "options": [
             "A",
             "B",
@@ -296,7 +296,7 @@ const test: PracticeTest = {
               "textHtml": "Spider silk is now being produced commercially"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 20-24</span></strong><br/>\n<span>Do the following statements reflect the claims of the writer in the passage? Write</span></p><p><span><strong>YES</strong>                              if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>             if it is impossible to say what the writer thinks about this</span></p><p><span>20. All spiders secrete silk.</span><br/>\n<span>21. Artificial genes for spider silk have been produced.</span><br/>\n<span>22. Spider silk protein occurs naturally in goats’ milk.</span><br/>\n<span>23. China is leading research efforts in the area of spider silk.</span><br/>\n<span>24. Spider silk is now being produced commercially.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 25-27",
@@ -322,7 +322,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 25-27</span></strong><br/>\n<span>Using <strong>ONE WORD ONLY</strong> from the passage for each answer, complete the following.</span></p><p><strong><span>Comparison of Synthetic and Natural Fibres</span></strong></p><p><span>• Main problem in the production of synthetic fibres: (25) ……………</span><br/>\n<span>• 3 disadvantages of natural fibres: losing elasticity, reducing in size, and (26) ………….</span><br/>\n<span>• Proportion of clothing made from natural fibre: (27) ………………. percent</span></p><p><br/>\n<br/>\n<br/> </p>",
+          "legendHtml": "<p><strong><span>Comparison of Synthetic and Natural Fibres</span></strong></p><p><span>• Main problem in the production of synthetic fibres: (25) ……………</span><br/>\n<span>• 3 disadvantages of natural fibres: losing elasticity, reducing in size, and (26) ………….</span><br/>\n<span>• Proportion of clothing made from natural fibre: (27) ………………. percent</span></p>",
           "wordLimit": 1
         }
       ]
@@ -394,7 +394,7 @@ const test: PracticeTest = {
               "textHtml": "…………… the size of one country with another"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 28-31</span></strong><br/>\n<span>Complete the summary. Choose your answers from the box below the summary.</span></p><p><strong><span>List of Words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Axis</span></td><td width=\"119\"><span>Estimate</span></td><td width=\"119\"><span>Perspective</span></td><td width=\"119\"><span>Map</span></td><td width=\"119\"><span>Direction</span></td></tr><tr><td width=\"119\"><span>Compare</span></td><td width=\"119\"><span>Projection</span></td><td width=\"119\"><span>Size</span></td><td width=\"119\"><span>Judge</span></td><td width=\"119\"><span>Accurately</span></td></tr><tr><td width=\"119\"><span>Angle</span></td><td width=\"119\"><span>Distances</span></td><td width=\"119\"><span>Models</span></td><td width=\"119\"><span>Change</span></td><td width=\"119\"></td></tr></tbody></table><p><span>For four centuries, map makers have been trying to convert three-dimensional information as accurately (example) as possible onto a two-dimensional plane. However, each method of (28) …………………. involves a compromise. Thus, a cylindrical projection indicates true north and south, known as fidelity of (29) …………. but misrepresents the relative size of countries.</span></p><p><span>To avoid this distortion, other cartographers rounded the lines of latitude and longitude. Dr. Peters felt that such maps presented a first-world (30) ……………… His map, with equal area projection, enables us to (31) …………… the size of one country with another.</span></p>",
+          "legendHtml": "<p><strong><span>List of Words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Axis</span></td><td width=\"119\"><span>Estimate</span></td><td width=\"119\"><span>Perspective</span></td><td width=\"119\"><span>Map</span></td><td width=\"119\"><span>Direction</span></td></tr><tr><td width=\"119\"><span>Compare</span></td><td width=\"119\"><span>Projection</span></td><td width=\"119\"><span>Size</span></td><td width=\"119\"><span>Judge</span></td><td width=\"119\"><span>Accurately</span></td></tr><tr><td width=\"119\"><span>Angle</span></td><td width=\"119\"><span>Distances</span></td><td width=\"119\"><span>Models</span></td><td width=\"119\"><span>Change</span></td><td width=\"119\"></td></tr></tbody></table><p><span>For four centuries, map makers have been trying to convert three-dimensional information as accurately (example) as possible onto a two-dimensional plane. However, each method of (28) …………………. involves a compromise. Thus, a cylindrical projection indicates true north and south, known as fidelity of (29) …………. but misrepresents the relative size of countries.</span></p><p><span>To avoid this distortion, other cartographers rounded the lines of latitude and longitude. Dr. Peters felt that such maps presented a first-world (30) ……………… His map, with equal area projection, enables us to (31) …………… the size of one country with another.</span></p>",
           "options": [
             "A"
           ]
@@ -430,7 +430,7 @@ const test: PracticeTest = {
               "textHtml": "more accurately represents country shapes and sizes"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 32-36</span></strong><br/>\n<span>Use the information in the text to match the map projections [M A P] with the characteristics listed below.</span></p><p><span><strong>M</strong> Mercator projection</span><br/>\n<span><strong>A</strong> Aitoff projection</span><br/>\n<span><strong>P</strong> Peters projection</span></p><p><span>32. makes Europe seem larger than it is</span><br/>\n<span>33. maximum distortions at the poles</span><br/>\n<span>34. maintains greatest accuracy at 45 degrees latitude</span><br/>\n<span>35. most distorts the position of the equator</span><br/>\n<span>36. more accurately represents country shapes and sizes</span></p>",
+          "legendHtml": "<p><span><strong>M</strong> Mercator projection</span><br/>\n<span><strong>A</strong> Aitoff projection</span><br/>\n<span><strong>P</strong> Peters projection</span></p>",
           "options": [
             "A"
           ]
@@ -456,7 +456,7 @@ const test: PracticeTest = {
               "textHtml": "Peters projection"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-39</span></strong><br/>\n<span>Choose one drawing (A-D) to match each of the three projection types (37-39).</span></p><p><img alt=\"\" class=\"size-medium wp-image-11977 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 275px) 100vw, 275px\" decoding=\"async\" fetchpriority=\"high\" height=\"300\" src=\"/ielts-website/pics/reading/imported/test-296-1.webp\" width=\"275\"/> <img alt=\"\" class=\"size-medium wp-image-11978 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" height=\"262\" src=\"/ielts-website/pics/reading/imported/test-296-3.webp\" width=\"300\"/></p><p><span>37. Mercator projection</span><br/>\n<span>38. Aitoff projection</span><br/>\n<span>39. Peters projection</span></p>",
+          "legendHtml": "<p><img alt=\"\" class=\"size-medium wp-image-11977 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 275px) 100vw, 275px\" decoding=\"async\" fetchpriority=\"high\" height=\"300\" src=\"/ielts-website/pics/reading/imported/test-296-1.webp\" width=\"275\"/> <img alt=\"\" class=\"size-medium wp-image-11978 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" height=\"262\" src=\"/ielts-website/pics/reading/imported/test-296-3.webp\" width=\"300\"/></p>",
           "options": [
             "A",
             "B",
@@ -480,7 +480,7 @@ const test: PracticeTest = {
               ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 40</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>40. The main point made by the writer of this article is that we need to</span><br/>\n<span><strong>A</strong> understand maps.</span><br/>\n<span><strong>B</strong> understand map-making.</span><br/>\n<span><strong>C</strong> understand that maps are not objective.</span><br/>\n<span><strong>D</strong> understand the importance of latitude and longitude.</span></p><p><br/>\n<br/>\n<br/> </p>"
+          "legendHtml": "<p><strong><span>Questions 40</span></strong></p>"
         }
       ]
     }

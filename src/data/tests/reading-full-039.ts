@@ -101,7 +101,7 @@ const test: PracticeTest = {
               "textHtml": "Climate change rather than prehistoric human activities resulted in megafauna’s extinction"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-8</strong><br/>Use the information in the passage to match the people (listed A-F) with opinions or deeds below. Write the appropriate letters A-F in boxes 1-8 on your answer sheet. NB You may use any letter more than once.</p><p><strong>A</strong> Jim Bowler<br/><strong>B</strong> Alan Thorne<br/><strong>C</strong> Pddbo<br/><strong>D</strong> Tim Flannery<br/><strong>E</strong> Chris Stringer<br/><strong>F</strong> Rainer Grün</p><p>1. He was searching for ancient lakes and came across the charred remains of Mungo Lady, who had been cremated.<br/>2. Professor who hold a skeptical attitude towards reliability for DNA analysis on some fossils.<br/>3. Professor whose determination of the age of Mungo Man to be much younger than the former result which is older than the 62,000 years.<br/>4. Determining the age of Mungo Man has little to do with controversy for the origins of Australians.<br/>5. Research group who recovered a biological proof of the first Neanderthal found in Europe.<br/>6. A supporter of the idea that Australia’s megafauna was extinct due to the hunting by the ancient human beings.<br/>7. Instead of keep arguing a single source origin, multi-regional explanation has been raised.<br/>8. Climate change rather than prehistoric human activities resulted in megafauna’s extinction.</p>",
+          "legendHtml": "<p><strong>A</strong> Jim Bowler<br/>\n<strong>B</strong> Alan Thorne<br/>\n<strong>C</strong> Pddbo<br/>\n<strong>D</strong> Tim Flannery<br/>\n<strong>E</strong> Chris Stringer<br/>\n<strong>F</strong> Rainer Grün</p>",
           "options": [
             "A",
             "B",
@@ -147,7 +147,7 @@ const test: PracticeTest = {
               "textHtml": "Out of Africa supporters have criticised Australian professors for using an outmoded research method"
             }
           ],
-          "legendHtml": "<p><strong>Questions 9-14</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 9-14 on your answer sheet, write</p><p><strong>TRUE</strong>                         if the statement agrees with the information<br/><strong>FALSE</strong>                       if the statement contradicts the information<br/><strong>NOT GIVEN</strong>            if there is no information on this</p><p>9. The Lake Mungo remains offer the archaeologists the evidence of graphic illustration of human activities around.<br/>10. In Lake Mungo remains, weapons were found used by the Mungo.<br/>11. Mungo Man is one of the oldest known archaeological evidence in the world of cultural sophistication such as a burying ritual.<br/>12. Mungo Man and woman’s skeletons were uncovered in the same year.<br/>13. There is controversy among scientists about the origin of the oldest Homo sapiens.<br/>14. Out of Africa supporters have criticised Australian professors for using an outmoded research method.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -222,7 +222,6 @@ const test: PracticeTest = {
               "textHtml": "Unsustainable fishing methods are applied in regions of the world"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-20</strong><br/>The reading passage has seven paragraphs A-G. Which paragraph contains the following information? Write the correct letter A-G, in boxes 15-20 on your answer sheet. NB You may use any letter more than once.</p><p>15. Geographical Location of the world‘s coral reef<br/>16. How does coral reef benefit economy locally<br/>17. The statistics of coral reef‘s economic significance<br/>18. The listed reasons for the declining number of coral reef<br/>19. Physical approach to the coral reef by people<br/>20. Unsustainable fishing methods are applied in regions of the world</p>",
           "options": [
             "A",
             "B",
@@ -267,7 +266,7 @@ const test: PracticeTest = {
               "textHtml": "As with other fishing business, coral fishery is not suitable to women and children"
             }
           ],
-          "legendHtml": "<p><strong>Questions 21-26</strong><br/>Do the following statements agree with the information given in reading passage? Write your answers in boxes 21-26 on your answer sheet.</p><p><strong>TRUE</strong>                       if the statement agrees with the information<br/><strong>FALSE</strong>                     if the statement contradicts the information<br/><strong>NOT GIVEN</strong>          if there is no information on this</p><p>21. Coral reefs provide habitat to a variety of marine life.<br/>22. Coral reef distributes around the ocean disproportionally.<br/>23. Coral reef is increasingly important for scientific purpose.<br/>24.Coral reefs are greatly exchanged among and exported to other counties.<br/>25. Reef tourism is of economic essence generally for some poor people.<br/>26. As with other fishing business, coral fishery is not suitable to women and children.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Question 27",
@@ -285,8 +284,7 @@ const test: PracticeTest = {
                 "To show the vital efforts made to protect the coral reef in Australia"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Question 27</strong><br/>Choose the correct letter, A，B，C or D.</p><p>27. What is the main purpose of this passage?<br/><strong>A</strong> Demonstrate how coral reef growth in the ocean<br/><strong>B</strong> To tell that coral reef is widely used as a scientific project<br/><strong>C</strong> Present the general benefits and an alarming situation of coral reef<br/><strong>D</strong> To show the vital efforts made to protect the coral reef in Australia</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          ]
         }
       ]
     },
@@ -379,7 +377,7 @@ const test: PracticeTest = {
               "textHtml": "……"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-35</strong><br/>Complete the summary using the list of words, A-N below. Write the correct letter, A-N, in boxes 28-35 on your answer sheet.</p><p><strong>A</strong> pollution<br/><strong>B</strong> internet energy<br/><strong>C</strong> paper usage<br/><strong>D</strong> construction and maintenance<br/><strong>E</strong> materials<br/><strong>F</strong> shopping<br/><strong>G</strong> productivity<br/><strong>H</strong> fuels and gases<br/><strong>I</strong> electronically<br/><strong>J</strong> IT<br/><strong>K</strong> equipment L company<br/><strong>M</strong> work-related<br/><strong>N</strong> geography</p><p>Teleworking has been said to have many benefits for both society and companies. Survey identified that telecommuters spend more time on (28)…………………… than those traditional workers on changes in non-commuting travel on weekends. It also is beneficial to the environment as it reduces the (29)……………… in the atmosphere from decreased street repairs, city heating, or even (30)…………………. as staff in office could send documents (31)………………….. Apart from that, other materials such as Vehicle-related, Highway-related and (32)………………….. materials will also be saved. Traditionally, a large amount of energy is needed to make (33)…………….., e.g. Public transportation and private cars. With the rise of telecommuting, resources and (34)………………. will be saved. And conservation goes to the energy and materials consumed in all (35)…….</p>",
+          "legendHtml": "<p><strong>A</strong> pollution<br/>\n<strong>B</strong> internet energy<br/>\n<strong>C</strong> paper usage<br/>\n<strong>D</strong> construction and maintenance<br/>\n<strong>E</strong> materials<br/>\n<strong>F</strong> shopping<br/>\n<strong>G</strong> productivity<br/>\n<strong>H</strong> fuels and gases<br/>\n<strong>I</strong> electronically<br/>\n<strong>J</strong> IT<br/>\n<strong>K</strong> equipment L company<br/>\n<strong>M</strong> work-related<br/>\n<strong>N</strong> geography</p><p>Teleworking has been said to have many benefits for both society and companies. Survey identified that telecommuters spend more time on (28)…………………… than those traditional workers on changes in non-commuting travel on weekends. It also is beneficial to the environment as it reduces the (29)……………… in the atmosphere from decreased street repairs, city heating, or even (30)…………………. as staff in office could send documents (31)………………….. Apart from that, other materials such as Vehicle-related, Highway-related and (32)………………….. materials will also be saved. Traditionally, a large amount of energy is needed to make (33)…………….., e.g. Public transportation and private cars. With the rise of telecommuting, resources and (34)………………. will be saved. And conservation goes to the energy and materials consumed in all (35)…….</p>",
           "options": [
             "A",
             "B",
@@ -423,7 +421,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 36-39</strong><br/>Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in box 36-39 on your answer sheet.</p><p><strong>A</strong> stress and tension<br/><strong>B</strong> consumption of goods.<br/><strong>C</strong> the problem of less communication with colleagues.<br/><strong>D</strong> many problems when equipment doesn’t work<br/><strong>E</strong> transport equipment such as automobiles<br/><strong>F</strong> technical supporters.</p><p>36. More working time is often connected with:<br/>37. Oracle’s Functional idea aims to improve:<br/>38. When you work at office equipment such as computers and printers are maintained by:<br/>39. When work from home using hardware and software:</p>"
+          "legendHtml": "<p><strong>A</strong> stress and tension<br/>\n<strong>B</strong> consumption of goods.<br/>\n<strong>C</strong> the problem of less communication with colleagues.<br/>\n<strong>D</strong> many problems when equipment doesn’t work<br/>\n<strong>E</strong> transport equipment such as automobiles<br/>\n<strong>F</strong> technical supporters.</p><p>36. More working time is often connected with:<br/>\n37. Oracle’s Functional idea aims to improve:<br/>\n38. When you work at office equipment such as computers and printers are maintained by:<br/>\n39. When work from home using hardware and software:</p>"
         },
         {
           "title": "Question 40",
@@ -437,7 +435,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Question 40</strong><br/>Choose correct letter A, B, C or D.</p><p>40. Implied in the passage, what is the author’s attitude toward Telework?<br/><strong>A</strong> surprised by its fast growth<br/><strong>B</strong> unconcerned about the future pattern<br/><strong>C</strong> believe it is generally positive and encouraging<br/><strong>D</strong> worried in the economical problems arise</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p>40. Implied in the passage, what is the author’s attitude toward Telework?<br/>\n<strong>A</strong> surprised by its fast growth<br/>\n<strong>B</strong> unconcerned about the future pattern<br/>\n<strong>C</strong> believe it is generally positive and encouraging<br/>\n<strong>D</strong> worried in the economical problems arise</p><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

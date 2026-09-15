@@ -89,7 +89,7 @@ const test: PracticeTest = {
               "evidence": "Choice, and citizens' belief that they can affect the political process, increase subjective well-being."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-3</span></strong><br/>\n<span>Choose THREE letters A – H. Circle the correct letters, A – H, below. NB Your answers may be given in any order.</span></p><p><span>Which <strong>THREE</strong> of the following statements are true, according to the text?</span></p><p><span><strong>A</strong> Money can bring misery.</span><br/>\n<span><strong>B</strong> Wealthier nations place more emphasis on happiness than poorer ones.</span><br/>\n<span><strong>C</strong> Securing a place to live is a basic human need.</span><br/>\n<span><strong>D</strong> The desire for social status is global phenomenon.</span><br/>\n<span><strong>E</strong> An unmarried people living together are less likely to be happy than a married people.</span><br/>\n<span><strong>F</strong> The less responsibility one has, the happier one is.</span><br/>\n<span><strong>G</strong> Involvement in policy making can increase well-being.</span><br/>\n<span><strong>H</strong> Our prehistoric ancestors were happier than we are.</span></p>",
+          "legendHtml": "<p><span>Which <strong>THREE</strong> of the following statements are true, according to the text?</span></p>",
           "selectCount": 3,
           "choices": [
             {
@@ -161,7 +161,7 @@ const test: PracticeTest = {
               "evidence": "the more that governments recognise individual preferences, the happier their citizens will be."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 4-7</span></strong><br/>\n<span>Complete the summary using the list of words, A -I, below. Write the correct letter, A – I in the spaces below.</span></p><p><span>A. episode</span><br/>\n<span>B. interaction</span><br/>\n<span>C. cooperation</span><br/>\n<span>D. control</span><br/>\n<span>E. number</span><br/>\n<span>F. level</span><br/>\n<span>G. course</span><br/>\n<span>H. conflict</span><br/>\n<span>I. limit</span></p><p><span>Money can buy you just about anything, but not. it seems, happiness. Whether on a personal or national (4) ……………. your bank balance won’t make you happier. Once the basic criteria of a roof over your head and food on the table have been met, money ceases to play a part. One of the most important factors in achieving happiness is the extent of our social (5) ………………. – our relationships with family, friends, colleagues and so on. Equally important is the amount of (6) …………………. we have, either in our personal life, working life, or even in our ability to influence the political (7) ………………. that our country embarks on.</span></p>",
+          "legendHtml": "<p><span>A. episode</span><br/>\n<span>B. interaction</span><br/>\n<span>C. cooperation</span><br/>\n<span>D. control</span><br/>\n<span>E. number</span><br/>\n<span>F. level</span><br/>\n<span>G. course</span><br/>\n<span>H. conflict</span><br/>\n<span>I. limit</span></p><p><span>Money can buy you just about anything, but not. it seems, happiness. Whether on a personal or national (4) ……………. your bank balance won’t make you happier. Once the basic criteria of a roof over your head and food on the table have been met, money ceases to play a part. One of the most important factors in achieving happiness is the extent of our social (5) ………………. – our relationships with family, friends, colleagues and so on. Equally important is the amount of (6) …………………. we have, either in our personal life, working life, or even in our ability to influence the political (7) ………………. that our country embarks on.</span></p>",
           "options": [
             "A",
             "B",
@@ -220,7 +220,7 @@ const test: PracticeTest = {
               "evidence": "family life provided the greatest source of satisfaction... Friendship is another major factor."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 8-13 below write</span></p><p><span><strong>TRUE</strong>                        if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                      if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN         </strong> if there is no information on this</span></p><p><span>8. People from underdeveloped nations try to attain the same standard of living as those from developed nations.</span><br/>\n<span>9. Seeing what others have makes people want to have it too.</span><br/>\n<span>10. The larger the family is, the happier the parents will probably be.</span><br/>\n<span>11. One’s attitude to life has no influence on one’s health.</span><br/>\n<span>12. Instinct can be a barrier to happiness.</span><br/>\n<span>13. Family and friends rank equally as sources of happiness.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -304,7 +304,7 @@ const test: PracticeTest = {
               "evidence": "saving billions of dollars which are now being spent on translators and interpreters"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading passage has seven paragraphs, A – G. Choose the correct heading for paragraphs B – G from the list of headings below. Write the correct number i – ix in spaces 14-19 below.</span></p><p><span>i. A non-exclusive language</span><br/>\n<span>ii. Fewer languages, more results</span><br/>\n<span>iii. Language is personal</span><br/>\n<span>iv. What’s fashionable in language</span><br/>\n<span>v. From the written word to the spoken word</span><br/>\n<span>vi. A real language</span><br/>\n<span>vii. Harmony through language</span><br/>\n<span>viii. The mechanics of a language</span><br/>\n<span>ix. The challenge of translation</span></p><p><span>14. Paragraph B</span><br/>\n<span>15. Paragraph C</span><br/>\n<span>16. Paragraph D</span><br/>\n<span>17. Paragraph E</span><br/>\n<span>18. Paragraph F</span><br/>\n<span>19. Paragraph G</span></p>",
+          "legendHtml": "<p><span>i. A non-exclusive language</span><br/>\n<span>ii. Fewer languages, more results</span><br/>\n<span>iii. Language is personal</span><br/>\n<span>iv. What’s fashionable in language</span><br/>\n<span>v. From the written word to the spoken word</span><br/>\n<span>vi. A real language</span><br/>\n<span>vii. Harmony through language</span><br/>\n<span>viii. The mechanics of a language</span><br/>\n<span>ix. The challenge of translation</span></p>",
           "options": [
             "i",
             "ii",
@@ -361,8 +361,7 @@ const test: PracticeTest = {
               "explanation": "Money currently spent on interpreters and translation could instead fund health programmes for struggling populations.",
               "evidence": "they would be able to devote those huge amounts of money to improving the health of stricken populations throughout the world."
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 20-22</span></strong><br/>\n<span>Choose the correct letter A, B, C or D.</span></p><p><span>20. What advantage is there to learning Esperanto as one’s first foreign language?</span><br/>\n<span><strong>A</strong> Its pronunciation rules follow those of most European languages.</span><br/>\n<span><strong>B</strong> There are no grammar rules to learn.</span><br/>\n<span><strong>C</strong> It can make the learning of other foreign languages less complicated.</span><br/>\n<span><strong>D</strong> Its verbs are not conjugated.</span></p><p><span>21. What do its critics say of Esperanto?</span><br/>\n<span><strong>A</strong> It is only used in artificial situations.</span><br/>\n<span><strong>B</strong> It requires emotional involvement.</span><br/>\n<span><strong>C</strong> It cannot translate works of literature.</span><br/>\n<span><strong>D</strong> It lacks depth of expression.</span></p><p><span>22. How could Esperanto help on a global level?</span><br/>\n<span><strong>A</strong> It would eliminate the need for conferences.</span><br/>\n<span><strong>B</strong> More aid money would reach those who need it.</span><br/>\n<span><strong>C</strong> The world population would be speaking only one language.</span><br/>\n<span><strong>D</strong> More funds could be made available for learning foreign languages.</span></p>"
+          ]
         },
         {
           "title": "Questions 23-26",
@@ -397,7 +396,7 @@ const test: PracticeTest = {
               "evidence": "participate fluently in international conferences and chat comfortably with each other after the formal presentations are made."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In spaces 23-26 below, write</span></p><p><span><strong>YES</strong>                           if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                             if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>           if it is impossible to say what the writer thinks about this</span></p><p><span>23. Supporters of Esperanto say it gives everyone an equal voice.</span><br/>\n<span>24. Esperanto is the only artificially-constructed language.</span><br/>\n<span>25. Esperanto can be learned as part of a self-study course.</span><br/>\n<span>26. Esperanto can be used equally in formal and casual situations.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         }
       ]
     },
@@ -487,7 +486,7 @@ const test: PracticeTest = {
               "evidence": "accelerate the depletion of vegetation and soils."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the flow-chart below. Write <strong>NO MORE THAN THREE WORDS</strong> for each answer.</span><br/>\n<span><img alt=\"\" class=\"wp-image-12096 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 335px) 100vw, 335px\" decoding=\"async\" fetchpriority=\"high\" height=\"286\" src=\"/ielts-website/pics/reading/imported/test-304-1.webp\" width=\"335\"/></span></p>",
+          "legendHtml": "<p><span><img alt=\"\" class=\"wp-image-12096 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 335px) 100vw, 335px\" decoding=\"async\" fetchpriority=\"high\" height=\"286\" src=\"/ielts-website/pics/reading/imported/test-304-1.webp\" width=\"335\"/></span></p>",
           "wordLimit": 3
         },
         {
@@ -524,7 +523,6 @@ const test: PracticeTest = {
               "evidence": "resulting from various factors including climatic variations and human activities."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 33-36</span></strong><br/>\n<span>Reading passage has seven paragraphs, A – G. Which paragraph contains the following information? Write the correct letter A – G in spaces 33 – 36 below.</span></p><p><span>33. Human intervention is a potential solution to potential disaster.</span><br/>\n<span>34. The rate of climate change is set to accelerate dramatically.</span><br/>\n<span>35. There is seldom enough information available in some areas to track how fast the effects of climate change have happened in the past.</span><br/>\n<span>36. Desertification is attributable to a number of factors.</span></p>",
           "options": [
             "A",
             "B",
@@ -569,7 +567,7 @@ const test: PracticeTest = {
               "evidence": "such areas also suffer from land degradation due to over-cultivation, overgrazing, deforestation and poor irrigation practices."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Complete the summary with the list of words A – I below. Write the correct letter A – I in spaces 37-40 below.</span></p><p><span>Climate change may have catastrophic effects on the human and animal world. As glaciers melt, sea levels will rise, causing extensive flooding and land (37) ……………… Another consequence of global warming is (38) …………….. which affects areas known as (39) ……………….. These areas are subject to irregular weather patterns, but also suffer from human intervention or neglect, such as inadequate or inefficient (40) ……….. </span><span>systems.</span></p><p><span>A. irrigation</span><br/>\n<span>B. cooling</span><br/>\n<span>C. drylands</span><br/>\n<span>D. cause</span><br/>\n<span>E. loss</span><br/>\n<span>F. abuse</span><br/>\n<span>G. desertification</span><br/>\n<span>H. deserts</span><br/>\n<span>I. emission</span></p>",
+          "legendHtml": "<p><span>Climate change may have catastrophic effects on the human and animal world. As glaciers melt, sea levels will rise, causing extensive flooding and land (37) ……………… Another consequence of global warming is (38) …………….. which affects areas known as (39) ……………….. These areas are subject to irregular weather patterns, but also suffer from human intervention or neglect, such as inadequate or inefficient (40) ……….. </span><span>systems.</span></p><p><span>A. irrigation</span><br/>\n<span>B. cooling</span><br/>\n<span>C. drylands</span><br/>\n<span>D. cause</span><br/>\n<span>E. loss</span><br/>\n<span>F. abuse</span><br/>\n<span>G. desertification</span><br/>\n<span>H. deserts</span><br/>\n<span>I. emission</span></p>",
           "options": [
             "A",
             "B",

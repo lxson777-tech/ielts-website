@@ -1,14 +1,21 @@
 import { Fragment, useEffect, useState } from 'react';
 import { getWritingAttempts, onProgressChange, type WritingAttempt } from '../lib/progress';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
+import { CRITERIA, criterionLabel } from '../lib/writing/schema';
+import { WRITING_BAND_GUIDES, guideFor } from '../data/band-guides';
+import BandReport from './BandReport';
 
 interface Row {
   promptId: string;
   attempt: WritingAttempt;
 }
 
-function promptTitle(id: string): string {
-  return WRITING_PROMPTS.find((p) => p.id === id)?.title ?? id;
+/** The title to show for a row: the title saved at grading time (so history
+    reads correctly even if the prompt is later renamed or removed from the
+    pool), falling back to a live lookup by id, then the id itself for
+    attempts recorded before promptTitle existed and whose prompt is gone. */
+function rowTitle(r: Row): string {
+  return r.attempt.promptTitle ?? WRITING_PROMPTS.find((p) => p.id === r.promptId)?.title ?? r.promptId;
 }
 
 const fmtDate = (iso: string) =>
@@ -105,8 +112,9 @@ function BandChart({ rows }: { rows: Row[] }) {
 
 export default function WritingHistory() {
   const [rows, setRows] = useState<Row[] | null>(null);
-  // Index (within the displayed, newest-first list) of the row whose saved
-  // essay text is expanded below it. One at a time keeps the table scannable.
+  // Index (within the displayed, newest-first list) of the row whose review
+  // panel (essay + AI report) is expanded below it. One at a time keeps the
+  // table scannable.
   const [openEssay, setOpenEssay] = useState<number | null>(null);
 
   useEffect(() => {
@@ -143,53 +151,165 @@ export default function WritingHistory() {
             </tr>
           </thead>
           <tbody>
-            {[...rows].reverse().map((r, i) => (
-              <Fragment key={i}>
-                <tr className="border-t border-border transition-colors hover:bg-surface-alt">
-                  <td className="px-4 py-2.5 text-ink-muted">{fmtDate(r.attempt.at)}</td>
-                  <td className="px-4 py-2.5 font-medium">{promptTitle(r.promptId)}</td>
-                  <td className="px-4 py-2.5">{r.attempt.wordCount}</td>
-                  <td className="px-4 py-2.5">
-                    <span className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-bold text-brand">
-                      {r.attempt.overallBand.toFixed(1)}
-                    </span>
-                    {!r.attempt.live && <span className="ml-1.5 text-xs text-ink-muted">(sample)</span>}
-                  </td>
-                  <td className="px-4 py-2.5 text-right">
-                    {r.attempt.essay ? (
-                      <button
-                        type="button"
-                        onClick={() => setOpenEssay(openEssay === i ? null : i)}
-                        aria-expanded={openEssay === i}
-                        className="whitespace-nowrap text-xs font-semibold text-brand hover:underline"
-                      >
-                        {openEssay === i ? 'Hide essay' : 'View essay'}
-                      </button>
-                    ) : (
-                      // Attempts recorded before essays were saved have no text to show.
-                      <span className="text-xs text-ink-muted" title="This attempt was recorded before essays were saved.">
-                        n/a
+            {[...rows].reverse().map((r, i) => {
+              const canOpen = Boolean(r.attempt.essay || r.attempt.report);
+              return (
+                <Fragment key={i}>
+                  <tr className="border-t border-border transition-colors hover:bg-surface-alt">
+                    <td className="px-4 py-2.5 text-ink-muted">{fmtDate(r.attempt.at)}</td>
+                    <td className="px-4 py-2.5 font-medium">{rowTitle(r)}</td>
+                    <td className="px-4 py-2.5">{r.attempt.wordCount}</td>
+                    <td className="px-4 py-2.5">
+                      <span className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-bold text-brand">
+                        {r.attempt.overallBand.toFixed(1)}
                       </span>
-                    )}
-                  </td>
-                </tr>
-                {openEssay === i && r.attempt.essay && (
-                  <tr className="border-t border-border bg-surface-alt/60">
-                    <td colSpan={5} className="px-4 py-4">
-                      <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">Your answer</p>
-                      <p className="max-h-80 overflow-y-auto whitespace-pre-wrap text-[0.9rem] leading-relaxed">
-                        {r.attempt.essay}
-                      </p>
+                      {!r.attempt.live && <span className="ml-1.5 text-xs text-ink-muted">(sample)</span>}
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      {canOpen ? (
+                        <button
+                          type="button"
+                          onClick={() => setOpenEssay(openEssay === i ? null : i)}
+                          aria-expanded={openEssay === i}
+                          className="whitespace-nowrap text-xs font-semibold text-brand hover:underline"
+                        >
+                          {openEssay === i ? 'Close' : 'Open'}
+                        </button>
+                      ) : (
+                        // Attempts recorded before essays were saved have nothing to show.
+                        <span className="text-xs text-ink-muted" title="This attempt was recorded before essays were saved.">
+                          n/a
+                        </span>
+                      )}
                     </td>
                   </tr>
-                )}
-              </Fragment>
-            ))}
+                  {openEssay === i && canOpen && (
+                    <tr className="border-t border-border bg-surface-alt/60">
+                      <td colSpan={5} className="px-4 py-5 sm:px-6">
+                        <EssayReviewPanel row={r} onClose={() => setOpenEssay(null)} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
       <BandChart rows={rows} />
+    </div>
+  );
+}
+
+/** Expanded under a row: the task, the essay, and — when saved — the full AI
+    report rendered exactly as WritingTester shows it right after grading,
+    via the same shared <BandReport>. Attempts graded before reports were
+    saved (or past the MAX_SAVED_REPORTS cap in progress.ts) fall back to
+    the essay text alone with a muted note. */
+function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
+  const { attempt } = row;
+  const report = attempt.report;
+  const task = attempt.task ?? 'task2';
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-display font-bold">{rowTitle(row)}</p>
+          <p className="mt-0.5 text-xs text-ink-muted">{fmtDate(attempt.at)}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="shrink-0 rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface"
+        >
+          Close
+        </button>
+      </div>
+
+      {attempt.essay && (
+        <div className="rounded-card border border-border bg-surface p-4 shadow-card">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">Your answer</p>
+          <p className="max-h-80 overflow-y-auto whitespace-pre-wrap text-[0.9rem] leading-relaxed">{attempt.essay}</p>
+        </div>
+      )}
+
+      {report ? (
+        <BandReport
+          title={rowTitle(row)}
+          overallBand={attempt.overallBand}
+          live={report.grader.live}
+          offlineWarning="The band scores below are illustrative, generated from mechanical signals only, without an AI examiner."
+          criteria={CRITERIA.map((c) => {
+            const score = report.criteria[c.key];
+            const guide = guideFor(WRITING_BAND_GUIDES[c.key], score.band);
+            return {
+              key: c.key,
+              label: criterionLabel(c, task),
+              band: score.band,
+              comment: score.comment,
+              tip: score.tip,
+              nextBand: score.nextBand,
+              guide: guide && task !== 'task1' ? { ...guide, task1Note: undefined } : guide,
+            };
+          })}
+          strengths={report.strengths}
+          improvements={report.improvements}
+          actionPlan={report.actionPlan}
+        >
+          <div className="rounded-card border border-border bg-surface p-5 shadow-card">
+            <h3 className="font-display font-bold">Mechanics check</h3>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+              <Stat label="Words" value={`${report.mechanics.wordCount}`} bad={report.mechanics.underLength} />
+              <Stat label="Sentences" value={`${report.mechanics.sentenceCount}`} />
+              <Stat
+                label="Vocab variety"
+                value={`${Math.round(report.mechanics.lexicalDiversity * 100)}%`}
+                bad={report.mechanics.lexicalDiversity < 0.42}
+              />
+              <Stat
+                label="Linking words"
+                value={`${report.mechanics.linkingDevices.reduce((a, l) => a + l.count, 0)}`}
+                bad={report.mechanics.linkingDevices.length === 0 && report.mechanics.sentenceCount > 3}
+              />
+            </div>
+            <ul className="mt-4 space-y-1.5 text-sm text-ink-muted">
+              {report.mechanics.notes.map((n) => (
+                <li key={n} className="flex gap-2">
+                  <span aria-hidden="true">·</span>
+                  <span>{n}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {report.moments.length > 0 && (
+            <div className="rounded-card border border-border bg-surface p-5 shadow-card">
+              <h3 className="font-display font-bold">Moments from your essay</h3>
+              <ul className="mt-3 space-y-2 text-sm">
+                {report.moments.map((mo, mi) => (
+                  <li key={mi}>
+                    <span className="italic text-ink-muted">&ldquo;{mo.quote}&rdquo;</span>
+                    <span className="block text-ink-muted">· {mo.note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </BandReport>
+      ) : (
+        <p className="text-xs italic text-ink-muted">Graded before comments were saved.</p>
+      )}
+    </div>
+  );
+}
+
+function Stat({ label, value, bad }: { label: string; value: string; bad?: boolean }) {
+  return (
+    <div className={`rounded-lg border p-2.5 ${bad ? 'border-error/40 bg-error-tint' : 'border-border bg-surface-alt'}`}>
+      <p className={`font-display text-lg font-extrabold ${bad ? 'text-error' : ''}`}>{value}</p>
+      <p className="text-xs text-ink-muted">{label}</p>
     </div>
   );
 }

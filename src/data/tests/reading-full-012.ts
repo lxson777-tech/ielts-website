@@ -118,7 +118,7 @@ const test: PracticeTest = {
               "evidence": "planting them in large pits with good quality soil"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.</span></p><p><span>Street trees enhance urban areas by offering various ecological, financial, and societal (1) ……………</span></p><p><span>Over time, the (2) ………………. sector has increasingly taken responsibility for street trees due to the privatization of communal spaces.</span></p><p><span>Materials like asphalt and concrete contribute to the urban heat island phenomenon by absorbing and retaining solar (3) ………………….</span></p><p><span>By improving drainage and filtering pollutants, street trees significantly enhance (4) ……………….. quality and mitigate flooding.</span></p><p><span>These trees provide shade, reducing the reliance on artificial (5) …………….. systems during warmer months.</span></p><p><span>Acting as a protective (6) ………………. between pedestrians and moving vehicles, street trees reduce noise and offer a sense of safety.</span></p><p><span>Ensuring street trees thrive involves choosing appropriate locations, providing high-grade (7) ……….. and shielding them from vandalism and adverse weather.</span></p>",
+          "legendHtml": "<p><span>Street trees enhance urban areas by offering various ecological, financial, and societal (1) ……………</span></p><p><span>Over time, the (2) ………………. sector has increasingly taken responsibility for street trees due to the privatization of communal spaces.</span></p><p><span>Materials like asphalt and concrete contribute to the urban heat island phenomenon by absorbing and retaining solar (3) ………………….</span></p><p><span>By improving drainage and filtering pollutants, street trees significantly enhance (4) ……………….. quality and mitigate flooding.</span></p><p><span>These trees provide shade, reducing the reliance on artificial (5) …………….. systems during warmer months.</span></p><p><span>Acting as a protective (6) ………………. between pedestrians and moving vehicles, street trees reduce noise and offer a sense of safety.</span></p><p><span>Ensuring street trees thrive involves choosing appropriate locations, providing high-grade (7) ……….. and shielding them from vandalism and adverse weather.</span></p>",
           "wordLimit": 1
         },
         {
@@ -166,7 +166,7 @@ const test: PracticeTest = {
               "explanation": "The passage lists both benefits and problems but never states outright that the benefits outweigh the disadvantages, so there is no information on this."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                  if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                                if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                    if there is no information on this</span></p><p><span>8. Privatisation has made it easier for local governments to manage street trees.</span><br/>\n<span>9. Street trees can help to make people feel that they are in a unique location.</span><br/>\n<span>10. The pits in which street trees are planted are sometimes too small.</span><br/>\n<span>11. Street trees need more water in warmer climates.</span><br/>\n<span>12. Some street trees have to be removed because they are diseased.</span><br/>\n<span>13. The benefits of street trees outweigh the disadvantages.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -257,7 +257,6 @@ const test: PracticeTest = {
               "evidence": "too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-20</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 14-20 on your answer sheet. NB You may use any letter more than once</span></p><p><span>14. examples of how technology can be used to help students learn</span><br/>\n<span>15. the need for teachers to be able to use technology effectively</span><br/>\n<span>16. the need for schools to have the right equipment</span><br/>\n<span>17. the possibility of students not being able to think independently</span><br/>\n<span>18. the possibility of students becoming less sociable</span><br/>\n<span>19. the possibility of students coming across unsuitable material online</span><br/>\n<span>20. the possibility of students not being able to sleep well</span></p>",
           "options": [
             "A",
             "B",
@@ -312,8 +311,7 @@ const test: PracticeTest = {
               "explanation": "Paragraph D suggests poorer results happen when students are not taught how to use technology properly.",
               "evidence": "they are not using the technology effectively, or because they are not being taught how to use it properly."
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 21-23</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>21. According to the writer, schools in the past</span><br/>\n<span><strong>A</strong> were not very different from schools today.</span><br/>\n<span><strong>B</strong> focused on teaching practical knowledge.</span><br/>\n<span><strong>C</strong> prepared students for their future lives.</span><br/>\n<span><strong>D</strong> taught students how to predict the future.</span></p><p><span>22. According to the writer, technology allows students to</span><br/>\n<span><strong>A</strong> work in a way that suits them.</span><br/>\n<span><strong>B</strong> learn more quickly than in the past.</span><br/>\n<span><strong>C</strong> develop better social skills.</span><br/>\n<span><strong>D</strong> learn to make better use of their time.</span></p><p><span>23. According to the writer, some students may do worse than others if</span><br/>\n<span><strong>A</strong> they use technology too much.</span><br/>\n<span><strong>B</strong> they are not taught how to use technology.</span><br/>\n<span><strong>C</strong> they do not have access to technology.</span><br/>\n<span><strong>D</strong> They rely on technology without proper guidance.</span></p>"
+          ]
         },
         {
           "title": "Questions 24-26",
@@ -345,7 +343,7 @@ const test: PracticeTest = {
               "evidence": "access to training and professional development opportunities."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>OVERCOMING THE CHALLENGES OF TECHNOLOGY</span></strong></p><p><span>Schools are finding ways to overcome the challenges of technology. For example, they are using technology to</span><br/>\n<span>(24) ………………. rather than replace traditional teaching methods. They are also setting guidelines for the use of technology in the classroom and putting (25) …………… in place to protect students from inappropriate content. In order to use technology effectively, teachers need to have access to training and (26) ……………. They also need to be supported by their schools and given the resources they need to use technology effectively.</span></p>",
+          "legendHtml": "<p><strong><span>OVERCOMING THE CHALLENGES OF TECHNOLOGY</span></strong></p><p><span>Schools are finding ways to overcome the challenges of technology. For example, they are using technology to</span><br/>\n<span>(24) ………………. rather than replace traditional teaching methods. They are also setting guidelines for the use of technology in the classroom and putting (25) …………… in place to protect students from inappropriate content. In order to use technology effectively, teachers need to have access to training and (26) ……………. They also need to be supported by their schools and given the resources they need to use technology effectively.</span></p>",
           "wordLimit": 1
         }
       ]
@@ -437,7 +435,6 @@ const test: PracticeTest = {
               "evidence": "The placebo effect is a real, measurable, and powerful phenomenon that should be taken seriously by the medical community."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 27-33 on your answer sheet. NB You may use any letter more than once.</span></p><p><span>27. a reference to the origin of the word ‘placebo’</span><br/>\n<span>28. a reference to the fact that a placebo has no active ingredient</span><br/>\n<span>29. a reference to a study which did not involve any new research data</span><br/>\n<span>30. examples of conditions that respond well to treatment with a placebo</span><br/>\n<span>31. a reference to a study which involved a surgical procedure</span><br/>\n<span>32. a reference to a study which involved a drug treatment</span><br/>\n<span>33. a suggestion that the placebo effect should be seen as a positive thing</span></p>",
           "options": [
             "A",
             "B",
@@ -486,7 +483,7 @@ const test: PracticeTest = {
               "evidence": "Beecher argued that the placebo effect is not just a result of patients believing in the treatment they are receiving, but also of the patient's relationship with the physician."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 34-38</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage? In boxes 34-38 on your answer sheet, write</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                  if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>34. A placebo can produce both positive and negative effects.</span><br/>\n<span>35. Placebos were first used in scientific studies in the 19th century.</span><br/>\n<span>36. Beecher’s study involved a large number of patients.</span><br/>\n<span>37. Beecher’s study was the first to compare the effects of placebos with actual medical treatments.</span><br/>\n<span>38. Beecher believed that a patient’s relationship with their physician could affect the outcome of treatment.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 39-40",
@@ -507,7 +504,7 @@ const test: PracticeTest = {
               "explanation": "The passage moves from the placebo effect being scorned to being shown as a genuinely powerful healing phenomenon, matching this subheading."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 39-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>39. What is the writer’s main purpose in Reading Passage 3?</span><br/>\n<span><strong>A</strong> to highlight the differences between the placebo effect and actual medical treatments</span><br/>\n<span><strong>B</strong> to provide support for those who believe that the placebo effect is a good thing</span><br/>\n<span><strong>C</strong> to argue that the placebo effect should be studied in more detail</span><br/>\n<span><strong>D</strong> to present evidence that the placebo effect is a real phenomenon</span></p><p><span>40. What would be the best subheading for this passage?</span><br/>\n<span><strong>A</strong> The placebo effect: a nuisance or a powerful healing tool?</span><br/>\n<span><strong>B</strong> The placebo effect: the key to effective pain management?</span><br/>\n<span><strong>C</strong> The placebo effect: a key to understanding the immune system?</span><br/>\n<span><strong>D</strong> The placebo effect: the end of modern medicine as we know it?</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> to highlight the differences between the placebo effect and actual medical treatments</span><br/>\n<span><strong>B</strong> to provide support for those who believe that the placebo effect is a good thing</span><br/>\n<span><strong>C</strong> to argue that the placebo effect should be studied in more detail</span><br/>\n<span><strong>D</strong> to present evidence that the placebo effect is a real phenomenon</span></p><p><span><strong>A</strong> The placebo effect: a nuisance or a powerful healing tool?</span><br/>\n<span><strong>B</strong> The placebo effect: the key to effective pain management?</span><br/>\n<span><strong>C</strong> The placebo effect: a key to understanding the immune system?</span><br/>\n<span><strong>D</strong> The placebo effect: the end of modern medicine as we know it?</span></p>",
           "options": [
             "A",
             "B",

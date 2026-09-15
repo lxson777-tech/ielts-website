@@ -57,7 +57,7 @@ const test: PracticeTest = {
               "evidence": "more alert, more energetic, happier doing what you do, more productive"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1</span></strong><br/>\n<span>Circle the correct answer A-D.</span></p><p><span>1. According to the passage, which of the following statements is supported by recent research?</span><br/>\n<span><strong>A</strong> Napping is an indicator of laziness.</span><br/>\n<span><strong>B</strong> Two thirds of Americans sleep too much.</span><br/>\n<span><strong>C</strong> Napping in the workplace is a current trend.</span><br/>\n<span><strong>D</strong> Short naps at work increase productivity.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 1</span></strong></p>"
         },
         {
           "title": "Questions 2-6",
@@ -98,7 +98,7 @@ const test: PracticeTest = {
               "evidence": "Two out of three Americans get less than eight hours of sleep a night"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 2-6</span></strong><br/>\n<span>Do the following statements reflect the claims of the writer in Passage? Write</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                  if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>2. The number one cause of car accidents is fatigue.</span><br/>\n<span>3. People who nap in the afternoon are lazy.</span><br/>\n<span>4. A nap in the middle of the day can improve your mood.</span><br/>\n<span>5. People who nap regularly live longer.</span><br/>\n<span>6. The majority of Americans sleep at least eight hours a night.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 7-9",
@@ -130,7 +130,7 @@ const test: PracticeTest = {
               "evidence": "not going to see napping at traditional types of operations"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 7-9</span></strong><br/>\n<span>Choose one phrase from the list in the box (A-F) to complete each of the following sentences.</span></p><p><span>7. Humans are biologically programmed to</span><br/>\n<span>8. Employees of some progressive companies are encouraged to</span><br/>\n<span>9. Traditional employers are likely to</span></p><p><span>A. drink coffee to stay awake during the afternoon</span><br/>\n<span>B. have a nap during breaks</span><br/>\n<span>C. fall asleep when they are bored</span><br/>\n<span>D. sneak naps without permission</span><br/>\n<span>E. resist the trend toward napping</span><br/>\n<span>F. fall asleep in the afternoon</span></p>"
+          "legendHtml": "<p><span>7. Humans are biologically programmed to</span><br/>\n<span>8. Employees of some progressive companies are encouraged to</span><br/>\n<span>9. Traditional employers are likely to</span></p><p><span>A. drink coffee to stay awake during the afternoon</span><br/>\n<span>B. have a nap during breaks</span><br/>\n<span>C. fall asleep when they are bored</span><br/>\n<span>D. sneak naps without permission</span><br/>\n<span>E. resist the trend toward napping</span><br/>\n<span>F. fall asleep in the afternoon</span></p>"
         },
         {
           "title": "Questions 10-11",
@@ -154,7 +154,7 @@ const test: PracticeTest = {
               "evidence": "when not on duty, to nap in the cockpit"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 10-11</span></strong><br/>\n<span>Complete the following sentences using <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><p><span>In the transportation industry, napping is a matter of (10) …………..</span></p><p><span>On some airlines, pilots can sleep in the cockpit if (11) …………..</span></p>",
+          "legendHtml": "<p><span>In the transportation industry, napping is a matter of (10) …………..</span></p><p><span>On some airlines, pilots can sleep in the cockpit if (11) …………..</span></p>",
           "wordLimit": 3
         },
         {
@@ -188,8 +188,7 @@ const test: PracticeTest = {
               "explanation": "Anthony says workplace napping is 'going to have more to do with productivity', matching C.",
               "evidence": "more to do with productivity"
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 12-13</span></strong><br/>\n<span>Circle the correct answer A-D.</span></p><p><span>12. According to the writer, in America the workplace is becoming …</span><br/>\n<span><strong>A</strong> less flexible.</span><br/>\n<span><strong>B</strong> more exciting.</span><br/>\n<span><strong>C</strong> less demanding.</span><br/>\n<span><strong>D</strong> more stressful.</span></p><p><span>13. According to the writer, what is the main reason why employers support the idea of naps at work?</span><br/>\n<span><strong>A</strong> for health reasons</span><br/>\n<span><strong>B</strong> to promote safety</span><br/>\n<span><strong>C</strong> to increase productivity</span><br/>\n<span><strong>D</strong> to encourage creativity</span></p>"
+          ]
         }
       ]
     },
@@ -273,7 +272,7 @@ const test: PracticeTest = {
               "evidence": "not an appropriate treatment for degenerative diseases"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>The reading passage has 7 sections A-G. Choose the most suitable headings for sections B-G from the list of headings (i-x).</span></p><p><span>There are more headings than sections so you will not use all of them.</span></p><p><span>List of Headings</span><br/>\n<span>i. The future of homeopathy</span><br/>\n<span>ii. Concerns about homeopathy</span><br/>\n<span>iii. Comparison with traditional western medicine</span><br/>\n<span>iv. Dr. S. Hahnemann</span><br/>\n<span>v. Theoretical and experimental basis</span><br/>\n<span>vi. Revival of homeopathy</span><br/>\n<span>vii. Preparation of medicines</span><br/>\n<span>viii. Debate over effectiveness</span><br/>\n<span>ix. Advantages and limitations of homeopathy</span><br/>\n<span>x. Aspects of treatment</span></p><p><span>14. Section B</span><br/>\n<span>15. Section C</span><br/>\n<span>16. Section D</span><br/>\n<span>17. Section E</span><br/>\n<span>18. Section F</span><br/>\n<span>19. Section G</span></p>",
+          "legendHtml": "<p><span>There are more headings than sections so you will not use all of them.</span></p><p><span>i. The future of homeopathy</span><br/>\n<span>ii. Concerns about homeopathy</span><br/>\n<span>iii. Comparison with traditional western medicine</span><br/>\n<span>iv. Dr. S. Hahnemann</span><br/>\n<span>v. Theoretical and experimental basis</span><br/>\n<span>vi. Revival of homeopathy</span><br/>\n<span>vii. Preparation of medicines</span><br/>\n<span>viii. Debate over effectiveness</span><br/>\n<span>ix. Advantages and limitations of homeopathy</span><br/>\n<span>x. Aspects of treatment</span></p>",
           "options": [
             "i",
             "ii",
@@ -317,7 +316,7 @@ const test: PracticeTest = {
               "evidence": "the more dilute the remedy, the stronger it is"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 20-22</span></strong><br/>\n<span>Complete the description below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><strong><span>Making a homeopathic remedy</span></strong></p><p><span>The remedies come from plant, animal and mineral sources.</span></p><p><span>A single product is mixed with alcohol and (20) …………….. then left to stand for 2-4 weeks.</span></p><p><span>This mixture is strained to produce a tincture which can be diluted.</span></p><p><span>1 drop of this tincture is added to 99 drops of alcohol/water.</span></p><p><span>The mixture is then (21) …………. vigorously.</span></p><p><span>This produces a remedy with a potency of 1c.</span></p><p><span>As the remedy becomes more diluted, it gets (22) ……………..</span></p>",
+          "legendHtml": "<p><strong><span>Making a homeopathic remedy</span></strong></p><p><span>The remedies come from plant, animal and mineral sources.</span></p><p><span>A single product is mixed with alcohol and (20) …………….. then left to stand for 2-4 weeks.</span></p><p><span>This mixture is strained to produce a tincture which can be diluted.</span></p><p><span>1 drop of this tincture is added to 99 drops of alcohol/water.</span></p><p><span>The mixture is then (21) …………. vigorously.</span></p><p><span>This produces a remedy with a potency of 1c.</span></p><p><span>As the remedy becomes more diluted, it gets (22) ……………..</span></p>",
           "wordLimit": 3
         },
         {
@@ -354,7 +353,7 @@ const test: PracticeTest = {
               "evidence": "the rarity of adverse reactions"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Complete the summary. Choose your answers from the box below.</span></p><p><span>Homeopathy differs from conventional medicine in a number of ways. Conventional medicine views symptoms as an indication of something wrong in the body whereas homeopathy sees them as signs that the body is attempting to (23) ……………. The uses of medication differ also. Many types of conventional medication (24) ……………. but if the medicine is taken away, the illness returns. The intention of homeopathy is to bring about a complete cure. Homeopathic remedies are (25) ……………… than conventional medicine and have fewer (26) ………………</span></p><p><strong><span>List of words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Cheaper</span></td><td width=\"119\"><span>Cure</span></td><td width=\"119\"><span>Heal itself</span></td><td width=\"119\"><span>Illness</span></td><td width=\"119\"><span>Treatments</span></td></tr><tr><td width=\"119\"><span>Getting better</span></td><td width=\"119\"><span>Control symptoms</span></td><td width=\"119\"><span>More expensive</span></td><td width=\"119\"><span>Side effects</span></td><td width=\"119\"><span>Stronger</span></td></tr><tr><td width=\"119\"><span>Healthy</span></td><td width=\"119\"><span>Patients</span></td><td width=\"119\"></td><td width=\"119\"></td><td width=\"119\"></td></tr></tbody></table>",
+          "legendHtml": "<p><span>Homeopathy differs from conventional medicine in a number of ways. Conventional medicine views symptoms as an indication of something wrong in the body whereas homeopathy sees them as signs that the body is attempting to (23) ……………. The uses of medication differ also. Many types of conventional medication (24) ……………. but if the medicine is taken away, the illness returns. The intention of homeopathy is to bring about a complete cure. Homeopathic remedies are (25) ……………… than conventional medicine and have fewer (26) ………………</span></p><p><strong><span>List of words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Cheaper</span></td><td width=\"119\"><span>Cure</span></td><td width=\"119\"><span>Heal itself</span></td><td width=\"119\"><span>Illness</span></td><td width=\"119\"><span>Treatments</span></td></tr><tr><td width=\"119\"><span>Getting better</span></td><td width=\"119\"><span>Control symptoms</span></td><td width=\"119\"><span>More expensive</span></td><td width=\"119\"><span>Side effects</span></td><td width=\"119\"><span>Stronger</span></td></tr><tr><td width=\"119\"><span>Healthy</span></td><td width=\"119\"><span>Patients</span></td><td width=\"119\"></td><td width=\"119\"></td><td width=\"119\"></td></tr></tbody></table>",
           "options": [
             "A"
           ]
@@ -437,7 +436,7 @@ const test: PracticeTest = {
               "evidence": "the Marijuana Prohibition took effect"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-31</span></strong><br/>\n<span>Re-order the following letters (A-F) to show the sequence of events according to the passage.</span></p><p><span>A. Timber and petro-chemical industries threatened</span><br/>\n<span>B. Articles praise hemp as a potential billion dollar crop</span><br/>\n<span>C. Widespread cultivation of hemp (Example)</span><br/>\n<span>D. Prohibition of marijuana</span><br/>\n<span>E. Newspaper articles link hemp to violent crime</span><br/>\n<span>F. Development of stripping machines</span></p><p><span>The first one has been done for you as an example.</span></p><p><span>Example: C</span><br/>\n<span>(27) ……..</span><br/>\n<span>(28) …….</span><br/>\n<span>(29) …….</span><br/>\n<span>(30) …….</span><br/>\n<span>(31) ………</span></p>",
+          "legendHtml": "<p><span>A. Timber and petro-chemical industries threatened</span><br/>\n<span>B. Articles praise hemp as a potential billion dollar crop</span><br/>\n<span>C. Widespread cultivation of hemp (Example)</span><br/>\n<span>D. Prohibition of marijuana</span><br/>\n<span>E. Newspaper articles link hemp to violent crime</span><br/>\n<span>F. Development of stripping machines</span></p><p><span>The first one has been done for you as an example.</span></p><p><span>Example: C</span><br/>\n<span>(28) …….</span><br/>\n<span>(29) …….</span><br/>\n<span>(30) …….</span></p>",
           "options": [
             "A",
             "B",
@@ -469,7 +468,7 @@ const test: PracticeTest = {
               "evidence": "the active ingredients of drug-type cannabis (THC)"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 32-33</span></strong><br/>\n<span>Complete the following using <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><table><tbody><tr><td width=\"104\"></td><td width=\"227\"><span><strong>Hemp</strong></span></td><td width=\"263\"><span><strong>Marijuana </strong></span></td></tr><tr><td width=\"104\"><span><strong>Fibre</strong></span></td><td width=\"227\"><span>Strong and durable</span></td><td width=\"263\"><span>(32)…………..</span></td></tr><tr><td width=\"104\"><span><strong>Drug content</strong></span></td><td width=\"227\"><span>No active substances named (33) ……</span></td><td width=\"263\"><span>Up to 10%</span></td></tr></tbody></table>",
+          "legendHtml": "<table><tbody><tr><td width=\"104\"></td><td width=\"227\"><span><strong>Hemp</strong></span></td><td width=\"263\"><span><strong>Marijuana </strong></span></td></tr><tr><td width=\"104\"><span><strong>Fibre</strong></span></td><td width=\"227\"><span>Strong and durable</span></td><td width=\"263\"><span>(32)…………..</span></td></tr><tr><td width=\"104\"><span><strong>Drug content</strong></span></td><td width=\"227\"><span>No active substances named (33) ……</span></td><td width=\"263\"><span>Up to 10%</span></td></tr></tbody></table>",
           "wordLimit": 3
         },
         {
@@ -520,7 +519,7 @@ const test: PracticeTest = {
               "evidence": "Cotton grows only in warm climates"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 34-39</span></strong><br/>\n<span>From the information given in the passage, classify the following (34-39) as characteristic of:</span></p><p><span>A. Hemp</span><br/>\n<span>B. Wood</span><br/>\n<span>C. Cotton</span></p><p><span>34. mildew-resistant</span><br/>\n<span>35. dioxin is a by-product of processing</span><br/>\n<span>36. can be harvested more than once a year</span><br/>\n<span>37. large amounts of fertiliser needed</span><br/>\n<span>38. fire-retardant properties</span><br/>\n<span>39. requires mild temperature</span></p>",
+          "legendHtml": "<p><span>A. Hemp</span><br/>\n<span>B. Wood</span><br/>\n<span>C. Cotton</span></p>",
           "options": [
             "A",
             "B",
@@ -546,7 +545,7 @@ const test: PracticeTest = {
               "evidence": "hemp is proving to be a highly profitable industry"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 40</span></strong><br/>\n<span>Choose the correct answer A-D.</span></p><p><span>40. The main purpose of this article is</span><br/>\n<span><strong>A</strong> to criticise government policy on hemp.</span><br/>\n<span><strong>B</strong> to show the economic benefits of hemp.</span><br/>\n<span><strong>C</strong> to compare hemp and marijuana.</span><br/>\n<span><strong>D</strong> to promote research into new uses of hemp.</span></p>"
+          "legendHtml": "<p><strong><span>Questions 40</span></strong></p>"
         }
       ]
     }

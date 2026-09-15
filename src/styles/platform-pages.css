@@ -464,3 +464,34 @@
     transform: none;
   }
 }
+
+/* Writing prompt block (Trainer + Checker): imported Task 1 prompts hard-code
+   max-width:560px on their chart <img> via inline style, which normally beats
+   any stylesheet rule, so overriding it here needs !important. Students read
+   exact numbers off these charts, so the image should fill the prompt block
+   instead of sitting small inside it; the block itself is capped at 820px
+   (src/components/WritingTester.tsx) so text prompts keep a comfortable line
+   length too. A click opens the full-size lightbox rendered in that component. */
+.writing-prompt img {
+  max-width: 100% !important;
+  width: 100%;
+  height: auto;
+  cursor: zoom-in;
+  border-radius: 10px;
+  transition: opacity 0.15s ease;
+}
+.writing-prompt img:hover {
+  opacity: 0.92;
+}
+
+/* The Writing Trainer's two-column task+coach layout needs more room
+   than the standard 880px workspace column (or the 1100px shared "wide"
+   one other routes opt into via WIDE_ROUTES in src/lib/platform-nav.ts) -
+   .ws-page is what actually sets that width (src/styles/platform.css),
+   not this page's own container (its max-width is stripped by
+   `.ws-page > .mx-auto` there on purpose, so pages don't double up on
+   gutters). Scoped to the .writing-trainer-page marker on this one route
+   so /trainers, /tests, /learn, /account and /writing/models are untouched. */
+.ws-page:has(> .writing-trainer-page) {
+  max-width: 1360px;
+}

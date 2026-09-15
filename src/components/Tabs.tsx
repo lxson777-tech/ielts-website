@@ -43,7 +43,7 @@ export default function Tabs({
         ref={listRef}
         role="tablist"
         onKeyDown={onKeyDown}
-        className={`flex gap-1 rounded-button border border-border bg-surface-alt/60 p-1 ${className ?? ''}`}
+        className={`flex flex-wrap gap-1 rounded-button border border-border bg-surface-alt/60 p-1 ${className ?? ''}`}
       >
         {tabs.map((t) => {
           const isActive = t.id === active;

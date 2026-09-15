@@ -83,7 +83,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph F"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-6</strong><br/>The reading passage has six paragraphs, A-F. Choose the correct heading for each paragraph from the list of headings below. Write the correct number (i-vii) in boxes.</p><p><strong>List of Headings</strong><br/>i The controversy around the word “toxic”<br/>ii Effects of different types of stress<br/>iii How to protect children from toxic stress<br/>iv An association of adverse experience with health problems and unhealthy habits<br/>v Body’s reactions in response to the perceived harmful event<br/>vi Signs of being under sustained stress<br/>vii Negative impacts of toxic stress on children’s mental health</p><p>1. Paragraph A<br/>2. Paragraph B<br/>3. Paragraph C<br/>4. Paragraph D<br/>5. Paragraph E<br/>6. Paragraph F</p>",
+          "legendHtml": "<p>i The controversy around the word “toxic”<br/>\nii Effects of different types of stress<br/>\niii How to protect children from toxic stress<br/>\niv An association of adverse experience with health problems and unhealthy habits<br/>\nv Body’s reactions in response to the perceived harmful event<br/>\nvi Signs of being under sustained stress<br/>\nvii Negative impacts of toxic stress on children’s mental health</p>",
           "options": [
             "i",
             "ii",
@@ -115,7 +115,7 @@ const test: PracticeTest = {
               "textHtml": "Several paediatricians consider poverty and racism the primary contributors to toxic stress"
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-9</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 7-9 on your answer sheet, write:</p><p><strong>TRUE</strong>                              if the statement agrees with the information<br/><strong>FALSE</strong>                             if the statement contradicts the information<br/><strong>NOT GIVEN</strong>                 if there is no information on this</p><p>7. Felitti and Anda were the first to show that ACEs create impacts regarding health and habits later on in life.<br/>8. Some children have the same level of vulnerability to stressful events.<br/>9. Several paediatricians consider poverty and racism the primary contributors to toxic stress.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 10-13",
@@ -143,7 +143,7 @@ const test: PracticeTest = {
               "textHtml": "Nadine Burke Harris"
             }
           ],
-          "legendHtml": "<p><strong>Questions 10-13</strong><br/>Look at the following people and the list of statements below. Match each person with the correct statement, A-E. Write the correct letter A-E in boxes.</p><p><strong>List of statements</strong><br/><strong>A</strong> Traumatic experiences in childhood might lead to poor self-management<br/><strong>B</strong> Supportive and responsive relationships with caring parents can prevent or reverse the damaging effects of toxic stress responses.<br/><strong>C</strong> Properly naming a type of stress can facilitate its treatment process.<br/><strong>D</strong> The real name of a particular form of stress could denounce a number of people.<br/><strong>E</strong> Toxic stress can cause the next generations to suffer from negative consequences on both mental and physical health problems.</p><p>10. Megan Gunnar<br/>11. Jenny Anderson<br/>12. John Devaney<br/>13. Nadine Burke Harris</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Traumatic experiences in childhood might lead to poor self-management<br/>\n<strong>B</strong> Supportive and responsive relationships with caring parents can prevent or reverse the damaging effects of toxic stress responses.<br/>\n<strong>C</strong> Properly naming a type of stress can facilitate its treatment process.<br/>\n<strong>D</strong> The real name of a particular form of stress could denounce a number of people.<br/>\n<strong>E</strong> Toxic stress can cause the next generations to suffer from negative consequences on both mental and physical health problems.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",
@@ -239,8 +239,7 @@ const test: PracticeTest = {
                 "Their hooves are undivided"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 14-16</strong><br/>Choose the correct letter, A, B, C or D.</p><p>14. In which region is the biggest range of bovids to be found?<br/><strong>A</strong> Africa<br/><strong>B</strong> Eurasia<br/><strong>C</strong> North America<br/><strong>D</strong> South-east Asia</p><p>15. Most bovids have a preference for living in<br/><strong>A</strong> isolation<br/><strong>B</strong> small groups<br/><strong>C</strong> tropical forest<br/><strong>D</strong> wide open spaces</p><p>16. Which of the following features do all bovids have in common?<br/><strong>A</strong> Their horns are shot<br/><strong>B</strong> They have upper incisors<br/><strong>C</strong> They store food in the body<br/><strong>D</strong> Their hooves are undivided</p>"
+          ]
         },
         {
           "title": "Questions 17-21",
@@ -273,7 +272,7 @@ const test: PracticeTest = {
               "textHtml": "does not defend a particular area of land"
             }
           ],
-          "legendHtml": "<p><strong>Questions 17-21</strong><br/>Look at the following characteristics (Questions 17-21) and the list of sub-families below. Match each characteristic with the correct sub-family, A, B, C or D.</p><p><strong>List of sub-families</strong><br/><strong>A</strong>. Antelope<br/><strong>B</strong>. Bovinae<br/><strong>C</strong>. Caprinae<br/><strong>D</strong>. Cephalophinae</p><p>17. can endure very harsh environments<br/>18. includes the ox and the cow<br/>19. may supplement its diet with meat<br/>20. can usually move a speed<br/>21. does not defend a particular area of land</p>",
+          "legendHtml": "<p><strong>A</strong>. Antelope<br/>\n<strong>B</strong>. Bovinae<br/>\n<strong>C</strong>. Caprinae<br/>\n<strong>D</strong>. Cephalophinae</p>",
           "options": [
             "A",
             "B",
@@ -326,7 +325,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 22-26</strong><br/>Answer the questions below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</p><p>22. What is the smallest species of Bovid called?<br/>23. Which species of Bovinae hos now died out?<br/>24. What facilitates the movement of the sitatunga over wetland?<br/>25. What sort of terrain do barbary sheep live in?<br/>26. What is the only living member of the Antilocapridae sub-family?</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>22. What is the smallest species of Bovid called?<br/>\n23. Which species of Bovinae hos now died out?<br/>\n24. What facilitates the movement of the sitatunga over wetland?<br/>\n25. What sort of terrain do barbary sheep live in?<br/>\n26. What is the only living member of the Antilocapridae sub-family?</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 3
         }
       ]
@@ -449,8 +448,7 @@ const test: PracticeTest = {
                 "they have divided into too many species"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 27-32</strong><br/>Choose the correct letter A, B, C or D.</p><p>27. Why is it difficult to find mite harvestmen?<br/><strong>A</strong> they are too small to see with naked eye.<br/><strong>B</strong> they can easily be confused with daddy longlegs.<br/><strong>C</strong> they are hard to distinguish from their surroundings.<br/><strong>D</strong> they do not exist in large numbers in any one place.</p><p>28. Why are mile harvestmen of interest to Dr Giribet and his colleagues?<br/><strong>A</strong> they have been studied far less than most other species.<br/><strong>B</strong> they show the effects of climate on the evolution of animals.<br/><strong>C</strong> they have an unusual relationship with plants and other animals.<br/><strong>D</strong> they provide evidence relating to a field of study other than insects.</p><p>29. What factor contributed to Wegener’s idea that present-day continents used to form a single landmass?<br/><strong>A</strong> changes in the level of the ocean<br/><strong>B</strong> the distance that species could travel<br/><strong>C</strong> the lack of certain fossils on one side of the Atlantic<br/><strong>D</strong> similarities in living conditions on both sides of the Atlantic</p><p>30. What point is made by the reference to armadillos?<br/><strong>A</strong> regions have both separated and become connected.<br/><strong>B</strong> certain animals could travel longer distances than others.<br/><strong>C</strong> the oldest species of animals are likely to be found in Africa.<br/><strong>D</strong> there is a tendency for animals to spread in a particular direction.</p><p>31. Which of the following is stated in the fifth paragraph?<br/><strong>A</strong> Hawaii is a habitat that cannot support large birds.<br/><strong>B</strong> Hawaii is an attractive habitat for certain species of birds.<br/><strong>C</strong> flightless birds are more likely to become extinct than others.<br/><strong>D</strong> the Hawaiian goose became flightless after it had reached Hawaii.</p><p>32. Why is evidence from cockroached of limited value?<br/><strong>A</strong> they spread too fast.<br/><strong>B</strong> they multiply too quickly.<br/><strong>C</strong> they are found in too few places.<br/><strong>D</strong> they have divided into too many species.</p>"
+          ]
         },
         {
           "title": "Questions 33-36",
@@ -478,7 +476,7 @@ const test: PracticeTest = {
               "textHtml": "Dr Boyer’s theory concerning the origins of Florida is widely accepted"
             }
           ],
-          "legendHtml": "<p><strong>Questions 33-36</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 33-36 on your answer sheet, write</p><p><strong>YES</strong>                            if the statement agrees with the views of the writer<br/><strong>NO</strong>                              if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>           if it is impossible to say what the writer thinks about this</p><p>33. The colonization of Hawaii by geese provides evidence of continental drift.<br/>34. The reason why mite harvestmen don’t exist on Hawaii can be explained.<br/>35. The DNA of certain species has evolved more quickly than that of others.<br/>36. Dr Boyer’s theory concerning the origins of Florida is widely accepted.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 37-40",
@@ -506,7 +504,7 @@ const test: PracticeTest = {
               "textHtml": "……………………. For example, the same type of mite harvestman is found in places that are now far apart but used to form Gondwana, part of a huge landmass"
             }
           ],
-          "legendHtml": "<p><strong>Questions 37-40</strong><br/>Complete the summary using the list of words A-I below. Write the correct letter A-I in boxes 37-40 on your answer sheet.</p><p><strong>List of words</strong><br/><strong>A</strong>. branches<br/><strong>B</strong>. fossils<br/><strong>C</strong>. drift<br/><strong>D</strong>. DNA<br/><strong>E</strong>. evolution<br/><strong>F</strong>. Pangea<br/><strong>G</strong>. dispersal<br/><strong>H</strong>. ancestors<br/><strong>I</strong>. continents</p><p><strong>The age and evolution of mite harvestmen</strong></p><p>Some of the first creatures to live on land were the (37) ………………….. of mite harvestmen. Boyer, Giribet and others study differences in the (38) ……………………. of these insects, and trace the development of a number of (39) ……………………… of the species.</p><p>Their evolution appears to reflect changes in the location of (40) ……………………. For example, the same type of mite harvestman is found in places that are now far apart but used to form Gondwana, part of a huge landmass.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. branches<br/>\n<strong>B</strong>. fossils<br/>\n<strong>C</strong>. drift<br/>\n<strong>D</strong>. DNA<br/>\n<strong>E</strong>. evolution<br/>\n<strong>F</strong>. Pangea<br/>\n<strong>G</strong>. dispersal<br/>\n<strong>H</strong>. ancestors<br/>\n<strong>I</strong>. continents</p><p><strong>The age and evolution of mite harvestmen</strong></p><p>Some of the first creatures to live on land were the (37) ………………….. of mite harvestmen. Boyer, Giribet and others study differences in the (38) ……………………. of these insects, and trace the development of a number of (39) ……………………… of the species.</p><p>Their evolution appears to reflect changes in the location of (40) ……………………. For example, the same type of mite harvestman is found in places that are now far apart but used to form Gondwana, part of a huge landmass.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",

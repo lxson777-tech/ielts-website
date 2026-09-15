@@ -75,7 +75,7 @@ const test: PracticeTest = {
               "textHtml": "The Masai Barefoot Technology shoes are made to fit people of all ages"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-5</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 1-5 on your answer sheet, write</p><p><strong>TRUE</strong>                         if the statement agrees with the information<br/><strong>FALSE</strong>                       if the statement contradicts the information<br/><strong>NOT GIVEN</strong>           if there is no information on this</p><p>1. Brantingham and Beekman were the first researchers to investigate the relationship between health problems and flat floors.<br/>2. The subjects in Fisher’s control group experienced a decline in their physical condition.<br/>3. The manufacturers are increasing the number of cobblestone mats they are making.<br/>4. Fisher based his ideas on what he saw during an overseas trip.<br/>5. The Masai Barefoot Technology shoes are made to fit people of all ages.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 6-8",
@@ -115,8 +115,7 @@ const test: PracticeTest = {
                 "The natural environment is fast disappearing"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 6-8</strong><br/>Choose the correct letter, A, B, C or D.</p><p>6. The writer suggests that Brantingham and Beekman’s findings were<br/><strong>A</strong> ignored by big companies.<br/><strong>B</strong> doubted by other researchers.<br/><strong>C</strong> applicable to a narrow range of people.<br/><strong>D</strong> surprising to them.</p><p>7. What claim is made by the designers of the cobblestone mats”?<br/><strong>A</strong> They need to be used continuously in order to have a lasting effect.<br/><strong>B</strong> They would be as beneficial to younger people as to older peopl<br/><strong>C</strong> They could be an effective alternative to medical intervention.<br/><strong>D</strong> Their effects may vary depending on individual users.</p><p>8. Which of the following points does the writer make in the final paragraph?<br/><strong>A</strong> People should question new theories that scientists put forward.<br/><strong>B</strong> High prices do not necessarily equate to a quality product.<br/><strong>C</strong> People are setting up home in the country for health reasons.<br/><strong>D</strong> The natural environment is fast disappearing.</p>"
+          ]
         },
         {
           "title": "Questions 9-14",
@@ -160,7 +159,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 9-14</strong><br/>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p>In their research, Brantingham and Beekman looked at the complex physical (9) ………………. of the foot and noted that the surfaces of modem environments restrict its movement. They invented a mat which they tried out on factory workers. Whenever the workers walked on it, the different levels of (10) ……………….. in the mat would encourage greater muscle action. In turn, this lessened the effect of (11) ……………….. on the cardiovascular system.</p><p>Similar research was undertaken by John Fisher and colleagues in Oregon. As a result of their findings, they decided to market cobblestone mats to the elderly as a means of dealing with (12) ……………… Reflexologists claim that by manipulating specific parts of the feet, the performance of certain (13) ……………… will also improve. Finally, Benno Nigg at Calgary University believes that specially shaped (14) ……………… on shoes should give health benefits.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>In their research, Brantingham and Beekman looked at the complex physical (9) ………………. of the foot and noted that the surfaces of modem environments restrict its movement. They invented a mat which they tried out on factory workers. Whenever the workers walked on it, the different levels of (10) ……………….. in the mat would encourage greater muscle action. In turn, this lessened the effect of (11) ……………….. on the cardiovascular system.</p><p>Similar research was undertaken by John Fisher and colleagues in Oregon. As a result of their findings, they decided to market cobblestone mats to the elderly as a means of dealing with (12) ……………… Reflexologists claim that by manipulating specific parts of the feet, the performance of certain (13) ……………… will also improve. Finally, Benno Nigg at Calgary University believes that specially shaped (14) ……………… on shoes should give health benefits.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -250,7 +249,7 @@ const test: PracticeTest = {
               "textHtml": "When living in Berowra, Margaret painted flowers in their natural location"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-21</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 15-21 on your answer sheet, write</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                          if the statement contradicts the information<br/><strong>NOT GIVEN</strong>               if there is no information on this</p><p>15. Artists in the German aesthetic tradition portrayed nature realistically.<br/>16. Margaret attended a famous art college in Paris.<br/>17. Margaret met her husband William while teaching a craft at a rehabilitation unit.<br/>18. Margaret Preston and Thea Proctor explored similar themes in their art.<br/>19. Margaret’s 1925 artworks of Sydney Harbour were simpler than her previous ones.<br/>20. The colours in Margaret’s Berowra prints were very bright.<br/>21. When living in Berowra, Margaret painted flowers in their natural location.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 22-27",
@@ -294,7 +293,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 22-27</strong><br/>Complete the notes below. Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer.</p><p><strong>Margaret Preston’s later life</strong></p><p><strong>Aboriginal influence</strong><br/>• interest in Aboriginal art was inspired by seeing rock engravings close to her Berowra home<br/>• incorporated (22) …………….. and colours from Aboriginal art in her own work often referred to Aboriginal sources in the (23) ………………. she gave her artworks</p><p><strong>1953 exhibition</strong><br/>• very old method of (24) ……………….. was used for some prints<br/>• was inspired by (25) ………………….. about Chinese art that she had started collecting in 1915<br/>• combination of Chinese and Aboriginal elements</p><p><strong>Old age</strong><br/>• still interested in (26) ………………… and art<br/>• worked for nearly six decades making more than (27) ………………… artworks<br/>• dedicated n to Australian art and the originality of her work is seen in Preston’s long career</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Margaret Preston’s later life</strong></p><p><strong>Aboriginal influence</strong><br/>\n• interest in Aboriginal art was inspired by seeing rock engravings close to her Berowra home<br/>\n• incorporated (22) …………….. and colours from Aboriginal art in her own work often referred to Aboriginal sources in the (23) ………………. she gave her artworks</p><p><strong>1953 exhibition</strong><br/>\n• very old method of (24) ……………….. was used for some prints<br/>\n• was inspired by (25) ………………….. about Chinese art that she had started collecting in 1915<br/>\n• combination of Chinese and Aboriginal elements</p><p><strong>Old age</strong><br/>\n• still interested in (26) ………………… and art<br/>\n• worked for nearly six decades making more than (27) ………………… artworks<br/>\n• dedicated n to Australian art and the originality of her work is seen in Preston’s long career</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -374,7 +373,6 @@ const test: PracticeTest = {
               "textHtml": "details of proposed research into the frequency with which earworms occur indifferent age groups"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-31</strong><br/>The reading Passage has eight paragraphs, A-H. Which paragraph contains the following information?</p><p>28. a description of the characteristics common to songs with earworms<br/>29. a justification for research into earworms<br/>30. a description of the brain’s reaction to known and unknown songs<br/>31. details of proposed research into the frequency with which earworms occur indifferent age groups</p>",
           "options": [
             "A",
             "B",
@@ -416,7 +414,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 32-35</strong><br/>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p>Researchers from Goldsmiths concluded that the music we imagine in our minds is quite similar to recordings. They proved this by asking volunteers to record the rhythm of music using a monitor on their (32) ……………….. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with (33) ………………….. differently from other people, Dr Stewart also believes that the brain is (34) ……………… by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how (35) ………………. the task was Interestingly, volunteers’ diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental.</p>",
+          "legendHtml": "<p>Researchers from Goldsmiths concluded that the music we imagine in our minds is quite similar to recordings. They proved this by asking volunteers to record the rhythm of music using a monitor on their (32) ……………….. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with (33) ………………….. differently from other people, Dr Stewart also believes that the brain is (34) ……………… by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how (35) ………………. the task was Interestingly, volunteers’ diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental.</p>",
           "wordLimit": 1
         },
         {
@@ -450,7 +448,7 @@ const test: PracticeTest = {
               "textHtml": "Earworms are more persistent when only a short section of the song is constantly replayed. A . Lauren Stewart B . Ira Hyman C . Andrea Haiper D . John Seabrook"
             }
           ],
-          "legendHtml": "<p><strong>Questions 36-40</strong><br/>Look at the following statements and the list of researcher below. Match each statement with the correct person, A, B, C or D. NB You may use any letter more than once.</p><p>36. Some musicians create music that is intentionally memorable.<br/>37. People are unable to completely regulate how they think.<br/>38. We can remember songs without knowing that we have heard them.<br/>39. Thinking about music has a similar effect on the brain to hearing music.<br/>40. Earworms are more persistent when only a short section of the song is constantly replayed.</p><p><strong>A</strong>. Lauren Stewart<br/><strong>B</strong>. Ira Hyman<br/><strong>C</strong>. Andrea Haiper<br/><strong>D</strong>. John Seabrook</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. Lauren Stewart<br/>\n<strong>B</strong>. Ira Hyman<br/>\n<strong>C</strong>. Andrea Haiper<br/>\n<strong>D</strong>. John Seabrook</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",

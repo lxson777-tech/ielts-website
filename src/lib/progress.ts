@@ -2,6 +2,8 @@
    can migrate v1 data. All storage access is guarded: SSR, disabled
    storage (private mode), and corrupt JSON all degrade to empty state. */
 
+import type { CriterionKey, CriterionScore, MechanicsReport, Moment } from './writing/schema';
+
 const KEY = 'ielts.progress.v1';
 
 /* The 2026-09 IELTS question-type restructure renamed a handful of lesson
@@ -58,6 +60,33 @@ export interface TestAttempt {
   skill?: 'reading' | 'listening';
 }
 
+/** The parts of GradeResult (src/lib/writing/schema.ts) needed to re-render
+    the full band report later: the same criteria cards, moments,
+    strengths/improvements and action plan the student saw right after
+    grading, via the shared <BandReport>. Saved alongside the score row so
+    "Open" on a past attempt in WritingHistory isn't limited to the essay
+    text.
+
+    Roughly 5-10 KB of JSON per report (the grading Worker already caps
+    every string field it returns), against localStorage's ~5 MB budget —
+    generous enough that no pruning beyond recordWritingAttempt's
+    MAX_SAVED_REPORTS cap (see below) is needed. */
+export interface SavedEssayReport {
+  criteria: Record<CriterionKey, CriterionScore>;
+  moments: Moment[];
+  strengths: string[];
+  improvements: string[];
+  actionPlan?: string[];
+  /** Only the fields the report screen actually renders (the mechanics Stat
+      row + its notes) — no reason to store overusedWords, spellingFlags,
+      topicOverlap etc. that never reach the screen. */
+  mechanics: Pick<
+    MechanicsReport,
+    'wordCount' | 'sentenceCount' | 'lexicalDiversity' | 'linkingDevices' | 'underLength' | 'notes'
+  >;
+  grader: { name: string; live: boolean };
+}
+
 export interface WritingAttempt {
   at: string; // ISO datetime
   overallBand: number;
@@ -69,6 +98,17 @@ export interface WritingAttempt {
   /** the submitted essay text, so students can reread their answers later.
       Optional so attempts recorded before this feature still load. */
   essay?: string;
+  /** the prompt's title at the time of grading, so history reads correctly
+      even if a prompt is later renamed or removed from the pool. Optional
+      so attempts recorded before this field existed still load (those fall
+      back to a live lookup by promptId). */
+  promptTitle?: string;
+  /** Optional so attempts recorded before this field existed still load. */
+  task?: 'task1' | 'task2';
+  /** The full report, for "Open" in WritingHistory to re-render. Optional:
+      older attempts, and any attempt past the MAX_SAVED_REPORTS cap, don't
+      have one — those show the essay text only. */
+  report?: SavedEssayReport;
 }
 
 /** One graded speaking attempt. Unlike tests/writing this is a flat list, not
@@ -227,9 +267,30 @@ export function getAttempts(testId?: string): { testId: string; attempt: TestAtt
     .sort((a, b) => a.attempt.at.localeCompare(b.attempt.at));
 }
 
+/** How many attempts, across every prompt, keep their full `report`. Beyond
+    this the score row (band, criteria bands, wordCount, essay text, …)
+    stays forever — only the larger re-render payload is dropped from the
+    oldest attempts. Local-only storage for one student, so this is a
+    generous ceiling, not a tight budget (see SavedEssayReport above). */
+const MAX_SAVED_REPORTS = 60;
+
+/** Keep at most MAX_SAVED_REPORTS reports, newest first, across the whole
+    writing store. Mutates the attempt objects in `p.writing` in place —
+    safe here since every caller re-reads via getProgress() right before. */
+function pruneWritingReports(p: ProgressV1): void {
+  const withReports = Object.values(p.writing)
+    .flat()
+    .filter((a) => a.report)
+    .sort((a, b) => b.at.localeCompare(a.at));
+  for (const attempt of withReports.slice(MAX_SAVED_REPORTS)) {
+    delete attempt.report;
+  }
+}
+
 export function recordWritingAttempt(promptId: string, attempt: WritingAttempt): void {
   const p = getProgress();
   (p.writing[promptId] ??= []).push(attempt);
+  pruneWritingReports(p);
   // No real duration is recorded for a writing session, so this uses a flat
   // estimate for a Task 2 essay (roughly the exam's own 40-minute budget for
   // it), same spirit as the other per-item minute estimates above.
@@ -374,7 +435,7 @@ export function mergeProgress(a: ProgressV1, b: ProgressV1): ProgressV1 {
         : (av ?? bv)!;
   }
 
-  return {
+  const merged: ProgressV1 = {
     version: 1,
     lessons,
     tests,
@@ -382,4 +443,8 @@ export function mergeProgress(a: ProgressV1, b: ProgressV1): ProgressV1 {
     speaking: mergeAttempts(a.speaking ?? [], b.speaking ?? []),
     activity,
   };
+  // Two devices merging can each bring their own recent reports; re-apply
+  // the same cap so a merge can't push the store past it.
+  pruneWritingReports(merged);
+  return merged;
 }

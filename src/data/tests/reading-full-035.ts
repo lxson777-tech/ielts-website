@@ -89,7 +89,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 1 – 4</strong><br/>Write the letters A-F in boxes 1-4 on your answer sheet.</p><p>A. make things like clothes<br/>B. produce plastic from plant<br/>C. selling plastic in market<br/>D. fermentation process<br/>E. drape fabrics<br/>F. wrapping products</p><p>1. Scientists manage to<br/>2. Cargill needs to have contacts with<br/>3. Nature work is used for<br/>4. Ingeo is used to</p>"
+          "legendHtml": "<p>A. make things like clothes<br/>\nB. produce plastic from plant<br/>\nC. selling plastic in market<br/>\nD. fermentation process<br/>\nE. drape fabrics<br/>\nF. wrapping products</p><p>1. Scientists manage to<br/>\n2. Cargill needs to have contacts with<br/>\n3. Nature work is used for<br/>\n4. Ingeo is used to</p>"
         },
         {
           "title": "Questions 5-8",
@@ -121,7 +121,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 5 – 8</strong><br/>Complete the following summary of the paragraphs of reading passage. Using <strong>NO MORE THAN TWO WORDS</strong> from the reading passage for each answer.</p><p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"562\" src=\"/ielts-website/pics/reading/imported/test-283-1.png\" width=\"797\"/></p>",
+          "legendHtml": "<p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"562\" src=\"/ielts-website/pics/reading/imported/test-283-1.png\" width=\"797\"/></p>",
           "wordLimit": 2
         },
         {
@@ -152,7 +152,7 @@ const test: PracticeTest = {
               ]
             }
           ],
-          "legendHtml": "<p><strong>Question 9 – 10</strong><br/>Choose the correct letter, A, B, C or D.</p><p>9. Why did choose the PLA as material for food packaging?<br/><strong>A</strong> It smells good<br/><strong>B</strong> It can save food freshness<br/><strong>C</strong> It can be used on other materials<br/><strong>D</strong> Some other things need to be revised about it.</p><p>10. What is PLA packaging is used for?<br/><strong>A</strong> absorbing moisture<br/><strong>B</strong> composting facilities<br/><strong>C</strong> Packaging fresh food<br/><strong>D</strong> manufacturing</p>"
+          "legendHtml": "<p><strong>Question 9 – 10</strong></p>"
         },
         {
           "title": "Questions 11-12",
@@ -178,7 +178,6 @@ const test: PracticeTest = {
               "answerPairId": "reading-283-q11-q12"
             }
           ],
-          "legendHtml": "<p><strong>Questions 11 – 12</strong><br/>Which two features of PLA are correct?</p><p><strong>A</strong> It is made of renewable raw materials<br/><strong>B</strong> It involves the removal of carbon dioxide<br/><strong>C</strong> It is no use of fossil fuel product<br/><strong>D</strong> It uses renewable raw resources<br/><strong>E</strong> It is sustenance which can absorb the CO2 in the atmosphere</p>",
           "selectCount": 2,
           "choices": [
             {
@@ -227,7 +226,6 @@ const test: PracticeTest = {
               "answerPairId": "reading-283-q13-q14"
             }
           ],
-          "legendHtml": "<p><strong>Questions 13 – 14</strong><br/>Which two features of PLA are correct?</p><p><strong>A</strong> It takes in moisture of skin<br/><strong>B</strong> It is waterproof<br/><strong>C</strong> comfortable sportswear<br/><strong>D</strong> It’s fading under the sun<br/><strong>E</strong> It is only made in deep color</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -353,7 +351,7 @@ const test: PracticeTest = {
               "textHtml": "According to AEA, Australia is a world leader in developing renewable energy"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15 – 21</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 15-26 on your answer sheet, write</p><p><strong>TRUE</strong>                           if the statement agrees with the information<br/><strong>FALSE</strong>                         if the statement contradicts the information<br/><strong>NOT GIVEN</strong>              if there is no information on this</p><p>15. In Australia, alternative energies are less expensive than conventional electricity.<br/>16. Geoenergy needs to adapt its system to make it less harmful to the environment.<br/>17. Dr Prue Chopra has studied the effects of radon gas on the environment.<br/>18. Hot, dry rocks could provide enough power for the whole of Australia.<br/>19. The new Enviropower facility will keep tourists away.<br/>20. Wavetech was established when its founders were turned down by another company.<br/>21. According to AEA, Australia is a world leader in developing renewable energy.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 22-27",
@@ -391,7 +389,7 @@ const test: PracticeTest = {
               "textHtml": "Original estimates for part of the project have been revised"
             }
           ],
-          "legendHtml": "<p><strong>Questions 22-27</strong><br/>Look at the following statements (Questions 8-13) and the list of companies below. Match each statement with the correct company, A-D.</p><p>22. During the process, harmful substances are prevented from escaping.<br/>23. Water is used to force air through a special device.<br/>24. Techniques used by other countries are being copied.<br/>25. The system can provide services other than energy production.<br/>26. It is planned to force water deep under the ground.<br/>27. Original estimates for part of the project have been revised.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><span><strong>A</strong> Australian Hydro</span><br/>\n<span><strong>B</strong> Geoenergy</span><br/>\n<span><strong>C</strong> Enviropower</span><br/>\n<span><strong>D</strong> Wavetech</span></p>",
           "options": [
             "A",
             "B",
@@ -472,7 +470,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-32</strong><br/>Answer the questions below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer</p><p>28. What was an early slogan about addressing the imbalance between the developed and developing worlds?<br/>29. What is probably the most well-known fair-trade commodity?<br/>30. According to the writer, in terms of total global trade, what do fair-trade producers represent?<br/>31. How do its supporters think fair trade has aﬀected many people?<br/>32. What do its critics think fair-trade producers would get if they went back to mainstream trade?</p>",
+          "legendHtml": "<p>28. What was an early slogan about addressing the imbalance between the developed and developing worlds?<br/>\n29. What is probably the most well-known fair-trade commodity?<br/>\n30. According to the writer, in terms of total global trade, what do fair-trade producers represent?<br/>\n31. How do its supporters think fair trade has aﬀected many people?<br/>\n32. What do its critics think fair-trade producers would get if they went back to mainstream trade?</p>",
           "wordLimit": 3
         },
         {
@@ -505,7 +503,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 33-36</strong><br/>Complete each sentence with the correct ending, A-H, below. Write the correct letter A-H, in boxes 33-36 on your answer sheet.</p><p>A. loans or training for producers and employees.<br/>B. although they may not be obliged to do so in their own country<br/>C. for the various social benefits fair trade brings.<br/>D. to pay more for what they see as ethical products.<br/>E. has influenced non-fair-trade producers.<br/>F. because these are United Nations obligations.<br/>G. too much corruption.<br/>H. have been adopted by non-fair-trade producers.</p><p>33. Consumers of fair-trade products are happy<br/>34. The fair-trade system may include<br/>35. Some fair-trade practices<br/>36. Fair-trade producers must adopt international employment standards</p>"
+          "legendHtml": "<p>A. loans or training for producers and employees.<br/>\nB. although they may not be obliged to do so in their own country<br/>\nC. for the various social benefits fair trade brings.<br/>\nD. to pay more for what they see as ethical products.<br/>\nE. has influenced non-fair-trade producers.<br/>\nF. because these are United Nations obligations.<br/>\nG. too much corruption.<br/>\nH. have been adopted by non-fair-trade producers.</p><p>33. Consumers of fair-trade products are happy<br/>\n34. The fair-trade system may include<br/>\n35. Some fair-trade practices<br/>\n36. Fair-trade producers must adopt international employment standards</p>"
         },
         {
           "title": "Questions 37-40",
@@ -533,7 +531,7 @@ const test: PracticeTest = {
               "textHtml": "Fair trade is mainly a marketing ploy and not a valid way of helping the poor"
             }
           ],
-          "legendHtml": "<p><strong>Questions 37-40</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 37-40 on your answer sheet, write:</p><p><strong>YES</strong>                              if the statement agrees with the views of the writer<br/><strong>NO</strong>                                if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>             if it is impossible to say what the writer thinks about this</p><p>37. The fair-trade system assists farmers who are extremely poor.<br/>38. Some products labelled as fair-trade is in fact not.<br/>39. UK supermarkets and cafes should not charge such high prices for fair-trade items.<br/>40. Fair trade is mainly a marketing ploy and not a valid way of helping the poor.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

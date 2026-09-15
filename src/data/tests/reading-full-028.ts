@@ -90,7 +90,6 @@ const test: PracticeTest = {
               "textHtml": "the wider benefits to the knowledge of researching flavors"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-5</strong><br/>The reading Passage has six paragraphs A-H Which paragraph contains the following information? Write the correct letter A-H, in boxes 1-5 on your answer sheet. NB: you may use the letter more than once</p><p>1. the process of the new food flavor is agreed on<br/>2. the reason for some natural preferences<br/>3. the reason why flavor has not been researched in depth in the past.<br/>4. the explanation of lack of consistency in sensory analyzing data.<br/>5. the wider benefits to the knowledge of researching flavors.</p>",
           "options": [
             "A",
             "B",
@@ -133,7 +132,7 @@ const test: PracticeTest = {
               "textHtml": "Research is being done to the controlling of the experience of taste"
             }
           ],
-          "legendHtml": "<p><strong>Questions 6-10</strong><br/>Do the following statements agree with the information given in the reading passage? In boxes 6-10 on your answer sheet, write</p><p><strong>TRUE</strong>                           if the statement agrees with the information<br/><strong>FALSE</strong>                         if the statement contradicts the information<br/><strong>NOT GIVEN</strong>             if there is no information on this</p><p>6. Both taste and flavor can be experienced only in mouth.<br/>7. Some elements in flavor involve neither taste nor smell.<br/>8. Ice-cream manufactures are at the forefront of the research on flavor<br/>9. It is possible to accurately match the brain activity to the experience of flavor.<br/>10. Research is being done to the controlling of the experience of taste.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 11-14",
@@ -161,7 +160,7 @@ const test: PracticeTest = {
               "textHtml": "Identify elements in certain smells"
             }
           ],
-          "legendHtml": "<p><strong>Questions 11-14</strong><br/>Look at the following statements and the list of researcher below. Match the person with their opinions. NB You may use any letter more than once.</p><p><strong>A</strong>. Givaudan<br/><strong>B</strong>. University of Bath<br/><strong>C</strong>. University of Nottingham<br/><strong>D</strong>. Firmenich<br/><strong>E</strong>. Chemical senses Institute<br/><strong>F</strong>. Linguagen</p><p>11. Matching brain activity and food input<br/>12. Use genetic modification to track flavor signals<br/>13. Matching textural qualities of food and sensation<br/>14. Identify elements in certain smells</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. Givaudan<br/>\n<strong>B</strong>. University of Bath<br/>\n<strong>C</strong>. University of Nottingham<br/>\n<strong>D</strong>. Firmenich<br/>\n<strong>E</strong>. Chemical senses Institute<br/>\n<strong>F</strong>. Linguagen</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",
@@ -253,7 +252,7 @@ const test: PracticeTest = {
               "textHtml": "Exposing oneself to dangers"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-20</strong><br/>Classify the following developments as characterising</p><p><strong>A</strong>. early adolescence<br/><strong>B</strong>. middle adolescence<br/><strong>C</strong>. late adolescence</p><p>15. Becoming interested in people of the other gender<br/>16. Beginning to choose a future career<br/>17. Needing to feel the same as one’s friends<br/>18. Beginning to form a self-image separate from the family context<br/>19. Having less need for the good opinion of friends<br/>20. Exposing oneself to dangers</p>",
+          "legendHtml": "<p><strong>A</strong>. early adolescence<br/>\n<strong>B</strong>. middle adolescence<br/>\n<strong>C</strong>. late adolescence</p>",
           "options": [
             "A",
             "B",
@@ -290,7 +289,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 21-24</strong><br/>Complete each sentence with the correct ending, A-E, below. Write the correct letter, A-E in boxes 21-24 on your answer sheet.</p><p><strong>A</strong>. reflects an adolescent’s emerging self-perception.<br/><strong>B</strong>. cannot solve a problem without an example<br/><strong>C</strong>. is designed to become more challenging.<br/><strong>D</strong>. formulates a personal set of moral beliefs and values.<br/><strong>E</strong>. formulates a personal set of moral beliefs and values.</p><p>21. Havighurst proposed a set of tasks which<br/>22. A course of study at high school<br/>23. The speed of development of thinking ability during adolescence<br/>24. Adolescence is a time when the young person</p>"
+          "legendHtml": "<p><strong>A</strong>. reflects an adolescent’s emerging self-perception.<br/>\n<strong>B</strong>. cannot solve a problem without an example<br/>\n<strong>C</strong>. is designed to become more challenging.<br/>\n<strong>D</strong>. formulates a personal set of moral beliefs and values.<br/>\n<strong>E</strong>. formulates a personal set of moral beliefs and values.</p><p>21. Havighurst proposed a set of tasks which<br/>\n22. A course of study at high school<br/>\n23. The speed of development of thinking ability during adolescence<br/>\n24. Adolescence is a time when the young person</p>"
         },
         {
           "title": "Questions 25-27",
@@ -313,7 +312,7 @@ const test: PracticeTest = {
               "textHtml": "Whether or not an adolescent is accepted by their age-group is an important clue to other aspects of their social adjustment"
             }
           ],
-          "legendHtml": "<p><strong>Questions 25-27</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 25-27 on your answer sheet, write</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                          if the statement contradicts the information<br/><strong>NOT GIVEN</strong>               if there is no information on this</p><p>25. Most pre-adolescent children are capable of abstract thought.<br/>26. Adolescents ‘limited skills with words may give a false impression of their ability.<br/>27. Whether or not an adolescent is accepted by their age-group is an important clue to other aspects of their social adjustment.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -387,7 +386,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph F"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-32</strong><br/>Reading passage has seven paragraphs, A-G. Choose the correct heading for paragraphs A, B, D, E and F from the list of headings below.</p><p><strong>List of Headings</strong><br/>i. Parallels between bee and human activities<br/>ii. An evolutionary turning point<br/>iii. An evolutionary turning point<br/>iv. The preservation of individual plant species<br/>v. The commercial value of bees<br/>vi. The structure of flowering plants<br/>vii. The pursuit of self-interest<br/>viii. The need for further research</p><p>28. Paragraph A<br/>29. Paragraph B<br/>30. Paragraph D<br/>31. Paragraph E<br/>32. Paragraph F</p>",
+          "legendHtml": "<p>i. Parallels between bee and human activities<br/>\nii. An evolutionary turning point<br/>\niii. An evolutionary turning point<br/>\niv. The preservation of individual plant species<br/>\nv. The commercial value of bees<br/>\nvi. The structure of flowering plants<br/>\nvii. The pursuit of self-interest<br/>\nviii. The need for further research</p>",
           "options": [
             "i",
             "ii",
@@ -447,7 +446,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 33-39</strong><br/>Complete the sentences below. Choose <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> from the passage for each answer.</p><p>Hunting wasps used to feed on other (33) ………………. , rather than on vegetation.</p><p>Flowering plants started to reward bees with rich pollen and an additional food in the form of (34) ………………</p><p>Approximately (35) ………………….. of human food production relies on the activity of bees.</p><p>If the process of (36) ………………. is to take place effectively, bees need to travel from one flower to another before going back to the nest.</p><p>Bees need to balance the (37) …………………. of each trip against the calorific rewards they obtain.</p><p>There can be over 120 different (38) ………………….. in. an acre of rainforest.</p><p>The bees that pollinate large forests regularly practise an activity known as (39) ………………..</p>",
+          "legendHtml": "<p>Hunting wasps used to feed on other (33) ………………. , rather than on vegetation.</p><p>Flowering plants started to reward bees with rich pollen and an additional food in the form of (34) ………………</p><p>Approximately (35) ………………….. of human food production relies on the activity of bees.</p><p>If the process of (36) ………………. is to take place effectively, bees need to travel from one flower to another before going back to the nest.</p><p>Bees need to balance the (37) …………………. of each trip against the calorific rewards they obtain.</p><p>There can be over 120 different (38) ………………….. in. an acre of rainforest.</p><p>The bees that pollinate large forests regularly practise an activity known as (39) ………………..</p>",
           "wordLimit": 2
         },
         {
@@ -467,7 +466,7 @@ const test: PracticeTest = {
               ]
             }
           ],
-          "legendHtml": "<p><strong>Questions 40</strong><br/>Choose the correct letter, A, B, C or D. Write the correct letter in box 40 on your answer sheet.</p><p>40. Which is the best title for reading passage?<br/><strong>A</strong> The Ecological Importance of Bees<br/><strong>B</strong> The Evolutionary History of Bees<br/><strong>C</strong> The Social Behaviour of Bees<br/><strong>D</strong> The Geographical Distribution of Bees</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p><strong>Questions 40</strong></p><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

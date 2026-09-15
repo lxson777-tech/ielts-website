@@ -82,7 +82,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph G"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-5</strong><br/>Reading passage has 7 paragraphs A-G. Choose the correct heading for paragraphs B-E and G from the list of headings below. Write the correct number, i-x, in boxes 1-5 on your answer sheet.</p><p><strong>List of Headings</strong><br/>i. A misunderstanding in the history of science<br/>ii. Thomas Harriot’s biography<br/>iii. Unknown reasons for his unpublished works<br/>iv. Harriot’s 1588 publication on North America studies<br/>v. Expedition to the New World<br/>vi. Reluctant cooperation with Kepler<br/>vii. Belated appreciation of Harriot’s contribution<br/>viii. Religious pressures keeping him from publishing<br/>ix. Correspondence with Kepler<br/>x. Interests and researches into multiple fields of study</p><p>1. Paragraph B<br/>2. Paragraph C<br/>3. Paragraph D<br/>4. Paragraph E<br/>5. Paragraph G</p>",
+          "legendHtml": "<p>i. A misunderstanding in the history of science<br/>\nii. Thomas Harriot’s biography<br/>\niii. Unknown reasons for his unpublished works<br/>\niv. Harriot’s 1588 publication on North America studies<br/>\nv. Expedition to the New World<br/>\nvi. Reluctant cooperation with Kepler<br/>\nvii. Belated appreciation of Harriot’s contribution<br/>\nviii. Religious pressures keeping him from publishing<br/>\nix. Correspondence with Kepler<br/>\nx. Interests and researches into multiple fields of study</p>",
           "options": [
             "i",
             "ii",
@@ -132,7 +132,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 6-10</strong><br/>Answer the questions below using <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</p><p>Various modem applications base on an image produced by lens uses refraction, such as (6)………………. And a spectrum of colors from a beam of light can be produced with (7)……………… Harriot travelled to Virginia and mainly did research which focused on two subjects of American (8)…………………. After, he also enters upon a study of flight dynamics and (9)……………….. for one of his friends much ahead of major European competitor. He undertook extensive other studies which were only noted down personally yet predated than many other great scientists. One result, for example, corrected the misconception about the idea of (10)……………..</p>",
+          "legendHtml": "<p>Various modem applications base on an image produced by lens uses refraction, such as (6)………………. And a spectrum of colors from a beam of light can be produced with (7)……………… Harriot travelled to Virginia and mainly did research which focused on two subjects of American (8)…………………. After, he also enters upon a study of flight dynamics and (9)……………….. for one of his friends much ahead of major European competitor. He undertook extensive other studies which were only noted down personally yet predated than many other great scientists. One result, for example, corrected the misconception about the idea of (10)……………..</p>",
           "wordLimit": 3
         },
         {
@@ -161,7 +161,7 @@ const test: PracticeTest = {
               "textHtml": "The person whose name the sin law was attributed to"
             }
           ],
-          "legendHtml": "<p><strong>Questions 11-14</strong><br/>Look at the following researchers (listed A-D) and findings. Match each researcher with the correct finding. Write your answers in boxes 11-14 on your answer sheet. NB You may use any researcher more than once.</p><p><strong>A</strong> Willobrord Snell<br/><strong>B</strong> Johannes Kepler<br/><strong>C</strong> Ptolemy<br/><strong>D</strong> Galileo<br/><strong>E</strong> Harriot</p><p>11. Discovered the moons of Jupiter<br/>12. Distracted experimental calculation on refraction<br/>13. The discovery of sunspots<br/>14. The person whose name the sin law was attributed to</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Willobrord Snell<br/>\n<strong>B</strong> Johannes Kepler<br/>\n<strong>C</strong> Ptolemy<br/>\n<strong>D</strong> Galileo<br/>\n<strong>E</strong> Harriot</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",
@@ -250,7 +250,7 @@ const test: PracticeTest = {
               "textHtml": "Controversy can’t be avoided for adjacent nations over the water resource"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-19</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 15-19 on your answer sheet, write</p><p><strong>TRUE</strong>                         if the statement agrees with the information<br/><strong>FALSE</strong>                       if the statement contradicts the information<br/><strong>NOT GIVEN</strong>            if there is no information on this</p><p>15. The prospect for the need for freshwater worldwide is obscure.<br/>16. To some extent, the challenge for freshwater is alleviated by common recognition.<br/>17. Researchers arrive at the specific conclusion about the water crisis based on persuasive consideration of several factors.<br/>18. The fact that people do not actually cherish the usage of water scarcity.<br/>19. Controversy can’t be avoided for adjacent nations over the water resource.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 20-24",
@@ -283,7 +283,6 @@ const test: PracticeTest = {
               "textHtml": "The lower limit of the amount of fresh water for a person to survive"
             }
           ],
-          "legendHtml": "<p><strong>Questions 20-24</strong><br/>The reading passage has eleven paragraphs A-I. Which paragraph contains the following information?</p><p>20. The uneven distribution of water around the world.<br/>21. Other factors regarding nature bothering people who make the policies.<br/>22. Joint efforts needed to carry out the detailed solutions combined with various aspects.<br/>23. No always-in-time match available between the requirements and the actual rainfall.<br/>24. The lower limit of the amount of fresh water for a person to survive.</p>",
           "options": [
             "A",
             "B",
@@ -320,7 +319,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 25-27</strong><br/>Complete the following summary of the paragraphs of reading passage, using <strong>NO MORE THAN THREE WORDS</strong> from the reading passage for each answer. Write your answers in boxes 25–27 on your answer sheet.</p><p>Many severe problems like starvation and military actions etc result from the storage of water which sometimes for some areas seems (25)…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support. (26)……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the (27)……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Many severe problems like starvation and military actions etc result from the storage of water which sometimes for some areas seems (25)…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support. (26)……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the (27)……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 3
         }
       ]
@@ -386,7 +385,7 @@ const test: PracticeTest = {
               "textHtml": "Figures relating to the reduction of natural wildlife habitat over a period of time"
             }
           ],
-          "legendHtml": "<p><strong>Question 28 – 31</strong><br/>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information?</p><p>28. A reason why newer forests provide howlers with better feeding opportunities than older forests<br/>29. A reference to a change in farmers’ attitudes towards wildlife<br/>30. A description of the means by which howlers select the best available diet for themselves<br/>31. Figures relating to the reduction of natural wildlife habitat over a period of time</p>",
+          "legendHtml": "<p><strong>Question 28 – 31</strong></p>",
           "options": [
             "A",
             "B",
@@ -427,7 +426,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 32-35</strong><br/>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p><strong>Why do howlers have an advantage over other Central American monkeys?</strong></p><p>Howler monkeys have a more rapid rate of (32)………………… than either capuchin of spider monkeys. Unlike the other local monkey species, howlers can survive without eating (33)……………. and so can live inside a relatively small habitat area. Their diet is more flexible, and they are able to tolerate leaves with high levels of (34)……………… Howlers can also survive periods of (35)…………….. better than the other monkey species can.</p>",
+          "legendHtml": "<p><strong>Why do howlers have an advantage over other Central American monkeys?</strong></p><p>Howler monkeys have a more rapid rate of (32)………………… than either capuchin of spider monkeys. Unlike the other local monkey species, howlers can survive without eating (33)……………. and so can live inside a relatively small habitat area. Their diet is more flexible, and they are able to tolerate leaves with high levels of (34)……………… Howlers can also survive periods of (35)…………….. better than the other monkey species can.</p>",
           "wordLimit": 1
         },
         {
@@ -461,7 +460,7 @@ const test: PracticeTest = {
               "textHtml": "Its landscape was altered by the construction of a transport link"
             }
           ],
-          "legendHtml": "<p><strong>Question 36 – 40</strong><br/>Look at the following features (Questions 36-40) and the list of locations below. Match each feature with the correct location, A, B or C. Write the correct letter, A, B or C, in boxes 36-40 on your answer sheet.</p><p><strong>List of Locations</strong><br/><strong>A</strong> A<br/><strong>B</strong> B<br/><strong>C</strong> C</p><p>36. It has seen the return of native tree species.<br/>37. It supports only one species of native monkey.<br/>38. Its monkey population helps the agriculture of the area.<br/>39. It is home to populations of all three local monkey species.<br/>40. Its landscape was altered by the construction of a transport link.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Question 36 – 40</strong></p><p><strong>A</strong> A<br/>\n<strong>B</strong> B<br/>\n<strong>C</strong> C</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",

@@ -245,6 +245,7 @@ export const PROMPT_VARIANT_STRUCTURE: Record<string, VariantKey> = {
   'problem-solution': 'problem-solution',
   'advantages-disadvantages': 'advantages-disadvantages',
   'two-part': 'two-part',
+  chart: 'chart',
   'line-graph': 'chart',
   'bar-chart': 'chart',
   'pie-chart': 'chart',

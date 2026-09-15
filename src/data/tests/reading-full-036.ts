@@ -91,7 +91,6 @@ const test: PracticeTest = {
               "textHtml": "energy storage devices in a fish"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-6</strong><br/>The passage has 8 paragraphs A-H. Which paragraph contains the following information? Write the appropriate letter, A-H, in boxes 1-6 on your answer sheet.</p><p>1. categorizations of fish by swimming speed<br/>2. an example of fish capable of maintaining fast swimming for a long time<br/>3. how fish control stability<br/>4. frequency of the muscle movement of fish<br/>5. a mechanical model of fish skeleton<br/>6. energy storage devices in a fish</p>",
           "options": [
             "A",
             "B",
@@ -133,7 +132,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-10</strong><br/>The diagram below gives information about fish fins and their purposes. Complete the diagram with <strong>NO MORE THAN THREE WORDS</strong> from the passage for each blank.</p><p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"492\" src=\"/ielts-website/pics/reading/imported/test-282-1.png\" width=\"855\"/></p>",
+          "legendHtml": "<p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"492\" src=\"/ielts-website/pics/reading/imported/test-282-1.png\" width=\"855\"/></p>",
           "wordLimit": 3
         },
         {
@@ -160,7 +159,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 11-13</strong><br/>Complete the summary below using <strong>NO MORE THAN THREE WORDS</strong> from the passage for each blank.</p><p>Two types of muscles are involved in fish swimming. The majority of a fish’s body comprises the (11)………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its (12)………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from (13)……………</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Two types of muscles are involved in fish swimming. The majority of a fish’s body comprises the (11)………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its (12)………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from (13)……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 3
         }
       ]
@@ -254,7 +253,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 14-19</strong><br/>Complete the table. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</p><table><tbody><tr><td width=\"151\"><strong>Source of knowledge</strong></td><td width=\"442\"><strong>Examples </strong></td></tr><tr><td width=\"151\">Personal experience</td><td width=\"442\"><p> </p><p>Symptoms of a (14)……………..and tiredness</p><p> </p><p>Doctor’s measurement by taking (15)…………….and temperature</p><p> </p><p>Common judgement from (16)…………….around you</p><p> </p></td></tr><tr><td width=\"151\">Scientific evidence</td><td width=\"442\"><p> </p><p>Medical knowledge from the general (17)……………e.g. doctor’s medical (18)………….</p><p> </p><p>Examine the medical hypothesis with the previous drill and(19)………….</p><p> </p></td></tr></tbody></table>",
+          "legendHtml": "<table><tbody><tr><td width=\"151\"><strong>Source of knowledge</strong></td><td width=\"442\"><strong>Examples </strong></td></tr><tr><td width=\"151\">Personal experience</td><td width=\"442\"><p> </p><p>Symptoms of a (14)……………..and tiredness</p><p> </p><p>Doctor’s measurement by taking (15)…………….and temperature</p><p> </p><p>Common judgement from (16)…………….around you</p><p> </p></td></tr><tr><td width=\"151\">Scientific evidence</td><td width=\"442\"><p> </p><p>Medical knowledge from the general (17)……………e.g. doctor’s medical (18)………….</p><p> </p><p>Examine the medical hypothesis with the previous drill and(19)………….</p><p> </p></td></tr></tbody></table>",
           "wordLimit": 3,
           "table": {
             "rows": [
@@ -349,7 +348,7 @@ const test: PracticeTest = {
               "textHtml": "a reference that some people do not realize they are ill"
             }
           ],
-          "legendHtml": "<p><strong>Questions 20 – 27</strong><br/>The reading passage has nine paragraphs A-I. Which paragraph contains the following information?</p><p>20. the contrast between the nature of personal judgment and the nature of doctor’s diagnosis<br/>21. a reference of culture about pressure<br/>22. sick leave will not be permitted without the professional diagnosis<br/>23. how doctors’ opinions are regarded in society<br/>24. the illness of patients can become part of new knowledge<br/>25. a description of knowledge drawn from non-specialized sources other than personal knowledge<br/>26. an example of collective judgment from personal experience and professional doctor<br/>27. a reference that some people do not realize they are ill</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",
@@ -436,7 +435,6 @@ const test: PracticeTest = {
               "textHtml": "The possible application of the silk in civil engineering2"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-32</strong><br/>Reading passage has nine paragraphs, A-I. Which paragraph contains the following information?</p><p>28. A comparison of the ways two materials are used to replace silk-producing glands<br/>29. Predictions regarding the availability of the synthetic silk<br/>30. Ongoing research into other synthetic materials<br/>31. The research into the part of the spider that manufactures silk<br/>32. The possible application of the silk in civil engineering2</p>",
           "options": [
             "A",
             "B",
@@ -485,7 +483,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 33-37</strong><br/>Complete the flow-chart below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</p><p>• Synthetic gene grown in (33)…………….. or (34)……………..<br/>• Globules of (35)……………<br/>• Dissolved in (36)…………..<br/>• Passed through (37)…………..<br/>• To produce a solid fibre</p>",
+          "legendHtml": "<p>• Synthetic gene grown in (33)…………….. or (34)……………..<br/>\n• Globules of (35)……………<br/>\n• Dissolved in (36)…………..<br/>\n• Passed through (37)…………..<br/>\n• To produce a solid fibre</p>",
           "wordLimit": 2
         },
         {
@@ -509,7 +507,7 @@ const test: PracticeTest = {
               "textHtml": "Lewis and Dorsch co-operated in the synthetic production of silk"
             }
           ],
-          "legendHtml": "<p><strong>Questions 38-40</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 38-40 on your answer sheet, write</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                          if the statement contradicts the information<br/><strong>NOT GIVEN</strong>               if there is no information on this</p><p>38. Biosilk has already replaced nylon in parachute manufacture.<br/>39. The spider produces silk of varying strengths.<br/>40. Lewis and Dorsch co-operated in the synthetic production of silk.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

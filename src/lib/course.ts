@@ -20,7 +20,7 @@
       so week one touches Reading, Listening, Writing and Vocabulary instead
       of spending a month inside one paper. */
 
-import { STAGES, type Skill, type Stage } from '../data/lessons';
+import { STAGES, SKILLS, type Skill, type Stage } from '../data/lessons';
 import { READING_PARTS } from '../data/reading';
 import { LISTENING_PARTS } from '../data/listening';
 import { WRITING_PARTS } from '../data/writing';
@@ -141,6 +141,32 @@ export function buildCourse(): CourseModule[] {
       blurb: stage.blurb,
       lessons: inStage.map((l) => ({ ...l, position: ++position })),
       extras: stage.id === 4 ? EXAM_READINESS : [],
+    };
+  });
+}
+
+/** Every lesson grouped by section (skill), each section in its own
+    registry order (the order READING_PARTS, LISTENING_PARTS, etc. are
+    written in) rather than the interleaved stage order buildCourse() uses.
+    This backs the Course tab's "By section" view: same lessons, same
+    completion source, just grouped the way a student browsing one paper at
+    a time would expect instead of the guided round-robin path. */
+export interface CourseSection {
+  skill: Skill;
+  label: string;
+  blurb: string;
+  lessons: CourseLesson[];
+}
+
+export function buildSections(): CourseSection[] {
+  const lessons = allLessons();
+  return SKILLS.map((s) => {
+    const inSection = lessons.filter((l) => l.skill === s.id);
+    return {
+      skill: s.id,
+      label: s.label,
+      blurb: s.blurb,
+      lessons: inSection.map((l, i) => ({ ...l, position: i + 1 })),
     };
   });
 }

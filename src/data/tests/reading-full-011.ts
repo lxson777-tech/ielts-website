@@ -96,7 +96,7 @@ const test: PracticeTest = {
               "evidence": "The flowers provide food for birds, bees and other insects."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                                 if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                               if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                    if there is no information on this</span></p><p><span>1. The baobab tree has been a part of African folklore because of its symbolic representation in ancient myths.</span><br/>\n<span>2. Baobab trees are only found on the African continent.</span><br/>\n<span>3. In West Africa, the presence of a baobab tree often indicates nearby human settlements.</span><br/>\n<span>4. Baobab trees are commonly found in humid tropical rainforests.</span><br/>\n<span>5. The baobab stores water in its trunk during the rainy season to survive dry periods.</span><br/>\n<span>6. The leaves of the baobab tree can be used to make a medicinal sauce.</span><br/>\n<span>7. Baobab trees are pollinated exclusively by fruit bats.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 8-13",
@@ -152,7 +152,7 @@ const test: PracticeTest = {
               "evidence": "The tree is also a source of fuel and is used as a firebreak as well."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>USES OF THE BAOBAB TREE</span></strong></p><p><span>Fruit</span><br/>\n<span>– contains a lot of vitamin C</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be stored for a long time</span><br/>\n<span>– seeds can be used to produce oil</span></p><p><span>Leaves</span><br/>\n<span>– can be used fresh or dried</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be used to make a (8) ………….</span></p><p><span>Bark</span><br/>\n<span>– can be used to make cloth and musical instruments</span><br/>\n<span>– can be used to protect (9) ……………</span><br/>\n<span>and to treat fever</span></p><p><span>Trunk</span><br/>\n<span>– can provide (10) ……………… and water</span><br/>\n<span>– can be used to make (11) …………….</span></p><p><span>General</span><br/>\n<span>– provides (12) ………………. for animals and humans</span><br/>\n<span>– can be used to make (13) …………… to burn</span></p>",
+          "legendHtml": "<p><strong><span>USES OF THE BAOBAB TREE</span></strong></p><p><span>Fruit</span><br/>\n<span>– contains a lot of vitamin C</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be stored for a long time</span><br/>\n<span>– seeds can be used to produce oil</span></p><p><span>Leaves</span><br/>\n<span>– can be used fresh or dried</span><br/>\n<span>– can be used to treat illness</span><br/>\n<span>– can be used to make a (8) ………….</span></p><p><span>Bark</span><br/>\n<span>– can be used to make cloth and musical instruments</span><br/>\n<span>– can be used to protect (9) ……………</span><br/>\n<span>and to treat fever</span></p><p><span>Trunk</span><br/>\n<span>– can provide (10) ……………… and water</span><br/>\n<span>– can be used to make (11) …………….</span></p><p><span>General</span><br/>\n<span>– provides (12) ………………. for animals and humans</span><br/>\n<span>– can be used to make (13) …………… to burn</span></p>",
           "wordLimit": 1
         }
       ]
@@ -227,7 +227,6 @@ const test: PracticeTest = {
               "evidence": "The idea that 10,000 hours of practice will make you an expert is appealing... but their research didn't determine whether practice was the cause of that expertise."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-18</span></strong><br/>\n<span>Reading passage has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.</span></p><p><span>14. a reference to the time when a distinction was first made between two types of skills</span><br/>\n<span>15. a reference to what a particular investigation failed to do</span><br/>\n<span>16. a reference to the influence of the 10,000-hour rule outside the field of music</span><br/>\n<span>17. A reference to how the study compared achievement levels based on practice time.</span><br/>\n<span>18. a reference to a claim that was made without sufficient evidence</span></p>",
           "options": [
             "A",
             "B",
@@ -270,7 +269,7 @@ const test: PracticeTest = {
               "evidence": "estimated that the average amount that practice contributes to mastery of these is just 12 percent."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 19-22</span></strong><br/>\n<span>Look at the following statements (Questions 19-22) and the list of researchers below. Match each statement with the correct researcher, A, B or C. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.</span></p><p><strong><span>List of Researchers</span></strong><br/>\n<span>A. Ericsson and colleagues</span><br/>\n<span>B. Malcolm Gladwell</span><br/>\n<span>C. Brooke Macnamara and colleagues</span></p><p><span>19. Their research involved innovative methods of measuring practice among participants.</span><br/>\n<span>20. They made claims about the significance of practice which were not justified.</span><br/>\n<span>21. They devised a sophisticated way of measuring the development of expertise.</span><br/>\n<span>22. Their research generated an unexpected result.</span></p>",
+          "legendHtml": "<p><span>A. Ericsson and colleagues</span><br/>\n<span>B. Malcolm Gladwell</span><br/>\n<span>C. Brooke Macnamara and colleagues</span></p>",
           "options": [
             "A",
             "B",
@@ -305,7 +304,7 @@ const test: PracticeTest = {
               "evidence": "couldn't find any \"naturals\", musicians who floated effortlessly to the top... Nor could they find any \"grinds\""
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23-24</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the study of violinists undertaken by Ericsson and his colleagues?</span></p><p><span><strong>A</strong> It was widely regarded as original.</span><br/>\n<span><strong>B</strong> Its aims were innovative.</span><br/>\n<span><strong>C</strong> It produced some unexpected findings.</span><br/>\n<span><strong>D</strong> It called into question the methods of other researchers.</span><br/>\n<span><strong>E</strong> Its scope was very limited.</span></p>",
+          "legendHtml": "<p><span>Which <strong>TWO</strong> of the following statements does the writer make about the study of violinists undertaken by Ericsson and his colleagues?</span></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -359,7 +358,7 @@ const test: PracticeTest = {
               "evidence": "a group of psychologists led by Brooke Macnamara of Princeton University re-analysed data"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 25-26</span></strong><br/>\n<span>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.</span></p><p><span>Which <strong>TWO</strong> of the following statements does the writer make about the theory of deliberate practice?</span></p><p><span><strong>A</strong> It was developed by combining data from several studies.</span><br/>\n<span><strong>B</strong> It is the only theory to attempt to calculate the number of hours required for expertise.</span><br/>\n<span><strong>C</strong> It is the first theory to link the acquisition of expertise with the number of hours spent practising.</span><br/>\n<span><strong>D</strong> It fails to take account of individual differences.</span><br/>\n<span><strong>E</strong> It has been challenged by some researchers.</span></p>",
+          "legendHtml": "<p><span>Which <strong>TWO</strong> of the following statements does the writer make about the theory of deliberate practice?</span></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -476,7 +475,6 @@ const test: PracticeTest = {
               "evidence": "find ways to reduce the cost of nuclear fusion research, such as by having cheaper, more durable materials"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.</span></p><p><span>27. a description of the method used by stars to generate energy</span><br/>\n<span>28. a description of the process used to produce energy in nuclear power plants today</span><br/>\n<span>29. an explanation of the advantages of nuclear fusion over nuclear fission</span><br/>\n<span>30. a reference to the difficulty of achieving the conditions required for nuclear fusion</span><br/>\n<span>31. a reference to a nuclear fusion experiment that has been successful</span><br/>\n<span>32. a mention of the need to find a way of making nuclear fusion research more affordable</span></p>",
           "options": [
             "A",
             "B",
@@ -517,7 +515,7 @@ const test: PracticeTest = {
               "evidence": "The compression and heating cause the nuclei to fuse together, releasing energy."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 33-35</span></strong><br/>\n<span>Complete the summary using the list of words, A-K, below. Write the correct letter, A-K, in boxes 33-35 on your answer sheet.</span></p><p><strong><span>MAGNETIC CONFINEMENT</span></strong></p><p><span>In the magnetic confinement approach, a (33) ……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental (34) ……………….. showing potential for generating fusion energy.</span></p><p><strong><span>INERTIAL CONFINEMENT</span></strong></p><p><span>In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the (35) ………….. are fused together, releasing a significant amount of energy.</span></p><p><span>A. plasma</span><br/>\n<span>B. nuclei</span><br/>\n<span>C. energy</span><br/>\n<span>D. reactors</span><br/>\n<span>E. fusion</span><br/>\n<span>F. reaction</span><br/>\n<span>G. hydrogen</span><br/>\n<span>H. atoms</span><br/>\n<span>I. nuclear fission</span><br/>\n<span>J. nuclear fusion</span><br/>\n<span>K. temperature</span></p>",
+          "legendHtml": "<p><strong><span>MAGNETIC CONFINEMENT</span></strong></p><p><span>In the magnetic confinement approach, a (33) ……………….. is placed inside a magnetic field and heated. This method has been employed in various experimental (34) ……………….. showing potential for generating fusion energy.</span></p><p><strong><span>INERTIAL CONFINEMENT</span></strong></p><p><span>In the inertial confinement approach, a small pellet of hydrogen fuel is compressed and heated using lasers or other forms of energy. This extreme compression and heat triggers a nuclear reaction during which the (35) ………….. are fused together, releasing a significant amount of energy.</span></p><p><span>A. plasma</span><br/>\n<span>B. nuclei</span><br/>\n<span>C. energy</span><br/>\n<span>D. reactors</span><br/>\n<span>E. fusion</span><br/>\n<span>F. reaction</span><br/>\n<span>G. hydrogen</span><br/>\n<span>H. atoms</span><br/>\n<span>I. nuclear fission</span><br/>\n<span>J. nuclear fusion</span><br/>\n<span>K. temperature</span></p>",
           "options": [
             "A",
             "B",
@@ -572,7 +570,7 @@ const test: PracticeTest = {
               "explanation": "The passage never compares current physics understanding with what scientists previously expected, so there is no information on this."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 36-40</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>36. The California experiment was the first time nuclear fusion had ever been achieved.</span><br/>\n<span>37. Nuclear fusion could help to reduce the world’s dependence on fossil fuels.</span><br/>\n<span>38. The fuel used in nuclear fusion is rare and hard to find.</span><br/>\n<span>39. The high cost of nuclear fusion is solely attributed to its equipment.</span><br/>\n<span>40. The basic physics behind nuclear fusion is more advanced than scientists once thought.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     }

@@ -87,7 +87,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph F"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-6</strong><br/>Reading passage has seven paragraphs, A-G. Choose the correct heading for paragraphs A-F from the list of headings below.</p><p><strong>List of Headings</strong><br/>i. Action already taken by the United Nations<br/>ii. Marketing the hydrogen car<br/>iii. Making the new technology available worldwide<br/>iv. Some negative predictions from one group of experts<br/>v. How the new vehicle technology works<br/>vi. The history of fuel-cell technology<br/>vii. A holistic view of climatic change<br/>viii. Locating the essential ingredient<br/>ix. Sustaining car manufacture</p><p>1. Paragraph A<br/>2. Paragraph B<br/>3. Paragraph C<br/>4. Paragraph D<br/>5. Paragraph E<br/>6. Paragraph F</p>",
+          "legendHtml": "<p>i. Action already taken by the United Nations<br/>\nii. Marketing the hydrogen car<br/>\niii. Making the new technology available worldwide<br/>\niv. Some negative predictions from one group of experts<br/>\nv. How the new vehicle technology works<br/>\nvi. The history of fuel-cell technology<br/>\nvii. A holistic view of climatic change<br/>\nviii. Locating the essential ingredient<br/>\nix. Sustaining car manufacture</p>",
           "options": [
             "i",
             "ii",
@@ -130,7 +130,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-10</strong><br/>Complete the sentences below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</p><p>7. In the late nineteenth century, the car industry invested in the development of the ………………… , rather than fuel-cell technology.<br/>8. Ford engineers predict that they will eventually design an almost ………………….. car.<br/>9. While a fuel-cell lasts longer, some aspects of it are comparable to a ……………….<br/>10. Fuel-cells can come in many sizes and can be used in power stations and in …………………… as well as in vehicles.</p>",
+          "legendHtml": "<p>7. In the late nineteenth century, the car industry invested in the development of the ………………… , rather than fuel-cell technology.<br/>\n8. Ford engineers predict that they will eventually design an almost ………………….. car.<br/>\n9. While a fuel-cell lasts longer, some aspects of it are comparable to a ……………….<br/>\n10. Fuel-cells can come in many sizes and can be used in power stations and in …………………… as well as in vehicles.</p>",
           "wordLimit": 2
         },
         {
@@ -159,7 +159,7 @@ const test: PracticeTest = {
               "textHtml": "More funding is necessary to ensure the success of the fuel-cell vehicle industry"
             }
           ],
-          "legendHtml": "<p><strong>Questions 11-14</strong><br/>Do the following statements agree, with the information given in reading passage? In boxes 11-14 on your answer sheet, write</p><p><strong>TRUE</strong>                                if the statement agrees with the information<br/><strong>FALSE</strong>                              if the statement contradicts the information<br/><strong>NOT GIVEN</strong>                  if there is no information on this</p><p>11. Using electricity produced by burning fossil fuels to access sources of hydrogen may increase the positive effect of the fuel-cell.<br/>12. The oil company Statoil in Norway owns gas wells in other parts of the world.<br/>13. Public transport is leading the way in the application of fuel-cell technology.<br/>14. More funding is necessary to ensure the success of the fuel-cell vehicle industry.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -236,7 +236,7 @@ const test: PracticeTest = {
               "textHtml": "Cholesterol and smoking cause heart attacks"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-18</strong><br/>Read the following statements 15-18. According to the reading passage, Write your answers in the spaces numbered 15-18 on the answer sheet.</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                           if the statement contradicts the information<br/><strong>NOT GIVEN</strong>               if there is no information on this</p><p>15. Unemployed Germans have a higher risk of heart attack than employed Germans.<br/>16. Unemployed Italians have a lower risk of heart attack than unemployed Germans.<br/>17. Germans risk heart attack because of their high consumption of fatty food.<br/>18. Cholesterol and smoking cause heart attacks.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 19-27",
@@ -289,7 +289,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph I"
             }
           ],
-          "legendHtml": "<p><strong>Questions 19-27</strong><br/>Read reading passage and from the list of headings below, select the best heading for each paragraph A-I. Write the appropriate number i-ix, in the spaces numbered 6-14 on the answer sheet. Use each heading ONCE only.</p><p><strong>List of headings</strong><br/>i. Exact cause of heart attacks<br/>ii. The safest day<br/>iii. Breathless, sweaty and crushed<br/>iv. Reducing heart attack hazard<br/>v. High-risk Monday<br/>vi. Mondays: riskier than food and way of life<br/>vii. Jobless but safer<br/>viii. Elderly also at risk<br/>ix. Bodily adaptations</p><p>19. Paragraph A<br/>20. Paragraph B<br/>21. Paragraph C<br/>22. Paragraph D<br/>23. Paragraph E<br/>24. Paragraph F<br/>25. Paragraph G<br/>26. Paragraph H<br/>27. Paragraph I</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>i. Exact cause of heart attacks<br/>\nii. The safest day<br/>\niii. Breathless, sweaty and crushed<br/>\niv. Reducing heart attack hazard<br/>\nv. High-risk Monday<br/>\nvi. Mondays: riskier than food and way of life<br/>\nvii. Jobless but safer<br/>\nviii. Elderly also at risk<br/>\nix. Bodily adaptations</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "i",
             "ii",
@@ -381,7 +381,7 @@ const test: PracticeTest = {
               "textHtml": "Parents who took part in GUiNZ believe New Zealand is a good place to raise children"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-33</strong><br/>Do the following statements agree with the information given in passage? In boxes 28-33on your answer sheet, write:</p><p><strong>TRUE</strong>                         if the statement agrees with the information<br/><strong>FALSE</strong>                       if the statement contradicts the information<br/><strong>NOT GIVEN</strong>            if there is no information on this</p><p>28. Findings from studies like GUiNZ will inform public policy.<br/>29. Exactly 6,846 babies formed the GUiNZ cohort.<br/>30. GUiNZ will probably end when the children reach ten.<br/>31. Eventually, there will be 21 reports in GUiNZ.<br/>32. So far, GUiNZ has shown New Zealanders today to be rather similar to those of 25 years ago.<br/>33. Parents who took part in GUiNZ believe New Zealand is a good place to raise children.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 34-40",
@@ -424,7 +424,7 @@ const test: PracticeTest = {
               "textHtml": "This suggests having a teenage mother could negatively aﬀect a child"
             }
           ],
-          "legendHtml": "<p><strong>Questions 34-40</strong><br/>Classify the following things that relate to:</p><p>Write the correct letter A, B, C, or D, in boxes 34-40 on your answer sheet.</p><p><strong>A</strong>. Report 1<br/><strong>B</strong>. Report 2<br/><strong>C</strong>. Report 3<br/><strong>D</strong>. Report 4</p><p>34. This is unique because it contains interviews with both parents.<br/>35. This looks at how children might be at risk.<br/>36. This suggests having a child may lead to financial hardship.<br/>37. Information for this came from direct observations of children.<br/>38. This shows many children use electronic devices.<br/>39. This was modelled on criteria used in Western Europe.<br/>40. This suggests having a teenage mother could negatively aﬀect a child.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Write the correct letter A, B, C, or D, in boxes 34-40 on your answer sheet.</p><p><strong>A</strong>. Report 1<br/>\n<strong>B</strong>. Report 2<br/>\n<strong>C</strong>. Report 3<br/>\n<strong>D</strong>. Report 4</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",

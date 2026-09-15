@@ -110,7 +110,7 @@ const test: PracticeTest = {
               "evidence": "It’s thought that manatees use their muscular diaphragm and breathing to adjust their buoyancy."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-6</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer.</span></p><p><strong><span>Manatees</span></strong></p><p><strong><span>Appearance</span></strong><br/>\n<span>• look similar to dugongs, but with a differently shaped (1) …………….</span></p><p><strong><span>Movement</span></strong><br/>\n<span>• have fewer neck bones than most mammals</span><br/>\n<span>• need to use their (2) …………… to help to turn their bodies around in order to look sideways</span><br/>\n<span>• sense vibrations in the water by means of (3) ………………. on their skin</span></p><p><strong><span>Feeding</span></strong><br/>\n<span>• eat mainly aquatic vegetation, such as (4) …………</span><br/>\n<span>• grasp and pull up plants with their (5) ……………</span></p><p><strong><span>Breathing</span></strong><br/>\n<span>• come to the surface for air every 2-4 minutes when awake and every 15-20 while sleeping</span><br/>\n<span>• may regulate the (6) ………… of their bodies by using muscles of diaphragm to store air internally</span></p>",
+          "legendHtml": "<p><strong><span>Manatees</span></strong></p><p><strong><span>Appearance</span></strong><br/>\n<span>• look similar to dugongs, but with a differently shaped (1) …………….</span></p><p><strong><span>Movement</span></strong><br/>\n<span>• have fewer neck bones than most mammals</span><br/>\n<span>• need to use their (2) …………… to help to turn their bodies around in order to look sideways</span><br/>\n<span>• sense vibrations in the water by means of (3) ………………. on their skin</span></p><p><strong><span>Feeding</span></strong><br/>\n<span>• eat mainly aquatic vegetation, such as (4) …………</span><br/>\n<span>• grasp and pull up plants with their (5) ……………</span></p><p><strong><span>Breathing</span></strong><br/>\n<span>• come to the surface for air every 2-4 minutes when awake and every 15-20 while sleeping</span><br/>\n<span>• may regulate the (6) ………… of their bodies by using muscles of diaphragm to store air internally</span></p>",
           "wordLimit": 1
         },
         {
@@ -165,7 +165,7 @@ const test: PracticeTest = {
               "evidence": "However, laws in certain parts of Florida now limit boat speeds during winter, allowing slow-moving manatees more time to respond."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 7-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                              if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                            if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                 if there is no information on this</span></p><p><span>7. West Indian manatees can be found in a variety of different aquatic habitats.</span><br/>\n<span>8. The Florida manatee lives in warmer waters than the Antillean manatee.</span><br/>\n<span>9. The African manatee’s range is limited to coastal waters between the West African countries of Mauritania and Angola.</span><br/>\n<span>10. The extent of the loss of Amazonian manatees in the mid-twentieth century was only revealed many years later.</span><br/>\n<span>11. It is predicted that West Indian manatee populations will fall in the coming decades.</span><br/>\n<span>12. The risk to manatees from entanglement and plastic consumption increased significantly in the period 2009-2020.</span><br/>\n<span>13. There is some legislation in place which aims to reduce the likelihood of boat strikes on manatees in Florida.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -231,7 +231,6 @@ const test: PracticeTest = {
               "evidence": "Research involving brain imaging has found that areas of the brain linked to detection of threats and emotion regulation are actually different in people who chronically procrastinate compared to those who don’t procrastinate frequently."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-16</span></strong><br/>\n<span>Reading passage has six paragraphs, A-F. Which paragraph contains the following information? NB You may use any letter more than once.</span></p><p><span>14. mention of false assumptions about why people procrastinate</span><br/>\n<span>15. reference to the realisation that others also procrastinate</span><br/>\n<span>16. neurological evidence of a link between procrastination and emotion</span></p>",
           "options": [
             "A",
             "B",
@@ -295,7 +294,7 @@ const test: PracticeTest = {
               "evidence": "Afterwards, people tend to be left with a sense of guilt that not only increases their negative mood, but also reinforces their tendency to procrastinate."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 17-22</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>What makes us procrastinate?</span></strong></p><p><span>Many people think that procrastination is the result of (17) ……………… Others believe it to be the result of an inability to organise time efficiently.</span></p><p><span>But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel (18) ……………. when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying (19) ……………….</span></p><p><span>Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take (20) ……………. might be a typical example of one such task.</span></p><p><span>People who are likely to procrastinate tend to be either (21) ……………. or those with low self-esteem.</span></p><p><span>Procrastination is only a short-term measure for managing emotions. It’s often followed by a feeling of (22) ……………, which worsens our mood and leads to more procrastination.</span></p>",
+          "legendHtml": "<p><strong><span>What makes us procrastinate?</span></strong></p><p><span>Many people think that procrastination is the result of (17) ……………… Others believe it to be the result of an inability to organise time efficiently.</span></p><p><span>But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel (18) ……………. when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying (19) ……………….</span></p><p><span>Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take (20) ……………. might be a typical example of one such task.</span></p><p><span>People who are likely to procrastinate tend to be either (21) ……………. or those with low self-esteem.</span></p><p><span>Procrastination is only a short-term measure for managing emotions. It’s often followed by a feeling of (22) ……………, which worsens our mood and leads to more procrastination.</span></p>",
           "wordLimit": 1
         },
         {
@@ -326,7 +325,7 @@ const test: PracticeTest = {
               "evidence": "In fact, in one US survey of over 22,000 employees, participants who said they regularly procrastinated had less annual income and less employment stability."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23 and 24</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> comparisons between employees who often procrastinate and those who do not are mentioned in the text?</span><br/>\n<span>A. Their salaries are lower.</span><br/>\n<span>B. The quality of their work is inferior.</span><br/>\n<span>C. They don’t keep their jobs for as long.</span><br/>\n<span>D. They don’t enjoy their working lives as much.</span><br/>\n<span>E. They have poorer relationships with colleagues.</span></p>",
+          "legendHtml": "<p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> comparisons between employees who often procrastinate and those who do not are mentioned in the text?</span></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -379,7 +378,7 @@ const test: PracticeTest = {
               "evidence": "There are a number of evidence-based strategies that can help us fend off distractions that can occupy our minds when we should be focusing on the thing we should be getting on with."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 25 and 26</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> recommendations for getting out of a cycle of procrastination does the writer give?</span><br/>\n<span>A. not judging ourselves harshly</span><br/>\n<span>B. setting ourselves manageable aims</span><br/>\n<span>C. rewarding ourselves for tasks achieved</span><br/>\n<span>D. prioritising tasks according to their importance</span><br/>\n<span>E. avoiding things that stop us concentrating on our tasks</span></p>",
+          "legendHtml": "<p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> recommendations for getting out of a cycle of procrastination does the writer give?</span></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -487,7 +486,7 @@ const test: PracticeTest = {
               "evidence": "“It might be a triangle, or a blob, or something shaped like Texas."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Do the following statements agree with the claims of the writer in reading passage?</span></p><p><span><strong>YES</strong>                                 if the statement agrees with the claims of the writer</span><br/>\n<span><strong>NO</strong>                                    if the statement contradicts the claims of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>27. When DeJesus first used ABS, he shared decision-making about strikes with it.</span><br/>\n<span>28. MLB considered it necessary to amend the size of the strike zone when criticisms were received from players.</span><br/>\n<span>29. MLB is keen to justify the money spent on improving the accuracy of ABS’s calculations.</span><br/>\n<span>30. The hundred-mile-an-hour fastball led to a more exciting style of play.</span><br/>\n<span>31. The differing proposals for alterations to the baseball bat led to fierce debate on Sword’s team.</span><br/>\n<span>32.ABSmakes changes to the shape of the strike zone feasible.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the claims of the writer</dd><dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 33-37",
@@ -535,7 +534,7 @@ const test: PracticeTest = {
               "evidence": "Nobody said a word."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 33-37</span></strong><br/>\n<span>Complete the summary using the list of phrases, A-H, below.</span></p><p><strong><span>Calls by the umpire</span></strong></p><p><span>Even after ABS was developed, MLB still wanted human umpires to shout out decisions as they had in their (33) …………… The umpire’s job had, at one time, required a (34) …………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a (35) ………… extending approximately from the batter’s knee to his chest. In the past, (36) ……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with (37) ……………</span></p><p><span>A. pitch boundary</span><br/>\n<span>B. numerous disputes</span><br/>\n<span>C. team tactics</span><br/>\n<span>D. subjective assessment</span><br/>\n<span>E. widespread approval</span><br/>\n<span>F. former roles</span><br/>\n<span>G. total silence</span><br/>\n<span>H. perceived area</span></p>"
+          "legendHtml": "<p><strong><span>Calls by the umpire</span></strong></p><p><span>Even after ABS was developed, MLB still wanted human umpires to shout out decisions as they had in their (33) …………… The umpire’s job had, at one time, required a (34) …………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a (35) ………… extending approximately from the batter’s knee to his chest. In the past, (36) ……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with (37) ……………</span></p><p><span>A. pitch boundary</span><br/>\n<span>B. numerous disputes</span><br/>\n<span>C. team tactics</span><br/>\n<span>D. subjective assessment</span><br/>\n<span>E. widespread approval</span><br/>\n<span>F. former roles</span><br/>\n<span>G. total silence</span><br/>\n<span>H. perceived area</span></p>"
         },
         {
           "title": "Questions 38-40",
@@ -581,8 +580,7 @@ const test: PracticeTest = {
               "explanation": "Noe and Russo both suggest that perfect accuracy is not the same as enjoyment, since Russo says perfect would be weird and boring.",
               "evidence": "I think perfect would be weird."
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 38-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>38. What does the writer suggest about ABS in the fifth paragraph?</span><br/>\n<span>A. It is bound to make key decisions that are wrong.</span><br/>\n<span>B. It may reduce some of the appeal of the game.</span><br/>\n<span>C. It will lead to the disappearance of human umpires.</span><br/>\n<span>D. It may increase calls for the rules of baseball to be changed.</span></p><p><span>39. Morgan Sword says that the introduction of ABS</span><br/>\n<span>A. was regarded as an experiment without a guaranteed outcome.</span><br/>\n<span>B. was intended to keep up with developments in other sports.</span><br/>\n<span>C. was a response to changing attitudes about the role of sport.</span><br/>\n<span>D. was an attempt to ensure baseball retained a young audience.</span></p><p><span>40. Why does the writer include the views of Noe and Russo?</span><br/>\n<span>A. to show that attitudes to technology vary widely</span><br/>\n<span>B. to argue that people have unrealistic expectations of sport</span><br/>\n<span>C. to indicate that accuracy is not the same thing as enjoyment</span><br/>\n<span>D. to suggest that the number of baseball fans needs to increase</span></p>"
+          ]
         }
       ]
     }

@@ -104,7 +104,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-7</strong><br/>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.</p><p><strong>Britain’s Industrial Revolution</strong></p><p><strong>Steam power</strong><br/>• Newcomen’s steam engine was used in mines to remove water.<br/>• In Watt and Boulton’s steam engine, the movement of the (1) ……………… was linked to a gear system.<br/>• A greater supply of (2) ………………… was required to power steam engines.</p><p><strong>Textile industry</strong><br/>• Before the Industrial Revolution, spinners and weavers worked at home and in (3) ……………….<br/>• Not as much (4) ………………… was needed to produce cloth once the spinning jenny and power loom were invented.</p><p><strong>Iron industry</strong><br/>• Smelting of iron ore with coke resulted in material that was better (5) ………………<br/>• Demand for iron increased with the growth of the (6) …………………</p><p><strong>Communications</strong><br/>• Cooke and Wheatstone patented the first telegraphy system.<br/>• The telegraphy system was used to prevent locomotives colliding.</p><p><strong>Urbanisation</strong><br/>• Small towns turned into cities very quickly.<br/>• The new cities were dirty, crowded and lacked sufficient (7) ……………</p>",
+          "legendHtml": "<p><strong>Britain’s Industrial Revolution</strong></p><p><strong>Steam power</strong><br/>\n• Newcomen’s steam engine was used in mines to remove water.<br/>\n• In Watt and Boulton’s steam engine, the movement of the (1) ……………… was linked to a gear system.<br/>\n• A greater supply of (2) ………………… was required to power steam engines.</p><p><strong>Textile industry</strong><br/>\n• Before the Industrial Revolution, spinners and weavers worked at home and in (3) ……………….<br/>\n• Not as much (4) ………………… was needed to produce cloth once the spinning jenny and power loom were invented.</p><p><strong>Iron industry</strong><br/>\n• Smelting of iron ore with coke resulted in material that was better (5) ………………<br/>\n• Demand for iron increased with the growth of the (6) …………………</p><p><strong>Communications</strong><br/>\n• Cooke and Wheatstone patented the first telegraphy system.<br/>\n• The telegraphy system was used to prevent locomotives colliding.</p><p><strong>Urbanisation</strong><br/>\n• Small towns turned into cities very quickly.<br/>\n• The new cities were dirty, crowded and lacked sufficient (7) ……………</p>",
           "wordLimit": 1
         },
         {
@@ -143,7 +143,7 @@ const test: PracticeTest = {
               "textHtml": "There was some sympathy among local people for the Luddites who were arrested near Huddersfield"
             }
           ],
-          "legendHtml": "<p><strong>Questions 8-13</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 8-13 on your answer sheet, write</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                          if the statement contradicts the information<br/><strong>NOT GIVEN</strong>               if there is no information on this</p><p>8. Britain’s canal network grew rapidly so that more goods could be transported around the country.<br/>9. Costs in the iron industry rose when the technique of smelting iron ore with coke was introduced.<br/>10. Samuel Morse’s communication system was more reliable than that developed by William Cooke and Charles Wheatstone.<br/>11. The economic benefits of industrialisation were limited to certain sectors of society.<br/>12. Some skilled weavers believed that the introduction of the new textile machines would lead to job losses.<br/>13. There was some sympathy among local people for the Luddites who were arrested near Huddersfield.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -213,7 +213,6 @@ const test: PracticeTest = {
               "textHtml": "mention of people who can influence how athletes perceive their stress responses"
             }
           ],
-          "legendHtml": "<p><strong>Questions 14-18</strong><br/>Reading passage has six paragraphs, A-F. Which paragraph contains the following information? Write the correct letter, A-F, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.</p><p>14. reference to two chemical compounds which impact on performance<br/>15. examples of strategies for minimising the effects of stress<br/>16. how a sportsperson accounted for their own experience of stress<br/>17. study results indicating links between stress responses and performance<br/>18. mention of people who can influence how athletes perceive their stress responses</p>",
           "options": [
             "A",
             "B",
@@ -256,7 +255,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 19-22</strong><br/>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 19-22 on your answer sheet.</p><p>19. Performance stress involves many demands on the athlete, for example, coping with the possible risk of ………………<br/>20. Cortisol can cause tennis players to produce fewer good ………………<br/>21. Psychologists can help athletes to view their physiological responses as the effect of a positive feeling such as ……………….<br/>22 ……………………….is an example of a psychological technique which can reduce an athlete’s stress responses.</p>",
+          "legendHtml": "<p>19. Performance stress involves many demands on the athlete, for example, coping with the possible risk of ………………<br/>\n20. Cortisol can cause tennis players to produce fewer good ………………<br/>\n21. Psychologists can help athletes to view their physiological responses as the effect of a positive feeling such as ……………….<br/>\n22 ……………………….is an example of a psychological technique which can reduce an athlete’s stress responses.</p>",
           "wordLimit": 1
         },
         {
@@ -283,7 +282,7 @@ const test: PracticeTest = {
               "answerPairId": "reading-293-q23-q24"
             }
           ],
-          "legendHtml": "<p><strong>Questions 23 and 24</strong><br/>Choose TWO letters, A-E. Write the correct letters in boxes 23 and 24 on your answer sheet.</p><p>Which TWO facts about Emma Raducanu’s withdrawal from the Wimbledon tournament are mentioned in the text?</p><p><strong>A</strong> the stage at which she dropped out of the tournament<br/><strong>B</strong> symptoms of her performance stress at the tournament<br/><strong>C</strong> measures which she had taken to manage her stress levels<br/><strong>D</strong> aspects of the Wimbledon tournament which increased her stress levels<br/><strong>E</strong> reactions to her social media posts about her experience at Wimbledon</p>",
+          "legendHtml": "<p><strong>Questions 23 and 24</strong></p><p>Which TWO facts about Emma Raducanu’s withdrawal from the Wimbledon tournament are mentioned in the text?</p>",
           "selectCount": 2,
           "choices": [
             {
@@ -332,7 +331,7 @@ const test: PracticeTest = {
               "answerPairId": "reading-293-q25-q26"
             }
           ],
-          "legendHtml": "<p><strong>Questions 25 and 26</strong><br/>Choose TWO letters, A-E. Write the correct letters in boxes 25 and 26 on your answer sheet.</p><p>Which TWO facts about anxiety are mentioned in Paragraph E of the text?</p><p><strong>A</strong> the factors which determine how severe it may be<br/><strong>B</strong> how long it takes for its effects to become apparent<br/><strong>C</strong> which of its symptoms is most frequently encountered<br/><strong>D</strong> the types of athletes who are most likely to suffer from it<br/><strong>E</strong> the harm that can result if athletes experience it too often</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Questions 25 and 26</strong></p><p>Which TWO facts about anxiety are mentioned in Paragraph E of the text?</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -439,7 +438,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 27-32</strong><br/>Complete the summary using the list of phrases, A-K, below. Write the correct letter, A-K, in boxes 27-32 on your answer sheet.</p><p><strong>Maryann Mirzakhani</strong></p><p>Maryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be (30) ……………… when things did not go smoothly. She said she got the greatest (31) ……………… from making ground-breaking discoveries and in fact she was responsible for some extremely (32) ……………… mathematical studies.</p><p><strong>A</strong> appeal<br/><strong>B</strong> determined<br/><strong>C</strong> intrigued<br/><strong>D</strong> single<br/><strong>E</strong> achievement<br/><strong>F</strong> devoted<br/><strong>G</strong> involved<br/><strong>H</strong> unique<br/><strong>I</strong> innovative<br/><strong>J</strong> satisfaction<br/><strong>K</strong> intent</p>"
+          "legendHtml": "<p><strong>Maryann Mirzakhani</strong></p><p>Maryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be (30) ……………… when things did not go smoothly. She said she got the greatest (31) ……………… from making ground-breaking discoveries and in fact she was responsible for some extremely (32) ……………… mathematical studies.</p><p><strong>A</strong> appeal<br/>\n<strong>B</strong> determined<br/>\n<strong>C</strong> intrigued<br/>\n<strong>D</strong> single<br/>\n<strong>E</strong> achievement<br/>\n<strong>F</strong> devoted<br/>\n<strong>G</strong> involved<br/>\n<strong>H</strong> unique<br/>\n<strong>I</strong> innovative<br/>\n<strong>J</strong> satisfaction<br/>\n<strong>K</strong> intent</p>"
         },
         {
           "title": "Questions 33-37",
@@ -472,7 +471,7 @@ const test: PracticeTest = {
               "textHtml": "Einstein put his success down to the speed at which he dealt with scientific questions"
             }
           ],
-          "legendHtml": "<p><strong>Questions 33-37</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 33-37 on your answer sheet, write</p><p><strong>YES</strong>                                 if the statement agrees with the claims of the writer<br/><strong>NO</strong>                                   if the statement contradicts the claims of the writer<br/><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</p><p>33. Many people who ended up winning prestigious intellectual prizes only reached an average standard when young,<br/>34. Einstein’s failures as a young man were due to his lack of confidence.<br/>35. It is difficult to reach agreement on whether some children are actually born gifted.<br/>36. Einstein was upset by the public’s view of his life’s work.<br/>37. Einstein put his success down to the speed at which he dealt with scientific questions.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the claims of the writer</dd><dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 38-40",
@@ -512,8 +511,7 @@ const test: PracticeTest = {
                 "the guidance of someone who recognises the benefits of learning"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 38-40</strong><br/>Choose the correct letter, A, B, C or D. Write the correct letter in boxes 38-40 on your answer sheet.</p><p>38. What does Eyre believe is needed for children to equal ‘gifted’ standards?<br/><strong>A</strong> strict discipline from the teaching staff<br/><strong>B</strong> assistance from their peers in the classroom<br/><strong>C</strong> the development of a spirit of inquiry towards their studies<br/><strong>D</strong> the determination to surpass everyone else’s achievements</p><p>39. What is the result of Ericsson’s research?<br/><strong>A</strong> Very gifted students do not need to work on improving memory skills.<br/><strong>B</strong> Being born with a special gift is not the key factor in becoming expert.<br/><strong>C</strong> Including time for physical exercise is crucial in raising performance.<br/><strong>D</strong> 10,000 hours of relevant and demanding work will create a genius.</p><p>40. In the penultimate paragraph, it is stated the key to some deprived children’s success is<br/><strong>A</strong> a regular and nourishing diet at home.<br/><strong>B</strong> the loving support of more than one parent.<br/><strong>C</strong> a community which has well-funded facilities for learning.<br/><strong>D</strong> the guidance of someone who recognises the benefits of learning.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          ]
         }
       ]
     }

@@ -91,7 +91,7 @@ const test: PracticeTest = {
               "textHtml": "It is thought that the Kelo shelters were occupied continuously until about 1,000 years ago"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-7</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 1-7 on your answer sheet, write</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                          if the statement contradicts the information<br/><strong>NOT GIVEN</strong>              if there is no information on this</p><p>1. Archaeological research had taken place on the island of Obi before the arrival of Ceri Shipton and his colleagues.<br/>2. At the Kelo sites, the researchers found the first clam shell axes ever to be discovered in the region.<br/>3. The size of Obi today is less than it was 18,000 years ago.<br/>4. A change in the climate around 11,700 years ago had a greater impact on Obi than on the surrounding islands.<br/>5. The researchers believe there is a connection between warmer, wetter weather and a change in the material used to make axes.<br/>6. Shipton’s team were surprised to find evidence of the Obi islanders’ hunting practices.<br/>7. It is thought that the Kelo shelters were occupied continuously until about 1,000 years ago.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 8-13",
@@ -135,7 +135,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 8-13</strong><br/>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.</p><p><strong>Archaeological findings on Obi</strong></p><p>Excavations of rock shelters inside (8) ………………… near the village of Kelo revealed:</p><p>• axes from around 14,000 years ago, probably used to make canoes<br/>• axes made out of (9) ………… .dating from around 11,700 years ago<br/>• (10) ………………… of an animal: evidence of what ancient islanders ate<br/>• evidence of travel between islands:<br/>– obsidian: a material that is not found naturally on Obi<br/>– (11) ………………. which resembled ones found on other islands.</p><p>It is thought that from 8,000 years ago, Obi islanders:<br/>• may have switched from hunting to fishing<br/>• had (12) …………………… as well as items made out of metal<br/>• probably took part in the production and sale of (13) ……………</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Archaeological findings on Obi</strong></p><p>Excavations of rock shelters inside (8) ………………… near the village of Kelo revealed:</p><p>• axes from around 14,000 years ago, probably used to make canoes<br/>\n• axes made out of (9) ………… .dating from around 11,700 years ago<br/>\n• (10) ………………… of an animal: evidence of what ancient islanders ate<br/>\n• evidence of travel between islands:<br/>\n– obsidian: a material that is not found naturally on Obi<br/>\n– (11) ………………. which resembled ones found on other islands.</p><p>It is thought that from 8,000 years ago, Obi islanders:<br/>\n• may have switched from hunting to fishing<br/>\n• had (12) …………………… as well as items made out of metal<br/>\n• probably took part in the production and sale of (13) ……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -209,7 +209,6 @@ const test: PracticeTest = {
               "textHtml": "mention of the cultural significance of wetlands"
             }
           ],
-          "legendHtml": "<p><strong>Questions 14-17</strong><br/>Reading passage has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 14-17 on your answer sheet.</p><p>14. reference to the need to ensure that inhabitants of wetland regions continue to benefit from them<br/>15. the proportion of wetlands which have already been lost<br/>16. reference to the idea that people are beginning to appreciate the value of wetlands<br/>17. mention of the cultural significance of wetlands</p>",
           "options": [
             "A",
             "B",
@@ -257,7 +256,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 18-22</strong><br/>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 18-22 on your answer sheet.</p><p>18. Peatlands which have been drained begin to release ………………. instead of storing it.<br/>19. Once peatland areas have been cleared ……………… are more likely to occur.<br/>20. Clearing peatland forests to make way for oil palm plantations destroys the ………………of the local environment.<br/>21. Water is drained out of peatlands through the ………………… which are created by logging companies.<br/>22. Draining peatlands leads to ……………… ; a serious problem which can<br/>eventually result in coastal flooding and land loss.</p>",
+          "legendHtml": "<p>18. Peatlands which have been drained begin to release ………………. instead of storing it.<br/>\n19. Once peatland areas have been cleared ……………… are more likely to occur.<br/>\n20. Clearing peatland forests to make way for oil palm plantations destroys the ………………of the local environment.<br/>\n21. Water is drained out of peatlands through the ………………… which are created by logging companies.<br/>\n22. Draining peatlands leads to ……………… ; a serious problem which can<br/>\neventually result in coastal flooding and land loss.</p>",
           "wordLimit": 1
         },
         {
@@ -286,7 +285,7 @@ const test: PracticeTest = {
               "textHtml": "Initiatives to reverse environmental damage need not be complex. List of Experts A Matthew McCartney B Pieter van Eijk C Marcel Silvius D Dave Tickner"
             }
           ],
-          "legendHtml": "<p><strong>Questions 23-26</strong><br/>Look at the following statements (Questions 23-26) and the list of experts below. Match each statement with the correct expert, A-D. Write the correct letter, A-D, in boxes 23-26 on your answer sheet.</p><p>23. Communities living in wetland regions must be included in discussions about the future of these areas.<br/>24. Official policies towards wetlands vary from one nation to the next.<br/>25. People cause harm to wetlands without having any intention to do so.<br/>26. Initiatives to reverse environmental damage need not be complex.</p><p><strong>List of Experts</strong><br/><strong>A</strong> Matthew McCartney<br/><strong>B</strong> Pieter van Eijk<br/><strong>C</strong> Marcel Silvius<br/><strong>D</strong> Dave Tickner</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Matthew McCartney<br/>\n<strong>B</strong> Pieter van Eijk<br/>\n<strong>C</strong> Marcel Silvius<br/>\n<strong>D</strong> Dave Tickner</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",
@@ -386,8 +385,7 @@ const test: PracticeTest = {
                 "It is something few people need to worry about"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 27-30</strong><br/>Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-30 on your answer sheet.</p><p>27. What does the reader learn about the conversation in the first paragraph?<br/><strong>A</strong> The speakers are communicating in different languages.<br/><strong>B</strong> Neither of the speakers is familiar with their environment.<br/><strong>C</strong> The topic of the conversation is difficult for both speakers.<br/><strong>D</strong> Aspects of the conversation are challenging for both speakers.</p><p>28. What assists the electronic translator during lectures at Karlsruhe Institute of Technology?<br/><strong>A</strong> the repeated content of lectures<br/><strong>B</strong> the students’ reading skills<br/><strong>C</strong> the languages used<br/><strong>D</strong> the lecturers’ technical ability</p><p>29. When referring to The Hitchhiker’s Guide to the Galaxy, the writer suggests that<br/><strong>A</strong> the Babel fish was considered undesirable at the time.<br/><strong>B</strong> this book was not seriously intending to predict the future.<br/><strong>C</strong> artificial speech translation was not a surprising development.<br/><strong>D</strong> some speech translation techniques are better than others.</p><p>30. What does the writer say about sharing earpieces?<br/><strong>A</strong> It is something people will get used to doing.<br/><strong>B</strong> The reluctance to do this is understandable.<br/><strong>C</strong> The equipment will be unnecessary in the future.<br/><strong>D</strong> It is something few people need to worry about.</p>"
+          ]
         },
         {
           "title": "Questions 31-34",
@@ -419,7 +417,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 31-34</strong><br/>Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.</p><p>31. Speech translation methods are developing fast in Japan<br/>32. TV interviews that use translation voiceover methods are successful<br/>33. Future translation systems should address people appropriately<br/>34. Users may be able to maintain their local customs</p><p><strong>A</strong> but there are concerns about this.<br/><strong>B</strong> as systems do not need to conform to standard practices.<br/><strong>C</strong> but they are far from perfect.<br/><strong>D</strong> despite the noise issues.<br/><strong>E</strong> because translation is immediate.<br/><strong>F</strong> and have an awareness of good manners.</p>"
+          "legendHtml": "<p>31. Speech translation methods are developing fast in Japan<br/>\n32. TV interviews that use translation voiceover methods are successful<br/>\n33. Future translation systems should address people appropriately<br/>\n34. Users may be able to maintain their local customs</p><p><strong>A</strong> but there are concerns about this.<br/>\n<strong>B</strong> as systems do not need to conform to standard practices.<br/>\n<strong>C</strong> but they are far from perfect.<br/>\n<strong>D</strong> despite the noise issues.<br/>\n<strong>E</strong> because translation is immediate.<br/>\n<strong>F</strong> and have an awareness of good manners.</p>"
         },
         {
           "title": "Questions 35-40",
@@ -457,7 +455,7 @@ const test: PracticeTest = {
               "textHtml": "As far as language is concerned, there is a difference between people’s social and practical needs"
             }
           ],
-          "legendHtml": "<p><strong>Questions 35-40</strong><br/>Do the following statements agree with the views of the writer in reading passage? In boxes 35-40 on your answer sheet, write</p><p><strong>YES</strong>                           if the statement agrees with the views of the writer<br/><strong>NO</strong>                             if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>          if it is impossible to say what the writer thinks about this</p><p>35. Language translation systems will be seen as very useful throughout the academic and professional worlds.<br/>36. The overall value of automated translation to family life is yet to be shown.<br/>37. Automated translation could make life more difficult for immigrant families.<br/>38. Visual aspects of language translation are being considered by scientists.<br/>39. International scientists have found English easier to translate into other languages than Latin.<br/>40. As far as language is concerned, there is a difference between people’s social and practical needs.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

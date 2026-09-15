@@ -121,7 +121,7 @@ const test: PracticeTest = {
               "evidence": "By 1953, 33 million US families owned a refrigerator, and manufacturers were gradually increasing the size of the freezer compartments in them."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The history of frozen food</span></strong></p><p><strong><span>2,000 years ago, South America</span></strong><br/>\n<span>People conserved the nutritional value of (1) ……………, using a method of freezing then drying.</span></p><p><strong><span>1851, USA</span></strong><br/>\n<span>• (2) ……………… was kept cool by ice during transportation in specially adapted trains.</span></p><p><strong><span>1880, Australia</span></strong><br/>\n<span>• Two kinds of (3) ………………… were the first frozen food shipped to England.</span></p><p><strong><span>1917 onwards, USA</span></strong><br/>\n<span>• Clarence Birdseye introduced innovations including:</span><br/>\n<span>o quick-freezing methods, so that (4) ………… did not spoil the food.</span><br/>\n<span>o packaging products with (5) ……………., so the product was visible.</span></p><p><strong><span>Early 1940s, USA</span></strong><br/>\n<span>• Frozen food became popular because of a shortage of (6) ………………</span></p><p><strong><span>1950s, USA</span></strong><br/>\n<span>• A large number of homes now had a (7) ……………</span></p>",
+          "legendHtml": "<p><strong><span>The history of frozen food</span></strong></p><p><strong><span>2,000 years ago, South America</span></strong><br/>\n<span>People conserved the nutritional value of (1) ……………, using a method of freezing then drying.</span></p><p><strong><span>1851, USA</span></strong><br/>\n<span>• (2) ……………… was kept cool by ice during transportation in specially adapted trains.</span></p><p><strong><span>1880, Australia</span></strong><br/>\n<span>• Two kinds of (3) ………………… were the first frozen food shipped to England.</span></p><p><strong><span>1917 onwards, USA</span></strong><br/>\n<span>• Clarence Birdseye introduced innovations including:</span><br/>\n<span>o quick-freezing methods, so that (4) ………… did not spoil the food.</span><br/>\n<span>o packaging products with (5) ……………., so the product was visible.</span></p><p><strong><span>Early 1940s, USA</span></strong><br/>\n<span>• Frozen food became popular because of a shortage of (6) ………………</span></p><p><strong><span>1950s, USA</span></strong><br/>\n<span>• A large number of homes now had a (7) ……………</span></p>",
           "wordLimit": 1
         },
         {
@@ -170,7 +170,7 @@ const test: PracticeTest = {
               "explanation": "The passage gives figures only for the US industry and never compares them with other countries, so being the largest in the world cannot be confirmed."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>                if there is no information on this</span></p><p><span>8. The ice transportation business made some Boston ship owners very wealthy in the early 1800s.</span><br/>\n<span>9. A disadvantage of the freezing process invented in Australia was that it affected the taste of food.</span><br/>\n<span>10. Clarence Birdseye travelled to Labrador in order to learn how the Inuit people froze fish.</span><br/>\n<span>11. Swanson Foods invested a great deal of money in the promotion of the TV Dinner.</span><br/>\n<span>12. Swanson Foods developed a new style of container for the launch of the TV Dinner.</span><br/>\n<span>13. The US frozen food industry is currently the largest in the world.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -257,7 +257,7 @@ const test: PracticeTest = {
               "evidence": "‘The crucial point is that the progress we make in making coral better able to survive in a warming world can be shown to the public and encourage them to believe that we can do something to save the planet’s reefs,’ said Pearce-Kelly."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-19</span></strong><br/>\n<span>Reading Passage 2 has six sections, A-F. </span><span>Choose the correct heading for each section from the list of headings below.</span></p><p><span>i. Tried and tested solutions</span><br/>\n<span>ii. Cooperation beneath the waves</span><br/>\n<span>iii. Working to lessen the problems</span><br/>\n<span>iv. Disagreement about the accuracy of a certain phrase</span><br/>\n<span>v. Two clear educational goals</span><br/>\n<span>vi. Promoting hope</span><br/>\n<span>vii. A warning of further trouble ahead</span></p><p><span>14. Paragraph A</span><br/>\n<span>15. Paragraph B</span><br/>\n<span>16. Paragraph C</span><br/>\n<span>17. Paragraph D</span><br/>\n<span>18. Paragraph E</span><br/>\n<span>19. Paragraph F</span></p>",
+          "legendHtml": "<p><span>i. Tried and tested solutions</span><br/>\n<span>ii. Cooperation beneath the waves</span><br/>\n<span>iii. Working to lessen the problems</span><br/>\n<span>iv. Disagreement about the accuracy of a certain phrase</span><br/>\n<span>v. Two clear educational goals</span><br/>\n<span>vi. Promoting hope</span><br/>\n<span>vii. A warning of further trouble ahead</span></p>",
           "options": [
             "i",
             "ii",
@@ -296,7 +296,7 @@ const test: PracticeTest = {
               "evidence": "Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 20 and 21</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of these causes of damage to coral reefs are mentioned by the writer of the text?</span></p><p><span>A. a rising number of extreme storms</span><br/>\n<span>B. the removal of too many fish from the sea</span><br/>\n<span>C. the contamination of the sea from waste</span><br/>\n<span>D. increased disease among marine species</span><br/>\n<span>E. alterations in the usual flow of water in the seas</span></p>",
+          "legendHtml": "<p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of these causes of damage to coral reefs are mentioned by the writer of the text?</span></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -349,7 +349,7 @@ const test: PracticeTest = {
               "evidence": "One aim will be to carry out research on species to find those that can survive best in warm, acidic waters."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 22 and 23</span></strong></p><p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of the following statements are true of the researchers at London Zoo?</span></p><p><span>A. They are hoping to expand the numbers of different corals being bred in laboratories.</span><br/>\n<span>B. They want to identify corals that can cope well with the changed sea conditions.</span><br/>\n<span>C. They are looking at ways of creating artificial reefs that corals could grow on.</span><br/>\n<span>D. They are trying out methods that would speed up reproduction in some corals.</span><br/>\n<span>E. They are investigating materials that might protect reefs from higher temperatures.</span></p>",
+          "legendHtml": "<p><span>Choose <strong>TWO</strong> letters, A-E.</span><br/>\n<span>Which <strong>TWO</strong> of the following statements are true of the researchers at London Zoo?</span></p>",
           "selectCount": 2,
           "choices": [
             {
@@ -404,7 +404,7 @@ const test: PracticeTest = {
               "evidence": "Rising ocean temperatures are triggering bleaching events that strip reefs of their colour and eventually kill them."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 24-26</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>24. Corals have a number of ……………… which they use to collect their food.</span><br/>\n<span>25. Algae gain ……………… from being inside the coral.</span><br/>\n<span>26. Increases in the warmth of the sea water can remove the ………………. from coral.</span></p>",
+          "legendHtml": "<p><span>24. Corals have a number of ……………… which they use to collect their food.</span><br/>\n<span>25. Algae gain ……………… from being inside the coral.</span><br/>\n<span>26. Increases in the warmth of the sea water can remove the ………………. from coral.</span></p>",
           "wordLimit": 1
         }
       ]
@@ -511,7 +511,7 @@ const test: PracticeTest = {
               "evidence": "In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-33</span></strong><br/>\n<span>Look at the following statements and the list of experts below. Match each statement with the correct expert, A, B or C. NB You may use any letter more than once.</span></p><p><span>27. For our own safety, humans will need to restrict the abilities of robots.</span><br/>\n<span>28. The risk of robots harming us is less serious than humans believe it to be.</span><br/>\n<span>29. It will take many decades for robot intelligence to be as imaginative as human intelligence.</span><br/>\n<span>30. We may have to start considering whether we are treating robots fairly.</span><br/>\n<span>31. Robots are probably of more help to us on Earth than in space.</span><br/>\n<span>32. The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists.</span><br/>\n<span>33. There are those who look forward to robots developing greater intelligence.</span></p><p><strong><span>List of Experts</span></strong><br/>\n<span>A. Martin Rees</span><br/>\n<span>B. Daniel Wolpert</span><br/>\n<span>C. Kathleen Richardson</span></p>",
+          "legendHtml": "<p><span>A. Martin Rees</span><br/>\n<span>B. Daniel Wolpert</span><br/>\n<span>C. Kathleen Richardson</span></p>",
           "options": [
             "A",
             "B",
@@ -545,7 +545,7 @@ const test: PracticeTest = {
               "explanation": "Wolpert says artificial intelligence has already caused damage through computer viruses, while Richardson says robots have never actually threatened humans, so the two disagree here."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 34-36</span></strong><br/>\n<span>Complete each sentence with the correct ending, A-D, below.</span></p><p><span>34. Richardson and Rees express similar views regarding the ethical aspect of</span><br/>\n<span>35. Rees and Wolpert share an opinion about the extent of</span><br/>\n<span>36. Wolpert disagrees with Richardson on the question of</span></p><p><span>A. robots to explore outer space.</span><br/>\n<span>B. advances made in machine intelligence so far.</span><br/>\n<span>C. changes made to other planets for our own benefit.</span><br/>\n<span>D. the harm already done by artificial intelligence.</span></p>"
+          "legendHtml": "<p><span>34. Richardson and Rees express similar views regarding the ethical aspect of</span><br/>\n<span>35. Rees and Wolpert share an opinion about the extent of</span><br/>\n<span>36. Wolpert disagrees with Richardson on the question of</span></p><p><span>A. robots to explore outer space.</span><br/>\n<span>B. advances made in machine intelligence so far.</span><br/>\n<span>C. changes made to other planets for our own benefit.</span><br/>\n<span>D. the harm already done by artificial intelligence.</span></p>"
         },
         {
           "title": "Questions 37-40",
@@ -604,8 +604,7 @@ const test: PracticeTest = {
               "explanation": "Richardson explains that the line between reality and fiction is not clear cut and suggests bringing the two together, which is recommending a change of approach.",
               "evidence": "‘But the divide is not so clear cut, and that is why the worlds seem to collide at times,’ she said."
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Choose the correct letter, A, B, C or D.</span></p><p><span>37. What point does Richardson make about fear of machines?</span><br/>\n<span>A. It has grown alongside the development of ever more advanced robots.</span><br/>\n<span>B. It is the result of our inclination to attribute human characteristics to non-human entities.</span><br/>\n<span>C. It has its origins in basic misunderstandings about how inanimate objects function.</span><br/>\n<span>D. It demonstrates a key difference between human intelligence and machine intelligence.</span></p><p><span>38. What potential advance does Rees see as a cause for concern?</span><br/>\n<span>A. robots outnumbering people</span><br/>\n<span>B. robots having abilities which humans do not</span><br/>\n<span>C. artificial intelligence developing independent thought</span><br/>\n<span>D. artificial intelligence taking over every aspect of our lives</span></p><p><span>39. What does Wolpert emphasise in his response to the question about science fiction?</span><br/>\n<span>A. how science fiction influences our attitudes to robots</span><br/>\n<span>B. how fundamental robots are to the science fiction genre</span><br/>\n<span>C. how the image of robots in science fiction has changed over time</span><br/>\n<span>D. how reactions to similar portrayals of robots in science fiction may vary</span></p><p><span>40. What is Richardson doing in her comment about reality and fantasy?</span><br/>\n<span>A. warning people not to confuse one with the other</span><br/>\n<span>B. outlining ways in which one has impacted on the other</span><br/>\n<span>C. recommending a change of approach in how people view them</span><br/>\n<span>D. explaining why scientists have a different perspective on them from other people</span></p>"
+          ]
         }
       ]
     }

@@ -86,7 +86,7 @@ const test: PracticeTest = {
               "textHtml": "Modern day Maori healers often reach the same conclusion about the type of treatment which is best"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-6</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 1-6 on your answer sheet, write</p><p><strong>TRUE</strong>                               if the statement agrees with the information<br/><strong>FALSE</strong>                             if the statement contradicts the information<br/><strong>NOT GIVEN</strong>                  if there is no information on this</p><p>1. Early Maori healers learned their skills through studying written texts.<br/>2. The first Europeans in New Zealand were surprised by how long the Maori lived.<br/>3. Diseases of the gods were believed to be more serious than physical diseases.<br/>4. The leaves of the pepper tree were used to treat toothache.<br/>5. Western religion was one reason why traditional Maori medicine became less popular.<br/>6. Modern day Maori healers often reach the same conclusion about the type of treatment which is best.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 7-13",
@@ -136,7 +136,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-13</strong><br/>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p><strong>A short history of Maori healing</strong></p><p><strong>Pre-European arrival</strong><br/>• Maori were using plant based remedies, as well as treatment including massage<br/>• Diseases sent from the gods were thought to be caused by disobeying a spiritual (7) ……………..<br/>• Sickness could be attributed to eating food from a sacred (8) ………………. or burning sacred wood</p><p><strong>After European arrival</strong></p><p>1800s<br/>• The inability of Maori healers to cure new diseases meant the Maori people lost (9) ……………….. in them.<br/>• Eventually the (10) ………………. for Maori healing began shutting down 1970s<br/>• Published (11) ………………….. showed that Maori were not as healthy as Europeans</p><p>2000s<br/>• Maori healers can be seen working with Western doctors in (12) ……………….. in cities<br/>• Many patients appreciate the fact that the Maoris (13) ………………. in used by healers</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A short history of Maori healing</strong></p><p><strong>Pre-European arrival</strong><br/>\n• Maori were using plant based remedies, as well as treatment including massage<br/>\n• Diseases sent from the gods were thought to be caused by disobeying a spiritual (7) ……………..<br/>\n• Sickness could be attributed to eating food from a sacred (8) ………………. or burning sacred wood</p><p><strong>After European arrival</strong></p><p>1800s<br/>\n• The inability of Maori healers to cure new diseases meant the Maori people lost (9) ……………….. in them.<br/>\n• Eventually the (10) ………………. for Maori healing began shutting down 1970s<br/>\n• Published (11) ………………….. showed that Maori were not as healthy as Europeans</p><p>2000s<br/>\n• Maori healers can be seen working with Western doctors in (12) ……………….. in cities<br/>\n• Many patients appreciate the fact that the Maoris (13) ………………. in used by healers</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -217,7 +217,6 @@ const test: PracticeTest = {
               "textHtml": "Description of a specific species"
             }
           ],
-          "legendHtml": "<p><strong>Questions 14-20</strong><br/>The reading passage has 8 paragraphs labelled A-H. Which paragraph contains the following information? NB You may use any letter more than once.</p><p>14. The highest temperatures ever.<br/>15. The difference between current and past records on penguin population.<br/>16. Places where people cannot go to.<br/>17. Places where chinstrap penguins live.<br/>18. Measures to protect ocean species.<br/>19. Factors contributing to the decline in the amount of food available.<br/>20. Description of a specific species.</p>",
           "options": [
             "A",
             "B",
@@ -250,7 +249,7 @@ const test: PracticeTest = {
               "textHtml": "Gentoo penguins are not affected by climate change"
             }
           ],
-          "legendHtml": "<p><strong>Questions 21-23</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 21-23 on your answer sheet, choose:</p><p><strong>TRUE</strong>                           if the statement agrees with the information<br/><strong>FALSE</strong>                         if the statement contradicts the information<br/><strong>NOT GIVEN</strong>              if there is no information on this</p><p>21. The IUCN showed little concern about the fall in penguin numbers.<br/>22. Climate change is a reason for the changes in the food chain of chinstrap penguins.<br/>23. Gentoo penguins are not affected by climate change.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 24-26",
@@ -276,7 +275,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 24-26</strong><br/>Complete the note below. Choose <strong>ONLY ONE WORD</strong> from the passage for each answer.</p><p>The Greenpeace ship has been used to:<br/>• record the (24) ……………… to marine life over the world.<br/>• carry the (25) ………………….. overseas.<br/>• Build (26) …………………. to protect many surveyed colonies.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>The Greenpeace ship has been used to:<br/>\n• record the (24) ……………… to marine life over the world.<br/>\n• carry the (25) ………………….. overseas.<br/>\n• Build (26) …………………. to protect many surveyed colonies.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -357,7 +356,7 @@ const test: PracticeTest = {
               "textHtml": "People often smell their hands to spot poisonous chemicals"
             }
           ],
-          "legendHtml": "<p><strong>Questions 27-33</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 27-33 on your answer sheet, choose:</p><p><strong>TRUE</strong>                         if the statement agrees with the information<br/><strong>FALSE</strong>                       if the statement contradicts the information<br/><strong>NOT GIVEN</strong>           if there is no information on this</p><p>27. Shaking hands is an indicator of hospitality.<br/>28. Evidence showed that the handshake started as a sign of peace.<br/>29. When shaking hands, people often rolled up their sleeves.<br/>30. The use of a handshake in different situations can be unpredictable.<br/>31. In America, handshakes became prevalent because they represented equality and freedom.<br/>32. A research conducted in 2015 showed that exactly 25% of participants smelled their hands after a handshake.<br/>33. People often smell their hands to spot poisonous chemicals.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 34-38",
@@ -395,7 +394,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 34-38</strong><br/>Complete the summary below. Choose no more than <strong>THREE WORDS AND/OR A NUMBER</strong> from the passage for each answer.</p><p><strong>The history of cheek kissing</strong></p><p>In the past, Christian used cheek kisses in (34) ………………….. In the Middle Age, the kiss-as-greeting was used to show (35) …………….. or used in making agreements. At present, it is a norm for people almost all over the world to greet each other. In Rome, people named different types of kisses in different ways. It is common for people in Paris to exchange (36) ………………….. The standard is three in Provence and four in the Lore Valley. A kiss on the cheek is also popular among people of Egypt, Latin America and the Philippines. People believe that in the 14th century, the cheek kiss might have been paused and it remained so for (37) …………………. In 2009, due to (38) ………………….. cheek kisses were also stopped for a while.</p>",
+          "legendHtml": "<p><strong>The history of cheek kissing</strong></p><p>In the past, Christian used cheek kisses in (34) ………………….. In the Middle Age, the kiss-as-greeting was used to show (35) …………….. or used in making agreements. At present, it is a norm for people almost all over the world to greet each other. In Rome, people named different types of kisses in different ways. It is common for people in Paris to exchange (36) ………………….. The standard is three in Provence and four in the Lore Valley. A kiss on the cheek is also popular among people of Egypt, Latin America and the Philippines. People believe that in the 14th century, the cheek kiss might have been paused and it remained so for (37) …………………. In 2009, due to (38) ………………….. cheek kisses were also stopped for a while.</p>",
           "wordLimit": 3
         },
         {
@@ -416,7 +415,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 39-40</strong><br/>Answer the question below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</p><p>39. What did French Health Minister advise people to avoid to prevent the spread of coronavirus?<br/>40. What can be transferred from a handshake?</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>39. What did French Health Minister advise people to avoid to prevent the spread of coronavirus?<br/>\n40. What can be transferred from a handshake?</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 2
         }
       ]

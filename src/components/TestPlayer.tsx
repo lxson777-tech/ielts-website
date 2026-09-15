@@ -58,6 +58,59 @@ function PencilIcon() {
   );
 }
 
+/** Prominent passage/section switcher pinned to the top of the questions
+    pane. Students were missing the tiny footer pills entirely, so this is
+    now the primary way to jump between passages/sections and revisit ones
+    already done. A plain segmented control: one button per part, the
+    active one filled brand, each showing progress so switching is legible
+    and safe at a glance. */
+function PartSwitcher({
+  parts,
+  numbered,
+  answers,
+  submitted,
+  activePart,
+  onSelect,
+}: {
+  parts: TestPart[];
+  numbered: Numbered[];
+  answers: Record<string, string>;
+  submitted: boolean;
+  activePart: number;
+  onSelect: (i: number) => void;
+}) {
+  return (
+    <div
+      role="group"
+      aria-label="Choose passage"
+      className="mb-4 flex flex-wrap gap-1 rounded-full border border-border bg-surface-alt p-1"
+    >
+      {parts.map((p, i) => {
+        const partQs = numbered.filter((nq) => nq.part === p && nq.question.scored !== false);
+        const partAnswered = partQs.filter((nq) => answers[nq.question.id]).length;
+        const complete = partQs.length > 0 && partAnswered === partQs.length;
+        const active = i === activePart;
+        return (
+          <button
+            key={p.label}
+            type="button"
+            aria-current={active ? 'true' : undefined}
+            onClick={() => onSelect(i)}
+            className={`flex-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-alt ${
+              active ? 'bg-brand text-white shadow-sm' : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            {p.label}
+            <span className={`ml-1.5 font-normal ${active ? 'opacity-80' : 'opacity-60'}`}>
+              {complete && !submitted ? '✓' : `${partAnswered}/${partQs.length}`}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 interface Numbered {
   question: Question;
   group: QuestionGroup;
@@ -229,6 +282,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
 
   const mainRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
+  const stimulusPaneRef = useRef<HTMLDivElement>(null);
   const passageContentRef = useRef<HTMLDivElement>(null);
   // Listening's equivalent of passageContentRef: the rendered transcript text,
   // used by locateEvidence to jump to a review item's evidence line. Wrapped
@@ -370,6 +424,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      changes (switching part/passage). */
   useEffect(() => {
     setActiveQIndex(0);
+    // Jumping between passages/sections should feel like a fresh page, not
+    // a scrolled-down one — reset both panes to the top (passage switcher,
+    // see PartSwitcher below).
+    questionsRef.current?.scrollTo({ top: 0 });
+    stimulusPaneRef.current?.scrollTo({ top: 0 });
   }, [activePart]);
 
   /* j/k and arrow-key navigation between questions in the current part
@@ -673,6 +732,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         {/* Stimulus pane — full-height on mobile when its tab is active,
             always visible side-by-side with questions from md up. */}
         <div
+          ref={stimulusPaneRef}
           className={`min-h-0 flex-1 overflow-y-auto border-b border-border bg-surface-alt md:block md:border-b-0 ${
             mobileView === 'stimulus' ? 'block' : 'hidden'
           }`}
@@ -742,6 +802,24 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 <h2 className="font-display text-2xl font-extrabold">Answer sheet</h2>
                 <p className="mt-1 text-sm text-ink-muted">{stimulus.label}. Enter answers for {partRange.toLowerCase()}.</p>
               </div>
+            )}
+            {/* Prominent passage/section switcher — the footer pills are easy
+                to miss, so this is the primary, always-visible way to jump
+                between passages/sections and revisit ones already done. */}
+            {test.parts.length > 1 && (
+              <PartSwitcher
+                parts={test.parts}
+                numbered={numbered}
+                answers={answers}
+                submitted={submitted}
+                activePart={activePart}
+                onSelect={setActivePart}
+              />
+            )}
+            {activePart === 0 && test.skill !== 'listening' && (
+              <p className="-mt-2 mb-4 text-xs text-ink-muted">
+                Do the passages in any order. Your answers are kept when you switch.
+              </p>
             )}
             {/* Desktop-only keyboard-nav hint (feature 3) — shown only while
                 actively answering, never once the test is submitted. */}
@@ -868,6 +946,20 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 </section>
               );
             })}
+            {!submitted &&
+              (activePart < test.parts.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setActivePart(activePart + 1)}
+                  className="mt-2 w-full rounded-button bg-brand px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                >
+                  Continue to {test.parts[activePart + 1]!.label}
+                </button>
+              ) : (
+                <p className="mt-4 text-center text-sm text-ink-muted">
+                  This is the last passage. Check your answers, then submit using the Submit button above.
+                </p>
+              ))}
           </div>
         </div>
       </div>

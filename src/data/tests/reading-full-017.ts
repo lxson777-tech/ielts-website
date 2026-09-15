@@ -72,7 +72,7 @@ const test: PracticeTest = {
               "evidence": "What about life in the depths"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-4</span></strong><br/>\n<span>The passage has 5 sections A-E. Choose the most suitable heading for sections B-E from the list of headings below. Write the appropriate numbers (i-viii). There are more headings than sections so you will not use all of them.</span></p><p><span>i. Cost of exploration</span><br/>\n<span>ii. Location and description of the lake</span><br/>\n<span>iii. Potential for living organisms in the lake</span><br/>\n<span>iv. Challenges of exploration</span><br/>\n<span>v. Discovery of the lake</span><br/>\n<span>vi. Possible sources of nutrients to support life</span><br/>\n<span>vii. Types of organisms in the lake</span><br/>\n<span>viii. Scientific interest in Lake Vostok</span></p><p><span>1. Section B</span><br/>\n<span>2. Section C</span><br/>\n<span>3. Section D</span><br/>\n<span>4. Section E</span></p>",
+          "legendHtml": "<p><span>i. Cost of exploration</span><br/>\n<span>ii. Location and description of the lake</span><br/>\n<span>iii. Potential for living organisms in the lake</span><br/>\n<span>iv. Challenges of exploration</span><br/>\n<span>v. Discovery of the lake</span><br/>\n<span>vi. Possible sources of nutrients to support life</span><br/>\n<span>vii. Types of organisms in the lake</span><br/>\n<span>viii. Scientific interest in Lake Vostok</span></p>",
           "options": [
             "i",
             "ii",
@@ -115,8 +115,7 @@ const test: PracticeTest = {
               "explanation": "Section C explains that 'the 4 kilometers of ice acts effectively as an insulating blanket', matching A.",
               "evidence": "acts effectively as an insulating blanket"
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 5-6</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>5. Which is NOT given as a reason for interest in exploring Lake Vostok?</span><br/>\n<span><strong>A</strong> to test technology for space exploration</span><br/>\n<span><strong>B</strong> to develop anti-pollution devices</span><br/>\n<span><strong>C</strong> to investigate the history of Earth’s climate</span><br/>\n<span><strong>D</strong> to look for living organisms</span></p><p><span>6. Lake Vostok does not freeze because …</span><br/>\n<span><strong>A</strong> a thick ice cover provides insulation.</span><br/>\n<span><strong>B</strong> it is waned by heat from the earth’s surface.</span><br/>\n<span><strong>C</strong> low pressure prevents freezing.</span><br/>\n<span><strong>D</strong> an underwater volcano erupted recently.</span></p>"
+          ]
         },
         {
           "title": "Questions 7-13",
@@ -172,7 +171,7 @@ const test: PracticeTest = {
               "evidence": "creeping from west to east"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 7-13</span></strong><br/>\n<span>Do the following statements reflect the claims of the author? Write:</span></p><p><span><strong>YES</strong>                                       if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                         if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>                     if it is impossible to say what the writer thinks about this</span></p><p><span>7. Only one lake has been found beneath Antarctica.</span><br/>\n<span>8. The water in the lake is approximately 500m deep at the southern end.</span><br/>\n<span>9. Lake Vostok was detected by radar.</span><br/>\n<span>10. Exploration of Lake Vostok is coordinated by Russia.</span><br/>\n<span>11. Scientists have drilled through the ice into the water of Lake Vostok.</span><br/>\n<span>12. Nutrients to support life have been found in the Antarctic ice.</span><br/>\n<span>13. The ice above the lake is moving to the east.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         }
       ]
     },
@@ -255,7 +254,7 @@ const test: PracticeTest = {
               "evidence": "it vanished"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-17</span></strong><br/>\n<span>Complete the summary below. Choose your answers from the box below the summary. There are more words than you need so you will not use all of them.</span></p><p><span>Pfiesteria is a microorganism (Example) with some unusual characteristics. Under normal conditions, it acts like a (14) ……………….. but it has also developed powerful (15) ………………. as a defence against being eaten by fish. When the fish are disabled and killed by the neurotoxins, the organism (16) ………………. them and it (17) ……………….. afterward.</span></p><table><tbody><tr><td><span>jaws</span></td><td><span>grows</span></td><td><span>animal</span></td></tr><tr><td><span>kills</span></td><td><span>eats</span></td><td><span>poisons</span></td></tr><tr><td><span>plant</span></td><td><span>disappears</span></td><td><span>microorganism</span></td></tr><tr><td><span>bacteria</span></td><td><span>fish</span></td><td><span>dies</span></td></tr></tbody></table>"
+          "legendHtml": "<p><span>Pfiesteria is a microorganism (Example) with some unusual characteristics. Under normal conditions, it acts like a (14) ……………….. but it has also developed powerful (15) ………………. as a defence against being eaten by fish. When the fish are disabled and killed by the neurotoxins, the organism (16) ………………. them and it (17) ……………….. afterward.</span></p><table><tbody><tr><td><span>jaws</span></td><td><span>grows</span></td><td><span>animal</span></td></tr><tr><td><span>kills</span></td><td><span>eats</span></td><td><span>poisons</span></td></tr><tr><td><span>plant</span></td><td><span>disappears</span></td><td><span>microorganism</span></td></tr><tr><td><span>bacteria</span></td><td><span>fish</span></td><td><span>dies</span></td></tr></tbody></table>"
         },
         {
           "title": "Questions 18-21",
@@ -295,7 +294,7 @@ const test: PracticeTest = {
               "evidence": "ballast water carried by ships"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 18-21</span></strong><br/>\n<span>Fill in the blanks with <strong>NO MORE THAN THREE WORDS</strong> from the passage.</span></p><p><span>Conditions which favour the growth of toxic algae include high levels of (18) ………………. and (19) ………………… fish feeding together. Research scientists at the international conference learned about (20) ……………… types of toxic algae and how they are spreading around the world in water stored on (21) ………….. at sea.</span></p>",
+          "legendHtml": "<p><span>Conditions which favour the growth of toxic algae include high levels of (18) ………………. and (19) ………………… fish feeding together. Research scientists at the international conference learned about (20) ……………… types of toxic algae and how they are spreading around the world in water stored on (21) ………….. at sea.</span></p>",
           "wordLimit": 3
         },
         {
@@ -339,7 +338,7 @@ const test: PracticeTest = {
               "evidence": "It was later named pfiesteria"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 22-26</span></strong><br/>\n<span>Classify the following as:</span></p><p><span><strong>A</strong> caused by pfiesteria</span><br/>\n<span><strong>B</strong> caused by chattonella</span><br/>\n<span><strong>C</strong> caused by an unidentified micro-organism</span></p><p><span>22. death of sea-lions off the coast of California (1990s)</span><br/>\n<span>23. fish kill in Japan (1972)</span><br/>\n<span>24. shellfish industry losses in New Zealand (1990s)</span><br/>\n<span>25. tuna industry losses in Australia (1990s)</span><br/>\n<span>26. fish kill in North Carolina (1980s)</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> caused by pfiesteria</span><br/>\n<span><strong>B</strong> caused by chattonella</span><br/>\n<span><strong>C</strong> caused by an unidentified micro-organism</span></p>",
           "options": [
             "A",
             "B",
@@ -424,8 +423,7 @@ const test: PracticeTest = {
               "explanation": "The passage says the Ramses II evidence was ignored because 'it raised too many questions' that were outside accepted scientific views, matching B.",
               "evidence": "It raised too many questions"
             }
-          ],
-          "legendHtml": "<p><strong><span>Questions 27-29</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>27. What most surprised Dr. Balabanova about her discovery?</span><br/>\n<span><strong>A</strong> the presence of drugs in the mummies</span><br/>\n<span><strong>B</strong> the fact that the plants originated in the western hemisphere</span><br/>\n<span><strong>C</strong> the positive results of tests on other mummies</span><br/>\n<span><strong>D</strong> the hostile reaction of the scientific community</span></p><p><span>28. Which of the following was ruled out by Dr. Lescot’s investigation?</span><br/>\n<span><strong>A</strong> Tobacco had been dropped onto the mummy.</span><br/>\n<span><strong>B</strong> Tobacco grew in Ancient Egypt.</span><br/>\n<span><strong>C</strong> Chemicals produced false test results.</span><br/>\n<span><strong>D</strong> The mummies were fake.</span></p><p><span>29. Why was the discovery of tobacco in the body of Ramses II ignored?</span><br/>\n<span><strong>A</strong> Contamination was suspected.</span><br/>\n<span><strong>B</strong> The evidence raised difficult questions.</span><br/>\n<span><strong>C</strong> The tests produced false results.</span><br/>\n<span><strong>D</strong> The researcher was a woman.</span></p>"
+          ]
         },
         {
           "title": "Questions 30-34",
@@ -471,7 +469,7 @@ const test: PracticeTest = {
               "evidence": "hostile response to her publication"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 30-34</span></strong><br/>\n<span>Match <strong>ONE</strong> of the researchers (A-D) to each of the statements (30-34) below. There may be more than one correct answer.</span></p><p><span>30. first to find a substance from the Americas in a mummy</span><br/>\n<span>31. argues against transoceanic trade because of lack of evidence</span><br/>\n<span>32. had to defend against attacks on research methodology</span><br/>\n<span>33. gives evidence of extensive Egyptian trade in ancient times</span><br/>\n<span>34. publication of research results was controversial</span></p><p><span><strong>A</strong> Dr. Svetlana Balabanova</span><br/>\n<span><strong>B</strong> Dr. Michelle Lescot</span><br/>\n<span><strong>C</strong> Professor John Baines</span><br/>\n<span><strong>D</strong> Professor Martin Bernal.</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> Dr. Svetlana Balabanova</span><br/>\n<span><strong>B</strong> Dr. Michelle Lescot</span><br/>\n<span><strong>C</strong> Professor John Baines</span><br/>\n<span><strong>D</strong> Professor Martin Bernal.</span></p>",
           "options": [
             "A",
             "B",
@@ -518,7 +516,7 @@ const test: PracticeTest = {
               "explanation": "The passage never mentions 'qat' or any North African plant as a possible source of the test results."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 35-39</span></strong><br/>\n<span>Do the following statements reflect the opinions of the writer in the passage? Write:</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                 if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>              if it is impossible to say what the writer thinks about this</span></p><p><span>35. There is proof that tobacco was grown in Ancient Egypt.</span><br/>\n<span>36. Trade routes across the Atlantic Ocean may have existed thousands of years ago.</span><br/>\n<span>37. Ancient Egyptians were great ship builders.</span><br/>\n<span>38. The scientific community generally rejects the idea of contact between Ancient Egypt and the Americas.</span><br/>\n<span>39. The unusual test results could have come from ‘qat’, a plant native to North Africa.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Question 40",
@@ -538,8 +536,7 @@ const test: PracticeTest = {
               "explanation": "The final paragraph shows that a scientist's routine tests could 'upset whole areas of knowledge we thought we could take for granted', matching B.",
               "evidence": "upset whole areas of knowledge we thought we could take for granted"
             }
-          ],
-          "legendHtml": "<p><strong><span>Question 40</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>40. What is the main idea of this passage?</span><br/>\n<span><strong>A</strong> Experimental research often gives false results.</span><br/>\n<span><strong>B</strong> Long-held beliefs can be challenged by new information.</span><br/>\n<span><strong>C</strong> The scientific community is conservative by nature.</span><br/>\n<span><strong>D</strong> Ideas which don’t fit our belief system must be wrong.</span></p>"
+          ]
         }
       ]
     }

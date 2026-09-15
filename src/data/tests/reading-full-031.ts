@@ -107,8 +107,7 @@ const test: PracticeTest = {
                 "It features successful people endorsing products responsible for their success"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 1-5</strong><br/>Choose the correct letter, A, B, C or D.</p><p>1. According to the writer, which marketing technique attempts to make consumers stay in a shop for longer?<br/><strong>A</strong> playing appealing music<br/><strong>B</strong> emitting pleasant scents<br/><strong>C</strong> displaying attractive posters<br/><strong>D</strong> making in – store announcements</p><p>2. The writer mentions bottled water in order to show that<br/><strong>A</strong> consumers buy it because of the fact that it is marketed.<br/><strong>B</strong> people purchase it despite the fact that it has no taste.<br/><strong>C</strong> marketers need not do taste tests when a campaign is effective.<br/><strong>D</strong> tests prove that people cannot differentiate it from tap water.</p><p>3. According to the writer, socially transmitted food preference occurs when<br/><strong>A</strong> only dominant members of an animal group influence what others eat.<br/><strong>B</strong> the same types of animals naturally prefer the same types of food.<br/><strong>C</strong> animals are influenced by what any other animals of the same species eat.<br/><strong>D</strong> a food type is more desirable because an animal views that food as scarce.</p><p>4. According to the writer, how is learning by observation and imitation a useful feature of the brain?<br/><strong>A</strong> it helps people overcome challenges.<br/><strong>B</strong> positive models can influence social behaviour.<br/><strong>C</strong> it can give an advantage when communicating with others.<br/><strong>D</strong> cultural norms and relationships can be understood more easily</p><p>5. According to the writer, how does television advertising exploit the human tendency to imitate others?<br/><strong>A</strong> It shows buying behaviour that marketers want to encourage in viewers.<br/><strong>B</strong> It features people who have a desirable image.<br/><strong>C</strong> It shows older people whom teenagers admire.<br/><strong>D</strong> It features successful people endorsing products responsible for their success.</p>"
+          ]
         },
         {
           "title": "Questions 6-10",
@@ -141,7 +140,7 @@ const test: PracticeTest = {
               "textHtml": "Consumers make a logical connection between celebrities ‘ achievements and the products they promote"
             }
           ],
-          "legendHtml": "<p><strong>Questions 6-10</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 6-10 on your answer sheet, write</p><p><strong>YES</strong>                            if the statement agrees with the views of the writer<br/><strong>NO</strong>                              if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>          if it is impossible to say what the writer thinks about this</p><p>6. The diamond campaign worked by making a connection in people’s minds between diamonds and luxury<br/>7. People are more aware of visual marketing than auditory marketing.<br/>8. The campaign advertising diamonds had a positive influence on society.<br/>9. There is still some uncertainty about whether animals copy the behaviour of the most powerful animals among them.<br/>10. Consumers make a logical connection between celebrities ‘ achievements and the products they promote.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 11-14",
@@ -173,7 +172,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 11-14</strong><br/>Complete each sentence with the correct ending A-G, below. Write the correct letter, A-G , in boxes 11-14 on your answer sheet.</p><p>11. The behaviour of the monkeys on the island of Koshima showed that<br/>12. Primatologist Frans de Waal found that<br/>13. Dick Fosbury is mentioned in order to show that<br/>14. A feature of some modern marketing campaigns is that</p><p><strong>A</strong>. people imitated behaviour that was linked with success<br/><strong>B</strong>. younger animals of a certain species are more likely to imitate each other.<br/><strong>C</strong>. an animal would imitate another that had higher status<br/><strong>D</strong>. imitation of popular sportspeople has occurred for many decades<br/><strong>E</strong>. products are marketed to potential consumers who are unaware that marketing is occurring<br/><strong>F</strong>. animals can develop new habits by observation.<br/><strong>G</strong>. incentives are provided for consumers who behave in a certain way</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p>11. The behaviour of the monkeys on the island of Koshima showed that<br/>\n12. Primatologist Frans de Waal found that<br/>\n13. Dick Fosbury is mentioned in order to show that<br/>\n14. A feature of some modern marketing campaigns is that</p><p><strong>A</strong>. people imitated behaviour that was linked with success<br/>\n<strong>B</strong>. younger animals of a certain species are more likely to imitate each other.<br/>\n<strong>C</strong>. an animal would imitate another that had higher status<br/>\n<strong>D</strong>. imitation of popular sportspeople has occurred for many decades<br/>\n<strong>E</strong>. products are marketed to potential consumers who are unaware that marketing is occurring<br/>\n<strong>F</strong>. animals can develop new habits by observation.<br/>\n<strong>G</strong>. incentives are provided for consumers who behave in a certain way</p><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -264,7 +263,6 @@ const test: PracticeTest = {
               "textHtml": "An example of a parrot species which did not survive changes to its habitat"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-20</strong><br/>Reading passage has ten paragraphs A-J. Which paragraph contains the following information?</p><p>15. An example of how one parrot species may survive at the expense of another<br/>16. A description of how plants may adapt to attract birds<br/>17. Example of two parrot species which benefited from changes to the environment<br/>18. How the varied Australian landscape resulted in a great variety of parrot species<br/>19. A reason why most parrot species are native to the southern hemisphere<br/>20. An example of a parrot species which did not survive changes to its habitat</p>",
           "options": [
             "A",
             "B",
@@ -315,8 +313,7 @@ const test: PracticeTest = {
                 "They are too few of them"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 21-23</strong><br/>Choose the correct letter A, B, C, or D</p><p>21. The writer believes that most parrot species<br/><strong>A</strong> Move from Africa and South America to Australia<br/><strong>B</strong> Had ancestors in either Africa, Australia or South America<br/><strong>C</strong> Had ancestors in a continent which later split up<br/><strong>D</strong> Came from a continent now covered by water</p><p>22. What does the Writer say about parrot’s beak?<br/><strong>A</strong> They are longer than those of other birds<br/><strong>B</strong> They are made of a unique material<br/><strong>C</strong> They are used more efficiently than those of other species<br/><strong>D</strong> They are specially adapted to suit the diet</p><p>23. Which of the following is NOT mentioned by the writer as a disadvantage of nesting boxes?<br/><strong>A</strong> They cost too much<br/><strong>B</strong> They need to be maintained<br/><strong>C</strong> They provide only shelter, not food<br/><strong>D</strong> They are too few of them</p>"
+          ]
         },
         {
           "title": "Questions 24-27",
@@ -348,7 +345,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 24-27</strong><br/>Complete the summary below. Choose <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> from the passage for each answer.</p><p>There are 345 varieties of parrot in existence and, of these, (24) ………….. live in Australia. As early as the (25) …………………….., the mapmaker (26) …………………… recognized that parrots lived in that part of the world. (27) ……………………, the famous painter of animals and birds, commented on the size and beauty of the Australian parrot family.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>There are 345 varieties of parrot in existence and, of these, (24) ………….. live in Australia. As early as the (25) …………………….., the mapmaker (26) …………………… recognized that parrots lived in that part of the world. (27) ……………………, the famous painter of animals and birds, commented on the size and beauty of the Australian parrot family.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 2
         }
       ]
@@ -433,7 +430,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph F"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-33</strong><br/>The reading Passage has six paragraphs A-F. Choose the correct heading for each paragraph from the list of headings below.</p><p><strong>List of Headings</strong><br/>i. Different areas of professional expertise<br/>ii. Reasons why it is unfair to criticise lawyers<br/>iii. The disadvantages of the legal system<br/>iv. The law applies throughout our lives<br/>v. The law has affected historical events<br/>vi. A negative regard for lawyers<br/>vii. public’s increasing ability to influence the law<br/>viii. growth in laws</p><p>28. Paragraph A<br/>29. Paragraph B<br/>30. Paragraph C<br/>31. Paragraph D<br/>32. Paragraph E<br/>33. Paragraph F</p>",
+          "legendHtml": "<p>i. Different areas of professional expertise<br/>\nii. Reasons why it is unfair to criticise lawyers<br/>\niii. The disadvantages of the legal system<br/>\niv. The law applies throughout our lives<br/>\nv. The law has affected historical events<br/>\nvi. A negative regard for lawyers<br/>\nvii. public’s increasing ability to influence the law<br/>\nviii. growth in laws</p>",
           "options": [
             "i",
             "ii",
@@ -469,7 +466,7 @@ const test: PracticeTest = {
               "answerPairId": "reading-287-q34-q35"
             }
           ],
-          "legendHtml": "<p><strong>Questions 34-35</strong><br/>Choose <strong>TWO</strong> letters, A-E. Write the correct letters in boxes 7-8 on your answer sheet.</p><p>Which <strong>TWO</strong> of the following statements does the writer make about legal skills in today’s world?</p><p><strong>A</strong> There should be a person with legal training in every hospital.<br/><strong>B</strong> Lawyers with experience in commercial law are the most in demand.<br/><strong>C</strong> Knowledge of the law is as important as having computer skills.<br/><strong>D</strong> Society could not function effectively without legal experts.<br/><strong>E</strong> Schools should teach students about the law.</p>",
+          "legendHtml": "<p>Which <strong>TWO</strong> of the following statements does the writer make about legal skills in today’s world?</p>",
           "selectCount": 2,
           "choices": [
             {
@@ -530,7 +527,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 36-40</strong><br/>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p>Lawyers as professionals People sometimes say that (36) …………………….. is of little interest to lawyers, who are more concerned with making money. This may well be the case with some individuals, in the same way that some (37) …………………….. or scientific experts may also be driven purely by financial greed. However, criticising lawyers because their work is concerned with people’s problems would be similar to attacking IT staff or (38) ……………………. for the same reason. In fact, many lawyers focus on questions relating, for example, to housing or civil liberties, which requires them to have (39) …………………… to their work. What’s more, a lot of lawyers’ time is spent writing (40) …………………….. rather than dealing with people’s misfortunes.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Lawyers as professionals People sometimes say that (36) …………………….. is of little interest to lawyers, who are more concerned with making money. This may well be the case with some individuals, in the same way that some (37) …………………….. or scientific experts may also be driven purely by financial greed. However, criticising lawyers because their work is concerned with people’s problems would be similar to attacking IT staff or (38) ……………………. for the same reason. In fact, many lawyers focus on questions relating, for example, to housing or civil liberties, which requires them to have (39) …………………… to their work. What’s more, a lot of lawyers’ time is spent writing (40) …………………….. rather than dealing with people’s misfortunes.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]

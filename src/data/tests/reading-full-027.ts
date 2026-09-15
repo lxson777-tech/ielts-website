@@ -98,7 +98,6 @@ const test: PracticeTest = {
               "textHtml": "A list of requirements that historians see as obstacles to their use of film to record history"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-9</strong><br/>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.</p><p>1. An overview of the range of methods that have been used over time to document history<br/>2. The main reason why many historians are unwilling to use films in their work<br/>3. A reference to some differences between oral and written communication<br/>4. How most citizens today gain an understanding of history<br/>5. How current student events are sometimes captured for future audiences<br/>6. Mention of the fact that the advantages of film are greater than the disadvantages<br/>7. The claim that there is no official title for film-based historical work<br/>8. Reference to the active role the audience plays when watching films<br/>9. A list of requirements that historians see as obstacles to their use of film to record history</p>",
           "options": [
             "A",
             "B",
@@ -140,7 +139,7 @@ const test: PracticeTest = {
               "textHtml": "Developments in technology are influencing a range of academic subjects"
             }
           ],
-          "legendHtml": "<p><strong>Questions 10-14</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 10-14 on your answer sheet, write</p><p><strong>YES</strong>                               if the statement agrees with the views of the writer<br/><strong>NO</strong>                                 if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>              if it is impossible to say what the writer thinks about this</p><p>10. The needs of students in school have led to improvements in the teaching of history.<br/>11. Academic and popular historians have different attitudes towards the value of innovations in communication.<br/>12. It is common for historians to play a major role in creating historical documentaries for television.<br/>13. Articles in American History Review have explored aspects of modern history through popular films.<br/>14. Developments in technology are influencing a range of academic subjects.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -234,7 +233,7 @@ const test: PracticeTest = {
               "textHtml": "The potential for sequestration to harm human life. List of People and organisations A . Scott Klara B . Intergovernmental Panel on Climate Change C . International Energy Agency D . Klaus Lackner E . David Hawkins F . World Wide Fund for Nature Australia"
             }
           ],
-          "legendHtml": "<p><strong>Questions 15-20</strong><br/>Look at the following issues (Questions 15-20) and the list of people and organisations below. Match each issue with the correct person or organization, A-F. NB You may use any letter more than once.</p><p>15. The cost implications of fitting plants with the necessary equipment.<br/>16. The effects of sequestration could have on sea creatures.<br/>17. The reasons why products such as oil and gas continue to be popular energy sources.<br/>18. The need for industrialised countries to give aid to less wealthy countries.<br/>19. The significant increase in carbon dioxide concentrations in the air over the last 100 years.<br/>20. The potential for sequestration to harm human life.</p><p><strong>List of People and organisations</strong><br/><strong>A</strong>. Scott Klara<br/><strong>B</strong>. Intergovernmental Panel on Climate Change<br/><strong>C</strong>. International Energy Agency<br/><strong>D</strong>. Klaus Lackner<br/><strong>E</strong>. David Hawkins<br/><strong>F</strong>. World Wide Fund for Nature Australia</p>",
+          "legendHtml": "<p><strong>A</strong>. Scott Klara<br/>\n<strong>B</strong>. Intergovernmental Panel on Climate Change<br/>\n<strong>C</strong>. International Energy Agency<br/>\n<strong>D</strong>. Klaus Lackner<br/>\n<strong>E</strong>. David Hawkins<br/>\n<strong>F</strong>. World Wide Fund for Nature Australia</p>",
           "options": [
             "A",
             "B",
@@ -265,7 +264,6 @@ const test: PracticeTest = {
               "textHtml": "Current examples of the environmental harm attributed to carbon dioxide in the air"
             }
           ],
-          "legendHtml": "<p><strong>Questions 21-23</strong><br/>Reading passage has ten paragraphs, A-J. Which paragraph contains the following information?</p><p>21. Examples of sequestration already in use in several parts of the world<br/>22. An example of putting carbon dioxide emissions to use in the food and beverage industry<br/>23. Current examples of the environmental harm attributed to carbon dioxide in the air</p>",
           "options": [
             "A",
             "B",
@@ -303,7 +301,7 @@ const test: PracticeTest = {
               "textHtml": "More forests need to be planted to improve the atmosphere"
             }
           ],
-          "legendHtml": "<p><strong>Questions 24-27</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 24-27 on your answer sheet, write</p><p><strong>TRUE</strong>                            if the statement agrees with the information<br/><strong>FALSE</strong>                           if the statement contradicts the information<br/><strong>NOT GIVEN</strong>               if there is no information on this</p><p>24. Both developing and developed nations have decided to investigate carbon dioxide sequestration.<br/>25. A growing economy will use more power.<br/>26. Capturing carbon dioxide has become financially attractive.<br/>27. More forests need to be planted to improve the atmosphere.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -400,7 +398,7 @@ const test: PracticeTest = {
               "textHtml": "Paragraph I"
             }
           ],
-          "legendHtml": "<p><strong>Questions 28-35</strong><br/>Reading passage has nine paragraphs, A-l. Choose the correct heading for paragraphs A and C-l from the list of headings below.</p><p><strong>List of Headings</strong><br/>i. An analysis of protective coatings<br/>ii. Applying technology to violin production<br/>iii. Location – a key factor<br/>iv. A controversial range of prices<br/>v. Techniques of mass production<br/>vi. The advantages of older wood<br/>vii. A re-evaluation of documentary evidence<br/>viii. The mathematical basis of earlier design<br/>ix. Manual woodworking techniques<br/>x. Preferences of top musicians<br/>xi. The use of saturated wood<br/>xii. The challenge for scientists</p><p>28. Paragraph A<br/>29. Paragraph C<br/>30. Paragraph D<br/>31. Paragraph E<br/>32. Paragraph F<br/>33. Paragraph G<br/>34. Paragraph H<br/>35. Paragraph I</p>",
+          "legendHtml": "<p>i. An analysis of protective coatings<br/>\nii. Applying technology to violin production<br/>\niii. Location – a key factor<br/>\niv. A controversial range of prices<br/>\nv. Techniques of mass production<br/>\nvi. The advantages of older wood<br/>\nvii. A re-evaluation of documentary evidence<br/>\nviii. The mathematical basis of earlier design<br/>\nix. Manual woodworking techniques<br/>\nx. Preferences of top musicians<br/>\nxi. The use of saturated wood<br/>\nxii. The challenge for scientists</p>",
           "options": [
             "i",
             "ii",
@@ -445,7 +443,7 @@ const test: PracticeTest = {
               "textHtml": "Modern violins are gaining in popularity amongst the top violinists"
             }
           ],
-          "legendHtml": "<p><strong>Questions 36-40</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 36-40 on your answer sheet, write</p><p><strong>TRUE</strong>                                if the statement agrees with the information<br/><strong>FALSE</strong>                              if the statement contradicts the information<br/><strong>NOT GIVEN</strong>                  if there is no information on this</p><p>36. The quality of any particular note played on the same violin varies.<br/>37. Scientific instruments analyse complex sound more accurately than humans.<br/>38. The quality of handmade violins varies according to the musical ability of the craftsman.<br/>39. Modern violins seem to improve in their early years.<br/>40. Modern violins are gaining in popularity amongst the top violinists</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

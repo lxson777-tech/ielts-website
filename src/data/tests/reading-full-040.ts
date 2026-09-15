@@ -85,7 +85,7 @@ const test: PracticeTest = {
               "textHtml": "According to Peter Hicks, companies pay older people more regardless of the contribution they make"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-4</strong><br/>\nDo the following statements agree with the information given in reading passage? In boxes 1-4 on your answer sheet, write</p><p><strong>TRUE</strong>                           if the statement agrees with the information<br/>\n<strong>FALSE</strong>                         if the statement contradicts the information<br/>\n<strong>NOT GIVEN</strong>             if there is no information on this</p><p>1. Insurance company Sun Life of Canada made a decision that it would hire more Canadian employees rather than British ones in order to get a fresh staff.<br/>\n2. Unlike other places, employees in Japan get paid according to the years they are employed.<br/>\n3. Elder workers are laid off by some German companies which are refreshing corporate culture.<br/>\n4. According to Peter Hicks, companies pay older people more regardless of the contribution they make.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 5-6",
@@ -111,7 +111,7 @@ const test: PracticeTest = {
               "answerPairId": "reading-278-q5-q6"
             }
           ],
-          "legendHtml": "<p><strong>Questions 5-6</strong><br/>\nChoose the correct letter, A, B, C, D, E.</p><p>According to the passage, there are several advantages to hire elder people, please choose TWO from below：</p><p><strong>A</strong> their products are more superior to the young.<br/>\n<strong>B</strong> paid less compared with younger ones<br/>\n<strong>C</strong> run fast when there is a meeting<br/>\n<strong>D</strong> have a better inter-person relationship<br/>\n<strong>E</strong> identify problems in an advanced time</p>",
+          "legendHtml": "<p>According to the passage, there are several advantages to hire elder people, please choose TWO from below：</p>",
           "selectCount": 2,
           "choices": [
             {
@@ -160,7 +160,7 @@ const test: PracticeTest = {
               "answerPairId": "reading-278-q7-q8"
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-8</strong><br/>\nChoose the correct letter, A, B, C, D, E.</p><p>According to Mr.Peterson, Compared with elder employees, young graduates have several weaknesses in workplace, please choose TWO of them below：</p><p><strong>A</strong> they are not worth training<br/>\n<strong>B</strong> their productivity is lower than counterparts.<br/>\n<strong>C</strong> they change work more often<br/>\n<strong>D</strong> their academic criteria is someway behind elders<br/>\n<strong>E</strong> they are normally high school graduates.</p>",
+          "legendHtml": "<p>According to Mr.Peterson, Compared with elder employees, young graduates have several weaknesses in workplace, please choose TWO of them below：</p>",
           "selectCount": 2,
           "choices": [
             {
@@ -245,8 +245,7 @@ const test: PracticeTest = {
                 "There are more jobs in the world that only employ older people"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 9-13</strong><br/>\nChoose the correct letter, A, B, C or D.</p><p>9. According to paragraph F, the firms and workers still hold the opinion that<br/>\n<strong>A</strong> Older workers are more likely to attract other staff<br/>\n<strong>B</strong> people are not happy if pay gets lower in retiring age.<br/>\n<strong>C</strong> Older people have more retaining motivation than young people<br/>\n<strong>D</strong> young people often earn less for their piece-rates salary.</p><p>10. SkillTeam that has been founded by IBM conducted which of the following movement:<br/>\n<strong>A</strong> Ask all the old worker to continue their job on former working hours basis<br/>\n<strong>B</strong> Carry on the action of cutting off the elder’s proportion of employment<br/>\n<strong>C</strong> Ask employees to work more hours in order to get extra pay<br/>\n<strong>D</strong> Re-hire old employees and kept the salary a bit lower</p><p>11. which of the followings is correct according to the research of Mr Quinn<br/>\n<strong>A</strong> About 50% of all employees in America switched into ‘Bridge’ jobs.<br/>\n<strong>B</strong> Only the worst-paid continue to work.<br/>\n<strong>C</strong> More men than women fell into the category of ’bridge’ work.<br/>\n<strong>D</strong> Some old people keep working for their motives rather than an economic incentive.</p><p>12. Which of the followings is correct according to David Storey:<br/>\n<strong>A</strong> 70% of business is successful if hire more older people.<br/>\n<strong>B</strong> The average success of the self-employed business is getting lower.<br/>\n<strong>C</strong> Self-employed elder people are more likely to survive.<br/>\n<strong>D</strong> Older people’s working hours are more flexible.</p><p>13. What is the main purpose of the author in writing this passage?<br/>\n<strong>A</strong> there must be a successful retiring program for the old<br/>\n<strong>B</strong> older people should be correctly valued in employment<br/>\n<strong>C</strong> old people should offer more helping young employees grow.<br/>\n<strong>D</strong> There are more jobs in the world that only employ older people</p><p><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>"
+          ]
         }
       ]
     },
@@ -343,7 +342,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 14-21</strong><br/>\nComplete the table below. Write <strong>NO MORE THAN TWO WORDS</strong> from reading passage for each answer.</p><table><tbody><tr><td><strong>Time</strong></td><td><strong>Destination</strong></td><td><strong>Traveler</strong></td><td><strong>Purpose</strong></td></tr><tr><td>Classical era</td><td width=\"148\">Egypt and Anatolia</td><td width=\"148\">Herodotus</td><td width=\"148\">To obtain information on (14) ……………..</td></tr><tr><td width=\"148\">1<sup>st</sup> century BC</td><td width=\"148\">Central Asia</td><td width=\"148\">Zhang Qian</td><td width=\"148\">To seek (15) ………</td></tr><tr><td width=\"148\">Roman Empire</td><td width=\"148\">Mediterranean</td><td width=\"148\">Ptolemy, Strabo Pliny the Elder</td><td width=\"148\">To gather (16) ………</td></tr><tr><td width=\"148\">Post-classical era</td><td width=\"148\">Eastern Hemisphere</td><td width=\"148\">Muslims</td><td width=\"148\">For business and (17) ………..</td></tr><tr><td width=\"148\">5<sup>th</sup> to 9<sup>th</sup> centuries CE</td><td width=\"148\">India</td><td width=\"148\">Asian Buddhists</td><td width=\"148\">To study with (18) ……</td></tr><tr><td width=\"148\">Early modern era</td><td width=\"148\">Distant places of the globe</td><td width=\"148\">The Europeans</td><td width=\"148\">To meet the public’s expectation for the outside</td></tr><tr><td width=\"148\">19<sup>th</sup> century</td><td width=\"148\">Asia, Africa</td><td width=\"148\">Colonial administrator</td><td width=\"148\">To provide information on the (19) ……… they conquer</td></tr><tr><td width=\"148\">By the mid-century of the 1800s</td><td width=\"148\">Europe and the United States</td><td width=\"148\">Sun Yat-sen, Fukuzawa Yukichi</td><td width=\"148\">To learn (20) ………….<p>for the reorganization of their societies</p></td></tr><tr><td width=\"148\">20<sup>th</sup> century</td><td width=\"148\">Mass tourism</td><td width=\"148\">People from (21) ……..<p>Countries</p></td><td width=\"148\">For entertainment</td></tr></tbody></table>",
+          "legendHtml": "<table><tbody><tr><td><strong>Time</strong></td><td><strong>Destination</strong></td><td><strong>Traveler</strong></td><td><strong>Purpose</strong></td></tr><tr><td>Classical era</td><td width=\"148\">Egypt and Anatolia</td><td width=\"148\">Herodotus</td><td width=\"148\">To obtain information on (14) ……………..</td></tr><tr><td width=\"148\">1<sup>st</sup> century BC</td><td width=\"148\">Central Asia</td><td width=\"148\">Zhang Qian</td><td width=\"148\">To seek (15) ………</td></tr><tr><td width=\"148\">Roman Empire</td><td width=\"148\">Mediterranean</td><td width=\"148\">Ptolemy, Strabo Pliny the Elder</td><td width=\"148\">To gather (16) ………</td></tr><tr><td width=\"148\">Post-classical era</td><td width=\"148\">Eastern Hemisphere</td><td width=\"148\">Muslims</td><td width=\"148\">For business and (17) ………..</td></tr><tr><td width=\"148\">5<sup>th</sup> to 9<sup>th</sup> centuries CE</td><td width=\"148\">India</td><td width=\"148\">Asian Buddhists</td><td width=\"148\">To study with (18) ……</td></tr><tr><td width=\"148\">Early modern era</td><td width=\"148\">Distant places of the globe</td><td width=\"148\">The Europeans</td><td width=\"148\">To meet the public’s expectation for the outside</td></tr><tr><td width=\"148\">19<sup>th</sup> century</td><td width=\"148\">Asia, Africa</td><td width=\"148\">Colonial administrator</td><td width=\"148\">To provide information on the (19) ……… they conquer</td></tr><tr><td width=\"148\">By the mid-century of the 1800s</td><td width=\"148\">Europe and the United States</td><td width=\"148\">Sun Yat-sen, Fukuzawa Yukichi</td><td width=\"148\">To learn (20) ………….<p>for the reorganization of their societies</p></td></tr><tr><td width=\"148\">20<sup>th</sup> century</td><td width=\"148\">Mass tourism</td><td width=\"148\">People from (21) ……..<p>Countries</p></td><td width=\"148\">For entertainment</td></tr></tbody></table>",
           "wordLimit": 2,
           "table": {
             "rows": [
@@ -466,8 +465,7 @@ const test: PracticeTest = {
                 "mass transport"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 22 – 26</strong><br/>\nChoose the correct letter, A, B, C or D.</p><p>22. Why did some people travel in the early days?<br/>\n<strong>A</strong> to do research on themselves<br/>\n<strong>B</strong> to write travel books<br/>\n<strong>C</strong> to have a better understanding of other people and places<br/>\n<strong>D</strong> to study local culture</p><p>23. The travelers’ accounts are a mirror to themselves,<br/>\n<strong>A</strong> because they help them to be aware of local histories.<br/>\n<strong>B</strong> because travelers are curious about the world.<br/>\n<strong>C</strong> because travelers could do more research on the unknown.<br/>\n<strong>D</strong> because they reflect the writers’ own experience and social life.</p><p>24. Most of the people who went to holy sites during the early part of the postclassical era are<br/>\n<strong>A</strong> Europeans<br/>\n<strong>B</strong> Muslim and East Asians<br/>\n<strong>C</strong> Americans<br/>\n<strong>D</strong> Greeks</p><p>25. During the early modern era, a large number of travel books were published to<br/>\n<strong>A</strong> provide what the public wants.<br/>\n<strong>B</strong> encourage the public’s feedback.<br/>\n<strong>C</strong> gain profit.<br/>\n<strong>D</strong> prompt trips to the new world.</p><p>26. What stimulated the market for traveling in the 20th century?<br/>\n<strong>A</strong> the wealthy<br/>\n<strong>B</strong> travel books<br/>\n<strong>C</strong> delicious food<br/>\n<strong>D</strong> mass transport</p><p><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>"
+          ]
         }
       ]
     },
@@ -541,7 +539,7 @@ const test: PracticeTest = {
               "textHtml": "Questioning concern raised about the usefulness of investigation on dreams"
             }
           ],
-          "legendHtml": "<p><strong>Question 27 – 31</strong><br/>\nReading passage has seven paragraphs, A-G. Which paragraph contains the following information?</p><p>27. Reference of an artist’s dreams who has versatile talents<br/>\n28. The dream actually happens to many animals<br/>\n29. Dreams are related to benefit and happiness<br/>\n30. Advanced scientific technology applied in the investigation of the REM stage.<br/>\n31. Questioning concern raised about the usefulness of investigation on dreams</p>",
+          "legendHtml": "<p><strong>Question 27 – 31</strong></p>",
           "options": [
             "A",
             "B",
@@ -590,8 +588,7 @@ const test: PracticeTest = {
                 "REM makes people want to drink beer with more foam"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 32 – 34</strong><br/>\nChoose the correct letter, A, B, C or D.</p><p>32. What were dreams regarded as by ancient people?<br/>\n<strong>A</strong> superstitious and unreliable<br/>\n<strong>B</strong> communication with gods and chance to predict the future<br/>\n<strong>C</strong> medical relief for children with an ill desire<br/>\n<strong>D</strong> rules to follow as they fell asleep in a temple</p><p>33. According to Paragraph D, which part of the brain controls reasoning?<br/>\n<strong>A</strong> anterior cingulate cortex<br/>\n<strong>B</strong> internal cortex<br/>\n<strong>C</strong> limbic system<br/>\n<strong>D</strong> prefrontal cortex</p><p>34. What can we conclude when the author cited a reference for dreams in animals?<br/>\n<strong>A</strong> Brain temperature rises when REM pattern happens.<br/>\n<strong>B</strong> The reason why mammals are warm-blooded<br/>\n<strong>C</strong> mammals are bound to appear with more frequent REM.<br/>\n<strong>D</strong> REM makes people want to drink beer with more foam.</p>"
+          ]
         },
         {
           "title": "Questions 35-40",
@@ -629,7 +626,7 @@ const test: PracticeTest = {
               "textHtml": "Dreams seem to be as randomly occurring and have limited research significance"
             }
           ],
-          "legendHtml": "<p><strong>Questions 35-40</strong><br/>\nLook at the following people and the list of statements below. Match each statement with the correct person, A-G.</p><p><strong>List of people</strong><br/>\n<strong>A</strong> Sigmund Freud<br/>\n<strong>B</strong> Allan Hobson (Harvard)<br/>\n<strong>C</strong> Robert McCarley<br/>\n<strong>D</strong> Eric Nofzinger<br/>\n<strong>E</strong> Jerry Siegel<br/>\n<strong>F</strong> Clara Hill<br/>\n<strong>G</strong> Rosalind Cartwright</p><p>35. Dreams sometimes come along with REM as no more than a trivial attachment<br/>\n36. Exploring patients’ dreams would be beneficial for treatment as it reveals the unconscious thinking<br/>\n37. Dreams help people cope with the difficulties they meet in the daytime<br/>\n38. Decoding dreams would provide a reminder to human desire in the early days<br/>\n39. Dreams are a body function to control strong emotion<br/>\n40. Dreams seem to be as randomly occurring and have limited research significance.</p><p><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>List of people</strong><br/>\n<strong>A</strong> Sigmund Freud<br/>\n<strong>B</strong> Allan Hobson (Harvard)<br/>\n<strong>C</strong> Robert McCarley<br/>\n<strong>D</strong> Eric Nofzinger<br/>\n<strong>E</strong> Jerry Siegel<br/>\n<strong>F</strong> Clara Hill<br/>\n<strong>G</strong> Rosalind Cartwright</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "options": [
             "A",
             "B",

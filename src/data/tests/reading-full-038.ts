@@ -99,7 +99,7 @@ const test: PracticeTest = {
               "textHtml": "Conventional medical doctors (who is aware of placebo)"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1- 6</strong><br/>Use the information in the passage to match the deed (listed A-H) with people below. Write the appropriate letters A-H in boxes 1-6 on your answer sheet. NB You may use any letter more than once</p><p><strong>A</strong> Should easily be understood<br/><strong>B</strong> Should improve by itself<br/><strong>C</strong> Should not involve any mysticism<br/><strong>D</strong> Ought to last a minimum length of time.<br/><strong>E</strong> Needs to be treated at the right time.<br/><strong>F</strong> Should give more recognition.<br/><strong>G</strong> Can earn valuable money.<br/><strong>H</strong> Do not rely on any specific treatment</p><p>1. Appointments with an alternative practitioner<br/>2. An alternative practitioner’s description of the treatment<br/>3. An alternative practitioner who has faith in what he does<br/>4. The illness of patients convinced of alternative practice<br/>5. Improvements of patients receiving alternative practice<br/>6. Conventional medical doctors (who is aware of placebo)</p>",
+          "legendHtml": "<p><strong>A</strong> Should easily be understood<br/>\n<strong>B</strong> Should improve by itself<br/>\n<strong>C</strong> Should not involve any mysticism<br/>\n<strong>D</strong> Ought to last a minimum length of time.<br/>\n<strong>E</strong> Needs to be treated at the right time.<br/>\n<strong>F</strong> Should give more recognition.<br/>\n<strong>G</strong> Can earn valuable money.<br/>\n<strong>H</strong> Do not rely on any specific treatment</p>",
           "options": [
             "A",
             "B",
@@ -149,8 +149,7 @@ const test: PracticeTest = {
                 "Their pain-relieving effects do not last long enough"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 7- 9</strong><br/>Choose the correct letter, A, B, C or D.</p><p>7. In the fifth paragraph, the writer uses the example of anger and sadness to illustrate that:<br/><strong>A</strong> People’s feeling could affect their physical behaviour<br/><strong>B</strong> Scientists don’t understand how the mind influences the body.<br/><strong>C</strong> Research on the placebo effect is very limited<br/><strong>D</strong> How placebo achieves its effect is yet to be understood.</p><p>8. Research on pain control attracts most of the attention because<br/><strong>A</strong> Scientists have discovered that endorphins can help to reduce pain.<br/><strong>B</strong> Only a limited number of researchers gain relevant experience<br/><strong>C</strong> Pain reducing agents might also be involved in the placebo effect<br/><strong>D</strong> Patients often experience pain and like to complain about it</p><p>9. Fabrizio Benedetti’s research on endorphins indicates that<br/><strong>A</strong> They are widely used to regulate pain.<br/><strong>B</strong> They can be produced by willful thoughts<br/><strong>C</strong> They can be neutralized by introducing naloxone.<br/><strong>D</strong> Their pain-relieving effects do not last long enough.</p>"
+          ]
         },
         {
           "title": "Questions 10-14",
@@ -183,7 +182,7 @@ const test: PracticeTest = {
               "textHtml": "Alternative practitioners are seldom known for applying the placebo effect"
             }
           ],
-          "legendHtml": "<p><strong>Questions 10 – 14</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 10-14 on your answer sheet, write</p><p><strong>TRUE</strong>                       if the statement agrees with the information<br/><strong>FALSE</strong>                      if the statement contradicts the information<br/><strong>NOT GIVEN</strong>          if there is no information on this</p><p>10. There is enough information for scientists to fully understand the placebo effect.<br/>11. London based researcher discovered that red pills should be taken off the market.<br/>12. People’s preference for brands would also have an effect on their healing.<br/>13. Medical doctors have a range of views of the newly introduced drug of chlorpromazine.<br/>14. Alternative practitioners are seldom known for applying the placebo effect.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -283,8 +282,7 @@ const test: PracticeTest = {
                 "Drought will affect somewhere of the earth such as Australia and Indonesia"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 15-18</strong><br/>Choose the correct letter, A, B, C or D. Write your answers in boxes 15-26 on your answer sheet.</p><p>15. Why do scientists want to investigate El Nino phenomenon at beginning of the paragraph?<br/><strong>A</strong> To learn patterns of creatures that live in marine environment.<br/><strong>B</strong> Assist us to map out because it disturbs normal cycle of for wildlife and human.<br/><strong>C</strong> It has profound theory for both the academic side and practical side.<br/><strong>D</strong> Tropical Pacific Ocean is where El Nino affects most.</p><p>16. Why do scientists use seabirds as important subjects when observe climate change World-widely?<br/><strong>A</strong> Seabirds affected by prey changes according to the temperature and ice<br/><strong>B</strong> Its size is large enough to be observed.<br/><strong>C</strong> El Nino affects seabirds more than other sea creatures.<br/><strong>D</strong> North America is situated in the area where El Nino affects most.</p><p>17. What happened for Marine mammals that live in Tugidak Island in Gulf of Alaska?<br/><strong>A</strong> Number of seals declined about 85% from the mid of 20th century.<br/><strong>B</strong> Number of Steller sea lion declined while Number seals grew.<br/><strong>C</strong> Birth rate and breeding females declined on the Tugidak Island.<br/><strong>D</strong> The situation of mammals on the island is not that worse than we expected.</p><p>18. According to J. Walker, what happens in the monsoon seasons notably?<br/><strong>A</strong> Flood and drought seriously damage almost everywhere of the planet.<br/><strong>B</strong> Walker’s prediction would soon come true.<br/><strong>C</strong> Drought only affects some parts of Africa.<br/><strong>D</strong> Drought will affect somewhere of the earth such as Australia and Indonesia.</p>"
+          ]
         },
         {
           "title": "Questions 19-27",
@@ -337,7 +335,7 @@ const test: PracticeTest = {
               "textHtml": "Byrd and Tobish think that heavy rainfall and storms cause mortality for chicks, which has already been a convincing proof"
             }
           ],
-          "legendHtml": "<p><strong>Question 19 – 27</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 19-27 on your answer sheet, write</p><p><strong>TRUE</strong>                     if the statement agrees with the information<br/><strong>FALSE</strong>                   if the statement contradicts the information<br/><strong>NOT GIVEN</strong>        if there is no information on this</p><p>19. Seabirds are regarded as precious indicators of changes in oceanic environment.<br/>20. Seabirds such as Fulmars and Murres feed by the characteristic of prey in different ways.<br/>21. Steller sea lions only decline in birth rate and fewer pups, but the whole population wouldn’t be affected by the changes.<br/>22. With reply of Walker’s colleague, knowledge of wind patterns will be very helpful.<br/>23. It is difficult to investigate El Nino for ornithologists and ecologist because lack of available statistics and inspections.<br/>24. Habit of seabirds in Alaska is similar to those in the Northern Hemisphere.<br/>25. Number of Shearwaters in the southern hemisphere feed most during the summer.<br/>26. Hatch thinks that it is too early to determine all the problems that are caused by El Nino.<br/>27. Byrd and Tobish think that heavy rainfall and storms cause mortality for chicks, which has already been a convincing proof.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p><strong>Question 19 – 27</strong></p><dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     },
@@ -416,7 +414,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 28 – 32</strong><br/>Complete the table now. Choose <strong>NO MORE THAN THREE WORDS</strong> from the reading passage for each answer.</p><table><tbody><tr><td width=\"198\"><strong>Type of Impact to Children</strong></td><td width=\"198\"><strong>Range of Reference to Siblings</strong></td><td width=\"198\"><strong>Rate of Influence</strong></td></tr><tr><td width=\"198\">(28)……………. background from parents and family</td><td width=\"198\">including to all of siblings</td><td width=\"198\">40%-50%</td></tr><tr><td width=\"198\">Shared Environment</td><td width=\"198\">to (29)………………</td><td width=\"198\">Less than (30)……………</td></tr><tr><td width=\"198\">(31)……………….</td><td width=\"198\">to part of siblings</td><td width=\"198\">(32)……. – 50%</td></tr></tbody></table>",
+          "legendHtml": "<table><tbody><tr><td width=\"198\"><strong>Type of Impact to Children</strong></td><td width=\"198\"><strong>Range of Reference to Siblings</strong></td><td width=\"198\"><strong>Rate of Influence</strong></td></tr><tr><td width=\"198\">(28)……………. background from parents and family</td><td width=\"198\">including to all of siblings</td><td width=\"198\">40%-50%</td></tr><tr><td width=\"198\">Shared Environment</td><td width=\"198\">to (29)………………</td><td width=\"198\">Less than (30)……………</td></tr><tr><td width=\"198\">(31)……………….</td><td width=\"198\">to part of siblings</td><td width=\"198\">(32)……. – 50%</td></tr></tbody></table>",
           "wordLimit": 3,
           "table": {
             "rows": [
@@ -482,7 +480,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 33-35</strong><br/>Complete the following summary of the paragraphs of reading passage. Using <strong>NO MORE THAN THREE WORDS</strong> from the Reading Passage for each answer.</p><p>Research in recent years illuminated that the impact from parents will frequently be (33)……………… by the peer’s pressure. It was also indicated that (34)………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing (35)………………. between parents and children or even between parents themselves.</p>",
+          "legendHtml": "<p>Research in recent years illuminated that the impact from parents will frequently be (33)……………… by the peer’s pressure. It was also indicated that (34)………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing (35)………………. between parents and children or even between parents themselves.</p>",
           "wordLimit": 3
         },
         {
@@ -511,7 +509,7 @@ const test: PracticeTest = {
               "textHtml": "The Study of non-shared environment influence can be a generally agreed idea among researchers in the field"
             }
           ],
-          "legendHtml": "<p><strong>Question 36 – 39</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write</p><p><strong>YES</strong>                             if the statement agrees with the views of the writer<br/><strong>NO</strong>                               if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>            if it is impossible to say what the writer thinks about this</p><p>36. The more children there are in a family, the more impacts of environment it is.<br/>37. Methods based on twin studies still meet unexpected differences that cannot be ascribed to be a purely genetic explanation.<br/>38. Children prefer to speak the language from the children of the same age to the language spoken by their parents.<br/>39. The Study of non-shared environment influence can be a generally agreed idea among researchers in the field.</p>"
+          "legendHtml": "<p><strong>Question 36 – 39</strong></p><dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Question 40",
@@ -529,8 +527,7 @@ const test: PracticeTest = {
                 "can be workable"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Question 40</strong><br/>Choose the correct letter, A, B, C, or D.</p><p>40. According to this passage, which comment is TURE about the current Study of non-shared environment influence to children?<br/><strong>A</strong> a little biased in nature<br/><strong>B</strong> not sufficiently proved<br/><strong>C</strong> very systematic<br/><strong>D</strong> can be workable</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+          ]
         }
       ]
     }

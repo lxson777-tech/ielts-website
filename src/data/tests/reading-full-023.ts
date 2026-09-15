@@ -86,7 +86,7 @@ const test: PracticeTest = {
               "textHtml": "The data used in the study was taken from the work of amateur butterfly watchers"
             }
           ],
-          "legendHtml": "<p><strong>Questions 1-6</strong><br/>\nDo the following statements agree with the information given in reading passage? In boxes 1-6 on your answer sheet, write</p><p><strong>TRUE</strong>                           if the statement agrees with the information<br/>\n<strong>FALSE</strong>                         if the statement contradicts the information<br/>\n<strong>NOT GIVEN</strong>              if there is no information on this</p><p>1. Forty years ago, there were fewer butterflies in Britain than at present.<br/>\n2. Caterpillars are eaten by a number of different predators.<br/>\n3. ‘Phenology’ is a term used to describe a creature’s ability to alter the location of a lifecycle event.<br/>\n4. Some species of butterfly have a reduced lifespan due to spring temperature increases.<br/>\n5. There is a dear reason for the adaptations that butterflies are making to climate change.<br/>\n6. The data used in the study was taken from the work of amateur butterfly watchers.</p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         },
         {
           "title": "Questions 7-13",
@@ -139,7 +139,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-13</strong><br/>\nComplete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p><strong>Butterflies in the UK</strong></p><p><strong>The Small Blue</strong><br/>\n• lives in large (7) ……………….<br/>\n• first appears at the start of (8) ………….<br/>\n• completes more than one reproductive cycle per year</p><p><strong>The High Brown Fritillary</strong><br/>\n• has one reproductive cycle<br/>\n• is considered to be more (9) ……………… than other species<br/>\n• its caterpillars occupy a limited range of (10) …………………</p><p><strong>The Silver-studded Blue</strong><br/>\n• is already able to reproduce twice a year in warm areas of (11) ……………</p><p><strong>The White Admiral</strong><br/>\n• is found in (12) ………… areas of England<br/>\n• both climate change and the (13) ……………… of the caterpillar are possible reasons for decline</p><p><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Butterflies in the UK</strong></p><p><strong>The Small Blue</strong><br/>\n• lives in large (7) ……………….<br/>\n• first appears at the start of (8) ………….<br/>\n• completes more than one reproductive cycle per year</p><p><strong>The High Brown Fritillary</strong><br/>\n• has one reproductive cycle<br/>\n• is considered to be more (9) ……………… than other species<br/>\n• its caterpillars occupy a limited range of (10) …………………</p><p><strong>The Silver-studded Blue</strong><br/>\n• is already able to reproduce twice a year in warm areas of (11) ……………</p><p><strong>The White Admiral</strong><br/>\n• is found in (12) ………… areas of England<br/>\n• both climate change and the (13) ……………… of the caterpillar are possible reasons for decline</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -202,7 +202,6 @@ const test: PracticeTest = {
               "textHtml": "reference to the fact that the countries of the world have yet to agree on rules for the exploration of the seabed"
             }
           ],
-          "legendHtml": "<p><strong>Questions 14-17</strong><br/>\nReading passage has six paragraphs, A-F. Which paragraph contains the following information? Write the correct letter, A-F, in boxes 14-17 on your answer sheet.</p><p>14. reference to the rapidly increasing need for one raw material in the transport industry<br/>\n15. a rough estimate of the area of the Earth covered by the oceans<br/>\n16. how a particular underwater habitat, where minerals and organisms co-exist, is formed<br/>\n17. reference to the fact that the countries of the world have yet to agree on rules for the exploration of the seabed</p>",
           "options": [
             "A",
             "B",
@@ -248,7 +247,7 @@ const test: PracticeTest = {
               "textHtml": "There is one marine life habitat where experts agree mining should not take place. List of People A Professor Mat Upton B Julie Hunter, Julian Aguon and Pradeep Singh C Dr Jon Copley D Mike Johnston E Verena Tunnicliffe"
             }
           ],
-          "legendHtml": "<p><strong>Questions 18-23</strong><br/>\nLook at the following statements (Questions 18-23) and the list of people below. Match each statement with the correct person or people, A-E. Write the correct letter, A-E, in boxes 18-23 on your answer sheet. NB You may use any letter more than once.</p><p>18. A move away from the exploration of heavily mined reserves on land is a good idea,<br/>\n19. The negative effects of undersea exploration on local areas and their inhabitants are being ignored.<br/>\n20. There are more worthwhile things to extract from the sea than minerals.<br/>\n21. No other form of human exploration will have such a destructive impact on marine life as deep- sea mining.<br/>\n22. More is known about outer space than about what lies beneath the oceans.<br/>\n23. There is one marine life habitat where experts agree mining should not take place.</p><p><strong>List of People</strong><br/>\n<strong>A</strong> Professor Mat Upton<br/>\n<strong>B</strong> Julie Hunter, Julian Aguon and Pradeep Singh<br/>\n<strong>C</strong> Dr Jon Copley<br/>\n<strong>D</strong> Mike Johnston<br/>\n<strong>E</strong> Verena Tunnicliffe</p>",
+          "legendHtml": "<p><strong>A</strong> Professor Mat Upton<br/>\n<strong>B</strong> Julie Hunter, Julian Aguon and Pradeep Singh<br/>\n<strong>C</strong> Dr Jon Copley<br/>\n<strong>D</strong> Mike Johnston<br/>\n<strong>E</strong> Verena Tunnicliffe</p>",
           "options": [
             "A",
             "B",
@@ -281,7 +280,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 24-26</strong><br/>\nComplete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer. Write your answers in boxes 24-26 on your answer sheet.</p><p><strong>Mining the sea floor</strong></p><p>Mining corporations believe that the mineral resources lying under the sea may be superior to those found in the earth. They also say that these can be removed without producing much (24) …………….</p><p>The extraction is often done by adapting the (25) …………………. that has already been used to work on land. The method of excavation involves removing the seawater from the slurry that is brought up to ships and returning it to the seabed. However, concerned groups strongly believe that (26) …………… is necessary due to the possible number of unidentified consequences.</p><p><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Mining the sea floor</strong></p><p>Mining corporations believe that the mineral resources lying under the sea may be superior to those found in the earth. They also say that these can be removed without producing much (24) …………….</p><p>The extraction is often done by adapting the (25) …………………. that has already been used to work on land. The method of excavation involves removing the seawater from the slurry that is brought up to ships and returning it to the seabed. However, concerned groups strongly believe that (26) …………… is necessary due to the possible number of unidentified consequences.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
           "wordLimit": 1
         }
       ]
@@ -379,8 +378,7 @@ const test: PracticeTest = {
                 "hunter-gatherer cultures worldwide are declining in number"
               ]
             }
-          ],
-          "legendHtml": "<p><strong>Questions 27-30</strong><br/>\nChoose the correct letter, A, B, C or D.</p><p>27. What is the writer doing in the first paragraph?<br/>\n<strong>A</strong> setting out two opposing views about human nature<br/>\n<strong>B</strong> justifying his opinion about our tendency to be greedy<br/>\n<strong>C</strong> describing a commonly held belief about people’s behaviour<br/>\n<strong>D</strong> explaining why he thinks that humans act in a selfish manner</p><p>28. What point is made about Richard Dawkins’ book The Selfish Gene?<br/>\n<strong>A</strong> Its appeal lay in the radical nature of its ideas.<br/>\n<strong>B</strong> Its success was due to the scientific support it offered.<br/>\n<strong>C</strong> It presented a view that was in line with the attitudes of its time.<br/>\n<strong>D</strong> It took an innovative approach to the analysis of human psychology.</p><p>29. What does the writer suggest about the prehistoric era in the fourth paragraph?<br/>\n<strong>A</strong> Societies were more complex than many people believe.<br/>\n<strong>B</strong> Supplies of natural resources were probably relatively plentiful.<br/>\n<strong>C</strong> Most estimates about population sizes are likely to be inaccurate.<br/>\n<strong>D</strong> Humans moved across continents more than was previously thought.</p><p>30. The writer refers to Bruce Knauft’s work as support for the idea that<br/>\n<strong>A</strong> selfishness is a relatively recent development in human societies.<br/>\n<strong>B</strong> only people in isolated communities can live in an unselfish manner.<br/>\n<strong>C</strong> very few lifestyles have survived unchanged since prehistoric times.<br/>\n<strong>D</strong> hunter-gatherer cultures worldwide are declining in number.</p>"
+          ]
         },
         {
           "title": "Questions 31-35",
@@ -418,7 +416,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 31-35</strong><br/>\nComplete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p><p><strong>Contemporary hunter-gatherer societies</strong></p><p>Bruce Knauft’s research shows that contemporary hunter-gatherer societies tend to exhibit a high level of (31) …………………. in all areas of life. In these cultures, distributing resources fairly among all members is a moral obligation. These societies also employ strategies to prevent differences in (32) ………………. occurring: for example, the !Kung follow a custom whereby the credit for one person’s success at (33) ……………….. is given to another member of the group. Individuals who behave in a (34) ……………………. manner are punished by being excluded from the group, and women have a considerable amount of (35) …………………. in choices regarding work and marriage.</p>",
+          "legendHtml": "<p><strong>Contemporary hunter-gatherer societies</strong></p><p>Bruce Knauft’s research shows that contemporary hunter-gatherer societies tend to exhibit a high level of (31) …………………. in all areas of life. In these cultures, distributing resources fairly among all members is a moral obligation. These societies also employ strategies to prevent differences in (32) ………………. occurring: for example, the !Kung follow a custom whereby the credit for one person’s success at (33) ……………….. is given to another member of the group. Individuals who behave in a (34) ……………………. manner are punished by being excluded from the group, and women have a considerable amount of (35) …………………. in choices regarding work and marriage.</p>",
           "wordLimit": 1
         },
         {
@@ -452,7 +450,7 @@ const test: PracticeTest = {
               "textHtml": "Animal research has failed to reveal a link between changes in the environment and the emergence of aggressive tendencies"
             }
           ],
-          "legendHtml": "<p><strong>Questions 36-40</strong><br/>\nDo the following statements agree with the views of the writer in reading passage? In boxes 36-40 on your answer sheet, write</p><p><strong>YES</strong>                          if the statement agrees with the views of the writer<br/>\n<strong>NO</strong>                            if the statement contradicts the views of the writer<br/>\n<strong>NOT GIVEN</strong>         if it is impossible to say what the writer thinks about this<br/>\n36. Some anthropologists are mistaken about the point when the number of societies such as the !Kung began to decline.<br/>\n37. Humans who developed warlike traits in prehistory would have had an advantage over those who did not.<br/>\n38. Being peaceful and cooperative is a natural way for people to behave.<br/>\n39. Negative traits are more apparent in some modern cultures than in others.<br/>\n40. Animal research has failed to reveal a link between changes in the environment and the emergence of aggressive tendencies.</p><p><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
         }
       ]
     }

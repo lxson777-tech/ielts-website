@@ -1,0 +1,73 @@
+---
+/**
+ * Shared explainer for the Practice/Tests split, used under the intro on
+ * both hub pages (/trainers and /tests). One place for the wording so the
+ * two hubs can never drift apart on how they describe each other.
+ *
+ * `current` highlights that hub's card with the brand tint; the other card
+ * is a plain link across to it.
+ */
+import { withBase } from '../lib/url';
+
+interface Props {
+  current: 'practice' | 'tests';
+}
+const { current } = Astro.props;
+
+const cards = [
+  {
+    id: 'practice' as const,
+    label: 'Practice',
+    href: '/trainers',
+    bullets: [
+      'Guided practice for one skill, with a coach on screen',
+      'Use it while you are still learning the format',
+      'Hints, model phrases and feedback on every attempt',
+    ],
+  },
+  {
+    id: 'tests' as const,
+    label: 'Tests',
+    href: '/tests',
+    bullets: [
+      'A full test, exactly like the real exam',
+      'Use it when you want to know your band',
+      'Timed, no hints, a band estimate and review after',
+    ],
+  },
+];
+---
+
+<div class="mb-10 grid gap-4 sm:grid-cols-2" role="group" aria-label="Practice versus Tests">
+  {cards.map((card) => {
+    const isCurrent = card.id === current;
+    return (
+      <div
+        class={`rounded-card border p-5 transition-colors duration-300 ${
+          isCurrent ? 'border-brand/30 bg-brand-tint/40' : 'border-border bg-surface'
+        }`}
+      >
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="font-display text-base font-extrabold">{card.label}</h3>
+          {isCurrent ? (
+            <span class="rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+              You are here
+            </span>
+          ) : (
+            <a href={withBase(card.href)} class="text-xs font-semibold text-brand hover:underline">
+              Go to {card.label}
+            </a>
+          )}
+        </div>
+        <ul class="mt-3 space-y-1.5 text-sm text-ink-muted">
+          {card.bullets.map((line) => (
+            <li class="flex gap-2">
+              <span aria-hidden="true" class="text-brand">·</span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  })}
+</div>

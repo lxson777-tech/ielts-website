@@ -195,6 +195,25 @@ input[type='radio'] {
   font-variant-numeric: tabular-nums;
 }
 
+/* Test player: answer-key legend (TRUE/FALSE/NOT GIVEN and similar).
+   Cleaned legendHtml renders these as a <dl>; keyword bold and inline
+   with its definition, one pair per line via the ::before line break. */
+.legend-key {
+  margin: 0;
+}
+.legend-key dt {
+  display: inline;
+  font-weight: 700;
+}
+.legend-key dt::before {
+  content: '';
+  display: block;
+}
+.legend-key dd {
+  display: inline;
+  margin: 0 0 0 0.4em;
+}
+
 /* ── Count-up number ───────────────────────────────────────────────
    The streak on the dashboard. The digits are written by JS, so this
    only has to hold the width steady while they change. */

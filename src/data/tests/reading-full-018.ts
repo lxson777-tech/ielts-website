@@ -78,7 +78,7 @@ const test: PracticeTest = {
               "explanation": "The passage says wolf descendants are 'often in endangered populations' but never states wolves are a protected species across most of the world."
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 1-5</strong></span><br/>\n<span>Do the following statements agree with the views of the writer of the passage? Write:</span></p><p><span><strong>YES</strong>                                if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                  if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>               if it is impossible to say what the writer thinks about this</span></p><p><span>1. The co-existence of wolves and humans began 10,000 years ago.</span><br/>\n<span>2. Dogs, wolves, jackals and coyotes share a common ancestor.</span><br/>\n<span>3. Dogs probably influenced the development of human hunting skills.</span><br/>\n<span>4. Dogs evolved from wolves which chose to live with humans.</span><br/>\n<span>5. Wolves are a protected species in most parts of the world.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 6-8",
@@ -124,8 +124,7 @@ const test: PracticeTest = {
               "explanation": "Since humans could rely on dogs' senses, brain areas linked to smell and hearing could shrink because they were no longer needed for survival, supporting inference A.",
               "evidence": "allowing certain areas of the human brain to shrink in size"
             }
-          ],
-          "legendHtml": "<p><span><strong>Questions 6-8</strong></span><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>6. How do we know that dogs have been more successful in evolutionary terms than wolves?</span><br/>\n<span><strong>A</strong> Dogs can be trained more easily than wolves.</span><br/>\n<span><strong>B</strong> Wolves are stronger than dogs.</span><br/>\n<span><strong>C</strong> Humans prefer dogs to wolves.</span><br/>\n<span><strong>D</strong> There are more dogs than wolves today.</span></p><p><span>7. As a result of domestication, the size of the human brain has …</span><br/>\n<span><strong>A</strong> increased.</span><br/>\n<span><strong>B</strong> decreased</span><br/>\n<span><strong>C</strong> stayed the same.</span><br/>\n<span><strong>D</strong> become more complex.</span></p><p><span>8. What can we infer from the studies of brain size and domestication?</span><br/>\n<span><strong>A</strong> Domestic life is less demanding than surviving in the wild.</span><br/>\n<span><strong>B</strong> Animals like living with humans.</span><br/>\n<span><strong>C</strong> Domestication has made animals physically weaker.</span><br/>\n<span><strong>D</strong> Pigs are less intelligent than dogs.</span></p>"
+          ]
         },
         {
           "title": "Question 9",
@@ -141,7 +140,7 @@ const test: PracticeTest = {
               "evidence": "selectively breed these animals"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 9</strong></span><br/>\n<span>Choose <strong>TWO WORDS</strong> from the passage for the answer.</span></p><p><span>There are many different types of dogs today, because, in early times humans began to (9) ……………… their animals for the characteristics they wanted.</span></p>",
+          "legendHtml": "<p><span><strong>Questions 9</strong></span></p><p><span>There are many different types of dogs today, because, in early times humans began to (9) ……………… their animals for the characteristics they wanted.</span></p>",
           "wordLimit": 2
         },
         {
@@ -185,7 +184,7 @@ const test: PracticeTest = {
               "evidence": "analysing the genetic history through the DNA of 162 wolves"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 10-14</strong></span><br/>\n<span>Match one of the researchers (A-C) to each of the findings (10-14) below.</span></p><p><span><strong>A</strong> Dr. Wayne</span><br/>\n<span><strong>B</strong> Dr. Paxton</span><br/>\n<span><strong>C</strong> Dr. Groves</span></p><p><span>Example: found the common ancestor of the dog <span><strong>A</strong></span></span></p><p><span>10. studied the brain size of domesticated animals</span><br/>\n<span>11. claims that wolves chose to interact with humans</span><br/>\n<span>12. established a new time frame for domestication of wolves</span><br/>\n<span>13. believes that dogs and humans domesticated each other</span><br/>\n<span>14. studied the DNA of wolves and dogs</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> Dr. Wayne</span><br/>\n<span><strong>B</strong> Dr. Paxton</span><br/>\n<span><strong>C</strong> Dr. Groves</span></p><p><span>Example: found the common ancestor of the dog <span><strong>A</strong></span></span></p>",
           "options": [
             "A",
             "B",
@@ -266,7 +265,7 @@ const test: PracticeTest = {
               "evidence": "it is irrational to believe that all crop circles are fake"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 15-19</strong></span><br/>\n<span>Do the following statements reflect the claims of the writer of this passage? Write:</span></p><p><span><strong>YES</strong>                              if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>             if it is impossible to say what the writer thinks about this</span></p><p><span>15. Crop circles only appear in wheat fields.</span><br/>\n<span>16. Crop circles have never been documented in tropical countries.</span><br/>\n<span>17. The largest number of crop circle reporting in a single year occurred in 1990.</span><br/>\n<span>18. The patterns of crop circles have become increasingly complex over the years.</span><br/>\n<span>19. All crop circles are hoaxes.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         },
         {
           "title": "Questions 20-23",
@@ -318,7 +317,7 @@ const test: PracticeTest = {
               "evidence": "avoid going directly over a crop circle formation"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 20-23</strong></span><br/>\n<span>Complete the summary below. Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</span></p><p><span>Since the early 1970s, over ten thousand crop circles have been reported around the world, the greatest number in (20) ………………, where in a single year, over one hundred circles appeared. Phenomena such as the appearance of strange lights and unusual (21) ………………. sometimes occur around the sites of crop circles. (22) ………………. are not affected but it has been observed that birds (23) ………………… flying over a formation.</span></p>",
+          "legendHtml": "<p><span>Since the early 1970s, over ten thousand crop circles have been reported around the world, the greatest number in (20) ………………, where in a single year, over one hundred circles appeared. Phenomena such as the appearance of strange lights and unusual (21) ………………. sometimes occur around the sites of crop circles. (22) ………………. are not affected but it has been observed that birds (23) ………………… flying over a formation.</span></p>",
           "wordLimit": 3
         },
         {
@@ -355,7 +354,7 @@ const test: PracticeTest = {
               "evidence": "significant changes at the cellular level of crop circle plants"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 24-27</strong></span><br/>\n<span>Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below.</span></p><p><span><strong>A</strong> Dr. Mearden</span><br/>\n<span><strong>B</strong> Dr. Levengood</span><br/>\n<span><strong>C</strong> Michael Chorost</span></p><p><span>Example: observations of light in relation to crop circles <span><strong>A</strong></span></span></p><p><span>24. changes in the structure of soil within crop circles</span><br/>\n<span>25. accelerated growth of seeds from crop circles</span><br/>\n<span>26. electrical charges in the air around crop circles</span><br/>\n<span>27. changes in cell structure of plants found in crop circles</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> Dr. Mearden</span><br/>\n<span><strong>B</strong> Dr. Levengood</span><br/>\n<span><strong>C</strong> Michael Chorost</span></p><p><span>Example: observations of light in relation to crop circles <span><strong>A</strong></span></span></p>",
           "options": [
             "A",
             "B",
@@ -459,7 +458,7 @@ const test: PracticeTest = {
               "evidence": "little evidence they are serious enough to halt or even reverse human progress"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 28-33</strong></span><br/>\n<span>Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer.</span></p><p><span>28. Our patterns of consumption are using up the ecological capital of the planet.</span><br/>\n<span>29. Crises beginning in the Third World will spread to developed countries.</span><br/>\n<span>30. Scientific progress will enable the planet to sustain increased population.</span><br/>\n<span>31. Social and political infrastructure worldwide could collapse.</span><br/>\n<span>32. Earth’s life support systems are at critical risk.</span><br/>\n<span>33. Environmental problems are not a threat to progress.</span></p><p><span><strong>A</strong> R. Kaplan, author of The Coming Anarchy</span><br/>\n<span><strong>B</strong> M. Gee, author of Apocalypse Deferred</span><br/>\n<span><strong>C</strong> D. Suzuki, author of this passage</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> R. Kaplan, author of The Coming Anarchy</span><br/>\n<span><strong>B</strong> M. Gee, author of Apocalypse Deferred</span><br/>\n<span><strong>C</strong> D. Suzuki, author of this passage</span></p>",
           "options": [
             "A",
             "B",
@@ -488,12 +487,12 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "C",
-              "textHtml": "Natural resources and the economy A have most benefited developing countries B has led to a drop in the standard of living generally C cannot continue to expand indefinitely D have decreased third world debt E shows a correlation, not cause and effect F pose a threat to human progress G has been accompanied by global economic growth",
+              "textHtml": "Natural resources and the economy",
               "explanation": "Suzuki's bank account analogy shows it would be 'foolish to conclude that we could keep drawing more from the account indefinitely', meaning resources cannot expand forever, matching C.",
               "evidence": "we could keep drawing more from the account indefinitely"
             }
           ],
-          "legendHtml": "<p><span><strong>Questions 34-36</strong></span><br/>\n<span>Choose <strong>ONE</strong> phrase pom the list below (A-G) to complete each of the following sentences. There are more phrases than questions so you will not use all of them.</span></p><p><span>34. The growth of world trade</span><br/>\n<span>35. The relationship between population and standard of living</span><br/>\n<span>36. Natural resources and the economy</span></p><p><span><strong>A</strong> have most benefited developing countries</span><br/>\n<span><strong>B</strong> has led to a drop in the standard of living generally</span><br/>\n<span><strong>C</strong> cannot continue to expand indefinitely</span><br/>\n<span><strong>D</strong> have decreased third world debt</span><br/>\n<span><strong>E</strong> shows a correlation, not cause and effect</span><br/>\n<span><strong>F</strong> pose a threat to human progress</span><br/>\n<span><strong>G</strong> has been accompanied by global economic growth</span></p>",
+          "legendHtml": "<p><span><strong>A</strong> have most benefited developing countries</span><br/>\n<span><strong>B</strong> has led to a drop in the standard of living generally</span><br/>\n<span><strong>C</strong> cannot continue to expand indefinitely</span><br/>\n<span><strong>D</strong> have decreased third world debt</span><br/>\n<span><strong>E</strong> shows a correlation, not cause and effect</span><br/>\n<span><strong>F</strong> pose a threat to human progress</span><br/>\n<span><strong>G</strong> has been accompanied by global economic growth</span></p>",
           "options": [
             "A",
             "B",
@@ -561,8 +560,7 @@ const test: PracticeTest = {
               "explanation": "The closing paragraph warns that the popular media 'blinds the public to the urgency... of warnings that an environmental crisis confronts us', matching A.",
               "evidence": "an environmental crisis confronts us"
             }
-          ],
-          "legendHtml": "<p><span><strong>Questions 37-40</strong></span><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>37. Which of the following is NOT stated by Kaplan as a key contributing factor to potential global destabilisation?</span><br/>\n<span><strong>A</strong> political corruption</span><br/>\n<span><strong>B</strong> collapse of ecosystems</span><br/>\n<span><strong>C</strong> population explosion</span><br/>\n<span><strong>D</strong> diseases</span></p><p><span>38. What is the main source of Gee’s optimism?</span><br/>\n<span><strong>A</strong> scientific and technological advances</span><br/>\n<span><strong>B</strong> decreasing Third World debt</span><br/>\n<span><strong>C</strong> the rise in the standard of living worldwide</span><br/>\n<span><strong>D</strong> economic growth</span></p><p><span>39. Which of the following can we infer about the views of the author of this passage?</span><br/>\n<span><strong>A</strong> He disagrees with both Gee and Kaplan.</span><br/>\n<span><strong>B</strong> He supports the views of Gee.</span><br/>\n<span><strong>C</strong> His views are closer to those of Kaplan.</span><br/>\n<span><strong>D</strong> He thinks both Gee and Kaplan are right.</span></p><p><span>40. The main purpose of the author in this passage is …</span><br/>\n<span><strong>A</strong> to alert us to an environmental crisis.</span><br/>\n<span><strong>B</strong> to educate the media.</span><br/>\n<span><strong>C</strong> to create uncertainty about the future.</span><br/>\n<span><strong>D</strong> to challenge current economic theory.</span></p>"
+          ]
         }
       ]
     }

@@ -112,7 +112,7 @@ const test: PracticeTest = {
               "evidence": "aerial views of rivers and expansive paintings of the sky viewed from just above clouds"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 1-7</span></strong><br/>\n<span>Complete the notes below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>The life and work of Georgia O’Keeffe</span></strong></p><p><span>• studied art, then worked as a (1) …………… in various places in the USA</span><br/>\n<span>• created drawings using (2) ………………. which were exhibited in New York City</span><br/>\n<span>• moved to New York and became famous for her paintings of the city’s (3) …………</span><br/>\n<span>• produced a series of innovative close-up paintings of (4) …………….</span><br/>\n<span>• went to New Mexico and was initially inspired to paint the many (5) ………………. that could be found there</span><br/>\n<span>• continued to paint various features that together formed the dramatic (6) ………………… of New Mexico for over forty years</span><br/>\n<span>• travelled widely by plane in later years, and painted pictures of clouds and (7) …………… seen from above</span></p>",
+          "legendHtml": "<p><strong><span>The life and work of Georgia O’Keeffe</span></strong></p><p><span>• studied art, then worked as a (1) …………… in various places in the USA</span><br/>\n<span>• created drawings using (2) ………………. which were exhibited in New York City</span><br/>\n<span>• moved to New York and became famous for her paintings of the city’s (3) …………</span><br/>\n<span>• produced a series of innovative close-up paintings of (4) …………….</span><br/>\n<span>• went to New Mexico and was initially inspired to paint the many (5) ………………. that could be found there</span><br/>\n<span>• continued to paint various features that together formed the dramatic (6) ………………… of New Mexico for over forty years</span><br/>\n<span>• travelled widely by plane in later years, and painted pictures of clouds and (7) …………… seen from above</span></p>",
           "wordLimit": 1
         },
         {
@@ -161,7 +161,7 @@ const test: PracticeTest = {
               "explanation": "The passage says her final two decades were ‘relatively unproductive’, but it never compares her 1950s-70s output with other periods, so this is not given."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 8-13</span></strong><br/>\n<span>Do the following statements agree with the information given in reading passage?</span></p><p><span><strong>TRUE</strong>                             if the statement agrees with the information</span><br/>\n<span><strong>FALSE</strong>                           if the statement contradicts the information</span><br/>\n<span><strong>NOT GIVEN</strong>               if there is no information on this</span></p><p><span>8. Georgia O’Keeffe’s style was greatly influenced by the changing fashions in art over the seven decades of her career.</span><br/>\n<span>9. When O’Keeffe finished high school, she had already made her mind up about the career that she wanted.</span><br/>\n<span>10. Alfred Stieglitz first discovered O’Keeffe’s work when she sent some abstract drawings to his gallery in New York City.</span><br/>\n<span>11. O’Keeffe was the subject of Stieglitz’s photographic work for many years.</span><br/>\n<span>12. O’Keeffe’s paintings of the patio of her house in Abiquiu were among the artist’s favourite works.</span><br/>\n<span>13. O’Keeffe produced a greater quantity of work during the 1950s to 1970s than at any other time in her life.</span></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -228,7 +228,6 @@ const test: PracticeTest = {
               "evidence": "Using a Geographic Information System data mapping tool, the programme identified streets with low tree canopy cover"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 14-17</span></strong><br/>\n<span>Reading passage has six paragraphs, A-F. Which paragraph contains the following information?</span></p><p><span>14. how a type of plant functions as a natural protection for coastlines</span><br/>\n<span>15. a prediction about how long it could take to stop noticing the effects of climate change</span><br/>\n<span>16. a reference to the fact that a solution is particularly cost-effective</span><br/>\n<span>17. a mention of a technology used to locate areas most in need of intervention</span></p>",
           "options": [
             "A",
             "B",
@@ -284,7 +283,7 @@ const test: PracticeTest = {
               "evidence": "a series of pilot projects, which include the planting of trees"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 18-22</span></strong><br/>\n<span>Complete the sentences below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><span>18. The stormwater-management programme in Miami Beach has involved the installation of efficient …………….</span><br/>\n<span>19. The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia.</span><br/>\n<span>20. As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can ………….</span><br/>\n<span>21. Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content.</span><br/>\n<span>22. A project in LA has increased the number of ……………… on the city’s streets.</span></p>",
+          "legendHtml": "<p><span>18. The stormwater-management programme in Miami Beach has involved the installation of efficient …………….</span><br/>\n<span>19. The construction of ……………. was the first stage of a project to ensure the success of mangroves in Indonesia.</span><br/>\n<span>20. As a response to rising floodwaters in the Mekong Delta, a not-for-profit organisation has been building houses that can ………….</span><br/>\n<span>21. Rising sea levels in Bangladesh have made it necessary to introduce various ………………. that are suitable for areas of high salt content.</span><br/>\n<span>22. A project in LA has increased the number of ……………… on the city’s streets.</span></p>",
           "wordLimit": 1,
           "table": {
             "rows": [
@@ -360,7 +359,7 @@ const test: PracticeTest = {
               "evidence": "this technology is becoming necessary in places that didn’t previously need it"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 23-26</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A-E.</span></p><p><span>23. It is essential to adopt strategies which involve and help residents of the region.</span><br/>\n<span>24. Interventions which reduce heat are absolutely vital for our survival in this location.</span><br/>\n<span>25. More work will need to be done in future decades to deal with the impact of rising water levels.</span><br/>\n<span>26. The number of locations requiring action to adapt to flooding has grown in recent years.</span></p><p><strong><span>List of People</span></strong></p><p><span>A. Yanira Pineda</span><br/>\n<span>B. Susanna Toi</span><br/>\n<span>C. Elizabeth English</span><br/>\n<span>D. Raisa Chowdhury</span><br/>\n<span>E. Greg Spotts</span></p>",
+          "legendHtml": "<p><span>A. Yanira Pineda</span><br/>\n<span>B. Susanna Toi</span><br/>\n<span>C. Elizabeth English</span><br/>\n<span>D. Raisa Chowdhury</span><br/>\n<span>E. Greg Spotts</span></p>",
           "options": [
             "A",
             "B",
@@ -447,7 +446,6 @@ const test: PracticeTest = {
               "evidence": "These dogs are raised from an early age with the animals they will be watching and eventually these animals become the dog’s family"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-31</span></strong><br/>\n<span>Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.</span></p><p><span>27. an example of how one predator has been protected by the introduction of livestock guard dogs</span><br/>\n<span>28.an optimistic suggestion about the possible positive developments in the use of livestock guard dogs</span><br/>\n<span>29.a description of how the methods used by livestock guard dogs help to keep predators away</span><br/>\n<span>30. claims by different academics that the use of livestock guard dogs is a successful way of protecting farmers’ herds</span><br/>\n<span>31. a reference to how livestock guard dogs gain their skills</span></p>",
           "options": [
             "A",
             "B",
@@ -499,7 +497,7 @@ const test: PracticeTest = {
               "evidence": "too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 32 – 36</span></strong><br/>\n<span>Look at the following statements and the list of people below. Match each statement with the correct person, A – E.</span></p><p><span>32. The use of guard dogs may save the lives of both livestock and wild animals.</span><br/>\n<span>33. Claims of a change in behaviour from those using livestock guard dogs may not be totally accurate.</span><br/>\n<span>34. There may be negative results if the use of livestock guard dogs is not sufficiently widespread.</span><br/>\n<span>35. Livestock guard dogs are the best way of protecting farm animals, as long as the dogs are appropriately handled.</span><br/>\n<span>36. Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog.</span></p><p><strong><span>List of people</span></strong></p><p><span>A. Dan Macon</span><br/>\n<span>B. Silvia Ribeiro</span><br/>\n<span>C. Linda van Bommel</span><br/>\n<span>D. Julie Young</span><br/>\n<span>E. Bethany Smith </span></p>",
+          "legendHtml": "<p><span>A. Dan Macon</span><br/>\n<span>B. Silvia Ribeiro</span><br/>\n<span>C. Linda van Bommel</span><br/>\n<span>D. Julie Young</span><br/>\n<span>E. Bethany Smith </span></p>",
           "options": [
             "A",
             "B",
@@ -546,7 +544,7 @@ const test: PracticeTest = {
               "evidence": "where foxes would normally raid them"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-40</span></strong><br/>\n<span>Complete the summary below. Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</span></p><p><strong><span>Unintended ecological effects of using guard dogs</span></strong></p><p><span>In Namibia, livestock guard dogs have been used to protect domestic animals from attacks by cheetahs.</span><br/>\n<span>This has led to a rise in the deaths of other predators, particularly (37) ……………</span><br/>\n<span>In addition, it has been suggested that the dogs could have (38) ……… which may affect other species, and that they may reduce the amount of (39) …………… available to certain wild animals.</span><br/>\n<span>On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as (40) ……………</span></p>",
+          "legendHtml": "<p><strong><span>Unintended ecological effects of using guard dogs</span></strong></p><p><span>In Namibia, livestock guard dogs have been used to protect domestic animals from attacks by cheetahs.</span><br/>\n<span>This has led to a rise in the deaths of other predators, particularly (37) ……………</span><br/>\n<span>In addition, it has been suggested that the dogs could have (38) ……… which may affect other species, and that they may reduce the amount of (39) …………… available to certain wild animals.</span><br/>\n<span>On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as (40) ……………</span></p>",
           "wordLimit": 1
         }
       ]
