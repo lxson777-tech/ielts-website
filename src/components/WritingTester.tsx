@@ -27,22 +27,12 @@ import { recordWritingAttempt } from '../lib/progress';
 import BandReport from './BandReport';
 import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
+import GradingProgress from './GradingProgress';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
 /* Academic only: Task 1 is always a report on visual data (chart, graph,
    table, process, map or combination) and Task 2 is the essay pool. */
-
-/* Fake-but-honest progress steps shown while the real request is in flight —
-   ticks forward on a timer, independent of the actual grading call, so it
-   never has to lie about real completion (it just stops advancing past the
-   last step until the response actually arrives). */
-const GRADING_STEPS = [
-  'Reading your essay…',
-  'Checking grammar, vocabulary & coherence…',
-  'Scoring against the 4 official IELTS criteria…',
-  'Writing your feedback…',
-];
 
 function pad(n: number): string {
   return String(n).padStart(2, '0');
@@ -56,8 +46,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const [result, setResult] = useState<GradeResult | null>(null);
   const [grading, setGrading] = useState(false);
   const [gradingError, setGradingError] = useState<string | null>(null);
-  const [gradingStep, setGradingStep] = useState(0);
-  const gradingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // When the grading request went out (ms epoch). GradingProgress derives the
+  // real percentage from this, so it survives re-renders of this component.
+  const [gradingStartedAt, setGradingStartedAt] = useState(0);
 
   // Lightbox for the Task 1 chart: the imported prompt markup hard-caps the
   // image at 560px inline, and students need to read exact numbers off it,
@@ -73,7 +64,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   useEffect(() => {
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-      if (gradingIntervalRef.current) clearInterval(gradingIntervalRef.current);
     };
   }, []);
 
@@ -112,11 +102,8 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   async function submit() {
     if (!prompt || grading || !isGraderConfigured()) return;
     setGrading(true);
-    setGradingStep(0);
+    setGradingStartedAt(Date.now());
     setGradingError(null);
-    gradingIntervalRef.current = setInterval(() => {
-      setGradingStep((s) => (s < GRADING_STEPS.length - 1 ? s + 1 : s));
-    }, 1600);
     try {
       const graded = await gradeEssay({ prompt, essay });
       setResult(graded);
@@ -156,7 +143,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       // permanent "not configured" state the student can't do anything about).
       setGradingError('We could not reach the grading service. Your essay is safe on this page; try again in a minute.');
     } finally {
-      if (gradingIntervalRef.current) clearInterval(gradingIntervalRef.current);
       setGrading(false);
     }
   }
@@ -280,29 +266,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         <p className="mx-auto mt-1 max-w-sm text-sm text-ink-muted">
           Our AI examiner is reading your response against the official IELTS band descriptors.
         </p>
-        <ul className="mx-auto mt-6 max-w-xs space-y-2.5 text-left">
-          {GRADING_STEPS.map((step, i) => {
-            const done = i < gradingStep;
-            const active = i === gradingStep;
-            return (
-              <li key={step} className="flex items-center gap-2.5 text-sm">
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.65rem] font-bold transition-colors ${
-                    done
-                      ? 'bg-[var(--skill,#0E9F6E)] text-white'
-                      : active
-                        ? 'border-2 border-[var(--skill,#0E9F6E)] text-[var(--skill,#0E9F6E)]'
-                        : 'border border-border text-transparent'
-                  }`}
-                  aria-hidden="true"
-                >
-                  {done ? '✓' : active ? <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--skill,#0E9F6E)]" /> : '○'}
-                </span>
-                <span className={done || active ? 'text-ink' : 'text-ink-muted'}>{step}</span>
-              </li>
-            );
-          })}
-        </ul>
+        <GradingProgress kind="writing" startedAt={gradingStartedAt} className="mt-7" />
       </div>
     );
   }

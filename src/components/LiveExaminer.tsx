@@ -33,7 +33,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { User } from '@supabase/supabase-js';
-import type { CueCard, SpeakingCriterionKey, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
+import type { CueCard, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
 import { openExaminerLink, fetchLiveConfig, type ExaminerLink, type LiveConfig } from '../lib/speaking/live/link';
@@ -57,6 +57,7 @@ import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prom
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import BandReport from './BandReport';
+import GradingProgress from './GradingProgress';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
@@ -122,7 +123,10 @@ export default function LiveExaminer({
   const [notes, setNotes] = useState('');
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
   const [finalTranscript, setFinalTranscript] = useState<TranscriptTurn[]>([]);
-  const [gradeStep, setGradeStep] = useState(0);
+  // The grading wait: when the request went out, and how long the recording
+  // is. Both feed the honest progress bar.
+  const [gradingStartedAt, setGradingStartedAt] = useState(0);
+  const [gradingAudioSeconds, setGradingAudioSeconds] = useState(0);
   const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -137,15 +141,6 @@ export default function LiveExaminer({
   const authConfigured = isAuthConfigured();
   const needsSignIn = requiresSignIn && authConfigured && !user;
   const authUnavailable = requiresSignIn && !authConfigured;
-
-  useEffect(() => {
-    if (phase !== 'grading') return;
-    setGradeStep(0);
-    // Advance through the steps once, then hold on the final "comparing
-    // assessments" line until the real result lands.
-    const i = setInterval(() => setGradeStep((s) => Math.min(s + 1, GRADING_STEPS.length - 1)), GRADE_STEP_MS);
-    return () => clearInterval(i);
-  }, [phase]);
 
   /** What the UI needs after setup: the on-screen cue card, plus the drawn
       topic's vocabulary for the drills' coach panel. */
@@ -545,8 +540,9 @@ export default function LiveExaminer({
       return;
     }
 
+    setGradingAudioSeconds(recording.durationMs / 1000);
+    setGradingStartedAt(Date.now());
     setPhase('grading');
-    const gradingStartedAt = performance.now();
     const m = modeRef.current;
     try {
       const graded = await gradeInterview(
@@ -567,11 +563,6 @@ export default function LiveExaminer({
           live: true,
         });
       }
-      // Let the criteria sequence play out in full before the reveal — a
-      // report that pops in mid-"checking grammar" reads as fake.
-      const minVisibleMs = GRADING_STEPS.length * GRADE_STEP_MS;
-      const remaining = minVisibleMs - (performance.now() - gradingStartedAt);
-      if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
       setResult(graded);
       setPhase('report');
       // Mock embed: report straight back to MockExam instead of waiting on a
@@ -640,6 +631,8 @@ export default function LiveExaminer({
     const params = new URLSearchParams(window.location.search);
     if (!params.has('preview')) return;
     if (params.get('preview') === 'grading') {
+      setGradingStartedAt(Date.now());
+      setGradingAudioSeconds(720);
       setPhase('grading');
       return;
     }
@@ -893,7 +886,6 @@ export default function LiveExaminer({
       </div>
     );
   } else if (phase === 'grading') {
-    const step = GRADING_STEPS[gradeStep % GRADING_STEPS.length]!;
     content = (
       <div className="relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <style>{LX_STYLES}</style>
@@ -906,29 +898,15 @@ export default function LiveExaminer({
             <span /><span /><span /><span /><span />
           </div>
 
-          <p className="lx-status mt-6 min-h-6 text-sm font-semibold" key={gradeStep} aria-live="polite">
-            {step.text}
-          </p>
-
-          {/* the four official criteria — the one being "checked" lights up */}
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
-            {SPEAKING_CRITERIA.map((c) => (
-              <span
-                key={c.key}
-                title={c.label}
-                className={`rounded-full border px-3 py-1 text-xs font-bold transition-all duration-500 ${
-                  step.crit === c.key
-                    ? 'scale-110 border-brand bg-brand text-white shadow-card'
-                    : 'border-border bg-surface-alt text-ink-muted'
-                }`}
-              >
-                {c.short}
-              </span>
-            ))}
-          </div>
+          <GradingProgress
+            kind="speaking"
+            audioSeconds={gradingAudioSeconds}
+            startedAt={gradingStartedAt}
+            className="mt-7"
+          />
 
           <p className="mt-6 text-xs text-ink-muted">
-            Three independent assessments are compared, and the median becomes your report. ~1 minute.
+            Three independent assessments are compared, and the median becomes your report.
           </p>
         </div>
       </div>
@@ -1275,20 +1253,6 @@ const LX_STYLES = `
   .lx-eq span { transform: scaleY(0.6); }
 }
 `;
-
-/* Rotating status lines shown while the report is generated — walks through
-   the four official criteria so the wait reads as work, not silence. The
-   sequence always plays in full: steps advance every GRADE_STEP_MS, hold on
-   the last line, and the report never appears before one complete pass. */
-const GRADE_STEP_MS = 4000;
-const GRADING_STEPS: { text: string; crit?: SpeakingCriterionKey }[] = [
-  { text: 'Replaying your interview…' },
-  { text: 'Checking Fluency & Coherence: pacing, hesitation, linking…', crit: 'fluencyCoherence' },
-  { text: 'Assessing Lexical Resource: range, precision, paraphrase…', crit: 'lexicalResource' },
-  { text: 'Checking Grammatical Range & Accuracy…', crit: 'grammaticalRange' },
-  { text: 'Listening closely to Pronunciation: stress, rhythm, clarity…', crit: 'pronunciation' },
-  { text: 'Comparing independent assessments…' },
-];
 
 function IconMic() {
   return (

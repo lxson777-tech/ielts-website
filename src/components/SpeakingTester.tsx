@@ -21,6 +21,7 @@ import BandReport from './BandReport';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
+import GradingProgress from './GradingProgress';
 
 type Mode = 'part1' | 'part2' | 'part3';
 type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report';
@@ -57,6 +58,10 @@ export default function SpeakingTester() {
   const [micError, setMicError] = useState<string | null>(null);
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
   const [vocab, setVocab] = useState<TopicVocab[] | undefined>(undefined);
+  // The grading wait: when the request went out, and how much speech it has
+  // to work through. Both feed the honest progress bar.
+  const [gradingStartedAt, setGradingStartedAt] = useState(0);
+  const [gradingAudioSeconds, setGradingAudioSeconds] = useState(0);
 
   const streamRef = useRef<MediaStream | null>(null);
   const recordingRef = useRef<RecordingHandle | null>(null);
@@ -204,6 +209,9 @@ export default function SpeakingTester() {
   }
 
   async function finishAndGrade() {
+    const recordedMs = clipsRef.current.reduce((sum, c) => sum + c.durationMs, 0);
+    setGradingAudioSeconds(recordedMs / 1000);
+    setGradingStartedAt(Date.now());
     setPhase('grading');
     try {
       await runGrading();
@@ -458,8 +466,8 @@ export default function SpeakingTester() {
       )}
 
       {phase === 'grading' && (
-        <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
-          <p className="text-sm text-ink-muted">Grading your answer…</p>
+        <div className="screen-in rounded-card border border-border bg-surface p-6 shadow-card">
+          <GradingProgress kind="speaking" audioSeconds={gradingAudioSeconds} startedAt={gradingStartedAt} />
         </div>
       )}
     </div>
