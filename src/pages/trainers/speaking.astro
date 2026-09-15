@@ -28,8 +28,8 @@ const liveConfigured = !!import.meta.env.PUBLIC_LIVE_EXAMINER_URL;
     {liveConfigured ? <LiveExaminer client:load variant="drills" /> : <SpeakingTester client:load />}
 
     <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
-      <span class="skill-resource-card-title">Cue-card bank</span>
-      <span class="skill-resource-card-desc">24 Part 2 cue cards with model answers and follow-ups</span>
+      <span class="skill-resource-card-title">Cue-card bank (for study, not a test)</span>
+      <span class="skill-resource-card-desc">Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>
     </a>
 
     <section id="history" class="mt-16 scroll-mt-20">

@@ -215,6 +215,23 @@ keeps the start button disabled, nothing breaks.
 Grading of the finished interview still goes through `workers/grade-speaking`
 (`kind: "interview"`), unaffected by which live provider is active.
 
+## Deploying after a question-bank change
+
+This Worker bundles its own copy of the speaking question bank: it imports
+`resolvePlanRequest` from `src/lib/speaking/live/instructions.ts`, which
+imports `src/data/speaking-prompts.ts`, so that a browser cannot ask the
+examiner to follow instructions the site did not author.
+
+That means the Worker and the site must be deployed together. If the site
+ships new topic or cue-card ids and this Worker is not redeployed, every
+session fails with `Unknown Part 1 topic: <id>` or `Unknown cue card: <id>`
+and no session row is ever created. This happened on 2026-09-15: the 2026
+topic pool went live while the Worker still held the previous bank, and the
+live examiner was unusable until it was redeployed.
+
+**Rule: whenever `src/data/speaking-prompts.ts` changes, run
+`npx wrangler deploy` in this folder as part of the same release.**
+
 ## Rollback to Gemini
 
 If the OpenAI path misbehaves, switch back without touching code:

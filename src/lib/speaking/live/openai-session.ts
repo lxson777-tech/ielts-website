@@ -429,6 +429,14 @@ export async function connectWebRtc(
     });
     if (!resp.ok) {
       const body = (await resp.json().catch(() => null)) as { error?: string } | null;
+      // A 400 here means the Worker rejected the plan, which in practice only
+      // happens when the site ships a question bank the deployed Worker does
+      // not have yet (see "Deploying after a question-bank change" in the
+      // Worker README). The Worker's message names internal ids, so it is
+      // never shown to a student.
+      if (resp.status === 400) {
+        throw new Error('The examiner service is being updated. Please try again in a few minutes.');
+      }
       throw new Error(body?.error ?? `Session service error (${resp.status})`);
     }
     const data = (await resp.json()) as {

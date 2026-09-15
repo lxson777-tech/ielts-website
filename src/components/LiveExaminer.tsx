@@ -855,13 +855,6 @@ export default function LiveExaminer({
             The live examiner needs accounts to be enabled on this site.
           </p>
         )}
-        {liveConfig && (
-          <p className="mx-auto mt-3 max-w-md text-xs text-ink-muted">
-            {liveConfig.provider === 'openai'
-              ? `Voice conversation by OpenAI GPT-Live (${liveConfig.model}). Your voice is streamed to OpenAI during the interview, the recording is then sent to Google Gemini for the band report.`
-              : `Voice conversation by Google Gemini Live (${liveConfig.model}). Your voice is streamed to Google during the interview and for the band report.`}
-          </p>
-        )}
         {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
         {configError && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
