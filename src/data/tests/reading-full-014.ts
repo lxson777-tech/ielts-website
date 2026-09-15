@@ -487,7 +487,7 @@ const test: PracticeTest = {
               "evidence": "accelerate the depletion of vegetation and soils."
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the flow-chart below. Write <strong>NO MORE THAN THREE WORDS</strong> for each answer.</span><br/>\n<span><img alt=\"\" class=\"wp-image-12096 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 335px) 100vw, 335px\" decoding=\"async\" fetchpriority=\"high\" height=\"286\" src=\"/ielts-website/pics/reading/imported/test-304-1.webp\" width=\"335\"/></span></p>",
+          "legendHtml": "<p><strong><span>Questions 27-32</span></strong><br/>\n<span>Complete the flow-chart below. Write <strong>NO MORE THAN THREE WORDS</strong> for each answer.</span><br/>\n<span><img alt=\"\" class=\"wp-image-12096 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 335px) 100vw, 335px\" decoding=\"async\" fetchpriority=\"high\" height=\"286\" src=\"/pics/reading/imported/test-304-1.webp\" width=\"335\"/></span></p>",
           "wordLimit": 3
         },
         {

@@ -5,13 +5,13 @@ lessons for every paper, interactive quizzes, and timed practice tests with
 band estimates. Built with **Astro + React islands + Tailwind CSS v4** and
 deployed to **GitHub Pages**.
 
-Live: https://lxson777-tech.github.io/ielts-website/
+Live: https://ieltsisez.com/
 
 ## Develop
 
 ```
 npm install
-npm run dev        # http://localhost:4321/ielts-website/
+npm run dev        # http://localhost:4321/
 npm run build      # static output in dist/
 npm run preview    # serve dist/ locally
 ```

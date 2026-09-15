@@ -121,7 +121,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 5 – 8</strong><br/>Complete the following summary of the paragraphs of reading passage. Using <strong>NO MORE THAN TWO WORDS</strong> from the reading passage for each answer.</p><p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"562\" src=\"/ielts-website/pics/reading/imported/test-283-1.png\" width=\"797\"/></p>",
+          "legendHtml": "<p><strong>Questions 5 – 8</strong><br/>Complete the following summary of the paragraphs of reading passage. Using <strong>NO MORE THAN TWO WORDS</strong> from the reading passage for each answer.</p><p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"562\" src=\"/pics/reading/imported/test-283-1.png\" width=\"797\"/></p>",
           "wordLimit": 2
         },
         {

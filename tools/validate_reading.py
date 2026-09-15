@@ -132,8 +132,8 @@ def main() -> None:
             if re.search(r"<(?:script|iframe|form|input|button)\b|\son\w+=", passage_html, re.I):
                 failures.append(f"{path.name} {part['label']}: unsafe passage markup remains")
             for src in re.findall(r'<img[^>]+src="([^"]+)"', passage_html):
-                relative = src.removeprefix("/ielts-website/")
-                if not src.startswith("/ielts-website/pics/reading/imported/") or not (ROOT / "public" / relative).exists():
+                relative = src.removeprefix("/")
+                if not src.startswith("/pics/reading/imported/") or not (ROOT / "public" / relative).exists():
                     failures.append(f"{path.name} {part['label']}: missing local image {src}")
         rebuilt = import_reading.build(source_number, local_number)
         rebuilt_passages = [part["stimulus"] for part in rebuilt["parts"]]

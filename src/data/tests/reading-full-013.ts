@@ -199,7 +199,7 @@ const test: PracticeTest = {
               "evidence": "Each cell is paired with a neighbouring 'buddy' cell linked by sliding doors"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 10-13</span></strong><br/>\n<span>Label the diagram, below. Write <strong>NO MORE THAN THREE WORDS</strong> from, the passage for each answer.</span><br/>\n<span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/ielts-website/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p>",
+          "legendHtml": "<p><strong><span>Questions 10-13</span></strong><br/>\n<span>Label the diagram, below. Write <strong>NO MORE THAN THREE WORDS</strong> from, the passage for each answer.</span><br/>\n<span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p>",
           "wordLimit": 3
         }
       ]

@@ -5,8 +5,10 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://lxson777-tech.github.io',
-  base: '/ielts-website',
+  // The site lives at the root of its own domain (no `base`). The old
+  // GitHub Pages address, lxson777-tech.github.io/ielts-website, is redirected
+  // here by GitHub once the custom domain is attached in the repo settings.
+  site: 'https://ieltsisez.com',
   trailingSlash: 'never',
   build: {
     // Emit lessons/reading-task1.html instead of lessons/reading-task1/index.html
@@ -14,9 +16,9 @@ export default defineConfig({
     format: 'file',
   },
   // The trainers (drills/checkers) moved under /trainers — keep the old,
-  // already-indexed URLs resolving instead of 404ing. Targets need the
-  // `base` prefix spelled out by hand: Astro's static redirect targets are
-  // emitted verbatim, not run back through the `base` config.
+  // already-indexed URLs resolving instead of 404ing. Astro emits static
+  // redirect targets verbatim (they are not run through `base`), so if the
+  // site ever moves below a base path again these need that prefix by hand.
   //
   // The per-drill redirect (old /tests/drills/[id] -> new /trainers/reading/[id])
   // is NOT listed here — Astro's redirects-with-params needs a live dynamic
@@ -32,9 +34,9 @@ export default defineConfig({
   redirects: {
     // The public homepage is not published yet: the site opens straight into
     // the student workspace (the AI Tutor screen).
-    '/': '/ielts-website/dashboard',
-    '/tests/drills': '/ielts-website/trainers/reading',
-    '/speaking/checker': '/ielts-website/speaking/examiner',
+    '/': '/dashboard',
+    '/tests/drills': '/trainers/reading',
+    '/speaking/checker': '/speaking/examiner',
   },
   integrations: [react(), sitemap()],
   vite: {

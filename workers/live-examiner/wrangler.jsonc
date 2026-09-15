@@ -29,7 +29,9 @@
     "LIVE_MODEL": "gemini-3.1-flash-live-preview",
     // Production origins only. Never add a local dev origin here — see
     // LOCAL_ORIGINS below, which is scoped so it can't be abused in prod.
-    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
+    // The old GitHub Pages origin stays listed for two weeks after the move to
+    // ieltsisez.com, then gets removed.
+    "ALLOWED_ORIGINS": "https://ieltsisez.com,https://lxson777-tech.github.io",
     // Comma-separated origins additionally allowed, but ONLY when this
     // Worker itself is being reached at localhost/127.0.0.1 (i.e. under
     // `wrangler dev`). A deployed Worker (workers.dev or a custom domain)

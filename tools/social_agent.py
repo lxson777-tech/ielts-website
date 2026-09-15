@@ -26,7 +26,7 @@ from agent_runner import run_agent
 from utils import ROOT, require_env
 
 LESSON_BODIES_DIR = ROOT / "src" / "content" / "lesson-bodies"
-SITE_URL = "https://lxson777-tech.github.io/ielts-website"
+SITE_URL = "https://ieltsisez.com"
 
 # Lesson-body stems map to /lessons/<stem> on the site, except the paper-level
 # hubs which are their own top-level lesson pages.

@@ -1,6 +1,8 @@
 /**
- * Prefix an internal path with the deployment base (`/ielts-website` on
- * GitHub Pages, `/` locally when base is unset). Always pass root-relative
+ * Prefix an internal path with the deployment base. The site is served from
+ * the root of ieltsisez.com today (base unset, so this is a no-op), but keep
+ * using it so the site still works if it is ever hosted below a path again.
+ * Always pass root-relative
  * paths like `/lessons/reading-task1` or `/pics/hero.png`.
  */
 export function withBase(path: string): string {

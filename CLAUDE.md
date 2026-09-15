@@ -9,11 +9,11 @@ lessons for every paper, interactive quizzes, timed practice tests with band est
 AI-graded writing/speaking feedback. Built with **Astro 5 + React islands + Tailwind CSS v4**,
 deployed to **GitHub Pages**.
 
-Live: https://lxson777-tech.github.io/ielts-website/
+Live: https://ieltsisez.com/
 
 ```
 npm install
-npm run dev        # http://localhost:4321/ielts-website/
+npm run dev        # http://localhost:4321/
 npm run build      # static output in dist/
 npm run preview    # serve dist/ locally
 ```
@@ -66,10 +66,11 @@ workflows/                 Markdown SOPs for those scripts
 workers/                   Cloudflare Workers backing the AI features (see below)
 ```
 
-`site`/`base` in `astro.config.mjs` are `https://lxson777-tech.github.io` / `/ielts-website`.
-Any hand-written internal link or redirect target needs the `/ielts-website` prefix spelled
-out (Astro's static redirects aren't run back through `base`); use `withBase()` in
-`src/lib/url.ts` elsewhere.
+`site` in `astro.config.mjs` is `https://ieltsisez.com` and the site is served from the
+domain root (no `base`). Keep using `withBase()` from `src/lib/url.ts` for internal links
+and store asset paths base-free (`/pics/...`), so the site still works if it is ever hosted
+below a path again. Astro's static redirect targets are emitted verbatim, not run through
+`base`.
 
 ### Design system
 

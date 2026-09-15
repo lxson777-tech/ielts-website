@@ -456,7 +456,7 @@ const test: PracticeTest = {
               "textHtml": "Peters projection"
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 37-39</span></strong><br/>\n<span>Choose one drawing (A-D) to match each of the three projection types (37-39).</span></p><p><img alt=\"\" class=\"size-medium wp-image-11977 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 275px) 100vw, 275px\" decoding=\"async\" fetchpriority=\"high\" height=\"300\" src=\"/ielts-website/pics/reading/imported/test-296-1.webp\" width=\"275\"/> <img alt=\"\" class=\"size-medium wp-image-11978 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" height=\"262\" src=\"/ielts-website/pics/reading/imported/test-296-3.webp\" width=\"300\"/></p><p><span>37. Mercator projection</span><br/>\n<span>38. Aitoff projection</span><br/>\n<span>39. Peters projection</span></p>",
+          "legendHtml": "<p><strong><span>Questions 37-39</span></strong><br/>\n<span>Choose one drawing (A-D) to match each of the three projection types (37-39).</span></p><p><img alt=\"\" class=\"size-medium wp-image-11977 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 275px) 100vw, 275px\" decoding=\"async\" fetchpriority=\"high\" height=\"300\" src=\"/pics/reading/imported/test-296-1.webp\" width=\"275\"/> <img alt=\"\" class=\"size-medium wp-image-11978 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" height=\"262\" src=\"/pics/reading/imported/test-296-3.webp\" width=\"300\"/></p><p><span>37. Mercator projection</span><br/>\n<span>38. Aitoff projection</span><br/>\n<span>39. Peters projection</span></p>",
           "options": [
             "A",
             "B",

@@ -449,7 +449,7 @@ def localise_images(number: int, nodes: list[Tag], page_url: str) -> None:
             response = requests.get(url, timeout=60)
             response.raise_for_status()
             path.write_bytes(response.content)
-        image["src"] = f"/ielts-website/pics/reading/imported/{path.name}"
+        image["src"] = f"/pics/reading/imported/{path.name}"
         for attr in ["srcset", "data-src", "data-lazy-src", "data-srcset"]:
             image.attrs.pop(attr, None)
 

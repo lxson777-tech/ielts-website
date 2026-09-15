@@ -133,7 +133,7 @@ const test: PracticeTest = {
               "after": ""
             }
           ],
-          "legendHtml": "<p><strong>Questions 7-10</strong><br/>The diagram below gives information about fish fins and their purposes. Complete the diagram with <strong>NO MORE THAN THREE WORDS</strong> from the passage for each blank.</p><p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"492\" src=\"/ielts-website/pics/reading/imported/test-282-1.png\" width=\"855\"/></p>",
+          "legendHtml": "<p><strong>Questions 7-10</strong><br/>The diagram below gives information about fish fins and their purposes. Complete the diagram with <strong>NO MORE THAN THREE WORDS</strong> from the passage for each blank.</p><p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"492\" src=\"/pics/reading/imported/test-282-1.png\" width=\"855\"/></p>",
           "wordLimit": 3
         },
         {

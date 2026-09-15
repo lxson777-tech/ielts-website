@@ -46,7 +46,9 @@
     // the newer model misbehaves in production.
     "GEMINI_MODEL": "gemini-3.6-flash",
     // Comma-separated origins allowed to call this Worker from a browser.
-    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321",
+    // The old GitHub Pages origin stays listed for two weeks after the move to
+    // ieltsisez.com, then gets removed.
+    "ALLOWED_ORIGINS": "https://ieltsisez.com,https://lxson777-tech.github.io,http://localhost:4321",
     // Independent grading runs whose median becomes the result (1-5). For
     // the hybrid pipeline a "run" repeats only the text-grading and
     // pronunciation calls (each clip is transcribed once and reused).

@@ -24,8 +24,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 from agent_runner import run_agent
 from utils import ROOT, open_marketing_pr, require_env
 
-ORIGIN = "https://lxson777-tech.github.io"
-SITE_URL = ORIGIN + "/ielts-website"
+ORIGIN = "https://ieltsisez.com"
+SITE_URL = ORIGIN
 LESSONS_TS = ROOT / "src" / "data" / "lessons.ts"
 BLOG_DIR = ROOT / "src" / "content" / "blog"
 REPORTS_DIR = ROOT / "marketing" / "reports"
