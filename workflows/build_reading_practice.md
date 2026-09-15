@@ -10,6 +10,16 @@ question, answer, explanation and evidence sentence shown in a lesson's
 practice block is a real exam question, taken from a real passage, with a
 source credit ("Academic Reading Test 7, Questions 14 to 19").
 
+Each lesson's practice is a list of `units` (`PracticeUnit`, in
+`src/data/reading-practice.ts`): one real passage, immediately followed by
+the questions drawn from it, checked on its own with its own
+"Check answers". A lesson normally has two units, one per source test, so
+the passage a student reads is always right next to the questions written
+against it, never a wall of passages stacked above a wall of questions.
+This replaced the invented "Example passage" blocks that used to sit inside
+each lesson body (2026-09-15) — those were removed from
+`src/content/lesson-bodies/reading-*.html` by hand and should not come back.
+
 Run this again whenever the reading test bank changes (tests added, fixed,
 or re-scraped) and the practice exercises should reflect that.
 
@@ -38,11 +48,13 @@ No API keys, no network access, no paid services. It only reads
    larger groups (more practice value). Falls back to later tests, with a
    generic explanation, only where no test 001-020 group of that type
    exists (this happens for `short-answer`: no test in 001-020 has one).
-4. Converts each chosen group into the site's `PracticeQuestion` /
-   `PracticeSet` shape, carrying the real passage text, the real answer,
-   the real explanation, evidence and a source credit line.
+4. Converts each chosen group into its own `PracticeUnit`: the real passage
+   text as a `passages` entry, plus the group's questions, each carrying the
+   real answer, explanation, evidence and a source credit line. A lesson's
+   `units` array is these, one per chosen group, in order.
 5. Writes `src/data/reading-practice.ts`, keeping the `paraphrase` lesson's
-   hand-written content untouched (see the note below).
+   hand-written content untouched (see the note below) other than wrapping
+   its existing questions in a single `unit` (it has no source passage).
 
 ## What to check after running it
 
@@ -54,8 +66,10 @@ No API keys, no network access, no paid services. It only reads
   unexpectedly small group, or a source outside tests 001-020 where a
   better one should exist.
 - Open a couple of `/lessons/reading/<part>` pages in the dev server and
-  answer a question to confirm the real passage renders above the
-  questions and the explanation/source line looks right.
+  answer a question to confirm each unit's real passage renders immediately
+  above that unit's own questions (not all passages stacked above all
+  questions), "Check answers" reveals that unit's explanation/source line,
+  and the passage's "Collapse passage" control works.
 
 ## Known limitations
 

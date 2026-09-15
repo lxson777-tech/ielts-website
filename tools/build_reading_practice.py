@@ -501,73 +501,57 @@ LESSON_META = {
 }
 
 
-def build_set(slug, groups):
-    meta = LESSON_META[slug]
-    passages = []
-    questions = []
-
+def build_unit(slug, gr):
+    """One unit = one real passage plus the questions drawn from it. Keeping
+       each source group as its own unit (rather than merging every group's
+       passages and questions into one flat lesson-wide list) is what lets
+       PracticeQuiz.tsx show a passage immediately followed by its own
+       questions, instead of every passage stacked above every question."""
     if slug in ("tfng", "ynng"):
         opts = TFNG_OPTS if slug == "tfng" else YNNG_OPTS
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_tfng_ynng(gr, opts)
-    elif slug == "mc":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_mc(gr)
-    elif slug == "headings":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_headings(gr)
-    elif slug == "matching-information":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_paragraph_matching(gr)
-    elif slug == "matching-features":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_matching_features(gr)
-    elif slug == "matching-sentence-endings":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_sentence_endings(gr)
-    elif slug == "sentence":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_fill(gr, question_style=False)
-    elif slug == "short-answer":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            questions += conv_fill(gr, question_style=True)
-    elif slug == "summary-completion":
-        for gr in groups:
-            sub = summary_subtype(gr)
-            note = {"table": "table completion", "flowchart": "flow-chart completion",
-                    "notes": "notes completion", "wordbank": "summary completion, word bank",
-                    "summary": "summary completion"}[sub]
-            passages.append(passage_entry(gr, note=note))
-            if sub == "table":
-                passages.append(legend_entry(gr, "Table"))
-                questions += conv_table_or_diagram_blanks(gr, "Table blank")
-            elif sub == "wordbank":
-                questions += conv_wordbank_select(gr)
-            else:
-                questions += conv_fill(gr, question_style=False)
-    elif slug == "diagram":
-        for gr in groups:
-            passages.append(passage_entry(gr))
-            passages.append(legend_entry(gr, "Diagram"))
-            questions += conv_table_or_diagram_blanks(gr, "Diagram label")
-    else:
-        raise ValueError(slug)
+        return {"passages": [passage_entry(gr)], "questions": conv_tfng_ynng(gr, opts)}
+    if slug == "mc":
+        return {"passages": [passage_entry(gr)], "questions": conv_mc(gr)}
+    if slug == "headings":
+        return {"passages": [passage_entry(gr)], "questions": conv_headings(gr)}
+    if slug == "matching-information":
+        return {"passages": [passage_entry(gr)], "questions": conv_paragraph_matching(gr)}
+    if slug == "matching-features":
+        return {"passages": [passage_entry(gr)], "questions": conv_matching_features(gr)}
+    if slug == "matching-sentence-endings":
+        return {"passages": [passage_entry(gr)], "questions": conv_sentence_endings(gr)}
+    if slug == "sentence":
+        return {"passages": [passage_entry(gr)], "questions": conv_fill(gr, question_style=False)}
+    if slug == "short-answer":
+        return {"passages": [passage_entry(gr)], "questions": conv_fill(gr, question_style=True)}
+    if slug == "summary-completion":
+        sub = summary_subtype(gr)
+        note = {"table": "table completion", "flowchart": "flow-chart completion",
+                "notes": "notes completion", "wordbank": "summary completion, word bank",
+                "summary": "summary completion"}[sub]
+        passages = [passage_entry(gr, note=note)]
+        if sub == "table":
+            passages.append(legend_entry(gr, "Table"))
+            questions = conv_table_or_diagram_blanks(gr, "Table blank")
+        elif sub == "wordbank":
+            questions = conv_wordbank_select(gr)
+        else:
+            questions = conv_fill(gr, question_style=False)
+        return {"passages": passages, "questions": questions}
+    if slug == "diagram":
+        passages = [passage_entry(gr), legend_entry(gr, "Diagram")]
+        return {"passages": passages, "questions": conv_table_or_diagram_blanks(gr, "Diagram label")}
+    raise ValueError(slug)
 
+
+def build_set(slug, groups):
+    meta = LESSON_META[slug]
     out = {"title": meta["title"]}
     if "intro" in meta:
         out["intro"] = meta["intro"]
     if "selectNoun" in meta:
         out["selectNoun"] = meta["selectNoun"]
-    out["passages"] = passages
-    out["questions"] = questions
+    out["units"] = [build_unit(slug, gr) for gr in groups]
     return out
 
 
@@ -604,11 +588,11 @@ export interface PracticeQuestion {
   source?: string;
 }
 
-/** A block of real source text shown above the questions that were drawn
-    from it, so students read the same passage the real question was
-    written against. `html` is used instead of `paragraphs` for the rare
-    group that is a real table or diagram image rather than running text
-    (PracticeQuiz can't flatten those into plain paragraphs). */
+/** A block of real source text belonging to one unit, so students read the
+    same passage the real question was written against. `html` is used
+    instead of `paragraphs` for the rare group that is a real table or
+    diagram image rather than running text (PracticeQuiz can't flatten
+    those into plain paragraphs). */
 export interface PracticePassage {
   label: string;
   title?: string;
@@ -616,28 +600,33 @@ export interface PracticePassage {
   html?: string;
 }
 
+/** One real passage (or, for listening, one real audio segment - see
+    ListeningPracticeSegment in ./listening-practice.ts, added to this
+    interface there via module augmentation) immediately followed by the
+    questions drawn from it. A PracticeSet is a list of these, rendered by
+    PracticeQuiz.tsx as passage-then-questions, checked one unit at a time,
+    rather than every passage stacked above every question. */
+export interface PracticeUnit {
+  /** Real passage(s) / table / diagram this unit's questions are drawn
+      from. Usually one entry; a table or diagram unit carries a second
+      entry for its legend/table image. Omitted for a unit with no source
+      passage (the hand-written "paraphrase" drill). */
+  passages?: PracticePassage[];
+  /** Optional short instruction specific to this unit. */
+  intro?: string;
+  questions: PracticeQuestion[];
+}
+
 export interface PracticeSet {
   title: string;
-  /** Optional short instruction shown above the questions. */
+  /** Optional short instruction shown once, above every unit. */
   intro?: string;
   /** What a 'select' question is choosing, used in the dropdown placeholder,
       its accessible label and the default option text. Defaults to
       'paragraph' since Matching Headings was the first set to use one;
       Matching Sentence Endings sets it to 'ending'. */
   selectNoun?: string;
-  /** Optional labelled diagram: numbered pins overlaid on an image, one per
-      text question (in order). x/y are percentages of the image box.
-      Unused by the generated sets below (they show the real scraped
-      diagram image via `passages[].html` instead), kept for hand-written
-      sets that still want a pinned diagram. */
-  diagram?: {
-    image: string;
-    alt: string;
-    markers: { x: number; y: number }[];
-  };
-  /** Real passage(s) / table / diagram the questions below are drawn from. */
-  passages?: PracticePassage[];
-  questions: PracticeQuestion[];
+  units: PracticeUnit[];
 }
 
 export const READING_PRACTICE: Record<string, PracticeSet> = {
@@ -663,7 +652,9 @@ def indent_block(text, spaces):
 PARAPHRASE_BLOCK = """  paraphrase: {
     title: 'Exercise. Spot the Correct Paraphrase',
     intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
-    questions: [
+    units: [
+      {
+        questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
         kind: 'choice',
@@ -752,6 +743,8 @@ PARAPHRASE_BLOCK = """  paraphrase: {
         answer: 'B',
         explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
       },
+        ],
+      },
     ],
   },"""
 
@@ -777,7 +770,8 @@ def main():
         entries.append((slug, pset))
         sources = "; ".join(f"Test {g['test_num']} Q{g['qrange']}" for g in chosen)
         types = ", ".join(sorted({g["group"]["type"] for g in chosen}))
-        report_rows.append((slug, types, sources, len(pset["questions"])))
+        n_questions = sum(len(u["questions"]) for u in pset["units"])
+        report_rows.append((slug, types, sources, n_questions))
 
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(HEADER)

@@ -14,6 +14,18 @@ Questions 21 to 25") and, where the test has one, a collapsible transcript.
 Run this again whenever the listening test bank changes (tests added, fixed
 or re-scraped) and the practice exercises should reflect that.
 
+Each lesson's practice is a list of `units` (`PracticeUnit`, defined in
+`src/data/reading-practice.ts`, shared with the Reading lessons): one real
+audio segment, immediately followed by the questions drawn from it, checked
+on its own with its own "Check answers"; its transcript (where the source
+test has one) appears as a collapsible toggle once that unit is checked. A
+Part lesson has exactly one unit (the whole part); a question-type lesson
+normally has two, one per source test. This replaced the invented
+"Simulation" transcripts and their hand-written practice questions that
+used to sit inside each lesson body (2026-09-15) — those were removed from
+`src/content/lesson-bodies/listening*.html` by hand and should not come
+back; the real audio, questions and transcript below now cover that job.
+
 ## Command
 
 ```
@@ -48,13 +60,13 @@ No API keys, no network access, no paid services. It only reads
    `extract_blank_context()` in the script for exactly why and how).
 5. Keeps the real answers, explanations, and any diagram/plan/map image the
    group uses (`public/pics/listening/imported/`).
-6. Writes `src/data/listening-practice.ts` in the existing `PracticeSet`
-   shape, plus a `segments` array (one per source group) recording that
-   group's audio clip, attribution and transcript — see the
-   `ListeningPracticeSegment` type at the top of the generated file, added
-   via TypeScript module augmentation rather than editing
-   `reading-practice.ts` directly (kept untouched so it can be edited
-   concurrently for the Reading lessons).
+6. Writes `src/data/listening-practice.ts` in the existing `PracticeSet` /
+   `PracticeUnit` shape: one unit per source group, each carrying a
+   `segment` recording that group's audio clip, attribution and transcript
+   — see the `ListeningPracticeSegment` type at the top of the generated
+   file, added to `PracticeUnit` via TypeScript module augmentation rather
+   than editing `reading-practice.ts` directly (kept untouched so it can be
+   edited concurrently for the Reading lessons).
 
 ## Type mapping
 
@@ -75,10 +87,10 @@ No API keys, no network access, no paid services. It only reads
   produces must still satisfy `src/components/PracticeQuiz.tsx`'s types.
 - Skim the printed table (lesson slug, source test, part, question range,
   count) for anything that picked an unexpectedly small group.
-- Open a Part page and a question-type page in the dev server, confirm the
-  audio player appears and seeks to the right clip, answer a question, and
-  once a set is finished, open its "Transcript" to confirm it matches the
-  clip.
+- Open a Part page and a question-type page in the dev server, confirm each
+  unit's audio player appears above that unit's own questions and seeks to
+  the right clip, answer a question, hit "Check answers", and open that
+  unit's "Transcript" to confirm it matches the clip.
 
 ## Known limitations
 

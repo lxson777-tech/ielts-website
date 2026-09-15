@@ -371,9 +371,7 @@ def build_part_set(test_num: int, data: dict, part_index: int) -> dict:
 
     questions = []
     for group in part["groups"]:
-        for q in convert_group(group, part_soup):
-            q["segment"] = 0
-            questions.append(q)
+        questions += convert_group(group, part_soup)
 
     lo = min(qnum(q["id"]) for g in part["groups"] for q in g["questions"])
     hi = max(qnum(q["id"]) for g in part["groups"] for q in g["questions"])
@@ -389,8 +387,7 @@ def build_part_set(test_num: int, data: dict, part_index: int) -> dict:
     return {
         "title": f"Exercise. Real questions from IELTS Listening Test {test_num}, {part['label']}",
         "intro": "Answer using the actual recording below, the same one real students hear on this test.",
-        "segments": [segment],
-        "questions": questions,
+        "units": [{"segment": segment, "questions": questions}],
     }
 
 
@@ -505,9 +502,8 @@ def build_type_set(slug: str) -> dict | None:
     if not picks:
         return None
 
-    questions = []
-    segments = []
-    for seg_index, pick in enumerate(picks):
+    units = []
+    for pick in picks:
         stim = pick["part"]["stimulus"]
         images = extract_images(pick["section"]) if slug == "map-labelling" else []
         segment = {
@@ -519,17 +515,12 @@ def build_type_set(slug: str) -> dict | None:
         }
         if images:
             segment["images"] = [{"src": src, "alt": f"Diagram for {segment['source']}"} for src in images]
-        segments.append(segment)
-        for q in pick["questions"]:
-            q = dict(q)
-            q["segment"] = seg_index
-            questions.append(q)
+        units.append({"segment": segment, "questions": [dict(q) for q in pick["questions"]]})
 
     return {
         "title": SLUG_TITLES[slug],
         "intro": SLUG_INTROS[slug],
-        "segments": segments,
-        "questions": questions,
+        "units": units,
     }
 
 
@@ -547,18 +538,17 @@ HEADER = """/* Interactive practice exercises for the Listening lessons (the fou
 
    See workflows/build_listening_practice.md for what the script does and how
    it picks material. Rendered by src/components/PracticeQuiz.tsx, same
-   component used for the Reading question-type pages; the optional
-   `segments` array groups questions under their own audio clip + transcript,
-   for sets built from more than one source test. */
+   component used for the Reading question-type pages; each unit's optional
+   `segment` carries that unit's own audio clip, transcript and reference
+   image(s), shown above its questions. */
 
 import type { PracticeSet } from './reading-practice';
 
-/** One audio clip (plus optional transcript / reference images) backing a
-    run of questions within a practice set. A set built from a single source
-    (the four Part lessons) has one segment covering every question; a set
-    combining two different tests (the six question-type lessons) has one
-    segment per source group, and each question's `segment` index below says
-    which one it belongs to. */
+/** One audio clip (plus optional transcript / reference images) backing one
+    unit's questions. A set built from a single source (the four Part
+    lessons) has one unit, and its segment covers every question in it; a
+    set combining two different tests (the six question-type lessons) has
+    one unit, and one segment, per source group. */
 export interface ListeningPracticeSegment {
   src?: string;
   startSeconds?: number;
@@ -566,7 +556,7 @@ export interface ListeningPracticeSegment {
   /** Attribution shown near the player, e.g. "Listening Test 12, Part 3,
       Questions 21 to 25". */
   source?: string;
-  /** Shown as a collapsible "Transcript" once the set is finished. */
+  /** Shown as a collapsible "Transcript" once the unit is checked. */
   transcriptHtml?: string;
   /** Reference picture(s) for a map/plan/diagram-labelling segment. */
   images?: { src: string; alt: string }[];
@@ -574,16 +564,13 @@ export interface ListeningPracticeSegment {
 
 /* Declared here via module augmentation, rather than editing
    reading-practice.ts (edited concurrently by another agent working on the
-   Reading passages), so the two fields above can be added to the shared
-   PracticeSet / PracticeQuestion shape without touching that file. */
+   Reading passages), so this field can be added to the shared PracticeUnit
+   shape without touching that file. */
 declare module './reading-practice' {
-  interface PracticeSet {
-    segments?: ListeningPracticeSegment[];
-  }
-  interface PracticeQuestion {
-    /** Index into this set's `segments`, grouping the question under a
-        particular audio clip / transcript / image. Undefined = no audio. */
-    segment?: number;
+  interface PracticeUnit {
+    /** This unit's audio clip / transcript / reference image(s). Undefined
+        for a reading unit (no audio). */
+    segment?: ListeningPracticeSegment;
   }
 }
 
@@ -600,15 +587,10 @@ def emit(practice: dict) -> str:
 
 def main() -> None:
     practice: dict[str, dict] = {}
-    table_rows = []
 
     parts_test_num, parts_data = pick_parts_test()
     for i, slug in enumerate(["part1", "part2", "part3", "part4"]):
-        pset = build_part_set(parts_test_num, parts_data, i)
-        practice[slug] = pset
-        seg = pset["segments"][0]
-        table_rows.append((slug, "part", f"Test {parts_test_num}", parts_data["parts"][i]["label"],
-                            seg["source"].split(", ")[-1], len(pset["questions"])))
+        practice[slug] = build_part_set(parts_test_num, parts_data, i)
 
     for slug in ["multiple-choice", "matching", "map-labelling", "form-completion",
                  "sentence-completion", "short-answer"]:
@@ -617,10 +599,6 @@ def main() -> None:
             print(f"WARNING: no material found for {slug}")
             continue
         practice[slug] = pset
-        for seg in pset["segments"]:
-            src_bits = seg["source"].split(", ")
-            table_rows.append((slug, "type", src_bits[0].replace("Listening ", ""), src_bits[1], src_bits[2],
-                                sum(1 for q in pset["questions"] if q.get("_seg") is None)))
 
     OUTPUT.write_text(emit(practice), encoding="utf-8")
 
@@ -631,17 +609,17 @@ def main() -> None:
         pset = practice.get(slug)
         if not pset:
             continue
-        segs = pset["segments"]
-        total = len(pset["questions"])
-        if len(segs) == 1:
-            s = segs[0]
+        units = pset["units"]
+        total = sum(len(u["questions"]) for u in units)
+        if len(units) == 1:
+            s = units[0]["segment"]
             bits = s["source"].split(", ")
             print(f"{slug:<20} {'part' if slug.startswith('part') else 'type':<6} "
                   f"{bits[0].replace('Listening ', ''):<10} {bits[1]:<10} {bits[2]:<28} {total}")
         else:
-            for s in segs:
-                bits = s["source"].split(", ")
-                print(f"{slug:<20} {'type':<6} {bits[0].replace('Listening ', ''):<10} {bits[1]:<10} {bits[2]:<28}")
+            for u in units:
+                bits = u["segment"]["source"].split(", ")
+                print(f"{slug:<20} {'type':<6} {bits[0].replace('Listening ', ''):<10} {bits[1]:<10} {bits[2]:<28} {len(u['questions'])}")
             print(f"{'':<20} {'':<6} {'':<10} {'':<10} {'total':<28} {total}")
 
 

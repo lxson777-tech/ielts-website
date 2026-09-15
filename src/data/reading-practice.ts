@@ -29,11 +29,11 @@ export interface PracticeQuestion {
   source?: string;
 }
 
-/** A block of real source text shown above the questions that were drawn
-    from it, so students read the same passage the real question was
-    written against. `html` is used instead of `paragraphs` for the rare
-    group that is a real table or diagram image rather than running text
-    (PracticeQuiz can't flatten those into plain paragraphs). */
+/** A block of real source text belonging to one unit, so students read the
+    same passage the real question was written against. `html` is used
+    instead of `paragraphs` for the rare group that is a real table or
+    diagram image rather than running text (PracticeQuiz can't flatten
+    those into plain paragraphs). */
 export interface PracticePassage {
   label: string;
   title?: string;
@@ -41,35 +41,42 @@ export interface PracticePassage {
   html?: string;
 }
 
+/** One real passage (or, for listening, one real audio segment - see
+    ListeningPracticeSegment in ./listening-practice.ts, added to this
+    interface there via module augmentation) immediately followed by the
+    questions drawn from it. A PracticeSet is a list of these, rendered by
+    PracticeQuiz.tsx as passage-then-questions, checked one unit at a time,
+    rather than every passage stacked above every question. */
+export interface PracticeUnit {
+  /** Real passage(s) / table / diagram this unit's questions are drawn
+      from. Usually one entry; a table or diagram unit carries a second
+      entry for its legend/table image. Omitted for a unit with no source
+      passage (the hand-written "paraphrase" drill). */
+  passages?: PracticePassage[];
+  /** Optional short instruction specific to this unit. */
+  intro?: string;
+  questions: PracticeQuestion[];
+}
+
 export interface PracticeSet {
   title: string;
-  /** Optional short instruction shown above the questions. */
+  /** Optional short instruction shown once, above every unit. */
   intro?: string;
   /** What a 'select' question is choosing, used in the dropdown placeholder,
       its accessible label and the default option text. Defaults to
       'paragraph' since Matching Headings was the first set to use one;
       Matching Sentence Endings sets it to 'ending'. */
   selectNoun?: string;
-  /** Optional labelled diagram: numbered pins overlaid on an image, one per
-      text question (in order). x/y are percentages of the image box.
-      Unused by the generated sets below (they show the real scraped
-      diagram image via `passages[].html` instead), kept for hand-written
-      sets that still want a pinned diagram. */
-  diagram?: {
-    image: string;
-    alt: string;
-    markers: { x: number; y: number }[];
-  };
-  /** Real passage(s) / table / diagram the questions below are drawn from. */
-  passages?: PracticePassage[];
-  questions: PracticeQuestion[];
+  units: PracticeUnit[];
 }
 
 export const READING_PRACTICE: Record<string, PracticeSet> = {
   paraphrase: {
     title: 'Exercise. Spot the Correct Paraphrase',
     intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
-    questions: [
+    units: [
+      {
+        questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
         kind: 'choice',
@@ -158,576 +165,598 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         answer: 'B',
         explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
       },
+        ],
+      },
     ],
   },
 
   "mc": {
   "title": "Exercise. Choose the correct answer (real test questions)",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 19, Passage 2, Questions 24 to 28",
-      "title": "Just relax",
-      "paragraphs": [
-        "A . Hypnosis is an intriguing and fascinating process. A trance-like mental state is induced in one person by another, who appears to have the power to command that person to obey instructions without question. Hypnotic experiences were described by the ancient Egyptians and Greeks, whilst references to deep sleep and anaesthesia have been found in the Bible and in the Jewish Talmud. In the mid-1700s, Franz Mesmer, an Austrian physician, developed his theory of ‘animal magnestism’, which was the belief that the cause of disease was the ‘improper distribution of invisible magnetic fluids’. Mesmer used water tubs and magnetic wands to direct these supposed fluids to his patients. In 1784, a French commission studied Mesmer’s claims, and concluded that these ‘cures’ were only imagined by the patients. However, people continued to believe in this process of ‘mesmerism’ and it was soon realised that successful results could be achieved, but without the need for magnets and water.",
-        "B . The term hypnotism was first used by James Braid, a British physician who studied suggestion and hypnosis in the mid-1800s. He demonstrated that hypnosis differed from sleep, that it was a physiological response and not the result of secret powers. During this same period, James Esdaile, a Scottish doctor working in India, used hypnotism instead of anaesthetic in over 200 major surgical operations, including leg amputations. Later that century, a French neurologist, Jean Charcot, successfully experimented with hypnosis in his clinic for nervous disorders.",
-        "C . Since then, scientists have shown that the state of hypnosis is a natural human behaviour, which can affect psychological, social and/or physical experiences. The effects of hypnotism depend on the ability, willingness and motivation of the person being hypnotised. Although hypnosis has been compared to dreaming and sleepwalking, it is not actually related to sleep. It involves a more active and intense mental concentration of the person being hypnotised. Hypnotised people can talk, write, and walk about and they are usually fully aware of what is being said and done.",
-        "D . There are various techniques used to induce hypnosis. The best-known is a series of simple suggestions repeated continuously in the same tone of voice. The subject is instructed to focus their attention on an object or fixed point, while being told to relax, breathe deeply, and allow the eyelids to grow heavy and close. As the person responds, their state of attention changes, and this altered state often leads to other changes. For example, the person may experience different levels of awareness, consciousness, imagination, memory and reasoning or become more responsive to suggestions. Additional phenomena may be produced or eliminated such as blushing, sweating, paralysis, muscle tension or anaesthesia. Although these changes can occur with hypnosis, none of these experiences is unique to it. People who are very responsive to hypnosis are also more responsive to suggestions when they are not hypnotised. This responsiveness increases during hypnotism. This explains why hypnosis takes only a few seconds for some, whilst other people cannot be easily hypnotised,",
-        "E . It is a common misunderstanding that hypnotists are able to force people to perform criminal or any other acts against their will. In fact, subjects can resist suggestions, and they retain their ability to distinguish right from wrong. This misunderstanding is often the result of public performances where subjects perform ridiculous or highly embarrassing actions at the command of the hypnotist. These people are usually instructed not to recall their behaviour after re-emerging from the hypnotic state, so it appears that they were powerless while hypnotised. The point to remember, however, is that these individuals chose to participate, and the success of hypnotism depends on the willingness of a person to be hypnotised.",
-        "F . Interestingly, there are different levels of hypnosis achievable. Thus deep hypnosis can be induced to allow anaesthesia for surgery, childbirth or dentistry. This contrasts to a lighter state of hypnosis, which deeply relaxes the patient who will then follow simple directions. This latter state may be used to treat mental health problems, as it allows patients to feel calm while simultaneously thinking about distressing feelings or painful memories. Thus patients can learn new responses to situations or come up with solutions to problems. This can help recovery from psychological conditions such as anxiety, depression or phobias. Sometimes, after traumatic incidents, memory of the events may be blocked. For example, some soldiers develop amnesia [loss of memory] as a result of their experiences during wartime. Through hypnosis these repressed memories can be retrieved and treated. A variation of this treatment involves age regression, when the hypnotist takes the patient back to a specific age. In this way patients may remember events and feelings from that time, which may be affecting their current well-being.",
-        "G . Physicians also have made use of the ability of a hypnotised person to remain in a given position for long periods of time. In one case, doctors had to graft skin onto a patient’s badly damaged foot. First, skin from the person’s abdomen was grafted onto his arm; then the graft was transferred to his foot. With hypnosis, the patient held his arm tightly in position over his abdomen for three weeks, then over his foot for four weeks. Even though these positions were unusual, the patient at no time felt uncomfortable!",
-        "H . Hypnosis occasionally has been used with witnesses and victims of crime to enable people to remember important clues, such as a criminal’s physical appearance or other significant details that might help to solve a crime. However, as people can both lie and make mistakes while hypnotised, the use of hypnotism in legal situations can cause serious problems. Also hypnosis cannot make a person divulge secret information if they don’t want to. This was confirmed by the Council on Scientific Affairs of the American Medical Association, which, in 1985 reported that memories refreshed through hypnosis may include inaccurate information, false memories, and confabulation (fact and fantasy combined)."
+      "passages": [
+        {
+          "label": "Academic Reading Test 19, Passage 2, Questions 24 to 28",
+          "title": "Just relax",
+          "paragraphs": [
+            "A . Hypnosis is an intriguing and fascinating process. A trance-like mental state is induced in one person by another, who appears to have the power to command that person to obey instructions without question. Hypnotic experiences were described by the ancient Egyptians and Greeks, whilst references to deep sleep and anaesthesia have been found in the Bible and in the Jewish Talmud. In the mid-1700s, Franz Mesmer, an Austrian physician, developed his theory of ‘animal magnestism’, which was the belief that the cause of disease was the ‘improper distribution of invisible magnetic fluids’. Mesmer used water tubs and magnetic wands to direct these supposed fluids to his patients. In 1784, a French commission studied Mesmer’s claims, and concluded that these ‘cures’ were only imagined by the patients. However, people continued to believe in this process of ‘mesmerism’ and it was soon realised that successful results could be achieved, but without the need for magnets and water.",
+            "B . The term hypnotism was first used by James Braid, a British physician who studied suggestion and hypnosis in the mid-1800s. He demonstrated that hypnosis differed from sleep, that it was a physiological response and not the result of secret powers. During this same period, James Esdaile, a Scottish doctor working in India, used hypnotism instead of anaesthetic in over 200 major surgical operations, including leg amputations. Later that century, a French neurologist, Jean Charcot, successfully experimented with hypnosis in his clinic for nervous disorders.",
+            "C . Since then, scientists have shown that the state of hypnosis is a natural human behaviour, which can affect psychological, social and/or physical experiences. The effects of hypnotism depend on the ability, willingness and motivation of the person being hypnotised. Although hypnosis has been compared to dreaming and sleepwalking, it is not actually related to sleep. It involves a more active and intense mental concentration of the person being hypnotised. Hypnotised people can talk, write, and walk about and they are usually fully aware of what is being said and done.",
+            "D . There are various techniques used to induce hypnosis. The best-known is a series of simple suggestions repeated continuously in the same tone of voice. The subject is instructed to focus their attention on an object or fixed point, while being told to relax, breathe deeply, and allow the eyelids to grow heavy and close. As the person responds, their state of attention changes, and this altered state often leads to other changes. For example, the person may experience different levels of awareness, consciousness, imagination, memory and reasoning or become more responsive to suggestions. Additional phenomena may be produced or eliminated such as blushing, sweating, paralysis, muscle tension or anaesthesia. Although these changes can occur with hypnosis, none of these experiences is unique to it. People who are very responsive to hypnosis are also more responsive to suggestions when they are not hypnotised. This responsiveness increases during hypnotism. This explains why hypnosis takes only a few seconds for some, whilst other people cannot be easily hypnotised,",
+            "E . It is a common misunderstanding that hypnotists are able to force people to perform criminal or any other acts against their will. In fact, subjects can resist suggestions, and they retain their ability to distinguish right from wrong. This misunderstanding is often the result of public performances where subjects perform ridiculous or highly embarrassing actions at the command of the hypnotist. These people are usually instructed not to recall their behaviour after re-emerging from the hypnotic state, so it appears that they were powerless while hypnotised. The point to remember, however, is that these individuals chose to participate, and the success of hypnotism depends on the willingness of a person to be hypnotised.",
+            "F . Interestingly, there are different levels of hypnosis achievable. Thus deep hypnosis can be induced to allow anaesthesia for surgery, childbirth or dentistry. This contrasts to a lighter state of hypnosis, which deeply relaxes the patient who will then follow simple directions. This latter state may be used to treat mental health problems, as it allows patients to feel calm while simultaneously thinking about distressing feelings or painful memories. Thus patients can learn new responses to situations or come up with solutions to problems. This can help recovery from psychological conditions such as anxiety, depression or phobias. Sometimes, after traumatic incidents, memory of the events may be blocked. For example, some soldiers develop amnesia [loss of memory] as a result of their experiences during wartime. Through hypnosis these repressed memories can be retrieved and treated. A variation of this treatment involves age regression, when the hypnotist takes the patient back to a specific age. In this way patients may remember events and feelings from that time, which may be affecting their current well-being.",
+            "G . Physicians also have made use of the ability of a hypnotised person to remain in a given position for long periods of time. In one case, doctors had to graft skin onto a patient’s badly damaged foot. First, skin from the person’s abdomen was grafted onto his arm; then the graft was transferred to his foot. With hypnosis, the patient held his arm tightly in position over his abdomen for three weeks, then over his foot for four weeks. Even though these positions were unusual, the patient at no time felt uncomfortable!",
+            "H . Hypnosis occasionally has been used with witnesses and victims of crime to enable people to remember important clues, such as a criminal’s physical appearance or other significant details that might help to solve a crime. However, as people can both lie and make mistakes while hypnotised, the use of hypnotism in legal situations can cause serious problems. Also hypnosis cannot make a person divulge secret information if they don’t want to. This was confirmed by the Council on Scientific Affairs of the American Medical Association, which, in 1985 reported that memories refreshed through hypnosis may include inaccurate information, false memories, and confabulation (fact and fantasy combined)."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "In order to induce hypnosis, the hypnotist will",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) encourage the person to relax using a repetitively even tone of voice"
+            },
+            {
+              "value": "B",
+              "label": "B) say a specific set of words in a special tone of voice"
+            },
+            {
+              "value": "C",
+              "label": "C) say any words but in a particular tone of voice"
+            },
+            {
+              "value": "D",
+              "label": "D) encourage the person to relax while focussing on a slowly moving object"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Section D describes the standard technique as 'a series of simple suggestions repeated continuously in the same tone of voice', matching A.",
+          "source": "Academic Reading Test 19, Questions 24 to 28"
+        },
+        {
+          "prompt": "Hypnotised subjects can be instructed to",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) do something they have previously said is against their wishes"
+            },
+            {
+              "value": "B",
+              "label": "B) demonstrate physical strength they would normally not have"
+            },
+            {
+              "value": "C",
+              "label": "C) reveal confidential information against their will"
+            },
+            {
+              "value": "D",
+              "label": "D) do something that they would normally be opposed to doing"
+            }
+          ],
+          "answer": "D",
+          "explanation": "Section E's public-performance examples show subjects made to 'perform ridiculous or highly embarrassing actions', something they would not normally choose to do, matching D.",
+          "source": "Academic Reading Test 19, Questions 24 to 28"
+        },
+        {
+          "prompt": "Past events are recalled under hypnosis",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) to entertain the hypnotist"
+            },
+            {
+              "value": "B",
+              "label": "B) to allow subjects to reassess them without distress"
+            },
+            {
+              "value": "C",
+              "label": "C) to help the subjects improve their memories"
+            },
+            {
+              "value": "D",
+              "label": "D) to make the subject feel younger"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Section F says hypnosis lets patients 'feel calm while simultaneously thinking about distressing feelings or painful memories', reassessing them without distress, matching B.",
+          "source": "Academic Reading Test 19, Questions 24 to 28"
+        },
+        {
+          "prompt": "After surgery, hypnosis may be used",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) to make drugs unnecessary"
+            },
+            {
+              "value": "B",
+              "label": "B) to keep the patient mobile"
+            },
+            {
+              "value": "C",
+              "label": "C) to make the patient forget to move"
+            },
+            {
+              "value": "D",
+              "label": "D) to minimise patient’s discomfort while immobile"
+            }
+          ],
+          "answer": "D",
+          "explanation": "In the skin-graft case the patient held an awkward position for weeks yet 'at no time felt uncomfortable', matching D.",
+          "source": "Academic Reading Test 19, Questions 24 to 28"
+        },
+        {
+          "prompt": "The American Medical Association reported that",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) people lie when giving evidence under hypnosis"
+            },
+            {
+              "value": "B",
+              "label": "B) people should be hypnotised before giving evidence"
+            },
+            {
+              "value": "C",
+              "label": "C) evidence given when hypnotised may be unreliable"
+            },
+            {
+              "value": "D",
+              "label": "D) secret evidence can be obtained through hypnosis"
+            }
+          ],
+          "answer": "C",
+          "explanation": "The AMA reported that memories recovered under hypnosis 'may include inaccurate information, false memories, and confabulation', matching C.",
+          "source": "Academic Reading Test 19, Questions 24 to 28"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 1, Passage 3, Questions 37 to 40",
-      "title": "The Globemakers: The Curious Story of an Ancient Craft",
-      "paragraphs": [
-        "In 2008, Peter Bellerby, who lived in London, wanted to give his father a model globe for his eightieth birthday. What seemed simple enough to start with triggered an almost obsessive, decade-long journey, marked by a series of obstacles that would have deterred anyone less determined. It ended with his establishing the world’s only bespoke globemaking company.",
-        "The first surprise in The Globemakers, Bellerby’s account of this impulsive enterprise, is that obtaining such a globe was not simply a matter of a quick online order and a repressed sigh at the shipping costs. After all, contrary to stubbornly held popular views of our ancestors’ geographical ignorance, we have known that the world is spherical since at least the 6th century BCE. The ancient Greek philosopher Plato in his work Phaedo likened it to a leather ball, while the accolade of producing the first recorded globe goes to the ancient Greek philosopher Crates of Mallus, who is said to have made one in around 150 BCE. Surely, Bellerby reasoned, a good-quality globe wouldn’t be difficult to find.",
-        "Nearly two millennia later, however, it seemed that the art of globemaking had been largely forgotten. Bellerby came across shoddy commercial versions designed for school classrooms and genuine antiques in auction houses that would have bust his budget. Even his trips to Morocco and India, where surely the knowledge of artisan cartographers had been preserved, drew a blank.",
-        "Not one to be easily thwarted, Bellerby decided to make his own good-quality globe. In the process, almost everything that could possibly go wrong did so. Even the shape of the Earth posed a problem, as it is not quite a perfect sphere, but oblate (slightly flattened at the poles). Having decided to compromise and opt for two half-spherical pieces that could be fitted together, he was unable to discover anyone capable of casting moulds with sufficient accuracy to ensure that he would not be left with two half-spheres that were not quite the same circumference. Even after he eventually resolved this issue, extracting these from the moulds resulted in piles of cracked plaster of Paris and clouds of choking dust in the workshop he had set up at the rear of his house.",
-        "This series of abortive experiments taught Bellerby a lot about the challenges of making globes, which he communicates here to the reader. Finding just the right way to prise the globes from the mould – a high-end air compressor finally did the trick – and locating the right paper and inks with which to make the gores (the sections of flat sheet mapping that are pasted onto the spherical globe) without the ink seeping out to create a mushy, unreadable mess took months and an alarming chunk out of his bank balance. Bellerby’s frustration at the painstaking process of attaching the gores to the globe surface – after having found a glue with precisely the right adhesive qualities – is palpable. Right at the end of the process, he learnt that the paper had stretched slightly and so the final one overlapped the first by a centimetre (which may not seem a great deal, but when that represents 2 per cent of the Earth’s diameter, it’s equivalent to obliterating the Himalayas or wiping out Chile).",
-        "Bellerby’s account of the technical challenges of globe production is interspersed with a series of interludes on great globemakers of the past and cartographic history in general. Purists might wish for more map-making details, but Bellerby clearly found a kindred spirit in Martin Behaim. He was the Nuremberg entrepreneur who in 1492 created the Erdapfel, the world’s oldest surviving globe, beautifully finished by a workshop of painters and other craftsmen, only to find that the explorer Christopher Columbus had stumbled upon the Americas the very same year, rendering his masterpiece instantly out of date. Something of Bellerby’s unflinching ambition is reflected in the even more heroic efforts of the Italian cartographer Vincenzo Coronelli, who, in the seventeenth century, created two globes for Louis XIV of France. It took him twenty years to complete the monstrous pair, whose vast bulk – each with a diameter of around four metres – can still be admired in the National Library of France in Paris.",
-        "Although a celebration of the revival of an ancient craft, Bellerby’s book is also a lament for the fading away of centuries-old traditions. When he embarked on his globemaking odyssey, he struggled to find artisans with the skills to make the right moulds for the globes or foundries that could shape the meridians (the metal frames which girdle globes) in just the right way. Although he finally located the right craftsmen, some simply dropping in, serendipitously, to his workshop (by now in more suitable premises than his back room), many of these have now retired or passed away.",
-        "Bellerby’s father finally did receive his eightieth birthday present, albeit two years late. Bellerby went on to found a company which now turns out over six hundred globes a year for customers who can have their own tiny village marked or more unusual requests fulfilled. His book, beautifully illustrated with photographs of the various stages of his venture and a few illustrations of historic globes and maps, is hardly a blueprint for commercial success. But it is more than enough to stir up admiration for the craftsmanship of the great mapmakers of the past and the obsessive determination of a modern successor who revived their almost moribund art."
+      "passages": [
+        {
+          "label": "Academic Reading Test 1, Passage 3, Questions 37 to 40",
+          "title": "The Globemakers: The Curious Story of an Ancient Craft",
+          "paragraphs": [
+            "In 2008, Peter Bellerby, who lived in London, wanted to give his father a model globe for his eightieth birthday. What seemed simple enough to start with triggered an almost obsessive, decade-long journey, marked by a series of obstacles that would have deterred anyone less determined. It ended with his establishing the world’s only bespoke globemaking company.",
+            "The first surprise in The Globemakers, Bellerby’s account of this impulsive enterprise, is that obtaining such a globe was not simply a matter of a quick online order and a repressed sigh at the shipping costs. After all, contrary to stubbornly held popular views of our ancestors’ geographical ignorance, we have known that the world is spherical since at least the 6th century BCE. The ancient Greek philosopher Plato in his work Phaedo likened it to a leather ball, while the accolade of producing the first recorded globe goes to the ancient Greek philosopher Crates of Mallus, who is said to have made one in around 150 BCE. Surely, Bellerby reasoned, a good-quality globe wouldn’t be difficult to find.",
+            "Nearly two millennia later, however, it seemed that the art of globemaking had been largely forgotten. Bellerby came across shoddy commercial versions designed for school classrooms and genuine antiques in auction houses that would have bust his budget. Even his trips to Morocco and India, where surely the knowledge of artisan cartographers had been preserved, drew a blank.",
+            "Not one to be easily thwarted, Bellerby decided to make his own good-quality globe. In the process, almost everything that could possibly go wrong did so. Even the shape of the Earth posed a problem, as it is not quite a perfect sphere, but oblate (slightly flattened at the poles). Having decided to compromise and opt for two half-spherical pieces that could be fitted together, he was unable to discover anyone capable of casting moulds with sufficient accuracy to ensure that he would not be left with two half-spheres that were not quite the same circumference. Even after he eventually resolved this issue, extracting these from the moulds resulted in piles of cracked plaster of Paris and clouds of choking dust in the workshop he had set up at the rear of his house.",
+            "This series of abortive experiments taught Bellerby a lot about the challenges of making globes, which he communicates here to the reader. Finding just the right way to prise the globes from the mould – a high-end air compressor finally did the trick – and locating the right paper and inks with which to make the gores (the sections of flat sheet mapping that are pasted onto the spherical globe) without the ink seeping out to create a mushy, unreadable mess took months and an alarming chunk out of his bank balance. Bellerby’s frustration at the painstaking process of attaching the gores to the globe surface – after having found a glue with precisely the right adhesive qualities – is palpable. Right at the end of the process, he learnt that the paper had stretched slightly and so the final one overlapped the first by a centimetre (which may not seem a great deal, but when that represents 2 per cent of the Earth’s diameter, it’s equivalent to obliterating the Himalayas or wiping out Chile).",
+            "Bellerby’s account of the technical challenges of globe production is interspersed with a series of interludes on great globemakers of the past and cartographic history in general. Purists might wish for more map-making details, but Bellerby clearly found a kindred spirit in Martin Behaim. He was the Nuremberg entrepreneur who in 1492 created the Erdapfel, the world’s oldest surviving globe, beautifully finished by a workshop of painters and other craftsmen, only to find that the explorer Christopher Columbus had stumbled upon the Americas the very same year, rendering his masterpiece instantly out of date. Something of Bellerby’s unflinching ambition is reflected in the even more heroic efforts of the Italian cartographer Vincenzo Coronelli, who, in the seventeenth century, created two globes for Louis XIV of France. It took him twenty years to complete the monstrous pair, whose vast bulk – each with a diameter of around four metres – can still be admired in the National Library of France in Paris.",
+            "Although a celebration of the revival of an ancient craft, Bellerby’s book is also a lament for the fading away of centuries-old traditions. When he embarked on his globemaking odyssey, he struggled to find artisans with the skills to make the right moulds for the globes or foundries that could shape the meridians (the metal frames which girdle globes) in just the right way. Although he finally located the right craftsmen, some simply dropping in, serendipitously, to his workshop (by now in more suitable premises than his back room), many of these have now retired or passed away.",
+            "Bellerby’s father finally did receive his eightieth birthday present, albeit two years late. Bellerby went on to found a company which now turns out over six hundred globes a year for customers who can have their own tiny village marked or more unusual requests fulfilled. His book, beautifully illustrated with photographs of the various stages of his venture and a few illustrations of historic globes and maps, is hardly a blueprint for commercial success. But it is more than enough to stir up admiration for the craftsmanship of the great mapmakers of the past and the obsessive determination of a modern successor who revived their almost moribund art."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "When Bellerby had to attach the gores to the globe surface,",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) he decided it was best to work quickly"
+            },
+            {
+              "value": "B",
+              "label": "B) he became aware of an unexpected issue"
+            },
+            {
+              "value": "C",
+              "label": "C) he was worried about the quality of his materials"
+            },
+            {
+              "value": "D",
+              "label": "D) he nearly gave up the whole project"
+            }
+          ],
+          "answer": "B",
+          "explanation": "The fifth paragraph describes Bellerby learning late in the process that the paper had stretched and the gores overlapped, an unexpected issue with his materials, matching option B.",
+          "source": "Academic Reading Test 1, Questions 37 to 40"
+        },
+        {
+          "prompt": "The reviewer mentions other globe makers of the past because",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Bellerby was particularly inspired by them"
+            },
+            {
+              "value": "B",
+              "label": "B) their achievements are not widely known"
+            },
+            {
+              "value": "C",
+              "label": "C) Bellerby had something in common with each of them"
+            },
+            {
+              "value": "D",
+              "label": "D) their difficulties could have been avoided"
+            }
+          ],
+          "answer": "C",
+          "explanation": "The sixth paragraph says Bellerby ‘found a kindred spirit’ in Behaim and shows shared ambition with Coronelli, so the other globemakers share something with Bellerby, matching option C.",
+          "source": "Academic Reading Test 1, Questions 37 to 40"
+        },
+        {
+          "prompt": "What point is made about Bellerby in the seventh paragraph?",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) He had long working relationships with numerous craftsmen"
+            },
+            {
+              "value": "B",
+              "label": "B) He understands the lack of interest in traditional crafts"
+            },
+            {
+              "value": "C",
+              "label": "C) He appreciates the importance of careful planning"
+            },
+            {
+              "value": "D",
+              "label": "D) He regrets the loss of many globe-making skills"
+            }
+          ],
+          "answer": "D",
+          "explanation": "The seventh paragraph, on the ‘fading away of centuries-old traditions’, shows many skilled craftsmen ‘have now retired or passed away’, matching option D, that Bellerby regrets the loss of skills.",
+          "source": "Academic Reading Test 1, Questions 37 to 40"
+        },
+        {
+          "prompt": "What does the reviewer say about Bellerby’s book in the final paragraph?",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) It does not tell you how to create a profitable business"
+            },
+            {
+              "value": "B",
+              "label": "B) It overlooks some important mapmakers"
+            },
+            {
+              "value": "C",
+              "label": "C) It fails to discuss the future of globe-making"
+            },
+            {
+              "value": "D",
+              "label": "D) It does not give enough details about individual customers"
+            }
+          ],
+          "answer": "A",
+          "explanation": "The final paragraph says the book ‘is hardly a blueprint for commercial success’, matching option A, that it does not explain how to run a profitable business.",
+          "source": "Academic Reading Test 1, Questions 37 to 40"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "In order to induce hypnosis, the hypnotist will",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) encourage the person to relax using a repetitively even tone of voice"
-        },
-        {
-          "value": "B",
-          "label": "B) say a specific set of words in a special tone of voice"
-        },
-        {
-          "value": "C",
-          "label": "C) say any words but in a particular tone of voice"
-        },
-        {
-          "value": "D",
-          "label": "D) encourage the person to relax while focussing on a slowly moving object"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Section D describes the standard technique as 'a series of simple suggestions repeated continuously in the same tone of voice', matching A.",
-      "source": "Academic Reading Test 19, Questions 24 to 28"
-    },
-    {
-      "prompt": "Hypnotised subjects can be instructed to",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) do something they have previously said is against their wishes"
-        },
-        {
-          "value": "B",
-          "label": "B) demonstrate physical strength they would normally not have"
-        },
-        {
-          "value": "C",
-          "label": "C) reveal confidential information against their will"
-        },
-        {
-          "value": "D",
-          "label": "D) do something that they would normally be opposed to doing"
-        }
-      ],
-      "answer": "D",
-      "explanation": "Section E's public-performance examples show subjects made to 'perform ridiculous or highly embarrassing actions', something they would not normally choose to do, matching D.",
-      "source": "Academic Reading Test 19, Questions 24 to 28"
-    },
-    {
-      "prompt": "Past events are recalled under hypnosis",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) to entertain the hypnotist"
-        },
-        {
-          "value": "B",
-          "label": "B) to allow subjects to reassess them without distress"
-        },
-        {
-          "value": "C",
-          "label": "C) to help the subjects improve their memories"
-        },
-        {
-          "value": "D",
-          "label": "D) to make the subject feel younger"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Section F says hypnosis lets patients 'feel calm while simultaneously thinking about distressing feelings or painful memories', reassessing them without distress, matching B.",
-      "source": "Academic Reading Test 19, Questions 24 to 28"
-    },
-    {
-      "prompt": "After surgery, hypnosis may be used",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) to make drugs unnecessary"
-        },
-        {
-          "value": "B",
-          "label": "B) to keep the patient mobile"
-        },
-        {
-          "value": "C",
-          "label": "C) to make the patient forget to move"
-        },
-        {
-          "value": "D",
-          "label": "D) to minimise patient’s discomfort while immobile"
-        }
-      ],
-      "answer": "D",
-      "explanation": "In the skin-graft case the patient held an awkward position for weeks yet 'at no time felt uncomfortable', matching D.",
-      "source": "Academic Reading Test 19, Questions 24 to 28"
-    },
-    {
-      "prompt": "The American Medical Association reported that",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) people lie when giving evidence under hypnosis"
-        },
-        {
-          "value": "B",
-          "label": "B) people should be hypnotised before giving evidence"
-        },
-        {
-          "value": "C",
-          "label": "C) evidence given when hypnotised may be unreliable"
-        },
-        {
-          "value": "D",
-          "label": "D) secret evidence can be obtained through hypnosis"
-        }
-      ],
-      "answer": "C",
-      "explanation": "The AMA reported that memories recovered under hypnosis 'may include inaccurate information, false memories, and confabulation', matching C.",
-      "source": "Academic Reading Test 19, Questions 24 to 28"
-    },
-    {
-      "prompt": "When Bellerby had to attach the gores to the globe surface,",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) he decided it was best to work quickly"
-        },
-        {
-          "value": "B",
-          "label": "B) he became aware of an unexpected issue"
-        },
-        {
-          "value": "C",
-          "label": "C) he was worried about the quality of his materials"
-        },
-        {
-          "value": "D",
-          "label": "D) he nearly gave up the whole project"
-        }
-      ],
-      "answer": "B",
-      "explanation": "The fifth paragraph describes Bellerby learning late in the process that the paper had stretched and the gores overlapped, an unexpected issue with his materials, matching option B.",
-      "source": "Academic Reading Test 1, Questions 37 to 40"
-    },
-    {
-      "prompt": "The reviewer mentions other globe makers of the past because",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Bellerby was particularly inspired by them"
-        },
-        {
-          "value": "B",
-          "label": "B) their achievements are not widely known"
-        },
-        {
-          "value": "C",
-          "label": "C) Bellerby had something in common with each of them"
-        },
-        {
-          "value": "D",
-          "label": "D) their difficulties could have been avoided"
-        }
-      ],
-      "answer": "C",
-      "explanation": "The sixth paragraph says Bellerby ‘found a kindred spirit’ in Behaim and shows shared ambition with Coronelli, so the other globemakers share something with Bellerby, matching option C.",
-      "source": "Academic Reading Test 1, Questions 37 to 40"
-    },
-    {
-      "prompt": "What point is made about Bellerby in the seventh paragraph?",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) He had long working relationships with numerous craftsmen"
-        },
-        {
-          "value": "B",
-          "label": "B) He understands the lack of interest in traditional crafts"
-        },
-        {
-          "value": "C",
-          "label": "C) He appreciates the importance of careful planning"
-        },
-        {
-          "value": "D",
-          "label": "D) He regrets the loss of many globe-making skills"
-        }
-      ],
-      "answer": "D",
-      "explanation": "The seventh paragraph, on the ‘fading away of centuries-old traditions’, shows many skilled craftsmen ‘have now retired or passed away’, matching option D, that Bellerby regrets the loss of skills.",
-      "source": "Academic Reading Test 1, Questions 37 to 40"
-    },
-    {
-      "prompt": "What does the reviewer say about Bellerby’s book in the final paragraph?",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) It does not tell you how to create a profitable business"
-        },
-        {
-          "value": "B",
-          "label": "B) It overlooks some important mapmakers"
-        },
-        {
-          "value": "C",
-          "label": "C) It fails to discuss the future of globe-making"
-        },
-        {
-          "value": "D",
-          "label": "D) It does not give enough details about individual customers"
-        }
-      ],
-      "answer": "A",
-      "explanation": "The final paragraph says the book ‘is hardly a blueprint for commercial success’, matching option A, that it does not explain how to run a profitable business.",
-      "source": "Academic Reading Test 1, Questions 37 to 40"
     }
   ]
 },
 
   "tfng": {
   "title": "Exercise. Decide: True, False, or Not Given (real test questions)",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 3, Passage 1, Questions 6 to 13",
-      "title": "Do animals dream?",
-      "paragraphs": [
-        "Studies using electrodes attached to the heads of sleepers have shown that when we sleep, we do so in two ways that alternate throughout the night. The first is rapid eye movement (REM) or active sleep. During this stage our eyes move, even though our eyelids are closed. Our muscles also twitch slightly, though they are largely paralysed so we don’t hurt ourselves. In contrast, we also engage in non-REM sleep, during which we barely move at all. Most dream states, and certainly those with the most vivid dreams, happen during REM sleep.",
-        "There’s some evidence that other mammals may also dream. For example, researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze.",
-        "But finding evidence of dreaming in non-mammals has proved more difficult. Their brains are very different from those of humans, and it can often be difficult to record their activity while they are sleeping. Recently, however, researchers succeeded in recording brain activity in sleeping pigeons. As in mammals, the recordings revealed both REM and non-REM sleep. Intriguingly, REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying, which suggests that this may possibly be what the pigeons were dreaming about.",
-        "That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom. For example, sponges don’t have brains, so they lack the machinery for dreaming. There are also some animals with unusual sleep patterns. These include whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake. They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid. This is surprising because we tend to think of whales and dolphins as having complex inner lives. It’s thought that they don’t experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature.",
-        "Nevertheless, in many cases REM sleep does seem to have benefits. Growing evidence from birds and mammals suggests that REM sleep and dreaming are important for forming memories and learning. It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage. As soon as animals evolved moderately complex lifestyles, they would have needed to dream in order to manage these lifestyles.",
-        "However, we still don’t understand how this outward behaviour relates to internal experience. It seems impossible to know what it is like to be a rat or a pigeon, let alone imagine their dreamscapes. We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don’t know if there is an internal experience of chasing rabbits that comes along with that.",
-        "Another non-human dreamer offers insight here. In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room. At one point, in the middle of the night, Heidi seemed to dream: her limbs and head moved, and her skin rapidly changed colour, as though she was pursuing a crab.",
-        "Similarly, a report recently emerged of a sleeping octopus apparently having a nightmare. Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator. The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams.",
-        "The trouble is that we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too. But we can try to imagine what these dreamscapes are like by meeting animals on their own terms. For example, vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations.",
-        "It is likely that dreaming has served multiple purposes since the first complex animals evolved. And if this is the case, it is possible that better understanding of these purposes might shed light on the true purpose of our own dreams."
+      "passages": [
+        {
+          "label": "Academic Reading Test 3, Passage 1, Questions 6 to 13",
+          "title": "Do animals dream?",
+          "paragraphs": [
+            "Studies using electrodes attached to the heads of sleepers have shown that when we sleep, we do so in two ways that alternate throughout the night. The first is rapid eye movement (REM) or active sleep. During this stage our eyes move, even though our eyelids are closed. Our muscles also twitch slightly, though they are largely paralysed so we don’t hurt ourselves. In contrast, we also engage in non-REM sleep, during which we barely move at all. Most dream states, and certainly those with the most vivid dreams, happen during REM sleep.",
+            "There’s some evidence that other mammals may also dream. For example, researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze.",
+            "But finding evidence of dreaming in non-mammals has proved more difficult. Their brains are very different from those of humans, and it can often be difficult to record their activity while they are sleeping. Recently, however, researchers succeeded in recording brain activity in sleeping pigeons. As in mammals, the recordings revealed both REM and non-REM sleep. Intriguingly, REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying, which suggests that this may possibly be what the pigeons were dreaming about.",
+            "That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom. For example, sponges don’t have brains, so they lack the machinery for dreaming. There are also some animals with unusual sleep patterns. These include whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake. They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid. This is surprising because we tend to think of whales and dolphins as having complex inner lives. It’s thought that they don’t experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature.",
+            "Nevertheless, in many cases REM sleep does seem to have benefits. Growing evidence from birds and mammals suggests that REM sleep and dreaming are important for forming memories and learning. It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage. As soon as animals evolved moderately complex lifestyles, they would have needed to dream in order to manage these lifestyles.",
+            "However, we still don’t understand how this outward behaviour relates to internal experience. It seems impossible to know what it is like to be a rat or a pigeon, let alone imagine their dreamscapes. We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don’t know if there is an internal experience of chasing rabbits that comes along with that.",
+            "Another non-human dreamer offers insight here. In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room. At one point, in the middle of the night, Heidi seemed to dream: her limbs and head moved, and her skin rapidly changed colour, as though she was pursuing a crab.",
+            "Similarly, a report recently emerged of a sleeping octopus apparently having a nightmare. Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator. The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams.",
+            "The trouble is that we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too. But we can try to imagine what these dreamscapes are like by meeting animals on their own terms. For example, vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations.",
+            "It is likely that dreaming has served multiple purposes since the first complex animals evolved. And if this is the case, it is possible that better understanding of these purposes might shed light on the true purpose of our own dreams."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Dreaming about past experiences helps us to create lasting memories of them",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "True",
+          "explanation": "The fifth paragraph says ‘when events are replayed in dreams, this helps to integrate memories into longer-term storage’, confirming the statement.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "It is now possible to tell what type of dream a dog is having",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "False",
+          "explanation": "The sixth paragraph admits ‘we don’t know if there is an internal experience… that comes along with’ a dog’s twitching, contradicting the claim that we can now tell what dogs dream about.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage describes what happened during Scheel’s documentary but never says it influenced other researchers’ work on octopuses, so this is not given.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "While it was asleep, the octopus called Costello reacted as if it was hunting",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "False",
+          "explanation": "Costello behaved ‘as though he were being attacked by a predator’, a defensive reaction, not one that suggests he was hunting, contradicting the statement.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "Scheel believes more research into octopuses’ dreams should be carried out",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "True",
+          "explanation": "Scheel says brain imaging ‘is needed to show that the octopuses are replaying sequences… in dreams’, implying he believes more research is required.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "We may soon be able to share the dreams of other human beings",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "False",
+          "explanation": "The passage says ‘we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too’, directly contradicting the idea that we may soon share human dreams.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "Hearing may be an important part of the dreams of some animals",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage mentions smell for dogs and vibrations for spiders as dominant senses, but it never discusses hearing in animal dreams, so this is not given.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        },
+        {
+          "prompt": "Interest in the reasons why humans dream has increased greatly in recent times",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage never discusses whether interest in why humans dream has grown over time, so this is not given.",
+          "source": "Academic Reading Test 3, Questions 6 to 13"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 1, Passage 1, Questions 1 to 7",
-      "title": "The problems and benefits created by the spread of the water hyacinth in Kenya",
-      "paragraphs": [
-        "Water hyacinth (Eichhornia crassipes), an aquatic plant native to South America, first appeared in countries in Africa in the early 1900s. Scientists there called it the ‘world’s worst aquatic weed’, after it spread from the southernmost tip of Africa in the early 1900s and started obstructing major dams and rivers.",
-        "In east Africa the plant arrived with Belgian colonists in Rwanda, who liked the look of its glossy leaves and delicate purple flowers floating in their ponds. But by the 1980s, it had ‘escaped’ out of the country via the Kagera river and made its way downstream to Lake Victoria. There, with no natural predators and perfect temperature conditions, the plant began spreading in the open water, blocking fishing routes and providing a new habitat for disease-carrying mosquitoes.",
-        "For the women who smoke fish from the lake to sell it has meant declining income, as the boats that once brought the fish to shore by the hundreds struggle to navigate through the mass of plants. But water hyacinth isn’t their only headache. In order to smoke the fish that they buy, they must gather huge quantities of firewood, sometimes walking as far as 10km each way to collect enough to complete their work. And each day as they cook, they breathe in the thick, grey smoke. About three out of four families in Kenya depend on wood or charcoal to cook their daily meals, and the rate is even higher in rural areas, Kenya’s latest demographic and health survey shows. Using solid fuels like these for cooking increases indoor pollution. The World Health Organization estimates that about 14,300 Kenyans die annually as a result of indoor air pollution – most of which is caused by cooking and heating sources.",
-        "Some years ago, on the shores of Lake Victoria, huge piles of water hyacinth that villagers had taken out of the water in an attempt to clear it were a common sight. But buried in those decaying waxy leaves was a renewable energy gold mine. It turns out the floating plant isn’t just good at spreading – its foliage also contains a high ratio of carbon to nitrogen. It’s a magic combination that has captivated researchers’ imaginations since as early as the 1980s when, across the world, they began to explore its potential as a biofuel. Just about 4kg of the dried plant would be enough to cater for a large family’s daily energy needs, early research predicted.",
-        "In 2014, Nigerian academics announced they had got better yields of biofuel gas when they mixed the plant with chicken manure. A few years later, Kenyan scientists confirmed what their Nigerian peers and others had already found: manure worked to improve the process of converting the weed into gas.",
-        "In 2018, the technology came to a village on the shore of Lake Victoria, called Dunga. The project promised a two-for-one solution to the dual menaces of the water hyacinth and dependence on firewood. The community received a pair of donated biogas digesters – machines that would transform a mix of water hyacinth and cow dung into biogas for cooking.",
-        "The digesters work a bit like a stomach. The mixture goes in one end – think of it as a mouth – and over the next 20 to 30 days, it goes through a fermentation process and breaks down, giving off gas that comes out the other end. From there, the clean-burning gas is passed through pipes to the point of use, just like traditional domestic gas. In Dunga, the machines produce enough gas to serve about 60% of the village’s population, it is used in domestic stoves and for other household tasks such as purifying water and incubating chicks.",
-        "The project is testing whether biogas can provide an effective alternative to firewood and charcoal in rural Kenyan communities. Results indicate that the programme seems to be working. The women who smoke the lake fish are already getting sick less often. Besides, they don’t have to devote a lot of time every day to gathering firewood, which is a great relief. As a result, they’re able to make more money for their families from other enterprises.",
-        "Kanyiva Muindi is an epidemiologist and air pollution research fellow at the African Population and Health Research Centre in Nairobi. She says families who switch to the smokeless cooking method could expect fewer respiratory diseases. Women, young girls and children are particularly vulnerable because they are the ones who cook in the kitchen or outside overfires. How much better the biogas stoves will be for the community’s health still needs more research, says Dominic Kahumbu Wanjihia, Biogas International’s chief executive. But unless the price of the machines drops, it’s pretty clear that most communities will never be able to afford any, since they sell for about $750.",
-        "Kanyiva says affordability is a challenge worth addressing, given the huge health and environmental dangers posed by ‘dirty’ fuels such as wood, charcoal and kerosene. If biogas could become affordable on a large scale, she says it ‘would be life-changing for millions on the African continent and beyond’."
+      "passages": [
+        {
+          "label": "Academic Reading Test 1, Passage 1, Questions 1 to 7",
+          "title": "The problems and benefits created by the spread of the water hyacinth in Kenya",
+          "paragraphs": [
+            "Water hyacinth (Eichhornia crassipes), an aquatic plant native to South America, first appeared in countries in Africa in the early 1900s. Scientists there called it the ‘world’s worst aquatic weed’, after it spread from the southernmost tip of Africa in the early 1900s and started obstructing major dams and rivers.",
+            "In east Africa the plant arrived with Belgian colonists in Rwanda, who liked the look of its glossy leaves and delicate purple flowers floating in their ponds. But by the 1980s, it had ‘escaped’ out of the country via the Kagera river and made its way downstream to Lake Victoria. There, with no natural predators and perfect temperature conditions, the plant began spreading in the open water, blocking fishing routes and providing a new habitat for disease-carrying mosquitoes.",
+            "For the women who smoke fish from the lake to sell it has meant declining income, as the boats that once brought the fish to shore by the hundreds struggle to navigate through the mass of plants. But water hyacinth isn’t their only headache. In order to smoke the fish that they buy, they must gather huge quantities of firewood, sometimes walking as far as 10km each way to collect enough to complete their work. And each day as they cook, they breathe in the thick, grey smoke. About three out of four families in Kenya depend on wood or charcoal to cook their daily meals, and the rate is even higher in rural areas, Kenya’s latest demographic and health survey shows. Using solid fuels like these for cooking increases indoor pollution. The World Health Organization estimates that about 14,300 Kenyans die annually as a result of indoor air pollution – most of which is caused by cooking and heating sources.",
+            "Some years ago, on the shores of Lake Victoria, huge piles of water hyacinth that villagers had taken out of the water in an attempt to clear it were a common sight. But buried in those decaying waxy leaves was a renewable energy gold mine. It turns out the floating plant isn’t just good at spreading – its foliage also contains a high ratio of carbon to nitrogen. It’s a magic combination that has captivated researchers’ imaginations since as early as the 1980s when, across the world, they began to explore its potential as a biofuel. Just about 4kg of the dried plant would be enough to cater for a large family’s daily energy needs, early research predicted.",
+            "In 2014, Nigerian academics announced they had got better yields of biofuel gas when they mixed the plant with chicken manure. A few years later, Kenyan scientists confirmed what their Nigerian peers and others had already found: manure worked to improve the process of converting the weed into gas.",
+            "In 2018, the technology came to a village on the shore of Lake Victoria, called Dunga. The project promised a two-for-one solution to the dual menaces of the water hyacinth and dependence on firewood. The community received a pair of donated biogas digesters – machines that would transform a mix of water hyacinth and cow dung into biogas for cooking.",
+            "The digesters work a bit like a stomach. The mixture goes in one end – think of it as a mouth – and over the next 20 to 30 days, it goes through a fermentation process and breaks down, giving off gas that comes out the other end. From there, the clean-burning gas is passed through pipes to the point of use, just like traditional domestic gas. In Dunga, the machines produce enough gas to serve about 60% of the village’s population, it is used in domestic stoves and for other household tasks such as purifying water and incubating chicks.",
+            "The project is testing whether biogas can provide an effective alternative to firewood and charcoal in rural Kenyan communities. Results indicate that the programme seems to be working. The women who smoke the lake fish are already getting sick less often. Besides, they don’t have to devote a lot of time every day to gathering firewood, which is a great relief. As a result, they’re able to make more money for their families from other enterprises.",
+            "Kanyiva Muindi is an epidemiologist and air pollution research fellow at the African Population and Health Research Centre in Nairobi. She says families who switch to the smokeless cooking method could expect fewer respiratory diseases. Women, young girls and children are particularly vulnerable because they are the ones who cook in the kitchen or outside overfires. How much better the biogas stoves will be for the community’s health still needs more research, says Dominic Kahumbu Wanjihia, Biogas International’s chief executive. But unless the price of the machines drops, it’s pretty clear that most communities will never be able to afford any, since they sell for about $750.",
+            "Kanyiva says affordability is a challenge worth addressing, given the huge health and environmental dangers posed by ‘dirty’ fuels such as wood, charcoal and kerosene. If biogas could become affordable on a large scale, she says it ‘would be life-changing for millions on the African continent and beyond’."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Water hyacinth was introduced as a decorative plant in east Africa",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "True",
+          "explanation": "The second paragraph says Belgian colonists in Rwanda ‘liked the look of its glossy leaves and delicate purple flowers’, showing it was valued as an ornamental plant, matching ‘decorative’.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        },
+        {
+          "prompt": "Fishermen took some water hyacinth plants to Lake Victoria",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "False",
+          "explanation": "The passage says the plant ‘escaped’ from Rwanda into Lake Victoria on its own via the Kagera river, not that fishermen carried it there, so this contradicts the text.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        },
+        {
+          "prompt": "It is now difficult to force boats through the thick water hyacinth on Lake Victoria",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "True",
+          "explanation": "The third paragraph says fishing boats now ‘struggle to navigate through the mass of plants’, confirming that moving boats through the hyacinth is difficult.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        },
+        {
+          "prompt": "Chemicals produced by the water hyacinth plants are affecting the numbers offish in Lake Victoria",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage explains hyacinth blocks fishing routes and shelters mosquitoes, but it never mentions any chemicals released by the plant harming fish numbers, so there is no information on this.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        },
+        {
+          "prompt": "Cooking with charcoal has been proved to be even worse for people’s health than cooking with wood",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage discusses indoor pollution from wood and charcoal together but never compares the two fuels or says charcoal is worse for health, so there is no information on this.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        },
+        {
+          "prompt": "People found it impossible to remove much water hyacinth from Lake Victoria",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "False",
+          "explanation": "The fourth paragraph shows villagers had taken ‘huge piles of water hyacinth’ out of the water, so removal was possible, contradicting the claim that it was impossible.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        },
+        {
+          "prompt": "Scientists started investigating the possibility of using water hyacinth to generate biogas in the last century",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "True"
+            },
+            {
+              "value": "False"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "True",
+          "explanation": "The fourth paragraph says researchers began exploring the plant as a biofuel ‘as early as the 1980s’, which falls within the 20th century, the last century.",
+          "source": "Academic Reading Test 1, Questions 1 to 7"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "Dreaming about past experiences helps us to create lasting memories of them",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "True",
-      "explanation": "The fifth paragraph says ‘when events are replayed in dreams, this helps to integrate memories into longer-term storage’, confirming the statement.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "It is now possible to tell what type of dream a dog is having",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "False",
-      "explanation": "The sixth paragraph admits ‘we don’t know if there is an internal experience… that comes along with’ a dog’s twitching, contradicting the claim that we can now tell what dogs dream about.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "David Scheel’s documentary was influential on other research into the sleeping patterns of octopuses",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage describes what happened during Scheel’s documentary but never says it influenced other researchers’ work on octopuses, so this is not given.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "While it was asleep, the octopus called Costello reacted as if it was hunting",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "False",
-      "explanation": "Costello behaved ‘as though he were being attacked by a predator’, a defensive reaction, not one that suggests he was hunting, contradicting the statement.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "Scheel believes more research into octopuses’ dreams should be carried out",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "True",
-      "explanation": "Scheel says brain imaging ‘is needed to show that the octopuses are replaying sequences… in dreams’, implying he believes more research is required.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "We may soon be able to share the dreams of other human beings",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "False",
-      "explanation": "The passage says ‘we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too’, directly contradicting the idea that we may soon share human dreams.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "Hearing may be an important part of the dreams of some animals",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage mentions smell for dogs and vibrations for spiders as dominant senses, but it never discusses hearing in animal dreams, so this is not given.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "Interest in the reasons why humans dream has increased greatly in recent times",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage never discusses whether interest in why humans dream has grown over time, so this is not given.",
-      "source": "Academic Reading Test 3, Questions 6 to 13"
-    },
-    {
-      "prompt": "Water hyacinth was introduced as a decorative plant in east Africa",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "True",
-      "explanation": "The second paragraph says Belgian colonists in Rwanda ‘liked the look of its glossy leaves and delicate purple flowers’, showing it was valued as an ornamental plant, matching ‘decorative’.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
-    },
-    {
-      "prompt": "Fishermen took some water hyacinth plants to Lake Victoria",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "False",
-      "explanation": "The passage says the plant ‘escaped’ from Rwanda into Lake Victoria on its own via the Kagera river, not that fishermen carried it there, so this contradicts the text.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
-    },
-    {
-      "prompt": "It is now difficult to force boats through the thick water hyacinth on Lake Victoria",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "True",
-      "explanation": "The third paragraph says fishing boats now ‘struggle to navigate through the mass of plants’, confirming that moving boats through the hyacinth is difficult.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
-    },
-    {
-      "prompt": "Chemicals produced by the water hyacinth plants are affecting the numbers offish in Lake Victoria",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage explains hyacinth blocks fishing routes and shelters mosquitoes, but it never mentions any chemicals released by the plant harming fish numbers, so there is no information on this.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
-    },
-    {
-      "prompt": "Cooking with charcoal has been proved to be even worse for people’s health than cooking with wood",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage discusses indoor pollution from wood and charcoal together but never compares the two fuels or says charcoal is worse for health, so there is no information on this.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
-    },
-    {
-      "prompt": "People found it impossible to remove much water hyacinth from Lake Victoria",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "False",
-      "explanation": "The fourth paragraph shows villagers had taken ‘huge piles of water hyacinth’ out of the water, so removal was possible, contradicting the claim that it was impossible.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
-    },
-    {
-      "prompt": "Scientists started investigating the possibility of using water hyacinth to generate biogas in the last century",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "True"
-        },
-        {
-          "value": "False"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "True",
-      "explanation": "The fourth paragraph says researchers began exploring the plant as a biofuel ‘as early as the 1980s’, which falls within the 20th century, the last century.",
-      "source": "Academic Reading Test 1, Questions 1 to 7"
     }
   ]
 },
@@ -735,268 +764,278 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "ynng": {
   "title": "Exercise. Decide: Yes, No, or Not Given (real test questions)",
   "intro": "These statements test the writer's own opinions and claims, not simple facts.",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 17, Passage 1, Questions 7 to 13",
-      "title": "Lake Vostok",
-      "paragraphs": [
-        "A Beneath the white blanket of Antarctica lies half a continent of virtually uncharted territory – an area so completely hidden that scientists have little clue what riches await discovery. Recently, Russian and British glaciologists identified an immense lake – one of Earth’s largest and deepest – buried beneath 4,000 meters of ice immediately below Russia’s Vostok Station.",
-        "B As details have emerged, a growing number of scientists are showing interest, with dozens of investigators keen to explore the feature, known as Lake Vostok. A thick layer of sediment at the bottom of the lake could hold novel dues to the planet’s climate going back tens of millions of years. By looking at the ratio of different oxygen isotopes, scientists should be able to trace how Earth’s temperature changed over the millennia. NASA has expressed interest in Lake Vostok because of its similarity to Europa. This moon of Jupiter appears to have a water ocean covered by a thick ice sheet, measuring perhaps tens of kilometers in depth. If hydrothermal vents existed beneath the ice, chemical reactions on Europa could have created the molecular building blocks for life, if not life itself. Vostok would be an ideal testing ground for technology that would eventually fly to Europa or places even more distant, say many scientists. Though cheap compared with a Europan mission, any expedition to Vostok would represent a significant investment.",
-        "C Vostok Station holds the uncomfortable distinction of having recorded the coldest temperature on Earth. Thermometers there measured in July 1983, and the average temperature hovers around -55ºC. It’s the thick ice, strangely, that enables a lake to survive in such a frozen environment. The 4 kilometers of ice acts effectively as an insulating blanket protecting the bedrock underneath the ice from the cold temperatures above. Geothermal heat coming from the planet’s interior keeps the lake from freezing and warms the lowest layers of ice. The tremendous weight of the ice sheet also plays a role in maintaining the lake. Beneath 4 kilometers of glacier, the pressure is intense enough to melt ice at a temperature of -4°C. These factors have helped lakes develop across much of the thickly blanketed East Antarctica. More than 70 hidden lakes have been detected in the small portion of the continent to date. Lake Vostok is the largest of these, stretching 280km from south to north and some 60 km from east to west. At Vostok station, which sits at the southern end of the lake, the water depth appears to be 500m according to seismic experiments carried out by Russian researchers.",
-        "D The first clues to Lake Vostok’s existence came in the 1970s, when British, U.S., and Danish researchers collected radar observations by flying over this region. The radar penetrates the ice and bounces off whatever sits below. When researchers found a surface as flat as a mirror, they surmised that a lake must exist underneath the ice. An airborne survey of the lake is being undertaken, the first step toward eventually drilling into the water. Along with the potential rewards come a host of challenges. Researchers must find a way to penetrate the icy covering without introducing any microorganisms or pollutants into the sealed-off water.",
-        "E What about life in the depths? If tiny microbes do populate the lake, they may be some of the hungriest organisms ever discovered. Lake Vostok has the potential to be one of the most energy-limited, or oligotrophic, environments on the planet. For the lake’s residents, the only nutrients would come from below. Russian investigators have speculated that the lake floor may have hot springs spewing out hydrothermal fluids stocked with reduced metals and other sorts of chemical nutrients. Scant geological evidence available for this region, however, indicates that the crust is old and dead. Without a stream of nutrients seeping up from the deep Earth, the only potential source of energy lies above the lake. The ice sheet above the water is creeping from west to east at a rate of roughly four meters per year. The lowermost layers of ice melt when they come in contact with the lake, liberating trapped gases and bits of crushed-up rock. If the glacier recently passed over rock before reaching the lake, it could be supplying organic compounds useful to microorganisms. It also could be seeding the lake with a continuous source of new residents. Bacteria, yeasts, fungi, algae and even pollen grains have been found in the Vostok ice core samples taken down to depths of 2,750m – three quarters of the way to the bottom. At least some of these organisms are alive and capable of growing, according to recent reports. The results of this analysis may indirectly indicate whether anything survives in the lightless body of water."
+      "passages": [
+        {
+          "label": "Academic Reading Test 17, Passage 1, Questions 7 to 13",
+          "title": "Lake Vostok",
+          "paragraphs": [
+            "A Beneath the white blanket of Antarctica lies half a continent of virtually uncharted territory – an area so completely hidden that scientists have little clue what riches await discovery. Recently, Russian and British glaciologists identified an immense lake – one of Earth’s largest and deepest – buried beneath 4,000 meters of ice immediately below Russia’s Vostok Station.",
+            "B As details have emerged, a growing number of scientists are showing interest, with dozens of investigators keen to explore the feature, known as Lake Vostok. A thick layer of sediment at the bottom of the lake could hold novel dues to the planet’s climate going back tens of millions of years. By looking at the ratio of different oxygen isotopes, scientists should be able to trace how Earth’s temperature changed over the millennia. NASA has expressed interest in Lake Vostok because of its similarity to Europa. This moon of Jupiter appears to have a water ocean covered by a thick ice sheet, measuring perhaps tens of kilometers in depth. If hydrothermal vents existed beneath the ice, chemical reactions on Europa could have created the molecular building blocks for life, if not life itself. Vostok would be an ideal testing ground for technology that would eventually fly to Europa or places even more distant, say many scientists. Though cheap compared with a Europan mission, any expedition to Vostok would represent a significant investment.",
+            "C Vostok Station holds the uncomfortable distinction of having recorded the coldest temperature on Earth. Thermometers there measured in July 1983, and the average temperature hovers around -55ºC. It’s the thick ice, strangely, that enables a lake to survive in such a frozen environment. The 4 kilometers of ice acts effectively as an insulating blanket protecting the bedrock underneath the ice from the cold temperatures above. Geothermal heat coming from the planet’s interior keeps the lake from freezing and warms the lowest layers of ice. The tremendous weight of the ice sheet also plays a role in maintaining the lake. Beneath 4 kilometers of glacier, the pressure is intense enough to melt ice at a temperature of -4°C. These factors have helped lakes develop across much of the thickly blanketed East Antarctica. More than 70 hidden lakes have been detected in the small portion of the continent to date. Lake Vostok is the largest of these, stretching 280km from south to north and some 60 km from east to west. At Vostok station, which sits at the southern end of the lake, the water depth appears to be 500m according to seismic experiments carried out by Russian researchers.",
+            "D The first clues to Lake Vostok’s existence came in the 1970s, when British, U.S., and Danish researchers collected radar observations by flying over this region. The radar penetrates the ice and bounces off whatever sits below. When researchers found a surface as flat as a mirror, they surmised that a lake must exist underneath the ice. An airborne survey of the lake is being undertaken, the first step toward eventually drilling into the water. Along with the potential rewards come a host of challenges. Researchers must find a way to penetrate the icy covering without introducing any microorganisms or pollutants into the sealed-off water.",
+            "E What about life in the depths? If tiny microbes do populate the lake, they may be some of the hungriest organisms ever discovered. Lake Vostok has the potential to be one of the most energy-limited, or oligotrophic, environments on the planet. For the lake’s residents, the only nutrients would come from below. Russian investigators have speculated that the lake floor may have hot springs spewing out hydrothermal fluids stocked with reduced metals and other sorts of chemical nutrients. Scant geological evidence available for this region, however, indicates that the crust is old and dead. Without a stream of nutrients seeping up from the deep Earth, the only potential source of energy lies above the lake. The ice sheet above the water is creeping from west to east at a rate of roughly four meters per year. The lowermost layers of ice melt when they come in contact with the lake, liberating trapped gases and bits of crushed-up rock. If the glacier recently passed over rock before reaching the lake, it could be supplying organic compounds useful to microorganisms. It also could be seeding the lake with a continuous source of new residents. Bacteria, yeasts, fungi, algae and even pollen grains have been found in the Vostok ice core samples taken down to depths of 2,750m – three quarters of the way to the bottom. At least some of these organisms are alive and capable of growing, according to recent reports. The results of this analysis may indirectly indicate whether anything survives in the lightless body of water."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Only one lake has been found beneath Antarctica",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "No",
+          "explanation": "Section C says 'more than 70 hidden lakes have been detected' beneath East Antarctica, contradicting the claim that only one exists.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        },
+        {
+          "prompt": "The water in the lake is approximately 500m deep at the southern end",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Yes",
+          "explanation": "Section C states 'the water depth appears to be 500m' at the southern end near Vostok Station, matching the claim exactly.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        },
+        {
+          "prompt": "Lake Vostok was detected by radar",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Yes",
+          "explanation": "Section D explains that radar observations, which 'penetrates the ice and bounces off whatever sits below', first revealed the lake's existence.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        },
+        {
+          "prompt": "Exploration of Lake Vostok is coordinated by Russia",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage names Russian, British, US and Danish researchers involved with Lake Vostok, but never states that Russia coordinates the overall exploration effort.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        },
+        {
+          "prompt": "Scientists have drilled through the ice into the water of Lake Vostok",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "No",
+          "explanation": "Section D describes an airborne survey as only 'the first step toward eventually drilling into the water', showing drilling has not yet happened.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        },
+        {
+          "prompt": "Nutrients to support life have been found in the Antarctic ice",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Yes",
+          "explanation": "Section E says the glacier ice could be 'supplying organic compounds useful to microorganisms', which counts as a nutrient source found in the ice.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        },
+        {
+          "prompt": "The ice above the lake is moving to the east",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Yes",
+          "explanation": "Section E states 'the ice sheet above the water is creeping from west to east', confirming the eastward movement.",
+          "source": "Academic Reading Test 17, Questions 7 to 13"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 2, Passage 3, Questions 35 to 40",
-      "title": "Rethinking the Past",
-      "paragraphs": [
-        "It is by now a truism that the story of human evolution is being rethought. Discoveries have come thick and fast over the last decade or so, and these have forced us to rethink many crucial points, such as how old our species is – about 300,000 years old as opposed to 200.0 – and what extinct hominins, such as our cousins the Neanderthals, were really like. But because there are so many species and eras involved, it’s hard to discern the common threads linking them.",
-        "However, I do think it’s possible to draw out some overall messages from the blizzard of archaeological finds in recent years. Two things stand out to me. One is the growing evidence that many supposedly ‘advanced’ behaviours, such as architecture and art, can be traced much further back in time than we thought, often to hominin species that existed before modern humans. And the other is that we have badly misunderstood gender roles in prehistoric societies, imposing patriarchal values onto cultures that had very different ideas about how women should behave.",
-        "Let’s start with architecture. At Kalambo Falls in Zambia, researchers found buried logs that had been shaped with stone tools so that they interlocked. They seem to have once been part of a larger structure, perhaps a building. This would be unsurprising if they weren’t 476.0 years old. That’s almost 200,000 years before our species, Homo sapiens, evolved. Extinct hominins also managed to settle in extreme places. For instance, we now know that extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions 200.0 years ago – upending the old notion that such environments were only settled by modem humans around 3,600 years ago.",
-        "Art also seems to have been invented by older hominins. We have had evidence for a long time now that Neanderthals painted on cave walls. Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells. By far the most contentious claim in this area is that Homo naledi made art. II. naledi lived around 250,000 years ago, making it a contemporary of our species. However, it had quite a small brain, typical of older hominins – and was therefore, according to palaeoanthropological dogma, incapable of complex behaviours. Nevertheless, in the Rising Star cave system in South Africa where the II. naledi remains were found, researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated.",
-        "To say these claims about H. naledi are controversial is to understate the situation. Many experts say the evidence presented so far is completely inadequate to support them. The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper. My views on the H. naledi controversy are complicated. I do think more evidence is needed: in particular with regard to the dating of the etchings. At the same time, I think the species’ small brains are a distraction. Palaeoanthropologists got fixated on brain size because it was what they could see: if what you have is skeletons, then all you know about brains are their shapes and sizes. But other properties, such as the brain’s internal wiring, are surely equally important and may explain how a species like H. naledi might have been capable of complex behaviours, despite their small brains.",
-        "In a sense, we shouldn’t be surprised that so many of these behaviours had their origins in older, extinct hominins. Evolution usually works by incremental steps and so does technology. The first birds weren’t great at flying, and the first mobile phones weren’t great at, well, anything really. The idea that there was a sudden explosion of intelligence and creativity at some point in our evolution isn’t inherently ridiculous: sometimes a system hits a tipping point and undergoes runaway change. But there was never that much evidence that human evolution worked this way. Instead, it seems the Neanderthals and many others all walked so we could run.",
-        "One way or another, the H. naledi story is going to be an example of letting our preconceptions get in the way of the evidence. The same is true for our ideas about gender in prehistory. Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research. Today’s researchers are trying to unpick this stuff, and there have been some significant steps in recent years.",
-        "Perhaps the most dramatic was the demolition of ‘Man the Hunter’, This was the idea, promoted for decades, that in most prehistoric societies the men went out to hunt and the women looked after the home. However, a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them. In line with this, it emerged that an ancient spear-throwing tool called an atlatl enables women to launch projectiles at the same speed as men. We have also seen growing evidence of women occupying positions of authority in ancient societies. The Viking queen Thyra may have helped unify Denmark in the 900s. Going further back, an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed, when proteins in her teeth were analysed.",
-        "It seems that the more we find out about past societies, the more our preconceptions about the ways society ‘has to be’ turn out to be wrong. Inequality, authoritarianism and patriarchy aren’t inevitable. They’re choices, and prehistory shows us that we can choose differently."
+      "passages": [
+        {
+          "label": "Academic Reading Test 2, Passage 3, Questions 35 to 40",
+          "title": "Rethinking the Past",
+          "paragraphs": [
+            "It is by now a truism that the story of human evolution is being rethought. Discoveries have come thick and fast over the last decade or so, and these have forced us to rethink many crucial points, such as how old our species is – about 300,000 years old as opposed to 200.0 – and what extinct hominins, such as our cousins the Neanderthals, were really like. But because there are so many species and eras involved, it’s hard to discern the common threads linking them.",
+            "However, I do think it’s possible to draw out some overall messages from the blizzard of archaeological finds in recent years. Two things stand out to me. One is the growing evidence that many supposedly ‘advanced’ behaviours, such as architecture and art, can be traced much further back in time than we thought, often to hominin species that existed before modern humans. And the other is that we have badly misunderstood gender roles in prehistoric societies, imposing patriarchal values onto cultures that had very different ideas about how women should behave.",
+            "Let’s start with architecture. At Kalambo Falls in Zambia, researchers found buried logs that had been shaped with stone tools so that they interlocked. They seem to have once been part of a larger structure, perhaps a building. This would be unsurprising if they weren’t 476.0 years old. That’s almost 200,000 years before our species, Homo sapiens, evolved. Extinct hominins also managed to settle in extreme places. For instance, we now know that extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions 200.0 years ago – upending the old notion that such environments were only settled by modem humans around 3,600 years ago.",
+            "Art also seems to have been invented by older hominins. We have had evidence for a long time now that Neanderthals painted on cave walls. Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells. By far the most contentious claim in this area is that Homo naledi made art. II. naledi lived around 250,000 years ago, making it a contemporary of our species. However, it had quite a small brain, typical of older hominins – and was therefore, according to palaeoanthropological dogma, incapable of complex behaviours. Nevertheless, in the Rising Star cave system in South Africa where the II. naledi remains were found, researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated.",
+            "To say these claims about H. naledi are controversial is to understate the situation. Many experts say the evidence presented so far is completely inadequate to support them. The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper. My views on the H. naledi controversy are complicated. I do think more evidence is needed: in particular with regard to the dating of the etchings. At the same time, I think the species’ small brains are a distraction. Palaeoanthropologists got fixated on brain size because it was what they could see: if what you have is skeletons, then all you know about brains are their shapes and sizes. But other properties, such as the brain’s internal wiring, are surely equally important and may explain how a species like H. naledi might have been capable of complex behaviours, despite their small brains.",
+            "In a sense, we shouldn’t be surprised that so many of these behaviours had their origins in older, extinct hominins. Evolution usually works by incremental steps and so does technology. The first birds weren’t great at flying, and the first mobile phones weren’t great at, well, anything really. The idea that there was a sudden explosion of intelligence and creativity at some point in our evolution isn’t inherently ridiculous: sometimes a system hits a tipping point and undergoes runaway change. But there was never that much evidence that human evolution worked this way. Instead, it seems the Neanderthals and many others all walked so we could run.",
+            "One way or another, the H. naledi story is going to be an example of letting our preconceptions get in the way of the evidence. The same is true for our ideas about gender in prehistory. Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research. Today’s researchers are trying to unpick this stuff, and there have been some significant steps in recent years.",
+            "Perhaps the most dramatic was the demolition of ‘Man the Hunter’, This was the idea, promoted for decades, that in most prehistoric societies the men went out to hunt and the women looked after the home. However, a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them. In line with this, it emerged that an ancient spear-throwing tool called an atlatl enables women to launch projectiles at the same speed as men. We have also seen growing evidence of women occupying positions of authority in ancient societies. The Viking queen Thyra may have helped unify Denmark in the 900s. Going further back, an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed, when proteins in her teeth were analysed.",
+            "It seems that the more we find out about past societies, the more our preconceptions about the ways society ‘has to be’ turn out to be wrong. Inequality, authoritarianism and patriarchy aren’t inevitable. They’re choices, and prehistory shows us that we can choose differently."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "No",
+          "explanation": "The passage says ‘even earlier species, such as Homo erectus, may also have made art’, so Neanderthal paintings were probably not the first artwork, contradicting the statement.",
+          "source": "Academic Reading Test 2, Questions 35 to 40"
+        },
+        {
+          "prompt": "It is very rare to find prehistoric artwork carved onto shells",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage mentions Homo erectus possibly engraving shells but never says how common or rare such finds are, so this is not given.",
+          "source": "Academic Reading Test 2, Questions 35 to 40"
+        },
+        {
+          "prompt": "The methods which the researchers used to examine the Rising Star cave system were rather unconventional",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Not Given",
+          "explanation": "The passage describes how the Rising Star results were released unconventionally, but it never describes the methods used to examine the cave system itself, so this is not given.",
+          "source": "Academic Reading Test 2, Questions 35 to 40"
+        },
+        {
+          "prompt": "It is unclear how old the etchings in the Rising Star cave system are",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Yes",
+          "explanation": "The passage says the cave etchings ‘have yet to be firmly dated’, confirming their age is unclear.",
+          "source": "Academic Reading Test 2, Questions 35 to 40"
+        },
+        {
+          "prompt": "The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "Yes",
+          "explanation": "The passage says the dispute ‘has only been heightened by the way the results were released’, confirming the publicity method added to the controversy.",
+          "source": "Academic Reading Test 2, Questions 35 to 40"
+        },
+        {
+          "prompt": "The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "Yes"
+            },
+            {
+              "value": "No"
+            },
+            {
+              "value": "Not Given"
+            }
+          ],
+          "answer": "No",
+          "explanation": "The writer says small brain size ‘is a distraction’ and that other properties like wiring ‘are surely equally important’, downplaying brain size as the key factor, contradicting the statement.",
+          "source": "Academic Reading Test 2, Questions 35 to 40"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "Only one lake has been found beneath Antarctica",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "No",
-      "explanation": "Section C says 'more than 70 hidden lakes have been detected' beneath East Antarctica, contradicting the claim that only one exists.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "The water in the lake is approximately 500m deep at the southern end",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Yes",
-      "explanation": "Section C states 'the water depth appears to be 500m' at the southern end near Vostok Station, matching the claim exactly.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "Lake Vostok was detected by radar",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Yes",
-      "explanation": "Section D explains that radar observations, which 'penetrates the ice and bounces off whatever sits below', first revealed the lake's existence.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "Exploration of Lake Vostok is coordinated by Russia",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage names Russian, British, US and Danish researchers involved with Lake Vostok, but never states that Russia coordinates the overall exploration effort.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "Scientists have drilled through the ice into the water of Lake Vostok",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "No",
-      "explanation": "Section D describes an airborne survey as only 'the first step toward eventually drilling into the water', showing drilling has not yet happened.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "Nutrients to support life have been found in the Antarctic ice",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Yes",
-      "explanation": "Section E says the glacier ice could be 'supplying organic compounds useful to microorganisms', which counts as a nutrient source found in the ice.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "The ice above the lake is moving to the east",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Yes",
-      "explanation": "Section E states 'the ice sheet above the water is creeping from west to east', confirming the eastward movement.",
-      "source": "Academic Reading Test 17, Questions 7 to 13"
-    },
-    {
-      "prompt": "It seems likely that the Neanderthals’ cave paintings were the first examples of artwork ever created",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "No",
-      "explanation": "The passage says ‘even earlier species, such as Homo erectus, may also have made art’, so Neanderthal paintings were probably not the first artwork, contradicting the statement.",
-      "source": "Academic Reading Test 2, Questions 35 to 40"
-    },
-    {
-      "prompt": "It is very rare to find prehistoric artwork carved onto shells",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage mentions Homo erectus possibly engraving shells but never says how common or rare such finds are, so this is not given.",
-      "source": "Academic Reading Test 2, Questions 35 to 40"
-    },
-    {
-      "prompt": "The methods which the researchers used to examine the Rising Star cave system were rather unconventional",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Not Given",
-      "explanation": "The passage describes how the Rising Star results were released unconventionally, but it never describes the methods used to examine the cave system itself, so this is not given.",
-      "source": "Academic Reading Test 2, Questions 35 to 40"
-    },
-    {
-      "prompt": "It is unclear how old the etchings in the Rising Star cave system are",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Yes",
-      "explanation": "The passage says the cave etchings ‘have yet to be firmly dated’, confirming their age is unclear.",
-      "source": "Academic Reading Test 2, Questions 35 to 40"
-    },
-    {
-      "prompt": "The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "Yes",
-      "explanation": "The passage says the dispute ‘has only been heightened by the way the results were released’, confirming the publicity method added to the controversy.",
-      "source": "Academic Reading Test 2, Questions 35 to 40"
-    },
-    {
-      "prompt": "The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "Yes"
-        },
-        {
-          "value": "No"
-        },
-        {
-          "value": "Not Given"
-        }
-      ],
-      "answer": "No",
-      "explanation": "The writer says small brain size ‘is a distraction’ and that other properties like wiring ‘are surely equally important’, downplaying brain size as the key factor, contradicting the statement.",
-      "source": "Academic Reading Test 2, Questions 35 to 40"
     }
   ]
 },
@@ -1005,1047 +1044,1067 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "title": "Exercise. Match each heading to a paragraph (real test questions)",
   "intro": "For each paragraph, choose the heading that best fits it, using the passage above.",
   "selectNoun": "heading",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 6, Passage 2, Questions 14 to 19",
-      "title": "Can the planet’s coral reefs be saved?",
-      "paragraphs": [
-        "A Conservationists have put the final touches to a giant artificial reef they have been assembling at the world-renowned Zoological Society of London (London Zoo). Samples of the planet’s most spectacular corals – vivid green branching coral, yellow scroll, blue ridge and many more species – have been added to the giant tank along with fish that thrive in their presence: blue tang, clownfish and many others. The reef is in the zoo’s new gallery, Tiny Giants, which is dedicated to the minuscule invertebrate creatures that sustain life across the planet. The coral reef tank and its seven-metre-wide window form the core of the exhibition.",
-        "‘Coral reefs are the most diverse ecosystems on Earth and we want to show people how wonderful they are,’ said Paul Pearce-Kelly, senior curator of invertebrates and fish at the Zoological Society of London. ‘However, we also want to highlight the research and conservation efforts that are now being carried out to try to save them from the threat of global warming.’ They want people to see what is being done to try to save these wonders.",
-        "B Corals are composed of tiny animals, known as polyps, with tentacles for capturing small marine creatures in the sea water. These polyps are transparent but get their brilliant tones of pink, orange, blue, green, etc. from algae that live within them, which in turn get protection, while their photosynthesising of the sun’s rays provides nutrients for the polyps. This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0.1% of the planet’s ocean bed while providing homes for more than 25% of marine species, including fish, molluscs, sponges and shellfish.",
-        "C As a result, coral reefs are often described as the ‘rainforests of the sea’, though the comparison is dismissed by some naturalists, including David Attenborough. ‘People say you cannot beat the rainforest,’ Attenborough has stated. ‘But that is simply not true. You go there and the first thing you think is: where… are the birds? Where are the animals? They are hiding in the trees, of course. No, if you want beauty and wildlife, you want a coral reef. Put on a mask and stick your head under the water. The sight is mind-blowing.’",
-        "D Unfortunately, these majestic sights are now under very serious threat, with the most immediate problem coming in the form of thermal stress. Rising ocean temperatures are triggering bleaching events that strip reefs of their colour and eventually kill them. And that is just the start. Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction. As a result, vast areas – including massive chunks of Australia’s Great Barrier Reef – have already been destroyed, and scientists advise that more than 90% of reefs could be lost by 2050 unless urgent action is taken to tackle global heating and greenhouse gas emissions.",
-        "Pearce-Kelly says that coral reefs have to survive really harsh conditions – wave erosion and other factors. And ‘when things start to go wrong in the oceans, then corals will be the first to react. And that is exactly what we are seeing now. Coral reefs are dying and they are telling us that all is not well with our planet.’",
-        "E However, scientists are trying to pinpoint hardy types of coral that could survive our overheated oceans, and some of this research will be carried out at London Zoo. ‘Behind our… coral reef tank we have built laboratories where scientists will be studying coral species,’ said Pearce-Kelly. One aim will be to carry out research on species to find those that can survive best in warm, acidic waters. Another will be to try to increase coral breeding rates. ‘Coral spawn just once a year,’ he added. ‘However, aquarium-based research has enabled some corals to spawn artificially, which can assist coral reef restoration efforts. And if this can be extended for all species, we could consider the launching of coral-spawning programmes several times a year. That would be a big help in restoring blighted reefs.’",
-        "F Research in these fields is being conducted in laboratories around the world, with the London Zoo centre linked to this global network. Studies carried out in one centre can then be tested in others. The resulting young coral can then be displayed in the tank in Tiny Giants. ‘The crucial point is that the progress we make in making coral better able to survive in a warming world can be shown to the public and encourage them to believe that we can do something to save the planet’s reefs,’ said Pearce-Kelly. ‘Saving our coral reefs is now a critically important ecological goal.’"
+      "passages": [
+        {
+          "label": "Academic Reading Test 6, Passage 2, Questions 14 to 19",
+          "title": "Can the planet’s coral reefs be saved?",
+          "paragraphs": [
+            "A Conservationists have put the final touches to a giant artificial reef they have been assembling at the world-renowned Zoological Society of London (London Zoo). Samples of the planet’s most spectacular corals – vivid green branching coral, yellow scroll, blue ridge and many more species – have been added to the giant tank along with fish that thrive in their presence: blue tang, clownfish and many others. The reef is in the zoo’s new gallery, Tiny Giants, which is dedicated to the minuscule invertebrate creatures that sustain life across the planet. The coral reef tank and its seven-metre-wide window form the core of the exhibition.",
+            "‘Coral reefs are the most diverse ecosystems on Earth and we want to show people how wonderful they are,’ said Paul Pearce-Kelly, senior curator of invertebrates and fish at the Zoological Society of London. ‘However, we also want to highlight the research and conservation efforts that are now being carried out to try to save them from the threat of global warming.’ They want people to see what is being done to try to save these wonders.",
+            "B Corals are composed of tiny animals, known as polyps, with tentacles for capturing small marine creatures in the sea water. These polyps are transparent but get their brilliant tones of pink, orange, blue, green, etc. from algae that live within them, which in turn get protection, while their photosynthesising of the sun’s rays provides nutrients for the polyps. This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0.1% of the planet’s ocean bed while providing homes for more than 25% of marine species, including fish, molluscs, sponges and shellfish.",
+            "C As a result, coral reefs are often described as the ‘rainforests of the sea’, though the comparison is dismissed by some naturalists, including David Attenborough. ‘People say you cannot beat the rainforest,’ Attenborough has stated. ‘But that is simply not true. You go there and the first thing you think is: where… are the birds? Where are the animals? They are hiding in the trees, of course. No, if you want beauty and wildlife, you want a coral reef. Put on a mask and stick your head under the water. The sight is mind-blowing.’",
+            "D Unfortunately, these majestic sights are now under very serious threat, with the most immediate problem coming in the form of thermal stress. Rising ocean temperatures are triggering bleaching events that strip reefs of their colour and eventually kill them. And that is just the start. Other menaces include ocean acidification, sea level increase, pollution by humans, deoxygenation and ocean current changes, while the climate crisis is also increasing habitat destruction. As a result, vast areas – including massive chunks of Australia’s Great Barrier Reef – have already been destroyed, and scientists advise that more than 90% of reefs could be lost by 2050 unless urgent action is taken to tackle global heating and greenhouse gas emissions.",
+            "Pearce-Kelly says that coral reefs have to survive really harsh conditions – wave erosion and other factors. And ‘when things start to go wrong in the oceans, then corals will be the first to react. And that is exactly what we are seeing now. Coral reefs are dying and they are telling us that all is not well with our planet.’",
+            "E However, scientists are trying to pinpoint hardy types of coral that could survive our overheated oceans, and some of this research will be carried out at London Zoo. ‘Behind our… coral reef tank we have built laboratories where scientists will be studying coral species,’ said Pearce-Kelly. One aim will be to carry out research on species to find those that can survive best in warm, acidic waters. Another will be to try to increase coral breeding rates. ‘Coral spawn just once a year,’ he added. ‘However, aquarium-based research has enabled some corals to spawn artificially, which can assist coral reef restoration efforts. And if this can be extended for all species, we could consider the launching of coral-spawning programmes several times a year. That would be a big help in restoring blighted reefs.’",
+            "F Research in these fields is being conducted in laboratories around the world, with the London Zoo centre linked to this global network. Studies carried out in one centre can then be tested in others. The resulting young coral can then be displayed in the tank in Tiny Giants. ‘The crucial point is that the progress we make in making coral better able to survive in a warming world can be shown to the public and encourage them to believe that we can do something to save the planet’s reefs,’ said Pearce-Kelly. ‘Saving our coral reefs is now a critically important ecological goal.’"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Paragraph A",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) Tried and tested solutions"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Cooperation beneath the waves"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Working to lessen the problems"
+            },
+            {
+              "value": "iv",
+              "label": "iv) Disagreement about the accuracy of a certain phrase"
+            },
+            {
+              "value": "v",
+              "label": "v) Two clear educational goals"
+            },
+            {
+              "value": "vi",
+              "label": "vi) Promoting hope"
+            },
+            {
+              "value": "vii",
+              "label": "vii) A warning of further trouble ahead"
+            }
+          ],
+          "answer": "v",
+          "explanation": "Paragraph A explains the zoo wants to show visitors how wonderful reefs are and to highlight conservation research, two distinct educational aims.",
+          "source": "Academic Reading Test 6, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph B",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) Tried and tested solutions"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Cooperation beneath the waves"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Working to lessen the problems"
+            },
+            {
+              "value": "iv",
+              "label": "iv) Disagreement about the accuracy of a certain phrase"
+            },
+            {
+              "value": "v",
+              "label": "v) Two clear educational goals"
+            },
+            {
+              "value": "vi",
+              "label": "vi) Promoting hope"
+            },
+            {
+              "value": "vii",
+              "label": "vii) A warning of further trouble ahead"
+            }
+          ],
+          "answer": "ii",
+          "explanation": "Paragraph B describes coral polyps and algae helping each other, the polyps getting protection and the algae providing nutrients, a cooperative relationship.",
+          "source": "Academic Reading Test 6, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph C",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) Tried and tested solutions"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Cooperation beneath the waves"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Working to lessen the problems"
+            },
+            {
+              "value": "iv",
+              "label": "iv) Disagreement about the accuracy of a certain phrase"
+            },
+            {
+              "value": "v",
+              "label": "v) Two clear educational goals"
+            },
+            {
+              "value": "vi",
+              "label": "vi) Promoting hope"
+            },
+            {
+              "value": "vii",
+              "label": "vii) A warning of further trouble ahead"
+            }
+          ],
+          "answer": "iv",
+          "explanation": "Paragraph C reports David Attenborough disputing the common comparison of reefs to rainforests.",
+          "source": "Academic Reading Test 6, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph D",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) Tried and tested solutions"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Cooperation beneath the waves"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Working to lessen the problems"
+            },
+            {
+              "value": "iv",
+              "label": "iv) Disagreement about the accuracy of a certain phrase"
+            },
+            {
+              "value": "v",
+              "label": "v) Two clear educational goals"
+            },
+            {
+              "value": "vi",
+              "label": "vi) Promoting hope"
+            },
+            {
+              "value": "vii",
+              "label": "vii) A warning of further trouble ahead"
+            }
+          ],
+          "answer": "vii",
+          "explanation": "Paragraph D lists threats to reefs and warns over 90 percent could be lost by 2050, a warning of trouble to come.",
+          "source": "Academic Reading Test 6, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph E",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) Tried and tested solutions"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Cooperation beneath the waves"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Working to lessen the problems"
+            },
+            {
+              "value": "iv",
+              "label": "iv) Disagreement about the accuracy of a certain phrase"
+            },
+            {
+              "value": "v",
+              "label": "v) Two clear educational goals"
+            },
+            {
+              "value": "vi",
+              "label": "vi) Promoting hope"
+            },
+            {
+              "value": "vii",
+              "label": "vii) A warning of further trouble ahead"
+            }
+          ],
+          "answer": "iii",
+          "explanation": "Paragraph E describes scientists researching hardy coral and better breeding methods to reduce the damage, in other words working to lessen the problems.",
+          "source": "Academic Reading Test 6, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph F",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) Tried and tested solutions"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Cooperation beneath the waves"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Working to lessen the problems"
+            },
+            {
+              "value": "iv",
+              "label": "iv) Disagreement about the accuracy of a certain phrase"
+            },
+            {
+              "value": "v",
+              "label": "v) Two clear educational goals"
+            },
+            {
+              "value": "vi",
+              "label": "vi) Promoting hope"
+            },
+            {
+              "value": "vii",
+              "label": "vii) A warning of further trouble ahead"
+            }
+          ],
+          "answer": "vi",
+          "explanation": "Paragraph F says showing this progress to the public encourages belief that reefs can be saved, which is promoting hope.",
+          "source": "Academic Reading Test 6, Questions 14 to 19"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 14, Passage 2, Questions 14 to 19",
-      "title": "One Who Hopes",
-      "paragraphs": [
-        "A Language lovers, just like music lovers, enjoy variety. For the latter there’s Mozart, The Rolling Stones and Beyonce. For the former there’s English, French, Swahili, Urdu… the list is endless. But what about those poor overworked students who find learning difficult, confusing languages a drudge? Wouldn’t it put a smile on their faces if there were just one simple, easy-to-learn tongue that would cut their study time by years? Well, of course, it exists. It’s called Esperanto, and it’s been around for more than 120 years. Esperanto is the most widely spoken artificially constructed international language. The name derives from Doktoro Esperanto, the pseudonym under which L. L. Zamenhof first published his Unua Libro in 1887. The phrase itself means ‘one who hopes’. Zamenhof’s goal was to create an easy and flexible language as a universal second language to promote peace and international understanding.",
-        "B Zamenhof, after ten years of developing his brainchild from the late 1870s to the early 1880s, had the first Esperanto grammar published in Warsaw in July 1887. The number of speakers grew rapidly over the next few decades, at first primarily in the Russian empire and Eastern Europe, then in Western Europe and the Americas, China, and Japan. In the early years, speakers of Esperanto kept in contact primarily through correspondence and periodicals, but since 1905 world congresses have been held on five continents every year except during the two World Wars. Latest estimates for the numbers of Esperanto speakers are around 2 million. Put in percentage terms, that’s about 0.03% of the world’s population – no staggering figure, comparatively speaking. One reason is that Esperanto has no official status in any country, but it is an optional subject on the curriculum of several state education systems. It is widely estimated that it can be learned in anywhere between a quarter to a twentieth of the time required for other languages.",
-        "C As a constructed language, Esperanto is not genealogically related to any ethnic language. Whilst it is described as ‘a language lexically predominantly Romanic’, the phonology, grammar, vocabulary, and semantics are based on the western Indo-European languages. For those of us who are not naturally predisposed to tucking languages under our belts, it is an easy language to learn. It has 5 vowels and 23 consonants. It has one simple way of conjugating all of its verbs. Words are often made from many other roots, making the number of words which one must memorise much smaller. The language is phonetic, and the rules of pronunciation are very simple, so that everyone knows how to pronounce a written word and vice-versa, and word order follows a standard, logical pattern. Through prefixing and suffixing, Esperanto makes it easy to identify words as nouns, verbs, adjectives, adverbs, direct objects and so on, by means of easy-to-spot endings. All this makes for easy language learning. What’s more, several research studies demonstrate that studying Esperanto before another foreign language speeds up and improves the learning of the other language. This is presumably because learning subsequent foreign languages is easier than learning one’s first, while the use of a grammatically simple and culturally flexible language like Esperanto softens the blow of learning one’s first foreign language. In one study, a group of European high school students studied Esperanto for one year, then French for three years, and ended up with a significantly better command of French than a control group who had studied French for all four years.",
-        "D Needless to say, the language has its critics. Some point to the Eastern European features of the language as being harsh and difficult to pronounce, and argue that Esperanto has an artificial feel to it, without the flow of a natural tongue, and that by nature of its artificiality, it is impossible to become emotionally involved with the language. Others cite its lack of cultural history, indigenous literature – “no one has ever written a novel straight into Esperanto” – together with its minimal vocabulary and its inability to express all the necessary philosophical, emotional and psychological concepts.",
-        "E The champions of Esperanto – Esperantists – disagree. They claim that it is a language in which a great body of world literature has appeared in translation: in poetry, novels, literary journals, and, to rebut the accusation that it is not a ‘real’ language, point out that it is frequently used at international meetings which draw hundreds and thousands of participants. Moreover, on an international scale, it is most useful – and fair – for neutral communication. That means that communication through Esperanto does not give advantages to the members of any particular people or culture, but provides an ethos of equality of rights, tolerance and true internationalism.",
-        "F Esperantists further claim that Esperanto has the potential – were it universally taught for a year or two throughout the world – to empower ordinary people to communicate effectively worldwide on a scale that far exceeds that which is attainable today by only the most linguistically brilliant among us. It offers the opportunity to improve communication in business, diplomacy, scholarship and other fields so that those who speak many different native languages will be able to participate fluently in international conferences and chat comfortably with each other after the formal presentations are made. Nowadays that privilege is often restricted to native speakers of English and those who have special talents and opportunities for learning English as a foreign language.",
-        "G What Esperanto does offer in concrete terms is the potential of saving billions of dollars which are now being spent on translators and interpreters, billions which would be freed up to serve the purposes of governments and organisations that spend so much of their resources to change words from one language into the words of others. Take, for example, the enormously costly conferences, meetings and documentation involved in the European Union parliamentary and administrative procedures – all funded, essentially, by tax payers. And instead of the World Health Organisation, and all NGOs for that matter, devoting enormous sums to provide interpreters and translations, they would be able to devote those huge amounts of money to improving the health of stricken populations throughout the world."
+      "passages": [
+        {
+          "label": "Academic Reading Test 14, Passage 2, Questions 14 to 19",
+          "title": "One Who Hopes",
+          "paragraphs": [
+            "A Language lovers, just like music lovers, enjoy variety. For the latter there’s Mozart, The Rolling Stones and Beyonce. For the former there’s English, French, Swahili, Urdu… the list is endless. But what about those poor overworked students who find learning difficult, confusing languages a drudge? Wouldn’t it put a smile on their faces if there were just one simple, easy-to-learn tongue that would cut their study time by years? Well, of course, it exists. It’s called Esperanto, and it’s been around for more than 120 years. Esperanto is the most widely spoken artificially constructed international language. The name derives from Doktoro Esperanto, the pseudonym under which L. L. Zamenhof first published his Unua Libro in 1887. The phrase itself means ‘one who hopes’. Zamenhof’s goal was to create an easy and flexible language as a universal second language to promote peace and international understanding.",
+            "B Zamenhof, after ten years of developing his brainchild from the late 1870s to the early 1880s, had the first Esperanto grammar published in Warsaw in July 1887. The number of speakers grew rapidly over the next few decades, at first primarily in the Russian empire and Eastern Europe, then in Western Europe and the Americas, China, and Japan. In the early years, speakers of Esperanto kept in contact primarily through correspondence and periodicals, but since 1905 world congresses have been held on five continents every year except during the two World Wars. Latest estimates for the numbers of Esperanto speakers are around 2 million. Put in percentage terms, that’s about 0.03% of the world’s population – no staggering figure, comparatively speaking. One reason is that Esperanto has no official status in any country, but it is an optional subject on the curriculum of several state education systems. It is widely estimated that it can be learned in anywhere between a quarter to a twentieth of the time required for other languages.",
+            "C As a constructed language, Esperanto is not genealogically related to any ethnic language. Whilst it is described as ‘a language lexically predominantly Romanic’, the phonology, grammar, vocabulary, and semantics are based on the western Indo-European languages. For those of us who are not naturally predisposed to tucking languages under our belts, it is an easy language to learn. It has 5 vowels and 23 consonants. It has one simple way of conjugating all of its verbs. Words are often made from many other roots, making the number of words which one must memorise much smaller. The language is phonetic, and the rules of pronunciation are very simple, so that everyone knows how to pronounce a written word and vice-versa, and word order follows a standard, logical pattern. Through prefixing and suffixing, Esperanto makes it easy to identify words as nouns, verbs, adjectives, adverbs, direct objects and so on, by means of easy-to-spot endings. All this makes for easy language learning. What’s more, several research studies demonstrate that studying Esperanto before another foreign language speeds up and improves the learning of the other language. This is presumably because learning subsequent foreign languages is easier than learning one’s first, while the use of a grammatically simple and culturally flexible language like Esperanto softens the blow of learning one’s first foreign language. In one study, a group of European high school students studied Esperanto for one year, then French for three years, and ended up with a significantly better command of French than a control group who had studied French for all four years.",
+            "D Needless to say, the language has its critics. Some point to the Eastern European features of the language as being harsh and difficult to pronounce, and argue that Esperanto has an artificial feel to it, without the flow of a natural tongue, and that by nature of its artificiality, it is impossible to become emotionally involved with the language. Others cite its lack of cultural history, indigenous literature – “no one has ever written a novel straight into Esperanto” – together with its minimal vocabulary and its inability to express all the necessary philosophical, emotional and psychological concepts.",
+            "E The champions of Esperanto – Esperantists – disagree. They claim that it is a language in which a great body of world literature has appeared in translation: in poetry, novels, literary journals, and, to rebut the accusation that it is not a ‘real’ language, point out that it is frequently used at international meetings which draw hundreds and thousands of participants. Moreover, on an international scale, it is most useful – and fair – for neutral communication. That means that communication through Esperanto does not give advantages to the members of any particular people or culture, but provides an ethos of equality of rights, tolerance and true internationalism.",
+            "F Esperantists further claim that Esperanto has the potential – were it universally taught for a year or two throughout the world – to empower ordinary people to communicate effectively worldwide on a scale that far exceeds that which is attainable today by only the most linguistically brilliant among us. It offers the opportunity to improve communication in business, diplomacy, scholarship and other fields so that those who speak many different native languages will be able to participate fluently in international conferences and chat comfortably with each other after the formal presentations are made. Nowadays that privilege is often restricted to native speakers of English and those who have special talents and opportunities for learning English as a foreign language.",
+            "G What Esperanto does offer in concrete terms is the potential of saving billions of dollars which are now being spent on translators and interpreters, billions which would be freed up to serve the purposes of governments and organisations that spend so much of their resources to change words from one language into the words of others. Take, for example, the enormously costly conferences, meetings and documentation involved in the European Union parliamentary and administrative procedures – all funded, essentially, by tax payers. And instead of the World Health Organisation, and all NGOs for that matter, devoting enormous sums to provide interpreters and translations, they would be able to devote those huge amounts of money to improving the health of stricken populations throughout the world."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Paragraph B",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) A non-exclusive language"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Fewer languages, more results"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Language is personal"
+            },
+            {
+              "value": "iv",
+              "label": "iv) What’s fashionable in language"
+            },
+            {
+              "value": "v",
+              "label": "v) From the written word to the spoken word"
+            },
+            {
+              "value": "vi",
+              "label": "vi) A real language"
+            },
+            {
+              "value": "vii",
+              "label": "vii) Harmony through language"
+            },
+            {
+              "value": "viii",
+              "label": "viii) The mechanics of a language"
+            },
+            {
+              "value": "ix",
+              "label": "ix) The challenge of translation"
+            }
+          ],
+          "answer": "v",
+          "explanation": "Paragraph B traces Esperanto's growth from a published grammar through written correspondence to spoken world congresses.",
+          "source": "Academic Reading Test 14, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph C",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) A non-exclusive language"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Fewer languages, more results"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Language is personal"
+            },
+            {
+              "value": "iv",
+              "label": "iv) What’s fashionable in language"
+            },
+            {
+              "value": "v",
+              "label": "v) From the written word to the spoken word"
+            },
+            {
+              "value": "vi",
+              "label": "vi) A real language"
+            },
+            {
+              "value": "vii",
+              "label": "vii) Harmony through language"
+            },
+            {
+              "value": "viii",
+              "label": "viii) The mechanics of a language"
+            },
+            {
+              "value": "ix",
+              "label": "ix) The challenge of translation"
+            }
+          ],
+          "answer": "viii",
+          "explanation": "Paragraph C explains Esperanto's grammar, phonology and word-building system, its mechanics.",
+          "source": "Academic Reading Test 14, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph D",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) A non-exclusive language"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Fewer languages, more results"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Language is personal"
+            },
+            {
+              "value": "iv",
+              "label": "iv) What’s fashionable in language"
+            },
+            {
+              "value": "v",
+              "label": "v) From the written word to the spoken word"
+            },
+            {
+              "value": "vi",
+              "label": "vi) A real language"
+            },
+            {
+              "value": "vii",
+              "label": "vii) Harmony through language"
+            },
+            {
+              "value": "viii",
+              "label": "viii) The mechanics of a language"
+            },
+            {
+              "value": "ix",
+              "label": "ix) The challenge of translation"
+            }
+          ],
+          "answer": "iii",
+          "explanation": "Paragraph D's critics say the language is too artificial to become emotionally, personally involved with.",
+          "source": "Academic Reading Test 14, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph E",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) A non-exclusive language"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Fewer languages, more results"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Language is personal"
+            },
+            {
+              "value": "iv",
+              "label": "iv) What’s fashionable in language"
+            },
+            {
+              "value": "v",
+              "label": "v) From the written word to the spoken word"
+            },
+            {
+              "value": "vi",
+              "label": "vi) A real language"
+            },
+            {
+              "value": "vii",
+              "label": "vii) Harmony through language"
+            },
+            {
+              "value": "viii",
+              "label": "viii) The mechanics of a language"
+            },
+            {
+              "value": "ix",
+              "label": "ix) The challenge of translation"
+            }
+          ],
+          "answer": "vi",
+          "explanation": "Paragraph E has Esperantists rebut the accusation that Esperanto is not a genuine, real language.",
+          "source": "Academic Reading Test 14, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph F",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) A non-exclusive language"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Fewer languages, more results"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Language is personal"
+            },
+            {
+              "value": "iv",
+              "label": "iv) What’s fashionable in language"
+            },
+            {
+              "value": "v",
+              "label": "v) From the written word to the spoken word"
+            },
+            {
+              "value": "vi",
+              "label": "vi) A real language"
+            },
+            {
+              "value": "vii",
+              "label": "vii) Harmony through language"
+            },
+            {
+              "value": "viii",
+              "label": "viii) The mechanics of a language"
+            },
+            {
+              "value": "ix",
+              "label": "ix) The challenge of translation"
+            }
+          ],
+          "answer": "i",
+          "explanation": "Paragraph F says Esperanto could free international communication from being restricted mainly to native English speakers, making it non-exclusive.",
+          "source": "Academic Reading Test 14, Questions 14 to 19"
+        },
+        {
+          "prompt": "Paragraph G",
+          "kind": "select",
+          "options": [
+            {
+              "value": "i",
+              "label": "i) A non-exclusive language"
+            },
+            {
+              "value": "ii",
+              "label": "ii) Fewer languages, more results"
+            },
+            {
+              "value": "iii",
+              "label": "iii) Language is personal"
+            },
+            {
+              "value": "iv",
+              "label": "iv) What’s fashionable in language"
+            },
+            {
+              "value": "v",
+              "label": "v) From the written word to the spoken word"
+            },
+            {
+              "value": "vi",
+              "label": "vi) A real language"
+            },
+            {
+              "value": "vii",
+              "label": "vii) Harmony through language"
+            },
+            {
+              "value": "viii",
+              "label": "viii) The mechanics of a language"
+            },
+            {
+              "value": "ix",
+              "label": "ix) The challenge of translation"
+            }
+          ],
+          "answer": "ii",
+          "explanation": "Paragraph G argues that one shared language would free up billions currently spent on translation, for better results elsewhere.",
+          "source": "Academic Reading Test 14, Questions 14 to 19"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "Paragraph A",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) Tried and tested solutions"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Cooperation beneath the waves"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Working to lessen the problems"
-        },
-        {
-          "value": "iv",
-          "label": "iv) Disagreement about the accuracy of a certain phrase"
-        },
-        {
-          "value": "v",
-          "label": "v) Two clear educational goals"
-        },
-        {
-          "value": "vi",
-          "label": "vi) Promoting hope"
-        },
-        {
-          "value": "vii",
-          "label": "vii) A warning of further trouble ahead"
-        }
-      ],
-      "answer": "v",
-      "explanation": "Paragraph A explains the zoo wants to show visitors how wonderful reefs are and to highlight conservation research, two distinct educational aims.",
-      "source": "Academic Reading Test 6, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph B",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) Tried and tested solutions"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Cooperation beneath the waves"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Working to lessen the problems"
-        },
-        {
-          "value": "iv",
-          "label": "iv) Disagreement about the accuracy of a certain phrase"
-        },
-        {
-          "value": "v",
-          "label": "v) Two clear educational goals"
-        },
-        {
-          "value": "vi",
-          "label": "vi) Promoting hope"
-        },
-        {
-          "value": "vii",
-          "label": "vii) A warning of further trouble ahead"
-        }
-      ],
-      "answer": "ii",
-      "explanation": "Paragraph B describes coral polyps and algae helping each other, the polyps getting protection and the algae providing nutrients, a cooperative relationship.",
-      "source": "Academic Reading Test 6, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph C",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) Tried and tested solutions"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Cooperation beneath the waves"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Working to lessen the problems"
-        },
-        {
-          "value": "iv",
-          "label": "iv) Disagreement about the accuracy of a certain phrase"
-        },
-        {
-          "value": "v",
-          "label": "v) Two clear educational goals"
-        },
-        {
-          "value": "vi",
-          "label": "vi) Promoting hope"
-        },
-        {
-          "value": "vii",
-          "label": "vii) A warning of further trouble ahead"
-        }
-      ],
-      "answer": "iv",
-      "explanation": "Paragraph C reports David Attenborough disputing the common comparison of reefs to rainforests.",
-      "source": "Academic Reading Test 6, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph D",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) Tried and tested solutions"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Cooperation beneath the waves"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Working to lessen the problems"
-        },
-        {
-          "value": "iv",
-          "label": "iv) Disagreement about the accuracy of a certain phrase"
-        },
-        {
-          "value": "v",
-          "label": "v) Two clear educational goals"
-        },
-        {
-          "value": "vi",
-          "label": "vi) Promoting hope"
-        },
-        {
-          "value": "vii",
-          "label": "vii) A warning of further trouble ahead"
-        }
-      ],
-      "answer": "vii",
-      "explanation": "Paragraph D lists threats to reefs and warns over 90 percent could be lost by 2050, a warning of trouble to come.",
-      "source": "Academic Reading Test 6, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph E",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) Tried and tested solutions"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Cooperation beneath the waves"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Working to lessen the problems"
-        },
-        {
-          "value": "iv",
-          "label": "iv) Disagreement about the accuracy of a certain phrase"
-        },
-        {
-          "value": "v",
-          "label": "v) Two clear educational goals"
-        },
-        {
-          "value": "vi",
-          "label": "vi) Promoting hope"
-        },
-        {
-          "value": "vii",
-          "label": "vii) A warning of further trouble ahead"
-        }
-      ],
-      "answer": "iii",
-      "explanation": "Paragraph E describes scientists researching hardy coral and better breeding methods to reduce the damage, in other words working to lessen the problems.",
-      "source": "Academic Reading Test 6, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph F",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) Tried and tested solutions"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Cooperation beneath the waves"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Working to lessen the problems"
-        },
-        {
-          "value": "iv",
-          "label": "iv) Disagreement about the accuracy of a certain phrase"
-        },
-        {
-          "value": "v",
-          "label": "v) Two clear educational goals"
-        },
-        {
-          "value": "vi",
-          "label": "vi) Promoting hope"
-        },
-        {
-          "value": "vii",
-          "label": "vii) A warning of further trouble ahead"
-        }
-      ],
-      "answer": "vi",
-      "explanation": "Paragraph F says showing this progress to the public encourages belief that reefs can be saved, which is promoting hope.",
-      "source": "Academic Reading Test 6, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph B",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) A non-exclusive language"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Fewer languages, more results"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Language is personal"
-        },
-        {
-          "value": "iv",
-          "label": "iv) What’s fashionable in language"
-        },
-        {
-          "value": "v",
-          "label": "v) From the written word to the spoken word"
-        },
-        {
-          "value": "vi",
-          "label": "vi) A real language"
-        },
-        {
-          "value": "vii",
-          "label": "vii) Harmony through language"
-        },
-        {
-          "value": "viii",
-          "label": "viii) The mechanics of a language"
-        },
-        {
-          "value": "ix",
-          "label": "ix) The challenge of translation"
-        }
-      ],
-      "answer": "v",
-      "explanation": "Paragraph B traces Esperanto's growth from a published grammar through written correspondence to spoken world congresses.",
-      "source": "Academic Reading Test 14, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph C",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) A non-exclusive language"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Fewer languages, more results"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Language is personal"
-        },
-        {
-          "value": "iv",
-          "label": "iv) What’s fashionable in language"
-        },
-        {
-          "value": "v",
-          "label": "v) From the written word to the spoken word"
-        },
-        {
-          "value": "vi",
-          "label": "vi) A real language"
-        },
-        {
-          "value": "vii",
-          "label": "vii) Harmony through language"
-        },
-        {
-          "value": "viii",
-          "label": "viii) The mechanics of a language"
-        },
-        {
-          "value": "ix",
-          "label": "ix) The challenge of translation"
-        }
-      ],
-      "answer": "viii",
-      "explanation": "Paragraph C explains Esperanto's grammar, phonology and word-building system, its mechanics.",
-      "source": "Academic Reading Test 14, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph D",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) A non-exclusive language"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Fewer languages, more results"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Language is personal"
-        },
-        {
-          "value": "iv",
-          "label": "iv) What’s fashionable in language"
-        },
-        {
-          "value": "v",
-          "label": "v) From the written word to the spoken word"
-        },
-        {
-          "value": "vi",
-          "label": "vi) A real language"
-        },
-        {
-          "value": "vii",
-          "label": "vii) Harmony through language"
-        },
-        {
-          "value": "viii",
-          "label": "viii) The mechanics of a language"
-        },
-        {
-          "value": "ix",
-          "label": "ix) The challenge of translation"
-        }
-      ],
-      "answer": "iii",
-      "explanation": "Paragraph D's critics say the language is too artificial to become emotionally, personally involved with.",
-      "source": "Academic Reading Test 14, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph E",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) A non-exclusive language"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Fewer languages, more results"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Language is personal"
-        },
-        {
-          "value": "iv",
-          "label": "iv) What’s fashionable in language"
-        },
-        {
-          "value": "v",
-          "label": "v) From the written word to the spoken word"
-        },
-        {
-          "value": "vi",
-          "label": "vi) A real language"
-        },
-        {
-          "value": "vii",
-          "label": "vii) Harmony through language"
-        },
-        {
-          "value": "viii",
-          "label": "viii) The mechanics of a language"
-        },
-        {
-          "value": "ix",
-          "label": "ix) The challenge of translation"
-        }
-      ],
-      "answer": "vi",
-      "explanation": "Paragraph E has Esperantists rebut the accusation that Esperanto is not a genuine, real language.",
-      "source": "Academic Reading Test 14, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph F",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) A non-exclusive language"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Fewer languages, more results"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Language is personal"
-        },
-        {
-          "value": "iv",
-          "label": "iv) What’s fashionable in language"
-        },
-        {
-          "value": "v",
-          "label": "v) From the written word to the spoken word"
-        },
-        {
-          "value": "vi",
-          "label": "vi) A real language"
-        },
-        {
-          "value": "vii",
-          "label": "vii) Harmony through language"
-        },
-        {
-          "value": "viii",
-          "label": "viii) The mechanics of a language"
-        },
-        {
-          "value": "ix",
-          "label": "ix) The challenge of translation"
-        }
-      ],
-      "answer": "i",
-      "explanation": "Paragraph F says Esperanto could free international communication from being restricted mainly to native English speakers, making it non-exclusive.",
-      "source": "Academic Reading Test 14, Questions 14 to 19"
-    },
-    {
-      "prompt": "Paragraph G",
-      "kind": "select",
-      "options": [
-        {
-          "value": "i",
-          "label": "i) A non-exclusive language"
-        },
-        {
-          "value": "ii",
-          "label": "ii) Fewer languages, more results"
-        },
-        {
-          "value": "iii",
-          "label": "iii) Language is personal"
-        },
-        {
-          "value": "iv",
-          "label": "iv) What’s fashionable in language"
-        },
-        {
-          "value": "v",
-          "label": "v) From the written word to the spoken word"
-        },
-        {
-          "value": "vi",
-          "label": "vi) A real language"
-        },
-        {
-          "value": "vii",
-          "label": "vii) Harmony through language"
-        },
-        {
-          "value": "viii",
-          "label": "viii) The mechanics of a language"
-        },
-        {
-          "value": "ix",
-          "label": "ix) The challenge of translation"
-        }
-      ],
-      "answer": "ii",
-      "explanation": "Paragraph G argues that one shared language would free up billions currently spent on translation, for better results elsewhere.",
-      "source": "Academic Reading Test 14, Questions 14 to 19"
     }
   ]
 },
 
   "matching-information": {
   "title": "Exercise. Which paragraph contains the information? (real test questions)",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 9, Passage 3, Questions 27 to 33",
-      "title": "THE HISTORY OF LANGUAGE",
-      "paragraphs": [
-        "A The evolution of language has been a central concern of philosophers, psychologists, and linguists for centuries. The question of how language evolved is intrinsically linked to the question of why humans are the only species to have evolved language. The answer to this question is not straightforward, and there are several competing theories.",
-        "B One possible theory is that the evolution of language was linked to the evolution of the human brain. The human brain is proportionally larger than that of other species, and it has a larger neocortex, which is the part of the brain responsible for higher-order thinking. The human brain also has a larger Broca’s area, which is responsible for speech production, and a larger Wernicke’s area, which is responsible for language comprehension. These areas of the brain are also present in other primates, but they are not as developed as they are in humans. This suggests that the evolution of language may have been linked to the evolution of the human brain.",
-        "C Another possible theory is that the evolution of language was linked to the evolution of social structures. Humans are social animals, and language is a tool that allows us to communicate with one another. It is possible that the evolution of language was driven by the need for humans to communicate with one another in order to cooperate and form social groups. This theory is supported by the fact that other social animals, such as dolphins and elephants, also have complex communication systems.",
-        "D A third possible theory is that the evolution of language was linked to the evolution of tool use. Humans are unique among animals in their use of tools, and it is possible that the evolution of language was driven by the need for humans to communicate with one another in order to share information about tool use. This theory is supported by the fact that other tool-using animals, such as chimpanzees and crows, also have complex communication systems.",
-        "E Regardless of the specific theory, it is clear that the evolution of language was a complex process that was influenced by a variety of factors. The evolution of language was likely driven by a combination of biological, social, and environmental factors.",
-        "F The evolution of language can be divided into several stages. The first stage is the evolution of vocalizations. All animals produce vocalizations, and it is likely that the first stage in the evolution of language was the evolution of vocalizations that were used to communicate with other members of the same species. These vocalizations would have been simple and would have been used to communicate basic information, such as the presence of a predator or the location of food.",
-        "G The second stage in the evolution of language is the evolution of syntax. Syntax is the set of rules that govern the structure of sentences, and it is what allows us to combine words into sentences that convey complex meanings. The evolution of syntax was likely driven by the need for humans to communicate more complex information. For example, the ability to communicate about the past or the future would have been an important advantage for early humans.",
-        "H The third stage in the evolution of language is the evolution of semantics. Semantics is the study of meaning, and it is what allows us to understand the meaning of words and sentences. The evolution of semantics was likely driven by the need for humans to communicate more abstract information. For example, the ability to communicate about abstract concepts, such as justice or love, would have been an important advantage for early humans.",
-        "I The fourth stage in the evolution of language is the evolution of pragmatics. Pragmatics is the study of how language is used in context, and it is what allows us to understand the meaning of a sentence based on the context in which it is used. The evolution of pragmatics was likely driven by the need for humans to communicate more effectively in social situations. For example, the ability to understand sarcasm or irony would have been an important advantage for early humans.",
-        "J The evolution of language was a complex process that was influenced by a variety of factors. The evolution of language was likely driven by a combination of biological, social, and environmental factors. The evolution of language was a gradual process that took place over millions of years, and it is likely that the evolution of language was influenced by a variety of factors, including the evolution of the human brain, the evolution of social structures, and the evolution of tool use."
+      "passages": [
+        {
+          "label": "Academic Reading Test 9, Passage 3, Questions 27 to 33",
+          "title": "THE HISTORY OF LANGUAGE",
+          "paragraphs": [
+            "A The evolution of language has been a central concern of philosophers, psychologists, and linguists for centuries. The question of how language evolved is intrinsically linked to the question of why humans are the only species to have evolved language. The answer to this question is not straightforward, and there are several competing theories.",
+            "B One possible theory is that the evolution of language was linked to the evolution of the human brain. The human brain is proportionally larger than that of other species, and it has a larger neocortex, which is the part of the brain responsible for higher-order thinking. The human brain also has a larger Broca’s area, which is responsible for speech production, and a larger Wernicke’s area, which is responsible for language comprehension. These areas of the brain are also present in other primates, but they are not as developed as they are in humans. This suggests that the evolution of language may have been linked to the evolution of the human brain.",
+            "C Another possible theory is that the evolution of language was linked to the evolution of social structures. Humans are social animals, and language is a tool that allows us to communicate with one another. It is possible that the evolution of language was driven by the need for humans to communicate with one another in order to cooperate and form social groups. This theory is supported by the fact that other social animals, such as dolphins and elephants, also have complex communication systems.",
+            "D A third possible theory is that the evolution of language was linked to the evolution of tool use. Humans are unique among animals in their use of tools, and it is possible that the evolution of language was driven by the need for humans to communicate with one another in order to share information about tool use. This theory is supported by the fact that other tool-using animals, such as chimpanzees and crows, also have complex communication systems.",
+            "E Regardless of the specific theory, it is clear that the evolution of language was a complex process that was influenced by a variety of factors. The evolution of language was likely driven by a combination of biological, social, and environmental factors.",
+            "F The evolution of language can be divided into several stages. The first stage is the evolution of vocalizations. All animals produce vocalizations, and it is likely that the first stage in the evolution of language was the evolution of vocalizations that were used to communicate with other members of the same species. These vocalizations would have been simple and would have been used to communicate basic information, such as the presence of a predator or the location of food.",
+            "G The second stage in the evolution of language is the evolution of syntax. Syntax is the set of rules that govern the structure of sentences, and it is what allows us to combine words into sentences that convey complex meanings. The evolution of syntax was likely driven by the need for humans to communicate more complex information. For example, the ability to communicate about the past or the future would have been an important advantage for early humans.",
+            "H The third stage in the evolution of language is the evolution of semantics. Semantics is the study of meaning, and it is what allows us to understand the meaning of words and sentences. The evolution of semantics was likely driven by the need for humans to communicate more abstract information. For example, the ability to communicate about abstract concepts, such as justice or love, would have been an important advantage for early humans.",
+            "I The fourth stage in the evolution of language is the evolution of pragmatics. Pragmatics is the study of how language is used in context, and it is what allows us to understand the meaning of a sentence based on the context in which it is used. The evolution of pragmatics was likely driven by the need for humans to communicate more effectively in social situations. For example, the ability to understand sarcasm or irony would have been an important advantage for early humans.",
+            "J The evolution of language was a complex process that was influenced by a variety of factors. The evolution of language was likely driven by a combination of biological, social, and environmental factors. The evolution of language was a gradual process that took place over millions of years, and it is likely that the evolution of language was influenced by a variety of factors, including the evolution of the human brain, the evolution of social structures, and the evolution of tool use."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "The emergence of syntax allowed humans to communicate more complex ideas",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "G",
+          "explanation": "Paragraph G says syntax lets us combine words into sentences that convey complex meanings.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        },
+        {
+          "prompt": "A biological explanation for language evolution is linked to the development of certain brain areas",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Paragraph B links language evolution to a larger neocortex and more developed Broca's and Wernicke's areas.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        },
+        {
+          "prompt": "Understanding how language is used in different situations helped humans communicate effectively",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "I",
+          "explanation": "Paragraph I says pragmatics lets us understand meaning from context, helping humans communicate effectively in social situations.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        },
+        {
+          "prompt": "The first stage of language development involved simple vocalizations for basic communication",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "F",
+          "explanation": "Paragraph F says the first stage was simple vocalisations used to signal basic things like a predator or food.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        },
+        {
+          "prompt": "A possible connection exists between language development and tool usage among humans",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "D",
+          "explanation": "Paragraph D suggests language evolved alongside tool use, driven by the need to share information about using tools.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        },
+        {
+          "prompt": "The reason humans are the only species to have developed language is still debated",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Paragraph A says why humans alone evolved language has no straightforward answer and several competing theories exist.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        },
+        {
+          "prompt": "Language may have evolved due to the necessity of social interactions and cooperation",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            },
+            {
+              "value": "H"
+            },
+            {
+              "value": "I"
+            },
+            {
+              "value": "J"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Paragraph C suggests language evolved from the need to cooperate and form social groups.",
+          "source": "Academic Reading Test 9, Questions 27 to 33"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 12, Passage 2, Questions 14 to 20",
-      "title": "TECHNOLOGY IN EDUCATION: PROS AND CONS",
-      "paragraphs": [
-        "A Technology has transformed the way we live, work, communicate and play. It is also transforming the way we educate our children. In the past, schools were designed to teach children the skills they would need for a future that would be very similar to the present. However, now that technology is changing so rapidly, it is hard to predict what those skills will be. What we do know is that our students will need to be able to think creatively to find solutions to problems we can’t even imagine yet. In order to prepare them for this uncertain future, our schools are increasingly turning to technology in the classroom. But is this a good thing?",
-        "B The benefits of using technology in the classroom are many. For example, technology allows students to personalise their learning. They can work at their own pace, go back to lessons they missed or didn’t understand the first time, and get extra practice if they need it. Technology also gives students access to a wide range of information and resources. They can use the Internet to research topics, watch videos, and read books and articles. This can help them to learn more about a subject and develop their understanding of it. Another benefit of technology is that it can help students to develop important skills. For example, using computers and other digital devices can help students to improve their typing and computer skills. These are skills that will be useful to them in their future studies and careers.",
-        "C There are also some potential drawbacks to using technology in the classroom. One concern is that students may become too reliant on technology. If they are used to having everything they need at their fingertips, they may not be able to think for themselves or solve problems independently. Another concern is that students may be distracted by technology. If they are allowed to use their devices in class, they may be tempted to check social media or play games instead of paying attention to the lesson. There is also the risk that students may be exposed to inappropriate content online. If they are not supervised, they may come across material that is not suitable for their age group.",
-        "D There are also concerns about the impact of technology on students’ health and well-being. Some studies have shown that too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping. There is also the risk that students may become isolated from their peers if they spend too much time on their devices. They may miss out on important social interactions and opportunities to develop their communication skills. In addition, there is the question of whether technology is actually improving students’ learning. Some studies have shown that students who use technology in the classroom do not perform any better than those who do not. In fact, in some cases, they may even do worse. This may be because they are not using the technology effectively, or because they are not being taught how to use it properly.",
-        "E Despite these concerns, many schools are embracing technology and are finding ways to overcome the challenges it presents. One way they are doing this is by using technology to support traditional teaching methods, rather than replacing them. For example, teachers can use interactive whiteboards to display information and engage students in lessons. They can also use online resources to supplement their teaching and provide students with additional practice. Another way schools are overcoming the challenges of technology is by setting clear guidelines for its use. For example, they may have rules about when and how devices can be used in the classroom. They may also have policies in place to protect students from inappropriate content online.",
-        "F In order to maximise the benefits of technology in the classroom, it is important for teachers to have the right skills and knowledge. They need to be able to use technology effectively and to integrate it into their teaching in a way that enhances students’ learning. This means that teachers need to have access to training and professional development opportunities. They also need to be supported by their schools and given the resources they need to use technology effectively. In addition, schools need to have the right infrastructure in place to support the use of technology. This includes having reliable Internet access and the right hardware and software.",
-        "G In conclusion, technology has the potential to transform education and to improve students’ learning. However, it is important to recognise that it is not a magic solution to all of the challenges facing education today. In order to make the most of technology in the classroom, it is important to use it effectively and to integrate it into teaching in a way that supports students’ learning. Therefore, it is essential for teachers to possess appropriate skills and understanding, and for schools to provide the necessary infrastructure and support."
+      "passages": [
+        {
+          "label": "Academic Reading Test 12, Passage 2, Questions 14 to 20",
+          "title": "TECHNOLOGY IN EDUCATION: PROS AND CONS",
+          "paragraphs": [
+            "A Technology has transformed the way we live, work, communicate and play. It is also transforming the way we educate our children. In the past, schools were designed to teach children the skills they would need for a future that would be very similar to the present. However, now that technology is changing so rapidly, it is hard to predict what those skills will be. What we do know is that our students will need to be able to think creatively to find solutions to problems we can’t even imagine yet. In order to prepare them for this uncertain future, our schools are increasingly turning to technology in the classroom. But is this a good thing?",
+            "B The benefits of using technology in the classroom are many. For example, technology allows students to personalise their learning. They can work at their own pace, go back to lessons they missed or didn’t understand the first time, and get extra practice if they need it. Technology also gives students access to a wide range of information and resources. They can use the Internet to research topics, watch videos, and read books and articles. This can help them to learn more about a subject and develop their understanding of it. Another benefit of technology is that it can help students to develop important skills. For example, using computers and other digital devices can help students to improve their typing and computer skills. These are skills that will be useful to them in their future studies and careers.",
+            "C There are also some potential drawbacks to using technology in the classroom. One concern is that students may become too reliant on technology. If they are used to having everything they need at their fingertips, they may not be able to think for themselves or solve problems independently. Another concern is that students may be distracted by technology. If they are allowed to use their devices in class, they may be tempted to check social media or play games instead of paying attention to the lesson. There is also the risk that students may be exposed to inappropriate content online. If they are not supervised, they may come across material that is not suitable for their age group.",
+            "D There are also concerns about the impact of technology on students’ health and well-being. Some studies have shown that too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping. There is also the risk that students may become isolated from their peers if they spend too much time on their devices. They may miss out on important social interactions and opportunities to develop their communication skills. In addition, there is the question of whether technology is actually improving students’ learning. Some studies have shown that students who use technology in the classroom do not perform any better than those who do not. In fact, in some cases, they may even do worse. This may be because they are not using the technology effectively, or because they are not being taught how to use it properly.",
+            "E Despite these concerns, many schools are embracing technology and are finding ways to overcome the challenges it presents. One way they are doing this is by using technology to support traditional teaching methods, rather than replacing them. For example, teachers can use interactive whiteboards to display information and engage students in lessons. They can also use online resources to supplement their teaching and provide students with additional practice. Another way schools are overcoming the challenges of technology is by setting clear guidelines for its use. For example, they may have rules about when and how devices can be used in the classroom. They may also have policies in place to protect students from inappropriate content online.",
+            "F In order to maximise the benefits of technology in the classroom, it is important for teachers to have the right skills and knowledge. They need to be able to use technology effectively and to integrate it into their teaching in a way that enhances students’ learning. This means that teachers need to have access to training and professional development opportunities. They also need to be supported by their schools and given the resources they need to use technology effectively. In addition, schools need to have the right infrastructure in place to support the use of technology. This includes having reliable Internet access and the right hardware and software.",
+            "G In conclusion, technology has the potential to transform education and to improve students’ learning. However, it is important to recognise that it is not a magic solution to all of the challenges facing education today. In order to make the most of technology in the classroom, it is important to use it effectively and to integrate it into teaching in a way that supports students’ learning. Therefore, it is essential for teachers to possess appropriate skills and understanding, and for schools to provide the necessary infrastructure and support."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "examples of how technology can be used to help students learn",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Paragraph B lists personalised learning, research access and skill development as examples of technology helping students.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        },
+        {
+          "prompt": "the need for teachers to be able to use technology effectively",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "F",
+          "explanation": "Paragraph F stresses that teachers need the skills to use technology effectively.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        },
+        {
+          "prompt": "the need for schools to have the right equipment",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "F",
+          "explanation": "Paragraph F says schools need the right infrastructure, including hardware and software.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        },
+        {
+          "prompt": "the possibility of students not being able to think independently",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Paragraph C warns students may lose the ability to think or solve problems independently.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        },
+        {
+          "prompt": "the possibility of students becoming less sociable",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "D",
+          "explanation": "Paragraph D warns students may become isolated and miss social interaction opportunities.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        },
+        {
+          "prompt": "the possibility of students coming across unsuitable material online",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Paragraph C raises the risk of students finding inappropriate material online.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        },
+        {
+          "prompt": "the possibility of students not being able to sleep well",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A"
+            },
+            {
+              "value": "B"
+            },
+            {
+              "value": "C"
+            },
+            {
+              "value": "D"
+            },
+            {
+              "value": "E"
+            },
+            {
+              "value": "F"
+            },
+            {
+              "value": "G"
+            }
+          ],
+          "answer": "D",
+          "explanation": "Paragraph D is the one that mentions sleep: it says too much screen time can lead to eye strain, headaches and difficulty sleeping. Paragraph C covers over-reliance, distraction and unsuitable content, and never mentions sleep.",
+          "source": "Academic Reading Test 12, Questions 14 to 20"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "The emergence of syntax allowed humans to communicate more complex ideas",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "G",
-      "explanation": "Paragraph G says syntax lets us combine words into sentences that convey complex meanings.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "A biological explanation for language evolution is linked to the development of certain brain areas",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Paragraph B links language evolution to a larger neocortex and more developed Broca's and Wernicke's areas.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "Understanding how language is used in different situations helped humans communicate effectively",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "I",
-      "explanation": "Paragraph I says pragmatics lets us understand meaning from context, helping humans communicate effectively in social situations.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "The first stage of language development involved simple vocalizations for basic communication",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "F",
-      "explanation": "Paragraph F says the first stage was simple vocalisations used to signal basic things like a predator or food.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "A possible connection exists between language development and tool usage among humans",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "D",
-      "explanation": "Paragraph D suggests language evolved alongside tool use, driven by the need to share information about using tools.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "The reason humans are the only species to have developed language is still debated",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Paragraph A says why humans alone evolved language has no straightforward answer and several competing theories exist.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "Language may have evolved due to the necessity of social interactions and cooperation",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        },
-        {
-          "value": "H"
-        },
-        {
-          "value": "I"
-        },
-        {
-          "value": "J"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Paragraph C suggests language evolved from the need to cooperate and form social groups.",
-      "source": "Academic Reading Test 9, Questions 27 to 33"
-    },
-    {
-      "prompt": "examples of how technology can be used to help students learn",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Paragraph B lists personalised learning, research access and skill development as examples of technology helping students.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
-    },
-    {
-      "prompt": "the need for teachers to be able to use technology effectively",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "F",
-      "explanation": "Paragraph F stresses that teachers need the skills to use technology effectively.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
-    },
-    {
-      "prompt": "the need for schools to have the right equipment",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "F",
-      "explanation": "Paragraph F says schools need the right infrastructure, including hardware and software.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
-    },
-    {
-      "prompt": "the possibility of students not being able to think independently",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Paragraph C warns students may lose the ability to think or solve problems independently.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
-    },
-    {
-      "prompt": "the possibility of students becoming less sociable",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "D",
-      "explanation": "Paragraph D warns students may become isolated and miss social interaction opportunities.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
-    },
-    {
-      "prompt": "the possibility of students coming across unsuitable material online",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Paragraph C raises the risk of students finding inappropriate material online.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
-    },
-    {
-      "prompt": "the possibility of students not being able to sleep well",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A"
-        },
-        {
-          "value": "B"
-        },
-        {
-          "value": "C"
-        },
-        {
-          "value": "D"
-        },
-        {
-          "value": "E"
-        },
-        {
-          "value": "F"
-        },
-        {
-          "value": "G"
-        }
-      ],
-      "answer": "D",
-      "explanation": "Paragraph D is the one that mentions sleep: it says too much screen time can lead to eye strain, headaches and difficulty sleeping. Paragraph C covers over-reliance, distraction and unsuitable content, and never mentions sleep.",
-      "source": "Academic Reading Test 12, Questions 14 to 20"
     }
   ]
 },
@@ -2053,316 +2112,326 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "matching-features": {
   "title": "Exercise. Classify each statement (real test questions)",
   "intro": "Read each statement, then choose which option below it matches, using the passage above.",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 6, Passage 3, Questions 27 to 33",
-      "title": "Robots and us",
-      "paragraphs": [
-        "Three leaders in their fields answer questions about our relationships with robot.",
-        "When asked ‘Should robots be used to colonies other planets?’, cosmology and astrophysics Professor Martin Rees said he believed the solar system would be mapped by robotic craft by the end of the century. ‘The next step would be mining of asteroids, enabling fabrication of large structures in space without having to bring all the raw materials from Earth…. I think this is more realistic and benign than the… “terraforming”* of planets.’ He maintains that colonised planets ‘should be preserved with a status that is analogous to Antarctica here on Earth.’",
-        "On the question of using robots to colonise other planets and exploit mineral resources, engineering Professor Daniel Wolpert replied, ‘I don’t see a pressing need to colonise other planets unless we can bring [these] resources back to Earth. The vast majority of Earth is currently inaccessible to us. Using robots to gather resources nearer to home would seem to be a better use of our robotic tools.’",
-        "Meanwhile, for anthropology Professor Kathleen Richardson, the idea of ‘colonisation’ of other planets seemed morally dubious: ‘I think whether we do something on Earth or on Mars we should always do it in the spirit of a genuine interest in “the Other”, not to impose a particular model, but to meet “the Other”.’",
-        "In response to the second question, ‘How soon will machine intelligence outstrip human intelligence?’, Rees mentions robots that are advanced enough to beat humans at chess, but then goes on to say, ‘Robots are still limited in their ability to sense their environment: they can’t yet recognise and move the pieces on a real chessboard as cleverly as a child can. Later this century, however, their more advanced successors may relate to their surroundings, and to people, as adeptly as we do. Moral questions then arise. … Should we feel guilty about exploiting [sophisticated robots]? Should we fret if they are underemployed, frustrated, or bored?’",
-        "Wolpert’s response to the question about machine intelligence outstripping human intelligence was this: ‘In a limited sense it already has. Machines can already navigate, remember and search for items with an ability that far outstrips humans. However, there is no machine that can identify visual objects or speech with the reliability and flexibility of humans…. Expecting a machine close to the creative intelligence of a human within the next 50 years would be highly ambitious.’",
-        "Richardson believes that our fear of machines becoming too advanced has more to do with human nature than anything intrinsic to the machines themselves. In her view, it stems from humans’ tendency to personify inanimate objects: we create machines based on representations of ourselves, imagine that machines think and behave as we do, and therefore see them as an autonomous threat. ‘One of the consequences of thinking that the problem lies with machines is that …. we tend to imagine they are greater and more powerful than they really are and subsequently they become so.’",
-        "This led on to the third question, ‘Should we be scared by advances in artificial intelligence?’ To this question, Rees replied, ‘Those who should be worried are the futurologists who believe in the so-called “singularity”.** … And another worry is that we are increasingly dependent on computer networks, and that these could behave like a single “brain” with a mind of its own, and with goals that may be contrary to human welfare. I think we should ensure that robots remain as no more than “idiot savants” lacking the capacity to outwit us, even though they may greatly surpass us in the ability to calculate and process information.’",
-        "Wolpert’s response was to say that we have already seen the damaging effects of artificial intelligence in the form of computer viruses. ‘But in this case,’ he says, ‘the real intelligence is the malicious designer. Critically, the benefits of computers outweigh the damage that computer viruses cause. Similarly, while there may be misuses of robotics in the near future, the benefits that they will bring are likely to outweigh these negative aspects.’",
-        "Richardson’s response to this question was this: ‘We need to ask why fears of artificial intelligence and robots persist; none have in fact risen up and challenged human supremacy.’ She believes that as robots have never shown themselves to be a threat to humans, it seems unlikely that they ever will. In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence.’ In answer to the fourth question, ‘What can science fiction tell us about robotics?’, Rees replied, ‘I sometimes advise students that it’s better to read first-rate science fiction than second-rate science – more stimulating, and perhaps no more likely to be wrong.’",
-        "As his response, Wolpert commented, ‘Science fiction has often been remarkable at predicting the future Science fiction has painted a vivid spectrum of possible futures, from cute and helpful robots to dystopian robotic societies. Interestingly, almost no science fiction envisages a future without robots.’",
-        "Finally, on the question of science fiction, Richardson pointed out that in modern society, people tend to think there is reality on the one hand, and fiction and fantasy on the other. She then explained that the division did not always exist, and that scientists and technologists made this separation because they wanted to carve out the sphere of their work. ‘But the divide is not so clear cut, and that is why the worlds seem to collide at times,’ she said. ‘In some cases, we need to bring these different understandings together to get a whole perspective. Perhaps then, we won’t be so frightened that something we create as a copy of ourselves will be a [threat] to us.’ * terraforming: modifying a planet’s atmosphere to suit human needs ** singularity: the point when robots will be able to start creating ever more sophisticated versions of themselves"
+      "passages": [
+        {
+          "label": "Academic Reading Test 6, Passage 3, Questions 27 to 33",
+          "title": "Robots and us",
+          "paragraphs": [
+            "Three leaders in their fields answer questions about our relationships with robot.",
+            "When asked ‘Should robots be used to colonies other planets?’, cosmology and astrophysics Professor Martin Rees said he believed the solar system would be mapped by robotic craft by the end of the century. ‘The next step would be mining of asteroids, enabling fabrication of large structures in space without having to bring all the raw materials from Earth…. I think this is more realistic and benign than the… “terraforming”* of planets.’ He maintains that colonised planets ‘should be preserved with a status that is analogous to Antarctica here on Earth.’",
+            "On the question of using robots to colonise other planets and exploit mineral resources, engineering Professor Daniel Wolpert replied, ‘I don’t see a pressing need to colonise other planets unless we can bring [these] resources back to Earth. The vast majority of Earth is currently inaccessible to us. Using robots to gather resources nearer to home would seem to be a better use of our robotic tools.’",
+            "Meanwhile, for anthropology Professor Kathleen Richardson, the idea of ‘colonisation’ of other planets seemed morally dubious: ‘I think whether we do something on Earth or on Mars we should always do it in the spirit of a genuine interest in “the Other”, not to impose a particular model, but to meet “the Other”.’",
+            "In response to the second question, ‘How soon will machine intelligence outstrip human intelligence?’, Rees mentions robots that are advanced enough to beat humans at chess, but then goes on to say, ‘Robots are still limited in their ability to sense their environment: they can’t yet recognise and move the pieces on a real chessboard as cleverly as a child can. Later this century, however, their more advanced successors may relate to their surroundings, and to people, as adeptly as we do. Moral questions then arise. … Should we feel guilty about exploiting [sophisticated robots]? Should we fret if they are underemployed, frustrated, or bored?’",
+            "Wolpert’s response to the question about machine intelligence outstripping human intelligence was this: ‘In a limited sense it already has. Machines can already navigate, remember and search for items with an ability that far outstrips humans. However, there is no machine that can identify visual objects or speech with the reliability and flexibility of humans…. Expecting a machine close to the creative intelligence of a human within the next 50 years would be highly ambitious.’",
+            "Richardson believes that our fear of machines becoming too advanced has more to do with human nature than anything intrinsic to the machines themselves. In her view, it stems from humans’ tendency to personify inanimate objects: we create machines based on representations of ourselves, imagine that machines think and behave as we do, and therefore see them as an autonomous threat. ‘One of the consequences of thinking that the problem lies with machines is that …. we tend to imagine they are greater and more powerful than they really are and subsequently they become so.’",
+            "This led on to the third question, ‘Should we be scared by advances in artificial intelligence?’ To this question, Rees replied, ‘Those who should be worried are the futurologists who believe in the so-called “singularity”.** … And another worry is that we are increasingly dependent on computer networks, and that these could behave like a single “brain” with a mind of its own, and with goals that may be contrary to human welfare. I think we should ensure that robots remain as no more than “idiot savants” lacking the capacity to outwit us, even though they may greatly surpass us in the ability to calculate and process information.’",
+            "Wolpert’s response was to say that we have already seen the damaging effects of artificial intelligence in the form of computer viruses. ‘But in this case,’ he says, ‘the real intelligence is the malicious designer. Critically, the benefits of computers outweigh the damage that computer viruses cause. Similarly, while there may be misuses of robotics in the near future, the benefits that they will bring are likely to outweigh these negative aspects.’",
+            "Richardson’s response to this question was this: ‘We need to ask why fears of artificial intelligence and robots persist; none have in fact risen up and challenged human supremacy.’ She believes that as robots have never shown themselves to be a threat to humans, it seems unlikely that they ever will. In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence.’ In answer to the fourth question, ‘What can science fiction tell us about robotics?’, Rees replied, ‘I sometimes advise students that it’s better to read first-rate science fiction than second-rate science – more stimulating, and perhaps no more likely to be wrong.’",
+            "As his response, Wolpert commented, ‘Science fiction has often been remarkable at predicting the future Science fiction has painted a vivid spectrum of possible futures, from cute and helpful robots to dystopian robotic societies. Interestingly, almost no science fiction envisages a future without robots.’",
+            "Finally, on the question of science fiction, Richardson pointed out that in modern society, people tend to think there is reality on the one hand, and fiction and fantasy on the other. She then explained that the division did not always exist, and that scientists and technologists made this separation because they wanted to carve out the sphere of their work. ‘But the divide is not so clear cut, and that is why the worlds seem to collide at times,’ she said. ‘In some cases, we need to bring these different understandings together to get a whole perspective. Perhaps then, we won’t be so frightened that something we create as a copy of ourselves will be a [threat] to us.’ * terraforming: modifying a planet’s atmosphere to suit human needs ** singularity: the point when robots will be able to start creating ever more sophisticated versions of themselves"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "For our own safety, humans will need to restrict the abilities of robots",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Rees says robots should be kept as no more than idiot savants that cannot outwit us, showing a wish to limit their abilities for safety.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        },
+        {
+          "prompt": "The risk of robots harming us is less serious than humans believe it to be",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Richardson says robots have never actually challenged human supremacy, so she sees the danger as smaller than people fear.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        },
+        {
+          "prompt": "It will take many decades for robot intelligence to be as imaginative as human intelligence",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Wolpert says reaching human like creative intelligence within the next 50 years would be highly ambitious, meaning it will take a long time.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        },
+        {
+          "prompt": "We may have to start considering whether we are treating robots fairly",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Rees asks whether we should feel guilty about exploiting advanced robots or worry if they are bored, raising the question of fair treatment.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        },
+        {
+          "prompt": "Robots are probably of more help to us on Earth than in space",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Wolpert says gathering resources nearer to home would be a better use of robots than colonising other planets.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        },
+        {
+          "prompt": "The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Rees says it is better to read first rate science fiction than second rate science, since it is no more likely to be wrong.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        },
+        {
+          "prompt": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) Martin Rees"
+            },
+            {
+              "value": "B",
+              "label": "B) Daniel Wolpert"
+            },
+            {
+              "value": "C",
+              "label": "C) Kathleen Richardson"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Richardson says many people welcome machine intelligence, showing some look forward to robots becoming smarter.",
+          "source": "Academic Reading Test 6, Questions 27 to 33"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 18, Passage 3, Questions 28 to 33",
-      "title": "Are these two reporters on the same planet?",
-      "paragraphs": [
-        "An essay by scientist, educator and environmentalist, Dr. David Suzuki",
-        "A number of books, articles and television programs have disputed the reality of the claimed hazards of global warming, overpopulation, deforestation and ozone depletion. Two newspaper commentaries show the profound differences of opinion on critical issues affecting the planet.",
-        "The first, by Robert Kaplan, has generated both fear and denial. Entitled The Coming Anarchy, the report paints a horrifying picture of the future for humanity. The author suggests that the terrible consequences of the conjunction between exploding human population and surrounding environmental degradation are already visible in Africa and parts of Southeast Asia. As society is destabilised by the AIDS epidemic, government control evaporates, national borders crumble beneath the pressure of environmental refugees and local populations revert to tribalism to settle old scores or defend against fleeing masses and bands of stateless nomads on the move.",
-        "Kaplan believes what he has seen in Africa and Southeast Asia is the beginning of a global pattern of disintegration of social, political and economic infrastructure under the impact of ecological degradation, population pressure and disease. As ecosystems collapse, this scenario could sweep the planet, first in Eastern Europe and then the industrialised countries. It is a frightening scenario, built on a serious attempt to project the aftermath of ecological destruction. It comes from a core recognition that the planet is finite and consumption has vast social, political and economic ramifications. It has also generated a great deal of discussion and controversy.",
-        "Marcus Gee pronounces Kaplan’s vision ‘dead wrong’ in a major article headlined Apocalypse Deferred. Attacking the ‘doomsayers’, Gee counters with the statistics favoured by believers in the limitless benefits and potential of economic growth. Citing the spectacular improvements in human health, levels of education and literacy, availability of food and length of life even in the developing world, Gee pronounces the fivefold increase in the world economy since 1950 as the cause of this good news. He does concede that immense problems remain, from ethnic nationalism to tropical deforestation to malnutrition to cropland losses but concludes that Kaplan has exaggerated many of the crises and thus missed the broad pattern of progress.",
-        "Focusing on statistics of the decline in child mortality and the rise in longevity, food production and adult literacy, Gee reaches the conclusion that things have never been better. Economic indicators, such as the rise in gross world product and total exports show ‘remarkable sustained and dramatic progress’. Life for the majority of the world’s citizens is getting steadily better in almost every category.",
-        "Gee’s conclusions rest heavily on economic indicators. He points out the annual 3.9 percent rise in the global economy and the more than doubling of the gross output per person, that has occurred for the past thirty years. World trade has done even better, growing by 6 percent of a product’s price in 1947 to 5 percent today.",
-        "Gee skips lightly over such facts as third world debt and the daily toll of 22,000 child deaths from easily preventable diseases. He also fails to mention that during this period the gulf between rich and poor countries has increased. He does acknowledge the threats of loss of topsoil and forests, pollution of the air and contamination of water. However, he concludes that there is little evidence they are serious enough to halt or even reverse human progress. Gee challenges the notion of a population crisis since there have never been as many people so well off. Furthermore, he suggests there will never be a limit to population because more people means more Einsteins to keep making life better.",
-        "Gee’s outlook rests on a tiny minority of scientists who have faith in the boundless potential of science and technology to overcome the physical constraints of air, water and soil so that a much larger population can be sustained. His final proof? -the general rise in living standards along with population growth. But the relationship between changes in living standards and population is a correlation, not proof of causal connection. Gee is ignoring basic economic as well as scientific reality.",
-        "If we inherit a bank account with a thousand dollars that earns 5% interest annually, we could withdraw fifty dollars or less each year forever. However, suppose we start to increase our withdrawals, say up to sixty dollars, then seventy dollars and more each year. For many years the account would yield cash. But it would be foolish to conclude that we could keep drawing more from the account indefinitely. Yet that is what Gee believes. As ocean fisheries around the world show, we are using up the ecological capital of the planet (biodiversity, air. water, soil) rather than living off the interest. It is a dangerous deception to believe that the human-created artifice called economies can keep the indicators rising as the life support systems of the planet continue to decline.",
-        "The value system that dominates most of the popular media promotes the delusion that resources and the economy can continue to expand indefinitely. It also blinds the public to the urgency and credibility of warnings that an environmental crisis confronts us."
+      "passages": [
+        {
+          "label": "Academic Reading Test 18, Passage 3, Questions 28 to 33",
+          "title": "Are these two reporters on the same planet?",
+          "paragraphs": [
+            "An essay by scientist, educator and environmentalist, Dr. David Suzuki",
+            "A number of books, articles and television programs have disputed the reality of the claimed hazards of global warming, overpopulation, deforestation and ozone depletion. Two newspaper commentaries show the profound differences of opinion on critical issues affecting the planet.",
+            "The first, by Robert Kaplan, has generated both fear and denial. Entitled The Coming Anarchy, the report paints a horrifying picture of the future for humanity. The author suggests that the terrible consequences of the conjunction between exploding human population and surrounding environmental degradation are already visible in Africa and parts of Southeast Asia. As society is destabilised by the AIDS epidemic, government control evaporates, national borders crumble beneath the pressure of environmental refugees and local populations revert to tribalism to settle old scores or defend against fleeing masses and bands of stateless nomads on the move.",
+            "Kaplan believes what he has seen in Africa and Southeast Asia is the beginning of a global pattern of disintegration of social, political and economic infrastructure under the impact of ecological degradation, population pressure and disease. As ecosystems collapse, this scenario could sweep the planet, first in Eastern Europe and then the industrialised countries. It is a frightening scenario, built on a serious attempt to project the aftermath of ecological destruction. It comes from a core recognition that the planet is finite and consumption has vast social, political and economic ramifications. It has also generated a great deal of discussion and controversy.",
+            "Marcus Gee pronounces Kaplan’s vision ‘dead wrong’ in a major article headlined Apocalypse Deferred. Attacking the ‘doomsayers’, Gee counters with the statistics favoured by believers in the limitless benefits and potential of economic growth. Citing the spectacular improvements in human health, levels of education and literacy, availability of food and length of life even in the developing world, Gee pronounces the fivefold increase in the world economy since 1950 as the cause of this good news. He does concede that immense problems remain, from ethnic nationalism to tropical deforestation to malnutrition to cropland losses but concludes that Kaplan has exaggerated many of the crises and thus missed the broad pattern of progress.",
+            "Focusing on statistics of the decline in child mortality and the rise in longevity, food production and adult literacy, Gee reaches the conclusion that things have never been better. Economic indicators, such as the rise in gross world product and total exports show ‘remarkable sustained and dramatic progress’. Life for the majority of the world’s citizens is getting steadily better in almost every category.",
+            "Gee’s conclusions rest heavily on economic indicators. He points out the annual 3.9 percent rise in the global economy and the more than doubling of the gross output per person, that has occurred for the past thirty years. World trade has done even better, growing by 6 percent of a product’s price in 1947 to 5 percent today.",
+            "Gee skips lightly over such facts as third world debt and the daily toll of 22,000 child deaths from easily preventable diseases. He also fails to mention that during this period the gulf between rich and poor countries has increased. He does acknowledge the threats of loss of topsoil and forests, pollution of the air and contamination of water. However, he concludes that there is little evidence they are serious enough to halt or even reverse human progress. Gee challenges the notion of a population crisis since there have never been as many people so well off. Furthermore, he suggests there will never be a limit to population because more people means more Einsteins to keep making life better.",
+            "Gee’s outlook rests on a tiny minority of scientists who have faith in the boundless potential of science and technology to overcome the physical constraints of air, water and soil so that a much larger population can be sustained. His final proof? -the general rise in living standards along with population growth. But the relationship between changes in living standards and population is a correlation, not proof of causal connection. Gee is ignoring basic economic as well as scientific reality.",
+            "If we inherit a bank account with a thousand dollars that earns 5% interest annually, we could withdraw fifty dollars or less each year forever. However, suppose we start to increase our withdrawals, say up to sixty dollars, then seventy dollars and more each year. For many years the account would yield cash. But it would be foolish to conclude that we could keep drawing more from the account indefinitely. Yet that is what Gee believes. As ocean fisheries around the world show, we are using up the ecological capital of the planet (biodiversity, air. water, soil) rather than living off the interest. It is a dangerous deception to believe that the human-created artifice called economies can keep the indicators rising as the life support systems of the planet continue to decline.",
+            "The value system that dominates most of the popular media promotes the delusion that resources and the economy can continue to expand indefinitely. It also blinds the public to the urgency and credibility of warnings that an environmental crisis confronts us."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Our patterns of consumption are using up the ecological capital of the planet",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) R. Kaplan, author of The Coming Anarchy"
+            },
+            {
+              "value": "B",
+              "label": "B) M. Gee, author of Apocalypse Deferred"
+            },
+            {
+              "value": "C",
+              "label": "C) D. Suzuki, author of this passage"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Suzuki writes that 'we are using up the ecological capital of the planet', matching C.",
+          "source": "Academic Reading Test 18, Questions 28 to 33"
+        },
+        {
+          "prompt": "Crises beginning in the Third World will spread to developed countries",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) R. Kaplan, author of The Coming Anarchy"
+            },
+            {
+              "value": "B",
+              "label": "B) M. Gee, author of Apocalypse Deferred"
+            },
+            {
+              "value": "C",
+              "label": "C) D. Suzuki, author of this passage"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Kaplan predicts the collapse 'could sweep the planet, first in Eastern Europe and then the industrialised countries', matching A.",
+          "source": "Academic Reading Test 18, Questions 28 to 33"
+        },
+        {
+          "prompt": "Scientific progress will enable the planet to sustain increased population",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) R. Kaplan, author of The Coming Anarchy"
+            },
+            {
+              "value": "B",
+              "label": "B) M. Gee, author of Apocalypse Deferred"
+            },
+            {
+              "value": "C",
+              "label": "C) D. Suzuki, author of this passage"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Gee's optimism rests on faith in 'the boundless potential of science and technology to overcome the physical constraints', matching B.",
+          "source": "Academic Reading Test 18, Questions 28 to 33"
+        },
+        {
+          "prompt": "Social and political infrastructure worldwide could collapse",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) R. Kaplan, author of The Coming Anarchy"
+            },
+            {
+              "value": "B",
+              "label": "B) M. Gee, author of Apocalypse Deferred"
+            },
+            {
+              "value": "C",
+              "label": "C) D. Suzuki, author of this passage"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Kaplan foresees 'disintegration of social, political and economic infrastructure' as ecosystems collapse, matching A.",
+          "source": "Academic Reading Test 18, Questions 28 to 33"
+        },
+        {
+          "prompt": "Earth’s life support systems are at critical risk",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) R. Kaplan, author of The Coming Anarchy"
+            },
+            {
+              "value": "B",
+              "label": "B) M. Gee, author of Apocalypse Deferred"
+            },
+            {
+              "value": "C",
+              "label": "C) D. Suzuki, author of this passage"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Suzuki warns 'the life support systems of the planet continue to decline', a concern he shares with Kaplan's collapse scenario, matching C and A.",
+          "source": "Academic Reading Test 18, Questions 28 to 33"
+        },
+        {
+          "prompt": "Environmental problems are not a threat to progress. A R. Kaplan, author of The Coming Anarchy B M. Gee, author of Apocalypse Deferred C D. Suzuki, author of this passage",
+          "kind": "choice",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) R. Kaplan, author of The Coming Anarchy"
+            },
+            {
+              "value": "B",
+              "label": "B) M. Gee, author of Apocalypse Deferred"
+            },
+            {
+              "value": "C",
+              "label": "C) D. Suzuki, author of this passage"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Gee concludes there is 'little evidence they are serious enough to halt or even reverse human progress', matching B.",
+          "source": "Academic Reading Test 18, Questions 28 to 33"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "For our own safety, humans will need to restrict the abilities of robots",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Rees says robots should be kept as no more than idiot savants that cannot outwit us, showing a wish to limit their abilities for safety.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "The risk of robots harming us is less serious than humans believe it to be",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Richardson says robots have never actually challenged human supremacy, so she sees the danger as smaller than people fear.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "It will take many decades for robot intelligence to be as imaginative as human intelligence",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Wolpert says reaching human like creative intelligence within the next 50 years would be highly ambitious, meaning it will take a long time.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "We may have to start considering whether we are treating robots fairly",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Rees asks whether we should feel guilty about exploiting advanced robots or worry if they are bored, raising the question of fair treatment.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "Robots are probably of more help to us on Earth than in space",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Wolpert says gathering resources nearer to home would be a better use of robots than colonising other planets.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "The ideas in high-quality science fiction may prove to be just as accurate as those found in the work of mediocre scientists",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Rees says it is better to read first rate science fiction than second rate science, since it is no more likely to be wrong.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) Martin Rees"
-        },
-        {
-          "value": "B",
-          "label": "B) Daniel Wolpert"
-        },
-        {
-          "value": "C",
-          "label": "C) Kathleen Richardson"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Richardson says many people welcome machine intelligence, showing some look forward to robots becoming smarter.",
-      "source": "Academic Reading Test 6, Questions 27 to 33"
-    },
-    {
-      "prompt": "Our patterns of consumption are using up the ecological capital of the planet",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) R. Kaplan, author of The Coming Anarchy"
-        },
-        {
-          "value": "B",
-          "label": "B) M. Gee, author of Apocalypse Deferred"
-        },
-        {
-          "value": "C",
-          "label": "C) D. Suzuki, author of this passage"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Suzuki writes that 'we are using up the ecological capital of the planet', matching C.",
-      "source": "Academic Reading Test 18, Questions 28 to 33"
-    },
-    {
-      "prompt": "Crises beginning in the Third World will spread to developed countries",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) R. Kaplan, author of The Coming Anarchy"
-        },
-        {
-          "value": "B",
-          "label": "B) M. Gee, author of Apocalypse Deferred"
-        },
-        {
-          "value": "C",
-          "label": "C) D. Suzuki, author of this passage"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Kaplan predicts the collapse 'could sweep the planet, first in Eastern Europe and then the industrialised countries', matching A.",
-      "source": "Academic Reading Test 18, Questions 28 to 33"
-    },
-    {
-      "prompt": "Scientific progress will enable the planet to sustain increased population",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) R. Kaplan, author of The Coming Anarchy"
-        },
-        {
-          "value": "B",
-          "label": "B) M. Gee, author of Apocalypse Deferred"
-        },
-        {
-          "value": "C",
-          "label": "C) D. Suzuki, author of this passage"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Gee's optimism rests on faith in 'the boundless potential of science and technology to overcome the physical constraints', matching B.",
-      "source": "Academic Reading Test 18, Questions 28 to 33"
-    },
-    {
-      "prompt": "Social and political infrastructure worldwide could collapse",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) R. Kaplan, author of The Coming Anarchy"
-        },
-        {
-          "value": "B",
-          "label": "B) M. Gee, author of Apocalypse Deferred"
-        },
-        {
-          "value": "C",
-          "label": "C) D. Suzuki, author of this passage"
-        }
-      ],
-      "answer": "A",
-      "explanation": "Kaplan foresees 'disintegration of social, political and economic infrastructure' as ecosystems collapse, matching A.",
-      "source": "Academic Reading Test 18, Questions 28 to 33"
-    },
-    {
-      "prompt": "Earth’s life support systems are at critical risk",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) R. Kaplan, author of The Coming Anarchy"
-        },
-        {
-          "value": "B",
-          "label": "B) M. Gee, author of Apocalypse Deferred"
-        },
-        {
-          "value": "C",
-          "label": "C) D. Suzuki, author of this passage"
-        }
-      ],
-      "answer": "C",
-      "explanation": "Suzuki warns 'the life support systems of the planet continue to decline', a concern he shares with Kaplan's collapse scenario, matching C and A.",
-      "source": "Academic Reading Test 18, Questions 28 to 33"
-    },
-    {
-      "prompt": "Environmental problems are not a threat to progress. A R. Kaplan, author of The Coming Anarchy B M. Gee, author of Apocalypse Deferred C D. Suzuki, author of this passage",
-      "kind": "choice",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) R. Kaplan, author of The Coming Anarchy"
-        },
-        {
-          "value": "B",
-          "label": "B) M. Gee, author of Apocalypse Deferred"
-        },
-        {
-          "value": "C",
-          "label": "C) D. Suzuki, author of this passage"
-        }
-      ],
-      "answer": "B",
-      "explanation": "Gee concludes there is 'little evidence they are serious enough to halt or even reverse human progress', matching B.",
-      "source": "Academic Reading Test 18, Questions 28 to 33"
     }
   ]
 },
@@ -2371,430 +2440,440 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "title": "Exercise. Match each sentence beginning to its correct ending (real test questions)",
   "intro": "Choose the ending that correctly completes each sentence beginning, using the passage above.",
   "selectNoun": "ending",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 8, Passage 3, Questions 31 to 35",
-      "title": "How stress affects our judgement",
-      "paragraphs": [
-        "Some of the most important decisions of our lives occur while we’re feeling stressed and anxious. From medical decisions to financial and professional ones, we are all sometimes required to weigh up information under stressful conditions. But do we become better or worse at processing and using information under such circumstances?",
-        "My colleague and I, both neuroscientists, wanted to investigate how the mind operates under stress, so we visited some local fire stations. Firefighters’ workdays vary quite a bit. Some are pretty relaxed; they’ll spend their time washing the truck, cleaning equipment, cooking meals and reading. Other days can be hectic, with numerous life-threatening incidents to attend to; they’ll enter burning homes to rescue trapped residents, and assist with medical emergencies. These ups and downs presented the perfect setting for an experiment on how people’s ability to use information changes when they feel under pressure.",
-        "We found that perceived threat acted as a trigger for a stress reaction that made the task of processing information easier for the firefighters – but only as long as it conveyed bad news.",
-        "This is how we arrived at these results. We asked the firefighters to estimate their likelihood of experiencing 40 different adverse events in their life, such as being involved in an accident or becoming a victim of card fraud. We then gave them either good news (that their likelihood of experiencing these events was lower than they’d thought) or bad news (that it was higher) and asked them to provide new estimates.",
-        "People are normally quite optimistic – they will ignore bad news and embrace the good. This is what happened when the firefighters were relaxed; but when they were under stress, a different pattern emerged. Under these conditions, they became hyper-vigilant to bad news, even when it had nothing to do with their job (such as learning that the likelihood of card fraud was higher than they’d thought), and altered their beliefs in response. In contrast, stress didn’t change how they responded to good news (such as learning that the likelihood of card fraud was lower than they’d thought).",
-        "Back in our lab, we observed the same pattern in students who were told they had to give a surprise public speech, which would be judged by a panel, recorded and posted online. Sure enough, their cortisol levels spiked, their heart rates went up and they suddenly became better at processing unrelated, yet alarming, information about rates of disease and violence.",
-        "When we experience stressful events, a physiological change is triggered that causes us to take in warnings and focus on what might go wrong. Brain imaging reveals that this ‘switch’ is related to a sudden boost in a neural signal important for learning, specifically in response to unexpected warning signs, such as faces expressing fear.",
-        "Such neural engineering could have helped prehistoric humans to survive. When our ancestors found themselves surrounded by hungry animals, they would have benefited from an increased ability to learn about hazards. In a safe environment, however, it would have been wasteful to be on high alert constantly. So, a neural switch that automatically increases or decreases our ability to process warnings in response to changes in our environment could have been useful. In fact, people with clinical depression and anxiety seem unable to switch away from a state in which they absorb all the negative messages around them.",
-        "It is also important to realise that stress travels rapidly from one person to the next. If a co-worker is stressed, we are more likely to tense up and feel stressed ourselves. We don’t even need to be in the same room with someone for their emotions to influence our behaviour. Studies show that if we observe positive feeds on social media, such as images of a pink sunset, we are more likely to post uplifting messages ourselves. If we observe negative posts, such as complaints about a long queue at the coffee shop, we will in turn create more negative posts. In some ways, many of us now live as if we are in danger, constantly ready to tackle demanding emails and text messages, and respond to news alerts and comments on social media. Repeatedly checking your phone, according to a survey conducted by the American Psychological Association, is related to stress. In other words, a pre-programmed physiological reaction, which evolution has equipped us with to help us avoid famished predators, is now being triggered by an online post. Social media posting, according to one study, raises your pulse, makes you sweat, and enlarges your pupils more than most daily activities.",
-        "The fact that stress increases the likelihood that we will focus more on alarming messages, together with the fact that it spreads extremely rapidly, can create collective fear that is not always justified. After a stressful public event, such as a natural disaster or major financial crash, there is often a wave of alarming information in traditional and social media, which individuals become very aware of. But that has the effect of exaggerating existing danger. And so, a reliable pattern emerges – stress is triggered, spreading from one person to the next, which temporarily enhances the likelihood that people will take in negative reports, which increases stress further. As a result, trips are cancelled, even if the disaster took place across the globe; stocks are sold, even when holding on is the best thing to do.",
-        "The good news, however, is that positive emotions, such as hope, are contagious too, and are powerful in inducing people to act to find solutions. Being aware of the close relationship between people’s emotional state and how they process information can help us frame our messages more effectively and become conscientious agents of change."
+      "passages": [
+        {
+          "label": "Academic Reading Test 8, Passage 3, Questions 31 to 35",
+          "title": "How stress affects our judgement",
+          "paragraphs": [
+            "Some of the most important decisions of our lives occur while we’re feeling stressed and anxious. From medical decisions to financial and professional ones, we are all sometimes required to weigh up information under stressful conditions. But do we become better or worse at processing and using information under such circumstances?",
+            "My colleague and I, both neuroscientists, wanted to investigate how the mind operates under stress, so we visited some local fire stations. Firefighters’ workdays vary quite a bit. Some are pretty relaxed; they’ll spend their time washing the truck, cleaning equipment, cooking meals and reading. Other days can be hectic, with numerous life-threatening incidents to attend to; they’ll enter burning homes to rescue trapped residents, and assist with medical emergencies. These ups and downs presented the perfect setting for an experiment on how people’s ability to use information changes when they feel under pressure.",
+            "We found that perceived threat acted as a trigger for a stress reaction that made the task of processing information easier for the firefighters – but only as long as it conveyed bad news.",
+            "This is how we arrived at these results. We asked the firefighters to estimate their likelihood of experiencing 40 different adverse events in their life, such as being involved in an accident or becoming a victim of card fraud. We then gave them either good news (that their likelihood of experiencing these events was lower than they’d thought) or bad news (that it was higher) and asked them to provide new estimates.",
+            "People are normally quite optimistic – they will ignore bad news and embrace the good. This is what happened when the firefighters were relaxed; but when they were under stress, a different pattern emerged. Under these conditions, they became hyper-vigilant to bad news, even when it had nothing to do with their job (such as learning that the likelihood of card fraud was higher than they’d thought), and altered their beliefs in response. In contrast, stress didn’t change how they responded to good news (such as learning that the likelihood of card fraud was lower than they’d thought).",
+            "Back in our lab, we observed the same pattern in students who were told they had to give a surprise public speech, which would be judged by a panel, recorded and posted online. Sure enough, their cortisol levels spiked, their heart rates went up and they suddenly became better at processing unrelated, yet alarming, information about rates of disease and violence.",
+            "When we experience stressful events, a physiological change is triggered that causes us to take in warnings and focus on what might go wrong. Brain imaging reveals that this ‘switch’ is related to a sudden boost in a neural signal important for learning, specifically in response to unexpected warning signs, such as faces expressing fear.",
+            "Such neural engineering could have helped prehistoric humans to survive. When our ancestors found themselves surrounded by hungry animals, they would have benefited from an increased ability to learn about hazards. In a safe environment, however, it would have been wasteful to be on high alert constantly. So, a neural switch that automatically increases or decreases our ability to process warnings in response to changes in our environment could have been useful. In fact, people with clinical depression and anxiety seem unable to switch away from a state in which they absorb all the negative messages around them.",
+            "It is also important to realise that stress travels rapidly from one person to the next. If a co-worker is stressed, we are more likely to tense up and feel stressed ourselves. We don’t even need to be in the same room with someone for their emotions to influence our behaviour. Studies show that if we observe positive feeds on social media, such as images of a pink sunset, we are more likely to post uplifting messages ourselves. If we observe negative posts, such as complaints about a long queue at the coffee shop, we will in turn create more negative posts. In some ways, many of us now live as if we are in danger, constantly ready to tackle demanding emails and text messages, and respond to news alerts and comments on social media. Repeatedly checking your phone, according to a survey conducted by the American Psychological Association, is related to stress. In other words, a pre-programmed physiological reaction, which evolution has equipped us with to help us avoid famished predators, is now being triggered by an online post. Social media posting, according to one study, raises your pulse, makes you sweat, and enlarges your pupils more than most daily activities.",
+            "The fact that stress increases the likelihood that we will focus more on alarming messages, together with the fact that it spreads extremely rapidly, can create collective fear that is not always justified. After a stressful public event, such as a natural disaster or major financial crash, there is often a wave of alarming information in traditional and social media, which individuals become very aware of. But that has the effect of exaggerating existing danger. And so, a reliable pattern emerges – stress is triggered, spreading from one person to the next, which temporarily enhances the likelihood that people will take in negative reports, which increases stress further. As a result, trips are cancelled, even if the disaster took place across the globe; stocks are sold, even when holding on is the best thing to do.",
+            "The good news, however, is that positive emotions, such as hope, are contagious too, and are powerful in inducing people to act to find solutions. Being aware of the close relationship between people’s emotional state and how they process information can help us frame our messages more effectively and become conscientious agents of change."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "At times when they were relaxed, the firefighters usually",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) made them feel optimistic."
+            },
+            {
+              "value": "B",
+              "label": "B) took relatively little notice of bad news."
+            },
+            {
+              "value": "C",
+              "label": "C) responded to negative and positive information in the same way."
+            },
+            {
+              "value": "D",
+              "label": "D) were feeling under stress."
+            },
+            {
+              "value": "E",
+              "label": "E) put them in a stressful situation."
+            },
+            {
+              "value": "F",
+              "label": "F) behaved in a similar manner, regardless of the circumstances."
+            },
+            {
+              "value": "G",
+              "label": "G) thought it more likely that they would experience something bad."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Paragraph 5 says relaxed people normally ignore bad news, taking little notice of it.",
+          "source": "Academic Reading Test 8, Questions 31 to 35"
+        },
+        {
+          "prompt": "The researchers noted that when the firefighters were stressed, they",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) made them feel optimistic."
+            },
+            {
+              "value": "B",
+              "label": "B) took relatively little notice of bad news."
+            },
+            {
+              "value": "C",
+              "label": "C) responded to negative and positive information in the same way."
+            },
+            {
+              "value": "D",
+              "label": "D) were feeling under stress."
+            },
+            {
+              "value": "E",
+              "label": "E) put them in a stressful situation."
+            },
+            {
+              "value": "F",
+              "label": "F) behaved in a similar manner, regardless of the circumstances."
+            },
+            {
+              "value": "G",
+              "label": "G) thought it more likely that they would experience something bad."
+            }
+          ],
+          "answer": "G",
+          "explanation": "Paragraph 5 says stressed firefighters became hyper vigilant to bad news and revised their estimates upward, thinking something bad was more likely.",
+          "source": "Academic Reading Test 8, Questions 31 to 35"
+        },
+        {
+          "prompt": "When the firefighters were told good news, they always",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) made them feel optimistic."
+            },
+            {
+              "value": "B",
+              "label": "B) took relatively little notice of bad news."
+            },
+            {
+              "value": "C",
+              "label": "C) responded to negative and positive information in the same way."
+            },
+            {
+              "value": "D",
+              "label": "D) were feeling under stress."
+            },
+            {
+              "value": "E",
+              "label": "E) put them in a stressful situation."
+            },
+            {
+              "value": "F",
+              "label": "F) behaved in a similar manner, regardless of the circumstances."
+            },
+            {
+              "value": "G",
+              "label": "G) thought it more likely that they would experience something bad."
+            }
+          ],
+          "answer": "F",
+          "explanation": "Paragraph 5 says stress did not change how firefighters responded to good news, so their behaviour stayed the same regardless of conditions.",
+          "source": "Academic Reading Test 8, Questions 31 to 35"
+        },
+        {
+          "prompt": "The students’ cortisol levels and heart rates were affected when the researchers",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) made them feel optimistic."
+            },
+            {
+              "value": "B",
+              "label": "B) took relatively little notice of bad news."
+            },
+            {
+              "value": "C",
+              "label": "C) responded to negative and positive information in the same way."
+            },
+            {
+              "value": "D",
+              "label": "D) were feeling under stress."
+            },
+            {
+              "value": "E",
+              "label": "E) put them in a stressful situation."
+            },
+            {
+              "value": "F",
+              "label": "F) behaved in a similar manner, regardless of the circumstances."
+            },
+            {
+              "value": "G",
+              "label": "G) thought it more likely that they would experience something bad."
+            }
+          ],
+          "answer": "E",
+          "explanation": "Paragraph 6 says students told they had to give a surprise public speech showed spiked cortisol and heart rate, since the speech put them under stress.",
+          "source": "Academic Reading Test 8, Questions 31 to 35"
+        },
+        {
+          "prompt": "In both experiments, negative information was processed better when the subjects A. made them feel optimistic. B. took relatively little notice of bad news. C. responded to negative and positive information in the same way. D. were feeling under stress. E. put them in a stressful situation. F. behaved in a similar manner, regardless of the circumstances. G. thought it more likely that they would experience something bad",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) made them feel optimistic."
+            },
+            {
+              "value": "B",
+              "label": "B) took relatively little notice of bad news."
+            },
+            {
+              "value": "C",
+              "label": "C) responded to negative and positive information in the same way."
+            },
+            {
+              "value": "D",
+              "label": "D) were feeling under stress."
+            },
+            {
+              "value": "E",
+              "label": "E) put them in a stressful situation."
+            },
+            {
+              "value": "F",
+              "label": "F) behaved in a similar manner, regardless of the circumstances."
+            },
+            {
+              "value": "G",
+              "label": "G) thought it more likely that they would experience something bad."
+            }
+          ],
+          "answer": "D",
+          "explanation": "In both experiments, negative information was processed better while the subjects were under stress, as the firefighter and student studies both show.",
+          "source": "Academic Reading Test 8, Questions 31 to 35"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 13, Passage 1, Questions 1 to 5",
-      "title": "PROJECT: Reform Of The Prison System In The UK",
-      "paragraphs": [
-        "Penal progress:",
-        "The UK’s large prison population is fuelled by a high level of recidivism – when criminals repeatedly relapse into crime. This project for a model prison tackles issues of architecture, management and funding in an enlightened attempt to achieve lasting rehabilitation.",
-        "Project:",
-        "The penal system is one of the most direct manifestations of the power of the state, but is often also a revealing reflection of the national psyche and the public’s attitude to punishment and rehabilitation. Surprisingly, for a prosperous, progressive Western democracy, the UK has a lamentable penal record. Britain’s prison population is currently in excess of 60,000 (up 50 per cent from a decade ago) making it the second largest in Europe. The average cost of keeping an individual prisoner incarcerated for a year is £27,000 (ten times the average expenditure on a secondary school pupil in the state sector). Despite such substantial investment, over half of British prisoners re-offend within two years of release.",
-        "Such high rates of recidivism is a serious problem. It means that the prison population is continuing to grow at an alarming rate (recently by as many as 700 a week), so overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale. To ease this pressure, the UK government is investing in the prison estate at historic levels, with 12,000 new prison places proposed within the next few years. Yet, like their nineteenth-century predecessors, Britain’s ‘new Victorian’ prisons are designed for security and control rather than for the rehabilitation and education which is increasingly recognised as what prisoners need. Most are poorly educated young men under 30 (at least 60 per cent of whom are functionally illiterate and innumerate), so without education and skills few will be able to build meaningful lives away from crime, no matter how often they go to prison, or how long they spend there.",
-        "Any transformation of the penal system must start with the redesign of prison buildings. Prison architecture has a clearly discernible effect on behaviour, operational efficiency, interaction and morale. Last year, architects Buschow Henley were commissioned by a think tank organisation working with the Home Office Prison Service to research and develop an alternative prison model that focuses more intensely on rehabilitation through a concentrated programme of intellectual, physical and social education. The model is not intended as a blueprint but rather a series of principles that might be adapted to support the wider concept of the ‘Learning Prison’ in which other aspects such as organisation, management and funding would obviously play a part. Key to this is the introduction of a system that groups together prisoners in small communities or ‘houses’ of between 30 and 40 inmates. This has two important consequences. First, the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners. Second, the system places educational and other facilities at the heart of the building, within easy reach at all times of day, reinforced by a supportive social environment. This model also enables resources to be dramatically redeployed, from a current estimated ratio of 80:20 (costs of security versus rehabilitation) to a predicted reversed figure of 20:80, freeing up much-needed funds to invest in educational programmes, thereby helping to promote rehabilitation, reduce recidivism and initiate a virtuous cycle.",
-        "In Buschow Henley’s scheme, the proposed group size of 30-40 has the potential for social accountability – each prisoner being known within the community and personally accountable for his behaviour. Houses are semi-autonomous, not just dormitories, with communal, as opposed to centralised, facilities. Circulation is simplified and reduced. Buildings are arranged in a chess-board formation, as opposed to pavilions marooned in space, each with a discrete external area that can be productively used for sport, games or gardening with a minimum of supervision.",
-        "Individual cells are replanned to make them less like domestic lavatories and more conducive to learning. In an inversion of the conventional layout, the bed is placed lengthways along the external wall at a higher level, freeing up space below. Storage is built next to where they sleep and each inmate is provided with a moveable table equipped with electronic tools for study. Washing facilities are contained in a small adjoining space (included in the basic 8 sqm allowance) so reducing pressure on prison staff to manage inmate hygiene and ablution. Each cell is paired with a neighbouring ‘buddy’ cell linked by sliding doors controlled by individual prisoners to mitigate the risk of self-harm.",
-        "While this new type of prison appears to be somewhat liberal, the arrangement of spaces and functions both inside and out is actually tightly controlled. Paradoxically, however, this proscription enables a greater range of activities to take place, and makes general supervision easier. In this environment the prisoners are judged not by their degree of conformity, but by the scope of their activities and achievements, so laying the foundations for genuine rehabilitation. As Martin Narey, Director General of the UK Prison Services observes, ‘We have got to accept that prison must be a humane and constructive place, not least because all but 23 of my population are going home some day."
+      "passages": [
+        {
+          "label": "Academic Reading Test 13, Passage 1, Questions 1 to 5",
+          "title": "PROJECT: Reform Of The Prison System In The UK",
+          "paragraphs": [
+            "Penal progress:",
+            "The UK’s large prison population is fuelled by a high level of recidivism – when criminals repeatedly relapse into crime. This project for a model prison tackles issues of architecture, management and funding in an enlightened attempt to achieve lasting rehabilitation.",
+            "Project:",
+            "The penal system is one of the most direct manifestations of the power of the state, but is often also a revealing reflection of the national psyche and the public’s attitude to punishment and rehabilitation. Surprisingly, for a prosperous, progressive Western democracy, the UK has a lamentable penal record. Britain’s prison population is currently in excess of 60,000 (up 50 per cent from a decade ago) making it the second largest in Europe. The average cost of keeping an individual prisoner incarcerated for a year is £27,000 (ten times the average expenditure on a secondary school pupil in the state sector). Despite such substantial investment, over half of British prisoners re-offend within two years of release.",
+            "Such high rates of recidivism is a serious problem. It means that the prison population is continuing to grow at an alarming rate (recently by as many as 700 a week), so overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale. To ease this pressure, the UK government is investing in the prison estate at historic levels, with 12,000 new prison places proposed within the next few years. Yet, like their nineteenth-century predecessors, Britain’s ‘new Victorian’ prisons are designed for security and control rather than for the rehabilitation and education which is increasingly recognised as what prisoners need. Most are poorly educated young men under 30 (at least 60 per cent of whom are functionally illiterate and innumerate), so without education and skills few will be able to build meaningful lives away from crime, no matter how often they go to prison, or how long they spend there.",
+            "Any transformation of the penal system must start with the redesign of prison buildings. Prison architecture has a clearly discernible effect on behaviour, operational efficiency, interaction and morale. Last year, architects Buschow Henley were commissioned by a think tank organisation working with the Home Office Prison Service to research and develop an alternative prison model that focuses more intensely on rehabilitation through a concentrated programme of intellectual, physical and social education. The model is not intended as a blueprint but rather a series of principles that might be adapted to support the wider concept of the ‘Learning Prison’ in which other aspects such as organisation, management and funding would obviously play a part. Key to this is the introduction of a system that groups together prisoners in small communities or ‘houses’ of between 30 and 40 inmates. This has two important consequences. First, the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners. Second, the system places educational and other facilities at the heart of the building, within easy reach at all times of day, reinforced by a supportive social environment. This model also enables resources to be dramatically redeployed, from a current estimated ratio of 80:20 (costs of security versus rehabilitation) to a predicted reversed figure of 20:80, freeing up much-needed funds to invest in educational programmes, thereby helping to promote rehabilitation, reduce recidivism and initiate a virtuous cycle.",
+            "In Buschow Henley’s scheme, the proposed group size of 30-40 has the potential for social accountability – each prisoner being known within the community and personally accountable for his behaviour. Houses are semi-autonomous, not just dormitories, with communal, as opposed to centralised, facilities. Circulation is simplified and reduced. Buildings are arranged in a chess-board formation, as opposed to pavilions marooned in space, each with a discrete external area that can be productively used for sport, games or gardening with a minimum of supervision.",
+            "Individual cells are replanned to make them less like domestic lavatories and more conducive to learning. In an inversion of the conventional layout, the bed is placed lengthways along the external wall at a higher level, freeing up space below. Storage is built next to where they sleep and each inmate is provided with a moveable table equipped with electronic tools for study. Washing facilities are contained in a small adjoining space (included in the basic 8 sqm allowance) so reducing pressure on prison staff to manage inmate hygiene and ablution. Each cell is paired with a neighbouring ‘buddy’ cell linked by sliding doors controlled by individual prisoners to mitigate the risk of self-harm.",
+            "While this new type of prison appears to be somewhat liberal, the arrangement of spaces and functions both inside and out is actually tightly controlled. Paradoxically, however, this proscription enables a greater range of activities to take place, and makes general supervision easier. In this environment the prisoners are judged not by their degree of conformity, but by the scope of their activities and achievements, so laying the foundations for genuine rehabilitation. As Martin Narey, Director General of the UK Prison Services observes, ‘We have got to accept that prison must be a humane and constructive place, not least because all but 23 of my population are going home some day."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "The agenda of current British prison systems is primarily",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) improved security, supervision and education."
+            },
+            {
+              "value": "B",
+              "label": "B) rehabilitation and education."
+            },
+            {
+              "value": "C",
+              "label": "C) reduced educational opportunities and morale"
+            },
+            {
+              "value": "D",
+              "label": "D) reduced risk of self harm."
+            },
+            {
+              "value": "E",
+              "label": "E) security and control."
+            },
+            {
+              "value": "F",
+              "label": "F) an alternative prison model"
+            },
+            {
+              "value": "G",
+              "label": "G) a learning environment rather than a punitive compound"
+            },
+            {
+              "value": "H",
+              "label": "H) organisation, management and funding."
+            }
+          ],
+          "answer": "E",
+          "explanation": "Current UK prisons are built for security and control rather than rehabilitation.",
+          "source": "Academic Reading Test 13, Questions 1 to 5"
+        },
+        {
+          "prompt": "The primary role of prisons should he",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) improved security, supervision and education."
+            },
+            {
+              "value": "B",
+              "label": "B) rehabilitation and education."
+            },
+            {
+              "value": "C",
+              "label": "C) reduced educational opportunities and morale"
+            },
+            {
+              "value": "D",
+              "label": "D) reduced risk of self harm."
+            },
+            {
+              "value": "E",
+              "label": "E) security and control."
+            },
+            {
+              "value": "F",
+              "label": "F) an alternative prison model"
+            },
+            {
+              "value": "G",
+              "label": "G) a learning environment rather than a punitive compound"
+            },
+            {
+              "value": "H",
+              "label": "H) organisation, management and funding."
+            }
+          ],
+          "answer": "B",
+          "explanation": "The passage argues, through the illiteracy statistics, that prisons should focus on rehabilitation and education.",
+          "source": "Academic Reading Test 13, Questions 1 to 5"
+        },
+        {
+          "prompt": "The new prison scheme will focus on",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) improved security, supervision and education."
+            },
+            {
+              "value": "B",
+              "label": "B) rehabilitation and education."
+            },
+            {
+              "value": "C",
+              "label": "C) reduced educational opportunities and morale"
+            },
+            {
+              "value": "D",
+              "label": "D) reduced risk of self harm."
+            },
+            {
+              "value": "E",
+              "label": "E) security and control."
+            },
+            {
+              "value": "F",
+              "label": "F) an alternative prison model"
+            },
+            {
+              "value": "G",
+              "label": "G) a learning environment rather than a punitive compound"
+            },
+            {
+              "value": "H",
+              "label": "H) organisation, management and funding."
+            }
+          ],
+          "answer": "G",
+          "explanation": "The new scheme centres on the 'Learning Prison' concept, a learning environment rather than a purely punitive one.",
+          "source": "Academic Reading Test 13, Questions 1 to 5"
+        },
+        {
+          "prompt": "Existing prison architecture causes",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) improved security, supervision and education."
+            },
+            {
+              "value": "B",
+              "label": "B) rehabilitation and education."
+            },
+            {
+              "value": "C",
+              "label": "C) reduced educational opportunities and morale"
+            },
+            {
+              "value": "D",
+              "label": "D) reduced risk of self harm."
+            },
+            {
+              "value": "E",
+              "label": "E) security and control."
+            },
+            {
+              "value": "F",
+              "label": "F) an alternative prison model"
+            },
+            {
+              "value": "G",
+              "label": "G) a learning environment rather than a punitive compound"
+            },
+            {
+              "value": "H",
+              "label": "H) organisation, management and funding."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Overcrowding caused by current prison design hampers education and lowers morale.",
+          "source": "Academic Reading Test 13, Questions 1 to 5"
+        },
+        {
+          "prompt": "The positive results of reducing the number of prisoners in one space include A. improved security, supervision and education. B. rehabilitation and education. C. reduced educational opportunities and morale D. reduced risk of self harm. E. security and control. F. an alternative prison model G. a learning environment rather than a punitive compound H. organisation, management and funding",
+          "kind": "select",
+          "options": [
+            {
+              "value": "A",
+              "label": "A) improved security, supervision and education."
+            },
+            {
+              "value": "B",
+              "label": "B) rehabilitation and education."
+            },
+            {
+              "value": "C",
+              "label": "C) reduced educational opportunities and morale"
+            },
+            {
+              "value": "D",
+              "label": "D) reduced risk of self harm."
+            },
+            {
+              "value": "E",
+              "label": "E) security and control."
+            },
+            {
+              "value": "F",
+              "label": "F) an alternative prison model"
+            },
+            {
+              "value": "G",
+              "label": "G) a learning environment rather than a punitive compound"
+            },
+            {
+              "value": "H",
+              "label": "H) organisation, management and funding."
+            }
+          ],
+          "answer": "A",
+          "explanation": "Smaller house groupings free up staff time for supervision and put education facilities within easy reach.",
+          "source": "Academic Reading Test 13, Questions 1 to 5"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "At times when they were relaxed, the firefighters usually",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) made them feel optimistic."
-        },
-        {
-          "value": "B",
-          "label": "B) took relatively little notice of bad news."
-        },
-        {
-          "value": "C",
-          "label": "C) responded to negative and positive information in the same way."
-        },
-        {
-          "value": "D",
-          "label": "D) were feeling under stress."
-        },
-        {
-          "value": "E",
-          "label": "E) put them in a stressful situation."
-        },
-        {
-          "value": "F",
-          "label": "F) behaved in a similar manner, regardless of the circumstances."
-        },
-        {
-          "value": "G",
-          "label": "G) thought it more likely that they would experience something bad."
-        }
-      ],
-      "answer": "B",
-      "explanation": "Paragraph 5 says relaxed people normally ignore bad news, taking little notice of it.",
-      "source": "Academic Reading Test 8, Questions 31 to 35"
-    },
-    {
-      "prompt": "The researchers noted that when the firefighters were stressed, they",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) made them feel optimistic."
-        },
-        {
-          "value": "B",
-          "label": "B) took relatively little notice of bad news."
-        },
-        {
-          "value": "C",
-          "label": "C) responded to negative and positive information in the same way."
-        },
-        {
-          "value": "D",
-          "label": "D) were feeling under stress."
-        },
-        {
-          "value": "E",
-          "label": "E) put them in a stressful situation."
-        },
-        {
-          "value": "F",
-          "label": "F) behaved in a similar manner, regardless of the circumstances."
-        },
-        {
-          "value": "G",
-          "label": "G) thought it more likely that they would experience something bad."
-        }
-      ],
-      "answer": "G",
-      "explanation": "Paragraph 5 says stressed firefighters became hyper vigilant to bad news and revised their estimates upward, thinking something bad was more likely.",
-      "source": "Academic Reading Test 8, Questions 31 to 35"
-    },
-    {
-      "prompt": "When the firefighters were told good news, they always",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) made them feel optimistic."
-        },
-        {
-          "value": "B",
-          "label": "B) took relatively little notice of bad news."
-        },
-        {
-          "value": "C",
-          "label": "C) responded to negative and positive information in the same way."
-        },
-        {
-          "value": "D",
-          "label": "D) were feeling under stress."
-        },
-        {
-          "value": "E",
-          "label": "E) put them in a stressful situation."
-        },
-        {
-          "value": "F",
-          "label": "F) behaved in a similar manner, regardless of the circumstances."
-        },
-        {
-          "value": "G",
-          "label": "G) thought it more likely that they would experience something bad."
-        }
-      ],
-      "answer": "F",
-      "explanation": "Paragraph 5 says stress did not change how firefighters responded to good news, so their behaviour stayed the same regardless of conditions.",
-      "source": "Academic Reading Test 8, Questions 31 to 35"
-    },
-    {
-      "prompt": "The students’ cortisol levels and heart rates were affected when the researchers",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) made them feel optimistic."
-        },
-        {
-          "value": "B",
-          "label": "B) took relatively little notice of bad news."
-        },
-        {
-          "value": "C",
-          "label": "C) responded to negative and positive information in the same way."
-        },
-        {
-          "value": "D",
-          "label": "D) were feeling under stress."
-        },
-        {
-          "value": "E",
-          "label": "E) put them in a stressful situation."
-        },
-        {
-          "value": "F",
-          "label": "F) behaved in a similar manner, regardless of the circumstances."
-        },
-        {
-          "value": "G",
-          "label": "G) thought it more likely that they would experience something bad."
-        }
-      ],
-      "answer": "E",
-      "explanation": "Paragraph 6 says students told they had to give a surprise public speech showed spiked cortisol and heart rate, since the speech put them under stress.",
-      "source": "Academic Reading Test 8, Questions 31 to 35"
-    },
-    {
-      "prompt": "In both experiments, negative information was processed better when the subjects A. made them feel optimistic. B. took relatively little notice of bad news. C. responded to negative and positive information in the same way. D. were feeling under stress. E. put them in a stressful situation. F. behaved in a similar manner, regardless of the circumstances. G. thought it more likely that they would experience something bad",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) made them feel optimistic."
-        },
-        {
-          "value": "B",
-          "label": "B) took relatively little notice of bad news."
-        },
-        {
-          "value": "C",
-          "label": "C) responded to negative and positive information in the same way."
-        },
-        {
-          "value": "D",
-          "label": "D) were feeling under stress."
-        },
-        {
-          "value": "E",
-          "label": "E) put them in a stressful situation."
-        },
-        {
-          "value": "F",
-          "label": "F) behaved in a similar manner, regardless of the circumstances."
-        },
-        {
-          "value": "G",
-          "label": "G) thought it more likely that they would experience something bad."
-        }
-      ],
-      "answer": "D",
-      "explanation": "In both experiments, negative information was processed better while the subjects were under stress, as the firefighter and student studies both show.",
-      "source": "Academic Reading Test 8, Questions 31 to 35"
-    },
-    {
-      "prompt": "The agenda of current British prison systems is primarily",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) improved security, supervision and education."
-        },
-        {
-          "value": "B",
-          "label": "B) rehabilitation and education."
-        },
-        {
-          "value": "C",
-          "label": "C) reduced educational opportunities and morale"
-        },
-        {
-          "value": "D",
-          "label": "D) reduced risk of self harm."
-        },
-        {
-          "value": "E",
-          "label": "E) security and control."
-        },
-        {
-          "value": "F",
-          "label": "F) an alternative prison model"
-        },
-        {
-          "value": "G",
-          "label": "G) a learning environment rather than a punitive compound"
-        },
-        {
-          "value": "H",
-          "label": "H) organisation, management and funding."
-        }
-      ],
-      "answer": "E",
-      "explanation": "Current UK prisons are built for security and control rather than rehabilitation.",
-      "source": "Academic Reading Test 13, Questions 1 to 5"
-    },
-    {
-      "prompt": "The primary role of prisons should he",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) improved security, supervision and education."
-        },
-        {
-          "value": "B",
-          "label": "B) rehabilitation and education."
-        },
-        {
-          "value": "C",
-          "label": "C) reduced educational opportunities and morale"
-        },
-        {
-          "value": "D",
-          "label": "D) reduced risk of self harm."
-        },
-        {
-          "value": "E",
-          "label": "E) security and control."
-        },
-        {
-          "value": "F",
-          "label": "F) an alternative prison model"
-        },
-        {
-          "value": "G",
-          "label": "G) a learning environment rather than a punitive compound"
-        },
-        {
-          "value": "H",
-          "label": "H) organisation, management and funding."
-        }
-      ],
-      "answer": "B",
-      "explanation": "The passage argues, through the illiteracy statistics, that prisons should focus on rehabilitation and education.",
-      "source": "Academic Reading Test 13, Questions 1 to 5"
-    },
-    {
-      "prompt": "The new prison scheme will focus on",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) improved security, supervision and education."
-        },
-        {
-          "value": "B",
-          "label": "B) rehabilitation and education."
-        },
-        {
-          "value": "C",
-          "label": "C) reduced educational opportunities and morale"
-        },
-        {
-          "value": "D",
-          "label": "D) reduced risk of self harm."
-        },
-        {
-          "value": "E",
-          "label": "E) security and control."
-        },
-        {
-          "value": "F",
-          "label": "F) an alternative prison model"
-        },
-        {
-          "value": "G",
-          "label": "G) a learning environment rather than a punitive compound"
-        },
-        {
-          "value": "H",
-          "label": "H) organisation, management and funding."
-        }
-      ],
-      "answer": "G",
-      "explanation": "The new scheme centres on the 'Learning Prison' concept, a learning environment rather than a purely punitive one.",
-      "source": "Academic Reading Test 13, Questions 1 to 5"
-    },
-    {
-      "prompt": "Existing prison architecture causes",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) improved security, supervision and education."
-        },
-        {
-          "value": "B",
-          "label": "B) rehabilitation and education."
-        },
-        {
-          "value": "C",
-          "label": "C) reduced educational opportunities and morale"
-        },
-        {
-          "value": "D",
-          "label": "D) reduced risk of self harm."
-        },
-        {
-          "value": "E",
-          "label": "E) security and control."
-        },
-        {
-          "value": "F",
-          "label": "F) an alternative prison model"
-        },
-        {
-          "value": "G",
-          "label": "G) a learning environment rather than a punitive compound"
-        },
-        {
-          "value": "H",
-          "label": "H) organisation, management and funding."
-        }
-      ],
-      "answer": "C",
-      "explanation": "Overcrowding caused by current prison design hampers education and lowers morale.",
-      "source": "Academic Reading Test 13, Questions 1 to 5"
-    },
-    {
-      "prompt": "The positive results of reducing the number of prisoners in one space include A. improved security, supervision and education. B. rehabilitation and education. C. reduced educational opportunities and morale D. reduced risk of self harm. E. security and control. F. an alternative prison model G. a learning environment rather than a punitive compound H. organisation, management and funding",
-      "kind": "select",
-      "options": [
-        {
-          "value": "A",
-          "label": "A) improved security, supervision and education."
-        },
-        {
-          "value": "B",
-          "label": "B) rehabilitation and education."
-        },
-        {
-          "value": "C",
-          "label": "C) reduced educational opportunities and morale"
-        },
-        {
-          "value": "D",
-          "label": "D) reduced risk of self harm."
-        },
-        {
-          "value": "E",
-          "label": "E) security and control."
-        },
-        {
-          "value": "F",
-          "label": "F) an alternative prison model"
-        },
-        {
-          "value": "G",
-          "label": "G) a learning environment rather than a punitive compound"
-        },
-        {
-          "value": "H",
-          "label": "H) organisation, management and funding."
-        }
-      ],
-      "answer": "A",
-      "explanation": "Smaller house groupings free up staff time for supervision and put education facilities within easy reach.",
-      "source": "Academic Reading Test 13, Questions 1 to 5"
     }
   ]
 },
@@ -2802,186 +2881,196 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "sentence": {
   "title": "Exercise. Complete the sentences (real test questions)",
   "intro": "Fill each gap using words taken from the passage above.",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 15, Passage 2, Questions 14 to 24",
-      "title": "Physiology and Criminality",
-      "paragraphs": [
-        "Prior to the 19th century, criminality was considered more of a moral or philosophical issue. Only with the advent of Italian anthropologist Cesare Lombroso did the subject of criminality take a more scientific turn. With the publication of his theories of criminal behaviour, Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons.",
-        "In his ‘atavistic form’ theory published in 1876, Lombroso claimed that criminality was heritable. He proposed that a distinct biological class of people were prone to criminality. Such people, he claimed, exhibited ‘atavistic’ or primitive features and were ‘throwbacks’, bearing physical resemblances to Man’s predecessors, the Neanderthals. Characterised by a strong, well-defined jaw and heavy brow, they certainly had little to recommend them in the beauty stakes. With such features, coupled with a tendency towards criminal behaviour, Lombroso’s atavistic type was certainly not cut out for social success. Just for good measure, Lombroso also included other distinguishing features to identify criminals, such as bloodshot eyes and curly hair for murderers and thick lips and protruding ears for sex offenders. It has to be wondered, given the unusual appearance with which they were credited, how such individuals would have got close enough to their victims to begin with and, more to the point, how any such criminals hoped to get away with their crime, seeing as they were so readily identifiable.",
-        "In hindsight, Lombroso’s hypothesis seems ludicrous and deeply flawed. One major failing in Lombroso’s theory of an atavistic type is that no proper controls were used in studies designed to support his hypothesis. All individuals were confined to a criminal population, no comparison being made at the time with non-criminal control groups. Secondly, the concept of what constitutes a crime is in itself a social construct and can vary cross-culturally and over time. Therefore, the argument that criminal behaviour is inherited is hard to sustain. Finally, in the light of modern genetic research, complex behaviours are not considered to be controlled by single genes, thereby completely ruling out any possibility of inherited criminality.",
-        "Surprisingly, given his strong conviction of a biological disposition towards criminality, Lombroso later modified his views to admit environmental influences in determining criminal behaviour. Such views now form the basis of contemporary theories of criminality. In recognition of this fact, contemporary criminologists have bestowed on Lombroso the honorary title ‘the father of criminology’. Furthermore, despite scientific failings in his experimental approach, Lombroso is to be credited with shifting the study of criminal behaviour from a moral basis to an empirical one, thereby placing the study of criminology on a more scientific footing.",
-        "The argument for a biological basis to criminality resurfaced, however, nearly a century later with Sheldon’s theory of somatotypes. In 1949, Sheldon advanced the theory that individuals fell within three broad physical types: the ectomorph, mesomorph and endomorph. The ectomorph was essentially thin, the mesomorph muscular and athletic, whilst the endomorph type was said to be fat and rather lethargic. Each physical type, Sheldon claimed, was associated with a distinct personality and temperament. Ectomorphs were characterised by a solitary and restrained nature, whilst mesomorphs were said to be adventurous and endomorphs relaxed and pleasure-loving. Unfortunately for the mesomorphs, Sheldon also claimed that those corresponding to this physical type had criminal tendencies. By linking inherited physical types with personality, Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour. Sheldon’s studies of mesomorphic college students did to some extent confirm his theory as did a later study conducted by Putwain and Sammons as recently as 2002. In partial support of Sheldon’s theory, an increased level of testosterone associated with a mesomorphic build could explain such a biological disposition towards criminality associated with a particular body type. However, social prejudices and self-fulfilling prophecies could also be at play in the above average correlation between mesomorphic types and criminal behaviour in society.",
-        "Following on from Sheldon’s hypothesis, a further argument for a biological disposition to criminality was proposed in the 1960s. This time, hereditary tendencies were linked to genetic defect or chromosomal abnormality. Variations of the normal ‘XY’ genetic component or genotype of males were hypothesised to determine criminal behaviour from homicide to violent crime. The theory was based on the unproven assumption that possession of an extra ‘X’ chromosome ‘feminises’ a man and so conversely having an extra male ‘Y’ chromosome should make a man more masculine and aggressive. However, this somewhat weak hypothesis was severely undermined by the study of Epps in 1995. Epps demonstrated that possessing an extra ‘Y’ chromosome, as in the ‘XYY’ genotype, made an individual no more likely to commit violent crime than anyone else. The further finding that testosterone levels amongst ‘XYY’ men are no different from ‘XY’ men and that the former are no more aggressive than the latter sounded the final death knell for the hypothesis of a criminal type determined by genotype alone.",
-        "At least those who place trust in rehabilitation programmes to reform criminal types can now breathe a sigh of relief. It would seem that the rather pessimistic prognosis for individuals born with a certain physique or genotype no longer holds credence in scientific circles. If biological predisposition does play a role in criminality, it seems to be at least tempered by environmental and social factors to a large extent."
+      "passages": [
+        {
+          "label": "Academic Reading Test 15, Passage 2, Questions 14 to 24",
+          "title": "Physiology and Criminality",
+          "paragraphs": [
+            "Prior to the 19th century, criminality was considered more of a moral or philosophical issue. Only with the advent of Italian anthropologist Cesare Lombroso did the subject of criminality take a more scientific turn. With the publication of his theories of criminal behaviour, Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons.",
+            "In his ‘atavistic form’ theory published in 1876, Lombroso claimed that criminality was heritable. He proposed that a distinct biological class of people were prone to criminality. Such people, he claimed, exhibited ‘atavistic’ or primitive features and were ‘throwbacks’, bearing physical resemblances to Man’s predecessors, the Neanderthals. Characterised by a strong, well-defined jaw and heavy brow, they certainly had little to recommend them in the beauty stakes. With such features, coupled with a tendency towards criminal behaviour, Lombroso’s atavistic type was certainly not cut out for social success. Just for good measure, Lombroso also included other distinguishing features to identify criminals, such as bloodshot eyes and curly hair for murderers and thick lips and protruding ears for sex offenders. It has to be wondered, given the unusual appearance with which they were credited, how such individuals would have got close enough to their victims to begin with and, more to the point, how any such criminals hoped to get away with their crime, seeing as they were so readily identifiable.",
+            "In hindsight, Lombroso’s hypothesis seems ludicrous and deeply flawed. One major failing in Lombroso’s theory of an atavistic type is that no proper controls were used in studies designed to support his hypothesis. All individuals were confined to a criminal population, no comparison being made at the time with non-criminal control groups. Secondly, the concept of what constitutes a crime is in itself a social construct and can vary cross-culturally and over time. Therefore, the argument that criminal behaviour is inherited is hard to sustain. Finally, in the light of modern genetic research, complex behaviours are not considered to be controlled by single genes, thereby completely ruling out any possibility of inherited criminality.",
+            "Surprisingly, given his strong conviction of a biological disposition towards criminality, Lombroso later modified his views to admit environmental influences in determining criminal behaviour. Such views now form the basis of contemporary theories of criminality. In recognition of this fact, contemporary criminologists have bestowed on Lombroso the honorary title ‘the father of criminology’. Furthermore, despite scientific failings in his experimental approach, Lombroso is to be credited with shifting the study of criminal behaviour from a moral basis to an empirical one, thereby placing the study of criminology on a more scientific footing.",
+            "The argument for a biological basis to criminality resurfaced, however, nearly a century later with Sheldon’s theory of somatotypes. In 1949, Sheldon advanced the theory that individuals fell within three broad physical types: the ectomorph, mesomorph and endomorph. The ectomorph was essentially thin, the mesomorph muscular and athletic, whilst the endomorph type was said to be fat and rather lethargic. Each physical type, Sheldon claimed, was associated with a distinct personality and temperament. Ectomorphs were characterised by a solitary and restrained nature, whilst mesomorphs were said to be adventurous and endomorphs relaxed and pleasure-loving. Unfortunately for the mesomorphs, Sheldon also claimed that those corresponding to this physical type had criminal tendencies. By linking inherited physical types with personality, Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour. Sheldon’s studies of mesomorphic college students did to some extent confirm his theory as did a later study conducted by Putwain and Sammons as recently as 2002. In partial support of Sheldon’s theory, an increased level of testosterone associated with a mesomorphic build could explain such a biological disposition towards criminality associated with a particular body type. However, social prejudices and self-fulfilling prophecies could also be at play in the above average correlation between mesomorphic types and criminal behaviour in society.",
+            "Following on from Sheldon’s hypothesis, a further argument for a biological disposition to criminality was proposed in the 1960s. This time, hereditary tendencies were linked to genetic defect or chromosomal abnormality. Variations of the normal ‘XY’ genetic component or genotype of males were hypothesised to determine criminal behaviour from homicide to violent crime. The theory was based on the unproven assumption that possession of an extra ‘X’ chromosome ‘feminises’ a man and so conversely having an extra male ‘Y’ chromosome should make a man more masculine and aggressive. However, this somewhat weak hypothesis was severely undermined by the study of Epps in 1995. Epps demonstrated that possessing an extra ‘Y’ chromosome, as in the ‘XYY’ genotype, made an individual no more likely to commit violent crime than anyone else. The further finding that testosterone levels amongst ‘XYY’ men are no different from ‘XY’ men and that the former are no more aggressive than the latter sounded the final death knell for the hypothesis of a criminal type determined by genotype alone.",
+            "At least those who place trust in rehabilitation programmes to reform criminal types can now breathe a sigh of relief. It would seem that the rather pessimistic prognosis for individuals born with a certain physique or genotype no longer holds credence in scientific circles. If biological predisposition does play a role in criminality, it seems to be at least tempered by environmental and social factors to a large extent."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "…………….. realm. Italian scientist, Lombroso proposes a ________",
+          "kind": "text",
+          "answer": [
+            "moral or philosophical"
+          ],
+          "explanation": "Before the 19th century, criminality was seen as a moral or philosophical matter.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "………………. to criminality. A biological theory of criminality presupposes that such a condition is ________",
+          "kind": "text",
+          "answer": [
+            "physiological disposition",
+            "biological disposition"
+          ],
+          "explanation": "Lombroso proposed that criminal behaviour came from a physiological, biological disposition.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "……………… Criminal types are claimed to be ________",
+          "kind": "text",
+          "answer": [
+            "heritable",
+            "inherited"
+          ],
+          "explanation": "Lombroso claimed criminality was heritable, passed down biologically.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a ________",
+          "kind": "text",
+          "answer": [
+            "characterised by"
+          ],
+          "explanation": "Criminal types were said to be marked by primitive, atavistic physical features.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "……………… to criminality. Body types are ________",
+          "kind": "text",
+          "answer": [
+            "hereditary aspect",
+            "biological basis"
+          ],
+          "explanation": "Sheldon, like Lombroso, proposed a hereditary, biological basis for criminality through body type.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "……………… particular dispositions. Mesomorphs are types considered to have ________",
+          "kind": "text",
+          "answer": [
+            "associated with"
+          ],
+          "explanation": "Each physical body type was linked with a distinct personality.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "……………….. 1960s ________",
+          "kind": "text",
+          "answer": [
+            "criminal tendencies"
+          ],
+          "explanation": "Sheldon claimed the muscular mesomorph type had criminal tendencies.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more ________",
+          "kind": "text",
+          "answer": [
+            "Chromosomal abnormality"
+          ],
+          "explanation": "In the 1960s, chromosomal abnormality became the new proposed biological cause of criminality.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "………………… males. The proposed link between criminality and genotype is ________",
+          "kind": "text",
+          "answer": [
+            "masculine and aggressive"
+          ],
+          "explanation": "An extra Y chromosome was hypothesised to make men more masculine and aggressive.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by ________",
+          "kind": "text",
+          "answer": [
+            "severely undermined by"
+          ],
+          "explanation": "Epps' 1995 study seriously undermined the chromosome theory of criminality.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        },
+        {
+          "prompt": "……………… elements ________",
+          "kind": "text",
+          "answer": [
+            "environmental and social"
+          ],
+          "explanation": "Today, biological factors are seen as moderated by environmental and social influences.",
+          "source": "Academic Reading Test 15, Questions 14 to 24"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 10, Passage 3, Questions 36 to 40",
-      "title": "THE MYTH OF LEARNING STYLES",
-      "paragraphs": [
-        "The idea that teaching methods should match a student’s particular learning style — their personal way of learning — is popular with teachers and students alike. But the evidence suggests it may not be helpful.",
-        "The concept of learning styles is one of the most influential — and widely criticized — theories in education. It is the idea that each person finds it easier to learn through a particular method of instruction. Some people, for example, are thought to learn better when they’re taught visually; others, when instruction is auditory, or through movement, and so on.",
-        "The idea is popular in part because it reflects the intuition of teachers and students. Everyone knows from personal experience that some kinds of learning feel easier than others, and that they may prefer one way of learning over another. And it is also popular because it claims to be based on science. The idea of learning styles was developed in the 1970s, as psychologists and educational theorists were trying to understand how people learn. The idea that different people learn information in different ways was appealing, and it soon became clear that many people had strong preferences about how they liked information to be presented. In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’. All the students would then be asked to learn something, with half the visual learners being taught visually, and half being taught aurally. The auditory learners would also be split into the two groups. If the theory was correct, the visual learners should do better when taught visually, and the auditory learners should do better when taught aurally.",
-        "But that’s not what psychologists found. As early as 2004, a review of the evidence by cognitive scientists found that the great majority of studies did not provide any evidence supporting the idea that matching the material to a student’s particular learning style was helpful. More recently, a team of psychologists led by Daniel Willingham at the University of Virginia has examined the evidence for learning styles again. They found that the vast majority of studies either found no evidence for the theory, or actually contradicted it. As the researchers point out, people may have preferences about how they learn, but that doesn’t mean that they will learn better when the teaching matches those preferences.",
-        "There are several possible explanations for these findings. One is that some students might not actually have a ‘style’ that is strong enough to affect their learning. Another possibility is that students do have preferences about how they learn, but these preferences don’t affect their learning. A third possibility is that students do have preferences, and these preferences do affect their learning, but only because they have learned less well through other methods in the past.",
-        "But the most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves a mix of visual learning (such as watching the instructor), auditory learning (listening to instructions), and hands-on learning (actually driving the car). In a 2009 article in the journal Psychological Science in the Public Interest, psychologists Harold Pashler, Mark McDaniel, Doug Rohrer and Robert Bjork argued that the learning-styles approach is not only unsupported by science, but may actually be harmful, because it leads teachers to teach students in ways that are not very effective. For example, a student who is a ‘visual learner’ might be encouraged to learn only through visual materials, and never to practice learning by listening, reading or acting.",
-        "The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence. In recent years, a great deal of research has shown that people’s attitudes to learning can have a large impact on how much they learn. For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies. Similarly, students who have been told that they are ‘visual learners’ might put less effort into tasks that are based on reading or listening. This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’.",
-        "Despite the lack of evidence for learning styles, the idea is still very popular. A 2014 study of more than 400 teachers in the UK and the Netherlands found that more than 90 percent of them believed that people learn better if they are taught in their preferred learning style, and that the majority of them used learning styles as a method of instruction. In the US, a 2017 survey of more than 300 teachers found that 96 percent of them agreed with the idea of learning styles, and 24 percent of them used it to guide their teaching.",
-        "The idea of learning styles is also popular among students. In a 2018 study, researchers asked more than 600 students in the US about their beliefs about learning. They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style.",
-        "The evidence is clear: matching teaching to a student’s particular learning style is unlikely to lead to better learning. It may in fact be holding students back."
+      "passages": [
+        {
+          "label": "Academic Reading Test 10, Passage 3, Questions 36 to 40",
+          "title": "THE MYTH OF LEARNING STYLES",
+          "paragraphs": [
+            "The idea that teaching methods should match a student’s particular learning style — their personal way of learning — is popular with teachers and students alike. But the evidence suggests it may not be helpful.",
+            "The concept of learning styles is one of the most influential — and widely criticized — theories in education. It is the idea that each person finds it easier to learn through a particular method of instruction. Some people, for example, are thought to learn better when they’re taught visually; others, when instruction is auditory, or through movement, and so on.",
+            "The idea is popular in part because it reflects the intuition of teachers and students. Everyone knows from personal experience that some kinds of learning feel easier than others, and that they may prefer one way of learning over another. And it is also popular because it claims to be based on science. The idea of learning styles was developed in the 1970s, as psychologists and educational theorists were trying to understand how people learn. The idea that different people learn information in different ways was appealing, and it soon became clear that many people had strong preferences about how they liked information to be presented. In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’. All the students would then be asked to learn something, with half the visual learners being taught visually, and half being taught aurally. The auditory learners would also be split into the two groups. If the theory was correct, the visual learners should do better when taught visually, and the auditory learners should do better when taught aurally.",
+            "But that’s not what psychologists found. As early as 2004, a review of the evidence by cognitive scientists found that the great majority of studies did not provide any evidence supporting the idea that matching the material to a student’s particular learning style was helpful. More recently, a team of psychologists led by Daniel Willingham at the University of Virginia has examined the evidence for learning styles again. They found that the vast majority of studies either found no evidence for the theory, or actually contradicted it. As the researchers point out, people may have preferences about how they learn, but that doesn’t mean that they will learn better when the teaching matches those preferences.",
+            "There are several possible explanations for these findings. One is that some students might not actually have a ‘style’ that is strong enough to affect their learning. Another possibility is that students do have preferences about how they learn, but these preferences don’t affect their learning. A third possibility is that students do have preferences, and these preferences do affect their learning, but only because they have learned less well through other methods in the past.",
+            "But the most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves a mix of visual learning (such as watching the instructor), auditory learning (listening to instructions), and hands-on learning (actually driving the car). In a 2009 article in the journal Psychological Science in the Public Interest, psychologists Harold Pashler, Mark McDaniel, Doug Rohrer and Robert Bjork argued that the learning-styles approach is not only unsupported by science, but may actually be harmful, because it leads teachers to teach students in ways that are not very effective. For example, a student who is a ‘visual learner’ might be encouraged to learn only through visual materials, and never to practice learning by listening, reading or acting.",
+            "The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence. In recent years, a great deal of research has shown that people’s attitudes to learning can have a large impact on how much they learn. For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies. Similarly, students who have been told that they are ‘visual learners’ might put less effort into tasks that are based on reading or listening. This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’.",
+            "Despite the lack of evidence for learning styles, the idea is still very popular. A 2014 study of more than 400 teachers in the UK and the Netherlands found that more than 90 percent of them believed that people learn better if they are taught in their preferred learning style, and that the majority of them used learning styles as a method of instruction. In the US, a 2017 survey of more than 300 teachers found that 96 percent of them agreed with the idea of learning styles, and 24 percent of them used it to guide their teaching.",
+            "The idea of learning styles is also popular among students. In a 2018 study, researchers asked more than 600 students in the US about their beliefs about learning. They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style.",
+            "The evidence is clear: matching teaching to a student’s particular learning style is unlikely to lead to better learning. It may in fact be holding students back."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "…………………. Students who believe that intelligence is ________",
+          "kind": "text",
+          "answer": [
+            "Intelligence"
+          ],
+          "explanation": "Paragraph 7 says learning styles can give students a fixed idea about their level of intelligence.",
+          "source": "Academic Reading Test 10, Questions 36 to 40"
+        },
+        {
+          "prompt": "………………… tend to do better than other students. Students who have been told that they are ________",
+          "kind": "text",
+          "answer": [
+            "Changeable",
+            "Changing"
+          ],
+          "explanation": "Paragraph 7 says students who believe that intelligence can change tend to do better than those who think it is fixed. The gap follows 'is', so it needs an adjective: 'changeable' or 'changing'.",
+          "source": "Academic Reading Test 10, Questions 36 to 40"
+        },
+        {
+          "prompt": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a ________",
+          "kind": "text",
+          "answer": [
+            "Visual"
+          ],
+          "explanation": "Paragraph 8 says students told they are visual learners might not try as hard at reading or listening tasks.",
+          "source": "Academic Reading Test 10, Questions 36 to 40"
+        },
+        {
+          "prompt": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular ________",
+          "kind": "text",
+          "answer": [
+            "Mix"
+          ],
+          "explanation": "Paragraph 8 says students who use a mix of learning methods often learn more effectively.",
+          "source": "Academic Reading Test 10, Questions 36 to 40"
+        },
+        {
+          "prompt": "………………… ________",
+          "kind": "text",
+          "answer": [
+            "Style",
+            "Learning style"
+          ],
+          "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style. The instruction allows one word only, so the answer to write is 'style'.",
+          "source": "Academic Reading Test 10, Questions 36 to 40"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "…………….. realm. Italian scientist, Lombroso proposes a ________",
-      "kind": "text",
-      "answer": [
-        "moral or philosophical"
-      ],
-      "explanation": "Before the 19th century, criminality was seen as a moral or philosophical matter.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "………………. to criminality. A biological theory of criminality presupposes that such a condition is ________",
-      "kind": "text",
-      "answer": [
-        "physiological disposition",
-        "biological disposition"
-      ],
-      "explanation": "Lombroso proposed that criminal behaviour came from a physiological, biological disposition.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "……………… Criminal types are claimed to be ________",
-      "kind": "text",
-      "answer": [
-        "heritable",
-        "inherited"
-      ],
-      "explanation": "Lombroso claimed criminality was heritable, passed down biologically.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a ________",
-      "kind": "text",
-      "answer": [
-        "characterised by"
-      ],
-      "explanation": "Criminal types were said to be marked by primitive, atavistic physical features.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "……………… to criminality. Body types are ________",
-      "kind": "text",
-      "answer": [
-        "hereditary aspect",
-        "biological basis"
-      ],
-      "explanation": "Sheldon, like Lombroso, proposed a hereditary, biological basis for criminality through body type.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "……………… particular dispositions. Mesomorphs are types considered to have ________",
-      "kind": "text",
-      "answer": [
-        "associated with"
-      ],
-      "explanation": "Each physical body type was linked with a distinct personality.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "……………….. 1960s ________",
-      "kind": "text",
-      "answer": [
-        "criminal tendencies"
-      ],
-      "explanation": "Sheldon claimed the muscular mesomorph type had criminal tendencies.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more ________",
-      "kind": "text",
-      "answer": [
-        "Chromosomal abnormality"
-      ],
-      "explanation": "In the 1960s, chromosomal abnormality became the new proposed biological cause of criminality.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "………………… males. The proposed link between criminality and genotype is ________",
-      "kind": "text",
-      "answer": [
-        "masculine and aggressive"
-      ],
-      "explanation": "An extra Y chromosome was hypothesised to make men more masculine and aggressive.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by ________",
-      "kind": "text",
-      "answer": [
-        "severely undermined by"
-      ],
-      "explanation": "Epps' 1995 study seriously undermined the chromosome theory of criminality.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "……………… elements ________",
-      "kind": "text",
-      "answer": [
-        "environmental and social"
-      ],
-      "explanation": "Today, biological factors are seen as moderated by environmental and social influences.",
-      "source": "Academic Reading Test 15, Questions 14 to 24"
-    },
-    {
-      "prompt": "…………………. Students who believe that intelligence is ________",
-      "kind": "text",
-      "answer": [
-        "Intelligence"
-      ],
-      "explanation": "Paragraph 7 says learning styles can give students a fixed idea about their level of intelligence.",
-      "source": "Academic Reading Test 10, Questions 36 to 40"
-    },
-    {
-      "prompt": "………………… tend to do better than other students. Students who have been told that they are ________",
-      "kind": "text",
-      "answer": [
-        "Changeable",
-        "Changing"
-      ],
-      "explanation": "Paragraph 7 says students who believe that intelligence can change tend to do better than those who think it is fixed. The gap follows 'is', so it needs an adjective: 'changeable' or 'changing'.",
-      "source": "Academic Reading Test 10, Questions 36 to 40"
-    },
-    {
-      "prompt": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a ________",
-      "kind": "text",
-      "answer": [
-        "Visual"
-      ],
-      "explanation": "Paragraph 8 says students told they are visual learners might not try as hard at reading or listening tasks.",
-      "source": "Academic Reading Test 10, Questions 36 to 40"
-    },
-    {
-      "prompt": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular ________",
-      "kind": "text",
-      "answer": [
-        "Mix"
-      ],
-      "explanation": "Paragraph 8 says students who use a mix of learning methods often learn more effectively.",
-      "source": "Academic Reading Test 10, Questions 36 to 40"
-    },
-    {
-      "prompt": "………………… ________",
-      "kind": "text",
-      "answer": [
-        "Style",
-        "Learning style"
-      ],
-      "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style. The instruction allows one word only, so the answer to write is 'style'.",
-      "source": "Academic Reading Test 10, Questions 36 to 40"
     }
   ]
 },
@@ -2989,219 +3078,229 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "summary-completion": {
   "title": "Exercise. Complete the summary, notes or table (real test questions)",
   "intro": "Fill each gap using words from the passage above, or the word bank where given.",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 16, Passage 1, Questions 1 to 10 (table completion)",
-      "title": "Art or Craft?",
-      "paragraphs": [
-        "Down the centuries, craftsmen have been held to be distinct from artists. Craftsmen, such as woodworkers and plasterers, belonged to their own guild, whilst the artist was regarded as a more solitary being confined to an existence in a studio or attic. In addition, whilst craftsmen could rely on a reasonably steady income, artists were often living such a hand-to-mouth existence that the term ‘starving artist’ became a byword to describe the impoverished existence of artists generally. Even today, the lifestyles of the craftsman and the artist could not be more different. However, what exactly separates craft from art from both a practical and a philosophical view?",
-        "One of the main distinctions between art and craft resides in the nature of the finished product or piece. Essentially, the concept of craft is historically associated with the production of useful or practical products. Art, on the other hand, is not restricted by the confines of practicality. The craftsman’s teapot or vase should normally be able to hold tea or flowers while the artist’s work is typically without utilitarian function. In fact, the very reason for art and its existence is purely to ‘be’, hence the furlined teacup created by Dada artist, Meret Oppenheim. The ‘cup’ as such was quite obviously never intended for practical use any more than a chocolate teapot might have been.",
-        "Artistry in craftsmanship is therefore merely a byproduct, since the primary focus is on what something does, not what it is. The reverse is true for art. Artistic products appeal purely at the level of the imagination. As the celebrated philosopher, Kant, stated, ‘At its best, art cultivates and expands the human spirit.’ Whether the artist responsible for a piece of art has sufficient talent to achieve this is another matter. The goal of all artists nevertheless remains the same: to produce a work that simultaneously transcends the mundane and uplifts the viewer. In contrast, the world of the craftsman and his work remain lodged firmly in the practicality of the everyday world. An object produced by an artist is therefore fundamentally different from the one produced by a craftsman.",
-        "Differences between the two disciplines of art and craft extend also to the process required to produce the finished object. The British philosopher R.G. Collingwood, who set out a list of criteria that distinguish art from craft, focused on the distinction between the two disciplines in their ‘planning and execution’. With a craft, Collingwood argued, the ‘result to be obtained is preconceived or thought out before being arrived at.’ The craftsman, Collingwood says, ‘knows what he wants to make before he makes it’. This foreknowledge, according to Collingwood, must not be vague but precise. In fact, such planning is considered to be ‘indispensable’ to craft. In this respect, craft is essentially different from art. Art is placed by Collingwood at the other end of the creative continuum, the creation of art being described as a process that evolves non-deterministically. The artist is, therefore, just as unaware as anyone else as to what the end product of creation will be, when he is actually in the process of creating. Contrast this with the craftsman who already knows what the end product will look like before he or she has even begun to create it.",
-        "Since the artist is not following a set of standard rules in the process of creation, he or she has no guidelines like the craftsman. Whilst the table or chair created by the craftsman, for example, has to conform to certain expectations in appearance and design, no such limitations are imposed on the artist. For it is the artist alone who, through a trial-and-error approach, will create the final object.",
-        "The object merely evolves over time. Whereas the craftsman can fairly accurately predict when a product will be finished taking technical procedures into account, the artist can do no such thing. The artist is at the mercy of inspiration alone and quite apart from not being able to have a projected finishing date, may never be able to guarantee that the object will be finished at all. Unfinished symphonies by great composers and works of literature never completed by their authors testify to this.",
-        "Having no definite end-goal in mind, the emphasis on the finished product that is true of craftsmanship is placed Instead on the act of creation itself with the artist. The creation of the work of art is an exploration and a struggle and path of discovery for the artist. It could be said that the artist is producing as much for himself as for those who will view the finished product. This act of creation is very distinct from the production of an object that is crafted, therefore. The goal of making craftwork is monetary compensation. Craft is produced for purchase and is essentially a money-generating industry. Any craftsman who followed the artistic approach to creation would soon be out of a job. Craftsmen are expected to deliver, artists are not. This is probably the most fundamental difference that separates the craftsman from the artist."
+      "passages": [
+        {
+          "label": "Academic Reading Test 16, Passage 1, Questions 1 to 10 (table completion)",
+          "title": "Art or Craft?",
+          "paragraphs": [
+            "Down the centuries, craftsmen have been held to be distinct from artists. Craftsmen, such as woodworkers and plasterers, belonged to their own guild, whilst the artist was regarded as a more solitary being confined to an existence in a studio or attic. In addition, whilst craftsmen could rely on a reasonably steady income, artists were often living such a hand-to-mouth existence that the term ‘starving artist’ became a byword to describe the impoverished existence of artists generally. Even today, the lifestyles of the craftsman and the artist could not be more different. However, what exactly separates craft from art from both a practical and a philosophical view?",
+            "One of the main distinctions between art and craft resides in the nature of the finished product or piece. Essentially, the concept of craft is historically associated with the production of useful or practical products. Art, on the other hand, is not restricted by the confines of practicality. The craftsman’s teapot or vase should normally be able to hold tea or flowers while the artist’s work is typically without utilitarian function. In fact, the very reason for art and its existence is purely to ‘be’, hence the furlined teacup created by Dada artist, Meret Oppenheim. The ‘cup’ as such was quite obviously never intended for practical use any more than a chocolate teapot might have been.",
+            "Artistry in craftsmanship is therefore merely a byproduct, since the primary focus is on what something does, not what it is. The reverse is true for art. Artistic products appeal purely at the level of the imagination. As the celebrated philosopher, Kant, stated, ‘At its best, art cultivates and expands the human spirit.’ Whether the artist responsible for a piece of art has sufficient talent to achieve this is another matter. The goal of all artists nevertheless remains the same: to produce a work that simultaneously transcends the mundane and uplifts the viewer. In contrast, the world of the craftsman and his work remain lodged firmly in the practicality of the everyday world. An object produced by an artist is therefore fundamentally different from the one produced by a craftsman.",
+            "Differences between the two disciplines of art and craft extend also to the process required to produce the finished object. The British philosopher R.G. Collingwood, who set out a list of criteria that distinguish art from craft, focused on the distinction between the two disciplines in their ‘planning and execution’. With a craft, Collingwood argued, the ‘result to be obtained is preconceived or thought out before being arrived at.’ The craftsman, Collingwood says, ‘knows what he wants to make before he makes it’. This foreknowledge, according to Collingwood, must not be vague but precise. In fact, such planning is considered to be ‘indispensable’ to craft. In this respect, craft is essentially different from art. Art is placed by Collingwood at the other end of the creative continuum, the creation of art being described as a process that evolves non-deterministically. The artist is, therefore, just as unaware as anyone else as to what the end product of creation will be, when he is actually in the process of creating. Contrast this with the craftsman who already knows what the end product will look like before he or she has even begun to create it.",
+            "Since the artist is not following a set of standard rules in the process of creation, he or she has no guidelines like the craftsman. Whilst the table or chair created by the craftsman, for example, has to conform to certain expectations in appearance and design, no such limitations are imposed on the artist. For it is the artist alone who, through a trial-and-error approach, will create the final object.",
+            "The object merely evolves over time. Whereas the craftsman can fairly accurately predict when a product will be finished taking technical procedures into account, the artist can do no such thing. The artist is at the mercy of inspiration alone and quite apart from not being able to have a projected finishing date, may never be able to guarantee that the object will be finished at all. Unfinished symphonies by great composers and works of literature never completed by their authors testify to this.",
+            "Having no definite end-goal in mind, the emphasis on the finished product that is true of craftsmanship is placed Instead on the act of creation itself with the artist. The creation of the work of art is an exploration and a struggle and path of discovery for the artist. It could be said that the artist is producing as much for himself as for those who will view the finished product. This act of creation is very distinct from the production of an object that is crafted, therefore. The goal of making craftwork is monetary compensation. Craft is produced for purchase and is essentially a money-generating industry. Any craftsman who followed the artistic approach to creation would soon be out of a job. Craftsmen are expected to deliver, artists are not. This is probably the most fundamental difference that separates the craftsman from the artist."
+          ]
+        },
+        {
+          "label": "Table, Academic Reading Test 16, Questions 1 to 10",
+          "html": "<table><tbody><tr><td></td><td><span><strong>Art</strong></span></td><td><span><strong>Craft</strong></span></td></tr><tr><td rowspan=\"2\"><span>End product</span></td><td><span>(1) ……………</span></td><td><span>(2) ……………</span></td></tr><tr><td><span>(3) ……………</span></td><td><span>(4) ……………</span></td></tr><tr><td rowspan=\"3\"><span>Act of Creation/ Production</span></td><td><span>(5) ……………</span></td><td><span>(6) ……………</span></td></tr><tr><td><span>(7) ……………</span></td><td><span>(8) ……………</span></td></tr><tr><td><span>(9) ……………</span></td><td><span>(10) ……………</span></td></tr></tbody></table><p><span><strong>A</strong> the finished object appeals on an emotional and spiritual level</span><br/>\n<span><strong>B</strong> the final product has no pretensions to being anything more than it appears</span><br/>\n<span><strong>C</strong> only a functional use is considered for the finished object</span><br/>\n<span><strong>D</strong> no practical purpose as such is envisaged for the created object</span><br/>\n<span><strong>E</strong> the process of creation is merely a means to an end</span><br/>\n<span><strong>F</strong> whether or not there is an end product, the product itself is secondary to the process of creation</span><br/>\n<span><strong>G</strong> not having to adhere to a set of rules, the process is a matter of experimentation</span><br/>\n<span><strong>H</strong> there is no margin of error for experimentation, all of the process following a set of guidelines</span><br/>\n<span><strong>I</strong> its goal is defined from the outset</span><br/>\n<span><strong>J</strong> the process is fluid and undefined</span><br/>\n<span><strong>K</strong> it is useful but not commercially viable</span><br/>\n<span><strong>L</strong> the production process is a mixture of following rules and experimentation</span></p>"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Table blank 1: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "A",
+            "D"
+          ],
+          "explanation": "Paragraph 3 says art 'appeal[s] purely at the level of the imagination' (A), and paragraph 2 says art is 'not restricted by the confines of practicality' (D), so either letter fits this row.",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 2: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "B",
+            "C"
+          ],
+          "explanation": "Paragraph 2 says the craftsman's teapot 'should normally be able to hold tea or flowers', only a functional use (C), while craft stays 'lodged firmly in the practicality of the everyday world', no higher pretension (B).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 3: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "A",
+            "D"
+          ],
+          "explanation": "This row shares q1's pool: paragraph 3 says art appeals 'at the level of the imagination' (A) and paragraph 2 says art has 'no practical purpose' since it is 'not restricted by the confines of practicality' (D).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 4: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "B",
+            "C"
+          ],
+          "explanation": "This row shares q2's pool: craft's end product is judged only by its function (C, paragraph 2) and remains 'lodged firmly in the practicality of the everyday world' with no higher pretension (B).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 5: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "F",
+            "G",
+            "J"
+          ],
+          "explanation": "Paragraph 8 says art's emphasis 'is placed instead on the act of creation itself' (F); paragraph 5 describes the artist's 'trial-and-error approach' (G); paragraph 4 says art 'evolves non-deterministically' (J).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 6: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "E",
+            "H",
+            "I"
+          ],
+          "explanation": "Paragraph 8 says craft exists for 'monetary compensation', so its process is only a means to an end (E); paragraph 4 says the craftsman 'knows what he wants to make before he makes it', a goal set from the start (I) with no room for experiment (H).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 7: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "F",
+            "G",
+            "J"
+          ],
+          "explanation": "This row shares q5's Art pool: paragraph 4 says art 'evolves non-deterministically' (J), paragraph 5 describes 'a trial-and-error approach' (G), and paragraph 8 places emphasis on process over product (F).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 8: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "E",
+            "H",
+            "I"
+          ],
+          "explanation": "This row shares q6's Craft pool: Collingwood says the craftsman's foreknowledge 'must not be vague but precise', leaving no margin for experiment (H) once the goal is fixed (I).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 9: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "F",
+            "G",
+            "J"
+          ],
+          "explanation": "This row also draws on F, G and J: the artist works by trial and error (paragraph 5) in an undefined, evolving process (paragraph 4) where the finished object itself is secondary (paragraph 8).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        },
+        {
+          "prompt": "Table blank 10: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "E",
+            "H",
+            "I"
+          ],
+          "explanation": "This row completes the Craft pool: planning is 'indispensable' to craft (paragraph 4, supporting H and I), and because craftsmen must deliver, the process is only a means to the finished product (E).",
+          "source": "Academic Reading Test 16, Questions 1 to 10"
+        }
       ]
     },
     {
-      "label": "Table, Academic Reading Test 16, Questions 1 to 10",
-      "html": "<table><tbody><tr><td></td><td><span><strong>Art</strong></span></td><td><span><strong>Craft</strong></span></td></tr><tr><td rowspan=\"2\"><span>End product</span></td><td><span>(1) ……………</span></td><td><span>(2) ……………</span></td></tr><tr><td><span>(3) ……………</span></td><td><span>(4) ……………</span></td></tr><tr><td rowspan=\"3\"><span>Act of Creation/ Production</span></td><td><span>(5) ……………</span></td><td><span>(6) ……………</span></td></tr><tr><td><span>(7) ……………</span></td><td><span>(8) ……………</span></td></tr><tr><td><span>(9) ……………</span></td><td><span>(10) ……………</span></td></tr></tbody></table><p><span><strong>A</strong> the finished object appeals on an emotional and spiritual level</span><br/>\n<span><strong>B</strong> the final product has no pretensions to being anything more than it appears</span><br/>\n<span><strong>C</strong> only a functional use is considered for the finished object</span><br/>\n<span><strong>D</strong> no practical purpose as such is envisaged for the created object</span><br/>\n<span><strong>E</strong> the process of creation is merely a means to an end</span><br/>\n<span><strong>F</strong> whether or not there is an end product, the product itself is secondary to the process of creation</span><br/>\n<span><strong>G</strong> not having to adhere to a set of rules, the process is a matter of experimentation</span><br/>\n<span><strong>H</strong> there is no margin of error for experimentation, all of the process following a set of guidelines</span><br/>\n<span><strong>I</strong> its goal is defined from the outset</span><br/>\n<span><strong>J</strong> the process is fluid and undefined</span><br/>\n<span><strong>K</strong> it is useful but not commercially viable</span><br/>\n<span><strong>L</strong> the production process is a mixture of following rules and experimentation</span></p>"
-    },
-    {
-      "label": "Academic Reading Test 2, Passage 2, Questions 19 to 26 (notes completion)",
-      "title": "The problems of getting around the city of Dar es Salaam",
-      "paragraphs": [
-        "Dar es Salaam in Tanzania is one of the fastest growing cities in Africa. Its population has increased eightfold since 1980 and swells by half a million people every year. United Nations projections anticipate it will become a megacity within seven years as its population passes 10 million, reaching 13.4 million by 2035. Daniel Hoornweg for the Global Cities Institute forecasts the city could be home to an incredible 73.7 million people by 2100.",
-        "Today, four out of five of its people live in single-storey informal settlements on the spreading edges of the city, where the journey to and from the centre regularly takes over two hours. It can be longer if rain turns the dirt roads to mud.",
-        "Even in the middle of the day, traffic frequently slows to a stop without warning. It is not unusual for cars and minibuses to queue for 20 minutes at a key intersection. A single suburban rail line serves residents in a few areas to the south but is tiny in the context of the wider city. Outside the centre many rely on boda boda (motorbike taxis) to navigate the narrow side streets and potholed mud roads that make up much of the metropolis. Their safety record is scandalous.",
-        "Dar es Salaam’s reliance on four arterial roads into the city is a legacy of the colonial government that planned the city at the start of the 20th century to cater for a population of 35,000. Most of the current growth is made up of young people arriving from the countryside to find work, and as the population has exploded, Dar es Salaam has grown around those four highways. Nearly all the expansion is happening on the periphery, and nearly all takes place informally without any agreed strategy.",
-        "But Dar es Salaam is pinning its hopes on a solution that could offer a different model for Africa’s megacities, giving them an alternative to a future controlled by the private car. Unlike many cities on the continent, Dar es Salaam isn’t trying to build a metro. It has chosen a less exciting but cheaper and more achievable method: the bus.",
-        "The DART bus rapid transit (BRT) system runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages. Ticket purchase and control takes place at stations prior to boarding and the buses are step-free, which means the entire route is accessible to people using wheelchairs or who are travelling with baby buggies.",
-        "‘The new buses are much, much better,’ says Paulas George, a young IT worker. He takes the bus every day and it has cut his journey time by two-thirds. He says it is not perfect, though, complaining that drivers often refuse to turn on the air conditioning to save fuel.",
-        "That is not the only problem. A shortage of buses after a serious flood at the main depot during the rainy season means the system is carrying 200,000 people a day – half the expected capacity. Smartcards can’t be used as the mechanical readers aren’t working either, forcing passengers to buy individual paper tickets for every journey. Each is printed with a scannable QR code, but there are no scanners. Staff stand by the gates and tear tickets as people enter. As a result, queues are considerable at peak times.",
-        "Morogoro Road to the north-west of the city was phase I of the BRT project. Phases II and III will install bus lanes along Nyerere Road to the south-west and Kilwa Road to the south. Construction on both routes is due to start imminently. Phase IV, towards Bagamoyo in the north, is in the preliminary design stage. ‘Much of the city will have access to a world-class transport system within the space of a few years,’ says Chris Kost, the Africa director of ITDP (the Institute for Transportation and Development Policy). All phases are being planned to high standards and, once complete, a third of city residents will be within a short walk of the BRT network.",
-        "The ITDP regrets Africa’s obsession with metros. ‘With a metro, an international firm will often just parachute in its own system,’ says Kost. ‘Bus rapid transit allows existing stakeholders to get involved. That’s what we did in Dar es Salaam and what we’re planning in Nairobi, where the bus bodies will be built in the city and local operators will look after tickets, fare collection and IT …Bus rapid transit has been transformational for Dar es Salaam. For millions of people in African cities, this is their best hope of ever being connected.’"
+      "passages": [
+        {
+          "label": "Academic Reading Test 2, Passage 2, Questions 19 to 26 (notes completion)",
+          "title": "The problems of getting around the city of Dar es Salaam",
+          "paragraphs": [
+            "Dar es Salaam in Tanzania is one of the fastest growing cities in Africa. Its population has increased eightfold since 1980 and swells by half a million people every year. United Nations projections anticipate it will become a megacity within seven years as its population passes 10 million, reaching 13.4 million by 2035. Daniel Hoornweg for the Global Cities Institute forecasts the city could be home to an incredible 73.7 million people by 2100.",
+            "Today, four out of five of its people live in single-storey informal settlements on the spreading edges of the city, where the journey to and from the centre regularly takes over two hours. It can be longer if rain turns the dirt roads to mud.",
+            "Even in the middle of the day, traffic frequently slows to a stop without warning. It is not unusual for cars and minibuses to queue for 20 minutes at a key intersection. A single suburban rail line serves residents in a few areas to the south but is tiny in the context of the wider city. Outside the centre many rely on boda boda (motorbike taxis) to navigate the narrow side streets and potholed mud roads that make up much of the metropolis. Their safety record is scandalous.",
+            "Dar es Salaam’s reliance on four arterial roads into the city is a legacy of the colonial government that planned the city at the start of the 20th century to cater for a population of 35,000. Most of the current growth is made up of young people arriving from the countryside to find work, and as the population has exploded, Dar es Salaam has grown around those four highways. Nearly all the expansion is happening on the periphery, and nearly all takes place informally without any agreed strategy.",
+            "But Dar es Salaam is pinning its hopes on a solution that could offer a different model for Africa’s megacities, giving them an alternative to a future controlled by the private car. Unlike many cities on the continent, Dar es Salaam isn’t trying to build a metro. It has chosen a less exciting but cheaper and more achievable method: the bus.",
+            "The DART bus rapid transit (BRT) system runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages. Ticket purchase and control takes place at stations prior to boarding and the buses are step-free, which means the entire route is accessible to people using wheelchairs or who are travelling with baby buggies.",
+            "‘The new buses are much, much better,’ says Paulas George, a young IT worker. He takes the bus every day and it has cut his journey time by two-thirds. He says it is not perfect, though, complaining that drivers often refuse to turn on the air conditioning to save fuel.",
+            "That is not the only problem. A shortage of buses after a serious flood at the main depot during the rainy season means the system is carrying 200,000 people a day – half the expected capacity. Smartcards can’t be used as the mechanical readers aren’t working either, forcing passengers to buy individual paper tickets for every journey. Each is printed with a scannable QR code, but there are no scanners. Staff stand by the gates and tear tickets as people enter. As a result, queues are considerable at peak times.",
+            "Morogoro Road to the north-west of the city was phase I of the BRT project. Phases II and III will install bus lanes along Nyerere Road to the south-west and Kilwa Road to the south. Construction on both routes is due to start imminently. Phase IV, towards Bagamoyo in the north, is in the preliminary design stage. ‘Much of the city will have access to a world-class transport system within the space of a few years,’ says Chris Kost, the Africa director of ITDP (the Institute for Transportation and Development Policy). All phases are being planned to high standards and, once complete, a third of city residents will be within a short walk of the BRT network.",
+            "The ITDP regrets Africa’s obsession with metros. ‘With a metro, an international firm will often just parachute in its own system,’ says Kost. ‘Bus rapid transit allows existing stakeholders to get involved. That’s what we did in Dar es Salaam and what we’re planning in Nairobi, where the bus bodies will be built in the city and local operators will look after tickets, fare collection and IT …Bus rapid transit has been transformational for Dar es Salaam. For millions of people in African cities, this is their best hope of ever being connected.’"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "………………. to cut down on delays • passengers pay fares before ________",
+          "kind": "text",
+          "answer": [
+            "Lanes"
+          ],
+          "explanation": "The sixth paragraph says the buses run on ‘bus lanes separated from other traffic… to reduce stoppages’, giving the word for this gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "………………. • passengers in ________",
+          "kind": "text",
+          "answer": [
+            "Boarding"
+          ],
+          "explanation": "The same paragraph says ‘ticket purchase and control takes place at stations prior to boarding’, matching this gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "…………………. can use every part of the system Problems • the temperature control is sometimes not activated in order to reduce ________",
+          "kind": "text",
+          "answer": [
+            "Wheelchairs"
+          ],
+          "explanation": "The passage says the step-free buses make the route ‘accessible to people using wheelchairs’, giving the word for this gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "………………. use • insufficient number of vehicles are available due to the effects of a severe ________",
+          "kind": "text",
+          "answer": [
+            "Fuel"
+          ],
+          "explanation": "Paulas George complains that ‘drivers often refuse to turn on the air conditioning to save fuel’, matching this gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "………………… • passengers are unable to use ________",
+          "kind": "text",
+          "answer": [
+            "Flood"
+          ],
+          "explanation": "The passage says there is ‘a shortage of buses after a serious flood at the main depot’, giving the word for this gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "……………….. because some equipment is out of action • tickets have to be checked manually at station ________",
+          "kind": "text",
+          "answer": [
+            "Smartcards"
+          ],
+          "explanation": "The passage says ‘smartcards can’t be used as the mechanical readers aren’t working’, matching this gap about equipment failure.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "……………. • ________",
+          "kind": "text",
+          "answer": [
+            "Gates"
+          ],
+          "explanation": "The passage says ‘staff stand by the gates and tear tickets as people enter’, giving the word for this gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        },
+        {
+          "prompt": "………………. frequently build up during rush hours ________",
+          "kind": "text",
+          "answer": [
+            "Queues"
+          ],
+          "explanation": "The passage concludes ‘as a result, queues are considerable at peak times’, matching this final gap.",
+          "source": "Academic Reading Test 2, Questions 19 to 26"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "Table blank 1: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "A",
-        "D"
-      ],
-      "explanation": "Paragraph 3 says art 'appeal[s] purely at the level of the imagination' (A), and paragraph 2 says art is 'not restricted by the confines of practicality' (D), so either letter fits this row.",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 2: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "B",
-        "C"
-      ],
-      "explanation": "Paragraph 2 says the craftsman's teapot 'should normally be able to hold tea or flowers', only a functional use (C), while craft stays 'lodged firmly in the practicality of the everyday world', no higher pretension (B).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 3: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "A",
-        "D"
-      ],
-      "explanation": "This row shares q1's pool: paragraph 3 says art appeals 'at the level of the imagination' (A) and paragraph 2 says art has 'no practical purpose' since it is 'not restricted by the confines of practicality' (D).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 4: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "B",
-        "C"
-      ],
-      "explanation": "This row shares q2's pool: craft's end product is judged only by its function (C, paragraph 2) and remains 'lodged firmly in the practicality of the everyday world' with no higher pretension (B).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 5: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "F",
-        "G",
-        "J"
-      ],
-      "explanation": "Paragraph 8 says art's emphasis 'is placed instead on the act of creation itself' (F); paragraph 5 describes the artist's 'trial-and-error approach' (G); paragraph 4 says art 'evolves non-deterministically' (J).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 6: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "E",
-        "H",
-        "I"
-      ],
-      "explanation": "Paragraph 8 says craft exists for 'monetary compensation', so its process is only a means to an end (E); paragraph 4 says the craftsman 'knows what he wants to make before he makes it', a goal set from the start (I) with no room for experiment (H).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 7: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "F",
-        "G",
-        "J"
-      ],
-      "explanation": "This row shares q5's Art pool: paragraph 4 says art 'evolves non-deterministically' (J), paragraph 5 describes 'a trial-and-error approach' (G), and paragraph 8 places emphasis on process over product (F).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 8: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "E",
-        "H",
-        "I"
-      ],
-      "explanation": "This row shares q6's Craft pool: Collingwood says the craftsman's foreknowledge 'must not be vague but precise', leaving no margin for experiment (H) once the goal is fixed (I).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 9: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "F",
-        "G",
-        "J"
-      ],
-      "explanation": "This row also draws on F, G and J: the artist works by trial and error (paragraph 5) in an undefined, evolving process (paragraph 4) where the finished object itself is secondary (paragraph 8).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "Table blank 10: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "E",
-        "H",
-        "I"
-      ],
-      "explanation": "This row completes the Craft pool: planning is 'indispensable' to craft (paragraph 4, supporting H and I), and because craftsmen must deliver, the process is only a means to the finished product (E).",
-      "source": "Academic Reading Test 16, Questions 1 to 10"
-    },
-    {
-      "prompt": "………………. to cut down on delays • passengers pay fares before ________",
-      "kind": "text",
-      "answer": [
-        "Lanes"
-      ],
-      "explanation": "The sixth paragraph says the buses run on ‘bus lanes separated from other traffic… to reduce stoppages’, giving the word for this gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "………………. • passengers in ________",
-      "kind": "text",
-      "answer": [
-        "Boarding"
-      ],
-      "explanation": "The same paragraph says ‘ticket purchase and control takes place at stations prior to boarding’, matching this gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "…………………. can use every part of the system Problems • the temperature control is sometimes not activated in order to reduce ________",
-      "kind": "text",
-      "answer": [
-        "Wheelchairs"
-      ],
-      "explanation": "The passage says the step-free buses make the route ‘accessible to people using wheelchairs’, giving the word for this gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "………………. use • insufficient number of vehicles are available due to the effects of a severe ________",
-      "kind": "text",
-      "answer": [
-        "Fuel"
-      ],
-      "explanation": "Paulas George complains that ‘drivers often refuse to turn on the air conditioning to save fuel’, matching this gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "………………… • passengers are unable to use ________",
-      "kind": "text",
-      "answer": [
-        "Flood"
-      ],
-      "explanation": "The passage says there is ‘a shortage of buses after a serious flood at the main depot’, giving the word for this gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "……………….. because some equipment is out of action • tickets have to be checked manually at station ________",
-      "kind": "text",
-      "answer": [
-        "Smartcards"
-      ],
-      "explanation": "The passage says ‘smartcards can’t be used as the mechanical readers aren’t working’, matching this gap about equipment failure.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "……………. • ________",
-      "kind": "text",
-      "answer": [
-        "Gates"
-      ],
-      "explanation": "The passage says ‘staff stand by the gates and tear tickets as people enter’, giving the word for this gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
-    },
-    {
-      "prompt": "………………. frequently build up during rush hours ________",
-      "kind": "text",
-      "answer": [
-        "Queues"
-      ],
-      "explanation": "The passage concludes ‘as a result, queues are considerable at peak times’, matching this final gap.",
-      "source": "Academic Reading Test 2, Questions 19 to 26"
     }
   ]
 },
@@ -3209,130 +3308,140 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "short-answer": {
   "title": "Exercise. Answer the questions (real test questions)",
   "intro": "Answer using words taken from the passage above.",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 29, Passage 2, Questions 22 to 26",
-      "title": "Bovids",
-      "paragraphs": [
-        "The family of mammals called bovids belongs to the Artiodactyl class, which also includes giraffes. Bovids are a highly diverse group consisting of 137 species, some of which are man’s most important domestic animals.",
-        "Bovids are well represented in most parts of Eurasia and Southeast Asian islands, but they are by far the most numerous and diverse in the latter Some species of bovid are solitary, but others live in large groups with complex social structures. Although bovids have adapted to a wide range of habitats, from arctic tundra to deep tropical forest, the majority of species favour open grassland, scrub or desert. This diversity of habitat is also matched by great diversity in size and form: at one extreme is the royal antelope of West Africa, which stands a mere 25 cm at the shoulder; at the other, the massively built bison of North America and Europe, growing to a shoulder height of 2.2m.",
-        "Despite differences in size and appearance, bovids are united by the possession of certain common features. All species are ruminants, which means that they retain undigested food in their stomachs, and regurgitate it as necessary. Bovids are almost exclusively herbivorous: plant-eating “incisors: front teeth herbivorous”.",
-        "Typically their teeth are highly modified for browsing and grazing: grass or foliage is cropped with the upper lip and lower incisors** (the upper incisors are usually absent), and then ground down by the cheek teeth. As well as having cloven, or split, hooves, the males of ail bovid species and the females of most carry horns. Bovid horns have bony cores covered in a sheath of horny material that is constantly renewed from within; they are unbranched and never shed. They vary in shape and size: the relatively simple horns of a large Indian buffalo may measure around 4 m from tip to tip along the outer curve, while the various gazelles have horns with a variety of elegant curves.",
-        "Five groups, or sub-families, may be distinguished: Bovinae, Antelope, Caprinae, Cephalophinae and Antilocapridae. The sub-family Bovinae comprises most of the larger bovids, including the African bongo, and nilgae, eland, bison and cattle. Unlike most other bovids they are all non-territorial. The ancestors of the various species of domestic cattle banteng, gaur, yak and water buffalo are generally rare and endangered in the wild, while the auroch (the ancestor of the domestic cattle of Europe) is extinct.",
-        "The term ‘antelope is not a very precise zoological name – it is used to loosely describe a number of bovids that have followed different lines of development. Antelopes are typically long-legged, fast-running species, often with long horns that may be laid along the back when the animal is in full flight. There are two main sub-groups of antelope: Hippotraginae, which includes the oryx and the addax, and Antilopinae, which generally contains slighter and more graceful animals such as gazelle and the springbok. Antelopes are mainly grassland species, but many have adapted to flooded grasslands: pukus, waterbucks and lechwes are all good at swimming, usually feeding in deep water, while the sitatunga has long, splayed hooves that enable it to walk freely on swampy ground.",
-        "The sub-family Caprinae includes the sheep and the goat, together with various relatives such as the goral and the tahr. Most are woolly or have long hair. Several species, such as wild goats, chamois and ibex, are agile cliff – and mountain-dwellers. Tolerance of extreme conditions is most marked in this group: Barbary and bighorn sheep have adapted to arid deserts, while Rocky Mountain sheep survive high up in mountains and musk oxen in arctic tundra.",
-        "The duiker of Africa belongs to the Cephalophinae sub-family. It is generally small and solitary, often living in thick forest. Although mainly feeding on grass and leaves, some duikers – unlike most other bovids – are believed to eat insects and feed on dead animal carcasses, and even to kill small animals.",
-        "The pronghorn is the sole survivor of a New World sub-family of herbivorous ruminants, the Antilocapridae in North America. It is similar in appearance and habits to the Old World antelope. Although greatly reduced in numbers since the arrival of Europeans, and the subsequent enclosure of grasslands, the pronghorn is still found in considerable numbers throughout North America, from Washington State to Mexico. When alarmed by the approach of wolves or other predators, hairs on the pronghorn’s rump stand erect, so showing and emphasizing the white patch there. At this signal, the whole herd gallops off at speed of over 60 km per hour."
+      "passages": [
+        {
+          "label": "Academic Reading Test 29, Passage 2, Questions 22 to 26",
+          "title": "Bovids",
+          "paragraphs": [
+            "The family of mammals called bovids belongs to the Artiodactyl class, which also includes giraffes. Bovids are a highly diverse group consisting of 137 species, some of which are man’s most important domestic animals.",
+            "Bovids are well represented in most parts of Eurasia and Southeast Asian islands, but they are by far the most numerous and diverse in the latter Some species of bovid are solitary, but others live in large groups with complex social structures. Although bovids have adapted to a wide range of habitats, from arctic tundra to deep tropical forest, the majority of species favour open grassland, scrub or desert. This diversity of habitat is also matched by great diversity in size and form: at one extreme is the royal antelope of West Africa, which stands a mere 25 cm at the shoulder; at the other, the massively built bison of North America and Europe, growing to a shoulder height of 2.2m.",
+            "Despite differences in size and appearance, bovids are united by the possession of certain common features. All species are ruminants, which means that they retain undigested food in their stomachs, and regurgitate it as necessary. Bovids are almost exclusively herbivorous: plant-eating “incisors: front teeth herbivorous”.",
+            "Typically their teeth are highly modified for browsing and grazing: grass or foliage is cropped with the upper lip and lower incisors** (the upper incisors are usually absent), and then ground down by the cheek teeth. As well as having cloven, or split, hooves, the males of ail bovid species and the females of most carry horns. Bovid horns have bony cores covered in a sheath of horny material that is constantly renewed from within; they are unbranched and never shed. They vary in shape and size: the relatively simple horns of a large Indian buffalo may measure around 4 m from tip to tip along the outer curve, while the various gazelles have horns with a variety of elegant curves.",
+            "Five groups, or sub-families, may be distinguished: Bovinae, Antelope, Caprinae, Cephalophinae and Antilocapridae. The sub-family Bovinae comprises most of the larger bovids, including the African bongo, and nilgae, eland, bison and cattle. Unlike most other bovids they are all non-territorial. The ancestors of the various species of domestic cattle banteng, gaur, yak and water buffalo are generally rare and endangered in the wild, while the auroch (the ancestor of the domestic cattle of Europe) is extinct.",
+            "The term ‘antelope is not a very precise zoological name – it is used to loosely describe a number of bovids that have followed different lines of development. Antelopes are typically long-legged, fast-running species, often with long horns that may be laid along the back when the animal is in full flight. There are two main sub-groups of antelope: Hippotraginae, which includes the oryx and the addax, and Antilopinae, which generally contains slighter and more graceful animals such as gazelle and the springbok. Antelopes are mainly grassland species, but many have adapted to flooded grasslands: pukus, waterbucks and lechwes are all good at swimming, usually feeding in deep water, while the sitatunga has long, splayed hooves that enable it to walk freely on swampy ground.",
+            "The sub-family Caprinae includes the sheep and the goat, together with various relatives such as the goral and the tahr. Most are woolly or have long hair. Several species, such as wild goats, chamois and ibex, are agile cliff – and mountain-dwellers. Tolerance of extreme conditions is most marked in this group: Barbary and bighorn sheep have adapted to arid deserts, while Rocky Mountain sheep survive high up in mountains and musk oxen in arctic tundra.",
+            "The duiker of Africa belongs to the Cephalophinae sub-family. It is generally small and solitary, often living in thick forest. Although mainly feeding on grass and leaves, some duikers – unlike most other bovids – are believed to eat insects and feed on dead animal carcasses, and even to kill small animals.",
+            "The pronghorn is the sole survivor of a New World sub-family of herbivorous ruminants, the Antilocapridae in North America. It is similar in appearance and habits to the Old World antelope. Although greatly reduced in numbers since the arrival of Europeans, and the subsequent enclosure of grasslands, the pronghorn is still found in considerable numbers throughout North America, from Washington State to Mexico. When alarmed by the approach of wolves or other predators, hairs on the pronghorn’s rump stand erect, so showing and emphasizing the white patch there. At this signal, the whole herd gallops off at speed of over 60 km per hour."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is the smallest species of Bovid called?",
+          "kind": "text",
+          "answer": [
+            "the royal antelope",
+            "royal antelope"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 29, Questions 22 to 26"
+        },
+        {
+          "prompt": "Which species of Bovinae hos now died out?",
+          "kind": "text",
+          "answer": [
+            "the auroch",
+            "auroch"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 29, Questions 22 to 26"
+        },
+        {
+          "prompt": "What facilitates the movement of the sitatunga over wetland?",
+          "kind": "text",
+          "answer": [
+            "Long, splayed hooves"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 29, Questions 22 to 26"
+        },
+        {
+          "prompt": "What sort of terrain do barbary sheep live in?",
+          "kind": "text",
+          "answer": [
+            "Arid deserts"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 29, Questions 22 to 26"
+        },
+        {
+          "prompt": "What is the only living member of the Antilocapridae sub-family?",
+          "kind": "text",
+          "answer": [
+            "the pronghorn",
+            "pronghorn"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 29, Questions 22 to 26"
+        }
       ]
     },
     {
-      "label": "Academic Reading Test 35, Passage 3, Questions 28 to 32",
-      "title": "How Fair is Fair Trade?",
-      "paragraphs": [
-        "The fair-trade movement began in Europe in earnest in the post-war period, but only in the last 25 years has it grown to include producers and consumers in over 60 countries.",
-        "In the 1950s and 60s, many people in the developed world felt passionately about the enormous disparities between developed and developing countries, and they believed the system of international trade shut out African, Asian, and South American producers who could not compete with multinational companies or who came from states that, for political reasons, were not trading with the West. The catchphrase ‘Trade Not Aid’ was used by church groups and trade unions – early supporters of fair trade – who also considered that international aid was either a pittance or a covert form of subjugation. These days, much fair trade does include aid: developed-world volunteers offer their services, and there is free training for producers and their workers.",
-        "Tea, coffee, cocoa, cotton, flowers, handicrafts, and gold are all major fair-trade items, with coffee being the most recognisable, fund on supermarket shelves and at café chains throughout the developed world.",
-        "Although around two million farmers and workers produce fair-trade items, this is a tiny number in relation to total global trade. Still, fair-trade advocates maintain that the system has positively impacted upon many more people worldwide, while the critics claim that if those two million returned to the mainstream trading system, they would receive higher prices for their goods or labour.",
-        "Fair trade is supposed to be a trade that is fair to producers. Its basic tenet is that developed-world consumers will pay slightly more for end products in the knowledge that developing-world producers have been equitably remunerated, and that the products have been made in decent circumstances. Additionally, the fair-trade system diﬀers from that of the open market because there is a minimum price paid for goods, which may be higher than that of the open market. Secondly, a small premium, earmarked for community development, is added in good years; for example, coﬀee co-operatives in South America frequently receive an additional 25c per kilogram. Lastly, purchasers of fair-trade products may assist with crop pre-financing or with the training of producers and workers, which could take the form of improving product quality, using environmentally friendly fertilisers, or raising literacy. Research has shown that non-fair-trade farmers copy some fair-trade farming practices, and, occasionally, encourage social progress. In exchange for ethical purchase and other assistance, fair-trade producers agree not to use child or slave labour, to adhere to the United Nations Charter on Human Rights, to provide safe workplaces, and to protect the environment despite these not being legally binding in their own countries. However, few non-fair-trade farmers have adopted these practices, viewing them as little more than rich-world conceits.",
-        "So that consumers know which products are made under fair-trade conditions, goods are labelled, and, these days, a single European and American umbrella organisation supervises labelling, standardisation, and inspection.",
-        "While fair trade is increasing, the system is far from perfect. First and foremost, there are expenses involved in becoming a fair-trade-certified producer, meaning the desperately poor rarely participate, so the very farmers fair-trade advocates originally hoped to support are excluded. Secondly, because conforming to the standards of fair-trade certification is costly, some producers deliberately mislabel their goods. The fair-trade monitoring process is patchy, and unfortunately, around 12% of fair-trade-labelled produce is nothing of the kind. Next, a crop may genuinely be produced under fair-trade conditions, but due to a lack of demand cannot be sold as fair trade, so goes onto the open market, where prices are mostly lower. It is estimated that only between 18-37% of fair-trade output is actually sold as fair trade. Sadly, there is little reliable research on the real relationship between costs incurred and revenue for fair-trade farmers, although empirical evidence suggests that many never realise a profit. Partly, reporting from producers is inadequate, and ways of determining profit may not include credit, harvesting, transport, or processing. Sometimes, the price paid to fair-trade producers is lower than that of the open market, so while a crop may be sold, elsewhere it could have earnt more, or where there are profits, they are often taken by the corporate firms that buy the goods and sell them on to retailers.",
-        "There are problems with the developed-world part of the equation too. People who volunteer to work for fair-trade concerns may do so believing they are assisting farmers and communities, whereas their labour serves to enrich middlemen and retailers. Companies involved in West African cocoa production have been criticised for this. In the developed world, the right to use a fair-trade logo is also expensive for packers and retailers, and sometimes a substantial amount of the money received from sale is ploughed back into marketing. In richer parts of the developed world, notably in London, packers and retailers charge high prices for fair-trade products. Consumers imagine they are paying so much because more money is returned to producers when profit-taking by retailers or packers is a more likely scenario. One UK café chain is known to have passed on 1.6% of the extra 18% is charged for fair-trade coﬀee to producers. However, this happens with other items at the supermarket or cafe, so perhaps consumers are naive to believe fair-traders behave otherwise. In addition, there are struggling farmers in rich countries, too, so some critics think fair-trade associations should certify them. Other critics find the entire fair-trade system ﬂawed – nothing more than a colossal marketing scam- and they would rather assist the genuinely poor in more transparent ways, but this criticism may be overblown since fair trade has endured for and been praised in the developing world itself."
+      "passages": [
+        {
+          "label": "Academic Reading Test 35, Passage 3, Questions 28 to 32",
+          "title": "How Fair is Fair Trade?",
+          "paragraphs": [
+            "The fair-trade movement began in Europe in earnest in the post-war period, but only in the last 25 years has it grown to include producers and consumers in over 60 countries.",
+            "In the 1950s and 60s, many people in the developed world felt passionately about the enormous disparities between developed and developing countries, and they believed the system of international trade shut out African, Asian, and South American producers who could not compete with multinational companies or who came from states that, for political reasons, were not trading with the West. The catchphrase ‘Trade Not Aid’ was used by church groups and trade unions – early supporters of fair trade – who also considered that international aid was either a pittance or a covert form of subjugation. These days, much fair trade does include aid: developed-world volunteers offer their services, and there is free training for producers and their workers.",
+            "Tea, coffee, cocoa, cotton, flowers, handicrafts, and gold are all major fair-trade items, with coffee being the most recognisable, fund on supermarket shelves and at café chains throughout the developed world.",
+            "Although around two million farmers and workers produce fair-trade items, this is a tiny number in relation to total global trade. Still, fair-trade advocates maintain that the system has positively impacted upon many more people worldwide, while the critics claim that if those two million returned to the mainstream trading system, they would receive higher prices for their goods or labour.",
+            "Fair trade is supposed to be a trade that is fair to producers. Its basic tenet is that developed-world consumers will pay slightly more for end products in the knowledge that developing-world producers have been equitably remunerated, and that the products have been made in decent circumstances. Additionally, the fair-trade system diﬀers from that of the open market because there is a minimum price paid for goods, which may be higher than that of the open market. Secondly, a small premium, earmarked for community development, is added in good years; for example, coﬀee co-operatives in South America frequently receive an additional 25c per kilogram. Lastly, purchasers of fair-trade products may assist with crop pre-financing or with the training of producers and workers, which could take the form of improving product quality, using environmentally friendly fertilisers, or raising literacy. Research has shown that non-fair-trade farmers copy some fair-trade farming practices, and, occasionally, encourage social progress. In exchange for ethical purchase and other assistance, fair-trade producers agree not to use child or slave labour, to adhere to the United Nations Charter on Human Rights, to provide safe workplaces, and to protect the environment despite these not being legally binding in their own countries. However, few non-fair-trade farmers have adopted these practices, viewing them as little more than rich-world conceits.",
+            "So that consumers know which products are made under fair-trade conditions, goods are labelled, and, these days, a single European and American umbrella organisation supervises labelling, standardisation, and inspection.",
+            "While fair trade is increasing, the system is far from perfect. First and foremost, there are expenses involved in becoming a fair-trade-certified producer, meaning the desperately poor rarely participate, so the very farmers fair-trade advocates originally hoped to support are excluded. Secondly, because conforming to the standards of fair-trade certification is costly, some producers deliberately mislabel their goods. The fair-trade monitoring process is patchy, and unfortunately, around 12% of fair-trade-labelled produce is nothing of the kind. Next, a crop may genuinely be produced under fair-trade conditions, but due to a lack of demand cannot be sold as fair trade, so goes onto the open market, where prices are mostly lower. It is estimated that only between 18-37% of fair-trade output is actually sold as fair trade. Sadly, there is little reliable research on the real relationship between costs incurred and revenue for fair-trade farmers, although empirical evidence suggests that many never realise a profit. Partly, reporting from producers is inadequate, and ways of determining profit may not include credit, harvesting, transport, or processing. Sometimes, the price paid to fair-trade producers is lower than that of the open market, so while a crop may be sold, elsewhere it could have earnt more, or where there are profits, they are often taken by the corporate firms that buy the goods and sell them on to retailers.",
+            "There are problems with the developed-world part of the equation too. People who volunteer to work for fair-trade concerns may do so believing they are assisting farmers and communities, whereas their labour serves to enrich middlemen and retailers. Companies involved in West African cocoa production have been criticised for this. In the developed world, the right to use a fair-trade logo is also expensive for packers and retailers, and sometimes a substantial amount of the money received from sale is ploughed back into marketing. In richer parts of the developed world, notably in London, packers and retailers charge high prices for fair-trade products. Consumers imagine they are paying so much because more money is returned to producers when profit-taking by retailers or packers is a more likely scenario. One UK café chain is known to have passed on 1.6% of the extra 18% is charged for fair-trade coﬀee to producers. However, this happens with other items at the supermarket or cafe, so perhaps consumers are naive to believe fair-traders behave otherwise. In addition, there are struggling farmers in rich countries, too, so some critics think fair-trade associations should certify them. Other critics find the entire fair-trade system ﬂawed – nothing more than a colossal marketing scam- and they would rather assist the genuinely poor in more transparent ways, but this criticism may be overblown since fair trade has endured for and been praised in the developing world itself."
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What was an early slogan about addressing the imbalance between the developed and developing worlds?",
+          "kind": "text",
+          "answer": [
+            "Trade not aid"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 35, Questions 28 to 32"
+        },
+        {
+          "prompt": "What is probably the most well-known fair-trade commodity?",
+          "kind": "text",
+          "answer": [
+            "Coffee"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 35, Questions 28 to 32"
+        },
+        {
+          "prompt": "According to the writer, in terms of total global trade, what do fair-trade producers represent?",
+          "kind": "text",
+          "answer": [
+            "A tiny number"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 35, Questions 28 to 32"
+        },
+        {
+          "prompt": "How do its supporters think fair trade has aﬀected many people?",
+          "kind": "text",
+          "answer": [
+            "Positively"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 35, Questions 28 to 32"
+        },
+        {
+          "prompt": "What do its critics think fair-trade producers would get if they went back to mainstream trade?",
+          "kind": "text",
+          "answer": [
+            "Higher prices"
+          ],
+          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "source": "Academic Reading Test 35, Questions 28 to 32"
+        }
       ]
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "What is the smallest species of Bovid called?",
-      "kind": "text",
-      "answer": [
-        "the royal antelope",
-        "royal antelope"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 29, Questions 22 to 26"
-    },
-    {
-      "prompt": "Which species of Bovinae hos now died out?",
-      "kind": "text",
-      "answer": [
-        "the auroch",
-        "auroch"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 29, Questions 22 to 26"
-    },
-    {
-      "prompt": "What facilitates the movement of the sitatunga over wetland?",
-      "kind": "text",
-      "answer": [
-        "Long, splayed hooves"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 29, Questions 22 to 26"
-    },
-    {
-      "prompt": "What sort of terrain do barbary sheep live in?",
-      "kind": "text",
-      "answer": [
-        "Arid deserts"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 29, Questions 22 to 26"
-    },
-    {
-      "prompt": "What is the only living member of the Antilocapridae sub-family?",
-      "kind": "text",
-      "answer": [
-        "the pronghorn",
-        "pronghorn"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 29, Questions 22 to 26"
-    },
-    {
-      "prompt": "What was an early slogan about addressing the imbalance between the developed and developing worlds?",
-      "kind": "text",
-      "answer": [
-        "Trade not aid"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 35, Questions 28 to 32"
-    },
-    {
-      "prompt": "What is probably the most well-known fair-trade commodity?",
-      "kind": "text",
-      "answer": [
-        "Coffee"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 35, Questions 28 to 32"
-    },
-    {
-      "prompt": "According to the writer, in terms of total global trade, what do fair-trade producers represent?",
-      "kind": "text",
-      "answer": [
-        "A tiny number"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 35, Questions 28 to 32"
-    },
-    {
-      "prompt": "How do its supporters think fair trade has aﬀected many people?",
-      "kind": "text",
-      "answer": [
-        "Positively"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 35, Questions 28 to 32"
-    },
-    {
-      "prompt": "What do its critics think fair-trade producers would get if they went back to mainstream trade?",
-      "kind": "text",
-      "answer": [
-        "Higher prices"
-      ],
-      "explanation": "See the passage above for the exact wording this answer is taken from.",
-      "source": "Academic Reading Test 35, Questions 28 to 32"
     }
   ]
 },
@@ -3340,135 +3449,145 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
   "diagram": {
   "title": "Exercise. Label the diagram (real test questions)",
   "intro": "Use words from the passage above to complete each label. The real diagram from the test is shown below.",
-  "passages": [
+  "units": [
     {
-      "label": "Academic Reading Test 15, Passage 3, Questions 27 to 32",
-      "title": "Jack the Ripper: A Bungled Investigation?",
-      "paragraphs": [
-        "Few murder enquiries have stirred the public imagination to such an extent as those relating to Jack the Ripper. The report of murders worthy of a depraved savage simultaneously appalled and enthralled Victorian society as the 19th century came to a close. The unleashing of a serial killer onto the London scene caught police unprepared as did the unprecedented brutality of the killings which earned their perpetrator the nickname ‘Jack the Ripper’. So, given the heightened public interest and the existence of a police force more competent than ever before since the formation of the Metropolitan Police in 1829, it has to be asked: why did the Ripper evade capture and why was no one even charged with the five murders attributed to the Ripper?",
-        "Conspiracy theorists would have us believe that the identity of the Ripper was, contrary to public belief, unmasked by police. However, the truth about the Ripper’s identity proved so unpalatable that it had to be hushed up. Far-fetched as it may seem, Queen Victoria’s grandson, Prince Albert Victor, was thought by some to be the Ripper himself. Whilst he did frequent places of ill repute, there is no tangible evidence to support this somewhat sensationalist theory. In fact, the Ripper may have successfully evaded the police for far more prosaic reasons.",
-        "Back in 1888, when the Ripper began his reign of terror in the streets of Whitechapel, forensic science was barely in its infancy. Rudimentary knowledge existed as to the necessity of keeping a murder scene intact to preserve vital clues but the means to thoroughly analyse such evidence through DNA testing was light years away still. In fact it was only with the publication of Hans Gross’ ‘A Handbook for Examining Magistrates, Police Officials, Military Police, etc.’ in 1893 that the foundation for forensic science was laid. It was too late, however, to help the Ripper investigation that floundered in its ignorance of modern forensic techniques.",
-        "The Ripper investigation also just missed out on developments in fingerprint identification that might have led police to the identity of the Ripper. Nearly a decade prior to the first Ripper murder, Dr. Henry Faulds had published a letter in the scientific journal Nature in 1880. In the letter he outlined for the first time the possibility of using fingerprints for identification purposes. It was only in 1896 that Sir Francis Galton, Inspector General of Bengal Police, sought to put theory into practice. Using the new-found method of ‘dactyloscopy’ (later known as fingerprinting) he employed the technique to successfully identify criminals. Again, new technology arrived just too late for the Ripper investigators.",
-        "Whilst investigative police could not be blamed for a lack of forensic knowledge, their failure to apply known investigative methods to the crime scene certainly smacked of incompetence. Photographing the crime scene was not exactly standard practice of the time but it was a known procedure. Unfortunately the officers leading the investigation at the time saw fit to only photograph one of the Ripper’s victims, a certain Mary Kelly, at the crime scene. Even more bizarrely, photographs of the victim were more centred on photographing her eyes to the neglect of all else. The reason for ‘forlorn hope’ as cited by Inspector Walter Dew was that the imprint of the Ripper might have been recorded on the victim’s retina at the time of her death. No conclusions were drawn from the undertaking.",
-        "Another more serious criticism that has been levelled at the investigative police at the time is their deliberate tampering with evidence. It is well-known that a semi-illiterate message was scrawled above one of the Ripper’s victims. However, before it could be properly analysed, the investigating officer ordered that it be removed as it was thought to implicate the Jews and racial repercussions were feared. the motive was well-intended but this action may have destroyed vital clues.",
-        "A final problem was the lack of co-operation that existed not just between the Press and the police but also between law enforcement agencies themselves. With regard to the former problem, police distrust if the Press led to limited information being released to the newspapers. This was due to a fear that information made public could alert a suspect or waste time in throwing up false leads. Unfortunately, if information had been circulated in the public arena, important information might have been uncovered and would have led to the arrest of the Ripper. As regards the law enforcement agencies, in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information and so further hinder proceedings."
+      "passages": [
+        {
+          "label": "Academic Reading Test 15, Passage 3, Questions 27 to 32",
+          "title": "Jack the Ripper: A Bungled Investigation?",
+          "paragraphs": [
+            "Few murder enquiries have stirred the public imagination to such an extent as those relating to Jack the Ripper. The report of murders worthy of a depraved savage simultaneously appalled and enthralled Victorian society as the 19th century came to a close. The unleashing of a serial killer onto the London scene caught police unprepared as did the unprecedented brutality of the killings which earned their perpetrator the nickname ‘Jack the Ripper’. So, given the heightened public interest and the existence of a police force more competent than ever before since the formation of the Metropolitan Police in 1829, it has to be asked: why did the Ripper evade capture and why was no one even charged with the five murders attributed to the Ripper?",
+            "Conspiracy theorists would have us believe that the identity of the Ripper was, contrary to public belief, unmasked by police. However, the truth about the Ripper’s identity proved so unpalatable that it had to be hushed up. Far-fetched as it may seem, Queen Victoria’s grandson, Prince Albert Victor, was thought by some to be the Ripper himself. Whilst he did frequent places of ill repute, there is no tangible evidence to support this somewhat sensationalist theory. In fact, the Ripper may have successfully evaded the police for far more prosaic reasons.",
+            "Back in 1888, when the Ripper began his reign of terror in the streets of Whitechapel, forensic science was barely in its infancy. Rudimentary knowledge existed as to the necessity of keeping a murder scene intact to preserve vital clues but the means to thoroughly analyse such evidence through DNA testing was light years away still. In fact it was only with the publication of Hans Gross’ ‘A Handbook for Examining Magistrates, Police Officials, Military Police, etc.’ in 1893 that the foundation for forensic science was laid. It was too late, however, to help the Ripper investigation that floundered in its ignorance of modern forensic techniques.",
+            "The Ripper investigation also just missed out on developments in fingerprint identification that might have led police to the identity of the Ripper. Nearly a decade prior to the first Ripper murder, Dr. Henry Faulds had published a letter in the scientific journal Nature in 1880. In the letter he outlined for the first time the possibility of using fingerprints for identification purposes. It was only in 1896 that Sir Francis Galton, Inspector General of Bengal Police, sought to put theory into practice. Using the new-found method of ‘dactyloscopy’ (later known as fingerprinting) he employed the technique to successfully identify criminals. Again, new technology arrived just too late for the Ripper investigators.",
+            "Whilst investigative police could not be blamed for a lack of forensic knowledge, their failure to apply known investigative methods to the crime scene certainly smacked of incompetence. Photographing the crime scene was not exactly standard practice of the time but it was a known procedure. Unfortunately the officers leading the investigation at the time saw fit to only photograph one of the Ripper’s victims, a certain Mary Kelly, at the crime scene. Even more bizarrely, photographs of the victim were more centred on photographing her eyes to the neglect of all else. The reason for ‘forlorn hope’ as cited by Inspector Walter Dew was that the imprint of the Ripper might have been recorded on the victim’s retina at the time of her death. No conclusions were drawn from the undertaking.",
+            "Another more serious criticism that has been levelled at the investigative police at the time is their deliberate tampering with evidence. It is well-known that a semi-illiterate message was scrawled above one of the Ripper’s victims. However, before it could be properly analysed, the investigating officer ordered that it be removed as it was thought to implicate the Jews and racial repercussions were feared. the motive was well-intended but this action may have destroyed vital clues.",
+            "A final problem was the lack of co-operation that existed not just between the Press and the police but also between law enforcement agencies themselves. With regard to the former problem, police distrust if the Press led to limited information being released to the newspapers. This was due to a fear that information made public could alert a suspect or waste time in throwing up false leads. Unfortunately, if information had been circulated in the public arena, important information might have been uncovered and would have led to the arrest of the Ripper. As regards the law enforcement agencies, in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information and so further hinder proceedings."
+          ]
+        },
+        {
+          "label": "Diagram, Academic Reading Test 15, Questions 27 to 32",
+          "html": "<p><span><img alt=\"\" class=\"alignnone size-medium wp-image-12051\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" fetchpriority=\"high\" height=\"294\" src=\"/ielts-website/pics/reading/imported/test-303-1.webp\" width=\"300\"/></span></p><p><span>DNA is left unexamined as no (27) …………….. yet is available to analyse it.</span></p><p><span>Fingerprints are not used (28) ……………..</span></p><p><span>Only one of the Ripper’s (29) …………… is photographed at the crime scene.</span></p><p><span>Images taken are (30) ……………… capturing the victim’s eyes.</span></p><p><span>Vital written evidence is (31) ……………. on the orders of a police investigator.</span></p><p><span>Investigators representing rival (32) …………………. fail to exchange information.</span></p>"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Diagram label 1: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "means"
+          ],
+          "explanation": "DNA evidence went unexamined because the means to test it, forensic DNA testing, did not yet exist.",
+          "source": "Academic Reading Test 15, Questions 27 to 32"
+        },
+        {
+          "prompt": "Diagram label 2: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "for identification purposes"
+          ],
+          "explanation": "Fingerprinting for identification was only theorised in 1880 and not put into practice until 1896, too late for the Ripper case.",
+          "source": "Academic Reading Test 15, Questions 27 to 32"
+        },
+        {
+          "prompt": "Diagram label 3: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "victims"
+          ],
+          "explanation": "Only one of the Ripper's victims, Mary Kelly, was photographed at the crime scene.",
+          "source": "Academic Reading Test 15, Questions 27 to 32"
+        },
+        {
+          "prompt": "Diagram label 4: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "centred on"
+          ],
+          "explanation": "The photographs focused mainly on the victim's eyes rather than the wider scene.",
+          "source": "Academic Reading Test 15, Questions 27 to 32"
+        },
+        {
+          "prompt": "Diagram label 5: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "removed"
+          ],
+          "explanation": "A police investigator ordered the scrawled message removed before it could be properly examined.",
+          "source": "Academic Reading Test 15, Questions 27 to 32"
+        },
+        {
+          "prompt": "Diagram label 6: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "law enforcement agencies"
+          ],
+          "explanation": "Rivalry between the City and Metropolitan Police forces delayed the exchange of information.",
+          "source": "Academic Reading Test 15, Questions 27 to 32"
+        }
       ]
     },
     {
-      "label": "Diagram, Academic Reading Test 15, Questions 27 to 32",
-      "html": "<p><span><img alt=\"\" class=\"alignnone size-medium wp-image-12051\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" fetchpriority=\"high\" height=\"294\" src=\"/ielts-website/pics/reading/imported/test-303-1.webp\" width=\"300\"/></span></p><p><span>DNA is left unexamined as no (27) …………….. yet is available to analyse it.</span></p><p><span>Fingerprints are not used (28) ……………..</span></p><p><span>Only one of the Ripper’s (29) …………… is photographed at the crime scene.</span></p><p><span>Images taken are (30) ……………… capturing the victim’s eyes.</span></p><p><span>Vital written evidence is (31) ……………. on the orders of a police investigator.</span></p><p><span>Investigators representing rival (32) …………………. fail to exchange information.</span></p>"
-    },
-    {
-      "label": "Academic Reading Test 13, Passage 1, Questions 10 to 13",
-      "title": "PROJECT: Reform Of The Prison System In The UK",
-      "paragraphs": [
-        "Penal progress:",
-        "The UK’s large prison population is fuelled by a high level of recidivism – when criminals repeatedly relapse into crime. This project for a model prison tackles issues of architecture, management and funding in an enlightened attempt to achieve lasting rehabilitation.",
-        "Project:",
-        "The penal system is one of the most direct manifestations of the power of the state, but is often also a revealing reflection of the national psyche and the public’s attitude to punishment and rehabilitation. Surprisingly, for a prosperous, progressive Western democracy, the UK has a lamentable penal record. Britain’s prison population is currently in excess of 60,000 (up 50 per cent from a decade ago) making it the second largest in Europe. The average cost of keeping an individual prisoner incarcerated for a year is £27,000 (ten times the average expenditure on a secondary school pupil in the state sector). Despite such substantial investment, over half of British prisoners re-offend within two years of release.",
-        "Such high rates of recidivism is a serious problem. It means that the prison population is continuing to grow at an alarming rate (recently by as many as 700 a week), so overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale. To ease this pressure, the UK government is investing in the prison estate at historic levels, with 12,000 new prison places proposed within the next few years. Yet, like their nineteenth-century predecessors, Britain’s ‘new Victorian’ prisons are designed for security and control rather than for the rehabilitation and education which is increasingly recognised as what prisoners need. Most are poorly educated young men under 30 (at least 60 per cent of whom are functionally illiterate and innumerate), so without education and skills few will be able to build meaningful lives away from crime, no matter how often they go to prison, or how long they spend there.",
-        "Any transformation of the penal system must start with the redesign of prison buildings. Prison architecture has a clearly discernible effect on behaviour, operational efficiency, interaction and morale. Last year, architects Buschow Henley were commissioned by a think tank organisation working with the Home Office Prison Service to research and develop an alternative prison model that focuses more intensely on rehabilitation through a concentrated programme of intellectual, physical and social education. The model is not intended as a blueprint but rather a series of principles that might be adapted to support the wider concept of the ‘Learning Prison’ in which other aspects such as organisation, management and funding would obviously play a part. Key to this is the introduction of a system that groups together prisoners in small communities or ‘houses’ of between 30 and 40 inmates. This has two important consequences. First, the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners. Second, the system places educational and other facilities at the heart of the building, within easy reach at all times of day, reinforced by a supportive social environment. This model also enables resources to be dramatically redeployed, from a current estimated ratio of 80:20 (costs of security versus rehabilitation) to a predicted reversed figure of 20:80, freeing up much-needed funds to invest in educational programmes, thereby helping to promote rehabilitation, reduce recidivism and initiate a virtuous cycle.",
-        "In Buschow Henley’s scheme, the proposed group size of 30-40 has the potential for social accountability – each prisoner being known within the community and personally accountable for his behaviour. Houses are semi-autonomous, not just dormitories, with communal, as opposed to centralised, facilities. Circulation is simplified and reduced. Buildings are arranged in a chess-board formation, as opposed to pavilions marooned in space, each with a discrete external area that can be productively used for sport, games or gardening with a minimum of supervision.",
-        "Individual cells are replanned to make them less like domestic lavatories and more conducive to learning. In an inversion of the conventional layout, the bed is placed lengthways along the external wall at a higher level, freeing up space below. Storage is built next to where they sleep and each inmate is provided with a moveable table equipped with electronic tools for study. Washing facilities are contained in a small adjoining space (included in the basic 8 sqm allowance) so reducing pressure on prison staff to manage inmate hygiene and ablution. Each cell is paired with a neighbouring ‘buddy’ cell linked by sliding doors controlled by individual prisoners to mitigate the risk of self-harm.",
-        "While this new type of prison appears to be somewhat liberal, the arrangement of spaces and functions both inside and out is actually tightly controlled. Paradoxically, however, this proscription enables a greater range of activities to take place, and makes general supervision easier. In this environment the prisoners are judged not by their degree of conformity, but by the scope of their activities and achievements, so laying the foundations for genuine rehabilitation. As Martin Narey, Director General of the UK Prison Services observes, ‘We have got to accept that prison must be a humane and constructive place, not least because all but 23 of my population are going home some day."
+      "passages": [
+        {
+          "label": "Academic Reading Test 13, Passage 1, Questions 10 to 13",
+          "title": "PROJECT: Reform Of The Prison System In The UK",
+          "paragraphs": [
+            "Penal progress:",
+            "The UK’s large prison population is fuelled by a high level of recidivism – when criminals repeatedly relapse into crime. This project for a model prison tackles issues of architecture, management and funding in an enlightened attempt to achieve lasting rehabilitation.",
+            "Project:",
+            "The penal system is one of the most direct manifestations of the power of the state, but is often also a revealing reflection of the national psyche and the public’s attitude to punishment and rehabilitation. Surprisingly, for a prosperous, progressive Western democracy, the UK has a lamentable penal record. Britain’s prison population is currently in excess of 60,000 (up 50 per cent from a decade ago) making it the second largest in Europe. The average cost of keeping an individual prisoner incarcerated for a year is £27,000 (ten times the average expenditure on a secondary school pupil in the state sector). Despite such substantial investment, over half of British prisoners re-offend within two years of release.",
+            "Such high rates of recidivism is a serious problem. It means that the prison population is continuing to grow at an alarming rate (recently by as many as 700 a week), so overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale. To ease this pressure, the UK government is investing in the prison estate at historic levels, with 12,000 new prison places proposed within the next few years. Yet, like their nineteenth-century predecessors, Britain’s ‘new Victorian’ prisons are designed for security and control rather than for the rehabilitation and education which is increasingly recognised as what prisoners need. Most are poorly educated young men under 30 (at least 60 per cent of whom are functionally illiterate and innumerate), so without education and skills few will be able to build meaningful lives away from crime, no matter how often they go to prison, or how long they spend there.",
+            "Any transformation of the penal system must start with the redesign of prison buildings. Prison architecture has a clearly discernible effect on behaviour, operational efficiency, interaction and morale. Last year, architects Buschow Henley were commissioned by a think tank organisation working with the Home Office Prison Service to research and develop an alternative prison model that focuses more intensely on rehabilitation through a concentrated programme of intellectual, physical and social education. The model is not intended as a blueprint but rather a series of principles that might be adapted to support the wider concept of the ‘Learning Prison’ in which other aspects such as organisation, management and funding would obviously play a part. Key to this is the introduction of a system that groups together prisoners in small communities or ‘houses’ of between 30 and 40 inmates. This has two important consequences. First, the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners. Second, the system places educational and other facilities at the heart of the building, within easy reach at all times of day, reinforced by a supportive social environment. This model also enables resources to be dramatically redeployed, from a current estimated ratio of 80:20 (costs of security versus rehabilitation) to a predicted reversed figure of 20:80, freeing up much-needed funds to invest in educational programmes, thereby helping to promote rehabilitation, reduce recidivism and initiate a virtuous cycle.",
+            "In Buschow Henley’s scheme, the proposed group size of 30-40 has the potential for social accountability – each prisoner being known within the community and personally accountable for his behaviour. Houses are semi-autonomous, not just dormitories, with communal, as opposed to centralised, facilities. Circulation is simplified and reduced. Buildings are arranged in a chess-board formation, as opposed to pavilions marooned in space, each with a discrete external area that can be productively used for sport, games or gardening with a minimum of supervision.",
+            "Individual cells are replanned to make them less like domestic lavatories and more conducive to learning. In an inversion of the conventional layout, the bed is placed lengthways along the external wall at a higher level, freeing up space below. Storage is built next to where they sleep and each inmate is provided with a moveable table equipped with electronic tools for study. Washing facilities are contained in a small adjoining space (included in the basic 8 sqm allowance) so reducing pressure on prison staff to manage inmate hygiene and ablution. Each cell is paired with a neighbouring ‘buddy’ cell linked by sliding doors controlled by individual prisoners to mitigate the risk of self-harm.",
+            "While this new type of prison appears to be somewhat liberal, the arrangement of spaces and functions both inside and out is actually tightly controlled. Paradoxically, however, this proscription enables a greater range of activities to take place, and makes general supervision easier. In this environment the prisoners are judged not by their degree of conformity, but by the scope of their activities and achievements, so laying the foundations for genuine rehabilitation. As Martin Narey, Director General of the UK Prison Services observes, ‘We have got to accept that prison must be a humane and constructive place, not least because all but 23 of my population are going home some day."
+          ]
+        },
+        {
+          "label": "Diagram, Academic Reading Test 13, Questions 10 to 13",
+          "html": "<p><span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/ielts-website/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p>"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Diagram label 1: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "discrete external area",
+            "external area"
+          ],
+          "explanation": "Each house is arranged so its building has its own discrete external area for sport, games or gardening.",
+          "source": "Academic Reading Test 13, Questions 10 to 13"
+        },
+        {
+          "prompt": "Diagram label 2: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "Bed"
+          ],
+          "explanation": "The redesigned cell places the bed along the external wall at a higher level.",
+          "source": "Academic Reading Test 13, Questions 10 to 13"
+        },
+        {
+          "prompt": "Diagram label 3: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "Storage"
+          ],
+          "explanation": "Storage is built next to where the bed is, beneath the raised sleeping area.",
+          "source": "Academic Reading Test 13, Questions 10 to 13"
+        },
+        {
+          "prompt": "Diagram label 4: what word goes here?",
+          "kind": "text",
+          "answer": [
+            "Sliding doors"
+          ],
+          "explanation": "Each cell connects to its neighbouring buddy cell through sliding doors.",
+          "source": "Academic Reading Test 13, Questions 10 to 13"
+        }
       ]
-    },
-    {
-      "label": "Diagram, Academic Reading Test 13, Questions 10 to 13",
-      "html": "<p><span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/ielts-website/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p>"
-    }
-  ],
-  "questions": [
-    {
-      "prompt": "Diagram label 1: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "means"
-      ],
-      "explanation": "DNA evidence went unexamined because the means to test it, forensic DNA testing, did not yet exist.",
-      "source": "Academic Reading Test 15, Questions 27 to 32"
-    },
-    {
-      "prompt": "Diagram label 2: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "for identification purposes"
-      ],
-      "explanation": "Fingerprinting for identification was only theorised in 1880 and not put into practice until 1896, too late for the Ripper case.",
-      "source": "Academic Reading Test 15, Questions 27 to 32"
-    },
-    {
-      "prompt": "Diagram label 3: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "victims"
-      ],
-      "explanation": "Only one of the Ripper's victims, Mary Kelly, was photographed at the crime scene.",
-      "source": "Academic Reading Test 15, Questions 27 to 32"
-    },
-    {
-      "prompt": "Diagram label 4: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "centred on"
-      ],
-      "explanation": "The photographs focused mainly on the victim's eyes rather than the wider scene.",
-      "source": "Academic Reading Test 15, Questions 27 to 32"
-    },
-    {
-      "prompt": "Diagram label 5: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "removed"
-      ],
-      "explanation": "A police investigator ordered the scrawled message removed before it could be properly examined.",
-      "source": "Academic Reading Test 15, Questions 27 to 32"
-    },
-    {
-      "prompt": "Diagram label 6: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "law enforcement agencies"
-      ],
-      "explanation": "Rivalry between the City and Metropolitan Police forces delayed the exchange of information.",
-      "source": "Academic Reading Test 15, Questions 27 to 32"
-    },
-    {
-      "prompt": "Diagram label 1: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "discrete external area",
-        "external area"
-      ],
-      "explanation": "Each house is arranged so its building has its own discrete external area for sport, games or gardening.",
-      "source": "Academic Reading Test 13, Questions 10 to 13"
-    },
-    {
-      "prompt": "Diagram label 2: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "Bed"
-      ],
-      "explanation": "The redesigned cell places the bed along the external wall at a higher level.",
-      "source": "Academic Reading Test 13, Questions 10 to 13"
-    },
-    {
-      "prompt": "Diagram label 3: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "Storage"
-      ],
-      "explanation": "Storage is built next to where the bed is, beneath the raised sleeping area.",
-      "source": "Academic Reading Test 13, Questions 10 to 13"
-    },
-    {
-      "prompt": "Diagram label 4: what word goes here?",
-      "kind": "text",
-      "answer": [
-        "Sliding doors"
-      ],
-      "explanation": "Each cell connects to its neighbouring buddy cell through sliding doors.",
-      "source": "Academic Reading Test 13, Questions 10 to 13"
     }
   ]
 },

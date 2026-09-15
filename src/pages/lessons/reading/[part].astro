@@ -37,6 +37,12 @@ const practice = READING_PRACTICE[part.slug];
 
   <Fragment set:html={body} />
 
+  {practice && (
+    <div class="mt-10 text-center">
+      <h2 class="font-display text-xl font-bold text-ink sm:text-2xl">Practice with real test questions</h2>
+      <p class="mt-1 text-sm text-ink-muted">The passage and questions below come from a real IELTS Academic Reading test.</p>
+    </div>
+  )}
   {practice && <PracticeQuiz client:load set={practice} />}
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Reading section">
