@@ -45,16 +45,16 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
   mc: {
     label: 'Multiple Choice',
     steps: [
-      'Read the question and all three options carefully before looking at the passage.',
+      'Read the question and all of the options carefully before looking at the passage.',
       'Identify differences between the options. They may be subtly different.',
       'Prepare paraphrases and synonyms for the question keywords.',
       'Scan the passage for the relevant section (answers come in order).',
       'Read the surrounding sentences. Not just the one that matches.',
-      'You may see information about all three options in the passage. Only one is correct.',
+      'You may see information about several of the options in the passage. Unless the instructions ask for more than one answer, only one is correct.',
       'Choose based on deeper meaning, not just word-matching.',
     ],
     traps: [
-      'all options may appear in the passage. Only one is accurate',
+      'every option may appear somewhere in the passage. Appearing is not the same as answering the question',
       'similar-sounding options with small but crucial differences',
     ],
   },
@@ -66,7 +66,7 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       'Distinguish between the main idea and supporting examples or details.',
       'Eliminate headings that only match one sentence in the paragraph.',
       'Watch for headings that look similar. Compare them carefully.',
-      'Your answer must be a roman numeral (e.g. III).',
+      'Your answer must be a roman numeral, written the way it appears in the list (e.g. iii).',
     ],
     traps: [
       'choosing a heading that matches one detail, not the whole paragraph',
@@ -82,7 +82,11 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       'When you find the relevant section, confirm it contains the information in the statement.',
       'Remember: a paragraph can answer more than one question. Check the instructions.',
     ],
-    traps: ['confusing this with Matching Headings', 'forgetting that one letter can be used more than once'],
+    traps: [
+      'confusing this with Matching Headings',
+      'forgetting that one letter can be used more than once when the instructions allow it',
+      'expecting the answers in passage order. This is one of the types that does not follow it',
+    ],
   },
   sentence: {
     label: 'Sentence Completion',
@@ -158,7 +162,7 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     steps: [
       'Read the whole summary, notes, table, or flow-chart first, ignoring the gaps, to see what part of the passage it retells.',
       'For each gap, decide what kind of word is missing (a noun, a number, a process, a name?).',
-      'Find the matching section in the passage. It usually keeps the same order as the gaps.',
+      'Find the part of the passage the task is drawn from. The answers usually all sit inside that one part, though not necessarily in the order of the gaps.',
       'If choosing from a box, compare each remaining option carefully. More than one may look tempting.',
       'Reread the completed sentence or step to check it makes grammatical sense and matches the passage.',
     ],

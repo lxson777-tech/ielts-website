@@ -4,8 +4,11 @@
    per-criterion scores, which a mock (no AI grading) never has, so those
    essays live here instead. The individual Listening and Reading legs are
    recorded as ordinary full attempts by TestPlayer itself (see
-   attemptKind="full" in MockExam.tsx); this file only adds the one
-   combined "a mock happened" record. */
+   attemptKind="full" in MockExam.tsx); the Speaking leg (2026-09) is the
+   embedded live examiner, graded live, whose band is folded straight into
+   this file's own combined record rather than progress.ts's separate
+   SpeakingAttempt list — see saveMockAttempt below. This file only adds the
+   one combined "a mock happened" record. */
 
 import type { PracticeTest } from './schema';
 import { getBestBand, recordTestAttempt } from '../progress';
@@ -70,6 +73,18 @@ export interface MockAttempt {
   readingRaw: number;
   readingTotal: number;
   essays: MockEssay[];
+  /** Overall band from the embedded live AI examiner (Part 1 interview, Part
+      2 long turn, Part 3 discussion), when the student took the Speaking
+      stage. Optional: absent both for every attempt recorded before Speaking
+      joined the mock, and for a sitting where the student chose "Skip
+      speaking" — check `speakingSkipped` to tell those two apart. */
+  speakingBand?: number;
+  /** True when the student pressed "Skip speaking" on the Speaking stage (or
+      left the interview before it produced a report) on this sitting.
+      Optional/absent for every attempt recorded before Speaking existed in
+      the mock; treat a missing value the same as `false` there — those
+      sittings simply had no Speaking stage to skip. */
+  speakingSkipped?: boolean;
   secondsUsed: number;
 }
 
@@ -119,29 +134,55 @@ export function getMockAttempt(id: string): MockAttempt | undefined {
   return readStore().find((m) => m.id === id);
 }
 
+/** The official IELTS overall-band method: the mean of the component bands
+    given, rounded to the nearest half band, with the official tie-break on
+    the two fractions a mean of half-band scores can land on exactly between
+    two half bands — .25 rounds up to the next half band, .75 rounds up to
+    the next whole band (so 6.25 → 6.5, 6.75 → 7). `Math.round` on the
+    doubled mean happens to implement exactly this: it rounds n.5 up for any
+    positive n, and doubling turns both the .25 and .75 cases into a .5 it
+    then rounds up. Works for any number of components (2 through 4 here —
+    see the two callers below), not just the historical Listening+Reading
+    pair, so both this file and the mock-summary screen share one
+    implementation instead of drifting apart. */
+export function overallMockBand(bands: number[]): number {
+  if (bands.length === 0) return 0;
+  const mean = bands.reduce((a, b) => a + b, 0) / bands.length;
+  return Math.round(mean * 2) / 2;
+}
+
 /** Save the mock's own record (essays included) and leave a matching marker
     in the shared progress store. TestAttempt only models one skill at a
-    time ('reading' | 'listening'), and a mock day spans Listening, Reading
-    and Writing — 'reading' is used as the nearest neutral value, the same
-    fallback progress.ts itself uses for attempts recorded before the skill
-    field existed. Marked kind: 'drill' so this combined marker never enters
-    'full'-only band history (getBestBand, ScoreHistory's chart/table) —
-    the real per-skill history already comes from the two ordinary 'full'
-    attempts TestPlayer records for the Listening and Reading legs. This
-    entry exists only so something in progress records that a mock sitting
-    happened on this day. */
+    time ('reading' | 'listening'), and a mock day spans Listening, Reading,
+    Writing and (now) Speaking — 'reading' is used as the nearest neutral
+    value, the same fallback progress.ts itself uses for attempts recorded
+    before the skill field existed. Marked kind: 'drill' so this combined
+    marker never enters 'full'-only band history (getBestBand,
+    ScoreHistory's chart/table) — the real per-skill history already comes
+    from the two ordinary 'full' attempts TestPlayer records for the
+    Listening and Reading legs (Speaking's live-test band deliberately isn't
+    also pushed into progress.speaking: that list's SpeakingAttempt.mode is
+    'part1' | 'part2' | 'part3' only, the same shape the standalone
+    /speaking/examiner full test already leaves alone — see the `m !== 'full'`
+    guard in LiveExaminer's finishTest). This entry exists only so something
+    in progress records that a mock sitting happened on this day. */
 export function saveMockAttempt(attempt: MockAttempt): void {
   const list = readStore();
   list.push(attempt);
   writeStore(list);
 
-  const combinedBand = Math.round(((attempt.listeningBand + attempt.readingBand) / 2) * 2) / 2;
+  const bands = [attempt.listeningBand, attempt.readingBand];
+  if (attempt.speakingBand != null) bands.push(attempt.speakingBand);
+  const combinedBand = overallMockBand(bands);
+  const bandLabel =
+    `L ${attempt.listeningBand.toFixed(1)} · R ${attempt.readingBand.toFixed(1)}` +
+    (attempt.speakingBand != null ? ` · S ${attempt.speakingBand.toFixed(1)}` : '');
   recordTestAttempt(attempt.id, {
     at: attempt.at,
     raw: attempt.listeningRaw + attempt.readingRaw,
     total: attempt.listeningTotal + attempt.readingTotal,
     band: combinedBand,
-    bandLabel: `L ${attempt.listeningBand.toFixed(1)} · R ${attempt.readingBand.toFixed(1)}`,
+    bandLabel,
     secondsUsed: attempt.secondsUsed,
     kind: 'drill',
     skill: 'reading',

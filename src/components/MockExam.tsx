@@ -1,12 +1,18 @@
 /* Mock Exam Day: a single chained sitting — Listening, then Reading, then
-   Writing, with no breaks — mirroring the real IELTS day as closely as this
-   portal's pieces allow. Listening and Reading are the existing full-test
-   TestPlayer, reused as-is in bare exam mode (see the onFinish prop below);
-   Writing is new here since nothing in the app already does "one shared
-   60-minute clock across two tasks, no grading". See src/lib/tests/mock.ts
-   for the pure pair-picking logic and the essay/attempt storage. */
+   Writing, then Speaking, with no breaks — mirroring the real IELTS day as
+   closely as this portal's pieces allow. Listening and Reading are the
+   existing full-test TestPlayer, reused as-is in bare exam mode (see the
+   onFinish prop below); Writing is new here since nothing in the app
+   already does "one shared 60-minute clock across two tasks, no grading".
+   Speaking (2026-09) is the live AI examiner (src/components/LiveExaminer,
+   `mock` mode) embedded as the fourth stage, behind its own brief screen
+   with a Skip option since it needs a microphone and, on the paid provider,
+   a signed-in account — see SpeakingBriefScreen below. See
+   src/lib/tests/mock.ts for the pure pair-picking logic, the official
+   overall-band rounding, and the essay/attempt storage. */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 import type { PracticeTest } from '../lib/tests/schema';
 import { ALL_TESTS } from '../data/tests';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
@@ -14,12 +20,42 @@ import type { EssayPrompt } from '../lib/writing/schema';
 import { countWords } from '../lib/writing/mechanics';
 import { isGraderConfigured } from '../lib/writing/grader';
 import { getAttempts } from '../lib/progress';
-import { pickDefaultPair, pairLabel, testNumber, nextMockId, saveMockAttempt, type MockEssay } from '../lib/tests/mock';
+import {
+  pickDefaultPair,
+  pairLabel,
+  testNumber,
+  nextMockId,
+  saveMockAttempt,
+  overallMockBand,
+  type MockEssay,
+} from '../lib/tests/mock';
 import { withBase } from '../lib/url';
+import { isAuthConfigured } from '../lib/auth/supabase';
+import { onAuthChange } from '../lib/auth/session';
+import { fetchLiveConfig, type LiveConfig } from '../lib/speaking/live/link';
 import Html from './Html';
 import TestPlayer from './TestPlayer';
+import LiveExaminer from './LiveExaminer';
+import AuthModal from './AuthModal';
 
-type Stage = 'start' | 'listening' | 'transition-reading' | 'reading' | 'transition-writing' | 'writing' | 'results';
+type Stage =
+  | 'start'
+  | 'listening'
+  | 'transition-reading'
+  | 'reading'
+  | 'transition-writing'
+  | 'writing'
+  | 'speaking-brief'
+  | 'speaking'
+  | 'results';
+
+/** Result handed back by the embedded live examiner (LiveExaminer's
+    `onComplete`), kept as its own type since MockAttempt only stores the
+    number, not the per-criterion breakdown. */
+interface SpeakingLegResult {
+  overallBand: number;
+  criteria: Record<string, number>;
+}
 
 interface LegResult {
   raw: number;
@@ -33,6 +69,10 @@ const TASK1_ACADEMIC = WRITING_PROMPTS.filter((p) => p.task === 'task1' && p.var
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
 const WRITING_SECONDS = 60 * 60;
 const TRANSITION_SECONDS = 60;
+/** Same env var LiveExaminer.tsx reads — used here only to know whether the
+    Speaking stage's brief screen has anything to gate (sign-in) or offer
+    (Start) at all. */
+const LIVE_EXAMINER_URL: string | undefined = import.meta.env?.PUBLIC_LIVE_EXAMINER_URL;
 
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
 
@@ -81,6 +121,15 @@ function NoGradingIcon() {
     </svg>
   );
 }
+function SpeakingIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="9" y="2.5" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0" />
+      <path d="M12 18v3.5" />
+    </svg>
+  );
+}
 
 /** One random-ish pick, stable for the lifetime of this mock sitting
     (computed once via useState's lazy initializer, not re-rolled on every
@@ -113,6 +162,8 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const [essay1, setEssay1] = useState('');
   const [essay2, setEssay2] = useState('');
   const [writingSecondsLeft, setWritingSecondsLeft] = useState(WRITING_SECONDS);
+  const [speakingResult, setSpeakingResult] = useState<SpeakingLegResult | null>(null);
+  const [speakingSkipped, setSpeakingSkipped] = useState(false);
   const savedRef = useRef(false);
 
   const listeningTest: PracticeTest | undefined = listeningTests.find((t) => t.id === listeningId) ?? listeningTests[0];
@@ -126,11 +177,17 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   /* Leaving mid-mock: Listening and Reading already warn on their own (see
      TestPlayer's beforeunload effect, active for the whole time each nested
      instance is started-but-not-submitted). This covers the stages
-     TestPlayer doesn't own — the two transition screens and Writing — so
-     the warning holds for the entire sitting except the start and results
-     screens, same as a real exam has no safe point to just walk away. */
+     TestPlayer doesn't own — the transition screens, Writing, and the
+     Speaking brief/interview — so the warning holds for the entire sitting
+     except the start and results screens, same as a real exam has no safe
+     point to just walk away. */
   useEffect(() => {
-    const midMock = stage === 'transition-reading' || stage === 'transition-writing' || stage === 'writing';
+    const midMock =
+      stage === 'transition-reading' ||
+      stage === 'transition-writing' ||
+      stage === 'writing' ||
+      stage === 'speaking-brief' ||
+      stage === 'speaking';
     if (!midMock) return;
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -177,6 +234,8 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       readingRaw: readingResult.raw,
       readingTotal: readingResult.total,
       essays,
+      speakingBand: speakingResult?.overallBand,
+      speakingSkipped,
       secondsUsed: listeningResult.secondsUsed + readingResult.secondsUsed + (WRITING_SECONDS - writingSecondsLeft),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,6 +247,26 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     setStartedAt(now);
     setStage('listening');
   }
+
+  /* Developer shortcut for manual/automated verification: ?stage=speaking
+     jumps straight to the Speaking brief screen with synthesized Listening,
+     Reading and Writing results, skipping ~2h45 of real exam flow. Honoured
+     only in dev builds — import.meta.env.DEV is statically false in a
+     production build, so this whole branch is dead code there. */
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    if (new URLSearchParams(window.location.search).get('stage') !== 'speaking') return;
+    const now = new Date().toISOString();
+    setMockId(nextMockId(now));
+    setStartedAt(now);
+    setListeningResult({ raw: 32, total: 40, band: 7, bandLabel: '7', secondsUsed: 28 * 60 });
+    setReadingResult({ raw: 30, total: 40, band: 6.5, bandLabel: '6.5', secondsUsed: 58 * 60 });
+    setEssay1('(dev shortcut: Task 1 left blank)');
+    setEssay2('(dev shortcut: Task 2 left blank)');
+    setWritingSecondsLeft(0);
+    setStage('speaking-brief');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleListeningFinish() {
     if (!listeningTest) return;
@@ -271,8 +350,41 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
         onChangeEssay1={setEssay1}
         onChangeEssay2={setEssay2}
         secondsLeft={writingSecondsLeft}
-        onFinish={() => setStage('results')}
+        onFinish={() => setStage('speaking-brief')}
       />
+    );
+  }
+
+  if (stage === 'speaking-brief') {
+    return (
+      <SpeakingBriefScreen
+        onStart={() => setStage('speaking')}
+        onSkip={() => {
+          setSpeakingSkipped(true);
+          setStage('results');
+        }}
+      />
+    );
+  }
+
+  if (stage === 'speaking') {
+    return (
+      <div className="screen-in min-h-dvh bg-surface-alt px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-3xl">
+          <LiveExaminer
+            variant="full"
+            mock
+            onComplete={(result) => {
+              setSpeakingResult(result);
+              setStage('results');
+            }}
+            onAbort={() => {
+              setSpeakingSkipped(true);
+              setStage('results');
+            }}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -287,6 +399,8 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       task2={task2Prompt}
       essay1={essay1}
       essay2={essay2}
+      speakingResult={speakingResult}
+      speakingSkipped={speakingSkipped}
     />
   );
 }
@@ -318,8 +432,8 @@ function StartScreen({
         <p className="text-xs font-bold uppercase tracking-wider text-brand">Mock Exam Day</p>
         <h1 className="mt-1 font-display text-2xl font-extrabold">A full IELTS sitting, back to back</h1>
         <p className="mt-2 text-ink-muted">
-          Listening, then Reading, then Writing, the same order and pace as the real test day, with no breaks in
-          between.
+          Listening, then Reading, then Writing, then Speaking, the same order and pace as the real test day, with
+          no breaks in between. About 2 hours 45 minutes for the first three papers, plus 14 minutes for Speaking.
         </p>
 
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
@@ -342,8 +456,19 @@ function StartScreen({
             </span>
           </li>
           <li className="flex gap-2.5">
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><SpeakingIcon /></span>
+            <span>
+              <strong>Speaking</strong> (about 14 minutes): a real-time voice conversation with the AI examiner,
+              Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this
+              site requires one for it. You can skip this stage.
+            </span>
+          </li>
+          <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><NoGradingIcon /></span>
-            <span>No AI grading during the mock, Writing is scored later, in the Writing Checker.</span>
+            <span>
+              Listening, Reading and Speaking are graded automatically. Writing isn't graded during the mock,
+              score it afterwards in the Writing Checker.
+            </span>
           </li>
         </ul>
 
@@ -549,6 +674,97 @@ function WritingTaskBlock({
   );
 }
 
+/** Part 4's brief screen: the same sign-in gate the standalone live
+    examiner page uses (isAuthConfigured/onAuthChange/fetchLiveConfig,
+    identical to LiveExaminer's own — see its file header), reduced to just
+    the decision this screen needs to make: can "Start speaking test" be
+    pressed right now, or does the student need to sign in first? Either
+    way "Skip speaking" stays available, so a student who'd rather not
+    (no mic, no time, doesn't want to sign in) can still finish the sitting
+    with three papers. */
+function SpeakingBriefScreen({ onStart, onSkip }: { onStart: () => void; onSkip: () => void }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => onAuthChange(setUser), []);
+
+  useEffect(() => {
+    if (!LIVE_EXAMINER_URL) return;
+    let cancelled = false;
+    fetchLiveConfig(LIVE_EXAMINER_URL)
+      .then((cfg) => {
+        if (!cancelled) setLiveConfig(cfg);
+      })
+      .catch(() => {
+        /* Can't tell yet whether sign-in is required — Start stays
+           disabled until it resolves or the student skips. */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const authConfigured = isAuthConfigured();
+  const requiresSignIn = liveConfig?.requiresSignIn === true;
+  const needsSignIn = requiresSignIn && authConfigured && !user;
+  const authUnavailable = requiresSignIn && !authConfigured;
+  const examinerConfigured = !!LIVE_EXAMINER_URL;
+  const canStart = examinerConfigured && !needsSignIn && !authUnavailable;
+
+  return (
+    <div className="screen-in grid min-h-dvh place-items-center bg-surface-alt p-4">
+      <div className="w-full max-w-md rounded-card border border-border bg-surface p-8 text-center shadow-card-hover">
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">Part 4 of 4</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">Speaking</h1>
+        <p className="mt-2 text-sm text-ink-muted">
+          About 14 minutes with the AI examiner: Part 1 interview, Part 2 long turn, Part 3 discussion. You need a
+          microphone and to be signed in.
+        </p>
+
+        {needsSignIn && (
+          <div className="mt-5 rounded-lg bg-warning-tint px-3 py-3 text-left text-xs text-ink-muted">
+            <p>Sign in to take the speaking test (this keeps the paid voice service for real students).</p>
+            <button
+              type="button"
+              onClick={() => setShowAuthModal(true)}
+              className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
+            >
+              Sign in
+            </button>
+          </div>
+        )}
+        {authUnavailable && (
+          <p className="mt-5 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+            The speaking test needs accounts to be enabled on this site.
+          </p>
+        )}
+        {!examinerConfigured && (
+          <p className="mt-5 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+            The speaking test isn't configured on this site yet.
+          </p>
+        )}
+
+        <div className="mt-7 flex flex-col items-center gap-3">
+          <button
+            type="button"
+            onClick={onStart}
+            disabled={!canStart}
+            className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Start speaking test
+          </button>
+          <button type="button" onClick={onSkip} className="px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+            Skip speaking
+          </button>
+        </div>
+
+        {showAuthModal && <AuthModal initialMode="signin" onClose={() => setShowAuthModal(false)} />}
+      </div>
+    </div>
+  );
+}
+
 function ResultsScreen({
   hubUrl,
   listeningTest,
@@ -559,6 +775,8 @@ function ResultsScreen({
   task2,
   essay1,
   essay2,
+  speakingResult,
+  speakingSkipped,
 }: {
   hubUrl: string;
   listeningTest: PracticeTest;
@@ -569,21 +787,57 @@ function ResultsScreen({
   task2?: EssayPrompt;
   essay1: string;
   essay2: string;
+  speakingResult: SpeakingLegResult | null;
+  speakingSkipped: boolean;
 }) {
   const graderReady = isGraderConfigured();
+
+  /* The overall band is the official mean-of-components method (see
+     overallMockBand in src/lib/tests/mock.ts), taken over whichever papers
+     actually have a band: Listening and Reading always do; Speaking adds a
+     third when the student took it. Writing isn't part of it — this mock,
+     like the rest of the site (see the Trainer/checker split noted in
+     WritingLeg above), never auto-grades essays, so there's no fourth
+     number to average in. The card names exactly how many papers went in
+     rather than implying a fixed four, so the figure stays honest whether
+     or not Speaking was taken. */
+  const bandedPapers: number[] = [];
+  if (listeningResult) bandedPapers.push(listeningResult.band);
+  if (readingResult) bandedPapers.push(readingResult.band);
+  if (speakingResult) bandedPapers.push(speakingResult.overallBand);
+  const overall = bandedPapers.length > 0 ? overallMockBand(bandedPapers) : null;
+  const scoredIntro = speakingResult
+    ? 'Listening, Reading and Speaking are scored automatically.'
+    : speakingSkipped
+      ? 'Listening and Reading are scored automatically; you skipped Speaking.'
+      : 'Listening and Reading are scored automatically.';
+
   return (
     <div className="screen-in mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <p className="text-xs font-bold uppercase tracking-wider text-brand">Mock Exam Day · Results</p>
       <h1 className="mt-1 font-display text-2xl font-extrabold">You've finished the sitting</h1>
       <p className="mt-2 text-ink-muted">
-        Listening and Reading are scored the same way as a normal full test. Writing and Speaking aren't
-        auto-scored here, so there's no single combined overall band. Get real feedback on your essays in the
-        Writing Checker.
+        {scoredIntro} Writing isn't auto-scored here, so get real feedback on your essays in the Writing Checker.
       </p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      {overall != null && (
+        <div className="mt-6 rounded-card border border-brand/25 bg-brand-tint/40 p-5 text-center">
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">
+            Overall band · {bandedPapers.length} {bandedPapers.length === 1 ? 'paper' : 'papers'}
+          </p>
+          <p className="mt-1 font-display text-4xl font-extrabold text-brand">{overall.toFixed(1)}</p>
+          <p className="mt-1 text-xs text-ink-muted">
+            Mean of {speakingResult ? 'Listening, Reading and Speaking' : 'Listening and Reading'}, rounded to the
+            nearest half band. Writing isn't included — it isn't graded during the mock.
+          </p>
+        </div>
+      )}
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <ResultCard title={listeningTest.title} raw={listeningResult?.raw} total={listeningResult?.total} bandLabel={listeningResult?.bandLabel} />
         <ResultCard title={readingTest.title} raw={readingResult?.raw} total={readingResult?.total} bandLabel={readingResult?.bandLabel} />
+        <WritingResultCard essay1={essay1} essay2={essay2} graderReady={graderReady} />
+        <SpeakingResultCard result={speakingResult} skipped={speakingSkipped} />
       </div>
 
       <div className="mt-8 space-y-6">
@@ -602,6 +856,13 @@ function ResultsScreen({
       ) : (
         <p className="mt-6 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
           AI feedback isn't available on this build. Your essays are saved on this device either way.
+        </p>
+      )}
+
+      {speakingSkipped && (
+        <p className="mt-6 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+          You skipped Speaking, so it isn't in your overall band above. You can take a full Speaking test any time
+          at <a href={withBase('/speaking/examiner')} className="font-semibold underline">the live AI examiner</a>.
         </p>
       )}
 
@@ -630,6 +891,35 @@ function ResultCard({
       <p className="text-sm font-semibold text-ink-muted">{title}</p>
       <p className="mt-2 font-display text-3xl font-extrabold text-brand">{bandLabel ?? '—'}</p>
       {raw != null && total != null && <p className="mt-1 text-xs text-ink-muted">{raw} / {total} correct</p>}
+    </div>
+  );
+}
+
+/** Writing never gets a band in the mock (see the note in ResultsScreen
+    above), so this card shows what there is instead: word counts, and a
+    reminder that real feedback lives one click away in the Writing
+    Checker. */
+function WritingResultCard({ essay1, essay2, graderReady }: { essay1: string; essay2: string; graderReady: boolean }) {
+  const words = countWords(essay1) + countWords(essay2);
+  return (
+    <div className="rounded-card border border-border bg-surface p-5 text-center shadow-card">
+      <p className="text-sm font-semibold text-ink-muted">Writing</p>
+      <p className="mt-2 font-display text-3xl font-extrabold text-ink-muted">—</p>
+      <p className="mt-1 text-xs text-ink-muted">
+        {words} words · {graderReady ? 'score it below' : 'not scored here'}
+      </p>
+    </div>
+  );
+}
+
+function SpeakingResultCard({ result, skipped }: { result: SpeakingLegResult | null; skipped: boolean }) {
+  return (
+    <div className="rounded-card border border-border bg-surface p-5 text-center shadow-card">
+      <p className="text-sm font-semibold text-ink-muted">Speaking</p>
+      <p className="mt-2 font-display text-3xl font-extrabold text-brand">
+        {result ? result.overallBand.toFixed(1) : '—'}
+      </p>
+      <p className="mt-1 text-xs text-ink-muted">{result ? 'live AI examiner' : skipped ? 'Skipped' : 'not taken'}</p>
     </div>
   );
 }

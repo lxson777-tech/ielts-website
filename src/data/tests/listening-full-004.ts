@@ -487,7 +487,7 @@ export const listeningFull004: PracticeTest = {
             },
             {
               "id": "q36",
-              "textHtml": "plants Painting Styles",
+              "textHtml": "plants",
               "answer": "B",
               "explanation": "At 21:49 in the yam tradition Aborigines began \"including vegetables in their diet as these feature prominently\", i.e. plants.",
               "evidence": "including vegetables in their diet"

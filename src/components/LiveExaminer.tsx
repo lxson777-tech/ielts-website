@@ -13,7 +13,22 @@
    three-part test on /speaking/examiner; variant="drills" is the Speaking
    Trainer on /trainers/speaking — the same live conversation scoped to a
    single part (with the structure cheat-sheet on screen, and each attempt
-   saved to the speaking score history). */
+   saved to the speaking score history).
+
+   A third mode (2026-09), `mock`, embeds the same full test as the fourth
+   stage of Mock Exam Day (src/components/MockExam.tsx). MockExam owns its
+   own brief screen with "Start speaking test" / "Skip speaking" (mirroring
+   the sign-in gate below) and only mounts this component once the student
+   presses Start, so in `mock` mode the component skips its own menu
+   screen — no heading, no description, straight to `startTest('full')` —
+   and reports back through two callbacks instead of sitting on its own
+   report/menu screens: `onComplete` once grading finishes (MockExam then
+   swaps straight to its combined results screen, same as the Listening,
+   Reading and Writing legs already do), or `onAbort` if the session ends
+   without a report (mic/connection failure, or the student navigating away
+   mid-interview — "End test early" is not an abort, it still grades and
+   completes normally, same as the standalone examiner). Everything else —
+   clock, stages, recorder, grading, `?preview` — is untouched. */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -82,8 +97,19 @@ type LiveMode = 'full' | DrillMode;
 
 /** variant="full": the complete three-part mock test (/speaking/examiner).
     variant="drills": the same live examiner scoped to a single part, with a
-    Part 1/2/3 picker menu (/trainers/speaking). */
-export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 'drills' }) {
+    Part 1/2/3 picker menu (/trainers/speaking). `mock`, `onComplete` and
+    `onAbort` are for the Mock Exam Day embed — see the file header. */
+export default function LiveExaminer({
+  variant = 'full',
+  mock = false,
+  onComplete,
+  onAbort,
+}: {
+  variant?: 'full' | 'drills';
+  mock?: boolean;
+  onComplete?: (result: { overallBand: number; criteria: Record<string, number> }) => void;
+  onAbort?: () => void;
+}) {
   const [phase, setPhase] = useState<Phase>('menu');
   const [stage, setStage] = useState<Stage>('part1');
   const [error, setError] = useState<string | null>(null);
@@ -141,6 +167,11 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
   const stageRef = useRef<Stage>('part1');
   const endedRef = useRef(false);
   const forceEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* mock embed bookkeeping: guards startTest('full') firing more than once
+     on mount, and tells the unmount cleanup below whether onComplete already
+     ran (so it doesn't also report an abort for a normal finish). */
+  const mockAutoStartedRef = useRef(false);
+  const mockCompletedRef = useRef(false);
 
   const later = (fn: () => void, ms: number) => {
     const t = setTimeout(fn, ms);
@@ -182,6 +213,32 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     };
   }, []);
 
+  /* Mock embed: skip the own-menu screen entirely and start the interview
+     the moment the config fetch above has settled (success or failure) —
+     MockExam's brief screen already showed the "Start speaking test"
+     control and the sign-in gate, so by the time this component mounts the
+     student has already chosen to start. If it turns out sign-in is (still)
+     required and missing — a race with the brief screen's own check, or the
+     Worker isn't configured at all — abort back to MockExam rather than
+     showing a menu this mode never renders. */
+  useEffect(() => {
+    if (!mock || mockAutoStartedRef.current) return;
+    if (!TOKEN_URL) {
+      mockAutoStartedRef.current = true;
+      onAbort?.();
+      return;
+    }
+    if (liveConfig === null && !configError) return; // config fetch still in flight
+    if (needsSignIn || authUnavailable) {
+      mockAutoStartedRef.current = true;
+      onAbort?.();
+      return;
+    }
+    mockAutoStartedRef.current = true;
+    void startTest('full');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mock, liveConfig, configError, needsSignIn, authUnavailable]);
+
   /* session start */
 
   async function startTest(m: LiveMode = 'full') {
@@ -208,7 +265,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
         setConfigError(null);
       } catch (e) {
         startingRef.current = false;
-        setPhase('menu');
+        setPhase(mock ? 'error' : 'menu');
         setError(e instanceof Error ? e.message : 'Could not reach the live examiner service.');
         return;
       }
@@ -223,7 +280,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
       });
     } catch {
       startingRef.current = false;
-      setPhase('menu');
+      setPhase(mock ? 'error' : 'menu');
       setError('Microphone access is required. Please allow the permission and try again.');
       return;
     }
@@ -285,7 +342,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
       if (rec && rec.state !== 'inactive') rec.stop();
       cleanupAudio();
       startingRef.current = false;
-      setPhase('menu');
+      setPhase(mock ? 'error' : 'menu');
       setError(e instanceof Error ? e.message : 'Could not start the examiner session.');
       return;
     }
@@ -517,6 +574,19 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
       if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
       setResult(graded);
       setPhase('report');
+      // Mock embed: report straight back to MockExam instead of waiting on a
+      // "Done" click — it swaps to its own combined results screen the
+      // moment this fires (same beat as the Listening/Reading/Writing legs),
+      // so in practice this component's own report screen never gets a
+      // chance to paint. mockCompletedRef tells the unmount cleanup below
+      // this was a real finish, not an abort.
+      if (mock) {
+        mockCompletedRef.current = true;
+        onComplete?.({
+          overallBand: graded.overallBand,
+          criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
+        });
+      }
     } catch (e) {
       setPhase('error');
       setError(e instanceof Error ? e.message : 'Grading failed.');
@@ -549,7 +619,17 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
     setNotice(null);
   }
 
-  useEffect(() => () => abandonToMenu(), []); // page navigation cleanup
+  useEffect(
+    () => () => {
+      // Mock embed: a teardown that isn't the completion path above (the
+      // student navigated away, or MockExam itself unmounted this component
+      // for some other reason) is exactly what onAbort is for.
+      if (mock && !mockCompletedRef.current) onAbort?.();
+      abandonToMenu();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  ); // page navigation cleanup
 
   /* Design preview: /speaking/examiner?preview renders the interview stage
      with synthetic audio levels — no mic, no session, no API cost. The orb
@@ -630,7 +710,18 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
 
   let content: React.ReactNode;
 
-  if (phase === 'report' && result) {
+  if (mock && phase === 'menu') {
+    // The mock embed's own "Start speaking test" already happened on
+    // MockExam's brief screen; this is only the brief window before the
+    // auto-start effect above has a config to act on (or decides to abort).
+    // No heading, no description, no button — those all belong to the
+    // brief screen, not here.
+    content = (
+      <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
+        <p className="text-sm text-ink-muted">Preparing the speaking test…</p>
+      </div>
+    );
+  } else if (phase === 'report' && result) {
     const m = result.mechanics;
     content = (
       <div className="space-y-6">
@@ -692,24 +783,30 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
           )}
         </BandReport>
 
-        <div className="flex flex-wrap justify-center gap-3">
-          {variant === 'drills' && modeRef.current !== 'full' && (
+        {/* Mock embed: onComplete already fired above, in the same tick as
+            setPhase('report') — MockExam swaps to its own results screen
+            before this ever paints, so there's nothing for a button here to
+            do. */}
+        {!mock && (
+          <div className="flex flex-wrap justify-center gap-3">
+            {variant === 'drills' && modeRef.current !== 'full' && (
+              <button
+                type="button"
+                onClick={() => void startTest(modeRef.current)}
+                className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+              >
+                ↻ Practice this part again
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => void startTest(modeRef.current)}
-              className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+              onClick={abandonToMenu}
+              className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
             >
-              ↻ Practice this part again
+              {variant === 'drills' ? 'Choose a different part' : 'Done'}
             </button>
-          )}
-          <button
-            type="button"
-            onClick={abandonToMenu}
-            className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
-          >
-            {variant === 'drills' ? 'Choose a different part' : 'Done'}
-          </button>
-        </div>
+          </div>
+        )}
       </div>
     );
   } else if (phase === 'menu') {
@@ -849,7 +946,7 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
         <p className="mx-auto max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>
         <button
           type="button"
-          onClick={abandonToMenu}
+          onClick={() => (mock ? onAbort?.() : abandonToMenu())}
           className="mt-6 rounded-button border border-border px-5 py-2 text-sm font-semibold hover:bg-surface-alt"
         >
           Back

@@ -93,7 +93,7 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
     part: 'Part 2',
     notes: [
       'In the prep minute, write one or two words per bullet. Your notes are a map, not a script.',
-      'Keep talking until the examiner stops you. Under a minute costs marks; small details and mini-stories fill time naturally.',
+      'Keep talking until the examiner stops you. Stopping well short leaves the examiner little to assess and pulls Fluency and Coherence down; small details and mini-stories fill the time naturally.',
       'It\'s fine to invent or exaggerate. The examiner grades your English, not your honesty.',
     ],
     stages: [

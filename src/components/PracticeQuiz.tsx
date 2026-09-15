@@ -1,16 +1,101 @@
-import { useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import type { PracticeQuestion, PracticeSet } from '../data/reading-practice';
 
 /** Base-prefixed URL for images stored under /public. */
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
 
-/* Interactive practice exercise for reading question-type pages.
-   Choice questions answer on click; text questions on Check/Enter.
-   Wrong answers reveal the correct answer plus an explanation.
-   Inherits the ambient --skill / --skill-tint variables (reading coral). */
+/* Interactive practice exercise for reading and listening question-type
+   pages. Choice questions answer on click; text questions on Check/Enter.
+   Wrong answers reveal the correct answer plus an explanation. Inherits the
+   ambient --skill / --skill-tint variables (reading coral / listening's own
+   accent). Listening sets additionally carry an optional `segments` array
+   (see ListeningPracticeSegment in ../data/listening-practice.ts): one audio
+   clip, attribution, transcript and reference image(s) per source group,
+   rendered above that group's questions by PracticeSegmentAudio below. */
 
 interface Props {
   set: PracticeSet;
+}
+
+function fmtClock(seconds: number): string {
+  const s = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(s / 60);
+  return `${m}:${String(s % 60).padStart(2, '0')}`;
+}
+
+/** A small self-contained audio clip player for one segment of a listening
+    practice set: native controls, seeks to startSeconds on load, pauses at
+    endSeconds (further seeking stays allowed, same "drill" behaviour as the
+    Listening Trainer's player in TestPlayer.tsx). Shown once, right above
+    the first question that belongs to this segment. */
+function PracticeSegmentAudio({ segment }: { segment: NonNullable<PracticeSet['segments']>[number] }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(segment.src ? 'loading' : 'error');
+
+  function handleLoadedMetadata() {
+    setStatus('ready');
+    const el = audioRef.current;
+    if (el && segment.startSeconds != null) el.currentTime = segment.startSeconds;
+  }
+
+  // The browser can fire the native `loadedmetadata` event before React
+  // finishes hydrating this island (a cached recording loads almost
+  // instantly), so the seek-to-startSeconds handler above never runs. Catch
+  // that case on mount by checking readyState directly instead of relying
+  // solely on the event.
+  useEffect(() => {
+    const el = audioRef.current;
+    if (el && el.readyState >= 1) handleLoadedMetadata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function handleTimeUpdate() {
+    const el = audioRef.current;
+    if (el && segment.endSeconds != null && el.currentTime >= segment.endSeconds) el.pause();
+  }
+
+  return (
+    <div className="mb-4 overflow-hidden rounded-xl border border-border bg-surface-alt">
+      {segment.images && segment.images.length > 0 && (
+        <div className="flex flex-wrap gap-3 border-b border-border bg-white p-3">
+          {segment.images.map((img, i) => (
+            <img
+              key={i}
+              src={asset(img.src)}
+              alt={img.alt}
+              className="max-h-64 rounded-lg border border-border object-contain"
+            />
+          ))}
+        </div>
+      )}
+      <div className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center">
+        {segment.src && (
+          <audio
+            ref={audioRef}
+            controls
+            controlsList="nodownload noplaybackrate"
+            preload="metadata"
+            src={asset(segment.src)}
+            className="h-10 w-full min-w-0 shrink-0 sm:w-auto sm:flex-1"
+            aria-label={segment.source ?? 'Listening recording'}
+            onLoadedMetadata={handleLoadedMetadata}
+            onTimeUpdate={handleTimeUpdate}
+            onError={() => setStatus('error')}
+          />
+        )}
+        {status === 'error' && <span className="text-xs text-error">Recording unavailable.</span>}
+        {segment.source && (
+          <span className="shrink-0 text-xs font-semibold text-ink-muted sm:text-right">{segment.source}</span>
+        )}
+      </div>
+      {segment.startSeconds != null && (
+        <p className="px-3 pb-2 text-xs text-ink-muted">
+          This clip covers {fmtClock(segment.startSeconds)} to {fmtClock(segment.endSeconds ?? segment.startSeconds)}{' '}
+          of the full recording.
+        </p>
+      )}
+    </div>
+  );
 }
 
 function isRight(q: PracticeQuestion, given: string): boolean {
@@ -87,6 +172,32 @@ export default function PracticeQuiz({ set }: Props) {
         </div>
       </div>
 
+      {/* Real source passage(s)/table/diagram the questions below are drawn
+          from. Shown as scrollable boxes so long passages don't push the
+          questions far down the page. `html` is used for the rare group
+          that is a real table or diagram image rather than running text. */}
+      {set.passages && set.passages.length > 0 && (
+        <div className="space-y-4 border-b border-border bg-surface p-4 sm:p-6">
+          {set.passages.map((p, idx) => (
+            <div key={idx}>
+              <p className="mb-2 font-display text-xs font-bold uppercase tracking-wide text-ink-muted">{p.label}</p>
+              <div className="max-h-64 overflow-y-auto rounded-xl border border-border bg-surface-alt p-4 text-sm leading-relaxed text-ink [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:p-2 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_img]:mx-auto [&_img]:max-w-full [&_img]:rounded-lg">
+                {p.title && <p className="mb-2 font-display text-sm font-bold text-ink">{p.title}</p>}
+                {p.html ? (
+                  <div dangerouslySetInnerHTML={{ __html: p.html }} />
+                ) : (
+                  p.paragraphs?.map((para, i) => (
+                    <p key={i} className="mb-3 last:mb-0">
+                      {para}
+                    </p>
+                  ))
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Labelled diagram */}
       {set.diagram && (
         <div className="border-b border-border bg-surface p-4 sm:p-6">
@@ -127,14 +238,17 @@ export default function PracticeQuiz({ set }: Props) {
           const g = given[i];
           const locked = g !== null;
           const right = locked && isRight(q, g);
+          const segment = q.segment != null ? set.segments?.[q.segment] : undefined;
+          const isNewSegment = segment && q.segment !== set.questions[i - 1]?.segment;
 
           return (
-            <div
-              key={i}
-              className={`rounded-xl border-2 bg-surface p-4 shadow-card transition-colors ${
-                locked ? (right ? 'border-success pq-pop' : 'border-error pq-shake') : 'border-transparent'
-              }`}
-            >
+            <Fragment key={i}>
+              {isNewSegment && <PracticeSegmentAudio segment={segment} />}
+              <div
+                className={`rounded-xl border-2 bg-surface p-4 shadow-card transition-colors ${
+                  locked ? (right ? 'border-success pq-pop' : 'border-error pq-shake') : 'border-transparent'
+                }`}
+              >
               <div className="flex items-start gap-3">
                 <span
                   className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-sm font-extrabold text-white ${
@@ -246,11 +360,32 @@ export default function PracticeQuiz({ set }: Props) {
                       {q.explanation}
                     </p>
                   )}
+                  {q.source && <p className="mt-1 text-xs text-ink-muted">Source: {q.source}</p>}
                 </div>
               )}
-            </div>
+              </div>
+            </Fragment>
           );
         })}
+
+        {/* Transcripts for any audio segment(s) above, offered once the set
+            is finished so students answer from listening first. */}
+        {done &&
+          set.segments?.some((s) => s.transcriptHtml) &&
+          set.segments.map(
+            (s, i) =>
+              s.transcriptHtml && (
+                <details key={i} className="rounded-xl border border-border bg-surface p-4">
+                  <summary className="cursor-pointer font-display text-sm font-bold text-ink">
+                    Transcript{s.source ? ` · ${s.source}` : ''}
+                  </summary>
+                  <div
+                    className="mt-3 max-h-72 overflow-y-auto text-sm leading-relaxed text-ink-muted [&_.ts]:mr-1 [&_.ts]:font-mono [&_.ts]:text-xs [&_.ts]:text-ink-muted [&_.transcript-note]:mb-2 [&_.transcript-note]:text-xs [&_.transcript-note]:italic"
+                    dangerouslySetInnerHTML={{ __html: s.transcriptHtml }}
+                  />
+                </details>
+              ),
+          )}
 
         {/* Score card */}
         {done ? (

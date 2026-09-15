@@ -36,7 +36,7 @@ type VariantKey =
    map lessons all defer structure to this and only add "what to look for". */
 const TASK1_SKELETON: WritingParagraph[] = [
   { name: 'Introduction', description: 'Paraphrase what the visual shows. Never copy the question wording. Keep the place, units and time period.' },
-  { name: 'Overview', description: 'The most important paragraph. Start with "Overall,". Give the 2-3 key features. No numbers. Without this, Task Achievement is capped around Band 5.' },
+  { name: 'Overview', description: 'The most important paragraph. Start with "Overall,". Give the 2-3 key features, saving the figures for the detail paragraphs. Task Achievement asks for a clear overview from Band 6 upwards.' },
   { name: 'Detail 1', description: 'The first logical group of information, supported with selected figures.' },
   { name: 'Detail 2', description: 'The remaining group. Every line, stage or area must be mentioned, even briefly. Compare across groups where you can.' },
 ];
@@ -183,9 +183,9 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
     ],
     mistakes: [
       'Copying the question wording into the introduction',
-      'No overview. An instant Task Achievement ceiling of Band 5',
+      'No overview. The Band 5 descriptor is written for exactly this, so it holds Task Achievement down',
       'Listing every data point instead of selecting key features',
-      'Writing a conclusion or giving an opinion',
+      'Giving an opinion, or explaining causes the data does not show',
       'Describing categories one by one with no comparison',
     ],
   },

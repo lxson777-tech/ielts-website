@@ -87,7 +87,7 @@ export const SKILLS: { id: Skill; label: string; blurb: string }[] = [
   { id: 'reading', label: 'Reading', blurb: 'Passages, question types and timed practice tests.' },
   { id: 'writing', label: 'Writing', blurb: 'Task 1 reports and Task 2 essays with model answers.' },
   { id: 'speaking', label: 'Speaking', blurb: 'All three parts of the interview, with sample responses.' },
-  { id: 'listening', label: 'Listening', blurb: 'Section-by-section strategies for the listening paper.' },
+  { id: 'listening', label: 'Listening', blurb: 'Part-by-part strategies for the listening paper.' },
   { id: 'vocabulary', label: 'Vocabulary', blurb: 'High-value academic words with an interactive quiz.' },
 ];
 
