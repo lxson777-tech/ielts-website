@@ -1,11 +1,14 @@
-"""Import 20 listening tests shared by PracticePTEOnline.
+"""Import listening tests shared by PracticePTEOnline.
 
 Alex confirmed permission from the publisher on 2026-09-11. This importer
 stores source pages in .tmp/listening-source, copies MP3 and diagram assets
 into public, and emits PracticeTest records. It keeps visible instructions
 and layouts, while removing answer forms, answer keys, scripts, and adverts.
 
-Run from the project root with: python tools/import_listening.py
+Run from the project root with: python tools/import_listening.py [start end]
+With no arguments it imports the original tests 1-20. Given two integers it
+imports that inclusive range instead (e.g. `21 30`) and never touches,
+re-downloads, or rewrites any test outside that range.
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ from html import escape
 from pathlib import Path
 import json
 import re
+import sys
 from urllib.parse import urljoin
 
 import requests
@@ -31,6 +35,18 @@ SOURCE_URLS = {
     # `test-15` URLs are WordPress redirects to unrelated tests 60 and 151.
     6: SOURCE_ORIGIN + "/ielts-listening-6/",
     15: SOURCE_ORIGIN + "/listening-15/",
+}
+
+# Exact, narrow text repairs applied to one test's raw fetched HTML before
+# parsing. Each entry fixes a single confirmed publisher typo that would
+# otherwise break question-number detection; it can never touch any other
+# test or any other string in this one, so it carries none of the risk a
+# generic pattern-based repair would.
+SOURCE_TEXT_FIXES: dict[int, list[tuple[str, str]]] = {
+    # Every other line in this Test 25 note list is "N. ...": only question
+    # 25 itself is missing its period, which drops its answer blank onto
+    # question 24 instead.
+    25: [("25 influence of immigration on place names", "25. influence of immigration on place names")],
 }
 
 # Visible question ranges, in four sections per test. The source has a few
@@ -70,6 +86,30 @@ GROUPS.update({
     20: [[(1, 1, "multiple-choice", "Choose the correct letter A, B or C."), (2, 2, "sentence-completion", "Answer the question with NO MORE THAN TWO WORDS."), (3, 3, "multiple-choice", "Choose the correct letter A, B or C."), (4, 5, "sentence-completion", "Complete the following sentences with ONE WORD OR A NUMBER."), (6, 8, "sentence-completion", "Write NO MORE THAN THREE WORDS for each answer."), (9, 10, "sentence-completion", "Answer the following questions. Write ONE WORD OR A NUMBER for each answer.")], [(11, 13, "sentence-completion", "Complete the following sentences with NO MORE THAN THREE WORDS for each answer."), (14, 14, "multiple-choice", "Choose the correct letter A, B or C."), (15, 15, "sentence-completion", "Complete the following sentence WITH ONE WORD only."), (16, 16, "multiple-choice", "Choose the correct letter A, B or C."), (17, 17, "sentence-completion", "Answer the question with ONE WORD OR A NUMBER only."), (18, 19, "sentence-completion", "Complete the sentence below with ONE WORD only."), (20, 20, "sentence-completion", "Answer the question with ONE WORD only.")], [(21, 23, "multiple-answer", "Choose THREE letters from A-E."), (24, 25, "sentence-completion", "Complete the following sentences with NO MORE THAN TWO WORDS for each answer."), (26, 27, "multiple-choice", "Choose the correct letter A, B or C."), (28, 29, "multiple-answer", "Choose TWO letters from A-E."), (30, 30, "sentence-completion", "Complete the following sentence with NO MORE THAN TWO WORDS.")], [(31, 32, "multiple-answer", "Choose TWO letters from A-E."), (33, 34, "sentence-completion", "Write NO MORE THAN THREE WORDS for each answer."), (35, 35, "multiple-choice", "Choose the correct letter A, B or C."), (36, 40, "sentence-completion", "Complete the sentences with NO MORE THAN THREE WORDS for each answer.")]],
 })
 
+# Tests 21-30 are mapped the same way, from PracticePTEOnline's visible group
+# headings verified against each source page fetched fresh for this import
+# (2026-09-14). See docs/listening-sources.md for the two source quirks this
+# range required (test 28's mislabeled Part 1 heading, test 30's corrupted
+# option-letter markers).
+GROUPS.update({
+    21: [[(1, 6, "multiple-choice", "Choose the correct letter A, B or C."), (7, 10, "sentence-completion", "Complete the sentences below. Write ONE WORD ONLY for each answer.")], [(11, 15, "multiple-choice", "Choose the correct letter A, B or C."), (16, 20, "matching-features", "What is planned for each of the following facilities? Choose FIVE answers from the box and write the correct letter A-G next to questions 16-20.")], [(21, 26, "table-completion", "Complete the table below. Write ONE WORD ONLY for each answer."), (27, 30, "categorisation", "Who is going to write each of the following parts of the report? Write the correct letter A-D next to questions 27-30.")], [(31, 40, "sentence-completion", "Complete the notes below. Write ONE WORD ONLY for each answer.")]],
+    22: [[(1, 5, "sentence-completion", "Complete the notes below. Write NO MORE THAN ONE WORD OR A NUMBER."), (6, 8, "multiple-answer", "Circle THREE letters A-F."), (9, 10, "sentence-completion", "Write NO MORE THAN THREE WORDS for each answer.")], [(11, 12, "multiple-choice", "Choose the correct letter A, B or C."), (13, 14, "sentence-completion", "Write NO MORE THAN THREE WORDS for each answer."), (15, 18, "multiple-choice", "Choose the correct letter A, B or C."), (19, 20, "multiple-answer", "Select TWO answers.")], [(21, 25, "table-completion", "Complete the table below. Write NO MORE THAN THREE WORDS for each answer."), (26, 30, "categorisation", "Write the appropriate letter A-C next to questions 26-30.")], [(31, 36, "table-completion", "Complete the table below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer."), (37, 40, "sentence-completion", "Complete the sentences below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer.")]],
+    23: [[(1, 5, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS."), (6, 10, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS.")], [(11, 16, "sentence-completion", "Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."), (17, 20, "sentence-completion", "Complete the flow chart below. Write NO MORE THAN TWO WORDS for each answer.")], [(21, 23, "multiple-choice", "Choose the correct letter A, B or C."), (24, 25, "multiple-answer", "Choose TWO letters A-E."), (26, 30, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer.")], [(31, 35, "sentence-completion", "Answer the questions below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer."), (36, 40, "sentence-completion", "Complete the sentences below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer.")]],
+    24: [[(1, 10, "sentence-completion", "Complete the form below. Write NO MORE THAN TWO WORDS OR A NUMBER.")], [(11, 14, "multiple-choice", "Choose the correct letter A, B or C."), (15, 20, "table-completion", "Complete the table below. Write NO MORE THAN ONE WORD AND/ OR A NUMBER for each answer.")], [(21, 26, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer."), (27, 30, "table-completion", "Complete the table below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer.")], [(31, 37, "sentence-completion", "Complete the summary below. Write NO MORE THAN TWO WORDS for each answer."), (38, 40, "diagram-labelling", "Complete the diagram below. Choose your answers from the box below and write the letters A-F next to questions 38-40.")]],
+    25: [[(1, 7, "sentence-completion", "Complete the form below. Write NO MORE THAN TWO WORDS OR A NUMBER for each answer."), (8, 10, "multiple-answer", "Choose THREE letters A-H.")], [(11, 17, "sentence-completion", "Complete the notes below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer."), (18, 20, "multiple-answer", "Choose THREE letters A-H.")], [(21, 26, "categorisation", "What do the students decide about each topic for Joe" + chr(39) + "s presentation? Write the correct letter A, B or C next to questions 21-26."), (27, 30, "sentence-completion", "Complete the summary below. Write NO MORE THAN TWO WORDS for each answer.")], [(31, 40, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer.")]],
+    26: [[(1, 5, "sentence-completion", "Complete the notes below. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer."), (6, 10, "table-completion", "Complete the table below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.")], [(11, 17, "sentence-completion", "Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."), (18, 20, "categorisation", "What does the speaker say about the following forms of transport? Write the correct letter, A, B, C or D next to questions 18-20.")], [(21, 26, "multiple-choice", "Choose the correct letter, A, B or C."), (27, 28, "multiple-answer", "Choose TWO letters A-E."), (29, 30, "multiple-answer", "Choose TWO letters A-E.")], [(31, 40, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer.")]],
+    27: [[(1, 3, "multiple-choice", "Choose the correct letter A-D."), (4, 7, "sentence-completion", "Complete the notes below. Write NO MORE THAN THREE WORDS for each answer."), (8, 8, "multiple-answer", "Which TWO of the following items must people take with them? Circle TWO letters from A-G."), (9, 9, "multiple-answer", "Which TWO accommodation options mentioned are near the paragliding school? Circle TWO letters from A-G."), (10, 10, "sentence-completion", "Write NO MORE THAN THREE WORDS for the answer.")], [(11, 13, "sentence-completion", "Complete the notes below. Write NO MORE THAN THREE WORDS for each answer."), (14, 15, "multiple-choice", "Choose the correct letter A-C."), (16, 18, "multiple-answer", "Circle THREE letters A-F."), (19, 20, "multiple-answer", "Circle TWO letters A-F.")], [(21, 25, "table-completion", "Complete the table below. Write NO MORE THAN THREE WORDS for each answer."), (26, 30, "sentence-completion", "Write NO MORE THAN THREE WORDS for each answer.")], [(31, 35, "table-completion", "Complete the table below. Write NO MORE THAN THREE WORDS for each answer."), (36, 40, "matching-features", "Complete the table below. Write the appropriate letters A-G next to questions 36-40.")]],
+    28: [[(1, 10, "sentence-completion", "Complete the notes below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer.")], [(11, 17, "sentence-completion", "Complete the sentences below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer."), (18, 20, "diagram-labelling", "Label the map below. Write the correct letter A-I next to questions 18-20.")], [(21, 23, "multiple-choice", "Choose the correct letter A, B or C."), (24, 27, "matching-features", "What does each university facility have? Choose your answers from the box and write the correct letter A-G next to questions 24-27."), (28, 30, "sentence-completion", "Complete the summary below. Write NO MORE THAN TWO WORDS for each answer.")], [(31, 40, "sentence-completion", "Complete the notes below. Write NO MORE THAN THREE WORDS for each answer.")]],
+    29: [[(1, 5, "table-completion", "Complete the table below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer."), (6, 10, "diagram-labelling", "Label the places on the map below.")], [(11, 20, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer.")], [(21, 28, "sentence-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer."), (29, 30, "multiple-choice", "Choose the correct letter A, B or C.")], [(31, 31, "multiple-choice", "Which picture shows the instrument described?"), (32, 35, "table-completion", "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer."), (36, 40, "multiple-choice", "Choose the correct letter A, B or C.")]],
+    30: [[(1, 5, "table-completion", "Complete the following form with NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer."), (6, 6, "multiple-answer", "Which kind of family does the girls prefer? Mark TWO letters that represent the correct answer."), (7, 10, "sentence-completion", "Fill in the blanks with NO MORE THAN THREE WORDS for each answer.")], [(11, 20, "sentence-completion", "Complete the notes by filling in the blanks with NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.")], [(21, 24, "sentence-completion", "Complete the sentences below. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer."), (25, 27, "sentence-completion", "Fill in the blanks with ONE WORD AND/OR A NUMBER for each answer."), (28, 30, "multiple-answer", "Most of the people being interviewed think that the following is/are most difficult to buy. Mark THREE letters that represent the correct answer.")], [(31, 40, "multiple-choice", "Choose the correct letter, A, B, C or D.")]],
+})
+
+# Multiple-choice groups whose source used more than the usual three options.
+MC_OPTIONS = {
+    (27, 1, 3): ["A", "B", "C", "D"],
+    (30, 31, 40): ["A", "B", "C", "D"],
+}
+
 MAP_OPTIONS = {
     (1, 2): list("ABCDEFGH"),
     (2, 2): list("ABCDEFGHI"),
@@ -90,6 +130,9 @@ MAP_OPTIONS = {
     (17, 3): list("ABCDEFGH"),
     (19, 2): list("ABCDEFG"),
     (19, 3): list("ABCDEFG"),
+    (21, 2): list("ABCDEFG"),
+    (27, 4): list("ABCDEFG"),
+    (28, 3): list("ABCDEFG"),
 }
 
 MULTI_ANSWER_LABELS = {
@@ -126,13 +169,28 @@ MULTI_ANSWER_LABELS = {
     (20, 3, 1): ["her mother is ill", "the doctor says Ann should do all the cooking and cleaning for her mother", "Ann and her mother cannot pay for extra help", "the neighbours are all too busy to help her mother", "she spends too much time playing computer games"],
     (20, 3, 4): ["they had not been introduced", "they went to different schools", "to prevent them realizing they were there for the experiment they had signed up for", "the other students were in uniform", "the professor did not want them to know each other"],
     (20, 4, 1): ["the media", "the internet", "types of message", "Yahoo", "advertising"],
+    (22, 1, 2): ["sport", "travel", "classics", "history", "cooking", "nature"],
+    (22, 2, 4): ["do not waste food", "you may bring friends in to eat", "bring your own plates and trays", "clean your own plates and trays", "don" + chr(39) + "t litter"],
+    (23, 3, 2): ["in Bob" + chr(39) + "s pencil case and the recycling bin", "in the cafeteria and the Resource Centre", "in the shop and Julia" + chr(39) + "s locker", "in Bob" + chr(39) + "s bag and his pocket", "in Tara" + chr(39) + "s packet and on the floor"],
+    (25, 1, 2): ["arts demonstration", "dance show", "museums trip", "bus tour at night", "picnic lunches", "river trip", "room with balcony", "trip to mountains"],
+    (25, 2, 2): ["badges", "bread and cake stall", "swimming event", "concert", "door to door collecting", "picnic", "postcards", "quiz", "second hand sale"],
+    (26, 3, 2): ["speak more frequently", "behave in a confident manner", "sit next to someone helpful", "listen to what other people say", "think of questions to ask"],
+    (26, 3, 3): ["plan them before the seminar", "note down key words that people say", "note points to say late", "include self-analysis", "rewrite them after the seminar"],
+    (27, 2, 3): ["there were no other campers nearby", "they willingly helped in the search", "they kept our spirits up", "they provided some dry clothes", "the park ranger was unable to get through", "the helicopter pilot led the search very well"],
+    (27, 2, 4): ["he took photos of them", "they could be clearly seen", "some were large", "they were unique", "they proved to be ancient"],
+    (30, 3, 3): ["Books", "Study Materials", "Foods", "Trousers", "Shoes", "Sportswear"],
 }
 
+# Keyed by (test, question number) so different tests can each carry their
+# own single-question multi-select cases without colliding.
 PER_QUESTION_MULTI = {
-    11: (["A", "C"], ["is an annual event", "lasts for one week", "is a free event", "happens in spring", "is more than 100 years old"]),
-    12: (["A", "C"], ["is situated in Edinburgh", "was built 20 years ago", "regularly participates in the Doors Open event", "is 120 years old", "is open to visitors every day of the year"]),
-    13: (["C", "D"], ["take place twice a day", "are more popular on Saturday", "run on Saturday and Sunday", "run four times a day", "finish at half past ten"]),
-    14: (["A", "C"], ["must be booked in advance", "are already sold out", "are on sale at the information point", "must be booked online", "are available for from midday"]),
+    (16, 11): (["A", "C"], ["is an annual event", "lasts for one week", "is a free event", "happens in spring", "is more than 100 years old"]),
+    (16, 12): (["A", "C"], ["is situated in Edinburgh", "was built 20 years ago", "regularly participates in the Doors Open event", "is 120 years old", "is open to visitors every day of the year"]),
+    (16, 13): (["C", "D"], ["take place twice a day", "are more popular on Saturday", "run on Saturday and Sunday", "run four times a day", "finish at half past ten"]),
+    (16, 14): (["A", "C"], ["must be booked in advance", "are already sold out", "are on sale at the information point", "must be booked online", "are available for from midday"]),
+    (27, 8): (["D", "F"], ["sandals", "old clothes", "pullover", "shirt with long sleeves", "soft drinks", "hat", "sunglasses"]),
+    (27, 9): (["A", "F"], ["camping", "youth hostel", "family", "backpackers", "caravan park", "bed and breakfast", "cheap hotel"]),
+    (30, 6): (["B", "D"], ["A big family with many young children", "A family without smoker or drinkers", "A family without any pets", "A family with many animals or pets"]),
 }
 
 # Source groups whose answers may be entered in any order. The same accepted
@@ -144,6 +202,8 @@ UNORDERED_RANGES = {
     (10, 5, 7), (13, 15, 17), (16, 21, 23),
     (19, 17, 18), (19, 19, 20), (20, 6, 8), (20, 21, 23),
     (20, 28, 29), (20, 31, 32),
+    (22, 6, 8), (22, 19, 20), (23, 24, 25), (25, 8, 10), (25, 18, 20),
+    (26, 27, 28), (26, 29, 30), (27, 16, 18), (27, 19, 20), (30, 28, 30),
 }
 
 # The publisher page for Test 11 jumps directly from question 13 to question
@@ -204,7 +264,10 @@ def fetch(n: int) -> tuple[str, BeautifulSoup, Tag, str]:
         response = requests.get(url, timeout=60)
         response.raise_for_status()
         path.write_text(response.text, encoding="utf-8")
-    soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+    html_text = path.read_text(encoding="utf-8")
+    for old_text, new_text in SOURCE_TEXT_FIXES.get(n, []):
+        html_text = html_text.replace(old_text, new_text)
+    soup = BeautifulSoup(html_text, "html.parser")
     body = soup.select_one(".entry-content")
     if body is None:
         raise RuntimeError(f"No entry-content found at {url}")
@@ -756,6 +819,57 @@ def remove_placeholder_fragments_after_blanks(wrapper: Tag) -> None:
         sibling.replace_with(NavigableString((" " if match.group(1) else "") + remainder))
 
 
+# Cyrillic capital letters that render visually identical to a Latin ASCII
+# capital letter. Test 30's source substituted two of these for real option
+# markers, almost certainly from a paste out of a Cyrillic-locale editor:
+# real, valid characters, just the wrong alphabet.
+CYRILLIC_LATIN_HOMOGLYPHS = {
+    "\u0410": "A", "\u0412": "B", "\u0415": "E", "\u041a": "K", "\u041c": "M",
+    "\u041d": "H", "\u041e": "O", "\u0420": "P", "\u0421": "C", "\u0422": "T", "\u0425": "X",
+}
+
+
+def repair_corrupted_option_letters(root: Tag) -> None:
+    """Restore a source option marker that is not a plain Latin A-Z: either a
+    Cyrillic homoglyph (test 30's checkbox options) or a single replacement
+    character where the source lost the glyph outright. A Cyrillic homoglyph
+    maps directly to its correct Latin letter, since the visual identity
+    makes the intended letter unambiguous; a genuine replacement character is
+    only inferred when the surviving markers in the same option list confirm
+    a consecutive A, B, C... sequence at that position."""
+    mangled = "\ufffd"
+
+    def resolve(text: str) -> str | None:
+        if re.fullmatch(r"[A-Z]", text):
+            return text
+        return CYRILLIC_LATIN_HOMOGLYPHS.get(text)
+
+    containers = ([root] if root.name in ("p", "td", "li") else []) + root.find_all(["p", "td", "li"])
+    for container in containers:
+        markers = [
+            element
+            for element in container.find_all(["strong", "b"])
+            if resolve(element.get_text(strip=True)) is not None or element.get_text(strip=True) == mangled
+        ]
+        if len(markers) < 3:
+            continue
+        raw_texts = [element.get_text(strip=True) for element in markers]
+        resolved = [resolve(text) for text in raw_texts]  # None only for the replacement character
+        base = next((ord(letter) - index for index, letter in enumerate(resolved) if letter is not None), None)
+        if base is None:
+            continue
+        expected = [chr(base + index) for index in range(len(resolved))]
+        if any(letter is not None and letter != want for letter, want in zip(resolved, expected)):
+            continue
+        for element, raw_text, want in zip(markers, raw_texts, expected):
+            if raw_text == want:
+                continue
+            for descendant in element.find_all(string=True):
+                if raw_text in descendant:
+                    descendant.replace_with(NavigableString(str(descendant).replace(raw_text, want)))
+                    break
+
+
 def sanitise(
     nodes: list[Tag],
     image_paths: dict[str, str],
@@ -776,6 +890,7 @@ def sanitise(
             continue
         for bad in root.select("script, style, form, button, iframe, noscript, audio, video, [id^='bg-showmore']"):
             bad.decompose()
+        repair_corrupted_option_letters(root)
         for element in [root, *root.find_all(True)]:
             if element.name == "input":
                 # Keep source answer controls just long enough to replace them
@@ -964,7 +1079,25 @@ def semantic_question_html(nodes: list[Tag], metas: list[tuple[int, int, str, st
             if node.find("img") is not None:
                 buckets[current].append(node.find("img"))
             remainder = content_after_embedded_heading(node)
-            if remainder is not None and (remainder.find("input") is not None or len(split_br_html(remainder)) > 1):
+            # A single-question group (e.g. an image-based MCQ whose whole
+            # stem sits in the heading paragraph) has no later numbered
+            # paragraph to fall back on, so its remainder must be kept even
+            # when it is one bare line with no BR or input. It also needs the
+            # question number restored at the front, since downstream MCQ
+            # structuring locates a question's prompt by its leading "N."
+            # marker, and a lone-question heading paragraph never had one
+            # (the number lived in the heading text that was just consumed).
+            group_first, group_last = metas[current][0], metas[current][1]
+            single_question = group_first == group_last
+            if remainder is not None and single_question:
+                remainder_text = remainder.get_text(" ", strip=True)
+                if not re.match(rf"^{group_first}(?:\.(?!\d)|\s)", remainder_text):
+                    remainder.insert(0, NavigableString(f"{group_first}. "))
+            if remainder is not None and (
+                remainder.find("input") is not None
+                or len(split_br_html(remainder)) > 1
+                or single_question
+            ):
                 buckets[current].append(remainder)
             continue
         refs = [int(a or b) for a, b in re.findall(r"\((\d{1,2})\)|(?:^|\s)(\d{1,2})\.(?=\s)", text)]
@@ -1037,13 +1170,13 @@ def make_group(n: int, section_index: int, group_index: int, meta: tuple[int, in
         if (n, number) in UNSCORED_SOURCE_QUESTIONS:
             q["scored"] = False
         if kind == "multiple-choice":
-            q["options"] = ["A", "B", "C"]
+            q["options"] = MC_OPTIONS.get((n, first, last), ["A", "B", "C"])
         if pair_id:
             q["answerPairId"] = pair_id
-        if n == 16 and number in PER_QUESTION_MULTI:
-            correct, _labels = PER_QUESTION_MULTI[number]
+        if (n, number) in PER_QUESTION_MULTI:
+            correct, _labels = PER_QUESTION_MULTI[(n, number)]
             q["answer"] = ", ".join(correct)
-            q["multiSelect"] = {"correctValues": correct, "selectCount": 2}
+            q["multiSelect"] = {"correctValues": correct, "selectCount": len(correct)}
         questions.append(q)
     group_title = f"Question {first}" if first == last else f"Questions {first}-{last}"
     group: dict[str, object] = {"title": group_title, "type": kind, "instructionHtml": escape(instruction), "questions": questions}
@@ -1054,10 +1187,12 @@ def make_group(n: int, section_index: int, group_index: int, meta: tuple[int, in
         else:
             group["options"] = shared
     if kind == "multiple-answer":
-        group["selectCount"] = 2 if n == 16 and first == last else last - first + 1
-        if n == 16 and first == last:
-            _correct, labels = PER_QUESTION_MULTI[first]
+        if first == last and (n, first) in PER_QUESTION_MULTI:
+            correct, labels = PER_QUESTION_MULTI[(n, first)]
+            group["selectCount"] = len(correct)
             group["choices"] = [{"value": chr(ord("A") + i), "label": label} for i, label in enumerate(labels)]
+        else:
+            group["selectCount"] = last - first + 1
     word_match = re.search(r"NO MORE THAN\s+(ONE|TWO|THREE|FOUR)\s+WORDS?|\b(ONE|TWO|THREE|FOUR)\s+WORD(?:S)?\s+(?:ONLY|OR|AND)", instruction, re.I)
     if kind in {"sentence-completion", "diagram-labelling", "table-completion"} and word_match:
         word = next(value for value in word_match.groups() if value)
@@ -1099,9 +1234,18 @@ def emit_test(n: int) -> str:
 
 
 def main() -> None:
-    for n in range(1, 21):
+    argv = sys.argv[1:]
+    if not argv:
+        start, end = 1, 20
+    elif len(argv) == 2:
+        start, end = int(argv[0]), int(argv[1])
+    else:
+        raise SystemExit("Usage: python tools/import_listening.py [start end]")
+    count = 0
+    for n in range(start, end + 1):
         print(f"Wrote {emit_test(n)} (40 answers)")
-    print("Imported 20 tests with 800 answer slots and shared-permission source assets.")
+        count += 1
+    print(f"Imported {count} tests ({start}-{end}) with {count * 40} answer slots and shared-permission source assets.")
 
 
 if __name__ == "__main__":

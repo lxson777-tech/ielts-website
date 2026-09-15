@@ -17,6 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
 import type { GradeResult } from '../lib/writing/schema';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
+import { WRITING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { countWords } from '../lib/writing/mechanics';
 import { gradeEssay, isGraderConfigured } from '../lib/writing/grader';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
@@ -29,15 +30,8 @@ import WritingCoachPanel from './WritingCoachPanel';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
-/* Task 1 splits into two non-overlapping pools: GT is always a letter,
-   Academic is everything else (chart/graph/table/process/map/combination).
-   Task 2 is one shared essay pool — real IELTS GT and Academic Task 2 use
-   the same skill and near-identical topics, so splitting it would just
-   fragment an already-small pool for no real benefit. */
-const ACADEMIC_TASK1_PROMPTS = TASK1_PROMPTS.filter((p) => p.variant !== 'letter');
-const GT_TASK1_PROMPTS = TASK1_PROMPTS.filter((p) => p.variant === 'letter');
-
-type Module = 'academic' | 'general';
+/* Academic only: Task 1 is always a report on visual data (chart, graph,
+   table, process, map or combination) and Task 2 is the essay pool. */
 
 /* Fake-but-honest progress steps shown while the real request is in flight —
    ticks forward on a timer, independent of the actual grading call, so it
@@ -56,7 +50,6 @@ function pad(n: number): string {
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
   const coached = variant === 'trainer';
-  const [module, setModule] = useState<Module>('academic');
   const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
   const [essay, setEssay] = useState('');
@@ -113,7 +106,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       });
     } catch {
       // The button is disabled whenever isGraderConfigured() is false, so any
-      // error reaching here happened after a real request went out — network,
+      // error reaching here happened after a real request went out - network,
       // timeout, or the Worker itself failing. Show one calm, specific
       // message rather than surfacing the raw error (which might read like a
       // permanent "not configured" state the student can't do anything about).
@@ -124,17 +117,16 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     }
   }
 
-  /* Serve the next prompt in the given task's rotation and clear the workspace.
-     Task 1's pool (and rotation) depends on the module; Task 2 is shared. */
-  function startTask(task: 'task1' | 'task2', mod: Module) {
-    const pool = task === 'task2' ? TASK2_PROMPTS : mod === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS;
-    const rotationKey = task === 'task2' ? 'ielts.rotation.writing-task2.v1' : `ielts.rotation.writing-task1-${mod}.v1`;
+  /* Serve the next prompt in the given task's rotation and clear the workspace. */
+  function startTask(task: 'task1' | 'task2') {
+    const pool = task === 'task2' ? TASK2_PROMPTS : TASK1_PROMPTS;
+    if (pool.length === 0) return; // no prompts of this kind are loaded
+    const rotationKey = task === 'task2' ? 'ielts.rotation.writing-task2.v1' : 'ielts.rotation.writing-task1.v1';
     const id = nextInRotation(
       rotationKey,
       pool.map((p) => p.id),
     );
     setTaskType(task);
-    setModule(mod);
     setPrompt(pool.find((p) => p.id === id) ?? pool[0]);
     setEssay('');
     setResult(null);
@@ -143,21 +135,18 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
   function newTask() {
     if (essay.trim() && !window.confirm('Get a different task? Your current answer will be cleared.')) return;
-    startTask(taskType!, module);
+    startTask(taskType!);
   }
 
   /* ── 1. Start screen ── */
   if (!prompt) {
-    const t1Pool = module === 'general' ? GT_TASK1_PROMPTS : ACADEMIC_TASK1_PROMPTS;
+    const t1Pool = TASK1_PROMPTS;
     const taskCards = [
       {
         task: 'task1' as const,
         title: 'Task 1',
-        kind: module === 'general' ? 'Letter' : 'Report',
-        description:
-          module === 'general'
-            ? 'Write a formal, semi-formal or informal letter for an everyday situation.'
-            : 'Describe a chart, graph, table, process or map in your own words.',
+        kind: 'Report',
+        description: 'Describe a chart, graph, table, process or map in your own words.',
         minWords: t1Pool[0]?.minWords,
         minutes: t1Pool[0]?.suggestedMinutes,
       },
@@ -189,39 +178,17 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             grading; repeating it here was reading as a doubled introduction. */}
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
           {coached
-            ? 'Pick your module, then a task. A different exam-style prompt every attempt.'
-            : 'Pick your module, then a task. Just you and the question, exactly like the real exam.'}
+            ? 'Pick a task. A different exam-style prompt every attempt.'
+            : 'Pick a task. Just you and the question, exactly like the real exam.'}
         </p>
 
-        <div className="mx-auto mt-6 inline-flex rounded-button border border-border bg-surface-alt/60 p-1">
-          <button
-            type="button"
-            onClick={() => setModule('academic')}
-            aria-pressed={module === 'academic'}
-            className={`rounded-button px-4 py-1.5 text-sm font-semibold transition-colors ${
-              module === 'academic' ? 'bg-[var(--skill,#0E9F6E)] text-white' : 'text-ink-muted hover:text-ink'
-            }`}
-          >
-            Academic
-          </button>
-          <button
-            type="button"
-            onClick={() => setModule('general')}
-            aria-pressed={module === 'general'}
-            className={`rounded-button px-4 py-1.5 text-sm font-semibold transition-colors ${
-              module === 'general' ? 'bg-[var(--skill,#0E9F6E)] text-white' : 'text-ink-muted hover:text-ink'
-            }`}
-          >
-            General Training
-          </button>
-        </div>
 
         <div className="mx-auto mt-6 grid max-w-xl gap-4 sm:grid-cols-2">
           {taskCards.map((t) => (
             <button
               key={t.task}
               type="button"
-              onClick={() => startTask(t.task, module)}
+              onClick={() => startTask(t.task)}
               className="group flex flex-col rounded-card border border-border bg-surface-alt/60 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--skill,#0E9F6E)]/60 hover:shadow-card"
             >
               <span className="font-display text-lg font-extrabold">
@@ -244,8 +211,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         </div>
 
         <p className="mt-5 text-xs text-ink-muted">
-          {t1Pool.length} Task 1 prompts · {TASK2_PROMPTS.length} Task 2 prompts
-          {module === 'general' ? ' (shared with Academic)' : ''} · free
+          {t1Pool.length} Task 1 prompts · {TASK2_PROMPTS.length} Task 2 prompts · free
         </p>
       </div>
     );
@@ -307,15 +273,23 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           overallBand={result.overallBand}
           live={result.grader.live}
           offlineWarning="The band scores below are illustrative, generated from mechanical signals only, without an AI examiner. Your teacher can enable AI grading."
-          criteria={CRITERIA.map((c) => ({
-            key: c.key,
-            label: criterionLabel(c, prompt.task),
-            band: result.criteria[c.key].band,
-            comment: result.criteria[c.key].comment,
-            tip: result.criteria[c.key].tip,
-          }))}
+          criteria={CRITERIA.map((c) => {
+            const score = result.criteria[c.key];
+            const guide = guideFor(WRITING_BAND_GUIDES[c.key], score.band);
+            return {
+              key: c.key,
+              label: criterionLabel(c, prompt.task),
+              band: score.band,
+              comment: score.comment,
+              tip: score.tip,
+              nextBand: score.nextBand,
+              // task1Note only applies to Task 1 Academic's Task Achievement scale
+              guide: guide && prompt.task !== 'task1' ? { ...guide, task1Note: undefined } : guide,
+            };
+          })}
           strengths={result.strengths}
           improvements={result.improvements}
+          actionPlan={result.actionPlan}
         >
           {/* Instant mechanics */}
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
@@ -336,19 +310,15 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             </ul>
           </div>
 
-          {/* Corrections */}
-          {result.corrections.length > 0 && (
+          {/* Moments */}
+          {result.moments.length > 0 && (
             <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-              <h3 className="font-display font-bold">Corrections</h3>
+              <h3 className="font-display font-bold">Moments from your essay</h3>
               <ul className="mt-3 space-y-2 text-sm">
-                {result.corrections.map((c, i) => (
-                  <li key={i} className="flex flex-wrap items-center gap-2">
-                    <span className="rounded bg-error-tint px-1.5 py-0.5 font-semibold text-error line-through">
-                      {c.original}
-                    </span>
-                    <span className="text-ink-muted">to</span>
-                    <span className="rounded bg-success-tint px-1.5 py-0.5 font-semibold text-success">{c.fix}</span>
-                    <span className="text-ink-muted">· {c.reason}</span>
+                {result.moments.map((mo, i) => (
+                  <li key={i}>
+                    <span className="italic text-ink-muted">&ldquo;{mo.quote}&rdquo;</span>
+                    <span className="block text-ink-muted">· {mo.note}</span>
                   </li>
                 ))}
               </ul>
@@ -366,7 +336,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           </button>
           <button
             type="button"
-            onClick={() => startTask(taskType!, module)}
+            onClick={() => startTask(taskType!)}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
             Take another test
@@ -423,9 +393,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
             <div className="flex items-start justify-between gap-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
-                {prompt.task === 'task2'
-                  ? 'Writing Task 2'
-                  : `Writing Task 1 (${module === 'general' ? 'General Training' : 'Academic'})`}{' '}
+                {prompt.task === 'task2' ? 'Writing Task 2' : 'Writing Task 1'}{' '}
                 · ~{prompt.suggestedMinutes} min
               </span>
               <div className="flex shrink-0 items-center gap-2">

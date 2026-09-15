@@ -10,6 +10,7 @@
 import { useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
+import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { nextInRotation } from '../lib/rotation';
@@ -281,15 +282,21 @@ export default function SpeakingTester() {
           overallBand={result.overallBand}
           live={result.grader.live}
           offlineWarning="Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading."
-          criteria={SPEAKING_CRITERIA.map((c) => ({
-            key: c.key,
-            label: c.label,
-            band: result.criteria[c.key].band,
-            comment: result.criteria[c.key].comment,
-            tip: result.criteria[c.key].tip,
-          }))}
+          criteria={SPEAKING_CRITERIA.map((c) => {
+            const score = result.criteria[c.key];
+            return {
+              key: c.key,
+              label: c.label,
+              band: score.band,
+              comment: score.comment,
+              tip: score.tip,
+              nextBand: score.nextBand,
+              guide: guideFor(SPEAKING_BAND_GUIDES[c.key], score.band),
+            };
+          })}
           strengths={result.strengths}
           improvements={result.improvements}
+          actionPlan={result.actionPlan}
         >
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
             <h3 className="font-display font-bold">Timing check</h3>

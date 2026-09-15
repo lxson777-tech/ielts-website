@@ -4,12 +4,19 @@
    ends, that clip plus the interview transcript go to the same
    grade-speaking Worker the recorded checker uses (kind: "interview"),
    which grades on the official four criteria. There is no offline stub
-   here — the live examiner only exists when the AI stack is configured. */
+   here, the live examiner only exists when the AI stack is configured.
+
+   The recording is converted to 16 kHz mono MP3 in the browser
+   (src/lib/speaking/encode.ts) before upload, because the grader's OpenAI
+   provider only accepts WAV or MP3 audio input, and MP3 keeps a full
+   ~14-minute session comfortably under a 5 MB request body. The acoustic
+   mechanics pass above still reads the original recording, only the
+   uploaded copy is converted. */
 
 import type { AudioMechanicsReport, SpeakingAssessment, SpeakingGradeResult } from '../schema';
 import { overallSpeakingBand } from '../schema';
 import { analyzeAudio } from '../mechanics';
-import { blobToBase64 } from '../recorder';
+import { blobToMp3Base64 } from '../encode';
 import type { TranscriptTurn } from './session';
 
 const GRADER_URL: string | undefined = import.meta.env?.PUBLIC_SPEAKING_GRADER_URL;
@@ -38,6 +45,7 @@ export async function gradeInterview(
   if (!GRADER_URL) throw new Error('The AI grader is not configured for this site.');
 
   const mechanics: AudioMechanicsReport = await analyzeAudio(recording.blob, opts.expectedMinMs);
+  const mp3 = await blobToMp3Base64(recording.blob);
 
   const resp = await fetch(GRADER_URL, {
     method: 'POST',
@@ -48,9 +56,11 @@ export async function gradeInterview(
         transcript: transcript.map((t) => ({ role: t.role, text: t.text.trim() })).filter((t) => t.text),
         scope: opts.scope,
         audio: {
-          question: 'Live session — candidate microphone recording',
-          audioBase64: await blobToBase64(recording.blob),
-          mimeType: recording.mimeType,
+          question: 'Live session, candidate microphone recording',
+          audioBase64: mp3.audioBase64,
+          mimeType: mp3.mimeType,
+          // The recorder's own measured length, not the re-encoded clip's,
+          // since that's the number the session UI already showed live.
           durationMs: recording.durationMs,
         },
       },
@@ -75,6 +85,7 @@ export async function gradeInterview(
     moments: assessment.moments,
     strengths: assessment.strengths,
     improvements: assessment.improvements,
+    actionPlan: assessment.actionPlan,
     grader: { name: 'AI examiner (live interview)', live: true },
   };
 }

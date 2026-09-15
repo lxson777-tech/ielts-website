@@ -38,6 +38,7 @@ const importedListeningAnswerHashes = [
   '36c45f2696dfca000ad7720548a3d13d9e52e3bf498f4ad433a7bba239a3e8b6',
   '0fd58f67b51727a5cafec564ca88ba61d35a167238001056f9872e1c8e3b7891',
   '63f3e27048a98c91d59ebfdc95b524ae76d884da9c9cf1315909d86346897619',
+  // test 9 recomputed after the 2026-09-14 answer-key correction (q1: "busines" -> "business")
   '4786e6635d64592832c6812d4084c92825ae49400efb3aea1e604b5ff919f82d',
   '9316a528e71ceb388a34478b73ae0b2c88d49b1c1a6535ee0e430443ce5bbe8f',
   '7babfba4c9c1f6d1308ee4ca8193cdd726bf9c9982672056619d89a6cd3dfde4',
@@ -49,17 +50,31 @@ const importedListeningAnswerHashes = [
   '6e9a5d24ce6984c07c8dc7ff85de70361b2d33b6213f20946a2ab87f377283ce',
   '511c8af8e5ddefdd89b4b2139e42ace6b13ba79d313485843b30d5964fc160bd',
   'c987b1c2ae6927ac3993a09f2f67c1eca2a3cd5f94bac08111133785015a0c9a',
+  // test 20 recomputed after the 2026-09-14 answer-key correction (q38: accepts both "Grandad's Old Ale" and "grandads old ale")
   '317844606ddd90d6f1551f2ecae1ddd72c65e69cf0e7f0fb3bdec9af5840d383',
+  // tests 21 to 30, imported 2026-09-14 and verified against the source answer keys by tools/validate_listening.py
+  '6349eba5a92eb9eb8e70117296f9fac5a7a36a569daf0f9a5b9761e91e1f4e4c',
+  '6056cc4306bf365180b17ae833b0d1f65524da9be5a441cfd9c1bdda609baf06',
+  'dbab849866075a7738aae33cdc56afffb919db52ea769dda3c6c9b1466aebfd6',
+  '9d1492e36806bdc4f7bde72d7e3e01a288a11418e41b3649381429a95a4360dc',
+  'd277c23b992c47f3d276effad096cc2820f7b63f873b4d1581ffa6b62d2eb0ee',
+  'f278d23e1bbbb4f3993ce9719e4f1c2efdd4a2a3d1e7f8e8c885c7b6e245953e',
+  '9d940d132b007220072bbcfe10a9c32bfbac0a959042f378910ba9182de1e1c2',
+  '868bf0e49779dd6d736f8a6e272771d446a1104d0c2b2a341564f8cceffc1c48',
+  '1cc383644081385a58e593e782d85fb1aadda9d9fdf4425ec1aba13ca9a6e46e',
+  '3046fc225db8982c007cfd1c0d97ace1c63ed13901ccbe4f16a1eca7f84d64ee',
 ];
 
-test('catalog contains twenty distinct reading tests and twenty distinct listening tests', () => {
+test('catalog contains only authentic (sourced) reading tests and thirty distinct listening tests', () => {
   const ids = ALL_TESTS.map((testRecord) => testRecord.id);
   assert.equal(new Set(ids).size, ids.length, 'test ids must be unique');
 
   const reading = ALL_TESTS.filter((testRecord) => testRecord.skill === 'reading');
   const listening = ALL_TESTS.filter((testRecord) => testRecord.skill === 'listening');
-  assert.equal(reading.length, 20);
-  assert.equal(listening.length, 20);
+  for (const testRecord of reading) {
+    assert.ok(testRecord.source, `reading test ${testRecord.id} must carry a source (in-house tests are not allowed)`);
+  }
+  assert.equal(listening.length, 30);
 
   const readingFingerprints = reading.map((testRecord) => JSON.stringify(testRecord.parts));
   const listeningFingerprints = listening.map((testRecord) => JSON.stringify(testRecord.parts));

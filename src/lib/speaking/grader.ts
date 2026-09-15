@@ -5,7 +5,13 @@
    instead of quietly handing back a fabricated band. The UI checks
    isSpeakingGraderConfigured() up front (Live Examiner's pattern) so a
    student never spends several minutes recording only to discover afterwards
-   that grading was never available. */
+   that grading was never available.
+
+   Every recorded clip is converted to 16 kHz mono MP3 in the browser
+   (src/lib/speaking/encode.ts) before it goes anywhere near the Worker,
+   because the grader's OpenAI provider only accepts WAV or MP3 audio input.
+   MP3 also keeps even a full test's worth of clips well under a 5 MB
+   request body. */
 
 import type {
   AudioMechanicsReport,
@@ -18,7 +24,7 @@ import type {
 } from './schema';
 import { overallSpeakingBand } from './schema';
 import { analyzeAudio } from './mechanics';
-import { blobToBase64 } from './recorder';
+import { blobToMp3Base64 } from './encode';
 
 /* Remote grader — POSTs to our Cloudflare Worker, which holds the API key and
    sends the actual audio to Gemini. Any failure throws, and gradeSpeaking()
@@ -43,8 +49,10 @@ class RemoteSpeakingGrader implements SpeakingGrader {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      // Audio payloads + multi-part prompts take longer than a single essay.
-      signal: AbortSignal.timeout(90000),
+      // The Worker transcribes the audio, grades the transcript and then judges
+      // pronunciation from the audio, one call after another. A full 14-minute
+      // test can take several minutes end to end, so wait up to ten minutes.
+      signal: AbortSignal.timeout(600000),
     });
     if (!resp.ok) {
       let detail = '';
@@ -78,12 +86,18 @@ export function isSpeakingGraderConfigured(): boolean {
   return !!SPEAKING_GRADER_URL;
 }
 
-/** Raw recorded clips (Blob) → base64 AnsweredClip, ready for the grader. */
+/** Raw recorded clips (Blob) → base64 AnsweredClip, ready for the grader.
+    Re-encodes to MP3 first since the grader's OpenAI provider only accepts
+    WAV or MP3 audio input. */
 export async function toAnsweredClip(question: string, seg: { blob: Blob; mimeType: string; durationMs: number }) {
+  const { audioBase64, mimeType } = await blobToMp3Base64(seg.blob);
   return {
     question,
-    audioBase64: await blobToBase64(seg.blob),
-    mimeType: seg.mimeType,
+    audioBase64,
+    mimeType,
+    // The original recorder-measured length, not the encoded clip's own
+    // (re-decoded) duration, since that's the number the student's UI
+    // already showed while they were answering.
     durationMs: seg.durationMs,
   };
 }

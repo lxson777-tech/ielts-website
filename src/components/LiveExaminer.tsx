@@ -40,6 +40,7 @@ import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange, getAccessToken } from '../lib/auth/session';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
 import type { StructureMethod } from '../data/speaking-structure-guides';
+import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import BandReport from './BandReport';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
@@ -638,15 +639,21 @@ export default function LiveExaminer({ variant = 'full' }: { variant?: 'full' | 
           overallBand={result.overallBand}
           live
           offlineWarning=""
-          criteria={SPEAKING_CRITERIA.map((c) => ({
-            key: c.key,
-            label: c.label,
-            band: result.criteria[c.key].band,
-            comment: result.criteria[c.key].comment,
-            tip: result.criteria[c.key].tip,
-          }))}
+          criteria={SPEAKING_CRITERIA.map((c) => {
+            const score = result.criteria[c.key];
+            return {
+              key: c.key,
+              label: c.label,
+              band: score.band,
+              comment: score.comment,
+              tip: score.tip,
+              nextBand: score.nextBand,
+              guide: guideFor(SPEAKING_BAND_GUIDES[c.key], score.band),
+            };
+          })}
           strengths={result.strengths}
           improvements={result.improvements}
+          actionPlan={result.actionPlan}
         >
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
             <h3 className="font-display font-bold">Timing check</h3>

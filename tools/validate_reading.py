@@ -1,4 +1,14 @@
-"""Validate the deterministic PracticePTEOnline Reading import."""
+"""Validate the deterministic PracticePTEOnline Reading import.
+
+Discovers every src/data/tests/reading-full-NNN.ts file and re-derives its
+source test number from the emitted `source.url` (falling back to `id` only
+if the URL doesn't carry a plain source number), so this validates however
+many imports exist rather than a fixed count. Every reading test on the site
+is in this same single-JSON-literal format: the five hand-written in-house
+tests were removed on 2026-09-13, and reading-full-001.ts through 020.ts are
+the renumbered original import (see import_reading.LOCAL_TO_SOURCE), not a
+different format that needs to be skipped.
+"""
 
 from __future__ import annotations
 
@@ -11,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import import_reading
 
 ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "src" / "data" / "tests"
 
 
 def load(path: Path) -> dict:
@@ -18,13 +29,40 @@ def load(path: Path) -> dict:
     return json.JSONDecoder().raw_decode(raw[raw.index("= {") + 2:])[0]
 
 
+def discover_imports() -> list[tuple[Path, int, int]]:
+    """Every reading-full-NNN.ts paired with its local test number (from the
+    filename) and its source test number. The source number comes from
+    `source.url` (the definitive record of where a test came from), not from
+    `id`: `id` matches the local/student-facing number since the 2026-09-13
+    renumbering, so it's only a fallback for a file whose URL doesn't carry a
+    plain ielts-reading-test-<N> number."""
+    found = []
+    for path in sorted(DATA.glob("reading-full-*.ts")):
+        match = re.fullmatch(r"reading-full-(\d+)\.ts", path.name)
+        if not match:
+            continue
+        local_number = int(match.group(1))
+        test = load(path)
+        url_match = re.search(r"ielts-reading-test-(\d+)", test.get("source", {}).get("url", ""))
+        id_match = re.fullmatch(r"reading-full-(\d+)", test.get("id", ""))
+        source_number = int(url_match.group(1)) if url_match else (int(id_match.group(1)) if id_match else None)
+        if source_number is None:
+            raise SystemExit(f"{path.name}: could not determine the source test number from source.url/id")
+        found.append((path, local_number, source_number))
+    return found
+
+
 def main() -> None:
+    from bs4 import BeautifulSoup
+
     failures = []
     total = 0
     overridden = 0
     seen_group_overrides = set()
-    for local_number, source_number in import_reading.LOCAL_TO_SOURCE.items():
-        path = ROOT / "src" / "data" / "tests" / f"reading-full-{local_number:03d}.ts"
+    imports = discover_imports()
+    passage_signatures: dict[str, list[tuple[str, str]]] = {}
+
+    for path, local_number, source_number in imports:
         test = load(path)
         url, body = import_reading.fetch(source_number)
         source_answers = import_reading.answer_key(body, source_number)
@@ -102,6 +140,8 @@ def main() -> None:
         emitted_passages = [part["stimulus"] for part in test["parts"]]
         if emitted_passages != rebuilt_passages:
             failures.append(f"{path.name}: emitted passage content differs from the cached source parse")
+        passage_signatures[path.name] = import_reading.passage_signatures(test)
+
     # A correction that no longer matches any question or group is a stale
     # entry: it would quietly stop protecting anything, so fail loudly instead.
     if overridden != len(import_reading.ANSWER_OVERRIDES):
@@ -109,14 +149,28 @@ def main() -> None:
     for key in import_reading.GROUP_OVERRIDES:
         if key not in seen_group_overrides:
             failures.append(f"group correction {key} matches no question group")
+
+    # Cross-check every imported test's passages against every other one — the
+    # per-file question/answer checks above can't catch two source numbers
+    # sharing the same passage.
+    names = list(passage_signatures)
+    for i, name_a in enumerate(names):
+        for name_b in names[i + 1:]:
+            for title_a, body_a in passage_signatures[name_a]:
+                for title_b, body_b in passage_signatures[name_b]:
+                    if title_a and title_a == title_b:
+                        failures.append(f"{name_a} and {name_b}: duplicate passage title")
+                    elif body_a and body_b and body_a[:400] == body_b[:400]:
+                        failures.append(f"{name_a} and {name_b}: duplicate passage text")
+
     if failures:
         raise SystemExit("\n".join(failures))
     print(
-        f"Validated 20 imported Reading tests, {total} source-keyed questions, passages, layouts, and local assets. "
-        f"{overridden} answer(s) and {len(seen_group_overrides)} question group(s) carry a recorded correction to the publisher's key."
+        f"Validated {len(imports)} imported Reading tests, {total} source-keyed questions, passages, layouts, local "
+        f"assets, and cross-test duplicates. {overridden} answer(s) and {len(seen_group_overrides)} question "
+        f"group(s) carry a recorded correction to the publisher's key."
     )
 
 
 if __name__ == "__main__":
-    from bs4 import BeautifulSoup
     main()

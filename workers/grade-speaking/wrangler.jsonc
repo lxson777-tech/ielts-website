@@ -1,17 +1,60 @@
 // Cloudflare Worker config for the IELTS speaking grader.
 // Deploy:  npx wrangler deploy   (from this directory)
-// Secret:  npx wrangler secret put GEMINI_API_KEY
+// Secrets: npx wrangler secret put OPENAI_API_KEY   (default provider)
+//          npx wrangler secret put GEMINI_API_KEY   (rollback provider)
 {
   "name": "ielts-grade-speaking",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
+    // Which provider grades requests: "openai" (default) or "gemini" (the
+    // original path, kept as a one-variable rollback). See README.md.
+    "GRADER_PROVIDER": "openai",
+    // Which OpenAI pipeline grades requests: "hybrid" (default, see README
+    // "Hybrid pipeline") or "audio" (the original single audio-model call).
+    "OPENAI_SPEAKING_MODE": "hybrid",
+    // The audio-capable model used for the "audio" mode's single call and
+    // for the hybrid pipeline's pronunciation-only call. Renamed from
+    // OPENAI_MODEL (still read as a fallback, see README).
+    "OPENAI_AUDIO_MODEL": "gpt-audio-1.5",
+    // Flagship text-reasoning model that grades Fluency & Coherence,
+    // Lexical Resource and Grammatical Range from the candidate-only
+    // transcript + timing statistics in the hybrid pipeline. Only used in
+    // "hybrid" mode.
+    "OPENAI_TEXT_MODEL": "gpt-5.6-sol",
+    // Reasoning effort for the hybrid text-grading call.
+    "OPENAI_REASONING_EFFORT": "medium",
+    // Speaker-labelled (diarized) transcription model for the hybrid
+    // pipeline: segments come back tagged by speaker, so only the
+    // candidate's speech (the speaker with the most total speaking time)
+    // is kept for grading. Set to "whisper-1" to use the older
+    // word-timestamp transcription instead (no speaker labels, the whole
+    // transcript is graded as-is).
+    "OPENAI_TRANSCRIBE_MODEL": "gpt-4o-transcribe-diarize",
+    // "on" (default) or "off". Whether the hybrid pipeline's text-grading
+    // and pronunciation calls include the examiner-standardisation anchors
+    // (six official IDP IELTS sample candidates, one per band, see
+    // src/anchors.ts and README.md "Examiner standardisation anchors").
+    // Switchable so the effect on grading accuracy can be measured with
+    // and without them.
+    "OPENAI_SPEAKING_ANCHORS": "on",
     // Free-tier Flash model — same as grade-essay. Swap via
     // `wrangler deploy --var GEMINI_MODEL:...` or edit here.
-    "GEMINI_MODEL": "gemini-2.5-flash",
+    // Switched 2026-09-14 from "gemini-2.5-flash" (which Google is retiring for
+    // new users and which tracked candidate bands inconsistently in the
+    // calibration run, see docs/SPEAKING-GRADING-CALIBRATION.md). Swap back if
+    // the newer model misbehaves in production.
+    "GEMINI_MODEL": "gemini-3.6-flash",
     // Comma-separated origins allowed to call this Worker from a browser.
     "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321",
-    // Independent grading runs whose median becomes the result (1-5).
-    "GRADING_SAMPLES": "3"
+    // Independent grading runs whose median becomes the result (1-5). For
+    // the hybrid pipeline a "run" repeats only the text-grading and
+    // pronunciation calls (each clip is transcribed once and reused).
+    // OpenAI calls cost real money (see README "Cost" section), so the
+    // default provider runs a single sample; 3 was the free-tier
+    // Gemini-era default and only makes sense again after rolling back to
+    // GRADER_PROVIDER=gemini (or if raised deliberately, understanding it
+    // multiplies OpenAI cost by the same factor).
+    "GRADING_SAMPLES": "1"
   }
 }

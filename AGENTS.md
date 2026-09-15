@@ -106,8 +106,9 @@ versioned so a future account sync can migrate it.
 
 ## AI grading subsystem
 
-Three independent Cloudflare Workers back the AI-graded features, each Gemini-backed, each
-deployed and configured separately from the Astro site itself:
+Three independent Cloudflare Workers back the AI-graded features. Since 2026-09-14 all three
+run on the OpenAI API by default (Gemini kept as a rollback switch in each Worker's
+`wrangler.jsonc`), each deployed and configured separately from the Astro site itself:
 
 | Feature | Route | Worker | Env var (site side) |
 |---|---|---|---|
@@ -115,20 +116,26 @@ deployed and configured separately from the Astro site itself:
 | Speaking grading | `/trainers/speaking` (`SpeakingTester`) | `workers/grade-speaking` | `PUBLIC_SPEAKING_GRADER_URL` |
 | Live voice examiner | `/speaking/examiner` (`LiveExaminer`) | `workers/live-examiner` | `PUBLIC_LIVE_EXAMINER_URL` |
 
-- `grade-essay` / `grade-speaking` take the submission, call Gemini, return a structured band
-  result (`RemoteGrader` / `RemoteSpeakingGrader` in `src/lib/{writing,speaking}/grader.ts`).
-  If unconfigured or unreachable, both fall back to the local stub grader rather than failing.
-- `live-examiner` doesn't grade directly, it mints short-lived Gemini Live API ephemeral
-  tokens so the browser can hold a real-time voice conversation with Gemini directly over
-  WebSocket, the Worker never sees the audio. If `PUBLIC_LIVE_EXAMINER_URL` is unset,
-  `/speaking/examiner` shows a "not configured" notice and disables the start button instead
-  of breaking.
+- `grade-essay` grades essays with the OpenAI Responses API (`gpt-5.6-terra`, strict JSON,
+  official public Writing band descriptors verbatim). `grade-speaking` runs a three-step
+  pipeline: `whisper-1` verbatim transcript with word timings, `gpt-5.6-terra` grades Fluency,
+  Lexis and Grammar from the transcript plus measured pauses and pace, and `gpt-audio-1.5`
+  judges Pronunciation from the audio itself (official public Speaking descriptors verbatim).
+  Recordings are converted to 16 kHz mono MP3 in the browser first (`src/lib/speaking/encode.ts`)
+  because the audio model accepts only WAV or MP3. Neither grader has an offline stub any more:
+  an unconfigured or unreachable grader is reported plainly to the student.
+- `live-examiner` brokers OpenAI GPT-Live-1 voice sessions over WebRTC (sign-in required,
+  per-student limits in Supabase, stage directions injected server-side through OpenAI's
+  sideband); Gemini ephemeral tokens remain as the rollback provider. The Worker never sees
+  the audio. If `PUBLIC_LIVE_EXAMINER_URL` is unset, `/speaking/examiner` shows a "not
+  configured" notice and disables the start button instead of breaking.
 - Each Worker has its own README under `workers/<name>/README.md` with deploy steps
   (`npx wrangler secret put ...`, `npx wrangler deploy`) and calibration notes. Read that
   before touching a Worker; don't guess at its request/response shape from the frontend code
   alone.
 - Deploying a Worker is a real, billable, externally-visible action, confirm with the user
-  before running `wrangler deploy` or rotating secrets.
+  before running `wrangler deploy` or rotating secrets. Grading and voice sessions are paid
+  OpenAI usage; calibration runs cost real money too, so keep them small and say what they cost.
 
 ## Content-automation tools (WAT: Workflows, Agents, Tools)
 

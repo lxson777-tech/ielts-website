@@ -805,7 +805,9 @@ async function defaultSideband(env: Env, sessionId: string, event: Record<string
 }
 
 export const defaultDeps: Deps = {
-  fetch,
+  // Wrapped on purpose: calling the global fetch through an object property
+  // throws "Illegal invocation" in the Workers runtime.
+  fetch: (input, init) => fetch(input, init),
   sideband: defaultSideband,
   now: () => new Date(),
 };

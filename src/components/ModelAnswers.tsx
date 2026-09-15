@@ -29,7 +29,6 @@ const TASK2_GROUPS: { key: string; label: string }[] = [
 ];
 
 const TASK1_GROUPS: { key: string; label: string }[] = [
-  { key: 'letter', label: 'Letters (GT)' },
   { key: 'line-graph', label: 'Line graphs' },
   { key: 'bar-chart', label: 'Bar charts' },
   { key: 'pie-chart', label: 'Pie charts' },
@@ -39,9 +38,13 @@ const TASK1_GROUPS: { key: string; label: string }[] = [
   { key: 'combination', label: 'Combination' },
 ];
 
-function groupPrompts(task: 'task1' | 'task2', groups: { key: string; label: string }[]) {
+function groupPrompts(
+  task: 'task1' | 'task2',
+  groups: { key: string; label: string }[],
+  prompts: EssayPrompt[],
+) {
   return groups
-    .map((g) => ({ ...g, prompts: WRITING_PROMPTS.filter((p) => p.task === task && p.variant === g.key) }))
+    .map((g) => ({ ...g, prompts: prompts.filter((p) => p.task === task && p.variant === g.key) }))
     .filter((g) => g.prompts.length > 0);
 }
 
@@ -222,17 +225,25 @@ function EssayPanel({
 }
 
 export default function ModelAnswers() {
-  const task2Groups = useMemo(() => groupPrompts('task2', TASK2_GROUPS), []);
-  const task1Groups = useMemo(() => groupPrompts('task1', TASK1_GROUPS), []);
+  // Only prompts that actually have a model answer are selectable. The
+  // model bank predates the imported prompt set, so most prompts currently
+  // have none; this list can be empty, in which case the empty state below
+  // is shown instead of a broken picker.
+  const promptsWithModels = useMemo(
+    () => WRITING_PROMPTS.filter((p) => getModelBands(p.id).length > 0),
+    [],
+  );
+  const task2Groups = useMemo(() => groupPrompts('task2', TASK2_GROUPS, promptsWithModels), [promptsWithModels]);
+  const task1Groups = useMemo(() => groupPrompts('task1', TASK1_GROUPS, promptsWithModels), [promptsWithModels]);
 
-  const [promptId, setPromptId] = useState<string>(WRITING_PROMPTS[0]!.id);
-  const prompt = getWritingPrompt(promptId) as EssayPrompt;
-  const bands = useMemo(() => getModelBands(promptId), [promptId]);
+  const [promptId, setPromptId] = useState<string>(promptsWithModels[0]?.id ?? '');
+  const prompt = promptId ? (getWritingPrompt(promptId) as EssayPrompt | undefined) : undefined;
+  const bands = useMemo(() => (promptId ? getModelBands(promptId) : []), [promptId]);
 
-  const [band, setBand] = useState<ModelBand>(bands[0]!);
+  const [band, setBand] = useState<ModelBand | null>(bands[0] ?? null);
   const [compare, setCompare] = useState(false);
-  const [bandA, setBandA] = useState<ModelBand>(bands[0]!);
-  const [bandB, setBandB] = useState<ModelBand>(bands[bands.length - 1]!);
+  const [bandA, setBandA] = useState<ModelBand | null>(bands[0] ?? null);
+  const [bandB, setBandB] = useState<ModelBand | null>(bands[bands.length - 1] ?? null);
   const [activeHighlight, setActiveHighlight] = useState<string | null>(null);
 
   // Tapping (or clicking) anywhere outside an open highlight note closes it —
@@ -248,14 +259,47 @@ export default function ModelAnswers() {
   function selectPrompt(id: string) {
     setPromptId(id);
     const nextBands = getModelBands(id);
-    setBand(nextBands[0]!);
-    setBandA(nextBands[0]!);
-    setBandB(nextBands[nextBands.length - 1]!);
+    setBand(nextBands[0] ?? null);
+    setBandA(nextBands[0] ?? null);
+    setBandB(nextBands[nextBands.length - 1] ?? null);
     setActiveHighlight(null);
   }
 
   const tabDefs: TabDef[] = bands.map((b) => ({ id: String(b), label: `Band ${fmtBand(b)}` }));
-  const modelForBand = (b: ModelBand) => getModelAnswers(promptId).find((m) => m.band === b)!;
+  const modelForBand = (b: ModelBand | null): ModelAnswer | undefined =>
+    b == null || !promptId ? undefined : getModelAnswers(promptId).find((m) => m.band === b);
+
+  // No prompt has a model answer yet: no hooks below this point, this is a
+  // plain early return after every hook above has already run, so hook
+  // order stays identical on every render regardless of which branch a
+  // given render takes.
+  if (promptsWithModels.length === 0) {
+    return (
+      <div className="ma-empty-state">
+        <h2 className="ma-empty-state-title">Model answers are being prepared</h2>
+        <p className="ma-empty-state-text">
+          Model answers for the real exam tasks on this site are on their way. In the meantime the
+          Writing Trainer's AI feedback shows you, sentence by sentence, how to reach the next band.
+        </p>
+        <a
+          href={withBase('/trainers/writing')}
+          className="rounded-button bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
+        >
+          Go to the Writing Trainer
+        </a>
+      </div>
+    );
+  }
+
+  // Defensive: promptId is always drawn from promptsWithModels above, so
+  // this should always resolve, but a missing prompt should render nothing
+  // rather than throw.
+  if (!prompt) return null;
+
+  const currentBand = band ?? bands[0] ?? null;
+  const currentModel = modelForBand(currentBand);
+  const modelA = modelForBand(bandA);
+  const modelB = modelForBand(bandB);
 
   return (
     <div className="ma-layout">
@@ -274,12 +318,16 @@ export default function ModelAnswers() {
 
         <div className="ma-controls">
           {!compare ? (
-            <Tabs tabs={tabDefs} active={String(band)} onChange={(id) => { setBand(Number(id) as ModelBand); setActiveHighlight(null); }} />
+            <Tabs
+              tabs={tabDefs}
+              active={currentBand != null ? String(currentBand) : ''}
+              onChange={(id) => { setBand(Number(id) as ModelBand); setActiveHighlight(null); }}
+            />
           ) : (
             <div className="ma-compare-selects">
               <label>
                 Band A
-                <select value={bandA} onChange={(e) => setBandA(Number(e.target.value) as ModelBand)}>
+                <select value={bandA ?? ''} onChange={(e) => setBandA(Number(e.target.value) as ModelBand)}>
                   {bands.map((b) => (
                     <option key={b} value={b}>
                       Band {fmtBand(b)}
@@ -289,7 +337,7 @@ export default function ModelAnswers() {
               </label>
               <label>
                 Band B
-                <select value={bandB} onChange={(e) => setBandB(Number(e.target.value) as ModelBand)}>
+                <select value={bandB ?? ''} onChange={(e) => setBandB(Number(e.target.value) as ModelBand)}>
                   {bands.map((b) => (
                     <option key={b} value={b}>
                       Band {fmtBand(b)}
@@ -317,17 +365,19 @@ export default function ModelAnswers() {
         </div>
 
         {!compare ? (
-          <EssayPanel
-            key={band}
-            model={modelForBand(band)}
-            asTabPanel
-            activeHighlight={activeHighlight}
-            setActiveHighlight={setActiveHighlight}
-          />
+          currentModel && (
+            <EssayPanel
+              key={currentBand}
+              model={currentModel}
+              asTabPanel
+              activeHighlight={activeHighlight}
+              setActiveHighlight={setActiveHighlight}
+            />
+          )
         ) : (
           <div className="ma-compare-grid">
-            <EssayPanel model={modelForBand(bandA)} compact activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />
-            <EssayPanel model={modelForBand(bandB)} compact activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />
+            {modelA && <EssayPanel model={modelA} compact activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />}
+            {modelB && <EssayPanel model={modelB} compact activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />}
           </div>
         )}
       </section>
