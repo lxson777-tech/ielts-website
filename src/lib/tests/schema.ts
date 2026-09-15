@@ -222,7 +222,7 @@ export function scoredQuestionIds(questions: Question[], answers: Record<string,
    the first row whose minimum the score meets wins. Replaces the old coarse
    percentage buckets, which returned a full-band-wide range like "6.5 – 7"
    and read a whole band low around the boundaries (e.g. 30/40 is Band 7, but
-   the old curve showed "6.5 – 7"). Academic only — General Training reading
+   the old curve showed "6.5 – 7"). Academic Reading curve.
    uses a more lenient table and the app's passages are Academic-style. */
 const READING_BAND_TABLE: [minRaw: number, band: number][] = [
   [39, 9.0],

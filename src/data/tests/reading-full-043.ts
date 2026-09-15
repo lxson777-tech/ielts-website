@@ -1,0 +1,540 @@
+import type { PracticeTest } from '../../lib/tests/schema';
+
+const test: PracticeTest = {
+  "id": "reading-full-280",
+  "skill": "reading",
+  "title": "Academic Reading Test 280",
+  "description": "A complete three-passage Academic Reading practice test with 40 questions.",
+  "durationMinutes": 60,
+  "source": {
+    "name": "IELTS MASTER / PracticePTEOnline",
+    "url": "https://practicepteonline.com/ielts-reading-test-280/",
+    "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
+  },
+  "parts": [
+    {
+      "label": "Passage 1",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 1",
+        "title": "The Power of Nothing",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "label": "A",
+            "html": "Want to devise a new form of alternative medicine? No problem. Here is the recipe. Be warm, sympathetic, reassuring and enthusiastic. Your treatment should involve physical contact, and each session with your patients should last at least half an hour. Encourage your patients to take an active part in their treatment and understand how their disorders relate to the rest of their lives. Tell them that their own bodies possess the true power to heal. Make them pay you out of their own pockets. Describe your treatment in familiar words, but embroidered with a hint of mysticism: energy fields, energy flows, energy blocks, meridians, forces, auras, rhythms and the like. Refer to the knowledge of an earlier age: wisdom carelessly swept aside by the rise and rise of blind, mechanistic science. Oh, come off it, you are saying. Something invented off the top of your head could not possibly work, could it?"
+          },
+          {
+            "label": "B",
+            "html": "Well yes, it could – and often well enough to earn you a living. A good living if you are sufficiently convincing, or better still, really believe in your therapy. Many illnesses get better on their own, so if you are lucky and administer your treatment at just the right time you will get the credit. But that’s only part of it. Some of the improvement really would be down to you. Your healing power would be the outcome of a paradoxical force that conventional medicine recognizes but remains oddly ambivalent about: the placebo effect."
+          },
+          {
+            "label": "C",
+            "html": "Placebos are treatments that have no direct effect on the body, yet still, work because the patient has faith in their power to heal. Most often the term refers to a dummy pill, but it applies just as much to any device or procedure, from a sticking plaster to a crystal to an operation. The existence of the placebo effect implies that even quackery may confer real benefits, which is why any mention of placebo is a touchy subject for many practitioners of complementary and alternative medicine, who are likely to regard it as tantamount to a charge of charlatanism. In fact, the placebo effect is a powerful part of all medical care, orthodox or otherwise, though its role is often neglected or misunderstood."
+          },
+          {
+            "label": "D",
+            "html": "One of the great strengths of CAM may be its practitioners’ skill in deploying the placebo effect to accomplish real healing. “Complementary practitioners are miles better at producing non-specific effects and good therapeutic relationships,” says Edzard Ernst, professor of CAM at Exeter University. The question is whether CAM could be integrated into conventional medicines, as some would like, without losing much of this power."
+          },
+          {
+            "label": "E",
+            "html": "At one level, it should come as no surprise that our state of mind can influence our physiology: anger opens the superficial blood vessels of the face; sadness pumps the tear glands. But exactly how placebos work their medical magic is still largely unknown. Most of the scant research done so far has focused on the control of pain because it’s one of the commonest complaints and lends itself to experimental study. Here, attention has turned to the endorphins, morphine-like neurochemicals known to help control pain."
+          },
+          {
+            "label": "F",
+            "html": "But exactly how placebos work their medical magic is still largely unknown. Most of the scant research to date has focused on the control of pain because it’s one of the commonest complaints and lends itself to experimental study. Here, attention has turned to the endorphins, natural counterparts of morphine that are known to help control pain. “Any of the neurochemicals involved in transmitting pain impulses or modulating them might also be involved in generating the placebo response,” says Don Price, an oral surgeon at the University of Florida who studies the placebo effect in dental pain."
+          },
+          {
+            "label": "G",
+            "html": "“But endorphins are still out in front.” That case has been strengthened by the recent work of Fabrizio Benedetti of the University of Turin, who showed that the placebo effect can be abolished by a drug, naloxone, which blocks the effects of endorphins. Benedetti induced pain in human volunteers by inflating a blood-pressure cuff on the forearm. He did this several times a day for several days, using morphine each time to control the pain. On the final day, without saying anything, he replaced the morphine with a saline solution. This still relieved the subjects’ pain: a placebo effect. But when he added naloxone to the saline the pain relief disappeared. Here was direct proof that placebo analgesia is mediated, at least in part, by these natural opiates."
+          },
+          {
+            "label": "H",
+            "html": "Still, no one knows how belief triggers endorphin release, or why most people can’t achieve placebo pain relief simply by willing it. Though scientists don’t know exactly how placebos work, they have accumulated a fair bit of knowledge about how to trigger the effect. A London rheumatologist found, for example, that red dummy capsules made more effective painkillers than blue, green or yellow ones. Research on American students revealed that blue pills make better sedatives than pink, a colour more suitable for stimulants. Even branding can make a difference: if Aspro or Tylenol is what you like to take for a headache, their chemically identical generic equivalents may be less effective."
+          },
+          {
+            "label": "I",
+            "html": "It matters, too, how the treatment is delivered. Decades ago, when the major tranquilliser chlorpromazine was being introduced, a doctor in Kansas categorised his colleagues according to whether they were keen on it, openly skeptical of its benefits, or took a “let’s try and see” attitude. His conclusion: the more enthusiastic the doctor, the better the drug performed. And this year Ernst surveyed published studies that compared doctors’ bedside manners. The studies turned up one consistent finding: “Physicians who adopt a warm, friendly and reassuring manner,” he reported, “are more effective than those whose consultations are formal and do not offer reassurance.”"
+          },
+          {
+            "label": "J",
+            "html": "Warm, friendly and reassuring are precisely CAM’s strong suits, of course. Many of the ingredients of that opening recipe – the physical contact, the generous swathes of time, the strong hints of supernormal healing power – are just the kind of thing likely to impress patients. It’s hardly surprising, then, that complementary practitioners are generally best at mobilising the placebo effect, says Arthur Kleinman, professor of social anthropology at Harvard University."
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 1-6",
+          "type": "matching-features",
+          "instructionHtml": "Use the information in the passage to match the deed (listed A-H) with people below. Write the appropriate letters A-H in boxes 1-6 on your answer sheet. NB You may use any letter more than once",
+          "questions": [
+            {
+              "id": "q1",
+              "answer": "D",
+              "textHtml": "Appointments with an alternative practitioner"
+            },
+            {
+              "id": "q2",
+              "answer": "A",
+              "textHtml": "An alternative practitioner’s description of the treatment"
+            },
+            {
+              "id": "q3",
+              "answer": "G",
+              "textHtml": "An alternative practitioner who has faith in what he does"
+            },
+            {
+              "id": "q4",
+              "answer": "B",
+              "textHtml": "The illness of patients convinced of alternative practice"
+            },
+            {
+              "id": "q5",
+              "answer": "H",
+              "textHtml": "Improvements of patients receiving alternative practice"
+            },
+            {
+              "id": "q6",
+              "answer": "F",
+              "textHtml": "Conventional medical doctors (who is aware of placebo)"
+            }
+          ],
+          "legendHtml": "<p><strong>Questions 1- 6</strong><br/>Use the information in the passage to match the deed (listed A-H) with people below. Write the appropriate letters A-H in boxes 1-6 on your answer sheet. NB You may use any letter more than once</p><p><strong>A</strong> Should easily be understood<br/><strong>B</strong> Should improve by itself<br/><strong>C</strong> Should not involve any mysticism<br/><strong>D</strong> Ought to last a minimum length of time.<br/><strong>E</strong> Needs to be treated at the right time.<br/><strong>F</strong> Should give more recognition.<br/><strong>G</strong> Can earn valuable money.<br/><strong>H</strong> Do not rely on any specific treatment</p><p>1. Appointments with an alternative practitioner<br/>2. An alternative practitioner’s description of the treatment<br/>3. An alternative practitioner who has faith in what he does<br/>4. The illness of patients convinced of alternative practice<br/>5. Improvements of patients receiving alternative practice<br/>6. Conventional medical doctors (who is aware of placebo)</p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ]
+        },
+        {
+          "title": "Questions 7-9",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C or D.",
+          "questions": [
+            {
+              "id": "q7",
+              "answer": "A",
+              "textHtml": "In the fifth paragraph, the writer uses the example of anger and sadness to illustrate that:",
+              "options": [
+                "People’s feeling could affect their physical behaviour",
+                "Scientists don’t understand how the mind influences the body",
+                "Research on the placebo effect is very limited",
+                "How placebo achieves its effect is yet to be understood"
+              ]
+            },
+            {
+              "id": "q8",
+              "answer": "D",
+              "textHtml": "Research on pain control attracts most of the attention because",
+              "options": [
+                "Scientists have discovered that endorphins can help to reduce pain",
+                "Only a limited number of researchers gain relevant experience",
+                "Pain reducing agents might also be involved in the placebo effect",
+                "Patients often experience pain and like to complain about it"
+              ]
+            },
+            {
+              "id": "q9",
+              "answer": "C",
+              "textHtml": "Fabrizio Benedetti’s research on endorphins indicates that",
+              "options": [
+                "They are widely used to regulate pain",
+                "They can be produced by willful thoughts",
+                "They can be neutralized by introducing naloxone",
+                "Their pain-relieving effects do not last long enough"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong>Questions 7- 9</strong><br/>Choose the correct letter, A, B, C or D.</p><p>7. In the fifth paragraph, the writer uses the example of anger and sadness to illustrate that:<br/><strong>A</strong> People’s feeling could affect their physical behaviour<br/><strong>B</strong> Scientists don’t understand how the mind influences the body.<br/><strong>C</strong> Research on the placebo effect is very limited<br/><strong>D</strong> How placebo achieves its effect is yet to be understood.</p><p>8. Research on pain control attracts most of the attention because<br/><strong>A</strong> Scientists have discovered that endorphins can help to reduce pain.<br/><strong>B</strong> Only a limited number of researchers gain relevant experience<br/><strong>C</strong> Pain reducing agents might also be involved in the placebo effect<br/><strong>D</strong> Patients often experience pain and like to complain about it</p><p>9. Fabrizio Benedetti’s research on endorphins indicates that<br/><strong>A</strong> They are widely used to regulate pain.<br/><strong>B</strong> They can be produced by willful thoughts<br/><strong>C</strong> They can be neutralized by introducing naloxone.<br/><strong>D</strong> Their pain-relieving effects do not last long enough.</p>"
+        },
+        {
+          "title": "Questions 10-14",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 10-14 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q10",
+              "answer": "False",
+              "textHtml": "There is enough information for scientists to fully understand the placebo effect"
+            },
+            {
+              "id": "q11",
+              "answer": "Not given",
+              "textHtml": "London based researcher discovered that red pills should be taken off the market"
+            },
+            {
+              "id": "q12",
+              "answer": "True",
+              "textHtml": "People’s preference for brands would also have an effect on their healing"
+            },
+            {
+              "id": "q13",
+              "answer": "True",
+              "textHtml": "Medical doctors have a range of views of the newly introduced drug of chlorpromazine"
+            },
+            {
+              "id": "q14",
+              "answer": "False",
+              "textHtml": "Alternative practitioners are seldom known for applying the placebo effect"
+            }
+          ],
+          "legendHtml": "<p><strong>Questions 10 – 14</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 10-14 on your answer sheet, write</p><p><strong>TRUE</strong>                       if the statement agrees with the information<br/><strong>FALSE</strong>                      if the statement contradicts the information<br/><strong>NOT GIVEN</strong>          if there is no information on this</p><p>10. There is enough information for scientists to fully understand the placebo effect.<br/>11. London based researcher discovered that red pills should be taken off the market.<br/>12. People’s preference for brands would also have an effect on their healing.<br/>13. Medical doctors have a range of views of the newly introduced drug of chlorpromazine.<br/>14. Alternative practitioners are seldom known for applying the placebo effect.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+        }
+      ]
+    },
+    {
+      "label": "Passage 2",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 2",
+        "title": "Elnino and Seabirds",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "label": "A",
+            "html": "Rhythm of the seasons cannot always be relied upon. At times the tropical Pacific Ocean and large expanses of the global atmosphere seem to be marching to the beat of a different drummer, disrupting the normal patterns of countless species of plants and animals along with hundreds of millions of human beings. So they want anticipate these occasional lapses in the march of the seasons and help societies plan accordingly, scientists are seeking to understand these competing rhythms: the strongest of which is the alternation between the “normal climate” and a different but still recurrent set of climatic conditions in the Pacific region called El Nino."
+          },
+          {
+            "label": "B",
+            "html": "Seabirds are prominent and highly visible components of marine ecosystems that will be affected by global climate change. The Bering Sea region is particularly important to seabirds; populations there are larger and more diverse than in any similar region in North America—over 90% of seabirds breeding in the continental United States are found in this region. Seabirds, so named because they spend at least 80% of their lives at sea, are dependent upon marine resources for food. As prey availability changes in response to climatically driven factors such as surface sea temperature and extent of sea ice, so will populations of seabirds be affected."
+          },
+          {
+            "label": "C",
+            "html": "Seabirds are valued as indicators of healthy marine ecosystems and provide a “vicarious use value” or existence value—people appreciate and value seabirds simply because they are there and enjoy them through venues such as pictures, nature programs, and written accounts without ever directly observing seabirds in their native environment. A direct measure of this value is demonstrated by Federal legislation that established specific national wildlife refuges to protect seabirds and international treaty obligations that provide additional protection for seabirds. Seabirds are also an important subsistence resource for many who live within the Bering Sea Region. Furthermore, the rich knowledge base about seabirds makes them a valuable resource as indicator species for measurement of change in the marine environment."
+          },
+          {
+            "label": "D",
+            "html": "The most abundant breeding species in Alaska are northern fulmars, storm-petrels, kittiwakes, murres, auklets and puffins. These species also form the largest colonies. Fulmars, storm-petrels and kittiwakes are surface feeders, picking their prey from the surface or just below the surface; murres, auklets, and puffins dive for their food. Fulmars nest primarily on island groups in and around the Bering Sea. They take a wide variety of prey (e.g., fish, squid, zooplankton, jellyfish) from the surface or just below the surface. Storm-petrels are strictly nocturnal and nest below ground in either burrows or crevices between rocks. They forage on zooplankton and squid; in some areas they are dependent upon small fish such as capelin and sand lance caught at the surface. Black-legged kittiwakes are widespread throughout Alaska, Canada and Eurasia while red-legged kittiwakes are found only in the Bering Sea region. Both are surface feeders although black-legged kittiwakes feed primarily on small fish and forage over the continental shelf and shelf break; red-legged kittiwakes feed primarily on myctophids and will forage beyond the shelf break."
+          },
+          {
+            "label": "E",
+            "html": "Marine mammals have exhibited similar signs of food stress in recent years. Harbor seals at Tugidak Island in the Gulf of Alaska declined by about 85% between 1976 and 1988 . Steller sea lion populations declined by 36% in the Gulf of Alaska between 1977 and 1985 , and by another 59% between 1985 and . Northern fur seals declined about 35% by 1986 from their average numbers in the 1970s, although numbers had rebounded somewhat (20%) by 1990 . Associated with the declines in Steller sea lions are declines in birth rate, fewer breeding females, fewer pups, decreased adult body condition, decreased juvenile survival, and a change in population age structure."
+          },
+          {
+            "label": "F",
+            "html": "Walker noticed that monsoon seasons with low-index conditions are often marked by drought in Australia, Indonesia, India, and parts of Africa. He also claimed that low-index winters tend to be unusually mild in western Canada. One of his British colleagues chided him in print for suggesting that climatic conditions over such widely separated regions of the globe could be linked. In his reply Walker predicted, correctly, that an explanation would be forthcoming, but that it would require a knowledge of wind patterns above ground level, which were not routinely being observed at that time."
+          },
+          {
+            "label": "G",
+            "html": "The need for long-term time series It seems obvious that without good baseline data ornithologists are doomed to be surprised by the arrival of El Nino every few years. Even when ornithologists and ecologists are at hand to take advantage of an incoming El Nino, lack of preexisting data, and of monitoring afterwards, makes it difficult 134 F.M. Jaksic &amp; J.M. Farina to understand responses of birds to the successive El Nino, La Nina, and “normal” years. Indeed, according to Jaksic, during the last century there were 12 El Nino years and 12 La Nina years, thus leaving about 76 ‘normal’ years in between. Thus, by heavily concentrating attention on only 12% of the time span El Nino, and of neglecting possibly another 12% , ornithologists are essentially ignoring what happens during 76% of the time. This situation may be remedied only as long as data are logged on a regular or continuous basis, that is, as long-term time series. The recipe prescribed by Schreiber &amp; Schreiber to understand El Nino, effects on birds still stands: ‘…carry out long-term studies that will shed further light on the interactions between global atmospheric cycles, oceanographic phenomena, and avian populations.’"
+          },
+          {
+            "label": "H",
+            "html": "Populations of seabirds in Alaska are larger and more diverse than any similar region in the Northern Hemisphere. The extensive coastal estuaries and offshore waters of Alaska provide breeding, feeding and migrating habitats for 66 species of seabirds. At least 38 species of seabirds, over 50 million individuals, breed in Alaska. Eight Alaskan species breed only here and in adjacent Siberia. Five additional species range through the North Pacific, but their populations are concentrated in Alaska. In addition to breeding grounds, Alaskan waters also provide important wintering habitat for birds that breed in Canada and Eurasia. Shearwaters, which breed in the southern hemisphere, are the most numerous species in Alaskan waters during the summer."
+          },
+          {
+            "label": "I",
+            "html": "As another indication that food has been limiting in recent years, several largescale die-offs of seabirds, mostly surface-feeding species, have been observed in the Gulf of Alaska during the last decade, most notably in 1983, 1989，and 1993 . But Hatch thinks that it is too early to decide the these die-offs reports are somehow connected with effect of El nino. Byrd and Tobish believe that high rainfall can affect survival of chicks in earthen burrows, and incidence of big storms with high winds during the chick-rearing period can cause mortality for chicks of species nesting on cliff-ledges, but this view has not been considered as convincing evidence."
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 15-18",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C or D. Write your answers in boxes 15-26 on your answer sheet.",
+          "questions": [
+            {
+              "id": "q15",
+              "answer": "B",
+              "textHtml": "Why do scientists want to investigate El Nino phenomenon at beginning of the paragraph?",
+              "options": [
+                "To learn patterns of creatures that live in marine environment",
+                "Assist us to map out because it disturbs normal cycle of for wildlife and human",
+                "It has profound theory for both the academic side and practical side",
+                "Tropical Pacific Ocean is where El Nino affects most"
+              ]
+            },
+            {
+              "id": "q16",
+              "answer": "A",
+              "textHtml": "Why do scientists use seabirds as important subjects when observe climate change World-widely?",
+              "options": [
+                "Seabirds affected by prey changes according to the temperature and ice",
+                "Its size is large enough to be observed",
+                "El Nino affects seabirds more than other sea creatures",
+                "North America is situated in the area where El Nino affects most"
+              ]
+            },
+            {
+              "id": "q17",
+              "answer": "C",
+              "textHtml": "What happened for Marine mammals that live in Tugidak Island in Gulf of Alaska?",
+              "options": [
+                "Number of seals declined about 85% from the mid of 20th century",
+                "Number of Steller sea lion declined while Number seals grew",
+                "Birth rate and breeding females declined on the Tugidak Island",
+                "The situation of mammals on the island is not that worse than we expected"
+              ]
+            },
+            {
+              "id": "q18",
+              "answer": "D",
+              "textHtml": "According to J. Walker, what happens in the monsoon seasons notably?",
+              "options": [
+                "Flood and drought seriously damage almost everywhere of the planet",
+                "Walker’s prediction would soon come true",
+                "Drought only affects some parts of Africa",
+                "Drought will affect somewhere of the earth such as Australia and Indonesia"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong>Questions 15-18</strong><br/>Choose the correct letter, A, B, C or D. Write your answers in boxes 15-26 on your answer sheet.</p><p>15. Why do scientists want to investigate El Nino phenomenon at beginning of the paragraph?<br/><strong>A</strong> To learn patterns of creatures that live in marine environment.<br/><strong>B</strong> Assist us to map out because it disturbs normal cycle of for wildlife and human.<br/><strong>C</strong> It has profound theory for both the academic side and practical side.<br/><strong>D</strong> Tropical Pacific Ocean is where El Nino affects most.</p><p>16. Why do scientists use seabirds as important subjects when observe climate change World-widely?<br/><strong>A</strong> Seabirds affected by prey changes according to the temperature and ice<br/><strong>B</strong> Its size is large enough to be observed.<br/><strong>C</strong> El Nino affects seabirds more than other sea creatures.<br/><strong>D</strong> North America is situated in the area where El Nino affects most.</p><p>17. What happened for Marine mammals that live in Tugidak Island in Gulf of Alaska?<br/><strong>A</strong> Number of seals declined about 85% from the mid of 20th century.<br/><strong>B</strong> Number of Steller sea lion declined while Number seals grew.<br/><strong>C</strong> Birth rate and breeding females declined on the Tugidak Island.<br/><strong>D</strong> The situation of mammals on the island is not that worse than we expected.</p><p>18. According to J. Walker, what happens in the monsoon seasons notably?<br/><strong>A</strong> Flood and drought seriously damage almost everywhere of the planet.<br/><strong>B</strong> Walker’s prediction would soon come true.<br/><strong>C</strong> Drought only affects some parts of Africa.<br/><strong>D</strong> Drought will affect somewhere of the earth such as Australia and Indonesia.</p>"
+        },
+        {
+          "title": "Questions 19-27",
+          "type": "tfng",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 19-27 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q19",
+              "answer": "True",
+              "textHtml": "Seabirds are regarded as precious indicators of changes in oceanic environment"
+            },
+            {
+              "id": "q20",
+              "answer": "True",
+              "textHtml": "Seabirds such as Fulmars and Murres feed by the characteristic of prey in different ways"
+            },
+            {
+              "id": "q21",
+              "answer": "False",
+              "textHtml": "Steller sea lions only decline in birth rate and fewer pups, but the whole population wouldn’t be affected by the changes"
+            },
+            {
+              "id": "q22",
+              "answer": "False",
+              "textHtml": "With reply of Walker’s colleague, knowledge of wind patterns will be very helpful"
+            },
+            {
+              "id": "q23",
+              "answer": "True",
+              "textHtml": "It is difficult to investigate El Nino for ornithologists and ecologist because lack of available statistics and inspections"
+            },
+            {
+              "id": "q24",
+              "answer": "Not given",
+              "textHtml": "Habit of seabirds in Alaska is similar to those in the Northern Hemisphere"
+            },
+            {
+              "id": "q25",
+              "answer": "Not given",
+              "textHtml": "Number of Shearwaters in the southern hemisphere feed most during the summer"
+            },
+            {
+              "id": "q26",
+              "answer": "True",
+              "textHtml": "Hatch thinks that it is too early to determine all the problems that are caused by El Nino"
+            },
+            {
+              "id": "q27",
+              "answer": "False",
+              "textHtml": "Byrd and Tobish think that heavy rainfall and storms cause mortality for chicks, which has already been a convincing proof"
+            }
+          ],
+          "legendHtml": "<p><strong>Question 19 – 27</strong><br/>Do the following statements agree with the information given in reading passage? In boxes 19-27 on your answer sheet, write</p><p><strong>TRUE</strong>                     if the statement agrees with the information<br/><strong>FALSE</strong>                   if the statement contradicts the information<br/><strong>NOT GIVEN</strong>        if there is no information on this</p><p>19. Seabirds are regarded as precious indicators of changes in oceanic environment.<br/>20. Seabirds such as Fulmars and Murres feed by the characteristic of prey in different ways.<br/>21. Steller sea lions only decline in birth rate and fewer pups, but the whole population wouldn’t be affected by the changes.<br/>22. With reply of Walker’s colleague, knowledge of wind patterns will be very helpful.<br/>23. It is difficult to investigate El Nino for ornithologists and ecologist because lack of available statistics and inspections.<br/>24. Habit of seabirds in Alaska is similar to those in the Northern Hemisphere.<br/>25. Number of Shearwaters in the southern hemisphere feed most during the summer.<br/>26. Hatch thinks that it is too early to determine all the problems that are caused by El Nino.<br/>27. Byrd and Tobish think that heavy rainfall and storms cause mortality for chicks, which has already been a convincing proof.</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+        }
+      ]
+    },
+    {
+      "label": "Passage 3",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 3",
+        "title": "The Impact of Environment to Children",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "label": "A",
+            "html": "What determines how a child develops? In reality, it would be impossible to account for each and every influence that ultimately determines who a child becomes. What we can look at are some of the most apparent influences such as genetics, parenting, experiences, friends, family relationships and school to help us understand the influences that help contribute to a child’s growth."
+          },
+          {
+            "label": "B",
+            "html": "Think of these influences as building blocks. While roost people tend to have the same basic building blocks, these components can be put together in an infinite number of ways. Consider your own overall personality. How much of who you are today was shaped by your genetic inheritance, and how much is a result of your lifetime of experiences? This question has puzzled philosophers, psychologists and educators for hundreds of years and is frequently referred to as the nature versus nurture debate. Generally, the given rate of influence on children is 40 % to 50%. It may refer to all of siblings of a family. Are we the result of nature (our genetic background) or nurture (our environment)? Today, most researchers agree that child development involves a complex interaction of both nature and nurture, while some aspects of development may be strongly influenced by biology, environmental influences may also play a role. For example, the timing of when the onset of puberty occurs is largely the results of heredity, but environmental factors such as nutrition can also have an effect."
+          },
+          {
+            "label": "C",
+            "html": "The From the earliest moments of life, the interaction of heredity and the environment works to shape who children are and who they will become. While the genetic instructions a child inherits from his parents may set out a road map for development, the environment can impact how these directions are expressed, shaped or event silenced. The complex interaction of nature and nurture does not just occur at certain moments or at certain periods of time; it is persistent and lifelong."
+          },
+          {
+            "label": "D",
+            "html": "The shared environment (also called common environment) refers to environmental influences that have the effect of making siblings more similar to one another. Shared environmental influences can include shared family experiences, shared peer groups, and sharing the same school and community. In general, there has not been strong evidence for shared environmental effects on many behaviors, particularly those measured in adults. Possible reasons for this are discussed. Shared environmental effects are evident in children and adolescents, but these effects generally decrease across the life span. New developments in behavior genetic methods have made it possible to specify shared environments of importance and to tease apart familial and nonfamilial sources of shared environmental influence. It may also refer to all of siblings of a family, but the rate of influence is less than 10 per cent."
+          },
+          {
+            "label": "E",
+            "html": "The importance of non-shared environment lay hidden within quantitative genetic studies since they began nearly a century ago. Quantitative genetic methods, such as twin and adoption methods, were designed to tease apart nature and nurture in order to explain family resemblance. For nearly all complex phenotypes, it has emerged that the answer to the question of the origins of family resemblance is nature-things run in families primarily for genetic reasons. However, the best available evidence for the importance of environmental influence comes from this same quantitative genetic research because genetic influence never explains all of the variances for complex phenotypes, and the remaining variance must be ascribed to environmental influences. Non-shared environment, it may refer to the part of siblings of a family, the rate of influence to children is 40 % to 50%."
+          },
+          {
+            "label": "F",
+            "html": "Yet it took many decades for the full meaning of these findings to emerge. If genetics explains why siblings growing up in the same family are similar, but the environment is important, then it must be the case that the salient environmental effects do not make siblings similar. That is, they are not shared by children growing up in the same family-they must be ‘non-shared’. This implication about non-shared environmental import lay fallow in the field of quantitative genetics because the field’s attention was then firmly on the nature-nurture debate. ‘Nurture’ in the nature-nurture debate was implicitly taken to mean shared environment because, from Freud onwards, theories of socialization had assumed that children’s environments are doled out on a family-by-family basis. In contrast, the point of the non-shared environment is that environments are doled out on a child-by-child basis. Note that the phrase ‘non-shared environment’ is shorthand for a component of phenotypic variance-it refers to ‘effects’ rather than ‘events’, as discussed later. Research in recent years suggested that the impact from parents will be easy to be interrupted by the influence from the children of the same age. That also showed that variations of knowledge that children get from other culture are increasing. A number of interests between, whatever, fathers and mothers or parents and their children are conflicting."
+          },
+          {
+            "label": "G",
+            "html": "Because siblings living in the same home share some but not all of the potential genetic and environmental factors that influence their behaviors, teasing apart the potential influences of genetic and non-genetic factors that differentiate siblings is very difficult. Turkheimer and Waldron (2000) have noted that non-shared environmental influences——which include all of the random measurement error——may not be systematic, but instead may operate idiosyncratically and in ways that cannot be ascertained. Thus, the question is whether or not quasi-experimental behavioral genetic designs can be used to actually identify systematic non-shared environmental mechanisms cross-sectionally and longitudinally. This is the impetus for the current study."
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 28-32",
+          "type": "table-completion",
+          "instructionHtml": "Complete the table now. Choose NO MORE THAN THREE WORDS from the reading passage for each answer.",
+          "questions": [
+            {
+              "id": "q28",
+              "answer": "Genetic",
+              "before": "……………. background from parents and family including to all of siblings 40%-50% Shared Environment to",
+              "after": ""
+            },
+            {
+              "id": "q29",
+              "answer": "All of siblings",
+              "before": "……………… Less than",
+              "after": ""
+            },
+            {
+              "id": "q30",
+              "answer": "10%",
+              "before": "……………",
+              "after": ""
+            },
+            {
+              "id": "q31",
+              "answer": "Non-shared environment",
+              "before": "………………. to part of siblings",
+              "after": ""
+            },
+            {
+              "id": "q32",
+              "answer": "40%",
+              "before": "……. – 50%",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong>Questions 28 – 32</strong><br/>Complete the table now. Choose <strong>NO MORE THAN THREE WORDS</strong> from the reading passage for each answer.</p><table><tbody><tr><td width=\"198\"><strong>Type of Impact to Children</strong></td><td width=\"198\"><strong>Range of Reference to Siblings</strong></td><td width=\"198\"><strong>Rate of Influence</strong></td></tr><tr><td width=\"198\">(28)……………. background from parents and family</td><td width=\"198\">including to all of siblings</td><td width=\"198\">40%-50%</td></tr><tr><td width=\"198\">Shared Environment</td><td width=\"198\">to (29)………………</td><td width=\"198\">Less than (30)……………</td></tr><tr><td width=\"198\">(31)……………….</td><td width=\"198\">to part of siblings</td><td width=\"198\">(32)……. – 50%</td></tr></tbody></table>",
+          "wordLimit": 3,
+          "table": {
+            "rows": [
+              [
+                "……………. background from parents and family including to all of siblings 40%-50% Shared Environment to",
+                {
+                  "questionId": "q28"
+                },
+                ""
+              ],
+              [
+                "……………… Less than",
+                {
+                  "questionId": "q29"
+                },
+                ""
+              ],
+              [
+                "……………",
+                {
+                  "questionId": "q30"
+                },
+                ""
+              ],
+              [
+                "………………. to part of siblings",
+                {
+                  "questionId": "q31"
+                },
+                ""
+              ],
+              [
+                "……. – 50%",
+                {
+                  "questionId": "q32"
+                },
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "title": "Questions 33-35",
+          "type": "sentence-completion",
+          "instructionHtml": "Complete the following summary of the paragraphs of reading passage. Using NO MORE THAN THREE WORDS from the Reading Passage for each answer.",
+          "questions": [
+            {
+              "id": "q33",
+              "answer": "Interrupted",
+              "before": "……………… by the peer’s pressure. It was also indicated that",
+              "after": ""
+            },
+            {
+              "id": "q34",
+              "answer": "Variations",
+              "before": "………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing",
+              "after": ""
+            },
+            {
+              "id": "q35",
+              "answer": "Interests",
+              "before": "………………. between parents and children or even between parents themselves",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong>Questions 33-35</strong><br/>Complete the following summary of the paragraphs of reading passage. Using <strong>NO MORE THAN THREE WORDS</strong> from the Reading Passage for each answer.</p><p>Research in recent years illuminated that the impact from parents will frequently be (33)……………… by the peer’s pressure. It was also indicated that (34)………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing (35)………………. between parents and children or even between parents themselves.</p>",
+          "wordLimit": 3
+        },
+        {
+          "title": "Questions 36-39",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write",
+          "questions": [
+            {
+              "id": "q36",
+              "answer": "Not given",
+              "textHtml": "The more children there are in a family, the more impacts of environment it is"
+            },
+            {
+              "id": "q37",
+              "answer": "Yes",
+              "textHtml": "Methods based on twin studies still meet unexpected differences that cannot be ascribed to be a purely genetic explanation"
+            },
+            {
+              "id": "q38",
+              "answer": "Not given",
+              "textHtml": "Children prefer to speak the language from the children of the same age to the language spoken by their parents"
+            },
+            {
+              "id": "q39",
+              "answer": "No",
+              "textHtml": "The Study of non-shared environment influence can be a generally agreed idea among researchers in the field"
+            }
+          ],
+          "legendHtml": "<p><strong>Question 36 – 39</strong><br/>Do the following statements agree with the claims of the writer in reading passage? In boxes 36-39 on your answer sheet, write</p><p><strong>YES</strong>                             if the statement agrees with the views of the writer<br/><strong>NO</strong>                               if the statement contradicts the views of the writer<br/><strong>NOT GIVEN</strong>            if it is impossible to say what the writer thinks about this</p><p>36. The more children there are in a family, the more impacts of environment it is.<br/>37. Methods based on twin studies still meet unexpected differences that cannot be ascribed to be a purely genetic explanation.<br/>38. Children prefer to speak the language from the children of the same age to the language spoken by their parents.<br/>39. The Study of non-shared environment influence can be a generally agreed idea among researchers in the field.</p>"
+        },
+        {
+          "title": "Question 40",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter, A, B, C, or D.",
+          "questions": [
+            {
+              "id": "q40",
+              "answer": "B",
+              "textHtml": "According to this passage, which comment is TURE about the current Study of non-shared environment influence to children?",
+              "options": [
+                "a little biased in nature",
+                "not sufficiently proved",
+                "very systematic",
+                "can be workable"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong>Question 40</strong><br/>Choose the correct letter, A, B, C, or D.</p><p>40. According to this passage, which comment is TURE about the current Study of non-shared environment influence to children?<br/><strong>A</strong> a little biased in nature<br/><strong>B</strong> not sufficiently proved<br/><strong>C</strong> very systematic<br/><strong>D</strong> can be workable</p><p><br/><ins data-full-width-responsive=\"true\"></ins></p>"
+        }
+      ]
+    }
+  ]
+};
+
+export default test;

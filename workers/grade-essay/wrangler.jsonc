@@ -1,18 +1,28 @@
 // Cloudflare Worker config for the IELTS essay grader.
 // Deploy:  npx wrangler deploy   (from this directory)
-// Secret:  npx wrangler secret put GEMINI_API_KEY
+// Secrets: npx wrangler secret put OPENAI_API_KEY
+//          npx wrangler secret put GEMINI_API_KEY   (rollback provider)
 {
   "name": "ielts-grade-essay",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
-    // Free-tier Flash model. Swap via `wrangler deploy --var GEMINI_MODEL:...`
-    // or edit here — e.g. a newer flash model once you confirm it's on the free tier.
+    // 'openai' (default) or 'gemini'. Flip to 'gemini' as a one-variable
+    // rollback if the OpenAI path misbehaves; GEMINI_API_KEY must be set too.
+    "GRADER_PROVIDER": "openai",
+    // Flagship model on purpose (2026-09-15 calibration): on twelve official
+    // examiner-marked essays gpt-5.6-terra sat a full band under from band 6
+    // upward; gpt-5.6-sol matched the examiner on nine of twelve and was within
+    // half a band on the rest. See docs/GRADING-OPENAI-RESULT.md.
+    "OPENAI_MODEL": "gpt-5.6-sol",
+    "OPENAI_REASONING_EFFORT": "medium",
+    // Free-tier Flash model, used only when GRADER_PROVIDER is 'gemini'.
+    // Swap via `wrangler deploy --var GEMINI_MODEL:...` or edit here.
     "GEMINI_MODEL": "gemini-2.5-flash",
     // Comma-separated origins allowed to call this Worker from a browser.
     "ALLOWED_ORIGINS": "https://lxson777-tech.github.io,http://localhost:4321",
     // Independent grading runs whose median becomes the result (1-5). Cuts the
-    // ±1-band single-run variance at the 7/8 boundary. Set "1" to disable.
+    // +/-1-band single-run variance at the 7/8 boundary. Set "1" to disable.
     "GRADING_SAMPLES": "3"
   }
 }

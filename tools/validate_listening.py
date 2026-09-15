@@ -13,6 +13,13 @@ from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Validate whatever listening-full-NNN.ts files exist, not a hardcoded count,
+# so a future import range extends coverage automatically.
+TEST_NUMBERS = sorted(
+    int(path.stem.rsplit("-", 1)[-1])
+    for path in (ROOT / "src" / "data" / "tests").glob("listening-full-*.ts")
+)
+
 PAPER_BLANK_TYPES = {
     "sentence-completion",
     "table-completion",
@@ -34,7 +41,7 @@ def main() -> None:
     total_questions = 0
     forbidden = re.compile(r"<(?:script|form|input|button|iframe|audio)\b|Show Answers|bg-showmore", re.I)
 
-    for number in range(1, 21):
+    for number in TEST_NUMBERS:
         test = load_test(number)
         questions = [q for part in test["parts"] for group in part["groups"] for q in group["questions"]]
         total_questions += len(questions)
@@ -213,8 +220,8 @@ def main() -> None:
 
     if failures:
         raise SystemExit("\n".join(failures))
-    audio_note = "20 present MP3s" if "--skip-audio-decode" in sys.argv else "20 decodable MP3s"
-    print(f"Validated 20 tests, {total_questions} sequential questions, {audio_note}, semantic layouts, and local image references.")
+    audio_note = f"{len(TEST_NUMBERS)} present MP3s" if "--skip-audio-decode" in sys.argv else f"{len(TEST_NUMBERS)} decodable MP3s"
+    print(f"Validated {len(TEST_NUMBERS)} tests, {total_questions} sequential questions, {audio_note}, semantic layouts, and local image references.")
 
 
 if __name__ == "__main__":

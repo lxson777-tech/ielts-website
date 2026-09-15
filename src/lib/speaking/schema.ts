@@ -5,6 +5,8 @@
    text-based "essay" here — an attempt is one or more recorded audio clips,
    each tied to the exact question that was asked. */
 
+import type { NextBandAdvice } from '../grading/next-band';
+
 export type SpeakingCriterionKey =
   | 'fluencyCoherence'
   | 'lexicalResource'
@@ -117,11 +119,15 @@ export interface SpeakingCriterionScore {
   band: number;
   comment: string;
   tip?: string;
+  /** Structured "how to reach the next band" advice from the AI examiner.
+      Optional: older results and the offline stub grader don't have it. */
+  nextBand?: NextBandAdvice;
 }
 
 /** A notable moment the model picked out from the audio (its own quote of
-    what was said + a remark) — replaces Writing's `corrections`, since
-    there's no transcript to slice exact error-spans from. */
+    what was said + a remark). Mirrors Writing's Moment type (see
+    src/lib/writing/schema.ts); kept as a separate interface since the two
+    graders' inputs differ (audio vs. text). */
 export interface SpokenMoment {
   quote: string;
   note: string;
@@ -134,13 +140,15 @@ export interface SpeakingGradeResult {
   moments: SpokenMoment[];
   strengths: string[];
   improvements: string[];
+  /** 3 to 5 numbered steps, in priority order. Optional, see SpeakingCriterionScore.nextBand. */
+  actionPlan?: string[];
   /** Which grader actually produced this result (drives the AI/sample badge). */
   grader: { name: string; live: boolean };
 }
 
 export type SpeakingAssessment = Pick<
   SpeakingGradeResult,
-  'criteria' | 'moments' | 'strengths' | 'improvements'
+  'criteria' | 'moments' | 'strengths' | 'improvements' | 'actionPlan'
 >;
 
 /** The swappable model boundary. */

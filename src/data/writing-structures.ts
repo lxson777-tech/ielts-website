@@ -30,8 +30,7 @@ type VariantKey =
   | 'two-part'
   | 'chart'
   | 'process'
-  | 'map'
-  | 'letter';
+  | 'map';
 
 /* Shared Task 1 report skeleton (writing-method.html) — chart, process and
    map lessons all defer structure to this and only add "what to look for". */
@@ -238,30 +237,6 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
       'Ignoring features that did not change',
     ],
   },
-  letter: {
-    label: 'Letter (General Training)',
-    paragraphs: [
-      { name: 'Greeting', description: 'Matched to the tone. "Dear Sir or Madam" (formal), "Dear Mr Chen" (semi-formal), "Dear Sam" (informal).' },
-      { name: 'Opening', description: 'Why you are writing. "I am writing to…" (formal) or "Just a quick note to…" (informal).' },
-      { name: 'One paragraph per bullet', description: 'Three bullets, three paragraphs. Develop each with a detail or example; don\'t just restate the bullet.' },
-      { name: 'Closing line', description: 'The action or feeling you want to leave. "I look forward to your reply." / "Can\'t wait to see you!"' },
-      { name: 'Sign-off', description: 'Matched to the greeting. "Yours faithfully" only pairs with "Dear Sir or Madam"; "Yours sincerely" with a named greeting.' },
-    ],
-    language: [
-      { job: 'Requesting', phrases: 'I would be grateful if you could… / Could you do me a favour and…?' },
-      { job: 'Complaining', phrases: 'I wish to express my dissatisfaction with… / I\'m really not happy about…' },
-      { job: 'Apologising', phrases: 'Please accept my sincere apologies for… / I\'m so sorry about…' },
-      { job: 'Suggesting', phrases: 'May I suggest that… / How about…?' },
-      { job: 'Inviting', phrases: 'I would be delighted if you could join me for… / Fancy coming to…?' },
-      { job: 'Thanking', phrases: 'I greatly appreciate your assistance with… / Thanks a million for…' },
-    ],
-    mistakes: [
-      'Missing or rushing one of the three bullet points',
-      'Mixed tone. Formal opening, informal body',
-      '"Yours faithfully" after "Dear Mr Chen" (it pairs with "Dear Sir or Madam")',
-      'No sign-off, or signing a full real name on an informal letter',
-    ],
-  },
 };
 
 export const PROMPT_VARIANT_STRUCTURE: Record<string, VariantKey> = {
@@ -277,5 +252,4 @@ export const PROMPT_VARIANT_STRUCTURE: Record<string, VariantKey> = {
   combination: 'chart',
   process: 'process',
   map: 'map',
-  letter: 'letter',
 };

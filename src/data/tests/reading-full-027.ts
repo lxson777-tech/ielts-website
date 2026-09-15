@@ -1,0 +1,490 @@
+import type { PracticeTest } from '../../lib/tests/schema';
+
+const test: PracticeTest = {
+  "id": "reading-full-296",
+  "skill": "reading",
+  "title": "Academic Reading Test 296",
+  "description": "A complete three-passage Academic Reading practice test with 40 questions.",
+  "durationMinutes": 60,
+  "source": {
+    "name": "IELTS MASTER / PracticePTEOnline",
+    "url": "https://practicepteonline.com/ielts-reading-test-296/",
+    "permission": "Reused with publisher permission confirmed by Alex on 2026-09-11."
+  },
+  "parts": [
+    {
+      "label": "Passage 1",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 1",
+        "title": "Survivor from the sky",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>In a remarkable documentary, Wings of Hope, German director Werner Herzog re-counts the true story of an eighteen-year-old girl, the sole survivor of a plane crash in the Amazon jungle in 1971. Twenty-nine years later, Herzog returns to the jungle with Juliane Koepke, now a 46-year-old biologist, and she tells her amazing story on film.</span>"
+          },
+          {
+            "html": "<span>Juliane had just graduated from high school in Lima, Peru and, with her mother, was flying out to spend Christmas at her father’s research station in the jungle. A half hour into the flight they encountered a horrific storm. In the midst of wild turbulence, the plane was struck by lightning and fell into a nosedive. Passengers screamed as baggage flew around the compartment. Then the plane broke into pieces and suddenly Juliane found herself outside free-falling 30,000 feet. ‘I was suspended in mid-air, still in my scat. It wasn’t so much that I had left the plane but that the plane had left me. It simply wasn’t there any more. I was all alone with my row of seats,’ says Juliane. ‘I sailed on through the air, then I tumbled into a fall. The seatbelt squeezed my stomach and I couldn’t breathe any more.’ Before she lost consciousness, Juliane saw the dense jungle below, ‘a deep green, like broccoli’, with no clearings for hundreds of miles.</span>"
+          },
+          {
+            "html": "<span>Somehow, miraculously, Juliane survived that fall from the sky. In the film, she speculates on a number of factors which may have combined to save her. First, the storm had produced a strong updraft from the thunder clouds. Secondly, being strapped into a row of seats, she was aware of falling in a spiralling movement, like a maple seed pod. Then, hitting the canopy of trees, she tumbled through a maze of vines which slowed her landing in deep mud.</span>"
+          },
+          {
+            "html": "<span>But surviving the fall, though miraculous in itself, was just the beginning. When Juliane awoke hours later, wet and covered with mud, she was still strapped to her seat. Staggering to her feet, she assessed her injuries: a fractured bone in the neck, concussion and deep cuts in her leg and back. She was also in shock, lost and totally alone in the Amazon jungle.</span>"
+          },
+          {
+            "html": "<span>No doubt it was her familiarity with the wilderness that enabled her to cope. Her parents were biologists and Juliane had grown up in the jungle. She realised her only hope was to follow a little stream of water nearby, trusting that it would eventually lead to a larger river and rescue. With no provisions, dressed in the miniskirt she had worn on the plane and wearing just one shoe, she set off through the jungle. She passed broken fragments from the plane – a wheel, an engine. ‘Initially, I saw planes circling above me, but after a few days I realised the search had been called off,’ she said.</span>"
+          },
+          {
+            "html": "<span>Surprisingly she felt no hunger but as the days passed her health was deteriorating rapidly. The gash in her shoulder, where flies had laid their eggs was now crawling with maggots. ‘I knew I’d perish in the jungle so I stayed in the water.’ Walking in the stream, however, presented one risk more serious than any others. Before each step she had to poke ahead in the sand with a stick, to avoid treading on poisonous sting rays, lying hidden on the bottom.</span>"
+          },
+          {
+            "html": "<span>As the stream grew into a river, swimming was the only option. However, here in deeper water, there were new threats. Crocodiles basking on the shores slipped silently into the water as she passed. Juliane trusted that they feared humans and were entering the water to hide. She swam on. On the tenth day, starving and barely conscious, she spotted a hut and a canoe. They belonged to three woodcutters working nearby. Rescue was at hand.</span>"
+          },
+          {
+            "html": "<span>For this 46-year-old woman, re-living such a traumatic experience on film must have been a great challenge. But she shows little emotion. Flying back into the jungle, she sits in the same seat (19F) as on that fateful day. She is dispassionate, unemotional in describing the flight. On the ground, when they finally locate the crash site, in dense jungle, Juliane is scientific in her detachment, looking through the debris, now buried under dense vegetation. She examines a girl’s purse, the skeleton of a suitcase. Walking along the stream, she spots the engine which she remembers passing on the third day. Her arms and legs are covered with mosquitoes, but she seems to ignore all discomfort. Then, back in the town, standing in front of a monument erected in memory of the victims of the crash, entitled Alas de Esperanza (Wings of Hope), Juliane comments simply, T emerged, as the sole embodiment of hope from this disaster.</span>"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 1-3",
+          "type": "sentence-completion",
+          "instructionHtml": "Answer the following questions using NO MORE THAN ONE WORDS AND/OR A NUMBER from the passage.",
+          "questions": [
+            {
+              "id": "q1",
+              "answer": "18 (years old)",
+              "before": "How old was Juliane at the time of the crash?",
+              "after": ""
+            },
+            {
+              "id": "q2",
+              "answer": "Biologist",
+              "before": "What is her occupation now?",
+              "after": ""
+            },
+            {
+              "id": "q3",
+              "answer": [
+                "Storm",
+                "lightning"
+              ],
+              "before": "What was the cause of the plane crash?",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 1-3</span></strong><br/>\n<span>Answer the following questions using <strong>NO MORE THAN ONE WORDS AND/OR A NUMBER</strong> from the passage.</span></p><p><span>1. How old was Juliane at the time of the crash?</span><br/>\n<span>2. What is her occupation now?</span><br/>\n<span>3. What was the cause of the plane crash?</span></p>",
+          "wordLimit": 1
+        },
+        {
+          "title": "Questions 4-10",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter A-D.",
+          "questions": [
+            {
+              "id": "q4",
+              "answer": "A",
+              "textHtml": "What happened to the plane?",
+              "options": [
+                "It broke apart in the air",
+                "It hit trees and exploded",
+                "It crashed into a mountainside",
+                "It hit the ground and burst into flames"
+              ]
+            },
+            {
+              "id": "q5",
+              "answer": "D",
+              "textHtml": "Which of the following did NOT help to slow her fall?",
+              "options": [
+                "an updraft caused by storm clouds",
+                "hitting vines",
+                "the section of seats to which she was attached",
+                "a parachute"
+              ]
+            },
+            {
+              "id": "q6",
+              "answer": "C",
+              "textHtml": "Which of the following injuries did she sustain?",
+              "options": [
+                "a broken foot",
+                "a broken arm",
+                "concussion",
+                "cuts on her head"
+              ]
+            },
+            {
+              "id": "q7",
+              "answer": "A",
+              "textHtml": "What, helped her to survive?",
+              "options": [
+                "Knowledge of the jungle",
+                "a map showing the location of the river",
+                "appropriate clothing and shoes",
+                "food supplies from the plane"
+              ]
+            },
+            {
+              "id": "q8",
+              "answer": "B",
+              "textHtml": "What was the biggest threat to her survival?",
+              "options": [
+                "infected wounds",
+                "sting rays",
+                "starvation",
+                "crocodiles"
+              ]
+            },
+            {
+              "id": "q9",
+              "answer": "C",
+              "textHtml": "How long was she lost in the jungle?",
+              "options": [
+                "3 days",
+                "5 days",
+                "10 days",
+                "15 days"
+              ]
+            },
+            {
+              "id": "q10",
+              "answer": "D",
+              "textHtml": "How was she finally rescued? A",
+              "options": [
+                "search party found her in the jungle",
+                "Native hunters found her",
+                "She signaled to a plane from the river",
+                "She reached a campsite along the river"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 4-10</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>4. What happened to the plane?</span><br/>\n<span><strong>A</strong> It broke apart in the air</span><br/>\n<span><strong>B</strong> It hit trees and exploded.</span><br/>\n<span><strong>C</strong> It crashed into a mountainside.</span><br/>\n<span><strong>D</strong> It hit the ground and burst into flames.</span></p><p><span>5. Which of the following did NOT help to slow her fall?</span><br/>\n<span><strong>A</strong> an updraft caused by storm clouds</span><br/>\n<span><strong>B</strong> hitting vines</span><br/>\n<span><strong>C</strong> the section of seats to which she was attached</span><br/>\n<span><strong>D</strong> a parachute</span></p><p><span>6. Which of the following injuries did she sustain?</span><br/>\n<span><strong>A</strong> a broken foot</span><br/>\n<span><strong>B</strong> a broken arm</span><br/>\n<span><strong>C</strong> concussion</span><br/>\n<span><strong>D</strong> cuts on her head</span></p><p><span>7. What, helped her to survive?</span><br/>\n<span><strong>A</strong> Knowledge of the jungle</span><br/>\n<span><strong>B</strong> a map showing the location of the river</span><br/>\n<span><strong>C</strong> appropriate clothing and shoes</span><br/>\n<span><strong>D</strong> food supplies from the plane</span></p><p><span>8. What was the biggest threat to her survival?</span><br/>\n<span><strong>A</strong> infected wounds</span><br/>\n<span><strong>B</strong> sting rays</span><br/>\n<span><strong>C</strong> starvation</span><br/>\n<span><strong>D</strong> crocodiles</span></p><p><span>9. How long was she lost in the jungle?</span><br/>\n<span><strong>A</strong> 3 days</span><br/>\n<span><strong>B</strong> 5 days</span><br/>\n<span><strong>C</strong> 10 days</span><br/>\n<span><strong>D</strong> 15 days</span></p><p><span>10. How was she finally rescued?</span><br/>\n<span><strong>A</strong> A search party found her in the jungle.</span><br/>\n<span><strong>B</strong> Native hunters found her.</span><br/>\n<span><strong>C</strong> She signaled to a plane from the river.</span><br/>\n<span><strong>D</strong> She reached a campsite along the river.</span></p>"
+        },
+        {
+          "title": "Questions 11-14",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements agree with the views of the writer in this passage? Write",
+          "questions": [
+            {
+              "id": "q11",
+              "answer": "No",
+              "textHtml": "Other survivors of the crash were found in the jungle"
+            },
+            {
+              "id": "q12",
+              "answer": "No",
+              "textHtml": "Juliane was upset when she re-visited the crash site"
+            },
+            {
+              "id": "q13",
+              "answer": "Yes",
+              "textHtml": "Wings of Hope is the name given to a memorial statue"
+            },
+            {
+              "id": "q14",
+              "answer": "Not given",
+              "textHtml": "Juliane suffered nightmares for many years as a result of her experience"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 11-14</span></strong><br/>\n<span>Do the following statements agree with the views of the writer in this passage? Write</span></p><p><span><strong>YES</strong>                            if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                              if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>          if it is impossible to say what the writer thinks about this</span></p><p><span>11. Other survivors of the crash were found in the jungle.</span><br/>\n<span>12. Juliane was upset when she re-visited the crash site.</span><br/>\n<span>13. Wings of Hope is the name given to a memorial statue.</span><br/>\n<span>14. Juliane suffered nightmares for many years as a result of her experience.</span></p><p><br/>\n<br/>\n<br/> </p>"
+        }
+      ]
+    },
+    {
+      "label": "Passage 2",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 2",
+        "title": "The race to make spider silk",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>The strength, toughness, and elasticity of silk continue to fascinate scientists, who wonder what gives this natural material its unusual qualities. Finer than human hair, lighter than cotton, and ounce for ounce stronger than steel, silk is of special interest to materials researchers. They are trying to duplicate its properties and synthesise it for large-scale production. Silk holds the promise of wear-resistant shoes and clothes; stronger ropes, nets, seatbelts and parachutes; rustfree panels and bumpers for automobiles; improved sutures and bandages; artificial tendons and ligaments; supports for weakened blood vessels as well as bulletproof vests.</span>"
+          },
+          {
+            "html": "<span>Many insects secrete silks of varying quality. Best known is the moth bombyx mori, whose caterpillar is commonly known as the silkworm. It spins its cocoon from a single thread between 300 and 900 metres long and has been used for centuries to make fine garments. But the focus of scientific attention today is on spider silk: tougher, stretchier, and more waterproof than silkworm strands. Spiders make as many as seven different types of silk, but one spider and two types of silk are at the centre of intense interest. The spider is the golden orb-weaving spider, nephila clavipes. Its two silks under investigation go by the evocative names ‘dragline’ and ‘capture’.</span>"
+          },
+          {
+            "html": "<span>Dragline is the silk which forms the frame for the wheel-shaped webs and enables the dangling spider to drop down and grab its prey. This silk exhibits a combination of strength and toughness unmatched by high-performance synthetic fibre.</span>"
+          },
+          {
+            "html": "<span>Capture silk is the resilient substance at the centre of the web. To catch a speeding insect, it may stretch to almost three times its original length. Insects get entangled in the sticky web because the stretchiness of capture silk lets the web move back and forth after the insect hits it. If the web were stiff, the insect might just bounce off. Whereas dragline is stronger, capture silk is more flexible, five times more flexible in fact.</span>"
+          },
+          {
+            "html": "<span>Because the orb weaver’s survival depends on its silk, some 400 million years of evolution have fine-tuned a remarkably tough and versatile material. Now, research groups all over the world are competing to spin the first artificial spider silk, a job that requires a three-step approach: to determine the fibre’s molecular architecture, to understand the genes that yield silk proteins, and then to learn how to spin the raw material into threads.</span>"
+          },
+          {
+            "html": "<span>The first two steps are well underway. The molecular structure for both dragline and capture silk is known and now researchers have cloned several genes for the silks and unravelled their protein structure.</span>"
+          },
+          {
+            "html": "<span>The next step is to find hosts for the artificial genes. Plants and fungi, as well as bacteria, are being considered. If a hardy plant could express a dragline silk gene, silk proteins could eventually be harvested in large quantities, processed into a liquid, polymer, and spun in factories, A different experimental approach is to insert the web gene into goats in order to collect the protein from the goats’ milk. Goats are being used instead of the simpler and much cheaper bacteria, because the secret of the protein’s strength lies in how the molecules cross-link with one another. When bacteria is used to make artificial web, the protein folds in a way that prevents it. from cross-linking properly, resulting in hard while lumps. The spider makes protein in a manner similar to the way mammals make milk, so the researchers hope that the protein made in the goats’ mammary glands will be able to cross-link properly. Once the protein is extracted from the goats’ milk, the next step is to find a way to spin it.</span>"
+          },
+          {
+            "html": "<span>Spiders make their silk in environmentally friendly ways. They process proteins from water-based solutions which, from a manufacturing point of view, is very attractive. The process of making synthetic fibres like nylon, on the other hand, requires petroleum products or organic solvents and results in pollution. So bio-technologists are motivated by both the practical and economic potential of generating artificial spider silk. Globally, as much as 60 per cent of the threads used to weave clothing come from natural fibre, including cotton, wool, and silk. The aim is to offer substitutes for natural fibres that are free of the problems of poor wash-wear performance: stretching, wrinkling and shrinkage. They are seeking a better-than-natural alternative fibre for which there is a major market. Bio-inspired materials are providing a new frontier for the fibre business.</span>"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 15-19",
+          "type": "categorisation",
+          "instructionHtml": "Classify the following as relating to:",
+          "questions": [
+            {
+              "id": "q15",
+              "answer": "B",
+              "textHtml": "forms the framework of a web"
+            },
+            {
+              "id": "q16",
+              "answer": "C",
+              "textHtml": "most elastic silk"
+            },
+            {
+              "id": "q17",
+              "answer": "B",
+              "textHtml": "allows predator to drop and catch prey"
+            },
+            {
+              "id": "q18",
+              "answer": "A",
+              "textHtml": "single strand can be up to 900 metres long"
+            },
+            {
+              "id": "q19",
+              "answer": "B",
+              "textHtml": "strongest silk"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 15-19</span></strong><br/>\n<span>Classify the following as relating to:</span></p><p><span><strong>A</strong> the silk of bombyx mori</span><br/>\n<span><strong>B</strong> dragline silk of nephila clavipes</span><br/>\n<span><strong>C</strong> capture silk of nephila clavipes</span></p><p><span>15. forms the framework of a web</span><br/>\n<span>16. most elastic silk</span><br/>\n<span>17. allows predator to drop and catch prey</span><br/>\n<span>18. single strand can be up to 900 metres long</span><br/>\n<span>19. strongest silk</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "title": "Questions 20-24",
+          "type": "yes-no-notgiven",
+          "instructionHtml": "Do the following statements reflect the claims of the writer in the passage? Write",
+          "questions": [
+            {
+              "id": "q20",
+              "answer": "Not given",
+              "textHtml": "All spiders secrete silk"
+            },
+            {
+              "id": "q21",
+              "answer": "No",
+              "textHtml": "Artificial genes for spider silk have been produced"
+            },
+            {
+              "id": "q22",
+              "answer": "No",
+              "textHtml": "Spider silk protein occurs naturally in goats’ milk"
+            },
+            {
+              "id": "q23",
+              "answer": "Not given",
+              "textHtml": "China is leading research efforts in the area of spider silk"
+            },
+            {
+              "id": "q24",
+              "answer": "No",
+              "textHtml": "Spider silk is now being produced commercially"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 20-24</span></strong><br/>\n<span>Do the following statements reflect the claims of the writer in the passage? Write</span></p><p><span><strong>YES</strong>                              if the statement agrees with the views of the writer</span><br/>\n<span><strong>NO</strong>                                if the statement contradicts the views of the writer</span><br/>\n<span><strong>NOT GIVEN</strong>             if it is impossible to say what the writer thinks about this</span></p><p><span>20. All spiders secrete silk.</span><br/>\n<span>21. Artificial genes for spider silk have been produced.</span><br/>\n<span>22. Spider silk protein occurs naturally in goats’ milk.</span><br/>\n<span>23. China is leading research efforts in the area of spider silk.</span><br/>\n<span>24. Spider silk is now being produced commercially.</span></p>"
+        },
+        {
+          "title": "Questions 25-27",
+          "type": "sentence-completion",
+          "instructionHtml": "Using ONE WORD ONLY from the passage for each answer, complete the following.",
+          "questions": [
+            {
+              "id": "q25",
+              "answer": "Pollution",
+              "before": "…………… • 3 disadvantages of natural fibres: losing elasticity, reducing in size, and",
+              "after": ""
+            },
+            {
+              "id": "q26",
+              "answer": "Wrinkling",
+              "before": "…………. • Proportion of clothing made from natural fibre:",
+              "after": ""
+            },
+            {
+              "id": "q27",
+              "answer": "60",
+              "before": "………………. percent",
+              "after": ""
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 25-27</span></strong><br/>\n<span>Using <strong>ONE WORD ONLY</strong> from the passage for each answer, complete the following.</span></p><p><strong><span>Comparison of Synthetic and Natural Fibres</span></strong></p><p><span>• Main problem in the production of synthetic fibres: (25) ……………</span><br/>\n<span>• 3 disadvantages of natural fibres: losing elasticity, reducing in size, and (26) ………….</span><br/>\n<span>• Proportion of clothing made from natural fibre: (27) ………………. percent</span></p><p><br/>\n<br/>\n<br/> </p>",
+          "wordLimit": 1
+        }
+      ]
+    },
+    {
+      "label": "Passage 3",
+      "stimulus": {
+        "kind": "passage",
+        "label": "Reading Passage 3",
+        "title": "Map wars",
+        "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
+        "paragraphs": [
+          {
+            "html": "<span>A map of the world expresses a point of view. A correct model of the earth is a sphere – or an ellipsoid to be precise. Photographs of the earth from space provide comforting reassurance on that point. If you wish to know the relative positions of the continents and the oceans you should go out and buy yourself a globe and spin it around.</span>"
+          },
+          {
+            "html": "<span>But a globe cannot be pinned to a wall or printed in a book. For that you need a two-dimensional representation. This is where the problems start since you cannot project three-dimensional information onto a flat plane without making certain assumptions. The arguments between cartographers mostly concern what those assumptions should be.</span>"
+          },
+          {
+            "html": "<span>The simplest two-dimensional representation is a ‘cylindrical’ projection – what you get by wrapping a sheet of paper around a globe and simply transferring the information across. This means it indicates true north and south. So, Newfoundland is directly north of Venezuela and it appears that way on the map. East and west similarly are also indicated correctly. Such a map demonstrates what is called ‘fidelity of axis’.</span>"
+          },
+          {
+            "html": "<span>One of the longest-lived cylindrical projections was based on the needs of sixteenth century navigators. Gerhard Kremer, a Flemish mathematician, produced his view of the world in 1569. ‘Kremer’ translates to ‘merchant’ in English and ‘mercator’ in Latin. And the Mercator projection survives to this day in many books and maps.</span>"
+          },
+          {
+            "html": "<span>Mercator’s projection of the world also shows intermediate compass directions like north-west more or less accurately. So, it is possible to conclude from his map that Brazil is south-west of Liberia and if you plot a course in that direction you will eventually arrive at your destination. No wonder it was appreciated by the early explorers! If it can be used in this way a map is said to have ‘fidelity of angle’.</span>"
+          },
+          {
+            "html": "<span>But fidelity of angle is only achieved at a cost. To make it work, the further away you get from the equator, the further apart you have to move the horizontal lines of latitude. As these distances increase so do the sizes of the countries underneath them. So, by the time you get to the North or South Poles the lines would be drawn infinitely far apart and the Arctic and Antarctic regions can scarcely be represented at all since they would be infinitely large. More importantly the relative sizes of intermediate areas are completely distorted; South America seems smaller than Europe whereas in fact it is twice the size. These changes in scale distort both the size and shape of countries. Given such defects, it is surprising that the Mercator projection has survived so long, especially as dozens of other more satisfactory projections have appeared since. One of the best known of these is the Aitoff projection of 1889, which attempted to represent country sizes and shapes more correctly. But to do so required a compromise – the lines of latitude and longitude had to be ‘bent’. Fidelity of axis had thus been lost and you could no longer judge north, south, east and west so easily. Most of us, however, did not notice that these projections were different from Mercator. We assumed that all maps were simply factual statements.</span>"
+          },
+          {
+            "html": "<span>Dr. Arno Peters, a German historian, was irritated by the maps he saw widely published, particularly by the survival of Mercator which he argued, gave a euro-centric view of the world. It shrank the developing countries since most of these are around the equator, and it expanded the richer countries since they lay further north. Even the equator itself is shown two thirds of the way down on the traditional Mercator map. Dr. Peters insisted that his map, which first appeared in 1985, has equal-area projection so that no country is given prominence over another, plus fidelity of axis to avoid the disorientating effect of bent lines of latitude and longitude.</span>"
+          },
+          {
+            "html": "<span>Then there is the question of country shape. If you were to take a photo of a globe in its normal position you would find the countries around the equator like Zaire or Ecuador came out of it pretty well. They would be shown relatively large and with something close to their correct shape. But further north or south there are considerable distortions: Australia tails away alarmingly. Dr. Peters decided that the minimum distortions should occur not at the equator but at the 45 degree lines of latitude, as these are much more populated areas. However, this controversial Peters map does radically change the shape of both Africa and South America; and although all projections distort to some extent, it is clear that Africa appears exceptionally long and thin on the Peters map.</span>"
+          },
+          {
+            "html": "<span>But the oddity of the Peters projection is at least partly responsible for its success, as there has been widespread discussion on the misrepresentation of country sizes in previous maps. The issues which the Peters map raises are relatively simple. If you decide you want an equal area map with fidelity of axis you will always get something resembling the Peters projection. If you decide that shape is more significant you will get something else.</span>"
+          },
+          {
+            "html": "<span>The real value of the Peters projection is that it has made the world think about something that before was never taken seriously: that maps of the world represent a point of view just as do press articles or TV programmes or photographs. But it isn’t recommended that you navigate a ‘747’ round the world with the Peters projection or with any other single global projection they would all lead you astray!</span>"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "title": "Questions 28-31",
+          "type": "matching-features",
+          "instructionHtml": "Complete the summary. Choose your answers from the box below the summary.",
+          "questions": [
+            {
+              "id": "q28",
+              "answer": "Projection",
+              "textHtml": "…………………. involves a compromise. Thus, a cylindrical projection indicates true north and south, known as fidelity of"
+            },
+            {
+              "id": "q29",
+              "answer": "Axis",
+              "textHtml": "…………. but misrepresents the relative size of countries. To avoid this distortion, other cartographers rounded the lines of latitude and longitude. Dr. Peters felt that such maps presented a first-world"
+            },
+            {
+              "id": "q30",
+              "answer": "Perspective",
+              "textHtml": "……………… His map, with equal area projection, enables us to"
+            },
+            {
+              "id": "q31",
+              "answer": "Compare",
+              "textHtml": "…………… the size of one country with another"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 28-31</span></strong><br/>\n<span>Complete the summary. Choose your answers from the box below the summary.</span></p><p><strong><span>List of Words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Axis</span></td><td width=\"119\"><span>Estimate</span></td><td width=\"119\"><span>Perspective</span></td><td width=\"119\"><span>Map</span></td><td width=\"119\"><span>Direction</span></td></tr><tr><td width=\"119\"><span>Compare</span></td><td width=\"119\"><span>Projection</span></td><td width=\"119\"><span>Size</span></td><td width=\"119\"><span>Judge</span></td><td width=\"119\"><span>Accurately</span></td></tr><tr><td width=\"119\"><span>Angle</span></td><td width=\"119\"><span>Distances</span></td><td width=\"119\"><span>Models</span></td><td width=\"119\"><span>Change</span></td><td width=\"119\"></td></tr></tbody></table><p><span>For four centuries, map makers have been trying to convert three-dimensional information as accurately (example) as possible onto a two-dimensional plane. However, each method of (28) …………………. involves a compromise. Thus, a cylindrical projection indicates true north and south, known as fidelity of (29) …………. but misrepresents the relative size of countries.</span></p><p><span>To avoid this distortion, other cartographers rounded the lines of latitude and longitude. Dr. Peters felt that such maps presented a first-world (30) ……………… His map, with equal area projection, enables us to (31) …………… the size of one country with another.</span></p>",
+          "options": [
+            "A"
+          ]
+        },
+        {
+          "title": "Questions 32-36",
+          "type": "matching-features",
+          "instructionHtml": "Use the information in the text to match the map projections [M A P] with the characteristics listed below.",
+          "questions": [
+            {
+              "id": "q32",
+              "answer": "M",
+              "textHtml": "makes Europe seem larger than it is"
+            },
+            {
+              "id": "q33",
+              "answer": "M",
+              "textHtml": "maximum distortions at the poles"
+            },
+            {
+              "id": "q34",
+              "answer": "P",
+              "textHtml": "maintains greatest accuracy at 45 degrees latitude"
+            },
+            {
+              "id": "q35",
+              "answer": "M",
+              "textHtml": "most distorts the position of the equator"
+            },
+            {
+              "id": "q36",
+              "answer": "A",
+              "textHtml": "more accurately represents country shapes and sizes"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 32-36</span></strong><br/>\n<span>Use the information in the text to match the map projections [M A P] with the characteristics listed below.</span></p><p><span><strong>M</strong> Mercator projection</span><br/>\n<span><strong>A</strong> Aitoff projection</span><br/>\n<span><strong>P</strong> Peters projection</span></p><p><span>32. makes Europe seem larger than it is</span><br/>\n<span>33. maximum distortions at the poles</span><br/>\n<span>34. maintains greatest accuracy at 45 degrees latitude</span><br/>\n<span>35. most distorts the position of the equator</span><br/>\n<span>36. more accurately represents country shapes and sizes</span></p>",
+          "options": [
+            "A"
+          ]
+        },
+        {
+          "title": "Questions 37-39",
+          "type": "matching-features",
+          "instructionHtml": "Choose one drawing (A-D) to match each of the three projection types (37-39).",
+          "questions": [
+            {
+              "id": "q37",
+              "answer": "B",
+              "textHtml": "Mercator projection"
+            },
+            {
+              "id": "q38",
+              "answer": "C",
+              "textHtml": "Aitoff projection"
+            },
+            {
+              "id": "q39",
+              "answer": "A",
+              "textHtml": "Peters projection"
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 37-39</span></strong><br/>\n<span>Choose one drawing (A-D) to match each of the three projection types (37-39).</span></p><p><img alt=\"\" class=\"size-medium wp-image-11977 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 275px) 100vw, 275px\" decoding=\"async\" fetchpriority=\"high\" height=\"300\" src=\"/ielts-website/pics/reading/imported/test-296-1.webp\" width=\"275\"/> <img alt=\"\" class=\"size-medium wp-image-11978 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" height=\"262\" src=\"/ielts-website/pics/reading/imported/test-296-3.webp\" width=\"300\"/></p><p><span>37. Mercator projection</span><br/>\n<span>38. Aitoff projection</span><br/>\n<span>39. Peters projection</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "title": "Question 40",
+          "type": "multiple-choice",
+          "instructionHtml": "Choose the correct letter A-D.",
+          "questions": [
+            {
+              "id": "q40",
+              "answer": "C",
+              "textHtml": "The main point made by the writer of this article is that we need to",
+              "options": [
+                "understand maps",
+                "understand map-making",
+                "understand that maps are not objective",
+                "understand the importance of latitude and longitude"
+              ]
+            }
+          ],
+          "legendHtml": "<p><strong><span>Questions 40</span></strong><br/>\n<span>Choose the correct letter A-D.</span></p><p><span>40. The main point made by the writer of this article is that we need to</span><br/>\n<span><strong>A</strong> understand maps.</span><br/>\n<span><strong>B</strong> understand map-making.</span><br/>\n<span><strong>C</strong> understand that maps are not objective.</span><br/>\n<span><strong>D</strong> understand the importance of latitude and longitude.</span></p><p><br/>\n<br/>\n<br/> </p>"
+        }
+      ]
+    }
+  ]
+};
+
+export default test;

@@ -1,12 +1,27 @@
-"""Import the 20 highest-numbered complete Reading tests shared by PracticePTEOnline.
+"""Import complete Reading tests shared by PracticePTEOnline.
 
 Alex confirmed publisher reuse permission on 2026-09-11. The importer caches the
 source pages, localises source images, and emits PracticeTest JSON as TypeScript.
-Run from the repository root: python tools/import_reading.py
+
+Run from the repository root with no arguments to reproduce the original 20-test
+import (source numbers 319, 318, 317, 316, 313 down to 298, written as
+reading-full-006.ts through reading-full-025.ts):
+
+    python tools/import_reading.py
+
+To import a further batch, pass the source numbers to try and the first output
+index to write to. Numbers whose page is missing, or whose passages duplicate a
+test already on the site, are reported and skipped without consuming an output
+slot; if the given range runs out before enough tests are collected, the search
+keeps counting down past it (skipping missing/duplicate numbers) until it finds
+enough, or gives up after too many misses in a row:
+
+    python tools/import_reading.py --numbers 297-278 --start 26 --target 20
 """
 
 from __future__ import annotations
 
+import argparse
 from html import escape
 import itertools
 import json
@@ -38,7 +53,10 @@ def fetch(number: int) -> tuple[str, Tag]:
         response = requests.get(url, timeout=60)
         response.raise_for_status()
         response.encoding = "utf-8"
-        if not re.search(fr"<title>\s*IELTS Reading Test {number}\b", response.text, re.I):
+        # Some older pages on the site render the title as "IELTS  Reading Test N"
+        # (a doubled space), not "IELTS Reading Test N" — tolerate any run of
+        # whitespace between words rather than assuming a single literal space.
+        if not re.search(fr"<title>\s*IELTS\s+Reading\s+Test\s+{number}\b", response.text, re.I):
             raise RuntimeError(f"{url} is not Reading Test {number}")
         path.write_text(response.text, encoding="utf-8")
     soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
@@ -116,14 +134,36 @@ def direct_nodes(body: Tag) -> list[Tag]:
     return out
 
 
-def is_title(nodes: list[Tag], index: int) -> bool:
+def is_title(nodes: list[Tag], index: int, relaxed: bool = False) -> bool:
+    """A passage title: short, not itself a question/heading line, and followed
+    by several long (real passage prose) paragraphs. `relaxed=True` additionally
+    accepts a node whose entire text is wrapped in a single <strong> — how these
+    pages usually typeset a title — even when the usual blank separator line
+    before it is missing (Test 267's passage 3 runs straight on from passage 2's
+    last question with no blank line). This is a *fallback*, not the default:
+    it's also capable of matching a bolded internal sub-heading inside a long
+    single passage (Test 302's "Who Benefits from Art Therapy" etc.), so
+    build() only asks for it when the strict pass didn't find all three titles."""
     text = clean(nodes[index].get_text(" ", strip=True))
     if not text or len(text) > 150 or re.match(r"^(?:Questions?|List of|TRUE|YES|A\.)\b", text, re.I):
         return False
     previous_blank = index == 0 or not clean(nodes[index - 1].get_text(" ", strip=True))
     following = [clean(n.get_text(" ", strip=True)) for n in nodes[index + 1:] if clean(n.get_text(" ", strip=True))][:3]
     uppercase_title = text == text.upper() and bool(re.search(r"[A-Z]", text))
-    return (previous_blank or uppercase_title) and any(len(value) > 180 for value in following)
+    wholly_bold = False
+    if relaxed:
+        # Comparing against the *whole* node text (not just checking a <strong>
+        # exists) keeps this from matching passage paragraphs that only bold a
+        # leading label like "A" before unbolded body text. It's also restricted
+        # to candidates that don't directly follow a "Questions N-M" heading
+        # line: a bold short line right after a heading is a sub-heading inside
+        # that group's own content (e.g. the bolded mini-title of a
+        # summary-completion passage extract, as in Test 319's Question 14-19
+        # group), never a real passage title.
+        previous_is_heading = index > 0 and group_range(clean(nodes[index - 1].get_text(" ", strip=True))) is not None
+        strong = nodes[index].find("strong")
+        wholly_bold = bool(strong) and clean(strong.get_text(" ", strip=True)) == text and not previous_is_heading
+    return (previous_blank or uppercase_title or wholly_bold) and any(len(value) > 180 for value in following)
 
 
 def group_range(text: str) -> tuple[int, int] | None:
@@ -143,7 +183,14 @@ def classify(instruction: str) -> str:
         return "paragraph-matching"
     if "classify" in value or "classification" in value:
         return "categorisation"
-    if re.search(r"(?:choose|which)\s+(?:two|three)(?:\s+of|\s+letters?|\s+answers?|\s+statements?|\s+facts?)", value):
+    # "Choose/select/which TWO|THREE <anything>" is a multi-answer prompt regardless
+    # of the noun that follows ("letters", "features", "options", "... from below",
+    # etc.) — earlier this only matched a fixed short list of nouns and missed real
+    # source phrasing like "which two features" or "choose TWO from below". The one
+    # exception is a word-limit instruction ("choose NO MORE THAN TWO WORDS"), which
+    # names words/word right after the number rather than answer items.
+    multi_match = re.search(r"(?:choose|select|which)\s+(two|three)\b", value)
+    if multi_match and not re.search(fr"{multi_match.group(1)}\s+words?\b", value):
         return "multiple-answer"
     if "choose the correct" in value or "circle the correct" in value:
         return "multiple-choice"
@@ -162,7 +209,15 @@ def word_limit(instruction: str) -> int | None:
 def numbered_chunks(text: str, first: int, last: int) -> dict[int, str]:
     positions = []
     for number in range(first, last + 1):
-        patterns = [fr"(?<!\d){number}\s*[.)]\s*", fr"\(\s*{number}\s*\)\s*"]
+        patterns = [
+            fr"(?<!\d){number}\s*[.)]\s*",
+            fr"\(\s*{number}\s*\)\s*",
+            # A handful of source pages drop the period after the final number in a
+            # list (e.g. "22 ………" instead of "22. ………") — only treat a bare number
+            # as a marker when it's immediately followed by a run of blank-placeholder
+            # characters, so this never matches an ordinary number inside prose.
+            fr"(?<!\d){number}\s+(?=[.…_]{{2,}})",
+        ]
         candidates = [m for p in patterns for m in re.finditer(p, text)]
         after = positions[-1][2] if positions else 0
         match = next((m for m in sorted(candidates, key=lambda m: m.start()) if m.start() >= after), None)
@@ -317,21 +372,37 @@ def build(number: int) -> dict:
         sanitise(node)
     heading_indices = [(i, group_range(clean(node.get_text(" ", strip=True)))) for i, node in enumerate(nodes)]
     heading_indices = [(i, r) for i, r in heading_indices if r]
-    title_candidates = [i for i in range(len(nodes)) if is_title(nodes, i)]
-    candidates_by_heading = {}
-    for candidate in title_candidates:
-        next_heading = next((index for index, _group in heading_indices if index > candidate), len(nodes))
-        candidates_by_heading.setdefault(next_heading, []).append(candidate)
-    title_indices = []
-    for next_heading, candidates in candidates_by_heading.items():
-        candidate = candidates[-1]
-        long_paragraphs = sum(len(clean(node.get_text(" ", strip=True))) > 180 for node in nodes[candidate + 1:next_heading])
-        if long_paragraphs >= 3:
-            title_indices.append(candidate)
-    combined_first_title = False
-    if len(title_indices) == 2 and nodes and nodes[0].select_one("strong") and nodes[0].select_one("br"):
-        title_indices.insert(0, 0)
-        combined_first_title = True
+
+    def find_title_indices(relaxed: bool) -> list[int]:
+        title_candidates = [i for i in range(len(nodes)) if is_title(nodes, i, relaxed=relaxed)]
+        candidates_by_heading: dict[int, list[int]] = {}
+        for candidate in title_candidates:
+            next_heading = next((index for index, _group in heading_indices if index > candidate), len(nodes))
+            candidates_by_heading.setdefault(next_heading, []).append(candidate)
+        found = []
+        for next_heading, candidates in candidates_by_heading.items():
+            candidate = candidates[-1]
+            long_paragraphs = sum(len(clean(node.get_text(" ", strip=True))) > 180 for node in nodes[candidate + 1:next_heading])
+            if long_paragraphs >= 3:
+                found.append(candidate)
+        return sorted(found)
+
+    def resolve_title_indices(relaxed: bool) -> tuple[list[int], bool]:
+        found = find_title_indices(relaxed=relaxed)
+        combined = False
+        if len(found) == 2 and nodes and nodes[0].select_one("strong") and nodes[0].select_one("br"):
+            found = [0, *found]
+            combined = True
+        return found, combined
+
+    # Try the strict rules first (blank line or ALL-CAPS before the title) — they
+    # cover the vast majority of pages and are the least likely to catch a bolded
+    # sub-heading buried inside one long passage (see is_title's docstring). Only
+    # fall back to the relaxed, "wholly bold" rule for the handful of pages that
+    # skip the usual blank separator before a title.
+    title_indices, combined_first_title = resolve_title_indices(relaxed=False)
+    if len(title_indices) != 3:
+        title_indices, combined_first_title = resolve_title_indices(relaxed=True)
     if len(title_indices) != 3:
         raise RuntimeError(f"Test {number}: expected three passage titles, found {[(i, clean(nodes[i].get_text(' ', strip=True))) for i in title_indices]}")
     parts = []
@@ -394,18 +465,186 @@ def build(number: int) -> dict:
     return test
 
 
+def parse_number_spec(spec: str) -> list[int]:
+    """Parse '319,318' or '297-278' (an inclusive range, either direction) into
+    an ordered list of source test numbers to try."""
+    numbers: list[int] = []
+    for chunk in spec.split(","):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        if "-" in chunk:
+            start_str, end_str = chunk.split("-", 1)
+            start, end = int(start_str), int(end_str)
+            step = -1 if start >= end else 1
+            numbers.extend(range(start, end + step, step))
+        else:
+            numbers.append(int(chunk))
+    return numbers
+
+
+def load_test_file(path: Path) -> dict:
+    raw = path.read_text(encoding="utf-8")
+    return json.JSONDecoder().raw_decode(raw[raw.index("= {") + 2:])[0]
+
+
+def load_existing_tests(min_number: int = 6) -> list[tuple[str, dict]]:
+    """Load every already-imported reading-full-NNN.ts (NNN >= min_number) as JSON,
+    for duplicate-passage checks. reading-full-001..005.ts are hand-written in a
+    different (multi-const) source format, not a single JSON literal, so they're
+    skipped here the same way validate_reading.py's own parsing skips them."""
+    tests = []
+    for path in sorted(DATA.glob("reading-full-*.ts")):
+        match = re.fullmatch(r"reading-full-(\d+)\.ts", path.name)
+        if not match or int(match.group(1)) < min_number:
+            continue
+        try:
+            tests.append((path.name, load_test_file(path)))
+        except ValueError:
+            continue
+    return tests
+
+
+def normalise_for_dedup(text: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = text.lower()
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return " ".join(text.split())
+
+
+def passage_signatures(test: dict) -> list[tuple[str, str]]:
+    signatures = []
+    for part in test["parts"]:
+        stimulus = part["stimulus"]
+        title = normalise_for_dedup(stimulus.get("title", ""))
+        body = normalise_for_dedup(" ".join(p["html"] for p in stimulus.get("paragraphs", [])))
+        signatures.append((title, body))
+    return signatures
+
+
+def find_duplicate(test: dict, known: list[tuple[str, dict]]) -> str | None:
+    """Return the filename of an already-imported test that shares a passage with
+    `test` (same normalised title, or the same normalised passage text for at
+    least the first 400 characters), or None if every passage is original here."""
+    new_signatures = passage_signatures(test)
+    for name, other in known:
+        other_signatures = passage_signatures(other)
+        for new_title, new_body in new_signatures:
+            for other_title, other_body in other_signatures:
+                if new_title and new_title == other_title:
+                    return name
+                if new_body and other_body and new_body[:400] == other_body[:400]:
+                    return name
+    return None
+
+
 def main() -> None:
-    manifest = {"selected": NUMBERS, "absentVerified": [315, 314], "tests": []}
-    for output_index, number in enumerate(NUMBERS, 6):
-        test = build(number)
+    parser = argparse.ArgumentParser(
+        description="Import PracticePTEOnline Reading tests as PracticeTest TypeScript files.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--numbers",
+        default=None,
+        help="Source test numbers to try, e.g. '297-278' (a descending range) or a "
+             "comma list such as '297,296,294'. Defaults to the original 20-test "
+             "selection (319, 318, 317, 316, 313 down to 298).",
+    )
+    parser.add_argument(
+        "--start",
+        type=int,
+        default=6,
+        help="First output index for src/data/tests/reading-full-<NNN>.ts (default 6, "
+             "matching the original import).",
+    )
+    parser.add_argument(
+        "--target",
+        type=int,
+        default=None,
+        help="How many complete, non-duplicate tests to import before stopping. "
+             "Defaults to the count of --numbers given (20 for the built-in default).",
+    )
+    args = parser.parse_args()
+
+    default_run = args.numbers is None
+    candidates = list(NUMBERS) if default_run else parse_number_spec(args.numbers)
+    target = args.target or len(candidates)
+
+    # Duplicate-passage checking only makes sense for a targeted range that is
+    # adding *new* output files. The default run regenerates the original
+    # 006-025 files themselves, so comparing them against the on-disk copies of
+    # themselves would always "find" a duplicate — skip that check here.
+    known_tests = [] if default_run else load_existing_tests()
+    manifest = {
+        "selected": [],
+        "absentVerified": [315, 314] if default_run else [],
+        "skippedDuplicates": [],
+        "tests": [],
+    }
+
+    # In a targeted (non-default) run, if the given numbers run out before we've
+    # collected `target` tests, keep counting down past the end of the range
+    # (same step direction as the range) rather than stopping short.
+    extend_step = None
+    if not default_run and candidates:
+        extend_step = -1 if len(candidates) < 2 or candidates[-1] <= candidates[0] else 1
+
+    queue = list(candidates)
+    max_consecutive_misses = 30
+    misses_in_a_row = 0
+    output_index = args.start
+    imported = 0
+    index = 0
+    while imported < target:
+        if index >= len(queue):
+            if extend_step is None:
+                break
+            queue.append(queue[-1] + extend_step)
+        number = queue[index]
+        index += 1
+        try:
+            test = build(number)
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else "?"
+            print(f"test {number}: page missing (HTTP {status}), skipping")
+            manifest["absentVerified"].append(number)
+            misses_in_a_row += 1
+            if misses_in_a_row >= max_consecutive_misses:
+                print(f"Stopping after {misses_in_a_row} consecutive missing pages.")
+                break
+            continue
+        except RuntimeError as exc:
+            if "is not Reading Test" in str(exc):
+                print(f"test {number}: page missing or redirected, skipping ({exc})")
+                manifest["absentVerified"].append(number)
+                misses_in_a_row += 1
+                if misses_in_a_row >= max_consecutive_misses:
+                    print(f"Stopping after {misses_in_a_row} consecutive missing pages.")
+                    break
+                continue
+            raise  # a genuine parser problem on a real page — fix the importer, don't hide it
+        duplicate_of = find_duplicate(test, known_tests)
+        if duplicate_of:
+            print(f"test {number}: duplicate of {duplicate_of}, skipping")
+            manifest["skippedDuplicates"].append({"number": number, "duplicateOf": duplicate_of})
+            misses_in_a_row = 0
+            continue
+        misses_in_a_row = 0
         path = DATA / f"reading-full-{output_index:03d}.ts"
         path.write_text(
             "import type { PracticeTest } from '../../lib/tests/schema';\n\n"
             f"const test: PracticeTest = {json.dumps(test, ensure_ascii=False, indent=2)};\n\nexport default test;\n",
             encoding="utf-8",
         )
+        manifest["selected"].append(number)
         manifest["tests"].append({"localId": test["id"], "file": path.name, "sourceNumber": number, "url": test["source"]["url"]})
+        known_tests.append((path.name, test))
         print(f"{path.name}: source {number}, 40 questions")
+        output_index += 1
+        imported += 1
+
+    if imported < target:
+        print(f"WARNING: only imported {imported}/{target} tests before giving up.")
     (CACHE / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 

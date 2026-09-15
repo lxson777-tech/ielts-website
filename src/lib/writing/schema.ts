@@ -3,6 +3,9 @@
    is deliberately abstracted behind `EssayGrader` so it can be swapped
    (Claude / Gemini / open model) without touching anything else. */
 
+import type { NextBandAdvice } from '../grading/next-band';
+export type { NextBandAction, NextBandAdvice } from '../grading/next-band';
+
 export type WritingTask = 'task1' | 'task2';
 
 /** A single topic-specific vocabulary suggestion for a prompt — distinct from the
@@ -18,7 +21,7 @@ export interface VocabSuggestion {
 export interface EssayPrompt {
   id: string;
   task: WritingTask;
-  /** finer type for lessons/filtering: 'opinion' | 'discussion' | 'letter' | 'chart' | … */
+  /** finer type for lessons/filtering: 'opinion' | 'discussion' | 'chart' | … */
   variant: string;
   title: string;
   /** the question the student answers (small inline HTML allowed) */
@@ -31,6 +34,9 @@ export interface EssayPrompt {
   suggestedMinutes: number;
   /** Topic vocabulary shown in the writing coach panel. */
   suggestedVocab: VocabSuggestion[];
+  /** Set on prompts imported from an external source (see tools/import_writing.py);
+      absent on the original in-house prompts. */
+  source?: { name: string; url: string; permission: string };
 }
 
 export interface EssayInput {
@@ -75,12 +81,18 @@ export interface CriterionScore {
   comment: string;
   /** One actionable sentence: what would lift this criterion to the next band. */
   tip?: string;
+  /** Structured "how to reach the next band" advice from the AI examiner.
+      Optional: older results, the Gemini rollback, and the offline stub
+      grader don't have it. */
+  nextBand?: NextBandAdvice;
 }
 
-export interface Correction {
-  original: string;
-  fix: string;
-  reason: string;
+/** A notable moment the model quoted from the essay (its own quote of what
+    was written, plus a remark on why it matters), mirrors Speaking's
+    SpokenMoment so both trainers render identically. */
+export interface Moment {
+  quote: string;
+  note: string;
 }
 
 /* ── Heuristic report (produced in-browser, no API) ────────────────────── */
@@ -113,9 +125,11 @@ export interface GradeResult {
   overallBand: number;
   criteria: Record<CriterionKey, CriterionScore>;
   mechanics: MechanicsReport;
-  corrections: Correction[];
+  moments: Moment[];
   strengths: string[];
   improvements: string[];
+  /** 3 to 5 numbered steps, in priority order. Optional, see CriterionScore.nextBand. */
+  actionPlan?: string[];
   /** Which grader actually produced this result (the configured one may have
       failed over to the offline stub) — drives the AI/sample badge. */
   grader: { name: string; live: boolean };
@@ -125,7 +139,7 @@ export interface GradeResult {
     heuristic (`mechanics`) and the assembled `overallBand`. */
 export type EssayAssessment = Pick<
   GradeResult,
-  'criteria' | 'corrections' | 'strengths' | 'improvements'
+  'criteria' | 'moments' | 'strengths' | 'improvements' | 'actionPlan'
 >;
 
 /** The swappable model boundary. Implementations may use any provider — the

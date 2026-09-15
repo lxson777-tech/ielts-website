@@ -2,7 +2,13 @@
    fabricates a plausible-but-honest offline result so the flow is clickable
    end-to-end with no API key; RemoteGrader POSTs to a Cloudflare Worker that
    holds the Gemini key and grades the actual audio. Swapping providers is a
-   one-file change: implement SpeakingGrader and return it from getGrader(). */
+   one-file change: implement SpeakingGrader and return it from getGrader().
+
+   Every recorded clip is converted to 16 kHz mono MP3 in the browser
+   (src/lib/speaking/encode.ts) before it goes anywhere near the Worker,
+   because the grader's OpenAI provider only accepts WAV or MP3 audio input.
+   MP3 also keeps even a full test's worth of clips well under a 5 MB
+   request body. */
 
 import type {
   AudioMechanicsReport,
@@ -15,7 +21,7 @@ import type {
 } from './schema';
 import { overallSpeakingBand, toSpeakingBand } from './schema';
 import { analyzeAudio } from './mechanics';
-import { blobToBase64 } from './recorder';
+import { blobToMp3Base64 } from './encode';
 
 /* Sample grader — NOT a real assessment. Fluency & Coherence is the one
    criterion with a genuine offline signal (pacing/silence from the acoustic
@@ -85,8 +91,10 @@ class RemoteSpeakingGrader implements SpeakingGrader {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      // Audio payloads + multi-part prompts take longer than a single essay.
-      signal: AbortSignal.timeout(90000),
+      // The Worker transcribes the audio, grades the transcript and then judges
+      // pronunciation from the audio, one call after another. A full 14-minute
+      // test can take several minutes end to end, so wait up to ten minutes.
+      signal: AbortSignal.timeout(600000),
     });
     if (!resp.ok) {
       let detail = '';
@@ -123,10 +131,14 @@ export function getSpeakingGrader(): SpeakingGrader {
 
 /** Raw recorded clips (Blob) → base64 AnsweredClip, ready for the grader. */
 export async function toAnsweredClip(question: string, seg: { blob: Blob; mimeType: string; durationMs: number }) {
+  const { audioBase64, mimeType } = await blobToMp3Base64(seg.blob);
   return {
     question,
-    audioBase64: await blobToBase64(seg.blob),
-    mimeType: seg.mimeType,
+    audioBase64,
+    mimeType,
+    // The original recorder-measured length, not the encoded clip's own
+    // (re-decoded) duration, since that's the number the student's UI
+    // already showed while they were answering.
     durationMs: seg.durationMs,
   };
 }

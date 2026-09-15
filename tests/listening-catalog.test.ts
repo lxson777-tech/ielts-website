@@ -50,16 +50,29 @@ const importedListeningAnswerHashes = [
   '511c8af8e5ddefdd89b4b2139e42ace6b13ba79d313485843b30d5964fc160bd',
   'c987b1c2ae6927ac3993a09f2f67c1eca2a3cd5f94bac08111133785015a0c9a',
   '707edbe339e6523420f1ddd10adc4852c1247be18dddb032026f5df3ba85b0d6',
+  // tests 21 to 30, imported 2026-09-14 and verified against the source answer keys by tools/validate_listening.py
+  '6349eba5a92eb9eb8e70117296f9fac5a7a36a569daf0f9a5b9761e91e1f4e4c',
+  '6056cc4306bf365180b17ae833b0d1f65524da9be5a441cfd9c1bdda609baf06',
+  'dbab849866075a7738aae33cdc56afffb919db52ea769dda3c6c9b1466aebfd6',
+  '9d1492e36806bdc4f7bde72d7e3e01a288a11418e41b3649381429a95a4360dc',
+  'd277c23b992c47f3d276effad096cc2820f7b63f873b4d1581ffa6b62d2eb0ee',
+  'f278d23e1bbbb4f3993ce9719e4f1c2efdd4a2a3d1e7f8e8c885c7b6e245953e',
+  '9d940d132b007220072bbcfe10a9c32bfbac0a959042f378910ba9182de1e1c2',
+  '868bf0e49779dd6d736f8a6e272771d446a1104d0c2b2a341564f8cceffc1c48',
+  '1cc383644081385a58e593e782d85fb1aadda9d9fdf4425ec1aba13ca9a6e46e',
+  '3046fc225db8982c007cfd1c0d97ace1c63ed13901ccbe4f16a1eca7f84d64ee',
 ];
 
-test('catalog contains five distinct reading tests and twenty distinct listening tests', () => {
+test('catalog contains only authentic (sourced) reading tests and thirty distinct listening tests', () => {
   const ids = ALL_TESTS.map((testRecord) => testRecord.id);
   assert.equal(new Set(ids).size, ids.length, 'test ids must be unique');
 
   const reading = ALL_TESTS.filter((testRecord) => testRecord.skill === 'reading');
   const listening = ALL_TESTS.filter((testRecord) => testRecord.skill === 'listening');
-  assert.equal(reading.length, 5);
-  assert.equal(listening.length, 20);
+  for (const testRecord of reading) {
+    assert.ok(testRecord.source, `reading test ${testRecord.id} must carry a source (in-house tests are not allowed)`);
+  }
+  assert.equal(listening.length, 30);
 
   const readingFingerprints = reading.map((testRecord) => JSON.stringify(testRecord.parts));
   const listeningFingerprints = listening.map((testRecord) => JSON.stringify(testRecord.parts));

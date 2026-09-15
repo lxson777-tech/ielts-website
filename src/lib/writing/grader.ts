@@ -29,7 +29,8 @@ class RemoteGrader implements EssayGrader {
         essay: input.essay,
         mechanics,
       }),
-      signal: AbortSignal.timeout(60000),
+      // Three reasoning-model runs are taken and the median kept; allow three minutes.
+      signal: AbortSignal.timeout(180000),
     });
     if (!resp.ok) {
       // Surface the Worker's message (e.g. daily-limit) if it sent one.

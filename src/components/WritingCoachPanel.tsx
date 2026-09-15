@@ -126,7 +126,13 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
         </div>
       )}
 
-      {active === 'vocab' && (
+      {active === 'vocab' && prompt.suggestedVocab.length === 0 && (
+        <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4 rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-ink-muted">
+          No topic vocabulary for this task yet.
+        </div>
+      )}
+
+      {active === 'vocab' && prompt.suggestedVocab.length > 0 && (
         <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4 grid items-start gap-2.5 sm:grid-cols-2">
           {prompt.suggestedVocab.map((v) => {
             const isOpen = revealed.has(v.phrase);

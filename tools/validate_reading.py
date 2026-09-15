@@ -1,4 +1,11 @@
-"""Validate the deterministic PracticePTEOnline Reading import."""
+"""Validate the deterministic PracticePTEOnline Reading import.
+
+Discovers every src/data/tests/reading-full-NNN.ts file with NNN >= 6 (the
+imported, template-parsed tests — 001-005 are hand-written originals in a
+different source format and aren't covered here) and re-derives its source
+test number from the emitted `id` field, so this validates however many
+imports exist rather than a fixed count.
+"""
 
 from __future__ import annotations
 
@@ -11,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import import_reading
 
 ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "src" / "data" / "tests"
 
 
 def load(path: Path) -> dict:
@@ -18,11 +26,34 @@ def load(path: Path) -> dict:
     return json.JSONDecoder().raw_decode(raw[raw.index("= {") + 2:])[0]
 
 
+def discover_imports() -> list[tuple[Path, int]]:
+    """Every reading-full-NNN.ts (NNN >= 6) paired with its source test number,
+    read back from the file's own `id`/`source.url` rather than assumed from a
+    fixed list, so newly imported batches are picked up automatically."""
+    found = []
+    for path in sorted(DATA.glob("reading-full-*.ts")):
+        match = re.fullmatch(r"reading-full-(\d+)\.ts", path.name)
+        if not match or int(match.group(1)) < 6:
+            continue
+        test = load(path)
+        id_match = re.fullmatch(r"reading-full-(\d+)", test.get("id", ""))
+        url_match = re.search(r"ielts-reading-test-(\d+)", test.get("source", {}).get("url", ""))
+        source_number = int(id_match.group(1)) if id_match else (int(url_match.group(1)) if url_match else None)
+        if source_number is None:
+            raise SystemExit(f"{path.name}: could not determine the source test number from id/source.url")
+        found.append((path, source_number))
+    return found
+
+
 def main() -> None:
+    from bs4 import BeautifulSoup
+
     failures = []
     total = 0
-    for local_number, source_number in enumerate(import_reading.NUMBERS, 6):
-        path = ROOT / "src" / "data" / "tests" / f"reading-full-{local_number:03d}.ts"
+    imports = discover_imports()
+    passage_signatures: dict[str, list[tuple[str, str]]] = {}
+
+    for path, source_number in imports:
         test = load(path)
         url, body = import_reading.fetch(source_number)
         source_answers = import_reading.answer_key(body, source_number)
@@ -84,11 +115,25 @@ def main() -> None:
         emitted_passages = [part["stimulus"] for part in test["parts"]]
         if emitted_passages != rebuilt_passages:
             failures.append(f"{path.name}: emitted passage content differs from the cached source parse")
+        passage_signatures[path.name] = import_reading.passage_signatures(test)
+
+    # Cross-check every imported test's passages against every other one — the
+    # per-file question/answer checks above can't catch two source numbers
+    # sharing the same passage.
+    names = list(passage_signatures)
+    for i, name_a in enumerate(names):
+        for name_b in names[i + 1:]:
+            for title_a, body_a in passage_signatures[name_a]:
+                for title_b, body_b in passage_signatures[name_b]:
+                    if title_a and title_a == title_b:
+                        failures.append(f"{name_a} and {name_b}: duplicate passage title")
+                    elif body_a and body_b and body_a[:400] == body_b[:400]:
+                        failures.append(f"{name_a} and {name_b}: duplicate passage text")
+
     if failures:
         raise SystemExit("\n".join(failures))
-    print(f"Validated 20 imported Reading tests, {total} source-keyed questions, passages, layouts, and local assets.")
+    print(f"Validated {len(imports)} imported Reading tests, {total} source-keyed questions, passages, layouts, local assets, and cross-test duplicates.")
 
 
 if __name__ == "__main__":
-    from bs4 import BeautifulSoup
     main()
