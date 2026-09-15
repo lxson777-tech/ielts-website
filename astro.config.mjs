@@ -30,6 +30,9 @@ export default defineConfig({
   // /speaking/checker keeps redirecting, but to the bare mock interview
   // rather than the coached Speaking Trainer, for the same reason.
   redirects: {
+    // The public homepage is not published yet: the site opens straight into
+    // the student workspace (the AI Tutor screen).
+    '/': '/ielts-website/dashboard',
     '/tests/drills': '/ielts-website/trainers/reading',
     '/speaking/checker': '/ielts-website/speaking/examiner',
   },

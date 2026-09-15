@@ -34,10 +34,12 @@ const {
 } = Astro.props;
 const pageTitle = title.replaceAll('IELTS Portal', 'IELTS is EZ');
 
-const canonicalUrl = new URL(withBase(Astro.url.pathname), Astro.site).toString();
 const absoluteOgImage = new URL(withBase(ogImage), Astro.site).toString();
 
 const route = toRoute(Astro.url.pathname, import.meta.env.BASE_URL);
+// The pathname already carries the base and, at build time, a .html suffix;
+// the clean route is what the canonical link must point at.
+const canonicalUrl = new URL(withBase(route), Astro.site).toString();
 const isAppRoute = !bare && routeIsApp(route);
 const isWide = wide ?? isWideRoute(route);
 

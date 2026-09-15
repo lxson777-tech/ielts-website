@@ -54,6 +54,7 @@ export const APP_ROUTE_PREFIXES = [
   '/account',
   '/review',
   '/report',
+  '/reset-password',
 ];
 
 /** Routes whose content genuinely needs the wider 1100px column: a two-pane
@@ -70,7 +71,10 @@ function matches(prefix: string, route: string): boolean {
 export function toRoute(pathname: string, base: string): string {
   const trimmedBase = base.replace(/\/$/, '');
   const route = trimmedBase && pathname.startsWith(trimmedBase) ? pathname.slice(trimmedBase.length) : pathname;
-  return route.replace(/\/$/, '') || '/';
+  // Static builds use `build.format: 'file'`, so at build time the pathname
+  // is "/dashboard.html" (and "/index.html" for the root), not "/dashboard".
+  // Strip both so the shell decision matches what the browser will show.
+  return route.replace(/\.html$/, '').replace(/\/index$/, '/').replace(/\/$/, '') || '/';
 }
 
 export function isAppRoute(route: string): boolean {
