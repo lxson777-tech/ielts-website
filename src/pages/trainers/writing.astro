@@ -24,6 +24,22 @@ import { withBase } from '../../lib/url';
       </a>
     </p>
 
+    {/* The model answer bank had no entry point while it was empty. Every one
+        of these 60 tasks now has a Band 8 model, so link it where a student
+        finishes writing and wants to compare. */}
+    <a
+      href={withBase('/writing/models')}
+      class="mt-6 flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
+    >
+      <span>
+        <span class="font-display font-bold text-ink">Model answers</span>
+        <span class="mt-0.5 block text-ink-muted">
+          A Band 8 answer for every task here, with examiner notes on all four criteria.
+        </span>
+      </span>
+      <span aria-hidden="true" class="shrink-0 text-brand">&rarr;</span>
+    </a>
+
     <section id="history" class="mt-16 scroll-mt-20">
       <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />
       <WritingHistory client:load />

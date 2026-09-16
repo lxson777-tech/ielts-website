@@ -295,7 +295,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     questionType: "Process diagram",
     whatItAsks: "Describe the sequence by which bamboo plants are converted into fabric and clothing, highlighting the seasonal agricultural stages and the later mechanical, chemical and textile treatments.",
     keyPoints: [
-      "The process is linear and contains nine stages, beginning with planting bamboo in spring and ending with finished clothing such as socks and a shirt.",
+      "The process is linear and contains nine stages, beginning with planting bamboo in spring and ending with a final stage that carries no label and is shown only as pictures of a T-shirt and socks.",
       "The agricultural phase is seasonal: bamboo is planted in spring and harvested in autumn.",
       "After harvesting, the bamboo is cut into strips, crushed into liquid pulp and filtered so that the long fibres are separated from the liquid.",
       "Water and amine oxide are added to soften the separated fibres, which is the only explicitly chemical stage shown.",
@@ -306,7 +306,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { label: "Introduction", goal: "Paraphrase the question by stating that the diagram presents the complete production of fabric and clothing from bamboo.", tips: ["Refer to bamboo as the raw material and fabric as the main final material.", "Use the present simple passive because bamboo is planted, harvested and processed."], starter: "The diagram illustrates how bamboo is cultivated and processed in order to manufacture fabric and clothing." },
       { label: "Overview", goal: "Summarise the linear direction and the main phases without listing individual stages or using numbers.", tips: ["Identify the broad movement from seasonal cultivation to fibre processing and textile manufacture.", "Mention that the process finishes with woven fabric and clothing rather than stopping at yarn."], starter: "Overall, the procedure follows a linear sequence, moving from growing bamboo through fibre treatment to the production of woven material and garments." },
       { label: "Detail 1", goal: "Report the first five stages, from spring planting through the separation of long fibres.", tips: ["State that planting occurs in spring, whereas harvesting takes place in autumn.", "Explain that harvested stems are cut into strips and then crushed to create liquid pulp.", "Clarify that filtration separates the long bamboo fibres from the liquid."], starter: "Initially, bamboo plants are planted in spring and left to grow until they are harvested in autumn." },
-      { label: "Detail 2", goal: "Describe how the extracted fibres are softened and converted into yarn, fabric and clothing.", tips: ["Specify that both water and amine oxide are added to soften the long fibres.", "Show the material changes clearly: softened fibres become yarn, which is then woven into fabric.", "End with the illustrated products, including socks and a shirt."], starter: "Once the long fibres have been extracted, they are softened by adding water and amine oxide." },
+      { label: "Detail 2", goal: "Describe how the extracted fibres are softened and converted into yarn, fabric and clothing.", tips: ["Specify that both water and amine oxide are added to soften the long fibres.", "Show the material changes clearly: softened fibres become yarn, which is then woven into fabric.", "End with the final stage, which has no label and is shown only as pictures of a T-shirt and socks."], starter: "Once the long fibres have been extracted, they are softened by adding water and amine oxide." },
     ],
     vocabulary: [
       { phrase: "plant bamboo", use: "for the initial cultivation stage" },
@@ -316,7 +316,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { phrase: "filter out", use: "when fibres separate from liquid" },
       { phrase: "amine oxide", use: "name the added softening chemical" },
       { phrase: "spin into yarn", use: "before yarn becomes woven fabric" },
-      { phrase: "finished garments", use: "for socks and shirt products" },
+      { phrase: "finished garments", use: "for the T-shirt and socks pictured" },
     ],
     pitfalls: [
       "Do not reverse the seasons: bamboo is planted in spring and harvested in autumn.",
@@ -536,6 +536,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       "Do not claim that every district grew individually, because Brooklyn, the Bronx, Queens and Staten Island are presented only as one combined group.",
       "Do not overlook Manhattan's fall from 1,850,093 in 1900 to 1,538,096 in 2000 while describing the city's overall growth.",
       "Do not confuse absolute population with percentage share. Manhattan's population was much higher in 2000 than in 1800, despite its share falling from 76% to 19%.",
+      "Do not quote a precise city total for 2000. The image prints it as “8,009,” with the final digits cut off, so write “just over eight million” instead.",
     ],
     timing: "5 minutes planning, 13 minutes writing, and 2 minutes checking figures, percentages and the 150 word minimum.",
   },
@@ -655,13 +656,13 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       "The process is cyclical: plants and trees use sunlight and carbon dioxide to grow, while carbon dioxide released later returns to the beginning of the cycle.",
       "The raw plant material is harvested and pre-processed, after which cellulose is obtained and sent for further processing.",
       "Processing converts the cellulose into sugars, and microbes are then added to produce ethanol.",
-      "The finished ethanol is used by cars, lorries and aircraft, all of which release carbon dioxide; the diagram also shows carbon dioxide leaving the pre-processing stage.",
+      "The finished ethanol is used by cars, lorries and aircraft, all of which release carbon dioxide back into the cycle.",
     ],
     overview: "Overall, ethanol production forms a cycle in which plant material is converted through mechanical and biological stages into fuel, while the carbon dioxide released is reused by growing plants and trees.",
     paragraphs: [
       { label: "Introduction", goal: "Paraphrase the title and state that the diagram presents ethanol production as a cycle.", tips: ["Say that ethanol biofuel is produced from plants and trees rather than merely saying it is “made”.", "Mention that the diagram includes both fuel production and the recycling of carbon dioxide."], starter: "The diagram illustrates how plant material is converted into ethanol biofuel within a cyclical production system." },
       { label: "Overview", goal: "Identify the plant-to-fuel transformation and the carbon dioxide cycle without listing individual stages.", tips: ["Highlight that plant growth begins with sunlight and carbon dioxide and ultimately leads to ethanol.", "State that emissions from fuel use return to support further plant growth.", "Do not include detailed terms such as cellulose, sugars or microbes here."], starter: "Overall, the system is cyclical, beginning with plant growth and ending with carbon dioxide being returned to the atmosphere for reuse." },
-      { label: "Detail 1", goal: "Describe the stages from plant growth through to the production of sugars in the correct order.", tips: ["Begin with plants and trees growing through energy supplied by sunlight and carbon dioxide.", "Follow the arrows accurately: harvesting, pre-processing, cellulose extraction, processing and sugar production.", "Mention that carbon dioxide is shown as an output of pre-processing."], starter: "Initially, plants and trees grow using sunlight and carbon dioxide before being harvested and pre-processed." },
+      { label: "Detail 1", goal: "Describe the stages from plant growth through to the production of sugars in the correct order.", tips: ["Begin with plants and trees growing through energy supplied by sunlight and carbon dioxide.", "Follow the arrows accurately: harvesting, pre-processing, cellulose extraction, processing and sugar production."], starter: "Initially, plants and trees grow using sunlight and carbon dioxide before being harvested and pre-processed." },
       { label: "Detail 2", goal: "Explain how sugars become ethanol and how the fuel is used before the cycle restarts.", tips: ["State that microbes are added to the sugars, resulting in ethanol.", "Report all three forms of transport shown: cars, lorries and aircraft.", "Connect the carbon dioxide emitted by these vehicles with the gas required for new plant growth."], starter: "Following the processing stage, microbes are introduced to the resulting sugars in order to produce ethanol." },
     ],
     vocabulary: [
@@ -676,7 +677,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     ],
     pitfalls: [
       "Do not reverse the sequence by saying that cellulose is produced after the main processing stage; it appears before processing and sugar formation.",
-      "Do not omit the circular carbon dioxide flow, since it connects emissions from pre-processing and transport with the growth of new plants.",
+      "Do not omit the circular carbon dioxide flow, since it connects emissions from transport with the growth of new plants.",
       "Do not invent fermentation times, temperatures or machinery details, as the diagram provides none of this information.",
     ],
     timing: "5 minutes planning, 13 minutes writing, and 2 minutes checking.",
@@ -1006,10 +1007,10 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     questionType: "Bar chart",
     whatItAsks: "Summarise and compare the numbers of US households, in millions, across five annual income brackets in 2007, 2011 and 2015.",
     keyPoints: [
-      "Households earning $100,000 or more formed one of the largest groups throughout, falling from about 29 million in 2007 to 28 million in 2011, then rising sharply to roughly 33 million in 2015.",
+      "Households earning $100,000 or more formed one of the largest groups throughout, falling from nearly 30 million in 2007 to 28 million in 2011, then rising sharply to roughly 33 million in 2015.",
       "The two lowest brackets increased between 2007 and 2011, from approximately 25 to 29 million for under $25,000 and from 27 to 30 million for $25,000 to $49,999, before both slipped slightly in 2015.",
       "The $50,000 to $74,999 category remained almost unchanged at around 21 million households in all three years.",
-      "The $75,000 to $99,999 bracket was consistently the smallest, staying near 14 million in 2007 and 2011 before edging up to about 15 million in 2015.",
+      "The $75,000 to $99,999 bracket was consistently the smallest, dipping from about 14.5 million in 2007 to around 14 million in 2011 before edging up to about 15 million in 2015.",
       "By 2015, the $100,000 or more group was clearly larger than every other category, whereas in 2011 the $25,000 to $49,999 bracket had ranked first.",
     ],
     overview: "Overall, the two lower-income groups grew before easing slightly, while the highest-income category dipped and then became clearly the largest, and the two middle brackets changed very little.",
@@ -1017,7 +1018,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { label: "Introduction", goal: "Paraphrase what the bar chart measures, including the country, unit, income categories and three years.", tips: ["State that the figures represent numbers of US households rather than individual people.", "Include the unit, millions, and the years 2007, 2011 and 2015.", "Do not explain possible causes of changes in household income."], starter: "The bar chart compares the number of American households, measured in millions, across five annual income categories in three selected years." },
       { label: "Overview", goal: "Identify the dominant movements and the stable or smallest categories without giving figures.", tips: ["Highlight the strong final rise among households earning at least $100,000.", "Contrast this with the relative stability of both middle-income categories.", "Mention that $75,000 to $99,999 remained the smallest bracket."], starter: "Overall, the highest-income category ended the period as the largest, while the middle-income groups showed far less movement." },
       { label: "Detail 1", goal: "Compare the two lower-income brackets and the two middle-income brackets across all three years.", tips: ["Report the under $25,000 figures as about 25, 29 and 28 million in chronological order.", "Give roughly 27, 30 and 29 million for the $25,000 to $49,999 group.", "Then contrast these changes with around 21 million for $50,000 to $74,999 and approximately 14 to 15 million for $75,000 to $99,999."], starter: "Among the lower-income households, the number earning under $25,000 rose from about 25 million in 2007 to 29 million in 2011 before declining slightly in 2015." },
-      { label: "Detail 2", goal: "Describe the changing size and ranking of the $100,000 or more category.", tips: ["State that this group stood at about 29 million in 2007 and slipped to around 28 million in 2011.", "Emphasise its substantial rise to approximately 33 million in 2015.", "Compare its 2015 total directly with the next-largest groups, both at just under 30 million."], starter: "The pattern for households earning at least $100,000 was different, as their number dipped initially and then climbed markedly." },
+      { label: "Detail 2", goal: "Describe the changing size and ranking of the $100,000 or more category.", tips: ["State that this group stood at nearly 30 million in 2007 and slipped to around 28 million in 2011.", "Emphasise its substantial rise to approximately 33 million in 2015.", "Compare its 2015 total directly with the next-largest groups, at about 28.8 and 28 million."], starter: "The pattern for households earning at least $100,000 was different, as their number dipped initially and then climbed markedly." },
     ],
     vocabulary: [
       { phrase: "income bracket", use: "Name each household earnings category" },
@@ -1077,9 +1078,9 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     questionType: "IELTS Academic Task 1 line chart",
     whatItAsks: "Summarise and compare the percentages of people living in cities in the Philippines, Malaysia, Thailand and Indonesia between 1970 and 2020, including forecasts for 2030 and 2040.",
     keyPoints: [
-      "Malaysia shows the clearest sustained growth, rising from about 30% in 1970 to roughly 75% in 2020, with a predicted figure of just over 80% by 2040.",
+      "Malaysia shows the clearest sustained growth, rising from about 30% in 1970 to roughly 76% in 2020, with a predicted figure of 83% by 2040.",
       "The Philippines is the only country with a substantial temporary decline. Its urban population peaks at just under 50% in 1990, falls to around 43% in 2010, and then recovers to a projected 56% in 2040.",
-      "Indonesia begins with the lowest proportion, approximately 13% in 1970, but grows rapidly after 2000. It reaches about 52% in 2020 and is forecast to rank second at around 64% in 2040.",
+      "Indonesia begins with the lowest proportion, approximately 14% in 1970, but grows rapidly after 2000. It reaches about 52% in 2020 and is forecast to rank second at around 64% in 2040.",
       "Thailand grows more slowly than the other countries, remaining near 30% from 1990 to 2000 and reaching only about 33% in 2020, although it is predicted to rise to almost 50% by 2040.",
       "Malaysia is highest in most years, while Indonesia catches the Philippines at about 43% in 2010 and then overtakes it, creating a clear ranking of Malaysia, Indonesia, the Philippines and Thailand from 2020 onwards.",
     ],
@@ -1087,8 +1088,8 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     paragraphs: [
       { label: "Introduction", goal: "Paraphrase the task by identifying the four countries, the urban population measure, the time period and the forecast years.", tips: ["Use “proportion” or “percentage” instead of repeating “percentage of population”.", "State that the data cover 1970 to 2040, but clarify that 2030 and 2040 are predictions.", "Do not describe individual figures in this paragraph."], starter: "The line chart compares the proportions of people residing in urban areas in four Asian nations between 1970 and 2040, with the final two years representing forecasts." },
       { label: "Overview", goal: "Present the dominant trends and the most important contrast without including figures.", tips: ["State that all four countries become more urbanised overall.", "Highlight Malaysia's generally leading position and Indonesia's sharp later rise.", "Mention that the Philippines is the only country to experience a period of decline."], starter: "Overall, urbanisation increased across all four nations, although Malaysia generally led the group while the Philippines followed a less consistent pattern." },
-      { label: "Detail 1", goal: "Compare Malaysia and the Philippines, which begin at similar levels but follow contrasting paths.", tips: ["Report that both stand near 30% in 1970, with the Philippines slightly higher.", "Trace Malaysia's increase through roughly 45% in 1990, 60% in 2000 and 75% in 2020.", "Contrast this with the Philippines' peak of about 48% in 1990, decline to around 43% in 2010, and forecast recovery to 56% by 2040."], starter: "In 1970, the Philippines and Malaysia had similar urban population shares, at just over and approximately 30% respectively, but their subsequent trends differed markedly." },
-      { label: "Detail 2", goal: "Explain the growth of Indonesia and Thailand, including Indonesia's overtaking of the Philippines and the final rankings.", tips: ["Show that Indonesia rises from about 13% in 1970 to 30% in 2000, then accelerates to around 52% in 2020.", "Describe Thailand's slower movement from about 18% to 30% by 1990, followed by little change until 2020.", "Finish with the 2040 forecasts of approximately 64% for Indonesia and 49% for Thailand, compared with 83% for Malaysia and 56% for the Philippines."], starter: "Indonesia and Thailand started at lower levels, although Indonesia's urban population grew much more rapidly after the turn of the century." },
+      { label: "Detail 1", goal: "Compare Malaysia and the Philippines, which begin at similar levels but follow contrasting paths.", tips: ["Report that both stand near 30% in 1970, with the Philippines slightly higher.", "Trace Malaysia's increase through roughly 45% in 1990, 60% in 2000 and 76% in 2020.", "Contrast this with the Philippines' peak of about 48% in 1990, decline to around 43% in 2010, and forecast recovery to 56% by 2040."], starter: "In 1970, the Philippines and Malaysia had similar urban population shares, at just over and approximately 30% respectively, but their subsequent trends differed markedly." },
+      { label: "Detail 2", goal: "Explain the growth of Indonesia and Thailand, including Indonesia's overtaking of the Philippines and the final rankings.", tips: ["Show that Indonesia rises from about 14% in 1970 to 30% in 2000, then accelerates to around 52% in 2020.", "Describe Thailand's slower movement from about 18% to 30% by 1990, followed by little change until 2020.", "Finish with the 2040 forecasts of approximately 64% for Indonesia and 49% for Thailand, compared with 83% for Malaysia and 56% for the Philippines."], starter: "Indonesia and Thailand started at lower levels, although Indonesia's urban population grew much more rapidly after the turn of the century." },
     ],
     vocabulary: [
       { phrase: "urban population share", use: "Describes percentages residing in cities." },
@@ -1150,7 +1151,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     whatItAsks: "Summarise and compare the numbers of shop closures and new shop openings in one country from 2011 to 2018, highlighting overall trends, major fluctuations and notable differences between the two series.",
     keyPoints: [
       "Openings showed an overall decline, falling from about 8,500 in 2011, the chart's highest figure, to 3,000 in 2018, their lowest point.",
-      "Closures fluctuated much more dramatically, reaching a peak of roughly 7,200 in 2013 before plunging to around 500 in 2015 and rebounding to just over 5,000 in 2016.",
+      "Closures fluctuated much more dramatically, reaching a peak of roughly 7,200 in 2013 before plunging to around 600 in 2015 and rebounding to just over 5,000 in 2016.",
       "Openings exceeded closures only in 2011 and 2015. Closures were higher in every other year, although the figures were relatively close in 2014.",
       "By 2018, closures stood at approximately 5,200 while openings had fallen to 3,000, producing a gap of about 2,200 shops.",
     ],
@@ -1158,8 +1159,8 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     paragraphs: [
       { label: "Introduction", goal: "Paraphrase the question by identifying the two measures, the country and the period covered.", tips: ["Refer to the graphic as a line graph.", "Use both categories, shop closures and new shop openings.", "State that the figures cover 2011 to 2018 and represent numbers of shops."], starter: "The line graph compares the numbers of shops that opened and closed in a particular country between 2011 and 2018." },
       { label: "Overview", goal: "Present the main contrast between the downward trend in openings and the highly volatile pattern of closures.", tips: ["Mention the overall fall in openings without including figures.", "Highlight the exceptional collapse and recovery in closures.", "State that closures outnumbered openings in most years."], starter: "Overall, while the number of new shops generally declined, closures varied considerably and were higher than openings for most of the period." },
-      { label: "Detail 1", goal: "Describe and compare both series from 2011 to 2014.", tips: ["Begin with openings at about 8,500 and closures at approximately 6,400 in 2011.", "Explain that openings plunged to 4,000 in 2012, then recovered to 5,000 in 2013 and roughly 6,100 in 2014.", "Contrast this with closures falling slightly to 5,900 in 2012, peaking at around 7,200 in 2013 and easing to 6,500 in 2014."], starter: "In 2011, approximately 8,500 shops opened, compared with about 6,400 closures, but the number of openings then fell sharply." },
-      { label: "Detail 2", goal: "Report the exceptional 2015 figures and the subsequent patterns through 2018.", tips: ["Emphasise that closures plunged to about 500 in 2015, while openings stood at 4,000.", "Describe the rebound in closures to around 5,200 in 2016, followed by little change at approximately 5,000 to 5,200.", "Note that openings remained near 4,000 from 2015 to 2017 before dropping to 3,000 in 2018."], starter: "The most striking change occurred in 2015, when closures collapsed to roughly 500 before recovering strongly the following year." },
+      { label: "Detail 1", goal: "Describe and compare both series from 2011 to 2014.", tips: ["Begin with openings at about 8,500 and closures at approximately 6,400 in 2011.", "Explain that openings plunged to 3,900 in 2012, then recovered to 5,000 in 2013 and roughly 6,200 in 2014.", "Contrast this with closures falling slightly to 5,900 in 2012, peaking at around 7,200 in 2013 and easing to 6,500 in 2014."], starter: "In 2011, approximately 8,500 shops opened, compared with about 6,400 closures, but the number of openings then fell sharply." },
+      { label: "Detail 2", goal: "Report the exceptional 2015 figures and the subsequent patterns through 2018.", tips: ["Emphasise that closures plunged to about 600 in 2015, while openings stood at 4,000.", "Describe the rebound in closures to around 5,200 in 2016, followed by little change at approximately 5,000 to 5,200.", "Note that openings remained near 4,000 from 2015 to 2017 before dropping to 3,000 in 2018."], starter: "The most striking change occurred in 2015, when closures collapsed to roughly 600 before recovering strongly the following year." },
     ],
     vocabulary: [
       { phrase: "shop closures", use: "Use for businesses ceasing operations." },
@@ -1172,7 +1173,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { phrase: "respectively", use: "Use for paired figures clearly." },
     ],
     pitfalls: [
-      "Do not claim that closures fell to zero in 2015. The point is above the baseline at approximately 500.",
+      "Do not claim that closures fell to zero in 2015. The point is above the baseline at approximately 600.",
       "Do not describe both lines as showing an overall decline without qualification. Openings declined overall, but closures fluctuated and finished at just over 5,000.",
       "Do not say openings were always lower than closures. Openings were higher in 2011 and, because closures collapsed, also in 2015.",
     ],
@@ -1432,7 +1433,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     questionType: "IELTS Academic Task 1, process diagram",
     whatItAsks: "Describe how discarded plastic bottles are collected, sorted and processed into reusable raw material and several new consumer products, using at least 150 words.",
     keyPoints: [
-      "The process contains nine labelled stages, beginning when consumers place used plastic bottles in recycling bins and ending with the manufacture of new products.",
+      "The process contains nine labelled stages, beginning when consumers place used plastic bottles in recycling bins and ending with the manufacture of new products, which an arrow returns to the recycling bin, making the process a closed loop.",
       "After collection by a recycling lorry, the bottles are sorted manually at a recycling centre, and only suitable bottles continue while rejected items are removed.",
       "The accepted bottles are compressed into large blocks, crushed into small fragments and then washed before further processing.",
       "The clean plastic fragments are converted into pellets, which are heated to create reusable raw material.",
@@ -1506,7 +1507,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     keyPoints: [
       "The number of gates will rise from 8 to 18, while the present compact rectangular gate area will be replaced by a much larger Y-shaped concourse.",
       "The existing walkways serving the gates will be replaced by a sky train, with stops near the terminal and at the point where the concourse divides.",
-      "The departures section will gain a bag-drop facility and shops, while its check-in desk and café will remain but occupy different positions.",
+      "The departures section will gain a bag-drop facility and shops, its check-in desk and café will move to new positions, and a second café will open on the arrivals side.",
       "The arrivals section, which currently has no passenger amenities shown, will gain an ATM and a car-hire facility, while passport control and customs will remain.",
       "The basic division will be preserved, with departures on the left and arrivals on the right, and security, passport control and customs continuing to separate the public terminal from the gate area.",
     ],
@@ -1515,7 +1516,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { label: "Introduction", goal: "Paraphrase that the two plans compare the present layout of Southwest Airport with its proposed appearance following redevelopment next year.", tips: ["Use the future passive because the second plan is a proposal, for example, will be added or will be replaced.", "Name both time periods clearly, the current site and the redeveloped airport next year."], starter: "The plans compare the current layout of Southwest Airport with the way it is expected to look after next year's redevelopment." },
       { label: "Overview", goal: "Highlight the major expansion and modernisation without including gate numbers or minor facility locations.", tips: ["Emphasise that the gate concourse will become much larger and change from a rectangle to a branching design.", "Mention both the new sky train and the increase in shops and services.", "Note that departures will remain on the left and arrivals on the right."], starter: "Overall, although the terminal will retain its basic division, the airside area will be greatly expanded and passenger facilities will be improved." },
       { label: "Detail 1", goal: "Describe changes to the departures and arrivals areas in the main terminal.", tips: ["On the departures side, report the new bag drop, the repositioned check-in desk and café, and the shops beyond security.", "On the arrivals side, identify the new ATM near the centre and the car-hire office in the new lower-right extension.", "State that security and passport control will still serve departures, while arrivals will continue to contain passport control and customs."], starter: "Within the main terminal, several new services are planned, especially on the departures side." },
-      { label: "Detail 2", goal: "Compare the present gate structure and access system with the enlarged future concourse.", tips: ["Contrast the current rectangular area containing gates 1 to 8 with the proposed Y-shaped concourse containing gates 1 to 18.", "Explain that gates 1 to 5 will line the central corridor, while gates 6 to 18 will be distributed around the two branches.", "Report that the current walkways will give way to a sky train connecting the terminal with the branching concourse."], starter: "More substantial changes will take place beyond passport control, where the existing gate area will be completely redesigned." },
+      { label: "Detail 2", goal: "Compare the present gate structure and access system with the enlarged future concourse.", tips: ["Contrast the current rectangular area containing gates 1 to 8 with the proposed Y-shaped concourse containing gates 1 to 18.", "Explain that gates 1 to 3 and 16 to 18 will line the central stem, one set on each side, while gates 4 to 15 will run along the two arms.", "Report that the current walkways will give way to a sky train connecting the terminal with the branching concourse."], starter: "More substantial changes will take place beyond passport control, where the existing gate area will be completely redesigned." },
     ],
     vocabulary: [
       { phrase: "Y-shaped concourse", use: "Describe the new branching gate-area" },
@@ -2001,14 +2002,14 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       "The park has shifted from a mainly formal, ornamental layout to one offering more entertainment and family facilities, including an amphitheatre, a café and a children's play area.",
       "The stage for musicians on the western side was replaced by an amphitheatre for concerts, while the central fountain gave way to a square rose garden surrounded by seats.",
       "The northeastern rose garden and pond for water plants were replaced by a café and a children's play area respectively.",
-      "The glasshouse in the southeast was removed and a larger water feature was created nearby, with a new underground entrance added at the southeastern corner.",
+      "The glasshouse in the southeast was removed and a larger water feature was created nearby, with a new underground car park entrance added outside the eastern boundary, at the south-east corner.",
       "The entrances from Arnold Avenue and Eldon Street remained, but the original perimeter seating was largely moved to the area around the central rose garden.",
     ],
     overview: "Overall, Grange Park has been transformed from a formal ornamental garden into a more varied recreational space, although its main road entrances and part of its planting have been retained.",
     paragraphs: [
       { label: "Introduction", goal: "Paraphrase that the plans compare Grange Park at its opening with its current arrangement.", tips: ["Name Grange Park and both time periods, namely 1920 and today.", "Use the word layout or plans rather than claiming the park changed size."], starter: "The plans illustrate how the layout of Grange Park has changed since it first opened in 1920." },
       { label: "Overview", goal: "Summarise the broad modernisation of the park and identify the limited continuity.", tips: ["Emphasise the change from ornamental features to leisure and entertainment facilities.", "Mention that the Arnold Avenue and Eldon Street entrances remain, while underground access is new.", "Do not include detailed locations or lists of every feature here."], starter: "Overall, the park is now more focused on recreation and entertainment, while its principal entrances have been preserved." },
-      { label: "Detail 1", goal: "Describe changes in the western and central parts of the park.", tips: ["Explain that the western stage for musicians and nearby southwestern rose garden made way for the amphitheatre for concerts.", "State that the fountain was replaced by a square central rose garden.", "Compare the original boundary benches with the seats now arranged around all sides of the central garden."], starter: "On the western side, the former stage and southwestern rose garden have been replaced by an amphitheatre, while the fountain in the centre has given way to a seated rose garden." },
+      { label: "Detail 1", goal: "Describe changes in the western and central parts of the park.", tips: ["Explain that the western stage for musicians made way for the amphitheatre for concerts, and that the south-western rose garden disappeared without anything taking its place.", "State that the fountain was replaced by a square central rose garden.", "Compare the original boundary benches with the seats now arranged around all sides of the central garden."], starter: "On the western side, the former stage has been replaced by an amphitheatre for concerts, the south-western rose garden has gone, and the fountain in the centre has given way to a seated rose garden." },
       { label: "Detail 2", goal: "Report the changes in the northern and eastern sections, including the new access point.", tips: ["Note that the northwestern rose garden is the only original rose garden still in the same position.", "Link the northeastern rose garden to the present café and the former pond to the children's play area.", "Describe the water feature replacing the southeastern glasshouse and mention the underground entrance from the southeast."], starter: "Elsewhere, the northwestern rose garden has survived, whereas the features on the eastern side have been extensively redeveloped." },
     ],
     vocabulary: [
