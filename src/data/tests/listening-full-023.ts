@@ -33,27 +33,42 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "ZQW5009"
+              "answer": "ZQW5009",
+              "explanation": "Just after 1:15 the client reads the policy number straight off the paper in front of her, ZQW5009. The three letters are said as letter names before the numbers, so write them as capitals and join the digits on with no space or gap.",
+              "evidence": "It's ZQW5009."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "2500cc"
+              "answer": "2500cc",
+              "explanation": "Around 1:40 the agent says 1,500 or 1,800 CC only as examples of what he means by engine size, and the client then answers that hers is much bigger, 2,500 CC. The two example numbers come first and are the trap, so wait until she gives her own figure.",
+              "evidence": "It's actually much bigger than that. It's 2,500 CC."
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "22 August"
+              "answer": [
+                "22 August",
+                "22nd August",
+                "August 22",
+                "the 22nd of August"
+              ],
+              "explanation": "Around 2:25 the client gives her date of birth as the 22nd of August 1955, and the year is already printed on the form. Two words are allowed, so write 22 August and leave out 'the' and 'of'.",
+              "evidence": "The 22nd of August, 1955."
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "Jack 1897"
+              "answer": "Jack 1897",
+              "explanation": "Just before 3 minutes the client guesses her password twice. Her first guess, her mother's name Sophia, is refused by the agent, and the real password is her grandfather's name Jack followed by the numbers 1897. This is a correction trap, so never write the first name you hear.",
+              "evidence": "It's my grandfather's name, Jack. Yes. Followed by some numbers. 1897, right?"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "15000"
+              "answer": "15000",
+              "explanation": "Around 3:20 the client asks to reduce the value by $5,000 and the agent works out what that actually means, bringing it down to $15,000. The form asks for the new value, so $5,000 is the trap because it is the size of the cut, not the answer.",
+              "evidence": "You mean bring it down to $15,000?"
             }
           ],
           "wordLimit": 2
@@ -66,30 +81,41 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "Son-in-law"
+              "answer": "Son-in-law",
+              "explanation": "Around 4:40 the client explains the relationship in two steps: Samuel is married to her daughter, so he is her son-in-law. She says the word herself straight afterwards, and son-in-law counts as one word because of the hyphens.",
+              "evidence": "He's married to my daughter. He's my son-in-law."
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "family"
+              "answer": "family",
+              "explanation": "Just after 5 minutes the client gives a long explanation about her injured arm and the gear stick, and the agent sums it all up for her as family reasons. The trap is his earlier question, business or social purposes, which she answers with 'not really'.",
+              "evidence": "So that would be family reasons then."
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
               "answer": [
+                "photocopy",
                 "copy",
                 "photo copy"
-              ]
+              ],
+              "explanation": "Around 5:30 the agent says the premium will not go up as long as they are given a photocopy of Samuel's licence, and he then calls it 'a true copy' that has to be signed at the Department of Transport. The form already prints 'Verified', so the missing part is the copy itself.",
+              "evidence": "long as you can provide us with a photocopy of his driver's license"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "record"
+              "answer": "record",
+              "explanation": "Around 5:50 the agent asks for a record of driving offences and then says it is important that Samuel has a clean record for the previous five years, which matches 'Clean driving' on the form. The five years is a distracting detail, not the answer.",
+              "evidence": "it's important that he has a clean record for the five previous years"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "temporary"
+              "answer": "temporary",
+              "explanation": "Just after 6:12 the agent says they can issue temporary cover from today's date, with full cover only once the paperwork has been approved. He repeats the idea when he explains that it lasts two full weeks, which is exactly what the form says.",
+              "evidence": "We can issue temporary cover from today's date"
             }
           ],
           "wordLimit": 2
@@ -116,32 +142,44 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "You can become more confident by using",
-              "answer": "positive thinking"
+              "answer": "positive thinking",
+              "explanation": "Just after 8 minutes Jo from Health Services says positive thinking is the key to confidence, and that if you apply positive thinking you will gain confidence. Two words are allowed, so write positive thinking rather than 'positive thought patterns', which she says a moment later.",
+              "evidence": "If you apply positive thinking, you will gain confidence."
             },
             {
               "id": "q12",
               "textHtml": "More confidence results in better",
-              "answer": "performance"
+              "answer": "performance",
+              "explanation": "Around 8:27 Jo gives the whole chain in one sentence: positivity leads to confidence, which in turn will optimise your performance. 'Optimise' is her way of saying 'better', so the word you need is the last one in the sentence, performance.",
+              "evidence": "Positivity leads to confidence, which, in turn, will optimize your performance."
             },
             {
               "id": "q13",
               "textHtml": "A good strategy to build confidence is to get rid of negative memories of mistakes and failures and instead concentrate on",
-              "answer": "successful outcomes"
+              "answer": "successful outcomes",
+              "explanation": "Around 9:22 Jo says you need to put aside your disappointments and focus on successful outcomes, and 'focus on' is the same as 'concentrate on' in the sentence. She uses the singular 'a more successful outcome' a little earlier, so listen for the plural version here.",
+              "evidence": "put aside your disappointments and focus on successful outcomes"
             },
             {
               "id": "q14",
               "textHtml": "Frequent of positive imagery is necessary for success.",
-              "answer": "rehearsal"
+              "answer": "rehearsal",
+              "explanation": "Around 9:53 Jo announces the first of two more things and repeats the word twice for you, rehearsal. She then explains it as imagining yourself performing successfully, which is the positive imagery in the sentence, so write the noun rehearsal and not the verb rehearse.",
+              "evidence": "Firstly, rehearsal. Yes, you heard me, rehearsal."
             },
             {
               "id": "q15",
               "textHtml": "Mental positivity is not enough-you also have to act in a confident manner-so is important too.",
-              "answer": "body language"
+              "answer": "body language",
+              "explanation": "Around 11:24 Jo says that practising positive body language will help you cross into a confident mood, which matches acting in a confident manner. She spends a full minute on posture, eye contact and smiling before she names it, so the answer comes after the examples, not before.",
+              "evidence": "Practicing positive body language will help you cross the threshold into a confident mood."
             },
             {
               "id": "q16",
               "textHtml": "Setting and achieving goals results in brain activity that brings about an experience of",
-              "answer": "happiness"
+              "answer": "happiness",
+              "explanation": "Just before 12 minutes Jo says that once you set a goal the brain responds with a burst of activity which we experience as happiness, and she pauses with 'that's right' just before the word. She repeats it for the achieved goal too, so you get a second chance to hear it.",
+              "evidence": "the brain responds with a burst of activity which we experience as, that's right, happiness"
             }
           ],
           "wordLimit": 2
@@ -154,22 +192,30 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "appropriate"
+              "answer": "appropriate",
+              "explanation": "Just after 13 minutes Jo says you need an appropriate goal and then explains 'by appropriate I mean achievable'. Achievable is the trap, because it is only her own explanation of the word, while the chart needs the word she actually uses, appropriate.",
+              "evidence": "you need an appropriate, and by appropriate I mean achievable goal"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "work out"
+              "answer": "work out",
+              "explanation": "Around 13:33 Jo says that once your incentives are settled you have to work out the various stages and phases you will go through, and 'stages and phases' is what the chart calls steps. Two words are allowed, so write the full phrasal verb work out.",
+              "evidence": "you'll have to work out the various stages and phases"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "resources"
+              "answer": "resources",
+              "explanation": "Around 13:45 Jo says it is important to ensure you collect the resources to accomplish the various steps, and 'collect' is the same idea as 'gather' in the chart. She says resources again in the very next sentence, which confirms it for you.",
+              "evidence": "ensure you collect the resources to accomplish the various steps"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "progress log"
+              "answer": "progress log",
+              "explanation": "Around 14:25 Jo gives the last step twice over: keep track of what you have accomplished, and then, in other words, maintain a progress log. The chart needs her second wording, so wait for 'in other words' before you write anything.",
+              "evidence": "be sure to maintain a progress log"
             }
           ],
           "wordLimit": 2
@@ -201,7 +247,9 @@ export const listeningFull023: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 16:25 two times are given close together. One student says the presentations are scheduled for next month, but the other says they have to be ready to demonstrate by the end of next week, and that is when their own work is due. Next year is a third trap, belonging to the series the project will be shown in.",
+              "evidence": "we have to be ready to demonstrate by the end of next week"
             },
             {
               "id": "q22",
@@ -211,7 +259,9 @@ export const listeningFull023: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 16:30 one student says they have to use cheap, readily available common items and that expensive lab equipment is out of the question, so the materials must be inexpensive. Recycled items are only suggested 'if possible', and lab equipment is ruled out rather than required.",
+              "evidence": "We have to use cheap, readily available common items."
             },
             {
               "id": "q23",
@@ -221,14 +271,16 @@ export const listeningFull023: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Just after 17 minutes one student explains that superstitious people gave it that name because they could not understand the science behind it and thought it was black magic, which is a belief in the supernatural. The word 'black' is the trap here, because it belongs to 'black magic' and not to the colour of the toy.",
+              "evidence": "superstitious people labeled it that because they couldn't comprehend the scientific principles it demonstrated"
             }
           ]
         },
         {
           "title": "Questions 24-25",
           "type": "multiple-answer",
-          "instructionHtml": "Choose TWO letters A-E.",
+          "instructionHtml": "Where do the students find the small items they need for their experiment? Choose TWO letters, A to E.",
           "questions": [
             {
               "id": "q24",
@@ -237,7 +289,9 @@ export const listeningFull023: PracticeTest = {
                 "D",
                 "E"
               ],
-              "answerPairId": "test23-q24-q25"
+              "answerPairId": "test23-q24-q25",
+              "explanation": "The two answers are D and E, in either order. D covers the two places on Bob himself: around 17:45 the paper clips come out of the bottom of his bag, and just after 18 minutes a rubber band comes out of his pocket, even though it turns out to be the wrong kind. His pencil case in option A is the trap, because he opens it and there is nothing in it.",
+              "evidence": "there are lots of them in the bottom of my bag"
             },
             {
               "id": "q25",
@@ -246,7 +300,9 @@ export const listeningFull023: PracticeTest = {
                 "D",
                 "E"
               ],
-              "answerPairId": "test23-q24-q25"
+              "answerPairId": "test23-q24-q25",
+              "explanation": "The two answers are D and E, in either order. E covers the other pair of places: around 18:05 they pick up more of the small paper clips from the floor, and just after 18:30 Tara hands over hair bands from a whole packet full. The recycling bin in option A never supplies anything, because Bob refuses to go through other people's rubbish.",
+              "evidence": "especially on the floor, we're about to find a few more"
             }
           ],
           "choices": [
@@ -281,17 +337,23 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "straw"
+              "answer": "straw",
+              "explanation": "Around 20:40 the first assembly step is given as a spoken instruction: take a straw and fold it in two, and 'in two' means the same as 'in half' in the notes. The talk about pinching and biting it that follows is about how to fold it, not what to fold.",
+              "evidence": "Take a straw and fold it in two."
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "rubber band"
+              "answer": "rubber band",
+              "explanation": "Around 21 minutes step two is to wrap a rubber band several times around the ends to hold them together, which is the same as securing the ends. Two words are allowed, so write rubber band and leave out 'several times'.",
+              "evidence": "Wrap a rubber band several times around the ends to hold them together."
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "paper clips"
+              "answer": "paper clips",
+              "explanation": "Around 21:20 one student hooks a paper clip into the rubber band and then says to hook two or three more on, so the thing attached to the diver is paper clips. Write the plural, because several are used to get the weight of the diver right.",
+              "evidence": "Now, hook two or three more paper clips on."
             },
             {
               "id": "q29",
@@ -299,12 +361,16 @@ export const listeningFull023: PracticeTest = {
               "answer": [
                 "cap",
                 "lid"
-              ]
+              ],
+              "explanation": "Around 22:20 the bottle is filled with water, the diver is lowered in, and the next instruction is to put the cap back on, so cap is the word you hear. The word lid is used much earlier when they are looking for a bottle, and either word is accepted here.",
+              "evidence": "Now put the cap back on."
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "heavier"
+              "answer": "heavier",
+              "explanation": "Around 22:30 the reason is explained at the end of the demonstration: squeezing compresses the air bubble trapped in the straw, water rushes in, and that makes the diver heavier so it sinks. The comparative form heavier is what you need, not 'heavy'.",
+              "evidence": "making it heavier so it sinks"
             }
           ],
           "wordLimit": 2
@@ -331,27 +397,37 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "When did Mt. Pinatubo erupt for the first time?",
-              "answer": "5500 years ago"
+              "answer": "5500 years ago",
+              "explanation": "Around 25 minutes the lecturer lists evidence of eruptions from approximately 500, 3,000 and 5,500 years ago. The question asks about the first eruption, so you need the largest number, which is the last one in the list and the furthest back in time.",
+              "evidence": "There is evidence of eruptions from approximately 500, 3,000 and 5,500 years ago."
             },
             {
               "id": "q32",
               "textHtml": "When was the earthquake measuring 7.8 recorded?",
-              "answer": "July 1990"
+              "answer": "July 1990",
+              "explanation": "Around 25:17 the lecturer says the events of the 1991 eruption began in July 1990 with a magnitude 7.8 earthquake. Two years sit side by side in the same sentence, so match the date to the earthquake rather than to the eruption.",
+              "evidence": "began in July 1990 when a magnitude 7.8 earthquake occurred"
             },
             {
               "id": "q33",
               "textHtml": "When did the experts begin to study Mt. Pinatubo?",
-              "answer": "mid-march 1991"
+              "answer": "mid-march 1991",
+              "explanation": "Around 25:40 the lecturer says that in mid-March 1991 many earthquakes were felt around the mountain, and that this is when the volcanologists started their investigation, which is the same as beginning to study it. The date comes before the clue, so hold it in your head until you hear 'started their investigation'.",
+              "evidence": "In mid-March 1991, many earthquakes were experienced around Mount Pinatubo"
             },
             {
               "id": "q34",
               "textHtml": "What fell on the local villages on 2nd April?",
-              "answer": "ash"
+              "answer": "ash",
+              "explanation": "Around 25:50 the lecturer says that on April 2nd small explosions from vents near the crater dusted the villages with ash. 'Dusted' is used instead of 'fell on', so follow the date to find the right place in the talk.",
+              "evidence": "on April 2nd, small explosions from vents near the crater dusted their villages with ash"
             },
             {
               "id": "q35",
               "textHtml": "What does a ‘level 5’ alert mean?",
-              "answer": "eruption in progress"
+              "answer": "eruption in progress",
+              "explanation": "Around 26:30 the level 5 alert is announced and the lecturer explains it in the same breath as indicating an eruption in progress. The level 3 alert just before is the trap, because that one was only about the possibility of a major eruption.",
+              "evidence": "the announcement of a level 5 alert on June 9th, indicating an eruption in progress"
             }
           ],
           "wordLimit": 3
@@ -364,27 +440,37 @@ export const listeningFull023: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "collapse"
+              "answer": "collapse",
+              "explanation": "Around 27:10 the lecturer says the eruption caused numerous major earthquakes due to the collapse of the land at the top of the mountain. The sentence in the question says 'summit' where the lecturer says 'the land at the top', so the one word you need is collapse.",
+              "evidence": "causing numerous major earthquakes due to the collapse of the land at the top of the mountain"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "tropical storm"
+              "answer": "tropical storm",
+              "explanation": "Around 27:40 the lecturer says that as luck would have it a tropical storm was passing just to the northeast of the volcano, bringing a lot of rain. Two words are allowed, so write tropical storm and not 'a passing tropical storm'.",
+              "evidence": "a tropical storm was passing just to the northeast of Mount Pinatubo"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "roofs"
+              "answer": "roofs",
+              "explanation": "Around 28 minutes the lecturer says most of the people who died did so because the weight of the ash collapsed roofs and killed the people inside the houses. The sentence asks what the tephra fell on, so the answer is roofs, and the plural is what you hear.",
+              "evidence": "because of the weight of the ash collapsing roofs"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "water and oxygen"
+              "answer": "water and oxygen",
+              "explanation": "Around 28:30 the lecturer says the sulphur dioxide mixed with water and oxygen in the atmosphere to become sulphuric acid. Both words are needed, and the number right before it, between 15 and 30 million tons of gas, is there to distract you.",
+              "evidence": "the sulphur dioxide mixed with water and oxygen in the atmosphere to become sulfuric acid"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "global temperatures"
+              "answer": "global temperatures",
+              "explanation": "Around 29:10 the lecturer says the cooling effects of the cloud were remarkable and that it reduced global temperatures considerably, and 'reduced' is the same as 'lowering' in the sentence. Ozone is the distractor, because the ozone holes reached an unprecedented size, which is a rise rather than a fall.",
+              "evidence": "It reduced global temperatures considerably."
             }
           ],
           "wordLimit": 3

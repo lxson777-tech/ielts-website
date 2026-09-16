@@ -33,22 +33,35 @@ export const listeningFull024: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Sylvia"
+              "answer": "Sylvia",
+              "explanation": "Around 1:10 the agent checks the spelling of the first name, asks whether it is with an I or a Y, and the client answers 'a Y' and then spells the whole name out letter by letter. The trap is the agent's question itself: if you write Silvia the moment you first hear the name, the spelling that follows will cost you the mark.",
+              "evidence": "That's S-Y-L-V-I-A."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "England"
+              "answer": "England",
+              "explanation": "Around 1:25 the agent asks, for the record, what country the client lives in, and she says England. The trap is everything around it: the holiday is on the Gold Coast in Australia, so the place name you hear most often in this part is not the country of origin.",
+              "evidence": "It's England, actually."
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "26 July"
+              "answer": [
+                "26 July",
+                "26th July",
+                "July 26",
+                "the 26th of July"
+              ],
+              "explanation": "Just before 1:45 the client gives July the 26th, the agent mishears it as the 25th and starts talking about a public holiday, and the client corrects him and repeats the date. Always wait for the correction: the first date you hear here is the wrong one.",
+              "evidence": "No, we're coming on the 26th of July."
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "2"
+              "answer": "2",
+              "explanation": "Around 2:10 the agent asks how many people there will be, and the client answers with people rather than a number, so you have to count them yourself: her sister plus herself makes 2. Nobody ever says the word two out loud.",
+              "evidence": "Just my sister and myself."
             },
             {
               "id": "q5",
@@ -56,32 +69,44 @@ export const listeningFull024: PracticeTest = {
               "answer": [
                 "holiday",
                 "on holiday"
-              ]
+              ],
+              "explanation": "Around 2:30 the agent asks a negative question, 'So you're not coming on business then?', and the client says it is just a holiday. Business is the distractor, and the agent keeps talking about wireless internet and fax machines afterwards to keep it in your ear. Either holiday or on holiday is accepted.",
+              "evidence": "No, it's just a holiday."
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "apartment"
+              "answer": "apartment",
+              "explanation": "Around 3:30 the agent offers three kinds of place, a house, a duplex or an apartment, and the client picks the apartment. The duplex is the trap, because it gets a long explanation about townhouses and semi-detached units and so takes up most of the talking time.",
+              "evidence": "I think an apartment will suit us just fine."
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "secure"
+              "answer": "secure",
+              "explanation": "Around 4:05 the client says the car must not be parked on the street and must be secure, and the form already prints 'off street', so the missing word is secure. The lock up garage is the distractor: it is raised first and then dropped as hard to find with an apartment.",
+              "evidence": "I think as long as it's not parked on the street and it's secure, there shouldn't be any problems."
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "motorway"
+              "answer": "motorway",
+              "explanation": "Just before 4:50 the agent lists a shopping mall, a casino, fun parks and a swimming pool, and the client turns all of them down before naming the one thing she does want, reasonable access to the motorway. The word is heard clearly as motorway, and one word fits inside the limit.",
+              "evidence": "we'd like to have reasonable access to the motorway"
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "palm beach"
+              "answer": "palm beach",
+              "explanation": "Around 5:30 three towns are offered and the client first says Mermaid Waters sounds delightful, which is the trap, then changes her mind when she is told the M1 is closest to Palm Beach. The answer is the town she settles on, not the one she liked first, and it is written as two words, Palm Beach.",
+              "evidence": "That's settled then. Palm Beach, it is."
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "1500"
+              "answer": "1500",
+              "explanation": "Around 6:10 the client offers $1,200 a week and the agent asks her to stretch to $1,500, which she agrees to. The $1,200 is said first and repeated, so it is the obvious trap. The form already prints the dollar sign, so write only the number 1500.",
+              "evidence": "Could you stretch that to $1,500 a week?"
             }
           ],
           "wordLimit": 2
@@ -113,7 +138,9 @@ export const listeningFull024: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Just before 8 minutes the speaker names three places in one breath, and the refreshments, the tea and coffee, are in the lobby. The back of the hall is where the pamphlets are and the front counter is where Bill sells the club's products, so both wrong options are real places in the talk.",
+              "evidence": "there will be a chance for you to ask questions over tea and coffee in the lobby afterwards"
             },
             {
               "id": "q12",
@@ -123,7 +150,9 @@ export const listeningFull024: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 8:30 the speaker says Nick Noble thought about a newspaper advertisement and about a billboard, but the words 'it was the radio that he decided on' tell you which one he actually used. This is the classic listening trap: the rejected options are said first.",
+              "evidence": "but it was the radio that he decided on to reach the most people"
             },
             {
               "id": "q13",
@@ -133,7 +162,9 @@ export const listeningFull024: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 9 minutes the speaker says the club grew from 'a dozen or so' friends, and a dozen is about 12, so the founding number is A. The 200 and the 20 in the same sentence are the membership and the year count from 20 years ago, and the 2,500 straight afterwards is the membership now.",
+              "evidence": "the club soon grew from a dozen or so friends and enthusiasts to around 200 members 20 years ago"
             },
             {
               "id": "q14",
@@ -143,7 +174,9 @@ export const listeningFull024: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 9:35 the speaker says the club caters for all levels of maturity and both genders, which is the same as males and females of any age. The 75-year-old man and the families with small children are both mentioned, but only as examples of the range, not as the group the club is mainly for.",
+              "evidence": "The club tries to cater for all levels of maturity and both genders."
             }
           ]
         },
@@ -155,32 +188,44 @@ export const listeningFull024: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "tramping"
+              "answer": "tramping",
+              "explanation": "Just after 11 minutes the speaker turns to the grades of activity and starts with tramping, giving Tuesdays and Saturdays, which matches the days printed in this row. Only one word is allowed, so write tramping and not 'tramping trips'.",
+              "evidence": "Tramping is arranged for Tuesdays and Saturdays throughout the year."
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "walking"
+              "answer": "walking",
+              "explanation": "In the stretch that starts at 11:24 the speaker moves on to walking and gives Thursday and Sunday, the days in this row. Keep track of which activity you are on: the three to five hours mentioned just before belongs to tramping, not to walking.",
+              "evidence": "walks are arranged for every Thursday and every Sunday over the course of the entire year"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "organiser"
+              "answer": "organiser",
+              "explanation": "At the end of the same stretch from 11:24 the speaker says you get in touch with the walking organiser to confirm your place, so the contact person for this row is the organiser. Only one word is allowed, so leave out 'walking', and spell it the British way with an s.",
+              "evidence": "get in touch with the walking organiser to confirm your participation"
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "variable"
+              "answer": "variable",
+              "explanation": "Around 12:30 the speaker is describing the wanderers and says the length of their activities is variable, so no fixed number of hours is ever given for this row. The phrase 'we're always home before dark' is the trap, because it sounds like a time but is not one.",
+              "evidence": "Bear in mind that the length of these activities is variable"
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "mystery"
+              "answer": "mystery",
+              "explanation": "Just after 13:25 the speaker introduces the last thing on her list, the mystery weekends, which matches the row saying weekends on Saturday and Sunday. One word only, so write mystery.",
+              "evidence": "These are our mystery weekends."
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "chairman"
+              "answer": "chairman",
+              "explanation": "At the end of the stretch that starts at 13:27 the speaker says to call the chairman of the committee for more information about the mystery weekends. The trap is that three other contact words have already been given, coordinator, organiser and leader, so you must match the person to the right activity.",
+              "evidence": "call the chairman of the committee"
             }
           ],
           "wordLimit": 1
@@ -207,32 +252,50 @@ export const listeningFull024: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "ED995"
+              "answer": "ED995",
+              "explanation": "Around 16:05 the adviser says all the code numbers are changing next semester and gives the new one for this paper. GEC692 is the trap, because the student says it herself a moment earlier and it is the old code. The letters and numbers run together, so write ED995.",
+              "evidence": "the code will be ED995"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "document"
+              "answer": "document",
+              "explanation": "Around 16:40 the adviser says the course lets you not just explore but also document the advancement of new educational developments, and 'explore' is the 'research' in the notes, so the missing word is document. One word is enough here.",
+              "evidence": "not just to explore, but also to document the advancement of new educational developments"
             },
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "socio-economic structures"
+              "answer": [
+                "socio-economic structures",
+                "socioeconomic structures"
+              ],
+              "explanation": "Around 17 minutes the adviser says you examine how education has been affected by cultural values and socio-economic structures, so culture is already printed for you and the missing part is the second half of that pair. The two words are joined by a hyphen, which still counts as two words inside the limit.",
+              "evidence": "once you've examined how education has been affected by cultural values and socioeconomic structures"
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "impact"
+              "answer": "impact",
+              "explanation": "Around 17:35 the adviser says you explore the impact of internationalisation on curriculum diversity in developing and developed countries. The recording says internationalisation where the notes say globalization, so you have to match by meaning, and the one word that fits the gap is impact.",
+              "evidence": "you'd move on to explore the impact of internationalisation on curriculum diversity in both developing and developed countries"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "written reviw"
+              "answer": [
+                "written review",
+                "written reviw"
+              ],
+              "explanation": "Around 18:10 the adviser explains that the PowerPoint presentation is not graded and that its feedback helps you finalise the written review, so the written review is the part carrying the 30%. The presentation is the trap: it is the first thing mentioned and it earns no marks at all.",
+              "evidence": "The feedback you get will help you to finalise the written review."
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "seminar"
+              "answer": "seminar",
+              "explanation": "Around 18:35 the adviser splits the second assignment in two, twenty marks for taking part in a seminar and fifty for the essay. The essay is already printed with its 50%, so the word you need is seminar, and the 30% said just before belongs to the first assignment.",
+              "evidence": "Twenty marks will go towards your participation in a seminar"
             }
           ],
           "wordLimit": 2
@@ -245,22 +308,30 @@ export const listeningFull024: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "tower"
+              "answer": "tower",
+              "explanation": "Just before 20 minutes the student asks 'Sorry, who?' and the adviser spells the surname out letter by letter, then gives the title and the date 2007. When a name is spelled out in IELTS listening it is almost always an answer, so write the letters down as they come.",
+              "evidence": "T-O-W-E-R. 2007. Comparative education."
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "2008"
+              "answer": "2008",
+              "explanation": "Around 20:10 the adviser gives two dates for the same Elliot book and tells the student to get the 2008 edition, not the original 1998 one. Both years are said in the same breath, and 1998 is then repeated, which makes it the stronger trap.",
+              "evidence": "But be sure to get the 2008 edition, not the original 1998 edition"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "brown"
+              "answer": "brown",
+              "explanation": "Around 20:35 the adviser recommends Brown's Education and globalization from 2009, which matches the title and the date already in the table. The warning that there are several other books by Brown is a distraction, not a reason to doubt the name.",
+              "evidence": "look for Brown's education and globalization published in 2009"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "knowledge policy"
+              "answer": "knowledge policy",
+              "explanation": "Around 20:50 the adviser gives the last book, Globalization and knowledge policy by York, published in 2010. The table already prints 'Globalization and', so the two words you need are knowledge policy, which is exactly the limit.",
+              "evidence": "Globalization and knowledge policy by York published quite recently, in fact, 2010."
             }
           ],
           "wordLimit": 2
@@ -287,7 +358,9 @@ export const listeningFull024: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "attacks"
+              "answer": "attacks",
+              "explanation": "Around 22:50 the lecturer says the body has to ward off attacks by harmful bacteria and viruses every day, and 'ward off' is the 'fighting off' in the summary while 'harmful bacteria and viruses' are the 'destructive pathogens'. Write attacks in the plural, as it is heard.",
+              "evidence": "the human body has to ward off attacks by various harmful bacteria and viruses"
             },
             {
               "id": "q32",
@@ -295,32 +368,49 @@ export const listeningFull024: PracticeTest = {
               "answer": [
                 "illness",
                 "disease"
-              ]
+              ],
+              "explanation": "Around 23:15 the lecturer describes natural immunity gained actively, when a person has suffered and then recovered from an illness, which is the previous encounter the summary means. Either illness or disease is accepted, and the mother passing protection on comes in the next sentence, which is already printed for you.",
+              "evidence": "when a person has first suffered and then recovered from an illness"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "active"
+              "answer": "active",
+              "explanation": "Around 23:35 the lecturer calls vaccination active immunization used as a preventative measure. Passive immunization is described immediately afterwards and is the trap, so hold on to which of the two is the one a vaccine gives you.",
+              "evidence": "so we can use active immunization as a preventative measure"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "defence"
+              "answer": [
+                "defence",
+                "defence system",
+                "defense",
+                "defense system"
+              ],
+              "explanation": "Around 24:05 the lecturer says the tiny amount of germ is just enough for the body's defence system to react by forming antibodies, so the word in the gap is defence. Watch the spelling: the automatic transcript writes the American 'defense', but the British defence is what you want.",
+              "evidence": "sufficient for the body's defense system to recognize and respond to the threat by forming antibodies"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "blood"
+              "answer": "blood",
+              "explanation": "Around 24:30 the lecturer says the proteins used in passive immunization are usually taken from the blood of animals, which the summary turns round into 'proteins from animal blood'. One word, blood, is all that is needed.",
+              "evidence": "so proteins, usually taken from the blood of animals, are injected to equip the patient with the essential antibodies"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "infected cows"
+              "answer": "infected cows",
+              "explanation": "Around 25:05 the lecturer says people in contact with the infected cows caught cowpox, so that is where the milder disease came from. Writing just 'cows' misses the point the lecturer makes, and infected cows is two words, exactly the limit.",
+              "evidence": "people in contact with the infected cows became ill with symptoms resembling smallpox"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "experiment"
+              "answer": "experiment",
+              "explanation": "Around 25:20 the lecturer says Jenner conducted an experiment by injecting a child with cowpox material, which is the 'successful' thing the summary describes. The word experiment is said plainly, so one word answers it.",
+              "evidence": "He conducted an experiment by injecting a child with a small amount of pus taken from a cowpox pustule."
             }
           ],
           "wordLimit": 2
@@ -333,17 +423,57 @@ export const listeningFull024: PracticeTest = {
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "F"
+              "answer": "F",
+              "explanation": "Around 25:55 the lecturer says antibodies are made by white blood cells called B lymphocytes, so the cell shape at the top left of the diagram is F, B-lymphocyte. 'White blood cells' is the trap, because it is the phrase you hear first and it is not one of the six options in the box.",
+              "evidence": "antibodies are made by white blood cells called B lymphocytes"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "Just after 26 minutes the lecturer calls the Y-shaped things antibodies, and the diagram shows exactly those Y shapes coming out of the cell, so the label is A, antibody. Anti-toxins is offered as an easier name for the same thing, not as a different item.",
+              "evidence": "These Y-shaped antibodies, or you can think of them as anti-toxins"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "Around 26:35 the lecturer says an antibody clings to a particular antigen to make it harmless, which is the antigen-antibody reaction already printed on the diagram, so the loose shapes at the bottom left are C, antigens. D, germs, is the trap: the germs release the antigens, they are not the shapes themselves.",
+              "evidence": "A correct antibody for that disease clings to a particular antigen in order to render it harmless."
+            }
+          ],
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "choices": [
+            {
+              "value": "A",
+              "label": "antibody"
+            },
+            {
+              "value": "B",
+              "label": "agglutination"
+            },
+            {
+              "value": "C",
+              "label": "antigen"
+            },
+            {
+              "value": "D",
+              "label": "germs"
+            },
+            {
+              "value": "E",
+              "label": "plasma"
+            },
+            {
+              "value": "F",
+              "label": "B-lymphocyte"
             }
           ]
         }

@@ -33,37 +33,56 @@ export const listeningFull025: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Anna Grieves"
+              "answer": "Anna Grieves",
+              "explanation": "Just before 1:45 the caller gives her surname and the agent starts to guess the spelling as G-R-E, which she stops and corrects, spelling it out in full and adding that Anna has a double N. The wrong spelling is offered first, so wait for the correction before you write.",
+              "evidence": "No, G-R-I-E-V-E-S and Anna is with double N."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "holiday world"
+              "answer": "holiday world",
+              "explanation": "Around 1:55 the caller only says she saw an advertisement in 'one of the magazines', and it is the agent who supplies the name Holiday World, which she then confirms. The answer is said by the wrong person, which is why it is easy to miss.",
+              "evidence": "Was it Holiday World? Yes, that's the one."
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "FT4551"
+              "answer": "FT4551",
+              "explanation": "Around 2:20 the caller says which holiday she likes by its code, and letters and digits are read out together. Write them joined up as FT4551, with no space and no gap between the letters and the numbers.",
+              "evidence": "I like the look of the one with the code FT4551."
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "3"
+              "answer": "3",
+              "explanation": "Around 2:30 the caller says she is going with a couple of friends, so there will be three of them. 'A couple' means two, and two is the trap: the form asks for the number of people altogether, which she gives a moment later as three.",
+              "evidence": "I want to go with a couple of friends so there'd be three of us going."
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "16 August"
+              "answer": [
+                "16 August",
+                "16th August",
+                "August 16",
+                "the 16th of August"
+              ],
+              "explanation": "Around 2:45 the caller says they must be back by the end of August and then names the going out date, August the 16th. The end of August is the return, not the departure, so only the second date belongs in this gap.",
+              "evidence": "So if we say going on August the 16th, that would work fine."
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "11"
+              "answer": "11",
+              "explanation": "Around 2:55 the agent offers 7, 11 or 14 nights and the caller never repeats a number, she just says 'the middle one'. You have to do the choosing yourself, and the middle of those three is 11.",
+              "evidence": "There's, let's see, 7, 11 or 14 nights. We thought the middle one would be great."
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "super"
+              "answer": "super",
+              "explanation": "Around 3:15 three levels of insurance are given, standard, super and super plus, and the caller rejects standard as too basic and picks super. Super plus is the trap because the word super is inside it, so listen for whether anything follows.",
+              "evidence": "Standard seems a bit basic. Let's say super."
             }
           ],
           "wordLimit": 2
@@ -81,7 +100,9 @@ export const listeningFull025: PracticeTest = {
                 "A",
                 "F"
               ],
-              "answerPairId": "test25-q8-q10"
+              "answerPairId": "test25-q8-q10",
+              "explanation": "Around 4:15, talking about the hotel, the caller says a balcony for the room is a must because it is so nice to sit out and enjoy the view, so option G is one of her three. The sentence starts at the end of the previous stretch, and the picnic lunches just before are turned down, so E is not chosen.",
+              "evidence": "the room is a must. It's so nice to sit out enjoying the view."
             },
             {
               "id": "q9",
@@ -91,7 +112,9 @@ export const listeningFull025: PracticeTest = {
                 "A",
                 "F"
               ],
-              "answerPairId": "test25-q8-q10"
+              "answerPairId": "test25-q8-q10",
+              "explanation": "Around 4:30 the caller says she likes practical things and that a demonstration of local arts could be fun, which is option A. She has just rejected the night bus tour, the museums and the dances in the same breath, so three wrong options sit right next to the right one.",
+              "evidence": "So I think the demonstration of local arts could be fun."
             },
             {
               "id": "q10",
@@ -101,7 +124,9 @@ export const listeningFull025: PracticeTest = {
                 "A",
                 "F"
               ],
-              "answerPairId": "test25-q8-q10"
+              "answerPairId": "test25-q8-q10",
+              "explanation": "Around 4:45 the caller says going up the river on a boat sounds delightful and that she would not want to miss it, which is option F. The mountains are rejected straight afterwards because of the winding roads, and she never finishes the sentence, so you have to hear the refusal in her tone.",
+              "evidence": "going up the river on a boat sounds delightful"
             }
           ],
           "choices": [
@@ -162,37 +187,51 @@ export const listeningFull025: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "1992"
+              "answer": "1992",
+              "explanation": "Around 7:05 the speaker gives three years close together, and only 1992 is when the charity itself was set up. 1987 is when the founder took up long distance running and 1997 is when local TV started filming the runs, so both are traps.",
+              "evidence": "And in 1992, established the charity as we know it today."
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "hospital"
+              "answer": "hospital",
+              "explanation": "Around 7:20 the speaker says all the money raised goes to the hospital, which is the aim of the charity. The people who are unwell are mentioned in the same sentence, but the money goes to the place that treats them, so one word, hospital, is the answer.",
+              "evidence": "All the funds collected by run well go to the hospital"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "numbers"
+              "answer": "numbers",
+              "explanation": "Around 7:50 the speaker says the charity has a standard design for the numbers and asks teams to make them up themselves, because the charity will not spend its funds on doing it. Clothing is the trap: it is mentioned first, but what you wear is up to you, so it is not something teams must supply.",
+              "evidence": "We have a standard design for your numbers which we ask you to reproduce."
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "train"
+              "answer": "train",
+              "explanation": "Around 8:15 the speaker says teams should train as a group, so the missing word is train. The same sentence says you will not actually compete side by side, which is the opposite idea and is there to pull you away from the answer.",
+              "evidence": "we do recommend that you train as a group"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "food and drink"
+              "answer": "food and drink",
+              "explanation": "Around 8:40 the speaker says you must come to the race with sufficient food and drink because the charity does not provide it. Three words are allowed, so write food and drink in full rather than just one half of the pair.",
+              "evidence": "please make sure you come along to the race with sufficient food and drink"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "main square"
+              "answer": "main square",
+              "explanation": "Around 8:55 the speaker traces the course through the town and out through High Field Park before it ends in the main square. High Field Park is the trap, because it is on the way, and only the main square is where the race finishes.",
+              "evidence": "main square where the applauding spectators will be ready to greet you"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "minister for health"
+              "answer": "minister for health",
+              "explanation": "Around 9:10 three people are named in one sentence, and it is the Minister for Health who actually hands over each prize. The mayor only does the introducing, the hospital president makes a speech afterwards, and Zoom Fashions only donates one of the prizes.",
+              "evidence": "The mayor will introduce the Minister for Health who will hand over each prize to the winners"
             }
           ],
           "wordLimit": 3
@@ -200,7 +239,7 @@ export const listeningFull025: PracticeTest = {
         {
           "title": "Questions 18-20",
           "type": "multiple-answer",
-          "instructionHtml": "Choose THREE letters A-H.",
+          "instructionHtml": "Choose THREE letters, A to I.",
           "questions": [
             {
               "id": "q18",
@@ -210,7 +249,9 @@ export const listeningFull025: PracticeTest = {
                 "A",
                 "H"
               ],
-              "answerPairId": "test25-q18-q20"
+              "answerPairId": "test25-q18-q20",
+              "explanation": "Around 10:20 the speaker says a sponsored swimming event at the local school last year did very well, so C is recommended. The remark just before, that 20 kilometres is too far for children to run, is what makes the swim worth mentioning, not a reason to reject it.",
+              "evidence": "there was a sponsored swimming event at the local school last year and that did very well"
             },
             {
               "id": "q19",
@@ -220,7 +261,9 @@ export const listeningFull025: PracticeTest = {
                 "A",
                 "H"
               ],
-              "answerPairId": "test25-q18-q20"
+              "answerPairId": "test25-q18-q20",
+              "explanation": "Around 11:05 the speaker says useful funds can be raised by selling small promotional items such as badges, so A is recommended. Door to door collecting is rejected just before because so many people are out at work all day.",
+              "evidence": "items such as badges with the run well motif on them"
             },
             {
               "id": "q20",
@@ -230,7 +273,9 @@ export const listeningFull025: PracticeTest = {
                 "A",
                 "H"
               ],
-              "answerPairId": "test25-q18-q20"
+              "answerPairId": "test25-q18-q20",
+              "explanation": "Around 11:20 the speaker says one dedicated group organised a team quiz, and adds that it went very well and she would like to see more of them, so H is the third answer. The concert right afterwards is only 'talk', and the postcards are only being looked into, so neither is recommended yet.",
+              "evidence": "One very dedicated group organised a team quiz"
             }
           ],
           "choices": [
@@ -295,32 +340,63 @@ export const listeningFull025: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "cultural aspects of naming people",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "Around 13:40 Martin suggests the cultural side of people's names, Joe says he thought so too, and he promises to pick out some key points, so it is going in. Angela's warning to keep it concise sounds like an objection but is only advice about length.",
+              "evidence": "It would be a good way to start bringing in issues of religion, society."
             },
             {
               "id": "q22",
               "textHtml": "similarities across languages in naming practices",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Around 14:10 Joe says 'That sounds good' at first, then doubts whether it is really about names rather than language in general, and Angela tells him to think about it more. He ends with 'I'm not ruling it out', so this one is only a maybe. The warm first reaction is the trap.",
+              "evidence": "Maybe you need to give that some more thought."
             },
             {
               "id": "q23",
               "textHtml": "meanings of first names",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "Around 14:30 the students agree that what first names mean is a rich area with lots of examples, and Joe says he will enjoy making the slides, which is as clear a yes as you get. Nobody raises an objection here at all.",
+              "evidence": "It's a rich area for discussion."
             },
             {
               "id": "q24",
               "textHtml": "place names describing geographic features",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "Around 14:55 place names that describe the landscape are called interesting at first, then dismissed as just a translation issue, and Angela asks whether he should give that a miss. Joe agrees because of the time limit, so this topic is out. The warm opening remarks are the trap.",
+              "evidence": "Don't you think you might give that a miss?"
             },
             {
               "id": "q25",
               "textHtml": "influence of immigration on place names",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Around 15:20 Joe likes the idea of migrants naming places after home, Angela calls it a bit narrow, and they agree to decide later. Joe's 'I'll see how the rest of it goes first' is what makes this a maybe rather than a yes.",
+              "evidence": "Perhaps you should make a final decision on that later."
             },
             {
               "id": "q26",
               "textHtml": "origins of names of countries",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "Around 15:30 both of the others call the origins of country names an interesting area, and Joe already has a plan for a map activity, so it is definitely in. The automatic transcript writes 'a full gone conclusion' here, but what is said is 'a foregone conclusion', meaning the decision is already made.",
+              "evidence": "I think that's an interesting area."
+            }
+          ],
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "choices": [
+            {
+              "value": "A",
+              "label": "Joe will definitely include this topic"
+            },
+            {
+              "value": "B",
+              "label": "Joe might include this topic"
+            },
+            {
+              "value": "C",
+              "label": "Joe will not include this topic"
             }
           ]
         },
@@ -332,22 +408,33 @@ export const listeningFull025: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "meaningless words"
+              "answer": "meaningless words",
+              "explanation": "Around 17 minutes Angela lists what the students in the study were shown, and the third kind, after ordinary nouns and brand names, is meaningless words. The summary already prints the first two, so you need the last two words of the list.",
+              "evidence": "ordinary nouns, brand names and meaningless words"
             },
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "capital letters"
+              "answer": "capital letters",
+              "explanation": "Around 17:10 Angela says brand names were recognised more readily when they were displayed in capital letters rather than lowercase. Lowercase is the trap, because it is said last in the same sentence and is the thing that did not help.",
+              "evidence": "the brand names were recognized more readily if they were displayed in capital letters rather than lowercase"
             },
             {
               "id": "q29",
               "textHtml": "Question 29",
-              "answer": "color"
+              "answer": [
+                "color",
+                "colour"
+              ],
+              "explanation": "Around 17:25 Angela says the researchers suspect other visual features are at play and that colour in particular has a major effect on how brand names are stored. 'Visual features' is the general idea and colour is the one example given, so colour is what fits the gap.",
+              "evidence": "colour has a major effect in helping us to store brand names in a special way in our brains"
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "associations"
+              "answer": "associations",
+              "explanation": "Around 17:45 Angela says the power of brand names is that they conjure up a range of associations in our brains. 'A range of' is the 'a number of' in the summary, so the single word you need is associations, in the plural.",
+              "evidence": "they conjure up a range of associations inside our brains"
             }
           ],
           "wordLimit": 2
@@ -374,52 +461,75 @@ export const listeningFull025: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "spies"
+              "answer": "spies",
+              "explanation": "Around 20:25 the lecturer says that in the American Civil War Thaddeus Lowe replaced spies with balloons to look behind enemy lines, so balloons were used instead of spies. The date 1862 and the earlier 1783 are both there to distract you.",
+              "evidence": "we find Thaddeus Lowe replacing spies with balloons to go behind enemy lines"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "maps"
+              "answer": "maps",
+              "explanation": "Around 20:35 the lecturer says balloons kept being used in peacetime and were employed in the creation of maps. The notes say 'to make', which matches 'creation of', so the one word you need is maps.",
+              "evidence": "they were employed in the creation of maps"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "collect data"
+              "answer": "collect data",
+              "explanation": "Around 20:45 the lecturer says unmanned balloons are still widely used to collect data for scientific research, which is exactly the 'for research' already printed in the notes. Two words, collect data, fill the gap.",
+              "evidence": "Unmanned balloons are still widely used to collect data to inform scientific research of various kinds."
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "climate"
+              "answer": "climate",
+              "explanation": "Around 21:05 the lecturer says ongoing investigations into climate benefit from what balloons gather, so the studies are of climate. The instruments mounted in the balloon are mentioned in the same breath, but they are the equipment, not the subject being studied.",
+              "evidence": "ongoing investigations into climate benefit from the information that can be gathered from a flight"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "lift"
+              "answer": "lift",
+              "explanation": "Around 21:40 the lecturer says heating air makes a hot air balloon rise but the process does not generate as much lift as a gas balloon, so lift is what there is less of. Cheaper and safer are said just before, and they are advantages, so they cannot fill a gap that says 'less'.",
+              "evidence": "process doesn't generate as much lift as with gas balloons"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "weather protection"
+              "answer": "weather protection",
+              "explanation": "Around 22:05 the lecturer says the first airships gave their crew no weather protection, which is why it must have been uncomfortable up there. Two words are allowed, so write weather protection rather than just protection.",
+              "evidence": "didn't provide any weather protection for their crew"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "framework"
+              "answer": "framework",
+              "explanation": "Around 22:30 the lecturer says airships drifted about unless they were strengthened and that to work effectively they needed a framework. Strengthening is the general idea and framework is the actual thing, so one word, framework, is the answer.",
+              "evidence": "to work effectively, they would have to have a framework"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "airlines"
+              "answer": [
+                "airliners",
+                "airlines"
+              ],
+              "explanation": "Near the end of the lecture the speaker says the speed and popularity of airliners made the airship look superseded, so write what you hear, airliners, meaning the aeroplanes that had taken over the routes.",
+              "evidence": "the speed and popularity of airliners meant that the airship appeared superseded"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "crashes"
+              "answer": "crashes",
+              "explanation": "Around 23:15 the lecturer gives the second reason, an alarming number of crashes that put people off. The notes say 'series of', which matches 'a number of', and the word you need is crashes in the plural.",
+              "evidence": "an alarming number of crashes, and this, of course, put people off"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "cargo"
+              "answer": "cargo",
+              "explanation": "Around 23:35 the lecturer says that in the past few years there has been renewed attention to using airships to transport cargo. Naval observation and publicity are mentioned just before, but they are the existing small uses, not the new interest.",
+              "evidence": "there has been renewed attention paid to the possibility of using them to transport cargo"
             }
           ],
           "wordLimit": 2

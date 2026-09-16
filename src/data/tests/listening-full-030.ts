@@ -33,27 +33,43 @@ export const listeningFull030: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Keiko"
+              "answer": "Keiko",
+              "explanation": "Around 1:45 the housing officer asks for the first name after the family name, and the student spells it out letter by letter as K-E-I-K-O. The family name Yuichini is already filled in as the example, so do not repeat it here.",
+              "evidence": "It's Keiko, K-E-I-K-O."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "JO6337"
+              "answer": "JO6337",
+              "explanation": "Just after 2 minutes the housing officer reads the passport number back as J-O-6-3-3-7, so write it as one block, JO6337. The second character is the letter O, not a zero, so listen to how the officer says it rather than guessing.",
+              "evidence": "your passport number is J-O-6-3-3-7"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "advanced english studies"
+              "answer": "advanced english studies",
+              "explanation": "Around 2:40 the student answers the question about her course and names Advanced English Studies, which she chose because she needs help with her writing. The officer has just been asking about the homestay, so do not let the four months answer slip into this line.",
+              "evidence": "I've enrolled for 20 weeks in the Advanced English Studies because I need help with my writing."
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "5 months"
+              "answer": [
+                "20 weeks",
+                "5 months"
+              ],
+              "explanation": "Around 2:40 the student says the course she enrolled for is 20 weeks long, so write what she says, 20 weeks. The five weeks she has already finished and the 15 weeks still to come are both parts of that same course, so neither of those numbers is the answer.",
+              "evidence": "I've enrolled for 20 weeks in the Advanced English Studies"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "about 4 months"
+              "answer": [
+                "about 4 months",
+                "4 months"
+              ],
+              "explanation": "Just after 2:30 the housing officer asks how long she wants to stay with a homestay family and she says about four months longer. The 'about four months altogether' said a moment later is a repeat trap, because that one is the officer adding up the course weeks, not the homestay.",
+              "evidence": "how long are you planning to stay with Homestay? About four months longer"
             }
           ],
           "wordLimit": 3
@@ -73,7 +89,9 @@ export const listeningFull030: PracticeTest = {
                   "D"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "Around 3:50 to 4:05 the student gives two clear preferences to the housing officer: she would rather be with people who do not smoke or drink, which is B, and she loves animals and says the more the better, which is D. A is the trap, because she says she likes young children but then corrects herself and asks for people her own age, and C is the opposite of what she says about pets.",
+              "evidence": "I'd rather be with a family of people who do not smoke or drink."
             }
           ],
           "choices": [
@@ -104,22 +122,36 @@ export const listeningFull030: PracticeTest = {
             {
               "id": "q7",
               "textHtml": "Although the girl is not a vegetarian, she doesn’t eat a lot of meat. Her favourite food is",
-              "answer": "seafood"
+              "answer": "seafood",
+              "explanation": "Just after 4:10 the student says she is not a vegetarian and does not eat much meat, and then names the food she really likes, seafood. The words 'vegetarian' and 'meat' are already printed in the sentence, so the one new word is the answer.",
+              "evidence": "I really like seafood."
             },
             {
               "id": "q8",
               "textHtml": "The girls has given up playing handball. Now, she just play with her friends at weekends.",
-              "answer": "tennis"
+              "answer": "tennis",
+              "explanation": "Around 4:20 the student says she joined the handball team, did not like it and stopped, and then says she plays tennis at the weekend with friends. This is a correction trap: handball is said first and cancelled a second later, and handball is already printed in the sentence anyway.",
+              "evidence": "You know, I played tennis"
             },
             {
               "id": "q9",
               "textHtml": "The girl does not like the bus because they are always late. She would rather",
-              "answer": "take the train"
+              "answer": [
+                "take the train",
+                "catching trains",
+                "catch the train",
+                "take trains",
+                "trains"
+              ],
+              "explanation": "Around 4:40 the student says the buses are always late and that she likes catching trains because they are much faster, so trains are what she would rather use. Write it in the form that fits the gap and stays inside the word limit.",
+              "evidence": "I like catching trains. They're much faster."
             },
             {
               "id": "q10",
               "textHtml": "The girl can get the information about the homestay family that she wants",
-              "answer": "this afternoon"
+              "answer": "this afternoon",
+              "explanation": "Around 4:55 the housing officer asks the student to come back after class this afternoon and promises to give her the details then. 'After class' is the distractor, because the officer is only saying when in the day, and the two words the sentence needs are this afternoon.",
+              "evidence": "Could you come back after class this afternoon?"
             }
           ],
           "wordLimit": 3
@@ -146,52 +178,79 @@ export const listeningFull030: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "90 days"
+              "answer": "90 days",
+              "explanation": "Just after 6:20 the tour guide says the normal visa lasts for just 90 days, with a renewal possible. The two months he suggests in the very next sentence is a near number trap, because that is how long to allow for applying, not how long the visa lasts.",
+              "evidence": "The normal visa lasts for just 90 days"
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "30 pounds"
+              "answer": [
+                "30 pounds",
+                "£30"
+              ],
+              "explanation": "Around 6:45 the guide gives the latest confirmed price of the visa as £30, and this is why the note underneath says the price may change. Write the figure with the currency, not the word 'confirmed', and ignore the later advice to ring the embassy first.",
+              "evidence": "The latest confirmed price is £30"
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "confirm your nationality"
+              "answer": "confirm your nationality",
+              "explanation": "Just after 7 minutes the guide says some consulates in neighbouring countries want a letter from your own embassy, and the reason he gives is to confirm your nationality. The embassy is the trap here, because the note asks what the letter is for, not where it comes from.",
+              "evidence": "require you to provide a letter from your own embassy just to confirm your nationality"
             },
             {
               "id": "q14",
               "textHtml": "Question 14",
-              "answer": "page 13"
+              "answer": "page 13",
+              "explanation": "Around 7:25 the guide says the list of major embassies is in the student handbook on page 13, and the note already prints 'of the student handbook', so only the page reference goes in the gap. The number is said straight after the words 'student handbook', so keep listening past the book title.",
+              "evidence": "student handbook on page 13"
             },
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": "currency form"
+              "answer": "currency form",
+              "explanation": "Around 8:30 the guide says that anyone bringing in over $1000 in cash or traveller's cheques has to fill in the currency form. The $1000 is only the amount that triggers the rule, so it is not the name of the form.",
+              "evidence": "you need to fill in the currency form"
             },
             {
               "id": "q16",
               "textHtml": "Question 16",
-              "answer": "tourist export form"
+              "answer": "tourist export form",
+              "explanation": "Just after 8:30 the guide says all your items, and especially expensive ones such as video cameras, must be declared on a tourist export form. The words are said quickly as one name, so listen for all three of them and do not stop at 'export form'.",
+              "evidence": "on a tourist export form which you can arrange to carry in advance"
             },
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "BM276"
+              "answer": "BM276",
+              "explanation": "Around 8:55 the guide says the health certificate you need is the BM276, said as two letters and then the numbers, so write it as one block. The health certificate itself is already printed in the note, so only the code goes in the gap.",
+              "evidence": "The one you need is the BM276."
             },
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "international student card"
+              "answer": "international student card",
+              "explanation": "Around 9:15 the guide says you can get the youth fare card at any railway station just by showing your international student card. The youth fare card is the trap, because that is the thing you are getting, while the question asks what you show.",
+              "evidence": "Just show your international student card."
             },
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "12"
+              "answer": "12",
+              "explanation": "Around 9:25 the guide advises taking at least 12 passport photos because of all the bureaucracy in the country. The 'two passport photos' mentioned one sentence earlier is a classic near number trap, because those two are only for the youth fare card.",
+              "evidence": "we advise you to take at least 12 passport photos with you"
             },
             {
               "id": "q20",
               "textHtml": "Question 20",
-              "answer": "Yen, Australian dollar"
+              "answer": [
+                "Yen, Australian dollar",
+                "yen or australian dollars",
+                "yen and australian dollars"
+              ],
+              "explanation": "Around 9:40 the guide says pounds will not get you very far and advises carrying either Yen or Australian dollars. US dollars are the distractor, because they come in the very next sentence as a currency that is starting to cause difficulties, and credit cards and travellers' cheques come later still.",
+              "evidence": "We advise people to carry either Yen or Australian dollars."
             }
           ],
           "wordLimit": 3
@@ -218,22 +277,37 @@ export const listeningFull030: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "The woman being interviewed is now working in the bank. Her occupation is",
-              "answer": "cashier"
+              "answer": "cashier",
+              "explanation": "Around 11:35 the student doing the project asks the woman whether she is a student, and she corrects him: she was one last year, but she has left and now works in a bank as a cashier. Student is the correction trap, because it is said first and then cancelled by 'but since then'.",
+              "evidence": "I've left and I'm working in a bank now as a cashier"
             },
             {
               "id": "q22",
               "textHtml": "The woman usually spends about when she goes shopping.",
-              "answer": "50 pounds"
+              "answer": [
+                "50 pounds",
+                "£50"
+              ],
+              "explanation": "Around 12:15 the woman gives two amounts in one breath: about £100 a month spare, and about £50 each time she shops. The question asks about each shopping trip, so £100 is the trap, and you have to hold both numbers until you hear 'each time'.",
+              "evidence": "I'd probably spend about £50 each time"
             },
             {
               "id": "q23",
               "textHtml": "The woman often goes to because she finds them convenient.",
-              "answer": "big department store"
+              "answer": [
+                "big department store",
+                "big department stores",
+                "department stores"
+              ],
+              "explanation": "Around 12:20 the interviewer offers a choice between department stores and small retail outlets, and the woman picks big department stores because everything is in one place, which is the same idea as convenient. She says the plural, so write it as you hear it.",
+              "evidence": "Oh, I like big department stores, so everything's in one place."
             },
             {
               "id": "q24",
               "textHtml": "According to the woman, is/are her most difficult thing(s) to buy.",
-              "answer": "jeans"
+              "answer": "jeans",
+              "explanation": "Around 12:35 the interviewer asks what takes her a long time to find and the woman answers jeans, definitely, adding that she can spend all afternoon without finding a pair that fits. A sweater and a CD are the distractors, because she names them as things you can get hold of in a moment.",
+              "evidence": "Oh, jeans, definitely."
             }
           ],
           "wordLimit": 3
@@ -246,17 +320,23 @@ export const listeningFull030: PracticeTest = {
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "45 pounds"
+              "answer": "45 pounds",
+              "explanation": "Around 14:10 Dale takes his tutor through the chart and says half the people spend 45 pounds a month, and 'half' is the same as the 50% printed in the note. The 50 people he interviewed in total is a number trap, because it is said a moment earlier and is not an amount of money.",
+              "evidence": "that half the people spend 45 pounds a month"
             },
             {
               "id": "q26",
               "textHtml": "Question 26",
-              "answer": "75 pounds"
+              "answer": "75 pounds",
+              "explanation": "Around 14:15 Dale says 15% of people spend more than that, an average of 75 pounds a month. 'More than that' points back to the 45 pounds, so you have to keep the previous figure in your head to be sure the 75 belongs to the 15%.",
+              "evidence": "an average of 75 pounds"
             },
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "20 pounds"
+              "answer": "20 pounds",
+              "explanation": "Around 14:20 Dale calls the remaining 35% 'the rest', who spend relatively small amounts, no more than 20 pounds a month. He never says 35% out loud, so the clue is the order of the three groups and the words 'the rest'.",
+              "evidence": "Even the regular shoppers spend no more than 20 pounds a month."
             }
           ],
           "wordLimit": 1
@@ -274,7 +354,9 @@ export const listeningFull030: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test30-q28-q30"
+              "answerPairId": "test30-q28-q30",
+              "explanation": "Around 14:40 Dale says the problems are with things related to hobbies and names sportswear first, complaining that few shops sell it, so F is one of the three answers along with D and E. Listen for 'hobbies' as the signal that the list of difficult items is starting.",
+              "evidence": "As far as sportswear is concerned, they complain about the lack of shops that sell it."
             },
             {
               "id": "q29",
@@ -284,7 +366,9 @@ export const listeningFull030: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test30-q28-q30"
+              "answerPairId": "test30-q28-q30",
+              "explanation": "Just before 15 minutes Dale names shoes and trousers as really problematic, which gives E and D to go with the sportswear he mentioned a moment earlier. The reason he gives, too little variety in the styles, is not itself one of the options.",
+              "evidence": "but shoes and trousers were really problematic"
             },
             {
               "id": "q30",
@@ -294,7 +378,9 @@ export const listeningFull030: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test30-q28-q30"
+              "answerPairId": "test30-q28-q30",
+              "explanation": "The three answers are D, E and F together, and around 14:35 to 14:55 Dale rules out everything else. Books and study materials are the trap, because he says that is what he expected the answer to be and it turned out to be wrong, and sweaters are named as something few people have trouble buying.",
+              "evidence": "Not many have trouble buying sweaters and things like that, but shoes and trousers were really problematic."
             }
           ],
           "choices": [
@@ -353,7 +439,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 17:20 the lecturer says anyone interested in extra reading is welcome to see him after the lecture because he has a book list and other useful materials. Seeing him afterwards sounds like a personal consultation, which is option A, but what he actually offers is the reading materials themselves.",
+              "evidence": "as I have a book list here and some other useful materials"
             },
             {
               "id": "q32",
@@ -364,7 +452,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 17:30 the lecturer describes the old idea of time management as making a list, planning for every hour of the week and then sticking to the plan. Almost the same wording appears as an option in the next question, where it is wrong, so tie it to 'In the past' and choose B here.",
+              "evidence": "In the past, this used to mean making a list, to plan for every hour of the week and then try to stick to this plan."
             },
             {
               "id": "q33",
@@ -375,7 +465,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Just before 18 minutes the lecturer says time cannot be managed at all, so what you really manage is yourself, and that means setting goals and moving towards them in an efficient and systematic way. The list and the hour by hour plan are what he has just called the old way, so they belong to the previous question.",
+              "evidence": "you need to set goals, and you need to move towards achieving these goals"
             },
             {
               "id": "q34",
@@ -386,7 +478,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 18:05 the lecturer says the coursework at the end of the semester usually involves two written assignments of between 1,500 and 3,000 words, and written work of that length is an essay, option C. Mid-semester is the distractor, because that is when the work is set rather than when it is due, and no examination is mentioned.",
+              "evidence": "at the end of the semester, it usually involves two written assignments of between 1,500 and 3,000 words in length"
             },
             {
               "id": "q35",
@@ -397,7 +491,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 18:25 the lecturer gives the sign of pressure as the library reporting more and more students becoming angry when books are not available, which is trouble at the library, option D. Option B is a correction trap, because he then asks whether everyone has become angry for no reason and answers 'Not quite', and books being unavailable is not the same as books going missing.",
+              "evidence": "The library reports that an increasing number of students become angry when books are not available."
             },
             {
               "id": "q36",
@@ -408,7 +504,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 19:30 the lecturer suggests spending even one hour a day on an activity that helps your study, and adds that the real gain comes from making it a regular habit, which is option C. A very detailed daily plan is the trap, because that is the old style of time management he has already rejected.",
+              "evidence": "even just one hour on an activity that helps you with your study"
             },
             {
               "id": "q37",
@@ -419,7 +517,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 19:45 the lecturer points to the planners in the information kit and names exactly three: one term planner, one weekly planner and one daily planner. The other options swap in a monthly, yearly or hourly planner, so count the three names as he says them rather than choosing on the first word you recognise.",
+              "evidence": "one weekly planner and one daily planner"
             },
             {
               "id": "q38",
@@ -430,7 +530,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 20:25 the lecturer says a week is really the shortest time you have to build an overview of your time for planning, so the least you need is one week. The term planner is the trap, because he described it earlier as giving an overview of everything for the term, but the question asks for the minimum.",
+              "evidence": "a week is really the shortest time"
             },
             {
               "id": "q39",
@@ -441,7 +543,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 19:50 the lecturer goes through the three planners in turn and says the daily planner is for the really detailed planning. The overview of everything you need to do is the distractor, because he gives that job to the term planner one sentence earlier.",
+              "evidence": "the daily planner will help you with the really detailed planning"
             },
             {
               "id": "q40",
@@ -452,7 +556,9 @@ export const listeningFull030: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 20:35 the lecturer says that once planning becomes a habit you will find you have more time than before for relaxation and the other activities you enjoy, which is option A. Better assignments and essays are never promised as the benefit, they are only the problem he described earlier in the lecture.",
+              "evidence": "you've actually had more time than before to spend on relaxation and other activities"
             }
           ]
         }

@@ -22,7 +22,7 @@ export const listeningFull028: PracticeTest = {
         "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"10\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-10</p><p class=\"listening-source-instruction\">Complete the notes below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer.</p></header><div class=\"listening-source-note-block\"><div class=\"listening-source-note-row\"><strong>Report on abandoned vehicle</strong></div><div class=\"listening-source-note-row\">Name of caller: Mrs Shefford</div></div><div class=\"listening-source-question-list\" role=\"list\"><div class=\"listening-source-question-row\" data-question-row=\"1\" role=\"listitem\">Address: 41,  <span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> Barrowdale WH45JP</div><div class=\"listening-source-question-row\" data-question-row=\"2\" role=\"listitem\">Telephone:  <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"3\" role=\"listitem\">Vehicle location: in  <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> near main road</div><div class=\"listening-source-question-row\" data-question-row=\"4\" role=\"listitem\">Type of vehicle:  <span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Make: Catala</div><div class=\"listening-source-question-row\" data-question-row=\"5\" role=\"listitem\">Model:  <span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"6\" role=\"listitem\">Present color of vehicle:  <span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Vehicle number: S 322 GEC</div><div class=\"listening-source-question-row\" data-question-row=\"7\" role=\"listitem\">General condition: poor – one  <span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> , cracked windscreen</div><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\">Length of time at site:  <span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"9\" role=\"listitem\">Land belongs to:  <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Last owner: no information available</div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\">Other notes: vehicle does not belong to a  <span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> resident</div></div></section>",
         "startSeconds": 0.0,
         "endSeconds": 412.0,
-        "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> You will hear a woman phoning the local council about an abandoned vehicle. First you have some time to look at questions 1-6 on page 128. Now we shall begin. You should answer the questions as you listen because you will not hear the recording a second time.</p><p><span class=\"ts\">[00:39]</span> Listen carefully and answer questions 1-6. Environmental Health Department, Paul speaking. Oh hello. I wanted to report a vehicle that&#x27;s been left part near where I live. I think it&#x27;s been abandoned. I wondered if the council could arrange to get it towed away.</p><p><span class=\"ts\">[01:06]</span> Have I got through to the right department? Yes you have. If I could just take a few details. Your name please. Mrs. Shefford. Thank you.</p><p><span class=\"ts\">[01:17]</span> It&#x27;s not my vehicle though. I just thought someone ought to report it. No that&#x27;s fine. What I need to do is take some details first. Then we can decide what to do about the problem. Oh I see.</p><p><span class=\"ts\">[01:30]</span> So the next thing I need to know is your address. Right it&#x27;s 41 Lower Green Street. Yes. Barrowdale. And the postcodes WH4 5JP.</p><p><span class=\"ts\">[01:46]</span> Fine. And if I could just ask for a telephone number. It&#x27;s 01778 552387. I&#x27;m out quite a lot but you can just leave a message on the answer phone if you need to. Or I could give you my mobile number.</p><p><span class=\"ts\">[02:06]</span> That&#x27;s all right don&#x27;t worry. Now could you tell me a little more about this vehicle? You say it&#x27;s been abandoned. Well it certainly looks like it. Can you give me an idea of where it is?</p><p><span class=\"ts\">[02:18]</span> Yes. It&#x27;s near the main road that goes through Barrowdale. Is that the A69? Yes that&#x27;s right. Now there&#x27;s the primary school just towards the end of the village.</p><p><span class=\"ts\">[02:28]</span> And then next to that, next to the children&#x27;s playground, there&#x27;s a field and it&#x27;s in there. Oh. I wonder how it got in there. Well there&#x27;s a gate to allow a farm machinery in and out. I thought something ought to be done about it.</p><p><span class=\"ts\">[02:43]</span> The children from the school might start playing in the vehicle and lock themselves in or something. Yes. You were quite right to report it. And what type of vehicle are we talking about here? It&#x27;s a van actually.</p><p><span class=\"ts\">[02:55]</span> You know the sort with just a couple of little windows at the back. Right. You don&#x27;t happen to know the maker model do you? Oh yes. I went and had a look and got all the details. I thought you might need them.</p><p><span class=\"ts\">[03:09]</span> I&#x27;m surprised the school hasn&#x27;t contacted you about it. Anyway, I wrote the details down. Right. It&#x27;s a cutala and the models are flyer 2000. Is that FLYER?</p><p><span class=\"ts\">[03:25]</span> That&#x27;s right. Very good. And the colour? Well it&#x27;s not all that easy to see because it&#x27;s absolutely filthy. And actually it looks as if it&#x27;s had a paint job at some stage.</p><p><span class=\"ts\">[03:38]</span> It&#x27;s blue, but you can just see white underneath where it&#x27;s been scratched. Right. Well, I&#x27;ll just make a note of the present colour. And if you could just tell me the vehicle number, did you make a note of that? Oh yes. It&#x27;s S-322 G-E-C.</p><p><span class=\"ts\">[03:59]</span> Okay. Before you hear the rest of the conversation, you have some time to look at questions seven to ten on page 128. Now listen and answer questions seven to ten.</p><p><span class=\"ts\">[04:33]</span> And it sounds as if the general condition of the vehicle isn&#x27;t too good from what you say. No, it&#x27;s pretty poor. It wouldn&#x27;t be drivable. It&#x27;s got a flat tire and there&#x27;s a crack in the windscreen. I reckon someone just wanted to get rid of it.</p><p><span class=\"ts\">[04:48]</span> That&#x27;s usually the way. It&#x27;s been there for nearly a week. No, it must be eight days. I remember it was a Sunday morning when I noticed it. It wasn&#x27;t there the day before. The walk passed it most days on the way to the shops.</p><p><span class=\"ts\">[05:03]</span> I&#x27;d have thought the school would have reported it. Does the field actually belong to the school? No, it&#x27;s part of Hill Farmer State. Right. I&#x27;ll just make a note of that.</p><p><span class=\"ts\">[05:14]</span> And I don&#x27;t suppose you have any information about who might own the vehicle. No, I&#x27;ve no idea. So what will you do now? Well, we&#x27;ll come and have a look and see if we can trace the owner.</p><p><span class=\"ts\">[05:28]</span> And if we can&#x27;t, the vehicle will be removed as rapidly as the law permits. It could be anything up to 20 days. One thing I should say, I&#x27;m quite sure this doesn&#x27;t belong to anyone around here. I&#x27;d definitely recognize it if it was from someone who lived here.</p><p><span class=\"ts\">[05:45]</span> So you don&#x27;t think it was anyone local? Right. I&#x27;d say at a guess we&#x27;re looking at a stolen vehicle here. I did wonder if it might have been. You hear such a lot about car thieves nowadays?</p><p><span class=\"ts\">[06:00]</span> Well, we certainly will be looking into that possibility. Anyway, thank you for contacting us, Mrs. Shefford. And we&#x27;ll keep you informed of what happens. Right. Thank you very much.</p><p><span class=\"ts\">[06:13]</span> Goodbye. Goodbye. That is the end of section one. You now have half a minute to check your answers.</p>"
+        "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> You will hear a woman phoning the local council about an abandoned vehicle. First you have some time to look at questions 1-6 on page 128. Now we shall begin. You should answer the questions as you listen because you will not hear the recording a second time.</p><p><span class=\"ts\">[00:39]</span> Listen carefully and answer questions 1-6. Environmental Health Department, Paul speaking. Oh hello. I wanted to report a vehicle that&#x27;s been left part near where I live. I think it&#x27;s been abandoned. I wondered if the council could arrange to get it towed away.</p><p><span class=\"ts\">[01:06]</span> Have I got through to the right department? Yes you have. If I could just take a few details. Your name please. Mrs. Shefford. Thank you.</p><p><span class=\"ts\">[01:17]</span> It&#x27;s not my vehicle though. I just thought someone ought to report it. No that&#x27;s fine. What I need to do is take some details first. Then we can decide what to do about the problem. Oh I see.</p><p><span class=\"ts\">[01:30]</span> So the next thing I need to know is your address. Right it&#x27;s 41 Lower Green Street. Yes. Barrowdale. And the postcodes WH4 5JP.</p><p><span class=\"ts\">[01:46]</span> Fine. And if I could just ask for a telephone number. It&#x27;s 01778 552387. I&#x27;m out quite a lot but you can just leave a message on the answer phone if you need to. Or I could give you my mobile number.</p><p><span class=\"ts\">[02:06]</span> That&#x27;s all right don&#x27;t worry. Now could you tell me a little more about this vehicle? You say it&#x27;s been abandoned. Well it certainly looks like it. Can you give me an idea of where it is?</p><p><span class=\"ts\">[02:18]</span> Yes. It&#x27;s near the main road that goes through Barrowdale. Is that the A69? Yes that&#x27;s right. Now there&#x27;s the primary school just towards the end of the village.</p><p><span class=\"ts\">[02:28]</span> And then next to that, next to the children&#x27;s playground, there&#x27;s a field and it&#x27;s in there. Oh. I wonder how it got in there. Well there&#x27;s a gate to allow a farm machinery in and out. I thought something ought to be done about it.</p><p><span class=\"ts\">[02:43]</span> The children from the school might start playing in the vehicle and lock themselves in or something. Yes. You were quite right to report it. And what type of vehicle are we talking about here? It&#x27;s a van actually.</p><p><span class=\"ts\">[02:55]</span> You know the sort with just a couple of little windows at the back. Right. You don&#x27;t happen to know the maker model do you? Oh yes. I went and had a look and got all the details. I thought you might need them.</p><p><span class=\"ts\">[03:09]</span> I&#x27;m surprised the school hasn&#x27;t contacted you about it. Anyway, I wrote the details down. Right. It&#x27;s a Catala and the model&#x27;s a Flyer 2000. Is that FLYER?</p><p><span class=\"ts\">[03:25]</span> That&#x27;s right. Very good. And the colour? Well it&#x27;s not all that easy to see because it&#x27;s absolutely filthy. And actually it looks as if it&#x27;s had a paint job at some stage.</p><p><span class=\"ts\">[03:38]</span> It&#x27;s blue, but you can just see white underneath where it&#x27;s been scratched. Right. Well, I&#x27;ll just make a note of the present colour. And if you could just tell me the vehicle number, did you make a note of that? Oh yes. It&#x27;s S-322 G-E-C.</p><p><span class=\"ts\">[03:59]</span> Okay. Before you hear the rest of the conversation, you have some time to look at questions seven to ten on page 128. Now listen and answer questions seven to ten.</p><p><span class=\"ts\">[04:33]</span> And it sounds as if the general condition of the vehicle isn&#x27;t too good from what you say. No, it&#x27;s pretty poor. It wouldn&#x27;t be drivable. It&#x27;s got a flat tire and there&#x27;s a crack in the windscreen. I reckon someone just wanted to get rid of it.</p><p><span class=\"ts\">[04:48]</span> That&#x27;s usually the way. It&#x27;s been there for nearly a week. No, it must be eight days. I remember it was a Sunday morning when I noticed it. It wasn&#x27;t there the day before. The walk passed it most days on the way to the shops.</p><p><span class=\"ts\">[05:03]</span> I&#x27;d have thought the school would have reported it. Does the field actually belong to the school? No, it&#x27;s part of Hill Farm Estate. Right. I&#x27;ll just make a note of that.</p><p><span class=\"ts\">[05:14]</span> And I don&#x27;t suppose you have any information about who might own the vehicle. No, I&#x27;ve no idea. So what will you do now? Well, we&#x27;ll come and have a look and see if we can trace the owner.</p><p><span class=\"ts\">[05:28]</span> And if we can&#x27;t, the vehicle will be removed as rapidly as the law permits. It could be anything up to 20 days. One thing I should say, I&#x27;m quite sure this doesn&#x27;t belong to anyone around here. I&#x27;d definitely recognize it if it was from someone who lived here.</p><p><span class=\"ts\">[05:45]</span> So you don&#x27;t think it was anyone local? Right. I&#x27;d say at a guess we&#x27;re looking at a stolen vehicle here. I did wonder if it might have been. You hear such a lot about car thieves nowadays?</p><p><span class=\"ts\">[06:00]</span> Well, we certainly will be looking into that possibility. Anyway, thank you for contacting us, Mrs. Shefford. And we&#x27;ll keep you informed of what happens. Right. Thank you very much.</p><p><span class=\"ts\">[06:13]</span> Goodbye. Goodbye. That is the end of section one. You now have half a minute to check your answers.</p>"
       },
       "groups": [
         {
@@ -33,52 +33,83 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "lower green street"
+              "answer": "lower green street",
+              "explanation": "Just after 1:30 Paul asks the caller for her address and Mrs Shefford reads it out, so the street name is Lower Green Street. The house number 41 and the town Barrowdale are already printed in the notes, so only the street name goes in the gap.",
+              "evidence": "it's 41 Lower Green Street"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "01778552387"
+              "answer": [
+                "01778552387",
+                "01778 552387"
+              ],
+              "explanation": "Around 1:46 Mrs Shefford gives her telephone number in two chunks, five digits and then six, so listen right to the end before you stop writing. She offers a mobile number straight afterwards, but Paul says not to worry, so the mobile is a distractor and the number for the gap is the first one.",
+              "evidence": "It's 01778 552387"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "field"
+              "answer": "field",
+              "explanation": "Around 2:28 Mrs Shefford works along the village step by step and lands on the place the van is actually in, which is a field. The primary school and the children's playground are both said just before, but they are only there to help her point at the right spot, and the notes already say 'near main road'.",
+              "evidence": "next to the children's playground, there's a field and it's in there"
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "van"
+              "answer": "van",
+              "explanation": "Just before 3 minutes Paul asks what type of vehicle it is and Mrs Shefford answers straight away that it is a van. She then describes the little windows at the back, which is a description of the van rather than a second answer.",
+              "evidence": "It's a van actually"
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "flyer 2000"
+              "answer": "flyer 2000",
+              "explanation": "Just after 3 minutes Mrs Shefford reads the details she wrote down, giving the make first and then the model, and the model is Flyer 2000. Paul checks the spelling back to her as F-L-Y-E-R, which is your chance to confirm it, and the make Catala is already printed in the notes.",
+              "evidence": "It's a Catala and the model's a Flyer 2000."
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "blue"
+              "answer": "blue",
+              "explanation": "Around 3:38 Mrs Shefford says the van is blue but that white shows through the scratches, and Paul then says he will note the present colour. White is the trap, because it is the older colour underneath the repaint, not the colour now.",
+              "evidence": "It's blue, but you can just see white underneath"
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "flat tyre"
+              "answer": [
+                "flat tyre",
+                "flat tire"
+              ],
+              "explanation": "Just after 4:33 Mrs Shefford lists two faults in one breath, a flat tyre and a crack in the windscreen, and the windscreen is already printed in the notes, so the missing fault is the flat tyre. Two words are allowed here, so write both words.",
+              "evidence": "It's got a flat tire and there's a crack in the windscreen"
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "8"
+              "answer": [
+                "8",
+                "8 days",
+                "eight days",
+                "eight"
+              ],
+              "explanation": "Around 4:48 Mrs Shefford gives a first answer and then corrects herself one second later, which is the classic listening trap: 'nearly a week' is wrong and 'eight days' is the answer. She explains how she knows, because she first saw it on a Sunday morning.",
+              "evidence": "It's been there for nearly a week. No, it must be eight days."
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "hill farm estate"
+              "answer": "hill farm estate",
+              "explanation": "Just after 5 minutes Mrs Shefford is asked whether the field belongs to the school and she says no, it is part of Hill Farm Estate. The school is the distractor, because it is named in the question Paul asks and rejected in her answer.",
+              "evidence": "No, it's part of Hill Farm Estate."
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "local"
+              "answer": "local",
+              "explanation": "Around 5:45 Mrs Shefford says she would recognise the van if it belonged to anyone living nearby, and Paul sums this up with the word you need, local. The stolen vehicle idea comes straight afterwards, so do not let it pull you away from the word already given.",
+              "evidence": "So you don't think it was anyone local?"
             }
           ],
           "wordLimit": 3
@@ -105,37 +136,51 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Manjiro started work as a when he was still a young boy.",
-              "answer": "fisherman"
+              "answer": "fisherman",
+              "explanation": "Around 8:21 the tour guide describes Manjiro's childhood and says he became a fisherman while he was still a youngster, which matches 'still a young boy' in the sentence. Only one word is needed, so leave out 'like many people in that town'.",
+              "evidence": "he became a fisherman when he was just a youngster"
             },
             {
               "id": "q12",
               "textHtml": "He spent on a deserted island before he was rescued.",
-              "answer": "6 months"
+              "answer": "6 months",
+              "explanation": "Around 8:55 the guide says the shipwrecked group waited six months before an American whale ship found them. Two numbers are close together here, his age of 14 and the year 1841, so keep your eye on the words 'before he was rescued' in the question.",
+              "evidence": "They had to wait for six months before they were rescued"
             },
             {
               "id": "q13",
               "textHtml": "He became friends with William Whitefield who was a ship’s",
-              "answer": "captain"
+              "answer": "captain",
+              "explanation": "Just after 8:55 the guide says Manjiro became friends with a captain, William Whitfield, so the job is captain. The four other Japanese put ashore in Hawaii are mentioned in the same breath, which is there to distract you.",
+              "evidence": "Manjiro had become friends with a captain, William Whitfield"
             },
             {
               "id": "q14",
               "textHtml": "The cost of Manjiro’s in America was covered by the Whitefield family.",
-              "answer": "education"
+              "answer": "education",
+              "explanation": "Around 9:28 the guide says the Whitfield family paid for his education in the town, so education is what they covered. The subjects he studied, mathematics, geography, shipbuilding and navigation, come next, but they are examples, not the answer.",
+              "evidence": "stayed with the Whitfield family who paid for his education here in the town"
             },
             {
               "id": "q15",
               "textHtml": "Manjiro eventually returned to Japan, where he carried out important work as a teacher and",
-              "answer": "interpreter"
+              "answer": "interpreter",
+              "explanation": "Just before 10 minutes the guide says Manjiro worked as a university teacher and also served as interpreter between Japan and the United States. Teacher is already printed in the sentence, so the second job, interpreter, is what you write.",
+              "evidence": "served an invaluable role as interpreter"
             },
             {
               "id": "q16",
               "textHtml": "Fairhaven and Tosashimizu are now officially",
-              "answer": "sister cities"
+              "answer": "sister cities",
+              "explanation": "Around 10 minutes the guide says the two places now have the official status of sister cities, and the word 'official' in the sentence points you straight at it. Two words are allowed, so write both.",
+              "evidence": "the two places now have the official status of sister cities"
             },
             {
               "id": "q17",
               "textHtml": "Every two years, the John Manjiro is held in Fairhaven.",
-              "answer": "festival"
+              "answer": "festival",
+              "explanation": "Just after 10:21 the guide says the festival is held every two years in Fairhaven to celebrate Manjiro's life, so festival fills the gap. The drumming, singing and martial arts that follow are parts of the programme, not the name of the event.",
+              "evidence": "at the time of the festival, which is held every two years here in Fairhaven"
             }
           ],
           "wordLimit": 2
@@ -148,17 +193,23 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q18",
               "textHtml": "Whitefield family house",
-              "answer": "I"
+              "answer": "I",
+              "explanation": "Around 12:09 the guide walks you along Center Street, up Main Street to Pilgrim Avenue, down it and right at the end, then says the two storey house on the corner with Oxford Street is the Whitfield Family House. The corner with Oxford Street is the detail that fixes it, so do not stop listening at the earlier turnings.",
+              "evidence": "just on the corner with Oxford Street, you'll see a two-story house. This is the Whitfield Family House"
             },
             {
               "id": "q19",
               "textHtml": "Old Oxford school",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Around 12:31 the guide carries on along Oxford Street, turns left at the end into North Street and says Old Oxford School is about halfway down it. 'Halfway down' is the trap, because it rules out anything at either end of North Street.",
+              "evidence": "you'll come to North Street, and about halfway down there is what's known as Old Oxford School"
             },
             {
               "id": "q20",
               "textHtml": "School of Navigation",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "Around 13:19 the guide goes to the end of North Street, turns onto Adams Street and heads back towards the library past two sharp bends, and says the School of Navigation is on the second bend. Counting the bends is the whole task here, because the first bend is the distractor.",
+              "evidence": "on the second of these, you can see the School of Navigation"
             }
           ]
         }
@@ -189,7 +240,9 @@ export const listeningFull028: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 16:04 Julia says that dealing with customers face to face let her see how they reacted to new fashion ideas, and she then calls that the most useful thing for her, which matches A. Her 'priorities' at work and the new designs from New York and Milan are both said nearby, but neither is what she says she gained.",
+              "evidence": "having direct contact with the customers meant I was able to see how they reacted to innovation"
             },
             {
               "id": "q22",
@@ -199,7 +252,9 @@ export const listeningFull028: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Just after 17 minutes Julia says she wants the chance to pursue her own line, using new fabrics in children's wear, which is B, a design area of her choice. Both wrong options are said and then knocked down: she says the way forward at work would have been managerial skills and she is not sure that is what she wants, and she is not intending to go deeply into the technology.",
+              "evidence": "I'd be very interested in looking at how new fabrics could be used in children's wear"
             },
             {
               "id": "q23",
@@ -209,7 +264,9 @@ export const listeningFull028: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 17:30 Julia says she hopes the course will eventually let her set up her own enterprise, which is B, start her own business. The academic environment is mentioned only because Dr Hillsdon asks how she feels about coming back to one, and the overseas links interest her but she never says she wants to work abroad.",
+              "evidence": "the course will give me the contacts and skills I need, eventually, to set up my own enterprise"
             }
           ]
         },
@@ -221,22 +278,30 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Library",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "Around 18:43 Dr Hillsdon says the library staff run an Information Skills programme that postgraduates are advised to take in their first week or two, which is D, an introductory course. Room to study is the trap, because Julia says how much room there is compared with her old university before the answer is given.",
+              "evidence": "The staff run an Information Skills program, which we recommend all post-graduates do in the first week or two."
             },
             {
               "id": "q25",
               "textHtml": "Computer centre",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "Just after 19 minutes Dr Hillsdon says the computer centre is a studio for innovation and creativity rather than a computer laboratory, which is G, emphasis on creative use. 'Laboratory' is said out loud here, so a student who is only matching words would wrongly choose A.",
+              "evidence": "it's a studio for innovation and creativity, rather than a computer laboratory"
             },
             {
               "id": "q26",
               "textHtml": "Photomedia",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "Around 19:30 Dr Hillsdon says photomedia is for all students, not only fashion design, and that they encourage work which crosses disciplinary boundaries, which is C. Photography and digital imaging are named first, but they are what the place does, not what it has.",
+              "evidence": "we encourage students to work there producing work that crosses disciplinary boundaries"
             },
             {
               "id": "q27",
               "textHtml": "Time based media",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "Around 19:51 Dr Hillsdon says time based media is in a new building that was specially built for it last year, which is E, purpose built premises. The plan to expand it comes next, but the answer is about the building it already has.",
+              "evidence": "That's in a new building that was specially built for it just last year."
             }
           ],
           "options": [
@@ -257,7 +322,9 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "progress reviews"
+              "answer": "progress reviews",
+              "explanation": "Around 20:32 Dr Hillsdon says there are progress reviews at the end of each of the first three stages of the four stage course, which matches the three assessments in the summary. Two words are allowed, so write both words and not just 'reviews'.",
+              "evidence": "there are what we call progress reviews at the end of each of the first three"
             },
             {
               "id": "q29",
@@ -265,12 +332,16 @@ export const listeningFull028: PracticeTest = {
               "answer": [
                 "reflection",
                 "critical reflection"
-              ]
+              ],
+              "explanation": "Just after 20:32 Dr Hillsdon says the final report is a critical reflection on your work, so the written report is the reflection. The word limit is two words, so 'reflection' on its own or 'critical reflection' both fit, but a longer phrase would not.",
+              "evidence": "You have to produce a report, which is a critical reflection on your work."
             },
             {
               "id": "q30",
               "textHtml": "Question 30",
-              "answer": "exhibition"
+              "answer": "exhibition",
+              "explanation": "Around 20:52 Julia asks whether there is a fashion show and Dr Hillsdon corrects her, saying there is an exhibition, and adds that fashion company representatives are invited. This is a correction trap: the words 'fashion show' are said first and are not the answer.",
+              "evidence": "There's an exhibition."
             }
           ],
           "wordLimit": 2
@@ -297,17 +368,23 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "physical"
+              "answer": "physical",
+              "explanation": "Around 23:10 the lecturer describes the muscles of the face and chest moving and the sound made by air forced out, then sums it up as a physical activity. The notes say 'process' where the recording says 'activity', so listen for the describing word in front of it rather than for the whole phrase.",
+              "evidence": "So we're talking about a physical activity."
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "instincts"
+              "answer": "instincts",
+              "explanation": "Around 23:43 the lecturer says laughing is not voluntary behaviour like speech but is regulated by our instincts. 'Voluntary behaviour' and 'conscious control' are both said close by, but each of those is what laughter is not.",
+              "evidence": "it's regulated by our instincts rather like the singing of a bird"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "relief"
+              "answer": "relief",
+              "explanation": "Around 24:18 the lecturer says laughter may have begun as a shared response to signal relief once a danger had passed, so relief is the word. Only one word is needed, so 'relief at the passing of danger' would be far too long.",
+              "evidence": "a shared response to signal relief at the passing of danger"
             },
             {
               "id": "q34",
@@ -315,37 +392,51 @@ export const listeningFull028: PracticeTest = {
               "answer": [
                 "bonds",
                 "social bonds"
-              ]
+              ],
+              "explanation": "Around 24:41 the lecturer says laughter can create bonds between the people in a group, which matches 'develop within a group' in the notes. Three words are allowed, so either bonds or social bonds is safe.",
+              "evidence": "laughter can result in the creation of bonds between the people in the group"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "power"
+              "answer": "power",
+              "explanation": "Just after 25 minutes the lecturer says that controlling the laughter of a group shows a link between laughter and power, and then gives bosses as evidence. Public speakers and politicians are named just before, but they are the example in the notes, not the answer.",
+              "evidence": "indicates that there's a link between laughter and power"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "negative"
+              "answer": "negative",
+              "explanation": "Around 25:24 the lecturer says laughter can be used as a negative signal as well as a positive one, and then gives the example of a group laughing to exclude someone. 'Positive' is said in the same sentence, so take the word that goes with excluding people.",
+              "evidence": "laughter can be used as a negative signal, as well as a positive one"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "release"
+              "answer": "release",
+              "explanation": "Around 26:15 the lecturer says people store negative emotions such as anger and sadness and that laughter gives a harmless way for their release, which matches 'safe method' in the notes. The noun release is what fits the gap, not the verb.",
+              "evidence": "laughter provides a harmless way for the release of these emotions"
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "hormones"
+              "answer": "hormones",
+              "explanation": "Around 26:33 the lecturer says laughter reduces the levels of hormones in the blood that are caused by stress, so hormones is what drops. Chemicals are mentioned in the very next sentence, but those go up rather than down, so they are the trap.",
+              "evidence": "by reducing the levels of hormones in the blood which are caused by stress"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "immune system"
+              "answer": "immune system",
+              "explanation": "Around 26:54 the lecturer says laughter helps to boost the immune system, and 'boost' is the same idea as 'improved' in the notes. Two words are needed here, so 'immune' on its own would not be enough.",
+              "evidence": "it helps to boost the immune system"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "bad dreams"
+              "answer": "bad dreams",
+              "explanation": "Around 27:15 the lecturer says a good laugh ten minutes before sleep can prevent bad dreams and give a more restful night, so bad dreams is what laughter stops. Painkillers and comic films are mentioned just before, but they belong to a different study.",
+              "evidence": "can prevent you from having bad dreams"
             }
           ],
           "wordLimit": 3

@@ -22,7 +22,7 @@ export const listeningFull027: PracticeTest = {
         "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"3\" data-question-type=\"multiple-choice\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-3</p><p class=\"listening-source-instruction\">Choose the correct letter A-D.</p></header><article class=\"listening-source-question\" data-question=\"1\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">1</span>How much is the beginner’s course?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>$190</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>$320</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>$330</span></li><li data-option=\"D\"><span class=\"listening-source-option-key\">D</span><span>$430</span></li></ol></article><article class=\"listening-source-question\" data-question=\"2\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">2</span>What does the club insurance cover?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>injury to yourself</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>injury to your equipment</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>damage to people’s property</span></li><li data-option=\"D\"><span class=\"listening-source-option-key\">D</span><span>loss of personal belongings</span></li></ol></article><article class=\"listening-source-question\" data-question=\"3\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">3</span>How do the girls want to travel?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>public transport</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>private bus</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>car</span></li><li data-option=\"D\"><span class=\"listening-source-option-key\">D</span><span>bicycle</span></li></ol></article></section><section class=\"listening-source-group\" data-question-start=\"4\" data-question-end=\"7\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 4-7</p><p class=\"listening-source-instruction\">Complete the notes below. Write NO MORE THAN THREE WORDS for each answer.</p></header><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\"><strong>Telephone Memo</strong></p><p class=\"listening-source-title\">Name: Maria Gentle</p><div class=\"listening-source-question-row\" data-question-row=\"4\" role=\"listitem\">Address: C10 Mr and Mrs  <span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"5\" role=\"listitem\"><span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> Newcastle</div><div class=\"listening-source-question-row\" data-question-row=\"6\" role=\"listitem\">Fax no.: 0249  <span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"7\" role=\"listitem\">Type of card:  <span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section><section class=\"listening-source-group\" data-question-start=\"8\" data-question-end=\"8\" data-question-type=\"multiple-answer\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Question 8</p><p class=\"listening-source-instruction\">Which TWO of the following items must people take with them? Circle TWO letters from A-G.</p></header><p>8. Circle <strong>TWO</strong> letters from A-G.</p><article class=\"listening-source-question\" data-question=\"8\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">8</span>Which TWO of the following items must people take with them?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>sandals</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>old clothes</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>pullover</span></li><li data-option=\"D\"><span class=\"listening-source-option-key\">D</span><span>shirt with long sleeves</span></li><li data-option=\"E\"><span class=\"listening-source-option-key\">E</span><span>soft drinks</span></li><li data-option=\"F\"><span class=\"listening-source-option-key\">F</span><span>hat</span></li><li data-option=\"G\"><span class=\"listening-source-option-key\">G</span><span>sunglasses</span></li></ol></article></section><section class=\"listening-source-group\" data-question-start=\"9\" data-question-end=\"9\" data-question-type=\"multiple-answer\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Question 9</p><p class=\"listening-source-instruction\">Which TWO accommodation options mentioned are near the paragliding school? Circle TWO letters from A-G.</p></header><article class=\"listening-source-question\" data-question=\"9\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">9</span>Which TWO accommodation options mentioned are near the paragliding school?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>camping</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>youth hostel</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>family</span></li><li data-option=\"D\"><span class=\"listening-source-option-key\">D</span><span>backpackers</span></li><li data-option=\"E\"><span class=\"listening-source-option-key\">E</span><span>caravan park</span></li><li data-option=\"F\"><span class=\"listening-source-option-key\">F</span><span>bed and breakfast</span></li><li data-option=\"G\"><span class=\"listening-source-option-key\">G</span><span>cheap hotel</span></li></ol></article></section><section class=\"listening-source-group\" data-question-start=\"10\" data-question-end=\"10\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Question 10</p><p class=\"listening-source-instruction\">Write NO MORE THAN THREE WORDS for the answer.</p></header><p>10. Which weekend do the girls decide to go? <span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></p></section>",
         "startSeconds": 0.0,
         "endSeconds": 394.52,
-        "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> You will hear a number of different recordings and you will have to answer questions on what you hear. There will be time for you to read the instructions and questions. And you will have a chance to check your work.</p><p><span class=\"ts\">[00:18]</span> All the recordings will be played once only. The test is in four sections. Write all of your answers in the listening question booklet. At the end of the real test, you will be given ten minutes to transfer your answers to</p><p><span class=\"ts\">[00:35]</span> an answer sheet. Now turn to section one of your booklet. Section one. Listen to the telephone conversation between a student and the owner of a paragliding school</p><p><span class=\"ts\">[00:50]</span> and answer the questions one to seven. Now you have some time to read questions one to seven. Hello, paraglide is paradise. How can I help you?</p><p><span class=\"ts\">[01:26]</span> Oh hi, I&#x27;m interested in doing a course in paragliding. Which course are you interested in? Well, I&#x27;m not sure. What&#x27;s available?</p><p><span class=\"ts\">[01:35]</span> We&#x27;ve got the introductory course which lasts for two days. Okay. Or there&#x27;s the four-day beginners course. There is also the elementary pilot course which takes five to six days depending on conditions.</p><p><span class=\"ts\">[01:50]</span> We might try the beginners course. What sort of prices are we looking at? The introductory is $190. The beginners course, which is what you&#x27;d probably be looking at, is $320.</p><p><span class=\"ts\">[02:03]</span> No, sorry, $330 is just gone up and the pilot course is $430. Right. And you also have to become a member of our club so that you&#x27;re insured. That&#x27;ll cost you $12 a day.</p><p><span class=\"ts\">[02:16]</span> Everyone has to take out insurance, you see. Does that cover me if I break a leg? No, I&#x27;m afraid not. It&#x27;s only third party and covers you against damage to other people or their belongings,</p><p><span class=\"ts\">[02:27]</span> but not theft or injury. You would need to take out your own personal accident insurance. I see. And what&#x27;s the best way to get to your place?</p><p><span class=\"ts\">[02:37]</span> By public transport or could we come by bike? We&#x27;re pretty keen cyclists. It&#x27;s difficult by public transport although there is a bus from Newcastle. Most people get here by car though, of course we&#x27;re a little off the beaten track.</p><p><span class=\"ts\">[02:51]</span> But you could ride here, OK? I&#x27;ll send you a map. Just let me take down a few details. What&#x27;s your name?</p><p><span class=\"ts\">[02:59]</span> Maria Gentel. And your address, Maria? Well, I&#x27;m a student staying with the family in Newcastle. So it&#x27;s care of...</p><p><span class=\"ts\">[03:07]</span> Care of Mr. and Mrs. MacDonald. Like the hamburgers. Yes, exactly. MacDonald.</p><p><span class=\"ts\">[03:13]</span> The post office box address is probably best. It&#x27;s PO Box 2492 Newcastle. Is there a fax number there? Because I could fax you the information.</p><p><span class=\"ts\">[03:24]</span> Yes, actually, there is. It&#x27;s O249. That is for Newcastle. And then 760412.</p><p><span class=\"ts\">[03:33]</span> OK. Now, if you decide to do one of our courses, you&#x27;ll need to book in advance and to pay when you book. How would you be paying?</p><p><span class=\"ts\">[03:41]</span> By credit card, if that&#x27;s OK, do you take Visa? Yes, fine. We take all major cards, including Visa, Master, and American Express. OK, then, thanks very much.</p><p><span class=\"ts\">[03:55]</span> Now you have some time to read questions eight to ten. As the conversation continues, answer questions eight to ten. Hi, Pauline. Hi, Maria.</p><p><span class=\"ts\">[04:23]</span> What&#x27;s that you&#x27;re reading? Just some information from a paragliding school. It&#x27;s really good fun. Do you fancy go at paragliding?</p><p><span class=\"ts\">[04:31]</span> Sure. Do you have to buy lots of equipment and stuff? Not really. The school provides the equipment, but we&#x27;d have to take a few things along.</p><p><span class=\"ts\">[04:40]</span> Such as? Well, it says here, clothes wear stout boots, so no sneakers or sandals, I suppose. And clothes suitable for an active day in the hills, preferably a long-sleeve t-shirt. That&#x27;s probably in case you land in the stinging nettles.</p><p><span class=\"ts\">[04:57]</span> It also says we should bring a packed lunch. We do not recommend soft drinks or flasks of coffee. Water is really the best thing to drink. We&#x27;d also need to bring sun-tan lotion and something to protect your head from the</p><p><span class=\"ts\">[05:10]</span> sun. Okay, that sounds reasonable. And where would we stay? Well, look.</p><p><span class=\"ts\">[05:15]</span> They seem to operate a campsite, too, because it says here that it&#x27;s only $10 a day to pitch a tent. That&#x27;d be fine, wouldn&#x27;t it? And that way we&#x27;d save quite a bit because even a cheap hotel would cost money.</p><p><span class=\"ts\">[05:28]</span> Um, or perhaps we could stay in a bed and breakfast nearby. It gives a couple of names here we could ring. I think I might prefer that. Hotels and youth hostels would all be miles away from the farm, and I don&#x27;t fancy a caravan.</p><p><span class=\"ts\">[05:42]</span> No, I agree, but let&#x27;s take a tent and pray for good weather. Okay, let&#x27;s do it. What about next weekend? No I can&#x27;t.</p><p><span class=\"ts\">[05:51]</span> I&#x27;m going on a geography field trip. And then it&#x27;s the weekend before exams and I really need to study. Okay then, let&#x27;s make it the one after the exams. Fine.</p><p><span class=\"ts\">[06:02]</span> We&#x27;ll need a break by then. Can you ring and? This is the end of section one. You now have half a minute to check your answers.</p>"
+        "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> You will hear a number of different recordings and you will have to answer questions on what you hear. There will be time for you to read the instructions and questions. And you will have a chance to check your work.</p><p><span class=\"ts\">[00:18]</span> All the recordings will be played once only. The test is in four sections. Write all of your answers in the listening question booklet. At the end of the real test, you will be given ten minutes to transfer your answers to</p><p><span class=\"ts\">[00:35]</span> an answer sheet. Now turn to section one of your booklet. Section one. Listen to the telephone conversation between a student and the owner of a paragliding school</p><p><span class=\"ts\">[00:50]</span> and answer the questions one to seven. Now you have some time to read questions one to seven. Hello, paraglide is paradise. How can I help you?</p><p><span class=\"ts\">[01:26]</span> Oh hi, I&#x27;m interested in doing a course in paragliding. Which course are you interested in? Well, I&#x27;m not sure. What&#x27;s available?</p><p><span class=\"ts\">[01:35]</span> We&#x27;ve got the introductory course which lasts for two days. Okay. Or there&#x27;s the four-day beginners course. There is also the elementary pilot course which takes five to six days depending on conditions.</p><p><span class=\"ts\">[01:50]</span> We might try the beginners course. What sort of prices are we looking at? The introductory is $190. The beginners course, which is what you&#x27;d probably be looking at, is $320.</p><p><span class=\"ts\">[02:03]</span> No, sorry, $330 is just gone up and the pilot course is $430. Right. And you also have to become a member of our club so that you&#x27;re insured. That&#x27;ll cost you $12 a day.</p><p><span class=\"ts\">[02:16]</span> Everyone has to take out insurance, you see. Does that cover me if I break a leg? No, I&#x27;m afraid not. It&#x27;s only third party and covers you against damage to other people or their belongings,</p><p><span class=\"ts\">[02:27]</span> but not theft or injury. You would need to take out your own personal accident insurance. I see. And what&#x27;s the best way to get to your place?</p><p><span class=\"ts\">[02:37]</span> By public transport or could we come by bike? We&#x27;re pretty keen cyclists. It&#x27;s difficult by public transport although there is a bus from Newcastle. Most people get here by car though, of course we&#x27;re a little off the beaten track.</p><p><span class=\"ts\">[02:51]</span> But you could ride here, OK? I&#x27;ll send you a map. Just let me take down a few details. What&#x27;s your name?</p><p><span class=\"ts\">[02:59]</span> Maria Gentel. And your address, Maria? Well, I&#x27;m a student staying with the family in Newcastle. So it&#x27;s care of...</p><p><span class=\"ts\">[03:07]</span> Care of Mr. and Mrs. MacDonald. Like the hamburgers. Yes, exactly. MacDonald.</p><p><span class=\"ts\">[03:13]</span> The post office box address is probably best. It&#x27;s PO Box 2492 Newcastle. Is there a fax number there? Because I could fax you the information.</p><p><span class=\"ts\">[03:24]</span> Yes, actually, there is. It&#x27;s 0249. That is for Newcastle. And then 760412.</p><p><span class=\"ts\">[03:33]</span> OK. Now, if you decide to do one of our courses, you&#x27;ll need to book in advance and to pay when you book. How would you be paying?</p><p><span class=\"ts\">[03:41]</span> By credit card, if that&#x27;s OK, do you take Visa? Yes, fine. We take all major cards, including Visa, Master, and American Express. OK, then, thanks very much.</p><p><span class=\"ts\">[03:55]</span> Now you have some time to read questions eight to ten. As the conversation continues, answer questions eight to ten. Hi, Pauline. Hi, Maria.</p><p><span class=\"ts\">[04:23]</span> What&#x27;s that you&#x27;re reading? Just some information from a paragliding school. It&#x27;s really good fun. Do you fancy go at paragliding?</p><p><span class=\"ts\">[04:31]</span> Sure. Do you have to buy lots of equipment and stuff? Not really. The school provides the equipment, but we&#x27;d have to take a few things along.</p><p><span class=\"ts\">[04:40]</span> Such as? Well, it says here, clothes wear stout boots, so no sneakers or sandals, I suppose. And clothes suitable for an active day in the hills, preferably a long-sleeve t-shirt. That&#x27;s probably in case you land in the stinging nettles.</p><p><span class=\"ts\">[04:57]</span> It also says we should bring a packed lunch. We do not recommend soft drinks or flasks of coffee. Water is really the best thing to drink. We&#x27;d also need to bring sun-tan lotion and something to protect your head from the</p><p><span class=\"ts\">[05:10]</span> sun. Okay, that sounds reasonable. And where would we stay? Well, look.</p><p><span class=\"ts\">[05:15]</span> They seem to operate a campsite, too, because it says here that it&#x27;s only $10 a day to pitch a tent. That&#x27;d be fine, wouldn&#x27;t it? And that way we&#x27;d save quite a bit because even a cheap hotel would cost money.</p><p><span class=\"ts\">[05:28]</span> Um, or perhaps we could stay in a bed and breakfast nearby. It gives a couple of names here we could ring. I think I might prefer that. Hotels and youth hostels would all be miles away from the farm, and I don&#x27;t fancy a caravan.</p><p><span class=\"ts\">[05:42]</span> No, I agree, but let&#x27;s take a tent and pray for good weather. Okay, let&#x27;s do it. What about next weekend? No I can&#x27;t.</p><p><span class=\"ts\">[05:51]</span> I&#x27;m going on a geography field trip. And then it&#x27;s the weekend before exams and I really need to study. Okay then, let&#x27;s make it the one after the exams. Fine.</p><p><span class=\"ts\">[06:02]</span> We&#x27;ll need a break by then. Can you ring and? This is the end of section one. You now have half a minute to check your answers.</p>"
       },
       "groups": [
         {
@@ -39,7 +39,9 @@ export const listeningFull027: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 1:55 the man gives the price of the beginners course as $320 and then corrects himself a second later, saying it has just gone up to $330. This is a pure correction trap, so the second number is the one to write, and $190 and $430 belong to the introductory and pilot courses.",
+              "evidence": "No, sorry, $330 is just gone up and the pilot course is $430."
             },
             {
               "id": "q2",
@@ -50,7 +52,9 @@ export const listeningFull027: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 2:20 Maria asks whether the club insurance would cover a broken leg and the man says no: it is third party only and covers damage to other people or their belongings, which is C. Injury and theft are both named in the same sentence, but only to rule them out.",
+              "evidence": "covers you against damage to other people or their belongings"
             },
             {
               "id": "q3",
@@ -61,7 +65,9 @@ export const listeningFull027: PracticeTest = {
                 "B",
                 "C",
                 "D"
-              ]
+              ],
+              "explanation": "Around 2:40 Maria asks about public transport but adds that she and her friend are keen cyclists and could come by bike, and the man confirms they could ride there. The bus from Newcastle and the car are the distractors, because they are how other people travel, not how the girls want to.",
+              "evidence": "could we come by bike? We're pretty keen cyclists"
             }
           ]
         },
@@ -73,22 +79,33 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "McDonald"
+              "answer": [
+                "McDonald",
+                "MacDonald"
+              ],
+              "explanation": "Around 3:05 Maria says she is staying with a family, so the address is care of Mr and Mrs McDonald, and she confirms the name with the joke about the hamburgers. The automatic transcript writes it as MacDonald, but the key follows the hamburger spelling, so write McDonald.",
+              "evidence": "Care of Mr. and Mrs. MacDonald."
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "PO Box 2492"
+              "answer": "PO Box 2492",
+              "explanation": "Around 3:15 Maria says the post office box address is best and reads it out as PO Box 2492, with Newcastle after it, which is already printed on the memo. Three words are allowed, so PO Box 2492 fits.",
+              "evidence": "It's PO Box 2492 Newcastle."
             },
             {
               "id": "q6",
               "textHtml": "Question 6",
-              "answer": "760412"
+              "answer": "760412",
+              "explanation": "Around 3:25 Maria gives the fax number in two parts and explains that the first part is the Newcastle area code, which is already printed on the memo, so only the six figures that follow go in the gap.",
+              "evidence": "That is for Newcastle. And then 760412."
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "Visa"
+              "answer": "Visa",
+              "explanation": "Around 3:45 Maria asks whether they take Visa and the man says that is fine. The trap is his answer, because he then lists Master and American Express as well, but Maria's own card is the Visa.",
+              "evidence": "By credit card, if that's OK, do you take Visa?"
             }
           ],
           "wordLimit": 3
@@ -108,7 +125,9 @@ export const listeningFull027: PracticeTest = {
                   "F"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "The two items are D and F. Just before 5 minutes the girls read that you need clothes for an active day in the hills, preferably a long sleeve t-shirt, and a moment later something to protect your head from the sun, which is the hat. Sandals and soft drinks are both said out loud but ruled out, because the notes say no sneakers or sandals and do not recommend soft drinks.",
+              "evidence": "And clothes suitable for an active day in the hills, preferably a long-sleeve t-shirt."
             }
           ],
           "choices": [
@@ -158,7 +177,9 @@ export const listeningFull027: PracticeTest = {
                   "F"
                 ],
                 "selectCount": 2
-              }
+              },
+              "explanation": "The two options near the school are A and F. Around 5:15 the girls read that the school runs a campsite where you can pitch a tent for $10 a day, and then Pauline suggests a bed and breakfast nearby with a couple of names to ring. Hotels and youth hostels are the trap, because they are said to be miles away, and the caravan is simply not wanted.",
+              "evidence": "perhaps we could stay in a bed and breakfast nearby"
             }
           ],
           "choices": [
@@ -201,7 +222,12 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q10",
               "textHtml": "Which weekend do the girls decide to go?",
-              "answer": "after exams"
+              "answer": [
+                "after exams",
+                "after the exams"
+              ],
+              "explanation": "Around 5:50 the girls go through three weekends and reject two of them: next weekend there is a geography field trip, and the one after that is just before the exams. The weekend they settle on is the one after the exams, so listen to the end of the exchange rather than the first date you hear.",
+              "evidence": "Okay then, let's make it the one after the exams."
             }
           ],
           "wordLimit": 3
@@ -228,17 +254,23 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "Question 11",
-              "answer": "a holiday"
+              "answer": "a holiday",
+              "explanation": "Around 7:45 Alan explains that he normally leads tours into remote parts of the country, but this trip was different because he decided it was time to have a holiday with his family. The tours are the distractor, because that is his job rather than the purpose of this trip.",
+              "evidence": "I thought it was time for me too to have a holiday."
             },
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "over 40,000 years"
+              "answer": "over 40,000 years",
+              "explanation": "Around 8:05 Alan says he chose Mungo National Park because it holds a record of Aboriginal life stretching back over 40,000 years. Three words are allowed, so keep the word over, which shows the figure is a minimum.",
+              "evidence": "It holds a record of Aboriginal life stretching back over 40,000 years."
             },
             {
               "id": "q13",
               "textHtml": "Question 13",
-              "answer": "walls of China"
+              "answer": "walls of China",
+              "explanation": "Around 8:10 Alan names the main feature of the park as the walls of China, the eroded formations he wanted his children to see. The World Heritage Area and the lakes are mentioned by the interviewer earlier, so they are background, not the feature itself.",
+              "evidence": "the remarkable walls of China, as they're called"
             }
           ],
           "wordLimit": 3
@@ -256,7 +288,9 @@ export const listeningFull027: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 8:20 Alan is asked about the weather and says it was unusual for that time of year, with one continual downpour after another, so A is the surprise. The main feature of the park and the record of Aboriginal life are both things he already knew about and went there to see.",
+              "evidence": "The rain was just one continual downpour after another."
             },
             {
               "id": "q15",
@@ -266,7 +300,9 @@ export const listeningFull027: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 8:45 Alan says the dirt roads were impassable so the family settled down for a long wet wait, and he adds that they did not really mind because the scenery was so interesting, which is C. Cutting the holiday short sounds negative, but it is about the rain, not about the wait.",
+              "evidence": "We didn't really mind because the scenery was so interesting."
             }
           ]
         },
@@ -283,7 +319,9 @@ export const listeningFull027: PracticeTest = {
                 "C",
                 "D"
               ],
-              "answerPairId": "test27-q16-q18"
+              "answerPairId": "test27-q16-q18",
+              "explanation": "The three letters are B, C and D. For B, around 9:55 Alan says the other camping family heard them calling the children and immediately joined the search. Option A is the trap in the same stretch, because he says they were lucky to have another family camping in their location, so it is not true that there were no campers nearby.",
+              "evidence": "When they heard us calling the kids, they immediately helped us search for them"
             },
             {
               "id": "q17",
@@ -293,7 +331,9 @@ export const listeningFull027: PracticeTest = {
                 "C",
                 "D"
               ],
-              "answerPairId": "test27-q16-q18"
+              "answerPairId": "test27-q16-q18",
+              "explanation": "The second letter is C. Around 10 minutes Alan says that as the hours went by the other family gave them much needed support and encouragement, which is the same idea as keeping their spirits up.",
+              "evidence": "they also provided us with much needed support and encouragement"
             },
             {
               "id": "q18",
@@ -303,7 +343,9 @@ export const listeningFull027: PracticeTest = {
                 "C",
                 "D"
               ],
-              "answerPairId": "test27-q16-q18"
+              "answerPairId": "test27-q16-q18",
+              "explanation": "The third letter is D. Around 10:10 Alan says the family made sure they had enough dry clothes to wear after two hours of searching in the rain. Options E and F are the traps just afterwards, because the ranger did manage to get through and it was the ranger, not the helicopter pilot, who led the search.",
+              "evidence": "they even made sure we had enough dry clothes"
             }
           ],
           "choices": [
@@ -346,7 +388,9 @@ export const listeningFull027: PracticeTest = {
                 "A",
                 "E"
               ],
-              "answerPairId": "test27-q19-q20"
+              "answerPairId": "test27-q19-q20",
+              "explanation": "The two letters are A and E. For A, around 10:40 Alan says he squeezed into the cave, was impressed, and managed to take a few photos before they left. Option C is the trap, because the markings were so small that it was hard to tell what they represented.",
+              "evidence": "managed to take a few photos of it before we left"
             },
             {
               "id": "q20",
@@ -355,7 +399,9 @@ export const listeningFull027: PracticeTest = {
                 "A",
                 "E"
               ],
-              "answerPairId": "test27-q19-q20"
+              "answerPairId": "test27-q19-q20",
+              "explanation": "The second letter is E. Just before 11 minutes Alan says museum people visited the cave and later confirmed the markings were very old, which is the same as proving them ancient. Option D is the trap in the same sentence, because they were said to be similar to other findings in the area, so they were not unique.",
+              "evidence": "later confirmed they were very old"
             }
           ],
           "choices": [
@@ -404,27 +450,43 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "thursday"
+              "answer": "thursday",
+              "explanation": "Around 12:55 Sally works her arrival date out aloud: she has been there four days, so it must have been Thursday. Ben's Sunday is already printed in the table, so do not copy the day you hear first.",
+              "evidence": "I've been here for four days now, so it must have been Thursday that I arrived."
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "psychology"
+              "answer": "psychology",
+              "explanation": "Around 13:20 Ben remembers that Sally was planning to do economics, and she says yes, she was, but she has decided on psychology instead. Economics is the correction trap, so the subject for the table is psychology.",
+              "evidence": "But I've decided on psychology instead."
             },
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "14"
+              "answer": [
+                "14",
+                "fourteen"
+              ],
+              "explanation": "Around 13:40 Ben, the architecture student, says his book list is fourteen all told, after Sally has remarked that his list is longer than hers. The recording says the word fourteen, and the key wants the figure, so write 14.",
+              "evidence": "Well, it's fourteen, all told."
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "5"
+              "answer": [
+                "5",
+                "five"
+              ],
+              "explanation": "Just after 13:45 Sally says she will buy the whole lot because she only has five books on her list. Keep the two numbers with the right person: the long list of fourteen is Ben's, and five is Sally's.",
+              "evidence": "I'll probably buy the whole lot of mine because I only have five on my list."
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "wednesday"
+              "answer": "wednesday",
+              "explanation": "Around 14:10 Ben says his first lecture is on Tuesday and Sally replies that she has an extra day and starts the day after he does, so her day is Wednesday. The word Wednesday is never said, so you have to count one day on from Tuesday yourself.",
+              "evidence": "Oh, I've got an extra day, the day after you all start."
             }
           ],
           "wordLimit": 3
@@ -437,27 +499,46 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "What is Sally’s study strategy in lectures?",
-              "answer": "write everything"
+              "answer": [
+                "write everything",
+                "write every word",
+                "every word",
+                "write down every word"
+              ],
+              "explanation": "Around 15 minutes Sally says that because she tries to read every word of a book she will try to write down every word of the lecture too. The key shortens this to write everything, so give the idea in your own short phrase rather than the full spoken wording, which would break the three word limit.",
+              "evidence": "So I suppose I'll try to write down every word of the lecture if I can."
             },
             {
               "id": "q27",
               "textHtml": "What is Ben’s study strategy for reading?",
-              "answer": "skim and underline"
+              "answer": [
+                "skim and underline",
+                "skim and underline key parts",
+                "skimming and underlining"
+              ],
+              "explanation": "Around 15:15 Ben says he usually skims a book and underlines the key parts, so his reading strategy is to skim and underline. The cassette recorder suggested a moment later is a distractor, because it is an idea for lectures, not for reading.",
+              "evidence": "I usually skim a book when I read and underline key parts."
             },
             {
               "id": "q28",
               "textHtml": "What is the subject of Ben’s first lecture?",
-              "answer": "the industrial revolution"
+              "answer": "the industrial revolution",
+              "explanation": "Around 15:45 Ben answers the question about his first lecture with the Industrial Revolution, and you can tell it is his because he goes on to say it mattered for architecture, which is his subject. Sally's first lecture, about what separates humans from other animals, comes just afterwards.",
+              "evidence": "Oh, it's on the Industrial Revolution."
             },
             {
               "id": "q29",
               "textHtml": "What is the title of Ben’s first tutorial paper?",
-              "answer": "why study architecture"
+              "answer": "why study architecture",
+              "explanation": "Around 16:15 Ben says his tutor must have trouble thinking up topics and gives the title of his paper as Why study architecture. Three words are allowed, so leave out the question mark and any extra words.",
+              "evidence": "Why study architecture?"
             },
             {
               "id": "q30",
               "textHtml": "What is the subject of Sally’s first tutorial paper?",
-              "answer": "needs for sleep"
+              "answer": "needs for sleep",
+              "explanation": "Around 16:30 Sally is asked whether she has a tutorial yet and gives her title as Needs for sleep. Her subject is psychology, so keep this one apart from Ben's architecture title given a moment earlier.",
+              "evidence": "Needs for sleep."
             }
           ],
           "wordLimit": 3
@@ -484,27 +565,41 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "one year"
+              "answer": "one year",
+              "explanation": "Around 18:55 the speaker says the undergraduate diploma in psychology is a one-year course for people already in work. The six months in the row above belongs to the certificate, so match the length to the right course.",
+              "evidence": "we provide a one-year diploma in psychology course"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "none"
+              "answer": "none",
+              "explanation": "Just after 19 minutes the speaker says the diploma has no particular entry requirements, because it is designed for people whose work and training are not in psychology. The word none is what the table needs, so keep it short.",
+              "evidence": "There are no particular entry requirements"
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "bachelors of art"
+              "answer": [
+                "Bachelor of Arts",
+                "bachelors of art",
+                "BA"
+              ],
+              "explanation": "Around 19:15 the speaker says the three year degree course for a major in psychology is called a Bachelor of Arts, which matches the three years already printed in the table. Write the name of the degree, not the subject.",
+              "evidence": "we offer a three-year degree course called a Bachelor of Arts"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "degree in psychology"
+              "answer": "degree in psychology",
+              "explanation": "Around 19:40 the speaker says entry to the master's programme is only through first gaining a degree in psychology, and repeats that it must be a degree majoring in psychology. The three word limit means degree in psychology is the form that fits.",
+              "evidence": "entry to this programme is only through first gaining a degree in psychology"
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "clinical psychology diploma"
+              "answer": "clinical psychology diploma",
+              "explanation": "Around 19:55 the speaker describes a 12 month diploma in clinical psychology and gives its short name, clinical psychology diploma, which is the name the table wants. The honours degree said straight afterwards is the entry requirement, which is already printed.",
+              "evidence": "usually called clinical psychology diploma"
             }
           ],
           "wordLimit": 3
@@ -517,27 +612,37 @@ export const listeningFull027: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "Around 21 minutes the speaker says certificate students range from women who stopped work to care for children now at school, to support staff in a publishing company, and only the first of those appears in the list, so the answer is E. The certificate does not qualify you for anything in particular, which rules out the job options.",
+              "evidence": "women who have stopped work to care for their children, and the children have now commenced school"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "G"
+              "answer": "G",
+              "explanation": "Around 21:15 the speaker says the undergraduate diploma attracts people already working in offices, so the office career, G, is the match. Note that the recording names banks and government departments rather than insurance, so choose G as the only office based option in the list.",
+              "evidence": "The undergraduate diploma usually attracts people working in offices such as banks or in some government departments."
             },
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "Around 21:30 the speaker says a degree with a psychology major does not train you professionally, but can help you get a good job that needs no particular specialisation, which is A. Further professional training is mentioned in the same sentence as a different path, so it is the distractor.",
+              "evidence": "it might just be part of a first degree that will help you to get a good job that doesn't require particular specialisation at that stage"
             },
             {
               "id": "q39",
               "textHtml": "Question 39",
-              "answer": "D"
+              "answer": "D",
+              "explanation": "Around 21:50 the speaker says a master's graduate would expect to have some specialisation, perhaps in research, which points to D, a research psychologist. Child development is given as the other example in the same sentence, but it is not one of the letters.",
+              "evidence": "you would expect to have some specialisation, perhaps in research"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Around 22 minutes the speaker says clinical diploma holders may work in institutions such as those for the mentally ill, which is B, working with people who are ill. Prisons and psychological tests are listed in the same breath as other possibilities, so pick the one that has a letter.",
+              "evidence": "such as those for the mentally ill or in prisons"
             }
           ],
           "options": [

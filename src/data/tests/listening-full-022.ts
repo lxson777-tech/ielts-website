@@ -33,27 +33,37 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "bridge"
+              "answer": "bridge",
+              "explanation": "Just before 2 minutes Angela gives her address and the street name comes after the number, 86 Bridge Street. Mr Ray repeats 'Bridge Street' back to her to check it, which is your second chance to hear it, and because the form already prints 'apartment 3, 86', the single word bridge is all you write.",
+              "evidence": "86 Bridge Street, Pimlico"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "2065"
+              "answer": "2065",
+              "explanation": "Around 1:57 the postcode is not given by Angela at all: Mr Ray works it out from the street and says it must be 2065, and she then confirms it. Wait for her 'that's right' before you write, because a number offered as a guess is often corrected a moment later.",
+              "evidence": "must be 2065, right? Yes, that's right."
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "84561307"
+              "answer": "84561307",
+              "explanation": "Just after 2 minutes Angela gives two telephone numbers one after the other, and the form only needs the work one. The home number, 8763 5142, is already printed for you, so writing it again is the trap; the answer is the second number, 8456 1307, written without the space.",
+              "evidence": "And work is 8456 1307."
             },
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "4040AC"
+              "answer": "4040AC",
+              "explanation": "Just before 2:30 Angela says she knows her driver's licence number by heart and reads it out as 4040AC, the four digits first and then two letters said as letter names. Write it as one block with no space, and use capitals for the letters even though the transcript prints them small.",
+              "evidence": "I know it by heart. 4040ac."
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "March"
+              "answer": "March",
+              "explanation": "Just after 2:30 Angela gives her whole date of birth in one breath, 24 March 1981, and only the month is missing from the form. The day and the year are already printed, so write the one word March and nothing else.",
+              "evidence": "24 March 1981"
             }
           ],
           "wordLimit": 1
@@ -71,7 +81,9 @@ export const listeningFull022: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test22-q6-q8"
+              "answerPairId": "test22-q6-q8",
+              "explanation": "The three answers here are B, E and F, and they can be written in any order. B, travel, comes just after 3:12, where Angela says she likes to learn about other countries she might visit one day, so the idea of travel is described without the word ever being said.",
+              "evidence": "I always like to relax and learn about other countries"
             },
             {
               "id": "q7",
@@ -81,7 +93,9 @@ export const listeningFull022: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test22-q6-q8"
+              "answerPairId": "test22-q6-q8",
+              "explanation": "The three answers here are B, E and F, in any order. F, nature, comes around 3:30, where Angela says she does not like anything heavy or serious unless it is about animals or the environment, and animals and the environment stand for nature. The same sentence rules out history and classics with 'heavy or serious'.",
+              "evidence": "I don't like anything too heavy or serious unless it's about animals or the environment."
             },
             {
               "id": "q8",
@@ -91,7 +105,9 @@ export const listeningFull022: PracticeTest = {
                 "E",
                 "F"
               ],
-              "answerPairId": "test22-q6-q8"
+              "answerPairId": "test22-q6-q8",
+              "explanation": "The three answers here are B, E and F, in any order. E, cooking, comes just before 4 minutes and is never named: Angela says she enjoys entertaining at home and giving dinner parties, and that the pictures in those books make her hungry, which can only mean cookery books. Sport is the clearest trap, because she says out loud that she is not really into it.",
+              "evidence": "The pictures in those books always make me hungry"
             }
           ],
           "choices": [
@@ -130,12 +146,16 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q9",
               "textHtml": "How much does it cost to join the library?",
-              "answer": "$20"
+              "answer": "$20",
+              "explanation": "Just before 4 minutes Mr Ray almost forgets the fee and then says the membership costs $20. The word 'refundable' straight after it is a distraction, because the question asks what it costs to join, not what happens to the money if she leaves.",
+              "evidence": "The membership fee is $20"
             },
             {
               "id": "q10",
               "textHtml": "When will Angela’s card be ready?",
-              "answer": "next week"
+              "answer": "next week",
+              "explanation": "Around 4 minutes Mr Ray puts the answer in a negative sentence: the card will not be ready until next week. You have to turn 'won't be ready until next week' into 'ready next week', and the trap is that she can borrow books today, which tempts you into writing today.",
+              "evidence": "your membership card won't be ready until next week"
             }
           ],
           "wordLimit": 3
@@ -167,7 +187,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Just after 6:30 the speaker names the new thing directly: variety in student meals, which is the same as more variety. More students and more service are never claimed, and the three themed food stations you hear next are only an example of that variety.",
+              "evidence": "in the dining facilities is variety in student meals"
             },
             {
               "id": "q12",
@@ -177,7 +199,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 6:40 the speaker describes last year: a set menu at every dinner, no choice, and students had to eat whatever was served. Money is the trap that students expect here, but the recording never says the food cost too much, and it never says there was too little of it.",
+              "evidence": "Students had to eat, whatever was served."
             }
           ]
         },
@@ -189,12 +213,19 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q13",
               "textHtml": "and pasta are an example of food",
-              "answer": "Pizza, Italian"
+              "answer": "Pizza, Italian",
+              "explanation": "Just after 7 minutes the speaker goes through the three stations one at a time, and station one is Italian food which might consist of pizza and pasta. Both blanks come from this single sentence, so pizza goes in the first and Italian in the second, and pasta is already printed for you.",
+              "evidence": "there might be Italian food at station number one, which might consist of pizza and pasta"
             },
             {
               "id": "q14",
               "textHtml": "American food consists of",
-              "answer": "hamburgers, hot dogs"
+              "answer": [
+                "hamburgers, hot dogs",
+                "hamburgers and hot dogs"
+              ],
+              "explanation": "Around 7:10 station two is American food, consisting of hamburgers and hot dogs. The limit is three words, so drop the 'and' that you hear and write hamburgers, hot dogs; the vegetarian soups and salads that follow belong to station three.",
+              "evidence": "there would be American food, consisting of hamburgers and hot dogs"
             }
           ],
           "wordLimit": 3
@@ -202,7 +233,7 @@ export const listeningFull022: PracticeTest = {
         {
           "title": "Questions 15-18",
           "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter A, B or C.",
+          "instructionHtml": "Choose the correct letter, A, B, C or D.",
           "questions": [
             {
               "id": "q15",
@@ -212,7 +243,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Just after 8 minutes the speaker explains why the food will be better: real chefs trained in culinary school have been hired by the school itself. More kinds of food is the trap, because that was the earlier point about variety, and the price of the food is never mentioned at all.",
+              "evidence": "These are real chefs that have been trained in culinary school and have been hired specifically by the school"
             },
             {
               "id": "q16",
@@ -222,7 +255,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 8:45 the two times come a few sentences apart: breakfast opens at 6am, and in the evenings the hall stays open until midnight. You have to turn midnight into 12am rather than 12pm, and that swap is the whole trap in this question.",
+              "evidence": "In the evenings, we will open until midnight"
             },
             {
               "id": "q17",
@@ -232,7 +267,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 9:03 the speaker says the afternoons will still remain closed, but a student store will be open with drinks and fruit from 2pm to 5pm. The word 'closed' is the trap: it pushes you towards waiting until dinner, when the same sentence goes on to give the real answer.",
+              "evidence": "we will have a student store open that will provide all students with drinks and fruits"
             },
             {
               "id": "q18",
@@ -242,8 +279,16 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Just before 10 minutes the speaker separates two groups of people. Students who do not live in a dormitory can buy a dining facility card, but anyone who is not a student must purchase meals at the door. The card is the distractor, and the giveaway is the line that says the card is not open to the general public.",
+              "evidence": "you must purchase meals at the door"
             }
+          ],
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
           ]
         },
         {
@@ -258,7 +303,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "D"
               ],
-              "answerPairId": "test22-q19-q20"
+              "answerPairId": "test22-q19-q20",
+              "explanation": "The two answers are A and D, in either order. A comes just after 10 minutes, where the speaker says they do not limit how much food you take but they do not want students to waste it, and asks you not to take more than you can eat.",
+              "evidence": "we do not want students to waste food"
             },
             {
               "id": "q20",
@@ -267,7 +314,9 @@ export const listeningFull022: PracticeTest = {
                 "A",
                 "D"
               ],
-              "answerPairId": "test22-q19-q20"
+              "answerPairId": "test22-q19-q20",
+              "explanation": "The two answers are A and D, in either order. D comes around 10:20, where every student is told to clean his or her own trays and plates. C is the trap in the very next sentence, because the hall provides the plates and trays, so you never bring your own.",
+              "evidence": "every student must clean his or her own trays and plates"
             }
           ],
           "choices": [
@@ -316,27 +365,37 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "stay"
+              "answer": "stay",
+              "explanation": "Around 13 minutes one of the students lists the obedience commands in the same order as the table: teaching them to sit, then stay in one place. 'Sit' is already printed, so the next word, stay, is the answer, and the extra words 'in one place' are not needed.",
+              "evidence": "teaching them to sit, stay in one place and so on"
             },
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "speak"
+              "answer": "speak",
+              "explanation": "Just after 13 minutes the other student gives the example for spoken commands: simple audio commands like speak. The answer is the example itself, speak, not the labels 'audio commands' or 'spoken words' that sit around it in the same sentence.",
+              "evidence": "simple audio commands like speak"
             },
             {
               "id": "q23",
               "textHtml": "Question 23",
-              "answer": "barking"
+              "answer": "barking",
+              "explanation": "Around 13:21 the two guard training examples are given together, patrolling and barking, and the table already prints patrolling, so the missing one is barking. Write the -ing form you hear so that it matches the other examples in the column.",
+              "evidence": "Patroling and barking are probably the best examples"
             },
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "biting"
+              "answer": "biting",
+              "explanation": "Around 13:30 attack training is described as training the dog to knock someone down and even biting if it has to. Knocking someone down is already in the table, so biting is the answer, and the -ing form is what you hear.",
+              "evidence": "training the dog to knock someone down and even biting if they have to"
             },
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "sniffing"
+              "answer": "sniffing",
+              "explanation": "Just before 13:45 one student says sniffing dogs make up the searching category, so the example for search training is sniffing. The order is reversed here, with the example first and the category second, which is why this one is easy to miss.",
+              "evidence": "Sniffing dogs which make up the searching category"
             }
           ],
           "wordLimit": 3
@@ -349,27 +408,37 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q26",
               "textHtml": "physical training",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "Around 15:30 the student giving the opinions turns to physical training and says it is better suited to the larger kinds of dog. She first repeats what 'some people think', that it is ideal for every breed, and then corrects it, so wait for her own opinion before you answer.",
+              "evidence": "I think it's better suited to the larger kinds"
             },
             {
               "id": "q27",
               "textHtml": "search training",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Just before 16 minutes she says the specialised sniffing training, which is the search category, is better with the more intelligent breeds of dog. The phrase 'is the same' just before it is the trap, because it sounds as if she is repeating large dogs from the previous answer.",
+              "evidence": "I think they're better with the more intelligent breeds of dogs"
             },
             {
               "id": "q28",
               "textHtml": "attack training",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "Around 16 minutes she says attack training can be useful for every kind of large dog, as long as the dog is treated well. The word 'however' is your warning that this answer is different from the sniffing dogs she has just placed with the intelligent breeds.",
+              "evidence": "Attack training, however, can be useful for every kind of large dog"
             },
             {
               "id": "q29",
               "textHtml": "barking",
-              "answer": "A"
+              "answer": "A",
+              "explanation": "Just after 16:11 she says barking is an ideal way for small dogs to guard a home, adding that a small dog is not big enough to stop a person but the noise is usually enough. Large dogs are mentioned barking at the end of the section, but that is the other student making a different point.",
+              "evidence": "Barking is an ideal way for small dogs to guard a home"
             },
             {
               "id": "q30",
               "textHtml": "biting",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Around 16:20 she separates biting from barking and says she would always teach it to a smart dog, and smart means the same as intelligent in the list. The word 'different' is the signal that the answer changes from the one you have just written for barking.",
+              "evidence": "I'd always plan to teach those to a smart dog"
             }
           ]
         }
@@ -395,32 +464,58 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "7am – 12am"
+              "answer": [
+                "7am to 12am",
+                "7am-12am",
+                "7am - 12am",
+                "7am to midnight",
+                "7 am to midnight",
+                "7am until midnight"
+              ],
+              "explanation": "Just before 19 minutes Gina, the residential advisor, says the dining facility on the first floor is open seven days a week from 7am to midnight. You have to turn the word midnight into a clock time, and the table writes it as 12am.",
+              "evidence": "It is open seven days a week from 7 a.m. to midnight."
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "basement"
+              "answer": "basement",
+              "explanation": "Around 19:35 Gina says the gym and recreational hall are in the basement of the building. She gives the place before she names the facility, so the answer arrives before you know what it belongs to, which is why you have to read ahead in the table.",
+              "evidence": "In the basement of this building, there is a gym and recreational hall."
             },
             {
               "id": "q33",
               "textHtml": "Question 33",
-              "answer": "pin-pong tables"
+              "answer": [
+                "ping pong tables",
+                "ping-pong tables",
+                "pin-pong tables"
+              ],
+              "explanation": "Around 19:45 Gina lists what is in the recreational hall: ping pong tables and a pool table. The treadmills and weight sets are already printed in the table, so the new item is the ping pong tables, and the pool table is the distractor because only one item fits the limit.",
+              "evidence": "there are ping pong tables and a pool table for student use"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "2nd floor"
+              "answer": [
+                "2nd floor",
+                "second floor"
+              ],
+              "explanation": "Just after 20 minutes Gina says the kitchen is located on the second floor of the building. The table uses figures, so write 2nd floor, and do not carry over the first floor of the dining hall or the basement gym that she has just described.",
+              "evidence": "There is a kitchen located on the second floor of this building."
             },
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "24 hours"
+              "answer": "24 hours",
+              "explanation": "Around 20:10 Gina finishes the kitchen description by saying the room is open 24 hours a day, seven days a week. The limit is two words and a number, so write 24 hours and leave off the rest of her sentence.",
+              "evidence": "This room is open 24 hours a day, seven days a week."
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "refrigerator"
+              "answer": "refrigerator",
+              "explanation": "Around 20 minutes Gina lists what is inside the kitchen, and the first item is a refrigerator. The microwave and the oven that follow are already printed in the table, so the answer is the item left over, and she says refrigerator in full rather than fridge.",
+              "evidence": "Inside, there is a refrigerator, a microwave, an oven, and a stove."
             }
           ],
           "wordLimit": 2
@@ -433,22 +528,47 @@ export const listeningFull022: PracticeTest = {
             {
               "id": "q37",
               "textHtml": "List three activities that Saturday Morning Outings have included in the past",
-              "answer": "fishing, hiking, cycling"
+              "answer": [
+                "fishing, hiking, cycling",
+                "fishing, hiking, ice skating",
+                "fishing, hiking, going to the beach",
+                "fishing, cycling, ice skating",
+                "fishing, cycling, going to the beach",
+                "fishing, ice skating, going to the beach",
+                "hiking, cycling, ice skating",
+                "hiking, cycling, going to the beach",
+                "hiking, ice skating, going to the beach",
+                "cycling, ice skating, going to the beach",
+                "fishing, hiking, ice-skating",
+                "fishing, cycling, ice-skating",
+                "fishing, ice-skating, going to the beach",
+                "hiking, cycling, ice-skating",
+                "hiking, ice-skating, going to the beach",
+                "cycling, ice-skating, going to the beach"
+              ],
+              "explanation": "Around 20:45 Gina names five past Saturday morning outings in a single list: fishing, hiking, cycling, ice skating and going to the beach. You only need three of them, and the three word limit means you write the activities as single words and drop the word 'going'.",
+              "evidence": "these trips have included going fishing, hiking, cycling, ice skating, and even going to the beach"
             },
             {
               "id": "q38",
               "textHtml": "There are spaces available for the volleyball team.",
-              "answer": "20"
+              "answer": "20",
+              "explanation": "Around 21:20 Gina says there are only 20 spaces available on the volleyball team, on a first come first served basis. The other number close by is the trap: coming first in the dorm league last year is a position, not a number of places.",
+              "evidence": "there are only 20 spaces available"
             },
             {
               "id": "q39",
               "textHtml": "The first rule of the building: must be kept to a minimum after 11 pm. The second rule of the building: All visitors must sign in at the front of the building.",
-              "answer": "noise levels"
+              "answer": "noise levels",
+              "explanation": "Around 21:34 Gina gives the first rule in almost the same words as the sentence: noise levels must be kept to a minimum after 11pm. The time 11pm tells you that you are in the right place, and the 10 she mentions next is only the hour some students sleep until.",
+              "evidence": "noise levels must be kept to a minimum after 11 p.m."
             },
             {
               "id": "q40",
               "textHtml": "The third rule of the building: are not permitted in the building.",
-              "answer": "alcohol and drugs"
+              "answer": "alcohol and drugs",
+              "explanation": "Just after 22 minutes Gina gives the third rule: alcohol and drugs are not permitted in the dorm at any time. The ordering word 'thirdly' tells you this is the rule the sentence is asking about, and both words are needed for the answer.",
+              "evidence": "alcohol and drugs are not permitted in this dorm"
             }
           ],
           "wordLimit": 3

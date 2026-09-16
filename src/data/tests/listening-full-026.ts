@@ -33,17 +33,26 @@ export const listeningFull026: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "dress your best"
+              "answer": "dress your best",
+              "explanation": "Just after 1:10 Sue gives the company name and the man writes it down wrongly as 'Dress for best', then she corrects him to 'your best', so the name is Dress Your Best. Always keep listening after a name is repeated back, because the correction is the answer.",
+              "evidence": "It's called Dress Your Best."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "Kirby"
+              "answer": "Kirby",
+              "explanation": "Around 1:50 Sue says the office is on Kirby Trading Estate, and when the man asks how to spell it she reads out K-I-R-B-Y, so copy the letters exactly. The road name that follows is already printed for you, so only the estate name goes in the gap.",
+              "evidence": "we're on Kirby Trading Estate"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "09356788545"
+              "answer": [
+                "09356788545",
+                "09356 788 545"
+              ],
+              "explanation": "Around 2:25 Sue says it is best to give her mobile number and reads it out in three chunks. The trap comes straight afterwards: the man repeats it wrongly as 'Double 788' and she corrects him, so the ending is 788 545, not 788 788.",
+              "evidence": "The number's 09356 788 545."
             },
             {
               "id": "q4",
@@ -51,12 +60,16 @@ export const listeningFull026: PracticeTest = {
               "answer": [
                 "charge",
                 "extra charge"
-              ]
+              ],
+              "explanation": "Just after 3 minutes the man explains that delivery on the 16th carries a charge of $40 while option two is free, and Sue picks option two because she does not want to pay. He then says out loud what to write on the form, no charge.",
+              "evidence": "I'll note down, no charge."
             },
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "american express"
+              "answer": "american express",
+              "explanation": "Around 3:40 Sue says she will pay by credit card and the man offers Visa first, which is the distractor. Sue answers with a question of her own, asking whether American Express is all right, and he says it is fine, so American Express is the card type.",
+              "evidence": "Is American Express okay?"
             }
           ],
           "wordLimit": 3
@@ -72,27 +85,43 @@ export const listeningFull026: PracticeTest = {
               "answer": [
                 "black",
                 "dark"
-              ]
+              ],
+              "explanation": "Around 5 minutes the man lists the chair colours as pink, white and black, and Sue then says the pink looks nice but the darker colour is better because marks show up on light materials. Pink is the trap, since it is the colour she praises but does not choose, and the darker one is black.",
+              "evidence": "Okay, those chairs come in pink, white and black."
             },
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "glass desk"
+              "answer": [
+                "glass desk",
+                "glass desks"
+              ],
+              "explanation": "Around 5:35 Sue orders two glass desks, which matches the quantity of 2 in the table. The striped mats mentioned a moment earlier are the distractor, because they are out of stock and she gives up on them.",
+              "evidence": "Well, I'd also like two of your glass desks."
             },
             {
               "id": "q8",
               "textHtml": "Question 8",
-              "answer": "TG586"
+              "answer": [
+                "TG586",
+                "TG 586"
+              ],
+              "explanation": "Around 5:50 the man starts to give the code for the small desks but Sue cuts him off and says she wants the large ones, and the code for those is TG 586. The unfinished code for the small size is the trap, so wait for the code that belongs to the size actually chosen.",
+              "evidence": "The code here is TG 586."
             },
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "yellow"
+              "answer": "yellow",
+              "explanation": "Around 6:35 four colours are offered for the leather sofa and Sue rules three of them out loud: brown is too dull, cream shows the dirt, and red is not the one she settles on. The colour she says she will have is the extra one, yellow.",
+              "evidence": "Yes, it does come in yellow as well."
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "coffee table"
+              "answer": "coffee table",
+              "explanation": "Around 7 minutes the man suggests a coffee table and Sue agrees, then gives the code TX22 and the colour silver, which are already printed in the table. So the item name is what goes in the gap, and two words are allowed, which is exactly what coffee table needs.",
+              "evidence": "A coffee table, perhaps?"
             }
           ],
           "wordLimit": 2
@@ -119,37 +148,54 @@ export const listeningFull026: PracticeTest = {
             {
               "id": "q11",
               "textHtml": "To enjoy the day, make sure you it first.",
-              "answer": "plan"
+              "answer": "plan",
+              "explanation": "Around 9:35 Fred starts his list of tips and the first one is to plan your day rather than leave everything to the last minute. Only one word fits the gap after 'make sure you', so write plan.",
+              "evidence": "First of all, be certain to plan your day."
             },
             {
               "id": "q12",
               "textHtml": "Travel within the city centre.",
-              "answer": "on foot"
+              "answer": "on foot",
+              "explanation": "Just before 10 minutes Fred says not to rely on your car and that the best way to get around town is on foot. Cycling is the trap, because he mentions it in the next breath and then explains you still cannot use the roads near the runners' route.",
+              "evidence": "the best way to get around the town will be on foot"
             },
             {
               "id": "q13",
               "textHtml": "Wear on the day.",
-              "answer": "sensible clothes"
+              "answer": "sensible clothes",
+              "explanation": "Around 10:05 Fred separates advice for runners from advice for watchers: the runners were told last week to wear the right shoes, and now he tells the spectators to put on sensible clothes. Shoes are the distractor, because they belong to the other group.",
+              "evidence": "I'm going to tell you to put on sensible clothes"
             },
             {
               "id": "q14",
               "textHtml": "Check the the night before the marathon",
-              "answer": "weather"
+              "answer": [
+                "weather",
+                "forecast"
+              ],
+              "explanation": "Around 10:36 Fred says to look at the forecast on Friday night, which is the night before Saturday's marathon, and he has just said the weather may be hot or wet. The key wants weather here, so do not copy the word forecast even though that is the word you hear.",
+              "evidence": "Make sure you look at the forecast on Friday night."
             },
             {
               "id": "q15",
               "textHtml": "Let the give drinks to runners.",
-              "answer": "volunteers"
+              "answer": "volunteers",
+              "explanation": "Just before 11 minutes Fred tells spectators not to hand drinks to the runners themselves, because hundreds of volunteers are already standing on the roadside to do it. The word is plural in the recording and the sentence needs the plural, so write volunteers.",
+              "evidence": "We already have hundreds of volunteers who will be standing on the roadside, so let them give out the drinks."
             },
             {
               "id": "q16",
               "textHtml": "Ray on one side of the road to avoid",
-              "answer": "accidents"
+              "answer": "accidents",
+              "explanation": "Around 11:15 Fred warns you not to cross the road because tired runners cannot focus clearly, and he says plainly that nobody wants any accidents. Obstacles is the trap word in the next sentence, but it describes the spectators themselves, not the thing being avoided.",
+              "evidence": "We don't want any accidents"
             },
             {
               "id": "q17",
               "textHtml": "Don’t arrange to meet runners near the",
-              "answer": "finish line"
+              "answer": "finish line",
+              "explanation": "Around 11:40 Fred's last tip is not to arrange to meet friends or relatives at the finish line, because that whole area will be congested. Two words are allowed, which is exactly what finish line needs.",
+              "evidence": "please don't say that you'll see them at the finish line"
             }
           ],
           "wordLimit": 2
@@ -157,23 +203,36 @@ export const listeningFull026: PracticeTest = {
         {
           "title": "Questions 18-20",
           "type": "categorisation",
-          "instructionHtml": "What does the speaker say about the following forms of transport? Write the correct letter, A, B, C or D next to questions 18-20.",
+          "instructionHtml": "What does the speaker say about the following forms of transport? Write the correct letter, A to E, next to questions 18 to 20.",
           "questions": [
             {
               "id": "q18",
               "textHtml": "taxis",
-              "answer": "C"
+              "answer": "C",
+              "explanation": "Around 13 minutes Fred says taxis will be held up on the roads and will not be as punctual as usual, which is the same idea as C, longer waiting times. The trap comes right after, because he says there will be extra drivers that day, so D, fewer staff, is the opposite of what he says.",
+              "evidence": "so passengers shouldn't expect them to be as punctual as they normally are"
             },
             {
               "id": "q19",
               "textHtml": "trams",
-              "answer": "B"
+              "answer": "B",
+              "explanation": "Around 13:20 Fred says that if you want to be there when the runners set off at 9am, whatever part of the city you come from, you should use the trams, which matches B. Option A is the trap, because he says trams can carry plenty of passengers but never says that is more than usual.",
+              "evidence": "whatever end of the city you're coming from, I'd say use the trams"
             },
             {
               "id": "q20",
               "textHtml": "buses",
-              "answer": "E"
+              "answer": "E",
+              "explanation": "Around 14 minutes Fred says bus drivers will be working different routes and some will have longer breaks than normal, which is E, changed work schedules. He blocks option D in the same sentence by saying there will not be fewer drivers, so listen to the whole sentence before choosing.",
+              "evidence": "There won't be fewer drivers, but they will be operating on different routes, and some will have longer breaks than they normally do."
             }
+          ],
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
           ]
         }
       ]
@@ -203,7 +262,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 16:15 Ahmed says he enjoyed the seminar but was not sure he really followed parts of the discussion, which is C, he could not understand everything. The word 'enjoyed' is the distractor, because a positive comment can still be followed by the problem the question is asking about.",
+              "evidence": "I'm not sure I really followed parts of the discussion that took place"
             },
             {
               "id": "q22",
@@ -213,7 +274,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 17:10 Ahmed says he wrote up the results of the class experiments beforehand and the tutor replies that this was good and made the analysis easier, so B is right. The articles are the trap, because Ahmed only started reading them, and the tutor never compares him with other students.",
+              "evidence": "Yes, and that was good. It made it easier to analyze them."
             },
             {
               "id": "q23",
@@ -223,7 +286,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 17:55 Ahmed admits that instead of including everyone he kept turning to the person sitting next to him, which is A. Eye contact is the distractor, because the tutor suggests it and Ahmed says no, it is only habit and he is not shy.",
+              "evidence": "I think I kept turning to the person next to me"
             },
             {
               "id": "q24",
@@ -233,7 +298,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 18:20 Ahmed says the thing he is really concerned about is keeping up with the discussion, and he adds that his mind goes elsewhere while other students are talking, which is C, staying focused. Knowing when to speak is the trap, because the tutor says he handled that quite well.",
+              "evidence": "The thing I'm really concerned about is keeping up with the discussion."
             },
             {
               "id": "q25",
@@ -243,7 +310,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 19 minutes the tutor explains that students take different roles in a group, and Ahmed answers that this is a new idea to him and he does not know what he is like, which is A. He has not thought about it because, as the tutor says, he is busy thinking about his own performance.",
+              "evidence": "Oh, that's a new idea to me. I don't know what I'm like."
             },
             {
               "id": "q26",
@@ -253,7 +322,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "B",
                 "C"
-              ]
+              ],
+              "explanation": "Around 19:35 the tutor tells Ahmed that at the next seminar he should look outside himself and watch what the other students are doing, which is B. Asking others for their views is the trap, because that advice comes later, in the part about strategies, not in this instruction.",
+              "evidence": "it's important to watch what other students are doing"
             }
           ]
         },
@@ -269,7 +340,9 @@ export const listeningFull026: PracticeTest = {
                 "D",
                 "E"
               ],
-              "answerPairId": "test26-q27-q28"
+              "answerPairId": "test26-q27-q28",
+              "explanation": "The two strategies are D and E. For D, around 21 minutes the tutor says it is not a question of Ahmed saying more but of how well he pays attention to the other students, so listening is the first strategy. Option A is the trap, since Ahmed himself suggests speaking more and the tutor turns it down.",
+              "evidence": "it's more about how well you pay attention to other students"
             },
             {
               "id": "q28",
@@ -278,7 +351,9 @@ export const listeningFull026: PracticeTest = {
                 "D",
                 "E"
               ],
-              "answerPairId": "test26-q27-q28"
+              "answerPairId": "test26-q27-q28",
+              "explanation": "The second strategy is E, thinking of questions to ask, because just after 21 minutes the tutor gives Ahmed exact wordings for drawing other people out. Sitting next to a quiet person, option C, is the half agreement trap: the tutor says 'you can do', then moves straight on to what really matters.",
+              "evidence": "encourage someone else to say more by saying, what did you mean when you said"
             }
           ],
           "choices": [
@@ -317,7 +392,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "C"
               ],
-              "answerPairId": "test26-q29-q30"
+              "answerPairId": "test26-q29-q30",
+              "explanation": "The two suggestions about notes are A and C. For A, around 21:40 the tutor says Ahmed needs to think a few days ahead about the topic and the best way of making notes, so the planning happens before the seminar starts.",
+              "evidence": "Well, you actually need to think a few days ahead."
             },
             {
               "id": "q30",
@@ -326,7 +403,9 @@ export const listeningFull026: PracticeTest = {
                 "A",
                 "C"
               ],
-              "answerPairId": "test26-q29-q30"
+              "answerPairId": "test26-q29-q30",
+              "explanation": "The second suggestion is C, noting points to come back to later, which the tutor describes around 22 minutes as a small column for things you want to raise before the seminar ends. Option E is the trap, because the tutor says the opposite: good planning means you will not have to write your notes out again.",
+              "evidence": "you should include a small column in your notes, where you can jot down things you want to go back to before the seminar ends"
             }
           ],
           "choices": [
@@ -375,12 +454,20 @@ export const listeningFull026: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "rain shadow"
+              "answer": "rain shadow",
+              "explanation": "Around 24:45 the lecturer explains that deserts form where the land lies in what is called a rain shadow, a region beneath a mountain range. Two words are allowed, which is exactly what rain shadow needs.",
+              "evidence": "located in something that's called a rain shadow"
             },
             {
               "id": "q32",
               "textHtml": "Question 32",
-              "answer": "inches"
+              "answer": [
+                "inches",
+                "few inches",
+                "a few inches"
+              ],
+              "explanation": "Around 25 minutes the lecturer says rainfall often totals just a few inches a year, so the measurement asked for is inches. The key wants that single word, so do not add 'a few', which would also take you past the two word limit.",
+              "evidence": "rainfall often totals just a few inches a year"
             },
             {
               "id": "q33",
@@ -388,12 +475,16 @@ export const listeningFull026: PracticeTest = {
               "answer": [
                 "minerals",
                 "other minerals"
-              ]
+              ],
+              "explanation": "Around 25:20 the lecturer says the rain evaporates quickly, which makes the soil salty and leaves behind a range of other minerals. Salt is already printed in the note, so the word you need is the one that follows it, minerals.",
+              "evidence": "leaves behind a whole range of other minerals as well"
             },
             {
               "id": "q34",
               "textHtml": "Question 34",
-              "answer": "collect"
+              "answer": "collect",
+              "explanation": "Around 26:15 the lecturer names the first of the two main adaptations, the ability to collect water and store it. Store is already printed in the note, so write the verb that goes with it, collect.",
+              "evidence": "The first is that they have an ability to collect water and to store it."
             },
             {
               "id": "q35",
@@ -401,17 +492,23 @@ export const listeningFull026: PracticeTest = {
               "answer": [
                 "stem",
                 "green stem"
-              ]
+              ],
+              "explanation": "Around 27:15 the lecturer says the Saguaro's roots gather water after rain and the water is then taken to the green stem, where it is kept. The roots are the trap, because they collect the water but are not where it is stored.",
+              "evidence": "Then the water is taken here to the green stem."
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "expand"
+              "answer": "expand",
+              "explanation": "Around 27:50 the lecturer says the barrel cactus can expand when it rains and then shrinks in dry times as it uses the stored water. Shrink is already printed in the note, so the missing verb is its opposite, expand.",
+              "evidence": "its shape allows it to expand when it rains"
             },
             {
               "id": "q37",
               "textHtml": "Question 37",
-              "answer": "white hairs"
+              "answer": "white hairs",
+              "explanation": "Around 28:15 the lecturer describes the old man cactus, which is covered in white hairs, and says these help the plant reflect the hot desert sun. Two words are allowed, so write white hairs and keep the plural you hear.",
+              "evidence": "This third cactus, often just one plant reaching upwards, has these white hairs all over its surface."
             },
             {
               "id": "q38",
@@ -419,7 +516,9 @@ export const listeningFull026: PracticeTest = {
               "answer": [
                 "thorns",
                 "sharp thorns"
-              ]
+              ],
+              "explanation": "Around 28:50 the lecturer says animals eat desert plants for the water stored in them, so the prickly pear has sharp thorns to keep predators away. The word is heard as thorns, not spines, and spines belong to the barrel cactus earlier in the talk.",
+              "evidence": "the plant has sharp thorns specially designed to prevent the predator"
             },
             {
               "id": "q39",
@@ -427,12 +526,16 @@ export const listeningFull026: PracticeTest = {
               "answer": [
                 "tough",
                 "very tough"
-              ]
+              ],
+              "explanation": "Around 29:20 the lecturer says the desert spoon's long leaves are succulent but also very tough, and that toughness is what keeps the water inside. Succulent is the distractor, because it explains storage rather than reducing water loss.",
+              "evidence": "they're also usually very tough, and this helps keep the water inside"
             },
             {
               "id": "q40",
               "textHtml": "Question 40",
-              "answer": "plastic"
+              "answer": "plastic",
+              "explanation": "Just before 30 minutes the lecturer says the aloe's waxy leaf surface behaves like a plastic wrapper and helps hold the water in. Waxy is the trap, because the note asks what the surface acts like, and the comparison the lecturer makes is with plastic.",
+              "evidence": "This surface behaves in a similar way to a plastic wrapper"
             }
           ],
           "wordLimit": 2
