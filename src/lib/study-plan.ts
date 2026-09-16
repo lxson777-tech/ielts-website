@@ -45,6 +45,52 @@ export interface SavedPlan {
       every field unchanged. Drives the settings strip's quiet "set your
       exam date" hint instead of treating a guess as a real choice. */
   defaulted?: boolean;
+  /** Optional minimum band per paper. Universities usually ask for an overall
+      band AND a floor in every paper ("6.5 overall with no band below 6.0"),
+      so one overall target is not enough to aim at. Any paper left out here
+      falls back to targetBand (see skillTargetFor). Values are strings from
+      SKILL_TARGET_BANDS; loadStudyPlan drops anything else. */
+  skillTargets?: Partial<Record<PlanSkill, string>>;
+}
+
+/** The four papers a band is reported for. Vocabulary is a site section, not a
+    paper, so it never gets a target. */
+export const PLAN_SKILLS = ['listening', 'reading', 'writing', 'speaking'] as const;
+export type PlanSkill = (typeof PLAN_SKILLS)[number];
+
+export const PLAN_SKILL_LABEL: Record<PlanSkill, string> = {
+  listening: 'Listening',
+  reading: 'Reading',
+  writing: 'Writing',
+  speaking: 'Speaking',
+};
+
+/** Bands a per-paper minimum may be set to. Wider than TARGET_BANDS on purpose:
+    a student aiming at 7.0 overall may only need 6.0 in each paper, and that
+    floor is the number that decides whether an application is accepted. */
+export const SKILL_TARGET_BANDS = ['5.0', '5.5', '6.0', '6.5', '7.0', '7.5', '8.0', '8.5', '9.0'] as const;
+
+/** Keep only the four papers, and only bands we offer. Anything else (an old
+    key, a hand-edited value, a number instead of a string) is dropped rather
+    than rendered into a select that cannot show it. Returns undefined when
+    nothing survives, so the plan stays exactly as it was before the feature. */
+export function sanitiseSkillTargets(value: unknown): SavedPlan['skillTargets'] {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const out: Partial<Record<PlanSkill, string>> = {};
+  for (const skill of PLAN_SKILLS) {
+    const band = (value as Record<string, unknown>)[skill];
+    if (typeof band === 'string' && (SKILL_TARGET_BANDS as readonly string[]).includes(band)) {
+      out[skill] = band;
+    }
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+/** The band this student is aiming at in one paper: their own minimum when
+    they set one, otherwise the overall target. */
+export function skillTargetFor(plan: SavedPlan | null, skill: PlanSkill): string | null {
+  if (!plan) return null;
+  return plan.skillTargets?.[skill] ?? plan.targetBand ?? null;
 }
 
 /** The six target bands the course now offers, one decimal place, low to
@@ -108,7 +154,11 @@ export function loadStudyPlan(): SavedPlan | null {
     if (!raw) return null;
     const p = JSON.parse(raw);
     if (typeof p?.targetBand !== 'string') return null;
-    return { done: [], testDate: '', createdAt: '', ...p } as SavedPlan;
+    const plan = { done: [], testDate: '', createdAt: '', ...p } as SavedPlan;
+    const skillTargets = sanitiseSkillTargets(plan.skillTargets);
+    if (skillTargets) plan.skillTargets = skillTargets;
+    else delete plan.skillTargets;
+    return plan;
   } catch {
     return null;
   }

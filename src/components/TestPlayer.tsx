@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { PracticeTest, Question, QuestionGroup, QuestionType, TestPart, TestSkill } from '../lib/tests/schema';
-import { bandEstimate, bandMidpoint, isCorrect, questionCount, scoredQuestionIds } from '../lib/tests/schema';
+import {
+  acceptedVariants,
+  answerLeniency,
+  bandEstimate,
+  bandMidpoint,
+  isCorrect,
+  questionCount,
+  scoredQuestionIds,
+} from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
 import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
 import { drillTypes } from '../lib/tests/drills';
@@ -1332,8 +1340,16 @@ function QuestionItem({
           </p>
         </div>
       )}
-      {submitted && (showHint || q.explanation || q.evidence) && (
-        <AnswerReview q={q} ok={ok} answerText={answerText} onLocate={onLocate} skill={skill} className="sm:ml-10" />
+      {submitted && (showHint || q.explanation || q.evidence || (ok && answerLeniency(q, value))) && (
+        <AnswerReview
+          q={q}
+          ok={ok}
+          given={value}
+          answerText={answerText}
+          onLocate={onLocate}
+          skill={skill}
+          className="sm:ml-10"
+        />
       )}
     </div>
   );
@@ -1399,6 +1415,7 @@ function BookmarkToggle({
 function AnswerReview({
   q,
   ok,
+  given,
   answerText,
   onLocate,
   skill,
@@ -1406,16 +1423,39 @@ function AnswerReview({
 }: {
   q: Question;
   ok: boolean;
+  given: string;
   answerText: string;
   onLocate?: (evidence: string) => void;
   skill: TestSkill;
   className?: string;
 }) {
+  /* Our marker forgives more than an examiner will (a hyphen, a currency sign,
+     punctuation). Saying nothing would train the student into a habit that
+     costs a mark on test day, so when the forgiveness is what saved the answer
+     we name it and show the exact form from the key. */
+  const leniency = ok ? answerLeniency(q, given) : null;
+  const variants = acceptedVariants(q);
   return (
     <div className={`mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm ${className ?? ''}`}>
       {!ok && (
         <p className="font-semibold text-success">
           ✓ Correct answer: <span className="font-bold">{answerText}</span>
+        </p>
+      )}
+      {leniency && (
+        <p className="mb-1 rounded bg-warning-tint px-2 py-1.5 text-warning">
+          Marked right, but write it exactly as <strong>{leniency.expected}</strong> in the real test. We let{' '}
+          {leniency.forgiven.join(' and ')} through here.
+        </p>
+      )}
+      {variants.length > 1 && (
+        <p className="mb-1 text-xs text-ink-muted">
+          The key accepts {variants.map((v, i) => (
+            <span key={v}>
+              {i > 0 ? ' or ' : ''}
+              <strong>{v}</strong>
+            </span>
+          ))}. In the test write one answer only, never both with a slash or brackets.
         </p>
       )}
       {q.explanation && <p className="mt-0.5 text-ink-muted">{q.explanation}</p>}
@@ -1651,12 +1691,15 @@ function TableGrid({
           const value = answers[nq.question.id] ?? '';
           const ok = isCorrect(nq.question, value);
           const answerText = Array.isArray(nq.question.answer) ? nq.question.answer[0]! : nq.question.answer;
-          if (ok && !nq.question.explanation && !nq.question.evidence) return null;
+          if (ok && !nq.question.explanation && !nq.question.evidence && !answerLeniency(nq.question, value)) {
+            return null;
+          }
           return (
             <AnswerReview
               key={nq.question.id}
               q={nq.question}
               ok={ok}
+              given={value}
               answerText={answerText}
               onLocate={onLocate}
               skill={skill}

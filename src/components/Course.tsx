@@ -22,7 +22,11 @@ import {
   onStudyPlanChange,
   daysUntilTest,
   planTierFor,
+  sanitiseSkillTargets,
   PLAN_TIER_LABEL,
+  PLAN_SKILLS,
+  PLAN_SKILL_LABEL,
+  SKILL_TARGET_BANDS,
   TARGET_BANDS,
   type SavedPlan,
 } from '../lib/study-plan';
@@ -58,6 +62,10 @@ export default function Course() {
   // note explaining why, right on the field, rather than silently swapping
   // the student's saved target the next time they submit the form.
   const [clampedFromBand, setClampedFromBand] = useState<string | null>(null);
+  /* Per-paper minimums. '' means "no minimum of its own", which falls back to
+     the overall target, so a student who does not care about per-paper floors
+     never has to touch these four fields. */
+  const [skillTargets, setSkillTargets] = useState<Record<string, string>>({});
 
   function seedEditorFields(saved: SavedPlan) {
     const savedBandValid = (TARGET_BANDS as readonly string[]).includes(saved.targetBand);
@@ -66,6 +74,7 @@ export default function Course() {
     setTestDate(saved.testDate);
     setDailyMinutes(saved.dailyMinutes ?? 25);
     setStudyDays(saved.studyDays ?? 'daily');
+    setSkillTargets({ ...(saved.skillTargets ?? {}) });
   }
 
   useEffect(() => {
@@ -120,7 +129,15 @@ export default function Course() {
      the new settings) rather than gating the course behind a form. */
   function saveSettings(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const next: SavedPlan = { ...activePlan, targetBand, testDate, dailyMinutes, studyDays, defaulted: false };
+    const next: SavedPlan = {
+      ...activePlan,
+      targetBand,
+      testDate,
+      dailyMinutes,
+      studyDays,
+      skillTargets: sanitiseSkillTargets(skillTargets),
+      defaulted: false,
+    };
     saveStudyPlan(next);
     setPlan(next);
     setShowEditor(false);
@@ -235,6 +252,40 @@ export default function Course() {
                 <option value="daily">Every day</option>
                 <option value="weekdays">Weekdays only</option>
               </select>
+            </div>
+            {/* Most universities ask for an overall band AND a floor in every
+                paper, so one target is not enough to aim at. Left blank, a
+                paper simply uses the overall target. */}
+            <div className="w-full">
+              <p className="text-xs font-semibold">
+                Minimum in each paper <span className="font-normal text-ink-muted">(optional)</span>
+              </p>
+              <p className="mt-0.5 text-xs text-ink-muted">
+                Set these if your university asks for a minimum in every paper, for example 6.5 overall with nothing
+                below 6.0. Leave one blank and it uses your target band.
+              </p>
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {PLAN_SKILLS.map((skill) => (
+                  <div key={skill}>
+                    <label className="block text-xs text-ink-muted" htmlFor={`skill-target-${skill}`}>
+                      {PLAN_SKILL_LABEL[skill]}
+                    </label>
+                    <select
+                      id={`skill-target-${skill}`}
+                      value={skillTargets[skill] ?? ''}
+                      onChange={(e) => setSkillTargets((s) => ({ ...s, [skill]: e.target.value }))}
+                      className="mt-1 w-full rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
+                    >
+                      <option value="">Same as target</option>
+                      {SKILL_TARGET_BANDS.map((b) => (
+                        <option key={b} value={b}>
+                          Band {b}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
             </div>
             <button
               type="submit"

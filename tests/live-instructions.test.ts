@@ -173,6 +173,32 @@ test('buildInstruction: part3 drill includes the part3 questions', () => {
   }
 });
 
+/* Official examiner behaviour: repeating is allowed everywhere, rephrasing only
+   in Part 3. A regression here makes our practice test teach help the candidate
+   will not get on test day. */
+test('buildInstruction: rephrasing is offered in Part 3 only', () => {
+  const part1 = buildInstruction(resolvePlanRequest({ mode: 'part1', part1TopicIds: [TOPIC_SOLO] }), 'openai');
+  assert.ok(part1.includes('PART 1:'), 'part 1 drill should carry the Part 1 clarification rule');
+  assert.ok(part1.includes('Never rephrase it'), 'part 1 drill must forbid rephrasing');
+  assert.ok(!part1.includes('PART 3:'), 'part 1 drill should not carry the Part 3 rule');
+
+  const part2 = buildInstruction(resolvePlanRequest({ mode: 'part2', cueCardId: CUE_PART2 }), 'openai');
+  assert.ok(part2.includes('must NOT explain the cue card'), 'part 2 drill must forbid explaining the cue card');
+  assert.ok(!part2.includes('MAY also rephrase'), 'part 2 drill must not allow rephrasing');
+
+  const part3 = buildInstruction(part3Plan(), 'openai');
+  assert.ok(part3.includes('MAY also rephrase'), 'part 3 drill should allow one rephrase');
+
+  for (const provider of LIVE_PROVIDERS) {
+    const full = buildInstruction(fullPlan(), provider);
+    assert.ok(full.includes('REPEATING AND REPHRASING'), 'full test should carry the clarification block');
+    for (const label of ['PART 1:', 'PART 2:', 'PART 3:']) {
+      assert.ok(full.includes(label), `full test should state the rule for ${label}`);
+    }
+    assert.ok(full.includes('never give your own opinion'), 'full test should forbid examiner opinions');
+  }
+});
+
 test('every instruction stays under 40,000 characters', () => {
   const plans: ResolvedPlan[] = [
     fullPlan(),

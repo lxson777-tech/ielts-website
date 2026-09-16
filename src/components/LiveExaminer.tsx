@@ -829,7 +829,7 @@ export default function LiveExaminer({
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· Use headphones if you can, in a quiet room</li>
           <li>· Speak naturally, the examiner waits while you think</li>
-          <li>· You can ask her to repeat or rephrase a question</li>
+          <li>· You can ask her to repeat a question, and in Part 3 to rephrase it, exactly as in the real test</li>
         </ul>
         {needsSignIn && (
           <div className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-3 text-xs text-ink-muted">

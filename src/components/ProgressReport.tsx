@@ -19,7 +19,7 @@ import {
   getTypeStats,
   getActivity,
 } from '../lib/progress';
-import { loadStudyPlan, daysUntilTest, type SavedPlan } from '../lib/study-plan';
+import { loadStudyPlan, daysUntilTest, skillTargetFor, type PlanSkill, type SavedPlan } from '../lib/study-plan';
 import { getStreak } from '../lib/plan/streak';
 import { buildCourse } from '../lib/course';
 import { LABELS } from './TypeAnalytics';
@@ -174,14 +174,15 @@ export default function ProgressReport() {
 
   const testRows: {
     skill: string;
+    key: PlanSkill;
     best: number | null;
     latest: number | null;
     count: number;
   }[] = [
-    { skill: 'Reading', best: readingBest?.band ?? null, latest: readingAttempts.at(-1)?.attempt.band ?? null, count: readingAttempts.length },
-    { skill: 'Listening', best: listeningBest?.band ?? null, latest: listeningAttempts.at(-1)?.attempt.band ?? null, count: listeningAttempts.length },
-    { skill: 'Writing', best: writingBest, latest: writingAttempts.at(-1)?.attempt.overallBand ?? null, count: writingAttempts.length },
-    { skill: 'Speaking', best: speakingBest, latest: speakingAttempts.at(-1)?.overallBand ?? null, count: speakingAttempts.length },
+    { skill: 'Reading', key: 'reading', best: readingBest?.band ?? null, latest: readingAttempts.at(-1)?.attempt.band ?? null, count: readingAttempts.length },
+    { skill: 'Listening', key: 'listening', best: listeningBest?.band ?? null, latest: listeningAttempts.at(-1)?.attempt.band ?? null, count: listeningAttempts.length },
+    { skill: 'Writing', key: 'writing', best: writingBest, latest: writingAttempts.at(-1)?.attempt.overallBand ?? null, count: writingAttempts.length },
+    { skill: 'Speaking', key: 'speaking', best: speakingBest, latest: speakingAttempts.at(-1)?.overallBand ?? null, count: speakingAttempts.length },
   ];
 
   const trend: TrendPoint[] = [
@@ -323,20 +324,50 @@ export default function ProgressReport() {
                 <th className="px-4 py-2.5 font-semibold">Attempts</th>
                 <th className="px-4 py-2.5 font-semibold">Best band</th>
                 <th className="px-4 py-2.5 font-semibold">Latest band</th>
+                <th className="px-4 py-2.5 font-semibold">Aiming at</th>
               </tr>
             </thead>
             <tbody>
-              {testRows.map((row) => (
-                <tr key={row.skill} className="border-t border-border">
-                  <td className="px-4 py-2.5 font-medium">{row.skill}</td>
-                  <td className="px-4 py-2.5">{row.count}</td>
-                  <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
-                  <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
-                </tr>
-              ))}
+              {testRows.map((row) => {
+                /* The band this paper has to reach: the student's own minimum
+                   when they set one in the course settings, otherwise their
+                   overall target. Compared against the best band, because that
+                   is what shows whether the paper is within reach. */
+                const target = skillTargetFor(plan, row.key);
+                const targetBand = target ? Number(target) : null;
+                const short = targetBand !== null && row.best !== null ? Math.round((targetBand - row.best) * 10) / 10 : null;
+                return (
+                  <tr key={row.skill} className="border-t border-border">
+                    <td className="px-4 py-2.5 font-medium">{row.skill}</td>
+                    <td className="px-4 py-2.5">{row.count}</td>
+                    <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
+                    <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
+                    <td className="px-4 py-2.5">
+                      {targetBand === null ? (
+                        <span className="text-ink-muted">no target</span>
+                      ) : (
+                        <>
+                          <span className="font-medium">{targetBand.toFixed(1)}</span>
+                          {short !== null && (
+                            <span className={short <= 0 ? 'text-success' : 'text-ink-muted'}>
+                              {short <= 0 ? ' · reached' : ` · ${short.toFixed(1)} to go`}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
+        {plan?.skillTargets && (
+          <p className="mt-2 text-xs text-ink-muted">
+            Your own minimum per paper is shown where you set one, otherwise your overall target of Band{' '}
+            {plan.targetBand}. Change these in Course settings.
+          </p>
+        )}
         {trend.length >= 2 ? (
           <BandTrend points={trend} />
         ) : (

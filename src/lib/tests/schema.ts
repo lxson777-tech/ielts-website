@@ -148,13 +148,50 @@ export function questionCount(test: PracticeTest): number {
   );
 }
 
+/* IELTS accepts British and American spellings of the same word, so a student
+   who writes "color" against a key that prints "colour" has earned the mark.
+   A curated pair list, not a suffix rule: "-our to -or" would also turn "four"
+   into "for". Each entry maps the British form to the American one, and both
+   sides of a comparison are folded to the American form before matching. */
+const SPELLING_PAIRS: Record<string, string> = {
+  colour: 'color', colours: 'colors', coloured: 'colored', colourful: 'colorful',
+  favour: 'favor', favours: 'favors', favourite: 'favorite', favourable: 'favorable',
+  behaviour: 'behavior', behaviours: 'behaviors', labour: 'labor', labours: 'labors',
+  neighbour: 'neighbor', neighbours: 'neighbors', neighbourhood: 'neighborhood',
+  harbour: 'harbor', harbours: 'harbors', flavour: 'flavor', flavours: 'flavors',
+  humour: 'humor', odour: 'odor', odours: 'odors', vapour: 'vapor', vapours: 'vapors',
+  rumour: 'rumor', rumours: 'rumors', armour: 'armor', honour: 'honor', honours: 'honors',
+  centre: 'center', centres: 'centers', metre: 'meter', metres: 'meters',
+  litre: 'liter', litres: 'liters', theatre: 'theater', theatres: 'theaters',
+  fibre: 'fiber', fibres: 'fibers', defence: 'defense', offence: 'offense',
+  licence: 'license', practise: 'practice', practised: 'practiced', practising: 'practicing',
+  analyse: 'analyze', analysed: 'analyzed', organise: 'organize', organised: 'organized',
+  organisation: 'organization', organisations: 'organizations', realise: 'realize',
+  realised: 'realized', recognise: 'recognize', recognised: 'recognized',
+  specialise: 'specialize', specialised: 'specialized', catalogue: 'catalog',
+  catalogues: 'catalogs', dialogue: 'dialog', programme: 'program', programmes: 'programs',
+  grey: 'gray', tyre: 'tire', tyres: 'tires', plough: 'plow', mould: 'mold', moulds: 'molds',
+  storey: 'story', storeys: 'stories', aluminium: 'aluminum', jewellery: 'jewelry',
+  travelled: 'traveled', travelling: 'traveling', traveller: 'traveler', travellers: 'travelers',
+  cancelled: 'canceled', cancelling: 'canceling', labelled: 'labeled', labelling: 'labeling',
+  modelling: 'modeling', fuelled: 'fueled', woollen: 'woolen', enrol: 'enroll',
+  skilful: 'skillful', fulfil: 'fulfill', instalment: 'installment', ageing: 'aging',
+  judgement: 'judgment', cheque: 'check', draught: 'draft', kerb: 'curb', pyjamas: 'pajamas',
+  sceptical: 'skeptical', moustache: 'mustache', aeroplane: 'airplane',
+};
+
+function foldSpelling(s: string): string {
+  return s.replace(/[a-z]+/g, (word) => SPELLING_PAIRS[word] ?? word);
+}
+
 function normalizeAnswer(s: string): string {
   // Free-form typing is stored raw, so we mark on content, not formatting.
-  // Forgiven: case; extra/doubled spaces; curly vs straight quotes and dashes;
+  // Forgiven: case; British vs American spelling (both are officially
+  // accepted); extra/doubled spaces; curly vs straight quotes and dashes;
   // thousand-separator commas (5000 vs 5,000); currency symbols ($50 vs 50);
   // "%" vs "percent"/"per cent"; hyphenated vs spaced compounds (well-known vs
   // well known); and any leading/trailing punctuation or quote marks.
-  return s
+  const out = s
       .toLowerCase()
       .replace(/[’‘]/g, "'")
       .replace(/[“”]/g, '"')
@@ -169,6 +206,71 @@ function normalizeAnswer(s: string): string {
       .replace(/^["']+|["']+$/g, '')
       .replace(/[.,;:!?]+$/, '')
       .trim();
+  return foldSpelling(out);
+}
+
+/* Everything normalizeAnswer forgives beyond case and stray spaces, in the
+   order we test it. Case and spacing are safe to forgive silently (an examiner
+   ignores them too); the rest are real differences from the printed key, so
+   when one of them is what saved the answer the student is told, rather than
+   being trained into a habit a real examiner may reject. */
+const LENIENCY_RULES: { note: string; apply: (s: string) => string }[] = [
+  { note: 'the currency symbol', apply: (s) => s.replace(/[£$€]/g, '') },
+  { note: 'the comma inside the number', apply: (s) => s.replace(/(?<=\d),(?=\d)/g, '') },
+  {
+    note: 'writing percent out in words instead of using the % sign',
+    apply: (s) => s.replace(/per\s*cent/g, 'percent').replace(/%/g, ' percent').replace(/\s+/g, ' ').trim(),
+  },
+  { note: 'the hyphen', apply: (s) => s.replace(/(?<=[a-z])-(?=[a-z])/g, ' ') },
+  { note: 'the quotation marks', apply: (s) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"') },
+  {
+    note: 'the punctuation you added',
+    apply: (s) => s.replace(/^["']+|["']+$/g, '').replace(/[.,;:!?]+$/, '').trim(),
+  },
+];
+
+function foldCaseAndSpace(s: string): string {
+  return s.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+export interface AnswerLeniency {
+  /** The exact form to write in the real test, straight from the key. */
+  expected: string;
+  /** Plain-language list of what our marker let through. */
+  forgiven: string[];
+}
+
+/** Why an answer we accepted would not have matched the printed key exactly.
+    Returns null when the answer is wrong, when it matches the key apart from
+    case and spacing (which cost nothing in the real test), or when it is a
+    multi-select question, where there is nothing to spell. */
+export function answerLeniency(question: Question, given: string): AnswerLeniency | null {
+  if (question.multiSelect) return null;
+  const accepted = Array.isArray(question.answer) ? question.answer : [question.answer];
+  const match = accepted.find((a) => normalizeAnswer(a) === normalizeAnswer(given));
+  if (match === undefined) return null;
+
+  let g = foldCaseAndSpace(given);
+  let e = foldCaseAndSpace(match);
+  const forgiven: string[] = [];
+  for (const rule of LENIENCY_RULES) {
+    if (g === e) break;
+    const ng = rule.apply(g);
+    const ne = rule.apply(e);
+    // Only a rule that changes ONE side is doing the forgiving: if it rewrites
+    // both the same way, the two forms already agreed on that point.
+    if ((ng !== g) !== (ne !== e)) forgiven.push(rule.note);
+    g = ng;
+    e = ne;
+  }
+  return g === e && forgiven.length > 0 ? { expected: match, forgiven } : null;
+}
+
+/** The other wordings the key also accepts, so review can show them. Empty for
+    a single-answer key. */
+export function acceptedVariants(question: Question): string[] {
+  if (question.multiSelect || !Array.isArray(question.answer)) return [];
+  return question.answer.length > 1 ? [...question.answer] : [];
 }
 
 export function isCorrect(question: Question, given: string): boolean {

@@ -155,37 +155,18 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
             })}
           </div>
 
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Vocabulary for this topic</p>
-            <div className="mt-1.5 grid items-start gap-2 sm:grid-cols-2">
-              {plan.vocabulary.map((v) => {
-                const isOpen = planVocabRevealed.has(v.phrase);
-                return (
-                  <div
-                    key={v.phrase}
-                    className="rounded-lg border border-[var(--color-vocabulary)]/25 bg-[var(--color-vocabulary-tint)]/60 p-2.5"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setPlanVocabRevealed((s) => toggle(s, v.phrase))}
-                      aria-expanded={isOpen}
-                      className="flex w-full items-center justify-between gap-2 text-left text-sm font-bold text-[var(--color-vocabulary)]"
-                    >
-                      <span>{v.phrase}</span>
-                      <span aria-hidden="true" className="shrink-0">
-                        {isOpen ? '▾' : '▸'}
-                      </span>
-                    </button>
-                    <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
-                      <div className="min-h-0 overflow-hidden">
-                        <p className="pt-1.5 text-sm text-ink-muted">{v.use}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {plan.vocabulary.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setActive('vocab')}
+              className="flex w-full items-center justify-between gap-2 rounded-lg border border-[var(--color-vocabulary)]/25 bg-[var(--color-vocabulary-tint)]/60 px-3 py-2 text-left"
+            >
+              <span className="text-sm font-bold text-[var(--color-vocabulary)]">
+                {plan.vocabulary.length} phrases for this question
+              </span>
+              <span className="text-xs font-semibold text-ink-muted">Vocabulary tab &rsaquo;</span>
+            </button>
+          )}
 
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Pitfalls on this question</p>
@@ -277,7 +258,55 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
         </div>
       )}
 
-      {active === 'vocab' && prompt.suggestedVocab.length === 0 && (
+      {/* The 60 imported exam tasks carry no hand-written suggestedVocab, so the
+          tab used to be empty on every real question. Their per-question plan
+          does have topic phrases, so show those instead of an apology. */}
+      {active === 'vocab' && prompt.suggestedVocab.length === 0 && plan && plan.vocabulary.length > 0 && (
+        <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4">
+          <p className="text-sm text-ink-muted">Phrases chosen for this exact question. Tap one to see when to use it.</p>
+          <div className="mt-2.5 grid items-start gap-2.5 sm:grid-cols-2">
+            {plan.vocabulary.map((v) => {
+              const isOpen = planVocabRevealed.has(v.phrase);
+              return (
+                <div
+                  key={v.phrase}
+                  className="rounded-lg border border-[var(--color-vocabulary)]/25 bg-[var(--color-vocabulary-tint)]/60 p-3"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setPlanVocabRevealed((s) => toggle(s, v.phrase))}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-2 text-left text-sm font-bold text-[var(--color-vocabulary)]"
+                  >
+                    <span>{v.phrase}</span>
+                    <span aria-hidden="true" className="shrink-0">
+                      {isOpen ? '▾' : '▸'}
+                    </span>
+                  </button>
+                  <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
+                    <div className="min-h-0 overflow-hidden">
+                      <div className="flex items-start justify-between gap-2 pt-2">
+                        <p className="text-sm text-ink-muted">{v.use}</p>
+                        <button
+                          type="button"
+                          onClick={() => copyPhrase(v.phrase)}
+                          title="Copy phrase"
+                          aria-label={`Copy "${v.phrase}"`}
+                          className="shrink-0 rounded p-1 text-ink-muted transition-colors hover:bg-surface hover:text-ink"
+                        >
+                          {copied === v.phrase ? '✓' : '⧉'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {active === 'vocab' && prompt.suggestedVocab.length === 0 && (!plan || plan.vocabulary.length === 0) && (
         <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4 rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-ink-muted">
           No topic vocabulary for this task yet.
         </div>

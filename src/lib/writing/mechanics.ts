@@ -162,8 +162,11 @@ export function analyzeEssay(input: EssayInput): MechanicsReport {
 
   const notes: string[] = [];
   if (underLength) {
+    /* Task 1 is marked on Task Achievement, Task 2 on Task Response. Naming the
+       wrong criterion sends the student to the wrong advice. */
+    const criterion = prompt.task === 'task1' ? 'Task Achievement' : 'Task Response';
     notes.push(
-      `Under the ${prompt.minWords}-word minimum (${wordCount} words), which caps your Task Achievement band.`,
+      `Under the ${prompt.minWords}-word minimum (${wordCount} words), which caps your ${criterion} band.`,
     );
   } else {
     notes.push(`${wordCount} words, comfortably over the ${prompt.minWords}-word minimum.`);
