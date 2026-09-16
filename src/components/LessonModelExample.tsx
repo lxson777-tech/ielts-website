@@ -88,8 +88,11 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
             >
               Show the Band 8 answer
             </button>
-            <a href={withBase('/trainers/writing')} className="text-sm font-semibold text-brand hover:underline">
-              Or write one yourself first
+            <a
+              href={withBase(`/trainers/writing?task=${encodeURIComponent(prompt.id)}`)}
+              className="text-sm font-semibold text-brand hover:underline"
+            >
+              Or write this one yourself first
             </a>
           </div>
         ) : (
@@ -116,7 +119,7 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
 
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
               <a
-                href={withBase('/trainers/writing')}
+                href={withBase(`/trainers/writing?type=${prompt.task}`)}
                 className="rounded-button bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
               >
                 Write one of these yourself

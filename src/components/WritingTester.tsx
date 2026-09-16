@@ -169,6 +169,31 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     startTask(taskType!);
   }
 
+  /* A link can open the trainer with the task already chosen, so a student sent
+     here from a lesson starts writing instead of landing on a menu:
+       ?task=<promptId>  this exact question
+       ?type=task1|task2 the next question of that type, from the rotation
+     Runs once, and only when nothing has been started yet. */
+  useEffect(() => {
+    if (prompt || typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const wanted = params.get('task');
+    if (wanted) {
+      const found = WRITING_PROMPTS.find((p) => p.id === wanted);
+      if (found) {
+        setTaskType(found.task);
+        setPrompt(found);
+        setEssay('');
+        setResult(null);
+        restartTimer();
+        return;
+      }
+    }
+    const type = params.get('type');
+    if (type === 'task1' || type === 'task2') startTask(type);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   /* ── 1. Start screen ── */
   if (!prompt) {
     const t1Pool = TASK1_PROMPTS;
