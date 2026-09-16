@@ -16,7 +16,7 @@ export interface WorkspaceTab {
 }
 
 export const WORKSPACE_TABS: WorkspaceTab[] = [
-  { href: '/dashboard', label: 'Today', also: ['/report'], icon: 'today' },
+  { href: '/dashboard', label: 'Today', also: ['/report', '/plan-settings'], icon: 'today' },
   { href: '/start', label: 'Course', also: ['/learn', '/lessons'], icon: 'course' },
   { href: '/trainers', label: 'Practice', also: ['/writing', '/speaking'], icon: 'practice' },
   { href: '/tests', label: 'Tests', icon: 'tests' },
@@ -32,6 +32,7 @@ export interface WorkspaceMenuItem {
 export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
   [
     { href: '/account', label: 'Account' },
+    { href: '/plan-settings', label: 'Study plan settings' },
     { href: '/account#saved', label: 'Saved and notes' },
     { href: '/report', label: 'Progress report' },
   ],
@@ -46,6 +47,7 @@ export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
 /** Route prefixes that get the workspace shell instead of the marketing nav. */
 export const APP_ROUTE_PREFIXES = [
   '/dashboard',
+  '/plan-settings',
   '/start',
   '/learn',
   '/lessons',

@@ -77,7 +77,7 @@ export default function PlanToday() {
       <p className="plan-today-strip">
         {summary.text}
         {summary.hint && <span className="plan-today-strip-hint"> · {summary.hint}</span>}
-        <a href={withBase('/start')} className="plan-today-strip-change">
+        <a href={withBase('/plan-settings')} className="plan-today-strip-change">
           Change
         </a>
       </p>
@@ -86,7 +86,7 @@ export default function PlanToday() {
         <div className="plan-today-behind">
           <span>{today.behindMessage}</span>
           <span className="plan-today-behind-actions">
-            <a href={withBase('/start')}>Push back my exam date</a>
+            <a href={withBase('/plan-settings')}>Push back my exam date</a>
             <button type="button" onClick={() => setDismissedBehind(true)}>
               Keep this lighter plan
             </button>

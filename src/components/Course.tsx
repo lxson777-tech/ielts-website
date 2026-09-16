@@ -33,11 +33,12 @@ const SKILL_DOT: Record<string, string> = {
   vocabulary: 'var(--color-vocabulary)',
 };
 
-export default function Course() {
+export default function Course({ settingsOnly = false }: { settingsOnly?: boolean }) {
   const [plan, setPlan] = useState<SavedPlan | null>(null);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [ready, setReady] = useState(false);
-  const [showEditor, setShowEditor] = useState(false);
+  const [showEditor, setShowEditor] = useState(settingsOnly);
+  const [saved, setSaved] = useState(false);
   const [targetBand, setTargetBand] = useState('6.5');
   const [testDate, setTestDate] = useState('');
   const [dailyMinutes, setDailyMinutes] = useState<NonNullable<SavedPlan['dailyMinutes']>>(25);
@@ -68,7 +69,9 @@ export default function Course() {
     // hands back the saved one, or fabricates and persists a default (see
     // createDefaultPlan in src/lib/plan/schedule.ts) so the course never
     // opens on a blank onboarding form.
-    setPlan(loadOrCreateStudyPlan());
+    const initialPlan = loadOrCreateStudyPlan();
+    setPlan(initialPlan);
+    seedEditorFields(initialPlan);
     setProgress(getProgress());
     setReady(true);
     // Keep in step with both stores: a cloud pull can rewrite either, and
@@ -126,7 +129,8 @@ export default function Course() {
     };
     saveStudyPlan(next);
     setPlan(next);
-    setShowEditor(false);
+    setShowEditor(settingsOnly);
+    setSaved(true);
   }
 
   function toggleExtra(key: string) {
@@ -153,13 +157,13 @@ export default function Course() {
             </span>
             <span className="text-sm text-ink-muted">{summary.text}</span>
           </div>
-          <button
+          {!settingsOnly && <button
             type="button"
             onClick={() => setShowEditor((v) => !v)}
             className="shrink-0 rounded-button border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt"
           >
             {showEditor ? 'Close' : 'Change'}
-          </button>
+          </button>}
         </div>
 
         {summary.hint && !showEditor && <p className="mt-2 text-xs text-ink-muted">{summary.hint}</p>}
@@ -174,6 +178,7 @@ export default function Course() {
         {showEditor && (
           <form
             onSubmit={saveSettings}
+            onChange={() => setSaved(false)}
             className="mt-4 flex flex-wrap items-end gap-3 rounded-lg border border-dashed border-border bg-surface-alt p-3.5"
           >
             <div>
@@ -282,6 +287,9 @@ export default function Course() {
           </form>
         )}
 
+        {saved && <p role="status" className="mt-4 text-sm font-semibold text-success">Your plan settings are saved.</p>}
+        {settingsOnly && <a href={withBase('/dashboard')} className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">Back to your dashboard</a>}
+        {!settingsOnly && <>
         <div className="mt-4">
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
             <span>
@@ -324,8 +332,10 @@ export default function Course() {
             </>
           )}
         </p>
+        </>}
       </div>
 
+      {!settingsOnly && <>
       <p className="mt-6 text-sm text-ink-muted">Eight learning units, usually one per week. Start each paper with its overview, learn the method, then practise. Your calendar adjusts to your available dates; your completed lessons stay saved.</p>
       <WeekView />
 
@@ -430,6 +440,7 @@ export default function Course() {
       <p className="mt-6 text-xs text-ink-muted">
         Lessons tick themselves off when you mark them complete on the lesson page.
       </p>
+      </>}
     </div>
   );
 }
