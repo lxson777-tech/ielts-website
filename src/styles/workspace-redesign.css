@@ -167,7 +167,6 @@
 .workspace-v2 .lesson-body .section p { max-width: 75ch; }
 .workspace-v2 .library-card { box-shadow: none; }
 .workspace-v2 .library-card { border-top-width: 1px; padding: 22px; }
-.workspace-v2 .platform-hub .skill-speaking a.activity-start { color: var(--color-speaking); }
 .workspace-v2 .course-sections { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 20px; max-width: none; }
 .workspace-v2 .course-sections > div { margin: 0; box-shadow: none; border-radius: 20px; padding: 24px; }
 .workspace-v2 .course-sections > div:last-child { grid-column: 1 / -1; }

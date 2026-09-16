@@ -2,9 +2,9 @@
 
 ## Scope and review
 
-Local work lives on `codex/capsule-redesign` in `C:/Users/Alex/Desktop/ielts-redesign`. It starts from `9ab6a78` plus a snapshot of in-progress content improvements from `ielts-deploy`. This is not a live deployment. The existing marketing homepage is outside this workspace redesign and remains intact.
+Local work lives on `codex/capsule-redesign` in `C:/Users/Alex/Desktop/ielts-redesign`. It starts from `9ab6a78` plus a snapshot of in-progress content improvements from `ielts-deploy`. Alex approved this design and its deployment on 2026-09-16. The existing marketing homepage is outside this workspace redesign and remains intact.
 
-Review the built workspace at [dashboard preview](http://127.0.0.1:4331/ielts-website/dashboard). The development server uses port 4330. Publishing requires Alex's approval after local review.
+Review the built workspace at [dashboard preview](http://127.0.0.1:4331/ielts-website/dashboard). The development server uses port 4330. Alex has completed local review and asked to retain this design for future work.
 
 ## Built direction
 
@@ -20,4 +20,8 @@ The request is a broad visual redesign with full content preservation. Keep all 
 
 ## Verification status
 
-Reported checks for this worktree: 288 tests passed, type check with 0 errors, and a successful build producing 515 pages. Runtime checks additionally passed desktop and phone navigation, writing task selection and text entry, the lesson vocabulary quiz, lesson completion and undo, and test rotation after client navigation. The checked pages had no horizontal overflow at 390px and no browser errors. Screenshots are in artifacts/redesign. Paid grading and microphone sessions were not invoked during this visual redesign.
+Reported checks for this worktree: 291 tests passed, type check with 0 errors, and a successful build producing 515 pages. Runtime checks additionally passed desktop and phone navigation, writing task selection and text entry, the lesson vocabulary quiz, lesson completion and undo, and test rotation after client navigation. The checked pages had no horizontal overflow at 390px and no browser errors. Screenshots are in artifacts/redesign. Paid grading and microphone sessions were not invoked during this visual redesign.
+
+## Combined release
+
+Merged the latest published content through `0e3597f`: all 60 real-task model answers, in-lesson examples, one-click writing task links, and listening transcripts and answer explanations. Those material files match the incoming main branch. Practice buttons have filled forest backgrounds, cream labels, 48px targets, and keyboard focus rings. Future work must follow DESIGN.md and COURSE-STRUCTURE.md, as recorded in CLAUDE.md and AGENTS.md.
