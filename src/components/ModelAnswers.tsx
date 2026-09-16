@@ -241,7 +241,16 @@ export default function ModelAnswers() {
   const task2Groups = useMemo(() => groupPrompts('task2', TASK2_GROUPS, promptsWithModels), [promptsWithModels]);
   const task1Groups = useMemo(() => groupPrompts('task1', TASK1_GROUPS, promptsWithModels), [promptsWithModels]);
 
-  const [promptId, setPromptId] = useState<string>(promptsWithModels[0]?.id ?? '');
+  /* ?task=<promptId> opens straight on one task, so the Writing Trainer can
+     send a student from their own graded essay to the model for that exact
+     question. An unknown id just falls back to the first task. */
+  const [promptId, setPromptId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const asked = new URLSearchParams(window.location.search).get('task');
+      if (asked && promptsWithModels.some((p) => p.id === asked)) return asked;
+    }
+    return promptsWithModels[0]?.id ?? '';
+  });
   const prompt = promptId ? (getWritingPrompt(promptId) as EssayPrompt | undefined) : undefined;
   const bands = useMemo(() => (promptId ? getModelBands(promptId) : []), [promptId]);
 

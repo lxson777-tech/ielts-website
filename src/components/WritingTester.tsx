@@ -21,6 +21,7 @@ import { WRITING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { countWords } from '../lib/writing/mechanics';
 import { gradeEssay, isGraderConfigured } from '../lib/writing/grader';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
+import { getModelAnswers } from '../data/model-answers';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttempt } from '../lib/progress';
@@ -299,6 +300,25 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           improvements={result.improvements}
           actionPlan={result.actionPlan}
         >
+          {/* The moment a model answer is worth most: the student has just
+              written this exact task and read their own bands. */}
+          {getModelAnswers(prompt.id).length > 0 && (
+            <a
+              href={withBase(`/writing/models?task=${encodeURIComponent(prompt.id)}`)}
+              className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
+            >
+              <span>
+                <span className="font-display font-bold text-ink">Compare with a Band 8 answer</span>
+                <span className="mt-0.5 block text-ink-muted">
+                  A model written for this same task, with the examiner notes behind every criterion.
+                </span>
+              </span>
+              <span aria-hidden="true" className="shrink-0 text-brand">
+                &rarr;
+              </span>
+            </a>
+          )}
+
           {/* Instant mechanics */}
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
             <h3 className="font-display font-bold">Mechanics check</h3>
