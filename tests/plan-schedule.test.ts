@@ -1,3 +1,4 @@
+import { buildCourse, buildSections, courseStatus } from '../src/lib/course.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -37,15 +38,15 @@ test('buildSchedule places every course lesson exactly once, in course order', (
   const lessonIds = days.flatMap((d) => d.items.filter((i) => i.type === 'lesson').map((i) => i.id));
   const uniqueIds = new Set(lessonIds);
   assert.equal(uniqueIds.size, lessonIds.length, 'no lesson is scheduled twice');
-  assert.ok(lessonIds.length > 0, 'at least some lessons are scheduled');
+  assert.deepEqual(lessonIds, buildCourse().flatMap((m) => m.lessons.map((l) => l.key)));
 });
 
-test('an ordinary study day has between 2 and 4 items', () => {
+test('an ordinary study day has between 1 and 4 items', () => {
   const plan = makePlan();
   const days = buildSchedule(plan);
   for (const day of days) {
     if (day.isExamLight) continue; // light-review days can be a single item
-    assert.ok(day.items.length >= 2, `day ${day.date} has fewer than 2 items`);
+    assert.ok(day.items.length >= 1, `day ${day.date} has fewer than 1 items`);
     assert.ok(day.items.length <= 4, `day ${day.date} has more than 4 items`);
   }
 });
@@ -62,12 +63,12 @@ test('the last two study days before the exam are light review only', () => {
   }
 });
 
-test('a full test appears from week two onward, alternating reading and listening', () => {
+test('full tests follow all teaching, alternating reading and listening', () => {
   const plan = makePlan();
   const days = buildSchedule(plan);
   const testItems = days.flatMap((d) => d.items.filter((i) => i.type === 'test').map((i) => ({ week: d.weekNumber, skill: i.skill })));
   assert.ok(testItems.length > 0, 'at least one test is scheduled');
-  assert.ok(testItems.every((t) => t.week >= 2), 'no test lands in week one');
+  assert.ok(testItems.every((t) => t.week === 8), 'tests belong to the final unit');
   for (let i = 1; i < testItems.length; i++) {
     assert.notEqual(testItems[i]!.skill, testItems[i - 1]!.skill, 'consecutive weekly tests alternate skill');
   }
@@ -98,13 +99,13 @@ test('markItemsDone ticks a lesson once progress records it, and leaves others u
   assert.ok(others.every((i) => !i.done));
 });
 
-test('getTodayPlan on day one of a fresh plan returns 2-4 items and reports on track', () => {
+test('getTodayPlan on day one of a fresh plan returns 1-4 items and reports on track', () => {
   const plan = makePlan();
   const progress = emptyProgress();
   const today = getTodayPlan(plan, progress, new Date(`${START}T12:00:00`));
   assert.ok(today);
   assert.equal(today!.dayNumber, 1);
-  assert.ok(today!.items.length >= 2 && today!.items.length <= 4);
+  assert.ok(today!.items.length >= 1 && today!.items.length <= 4);
   assert.equal(today!.onTrack, true);
   assert.equal(today!.daysBehind, 0);
 });
@@ -121,13 +122,13 @@ test('getTodayPlan flags "behind" once more than 3 past study days are left undo
   assert.equal(today!.onTrack, false);
 });
 
-test('mock exams are scheduled every two weeks from week three, 150 minutes, linking to /tests/mock', () => {
+test('a final mock follows teaching, lasts 150 minutes and links to /tests/mock', () => {
   const plan = makePlan();
   const days = buildSchedule(plan);
   const mockItems = days.flatMap((d) => d.items.filter((i) => i.type === 'mock').map((i) => ({ week: d.weekNumber, item: i })));
   assert.ok(mockItems.length > 0, 'at least one mock exam is scheduled over an 8-week plan');
   for (const { week, item } of mockItems) {
-    assert.ok(week >= 3 && (week - 3) % 2 === 0, `mock exam landed in week ${week}, expected week 3, 5, 7, ...`);
+    assert.ok(week === 8, `mock exam must follow teaching, got week ${week}`);
     assert.equal(item.minutes, 150);
     assert.equal(item.href, '/tests/mock');
   }
@@ -197,7 +198,7 @@ test('a fresh store (a brand new student, nothing saved yet) still yields a non-
   const progress = emptyProgress();
   const today = getTodayPlan(plan, progress, new Date(`${plan.startDate}T12:00:00`));
   assert.ok(today, 'Today is never null once a plan exists, default or not');
-  assert.ok(today!.items.length >= 2 && today!.items.length <= 4, 'Today lists a normal day worth of items immediately, no onboarding form first');
+  assert.ok(today!.items.length >= 1 && today!.items.length <= 4, 'Today lists a normal day worth of items immediately, no onboarding form first');
   assert.equal(today!.dayNumber, 1);
 });
 
@@ -207,4 +208,45 @@ test('resolvePlanParams on a defaulted plan still falls back to 25 minutes and e
   assert.equal(params.dailyMinutes, 25);
   assert.equal(params.studyDays, 'daily');
   assert.equal(params.examDate, addDays(plan.startDate!, 56), '8-week default pace when no exam date is set');
+});
+
+
+test('every section starts with its overview and keeps existing completion keys', () => {
+  const overviews = { speaking: 'speaking', reading: 'reading-task1', listening: 'listening', writing: 'writing', vocabulary: 'vocabulary' };
+  for (const section of buildSections()) assert.equal(section.lessons[0]!.key, overviews[section.skill]);
+  const modules = buildCourse();
+  const keys = modules.flatMap((m) => m.lessons.map((l) => l.key));
+  assert.equal(keys.length, 54);
+  assert.equal(new Set(keys).size, 54);
+  for (const [before, after] of [['speaking','speaking-part1'], ['speaking-part1','speaking-part2'], ['speaking-part2','speaking-part3'], ['writing-method','writing-charts'], ['writing-task2-method','writing-opinion'], ['reading-paraphrase','reading-tfng'], ['listening-part1','listening-part2'], ['listening-part2','listening-part3'], ['listening-part3','listening-part4']]) {
+    assert.ok(keys.indexOf(before!) < keys.indexOf(after!), `${before} must precede ${after}`);
+  }
+  const progress = emptyProgress();
+  progress.lessons['speaking'] = { completedAt: new Date().toISOString() };
+  progress.lessons['reading-paraphrase'] = { completedAt: new Date().toISOString() };
+  assert.equal(courseStatus(modules, progress).doneLessons, 2);
+  assert.equal(courseStatus(modules, progress).next!.key, 'speaking-part1');
+});
+
+test('week one teaches Speaking overview before Part 1, with familiar vocabulary only', () => {
+  const days = buildSchedule(makePlan()).filter((d) => d.weekNumber === 1);
+  const lessons = days.flatMap((d) => d.items.filter((i) => i.type === 'lesson'));
+  assert.deepEqual(lessons.map((l) => l.id), buildCourse()[0]!.lessons.map((l) => l.key));
+  assert.equal(lessons[0]!.minutes, 8);
+  assert.equal(lessons[1]!.minutes, 20);
+  assert.ok(days.every((d) => d.focus === 'Start speaking with confidence'));
+});
+
+test('all lessons survive different deadlines and study-day preferences in the same order', () => {
+  const expected = buildCourse().flatMap((m) => m.lessons.map((l) => l.key));
+  for (const length of [6, 14, 28, 56, 90]) for (const studyDays of ['daily','weekdays'] as const) for (const dailyMinutes of [15,25,40,60] as const) {
+    const schedule = buildSchedule(makePlan({ testDate: addDays(START,length), studyDays, dailyMinutes }));
+    assert.deepEqual(schedule.flatMap((d) => d.items.filter((i) => i.type === 'lesson').map((i) => i.id)), expected, `${length} days, ${studyDays}, ${dailyMinutes} minutes`);
+    const taught = new Set<string>();
+    for (const day of schedule) for (const item of day.items) {
+      if (item.type === 'lesson') taught.add(item.id);
+      if (item.type === 'test' || item.type === 'mock' || item.type === 'drill') assert.equal(taught.size, expected.length);
+      if (item.type === 'vocab') assert.ok(taught.has(`vocabulary-${item.href.split('topic=')[1]}`));
+    }
+  }
 });

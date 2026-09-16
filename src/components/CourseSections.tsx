@@ -52,7 +52,7 @@ export default function CourseSections() {
   const prog = progress ?? getProgress();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4" data-stagger>
+    <div className="course-sections mx-auto max-w-2xl space-y-4">
       {SECTIONS.map((section) => {
         const doneCount = section.lessons.filter((l) => isLessonDone(prog, l.key)).length;
         const isOpen = openSections[section.skill] ?? true;

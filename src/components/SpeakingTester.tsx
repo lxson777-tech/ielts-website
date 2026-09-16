@@ -364,10 +364,10 @@ export default function SpeakingTester() {
   if (phase === 'menu') {
     return (
       <div className="screen-in space-y-4">
-        <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+        <div className="speaking-choice">
           <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking</p>
-          <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Take a Speaking Test</h3>
+          <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Choose your speaking practice</h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
             Pick a part. Each question appears on screen, you record your answer with your microphone, and an AI
             examiner grades you on the four official IELTS Speaking criteria. A coach panel with the answer

@@ -83,6 +83,8 @@ export default function WeekView() {
   if (!ready || !plan || !progress || !week) return null;
 
   const todayStr = toLocalDateKey(new Date());
+  const focus = [...new Set(week.days.map((d) => d.focus).filter(Boolean))].join(' / ');
+  const longerDays = week.days.some((d) => d.items.reduce((n, i) => n + i.minutes, 0) > (plan.dailyMinutes ?? 25));
 
   return (
     <section className="mt-6 rounded-card border border-border bg-surface p-5 shadow-card sm:p-6" aria-labelledby="week-heading">
@@ -133,6 +135,8 @@ export default function WeekView() {
         </div>
       )}
 
+      <p className="mt-4 font-semibold text-ink">{focus}</p>
+      {longerDays && <p className="mt-1 text-sm text-ink-muted">Some sessions exceed your daily target. The times below include the full lessons or timed tests. Extend your plan in settings if you need a lighter pace.</p>}
       <div className="plan-week-grid mt-4">
         {week.days.map((day) => {
           const isToday = day.date === todayStr;
@@ -141,6 +145,7 @@ export default function WeekView() {
             <div key={day.date} className={`plan-week-day${isToday ? ' is-today' : ''}`}>
               <span className="plan-week-day-label">{label}</span>
               <span className="plan-week-day-num">{Number(day.date.slice(-2))}</span>
+              {day.items.length > 0 && <span className="text-xs text-ink-muted">{day.items.reduce((n, i) => n + i.minutes, 0)} min</span>}
               {day.items.length === 0 ? (
                 <span className="plan-week-empty">{day.isExamLight ? 'Light review' : 'Rest'}</span>
               ) : (

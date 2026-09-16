@@ -1,19 +1,5 @@
-/* "Start Here" course. Takes a target band and a test date, then lays out the
-   site's 44 lessons as one ordered path grouped into four modules, with a
-   Continue button that always points at the next unfinished lesson.
-
-   This replaces the old study-plan builder, which generated a hand-written
-   list of ~13 generic steps ("Study the Reading Overview") that restated the
-   lesson catalogue and drifted whenever a lesson was added. The modules now
-   come from src/lib/course.ts, which is derived from the part registries.
-
-   Two different kinds of row, deliberately:
-   - Lesson rows are links whose tick is READ from progress.lessons. You mark a
-     lesson complete on the lesson page itself, exactly as before, so there is
-     one place completion is recorded and lessons finished before starting the
-     course are already ticked here.
-   - Exam-readiness rows are checkboxes, because nothing in the progress store
-     records "I sat a mock". Those ticks are stored in the plan's doneKeys. */
+/* Guided curriculum and calendar. Lesson ticks use existing progress keys;
+   exam-readiness checklist ticks stay in the saved plan. */
 
 import { useEffect, useState } from 'react';
 import { withBase } from '../lib/url';
@@ -157,7 +143,7 @@ export default function Course() {
   const doneKeys = plan.doneKeys ?? [];
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-4xl">
       {/* settings strip, then progress, then the week view, then the modules */}
       <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -340,22 +326,22 @@ export default function Course() {
         </p>
       </div>
 
+      <p className="mt-6 text-sm text-ink-muted">Eight learning units, usually one per week. Start each paper with its overview, learn the method, then practise. Your calendar adjusts to your available dates; your completed lessons stay saved.</p>
       <WeekView />
 
       {/* modules */}
       <div className="mt-6 space-y-6" data-stagger>
         {MODULES.map((mod) => {
           const modDone = mod.lessons.filter((l) => isLessonDone(prog, l.key)).length;
-          const optional = mod.stage > pace.focusThrough && mod.stage !== 4;
           return (
             <section
-              key={mod.stage}
+              key={mod.id}
               id={mod.stage === 4 ? 'exam-readiness' : undefined}
               className="scroll-mt-24 rounded-card border border-border bg-surface p-5 shadow-card sm:p-6"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <h3 className="font-display text-lg font-bold">
-                  <span className="text-ink-muted">{mod.stage}.</span> {mod.name}
+                  <span className="text-ink-muted">{mod.id}.</span> {mod.name}
                 </h3>
                 {mod.lessons.length > 0 && (
                   <span className="text-xs font-semibold text-ink-muted">
@@ -364,11 +350,7 @@ export default function Course() {
                 )}
               </div>
               <p className="mt-1 text-sm text-ink-muted">{mod.blurb}</p>
-              {optional && (
-                <p className="mt-2 rounded-lg bg-surface-alt px-3 py-2 text-xs text-ink-muted">
-                  Optional at your pace: with {days} days left, prioritise the earlier modules and Exam readiness.
-                </p>
-              )}
+
 
               {mod.lessons.length > 0 && (
                 <ul className="mt-4 space-y-1">

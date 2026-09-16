@@ -9,12 +9,8 @@ interface Props {
 const { title, subtitle, eyebrow, id } = Astro.props;
 ---
 
-<div class="mb-8" id={id}>
-  {eyebrow && (
-    <p class="mb-2 inline-block rounded-full bg-[var(--skill-tint,var(--color-brand-tint))] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--skill,var(--color-brand))]">
-      {eyebrow}
-    </p>
-  )}
+<div class="section-heading mb-8" id={id}>
   <h2 class="text-3xl font-extrabold tracking-tight">{title}</h2>
+  {eyebrow && !title.toLowerCase().includes(eyebrow.toLowerCase()) && <p class="heading-context">{eyebrow}</p>}
   {subtitle && <p class="mt-2 max-w-xl text-ink-muted">{subtitle}</p>}
 </div>

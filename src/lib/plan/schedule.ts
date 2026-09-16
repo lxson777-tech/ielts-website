@@ -1,32 +1,5 @@
-/* The daily study-plan schedule: given a saved plan (target band, exam date,
-   daily minutes, study days) plus the course sequence, deterministically lays
-   out which course items land on which calendar day, from the day the plan
-   was created up to the exam.
-
-   The schedule is derived, never stored. buildSchedule() is a pure function
-   of the plan's parameters and the (also derived) course order — call it
-   again and it produces exactly the same days. Only "is this item done" is
-   read from progress, which is why buildSchedule() itself never touches
-   progress: everything here can compute the calendar first, then layer
-   completion on top. See markItemsDone() and getTodayPlan()/getWeekPlan()
-   for that second step.
-
-   Rules encoded here (see the parent feature brief for the plain-English
-   version):
-   - Lessons appear in course order (src/lib/course.ts), 12 minutes each.
-   - A drill of the matching skill follows every two lessons (10 minutes),
-     only when that skill has drills (reading/listening; writing, speaking
-     and vocabulary lessons don't get one).
-   - One full test a week from week two, alternating reading and listening
-     (60/40 minutes), plus a short vocabulary review to round the day out.
-   - Every 7th calendar day is a review day: revisit earlier lessons instead
-     of taking on new ones.
-   - The last two study days before the exam are light review only, no new
-     material.
-   - If the course can't fit before the exam at the student's daily pace,
-     review days are dropped first, then drills, but every lesson still gets
-     a day — see the "compressed" branch below. */
-
+/* Calendar follows the taught curriculum, not a random rotation of skills.
+   Completion stays in the existing progress store. */
 import { buildCourse, type CourseLesson } from '../course';
 import type { ProgressV1 } from '../progress';
 import { ALL_TESTS } from '../../data/tests';
@@ -41,7 +14,6 @@ export const DEFAULT_DAILY_MINUTES = 25;
 export const DEFAULT_PLAN_WEEKS = 8;
 
 const LESSON_MINUTES = 12;
-const DRILL_MINUTES = 10;
 const VOCAB_MINUTES = 5;
 const REVIEW_MINUTES = 8;
 const MOCK_MINUTES = 150;
@@ -82,6 +54,7 @@ export interface PlanDay {
   isReview: boolean;
   isExamLight: boolean;
   items: PlanItem[];
+  focus?: string;
 }
 
 export interface PlanParams {
@@ -160,7 +133,7 @@ function fullTests(skill: 'reading' | 'listening'): PracticeTest[] {
 }
 
 function lessonItem(l: CourseLesson): PlanItem {
-  return { id: l.key, type: 'lesson', label: l.title, meta: l.skillLabel, href: l.href, minutes: LESSON_MINUTES, skill: l.skill, done: false, trackable: true };
+  return { id: l.key, type: 'lesson', label: l.title, meta: l.skillLabel, href: l.href, minutes: l.minutes ?? LESSON_MINUTES, skill: l.skill, done: false, trackable: true };
 }
 
 function drillItem(d: DrillMeta, skill: 'reading' | 'listening'): PlanItem {
@@ -170,7 +143,7 @@ function drillItem(d: DrillMeta, skill: 'reading' | 'listening'): PlanItem {
     label: d.test.title,
     meta: skill === 'reading' ? 'Reading drill' : 'Listening drill',
     href: `/trainers/${skill}/${d.id}`,
-    minutes: DRILL_MINUTES,
+    minutes: d.test.durationMinutes,
     skill,
     done: false,
     trackable: true,
@@ -237,158 +210,92 @@ function pickReviewLessons(lessons: CourseLesson[], upTo: number): CourseLesson[
     Items are NOT marked done here; pair with markItemsDone() for that. */
 export function buildSchedule(plan: SavedPlan): PlanDay[] {
   const params = resolvePlanParams(plan);
+  const modules = buildCourse();
   const lessons = courseLessons();
-  const totalLessons = lessons.length;
-  // Vocabulary lesson keys are `vocabulary-<slug>`; course order here
-  // matches src/data/vocabulary.ts's VOCABULARY_PARTS order exactly, since
-  // interleaveBySkill() never reorders lessons within one skill's queue.
-  const vocabTopicSlugs = lessons.filter((l) => l.skill === 'vocabulary').map((l) => l.key.replace(/^vocabulary-/, ''));
-
   const totalCalendarDays = Math.max(1, daysBetween(params.startDate, params.examDate));
-  const allDates: string[] = Array.from({ length: totalCalendarDays }, (_, i) => addDays(params.startDate, i));
-  const studyDates = allDates.filter((d) => (params.studyDays === 'weekdays' ? isWeekday(d) : true));
-
-  // The two study days immediately before the exam are always light review,
-  // never dropped even under heavy compression.
-  const lightCount = Math.min(2, studyDates.length);
-  const lightDates = new Set(studyDates.slice(Math.max(0, studyDates.length - lightCount)));
-  const workingDates = studyDates.filter((d) => !lightDates.has(d));
-
-  const reviewDateCount = workingDates.filter((d) => (daysBetween(params.startDate, d) + 1) % 7 === 0).length;
-  const perDayLessonBudget = Math.max(1, Math.floor(params.dailyMinutes / LESSON_MINUTES));
-
-  // Compression: work out whether every lesson can land on its own
-  // reasonable slot before the light-review tail. If review days would
-  // starve the lesson queue, drop them (lesson days absorb their slots). If
-  // that's still not enough, drop drills too. If it's STILL not enough (an
-  // exam booked in a handful of days with fifty lessons left), lessons win
-  // outright: force as many per day as it takes, ignoring the usual budget.
-  const lessonDaysWithReview = Math.max(1, workingDates.length - reviewDateCount);
-  let allowReview = lessonDaysWithReview * perDayLessonBudget >= totalLessons;
-  let allowDrills = true;
-  let perDay = perDayLessonBudget;
-  if (!allowReview) {
-    const lessonDaysNoReview = Math.max(1, workingDates.length);
-    if (lessonDaysNoReview * perDayLessonBudget < totalLessons) {
-      allowDrills = false;
-      perDay = Math.max(perDayLessonBudget, Math.ceil(totalLessons / lessonDaysNoReview));
-    }
-  }
-  const compressed = perDay > perDayLessonBudget;
-
-  // Mock exam days: once every two weeks starting week three (weeks 3, 5,
-  // 7, ...), on the Sunday of that week if it's a study day, otherwise the
-  // last study day of that week (e.g. Friday on a weekdays-only plan).
-  // Picked from workingDates so a mock exam never lands on one of the two
-  // light-review days right before the exam.
-  const weekToWorkingDates = new Map<number, string[]>();
-  for (const d of workingDates) {
-    const wk = Math.ceil((daysBetween(params.startDate, d) + 1) / 7);
-    const list = weekToWorkingDates.get(wk) ?? [];
-    list.push(d);
-    weekToWorkingDates.set(wk, list);
-  }
-  const mockDates = new Set<string>();
-  for (const [wk, dates] of weekToWorkingDates) {
-    if (wk < 3 || (wk - 3) % 2 !== 0) continue;
-    const sunday = dates.find((d) => parseDateKey(d).getDay() === 0);
-    const chosen = sunday ?? dates[dates.length - 1];
-    if (chosen) mockDates.add(chosen);
-  }
-
-  let lessonPtr = 0;
-  let sinceDrill = 0;
-  let readingDrillPtr = 0;
-  let listeningDrillPtr = 0;
-  let readingTestPtr = 0;
-  let listeningTestPtr = 0;
-  let nextTestSkill: 'reading' | 'listening' = 'reading';
-  let lastTestWeek = 0;
-
-  const readingDrills = ALL_READING_DRILLS;
-  const listeningDrills = ALL_LISTENING_DRILLS;
-  const readingTests = fullTests('reading');
-  const listeningTests = fullTests('listening');
-
+  const dates = Array.from({ length: totalCalendarDays }, (_, i) => addDays(params.startDate, i))
+    .filter((d) => params.studyDays !== 'weekdays' || isWeekday(d));
+  const lightDates = new Set(dates.slice(-Math.min(2, dates.length)));
+  const workingDates = dates.filter((d) => !lightDates.has(d));
+  const taught: CourseLesson[] = [];
   const days: PlanDay[] = [];
 
-  for (const date of studyDates) {
+  function recap(): PlanItem[] {
+    const earlier = pickReviewLessons(taught, taught.length).map(reviewItem);
+    // Recaps are practice prompts, not new completion requirements or overdue work.
+    return earlier.map((item) => ({ ...item, trackable: false }));
+  }
+  function vocabulary(dayNumber: number): PlanItem | null {
+    const topics = taught.filter((l) => l.key.startsWith('vocabulary-')).map((l) => l.key.slice(11));
+    return topics.length ? { ...vocabItem(dayNumber, topics), trackable: false } : null;
+  }
+  function addDay(date: string, items: PlanItem[], focus: string, isReview = false) {
     const dayNumber = daysBetween(params.startDate, date) + 1;
-    const weekNumber = Math.ceil(dayNumber / 7);
-    const isLight = lightDates.has(date);
-    const isMock = !isLight && mockDates.has(date);
-    const isReview = !isLight && !isMock && allowReview && dayNumber % 7 === 0;
-    const items: PlanItem[] = [];
-
-    if (isLight) {
-      for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
-      if (items.length === 0) items.push(vocabItem(dayNumber, vocabTopicSlugs));
-    } else if (isMock) {
-      items.push(mockItem(date));
-      items.push(vocabItem(dayNumber, vocabTopicSlugs));
-    } else if (isReview) {
-      for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
-      if (items.length < 2) items.push(vocabItem(dayNumber, vocabTopicSlugs));
-    } else if (weekNumber >= 2 && weekNumber !== lastTestWeek) {
-      lastTestWeek = weekNumber;
-      const pool = nextTestSkill === 'reading' ? readingTests : listeningTests;
-      if (pool.length > 0) {
-        const ptr = nextTestSkill === 'reading' ? readingTestPtr : listeningTestPtr;
-        const test = pool[ptr % pool.length]!;
-        items.push(testItem(test, nextTestSkill));
-        if (nextTestSkill === 'reading') readingTestPtr++;
-        else listeningTestPtr++;
+    days.push({ date, dayNumber, weekNumber: Math.ceil(dayNumber / 7), isReview,
+      isExamLight: lightDates.has(date), items, focus });
+  }
+  function teach(unitLessons: CourseLesson[], unitDates: string[], focus: string) {
+    let ptr = 0;
+    // Reserve a consolidation day only when every lesson has a teaching day.
+    const lessonDays = unitDates.length > unitLessons.length ? unitDates.length - 1 : unitDates.length;
+    for (let index = 0; index < unitDates.length; index++) {
+      const date = unitDates[index]!;
+      const dayNumber = daysBetween(params.startDate, date) + 1;
+      const items: PlanItem[] = [];
+      const remainingDays = Math.max(1, lessonDays - index);
+      const minimum = Math.ceil((unitLessons.length - ptr) / remainingDays);
+      let minutes = 0;
+      // Never hide a lesson when dates are tight. Show the true workload in the UI.
+      while (ptr < unitLessons.length && index < lessonDays) {
+        const next = unitLessons[ptr]!;
+        const duration = next.minutes ?? LESSON_MINUTES;
+        if (items.length >= minimum && minutes + duration > params.dailyMinutes) break;
+        items.push(lessonItem(next));
+        taught.push(next);
+        minutes += duration;
+        ptr++;
       }
-      nextTestSkill = nextTestSkill === 'reading' ? 'listening' : 'reading';
-      items.push(vocabItem(dayNumber, vocabTopicSlugs));
-    } else {
-      // Ordinary lesson day: fill the budget with lessons, a drill after
-      // every two (when the skill has one and there's room), topped up with
-      // a vocab review if the day would otherwise be a single short item.
-      // `compressed` days ignore the usual 4-item and minute-budget caps for
-      // lessons specifically — see the "never drop lessons" comment above
-      // buildSchedule(). Everything else (drills, the item-count cap) still
-      // applies, since those are exactly what compression is allowed to cut.
-      let minutesUsed = 0;
-      let lessonsToday = 0;
-      while (lessonPtr < lessons.length && lessonsToday < perDay && (compressed || items.length < 4)) {
-        const lesson = lessons[lessonPtr]!;
-        items.push(lessonItem(lesson));
-        minutesUsed += LESSON_MINUTES;
-        lessonPtr++;
-        lessonsToday++;
-        sinceDrill++;
-        if (allowDrills && sinceDrill >= 2 && items.length < 4) {
-          const skill = lesson.skill;
-          if (skill === 'reading' || skill === 'listening') {
-            const drills = skill === 'reading' ? readingDrills : listeningDrills;
-            if (drills.length > 0) {
-              const ptr = skill === 'reading' ? readingDrillPtr : listeningDrillPtr;
-              items.push(drillItem(drills[ptr % drills.length]!, skill));
-              minutesUsed += DRILL_MINUTES;
-              if (skill === 'reading') readingDrillPtr++;
-              else listeningDrillPtr++;
-            }
-          }
-          sinceDrill = 0;
-        }
-        if (!compressed && minutesUsed >= params.dailyMinutes) break;
-      }
-      if (items.length === 0) {
-        // The course finished with days still left before the exam (no
-        // lessons were added above): keep reviewing instead of showing a
-        // near-empty day. Checked before the vocab top-up below, otherwise
-        // that top-up fires first and this branch never gets a chance to.
-        for (const l of pickReviewLessons(lessons, lessonPtr)) items.push(reviewItem(l));
-        if (items.length === 0) items.push(vocabItem(dayNumber, vocabTopicSlugs));
-      } else if (!compressed && items.length < 2 && items.length < 4) {
-        items.push(vocabItem(dayNumber, vocabTopicSlugs));
-      }
+      const isReview = items.length === 0;
+      if (isReview) items.push(...recap());
+      const words = vocabulary(dayNumber);
+      if (words && items.reduce((n, i) => n + i.minutes, 0) + words.minutes <= params.dailyMinutes) items.push(words);
+      addDay(date, items, focus, isReview);
     }
-
-    days.push({ date, dayNumber, weekNumber, isReview, isExamLight: isLight, items });
   }
 
+  if (workingDates.length < modules.length) {
+    // Very short deadlines cannot honestly contain eight weekly units.
+    teach(lessons, workingDates, 'Condensed course: follow the lesson order');
+  } else {
+    // Eight equal blocks of study days. At the default daily pace, unit 1 is week 1.
+    for (let index = 0; index < modules.length - 1; index++) {
+      const start = Math.floor(index * dates.length / modules.length);
+      const end = Math.min(Math.floor((index + 1) * dates.length / modules.length), workingDates.length);
+      teach(modules[index]!.lessons, workingDates.slice(start, end), modules[index]!.name);
+    }
+    const examDates = workingDates.slice(Math.floor(7 * dates.length / modules.length));
+    const reading = fullTests('reading')[0];
+    const listening = fullTests('listening')[0];
+    examDates.forEach((date, index) => {
+      let items: PlanItem[];
+      if (index === 0 && reading) items = [testItem(reading, 'reading')];
+      else if (index === Math.max(1, Math.floor((examDates.length - 1) / 2)) && listening) items = [testItem(listening, 'listening')];
+      else if (examDates.length >= 3 && index === examDates.length - 1) items = [mockItem(date)];
+      else {
+        items = recap();
+        const skill = index % 2 === 0 ? 'listening' : 'reading';
+        const pool = skill === 'reading' ? ALL_READING_DRILLS : ALL_LISTENING_DRILLS;
+        const drill = pool[Math.floor(index / 2) % pool.length];
+        if (drill && index > 4) items = [drillItem(drill, skill)];
+      }
+      addDay(date, items, modules[7]!.name, items.every((i) => i.type === 'review'));
+    });
+  }
+  for (const date of dates.filter((d) => lightDates.has(d))) {
+    const items = recap();
+    if (!items.length) items.push({ ...reviewItem(lessons[0]!), label: 'Gently review the Speaking overview', trackable: false });
+    addDay(date, items, 'Light review before your exam', true);
+  }
   return days;
 }
 
@@ -407,7 +314,7 @@ export function markItemsDone(items: PlanItem[], progress: ProgressV1, startDate
     if (item.type === 'lesson') return { ...item, done: Boolean(progress.lessons[item.id]) };
     if (item.type === 'review') {
       const refKey = item.id.startsWith('review:') ? item.id.slice('review:'.length) : item.id;
-      return { ...item, done: Boolean(progress.lessons[refKey]) };
+      return { ...item, done: item.trackable && Boolean(progress.lessons[refKey]) };
     }
     if (item.type === 'drill' || item.type === 'test') {
       const attempts = progress.tests[item.id] ?? [];

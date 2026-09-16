@@ -2,6 +2,15 @@
 
 This file provides guidance to Codex when working in this repository.
 
+
+## Approved design direction (Alex, 2026-09-16)
+
+Alex approved the capsule workspace redesign and logical eight-unit course, and asked for this design to be kept for all future IELTS platform work. Use `DESIGN.md`, `docs/CAPSULE-REDESIGN.md`, and `docs/COURSE-STRUCTURE.md` as the current references. They supersede older visual briefs or the former indigo/boxed workspace direction.
+
+Keep the warm neutral canvas, forest ink, restrained skill colours, Bricolage headings, Inter body text, capsule navigation, phone dock, generous spacing, and clear filled action buttons. Reuse `src/styles/workspace-redesign.css` and existing components when adding material or features. Preserve teaching details and real practice questions. Course additions must be explicitly placed in `COURSE_UNITS`, with introductions before techniques and timed tests after teaching. Preserve progress keys.
+
+Before continuing from an older branch or worktree, incorporate the current published main branch so new material does not restore the previous design. The approved release combines the redesign with Claude's latest writing model answers, in-lesson examples, listening transcripts and answer explanations. Alex explicitly authorised deployment of this combined release on 2026-09-16.
+
 ## What this is
 
 **IELTS Portal**, a free IELTS prep site for an English language teaching centre in Almaty:

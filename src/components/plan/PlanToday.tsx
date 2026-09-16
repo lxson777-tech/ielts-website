@@ -63,11 +63,12 @@ export default function PlanToday() {
   if (!ready || !plan || !today) return null;
 
   const summary = getPlanSummary(plan);
+  const next = today.items.find((item) => !item.done);
 
   return (
     <section className="plan-today" aria-labelledby="today-heading">
       <div className="plan-today-head">
-        <h2 id="today-heading">{today.finished ? 'Your plan is complete' : 'Today'}</h2>
+        <h2 id="today-heading">{today.finished ? 'Your plan is complete' : 'Your next step'}</h2>
         <span className="plan-today-progress">
           Day {today.dayNumber} of {today.totalDays}, {today.onTrack ? 'on track' : `${today.daysBehind} day${today.daysBehind === 1 ? '' : 's'} behind`}
         </span>
@@ -93,6 +94,15 @@ export default function PlanToday() {
         </div>
       )}
 
+      {next && (
+        <div className="plan-feature">
+          <div className="plan-feature-meta"><span>{next.meta || TYPE_LABEL[next.type]}</span><span>{next.minutes} min</span></div>
+          <h3>{next.label}</h3>
+          <p>{TYPE_LABEL[next.type]} from your personal study plan.</p>
+          <a className="plan-start" href={withBase(next.href)}>Start {TYPE_LABEL[next.type].toLowerCase()} <span aria-hidden="true">↗</span></a>
+        </div>
+      )}
+      {today.items.length > 0 && <div className="plan-list-heading"><h3>Today's schedule</h3><span>{today.items.filter((item) => item.done).length} / {today.items.length} complete</span></div>}
       {today.items.length === 0 ? (
         <p className="plan-rest-note">Nothing scheduled today. A rest day is fine, your plan adjusts.</p>
       ) : (

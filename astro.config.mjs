@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  devToolbar: { enabled: false },
   site: 'https://lxson777-tech.github.io',
   base: '/ielts-website',
   trailingSlash: 'never',

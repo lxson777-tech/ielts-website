@@ -190,36 +190,16 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       },
     ];
     return (
-      <div className="screen-in relative mx-auto max-w-5xl overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
-        <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
-        <img
-          src={withBase('/pics/writing/start-task.png')}
-          alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
-          className="mx-auto w-full max-w-[150px]"
-          loading="lazy"
-        />
-        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
-          {coached ? 'Writing · AI-graded' : 'Writing · Exam conditions'}
-        </p>
-        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">
-          {coached ? 'Take a Writing Test' : 'Writing Checker'}
-        </h3>
-        {/* One line only — the page header above the card already explains the
-            grading; repeating it here was reading as a doubled introduction. */}
-        <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          {coached
-            ? 'Pick a task. A different exam-style prompt every attempt.'
-            : 'Pick a task. Just you and the question, exactly like the real exam.'}
-        </p>
-
-
-        <div className="mx-auto mt-6 grid max-w-xl gap-4 sm:grid-cols-2">
+      <div className="writing-choice screen-in">
+        <h3>{coached ? 'Choose your writing practice' : 'Choose your writing task'}</h3>
+        <p className="choice-description">{coached ? 'A different exam-style prompt each attempt, with AI feedback on all four criteria.' : 'A different exam-style prompt each attempt. Just you and the question, under exam conditions.'}</p>
+        <div className="writing-choice-grid">
           {taskCards.map((t) => (
             <button
               key={t.task}
               type="button"
               onClick={() => startTask(t.task)}
-              className="group flex flex-col rounded-card border border-border bg-surface-alt/60 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--skill,#0E9F6E)]/60 hover:shadow-card"
+              className="writing-choice-card group"
             >
               <span className="font-display text-lg font-extrabold">
                 {t.title} <span className="font-bold text-ink-muted">· {t.kind}</span>
@@ -379,23 +359,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           card's side margin clears the clock's own width (~135px plus its
           right-6 offset), which is xl. Below xl: it renders inline in the
           card header instead. */}
-      {timerStartedRef.current && (
-        <div
-          className={`fixed right-3 top-20 z-50 hidden flex-col items-center rounded-card border-2 bg-surface px-4 py-3 shadow-card-hover xl:flex xl:right-6 ${
-            timerOvertime ? 'border-error' : 'border-brand'
-          }`}
-          title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
-        >
-          <span className={`text-[0.65rem] font-bold uppercase tracking-wider ${timerOvertime ? 'text-error' : 'text-ink-muted'}`}>
-            {timerOvertime ? '⚠ Overtime' : '⏱ Writing time'}
-          </span>
-          <span className={`font-mono text-3xl font-extrabold tabular-nums leading-tight xl:text-4xl ${timerOvertime ? 'text-error' : 'text-ink'}`}>
-            {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
-          </span>
-          <span className="text-[0.65rem] text-ink-muted">of ~{prompt.suggestedMinutes} min</span>
-        </div>
-      )}
-
       <div className={`screen-in ${coached ? 'lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-8' : ''}`}>
         <div className="space-y-4">
           <div
@@ -410,7 +373,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
               <div className="flex shrink-0 items-center gap-2">
                 {timerStartedRef.current && (
                   <span
-                    className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums xl:hidden ${
+                    className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums ${
                       timerOvertime ? 'border-error text-error' : 'border-border text-ink'
                     }`}
                     title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}

@@ -30,3 +30,26 @@ test('plan vocabulary entries are usable cards', () => {
     }
   }
 });
+
+/* The `variant` tag decides which structure guide the coach panel shows, so a
+   two-part question tagged "opinion" teaches the wrong essay shape. The
+   importer cannot tell the type from the page, so eight were corrected by
+   hand in 2026-09. Catch a regression, and catch the next import. */
+test('a Task 2 prompt that asks two questions is tagged two-part', () => {
+  const wrong: string[] = [];
+  for (const prompt of IMPORTED_WRITING_PROMPTS) {
+    if (prompt.task !== 'task2') continue;
+    const text = prompt.promptHtml
+      .replace(/<[^>]+>/g, ' ')
+      .replace('Write at least 250 words.', '')
+      .replace('Give reasons for your answer and include any relevant examples from your own knowledge or experience.', '');
+    const questions = (text.match(/\?/g) ?? []).length;
+    if (questions >= 2 && prompt.variant !== 'two-part') {
+      wrong.push(`${prompt.id}: ${questions} questions but tagged ${prompt.variant}`);
+    }
+    if (/outweigh/i.test(text) && prompt.variant !== 'advantages-disadvantages') {
+      wrong.push(`${prompt.id}: asks whether advantages outweigh but tagged ${prompt.variant}`);
+    }
+  }
+  assert.deepEqual(wrong, [], wrong.join('\n'));
+});

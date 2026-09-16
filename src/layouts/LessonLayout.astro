@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import Badge from '../components/Badge.astro';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
+import { buildCourse } from '../lib/course';
 import { WORDS } from '../data/words';
 import { READING_PARTS } from '../data/reading';
 import { LISTENING_PARTS } from '../data/listening';
@@ -44,6 +45,9 @@ function lookupPartMinutes(lessonSlug: string): number | undefined {
   }
   return undefined;
 }
+const courseLessons = buildCourse().flatMap((unit) => unit.lessons);
+const courseIndex = courseLessons.findIndex((entry) => entry.key === slug);
+const nextInCourse = courseIndex >= 0 ? courseLessons[courseIndex + 1] : undefined;
 const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }).minutes;
 ---
 
@@ -51,18 +55,6 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   <div class={`skill-${lesson.skill}`}>
     <!-- Lesson hero band -->
     <section class="lesson-hero border-b border-border">
-      <div class="lesson-hero-word">
-        <button
-          type="button"
-          id="lesson-hero-word-text"
-          class="lesson-hero-word-text"
-          aria-label="Click to test yourself on this vocabulary word"
-          aria-expanded="false"
-          aria-controls="lesson-hero-word-panel"
-          data-vocab-quiz-trigger
-          data-words={JSON.stringify(WORDS.map(({ word, def }) => ({ word, def })))}
-        ></button>
-      </div>
       <div class="lesson-hero-content mx-auto max-w-4xl px-4 py-12 sm:px-6">
         <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb">
           {/* py-2/-my-2 pad the tap target to 24px+ without growing the row visually */}
@@ -86,6 +78,18 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
         </div>
         <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{lesson.title}</h1>
         <p class="mt-3 max-w-2xl text-ink-muted">{lesson.description}</p>
+      <div class="lesson-word-quiz"><span>Vocabulary quick check</span>
+        <button
+          type="button"
+          id="lesson-hero-word-text"
+          class="lesson-word-button"
+          aria-label="Click to test yourself on this vocabulary word"
+          aria-expanded="false"
+          aria-controls="lesson-hero-word-panel"
+          data-vocab-quiz-trigger
+          data-words={JSON.stringify(WORDS.map(({ word, def }) => ({ word, def })))}
+        ></button>
+      </div>
         <!-- The floating word drifts and can't host its own panel, so its
              quiz expands here instead, in the static content column. -->
         <div id="lesson-hero-word-panel" class="vocab-quiz-panel mt-4" hidden>
@@ -123,6 +127,10 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
           </button>
         </div>
 
+        <nav class="flex flex-wrap items-center justify-center gap-4 text-sm" aria-label="Guided course">
+          <a href={withBase('/start')} class="font-semibold text-ink-muted hover:text-brand">Back to course</a>
+          {nextInCourse && <a data-course-next href={withBase(nextInCourse.href)} class="rounded-button bg-brand px-5 py-3 font-semibold text-white">Next in course: {nextInCourse.title}</a>}
+        </nav>
         <div class="w-full max-w-xl">
           <div class="flex items-baseline justify-between gap-2">
             <label for="lesson-notes" class="text-xs font-bold uppercase tracking-[0.1em] text-ink-muted">My notes</label>

@@ -124,32 +124,32 @@ export default function LearningDashboard() {
 
   return (
     <div className="dash">
-      <p className="dash-greeting">
-        {hour === null ? 'Welcome back.' : `${greeting(hour)}.`}
-        {goal && (
-          <span>
-            {' '}
-            <span className="count-up">{shownStreak}</span> day streak, {goal.minutes} of {goal.goal} minutes
-            today.
-            {targetBand && <> Target Band {targetBand}.</>}
-          </span>
-        )}
-      </p>
+      <div className="dash-welcome"><h1 className="dash-greeting">
+        {hour === null ? 'Welcome back.' : `${greeting(hour)}.`}<span className="dash-welcome-sub">A little practice. A step closer.</span>
+      </h1>
+        <div className="dash-daily-status">
+          <span className="dash-streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M13 3c1 5-5 6-3 10 1-1 2-2 2-4 4 3 6 5 6 8a6 6 0 0 1-12 0c0-4 2-7 7-14Z"/></svg>{shownStreak} day streak</span>
+          {goal && <span>{goal.minutes} / {goal.goal} min today</span>}
+        </div>
+      </div>
 
+      <div className="dash-workspace">
       <PlanToday />
 
-      <div className="dash-cards" data-stagger>
+      <aside className="dash-side" aria-label="Your study overview">
+      <div className="dash-target"><span>Your goal</span><strong>Band {targetBand ?? '...'}</strong><a href={withBase('/start')}>Adjust your study plan <span aria-hidden="true">↗</span></a></div>
+      <div className="dash-cards">
         {status?.next ? (
           <a className="dash-card" href={withBase(status.next.href)}>
-            <span className="dash-card-label">Continue course</span>
-            <strong className="dash-card-title">{status.next.title}</strong>
+            <span className="dash-card-label">Your course</span>
+            <strong className="dash-card-title">{status.doneLessons} of {status.totalLessons} lessons complete</strong>
             <span className="dash-card-meta">
-              {status.next.skillLabel}, {status.doneLessons} of {status.totalLessons} lessons done
+              Next in course: {status.next.title}
             </span>
           </a>
         ) : (
           <a className="dash-card" href={withBase('/start')}>
-            <span className="dash-card-label">Continue course</span>
+            <span className="dash-card-label">Your course</span>
             <strong className="dash-card-title">Course complete</strong>
             <span className="dash-card-meta">
               {status ? `${status.doneLessons} of ${status.totalLessons} lessons done` : ''}
@@ -159,7 +159,7 @@ export default function LearningDashboard() {
 
         <a className="dash-card" href={weak ? weak.href : withBase('/tests')}>
           <span className="dash-card-label">Weakest area</span>
-          <strong className="dash-card-title">{weak ? weak.label : 'Not enough practice yet'}</strong>
+          <strong className="dash-card-title">{weak ? weak.label : 'Find your starting point'}</strong>
           <span className="dash-card-meta">
             {weak ? `${weak.percent}% correct, practise this type` : 'Take a test and we will find it'}
           </span>
@@ -175,9 +175,11 @@ export default function LearningDashboard() {
         </a>
       </div>
 
+      </aside></div>
+
       <section className="dash-skills" aria-labelledby="dash-skills-heading">
         <h2 id="dash-skills-heading" className="dash-skills-heading">
-          Skills
+          Your learning library
         </h2>
         <div className="dash-skills-row" data-stagger>
           {SKILLS.map((skill) => {
@@ -193,12 +195,12 @@ export default function LearningDashboard() {
                 href={withBase(`/learn?skill=${skill.id}`)}
                 aria-label={`${skill.label}, ${finished} of ${total} lessons complete`}
               >
-                <span className="dash-skill-name">{skill.label}</span>
+                <span className="dash-skill-name">{skill.label}<span aria-hidden="true">↗</span></span>
                 <span className="dash-skill-track">
                   <span className="dash-skill-fill bar-fill" style={{ width: `${percent}%` }} />
                 </span>
                 <span className="dash-skill-count">
-                  {finished}/{total}
+                  {finished} / {total} lessons
                 </span>
               </a>
             );

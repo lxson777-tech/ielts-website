@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import '../styles/platform.css';
+import '../styles/workspace-redesign.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WorkspaceHeader from '../components/WorkspaceHeader.astro';
@@ -76,11 +77,12 @@ const jsonLd = {
 
     <ClientRouter />
   </head>
-  <body class="flex min-h-screen flex-col bg-surface text-ink">
+  <body class:list={["flex min-h-screen flex-col bg-surface text-ink", { "workspace-v2": isAppRoute }]} data-route={route}>
     {isAppRoute ? (
       <>
         <WorkspaceHeader />
-        <main class="ws-main">
+        <a class="ws-skip" href="#workspace-content">Skip to content</a>
+        <main class="ws-main" id="workspace-content">
           <div class:list={['ws-page', { 'is-wide': isWide }]}><slot /></div>
           <WorkspaceFooter />
         </main>

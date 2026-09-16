@@ -37,6 +37,8 @@ export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
   ],
   [
     { href: '/learn', label: 'Lessons library' },
+    { href: '/learn/bands', label: 'What each band needs' },
+    { href: '/writing/models', label: 'Model answers' },
     { href: '/speaking/cue-cards', label: 'Cue cards' },
   ],
 ];

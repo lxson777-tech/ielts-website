@@ -38,36 +38,9 @@ const cards = [
 ];
 ---
 
-<div class="mb-10 grid gap-4 sm:grid-cols-2" role="group" aria-label="Practice versus Tests">
-  {cards.map((card) => {
-    const isCurrent = card.id === current;
-    return (
-      <div
-        class={`rounded-card border p-5 transition-colors duration-300 ${
-          isCurrent ? 'border-brand/30 bg-brand-tint/40' : 'border-border bg-surface'
-        }`}
-      >
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="font-display text-base font-extrabold">{card.label}</h3>
-          {isCurrent ? (
-            <span class="rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
-              You are here
-            </span>
-          ) : (
-            <a href={withBase(card.href)} class="text-xs font-semibold text-brand hover:underline">
-              Go to {card.label}
-            </a>
-          )}
-        </div>
-        <ul class="mt-3 space-y-1.5 text-sm text-ink-muted">
-          {card.bullets.map((line) => (
-            <li class="flex gap-2">
-              <span aria-hidden="true" class="text-brand">·</span>
-              <span>{line}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  })}
-</div>
+<details class="mode-help">
+  <summary>What's the difference between Practice and Tests?</summary>
+  <div class="mode-help-content">
+    {cards.map((card) => <section><h3>{card.label}</h3><ul>{card.bullets.map((line) => <li>{line}</li>)}</ul>{card.id !== current && <a href={withBase(card.href)}>Go to {card.label} <span aria-hidden="true">↗</span></a>}</section>)}
+  </div>
+</details>

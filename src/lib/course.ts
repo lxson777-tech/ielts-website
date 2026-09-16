@@ -1,26 +1,6 @@
-/* The course: every lesson on the site as one ordered path a student can work
-   through, grouped into the four stages defined in src/data/lessons.ts.
-   The total is derived, not fixed: the 2026-09 question-type restructure took
-   it from 44 to 50 without an edit here.
-
-   Built entirely from the five part registries, so adding or reordering a
-   lesson updates the course with no edit here. This replaces the hand-written
-   step list that used to live in study-plan.ts, which restated the lesson
-   catalogue in prose and drifted every time a lesson was added.
-
-   Two rules worth knowing before changing anything:
-
-   1. Completion is NOT stored by the course. A lesson counts as done when
-      progress.lessons has its key, the same store the lesson pages and the
-      overview checkmarks already write. So a student who worked through
-      lessons before ever starting the course sees them already ticked, and
-      there is only one place completion can be wrong.
-
-   2. Within a stage, skills are interleaved round-robin rather than grouped,
-      so week one touches Reading, Listening, Writing and Vocabulary instead
-      of spending a month inside one paper. */
-
-import { STAGES, SKILLS, type Skill, type Stage } from '../data/lessons';
+/* A deliberate curriculum. Registry entries own the content and stable progress keys;
+   COURSE_UNITS owns teaching order. Overview always precedes a new paper. */
+import { LESSONS, SKILLS, type Skill, type Stage } from '../data/lessons';
 import { READING_PARTS } from '../data/reading';
 import { LISTENING_PARTS } from '../data/listening';
 import { WRITING_PARTS } from '../data/writing';
@@ -60,6 +40,7 @@ export interface CourseExtra {
 }
 
 export interface CourseModule {
+  id: number;
   stage: Stage;
   name: string;
   blurb: string;
@@ -75,11 +56,6 @@ const SKILL_LABEL: Record<Skill, string> = {
   vocabulary: 'Vocabulary',
 };
 
-/* Round-robin order. Reading and Listening lead because they are the papers
-   where technique pays off fastest; Vocabulary trails because it is ongoing
-   background work rather than something you finish. */
-const SKILL_ORDER: Skill[] = ['reading', 'listening', 'writing', 'speaking', 'vocabulary'];
-
 /** Every lesson in the site, tagged with its skill and URL, in registry order. */
 function allLessons(): Omit<CourseLesson, 'position'>[] {
   const sources: { skill: Skill; base: string; parts: { slug: string; title: string; blurb: string; stage: Stage; minutes?: number }[] }[] = [
@@ -89,7 +65,11 @@ function allLessons(): Omit<CourseLesson, 'position'>[] {
     { skill: 'speaking', base: 'speaking', parts: SPEAKING_PARTS },
     { skill: 'vocabulary', base: 'vocabulary', parts: VOCABULARY_PARTS },
   ];
-  return sources.flatMap(({ skill, base, parts }) =>
+  const overviews: Omit<CourseLesson, 'position'>[] = LESSONS.map((l) => ({
+    key: l.slug, skill: l.skill, skillLabel: SKILL_LABEL[l.skill], title: l.title,
+    blurb: l.description, href: `/lessons/${l.slug}`, stage: 1, minutes: l.minutes,
+  }));
+  return [...overviews, ...sources.flatMap(({ skill, base, parts }) =>
     parts.map((p) => ({
       key: `${base}-${p.slug}`,
       skill,
@@ -100,24 +80,34 @@ function allLessons(): Omit<CourseLesson, 'position'>[] {
       stage: p.stage,
       minutes: p.minutes,
     })),
-  );
+  )];
 }
 
-/** Take one lesson from each skill in turn until every queue is empty, so a
-    stage alternates papers instead of running them in blocks. */
-function interleaveBySkill<T extends { skill: Skill }>(items: T[]): T[] {
-  const queues = SKILL_ORDER.map((s) => items.filter((i) => i.skill === s));
-  const out: T[] = [];
-  for (let round = 0; out.length < items.length; round++) {
-    for (const q of queues) {
-      const next = q[round];
-      if (next) out.push(next);
-    }
-    // Guard against a malformed queue set spinning forever.
-    if (round > items.length) break;
-  }
-  return out;
-}
+export const COURSE_UNITS: { name: string; blurb: string; stage: Stage; keys: string[] }[] = [
+  { name: 'Start speaking with confidence', stage: 1,
+    blurb: 'Understand the Speaking test, then answer Part 1 questions about familiar topics. Build the vocabulary to talk about yourself, family, study and work.',
+    keys: ['speaking', 'speaking-part1', 'vocabulary', 'vocabulary-family', 'vocabulary-education', 'vocabulary-work'] },
+  { name: 'Listen for everyday information', stage: 1,
+    blurb: 'Start with the Listening overview and Part 1. Learn to capture details before moving to Part 2 and directions on a map.',
+    keys: ['listening', 'listening-part1', 'listening-form-completion', 'listening-short-answer', 'listening-sentence-completion', 'listening-part2', 'listening-map-labelling', 'vocabulary-travel'] },
+  { name: 'Read for meaning and detail', stage: 2,
+    blurb: 'Understand Reading first. Recognise paraphrases, find precise answers, then work through completion questions with increasingly complex layouts.',
+    keys: ['reading-task1', 'reading-paraphrase', 'reading-short-answer', 'reading-sentence', 'reading-summary-completion', 'reading-diagram', 'vocabulary-health', 'vocabulary-environment'] },
+  { name: 'Build a clear Task 1 report', stage: 2,
+    blurb: 'Learn how Writing is marked and practise the Task 1 method before applying it to charts, processes and maps. Linking and location language support your reports.',
+    keys: ['writing', 'writing-method', 'vocabulary-conjunctions', 'writing-charts', 'writing-process', 'vocabulary-housing', 'writing-maps'] },
+  { name: 'Develop and support your ideas', stage: 2,
+    blurb: 'Extend short answers into Speaking Part 2. Learn the Task 2 essay method before opinion essays, then distinguish facts, claims and distractors in Reading.',
+    keys: ['speaking-part2', 'writing-task2-method', 'writing-opinion', 'vocabulary-technology', 'reading-mc', 'reading-tfng', 'reading-ynng', 'vocabulary-social-media'] },
+  { name: 'Follow and compare arguments', stage: 3,
+    blurb: 'Progress to academic Listening Parts 3 and 4, then weigh different views in discussion and advantages essays. Reuse social issues vocabulary across both papers.',
+    keys: ['listening-part3', 'listening-multiple-choice', 'listening-matching', 'listening-part4', 'vocabulary-society', 'writing-discussion', 'writing-advantages', 'vocabulary-crime'] },
+  { name: 'Handle complex questions', stage: 3,
+    blurb: 'Move from reading individual answers to connecting ideas. Finish the remaining essay types and Speaking Part 3, using wider topic vocabulary to explain and evaluate.',
+    keys: ['reading-headings', 'reading-matching-information', 'reading-matching-features', 'reading-matching-sentence-endings', 'vocabulary-government', 'writing-problem', 'writing-twopart', 'vocabulary-ai', 'speaking-part3'] },
+  { name: 'Put it together under exam conditions', stage: 4,
+    blurb: 'After learning the material, take timed tests, try a complete mock and use your results to revisit weak areas. Keep the final two study days light.', keys: [] },
+];
 
 /* The exam-readiness module. These are the only course steps that are not
    lessons, which is why stage 4 has no entries in any registry. */
@@ -129,28 +119,29 @@ const EXAM_READINESS: CourseExtra[] = [
   { key: 'extra:review', label: 'Review your score history and re-target your weakest paper', href: '/account' },
 ];
 
-/** The whole course, as four modules. */
+/** Eight learning units, normally one per week. Shorter plans keep the same order. */
 export function buildCourse(): CourseModule[] {
-  const lessons = allLessons();
+  const registry = new Map(allLessons().map((l) => [l.key, l]));
+  const assigned = new Set<string>();
   let position = 0;
-  return STAGES.map((stage) => {
-    const inStage = interleaveBySkill(lessons.filter((l) => l.stage === stage.id));
-    return {
-      stage: stage.id,
-      name: stage.name,
-      blurb: stage.blurb,
-      lessons: inStage.map((l) => ({ ...l, position: ++position })),
-      extras: stage.id === 4 ? EXAM_READINESS : [],
-    };
-  });
+  const modules = COURSE_UNITS.map((unit, index) => ({
+    id: index + 1, stage: unit.stage, name: unit.name, blurb: unit.blurb,
+    lessons: unit.keys.map((key) => {
+      const lesson = registry.get(key);
+      if (!lesson || assigned.has(key)) throw new Error(`Invalid curriculum lesson: ${key}`);
+      assigned.add(key);
+      return { ...lesson, position: ++position };
+    }),
+    extras: unit.stage === 4 ? EXAM_READINESS : [],
+  }));
+  // A newly authored lesson must be deliberately placed, never silently omitted.
+  for (const key of registry.keys()) {
+    if (!assigned.has(key)) throw new Error(`Place ${key} in COURSE_UNITS before publishing.`);
+  }
+  return modules;
 }
 
-/** Every lesson grouped by section (skill), each section in its own
-    registry order (the order READING_PARTS, LISTENING_PARTS, etc. are
-    written in) rather than the interleaved stage order buildCourse() uses.
-    This backs the Course tab's "By section" view: same lessons, same
-    completion source, just grouped the way a student browsing one paper at
-    a time would expect instead of the guided round-robin path. */
+/** The same curriculum filtered by paper, with the overview first. */
 export interface CourseSection {
   skill: Skill;
   label: string;
@@ -159,7 +150,7 @@ export interface CourseSection {
 }
 
 export function buildSections(): CourseSection[] {
-  const lessons = allLessons();
+  const lessons = buildCourse().flatMap((m) => m.lessons);
   return SKILLS.map((s) => {
     const inSection = lessons.filter((l) => l.skill === s.id);
     return {
@@ -217,34 +208,14 @@ export type CoursePace = {
 };
 
 export function coursePace(days: number | null, modules: CourseModule[]): CoursePace {
-  const upTo = (s: Stage) =>
-    modules.filter((m) => m.stage <= s).reduce((n, m) => n + m.lessons.length, 0);
-
-  if (days === null) {
-    return {
-      focusThrough: 3,
-      lessonsPerWeek: null,
-      note: 'No test date set, so this is the full course at your own pace. Add a date and it will tell you how many lessons a week to aim for.',
-    };
-  }
-  const weeks = Math.max(days / 7, 0.5);
-  if (days <= 14) {
-    return {
-      focusThrough: 1,
-      lessonsPerWeek: Math.ceil(upTo(1) / weeks),
-      note: 'With under two weeks, finish Foundations, then go straight to Exam readiness. Treat the middle modules as optional.',
-    };
-  }
-  if (days <= 35) {
-    return {
-      focusThrough: 2,
-      lessonsPerWeek: Math.ceil(upTo(2) / weeks),
-      note: 'Aim to finish Foundations and Core question types, then spend your last week on Exam readiness.',
-    };
-  }
+  const total = courseLessonCount(modules);
   return {
     focusThrough: 3,
-    lessonsPerWeek: Math.ceil(upTo(3) / weeks),
-    note: 'You have time for the whole course. Keep a steady weekly pace and leave the final two weeks for Exam readiness.',
+    lessonsPerWeek: days === null ? null : Math.ceil(total / Math.max(days / 7, 0.5)),
+    note: days === null
+      ? 'Follow the eight units in order. Add an exam date to adjust the calendar; lesson times show the actual workload.'
+      : days < 56
+        ? 'This is a condensed schedule. Keep the same learning order and expect longer sessions; extend the date if the daily workload is too high.'
+        : 'Follow the units at a steady pace, then use the final unit for timed practice and light review.',
   };
 }
