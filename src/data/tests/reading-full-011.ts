@@ -106,48 +106,36 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Sauce",
-              "before": "…………. Bark – can be used to make cloth and musical instruments – can be used to protect",
-              "after": "",
               "explanation": "The notes gap follows \"can be used to make a ___\", and the passage says leaves are used as a food sauce.",
               "evidence": "The leaves can also be used as a sauce for food."
             },
             {
               "id": "q9",
               "answer": "Plants",
-              "before": "…………… and to treat fever Trunk – can provide",
-              "after": "",
               "explanation": "The bark protects young plants from animals, matching the gap \"can be used to protect ___\".",
               "evidence": "The bark has also been used to protect young plants from animals."
             },
             {
               "id": "q10",
               "answer": "Shelter",
-              "before": "……………… and water – can be used to make",
-              "after": "",
               "explanation": "The trunk provides shelter and water, matching the notes gap before \"and water\".",
               "evidence": "The trunk of the baobab is very wide and it can be used as a shelter."
             },
             {
               "id": "q11",
               "answer": "Pots",
-              "before": "……………. General – provides",
-              "after": "",
               "explanation": "The trunk can be shaped into pots for growing plants, matching \"can be used to make ___\".",
               "evidence": "pots to grow plants in, and many other useful items."
             },
             {
               "id": "q12",
               "answer": "Shade",
-              "before": "………………. for animals and humans – can be used to make",
-              "after": "",
               "explanation": "The general uses list states the tree provides shade for animals and humans.",
               "evidence": "The tree also provides shade for animals and humans."
             },
             {
               "id": "q13",
               "answer": "Fuel",
-              "before": "…………… to burn",
-              "after": "",
               "explanation": "The final general use listed is fuel, matching \"___ to burn\".",
               "evidence": "The tree is also a source of fuel and is used as a firebreak as well."
             }

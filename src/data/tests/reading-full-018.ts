@@ -134,8 +134,6 @@ const test: PracticeTest = {
             {
               "id": "q9",
               "answer": "Selectively breed",
-              "before": "……………… their animals for the characteristics they wanted",
-              "after": "",
               "explanation": "The passage says humans 'began to selectively breed these animals for specific traits', giving the exact two words needed.",
               "evidence": "selectively breed these animals"
             }
@@ -278,8 +276,6 @@ const test: PracticeTest = {
                 "southern England",
                 "England"
               ],
-              "before": "………………, where in a single year, over one hundred circles appeared. Phenomena such as the appearance of strange lights and unusual",
-              "after": "",
               "explanation": "The passage says the largest spread 'began in southern England during the summer of 1980', giving the location needed.",
               "evidence": "began in southern England during the summer of 1980"
             },
@@ -291,8 +287,6 @@ const test: PracticeTest = {
                 "noises",
                 "sound"
               ],
-              "before": "………………. sometimes occur around the sites of crop circles",
-              "after": "",
               "explanation": "The passage mentions that 'high-pitched, warbling, noises have been recorded' near some circle sites.",
               "evidence": "High-pitched, warbling, noises have been recorded"
             },
@@ -303,16 +297,12 @@ const test: PracticeTest = {
                 "insects",
                 "wild creatures"
               ],
-              "before": "………………. are not affected but it has been observed that birds",
-              "after": "",
               "explanation": "The passage says 'the causal energies do not seem to harm animals, or even insects', matching the first gap.",
               "evidence": "do not seem to harm animals, or even insects"
             },
             {
               "id": "q23",
               "answer": "Avoid",
-              "before": "………………… flying over a formation",
-              "after": "",
               "explanation": "Flocks of birds are seen to 'avoid going directly over a crop circle formation', matching the second gap.",
               "evidence": "avoid going directly over a crop circle formation"
             }

@@ -1,0 +1,29 @@
+---
+/* The band ladder: what each band needs in Writing and Speaking, browsable
+   without having been graded first. The content is src/data/band-guides.ts,
+   the official public descriptors in plain words. Linked from every band
+   report, where the student sees which rung they are on. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import BandLadder from '../../components/BandLadder';
+---
+
+<BaseLayout
+  title="What each band needs · IELTS is EZ"
+  description="The official IELTS band descriptors for Writing and Speaking in plain words: what changes at each band, what to do, what to stop doing, and one practice routine per step."
+>
+  <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <SectionHeading
+      eyebrow="Bands"
+      title="What each band needs"
+      subtitle="Pick a paper, a criterion, and the band you are at now. Each step is the official band descriptor put into plain words, with what to do, what to stop doing, and one thing to practise today."
+    />
+    <div class="mt-8">
+      <BandLadder client:load />
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../../styles/platform-pages.css';
+</style>

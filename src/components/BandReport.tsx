@@ -17,6 +17,7 @@
 import { motion, MotionConfig } from 'framer-motion';
 import type { NextBandAdvice } from '../lib/grading/next-band';
 import type { BandStepGuide } from '../data/band-guides';
+import { withBase } from '../lib/url';
 
 export interface BandReportCriterion {
   key: string;
@@ -208,6 +209,23 @@ export default function BandReport({
           <ListCard title="Improve next" items={improvements} tone="brand" />
         )}
       </div>
+
+      {/* The report says which rung the student is on. The ladder itself, every
+          band for every criterion, lives on one browsable page. */}
+      <a
+        href={withBase('/learn/bands')}
+        className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
+      >
+        <span>
+          <span className="font-display font-bold text-ink">What each band needs</span>
+          <span className="mt-0.5 block text-ink-muted">
+            The official descriptors for every criterion, in plain words.
+          </span>
+        </span>
+        <span aria-hidden="true" className="shrink-0 text-brand">
+          →
+        </span>
+      </a>
     </>
   );
 }

@@ -106,40 +106,30 @@ const test: PracticeTest = {
             {
               "id": "q7",
               "answer": "Celtic",
-              "before": "………….. words 8th-11th centuries AD The Vikings invaded England The English adopted some",
-              "after": "",
               "explanation": "Paragraph A says the invaders left behind a few Celtic words such as badger.",
               "evidence": "These invaders pushed the original Celtic-speaking inhabitants out of what is now England into Scotland, Wales, Cornwall, and Ireland, leaving behind a few Celtic words."
             },
             {
               "id": "q8",
               "answer": "Pronouns",
-              "before": "…………… 11th century AD The Normans invaded England English spelling changed, e.g., “cwene” became",
-              "after": "",
               "explanation": "Paragraph B says the Vikings gave English the pronouns they, their and them.",
               "evidence": "The Vikings also gave us the pronouns they, their, and them."
             },
             {
               "id": "q9",
               "answer": "Queen",
-              "before": "…………… English adopted different words for",
-              "after": "",
               "explanation": "Paragraph C says the Old English cwene became queen after French spelling influence.",
               "evidence": "For example, the Old English “cw” was changed to the French “qu”, so the Old English word “cwene” became “queen”."
             },
             {
               "id": "q10",
               "answer": "Animals",
-              "before": "…………… and the meats they produced, such as pork from French “porc” 14th century AD Geoffrey Chaucer wrote The Canterbury Tales Chaucer proved that English was a",
-              "after": "",
               "explanation": "Paragraph C explains the animals kept Anglo-Saxon names like cow and pig, while their meats took French names.",
               "evidence": "However, the animals from which these meats come have Anglo-Saxon names: cow, sheep, pig, and calf."
             },
             {
               "id": "q11",
               "answer": "Literary",
-              "before": "……….. language 15th century AD William Caxton introduced the printing press The English language became more",
-              "after": "",
               "explanation": "Paragraph D says Chaucer proved English was not vulgar but could be used for literary purposes.",
               "evidence": "Chaucer is known as the Father of English literature because he was the first person to prove that English was not a vulgar language but could be used for literary purposes."
             },
@@ -149,16 +139,12 @@ const test: PracticeTest = {
                 "Standardised",
                 "Standardized"
               ],
-              "before": "……….. 16th century AD The English Renaissance The English language gained many",
-              "after": "",
               "explanation": "Paragraph E says Caxton's printed books helped English spelling become standardised, so the missing word is 'standardised'. The American spelling is accepted too.",
               "evidence": "Caxton published many books in English, which helped it to be standardised more and expand the English vocabulary by introducing words such as canon, catholic, chapter, and history."
             },
             {
               "id": "q13",
               "answer": "New",
-              "before": "……….. words",
-              "after": "",
               "explanation": "Paragraph F says the Renaissance saw the invention of new words as well as new uses for old ones.",
               "evidence": "The English Renaissance saw the invention of new words, as well as new uses for existing ones."
             }
@@ -341,7 +327,7 @@ const test: PracticeTest = {
             {
               "id": "q22",
               "answer": "A",
-              "textHtml": "The use of self-driving cars will mean that fewer people need to park in city centres. List of Organisations A. the International Transport Forum B. the WZB Berlin Social Science Centre C. both the International Transport Forum and the WZB Berlin Social Science Centre",
+              "textHtml": "The use of self-driving cars will mean that fewer people need to park in city centres.",
               "explanation": "Paragraph B, from the ITF studies, says the number of parking spaces needed could also fall by 90 percent.",
               "evidence": "The studies also show that the number of parking spaces needed in a city could be reduced by 90% because self-driving cars can park themselves more efficiently."
             }
@@ -361,32 +347,24 @@ const test: PracticeTest = {
             {
               "id": "q23",
               "answer": "Cost",
-              "before": "………………. of parking or by limiting the number of spaces. Additionally, urban planners should modify infrastructure to support autonomous vehicles by incorporating",
-              "after": "",
               "explanation": "The summary says raising the cost of parking is one way to reduce reliance on private cars, matching paragraph G.",
               "evidence": "Cities can achieve this by limiting available parking, raising parking cost, and investing in public transportation and car-sharing programs."
             },
             {
               "id": "q24",
               "answer": "Charging stations",
-              "before": "……………. for electric cars and designing adaptable parking zones. The",
-              "after": "",
               "explanation": "Paragraph H says cities should add charging stations for electric vehicles as part of the infrastructure for self-driving cars. The group's word limit is two words, because no single word from the passage carries this meaning.",
               "evidence": "This could include designated parking areas that serve both conventional and self-driving cars, as well as charging stations for electric vehicles."
             },
             {
               "id": "q25",
               "answer": "Transition",
-              "before": "………………. from conventional cars to self-driving vehicles will require strategic planning. Cities must implement policies that ensure minimal disruption during this process. Long-term urban development should prioritize integrating self-driving technology by establishing suitable road networks and smart traffic systems. In the future,",
-              "after": "",
               "explanation": "Paragraph I says the transition to self-driving cars will reshape urban landscapes and needs careful planning.",
               "evidence": "The transition to self-driving cars will reshape urban landscapes and redefine parking needs."
             },
             {
               "id": "q26",
               "answer": "Cities",
-              "before": "……………… must rethink their policies to create sustainable and efficient urban environments",
-              "after": "",
               "explanation": "Paragraph I says cities must adopt proactive policies to balance technology with sustainable design.",
               "evidence": "To ensure a smooth shift, cities must adopt proactive policies that balance technology with sustainable urban design."
             }
@@ -545,24 +523,18 @@ const test: PracticeTest = {
             {
               "id": "q34",
               "answer": "Environmental",
-              "before": "……………… ones. It is likely that the first stage involved the development of",
-              "after": "",
               "explanation": "Paragraph E says language evolution was probably driven by a mix of biological, social and environmental factors.",
               "evidence": "The evolution of language was likely driven by a combination of biological, social, and environmental factors."
             },
             {
               "id": "q35",
               "answer": "Vocalizations",
-              "before": "……………… which were used to convey simple messages. In the second stage, it became possible to construct",
-              "after": "",
               "explanation": "Paragraph F says the first stage was the evolution of vocalisations used to convey simple messages.",
               "evidence": "The first stage is the evolution of vocalizations."
             },
             {
               "id": "q36",
               "answer": "Sentences",
-              "before": "……………… allowing more complex meanings to be expressed",
-              "after": "",
               "explanation": "Paragraph G says syntax is what allows us to combine words into sentences that convey complex meanings, so the missing word is 'sentences'.",
               "evidence": "Syntax is the set of rules that govern the structure of sentences, and it is what allows us to combine words into sentences that convey complex meanings."
             }

@@ -116,24 +116,18 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Cow dung",
-              "before": "…………….. into a digestor • Leave the mixture until the",
-              "after": "",
               "explanation": "The sixth paragraph explains the digesters turn ‘a mix of water hyacinth and cow dung into biogas’, giving the exact words needed for this gap.",
               "evidence": "would transform a mix of water hyacinth and cow dung into biogas for cooking"
             },
             {
               "id": "q9",
               "answer": "Fermentation",
-              "before": "………… is completed • Capture the gas emitted by the digester and use",
-              "after": "",
               "explanation": "The seventh paragraph describes the mixture going ‘through a fermentation process’ before it breaks down and releases gas, matching this gap.",
               "evidence": "over the next 20 to 30 days, it goes through a fermentation process and breaks down"
             },
             {
               "id": "q10",
               "answer": "Pipes",
-              "before": "………….. to transport it to individual homes • Then use the gas for cooking as well as making water fit for human consumption",
-              "after": "",
               "explanation": "The same paragraph states the gas ‘is passed through pipes to the point of use’, giving the word needed here.",
               "evidence": "the clean-burning gas is passed through pipes to the point of use"
             }
@@ -149,24 +143,18 @@ const test: PracticeTest = {
             {
               "id": "q11",
               "answer": "Time",
-              "before": "………………. collecting fuel • they can focus on different tasks that bring in",
-              "after": "",
               "explanation": "The eighth paragraph says the women ‘don’t have to devote a lot of time every day to gathering firewood’, matching this gap about what they no longer need to spend.",
               "evidence": "they don’t have to devote a lot of time every day to gathering firewood"
             },
             {
               "id": "q12",
               "answer": "Money",
-              "before": "…………… • they are less likely to experience certain diseases connected to burning wood Drawbacks of changing to biogas • the",
-              "after": "",
               "explanation": "The same paragraph continues that the women ‘are able to make more money for their families from other enterprises’, giving the word for this gap.",
               "evidence": "they’re able to make more money for their families from other enterprises"
             },
             {
               "id": "q13",
               "answer": "Price",
-              "before": "………………… of the digesters is beyond the reach of most villages",
-              "after": "",
               "explanation": "The ninth paragraph gives the drawback that ‘unless the price of the machines drops’ most communities cannot afford them, matching this gap.",
               "evidence": "unless the price of the machines drops, it’s pretty clear that most communities will never be able to afford any"
             }

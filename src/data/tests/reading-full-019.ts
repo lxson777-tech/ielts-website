@@ -249,7 +249,7 @@ const test: PracticeTest = {
             {
               "id": "q18",
               "answer": "ix",
-              "textHtml": "Section F List of Headings i. Use of hypnotism in criminal cases ii. The normality of hypnotised subjects’ behaviour iii. Early medical experiments with hypnotism iv. Early association of hypnosis with psychology v. Dangers of hypnotism vi. How to hypnotise vii. Hypnosis and free will viii. Difference between mesmerism and hypnotism ix. Therapeutic uses of hypnosis x. Origins of hypnosis (Example)",
+              "textHtml": "Section F",
               "explanation": "Section F lists treating 'anxiety, depression or phobias' and memory retrieval, showing hypnosis used as therapy, matching ix.",
               "evidence": "anxiety, depression or phobias"
             }
@@ -276,16 +276,12 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "Bible",
-              "before": "…………. Even when Mesmer’s",
-              "after": "",
               "explanation": "The passage says references to hypnotism appear in 'the Bible and in the Jewish Talmud', giving the missing word.",
               "evidence": "found in the Bible and in the Jewish Talmud"
             },
             {
               "id": "q20",
               "answer": "Magnets and water",
-              "before": "………….. were not used, successful results occurred without them. Braid identified hypnosis as a natural",
-              "after": "",
               "explanation": "Even 'without the need for magnets and water', results were still achieved, matching the gap.",
               "evidence": "without the need for magnets and water"
             },
@@ -295,8 +291,6 @@ const test: PracticeTest = {
                 "Physiological",
                 "human"
               ],
-              "before": "……….. response, rather than magical or mystical. Early psychological studies showed the difference between sleep and hypnosis. Successful hypnosis requires the subject’s active",
-              "after": "",
               "explanation": "Braid showed hypnosis was 'a physiological response and not the result of secret powers', matching the gap.",
               "evidence": "a physiological response and not the result of secret powers"
             },
@@ -306,8 +300,6 @@ const test: PracticeTest = {
                 "mental concentration",
                 "concentration"
               ],
-              "before": "…………. Consequently subjects can speak or move around and are",
-              "after": "",
               "explanation": "Section C says hypnosis 'involves a more active and intense mental concentration' from the subject, matching the gap.",
               "evidence": "a more active and intense mental concentration"
             },
@@ -317,8 +309,6 @@ const test: PracticeTest = {
                 "fully aware",
                 "aware"
               ],
-              "before": "………… of their surroundings",
-              "after": "",
               "explanation": "The passage says subjects 'are usually fully aware of what is being said and done', matching the gap.",
               "evidence": "fully aware of what is being said and done"
             }
@@ -449,8 +439,6 @@ const test: PracticeTest = {
             {
               "id": "q29",
               "answer": "Freedom",
-              "before": "…………… Because today sport is often decided and",
-              "after": "",
               "explanation": "The passage describes children's spontaneous sporting games as 'an activity of freedom', giving the exact word for the gap.",
               "evidence": "an activity of freedom"
             },
@@ -460,8 +448,6 @@ const test: PracticeTest = {
                 "Organised",
                 "Organized"
               ],
-              "before": "…………… by parents, children lose their autonomy. A first imbalance occurs because",
-              "after": "",
               "explanation": "The passage says parents are now 'organising sport for children... and often deciding for them', matching the gap.",
               "evidence": "organising sport for children"
             },
@@ -471,8 +457,6 @@ const test: PracticeTest = {
                 "Sports grounds",
                 "sports halls"
               ],
-              "before": "………….. are out of the city and often crowded, whilst there are a limited number of open recreational areas where children can play spontaneously. Children should discover and learn about sports themselves. The second imbalance occurs because they start early",
-              "after": "",
               "explanation": "The passage says 'sports grounds are often on the outskirts of cities, and are overcrowded', matching the first imbalance.",
               "evidence": "Sports grounds are often on the outskirts of cities, and are overcrowded"
             },
@@ -482,16 +466,12 @@ const test: PracticeTest = {
                 "Intensive",
                 "sports"
               ],
-              "before": "…………….. training very young and participate in only",
-              "after": "",
               "explanation": "The second imbalance is 'early intensive training' starting very young, matching the gap.",
               "evidence": "early intensive training from the youngest possible age"
             },
             {
               "id": "q33",
               "answer": "One",
-              "before": "………….. specific activity. Children often give up a sport because of negative",
-              "after": "",
               "explanation": "This intensive training is 'usually one specific sport within an organised framework', matching the gap.",
               "evidence": "usually one specific sport within an organised framework"
             },
@@ -501,24 +481,18 @@ const test: PracticeTest = {
                 "Assessments",
                 "criticism"
               ],
-              "before": "…………….. It is important that trainers avoid excessive criticism of young children, who should have",
-              "after": "",
               "explanation": "Children leave sport after 'too much criticism and too many negative assessments', matching the gap.",
               "evidence": "too much criticism and too many negative assessments"
             },
             {
               "id": "q35",
               "answer": "Fun",
-              "before": "……………… at sporting activities. Another reason that children may give up sport is the attitudes of their parents. This third imbalance occurs as parents exert",
-              "after": "",
               "explanation": "The passage says children's 'main desire is to have fun and socialise' at sport, matching the gap.",
               "evidence": "main desire is to have fun and socialise"
             },
             {
               "id": "q36",
               "answer": "Pressure",
-              "before": "………….. on children to win rather than to enjoy sport",
-              "after": "",
               "explanation": "The third imbalance is that 'parental pressure is high on the list of reasons why children leave sport', matching the gap.",
               "evidence": "parental pressure is high on the list of reasons why children leave sport"
             }

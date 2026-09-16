@@ -64,24 +64,18 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Mining",
-              "before": "………………… and transportation businesses • their upbringing gave them a sense of social responsibility • their",
-              "after": "",
               "explanation": "The passage says their grandfather amassed his fortune ‘in the shipping and mining industries’, giving the word for this gap.",
               "evidence": "a fortune in the shipping and mining industries"
             },
             {
               "id": "q2",
               "answer": "Education",
-              "before": "…………… was designed to give them an interest in activities such as collecting art • their governess took them on trips to art galleries • they took lengthy",
-              "after": "",
               "explanation": "The third paragraph says ‘the sisters’ education was rigorously geared toward such pursuits’, matching this gap.",
               "evidence": "the sisters’ education was rigorously geared toward such pursuits"
             },
             {
               "id": "q3",
               "answer": "Notes",
-              "before": "………………. about the things they saw in art galleries The sisters as art collectors • their",
-              "after": "",
               "explanation": "The third paragraph says they went ‘making extensive notes on the collections there’, matching this gap.",
               "evidence": "making extensive notes on the collections there"
             },
@@ -91,32 +85,24 @@ const test: PracticeTest = {
                 "Journals",
                 "Journal"
               ],
-              "before": "………………. showed they liked Old Master paintings, but they were expensive to buy • their early purchases were safe, popular paintings • the first Impressionist paintings they bought showed places in",
-              "after": "",
               "explanation": "The fifth paragraph says ‘the sisters’ journals reveal their preference for Old Master paintings’, matching this gap.",
               "evidence": "The sisters’ journals reveal their preference for Old Master paintings"
             },
             {
               "id": "q5",
               "answer": "Venice",
-              "before": "…………… Impact of First World War • they helped bring artists from Belgium to Wales • they worked in a",
-              "after": "",
               "explanation": "The sixth paragraph says their first Impressionist purchases ‘were scenes of Venice by the French artist Claude Monet’, matching this gap.",
               "evidence": "their first purchases of Impressionist art, made in October 1912, were scenes of Venice by the French artist Claude Monet"
             },
             {
               "id": "q6",
               "answer": "Canteen",
-              "before": "…………… for soldiers in France Opinions about the sisters as art collectors • were not considered typical collectors – they lived in isolation in the countryside and did not have any",
-              "after": "",
               "explanation": "The seventh paragraph says both sisters ‘decided to volunteer at a canteen for troops at Troyes’, matching this gap.",
               "evidence": "both sisters decided to volunteer at a canteen for troops at Troyes, in northern France"
             },
             {
               "id": "q7",
               "answer": "Friends",
-              "before": "………………….. who were artists",
-              "after": "",
               "explanation": "The ninth paragraph notes they ‘didn’t make friends with artists or gallery owners’, matching this final gap.",
               "evidence": "they didn’t make friends with artists or gallery owners"
             }
@@ -264,32 +250,24 @@ const test: PracticeTest = {
             {
               "id": "q18",
               "answer": "Breath",
-              "before": "………………, which helps them relax and enables them to meditate. Feinstein and his colleagues conducted an experiment in which 50 people, who were all suffering from stress and related issues, were given a",
-              "after": "",
               "explanation": "Paragraph D says ‘it is the ability to focus on the breath that helps people reach a relaxed or meditative state’, matching this gap.",
               "evidence": "it is the ability to focus on the breath that helps people reach a relaxed or meditative state"
             },
             {
               "id": "q19",
               "answer": "Questionnaire",
-              "before": "………………… to complete before and after using a flotation tank. Participants reported a reduction in their symptoms after an hour in the tank, together with signs of relaxation and improved general",
-              "after": "",
               "explanation": "Paragraph E says participants ‘answer a questionnaire prior to and following a flotation session’, matching this gap.",
               "evidence": "had them answer a questionnaire prior to and following a flotation session"
             },
             {
               "id": "q20",
               "answer": "Wellbeing",
-              "before": "……………….. In another experiment, the researchers had 48 people spend periods of 90 minutes either lying back in a chair or floating in a tank. Brain scans then revealed that those people who had been in a tank had decreased activity in parts of the brain associated with",
-              "after": "",
               "explanation": "Paragraph E reports ‘an increase in feelings of relaxation and overall wellbeing’, matching this gap.",
               "evidence": "an increase in feelings of relaxation and overall wellbeing"
             },
             {
               "id": "q21",
               "answer": "Depression",
-              "before": "……………",
-              "after": "",
               "explanation": "The passage says float sessions decreased activity in ‘a collection of brain regions commonly linked with depression’, matching this final gap.",
               "evidence": "a collection of brain regions commonly linked with depression"
             }
@@ -333,7 +311,7 @@ const test: PracticeTest = {
             {
               "id": "q26",
               "answer": "C",
-              "textHtml": "External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events. List of People A Nick Antonio B Justin Feinstein C Tal Dotan Ben-Soussan D Eric Pfeifer",
+              "textHtml": "External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events.",
               "explanation": "Ben-Soussan says quietness ‘allows us to be more aware of what is happening around us and what the situation may require from us’, matching this statement.",
               "evidence": "This allows us to be more aware of what is happening around us and what the situation may require from us so we can provide [a more] adequate response"
             }

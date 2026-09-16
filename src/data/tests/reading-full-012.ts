@@ -64,56 +64,42 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Benefits",
-              "before": "…………… Over time, the",
-              "after": "",
               "explanation": "The opening notes gap follows \"societal ___\", matching the passage's list of benefit types.",
               "evidence": "they also provide numerous environmental, economic and social benefits."
             },
             {
               "id": "q2",
               "answer": "Private",
-              "before": "………………. sector has increasingly taken responsibility for street trees due to the privatization of communal spaces. Materials like asphalt and concrete contribute to the urban heat island phenomenon by absorbing and retaining solar",
-              "after": "",
               "explanation": "Responsibility for street trees has shifted to the private sector as public space becomes privatised.",
               "evidence": "the responsibility for street trees has shifted from the public to the private domain"
             },
             {
               "id": "q3",
               "answer": "Surfaces",
-              "before": "…………………. By improving drainage and filtering pollutants, street trees significantly enhance",
-              "after": "",
               "explanation": "Hard surfaces like concrete and asphalt store solar heat, causing the urban heat island effect.",
               "evidence": "caused by hard surfaces such as concrete and asphalt storing heat from the sun."
             },
             {
               "id": "q4",
               "answer": "Water",
-              "before": "……………….. quality and mitigate flooding. These trees provide shade, reducing the reliance on artificial",
-              "after": "",
               "explanation": "Street trees improve water quality and reduce flooding, matching the gap \"___ quality and mitigate flooding\".",
               "evidence": "they also improve water quality, reduce flooding"
             },
             {
               "id": "q5",
               "answer": "Conditioning",
-              "before": "…………….. systems during warmer months. Acting as a protective",
-              "after": "",
               "explanation": "Shade from trees reduces the need for air conditioning in summer.",
               "evidence": "reducing the need for air conditioning in summer."
             },
             {
               "id": "q6",
               "answer": "Buffer",
-              "before": "………………. between pedestrians and moving vehicles, street trees reduce noise and offer a sense of safety. Ensuring street trees thrive involves choosing appropriate locations, providing high-grade",
-              "after": "",
               "explanation": "Trees act as a buffer between pedestrians and traffic.",
               "evidence": "they can provide a sense of place and identity... They also act as a buffer between pedestrians and traffic"
             },
             {
               "id": "q7",
               "answer": "Soil",
-              "before": "……….. and shielding them from vandalism and adverse weather",
-              "after": "",
               "explanation": "Good quality soil is one of the resources needed for trees to thrive, matching \"high-grade ___\".",
               "evidence": "planting them in large pits with good quality soil"
             }
@@ -321,24 +307,18 @@ const test: PracticeTest = {
             {
               "id": "q24",
               "answer": "Support",
-              "before": "………………. rather than replace traditional teaching methods. They are also setting guidelines for the use of technology in the classroom and putting",
-              "after": "",
               "explanation": "Schools use technology to support, not replace, traditional teaching, matching the summary gap.",
               "evidence": "using technology to support traditional teaching methods, rather than replacing them."
             },
             {
               "id": "q25",
               "answer": "Policies",
-              "before": "…………… in place to protect students from inappropriate content. In order to use technology effectively, teachers need to have access to training and",
-              "after": "",
               "explanation": "Schools set policies to protect students from inappropriate content, matching the gap \"putting ___ in place\".",
               "evidence": "policies in place to protect students from inappropriate content online."
             },
             {
               "id": "q26",
               "answer": "Development",
-              "before": "……………. They also need to be supported by their schools and given the resources they need to use technology effectively",
-              "after": "",
               "explanation": "Teachers need training and professional development to use technology effectively.",
               "evidence": "access to training and professional development opportunities."
             }

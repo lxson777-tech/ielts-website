@@ -61,16 +61,12 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Tail",
-              "before": "……………. Movement • have fewer neck bones than most mammals • need to use their",
-              "after": "",
               "explanation": "Paragraph 1 says the manatee has a broad, rounded tail while the dugong has a fluked one like a whale, so tail is the differently shaped part.",
               "evidence": "However, the manatee has a broad, rounded tail, whereas the dugong’s is fluked, like that of a whale."
             },
             {
               "id": "q2",
               "answer": "Flippers",
-              "before": "…………… to help to turn their bodies around in order to look sideways • sense vibrations in the water by means of",
-              "after": "",
               "explanation": "Paragraph 2 says a manatee must turn its whole body to look sideways, steering with its flippers.",
               "evidence": "To see something on its left or its right, a manatee must turn its entire body, steering with its flippers."
             },
@@ -80,32 +76,24 @@ const test: PracticeTest = {
                 "Hairs",
                 "Hair"
               ],
-              "before": "………………. on their skin Feeding • eat mainly aquatic vegetation, such as",
-              "after": "",
               "explanation": "Paragraph 2 says manatees have hairs on their skin that help them sense vibrations in the water.",
               "evidence": "They also have some hairs covering their bodies which help them sense vibrations in the water around them."
             },
             {
               "id": "q4",
               "answer": "Seagrasses",
-              "before": "………… • grasp and pull up plants with their",
-              "after": "",
               "explanation": "Paragraph 3 says seagrasses and other marine plants make up most of a manatee's diet.",
               "evidence": "Seagrasses and other marine plants make up most of a manatee’s diet."
             },
             {
               "id": "q5",
               "answer": "Lips",
-              "before": "…………… Breathing • come to the surface for air every 2-4 minutes when awake and every 15-20 while sleeping • may regulate the",
-              "after": "",
               "explanation": "Paragraph 4 says manatees use their lips like a pair of hands to tear food from the seafloor.",
               "evidence": "Instead of having incisors to grasp their food, manatees have lips which function like a pair of hands to help tear food away from the seafloor."
             },
             {
               "id": "q6",
               "answer": "Buoyancy",
-              "before": "………… of their bodies by using muscles of diaphragm to store air internally",
-              "after": "",
               "explanation": "Paragraph 5 says manatees may use their diaphragm and breathing to adjust their buoyancy.",
               "evidence": "It’s thought that manatees use their muscular diaphragm and breathing to adjust their buoyancy."
             }
@@ -248,48 +236,36 @@ const test: PracticeTest = {
             {
               "id": "q17",
               "answer": "Laziness",
-              "before": "……………… Others believe it to be the result of an inability to organise time efficiently. But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel",
-              "after": "",
               "explanation": "Paragraph B opens by rejecting the popular belief that procrastination is due to laziness or poor time management.",
               "evidence": "Contrary to popular belief, procrastination is not due to laziness or poor time management."
             },
             {
               "id": "q18",
               "answer": "Anxious",
-              "before": "……………. when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying",
-              "after": "",
               "explanation": "Paragraph B says a task that threatens our self-worth or makes us anxious is more likely to be put off.",
               "evidence": "If just thinking about the task threatens our sense of self-worth or makes us anxious, we will be more likely to put it off."
             },
             {
               "id": "q19",
               "answer": "Threats",
-              "before": "………………. Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take",
-              "after": "",
               "explanation": "Paragraph B says brain regions linked to detecting threats and regulating emotion differ in frequent procrastinators.",
               "evidence": "Research involving brain imaging has found that areas of the brain linked to detection of threats and emotion regulation are actually different in people who chronically procrastinate compared to those who don’t procrastinate frequently."
             },
             {
               "id": "q20",
               "answer": "Exams",
-              "before": "……………. might be a typical example of one such task. People who are likely to procrastinate tend to be either",
-              "after": "",
               "explanation": "Paragraph C gives preparing for exams as an example of an emotionally loaded, difficult task people put off.",
               "evidence": "Tasks that are emotionally loaded or difficult, such as preparing for exams, are prime candidates for procrastination."
             },
             {
               "id": "q21",
               "answer": "Perfectionists",
-              "before": "……………. or those with low self-esteem. Procrastination is only a short-term measure for managing emotions. It’s often followed by a feeling of",
-              "after": "",
               "explanation": "Paragraph C says perfectionists, who fear harsh judgement of their work, are prone to procrastinate.",
               "evidence": "Another group of people who tend to procrastinate are perfectionists, who worry their work will be judged harshly by others."
             },
             {
               "id": "q22",
               "answer": "Guilt",
-              "before": "……………, which worsens our mood and leads to more procrastination",
-              "after": "",
               "explanation": "Paragraph C says procrastinators are often left with a sense of guilt that worsens their mood.",
               "evidence": "Afterwards, people tend to be left with a sense of guilt that not only increases their negative mood, but also reinforces their tendency to procrastinate."
             }
@@ -496,40 +472,30 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "F",
-              "before": "…………… The umpire’s job had, at one time, required a",
-              "after": "",
               "explanation": "Paragraph 2 says MLB wanted human umpires to announce calls just as they had done in the past, their former role.",
               "evidence": "Major League Baseball (MLB), who had commissioned the system, wanted human umpires to announce the calls, just as they would have done in the past."
             },
             {
               "id": "q34",
               "answer": "D",
-              "before": "…………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a",
-              "after": "",
               "explanation": "Paragraph 2 says calling a strike used to be a judgment call by the umpire, a subjective assessment.",
               "evidence": "Previously, calling a strike was a judgment call on the part of the umpire."
             },
             {
               "id": "q35",
               "answer": "H",
-              "before": "………… extending approximately from the batter’s knee to his chest. In the past,",
-              "after": "",
               "explanation": "Paragraph 2 describes the strike zone as an imaginary zone from the knees to the chest, the perceived area a pitch must cross.",
               "evidence": "Even if the batter does not hit the ball, a pitch that passes through the ‘strike zone’ (an imaginary zone about seventeen inches wide, stretching from the batter’s knees to the middle of his chest) is considered a strike."
             },
             {
               "id": "q36",
               "answer": "B",
-              "before": "……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with",
-              "after": "",
               "explanation": "Paragraph 3 says countless arguments took place between managers and umpires over the strike zone, that is, numerous disputes.",
               "evidence": "For a hundred and fifty years or so, the strike zone has been the game’s animating force-countless arguments between a team’s manager and the umpire have taken place over its boundaries and whether a ball had crossed through it."
             },
             {
               "id": "q37",
               "answer": "G",
-              "before": "…………… A. pitch boundary B. numerous disputes C. team tactics D. subjective assessment E. widespread approval F. former roles G. total silence H. perceived area",
-              "after": "",
               "explanation": "Paragraph 2 says nobody said a word when DeJesus announced the first robo-umpire calls, total silence.",
               "evidence": "Nobody said a word."
             }

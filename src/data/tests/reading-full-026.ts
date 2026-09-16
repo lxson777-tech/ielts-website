@@ -64,37 +64,49 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "False",
-              "textHtml": "People had expected Andy Murray to become the world’s top tennis player for at least five years before 2016"
+              "textHtml": "People had expected Andy Murray to become the world’s top tennis player for at least five years before 2016",
+              "explanation": "The first paragraph says the opposite: five years before 2016 Murray was seen as a talented outsider who kept entering the big tournaments without winning them, so people were not expecting him to reach number one.",
+              "evidence": "Yet five years previously, he had been regarded as a talented outsider who entered but never won the major tournaments."
             },
             {
               "id": "q2",
               "answer": "False",
-              "textHtml": "The change that Andy Murray made to his rackets attracted a lot of attention"
+              "textHtml": "The change that Andy Murray made to his rackets attracted a lot of attention",
+              "explanation": "The second paragraph contrasts two changes: hiring Ivan Lendl was the one that was widely publicised, while the change to his strings was so small that almost nobody noticed it.",
+              "evidence": "Another change was so subtle as to pass more or less unnoticed."
             },
             {
               "id": "q3",
               "answer": "Not given",
-              "textHtml": "Most of the world’s top players take a professional racket stringer on tour with them"
+              "textHtml": "Most of the world’s top players take a professional racket stringer on tour with them",
+              "explanation": "The third paragraph quotes a UK based professional racket stringer and says that touring professionals have their rackets customised, but it never says whether top players take a stringer with them when they travel to tournaments."
             },
             {
               "id": "q4",
               "answer": "False",
-              "textHtml": "Mike and Bob Bryan use rackets that are light in comparison to the majority of rackets"
+              "textHtml": "Mike and Bob Bryan use rackets that are light in comparison to the majority of rackets",
+              "explanation": "The third paragraph says the Bryans' current rackets are heavier than the average model, not lighter, so the statement contradicts the passage.",
+              "evidence": "The rackets they use now weigh more than the average model"
             },
             {
               "id": "q5",
               "answer": "Not given",
-              "textHtml": "Werner Fischer played with a spaghetti-strung racket that he designed himself"
+              "textHtml": "Werner Fischer played with a spaghetti-strung racket that he designed himself",
+              "explanation": "The fifth paragraph says Werner Fischer started playing with the spaghetti-strung racket, but it never says who designed or invented that racket."
             },
             {
               "id": "q6",
               "answer": "True",
-              "textHtml": "The weather can affect how professional players adjust the strings on their rackets"
+              "textHtml": "The weather can affect how professional players adjust the strings on their rackets",
+              "explanation": "The sixth paragraph says players keep changing their strings and the tension depending on things like the court surface and the climatic conditions, and climatic conditions means the weather.",
+              "evidence": "They will continually change it depending on various factors including the court surface, climatic conditions, and game styles."
             },
             {
               "id": "q7",
               "answer": "True",
-              "textHtml": "It was believed that the change Pete Sampras made to his rackets contributed to his strong serve"
+              "textHtml": "It was believed that the change Pete Sampras made to his rackets contributed to his strong serve",
+              "explanation": "The paragraph about changes to the frame says a lot of Pete Sampras's serving power was put down to the lead weights he added to his rackets, which matches the idea that the change was believed to help his serve.",
+              "evidence": "much of the serving power of US professional player Pete Sampras was attributed to the addition of four to five lead weights onto his rackets"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -107,20 +119,20 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Paint",
-              "before": "………………. used on their racket frames. • Players were not allowed to use the spaghetti-strung racket because of the amount of",
-              "after": ""
+              "explanation": "In the third paragraph the Bryan brothers say they changed the length of their rackets and also tried out different kinds of paint, so paint is the thing they experimented with on the frames.",
+              "evidence": "they have adjusted not only racket length, but even experimented with different kinds of paint"
             },
             {
               "id": "q9",
               "answer": "Topspin",
-              "before": "……………. it created. • Changes to rackets can be regarded as being as important as players’ diets or the",
-              "after": ""
+              "explanation": "The fifth paragraph says the spaghetti-strung racket produced so much topspin that the International Tennis Federation banned it quickly.",
+              "evidence": "It created a string bed that generated so much topspin that it was quickly banned by the International Tennis Federation."
             },
             {
               "id": "q10",
               "answer": "Training",
-              "before": "……………. they do. • All rackets used to have natural strings made from the",
-              "after": ""
+              "explanation": "The fifth paragraph ends by saying racket modification now matters as much as nutrition or training, and nutrition is the diet part, so the missing word is training.",
+              "evidence": "Today it is, in many ways, an aspect of the game that is equal in significance to nutrition or training."
             },
             {
               "id": "q11",
@@ -128,20 +140,20 @@ const test: PracticeTest = {
                 "Intestines",
                 "gut"
               ],
-              "before": "………………. of animals. • Pete Sampras had metal",
-              "after": ""
+              "explanation": "The paragraph about natural gut says the old strings were made from the outer layer of sheep or cow intestines, so intestines is the animal part the strings came from.",
+              "evidence": "all tennis rackets were strung with natural gut made from the outer layer of sheep or cow intestines"
             },
             {
               "id": "q12",
               "answer": "Weights",
-              "before": "………………. put into the frames of his rackets. • Gongalo Oliveira changed the",
-              "after": ""
+              "explanation": "The paragraph about frame changes says Sampras had four or five lead weights added to his rackets, and lead is the metal, so the word for the gap is weights.",
+              "evidence": "the addition of four to five lead weights onto his rackets"
             },
             {
               "id": "q13",
               "answer": "Grips",
-              "before": "………………… on his racket handles",
-              "after": ""
+              "explanation": "The paragraph about handles says Goncalo Oliveira swapped the original grips on his rackets for thinner ones because the old ones felt uncomfortable.",
+              "evidence": "replaced the original grips of his rackets with something thinner"
             }
           ],
           "legendHtml": "<p><span><strong>The tennis racket and how it has changed</strong></span></p><p><span>• Mike and Bob Bryan made changes to the types of (8) ………………. used on their racket frames.</span><br/>\n<span>• Players were not allowed to use the spaghetti-strung racket because of the amount of (9) ……………. it created.</span><br/>\n<span>• Changes to rackets can be regarded as being as important as players’ diets or the (10) ……………. they do.</span><br/>\n<span>• All rackets used to have natural strings made from the (11) ………………. of animals.</span><br/>\n<span>• Pete Sampras had metal (12) ………………. put into the frames of his rackets.</span><br/>\n<span>• Gongalo Oliveira changed the (13) ………………… on his racket handles.</span></p><p><span></span><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
@@ -192,32 +204,44 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "D",
-              "textHtml": "a reference to a denial of involvement in piracy"
+              "textHtml": "a reference to a denial of involvement in piracy",
+              "explanation": "Section D describes the Amarna Letters, in which the king of Alashiya turned down the pharaoh's claim that his people were linked to the Lukka pirates, which is a denial of involvement.",
+              "evidence": "the king of Alashiya (modern Cyprus) rejected Akhenaten’s claims of a connection with the Lukka"
             },
             {
               "id": "q15",
               "answer": "G",
-              "textHtml": "details of how a campaign to eradicate piracy was carried out"
+              "textHtml": "details of how a campaign to eradicate piracy was carried out",
+              "explanation": "Section G explains exactly how Pompey ran his campaign, splitting the sea into 13 districts with a fleet for each one and clearing them in turn. Section F is tempting because it also talks about Rome and pirates, but it only explains why Rome finally decided to act.",
+              "evidence": "Pompey divided the entire Mediterranean into 13 districts, assigning a fleet and commander to each."
             },
             {
               "id": "q16",
               "answer": "C",
-              "textHtml": "a mention of the circumstances in which states in the ancient world would make use of pirates"
+              "textHtml": "a mention of the circumstances in which states in the ancient world would make use of pirates",
+              "explanation": "Section C says ancient governments sometimes hired pirates, especially in wartime, and used them in the first wave of an attack, which is the situation in which states made use of them.",
+              "evidence": "it was not unknown in the first and second millennia BCE for governments to resort to pirates’ services, especially during wartime"
             },
             {
               "id": "q17",
               "answer": "A",
-              "textHtml": "a reference to how people today commonly view pirates"
+              "textHtml": "a reference to how people today commonly view pirates",
+              "explanation": "Section A opens with the picture that comes into most people's heads today, a crew of adventurers on a tall sailing ship in the Caribbean, before saying that real Mediterranean pirates were very different.",
+              "evidence": "When one mentions pirates, an image springs to most people’s minds of a crew of misfits, daredevils and adventurers in command of a tall sailing ship in the Caribbean Sea."
             },
             {
               "id": "q18",
               "answer": "G",
-              "textHtml": "an explanation of how some people were encouraged not to return to piracy"
+              "textHtml": "an explanation of how some people were encouraged not to return to piracy",
+              "explanation": "Section G says that as a lasting fix many captured pirates were given farmland far inland, which gave them a living away from the sea so they would not go back to piracy.",
+              "evidence": "many more were offered land in fertile areas located far from the sea"
             },
             {
               "id": "q19",
               "answer": "B",
-              "textHtml": "a mention of the need for many sailing vessels to stay relatively close to land"
+              "textHtml": "a mention of the need for many sailing vessels to stay relatively close to land",
+              "explanation": "Section B says that before ocean-going caravels arrived in the 15th century ships could not easily cross open water, so they had to follow a few known routes along the coast. Section G is not the answer because it deals with Pompey's fleets, not with how ships had to sail.",
+              "evidence": "Before the invention of ocean-going caravels in the 15th century, ships could not easily cross long distances over open water."
             }
           ],
           "options": [
@@ -242,7 +266,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-292-q20-q21"
+              "answerPairId": "reading-292-q20-q21",
+              "explanation": "Section B says the people in the rugged coastal areas lived mainly off the sea, on fish and salt, which is option D, and that their knowledge of the local area let them escape once a state fleet came after them, which is option B. Option A fails because the passage says most of these men had their own boats rather than stolen ones.",
+              "evidence": "the inhabitants of these areas relied heavily on marine resources, including fish and salt"
             },
             {
               "id": "q21",
@@ -251,7 +277,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-292-q20-q21"
+              "answerPairId": "reading-292-q20-q21",
+              "explanation": "The other correct statement is in the same section: knowing the local coast so well meant the pirates could get away when a state fleet arrived. Option E fails because the coves are described as places to hide boats and attack from, not as storage for stolen goods.",
+              "evidence": "knowledge of the local area helped the pirates to avoid retaliation once a state fleet arrived"
             }
           ],
           "legendHtml": "<p><span><strong>Questions 20 and 21</strong></span></p><p><span>Which TWO of the following statements does the writer make about inhabitants of the Mediterranean region in the ancient world?</span></p>",
@@ -291,7 +319,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-292-q22-q23"
+              "answerPairId": "reading-292-q22-q23",
+              "explanation": "Section E says even senior people in the state joined in, and gives the example of Athenian ambassadors breaking off an official trip to seize a ship and keep the goods, which is option C. Option A fails because the passage says the opposite, that a large number of pirates were operating.",
+              "evidence": "Even high-ranking members of the state were not beyond engaging in such activities."
             },
             {
               "id": "q23",
@@ -300,7 +330,9 @@ const test: PracticeTest = {
                 "E"
               ],
               "textHtml": "",
-              "answerPairId": "reading-292-q22-q23"
+              "answerPairId": "reading-292-q22-q23",
+              "explanation": "The other correct statement is that ancient Greek writing shows piracy in a positive light: Homer praises the pirates' way of life and Thucydides glorified their raids, which is option E. Option B fails because the passage says the opinion stayed the same in the centuries after Homer.",
+              "evidence": "the ancient Greek writer Homer not only condones, but praises the lifestyle and actions of pirates"
             }
           ],
           "legendHtml": "<p><span><strong>Questions 22 and 23</strong></span></p><p><span>Which TWO of the following statements does the writer make about piracy and ancient Greece?</span></p>",
@@ -336,20 +368,20 @@ const test: PracticeTest = {
             {
               "id": "q24",
               "answer": "Grain",
-              "before": "………………….to Rome resulted in calls for",
-              "after": ""
+              "explanation": "Section F says the attacks that upset Rome were on the grain ships that its citizens depended on, so grain is the cargo being transported.",
+              "evidence": "Pirate attacks on grain ships, which were essential to Roman citizens"
             },
             {
               "id": "q25",
               "answer": "Punishment",
-              "before": "………………. for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a",
-              "after": ""
+              "explanation": "In the same sentence of Section F, those attacks made angry senators demand that the pirates responsible be punished, so the word needed is punishment.",
+              "evidence": "led to angry voices in the Senate, demanding punishment of the culprits"
             },
             {
               "id": "q26",
               "answer": "Ransom",
-              "before": "………………. for the return of the Roman officials they captured",
-              "after": ""
+              "explanation": "Section F ends by saying pirates kidnapped important Roman officials and asked for a large ransom, with Julius Caesar as the most famous example.",
+              "evidence": "emboldened pirates kidnapped prominent Roman dignitaries, asking for a large ransom to be paid"
             }
           ],
           "legendHtml": "<p><span><strong>Ancient Rome and piracy</strong></span></p><p><span>Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome’s industries. However, attacks on vessels transporting (24) ………………….to Rome resulted in calls for (25) ………………. for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a (26) ………………. for the return of the Roman officials they captured.</span></p><p><span></span><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
@@ -412,7 +444,9 @@ const test: PracticeTest = {
                 "Some people find it easy to identify misinformation",
                 "Misinformation changes as it is passed from one person to another",
                 "There may be a number of reasons for the spread of misinformation"
-              ]
+              ],
+              "explanation": "The opening paragraph lists several motives for lying, such as gaining an advantage, pushing people to act and protecting relationships, and adds that people also pass on wrong information by accident, so there are many reasons behind it. Option A fails because the same paragraph says plainly that misinformation is not a new problem.",
+              "evidence": "Deceiving others can offer an apparent opportunity to gain strategic advantage, to motivate others to action, or even to protect interpersonal bonds."
             },
             {
               "id": "q28",
@@ -423,7 +457,9 @@ const test: PracticeTest = {
                 "It could fundamentally alter the way in which people regard information",
                 "It has changed the way in which organisations use misinformation",
                 "It has made it easier for people to check whether information is accurate"
-              ]
+              ],
+              "explanation": "The second paragraph says that although technology now spreads misinformation widely, the cure may in time come from those same channels of mass communication. Option D is tempting, but the passage never says technology has made checking information easier.",
+              "evidence": "the means to correct misinformation might, over time, be found in those same patterns of mass communication and of the facilitated spread of information"
             },
             {
               "id": "q29",
@@ -434,7 +470,9 @@ const test: PracticeTest = {
                 "explaining how the effects of misinformation have changed over time",
                 "outlining which issues connected with misinformation are significant today",
                 "describing the attitude of policy makers towards misinformation in the media"
-              ]
+              ],
+              "explanation": "The fourth paragraph sets out three points about misinformation in today's media that deserve attention, so the writer is listing the issues that matter now. Option D fails because policy makers are only named as people who should take notice, and their attitude is never described.",
+              "evidence": "At least three observations related to misinformation in the contemporary mass-media environment warrant the attention of researchers, policy makers, and really everyone who watches television, listens to the radio, or reads information online."
             },
             {
               "id": "q30",
@@ -445,7 +483,9 @@ const test: PracticeTest = {
                 "Regulation does not affect people’s opinions of new prescription drugs",
                 "The USA has more regulatory bodies than most other countries",
                 "Regulation fails to prevent misinformation from appearing in the media"
-              ]
+              ],
+              "explanation": "The writer explains that US regulators such as the FDA check advertising after it has gone out rather than blocking it first, and then says those schemes do not stop false advertising being broadcast. Option A fails because the FDA guidelines are never criticised for being complicated.",
+              "evidence": "Such programs, although laudable and useful, do not keep false advertising off the airwaves."
             }
           ]
         },
@@ -457,38 +497,38 @@ const test: PracticeTest = {
             {
               "id": "q31",
               "answer": "G",
-              "before": "…………… to misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had",
-              "after": ""
+              "explanation": "The paragraph on Descartes and Spinoza begins by saying it is quite normal for people to meet false information, which matches frequent exposure (G). Extreme distrust (F) fails because the passage says people tend to believe what they meet, not doubt it.",
+              "evidence": "it is fairly routine for individuals to come across information that is false"
             },
             {
               "id": "q32",
               "answer": "J",
-              "before": "…………… about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct",
-              "after": ""
+              "explanation": "The same paragraph sets the two philosophers against each other and says their predictions conflicted, so they had different ideas (J) about how people deal with information.",
+              "evidence": "with conflicting predictions that only recently have been empirically tested in robust ways"
             },
             {
               "id": "q33",
               "answer": "H",
-              "before": "…………… is involved in these stages. Recent research has provided",
-              "after": ""
+              "explanation": "Spinoza's view is that people first take information in as true and only later check it, using a separate cognitive process, and a mental operation (H) is the plain way to say that.",
+              "evidence": "people accept all encountered information (or misinformation) by default and then subsequently verify or reject it through a separate cognitive process"
             },
             {
               "id": "q34",
               "answer": "B",
-              "before": "…………….for Spinoza’s theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely",
-              "after": ""
+              "explanation": "The passage says research teams at Chicago and Harvard have produced findings that back Spinoza's account, so the gap needs additional evidence (B). Experimental subjects (D) does not fit, because it is the findings, not the people tested, that support the theory.",
+              "evidence": "empirical evidence from the research teams of Erik Asp of the University of Chicago and Daniel Gilbert at Harvard University"
             },
             {
               "id": "q35",
               "answer": "E",
-              "before": "…………………..and do not label the information as true or false until later, This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in",
-              "after": ""
+              "explanation": "The passage says people treat new information as true even if only momentarily, and momentarily means for a short period (E).",
+              "evidence": "people appear to encode all new information as if it were true, even if only momentarily"
             },
             {
               "id": "q36",
               "answer": "C",
-              "before": "……………….in the brain. A constant conflict B additional evidence C different locations D experimental subjects E short period F extreme distrust G frequent exposure H mental operation I dubious reason J different ideas",
-              "after": ""
+              "explanation": "The end of that paragraph says the brain handles scepticism in a different part from the part used for perceiving and taking information in, which is different locations (C). Constant conflict (A) fails because the passage describes two separate places, not a struggle between them.",
+              "evidence": "mental resources for skepticism physically reside in a different part of the brain than the resources used in perceiving and encoding"
             }
           ],
           "legendHtml": "<p><span><strong>What happens when people encounter misinformation?</strong></span></p><p><span>Although people have (31) …………… to misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had (32) …………… about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct (33) …………… is involved in these stages. Recent research has provided (34) …………….for Spinoza’s theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely (35) …………………..and do not label the information as true or false until later, This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in (36) ……………….in the brain.</span></p><p><span><strong>A</strong> constant conflict</span><br/>\n<span><strong>B</strong> additional evidence</span><br/>\n<span><strong>C</strong> different locations</span><br/>\n<span><strong>D</strong> experimental subjects</span><br/>\n<span><strong>E</strong> short period</span><br/>\n<span><strong>F</strong> extreme distrust</span><br/>\n<span><strong>G</strong> frequent exposure</span><br/>\n<span><strong>H</strong> mental operation</span><br/>\n<span><strong>I</strong> dubious reason</span><br/>\n<span><strong>J</strong> different ideas</span></p>"
@@ -501,22 +541,28 @@ const test: PracticeTest = {
             {
               "id": "q37",
               "answer": "Yes",
-              "textHtml": "Campaigns designed to correct misinformation will fail to achieve their purpose if people are unable to understand them"
+              "textHtml": "Campaigns designed to correct misinformation will fail to achieve their purpose if people are unable to understand them",
+              "explanation": "In the paragraph on correcting misinformation the writer says a campaign can only persuade if the audience can understand it, which agrees with the statement.",
+              "evidence": "For corrective campaigns to be persuasive, audiences need to be able to comprehend them"
             },
             {
               "id": "q38",
               "answer": "Not given",
-              "textHtml": "Attempts to teach elementary school students about misinformation have been opposed"
+              "textHtml": "Attempts to teach elementary school students about misinformation have been opposed",
+              "explanation": "The writer suggests that media literacy teaching could usefully start as early as elementary school, but nothing in the passage says anyone has objected to or resisted such teaching."
             },
             {
               "id": "q39",
               "answer": "No",
-              "textHtml": "It may be possible to overcome the problem of misinformation in a relatively short period"
+              "textHtml": "It may be possible to overcome the problem of misinformation in a relatively short period",
+              "explanation": "The final paragraph says the way ahead will be long and hard and will need coordinated work over time rather than a single quick cure, so the writer does not think the problem can be solved quickly.",
+              "evidence": "The journey forward undoubtedly will be a long and arduous one."
             },
             {
               "id": "q40",
               "answer": "Not given",
-              "textHtml": "The need to keep up with new information is hugely exaggerated in today’s world"
+              "textHtml": "The need to keep up with new information is hugely exaggerated in today’s world",
+              "explanation": "The passage discusses how misinformation spreads and how hard it is to correct, but it never comments on how much people need to keep up with new information, or on whether that need is overstated."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the claims of the writer</dd><dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><span></span><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>"

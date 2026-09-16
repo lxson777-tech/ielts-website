@@ -108,48 +108,36 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Medical appointments",
-              "before": "…………………. – to store",
-              "after": "",
               "explanation": "Paragraph 4 says the French card can store medical records, prescriptions and details of medical appointments.",
               "evidence": "The card can be used to store medical records, prescriptions, and details of medical appointments."
             },
             {
               "id": "q9",
               "answer": "Prescriptions",
-              "before": "………………… Use of smart cards in the United States – to improve the security of the US passport card – to provide a",
-              "after": "",
               "explanation": "Paragraph 4 lists prescriptions among the things the French health card can store.",
               "evidence": "The card can be used to store medical records, prescriptions, and details of medical appointments."
             },
             {
               "id": "q10",
               "answer": "Unique number",
-              "before": "…………………. between the card and a government database Use of smart cards in Hong Kong – to pay for travel on the city’s underground railway system – to pay for travel on",
-              "after": "",
               "explanation": "Paragraph 6 says the US passport card's chip holds a unique number linking it to a government database.",
               "evidence": "The card has a microchip embedded in it that contains a unique number linking the card to a government database containing the cardholder’s personal information."
             },
             {
               "id": "q11",
               "answer": "Buses",
-              "before": "………………….. ,",
-              "after": "",
               "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
               "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
             },
             {
               "id": "q12",
               "answer": "Ferries",
-              "before": "……………….. and",
-              "after": "",
               "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
               "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
             },
             {
               "id": "q13",
               "answer": "Trams",
-              "before": "……………",
-              "after": "",
               "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
               "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
             }
@@ -249,24 +237,18 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "Somatic",
-              "before": "……………. cells of a patient are targeted for gene replacement. The effects of the therapy will not be passed down to future",
-              "after": "",
               "explanation": "Paragraph B says somatic gene therapy targets a patient's own body cells for gene replacement.",
               "evidence": "Gene therapy may be classified into the two following types: Somatic gene therapy: In somatic gene therapy, the therapeutic genes are transferred into the somatic cells (cells that do not make sperm or eggs) of a patient."
             },
             {
               "id": "q20",
               "answer": "Generations",
-              "before": "……………… However, in germline gene therapy, the DNA of a patient’s sperm or egg cells is altered. This means that any changes will be passed down to future generations. Although this type of gene therapy is not permitted in humans in most countries, it may be the only possible cure for people with certain",
-              "after": "",
               "explanation": "Paragraph B says effects of somatic therapy are not inherited by offspring or later generations.",
               "evidence": "Any modifications and effects will be restricted to the individual patient only, and will not be inherited by the patient’s offspring or later generations."
             },
             {
               "id": "q21",
               "answer": "Diseases",
-              "before": "…………………In addition, gene therapy can be classified as either ex vivo or in vivo. In ex vivo gene therapy, the genes are altered outside the patient’s body before the",
-              "after": "",
               "explanation": "Paragraph B says germline therapy may be the only option for some diseases despite being banned in most countries.",
               "evidence": "In some jurisdictions, germline gene therapy is the only feasible option for some diseases; however, this option is fraught with many bio-ethical considerations."
             },
@@ -276,8 +258,6 @@ const test: PracticeTest = {
                 "Reinsertion",
                 "Reinserted"
               ],
-              "before": "……………….. into the patient. In vivo gene therapy involves injecting the therapeutic DNA directly into the patient’s body",
-              "after": "",
               "explanation": "Paragraph C says ex vivo gene therapy involves the reinsertion of the genetically altered cells back into the patient. The gap comes straight after 'the', so it needs the noun 'reinsertion'.",
               "evidence": "Ex vivo gene therapy involves the transfer of genes in cultured cells and reinsertion of the genetically altered cells back into the patient."
             }
@@ -456,8 +436,6 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "Intelligence",
-              "before": "…………………. Students who believe that intelligence is",
-              "after": "",
               "explanation": "Paragraph 7 says learning styles can give students a fixed idea about their level of intelligence.",
               "evidence": "The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence."
             },
@@ -467,24 +445,18 @@ const test: PracticeTest = {
                 "Changeable",
                 "Changing"
               ],
-              "before": "………………… tend to do better than other students. Students who have been told that they are",
-              "after": "",
               "explanation": "Paragraph 7 says students who believe that intelligence can change tend to do better than those who think it is fixed. The gap follows 'is', so it needs an adjective: 'changeable' or 'changing'.",
               "evidence": "For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies."
             },
             {
               "id": "q38",
               "answer": "Visual",
-              "before": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a",
-              "after": "",
               "explanation": "Paragraph 8 says students told they are visual learners might not try as hard at reading or listening tasks.",
               "evidence": "In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’."
             },
             {
               "id": "q39",
               "answer": "Mix",
-              "before": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular",
-              "after": "",
               "explanation": "Paragraph 8 says students who use a mix of learning methods often learn more effectively.",
               "evidence": "This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’."
             },
@@ -494,8 +466,6 @@ const test: PracticeTest = {
                 "Style",
                 "Learning style"
               ],
-              "before": "…………………",
-              "after": "",
               "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style. The instruction allows one word only, so the answer to write is 'style'.",
               "evidence": "They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style."
             }

@@ -67,27 +67,37 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "E",
-              "textHtml": "the process of the new food flavor is agreed on"
+              "textHtml": "the process of the new food flavor is agreed on",
+              "explanation": "Paragraph E describes sensory analysis, where trained and ordinary tasters and the flavourists go back and forth in rounds until everyone accepts the taste, which is the moment a new flavour is agreed on. Paragraph D is tempting because it talks about creating new flavours, but it is about finding and inventing ingredients, not about approving the finished taste.",
+              "evidence": "The process is an iterative one, with several rounds of refinement between testers and flavourists, until the product is deemed to have an acceptable taste."
             },
             {
               "id": "q2",
               "answer": "H",
-              "textHtml": "the reason for some natural preferences"
+              "textHtml": "the reason for some natural preferences",
+              "explanation": "Paragraph H explains why we are born disliking sour and bitter things and liking sweet and salty ones, saying these reflect the sensible choices our ancestors made when food could be dangerous. Paragraph A is tempting because it lists the basic tastes, but it only names them and never says why we prefer some of them.",
+              "evidence": "a liking for sweet and salty ones reflect the wise choices that humanity’s ancestors made in a hostile environment"
             },
             {
               "id": "q3",
               "answer": "C",
-              "textHtml": "the reason why flavor has not been researched in depth in the past"
+              "textHtml": "the reason why flavor has not been researched in depth in the past",
+              "explanation": "Paragraph C says that in the early days the tools for analysis were basic and the taste substances were present in tiny amounts, which is why the subject was so hard to study before 1950. Paragraph A is tempting because it says little was learnt about taste in 2,000 years, but it does not give the reason.",
+              "evidence": "Not only were analytical methods rudimentary, but the substances responsible for taste are present in minuscule amounts even in concentrated foods such as crushed raspberries."
             },
             {
               "id": "q4",
               "answer": "B",
-              "textHtml": "the explanation of lack of consistency in sensory analyzing data"
+              "textHtml": "the explanation of lack of consistency in sensory analyzing data",
+              "explanation": "The second half of paragraph B says there is no reliable way of measuring what goes into and out of the brain against what people say they taste, which is why the data from taste testing does not line up neatly. Paragraph F is tempting because it also mentions measurement problems, but there the problem is the scanning technology, not the gap between measurements and people's reports.",
+              "evidence": "There are no useful algorithms to measure brain inputs and outputs against subjective reports of flavour sensations."
             },
             {
               "id": "q5",
               "answer": "B",
-              "textHtml": "the wider benefits to the knowledge of researching flavors"
+              "textHtml": "the wider benefits to the knowledge of researching flavors",
+              "explanation": "The first half of paragraph B lists what knowing about taste receptors could lead to, such as low-salt food that still tastes salty, medicines that are not bitter, and food the elderly will actually eat, so the gains reach well beyond the laboratory. Paragraph G is tempting because it also mentions blockers and enhancers, but it describes the testing method rather than the benefits.",
+              "evidence": "The discovery of taste receptors opens the way to mimicking, enhancing or blocking them for various desired effects"
             }
           ],
           "options": [
@@ -109,27 +119,36 @@ const test: PracticeTest = {
             {
               "id": "q6",
               "answer": "False",
-              "textHtml": "Both taste and flavor can be experienced only in mouth"
+              "textHtml": "Both taste and flavor can be experienced only in mouth",
+              "explanation": "Paragraph A says smell matters just as much as taste in flavour, and it gives the strawberry sweet example where the strawberry only appears once the nose is released, so flavour is not something that happens only in the mouth.",
+              "evidence": "Smell plays an equally prominent role in flavour but is often underappreciated."
             },
             {
               "id": "q7",
               "answer": "True",
-              "textHtml": "Some elements in flavor involve neither taste nor smell"
+              "textHtml": "Some elements in flavor involve neither taste nor smell",
+              "explanation": "Paragraph A says things like the fizz of a drink or the coolness of mint reach us through the trigeminal sense, which is part of touch, so some parts of flavour come from neither taste nor smell.",
+              "evidence": "are detected not by taste or smell, but by the trigeminal sense, a part of the touch system adapted for the mouth"
             },
             {
               "id": "q8",
               "answer": "Not given",
-              "textHtml": "Ice-cream manufactures are at the forefront of the research on flavor"
+              "textHtml": "Ice-cream manufactures are at the forefront of the research on flavor",
+              "explanation": "Vanilla ice-cream appears in paragraph E only as an example of something tasters are asked to rate. The passage never says who leads flavour research, and ice-cream makers are never described as researchers at all, so there is nothing to judge this statement against."
             },
             {
               "id": "q9",
               "answer": "False",
-              "textHtml": "It is possible to accurately match the brain activity to the experience of flavor"
+              "textHtml": "It is possible to accurately match the brain activity to the experience of flavor",
+              "explanation": "The second half of paragraph F says brain scanning is still not sensitive enough and the ways of reading the results are not meaningful enough to be useful for studying flavour, which contradicts the idea that brain activity can be matched accurately to what a person tastes.",
+              "evidence": "But the technologies are not yet sensitive enough, nor are the ways of analysing the data meaningful enough, for the methods to be useful in studies of flavour."
             },
             {
               "id": "q10",
               "answer": "True",
-              "textHtml": "Research is being done to the controlling of the experience of taste"
+              "textHtml": "Research is being done to the controlling of the experience of taste",
+              "explanation": "Paragraph G describes two biotech firms working on ways to change what we taste, including Linguagen's search for substances that block bitterness, which is exactly research into controlling the experience of taste.",
+              "evidence": "Another biotech firm, Linguagen of Paramus, New Jersey, is also bringing modern science to bear in the search for flavour modifiers, particularly bitterness blockers."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -142,22 +161,30 @@ const test: PracticeTest = {
             {
               "id": "q11",
               "answer": "D",
-              "textHtml": "Matching brain activity and food input"
+              "textHtml": "Matching brain activity and food input",
+              "explanation": "In the second half of paragraph F, Dr Blake describes watching the brain light up in real time while a person eats, and paragraph D tells us he is Firmenich's vice-president of food science. Chemical Senses Institute is the tempting choice, but Dr Beauchamp there suggests working with animal genes instead.",
+              "evidence": "can reveal patterns of electrical activity swishing around the brain in real time, says Dr Blake"
             },
             {
               "id": "q12",
               "answer": "E",
-              "textHtml": "Use genetic modification to track flavor signals"
+              "textHtml": "Use genetic modification to track flavor signals",
+              "explanation": "The second half of paragraph F quotes Dr Beauchamp of Monell, the Chemical Senses Institute, suggesting that specific genes in animals be altered so that the brain's signal pathways can be followed. Firmenich is the trap, because Dr Blake there talks about brain scanning rather than genes.",
+              "evidence": "An alternative approach, says Monell’s Dr Beauchamp, would be to focus on specific genes in animals and alter them to track the pathways that the brain uses in integrating signals from the receptors."
             },
             {
               "id": "q13",
               "answer": "B",
-              "textHtml": "Matching textural qualities of food and sensation"
+              "textHtml": "Matching textural qualities of food and sensation",
+              "explanation": "The second half of paragraph E names Julian Vincent of the University of Bath as one of the few researchers trying to link the results of mechanical tests on food to what people actually feel, such as crispness. Givaudan is tempting because Dr Häusler appears in the same paragraph, but he is talking about how unreliable human tasters are.",
+              "evidence": "Julian Vincent of the University of Bath, in Britain, is one of a small band of academic researchers who are trying to relate the results of mechanical tests to perceptions such as crispness."
             },
             {
               "id": "q14",
               "answer": "C",
-              "textHtml": "Identify elements in certain smells"
+              "textHtml": "Identify elements in certain smells",
+              "explanation": "Paragraph F says the University of Nottingham built the MS-Nose, which draws in a person's breath while they chew and works out which aroma molecules are in it. Firmenich is the tempting answer, but it only adopted the instrument, it did not develop it.",
+              "evidence": "an instrument called MS-Nose that sucks in breath from a person’s nose while they are chewing gum, for instance, and analyses the aroma molecules it finds there"
             }
           ],
           "legendHtml": "<p><strong>A</strong>. Givaudan<br/>\n<strong>B</strong>. University of Bath<br/>\n<strong>C</strong>. University of Nottingham<br/>\n<strong>D</strong>. Firmenich<br/>\n<strong>E</strong>. Chemical senses Institute<br/>\n<strong>F</strong>. Linguagen</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -224,32 +251,44 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "B",
-              "textHtml": "Becoming interested in people of the other gender"
+              "textHtml": "Becoming interested in people of the other gender",
+              "explanation": "The paragraph on the new physical sense of self says that the rapid changes of puberty leave mid-adolescents very aware of their bodies and focused on peers of the opposite sex, so this belongs to middle adolescence.",
+              "evidence": "The effect of this rapid change is that mid-adolescents are body-conscious, and their concerns are directed towards their opposite-sexed peers."
             },
             {
               "id": "q16",
               "answer": "B",
-              "textHtml": "Beginning to choose a future career"
+              "textHtml": "Beginning to choose a future career",
+              "explanation": "The paragraph on vocational goals says it is mid-adolescents who must work out, at least roughly, what job they want as adults and how to get there, so choosing a future career sits in middle adolescence.",
+              "evidence": "Mid-adolescents must identify, at least at a preliminary level, what their adult vocational goals are and how they intend to achieve them."
             },
             {
               "id": "q17",
               "answer": "A",
-              "textHtml": "Needing to feel the same as one’s friends"
+              "textHtml": "Needing to feel the same as one’s friends",
+              "explanation": "The paragraph on peer relationships says early adolescence is a time of intense conformity, when fitting in and not being different feel urgent, so wanting to be the same as your friends is an early adolescent trait.",
+              "evidence": "Early adolescence is also a period of intense conformity to peers."
             },
             {
               "id": "q18",
               "answer": "A",
-              "textHtml": "Beginning to form a self-image separate from the family context"
+              "textHtml": "Beginning to form a self-image separate from the family context",
+              "explanation": "The paragraph on personal identity says that in the early adolescent years the young person starts to see themselves as unique and separate from their parents, which is the beginning of a self-image outside the family.",
+              "evidence": "During the early adolescent years a young person begins to recognise their uniqueness and to establish themselves as separate individuals, independent of their parents."
             },
             {
               "id": "q19",
               "answer": "C",
-              "textHtml": "Having less need for the good opinion of friends"
+              "textHtml": "Having less need for the good opinion of friends",
+              "explanation": "The paragraph on peer relationships says the need for peer approval has faded by late adolescence or early adulthood, so needing your friends' good opinion less belongs to the late stage, not the early one where conformity peaks.",
+              "evidence": "Certainly by late adolescence or early adulthood the need for peer approval has diminished."
             },
             {
               "id": "q20",
               "answer": "B",
-              "textHtml": "Exposing oneself to dangers"
+              "textHtml": "Exposing oneself to dangers",
+              "explanation": "The final paragraph, on impulse control, says risky behaviour is so common among adolescents that risk-taking looks like a normal part of middle adolescence, so putting yourself in danger sits in the middle stage.",
+              "evidence": "Risky behaviours are sufficiently pervasive among adolescents to suggest that risk-taking may be a normal developmental process of middle adolescence."
             }
           ],
           "legendHtml": "<p><strong>A</strong>. early adolescence<br/>\n<strong>B</strong>. middle adolescence<br/>\n<strong>C</strong>. late adolescence</p>",
@@ -268,25 +307,39 @@ const test: PracticeTest = {
               "id": "q21",
               "answer": "A",
               "before": "Havighurst proposed a set of tasks which",
-              "after": ""
+              "after": "",
+              "explanation": "The opening paragraph says each of Havighurst's tasks can be seen as part of the overall sense of self that young people build as they move into adulthood, which matches ending A about an emerging self-perception. Ending D is tempting, but forming personal moral beliefs is only one of the ten tasks, not what the whole set is about.",
+              "evidence": "Each of the Havighurst tasks can also be seen as elements of the overall sense of self that adolescents carry with them as they move towards and into young adulthood."
             },
             {
               "id": "q22",
               "answer": "C",
               "before": "A course of study at high school",
-              "after": ""
+              "after": "",
+              "explanation": "The paragraph on cognitive demands at school says school courses are full of more abstract and demanding material, whether or not students are ready for it, so the course of study is built to get harder, which is ending C. Ending B is tempting because concrete examples are mentioned nearby, but that describes children before adolescence, not the curriculum.",
+              "evidence": "School curricula are frequently dominated by the inclusion of more abstract, demanding material, regardless of whether the adolescents have achieved formal thought."
             },
             {
               "id": "q23",
-              "answer": "E",
+              "answer": [
+                "E",
+                "D"
+              ],
               "before": "The speed of development of thinking ability during adolescence",
-              "after": ""
+              "after": "",
+              "explanation": "The paragraph on cognitive demands at school says young people do not all make the move to abstract thinking at the same speed, so the rate of development differs from one adolescent to another, which is ending E. Note that ending E has been printed with the same wording as ending D by mistake, so match by position in the list, and ending C does not fit because it describes the course, not the thinker.",
+              "evidence": "Since not all adolescents make the intellectual transition at the same rate, demands for abstract thinking prior to the achievement of that ability may be frustrating."
             },
             {
               "id": "q24",
-              "answer": "D",
+              "answer": [
+                "D",
+                "E"
+              ],
               "before": "Adolescence is a time when the young person",
-              "after": ""
+              "after": "",
+              "explanation": "The paragraph on a personal value system says the adolescent weighs their parents' values against those of friends and society and rebuilds them into a personal ideology, which is ending D about forming a personal set of moral beliefs. Ending A is tempting, but that phrase describes Havighurst's tasks as a whole in question 21.",
+              "evidence": "To reconcile differences, the adolescent restructures those beliefs into a personal ideology."
             }
           ],
           "legendHtml": "<p><strong>A</strong>. reflects an adolescent’s emerging self-perception.<br/>\n<strong>B</strong>. cannot solve a problem without an example<br/>\n<strong>C</strong>. is designed to become more challenging.<br/>\n<strong>D</strong>. formulates a personal set of moral beliefs and values.<br/>\n<strong>E</strong>. formulates a personal set of moral beliefs and values.</p><p>21. Havighurst proposed a set of tasks which<br/>\n22. A course of study at high school<br/>\n23. The speed of development of thinking ability during adolescence<br/>\n24. Adolescence is a time when the young person</p>"
@@ -299,17 +352,23 @@ const test: PracticeTest = {
             {
               "id": "q25",
               "answer": "False",
-              "textHtml": "Most pre-adolescent children are capable of abstract thought"
+              "textHtml": "Most pre-adolescent children are capable of abstract thought",
+              "explanation": "The paragraph on new intellectual abilities says that before adolescence children's thinking sticks to concrete examples and to what is real and physical, which contradicts the idea that most pre-adolescent children can think in abstractions.",
+              "evidence": "Before adolescence, children’s thinking is dominated by a concrete example for any problem that they solve; their thinking is constrained to what is real and physical."
             },
             {
               "id": "q26",
               "answer": "True",
-              "textHtml": "Adolescents ‘limited skills with words may give a false impression of their ability"
+              "textHtml": "Adolescents ‘limited skills with words may give a false impression of their ability",
+              "explanation": "The paragraph on verbal skills says that because ideas develop faster than language, adolescents can seem less able than they really are, which agrees with the statement that weak word skills give a false impression.",
+              "evidence": "As their conceptual development may outstrip their verbal development, adolescents may appear less competent than they really are."
             },
             {
               "id": "q27",
               "answer": "True",
-              "textHtml": "Whether or not an adolescent is accepted by their age-group is an important clue to other aspects of their social adjustment"
+              "textHtml": "Whether or not an adolescent is accepted by their age-group is an important clue to other aspects of their social adjustment",
+              "explanation": "The paragraph on peer relationships says how well an adolescent makes friends and finds an accepting group is a major sign of how well they will adjust in other social and psychological areas, which is what the statement says.",
+              "evidence": "This degree to which an adolescent is able to make friends and have an accepting peer group, though, is a major indicator of how well the adolescent will adjust in other areas of social and psychological development."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -362,28 +421,41 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q28",
-              "answer": "ii",
-              "textHtml": "Paragraph A"
+              "answer": [
+                "ii",
+                "iii"
+              ],
+              "textHtml": "Paragraph A",
+              "explanation": "Paragraph A describes the moment in the Cretaceous when hunting wasps switched to a plant diet and became bees, which set off the long partnership with flowering plants, so heading ii about an evolutionary turning point fits. Heading vi is tempting because flowers are discussed, but the paragraph never describes how a flower is built. Headings ii and iii have been printed with identical wording by mistake, so either letter describes the same idea.",
+              "evidence": "hunting wasps of a certain type became bees by adopting a vegetarian diet"
             },
             {
               "id": "q29",
               "answer": "v",
-              "textHtml": "Paragraph B"
+              "textHtml": "Paragraph B",
+              "explanation": "Paragraph B is all about money and food supply, giving the share of our diet that depends on bees and putting a figure on the crops they pollinate each year, which matches heading v on the commercial value of bees. Heading viii does not fit because nothing here calls for more research.",
+              "evidence": "On a global basis, the annual value of agricultural crops dependent on the pollination services of bees is estimated at £1,000 million (US$1,590 million)."
             },
             {
               "id": "q30",
               "answer": "i",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D compares the bee and flower relationship to Adam Smith's account of competing economic units in human society, which is heading i about parallels between bees and people. Heading vii is the trap, because the self-interest of each partner is set out in paragraph C, not here.",
+              "evidence": "Smith postulated that in human society the competitive interactions of different ‘economic units’ eventually resulted in a balanced, or ‘harmonious’ society."
             },
             {
               "id": "q31",
               "answer": "iv",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E says authorities need this knowledge when they design conservation policies, then shows rainforest trees that may have only one or two individuals of a species in an acre and depend on long-flying bees to survive, which matches heading iv on preserving individual plant species. Heading viii is tempting, but the call for more research comes in paragraph F.",
+              "evidence": "This is especially true when, say, devising conservation policies."
             },
             {
               "id": "q32",
               "answer": "viii",
-              "textHtml": "Paragraph F"
+              "textHtml": "Paragraph F",
+              "explanation": "Paragraph F asks how far these long-distance bees can fly and then says plainly that we cannot answer it yet, which is heading viii about the need for further research. Heading iv is tempting because forest reserves are mentioned, but the point here is the unanswered question rather than the plants themselves.",
+              "evidence": "We need to know much more about bees and their relationships with plants before this question can be answered."
             }
           ],
           "legendHtml": "<p>i. Parallels between bee and human activities<br/>\nii. An evolutionary turning point<br/>\niii. An evolutionary turning point<br/>\niv. The preservation of individual plant species<br/>\nv. The commercial value of bees<br/>\nvi. The structure of flowering plants<br/>\nvii. The pursuit of self-interest<br/>\nviii. The need for further research</p>",
@@ -406,44 +478,49 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "Insects",
-              "before": "………………. , rather than on vegetation. Flowering plants started to reward bees with rich pollen and an additional food in the form of",
-              "after": ""
+              "explanation": "Paragraph A says the wasps moved on to pollen as their protein instead of insects, so insects are what they used to feed on. Write the plural, insects, because the gap says 'other'.",
+              "evidence": "as an alternative to insects"
             },
             {
               "id": "q34",
               "answer": "Nectar",
-              "before": "……………… Approximately",
-              "after": ""
+              "explanation": "The end of paragraph A says flowers began rewarding bees with richer pollen and a second food, nectar, so nectar is the extra food named.",
+              "evidence": "flowers began to reward bees for their unwitting role in their reproduction by providing richer sources of pollen and another source of nutrition, nectar"
             },
             {
               "id": "q35",
-              "answer": "One-third",
-              "before": "………………….. of human food production relies on the activity of bees. If the process of",
-              "after": ""
+              "answer": [
+                "One-third",
+                "one third",
+                "a third",
+                "1/3"
+              ],
+              "explanation": "Paragraph B adds the 15 per cent of our diet from bee-pollinated crops to the 15 per cent from animal products and concludes that about a third of our food depends on bees.",
+              "evidence": "It follows that around one third of our food is directly or indirectly dependent on the pollinating services of bees."
             },
             {
               "id": "q36",
               "answer": "Cross-pollination",
-              "before": "………………. is to take place effectively, bees need to travel from one flower to another before going back to the nest. Bees need to balance the",
-              "after": ""
+              "explanation": "Paragraph C says a plant that depends on cross-pollination must give a bee enough nectar to be worth a visit but not so much that the bee goes straight home, which is why the bee must move on to another flower first.",
+              "evidence": "clearly a species which depends on cross-pollination is on a knife-edge: it must provide sufficient nectar to attract the interest of a bee, but not enough to satisfy all of its needs in one visit"
             },
             {
               "id": "q37",
               "answer": "Energy costs",
-              "before": "…………………. of each trip against the calorific rewards they obtain. There can be over 120 different",
-              "after": ""
+              "explanation": "Paragraph C says the bee has to weigh up its energy costs so that each foraging trip ends in a calorific profit, so energy costs is what is balanced against the rewards.",
+              "evidence": "juggle its energy costs so that it makes a calorific profit on each foraging trip"
             },
             {
               "id": "q38",
               "answer": "Tree species",
-              "before": "………………….. in. an acre of rainforest. The bees that pollinate large forests regularly practise an activity known as",
-              "after": ""
+              "explanation": "Paragraph E says rainforests hold a great many different tree species, with possibly more than 120 in a single acre, so tree species fills the gap.",
+              "evidence": "Here, as in all rainforests, there is a high diversity of tree species."
             },
             {
               "id": "q39",
               "answer": "Trap lining",
-              "before": "………………",
-              "after": ""
+              "explanation": "Paragraph E says the bees learn where the scattered trees are and keep to the same routes, and it gives this habit a name. The passage prints it with a hyphen, as trap-lining, so write it exactly as it appears.",
+              "evidence": "This is called ‘trap-lining’ and the bees forage for up to 23 km from their nests."
             }
           ],
           "legendHtml": "<p>Hunting wasps used to feed on other (33) ………………. , rather than on vegetation.</p><p>Flowering plants started to reward bees with rich pollen and an additional food in the form of (34) ………………</p><p>Approximately (35) ………………….. of human food production relies on the activity of bees.</p><p>If the process of (36) ………………. is to take place effectively, bees need to travel from one flower to another before going back to the nest.</p><p>Bees need to balance the (37) …………………. of each trip against the calorific rewards they obtain.</p><p>There can be over 120 different (38) ………………….. in. an acre of rainforest.</p><p>The bees that pollinate large forests regularly practise an activity known as (39) ………………..</p>",
@@ -463,7 +540,9 @@ const test: PracticeTest = {
                 "The Evolutionary History of Bees",
                 "The Social Behaviour of Bees",
                 "The Geographical Distribution of Bees"
-              ]
+              ],
+              "explanation": "The passage runs from the food we get from bees to conservation policy and closes in paragraph G by saying bees hold key positions in the web of life on the planet, so the ecological importance of bees covers the whole text. The evolutionary history of bees is tempting, but that is only paragraph A.",
+              "evidence": "Thus, as pollinators of crops and natural vegetation, bees occupy key positions in the web of relationships which sustain the living architecture of our planet."
             }
           ],
           "legendHtml": "<p><strong>Questions 40</strong></p><p><ins data-full-width-responsive=\"true\"></ins></p>"

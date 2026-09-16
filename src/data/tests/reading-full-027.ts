@@ -55,47 +55,65 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "C",
-              "textHtml": "An overview of the range of methods that have been used over time to document history"
+              "textHtml": "An overview of the range of methods that have been used over time to document history",
+              "explanation": "Paragraph C walks through the whole history of how history has been recorded, from spoken stories to writing, then printing, and now audiotape and videodiscs. Paragraph A is tempting because it also contrasts writing with film, but it compares two groups of people today rather than tracing methods over time.",
+              "evidence": "The study of history, as conceived of today, began with the transition from oral to literate culture, leading to the earliest written records and the earliest historical studies."
             },
             {
               "id": "q2",
               "answer": "E",
-              "textHtml": "The main reason why many historians are unwilling to use films in their work"
+              "textHtml": "The main reason why many historians are unwilling to use films in their work",
+              "explanation": "Paragraph E gives the reason directly: the whole profession is built around the written word and sits inside an academic world that the use of moving images would disturb. Paragraph B describes the gap itself but does not explain what causes it.",
+              "evidence": "The barrier seems to be that the profession is structured around the medium of the written word, and is somewhat insulated in its academic setting."
             },
             {
               "id": "q3",
               "answer": "F",
-              "textHtml": "A reference to some differences between oral and written communication"
+              "textHtml": "A reference to some differences between oral and written communication",
+              "explanation": "Paragraph F points out that speech carries body language, expression and tone, and that almost none of this survives when the words are written down. Paragraph C mentions the move from spoken to written culture but does not compare what the two forms carry.",
+              "evidence": "Little of this is evident in a written transcript."
             },
             {
               "id": "q4",
               "answer": "A",
-              "textHtml": "How most citizens today gain an understanding of history"
+              "textHtml": "How most citizens today gain an understanding of history",
+              "explanation": "Paragraph A says that film and video on television are probably the biggest influence on what ordinary people know about the past. Paragraph B is about people making their own recordings, not about how they learn history.",
+              "evidence": "film and video, especially as broadcast on television, are probably the major influence on the public’s consciousness of history"
             },
             {
               "id": "q5",
               "answer": "B",
-              "textHtml": "How current student events are sometimes captured for future audiences"
+              "textHtml": "How current student events are sometimes captured for future audiences",
+              "explanation": "Paragraph B mentions that schools make video yearbooks, which is a record of what students are doing now kept for people to watch later. Paragraph G is about interviews filmed by historians, not about school life.",
+              "evidence": "many schools, too, produce video yearbooks"
             },
             {
               "id": "q6",
               "answer": "G",
-              "textHtml": "Mention of the fact that the advantages of film are greater than the disadvantages"
+              "textHtml": "Mention of the fact that the advantages of film are greater than the disadvantages",
+              "explanation": "Paragraph G weighs the two sides and says the benefits of moving images are easily bigger than the worries about money, skills and the camera making people self conscious. Paragraph E lists only the drawbacks, with no comparison.",
+              "evidence": "The many benefits of using moving images as historical evidence easily outweigh worries about cost, technical skills, or the effect of a camera on a person telling his or her story."
             },
             {
               "id": "q7",
               "answer": "C",
-              "textHtml": "The claim that there is no official title for film-based historical work"
+              "textHtml": "The claim that there is no official title for film-based historical work",
+              "explanation": "At the end of paragraph C the writer says this way of recording events for future historians still has no name that everyone agrees on. Paragraph B talks about a lack of contact between the two approaches, not about naming.",
+              "evidence": "As yet, however, the use of moving images to record current events for the benefit of future historians does not even have a commonly agreed name."
             },
             {
               "id": "q8",
               "answer": "F",
-              "textHtml": "Reference to the active role the audience plays when watching films"
+              "textHtml": "Reference to the active role the audience plays when watching films",
+              "explanation": "The end of paragraph F says the narrator explains less and the viewer has to take part in working out what the history means, which is the audience being active. Paragraph A only says the public sees film of past events, which is passive watching.",
+              "evidence": "the viewer becomes involved in the process of interpreting and understanding history"
             },
             {
               "id": "q9",
               "answer": "E",
-              "textHtml": "A list of requirements that historians see as obstacles to their use of film to record history"
+              "textHtml": "A list of requirements that historians see as obstacles to their use of film to record history",
+              "explanation": "Paragraph E lists the things historians have turned down, the training, the institutions, the motivations and the professional structures, and adds the new skills they would have to learn. Paragraph G names cost and technical skills too, but there they are dismissed as small worries rather than presented as obstacles.",
+              "evidence": "historians have rejected the training, the institutions, the motivations and the professional structures that would be needed in order to use moving images effectively."
             }
           ],
           "options": [
@@ -116,27 +134,35 @@ const test: PracticeTest = {
             {
               "id": "q10",
               "answer": "Not given",
-              "textHtml": "The needs of students in school have led to improvements in the teaching of history"
+              "textHtml": "The needs of students in school have led to improvements in the teaching of history",
+              "explanation": "The passage mentions schools only once, to say they make video yearbooks. It never discusses what students need or whether history teaching in schools has got better, so there is no way to know the writer's view."
             },
             {
               "id": "q11",
               "answer": "Yes",
-              "textHtml": "Academic and popular historians have different attitudes towards the value of innovations in communication"
+              "textHtml": "Academic and popular historians have different attitudes towards the value of innovations in communication",
+              "explanation": "Paragraph C says the split between the two groups comes from whether individual historians are willing to accept new forms of communication as valid, which is exactly a difference in attitude. This agrees with the statement.",
+              "evidence": "This gulf can be seen as resulting from the willingness or otherwise of individual historians to accept the validity of new forms of communication in the study of history."
             },
             {
               "id": "q12",
               "answer": "No",
-              "textHtml": "It is common for historians to play a major role in creating historical documentaries for television"
+              "textHtml": "It is common for historians to play a major role in creating historical documentaries for television",
+              "explanation": "Paragraph B says the opposite of the statement: professional historians have generally stayed away from television programmes about history, apart from a few exceptions.",
+              "evidence": "professional historians have tended to avoid involvement in television programmes about history"
             },
             {
               "id": "q13",
               "answer": "Yes",
-              "textHtml": "Articles in American History Review have explored aspects of modern history through popular films"
+              "textHtml": "Articles in American History Review have explored aspects of modern history through popular films",
+              "explanation": "Paragraph D says useful research has used widely seen films as a source on the social and intellectual history of the twentieth century, and names American History Review as an important journal in that field, which agrees with the statement.",
+              "evidence": "Journals such as American History Review have played a significant role in this field."
             },
             {
               "id": "q14",
               "answer": "Not given",
-              "textHtml": "Developments in technology are influencing a range of academic subjects"
+              "textHtml": "Developments in technology are influencing a range of academic subjects",
+              "explanation": "The whole passage is about history alone and how historians work. It never says anything about other academic subjects or how technology is changing them, so the writer's view on this is impossible to tell."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -205,32 +231,44 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "D",
-              "textHtml": "The cost implications of fitting plants with the necessary equipment"
+              "textHtml": "The cost implications of fitting plants with the necessary equipment",
+              "explanation": "In paragraph F it is Klaus Lackner who talks about money, saying that changing existing power plants to capture carbon dioxide costs too much and that the equipment should be built into new plants instead. David Hawkins also discusses money, but about helping poorer countries, not about fitting equipment.",
+              "evidence": "Lackner argues that it is too expensive to adapt existing plants to capture carbon dioxide."
             },
             {
               "id": "q16",
               "answer": "E",
-              "textHtml": "The effects of sequestration could have on sea creatures"
+              "textHtml": "The effects of sequestration could have on sea creatures",
+              "explanation": "Paragraph G quotes David Hawkins warning that carbon dioxide put in the ocean could change the sea's chemistry and hurt the animals living there. The World Wide Fund for Nature Australia also warns about danger, but to people on land, not to sea life.",
+              "evidence": "the carbon dioxide could radically alter the chemical balance in the ocean, with potentially harmful consequences for marine life"
             },
             {
               "id": "q17",
               "answer": "D",
-              "textHtml": "The reasons why products such as oil and gas continue to be popular energy sources"
+              "textHtml": "The reasons why products such as oil and gas continue to be popular energy sources",
+              "explanation": "Paragraph E gives Klaus Lackner's point that fossil fuels supply about 85% of the world's energy because they are the cheapest and easiest to get, which is why people keep using them. Scott Klara is quoted elsewhere but only on rising carbon dioxide levels.",
+              "evidence": "around 85% of the world’s energy is derived from fossil fuels, the cheapest and most plentiful energy source available"
             },
             {
               "id": "q18",
               "answer": "E",
-              "textHtml": "The need for industrialised countries to give aid to less wealthy countries"
+              "textHtml": "The need for industrialised countries to give aid to less wealthy countries",
+              "explanation": "Paragraph J says David Hawkins wants richer nations to help poorer ones pay for carbon capture, for example by buying carbon credits from them. Klaus Lackner talks about costs too, but about the cost of the plants themselves rather than aid between countries.",
+              "evidence": "to encourage developing nations to use sequestration, developed nations will have to provide assistance"
             },
             {
               "id": "q19",
               "answer": "A",
-              "textHtml": "The significant increase in carbon dioxide concentrations in the air over the last 100 years"
+              "textHtml": "The significant increase in carbon dioxide concentrations in the air over the last 100 years",
+              "explanation": "Paragraph C credits Scott Klara with the figure that carbon dioxide in the air has gone up by almost a third over the past hundred years. The Intergovernmental Panel on Climate Change is the tempting choice, but its numbers are a prediction about the future, not the rise already measured.",
+              "evidence": "Over the past century, airborne carbon dioxide concentrations have risen by nearly a third, according to Scott Klara"
             },
             {
               "id": "q20",
               "answer": "F",
-              "textHtml": "The potential for sequestration to harm human life. List of People and organisations A . Scott Klara B . Intergovernmental Panel on Climate Change C . International Energy Agency D . Klaus Lackner E . David Hawkins F . World Wide Fund for Nature Australia"
+              "textHtml": "The potential for sequestration to harm human life.",
+              "explanation": "Paragraph I says the World Wide Fund for Nature Australia sees the main danger of underground storage as a big escape of gas that could suffocate people. David Hawkins is tempting because he warns about escaping gas too, but his worry is about ocean life and the chemistry of the sea.",
+              "evidence": "the primary risk of underground storage is that dangerously large volumes of carbon dioxide might escape and people become asphyxiated"
             }
           ],
           "legendHtml": "<p><strong>A</strong>. Scott Klara<br/>\n<strong>B</strong>. Intergovernmental Panel on Climate Change<br/>\n<strong>C</strong>. International Energy Agency<br/>\n<strong>D</strong>. Klaus Lackner<br/>\n<strong>E</strong>. David Hawkins<br/>\n<strong>F</strong>. World Wide Fund for Nature Australia</p>",
@@ -251,17 +289,23 @@ const test: PracticeTest = {
             {
               "id": "q21",
               "answer": "H",
-              "textHtml": "Examples of sequestration already in use in several parts of the world"
+              "textHtml": "Examples of sequestration already in use in several parts of the world",
+              "explanation": "Paragraph H gives real projects in different countries, an oil company in western Canada using gas piped from North Dakota, and a Norwegian firm injecting carbon dioxide under the North Sea. Paragraph B only says countries have agreed to research the idea.",
+              "evidence": "In western Canada, an oil company is pumping liquefied carbon dioxide into oil wells to force more oil to the surface and boost recovery by 10-15%."
             },
             {
               "id": "q22",
               "answer": "F",
-              "textHtml": "An example of putting carbon dioxide emissions to use in the food and beverage industry"
+              "textHtml": "An example of putting carbon dioxide emissions to use in the food and beverage industry",
+              "explanation": "Paragraph F says some American factories capture part of their carbon emissions and sell the gas, including for putting the fizz into soft drinks, which is the food and drink use. Paragraph H is about selling gas for oil wells, which is industry, not food.",
+              "evidence": "which they then sell for various uses, including carbonating soft drinks"
             },
             {
               "id": "q23",
               "answer": "C",
-              "textHtml": "Current examples of the environmental harm attributed to carbon dioxide in the air"
+              "textHtml": "Current examples of the environmental harm attributed to carbon dioxide in the air",
+              "explanation": "Paragraph C says the extra carbon in the air is thought to be causing temperatures and sea levels to rise around the world, which is the damage happening now. Paragraph G describes possible future harm to the ocean, not harm already attributed to carbon dioxide in the air.",
+              "evidence": "These increased levels of carbon-based compounds in the atmosphere are believed to be the cause of rising temperatures and sea levels around the world."
             }
           ],
           "options": [
@@ -283,22 +327,29 @@ const test: PracticeTest = {
             {
               "id": "q24",
               "answer": "True",
-              "textHtml": "Both developing and developed nations have decided to investigate carbon dioxide sequestration"
+              "textHtml": "Both developing and developed nations have decided to investigate carbon dioxide sequestration",
+              "explanation": "Paragraph B says representatives of fourteen countries, both industrialised and developing ones, agreed at a conference to work together on research into capturing and storing carbon dioxide, which matches the statement.",
+              "evidence": "delegates from fourteen industrialised and developing countries agreed to engage in cooperative research into capturing and storing carbon dioxide"
             },
             {
               "id": "q25",
               "answer": "True",
-              "textHtml": "A growing economy will use more power"
+              "textHtml": "A growing economy will use more power",
+              "explanation": "Paragraph D says cutting emissions is hard because using more energy is central to a growing economy, which is the same idea as a growing economy using more power.",
+              "evidence": "Limiting emissions, however, is not an easy undertaking since increased energy consumption is a key to economic growth."
             },
             {
               "id": "q26",
               "answer": "False",
-              "textHtml": "Capturing carbon dioxide has become financially attractive"
+              "textHtml": "Capturing carbon dioxide has become financially attractive",
+              "explanation": "Paragraph F says the opposite: capturing and storing a tonne of carbon dioxide costs around fifty US dollars and pushes the price of electricity up by 30 to 80%, and companies need incentives to make it worth doing.",
+              "evidence": "it costs about $US50 to extract and store a tonne of carbon dioxide from a power plant, which raises the cost of producing electricity by 30-80%"
             },
             {
               "id": "q27",
               "answer": "Not given",
-              "textHtml": "More forests need to be planted to improve the atmosphere"
+              "textHtml": "More forests need to be planted to improve the atmosphere",
+              "explanation": "Paragraph G says forests and wetlands take some carbon dioxide out of the air but nowhere near enough. It never suggests planting more forests, so there is no information for or against this statement."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -360,42 +411,58 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "iv",
-              "textHtml": "Paragraph A"
+              "textHtml": "Paragraph A",
+              "explanation": "Paragraph A sets prices of over a million pounds against modern violins costing under a hundred pounds and then asks whether that gap is really justified, a question it says people still argue about. Heading xii is tempting because scientists are named, but their work is only mentioned in passing here and is the subject of paragraph B.",
+              "evidence": "Do such figures really reflect such large differences in quality?"
             },
             {
               "id": "q29",
               "answer": "ix",
-              "textHtml": "Paragraph C"
+              "textHtml": "Paragraph C",
+              "explanation": "Paragraph C describes the maker working by hand, choosing wood by tapping it, carving the plates and judging thickness by feel and by the sound of knuckles on the wood. Heading v does not fit because this is slow work on one instrument at a time, the opposite of mass production.",
+              "evidence": "Traditional makers optimise the thickness by testing the ‘feel’ of the plates when they are flexed, and by the sounds produced when they are tapped at different positions with the knuckles."
             },
             {
               "id": "q30",
               "answer": "ii",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D is about makers who replaced hand testing with measurement, using glitter on the plates above a loudspeaker to see the patterns that resonance makes. Heading ix belongs to paragraph C, because here the hand methods are what is being replaced.",
+              "evidence": "a group of violin makers has emerged who have tried to take a more overtly scientific approach to violin making"
             },
             {
               "id": "q31",
               "answer": "viii",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E suggests the early Italian makers tuned the plates to exact musical intervals, in line with a Renaissance idea of perfection built on numbers and exact ratios. Heading vii is the trap, because the paragraph says there is no historical data at all, so nothing is being re-examined.",
+              "evidence": "which was measured in terms of numbers and exact ratios"
             },
             {
               "id": "q32",
               "answer": "vi",
-              "textHtml": "Paragraph F"
+              "textHtml": "Paragraph F",
+              "explanation": "Paragraph F explains that wood loses its internal damping as it ages, so three hundred year old wood may be part of why old instruments sound better, and why new violins improve early on. Heading iii does not fit because the place the wood came from is never discussed.",
+              "evidence": "The age of the wood may therefore automatically contribute to the improved quality of older instruments."
             },
             {
               "id": "q33",
               "answer": "i",
-              "textHtml": "Paragraph G"
+              "textHtml": "Paragraph G",
+              "explanation": "Paragraph G is entirely about the varnish that protects the violin and whether its recipe was special, concluding that it was much like varnish used today. Heading xii does not fit because this is one specific theory being tested, not the general problem facing scientists.",
+              "evidence": "Another factor thought to account for sound quality is the nature of the varnish used to protect the instrument."
             },
             {
               "id": "q34",
               "answer": "xi",
-              "textHtml": "Paragraph H"
+              "textHtml": "Paragraph H",
+              "explanation": "Paragraph H covers the claim that Stradivari soaked his timber in water before seasoning it, which is wood that has been saturated. Heading vi does not fit because the point here is soaking, not the age of the wood.",
+              "evidence": "Stradivarius’s secret was to soak the timber in water, to leach out supposedly harmful chemicals, before it was seasoned"
             },
             {
               "id": "q35",
               "answer": "x",
-              "textHtml": "Paragraph I"
+              "textHtml": "Paragraph I",
+              "explanation": "Paragraph I ends with what the players think: a few leading soloists sometimes use modern violins, but the very best players, and the dealers, still believe the old Italian instruments are better. Heading vii does not fit because no documents are being reviewed in this closing paragraph.",
+              "evidence": "Indeed, some leading soloists do occasionally play on modern instruments."
             }
           ],
           "legendHtml": "<p>i. An analysis of protective coatings<br/>\nii. Applying technology to violin production<br/>\niii. Location – a key factor<br/>\niv. A controversial range of prices<br/>\nv. Techniques of mass production<br/>\nvi. The advantages of older wood<br/>\nvii. A re-evaluation of documentary evidence<br/>\nviii. The mathematical basis of earlier design<br/>\nix. Manual woodworking techniques<br/>\nx. Preferences of top musicians<br/>\nxi. The use of saturated wood<br/>\nxii. The challenge for scientists</p>",
@@ -409,7 +476,9 @@ const test: PracticeTest = {
             "vii",
             "viii",
             "ix",
-            "x"
+            "x",
+            "xi",
+            "xii"
           ]
         },
         {
@@ -420,27 +489,36 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "True",
-              "textHtml": "The quality of any particular note played on the same violin varies"
+              "textHtml": "The quality of any particular note played on the same violin varies",
+              "explanation": "Paragraph B says that on one violin the same note sounds different every time it is played, which agrees with the statement.",
+              "evidence": "Individual notes on a single instrument sound different each time they are played"
             },
             {
               "id": "q37",
               "answer": "False",
-              "textHtml": "Scientific instruments analyse complex sound more accurately than humans"
+              "textHtml": "Scientific instruments analyse complex sound more accurately than humans",
+              "explanation": "Paragraph B says the opposite: the ear is an outstanding detector and no machine has yet been built that can match the brain at judging complex sounds.",
+              "evidence": "The ear is a supreme detection device, and a system has yet to be developed which can match the brain’s sophisticated ability to assess complex sounds."
             },
             {
               "id": "q38",
               "answer": "Not given",
-              "textHtml": "The quality of handmade violins varies according to the musical ability of the craftsman"
+              "textHtml": "The quality of handmade violins varies according to the musical ability of the craftsman",
+              "explanation": "The passage describes how makers choose wood, carve plates and test them, but it never says whether the maker can play the violin or how that would affect the result. The musical ability of the craftsman is simply not mentioned."
             },
             {
               "id": "q39",
               "answer": "True",
-              "textHtml": "Modern violins seem to improve in their early years"
+              "textHtml": "Modern violins seem to improve in their early years",
+              "explanation": "Paragraph F says that because damping in wood falls with age, this may be why a modern instrument seems to get better during its first few years, which agrees with the statement.",
+              "evidence": "This may also explain why the quality of a modern instrument appears to improve in its first few years."
             },
             {
               "id": "q40",
               "answer": "False",
-              "textHtml": "Modern violins are gaining in popularity amongst the top violinists"
+              "textHtml": "Modern violins are gaining in popularity amongst the top violinists",
+              "explanation": "Paragraph I says only that some leading soloists occasionally play modern violins, and that the very top soloists are still completely unconvinced, so modern instruments are not winning them over.",
+              "evidence": "remain utterly unconvinced"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"

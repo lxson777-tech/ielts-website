@@ -295,51 +295,35 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q14",
-              "answer": "Persian wars",
-              "before": "…………….. 1 st century BC Central Asia Zhang Qian To seek",
-              "after": ""
+              "answer": "Persian wars"
             },
             {
               "id": "q15",
-              "answer": "Allies",
-              "before": "……… Roman Empire Mediterranean Ptolemy, Strabo Pliny the Elder To gather",
-              "after": ""
+              "answer": "Allies"
             },
             {
               "id": "q16",
-              "answer": "Geographical knowledge",
-              "before": "……… Post-classical era Eastern Hemisphere Muslims For business and",
-              "after": ""
+              "answer": "Geographical knowledge"
             },
             {
               "id": "q17",
-              "answer": "Pilgrimage",
-              "before": "……….. 5 th to 9 th centuries CE India Asian Buddhists To study with",
-              "after": ""
+              "answer": "Pilgrimage"
             },
             {
               "id": "q18",
-              "answer": "Buddhist teachers",
-              "before": "…… Early modern era Distant places of the globe The Europeans To meet the public’s expectation for the outside 19 th century Asia, Africa Colonial administrator To provide information on the",
-              "after": ""
+              "answer": "Buddhist teachers"
             },
             {
               "id": "q19",
-              "answer": "Colonies",
-              "before": "……… they conquer By the mid-century of the 1800s Europe and the United States Sun Yat-sen, Fukuzawa Yukichi To learn",
-              "after": ""
+              "answer": "Colonies"
             },
             {
               "id": "q20",
-              "answer": "Principles",
-              "before": "…………. for the reorganization of their societies 20 th century Mass tourism People from",
-              "after": ""
+              "answer": "Principles"
             },
             {
               "id": "q21",
-              "answer": "Wealthy",
-              "before": "…….. Countries For entertainment",
-              "after": ""
+              "answer": "Wealthy"
             }
           ],
           "legendHtml": "<table><tbody><tr><td><strong>Time</strong></td><td><strong>Destination</strong></td><td><strong>Traveler</strong></td><td><strong>Purpose</strong></td></tr><tr><td>Classical era</td><td width=\"148\">Egypt and Anatolia</td><td width=\"148\">Herodotus</td><td width=\"148\">To obtain information on (14) ……………..</td></tr><tr><td width=\"148\">1<sup>st</sup> century BC</td><td width=\"148\">Central Asia</td><td width=\"148\">Zhang Qian</td><td width=\"148\">To seek (15) ………</td></tr><tr><td width=\"148\">Roman Empire</td><td width=\"148\">Mediterranean</td><td width=\"148\">Ptolemy, Strabo Pliny the Elder</td><td width=\"148\">To gather (16) ………</td></tr><tr><td width=\"148\">Post-classical era</td><td width=\"148\">Eastern Hemisphere</td><td width=\"148\">Muslims</td><td width=\"148\">For business and (17) ………..</td></tr><tr><td width=\"148\">5<sup>th</sup> to 9<sup>th</sup> centuries CE</td><td width=\"148\">India</td><td width=\"148\">Asian Buddhists</td><td width=\"148\">To study with (18) ……</td></tr><tr><td width=\"148\">Early modern era</td><td width=\"148\">Distant places of the globe</td><td width=\"148\">The Europeans</td><td width=\"148\">To meet the public’s expectation for the outside</td></tr><tr><td width=\"148\">19<sup>th</sup> century</td><td width=\"148\">Asia, Africa</td><td width=\"148\">Colonial administrator</td><td width=\"148\">To provide information on the (19) ……… they conquer</td></tr><tr><td width=\"148\">By the mid-century of the 1800s</td><td width=\"148\">Europe and the United States</td><td width=\"148\">Sun Yat-sen, Fukuzawa Yukichi</td><td width=\"148\">To learn (20) ………….<p>for the reorganization of their societies</p></td></tr><tr><td width=\"148\">20<sup>th</sup> century</td><td width=\"148\">Mass tourism</td><td width=\"148\">People from (21) ……..<p>Countries</p></td><td width=\"148\">For entertainment</td></tr></tbody></table>",

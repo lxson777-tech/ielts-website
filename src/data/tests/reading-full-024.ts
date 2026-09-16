@@ -58,37 +58,49 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "False",
-              "textHtml": "Archaeological research had taken place on the island of Obi before the arrival of Ceri Shipton and his colleagues"
+              "textHtml": "Archaeological research had taken place on the island of Obi before the arrival of Ceri Shipton and his colleagues",
+              "explanation": "The first paragraph says Shipton and his colleagues were the first archaeologists ever to explore Obi, so no earlier archaeological work had been done there and the statement contradicts the passage.",
+              "evidence": "became the first archaeologists to explore Obi"
             },
             {
               "id": "q2",
               "answer": "False",
-              "textHtml": "At the Kelo sites, the researchers found the first clam shell axes ever to be discovered in the region"
+              "textHtml": "At the Kelo sites, the researchers found the first clam shell axes ever to be discovered in the region",
+              "explanation": "The third paragraph says clam shell axes of about the same age had already been found in other places nearby, including the island of Gebe, so the Kelo ones were not the first in the region.",
+              "evidence": "Axes made from clam shells from roughly the same time had also previously been found elsewhere in this region, including on the nearby island of Gebe to the northeast."
             },
             {
               "id": "q3",
               "answer": "True",
-              "textHtml": "The size of Obi today is less than it was 18,000 years ago"
+              "textHtml": "The size of Obi today is less than it was 18,000 years ago",
+              "explanation": "The fourth paragraph says that 18,000 years ago the sea was about 120 metres lower, so Obi was much bigger then and even included land that is now separate islands. That means the island today is smaller.",
+              "evidence": "Sea levels were about 120 metres lower, meaning Obi was a much larger island"
             },
             {
               "id": "q4",
               "answer": "Not given",
-              "textHtml": "A change in the climate around 11,700 years ago had a greater impact on Obi than on the surrounding islands"
+              "textHtml": "A change in the climate around 11,700 years ago had a greater impact on Obi than on the surrounding islands",
+              "explanation": "The fifth paragraph describes how the climate around 11,700 years ago became warmer and wetter and what that did to Obi, but it never compares the effect on Obi with the effect on any other island. Without that comparison we cannot say the statement is true or false."
             },
             {
               "id": "q5",
               "answer": "True",
-              "textHtml": "The researchers believe there is a connection between warmer, wetter weather and a change in the material used to make axes"
+              "textHtml": "The researchers believe there is a connection between warmer, wetter weather and a change in the material used to make axes",
+              "explanation": "The fifth paragraph says the researchers think it is no accident that the first stone axes, replacing shell ones, appear just when the climate turned warmer and wetter and the jungle grew thicker. That is exactly the connection the statement describes.",
+              "evidence": "According to the researchers, it is no coincidence that around this time the first axes crafted from stone rather than sea shells appear"
             },
             {
               "id": "q6",
               "answer": "Not given",
-              "textHtml": "Shipton’s team were surprised to find evidence of the Obi islanders’ hunting practices"
+              "textHtml": "Shipton’s team were surprised to find evidence of the Obi islanders’ hunting practices",
+              "explanation": "The sixth paragraph tells us what the team found out about hunting, mainly that people hunted the Rothschild’s cuscus, but it never says how the researchers felt about the discovery. Nothing in the passage mentions surprise."
             },
             {
               "id": "q7",
               "answer": "False",
-              "textHtml": "It is thought that the Kelo shelters were occupied continuously until about 1,000 years ago"
+              "textHtml": "It is thought that the Kelo shelters were occupied continuously until about 1,000 years ago",
+              "explanation": "The last two paragraphs say the shelters were abandoned about 8,000 years ago and that there is no sign of anyone using them again until roughly 1,000 years ago, so the occupation was broken, not continuous.",
+              "evidence": "there is no evidence for use of the Kelo shelters after this time, until about 1,000 years ago"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -101,38 +113,38 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Caves",
-              "before": "………………… near the village of Kelo revealed: • axes from around 14,000 years ago, probably used to make canoes • axes made out of",
-              "after": ""
+              "explanation": "The third paragraph says the team found two caves near the village of Kelo that held prehistoric rock shelters, and those caves are where they dug. So the missing word is ‘caves’.",
+              "evidence": "Shipton and his colleagues found two caves containing prehistoric rock shelters that were suitable for excavation"
             },
             {
               "id": "q9",
               "answer": "Stone",
-              "before": "………… .dating from around 11,700 years ago •",
-              "after": ""
+              "explanation": "The fifth paragraph says that around 11,700 years ago the first axes made of stone rather than shell appear, so ‘stone’ is the material that fits this date.",
+              "evidence": "the first axes crafted from stone rather than sea shells appear"
             },
             {
               "id": "q10",
               "answer": "Bones",
-              "before": "………………… of an animal: evidence of what ancient islanders ate • evidence of travel between islands: – obsidian: a material that is not found naturally on Obi –",
-              "after": ""
+              "explanation": "The sixth paragraph says the researchers worked out what people ate from the bones they dug up in the Kelo caves, mainly those of a possum-like animal. So the missing word is ‘bones’.",
+              "evidence": "Judging by the bones which the researchers unearthed in the Kelo caves, people living there mainly hunted the Rothschild’s cuscus"
             },
             {
               "id": "q11",
               "answer": "Beads",
-              "before": "………………. which resembled ones found on other islands. It is thought that from 8,000 years ago, Obi islanders: • may have switched from hunting to fishing • had",
-              "after": ""
+              "explanation": "The seventh paragraph says the dig also turned up beads like ones already found on islands in southern Wallacea, which is the second sign of travel between islands after the obsidian.",
+              "evidence": "It also revealed particular types of beads, similar to those previously found on islands in southern Wallacea."
             },
             {
               "id": "q12",
               "answer": "Pottery",
-              "before": "…………………… as well as items made out of metal • probably took part in the production and sale of",
-              "after": ""
+              "explanation": "The last paragraph says the people who moved back into the shelters about 1,000 years ago had pottery as well as gold and silver objects, and gold and silver are the metal items in the note.",
+              "evidence": "they were re-occupied by people who owned pottery as well as items made out of gold and silver"
             },
             {
               "id": "q13",
               "answer": "Spices",
-              "before": "……………",
-              "after": ""
+              "explanation": "The last paragraph says these later occupants were probably involved in the old spice trade between the Maluku islands and the rest of the world, so the missing word is ‘spices’.",
+              "evidence": "used by people involved in the historic trade in spices between the Maluku islands and the rest of the world"
             }
           ],
           "legendHtml": "<p><strong>Archaeological findings on Obi</strong></p><p>Excavations of rock shelters inside (8) ………………… near the village of Kelo revealed:</p><p>• axes from around 14,000 years ago, probably used to make canoes<br/>\n• axes made out of (9) ………… .dating from around 11,700 years ago<br/>\n• (10) ………………… of an animal: evidence of what ancient islanders ate<br/>\n• evidence of travel between islands:<br/>\n– obsidian: a material that is not found naturally on Obi<br/>\n– (11) ………………. which resembled ones found on other islands.</p><p>It is thought that from 8,000 years ago, Obi islanders:<br/>\n• may have switched from hunting to fishing<br/>\n• had (12) …………………… as well as items made out of metal<br/>\n• probably took part in the production and sale of (13) ……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -191,22 +203,30 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "G",
-              "textHtml": "reference to the need to ensure that inhabitants of wetland regions continue to benefit from them"
+              "textHtml": "reference to the need to ensure that inhabitants of wetland regions continue to benefit from them",
+              "explanation": "Paragraph G is where Silvius and McCartney both say local people must earn something from wetlands and keep the right to use them, which is the idea of inhabitants continuing to benefit. Paragraph B is tempting because it mentions livelihoods, but it describes the situation rather than arguing for the need.",
+              "evidence": "we recognise there’s a need to provide an income for local people"
             },
             {
               "id": "q15",
               "answer": "A",
-              "textHtml": "the proportion of wetlands which have already been lost"
+              "textHtml": "the proportion of wetlands which have already been lost",
+              "explanation": "Paragraph A gives the figure from the WWFN that half of the world’s wetlands have gone since 1990, which is the proportion already lost. Paragraph E gives percentages too, but those are about future land loss, not wetlands already gone.",
+              "evidence": "half of the world’s wetlands have disappeared since 1990"
             },
             {
               "id": "q16",
               "answer": "H",
-              "textHtml": "reference to the idea that people are beginning to appreciate the value of wetlands"
+              "textHtml": "reference to the idea that people are beginning to appreciate the value of wetlands",
+              "explanation": "Paragraph H ends with McCartney saying that awareness of how important wetlands are is growing and that things are slowly changing. Paragraph C is tempting because it praises wetlands, but it is the writer explaining their value, not people starting to notice it.",
+              "evidence": "Awareness of the importance of wetlands is growing"
             },
             {
               "id": "q17",
               "answer": "B",
-              "textHtml": "mention of the cultural significance of wetlands"
+              "textHtml": "mention of the cultural significance of wetlands",
+              "explanation": "Paragraph B says wetlands have religious, historical and archaeological value for communities, which is their cultural significance. Paragraph A mentions plant and animal life, but that is natural value, not cultural.",
+              "evidence": "they are of considerable religious, historical and archaeological value to many communities around the world"
             }
           ],
           "options": [
@@ -229,31 +249,41 @@ const test: PracticeTest = {
               "id": "q18",
               "answer": "Carbon",
               "before": "Peatlands which have been drained begin to release ………………. instead of storing it",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says that once peatlands are drained for farming they stop storing carbon and start giving it off instead, so the missing word is ‘carbon’.",
+              "evidence": "When peatlands are drained for cultivation, they become net carbon emitters instead of active carbon stores"
             },
             {
               "id": "q19",
               "answer": "Fires",
               "before": "Once peatland areas have been cleared ……………… are more likely to occur",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says clearing peatlands for planting makes forest fires more likely, and those fires release large amounts of CO2. So the missing word is ‘fires’.",
+              "evidence": "The clearance of peatlands for planting also increases the risk of forest fires"
             },
             {
               "id": "q20",
               "answer": "Biodiversity",
               "before": "Clearing peatland forests to make way for oil palm plantations destroys the ………………of the local environment",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D quotes Silvius saying peatland forests with very high biodiversity value are being lost for a few decades of oil palm money, so what is destroyed is the biodiversity.",
+              "evidence": "We’re seeing huge peatland forests with extremely high biodiversity value being lost for a few decades of oil palm revenues"
             },
             {
               "id": "q21",
               "answer": "Ditches",
               "before": "Water is drained out of peatlands through the ………………… which are created by logging companies",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says logging companies dig ditches so they can reach the swamps by boat, and those same ditches are then used to drain the water away. So the missing word is ‘ditches’.",
+              "evidence": "They dig ditches to enter the peat swamps by boat and then float the logs out the same way."
             },
             {
               "id": "q22",
               "answer": "Subsidence",
               "before": "Draining peatlands leads to ……………… ; a serious problem which can eventually result in coastal flooding and land loss",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says that once the water is gone the solid part of the peat sinks downwards, and it gives that process the name subsidence, which later leaves large areas below water level.",
+              "evidence": "in a process known as subsidence"
             }
           ],
           "legendHtml": "<p>18. Peatlands which have been drained begin to release ………………. instead of storing it.<br/>\n19. Once peatland areas have been cleared ……………… are more likely to occur.<br/>\n20. Clearing peatland forests to make way for oil palm plantations destroys the ………………of the local environment.<br/>\n21. Water is drained out of peatlands through the ………………… which are created by logging companies.<br/>\n22. Draining peatlands leads to ……………… ; a serious problem which can<br/>\neventually result in coastal flooding and land loss.</p>",
@@ -267,22 +297,30 @@ const test: PracticeTest = {
             {
               "id": "q23",
               "answer": "A",
-              "textHtml": "Communities living in wetland regions must be included in discussions about the future of these areas"
+              "textHtml": "Communities living in wetland regions must be included in discussions about the future of these areas",
+              "explanation": "In paragraph G McCartney says local people must take part in wetland planning and decision making, which matches the statement. Silvius speaks about income in the same paragraph, but it is McCartney who talks about being involved in decisions.",
+              "evidence": "For sustainability, it’s essential that local people are involved in wetland planning and decision making and have clear rights to use wetlands."
             },
             {
               "id": "q24",
               "answer": "C",
-              "textHtml": "Official policies towards wetlands vary from one nation to the next"
+              "textHtml": "Official policies towards wetlands vary from one nation to the next",
+              "explanation": "In paragraph H it is Silvius who says governments differ in their attitudes, with some restoring wetlands and others denying the problem. McCartney speaks in the same paragraph, but he talks about growing awareness, not about differences between countries.",
+              "evidence": "Different governments have different attitudes"
             },
             {
               "id": "q25",
               "answer": "D",
-              "textHtml": "People cause harm to wetlands without having any intention to do so"
+              "textHtml": "People cause harm to wetlands without having any intention to do so",
+              "explanation": "In paragraph F Tickner says that in twenty years of work he has never met anyone who wanted to harm a wetland, and that the damage usually comes from people simply trying to make a living. Silvius also describes damage, but he never says it is unintentional.",
+              "evidence": "I’ve worked on wetland issues for 20 years and have never met anybody who wanted to damage a wetland"
             },
             {
               "id": "q26",
               "answer": "B",
-              "textHtml": "Initiatives to reverse environmental damage need not be complex. List of Experts A Matthew McCartney B Pieter van Eijk C Marcel Silvius D Dave Tickner"
+              "textHtml": "Initiatives to reverse environmental damage need not be complex.",
+              "explanation": "In paragraph C van Eijk says restoring a coastal forest can be as simple as planting a few trees per hectare, and that such projects are not really about money. McCartney is the tempting choice because he also discusses solutions, but he talks about rights and involvement, not about how simple the work can be.",
+              "evidence": "It can be as simple as planting a few trees per hectare to create shade and substantially change a microclimate"
             }
           ],
           "legendHtml": "<p><strong>A</strong> Matthew McCartney<br/>\n<strong>B</strong> Pieter van Eijk<br/>\n<strong>C</strong> Marcel Silvius<br/>\n<strong>D</strong> Dave Tickner</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -350,7 +388,9 @@ const test: PracticeTest = {
                 "Neither of the speakers is familiar with their environment",
                 "The topic of the conversation is difficult for both speakers",
                 "Aspects of the conversation are challenging for both speakers"
-              ]
+              ],
+              "explanation": "In the opening paragraph the writer has trouble hearing Waibel on a scratchy line from 10,000 kilometres away, while Waibel is speaking from a noisy railway station, so both sides find parts of the call hard. Option A is tempting, but the writer says plainly that they are both speaking the same language.",
+              "evidence": "I’m struggling to follow him in English, on a scratchy line that reminds me we are nearly 10,000 kilometres apart"
             },
             {
               "id": "q28",
@@ -361,7 +401,9 @@ const test: PracticeTest = {
                 "the students’ reading skills",
                 "the languages used",
                 "the lecturers’ technical ability"
-              ]
+              ],
+              "explanation": "The paragraph about Karlsruhe says it helps that the lecturers speak clearly, have no background chatter and say much the same thing every year, so the repeated content is one of the things that makes the translator’s job easier. The students’ reading is tempting because they read the text on their screens, but that helps the students, not the machine.",
+              "evidence": "It helps that lecturers speak clearly, don’t have to compete with background chatter, and say much the same thing each year."
             },
             {
               "id": "q29",
@@ -372,7 +414,9 @@ const test: PracticeTest = {
                 "this book was not seriously intending to predict the future",
                 "artificial speech translation was not a surprising development",
                 "some speech translation techniques are better than others"
-              ]
+              ],
+              "explanation": "The paragraph about the Babel fish says it stood for the kind of device people dream about long before it can actually be built, like flat TVs, so when real translation earpieces arrived they were no surprise. Option B is tempting, but the writer never questions what the novel was trying to do.",
+              "evidence": "It came to represent one of those devices that technology enthusiasts dream of long before they become practically realisable"
             },
             {
               "id": "q30",
@@ -383,7 +427,9 @@ const test: PracticeTest = {
                 "The reluctance to do this is understandable",
                 "The equipment will be unnecessary in the future",
                 "It is something few people need to worry about"
-              ]
+              ],
+              "explanation": "After Ochoa says people do not like sharing an earphone with a stranger, the writer comments that this could hardly have been unexpected, which means the reluctance makes sense. Option A is tempting, but the writer says the problem would be solved by everyone owning their own earpiece, not by people getting used to sharing.",
+              "evidence": "That can’t have been totally unexpected."
             }
           ]
         },
@@ -396,25 +442,33 @@ const test: PracticeTest = {
               "id": "q31",
               "answer": "C",
               "before": "Speech translation methods are developing fast in Japan",
-              "after": ""
+              "after": "",
+              "explanation": "The paragraph on Asian countries says voice translation has really taken off in places such as Japan, but then adds straight away that there is still a long way to go, which matches ending C. Ending E is tempting, but the same paragraph says systems still need to become simultaneous, so translation is not yet immediate.",
+              "evidence": "There is still a long way to go, though."
             },
             {
               "id": "q32",
               "answer": "E",
               "before": "TV interviews that use translation voiceover methods are successful",
-              "after": ""
+              "after": "",
+              "explanation": "The same paragraph uses the TV interview as the model to copy: the translator’s voice runs over the politician instead of making everyone stop and wait, so it works because the translation comes at once.",
+              "evidence": "A translation system needs to be simultaneous, like the translator’s voice speaking over the foreign politician being interviewed on the TV"
             },
             {
               "id": "q33",
               "answer": "F",
               "before": "Future translation systems should address people appropriately",
-              "after": ""
+              "after": "",
+              "explanation": "The paragraph on social awareness says systems must address people in the right way and respect politeness rules such as academic titles, which matches ending F about good manners. Ending D is tempting because noise appears in the same sentence, but noise is listed as a separate physical problem, not a contrast.",
+              "evidence": "Systems not only need to cope with physical challenges such as noise, they will also need to be socially aware by addressing people in the right way."
             },
             {
               "id": "q34",
               "answer": "B",
               "before": "Users may be able to maintain their local customs A but there are concerns about this. B as systems do not need to conform to standard practices. C but they are far from perfect. D despite the noise issues. E because translation is immediate. F and have an awareness of good manners",
-              "after": ""
+              "after": "",
+              "explanation": "The same paragraph says etiquette-aware translators might protect local customs by slowing the spread of international English habits, so they would not have to follow that common standard. Ending A is tempting, but the writer treats this as a benefit and raises no concerns about it.",
+              "evidence": "they might help to preserve local customs, slowing the spread of habits associated with international English"
             }
           ],
           "legendHtml": "<p>31. Speech translation methods are developing fast in Japan<br/>\n32. TV interviews that use translation voiceover methods are successful<br/>\n33. Future translation systems should address people appropriately<br/>\n34. Users may be able to maintain their local customs</p><p><strong>A</strong> but there are concerns about this.<br/>\n<strong>B</strong> as systems do not need to conform to standard practices.<br/>\n<strong>C</strong> but they are far from perfect.<br/>\n<strong>D</strong> despite the noise issues.<br/>\n<strong>E</strong> because translation is immediate.<br/>\n<strong>F</strong> and have an awareness of good manners.</p>"
@@ -427,32 +481,42 @@ const test: PracticeTest = {
             {
               "id": "q35",
               "answer": "No",
-              "textHtml": "Language translation systems will be seen as very useful throughout the academic and professional worlds"
+              "textHtml": "Language translation systems will be seen as very useful throughout the academic and professional worlds",
+              "explanation": "The writer says that professors and other professionals will not hand their language awareness over to software, so he does not expect these systems to be treated as very useful across academic and professional life. That contradicts the statement.",
+              "evidence": "Professors and other professionals will not outsource language awareness to software, though."
             },
             {
               "id": "q36",
               "answer": "Yes",
-              "textHtml": "The overall value of automated translation to family life is yet to be shown"
+              "textHtml": "The overall value of automated translation to family life is yet to be shown",
+              "explanation": "In the same paragraph the writer says it is an open question whether the technology will help people with family life or relationships, which agrees with the statement that its value there has not been shown yet.",
+              "evidence": "Whether it will help people conduct their family lives or relationships is open to question"
             },
             {
               "id": "q37",
               "answer": "No",
-              "textHtml": "Automated translation could make life more difficult for immigrant families"
+              "textHtml": "Automated translation could make life more difficult for immigrant families",
+              "explanation": "The writer says the opposite of the statement: he points out that the technology could break down the language barrier that often grows between children and grandparents after a family migrates, so it would make life easier, not harder.",
+              "evidence": "it could overcome the language barriers that often arise between generations after migration"
             },
             {
               "id": "q38",
               "answer": "Not given",
-              "textHtml": "Visual aspects of language translation are being considered by scientists"
+              "textHtml": "Visual aspects of language translation are being considered by scientists",
+              "explanation": "In the last paragraph the writer notes that lip movements will not match the translated voice, but that is his own remark about how it will look. He never says that scientists or developers are working on or looking into the visual side of translation."
             },
             {
               "id": "q39",
               "answer": "Not given",
-              "textHtml": "International scientists have found English easier to translate into other languages than Latin"
+              "textHtml": "International scientists have found English easier to translate into other languages than Latin",
+              "explanation": "The last paragraph says international scientists use English as a shared language where earlier scientists used Latin, but it says nothing about how easy either language is to translate into other languages. That comparison is never made."
             },
             {
               "id": "q40",
               "answer": "Yes",
-              "textHtml": "As far as language is concerned, there is a difference between people’s social and practical needs"
+              "textHtml": "As far as language is concerned, there is a difference between people’s social and practical needs",
+              "explanation": "The last paragraph says that although the practical need for a shared language will fall away, the social value of sharing one will remain, which is exactly the difference between social and practical needs in the statement.",
+              "evidence": "Though the practical need for a common language will diminish, the social value of sharing one will persist."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"

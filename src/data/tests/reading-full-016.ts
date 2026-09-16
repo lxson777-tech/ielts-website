@@ -55,8 +55,6 @@ const test: PracticeTest = {
                 "A",
                 "D"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-1-3",
               "explanation": "Paragraph 3 says art 'appeal[s] purely at the level of the imagination' (A), and paragraph 2 says art is 'not restricted by the confines of practicality' (D), so either letter fits this row.",
               "evidence": "appeal purely at the level of the imagination"
@@ -67,8 +65,6 @@ const test: PracticeTest = {
                 "B",
                 "C"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-2-4",
               "explanation": "Paragraph 2 says the craftsman's teapot 'should normally be able to hold tea or flowers', only a functional use (C), while craft stays 'lodged firmly in the practicality of the everyday world', no higher pretension (B).",
               "evidence": "should normally be able to hold tea or flowers"
@@ -79,8 +75,6 @@ const test: PracticeTest = {
                 "A",
                 "D"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-1-3",
               "explanation": "This row shares q1's pool: paragraph 3 says art appeals 'at the level of the imagination' (A) and paragraph 2 says art has 'no practical purpose' since it is 'not restricted by the confines of practicality' (D).",
               "evidence": "not restricted by the confines of practicality"
@@ -91,8 +85,6 @@ const test: PracticeTest = {
                 "B",
                 "C"
               ],
-              "before": "…………… Act of Creation/ Production",
-              "after": "",
               "answerPairId": "reading-302-2-4",
               "explanation": "This row shares q2's pool: craft's end product is judged only by its function (C, paragraph 2) and remains 'lodged firmly in the practicality of the everyday world' with no higher pretension (B).",
               "evidence": "lodged firmly in the practicality of the everyday world"
@@ -104,8 +96,6 @@ const test: PracticeTest = {
                 "G",
                 "J"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-5-7-9",
               "explanation": "Paragraph 8 says art's emphasis 'is placed instead on the act of creation itself' (F); paragraph 5 describes the artist's 'trial-and-error approach' (G); paragraph 4 says art 'evolves non-deterministically' (J).",
               "evidence": "the act of creation itself"
@@ -117,8 +107,6 @@ const test: PracticeTest = {
                 "H",
                 "I"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-6-8-10",
               "explanation": "Paragraph 8 says craft exists for 'monetary compensation', so its process is only a means to an end (E); paragraph 4 says the craftsman 'knows what he wants to make before he makes it', a goal set from the start (I) with no room for experiment (H).",
               "evidence": "knows what he wants to make before he makes it"
@@ -130,8 +118,6 @@ const test: PracticeTest = {
                 "G",
                 "J"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-5-7-9",
               "explanation": "This row shares q5's Art pool: paragraph 4 says art 'evolves non-deterministically' (J), paragraph 5 describes 'a trial-and-error approach' (G), and paragraph 8 places emphasis on process over product (F).",
               "evidence": "evolves non-deterministically"
@@ -143,8 +129,6 @@ const test: PracticeTest = {
                 "H",
                 "I"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-6-8-10",
               "explanation": "This row shares q6's Craft pool: Collingwood says the craftsman's foreknowledge 'must not be vague but precise', leaving no margin for experiment (H) once the goal is fixed (I).",
               "evidence": "must not be vague but precise"
@@ -156,8 +140,6 @@ const test: PracticeTest = {
                 "G",
                 "J"
               ],
-              "before": "……………",
-              "after": "",
               "answerPairId": "reading-302-5-7-9",
               "explanation": "This row also draws on F, G and J: the artist works by trial and error (paragraph 5) in an undefined, evolving process (paragraph 4) where the finished object itself is secondary (paragraph 8).",
               "evidence": "through a trial-and-error approach"
@@ -169,8 +151,6 @@ const test: PracticeTest = {
                 "H",
                 "I"
               ],
-              "before": "…………… A the finished object appeals on an emotional and spiritual level B the final product has no pretensions to being anything more than it appears C only a functional use is considered for the finished object D no practical purpose as such is envisaged for the created object E the process of creation is merely a means to an end F whether or not there is an end product, the product itself is secondary to the process of creation G not having to adhere to a set of rules, the process is a matter of experimentation H there is no margin of error for experimentation, all of the process following a set of guidelines I its goal is defined from the outset J the process is fluid and undefined K it is useful but not commercially viable L the production process is a mixture of following rules and experimentation",
-              "after": "",
               "answerPairId": "reading-302-6-8-10",
               "explanation": "This row completes the Craft pool: planning is 'indispensable' to craft (paragraph 4, supporting H and I), and because craftsmen must deliver, the process is only a means to the finished product (E).",
               "evidence": "indispensable"
@@ -474,8 +454,6 @@ const test: PracticeTest = {
             {
               "id": "q22",
               "answer": "Worldwide fame",
-              "before": "……………. becoming the figurehead of the Surrealist movement. His sheer",
-              "after": "",
               "explanation": "Paragraph 1 states Dali's work 'achieved enduring worldwide fame', giving the exact phrase needed for the gap.",
               "evidence": "achieved enduring worldwide fame"
             },
@@ -485,32 +463,24 @@ const test: PracticeTest = {
                 "Ambition",
                 "self-belief"
               ],
-              "before": "…………….. which for some might have been interpreted as arrogance, led him to believe he was capable of achieving anything. Moving to France, where he encountered Surrealist artists, was a",
-              "after": "",
               "explanation": "Paragraph 2 names 'ambition and self-belief' as the trait some viewed as arrogance, matching the gap directly.",
               "evidence": "ambition and self-belief"
             },
             {
               "id": "q24",
               "answer": "Turning point",
-              "before": "…………… in his life. Dali’s work was chiefly inspired by Freud’s",
-              "after": "",
               "explanation": "Paragraph 3 calls meeting the French Surrealists in Paris 'a turning point in Dali's artistic life'.",
               "evidence": "a turning point in Dali's artistic life"
             },
             {
               "id": "q25",
               "answer": "Psychoanalytic",
-              "before": "……………. theories. However, as Dali became increasingly infatuated with money, the standard of his art declined. Despite the fact that his work is of varying quality, Dali will never",
-              "after": "",
               "explanation": "Paragraph 4 says Dali's work was chiefly inspired by 'the psychoanalytic theories of Sigmund Freud'.",
               "evidence": "psychoanalytic theories of Sigmund Freud"
             },
             {
               "id": "q26",
               "answer": "Be forgotten",
-              "before": "…………………",
-              "after": "",
               "explanation": "The final sentence states Dali 'is unlikely to ever be forgotten', giving the answer directly.",
               "evidence": "unlikely to ever be forgotten"
             }
@@ -628,32 +598,24 @@ const test: PracticeTest = {
             {
               "id": "q34",
               "answer": "Variety of",
-              "before": "…………….. influences. Artist Adrian Hill realised the",
-              "after": "",
               "explanation": "Paragraph 1 says early practitioners acknowledged 'the influence of a variety of disciplines' on their practice, giving the exact words needed.",
               "evidence": "a variety of disciplines"
             },
             {
               "id": "q35",
               "answer": "Therapeutic benefits",
-              "before": "………………. of art as therapy, and coined the term ‘art therapy’ in 1942. Those supporting art therapy advised a psychoanalytic approach or alternatively one that placed more emphasis on the",
-              "after": "",
               "explanation": "Paragraph 2 says Hill discovered 'therapeutic benefits could be derived from drawing and painting', which he later named art therapy.",
               "evidence": "therapeutic benefits could be derived from drawing and painting"
             },
             {
               "id": "q36",
               "answer": "Creative process",
-              "before": "……………….. itself. Whilst theories behind art therapy may differ, they are",
-              "after": "",
               "explanation": "Paragraph 3 contrasts the psychoanalytic view with those who believed 'the creative process acting therapeutically on the patient' was what mattered.",
               "evidence": "the creative process acting therapeutically on the patient"
             },
             {
               "id": "q37",
               "answer": "Not incompatible",
-              "before": "……………….. in practice",
-              "after": "",
               "explanation": "Paragraph 3 says the two approaches 'were not incompatible', meaning they can coexist in practice.",
               "evidence": "were not incompatible"
             }

@@ -110,56 +110,42 @@ const test: PracticeTest = {
             {
               "id": "q7",
               "answer": "Bulbs",
-              "before": "……………… • nests are created in",
-              "after": "",
               "explanation": "Paragraph 3 lists bulbs among the plant parts that make up the kakapo's diet.",
               "evidence": "They are entirely vegetarian, with their diet including the leaves, roots and bark of trees as well as bulbs, and fern fronds."
             },
             {
               "id": "q8",
               "answer": "Soil",
-              "before": "……………… where eggs are laid. Arrival of Polynesian settlers • the",
-              "after": "",
               "explanation": "Paragraph 4 says kakapo eggs are laid in soil that is repeatedly turned over.",
               "evidence": "The 1-4 eggs are laid in soil, which is repeatedly turned over before and during incubation."
             },
             {
               "id": "q9",
               "answer": "Feathers",
-              "before": "………… of the kakapo were used to make clothes. Arrival of European colonisers •",
-              "after": "",
               "explanation": "Paragraph 5 says early settlers used kakapo feathers to make soft cloaks.",
               "evidence": "They ate its meat and used its feathers to make soft cloaks."
             },
             {
               "id": "q10",
               "answer": "Deer",
-              "before": "…………… were an animal which they introduced that ate the kakapo’s food sources. Protecting kakapo • Richard Henry, a conservationist, tried to protect the kakapo. • a definite sighting of female kakapo on Rakiura Island was reported in the year",
-              "after": "",
               "explanation": "Paragraph 5 says introduced deer depleted the forests of the food kakapo needed.",
               "evidence": "A great deal of habitat was lost through forest clearance, and introduced species such as deer depleted the remaining forests of food."
             },
             {
               "id": "q11",
               "answer": "1980",
-              "before": "……………. • the Recovery Plan included an increase in",
-              "after": "",
               "explanation": "Paragraph 7 says females were confirmed present on Rakiura Island in 1980.",
               "evidence": "There were about 200 individuals, and in 1980 it was confirmed females were also present."
             },
             {
               "id": "q12",
               "answer": "Funding",
-              "before": "………………. • a current goal of the Recovery Plan is to maintain the involvement of",
-              "after": "",
               "explanation": "Paragraph 9 says the 1996 Recovery Plan came with a higher amount of funding.",
               "evidence": "In 1996, a new Recovery Plan was launched, together with a specialist advisory group called the Kakapo Scientific and Technical Advisory Committee and a higher amount of funding."
             },
             {
               "id": "q13",
               "answer": "Stakeholders",
-              "before": "…………………. in kakapo protection",
-              "after": "",
               "explanation": "Paragraph 10 lists keeping stakeholders fully engaged as a current goal of the Recovery Plan.",
               "evidence": "Its key goals are: minimise the loss of genetic diversity in the kakapo population, restore or maintain sufficient habitat to accommodate the expected increase in the kakapo population, and ensure stakeholders continue to be fully engaged in the preservation of the species."
             }
@@ -291,7 +277,7 @@ const test: PracticeTest = {
             {
               "id": "q23",
               "answer": "A",
-              "textHtml": "You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was. List of People A. Matt Elliot B. Karen Russell C. Peter Bourne",
+              "textHtml": "You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was.",
               "explanation": "Elliot in paragraph A says old photographs only reveal how significant elms once were, showing the scale of the loss.",
               "evidence": "‘You look at old photographs from the 1960s and it’s only then that you realise the impact [elms had] … They were significant, large trees … then they were gone."
             }
@@ -311,24 +297,18 @@ const test: PracticeTest = {
             {
               "id": "q24",
               "answer": "Oak",
-              "before": "………… Starting in the Bronze Age, many tools were made from elm and people also used it to make weapons. In the 18th century, it was grown to provide wood for boxes and",
-              "after": "",
               "explanation": "Paragraph D says elm ran a close second to oak as Britain's preferred hardwood.",
               "evidence": "For centuries, elm ran a close second to oak as the hardwood tree of choice in Britain and was in many instances the most prominent tree in the landscape."
             },
             {
               "id": "q25",
               "answer": "Flooring",
-              "before": "…………… Due to its strength, elm was often used for mining equipment and the Cutty Sark’s",
-              "after": "",
               "explanation": "Paragraph D says 18th century elm wood was used for storage crates and flooring.",
               "evidence": "In the 18th century, it was planted more widely and its wood was used for items such as storage crates and flooring."
             },
             {
               "id": "q26",
               "answer": "Keel",
-              "before": "……………… was also constructed from elm",
-              "after": "",
               "explanation": "Paragraph D says elm was used to build the keel of the Cutty Sark.",
               "evidence": "It was also suitable for items that experienced high levels of impact and was used to build the keel of the 19th-century sailing ship Cutty Sark as well as mining equipment."
             }

@@ -61,7 +61,9 @@ const test: PracticeTest = {
                 "it is better for companies not to use any ‘on-hold’ music",
                 "light jazz was the most acceptable music overall",
                 "both gender and type of music influence callers’ reaction"
-              ]
+              ],
+              "explanation": "The sixth paragraph shows that the type of music changed how long the wait felt, and that the effect was different for men and women, so both things matter. Option A is tempting, but the fourth paragraph says the wait was generally overestimated, not underestimated.",
+              "evidence": "but the effect of music format differed for men and women"
             },
             {
               "id": "q2",
@@ -72,7 +74,9 @@ const test: PracticeTest = {
                 "four types of music should be offered to people ‘on hold’",
                 "advertising is preferable to music",
                 "women can be kept waiting for longer than men"
-              ]
+              ],
+              "explanation": "The fifth paragraph says the alternative music the client already plays is probably the best choice, so the advice is to keep it. Option C is tempting because light jazz did well, but it only worked best with women, not with everyone.",
+              "evidence": "The kind of music they’re playing now, alternative, is probably their best choice."
             }
           ]
         },
@@ -85,31 +89,41 @@ const test: PracticeTest = {
               "id": "q3",
               "answer": "C",
               "before": "music preferred by men",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says classical music produced the most positive reactions among males, so classical is the men’s favourite. Light jazz is the tempting choice, but that was the music women reacted best to.",
+              "evidence": "In general, classical music evoked the most positive reactions among males"
             },
             {
               "id": "q4",
               "answer": "D",
               "before": "longest waiting time estimate (both sexes)",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says rock produced the longest waiting time estimates and was the least liked by both men and women, so it fits ‘both sexes’.",
+              "evidence": "Rock was the least preferred across both gender groups and produced the longest waiting time estimates."
             },
             {
               "id": "q5",
               "answer": "D",
               "before": "music to avoid on telephone hold",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph quotes Kellaris saying rock music annoys people who are already calling with a problem, so it is the music a company should keep off its hold line.",
+              "evidence": "The rock music’s driving beat kind of aggravates people calling customer assistance with a problem"
             },
             {
               "id": "q6",
               "answer": "A",
               "before": "music to use if clients are mostly women",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says light jazz gave women the most positive reactions and the shortest waiting time estimates, so it suits a mostly female client base. Classical is the trap here, because for women the wait seemed longest with classical.",
+              "evidence": "light jazz evoked the most positive reactions (and shortest waiting time estimates) among females"
             },
             {
               "id": "q7",
               "answer": "B",
               "before": "best choice of ‘on-hold’ music overall",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says alternative is probably the best choice because it did not push reactions strongly either way and men and women reacted to it in similar ways, which makes it the safest music overall.",
+              "evidence": "males and females were less polarised in their reactions to this type of music"
             }
           ],
           "legendHtml": "<p><span>A. light jazz</span><br/>\n<span>B. alternative</span><br/>\n<span>C. classical</span><br/>\n<span>D. rock</span></p><p><span>3. music preferred by men</span><br/>\n<span>4. longest waiting time estimate (both sexes)</span><br/>\n<span>5. music to avoid on telephone hold</span><br/>\n<span>6. music to use if clients are mostly women</span><br/>\n<span>7. best choice of ‘on-hold’ music overall</span></p>"
@@ -122,32 +136,43 @@ const test: PracticeTest = {
             {
               "id": "q8",
               "answer": "Yes",
-              "textHtml": "Businesses want to minimise the time spent ‘on hold’"
+              "textHtml": "Businesses want to minimise the time spent ‘on hold’",
+              "explanation": "The fourth paragraph opens by saying service providers do not want callers to wait on hold at all, which agrees with the idea that businesses want that waiting time kept as short as possible.",
+              "evidence": "Service providers, of course don’t want you to have to wait on hold"
             },
             {
               "id": "q9",
               "answer": "Yes",
-              "textHtml": "The research sample consisted of real clients of a company"
+              "textHtml": "The research sample consisted of real clients of a company",
+              "explanation": "The third paragraph says the four types of music were tested on 71 of the company’s own clients, so the people in the study really were the company’s customers.",
+              "evidence": "The researchers tested four types of ‘on-hold’ music with 71 of the company’s clients"
             },
             {
               "id": "q10",
               "answer": "No",
-              "textHtml": "The sample consisted of equal numbers of men and women"
+              "textHtml": "The sample consisted of equal numbers of men and women",
+              "explanation": "The third paragraph gives 71 clients with 30 of them women, so there were more men than women and the numbers were not equal.",
+              "evidence": "71 of the company’s clients, 30 of them women"
             },
             {
               "id": "q11",
               "answer": "Not given",
-              "textHtml": "Advertising is considered a poor alternative to ‘on-hold’ music"
+              "textHtml": "Advertising is considered a poor alternative to ‘on-hold’ music",
+              "explanation": "The passage only compares different kinds of hold music with each other. It never mentions advertising on the telephone line at all, so we cannot tell what the writer thinks about it."
             },
             {
               "id": "q12",
               "answer": "No",
-              "textHtml": "The consumer service company surveyed was playing classical music"
+              "textHtml": "The consumer service company surveyed was playing classical music",
+              "explanation": "The fifth paragraph says the music the company plays now is alternative, not classical, so the statement contradicts the passage.",
+              "evidence": "The kind of music they’re playing now, alternative, is probably their best choice."
             },
             {
               "id": "q13",
               "answer": "No",
-              "textHtml": "Researchers asked subjects only to estimate the length of time they waited ‘on hold’"
+              "textHtml": "Researchers asked subjects only to estimate the length of time they waited ‘on hold’",
+              "explanation": "The third paragraph says the researchers also collected and measured the callers’ reactions and comments, so estimating the time was not the only thing subjects were asked to do.",
+              "evidence": "Their reactions and comments were also solicited and quantified by the researchers."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
@@ -197,27 +222,37 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "ix",
-              "textHtml": "Section B"
+              "textHtml": "Section B",
+              "explanation": "Section B lists the conditions a country needed before industry could take off, such as technology, cheap labour, transport and a market economy. Heading iii is tempting because Holland and France appear, but they are only quick comparisons, not the topic.",
+              "evidence": "He claims that there were about 20 different factors and all of them needed to be present before the revolution could happen."
             },
             {
               "id": "q15",
               "answer": "ii",
-              "textHtml": "Section C"
+              "textHtml": "Section C",
+              "explanation": "Section C is where Macfarlane offers his answer to the puzzle set up in Section B, saying the missing factors are tea and beer. Heading v is tempting because disease is mentioned, but the drinks and disease link is developed later in Section E.",
+              "evidence": "The missing factors, he proposes, are to be found in every kitchen cupboard."
             },
             {
               "id": "q16",
               "answer": "iv",
-              "textHtml": "Section D"
+              "textHtml": "Section D",
+              "explanation": "Section D describes how a long period of no growth was followed by a sudden jump in population, with infant deaths halving in 20 years. Heading ii does not fit because this section sets out a new question rather than offering a solution.",
+              "evidence": "But then there was a burst in population."
             },
             {
               "id": "q17",
               "answer": "v",
-              "textHtml": "Section E"
+              "textHtml": "Section E",
+              "explanation": "Section E links what the British drank, first beer with hops and later gin and water, to the rise and fall of waterborne disease. Heading vi is tempting because gin appears, but gin is only one step in the story, not the section’s subject.",
+              "evidence": "Macfarlane deduced that whatever the British were drinking must have been important in controlling disease."
             },
             {
               "id": "q18",
               "answer": "i",
-              "textHtml": "Section F"
+              "textHtml": "Section F",
+              "explanation": "Section F moves from Japan to Britain to explain why tea mattered so much, including the boiled water and healthier breast milk. Heading viii is the trap, because Japan is only the clue that led him to tea.",
+              "evidence": "That was when Macfarlane thought about the role of tea in Britain."
             }
           ],
           "legendHtml": "<p><span>There are more headings than sections so you will not use all of them.</span></p><p><span>i. The significance of tea drinking</span><br/>\n<span>ii. Possible solution to the puzzle</span><br/>\n<span>iii. Industry in Holland and France</span><br/>\n<span>iv. Significant population increase</span><br/>\n<span>v. The relationship between drinks and disease</span><br/>\n<span>vi. Gin drinking and industrialisation</span><br/>\n<span>vii. Dysentery prevention in Japan and Holland</span><br/>\n<span>viii. Japan’s waterborne diseases</span><br/>\n<span>ix. Preconditions necessary for Industrial Revolution</span><br/>\n<span>x. Introduction</span></p>",
@@ -246,14 +281,14 @@ const test: PracticeTest = {
                 "tax on malt",
                 "malt tax"
               ],
-              "before": "………. mortality rate goes up Early 18 th century",
-              "after": ""
+              "explanation": "Section E says a tax was put on malt in the late 17th century, which is what made beer expensive and pushed poor people towards water and gin.",
+              "evidence": "But in the late 17th century a tax was introduced on malt."
             },
             {
               "id": "q20",
               "answer": "Tea",
-              "before": "……….. drinking starts to become widespread Britain starts trade with China mortality rate goes down Mid 18 th century decline in urban deaths caused by",
-              "after": ""
+              "explanation": "Section F says tea was expensive until direct trade with China began in the early 18th century, and by the 1740s the drink was common, so tea is the drink that spread.",
+              "evidence": "Tea was relatively expensive until Britain started direct trade with China in the early 18th century."
             },
             {
               "id": "q21",
@@ -261,14 +296,14 @@ const test: PracticeTest = {
                 "Waterborne diseases",
                 "dysentery"
               ],
-              "before": "………",
-              "after": ""
+              "explanation": "Section C says tea and beer helped stop epidemics of waterborne diseases such as dysentery in crowded towns, so these are the deaths that fell in the cities.",
+              "evidence": "helped prevent epidemics of waterborne diseases, such as dysentery, in densely populated urban areas"
             },
             {
               "id": "q22",
               "answer": "Boiled",
-              "before": "…………. water used for tea and beer; antibacterial qualities of tannin infant mortality rate goes down by half",
-              "after": ""
+              "explanation": "Section C says both drinks are made with boiled water, and that this, together with the antiseptic ingredients, prevented disease, so the missing word is ‘boiled’.",
+              "evidence": "the fact that both are made with boiled water"
             }
           ],
           "legendHtml": "<table><tbody><tr><td width=\"132\"><span><strong>Century</strong></span></td><td width=\"165\"><span><strong>Social change in Britain</strong></span></td><td width=\"148\"><span><strong>Reason</strong></span></td><td width=\"148\"><span><strong>Effect on population</strong></span></td></tr><tr><td width=\"132\"><span>Mid 17<sup>th</sup> century</span></td><td width=\"165\"><span>main drinks were still beer and ale</span></td><td width=\"148\"><span>Imps helped to make beer last longer</span></td><td width=\"148\"><span>no significant change</span></td></tr><tr><td width=\"132\"><span>Late 17<sup>th</sup> century</span></td><td width=\"165\"><span>gin becomes more popular, especially with poor people</span></td><td width=\"148\"><span>beer becomes expensive because of (19) ……….</span></td><td width=\"148\"><span>mortality rate goes up</span></td></tr><tr><td width=\"132\"><span>Early 18<sup>th</sup> century</span></td><td width=\"165\"><span>(20) ……….. drinking starts to become widespread</span></td><td width=\"148\"><span>Britain starts trade with China</span></td><td width=\"148\"><span>mortality rate goes down</span></td></tr><tr><td width=\"132\"><span>Mid 18<sup>th</sup> century</span></td><td width=\"165\"><span>decline in urban deaths caused by (21) ……….</span></td><td width=\"148\"><span>(22) …………. water used for tea and beer; antibacterial qualities of tannin</span></td><td width=\"148\"><span>infant mortality rate goes down by half</span></td></tr></tbody></table>",
@@ -320,7 +355,9 @@ const test: PracticeTest = {
                 "larger quantities of beer were drunk",
                 "of the health protecting qualities of beer and tea",
                 "of the Industrial Revolution"
-              ]
+              ],
+              "explanation": "Section C says tannin in tea and hops in beer both have antiseptic properties, which stopped the waterborne diseases that were killing babies, and Section D shows infant deaths halving. Option B is tempting, but beer drinking actually fell after the malt tax, and it was the protective qualities, not the amount, that mattered.",
+              "evidence": "Tannin, the active ingredient in tea, and hops, used in making beer, both contain antiseptic properties."
             },
             {
               "id": "q24",
@@ -331,7 +368,9 @@ const test: PracticeTest = {
                 "It want animals to work",
                 "Iike using wheels",
                 "want unemployment"
-              ]
+              ],
+              "explanation": "Section G says Japan turned down a work-based revolution and gave up labour-saving machines so that people would not lose their jobs. Options B and C are tempting, but giving up animals and the wheel was the result of that decision, not the reason for it.",
+              "evidence": "Japan decided against a work-based revolution, by giving up labour-saving devices, even animals, to avoid putting people out of work."
             },
             {
               "id": "q25",
@@ -342,7 +381,9 @@ const test: PracticeTest = {
                 "industrialisation happened in Britain when if did",
                 "the Japanese did not drink beet",
                 "sanitation wasn’t widespread until the 19th century"
-              ]
+              ],
+              "explanation": "Section A sets the puzzle as why the Industrial Revolution happened in Britain and why at the end of the 18th century, and Section H says he considers that mystery solved. Option A is the trap, because tea and beer are his explanation, not the thing he set out to explain.",
+              "evidence": "The Cambridge academic considers the mystery solved."
             }
           ]
         }
@@ -397,44 +438,44 @@ const test: PracticeTest = {
             {
               "id": "q26",
               "answer": "Exceeds",
-              "before": "…………….. the supply of skilled IT personnel. Despite the",
-              "after": ""
+              "explanation": "The first paragraph says there are not enough people with IT skills to enter the workplace and be productive straight away, so demand for applicants is greater than supply, which is what ‘exceeds’ means.",
+              "evidence": "not enough people with IT skills that can enter the workplace and be productive with minimal on-the-job training"
             },
             {
               "id": "q27",
               "answer": "Current",
-              "before": "…………….. widespread use of computer technology in all areas of life,",
-              "after": ""
+              "explanation": "The gap needs an adjective describing how computer technology is used today, and the first paragraph says people in all areas of learning are now using it, so ‘current’ fits. ‘Previous’ would say the opposite of what the passage describes.",
+              "evidence": "people from all areas of learning are finding themselves using some form of information technology in the workplace"
             },
             {
               "id": "q28",
               "answer": "Employers",
-              "before": "…………….. face difficulties recruiting people whose education has equipped them to commence working productively without further training. Several business organisations now offer income and other",
-              "after": ""
+              "explanation": "It is the companies doing the hiring that struggle to find ready-trained people, as the second paragraph shows with companies searching for smart students, so the word needed is ‘employers’, not ‘employees’.",
+              "evidence": "many companies are looking for smart students who may have a budding interest in IT"
             },
             {
               "id": "q29",
               "answer": "Financial",
-              "before": "……………… inducements to potential employees. They also include group",
-              "after": ""
+              "explanation": "The second paragraph lists high salaries, annual bonuses and stock options, which are all money rewards, so the inducements offered alongside income are ‘financial’ ones.",
+              "evidence": "one American IT consulting company offers high salaries, annual bonuses, and immediate stock options to potential recruits"
             },
             {
               "id": "q30",
               "answer": "Activities",
-              "before": "……………… in their selection procedures, often inviting up to forty",
-              "after": ""
+              "explanation": "The second paragraph says the two-day visit includes interviews, team exercises and social events, so the group things used in selection are ‘activities’.",
+              "evidence": "This time includes interviews, team exercises and social events."
             },
             {
               "id": "q31",
               "answer": "Candidates",
-              "before": "……………. to their company for the two-day visit. In this way the company can demonstrate the reality of the working",
-              "after": ""
+              "explanation": "The second paragraph says the company brings in 25 to 40 prospective applicants at a time, and ‘candidates’ is the word for people applying. ‘Employees’ is wrong because they have not been hired yet.",
+              "evidence": "It also brings in 25 to 40 prospective applicants at a time for a two-day visit to the company."
             },
             {
               "id": "q32",
               "answer": "Environment",
-              "before": "……… which is more likely to involve challenging co-operative projects than individualised tasks. List of words Exceeds Extracts Choices Candidates Employees Admiration Previous Financial Employment Regularity Advantages Employers Environment Activities Current",
-              "after": ""
+              "explanation": "The second paragraph says companies offer challenging work environments and want applicants to see what working there is really like, so the working ‘environment’ is what is being shown.",
+              "evidence": "Some companies, trying to encourage students to attend interviews, provide good salary packages and challenging work environments."
             }
           ],
           "legendHtml": "<p><span>Although IT is one of the leading career choice made by graduates today, the industry’s demand for qualified applicants (26) …………….. the supply of skilled IT personnel. Despite the (27) …………….. widespread use of computer technology in all areas of life, (28) …………….. face difficulties recruiting people whose education has equipped them to commence working productively without further training. Several business organisations now offer income and other (29) ……………… inducements to potential employees. They also include group (30) ……………… in their selection procedures, often inviting up to forty (31) ……………. to their company for the two-day visit. In this way the company can demonstrate the reality of the working (32) ……… which is more likely to involve challenging co-operative projects than individualised tasks.</span></p><p><strong><span>List of words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Exceeds</span></td><td width=\"119\"><span>Extracts</span></td><td width=\"119\"><span>Choices</span></td><td width=\"119\"><span>Candidates</span></td><td width=\"119\"><span>Employees</span></td></tr><tr><td width=\"119\"><span>Admiration</span></td><td width=\"119\"><span>Previous</span></td><td width=\"119\"><span>Financial</span></td><td width=\"119\"><span>Employment</span></td><td width=\"119\"><span>Regularity</span></td></tr><tr><td width=\"119\"><span>Advantages</span></td><td width=\"119\"><span>Employers</span></td><td width=\"119\"><span>Environment</span></td><td width=\"119\"><span>Activities</span></td><td width=\"119\"><span>Current</span></td></tr></tbody></table>"
@@ -447,27 +488,36 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "No",
-              "textHtml": "The American Intercontinental University includes team-based learning in all its courses on all its campuses"
+              "textHtml": "The American Intercontinental University includes team-based learning in all its courses on all its campuses",
+              "explanation": "The fourth paragraph says AIU runs IT programs where a major portion of the curriculum uses team projects, which is narrower than every course on every campus, so the statement goes further than the writer does.",
+              "evidence": "AIU offers programs in IT with a major portion of the curriculum based on team projects."
             },
             {
               "id": "q34",
               "answer": "No",
-              "textHtml": "The composition of teams is changed regularly"
+              "textHtml": "The composition of teams is changed regularly",
+              "explanation": "The sixth paragraph says students work in permanent teams, which means the same people stay together, contradicting the idea that the teams are changed regularly.",
+              "evidence": "students spend a large part of their in-class time working in permanent and heterogeneous teams"
             },
             {
               "id": "q35",
               "answer": "No",
-              "textHtml": "Theoretical problems are the most important team activity"
+              "textHtml": "Theoretical problems are the most important team activity",
+              "explanation": "The sixth paragraph says team activities focus on using concepts rather than just learning them, and the seventh adds that theory is applied to real world situations, so theoretical problems are not the main activity.",
+              "evidence": "Team activities concentrate on using rather than just learning concepts"
             },
             {
               "id": "q36",
               "answer": "Yes",
-              "textHtml": "The team members participate in assessment of other team members"
+              "textHtml": "The team members participate in assessment of other team members",
+              "explanation": "The sixth paragraph says grades combine overall team performance with peer evaluation, so students really do help assess the other members of their team.",
+              "evidence": "student grades are a combination of overall team performance and peer evaluation of individual team members"
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "International students prefer traditional classroom learning to team-based learning"
+              "textHtml": "International students prefer traditional classroom learning to team-based learning",
+              "explanation": "The ninth paragraph says team classrooms suit international students well, but it never says what those students themselves prefer, so there is no way to know the writer’s view on this comparison."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
@@ -481,19 +531,25 @@ const test: PracticeTest = {
               "id": "q38",
               "answer": "D",
               "before": "Students’ work is assessed",
-              "after": ""
+              "after": "",
+              "explanation": "The sixth paragraph says grades combine team performance with peer evaluation, and the eighth adds individual assessment tests, so all three kinds of marking apply. Option B is the trap, because individual tests are only one part of the picture.",
+              "evidence": "student grades are a combination of overall team performance and peer evaluation of individual team members"
             },
             {
               "id": "q39",
               "answer": "F",
               "before": "The teams make a joint presentation",
-              "after": ""
+              "after": "",
+              "explanation": "The eighth paragraph says team presentations build cohesion and share the job of presenting and persuading, which is group work, and the seventh says exercises apply theory to real world problems. Option C is tempting, but the team persuades an outside audience together rather than competing inside the group.",
+              "evidence": "allow the team to focus and build cohesion, with team members sharing the responsibility for presenting"
             },
             {
               "id": "q40",
               "answer": "E",
               "before": "The need to achieve consensus assists A. to compete with other teams as judged by the facilitator. B. by individual tests and exams. C. to see who has the strongest point of view in the group. D. individually, by their peers and as a team. E. in the development of communication skills. F. to practise working as a group while putting theory into practice. G. to assist international and non-traditional students. H. in getting to know new friends and colleagues",
-              "after": ""
+              "after": "",
+              "explanation": "The eighth paragraph says the team tests require consensus and that this helps students learn critical communication skills, which matches option E directly.",
+              "evidence": "require consensus, helping students learn critical communication skills"
             }
           ],
           "legendHtml": "<p><span>38. Students’ work is assessed</span><br/>\n<span>39. The teams make a joint presentation</span><br/>\n<span>40. The need to achieve consensus assists</span></p><p><span>A. to compete with other teams as judged by the facilitator.</span><br/>\n<span>B. by individual tests and exams.</span><br/>\n<span>C. to see who has the strongest point of view in the group.</span><br/>\n<span>D. individually, by their peers and as a team.</span><br/>\n<span>E. in the development of communication skills.</span><br/>\n<span>F. to practise working as a group while putting theory into practice.</span><br/>\n<span>G. to assist international and non-traditional students.</span><br/>\n<span>H. in getting to know new friends and colleagues.</span></p>"

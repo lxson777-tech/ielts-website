@@ -58,56 +58,42 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Teacher",
-              "before": "…………… in various places in the USA • created drawings using",
-              "after": "",
               "explanation": "The second paragraph says she ‘became an art teacher and taught in elementary schools, high schools, and colleges’, matching this gap.",
               "evidence": "she became an art teacher and taught in elementary schools, high schools, and colleges in Virginia, Texas, and South Carolina"
             },
             {
               "id": "q2",
               "answer": "Charcoal",
-              "before": "………………. which were exhibited in New York City • moved to New York and became famous for her paintings of the city’s",
-              "after": "",
               "explanation": "The third paragraph says she began ‘creating abstract compositions in charcoal’, matching this gap.",
               "evidence": "O’Keeffe began to experiment with creating abstract compositions in charcoal"
             },
             {
               "id": "q3",
               "answer": "Skyscrapers",
-              "before": "………… • produced a series of innovative close-up paintings of",
-              "after": "",
               "explanation": "The fifth paragraph says she became known for ‘the soaring skyscrapers of New York’, matching this gap.",
               "evidence": "the architectural pictures that dramatically depict the soaring skyscrapers of New York"
             },
             {
               "id": "q4",
               "answer": "Flowers",
-              "before": "……………. • went to New Mexico and was initially inspired to paint the many",
-              "after": "",
               "explanation": "The fifth paragraph describes her ‘magnified images depicting flowers’, matching this gap.",
               "evidence": "In her magnified images depicting flowers, begun in 1924"
             },
             {
               "id": "q5",
               "answer": "Bones",
-              "before": "………………. that could be found there • continued to paint various features that together formed the dramatic",
-              "after": "",
               "explanation": "The seventh paragraph says she found ‘the numerous sun-bleached bones she came across’ in New Mexico, matching this gap.",
               "evidence": "the numerous sun-bleached bones she came across in the state’s rugged terrain that sparked her imagination"
             },
             {
               "id": "q6",
               "answer": "Landscape",
-              "before": "………………… of New Mexico for over forty years • travelled widely by plane in later years, and painted pictures of clouds and",
-              "after": "",
               "explanation": "The eighth paragraph says it was ‘the region’s spectacular landscape… that held the artist’s imagination for more than four decades’, matching this gap.",
               "evidence": "it was the region’s spectacular landscape, with its unusual geological formations, vivid colours, clarity of light, and exotic vegetation, that held the artist’s imagination for more than four decades"
             },
             {
               "id": "q7",
               "answer": "Rivers",
-              "before": "…………… seen from above",
-              "after": "",
               "explanation": "The passage says flying inspired ‘aerial views of rivers and expansive paintings of the sky viewed from just above clouds’, matching this final gap.",
               "evidence": "aerial views of rivers and expansive paintings of the sky viewed from just above clouds"
             }
@@ -354,7 +340,7 @@ const test: PracticeTest = {
             {
               "id": "q26",
               "answer": "C",
-              "textHtml": "The number of locations requiring action to adapt to flooding has grown in recent years. List of People A. Yanira Pineda B. Susanna Toi C. Elizabeth English D. Raisa Chowdhury E. Greg Spotts",
+              "textHtml": "The number of locations requiring action to adapt to flooding has grown in recent years.",
               "explanation": "English says this ‘technology is becoming necessary in places that didn’t previously need it’, matching this statement about growing need.",
               "evidence": "this technology is becoming necessary in places that didn’t previously need it"
             }
@@ -514,32 +500,24 @@ const test: PracticeTest = {
             {
               "id": "q37",
               "answer": "Jackals",
-              "before": "…………… In addition, it has been suggested that the dogs could have",
-              "after": "",
               "explanation": "Paragraph F says ‘the number of jackals killed by dogs and people actually increased’, matching this gap.",
               "evidence": "the number of jackals killed by dogs and people actually increased"
             },
             {
               "id": "q38",
               "answer": "Diseases",
-              "before": "……… which may affect other species, and that they may reduce the amount of",
-              "after": "",
               "explanation": "Paragraph F says guard dogs ‘have been found to spread diseases to wild animals’, matching this gap.",
               "evidence": "They have been found to spread diseases to wild animals, including endangered Ethiopian wolves"
             },
             {
               "id": "q39",
               "answer": "Food",
-              "before": "…………… available to certain wild animals. On the other hand, these dogs may help birds by protecting their nests. These might otherwise be threatened by predators such as",
-              "after": "",
               "explanation": "Paragraph F says the dogs ‘may also compete with other carnivores for food’, matching this gap.",
               "evidence": "They may also compete with other carnivores for food"
             },
             {
               "id": "q40",
               "answer": "Foxes",
-              "before": "……………",
-              "after": "",
               "explanation": "Paragraph G says ground-nesting birds ‘where foxes would normally raid them’ benefit from guard dogs, matching this final gap.",
               "evidence": "where foxes would normally raid them"
             }

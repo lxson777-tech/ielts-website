@@ -61,7 +61,9 @@ const test: PracticeTest = {
                 "emitting pleasant scents",
                 "displaying attractive posters",
                 "making in – store announcements"
-              ]
+              ],
+              "explanation": "The second paragraph lists the senses marketers target, and says smell is used with vanilla and citrus perfumes so that shoppers stay longer in a shop. Music is the tempting option, but the passage only links sound to catchy radio jingles and telemarketers, not to keeping people in a store.",
+              "evidence": "our olfactory system is targeted by variations of vanilla and citrus perfumes aimed at enticing US to linger in a retail outlet"
             },
             {
               "id": "q2",
@@ -72,7 +74,9 @@ const test: PracticeTest = {
                 "people purchase it despite the fact that it has no taste",
                 "marketers need not do taste tests when a campaign is effective",
                 "tests prove that people cannot differentiate it from tap water"
-              ]
+              ],
+              "explanation": "The second paragraph uses bottled water as an example of advertising being so powerful that people pay for something they could get free from the tap, so the buying is driven by the marketing. Option D is tempting, but the passage says companies avoid blind taste tests, so no test has proved anything.",
+              "evidence": "In the case of bottled water, we are swayed by advertising into paying for something that we can obtain for free."
             },
             {
               "id": "q3",
@@ -83,7 +87,9 @@ const test: PracticeTest = {
                 "the same types of animals naturally prefer the same types of food",
                 "animals are influenced by what any other animals of the same species eat",
                 "a food type is more desirable because an animal views that food as scarce"
-              ]
+              ],
+              "explanation": "The third paragraph describes a rat that eats both cereals equally until it is put with another rat, after which it copies that rat's choice, so the influence comes from any other rat of its kind. Option A is tempting, but there is no dominant animal in this experiment, just an ordinary companion.",
+              "evidence": "However, if we put that rat with another rat that spent its day eating just one type, when faced with a choice, our rat will now show a preference for the same type as the other rat was eating."
             },
             {
               "id": "q4",
@@ -94,7 +100,9 @@ const test: PracticeTest = {
                 "positive models can influence social behaviour",
                 "it can give an advantage when communicating with others",
                 "cultural norms and relationships can be understood more easily"
-              ]
+              ],
+              "explanation": "The fifth paragraph says learning by watching others is how we pick up communication, movement skills and everyday problem solving, and it ends by naming this shared, copied behaviour cultural transmission, which is how a culture's habits and ways of relating are passed on. The option about communication is tempting, but communication is only one item in the writer's list rather than the whole benefit.",
+              "evidence": "Humans and other primates exhibit multiple forms of imitative learning and this is called cultural transmission."
             },
             {
               "id": "q5",
@@ -105,7 +113,9 @@ const test: PracticeTest = {
                 "It features people who have a desirable image",
                 "It shows older people whom teenagers admire",
                 "It features successful people endorsing products responsible for their success"
-              ]
+              ],
+              "explanation": "The sixth paragraph says TV adverts are full of attractive, successful looking people because we copy those who seem popular and appealing, so it is the image that does the work. Option D is tempting, but the last paragraph says we actually know these people's success had nothing to do with the products they promote.",
+              "evidence": "advertisements are disproportionately populated with attractive, successful looking individuals"
             }
           ]
         },
@@ -117,27 +127,35 @@ const test: PracticeTest = {
             {
               "id": "q6",
               "answer": "No",
-              "textHtml": "The diamond campaign worked by making a connection in people’s minds between diamonds and luxury"
+              "textHtml": "The diamond campaign worked by making a connection in people’s minds between diamonds and luxury",
+              "explanation": "The first paragraph says the campaign deliberately tied diamonds to everlasting love in people's minds, not to luxury or wealth, so the statement names the wrong link.",
+              "evidence": "the objective was to promote diamonds as the symbol of everlasting love"
             },
             {
               "id": "q7",
               "answer": "Not given",
-              "textHtml": "People are more aware of visual marketing than auditory marketing"
+              "textHtml": "People are more aware of visual marketing than auditory marketing",
+              "explanation": "The second paragraph lists both visual advertising (posters, billboards, the internet) and sound advertising (jingles, telemarketers), but it never compares how aware people are of one against the other, so we cannot tell what the writer thinks."
             },
             {
               "id": "q8",
               "answer": "Not given",
-              "textHtml": "The campaign advertising diamonds had a positive influence on society"
+              "textHtml": "The campaign advertising diamonds had a positive influence on society",
+              "explanation": "The writer says the diamond campaign was extremely effective and even changed the fabric of our culture, but never judges that change as good or bad for society, so the idea of a positive influence is simply not there."
             },
             {
               "id": "q9",
               "answer": "Yes",
-              "textHtml": "There is still some uncertainty about whether animals copy the behaviour of the most powerful animals among them"
+              "textHtml": "There is still some uncertainty about whether animals copy the behaviour of the most powerful animals among them",
+              "explanation": "The seventh paragraph opens by saying that not all researchers accept the findings that some animals copy the dominant members of their group, which is exactly the uncertainty the statement describes.",
+              "evidence": "Although not all researchers are convinced by the findings, a number of studies indicate that some animals also imitate dominant members of their group."
             },
             {
               "id": "q10",
               "answer": "No",
-              "textHtml": "Consumers make a logical connection between celebrities ‘ achievements and the products they promote"
+              "textHtml": "Consumers make a logical connection between celebrities ‘ achievements and the products they promote",
+              "explanation": "The last paragraph says that, thinking rationally, we know a sportsperson's success did not come from the laptop or drink they advertise, so our buying is not a logical connection but an old urge to copy people above us.",
+              "evidence": "Rationally, we know these people’s success did not depend on these products"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
@@ -151,25 +169,33 @@ const test: PracticeTest = {
               "id": "q11",
               "answer": "F",
               "before": "The behaviour of the monkeys on the island of Koshima showed that",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph describes one monkey washing her sweet potatoes, other monkeys copying her after watching, and the habit spreading until most of the colony did it, which is a new habit learned by observation. Option B is tempting because it also talks about animals copying, but the passage never mentions the age of the monkeys.",
+              "evidence": "Potato washing then spread from monkey to monkey and, over the course of a few years, most monkeys were eating clean potatoes."
             },
             {
               "id": "q12",
               "answer": "C",
               "before": "Primatologist Frans de Waal found that",
-              "after": ""
+              "after": "",
+              "explanation": "The seventh paragraph says de Waal saw chimpanzees copying in a preferential way, and his example is a group whose injured dominant male was copied, so the animal being imitated was the one with the highest status. Option D is tempting because it also concerns imitation over time, but that option is about sportspeople, not about animals.",
+              "evidence": "Primatologist Frans de Waal provides anecdotal evidence of preferential imitation among chimpanzees."
             },
             {
               "id": "q13",
               "answer": "A",
               "before": "Dick Fosbury is mentioned in order to show that",
-              "after": ""
+              "after": "",
+              "explanation": "The last paragraph says that when Fosbury changed the high jump, people copied the jumping style that made him win and not his shoes, so they copied the behaviour that was actually linked to his success. Option D is tempting because the 1968 date is given, but the writer's point is what was copied, not how long copying has gone on.",
+              "evidence": "imitators obviously copied his jumping style, not his brand of sports shoes"
             },
             {
               "id": "q14",
               "answer": "E",
               "before": "A feature of some modern marketing campaigns is that A . people imitated behaviour that was linked with success B . younger animals of a certain species are more likely to imitate each other. C . an animal would imitate another that had higher status D . imitation of popular sportspeople has occurred for many decades E . products are marketed to potential consumers who are unaware that marketing is occurring F . animals can develop new habits by observation. G . incentives are provided for consumers who behave in a certain way",
-              "after": ""
+              "after": "",
+              "explanation": "The last paragraph describes stealth marketing, where people are paid to go to bars or websites and promote products secretly, so the consumer does not realise marketing is happening. Option G is tempting because it also describes a modern technique, but the passage never mentions rewards being given to consumers.",
+              "evidence": "Today, companies engage in stealth marketing campaigns in which people are paid to frequent bars or websites to covertly promote certain products"
             }
           ],
           "legendHtml": "<p>11. The behaviour of the monkeys on the island of Koshima showed that<br/>\n12. Primatologist Frans de Waal found that<br/>\n13. Dick Fosbury is mentioned in order to show that<br/>\n14. A feature of some modern marketing campaigns is that</p><p><strong>A</strong>. people imitated behaviour that was linked with success<br/>\n<strong>B</strong>. younger animals of a certain species are more likely to imitate each other.<br/>\n<strong>C</strong>. an animal would imitate another that had higher status<br/>\n<strong>D</strong>. imitation of popular sportspeople has occurred for many decades<br/>\n<strong>E</strong>. products are marketed to potential consumers who are unaware that marketing is occurring<br/>\n<strong>F</strong>. animals can develop new habits by observation.<br/>\n<strong>G</strong>. incentives are provided for consumers who behave in a certain way</p><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -235,32 +261,44 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "I",
-              "textHtml": "An example of how one parrot species may survive at the expense of another"
+              "textHtml": "An example of how one parrot species may survive at the expense of another",
+              "explanation": "Paragraph I tells how galahs on Kangaroo Island took over black cockatoo nest holes and destroyed their eggs, so one species did well while the other declined. Paragraph H is tempting, but there the harm comes from habitat loss, not from another parrot.",
+              "evidence": "Their success precipitated a partial collapse in the black cockatoo population when the later lost the struggle for scarce nesting hollows."
             },
             {
               "id": "q16",
               "answer": "F",
-              "textHtml": "A description of how plants may adapt to attract birds"
+              "textHtml": "A description of how plants may adapt to attract birds",
+              "explanation": "Paragraph F explains that flowers pollinated by birds tend to be red because red attracts birds most, which is the plant adapting to appeal to the bird. Paragraph E is tempting, but that paragraph is about beaks changing to suit food, which is the bird adapting, not the plant.",
+              "evidence": "flowers which depend on birds for pollination are more often red"
             },
             {
               "id": "q17",
               "answer": "G",
-              "textHtml": "Example of two parrot species which benefited from changes to the environment"
+              "textHtml": "Example of two parrot species which benefited from changes to the environment",
+              "explanation": "Paragraph G names the galah and the corella as two dry country parrots that have spread further because European settlement cleared forest and created grassland they like.",
+              "evidence": "Two of the dry country parrots, the pink and grey galah and the pink, white and yellow corella have expanded their ranges in recent years."
             },
             {
               "id": "q18",
               "answer": "D",
-              "textHtml": "How the varied Australian landscape resulted in a great variety of parrot species"
+              "textHtml": "How the varied Australian landscape resulted in a great variety of parrot species",
+              "explanation": "Paragraph D says the parrots moved out of the ancestral forests through the woodlands and into the central deserts, and that this is why they split into so many different species. Paragraph C is tempting because it also talks about the land drying out, but it stops at the shrinking rainforest and does not link that to the number of species.",
+              "evidence": "The parrots spread from ancestral forests through eucalypt woodlands to colonies the central deserts of Australia, and as a consequence they diversified into a wide range of species"
             },
             {
               "id": "q19",
               "answer": "C",
-              "textHtml": "A reason why most parrot species are native to the southern hemisphere"
+              "textHtml": "A reason why most parrot species are native to the southern hemisphere",
+              "explanation": "Paragraph C explains that parrots almost certainly began on Gondwana, the ancient southern landmass, which is why today's parrots are concentrated in the southern continents.",
+              "evidence": "it seems almost certain that parrots originated millions of years ago on the ancient southern continent of Gondwana"
             },
             {
               "id": "q20",
               "answer": "H",
-              "textHtml": "An example of a parrot species which did not survive changes to its habitat"
+              "textHtml": "An example of a parrot species which did not survive changes to its habitat",
+              "explanation": "Paragraph H gives the double-eyed fig parrot, which probably disappeared when large areas of rainforest were cleared, as the example of a species that did not survive the change to its habitat. Paragraph I is tempting, but there the black cockatoo only partly collapses and the cause is another parrot, not habitat change alone.",
+              "evidence": "The clearing of large areas of rainforest is probably responsible for the disappearance of the double-eyed fig parrot"
             }
           ],
           "options": [
@@ -272,7 +310,8 @@ const test: PracticeTest = {
             "F",
             "G",
             "H",
-            "I"
+            "I",
+            "J"
           ]
         },
         {
@@ -282,25 +321,29 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q21",
-              "answer": "D",
+              "answer": "C",
               "textHtml": "The writer believes that most parrot species",
               "options": [
                 "Move from Africa and South America to Australia",
                 "Had ancestors in either Africa, Australia or South America",
                 "Had ancestors in a continent which later split up",
                 "Came from a continent now covered by water"
-              ]
+              ],
+              "explanation": "Paragraph C is the place to look: it says parrots started on the single ancient southern continent of Gondwana, which afterwards split into the separate southern continents we have today, so all these parrots trace back to one old landmass. The option saying their ancestors were simply in Africa, Australia or South America is tempting, but those are the places parrots live now, not where the family began.",
+              "evidence": "before it broke up into the separate southern hemisphere continents we know today"
             },
             {
               "id": "q22",
-              "answer": "C",
+              "answer": "D",
               "textHtml": "What does the Writer say about parrot’s beak?",
               "options": [
                 "They are longer than those of other birds",
                 "They are made of a unique material",
                 "They are used more efficiently than those of other species",
                 "They are specially adapted to suit the diet"
-              ]
+              ],
+              "explanation": "Paragraph E is about beaks: the length and shape of a parrot's beak match the food that species eats, some being long for taking seeds out of fruit and others broad and strong for cracking hard seeds, so the beak does its particular job well. The option about a unique material is tempting because keratin is named, but keratin is the ordinary substance all beaks are made from, so it is not unique to parrots.",
+              "evidence": "The size of a parrot’s short, blunt beak and the length of that beak’s do curved upper section are related to the type of food each species eats."
             },
             {
               "id": "q23",
@@ -311,7 +354,9 @@ const test: PracticeTest = {
                 "They need to be maintained",
                 "They provide only shelter, not food",
                 "They are too few of them"
-              ]
+              ],
+              "explanation": "Paragraph J says nest boxes are too few, cost a lot, and cannot replace old trees, which also supply nectar, pollen and seeds, so shelter without food is covered too. Nothing is said about having to look after or repair the boxes, so maintenance is the one disadvantage the writer never mentions.",
+              "evidence": "there are not enough, they are expensive and they are not an adequate substitute by large, old trees"
             }
           ]
         },
@@ -322,27 +367,35 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q24",
-              "answer": "One-sixth",
-              "before": "………….. live in Australia. As early as the",
-              "after": ""
+              "answer": [
+                "One-sixth",
+                "one sixth",
+                "1/6",
+                "One- sixth"
+              ],
+              "explanation": "Paragraph A gives the figure: of the 345 parrot species in the world, one sixth of them live in Australia, so this is the fraction the summary needs.",
+              "evidence": "One- sixth of the world’s 345 parrot species are found there"
             },
             {
               "id": "q25",
-              "answer": "16th century",
-              "before": "…………………….., the mapmaker",
-              "after": ""
+              "answer": [
+                "16th century",
+                "sixteenth century"
+              ],
+              "explanation": "Paragraph B dates Mercator's world map to the 16th century, so that is when a mapmaker already knew parrots lived near what is now Australia.",
+              "evidence": "In the 16th century, the German cartographer Mercator made a world map"
             },
             {
               "id": "q26",
               "answer": "Mercator",
-              "before": "…………………… recognized that parrots lived in that part of the world",
-              "after": ""
+              "explanation": "Paragraph B names the German cartographer, another word for mapmaker, as Mercator, the man who marked a Land of Parrots near present day Australia.",
+              "evidence": "the German cartographer Mercator made a world map that included a place, somewhere near present-day Australia"
             },
             {
               "id": "q27",
               "answer": "John Gould",
-              "before": "……………………, the famous painter of animals and birds, commented on the size and beauty of the Australian parrot family",
-              "after": ""
+              "explanation": "Paragraph B says the naturalist and wildlife artist John Gould praised the great family of parrots in 1865, and a wildlife artist is the famous painter of animals and birds in the summary.",
+              "evidence": "In 1865, the celebrated British naturalist and wildlife artist John Gould said"
             }
           ],
           "legendHtml": "<p>There are 345 varieties of parrot in existence and, of these, (24) ………….. live in Australia. As early as the (25) …………………….., the mapmaker (26) …………………… recognized that parrots lived in that part of the world. (27) ……………………, the famous painter of animals and birds, commented on the size and beauty of the Australian parrot family.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -402,32 +455,44 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "iv",
-              "textHtml": "Paragraph A"
+              "textHtml": "Paragraph A",
+              "explanation": "Paragraph A says the law touches us from the embryo onwards and even after death, and covers our food, travel, family and property, so it runs right through our lives. Heading v is tempting because the paragraph sounds sweeping, but no historical event is mentioned anywhere in it.",
+              "evidence": "it governs almost all aspects of our behavior, and even what happens to us when we are no longer alive"
             },
             {
               "id": "q29",
               "answer": "vii",
-              "textHtml": "Paragraph B"
+              "textHtml": "Paragraph B",
+              "explanation": "Paragraph B contrasts the past, when most people could not read, with today, when a huge number of people can read and so can take an interest in the law and help shape it. Heading iii is tempting because the paragraph ends by saying law can be used to degrade humanity, but that is one closing remark, not the subject.",
+              "evidence": "it is becoming easier for people to take an interest in law, and for the general population to help actually shape the law in many countries"
             },
             {
               "id": "q30",
               "answer": "i",
-              "textHtml": "Paragraph C"
+              "textHtml": "Paragraph C",
+              "explanation": "Paragraph C compares two kinds of valuable knowledge in a modern society, computer and communications skills on one side and legal understanding on the other. Heading vi is tempting because a comedian's joke about lawyers appears, but the joke actually praises lawyers as the only ones who know the rules.",
+              "evidence": "In our rapidly developing world, all sorts of skills and knowledge are valuable."
             },
             {
               "id": "q31",
               "answer": "viii",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D is all numbers showing how much law is being made: about 35 new Acts a year in the UK, pages of legislation more than doubled since the 1970s, and over 32,000 statutory instruments in nine years. Heading iii is tempting, but nothing here is presented as a fault in the system, only as growth.",
+              "evidence": "The number of laws has never been greater."
             },
             {
               "id": "q32",
               "answer": "vi",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E is about lawyers being disliked, with jokes against them going back to the ancient Greeks and a child comparing his father's lawyer role to playing a bad guy. Heading ii is tempting because a few admired lawyers are named for balance, but the reasons why criticism is unfair are set out later, in paragraph F.",
+              "evidence": "lawyers are not universally admired"
             },
             {
               "id": "q33",
               "answer": "ii",
-              "textHtml": "Paragraph F"
+              "textHtml": "Paragraph F",
+              "explanation": "Paragraph F answers the common complaints one by one, saying it is no fairer to attack lawyers for earning from people's problems than to attack nurses or IT consultants, and pointing out the poorly paid public law work and the paperwork that has nothing to do with misfortune. Heading vi is tempting because the criticisms are repeated at the start, but they are only quoted in order to be argued against.",
+              "evidence": "it is no more Just to say that lawyers are bad because they make a living from people’s problems than it is to make the same accusation In respect of nurses or IT consultants"
             }
           ],
           "legendHtml": "<p>i. Different areas of professional expertise<br/>\nii. Reasons why it is unfair to criticise lawyers<br/>\niii. The disadvantages of the legal system<br/>\niv. The law applies throughout our lives<br/>\nv. The law has affected historical events<br/>\nvi. A negative regard for lawyers<br/>\nvii. public’s increasing ability to influence the law<br/>\nviii. growth in laws</p>",
@@ -454,7 +519,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-287-q34-q35"
+              "answerPairId": "reading-287-q34-q35",
+              "explanation": "The two correct statements are C and D. Paragraph C says legal understanding is just as vital and just as widely needed as the computer knowledge everyone now relies on, which matches C. Option A is tempting because hospitals are mentioned, but the person in every hospital is the IT helper, not a lawyer.",
+              "evidence": "But legal understanding is just as vital and as universally needed."
             },
             {
               "id": "q35",
@@ -463,7 +530,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-287-q34-q35"
+              "answerPairId": "reading-287-q34-q35",
+              "explanation": "The second of the two correct statements is D. The comedian's image in paragraph C, where the lawyer is the only one who has read the rules of the game we are all playing, shows that society could not work properly without people who understand the law. Option B is tempting, but commercial law is never singled out as the most wanted kind.",
+              "evidence": "the lawyer is the only person who has read and made sense of the rules."
             }
           ],
           "legendHtml": "<p>Which <strong>TWO</strong> of the following statements does the writer make about legal skills in today’s world?</p>",
@@ -499,32 +568,32 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "Truth",
-              "before": "…………………….. is of little interest to lawyers, who are more concerned with making money. This may well be the case with some individuals, in the same way that some",
-              "after": ""
+              "explanation": "Paragraph F reports the complaint that lawyers put their own reward above truth, so truth is the thing said to interest them little.",
+              "evidence": "professionals whose concerns put personal reward above truth"
             },
             {
               "id": "q37",
               "answer": "Journalists",
-              "before": "…………………….. or scientific experts may also be driven purely by financial greed. However, criticising lawyers because their work is concerned with people’s problems would be similar to attacking IT staff or",
-              "after": ""
+              "explanation": "Paragraph F says some scientists and journalists, among others, fit that same description, so journalists is the group named beside scientific experts.",
+              "evidence": "Just as there are some scientists, Journalists and others In that category"
             },
             {
               "id": "q38",
               "answer": "Nurses",
-              "before": "……………………. for the same reason. In fact, many lawyers focus on questions relating, for example, to housing or civil liberties, which requires them to have",
-              "after": ""
+              "explanation": "Paragraph F says blaming lawyers for earning from people's problems would mean blaming nurses or IT consultants in the same way, so nurses is the word that goes with IT staff.",
+              "evidence": "the same accusation In respect of nurses or IT consultants"
             },
             {
               "id": "q39",
               "answer": "Dedication",
-              "before": "…………………… to their work. What’s more, a lot of lawyers’ time is spent writing",
-              "after": ""
+              "explanation": "Paragraph F says public law work on housing and civil liberties is not well paid, so its quality depends on considerable professional dedication from the lawyers who do it.",
+              "evidence": "the quality of the service provided by these lawyers relies on considerable professional dedication"
             },
             {
               "id": "q40",
               "answer": "Documents",
-              "before": "…………………….. rather than dealing with people’s misfortunes",
-              "after": ""
+              "explanation": "Paragraph F says a lot of legal work has nothing to do with conflict or misfortune and is mainly the drafting of documents, so documents is what that time is spent writing.",
+              "evidence": "much legal work has nothing to do with conflict or misfortune, but is primarily concerned with drafting documents"
             }
           ],
           "legendHtml": "<p>Lawyers as professionals People sometimes say that (36) …………………….. is of little interest to lawyers, who are more concerned with making money. This may well be the case with some individuals, in the same way that some (37) …………………….. or scientific experts may also be driven purely by financial greed. However, criticising lawyers because their work is concerned with people’s problems would be similar to attacking IT staff or (38) ……………………. for the same reason. In fact, many lawyers focus on questions relating, for example, to housing or civil liberties, which requires them to have (39) …………………… to their work. What’s more, a lot of lawyers’ time is spent writing (40) …………………….. rather than dealing with people’s misfortunes.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",

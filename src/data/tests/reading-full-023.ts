@@ -58,32 +58,43 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "False",
-              "textHtml": "Forty years ago, there were fewer butterflies in Britain than at present"
+              "textHtml": "Forty years ago, there were fewer butterflies in Britain than at present",
+              "explanation": "The first paragraph says butterfly numbers have gone down over the last 40 years, so there were more butterflies then, not fewer. The statement says the opposite of the passage.",
+              "evidence": "populations of around two thirds of butterfly species have declined in Britain over the past 40 years"
             },
             {
               "id": "q2",
               "answer": "True",
-              "textHtml": "Caterpillars are eaten by a number of different predators"
+              "textHtml": "Caterpillars are eaten by a number of different predators",
+              "explanation": "The first paragraph lists birds, bats and other small mammals as animals that eat caterpillars, so several different predators feed on them.",
+              "evidence": "in turn act as prey for birds as well as bats and other small mammals"
             },
             {
               "id": "q3",
               "answer": "False",
-              "textHtml": "‘Phenology’ is a term used to describe a creature’s ability to alter the location of a lifecycle event"
+              "textHtml": "‘Phenology’ is a term used to describe a creature’s ability to alter the location of a lifecycle event",
+              "explanation": "The second paragraph says phenology is about the timing of lifecycle events, meaning when in the year something happens, not where it happens. The statement changes timing into location, so it contradicts the passage.",
+              "evidence": "Scientists refer to the timing of such lifecycle events as ‘phenology’"
             },
             {
               "id": "q4",
               "answer": "Not given",
-              "textHtml": "Some species of butterfly have a reduced lifespan due to spring temperature increases"
+              "textHtml": "Some species of butterfly have a reduced lifespan due to spring temperature increases",
+              "explanation": "The passage talks about butterflies becoming active earlier in the year as spring gets warmer, but it never says anything about how long individual butterflies live. Lifespan is simply not mentioned anywhere."
             },
             {
               "id": "q5",
               "answer": "False",
-              "textHtml": "There is a dear reason for the adaptations that butterflies are making to climate change"
+              "textHtml": "There is a clear reason for the adaptations that butterflies are making to climate change",
+              "explanation": "The third paragraph asks whether the butterflies are coping well or being dragged along under stress, and then says nobody knows yet, so the reason behind these changes is not clear at all.",
+              "evidence": "The answer is still unknown, but a new study is seeking to answer these questions."
             },
             {
               "id": "q6",
               "answer": "True",
-              "textHtml": "The data used in the study was taken from the work of amateur butterfly watchers"
+              "textHtml": "The data used in the study was taken from the work of amateur butterfly watchers",
+              "explanation": "The fourth paragraph says the researchers used millions of records sent in by butterfly enthusiasts, which is another way of saying amateur butterfly watchers.",
+              "evidence": "the researchers pulled together data from millions of records that had been submitted by butterfly enthusiasts"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -96,20 +107,20 @@ const test: PracticeTest = {
             {
               "id": "q7",
               "answer": "Colonies",
-              "before": "………………. • first appears at the start of",
-              "after": ""
+              "explanation": "The sixth paragraph describes the Small Blue and says its colonies can hold up to a hundred butterflies, so the word that fits after ‘lives in large’ is colonies.",
+              "evidence": "whose colonies are up to a hundred strong"
             },
             {
               "id": "q8",
               "answer": "Spring",
-              "before": "…………. • completes more than one reproductive cycle per year The High Brown Fritillary • has one reproductive cycle • is considered to be more",
-              "after": ""
+              "explanation": "The same sentence about the Small Blue says some of them turn into butterflies early in spring, so spring is the season when this butterfly first appears.",
+              "evidence": "some develop into butterflies early in spring"
             },
             {
               "id": "q9",
               "answer": "Endangered",
-              "before": "……………… than other species • its caterpillars occupy a limited range of",
-              "after": ""
+              "explanation": "The seventh paragraph calls the High Brown Fritillary Britain’s most endangered butterfly, so compared with other species it is more endangered.",
+              "evidence": "often described as Britain’s most endangered butterfly"
             },
             {
               "id": "q10",
@@ -117,26 +128,26 @@ const test: PracticeTest = {
                 "Habitat",
                 "Habitats"
               ],
-              "before": "………………… The Silver-studded Blue • is already able to reproduce twice a year in warm areas of",
-              "after": ""
+              "explanation": "The seventh paragraph says this butterfly lives only in coppiced woodland and limestone pavement, which is a narrow set of habitats for its caterpillars.",
+              "evidence": "It is found only in coppiced woodland and limestone pavement habitats"
             },
             {
               "id": "q11",
               "answer": "Europe",
-              "before": "…………… The White Admiral • is found in",
-              "after": ""
+              "explanation": "The eighth paragraph says single-generation British species, the group the Silver-studded Blue belongs to, already manage a second generation in warm years in continental Europe.",
+              "evidence": "Many of Britain’s single-generation species show the capacity, in continental Europe, to add a second generation in years that are sufficiently warm."
             },
             {
               "id": "q12",
               "answer": "Southern",
-              "before": "………… areas of England • both climate change and the",
-              "after": ""
+              "explanation": "The last paragraph introduces the butterfly as the White Admiral of southern England, so the missing word describing the areas of England is southern.",
+              "evidence": "The White Admiral of southern England, a much sought-after butterfly"
             },
             {
               "id": "q13",
               "answer": "Diet",
-              "before": "……………… of the caterpillar are possible reasons for decline",
-              "after": ""
+              "explanation": "The last paragraph gives two possible reasons for this butterfly’s decline: climate change, and the fact that its caterpillar eats only one plant, which is its diet.",
+              "evidence": "This may be because the caterpillar exists solely on a diet of a plant called honeysuckle."
             }
           ],
           "legendHtml": "<p><strong>Butterflies in the UK</strong></p><p><strong>The Small Blue</strong><br/>\n• lives in large (7) ……………….<br/>\n• first appears at the start of (8) ………….<br/>\n• completes more than one reproductive cycle per year</p><p><strong>The High Brown Fritillary</strong><br/>\n• has one reproductive cycle<br/>\n• is considered to be more (9) ……………… than other species<br/>\n• its caterpillars occupy a limited range of (10) …………………</p><p><strong>The Silver-studded Blue</strong><br/>\n• is already able to reproduce twice a year in warm areas of (11) ……………</p><p><strong>The White Admiral</strong><br/>\n• is found in (12) ………… areas of England<br/>\n• both climate change and the (13) ……………… of the caterpillar are possible reasons for decline</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -184,22 +195,30 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "C",
-              "textHtml": "reference to the rapidly increasing need for one raw material in the transport industry"
+              "textHtml": "reference to the rapidly increasing need for one raw material in the transport industry",
+              "explanation": "Paragraph C says demand for metals is soaring and names cobalt for electric car batteries, which is a raw material used in transport. The other paragraphs mention metals only in general terms.",
+              "evidence": "demand for resources such as copper, aluminium, cobalt for electric car batteries and other metals to power technology and smartphones, is soaring"
             },
             {
               "id": "q15",
               "answer": "F",
-              "textHtml": "a rough estimate of the area of the Earth covered by the oceans"
+              "textHtml": "a rough estimate of the area of the Earth covered by the oceans",
+              "explanation": "Paragraph F opens with the figure of about 70% of the planet being ocean, which is the rough estimate the question asks for. Paragraph C gives depths in metres, but that is not an area.",
+              "evidence": "The oceans occupy around 70% of the planet"
             },
             {
               "id": "q16",
               "answer": "E",
-              "textHtml": "how a particular underwater habitat, where minerals and organisms co-exist, is formed"
+              "textHtml": "how a particular underwater habitat, where minerals and organisms co-exist, is formed",
+              "explanation": "Paragraph E explains that hydrothermal vents form where seawater meets volcanic magma, and then says these mineral-rich vents are home to many animals, so minerals and living things share the same place. Paragraph B describes new species but never says how their habitat is made.",
+              "evidence": "hydrothermal vents, which are created when seawater meets volcanic magma"
             },
             {
               "id": "q17",
               "answer": "D",
-              "textHtml": "reference to the fact that the countries of the world have yet to agree on rules for the exploration of the seabed"
+              "textHtml": "reference to the fact that the countries of the world have yet to agree on rules for the exploration of the seabed",
+              "explanation": "Paragraph D says the worldwide set of rules for this activity has not even been written yet, which is the same as countries not having agreed rules. Paragraph F mentions strict controls, but that is a call for rules rather than a statement that none exist.",
+              "evidence": "the global regulatory framework is not yet drafted"
             }
           ],
           "options": [
@@ -219,32 +238,44 @@ const test: PracticeTest = {
             {
               "id": "q18",
               "answer": "D",
-              "textHtml": "A move away from the exploration of heavily mined reserves on land is a good idea,"
+              "textHtml": "A move away from the exploration of heavily mined reserves on land is a good idea,",
+              "explanation": "In paragraph F, Mike Johnston argues it makes sense to look at the untapped ocean instead of land resources that are running out fast, which matches moving away from heavily mined land reserves. Upton also talks about the deep sea, but he wants mining paused, not redirected.",
+              "evidence": "It makes sense to explore this untapped potential in an environmentally sustainable way, instead of continually looking at the fast depleting land resources of the planet to meet society’s rising needs."
             },
             {
               "id": "q19",
               "answer": "B",
-              "textHtml": "The negative effects of undersea exploration on local areas and their inhabitants are being ignored"
+              "textHtml": "The negative effects of undersea exploration on local areas and their inhabitants are being ignored",
+              "explanation": "Paragraph D quotes the paper by Hunter, Aguon and Singh saying the rush to mine ignores environmental and social effects and pushes indigenous people aside, which is exactly the harm to local areas and their people. Tunnicliffe talks about damage to ecosystems, but not about the communities living nearby.",
+              "evidence": "including a general disregard for environmental and social impacts, and the marginalisation of indigenous peoples and their rights"
             },
             {
               "id": "q20",
               "answer": "A",
-              "textHtml": "There are more worthwhile things to extract from the sea than minerals"
+              "textHtml": "There are more worthwhile things to extract from the sea than minerals",
+              "explanation": "In paragraph B, Upton says looking for medicines in the sea could be a better way of using its economic value than mining it, so he sees medicines as more worthwhile than minerals. Johnston is the trap, because he values the sea too, but he means its minerals.",
+              "evidence": "In sustainability terms, this could be a better way of exploiting the economic potential of the deep sea"
             },
             {
               "id": "q21",
               "answer": "E",
-              "textHtml": "No other form of human exploration will have such a destructive impact on marine life as deep- sea mining"
+              "textHtml": "No other form of human exploration will have such a destructive impact on marine life as deep- sea mining",
+              "explanation": "In paragraph F, Verena Tunnicliffe says mining would be the worst damage humans have ever done to deep-sea ecosystems, which means no other human activity compares. The paper in paragraph D calls mining a grave threat, but it does not rank it above everything else.",
+              "evidence": "Mining will be the greatest assault on deep-sea ecosystems ever inflicted by humans"
             },
             {
               "id": "q22",
               "answer": "B",
-              "textHtml": "More is known about outer space than about what lies beneath the oceans"
+              "textHtml": "More is known about outer space than about what lies beneath the oceans",
+              "explanation": "In paragraph D, the same three authors point out that the Moon, Mars and Venus have been mapped in far more detail than the deep sea, so we know more about space than about the ocean floor. Copley speaks about vents, but he says nothing about space.",
+              "evidence": "The surface of the Moon, Mars and even Venus have all been mapped and studied in much greater detail"
             },
             {
               "id": "q23",
               "answer": "C",
-              "textHtml": "There is one marine life habitat where experts agree mining should not take place. List of People A Professor Mat Upton B Julie Hunter, Julian Aguon and Pradeep Singh C Dr Jon Copley D Mike Johnston E Verena Tunnicliffe"
+              "textHtml": "There is one marine life habitat where experts agree mining should not take place.",
+              "explanation": "In paragraph E, Dr Jon Copley says scientists are clear that they do not want mining on deep sea vents, so that is the one habitat experts agree on. Tunnicliffe also wants vents protected, but she is making her own argument rather than reporting agreement among scientists.",
+              "evidence": "‘On deep sea vents, scientists are clear,’ says Dr Jon Copley of the National Oceanography Centre, Southampton: ‘we don’t want mining on them.’"
             }
           ],
           "legendHtml": "<p><strong>A</strong> Professor Mat Upton<br/>\n<strong>B</strong> Julie Hunter, Julian Aguon and Pradeep Singh<br/>\n<strong>C</strong> Dr Jon Copley<br/>\n<strong>D</strong> Mike Johnston<br/>\n<strong>E</strong> Verena Tunnicliffe</p>",
@@ -264,20 +295,20 @@ const test: PracticeTest = {
             {
               "id": "q24",
               "answer": "Waste",
-              "before": "……………. The extraction is often done by adapting the",
-              "after": ""
+              "explanation": "Paragraph C reports the mining companies’ claim that sea mining gives better ore than land mining with little or no waste, so the missing word is waste.",
+              "evidence": "They say that deep-sea mining could yield far superior ore to land mining with little, if any, waste"
             },
             {
               "id": "q25",
               "answer": "Machinery",
-              "before": "…………………. that has already been used to work on land. The method of excavation involves removing the seawater from the slurry that is brought up to ships and returning it to the seabed. However, concerned groups strongly believe that",
-              "after": ""
+              "explanation": "Paragraph C says most methods use converted machinery that was previously used for mining on land, so the thing being adapted is machinery.",
+              "evidence": "most involve employing some form of converted machinery previously used in terrestrial mining"
             },
             {
               "id": "q26",
               "answer": "Caution",
-              "before": "…………… is necessary due to the possible number of unidentified consequences",
-              "after": ""
+              "explanation": "Paragraph D opens by saying environmental and legal groups have urged caution because the effects are potentially huge and unknown, so caution is the word that fits.",
+              "evidence": "But environmental and legal groups have urged caution"
             }
           ],
           "legendHtml": "<p><strong>Mining the sea floor</strong></p><p>Mining corporations believe that the mineral resources lying under the sea may be superior to those found in the earth. They also say that these can be removed without producing much (24) …………….</p><p>The extraction is often done by adapting the (25) …………………. that has already been used to work on land. The method of excavation involves removing the seawater from the slurry that is brought up to ships and returning it to the seabed. However, concerned groups strongly believe that (26) …………… is necessary due to the possible number of unidentified consequences.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -343,7 +374,9 @@ const test: PracticeTest = {
                 "justifying his opinion about our tendency to be greedy",
                 "describing a commonly held belief about people’s behaviour",
                 "explaining why he thinks that humans act in a selfish manner"
-              ]
+              ],
+              "explanation": "The first paragraph sets out the long-standing idea that people are naturally selfish, reporting it as something people generally assume rather than as the writer’s own view. Option D is tempting, but the writer is not explaining his own opinion here, and he goes on to argue against this belief.",
+              "evidence": "There has long been a general assumption that human beings are essentially selfish."
             },
             {
               "id": "q28",
@@ -354,7 +387,9 @@ const test: PracticeTest = {
                 "Its success was due to the scientific support it offered",
                 "It presented a view that was in line with the attitudes of its time",
                 "It took an innovative approach to the analysis of human psychology"
-              ]
+              ],
+              "explanation": "The second paragraph says the book became popular because it matched the competitive, individualistic mood of late 20th-century society. Option A is the trap, because the book suited the attitudes of its time rather than shocking people with radical ideas.",
+              "evidence": "the competitive and individualistic ethos that was so prevalent in late 20th-century societies"
             },
             {
               "id": "q29",
@@ -365,7 +400,9 @@ const test: PracticeTest = {
                 "Supplies of natural resources were probably relatively plentiful",
                 "Most estimates about population sizes are likely to be inaccurate",
                 "Humans moved across continents more than was previously thought"
-              ]
+              ],
+              "explanation": "The fourth paragraph says there were very few people about, so groups probably did not have to fight each other over rivers, forests and animals, which suggests there was enough to go round. Option C is tempting because population figures appear, but the writer uses those estimates rather than doubting them.",
+              "evidence": "With such small population densities, it seems unlikely that prehistoric hunter-gatherer groups had to compete against each other for resources"
             },
             {
               "id": "q30",
@@ -376,7 +413,9 @@ const test: PracticeTest = {
                 "only people in isolated communities can live in an unselfish manner",
                 "very few lifestyles have survived unchanged since prehistoric times",
                 "hunter-gatherer cultures worldwide are declining in number"
-              ]
+              ],
+              "explanation": "Knauft studied hunter-gatherers who live today in the way prehistoric people did, and found them strongly equal and sharing, which supports the writer’s point that selfishness came later in human history. Option B fails because nothing in the passage says these groups are isolated or that only isolated people can live unselfishly.",
+              "evidence": "hunter-gatherers are characterised by ‘extreme political and sexual egalitarianism’"
             }
           ]
         },
@@ -388,32 +427,32 @@ const test: PracticeTest = {
             {
               "id": "q31",
               "answer": "Egalitarianism",
-              "before": "…………………. in all areas of life. In these cultures, distributing resources fairly among all members is a moral obligation. These societies also employ strategies to prevent differences in",
-              "after": ""
+              "explanation": "The fifth paragraph quotes Knauft describing these groups as extremely equal in both politics and relations between men and women, so the word needed is egalitarianism.",
+              "evidence": "hunter-gatherers are characterised by ‘extreme political and sexual egalitarianism’"
             },
             {
               "id": "q32",
               "answer": "Status",
-              "before": "………………. occurring: for example, the !Kung follow a custom whereby the credit for one person’s success at",
-              "after": ""
+              "explanation": "The same paragraph says these groups have ways of making sure gaps in status do not appear, so the differences they prevent are differences in status.",
+              "evidence": "They also have methods of preserving egalitarianism by ensuring that disparities of status don’t arise."
             },
             {
               "id": "q33",
               "answer": "Hunting",
-              "before": "……………….. is given to another member of the group. Individuals who behave in a",
-              "after": ""
+              "explanation": "The sixth paragraph describes the !Kung swapping arrows before a hunt so that praise for a kill goes to the owner of the arrow, so the success being shared is success at hunting.",
+              "evidence": "swap arrows before going hunting and when an animal is killed, the acclaim does not go to the person who fired the arrow"
             },
             {
               "id": "q34",
               "answer": "Domineering",
-              "before": "……………………. manner are punished by being excluded from the group, and women have a considerable amount of",
-              "after": ""
+              "explanation": "The sixth paragraph says someone who becomes too domineering is pushed out of the group, which matches the summary’s idea of being excluded as a punishment.",
+              "evidence": "if a person becomes too domineering, the other members of the group ostracise them, exiling the offender from society"
             },
             {
               "id": "q35",
               "answer": "Autonomy",
-              "before": "…………………. in choices regarding work and marriage",
-              "after": ""
+              "explanation": "The sixth paragraph says women in these groups enjoy a high level of autonomy, choosing their partners and their work, which is exactly the freedom the summary describes.",
+              "evidence": "Women in hunter-gatherer groups worldwide often benefit from a high level of autonomy, being able to select their own marriage partners, decide what work they do"
             }
           ],
           "legendHtml": "<p><strong>Contemporary hunter-gatherer societies</strong></p><p>Bruce Knauft’s research shows that contemporary hunter-gatherer societies tend to exhibit a high level of (31) …………………. in all areas of life. In these cultures, distributing resources fairly among all members is a moral obligation. These societies also employ strategies to prevent differences in (32) ………………. occurring: for example, the !Kung follow a custom whereby the credit for one person’s success at (33) ……………….. is given to another member of the group. Individuals who behave in a (34) ……………………. manner are punished by being excluded from the group, and women have a considerable amount of (35) …………………. in choices regarding work and marriage.</p>",
@@ -427,27 +466,35 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "Not given",
-              "textHtml": "Some anthropologists are mistaken about the point when the number of societies such as the !Kung began to decline"
+              "textHtml": "Some anthropologists are mistaken about the point when the number of societies such as the !Kung began to decline",
+              "explanation": "The seventh paragraph reports that many anthropologists think groups like the !Kung were normal until a few thousand years ago, but the writer never says these anthropologists have the date wrong. Whether they are mistaken about that timing is not discussed at all."
             },
             {
               "id": "q37",
               "answer": "No",
-              "textHtml": "Humans who developed warlike traits in prehistory would have had an advantage over those who did not"
+              "textHtml": "Humans who developed warlike traits in prehistory would have had an advantage over those who did not",
+              "explanation": "The seventh paragraph argues the opposite of the statement: people who acted selfishly and ruthlessly were more likely to be thrown out of the group and so less likely to survive, which is a disadvantage, not an advantage.",
+              "evidence": "Individuals who behaved selfishly and ruthlessly would be less likely to survive, since they would have been ostracised from their groups."
             },
             {
               "id": "q38",
               "answer": "Yes",
-              "textHtml": "Being peaceful and cooperative is a natural way for people to behave"
+              "textHtml": "Being peaceful and cooperative is a natural way for people to behave",
+              "explanation": "The eighth paragraph says the writer thinks cooperation, fairness, kindness and peacefulness are innate in humans, and innate means natural, so the statement matches his view.",
+              "evidence": "It makes more sense, then, to see traits such as cooperation, egalitarianism, altruism and peacefulness as innate characteristics of human beings."
             },
             {
               "id": "q39",
               "answer": "Not given",
-              "textHtml": "Negative traits are more apparent in some modern cultures than in others"
+              "textHtml": "Negative traits are more apparent in some modern cultures than in others",
+              "explanation": "The writer talks about modern people in general becoming selfish after farming began, but he never compares one modern culture with another. No such comparison appears in the passage."
             },
             {
               "id": "q40",
               "answer": "No",
-              "textHtml": "Animal research has failed to reveal a link between changes in the environment and the emergence of aggressive tendencies"
+              "textHtml": "Animal research has failed to reveal a link between changes in the environment and the emergence of aggressive tendencies",
+              "explanation": "The ninth paragraph says research has repeatedly found that apes and gorillas become more violent when their habitats are disturbed, so animal research has shown this link rather than failing to find it.",
+              "evidence": "Research has shown repeatedly that when the natural habitats of primates such as apes and gorillas are disrupted, they tend to become more violent and hierarchical."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"

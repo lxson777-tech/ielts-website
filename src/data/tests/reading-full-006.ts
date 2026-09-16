@@ -67,56 +67,42 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Potatoes",
-              "before": "……………, using a method of freezing then drying. 1851, USA •",
-              "after": "",
               "explanation": "Paragraph 2 says Andean people froze potatoes overnight, then trampled and dried them, matching the method of freezing then drying.",
               "evidence": "They froze them overnight, then trampled them to squeeze out the moisture, then dried them in the sun."
             },
             {
               "id": "q2",
               "answer": "Butter",
-              "before": "……………… was kept cool by ice during transportation in specially adapted trains. 1880, Australia • Two kinds of",
-              "after": "",
               "explanation": "Paragraph 3 says railroads sent butter from Ogdensburg to Boston in ice filled insulated rail cars in 1851.",
               "evidence": "In 1851, railroads first began putting blocks of ice in insulated rail cars to send butter from Ogdensburg, New York, to Boston."
             },
             {
               "id": "q3",
               "answer": "Meat",
-              "before": "………………… were the first frozen food shipped to England. 1917 onwards, USA • Clarence Birdseye introduced innovations including: o quick-freezing methods, so that",
-              "after": "",
               "explanation": "Paragraph 5 says a shipment of Australian beef and mutton, both meat, was sent frozen to England in 1880.",
               "evidence": "In 1880, a shipment of Australian beef and mutton was sent, frozen, to England."
             },
             {
               "id": "q4",
               "answer": "Crystals",
-              "before": "………… did not spoil the food. o packaging products with",
-              "after": "",
               "explanation": "Paragraph 8 says Birdseye's quick freezing techniques reduced the damage caused by ice crystals forming in the food.",
               "evidence": "He developed quick-freezing techniques that reduced the damage that crystals caused, as well as the technique of freezing the product in the package it was to be sold in."
             },
             {
               "id": "q5",
               "answer": "Cellophane",
-              "before": "……………., so the product was visible. Early 1940s, USA • Frozen food became popular because of a shortage of",
-              "after": "",
               "explanation": "Paragraph 8 says Birdseye introduced cellophane packaging so shoppers could see the quality of the product inside.",
               "evidence": "He also introduced the use of cellophane, the first transparent material for food packaging, which allowed consumers to see the quality of the product."
             },
             {
               "id": "q6",
               "answer": "Tin",
-              "before": "……………… 1950s, USA • A large number of homes now had a",
-              "after": "",
               "explanation": "Paragraph 10 says tin was rationed for the war effort, so frozen food, which needed none, became popular instead.",
               "evidence": "Canned foods were rationed to save tin for the war effort, while frozen foods were abundant and cheap."
             },
             {
               "id": "q7",
               "answer": "Refrigerator",
-              "before": "……………",
-              "after": "",
               "explanation": "Paragraph 10 says that by 1953, 33 million US families owned a refrigerator.",
               "evidence": "By 1953, 33 million US families owned a refrigerator, and manufacturers were gradually increasing the size of the freezer compartments in them."
             }
@@ -506,7 +492,7 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "C",
-              "textHtml": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson",
+              "textHtml": "There are those who look forward to robots developing greater intelligence.",
               "explanation": "Richardson says many people welcome machine intelligence, showing some look forward to robots becoming smarter.",
               "evidence": "In fact, she went on, ‘Not all fear [robots]; many people welcome machine intelligence."
             }

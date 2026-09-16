@@ -385,33 +385,23 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q28",
-              "answer": "Genetic",
-              "before": "……………. background from parents and family including to all of siblings 40%-50% Shared Environment to",
-              "after": ""
+              "answer": "Genetic"
             },
             {
               "id": "q29",
-              "answer": "All of siblings",
-              "before": "……………… Less than",
-              "after": ""
+              "answer": "All of siblings"
             },
             {
               "id": "q30",
-              "answer": "10%",
-              "before": "……………",
-              "after": ""
+              "answer": "10%"
             },
             {
               "id": "q31",
-              "answer": "Non-shared environment",
-              "before": "………………. to part of siblings",
-              "after": ""
+              "answer": "Non-shared environment"
             },
             {
               "id": "q32",
-              "answer": "40%",
-              "before": "……. – 50%",
-              "after": ""
+              "answer": "40%"
             }
           ],
           "legendHtml": "<table><tbody><tr><td width=\"198\"><strong>Type of Impact to Children</strong></td><td width=\"198\"><strong>Range of Reference to Siblings</strong></td><td width=\"198\"><strong>Rate of Influence</strong></td></tr><tr><td width=\"198\">(28)……………. background from parents and family</td><td width=\"198\">including to all of siblings</td><td width=\"198\">40%-50%</td></tr><tr><td width=\"198\">Shared Environment</td><td width=\"198\">to (29)………………</td><td width=\"198\">Less than (30)……………</td></tr><tr><td width=\"198\">(31)……………….</td><td width=\"198\">to part of siblings</td><td width=\"198\">(32)……. – 50%</td></tr></tbody></table>",
@@ -463,21 +453,15 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q33",
-              "answer": "Interrupted",
-              "before": "……………… by the peer’s pressure. It was also indicated that",
-              "after": ""
+              "answer": "Interrupted"
             },
             {
               "id": "q34",
-              "answer": "Variations",
-              "before": "………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing",
-              "after": ""
+              "answer": "Variations"
             },
             {
               "id": "q35",
-              "answer": "Interests",
-              "before": "………………. between parents and children or even between parents themselves",
-              "after": ""
+              "answer": "Interests"
             }
           ],
           "legendHtml": "<p>Research in recent years illuminated that the impact from parents will frequently be (33)……………… by the peer’s pressure. It was also indicated that (34)………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing (35)………………. between parents and children or even between parents themselves.</p>",

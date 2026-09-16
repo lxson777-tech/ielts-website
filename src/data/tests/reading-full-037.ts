@@ -103,33 +103,23 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q6",
-              "answer": "Magnification",
-              "before": "………………. And a spectrum of colors from a beam of light can be produced with",
-              "after": ""
+              "answer": "Magnification"
             },
             {
               "id": "q7",
-              "answer": "Prisms",
-              "before": "……………… Harriot travelled to Virginia and mainly did research which focused on two subjects of American",
-              "after": ""
+              "answer": "Prisms"
             },
             {
               "id": "q8",
-              "answer": "Land and language",
-              "before": "…………………. After, he also enters upon a study of flight dynamics and",
-              "after": ""
+              "answer": "Land and language"
             },
             {
               "id": "q9",
-              "answer": "Ship design",
-              "before": "……………….. for one of his friends much ahead of major European competitor. He undertook extensive other studies which were only noted down personally yet predated than many other great scientists. One result, for example, corrected the misconception about the idea of",
-              "after": ""
+              "answer": "Ship design"
             },
             {
               "id": "q10",
-              "answer": "Rainbow refraction",
-              "before": "……………",
-              "after": ""
+              "answer": "Rainbow refraction"
             }
           ],
           "legendHtml": "<p>Various modem applications base on an image produced by lens uses refraction, such as (6)………………. And a spectrum of colors from a beam of light can be produced with (7)……………… Harriot travelled to Virginia and mainly did research which focused on two subjects of American (8)…………………. After, he also enters upon a study of flight dynamics and (9)……………….. for one of his friends much ahead of major European competitor. He undertook extensive other studies which were only noted down personally yet predated than many other great scientists. One result, for example, corrected the misconception about the idea of (10)……………..</p>",
@@ -302,21 +292,15 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q25",
-              "answer": "Physical",
-              "before": "…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support",
-              "after": ""
+              "answer": "Physical"
             },
             {
               "id": "q26",
-              "answer": "Capture of shortage",
-              "before": "……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the",
-              "after": ""
+              "answer": "Capture of shortage"
             },
             {
               "id": "q27",
-              "answer": "Blue water",
-              "before": "……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved",
-              "after": ""
+              "answer": "Blue water"
             }
           ],
           "legendHtml": "<p>Many severe problems like starvation and military actions etc result from the storage of water which sometimes for some areas seems (25)…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support. (26)……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the (27)……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -403,27 +387,19 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q32",
-              "answer": "Reproduction",
-              "before": "………………… than either capuchin of spider monkeys. Unlike the other local monkey species, howlers can survive without eating",
-              "after": ""
+              "answer": "Reproduction"
             },
             {
               "id": "q33",
-              "answer": "Fruit",
-              "before": "……………. and so can live inside a relatively small habitat area. Their diet is more flexible, and they are able to tolerate leaves with high levels of",
-              "after": ""
+              "answer": "Fruit"
             },
             {
               "id": "q34",
-              "answer": "Toxics",
-              "before": "……………… Howlers can also survive periods of",
-              "after": ""
+              "answer": "Toxics"
             },
             {
               "id": "q35",
-              "answer": "Drought",
-              "before": "…………….. better than the other monkey species can",
-              "after": ""
+              "answer": "Drought"
             }
           ],
           "legendHtml": "<p><strong>Why do howlers have an advantage over other Central American monkeys?</strong></p><p>Howler monkeys have a more rapid rate of (32)………………… than either capuchin of spider monkeys. Unlike the other local monkey species, howlers can survive without eating (33)……………. and so can live inside a relatively small habitat area. Their diet is more flexible, and they are able to tolerate leaves with high levels of (34)……………… Howlers can also survive periods of (35)…………….. better than the other monkey species can.</p>",

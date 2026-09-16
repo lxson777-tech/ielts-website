@@ -61,40 +61,30 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Rats",
-              "before": "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
-              "after": "",
               "explanation": "The second paragraph describes research on rats, whose brain patterns while running a maze matched those seen in REM sleep, so ‘Rats’ is the animal in this row of the table.",
               "evidence": "researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep"
             },
             {
               "id": "q2",
               "answer": "Visual",
-              "before": "…………. input may have been dreaming of flying Whales and dolphins · still have",
-              "after": "",
               "explanation": "The third paragraph says REM activity was high in regions ‘processing visual information’, matching the word needed for what the pigeons’ brains were dealing with.",
               "evidence": "REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying"
             },
             {
               "id": "q3",
               "answer": "Half",
-              "before": "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
-              "after": "",
               "explanation": "The fourth paragraph says whales and dolphins ‘do not shut down their entire brain… but only half of it, keeping the rest awake’, giving the word for this gap.",
               "evidence": "do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake"
             },
             {
               "id": "q4",
               "answer": "Temperature",
-              "before": "… their dreams are probably not very",
-              "after": "",
               "explanation": "The fourth paragraph explains they avoid REM sleep because ‘animals are more vulnerable to extremes of temperature’ during it, matching this gap.",
               "evidence": "during REM sleep animals are more vulnerable to extremes of temperature"
             },
             {
               "id": "q5",
               "answer": "Vivid",
-              "before": "…………",
-              "after": "",
               "explanation": "The fourth paragraph says whales and dolphins ‘may only experience non-REM dreams, which are less vivid’, giving the word for this final gap.",
               "evidence": "they may only experience non-REM dreams, which are less vivid"
             }
@@ -354,40 +344,30 @@ const test: PracticeTest = {
             {
               "id": "q22",
               "answer": "Prosperity",
-              "before": "………………….. is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps. Other finds include round ceramic objects,",
-              "after": "",
               "explanation": "Paragraph E says large-scale pottery production ‘is another indicator of the prosperity of Mapungubwe society’, matching this gap.",
               "evidence": "is another indicator of the prosperity of Mapungubwe society"
             },
             {
               "id": "q23",
               "answer": "Whistles",
-              "before": "………………. and figures of various animals, as well as models of people with stretched",
-              "after": "",
               "explanation": "Paragraph E lists ‘ceramic discs, and whistles’ among the finds, matching this gap.",
               "evidence": "There are also ceramic discs, and whistles"
             },
             {
               "id": "q24",
               "answer": "Bodies",
-              "before": "…………………. It is possible that these had a role in ceremonies to honour",
-              "after": "",
               "explanation": "Paragraph E describes figures of humans ‘with elongated bodies and short limbs’, matching this gap.",
               "evidence": "small figures of highly stylised humans with elongated bodies and short limbs"
             },
             {
               "id": "q25",
               "answer": "Ancestors",
-              "before": "……………………. In addition, pieces of",
-              "after": "",
               "explanation": "Paragraph E suggests the figures ‘may have been used in ceremonies as offerings to ancestors’, matching this gap.",
               "evidence": "The figures may have been used in ceremonies as offerings to ancestors"
             },
             {
               "id": "q26",
               "answer": "Jewellery",
-              "before": "………………….. made from a local metal have been found at the site",
-              "after": "",
               "explanation": "Paragraph E mentions ‘small jewellery items made from locally sourced copper’, matching this final gap.",
               "evidence": "small jewellery items made from locally sourced copper"
             }

@@ -142,21 +142,15 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q11",
-              "answer": "White muscle",
-              "before": "………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its",
-              "after": ""
+              "answer": "White muscle"
             },
             {
               "id": "q12",
-              "answer": "Fats and glycogen",
-              "before": "………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from",
-              "after": ""
+              "answer": "Fats and glycogen"
             },
             {
               "id": "q13",
-              "answer": "Predator",
-              "before": "……………",
-              "after": ""
+              "answer": "Predator"
             }
           ],
           "legendHtml": "<p>Two types of muscles are involved in fish swimming. The majority of a fish’s body comprises the (11)………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its (12)………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from (13)……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -218,39 +212,27 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q14",
-              "answer": "Bad cough",
-              "before": "……………..and tiredness Doctor’s measurement by taking",
-              "after": ""
+              "answer": "Bad cough"
             },
             {
               "id": "q15",
-              "answer": "Blood pressure",
-              "before": "…………….and temperature Common judgement from",
-              "after": ""
+              "answer": "Blood pressure"
             },
             {
               "id": "q16",
-              "answer": "Families and friends",
-              "before": "…………….around you Scientific evidence Medical knowledge from the general",
-              "after": ""
+              "answer": "Families and friends"
             },
             {
               "id": "q17",
-              "answer": "Practitioner",
-              "before": "……………e.g. doctor’s medical",
-              "after": ""
+              "answer": "Practitioner"
             },
             {
               "id": "q18",
-              "answer": "Diagnosis",
-              "before": "…………. Examine the medical hypothesis with the previous drill and",
-              "after": ""
+              "answer": "Diagnosis"
             },
             {
               "id": "q19",
-              "answer": "Background",
-              "before": "…………",
-              "after": ""
+              "answer": "Background"
             }
           ],
           "legendHtml": "<table><tbody><tr><td width=\"151\"><strong>Source of knowledge</strong></td><td width=\"442\"><strong>Examples </strong></td></tr><tr><td width=\"151\">Personal experience</td><td width=\"442\"><p> </p><p>Symptoms of a (14)……………..and tiredness</p><p> </p><p>Doctor’s measurement by taking (15)…………….and temperature</p><p> </p><p>Common judgement from (16)…………….around you</p><p> </p></td></tr><tr><td width=\"151\">Scientific evidence</td><td width=\"442\"><p> </p><p>Medical knowledge from the general (17)……………e.g. doctor’s medical (18)………….</p><p> </p><p>Examine the medical hypothesis with the previous drill and(19)………….</p><p> </p></td></tr></tbody></table>",
@@ -454,33 +436,23 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q33",
-              "answer": "Yeast",
-              "before": "…………….. or",
-              "after": ""
+              "answer": "Yeast"
             },
             {
               "id": "q34",
-              "answer": "Bacteria",
-              "before": "…………….. • Globules of",
-              "after": ""
+              "answer": "Bacteria"
             },
             {
               "id": "q35",
-              "answer": "Protein",
-              "before": "…………… • Dissolved in",
-              "after": ""
+              "answer": "Protein"
             },
             {
               "id": "q36",
-              "answer": "Chemical",
-              "before": "………….. • Passed through",
-              "after": ""
+              "answer": "Chemical"
             },
             {
               "id": "q37",
-              "answer": "Holes",
-              "before": "………….. • To produce a solid fibre",
-              "after": ""
+              "answer": "Holes"
             }
           ],
           "legendHtml": "<p>• Synthetic gene grown in (33)…………….. or (34)……………..<br/>\n• Globules of (35)……………<br/>\n• Dissolved in (36)…………..<br/>\n• Passed through (37)…………..<br/>\n• To produce a solid fibre</p>",

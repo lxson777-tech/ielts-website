@@ -224,32 +224,24 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "Plant",
-              "before": "……………….. but it has also developed powerful",
-              "after": "",
               "explanation": "The passage says that in tanks pfiesteria 'was quite content to behave like a plant and photosynthesize' under normal conditions.",
               "evidence": "behave like a plant and photosynthesize"
             },
             {
               "id": "q15",
               "answer": "Poisons",
-              "before": "………………. as a defence against being eaten by fish. When the fish are disabled and killed by the neurotoxins, the organism",
-              "after": "",
               "explanation": "The passage says dinoflagellates 'have evolved powerful toxins' to deter fish from eating them, matching 'poisons' from the box.",
               "evidence": "have evolved powerful toxins"
             },
             {
               "id": "q16",
               "answer": "Eats",
-              "before": "………………. them and it",
-              "after": "",
               "explanation": "After the fish died, 'Pfiesteria changed shape again and devoured them', matching 'eats' from the box.",
               "evidence": "Pfiesteria changed shape again and devoured them"
             },
             {
               "id": "q17",
               "answer": "Disappears",
-              "before": "……………….. afterward. jaws grows animal kills eats poisons plant disappears microorganism bacteria fish dies",
-              "after": "",
               "explanation": "The passage says that once fed, 'it vanished', matching 'disappears' from the box.",
               "evidence": "it vanished"
             }
@@ -264,32 +256,24 @@ const test: PracticeTest = {
             {
               "id": "q18",
               "answer": "Pollution",
-              "before": "………………. and",
-              "after": "",
               "explanation": "The passage says water with the biggest fish kills showed 'high levels of pollution', giving the first condition.",
               "evidence": "high levels of pollution"
             },
             {
               "id": "q19",
               "answer": "Large numbers of",
-              "before": "………………… fish feeding together. Research scientists at the international conference learned about",
-              "after": "",
               "explanation": "The passage lists 'large numbers of fish travelling together' feeding in poorly flushed water as another condition favouring pfiesteria.",
               "evidence": "large numbers of fish travelling together"
             },
             {
               "id": "q20",
               "answer": "New",
-              "before": "……………… types of toxic algae and how they are spreading around the world in water stored on",
-              "after": "",
               "explanation": "Researchers at the conference 'heard about new kinds of toxins', matching the gap directly.",
               "evidence": "new kinds of toxins"
             },
             {
               "id": "q21",
               "answer": "Ships",
-              "before": "………….. at sea",
-              "after": "",
               "explanation": "The passage says toxic algae are 'spreading to new shores in ballast water carried by ships', matching the gap.",
               "evidence": "ballast water carried by ships"
             }

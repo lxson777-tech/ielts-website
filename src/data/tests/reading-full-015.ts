@@ -58,56 +58,42 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "rehabilitation of offenders",
-              "before": "………….. than to their incarceration. Closure of prisons in the Netherlands",
-              "after": "",
               "explanation": "The opening comparison credits falling crime to rehabilitating offenders rather than to locking them up.",
               "evidence": "a move towards rehabilitation of offenders and decreasing crime has seen a reduction in incarceration rates."
             },
             {
               "id": "q2",
               "answer": "has been accelerating",
-              "before": "………………. at an unprecedented rate over recent years. Against",
-              "after": "",
               "explanation": "Dutch prison closures have sped up sharply in recent years, with 19 closures in 2014 alone.",
               "evidence": "the Dutch reform of the prison system has been accelerating at a phenomenal pace, with 19 of the prisons being shut down in 2014 alone."
             },
             {
               "id": "q3",
               "answer": "all expectations",
-              "before": "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
-              "after": "",
               "explanation": "Crime is falling in the Netherlands as prisons close, defying what pro-incarceration supporters would expect.",
               "evidence": "Defying all expectations of the pro-incarceration lobbyists, crime rates in the Netherlands are also actually decreasing"
             },
             {
               "id": "q4",
               "answer": "question the validity",
-              "before": "………………. of such a practice. In fact, incarceration may serve to fuel rather",
-              "after": "",
               "explanation": "These figures lead many people to doubt whether incarceration actually works.",
               "evidence": "many are now beginning to question the validity of incarceration as a method of reforming offenders."
             },
             {
               "id": "q5",
               "answer": "than alleviate",
-              "before": "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
-              "after": "",
               "explanation": "The passage argues prison terms may create crime rather than reduce it.",
               "evidence": "serving a prison term tends to create rather than alleviate the problem of crime."
             },
             {
               "id": "q6",
               "answer": "more effective alternatives",
-              "before": "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
-              "after": "",
               "explanation": "The 1990 Conservative white paper proposed community sentences as cheaper, better alternatives to prison.",
               "evidence": "there should be a range of community-based sentences which would be cheaper and more effective alternatives to prison."
             },
             {
               "id": "q7",
               "answer": "social and economic",
-              "before": "………………. influences",
-              "after": "",
               "explanation": "The punitive approach ignores the social and economic causes behind crime.",
               "evidence": "Such an approach overlooks social and economic factors that can play an integral role in the incidence of crime."
             }
@@ -259,8 +245,6 @@ const test: PracticeTest = {
             {
               "id": "q14",
               "answer": "moral or philosophical",
-              "before": "…………….. realm. Italian scientist, Lombroso proposes a",
-              "after": "",
               "explanation": "Before the 19th century, criminality was seen as a moral or philosophical matter.",
               "evidence": "Prior to the 19th century, criminality was considered more of a moral or philosophical issue."
             },
@@ -270,8 +254,6 @@ const test: PracticeTest = {
                 "physiological disposition",
                 "biological disposition"
               ],
-              "before": "………………. to criminality. A biological theory of criminality presupposes that such a condition is",
-              "after": "",
               "explanation": "Lombroso proposed that criminal behaviour came from a physiological, biological disposition.",
               "evidence": "Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons."
             },
@@ -281,16 +263,12 @@ const test: PracticeTest = {
                 "heritable",
                 "inherited"
               ],
-              "before": "……………… Criminal types are claimed to be",
-              "after": "",
               "explanation": "Lombroso claimed criminality was heritable, passed down biologically.",
               "evidence": "Lombroso claimed that criminality was heritable."
             },
             {
               "id": "q17",
               "answer": "characterised by",
-              "before": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a",
-              "after": "",
               "explanation": "Criminal types were said to be marked by primitive, atavistic physical features.",
               "evidence": "Such people, he claimed, exhibited 'atavistic' or primitive features"
             },
@@ -300,56 +278,42 @@ const test: PracticeTest = {
                 "hereditary aspect",
                 "biological basis"
               ],
-              "before": "……………… to criminality. Body types are",
-              "after": "",
               "explanation": "Sheldon, like Lombroso, proposed a hereditary, biological basis for criminality through body type.",
               "evidence": "Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour."
             },
             {
               "id": "q19",
               "answer": "associated with",
-              "before": "……………… particular dispositions. Mesomorphs are types considered to have",
-              "after": "",
               "explanation": "Each physical body type was linked with a distinct personality.",
               "evidence": "Each physical type, Sheldon claimed, was associated with a distinct personality and temperament."
             },
             {
               "id": "q20",
               "answer": "criminal tendencies",
-              "before": "……………….. 1960s",
-              "after": "",
               "explanation": "Sheldon claimed the muscular mesomorph type had criminal tendencies.",
               "evidence": "those corresponding to this physical type had criminal tendencies."
             },
             {
               "id": "q21",
               "answer": "Chromosomal abnormality",
-              "before": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more",
-              "after": "",
               "explanation": "In the 1960s, chromosomal abnormality became the new proposed biological cause of criminality.",
               "evidence": "hereditary tendencies were linked to genetic defect or chromosomal abnormality."
             },
             {
               "id": "q22",
               "answer": "masculine and aggressive",
-              "before": "………………… males. The proposed link between criminality and genotype is",
-              "after": "",
               "explanation": "An extra Y chromosome was hypothesised to make men more masculine and aggressive.",
               "evidence": "having an extra male 'Y' chromosome should make a man more masculine and aggressive."
             },
             {
               "id": "q23",
               "answer": "severely undermined by",
-              "before": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by",
-              "after": "",
               "explanation": "Epps' 1995 study seriously undermined the chromosome theory of criminality.",
               "evidence": "this somewhat weak hypothesis was severely undermined by the study of Epps in 1995."
             },
             {
               "id": "q24",
               "answer": "environmental and social",
-              "before": "……………… elements",
-              "after": "",
               "explanation": "Today, biological factors are seen as moderated by environmental and social influences.",
               "evidence": "it seems to be at least tempered by environmental and social factors to a large extent."
             }
@@ -452,48 +416,36 @@ const test: PracticeTest = {
             {
               "id": "q27",
               "answer": "means",
-              "before": "…………….. yet is available to analyse it. Fingerprints are not used",
-              "after": "",
               "explanation": "DNA evidence went unexamined because the means to test it, forensic DNA testing, did not yet exist.",
               "evidence": "the means to thoroughly analyse such evidence through DNA testing was light years away still."
             },
             {
               "id": "q28",
               "answer": "for identification purposes",
-              "before": "…………….. Only one of the Ripper’s",
-              "after": "",
               "explanation": "Fingerprinting for identification was only theorised in 1880 and not put into practice until 1896, too late for the Ripper case.",
               "evidence": "he outlined for the first time the possibility of using fingerprints for identification purposes."
             },
             {
               "id": "q29",
               "answer": "victims",
-              "before": "…………… is photographed at the crime scene. Images taken are",
-              "after": "",
               "explanation": "Only one of the Ripper's victims, Mary Kelly, was photographed at the crime scene.",
               "evidence": "the officers leading the investigation at the time saw fit to only photograph one of the Ripper's victims"
             },
             {
               "id": "q30",
               "answer": "centred on",
-              "before": "……………… capturing the victim’s eyes. Vital written evidence is",
-              "after": "",
               "explanation": "The photographs focused mainly on the victim's eyes rather than the wider scene.",
               "evidence": "photographs of the victim were more centred on photographing her eyes"
             },
             {
               "id": "q31",
               "answer": "removed",
-              "before": "……………. on the orders of a police investigator. Investigators representing rival",
-              "after": "",
               "explanation": "A police investigator ordered the scrawled message removed before it could be properly examined.",
               "evidence": "the investigating officer ordered that it be removed as it was thought to implicate the Jews"
             },
             {
               "id": "q32",
               "answer": "law enforcement agencies",
-              "before": "…………………. fail to exchange information",
-              "after": "",
               "explanation": "Rivalry between the City and Metropolitan Police forces delayed the exchange of information.",
               "evidence": "in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information"
             }
@@ -509,24 +461,18 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "evade capture",
-              "before": "…………… against the odds. Only on closer investigation does the reason become more apparent. Often a",
-              "after": "",
               "explanation": "The overall puzzle the passage explores is how the Ripper evaded capture despite intense public and police attention.",
               "evidence": "why did the Ripper evade capture and why was no one even charged with the five murders"
             },
             {
               "id": "q34",
               "answer": "crime scene",
-              "before": "………………. was disturbed, destroying vital evidence within it. Only later, with",
-              "after": "",
               "explanation": "Evidence was disturbed at the crime scene, such as the removed written message, destroying potential clues.",
               "evidence": "this action may have destroyed vital clues."
             },
             {
               "id": "q35",
               "answer": "the publication of",
-              "before": "……………. a book by Hans Gross, were more scientific investigative methods introduced. Until then there was a lack of knowledge of",
-              "after": "",
               "explanation": "Modern forensic method only began with Hans Gross's 1893 handbook, published after the murders.",
               "evidence": "it was only with the publication of Hans Gross' 'A Handbook for Examining Magistrates, Police Officials, Military Police, etc.' in 1893 that the foundation for forensic science was laid."
             },
@@ -536,8 +482,6 @@ const test: PracticeTest = {
                 "modern forensic techniques",
                 "forensic science"
               ],
-              "before": "……………….. In 1896 Sir Francis Galton used a",
-              "after": "",
               "explanation": "Before Gross's book, investigators lacked knowledge of modern forensic techniques.",
               "evidence": "floundered in its ignorance of modern forensic techniques."
             },
@@ -547,16 +491,12 @@ const test: PracticeTest = {
                 "New-found",
                 "Fingerprinting"
               ],
-              "before": "……………… method known as dactyloscopy. This method was to greatly aid the police in identifying criminals. Curiously, investigative methods known to police at the time were often not employed. Crime scene photography was rarely",
-              "after": "",
               "explanation": "The passage calls dactyloscopy 'the new-found method', and says it later became known as fingerprinting, so either word fits the gap.",
               "evidence": "Using the new-found method of 'dactyloscopy' (later known as fingerprinting) he employed the technique to successfully identify criminals."
             },
             {
               "id": "q38",
               "answer": "standard practice",
-              "before": "…………. for example",
-              "after": "",
               "explanation": "Photographing the crime scene was not standard practice at the time.",
               "evidence": "Photographing the crime scene was not exactly standard practice of the time but it was a known procedure."
             }

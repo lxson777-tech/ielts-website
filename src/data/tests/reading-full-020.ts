@@ -140,16 +140,12 @@ const test: PracticeTest = {
             {
               "id": "q10",
               "answer": "Safety",
-              "before": "………….. On some airlines, pilots can sleep in the cockpit if",
-              "after": "",
               "explanation": "The passage says some companies 'are encouraging sleep at work, primarily for safety', matching the gap.",
               "evidence": "primarily for safety"
             },
             {
               "id": "q11",
               "answer": "Not on duty",
-              "before": "…………",
-              "after": "",
               "explanation": "Some overseas carriers let pilots nap in the cockpit 'when not on duty', matching the gap.",
               "evidence": "when not on duty, to nap in the cockpit"
             }
@@ -294,24 +290,18 @@ const test: PracticeTest = {
             {
               "id": "q20",
               "answer": "Water",
-              "before": "…………….. then left to stand for 2-4 weeks. This mixture is strained to produce a tincture which can be diluted. 1 drop of this tincture is added to 99 drops of alcohol/water. The mixture is then",
-              "after": "",
               "explanation": "The raw material is 'dissolved in a mixture that contains approximately 90% alcohol and 10% water', matching the gap.",
               "evidence": "90% alcohol and 10% water"
             },
             {
               "id": "q21",
               "answer": "Shaken",
-              "before": "…………. vigorously. This produces a remedy with a potency of 1c. As the remedy becomes more diluted, it gets",
-              "after": "",
               "explanation": "Between dilutions, 'the remedy is shaken vigorously', matching the gap.",
               "evidence": "the remedy is shaken vigorously"
             },
             {
               "id": "q22",
               "answer": "Stronger",
-              "before": "……………",
-              "after": "",
               "explanation": "The passage says 'the more dilute the remedy, the stronger it is', matching the gap.",
               "evidence": "the more dilute the remedy, the stronger it is"
             }
@@ -454,16 +444,12 @@ const test: PracticeTest = {
             {
               "id": "q32",
               "answer": "Low quality",
-              "before": "………….. Drug content No active substances named",
-              "after": "",
               "explanation": "The passage says 'most marijuana produces very low-quality fibre', matching the gap for the marijuana row.",
               "evidence": "most marijuana produces very low-quality fibre"
             },
             {
               "id": "q33",
               "answer": "THC",
-              "before": "…… Up to 10%",
-              "after": "",
               "explanation": "Hemp contains 'virtually none of the active ingredients of drug-type cannabis (THC)', giving the abbreviation needed.",
               "evidence": "the active ingredients of drug-type cannabis (THC)"
             }

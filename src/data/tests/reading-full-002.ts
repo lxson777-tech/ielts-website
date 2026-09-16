@@ -58,56 +58,42 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "Dust",
-              "before": "………………… out o lower the temperature of its",
-              "after": "",
               "explanation": "The second paragraph says the nostrils ‘filter out dust’, giving the exact word needed for what they keep out.",
               "evidence": "they filter out dust and cool the blood during hot, dry summers"
             },
             {
               "id": "q2",
               "answer": "Blood",
-              "before": "…………………..in summer o warm the air entering its lungs in winter • grows a thick",
-              "after": "",
               "explanation": "The same sentence says the nostrils ‘cool the blood during hot, dry summers’, matching this gap about what they lower the temperature of.",
               "evidence": "they filter out dust and cool the blood during hot, dry summers"
             },
             {
               "id": "q3",
               "answer": "Coat",
-              "before": "……………….. in winter, which it loses in spring Reasons for population decline • poaching, especially for the",
-              "after": "",
               "explanation": "The second paragraph mentions ‘a heavy winter coat that the saiga sheds when the weather warms up’, giving the word for this gap.",
               "evidence": "a heavy winter coat that the saiga sheds when the weather warms up"
             },
             {
               "id": "q4",
               "answer": "Horns",
-              "before": "……………… of male saiga • expansion of farms and settlements, causing o reduction in the size of the saiga’s",
-              "after": "",
               "explanation": "The fourth paragraph explains poachers target ‘their horns’ because male saiga horns are prized in traditional medicine, giving this gap’s word.",
               "evidence": "their horns are highly prized by traditional medicine practitioners"
             },
             {
               "id": "q5",
               "answer": "Habitat",
-              "before": "……………. o loss of access to the",
-              "after": "",
               "explanation": "The fifth paragraph opens with ‘loss of habitat, as a result of agricultural expansion and human settlement’, matching this gap.",
               "evidence": "Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement"
             },
             {
               "id": "q6",
               "answer": "Routes",
-              "before": "……………… which they use for migration • various forms of disease, leading to mass mortality events • climate change, causing the disappearance of",
-              "after": "",
               "explanation": "The same paragraph refers to ‘the seasonal migration routes’ that barriers can block, giving the word for this gap.",
               "evidence": "can block the seasonal migration routes of this transboundary species"
             },
             {
               "id": "q7",
               "answer": "Streams",
-              "before": "………………. which the saiga relied on",
-              "after": "",
               "explanation": "The seventh paragraph says ‘many of the smaller streams that the species normally depended on have dried up’, matching this gap.",
               "evidence": "many of the smaller streams that the species normally depended on have dried up and vanished"
             }
@@ -255,64 +241,48 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "Lanes",
-              "before": "………………. to cut down on delays • passengers pay fares before",
-              "after": "",
               "explanation": "The sixth paragraph says the buses run on ‘bus lanes separated from other traffic… to reduce stoppages’, giving the word for this gap.",
               "evidence": "runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages"
             },
             {
               "id": "q20",
               "answer": "Boarding",
-              "before": "………………. • passengers in",
-              "after": "",
               "explanation": "The same paragraph says ‘ticket purchase and control takes place at stations prior to boarding’, matching this gap.",
               "evidence": "Ticket purchase and control takes place at stations prior to boarding"
             },
             {
               "id": "q21",
               "answer": "Wheelchairs",
-              "before": "…………………. can use every part of the system Problems • the temperature control is sometimes not activated in order to reduce",
-              "after": "",
               "explanation": "The passage says the step-free buses make the route ‘accessible to people using wheelchairs’, giving the word for this gap.",
               "evidence": "the entire route is accessible to people using wheelchairs or who are travelling with baby buggies"
             },
             {
               "id": "q22",
               "answer": "Fuel",
-              "before": "………………. use • insufficient number of vehicles are available due to the effects of a severe",
-              "after": "",
               "explanation": "Paulas George complains that ‘drivers often refuse to turn on the air conditioning to save fuel’, matching this gap.",
               "evidence": "drivers often refuse to turn on the air conditioning to save fuel"
             },
             {
               "id": "q23",
               "answer": "Flood",
-              "before": "………………… • passengers are unable to use",
-              "after": "",
               "explanation": "The passage says there is ‘a shortage of buses after a serious flood at the main depot’, giving the word for this gap.",
               "evidence": "A shortage of buses after a serious flood at the main depot during the rainy season"
             },
             {
               "id": "q24",
               "answer": "Smartcards",
-              "before": "……………….. because some equipment is out of action • tickets have to be checked manually at station",
-              "after": "",
               "explanation": "The passage says ‘smartcards can’t be used as the mechanical readers aren’t working’, matching this gap about equipment failure.",
               "evidence": "Smartcards can’t be used as the mechanical readers aren’t working either"
             },
             {
               "id": "q25",
               "answer": "Gates",
-              "before": "……………. •",
-              "after": "",
               "explanation": "The passage says ‘staff stand by the gates and tear tickets as people enter’, giving the word for this gap.",
               "evidence": "Staff stand by the gates and tear tickets as people enter"
             },
             {
               "id": "q26",
               "answer": "Queues",
-              "before": "………………. frequently build up during rush hours",
-              "after": "",
               "explanation": "The passage concludes ‘as a result, queues are considerable at peak times’, matching this final gap.",
               "evidence": "As a result, queues are considerable at peak times"
             }

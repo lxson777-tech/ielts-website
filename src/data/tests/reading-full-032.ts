@@ -52,27 +52,36 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "True",
-              "textHtml": "Brantingham and Beekman were the first researchers to investigate the relationship between health problems and flat floors"
+              "textHtml": "Brantingham and Beekman were the first researchers to investigate the relationship between health problems and flat floors",
+              "explanation": "The first paragraph says the idea that flat floors could harm our health was pioneered in the late 1960s by Brantingham and Beekman, and 'pioneered' means nobody had looked into it before them.",
+              "evidence": "Research into the idea that flat floors could be detrimental to our health was pioneered back in the late 1960s in Long Beach, California."
             },
             {
               "id": "q2",
               "answer": "False",
-              "textHtml": "The subjects in Fisher’s control group experienced a decline in their physical condition"
+              "textHtml": "The subjects in Fisher’s control group experienced a decline in their physical condition",
+              "explanation": "The fourth paragraph says the control group who walked on ordinary floors got better too, just not as much as the mat group, so their condition improved rather than declined.",
+              "evidence": "People in a control group who walked on ordinary floors also improved but not as dramatically."
             },
             {
               "id": "q3",
               "answer": "True",
-              "textHtml": "The manufacturers are increasing the number of cobblestone mats they are making"
+              "textHtml": "The manufacturers are increasing the number of cobblestone mats they are making",
+              "explanation": "The fourth paragraph says the mats can now be bought and that production is being scaled up, which means more of them are being made.",
+              "evidence": "The mats are now available for purchase and production is being scaled up."
             },
             {
               "id": "q4",
               "answer": "True",
-              "textHtml": "Fisher based his ideas on what he saw during an overseas trip"
+              "textHtml": "Fisher based his ideas on what he saw during an overseas trip",
+              "explanation": "The fourth paragraph says Fisher took the idea from his regular visits to China, where people walk on cobbled paths for their health, so the idea came from trips abroad.",
+              "evidence": "Fisher admits he got the concept from regular visits to the country."
             },
             {
               "id": "q5",
               "answer": "Not given",
-              "textHtml": "The Masai Barefoot Technology shoes are made to fit people of all ages"
+              "textHtml": "The Masai Barefoot Technology shoes are made to fit people of all ages",
+              "explanation": "The sixth paragraph describes how the Masai Barefoot Technology shoes work, with rounded soles that make you rock, but it never says anything about who the shoes are designed to fit or about the ages of the people who wear them."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -91,7 +100,9 @@ const test: PracticeTest = {
                 "doubted by other researchers",
                 "applicable to a narrow range of people",
                 "surprising to them"
-              ]
+              ],
+              "explanation": "The third paragraph says that decades after the research, the floors of the world's biggest workplaces are still completely smooth, so large employers took no notice of the findings. Option D is tempting, but the passage says the results were what the researchers hoped for, so they were not a surprise.",
+              "evidence": "Yet decades later, the flooring of the world’s largest workplaces remains relentlessly smooth."
             },
             {
               "id": "q7",
@@ -102,7 +113,9 @@ const test: PracticeTest = {
                 "They would be as beneficial to younger people as to older peopl",
                 "They could be an effective alternative to medical intervention",
                 "Their effects may vary depending on individual users"
-              ]
+              ],
+              "explanation": "In the fourth paragraph the researchers call the mats a useful non-drug way of preventing or controlling high blood pressure, which means they could be used instead of medicine. Option B is tempting, but the study only involved people over 60 and no claim is made about younger users.",
+              "evidence": "‘useful nonpharmacological approach for preventing or controlling hypertension of older adults"
             },
             {
               "id": "q8",
@@ -113,7 +126,9 @@ const test: PracticeTest = {
                 "High prices do not necessarily equate to a quality product",
                 "People are setting up home in the country for health reasons",
                 "The natural environment is fast disappearing"
-              ]
+              ],
+              "explanation": "The last paragraph says the countryside is now harder to reach and is shrinking while concrete cities grow at a frightening speed, so nature is vanishing quickly. Option C is tempting because the countryside is recommended, but only for a weekend or a few hours, not for moving house.",
+              "evidence": "the countryside is not as accessible as it once was and is in fact a dwindling resource"
             }
           ]
         },
@@ -125,38 +140,38 @@ const test: PracticeTest = {
             {
               "id": "q9",
               "answer": "Anatomy",
-              "before": "………………. of the foot and noted that the surfaces of modem environments restrict its movement. They invented a mat which they tried out on factory workers. Whenever the workers walked on it, the different levels of",
-              "after": ""
+              "explanation": "The second paragraph says the two researchers understood that the foot is built like the hand, with 26 bones, 33 joints and over 100 muscles, and that modern life wastes that flexibility, so the word for this complex physical make-up is 'anatomy'.",
+              "evidence": "They understood that the anatomy of the foot parallels that of the human hand"
             },
             {
               "id": "q10",
               "answer": "Resistance",
-              "before": "……………….. in the mat would encourage greater muscle action. In turn, this lessened the effect of",
-              "after": ""
+              "explanation": "The third paragraph describes their mats as spongy, with the amount of resistance changing from place to place across the surface, and that unevenness is what made the leg muscles work.",
+              "evidence": "spongy mats with varying degrees of resistance across the surface"
             },
             {
               "id": "q11",
               "answer": "Stress",
-              "before": "……………….. on the cardiovascular system. Similar research was undertaken by John Fisher and colleagues in Oregon. As a result of their findings, they decided to market cobblestone mats to the elderly as a means of dealing with",
-              "after": ""
+              "explanation": "The third paragraph says the muscle action stopped blood pooling in the feet and legs, which reduced the stress on the heart and circulation, and the heart and circulation are the cardiovascular system.",
+              "evidence": "reducing the stress on the heart and circulation"
             },
             {
               "id": "q12",
               "answer": "Hypertension",
-              "before": "……………… Reflexologists claim that by manipulating specific parts of the feet, the performance of certain",
-              "after": ""
+              "explanation": "The fourth paragraph says the researchers believe the mats are a useful non-drug way of preventing or controlling hypertension in older adults, so hypertension is the problem the mats are sold to deal with.",
+              "evidence": "preventing or controlling hypertension of older adults"
             },
             {
               "id": "q13",
               "answer": "Organs",
-              "before": "……………… will also improve. Finally, Benno Nigg at Calgary University believes that specially shaped",
-              "after": ""
+              "explanation": "The fourth paragraph says reflexologists believe pressing particular spots on the foot links directly to particular organs and improves how they work, so it is the organs whose performance is said to improve.",
+              "evidence": "pressure applied to particular spots on the foot connects directly to particular organs of the body and somehow enhances their function"
             },
             {
               "id": "q14",
               "answer": "Soles",
-              "before": "……………… on shoes should give health benefits",
-              "after": ""
+              "explanation": "The sixth paragraph says Nigg's shoes have rounded soles that make you rock slightly and exercise the small ankle muscles, so the specially shaped part of the shoe is the soles.",
+              "evidence": "the shoes have rounded soles that cause you to rock slightly when you stand still"
             }
           ],
           "legendHtml": "<p>In their research, Brantingham and Beekman looked at the complex physical (9) ………………. of the foot and noted that the surfaces of modem environments restrict its movement. They invented a mat which they tried out on factory workers. Whenever the workers walked on it, the different levels of (10) ……………….. in the mat would encourage greater muscle action. In turn, this lessened the effect of (11) ……………….. on the cardiovascular system.</p><p>Similar research was undertaken by John Fisher and colleagues in Oregon. As a result of their findings, they decided to market cobblestone mats to the elderly as a means of dealing with (12) ……………… Reflexologists claim that by manipulating specific parts of the feet, the performance of certain (13) ……………… will also improve. Finally, Benno Nigg at Calgary University believes that specially shaped (14) ……………… on shoes should give health benefits.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -216,37 +231,48 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "True",
-              "textHtml": "Artists in the German aesthetic tradition portrayed nature realistically"
+              "textHtml": "Artists in the German aesthetic tradition portrayed nature realistically",
+              "explanation": "The third paragraph says Preston's early work followed the German aesthetic tradition, in which things from nature were shown true to life, and 'true to life' is the same as realistically.",
+              "evidence": "Her early artwork was influenced by the German aesthetic tradition, in which subjects of the natural world were depicted in a true to life manner."
             },
             {
               "id": "q16",
               "answer": "Not given",
-              "textHtml": "Margaret attended a famous art college in Paris"
+              "textHtml": "Margaret attended a famous art college in Paris",
+              "explanation": "The fourth paragraph mentions that she studied in Paris in 1904 and returned about eight years later, but it never names the school she attended there and never says whether it was famous, so we cannot judge this."
             },
             {
               "id": "q17",
               "answer": "False",
-              "textHtml": "Margaret met her husband William while teaching a craft at a rehabilitation unit"
+              "textHtml": "Margaret met her husband William while teaching a craft at a rehabilitation unit",
+              "explanation": "The fifth paragraph says she met William Preston on a boat sailing back to Australia, not at the rehabilitation unit in the West Country where she taught basket weaving, so the statement contradicts the passage.",
+              "evidence": "It was on board a boat returning to Australia that she met wealthy businessman William Preston, whom she married in 1919."
             },
             {
               "id": "q18",
               "answer": "Not given",
-              "textHtml": "Margaret Preston and Thea Proctor explored similar themes in their art"
+              "textHtml": "Margaret Preston and Thea Proctor explored similar themes in their art",
+              "explanation": "The sixth paragraph says Preston showed her work with her friend Thea Proctor in 1925 and then describes Preston's own subjects, but it never tells us what Proctor painted, so the two artists' themes are never compared."
             },
             {
               "id": "q19",
               "answer": "Not given",
-              "textHtml": "Margaret’s 1925 artworks of Sydney Harbour were simpler than her previous ones"
+              "textHtml": "Margaret’s 1925 artworks of Sydney Harbour were simpler than her previous ones",
+              "explanation": "The sixth paragraph compares the 1925 harbour views with her earlier ones and calls them compact and busy, but it never tells us how complicated or simple the earlier harbour views themselves were, so the comparison the statement makes is not one the passage gives."
             },
             {
               "id": "q20",
               "answer": "False",
-              "textHtml": "The colours in Margaret’s Berowra prints were very bright"
+              "textHtml": "The colours in Margaret’s Berowra prints were very bright",
+              "explanation": "The seventh paragraph says that at Berowra her prints became larger, less complex and less reliant on bright colours, so the colours were not very bright but more muted than before.",
+              "evidence": "Preston’s prints became larger, less complex and less reliant on the use of bright colours."
             },
             {
               "id": "q21",
               "answer": "True",
-              "textHtml": "When living in Berowra, Margaret painted flowers in their natural location"
+              "textHtml": "When living in Berowra, Margaret painted flowers in their natural location",
+              "explanation": "The seventh paragraph says that at Berowra she stopped arranging flowers in vases and instead concentrated on flowers growing wild around her bush home, which is painting them where they naturally grow.",
+              "evidence": "Preston began to concentrate instead on flowers that were growing wild."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -259,38 +285,41 @@ const test: PracticeTest = {
             {
               "id": "q22",
               "answer": "Symbols",
-              "before": "…………….. and colours from Aboriginal art in her own work often referred to Aboriginal sources in the",
-              "after": ""
+              "explanation": "The ninth paragraph says that during the 1940s Aboriginal symbols, along with the dried, burnt colours of traditional Aboriginal painting, appeared more and more in her prints, so symbols is what she took along with the colours.",
+              "evidence": "symbols used by Aboriginal people, together with dried, burnt colours found in traditional Aboriginal paintings, became increasingly prominent in her prints"
             },
             {
               "id": "q23",
               "answer": "Titles",
-              "before": "………………. she gave her artworks 1953 exhibition • very old method of",
-              "after": ""
+              "explanation": "The ninth paragraph says the titles she gave her works in this period often acknowledged where her ideas came from, so it is in the titles that she pointed to her Aboriginal sources.",
+              "evidence": "The artist’s titles from this period frequently acknowledge her sources"
             },
             {
               "id": "q24",
-              "answer": "Stenciling",
-              "before": "……………….. was used for some prints • was inspired by",
-              "after": ""
+              "answer": [
+                "Stenciling",
+                "Stencilling"
+              ],
+              "explanation": "The tenth paragraph says her 1953 Macquarie Galleries show had 29 prints made with the ancient technique called stenciling, which matches the note about a very old method.",
+              "evidence": "the ancient technique known as stenciling"
             },
             {
               "id": "q25",
               "answer": "Books",
-              "before": "………………….. about Chinese art that she had started collecting in 1915 • combination of Chinese and Aboriginal elements Old age • still interested in",
-              "after": ""
+              "explanation": "The tenth paragraph says she had admired Chinese art since 1915, when she bought the first of her many books on the subject, so books are what she began collecting that year.",
+              "evidence": "when she acquired the first of her many books on the subject"
             },
             {
               "id": "q26",
               "answer": "Painting",
-              "before": "………………… and art • worked for nearly six decades making more than",
-              "after": ""
+              "explanation": "The last paragraph says that as she grew older her love of painting, printmaking and travel carried on, so painting was one of the things she stayed interested in during old age.",
+              "evidence": "As she got older, her love of painting, printmaking and travel continued."
             },
             {
               "id": "q27",
               "answer": "400",
-              "before": "………………… artworks • dedicated n to Australian art and the originality of her work is seen in Preston’s long career",
-              "after": ""
+              "explanation": "The last paragraph says that by the time she died in 1963 she had made over 400 paintings and prints, which matches the note about more than a certain number of artworks.",
+              "evidence": "she had produced over 400 paintings and prints"
             }
           ],
           "legendHtml": "<p><strong>Margaret Preston’s later life</strong></p><p><strong>Aboriginal influence</strong><br/>\n• interest in Aboriginal art was inspired by seeing rock engravings close to her Berowra home<br/>\n• incorporated (22) …………….. and colours from Aboriginal art in her own work often referred to Aboriginal sources in the (23) ………………. she gave her artworks</p><p><strong>1953 exhibition</strong><br/>\n• very old method of (24) ……………….. was used for some prints<br/>\n• was inspired by (25) ………………….. about Chinese art that she had started collecting in 1915<br/>\n• combination of Chinese and Aboriginal elements</p><p><strong>Old age</strong><br/>\n• still interested in (26) ………………… and art<br/>\n• worked for nearly six decades making more than (27) ………………… artworks<br/>\n• dedicated n to Australian art and the originality of her work is seen in Preston’s long career</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -355,22 +384,30 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "G",
-              "textHtml": "a description of the characteristics common to songs with earworms"
+              "textHtml": "a description of the characteristics common to songs with earworms",
+              "explanation": "Paragraph G ends by listing the features that catchy songs tend to share, a repeating up and down pattern in pitch and an irregular musical interval. Paragraph B is tempting because it also reports research findings, but those are about tapping tempo and brain structure, not about the songs themselves.",
+              "evidence": "Songs with earworm potential appear to share certain features: a repeating pattern of ups and downs in pitch, and an irregular musical interval."
             },
             {
               "id": "q29",
               "answer": "A",
-              "textHtml": "a justification for research into earworms"
+              "textHtml": "a justification for research into earworms",
+              "explanation": "Paragraph A explains why earworms are worth studying, saying scientists use them to explore memory and the part of the brain we do not control. Paragraph C is tempting because it explains why earworms happen, but that is a finding, not a reason for doing the research.",
+              "evidence": "Some neuroscientists and cognitive psychologists are studying earworms to explore the mysteries of memory and the part of the brain that is beyond our conscious control."
             },
             {
               "id": "q30",
               "answer": "F",
-              "textHtml": "a description of the brain’s reaction to known and unknown songs"
+              "textHtml": "a description of the brain’s reaction to known and unknown songs",
+              "explanation": "Paragraph F contrasts what happens in the brain with familiar music, which lights up the right frontal and temporal areas, and with unfamiliar music, which activates the left frontal areas instead. Paragraph B also mentions brain differences, but those are between people, not between known and unknown songs.",
+              "evidence": "When the same subjects listened to unfamiliar music and were asked to recall it, there was activity in the left frontal portions of the brain instead."
             },
             {
               "id": "q31",
               "answer": "H",
-              "textHtml": "details of proposed research into the frequency with which earworms occur indifferent age groups"
+              "textHtml": "details of proposed research into the frequency with which earworms occur indifferent age groups",
+              "explanation": "Paragraph H describes a planned study by Stewart and Halpern on whether people at different ages get earworms more or less often. The ringtone plan in the same paragraph is about which songs stick, not about age, so it is the age study that matches.",
+              "evidence": "a study looking at whether people at different stages of life experience earworms differently"
             }
           ],
           "options": [
@@ -392,26 +429,26 @@ const test: PracticeTest = {
             {
               "id": "q32",
               "answer": "Wrist",
-              "before": "……………….. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with",
-              "after": ""
+              "explanation": "Paragraph B says the 17 volunteers tapped to the beat while a device on their wrist recorded their movements, so the monitor was worn on the wrist.",
+              "evidence": "a device attached to their wrist recorded their movements"
             },
             {
               "id": "q33",
               "answer": "Emotions",
-              "before": "………………….. differently from other people, Dr Stewart also believes that the brain is",
-              "after": ""
+              "explanation": "Paragraph B says people who hear earworms often and find them intrusive have more grey matter in the areas that process emotions, so emotions are what their brains handle differently.",
+              "evidence": "with more grey matter in areas associated with processing emotions"
             },
             {
               "id": "q34",
               "answer": "Entertained",
-              "before": "……………… by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how",
-              "after": ""
+              "explanation": "Paragraph C says Dr Stewart compares earworms to screen savers that keep the mind entertained when it has nothing else to do, which matches the brain being entertained while not focused on a task.",
+              "evidence": "‘sonic screen savers’ that keep the mind entertained while it is otherwise unoccupied"
             },
             {
               "id": "q35",
               "answer": "Challenging",
-              "before": "………………. the task was Interestingly, volunteers’ diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental",
-              "after": ""
+              "explanation": "Paragraph C says the harder the activity was, the less likely the volunteers were to hear music in their heads, so the drop in earworms depended on how challenging the task was.",
+              "evidence": "the more challenging the activity, the less likely the volunteers were to hear the music"
             }
           ],
           "legendHtml": "<p>Researchers from Goldsmiths concluded that the music we imagine in our minds is quite similar to recordings. They proved this by asking volunteers to record the rhythm of music using a monitor on their (32) ……………….. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with (33) ………………….. differently from other people, Dr Stewart also believes that the brain is (34) ……………… by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how (35) ………………. the task was Interestingly, volunteers’ diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental.</p>",
@@ -425,27 +462,37 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "D",
-              "textHtml": "Some musicians create music that is intentionally memorable"
+              "textHtml": "Some musicians create music that is intentionally memorable",
+              "explanation": "In paragraph G, John Seabrook describes how producers fill pop songs with hooks that are built to catch the brain and leave it wanting more, which is music made memorable on purpose. Lauren Stewart is the tempting choice because she talks about why songs stick, but she never says anything about how songs are written.",
+              "evidence": "the punchy melodic phrases designed to target the brain and leave it wanting more"
             },
             {
               "id": "q37",
               "answer": "A",
-              "textHtml": "People are unable to completely regulate how they think"
+              "textHtml": "People are unable to completely regulate how they think",
+              "explanation": "In paragraph A, Lauren Stewart says it is an illusion that we have full control over our thought processes, which is the same as saying people cannot completely regulate how they think. Ira Hyman is tempting because he talks about the subconscious, but his point is about how songs get in, not about control of thought in general.",
+              "evidence": "The idea that we have full control over our thought processes is an illusion"
             },
             {
               "id": "q38",
               "answer": "B",
-              "textHtml": "We can remember songs without knowing that we have heard them"
+              "textHtml": "We can remember songs without knowing that we have heard them",
+              "explanation": "In paragraph D, Ira Hyman says tunes you heard without paying attention can still slip into your subconscious and come back later, so we store songs we did not notice hearing. Lauren Stewart is tempting, but her point is about when earworms appear, not about unnoticed listening.",
+              "evidence": "Even tunes you may have heard but didn’t pay attention to can worm their way into your subconscious, says Ira Hyman"
             },
             {
               "id": "q39",
               "answer": "C",
-              "textHtml": "Thinking about music has a similar effect on the brain to hearing music"
+              "textHtml": "Thinking about music has a similar effect on the brain to hearing music",
+              "explanation": "Paragraph F says Andrea Halpern's imaging studies found that imagining music on purpose and really listening to it switch on many of the same brain networks. Lauren Stewart is the tempting choice because she also studies the brain, but the imaging work comparing imagined and heard music is Halpern's.",
+              "evidence": "deliberately imagining music and actually listening to music activate many of the same neurological networks"
             },
             {
               "id": "q40",
               "answer": "B",
-              "textHtml": "Earworms are more persistent when only a short section of the song is constantly replayed. A . Lauren Stewart B . Ira Hyman C . Andrea Haiper D . John Seabrook"
+              "textHtml": "Earworms are more persistent when only a short section of the song is constantly replayed. A . Lauren Stewart B . Ira Hyman C . Andrea Haiper D . John Seabrook",
+              "explanation": "Paragraph E says some earworms are only fragments that loop back when the mind cannot remember the next part, and Dr Hyman says this can make the earworm even more firmly stuck. Andrea Halpern is tempting because she appears in the next paragraph on brain areas, but the point about looping fragments is Hyman's.",
+              "evidence": "That could make an earworm even more entrenched, Dr Hyman says."
             }
           ],
           "legendHtml": "<p><strong>A</strong>. Lauren Stewart<br/>\n<strong>B</strong>. Ira Hyman<br/>\n<strong>C</strong>. Andrea Haiper<br/>\n<strong>D</strong>. John Seabrook</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
