@@ -30,6 +30,10 @@ function htmlImageSources(html: string): string[] {
 }
 
 const importedListeningAnswerHashes = [
+  /* Test 21 q31 changed on 2026-09-16: the key printed "attitude" but the
+     lecturer says "attitudes", and the marker does not fold plurals, so a
+     student writing what they heard was marked wrong. Both forms are now
+     accepted, which is a deliberate change to the contract below. */
   'aea3178c89ec70541617ae872308f757ced63e0191491f3bd907dad17d6cf86f',
   '7340117d6f6a403b7081660021a3c4bbf7227fce4103ea570061c3a9f2912d54',
   '4b6e196cf04ea2dae9cdd836cd36c4b307ba4a2c6921305b4e0ecda5f12e545b',
@@ -53,7 +57,7 @@ const importedListeningAnswerHashes = [
   // test 20 recomputed after the 2026-09-14 answer-key correction (q38: accepts both "Grandad's Old Ale" and "grandads old ale")
   '317844606ddd90d6f1551f2ecae1ddd72c65e69cf0e7f0fb3bdec9af5840d383',
   // tests 21 to 30, imported 2026-09-14 and verified against the source answer keys by tools/validate_listening.py
-  '6349eba5a92eb9eb8e70117296f9fac5a7a36a569daf0f9a5b9761e91e1f4e4c',
+  '5b01cd377b1c3bafcfefdd2856e8cf177dee0c308941688b6c6d2c73703d7c07',
   '6056cc4306bf365180b17ae833b0d1f65524da9be5a441cfd9c1bdda609baf06',
   'dbab849866075a7738aae33cdc56afffb919db52ea769dda3c6c9b1466aebfd6',
   '9d1492e36806bdc4f7bde72d7e3e01a288a11418e41b3649381429a95a4360dc',

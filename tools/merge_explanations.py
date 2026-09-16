@@ -26,6 +26,7 @@ Input shape:
 
 from __future__ import annotations
 
+import html
 import json
 import re
 import sys
@@ -38,11 +39,11 @@ PREFIX = "const test: PracticeTest = "
 SUFFIX = ";\n\nexport default test;\n"
 
 
-def strip_html(html: str) -> str:
-    text = re.sub(r"<[^>]+>", " ", html)
-    text = text.replace("&nbsp;", " ").replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
-    text = text.replace("&#39;", "'").replace("&quot;", '"')
-    return text
+def strip_html(markup: str) -> str:
+    """Tags out, entities decoded. The listening transcripts encode apostrophes
+    as &#x27;, so decoding has to be general: a hand-written entity list made
+    an evidence quote with an apostrophe impossible to pass."""
+    return html.unescape(re.sub(r"<[^>]+>", " ", markup))
 
 
 def normalise(s: str) -> str:
@@ -54,12 +55,19 @@ def normalise(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip().lower()
 
 
-def load_test(test_id: str) -> tuple[dict, Path]:
+# Reading tests are `const test: PracticeTest = {...};\n\nexport default test;`
+# and listening tests are `export const listeningFullNNN: PracticeTest = {...};`.
+# Accept either, and remember which, so a file is written back in its own shape.
+HEADER_RE = re.compile(r"(?:const test|export const (\w+)): PracticeTest = ")
+
+
+def load_test(test_id: str) -> tuple[dict, Path, str]:
     path = TESTS / f"{test_id}.ts"
     raw = path.read_text(encoding="utf-8")
-    start = raw.index(PREFIX) + len(PREFIX)
-    end = raw.rindex(";\n\nexport default test;")
-    return json.loads(raw[start:end]), path
+    match = HEADER_RE.search(raw)
+    if not match:
+        raise SystemExit(f"{test_id}: cannot find the PracticeTest declaration")
+    return json.loads(raw[match.end() : raw.rindex("};") + 1]), path, match.group(1) or ""
 
 
 def part_text(part: dict) -> str:
@@ -82,7 +90,7 @@ def part_text(part: dict) -> str:
 def merge(json_path: Path, write: bool) -> list[str]:
     test_id = json_path.stem
     entries = json.loads(json_path.read_text(encoding="utf-8"))
-    test, ts_path = load_test(test_id)
+    test, ts_path, export_name = load_test(test_id)
 
     problems: list[str] = []
     seen: set[str] = set()
@@ -131,10 +139,15 @@ def merge(json_path: Path, write: bool) -> list[str]:
 
     if write and not problems:
         body = json.dumps(test, indent=2, ensure_ascii=False)
-        ts_path.write_text(
-            f"import type {{ PracticeTest }} from '../../lib/tests/schema';\n\n{PREFIX}{body}{SUFFIX}",
-            encoding="utf-8",
-        )
+        header = "import type { PracticeTest } from '../../lib/tests/schema';\n\n"
+        if export_name:
+            text = f"{header}export const {export_name}: PracticeTest = {body};\n"
+        else:
+            text = f"{header}{PREFIX}{body}{SUFFIX}"
+        # Each test file is consistently CRLF or LF; keep whichever it uses.
+        if "\r\n" in ts_path.read_text(encoding="utf-8", newline=""):
+            text = text.replace("\n", "\r\n")
+        ts_path.write_text(text, encoding="utf-8", newline="")
 
     print(f"{test_id}: {covered} explanations ready, {len(problems)} problems{', written' if write and not problems else ''}")
     return problems
