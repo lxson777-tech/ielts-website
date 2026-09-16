@@ -63,32 +63,44 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "G",
-              "textHtml": "categorizations of fish by swimming speed"
+              "textHtml": "categorizations of fish by swimming speed",
+              "explanation": "Paragraph G is where the writer sorts fish into four types by how they swim, naming sneakers, stayers, sprinters and crawlers. Paragraph H also gives speeds, but it quotes records for single species rather than putting fish into groups.",
+              "evidence": "From these studies, we can broadly categorise fish into four groups"
             },
             {
               "id": "q2",
               "answer": "H",
-              "textHtml": "an example of fish capable of maintaining fast swimming for a long time"
+              "textHtml": "an example of fish capable of maintaining fast swimming for a long time",
+              "explanation": "Paragraph H gives tuna as fish that anglers have timed at over 40 mph for longer stretches, which is fast swimming kept up for a long time. Paragraph G is tempting because it names ‘stayers’ that swim fast over long periods, but it gives no example of such a fish.",
+              "evidence": "anglers have recorded speeds in excess of 40 mph over longer periods for several species of tuna"
             },
             {
               "id": "q3",
               "answer": "E",
-              "textHtml": "how fish control stability"
+              "textHtml": "how fish control stability",
+              "explanation": "Paragraph E explains that fins do almost none of the pushing and that their real job is to keep the fish steady and point it where it wants to go. Paragraph F is tempting because it lists fins too, but it describes what each separate fin does rather than the general idea of control.",
+              "evidence": "Their main function is to control the stability and direction of the fish"
             },
             {
               "id": "q4",
               "answer": "C",
-              "textHtml": "frequency of the muscle movement of fish"
+              "textHtml": "frequency of the muscle movement of fish",
+              "explanation": "Paragraph C gives the number of muscle waves per minute, from about 50 a minute in the dogfish up to 170 in the mackerel, which is the frequency the question asks about.",
+              "evidence": "The frequency of the waves varies from about 50/min in the dogfish to 170/min in the mackerel."
             },
             {
               "id": "q5",
               "answer": "B",
-              "textHtml": "a mechanical model of fish skeleton"
+              "textHtml": "a mechanical model of fish skeleton",
+              "explanation": "Paragraph B describes the skeleton in the language of simple machines, with the skull working as a fulcrum and the vertebrae as levers, which is a mechanical model of the fish’s bones.",
+              "evidence": "Their skull acts as a fulcrum and their vertebrae act as levers."
             },
             {
               "id": "q6",
               "answer": "D",
-              "textHtml": "energy storage devices in a fish"
+              "textHtml": "energy storage devices in a fish",
+              "explanation": "Paragraph D is the only place that says where a fish keeps its energy, telling us red muscle holds fat and glycogen, the stored form of glucose, while white muscle has very few energy stores.",
+              "evidence": "contains ampler quantities of fat and glycogen, the storage form of glucose"
             }
           ],
           "options": [
@@ -111,25 +123,41 @@ const test: PracticeTest = {
               "id": "q7",
               "answer": "Forward thrust",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "The label points at the tail fin, and Paragraph F says the tail fin, in its final lash, can give as much as 40 per cent of the forward thrust, so the tail supplies part of the forward thrust.",
+              "evidence": "The tail fin, in its final lash may contribute as much as 40 per cent of the forward thrust."
             },
             {
               "id": "q8",
               "answer": "Rolling and yawing",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "The gap sits beside the dorsal fin, and Paragraph F says the median fins, which include the dorsal fin, control the rolling and yawing movements of the fish.",
+              "evidence": "control the rolling and yawing movements of the fish"
             },
             {
               "id": "q9",
-              "answer": "Pectoral and pelvic",
+              "answer": [
+                "Pectoral and pelvic",
+                "pectoral",
+                "pectoral and pelvic fins"
+              ],
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "The label is about the fins that push the fish up and down, and Paragraph F names the paired fins as the pectoral and pelvic ones, which work like hydroplanes and tilt the fish upwards or downwards.",
+              "evidence": "The paired fins, pectoral and pelvic act as hydroplanes and control the pitch of the ash"
             },
             {
               "id": "q10",
-              "answer": "Slows and stops",
+              "answer": [
+                "Slows and stops",
+                "slows down and stops",
+                "slowing and stopping"
+              ],
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph F ends by saying the paired fins are also what the fish uses to slow down and come to a stop, which is the extra job the diagram asks for.",
+              "evidence": "The paired ins are also the means by which the fish slows down and stops."
             }
           ],
           "legendHtml": "<p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"492\" src=\"/ielts-website/pics/reading/imported/test-282-1.png\" width=\"855\"/></p>",
@@ -142,15 +170,24 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q11",
-              "answer": "White muscle"
+              "answer": "White muscle",
+              "explanation": "Paragraph D says most of a fish’s body is made of the so-called white muscle, so that is what the summary means by the majority of the body.",
+              "evidence": "The bulk of a fish’s body is composed of the so-called white muscle"
             },
             {
               "id": "q12",
-              "answer": "Fats and glycogen"
+              "answer": [
+                "Fats and glycogen",
+                "fat and glycogen"
+              ],
+              "explanation": "Paragraph D says the red muscle the fish uses for everyday swimming holds plenty of fat and glycogen, so these are the stores it draws on for routine movement.",
+              "evidence": "contains ampler quantities of fat and glycogen, the storage form of glucose, which is used for most day-to-day swimming movements"
             },
             {
               "id": "q13",
-              "answer": "Predator"
+              "answer": "Predator",
+              "explanation": "Paragraph D says the large store of white muscle matters when the fish’s life is in danger, for example from a predator, because it lets the fish dash away.",
+              "evidence": "if the life of the fish is threatened-by a predator, for instance"
             }
           ],
           "legendHtml": "<p>Two types of muscles are involved in fish swimming. The majority of a fish’s body comprises the (11)………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its (12)………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from (13)……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -212,27 +249,45 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q14",
-              "answer": "Bad cough"
+              "answer": "Bad cough",
+              "explanation": "Paragraph C sets out the symptoms in the example story: the person has a bad cough and feels tired all the time, so the first personal symptom is a bad cough.",
+              "evidence": "You have a bad cough and always seem to be tired."
             },
             {
               "id": "q15",
-              "answer": "Blood pressure"
+              "answer": "Blood pressure",
+              "explanation": "Paragraph C lists what the doctor measures at the first visit, including the patient’s temperature and blood pressure, so blood pressure is the missing measurement.",
+              "evidence": "takes your temperature and blood pressure"
             },
             {
               "id": "q16",
-              "answer": "Families and friends"
+              "answer": [
+                "Families and friends",
+                "friends and family"
+              ],
+              "explanation": "Paragraph F says the common sense of our families and friends is one of the things that shapes how we read our own symptoms, so these are the people around us whose everyday judgement counts.",
+              "evidence": "the common sense of our families and friends"
             },
             {
               "id": "q17",
-              "answer": "Practitioner"
+              "answer": "Practitioner",
+              "explanation": "Paragraph H calls the family doctor, the general practitioner, the most influential and authoritative source of medical knowledge, so the word needed after ‘general’ is practitioner.",
+              "evidence": "the medical knowledge provided by the general practitioner"
             },
             {
               "id": "q18",
-              "answer": "Diagnosis"
+              "answer": "Diagnosis",
+              "explanation": "Paragraph D says the patient ends up with a medically authenticated diagnosis, which is the piece of expert knowledge the doctor supplies.",
+              "evidence": "You have a medically authenticated diagnosis and it appears that you are seriously ill"
             },
             {
               "id": "q19",
-              "answer": "Background"
+              "answer": [
+                "Background",
+                "experience"
+              ],
+              "explanation": "Paragraph I says the doctor tests her idea about pneumonia using her medical training and background, so background is the second thing she draws on alongside her earlier training.",
+              "evidence": "Given the doctor’s medical training and background"
             }
           ],
           "legendHtml": "<table><tbody><tr><td width=\"151\"><strong>Source of knowledge</strong></td><td width=\"442\"><strong>Examples </strong></td></tr><tr><td width=\"151\">Personal experience</td><td width=\"442\"><p> </p><p>Symptoms of a (14)……………..and tiredness</p><p> </p><p>Doctor’s measurement by taking (15)…………….and temperature</p><p> </p><p>Common judgement from (16)…………….around you</p><p> </p></td></tr><tr><td width=\"151\">Scientific evidence</td><td width=\"442\"><p> </p><p>Medical knowledge from the general (17)……………e.g. doctor’s medical (18)………….</p><p> </p><p>Examine the medical hypothesis with the previous drill and(19)………….</p><p> </p></td></tr></tbody></table>",
@@ -292,42 +347,58 @@ const test: PracticeTest = {
             {
               "id": "q20",
               "answer": "E",
-              "textHtml": "the contrast between the nature of personal judgment and the nature of doctor’s diagnosis"
+              "textHtml": "the contrast between the nature of personal judgment and the nature of doctor’s diagnosis",
+              "explanation": "Paragraph E puts the two side by side: you go to the doctor because of what your own body tells you, while the doctor’s diagnosis rests on training, textbooks, laboratory reports and years of experience. Paragraph D is tempting because it also has both, but there they are combined into one conclusion rather than contrasted.",
+              "evidence": "However, the doctor’s expert diagnosis is based on experience and training, with sources of knowledge as diverse as other experts, laboratory reports, medical textbooks and years of experience."
             },
             {
               "id": "q21",
               "answer": "F",
-              "textHtml": "a reference of culture about pressure"
+              "textHtml": "a reference of culture about pressure",
+              "explanation": "Paragraph F says that over the past decade Western culture has given a lot of attention to stress related illness in the media, which is the reference to culture and pressure.",
+              "evidence": "Over the past decade, for example, Western culture has seen a significant emphasis on stress-related illness in the media."
             },
             {
               "id": "q22",
               "answer": "H",
-              "textHtml": "sick leave will not be permitted without the professional diagnosis"
+              "textHtml": "sick leave will not be permitted without the professional diagnosis",
+              "explanation": "Paragraph H says you need an expert medical diagnosis to get the certificate that lets you stay off work beyond the short period you may certify yourself. Paragraph D mentions time off work as well, but only as part of the story, not as a rule about being allowed to take it.",
+              "evidence": "We need an expert medical diagnosis in order to obtain the necessary certificate if we need to be off work for more than the statutory self-certification period."
             },
             {
               "id": "q23",
               "answer": "H",
-              "textHtml": "how doctors’ opinions are regarded in society"
+              "textHtml": "how doctors’ opinions are regarded in society",
+              "explanation": "Paragraph H says medical science is given a special, privileged place in modern Western culture, which is about how society treats a doctor’s opinion.",
+              "evidence": "The knowledge of the medical sciences is privileged in this respect in contemporary Western culture."
             },
             {
               "id": "q24",
               "answer": "I",
-              "textHtml": "the illness of patients can become part of new knowledge"
+              "textHtml": "the illness of patients can become part of new knowledge",
+              "explanation": "Paragraph I says what the doctor learns from this patient is added to her medical knowledge and may help her diagnose pneumonia in future, so one person’s illness becomes new knowledge.",
+              "evidence": "This will then be added to the doctor’s medical knowledge and may help in the future diagnosis of pneumonia."
             },
             {
               "id": "q25",
               "answer": "G",
-              "textHtml": "a description of knowledge drawn from non-specialized sources other than personal knowledge"
+              "textHtml": "a description of knowledge drawn from non-specialized sources other than personal knowledge",
+              "explanation": "Paragraph G is about ordinary, non expert sources: remarks from friends and family, and complementary practices such as holistic medicine. Paragraph F is tempting, but it is still about reading your own body, while G is about what other people and other practices tell you.",
+              "evidence": "Comments from friends and family such as ‘you do look ill’ or ‘that’s a bad cough’ might be another source of knowledge."
             },
             {
               "id": "q26",
               "answer": "D",
-              "textHtml": "an example of collective judgment from personal experience and professional doctor"
+              "textHtml": "an example of collective judgment from personal experience and professional doctor",
+              "explanation": "Paragraph D says the proof of illness comes from your own experience of your body put together with the judgement of a medical expert, which is the joint judgement the question describes.",
+              "evidence": "This is the result of the combination of your own subjective experience and the diagnosis of someone who has the status of a medical expert."
             },
             {
               "id": "q27",
               "answer": "B",
-              "textHtml": "a reference that some people do not realize they are ill"
+              "textHtml": "a reference that some people do not realize they are ill",
+              "explanation": "Paragraph B says people can be suffering from a disease and not know it until it is already at a late stage, which is exactly the idea that some people do not realise they are ill.",
+              "evidence": "At other times, people may be suffering from a disease and fail to be aware of the illness until it has reached a late stage in its development."
             }
           ],
           "legendHtml": "<p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -394,27 +465,37 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "E",
-              "textHtml": "A comparison of the ways two materials are used to replace silk-producing glands"
+              "textHtml": "A comparison of the ways two materials are used to replace silk-producing glands",
+              "explanation": "Paragraph E is where yeast and bacteria are set against each other as hosts for growing the silk protein, with a different method described for each. Paragraph F is tempting because it names both again, but it is about turning the protein into fibre, not about how the two hosts are used.",
+              "evidence": "At DuPont, researchers have used both yeast and bacteria as hosts to grow the raw material, which they have spun into fibres."
             },
             {
               "id": "q29",
               "answer": "H",
-              "textHtml": "Predictions regarding the availability of the synthetic silk"
+              "textHtml": "Predictions regarding the availability of the synthetic silk",
+              "explanation": "Paragraph H is where Dorsch says what the new material should be like but warns that it is still many years from being available.",
+              "evidence": "Dorsch is excited by the prospect of new super-strong materials but he warns they are many years away"
             },
             {
               "id": "q30",
               "answer": "I",
-              "textHtml": "Ongoing research into other synthetic materials"
+              "textHtml": "Ongoing research into other synthetic materials",
+              "explanation": "Paragraph I moves on to a different material, the natural glue made by the sea mussel, and says a synthetic gene for it has already been produced.",
+              "evidence": "researchers have already produced a synthetic gene for use in surrogate bacteria"
             },
             {
               "id": "q31",
               "answer": "D",
-              "textHtml": "The research into the part of the spider that manufactures silk"
+              "textHtml": "The research into the part of the spider that manufactures silk",
+              "explanation": "Paragraph D says the scientists started by examining the spider’s silk producing gland and the protein coding inside it. Paragraph E is tempting because it also describes laboratory work, but that work is done on yeast and bacteria, not on the spider.",
+              "evidence": "To recreate the material, scientists, including Randolph Lewis at the University of Wyoming, first examined the silk-producing gland of the spider."
             },
             {
               "id": "q32",
               "answer": "G",
-              "textHtml": "The possible application of the silk in civil engineering2"
+              "textHtml": "The possible application of the silk in civil engineering2",
+              "explanation": "Paragraph G suggests earthquake resistant suspension bridges hung from cables of synthetic silk, which is a civil engineering use. Paragraph B is tempting because it mentions vests and parachutes, but those are army equipment rather than construction.",
+              "evidence": "They say that earthquake-resistant suspension bridges hung from cables of synthetic spider silk fibres may become a reality."
             }
           ],
           "options": [
@@ -436,23 +517,39 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q33",
-              "answer": "Yeast"
+              "answer": "Yeast",
+              "explanation": "Paragraph E says DuPont grew the raw material in both yeast and bacteria, and it explains that with yeast the gene system can be set up so the protein comes out of the cell, so yeast is one of the two hosts.",
+              "evidence": "With yeast, the gene system can be designed so that the material excretes the protein outside the yeast for better access"
             },
             {
               "id": "q34",
-              "answer": "Bacteria"
+              "answer": "Bacteria",
+              "explanation": "Paragraph E gives bacteria as the other host, saying the researchers break the bacteria open and take out the protein to use as their starting material.",
+              "evidence": "We break open the bacteria, separate out the globules of protein and use them as the raw starting material."
             },
             {
               "id": "q35",
-              "answer": "Protein"
+              "answer": "Protein",
+              "explanation": "Paragraph E says what is harvested from the hosts is globules of protein, compared to marbles in an egg, so protein is the next stage in the chart.",
+              "evidence": "the globules of protein, comparable with marbles in an egg, are harvested and processed"
             },
             {
               "id": "q36",
-              "answer": "Chemical"
+              "answer": [
+                "Chemical",
+                "chemical solvents"
+              ],
+              "explanation": "Paragraph F says that because people cannot copy the spider’s water based method, the protein is dissolved in chemical solvents instead.",
+              "evidence": "dissolved the protein in chemical solvents"
             },
             {
               "id": "q37",
-              "answer": "Holes"
+              "answer": [
+                "Holes",
+                "small holes"
+              ],
+              "explanation": "Paragraph F says the dissolved protein is then pushed through small holes, which is what makes it set into a solid fibre.",
+              "evidence": "spun to push the material through small holes to form the solid fibre"
             }
           ],
           "legendHtml": "<p>• Synthetic gene grown in (33)…………….. or (34)……………..<br/>\n• Globules of (35)……………<br/>\n• Dissolved in (36)…………..<br/>\n• Passed through (37)…………..<br/>\n• To produce a solid fibre</p>",
@@ -466,17 +563,22 @@ const test: PracticeTest = {
             {
               "id": "q38",
               "answer": "False",
-              "textHtml": "Biosilk has already replaced nylon in parachute manufacture"
+              "textHtml": "Biosilk has already replaced nylon in parachute manufacture",
+              "explanation": "Paragraph B says army scientists are only looking at the possibility of using the silk for parachutes, and Paragraph H adds that such materials are many years away, so it has certainly not replaced nylon already.",
+              "evidence": "Army scientists are already looking at the possibilities of using it for lightweight, bulletproof vests and parachutes."
             },
             {
               "id": "q39",
               "answer": "True",
-              "textHtml": "The spider produces silk of varying strengths"
+              "textHtml": "The spider produces silk of varying strengths",
+              "explanation": "Paragraph C says the drag line silk that forms the radial arms of the web is stronger than the other parts of the web, so the same spider does make silk of different strengths.",
+              "evidence": "The drag-line silk, which forms the radial arms of the web, is stronger than the other parts of the web"
             },
             {
               "id": "q40",
               "answer": "Not given",
-              "textHtml": "Lewis and Dorsch co-operated in the synthetic production of silk"
+              "textHtml": "Lewis and Dorsch co-operated in the synthetic production of silk",
+              "explanation": "Lewis works at the University of Wyoming and Dorsch at DuPont, and each is quoted about his own work, but the passage never says the two men worked together on anything, so we cannot tell."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"

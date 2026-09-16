@@ -370,14 +370,14 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       "Adults aged 18 to 64 were the largest membership group in 2016, at 51%, while children represented 22%, young adults aged 13 to 17 accounted for 15%, and people aged 65 and over formed the smallest group, at 12%.",
       "Children's fiction and adult fiction were jointly the most borrowed categories, each making up 38% of loans. Together, fiction therefore represented 76% of all borrowing.",
       "Adult non-fiction was a distant third at 13%, followed by children's non-fiction at 6%. Children's DVDs were the smallest category at 1%, while young-adult items and adult audio books each accounted for 2%.",
-      "Total loans generally increased from approximately 16,000 in 2007 to nearly 22,000 in 2016. After reaching around 21,000 in 2011, borrowing fell to just under 20,000 in 2013 before recovering steadily to its peak in 2016.",
+      "Total loans generally increased from approximately 16,000 in 2007 to about 21,500 in 2016. After reaching around 21,000 in 2011, borrowing fell to just under 20,000 in 2013 before recovering steadily to its peak in 2016.",
     ],
     overview: "Overall, working-age adults formed the largest membership group, fiction dominated borrowing, and total annual loans generally rose despite a brief decline in the middle of the period.",
     paragraphs: [
       { label: "Introduction", goal: "Paraphrase what the three visuals show about Little Chalfont Library without reporting data.", tips: ["Mention the 2016 age distribution and loan categories separately.", "State that the bar chart covers annual borrowing from 2007 to 2016.", "Use “members”, “loans” and “borrowing” to avoid repeating the question."], starter: "The three charts present information about the ages of Little Chalfont Library's members, the types of items borrowed in 2016, and changes in annual lending over the preceding decade." },
       { label: "Overview", goal: "Identify the dominant membership and borrowing categories and the main direction of change in total loans.", tips: ["Highlight adults aged 18 to 64 as the largest membership group.", "State that fiction was much more popular than every other type of library item.", "Describe the overall rise in loans, while acknowledging the temporary fall around 2012 and 2013."], starter: "Overall, the library was used mainly by working-age adults, fiction accounted for most loans, and borrowing increased across the period despite a temporary dip." },
       { label: "Detail 1", goal: "Compare all age groups and loan categories using the exact 2016 percentages.", tips: ["Begin with the 51% share of members aged 18 to 64 and contrast it with the 12% aged 65 and over.", "Compare children at 22% with young adults at 15%.", "Group the two 38% fiction figures together, then report adult non-fiction at 13%, children's non-fiction at 6%, the two 2% categories, and children's DVDs at 1%."], starter: "In terms of membership, adults aged 18 to 64 accounted for just over half of the total, whereas the oldest group represented only 12%." },
-      { label: "Detail 2", goal: "Describe the overall rise, the mid-period decline and the final recovery in annual loans.", tips: ["Report figures as approximate because the bars do not display exact labels.", "Show the initial jump from roughly 16,000 in 2007 to about 19,000 in both 2008 and 2009.", "Mention the rise to around 21,000 in 2011, the fall to below 20,000 in 2013, and the recovery to nearly 22,000 in 2016."], starter: "Turning to annual lending, the total rose sharply from approximately 16,000 loans in 2007 to around 19,000 the following year." },
+      { label: "Detail 2", goal: "Describe the overall rise, the mid-period decline and the final recovery in annual loans.", tips: ["Report figures as approximate because the bars do not display exact labels.", "Show the initial jump from roughly 16,000 in 2007 to about 19,000 in both 2008 and 2009.", "Mention the rise to around 21,000 in 2011, the fall to below 20,000 in 2013, and the recovery to about 21,500 in 2016."], starter: "Turning to annual lending, the total rose sharply from approximately 16,000 loans in 2007 to around 19,000 the following year." },
     ],
     vocabulary: [
       { phrase: "working-age adults", use: "Identify the dominant membership group" },
@@ -721,20 +721,20 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     promptId: "pte-wt-122-task1",
     task: "task1",
     questionType: "Map or plan, before and after",
-    whatItAsks: "Summarise how Port Harbour has changed from 2000 to today, focusing on relocated boating areas, new tourist facilities, expanded ferry infrastructure and features that remained unchanged.",
+    whatItAsks: "Summarise how Porth Harbour has changed from 2000 to today, focusing on relocated boating areas, new tourist facilities, expanded ferry infrastructure and features that remained unchanged.",
     keyPoints: [
       "The fishing boats and marina for private yachts exchanged locations: fishing boats moved to the north-western waterfront, while the marina moved to the former fishing area in the south-west.",
       "The passenger ferry area was expanded with an additional dock, while the lifeboat station remained beside the southern waterfront.",
       "Tourist and commercial facilities were added, including cafés and shops beside the marina and a hotel replacing the ruined castle in the south-east.",
       "A second showers and toilets block was added on the western side, while both car parks remained. The public beach in the north-east also stayed unchanged.",
-      "The road leading to the former castle was changed from a public road into a private access road for hotel guests.",
+      "The beach along the southern shore was changed from a public beach into a private beach for the hotel.",
     ],
     overview: "Overall, the harbour has become more commercial and tourist-oriented, with expanded ferry infrastructure, new visitor amenities and a hotel, while the boating zones were rearranged and the public beach remained unchanged.",
     paragraphs: [
-      { label: "Introduction", goal: "Paraphrase the task by identifying Port Harbour, the two time periods and the purpose of the comparison.", tips: ["Use the name Port Harbour rather than referring vaguely to the area.", "State that the maps compare its layout in 2000 with its present appearance.", "Avoid listing individual changes in this paragraph."], starter: "The two plans illustrate how the layout of Port Harbour has developed since 2000." },
-      { label: "Overview", goal: "Present the main transformation towards tourism and commerce, together with the major unchanged feature.", tips: ["Highlight the hotel, cafés, shops and enlarged ferry facilities as evidence of commercial development.", "Mention that the fishing and private yacht areas were rearranged.", "Identify the public beach as a feature that remained in the same place."], starter: "Overall, Port Harbour is now more focused on visitors and commercial activity, although some coastal facilities have remained unchanged." },
+      { label: "Introduction", goal: "Paraphrase the task by identifying Porth Harbour, the two time periods and the purpose of the comparison.", tips: ["Use the name Porth Harbour rather than referring vaguely to the area.", "State that the maps compare its layout in 2000 with its present appearance.", "Avoid listing individual changes in this paragraph."], starter: "The two plans illustrate how the layout of Porth Harbour has developed since 2000." },
+      { label: "Overview", goal: "Present the main transformation towards tourism and commerce, together with the major unchanged feature.", tips: ["Highlight the hotel, cafés, shops and enlarged ferry facilities as evidence of commercial development.", "Mention that the fishing and private yacht areas were rearranged.", "Identify the public beach as a feature that remained in the same place."], starter: "Overall, Porth Harbour is now more focused on visitors and commercial activity, although some coastal facilities have remained unchanged." },
       { label: "Detail 1", goal: "Describe changes on the western and southern sides, especially the boating areas and visitor facilities.", tips: ["Explain clearly that the fishing boats took the marina's former north-western position, while private yachts moved south.", "Add that cafés and shops were constructed beside the relocated marina and lifeboat station.", "Report the new showers and toilets block, while noting that both western car parks were retained."], starter: "On the western side, the two boating areas were effectively relocated, with fishing boats now occupying the former marina site." },
-      { label: "Detail 2", goal: "Cover the ferry docks, public beach and conversion of the castle area in the east.", tips: ["State that an additional dock was created for passenger ferries.", "Contrast the ruined castle in 2000 with the hotel occupying the same south-east site today.", "Explain that the route to this site became a private hotel road, whereas the north-eastern public beach remained unchanged."], starter: "Further east, the passenger ferry facilities have been expanded, while the most substantial land-based change is the replacement of the castle." },
+      { label: "Detail 2", goal: "Cover the ferry docks, public beach and conversion of the castle area in the east.", tips: ["State that an additional dock was created for passenger ferries.", "Contrast the ruined castle in 2000 with the hotel occupying the same south-east site today.", "Explain that the beach on the southern shore became a private beach for the hotel, whereas the north-eastern public beach remained unchanged."], starter: "Further east, the passenger ferry facilities have been expanded, while the most substantial land-based change is the replacement of the castle." },
     ],
     vocabulary: [
       { phrase: "was converted into", use: "Castle's change into a hotel" },
@@ -743,12 +743,12 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { phrase: "remained unchanged", use: "Identify continuing public beach access" },
       { phrase: "additional dock", use: "Describe increased passenger ferry capacity" },
       { phrase: "waterside amenities", use: "Group new cafés with shops" },
-      { phrase: "private access road", use: "Describe restricted access to hotel" },
+      { phrase: "private beach", use: "Describe the restricted southern shore" },
       { phrase: "on the western side", use: "Locate facilities west of harbour" },
     ],
     pitfalls: [
       "Do not say the fishing boats or marina disappeared. They exchanged positions on the western side of the harbour.",
-      "Do not describe the hotel as an extension of the ruined castle. The castle was replaced, and its former public road became private.",
+      "Do not describe the hotel as an extension of the ruined castle. The castle was replaced, and the public beach beside it became private.",
       "Do not claim that every facility changed. The public beach, lifeboat station and both car parks remained in approximately the same locations.",
     ],
     timing: "Spend 5 minutes planning, 13 minutes writing and 2 minutes checking.",
@@ -795,7 +795,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     whatItAsks: "Summarise and compare participation in five activities at a Melbourne social centre from 2000 to 2020.",
     keyPoints: [
       "The film club was the most popular activity throughout, dipping from about 64 participants in 2000 to 60 in 2010 before recovering to roughly 66 in 2020.",
-      "Table tennis experienced the strongest growth, rising from 16 participants in 2000 to 20 in 2005 and 2010, then climbing sharply to 35 in 2015 and 54 in 2020.",
+      "Table tennis experienced the strongest growth, rising from 16 participants in 2000 to 20 in 2005 and 2010, then climbing sharply to 36 in 2015 and 54 in 2020.",
       "Amateur dramatics was the only activity with a substantial overall decline. Its figure rose slightly from 26 to 28 between 2000 and 2005, but then fell to 20, 14 and finally 6.",
       "Martial arts fluctuated within a narrow range of 32 to 38 participants, while musical performances increased from zero in 2000 and 2005 to 12 in 2010 and 18 in 2020.",
       "Table tennis and amateur dramatics were level at 20 participants in 2010, but their trends then diverged dramatically. By 2020, table tennis ranked second while amateur dramatics ranked last.",
@@ -805,7 +805,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
       { label: "Introduction", goal: "Paraphrase the question by identifying the location, five activities, measurement and time period.", tips: ["Refer to the venue as a social centre in Melbourne, Australia.", "State that the chart measures numbers of participants between 2000 and 2020.", "Do not list data or explain reasons for participation here."], starter: "The line chart compares participation in five activities at a Melbourne social centre over the period from 2000 to 2020." },
       { label: "Overview", goal: "Present the main rankings and contrasting trends without including figures.", tips: ["Identify the film club as consistently the most popular activity.", "Contrast the rapid growth of table tennis with the marked decline in amateur dramatics.", "Briefly mention the fluctuation in martial arts and gradual emergence of musical performances."], starter: "Overall, although the film club retained its leading position, the most striking changes involved the rise of table tennis and the fall of amateur dramatics." },
       { label: "Detail 1", goal: "Compare the two relatively stable activities, the film club and martial arts.", tips: ["Report the film club's slight fall from about 64 in 2000 to 60 in 2010, followed by a recovery to 66.", "Show that martial arts moved irregularly from 36 to 32, 38, 34 and 36.", "Emphasise that the film club remained around twice as popular as martial arts."], starter: "Participation in the film club stayed above all the other figures, despite falling slightly during the first half of the period." },
-      { label: "Detail 2", goal: "Describe and compare the larger changes in table tennis, amateur dramatics and musical performances.", tips: ["State that table tennis stayed at 20 in 2005 and 2010 before surging to 35 and then 54.", "Contrast this with amateur dramatics, which peaked at 28 in 2005 and then dropped continuously to 6.", "Mention that musical performances had no participants until after 2005, but rose to 12, 16 and 18, overtaking amateur dramatics in 2015."], starter: "The remaining activities followed more contrasting paths, with table tennis growing rapidly as amateur dramatics lost participants." },
+      { label: "Detail 2", goal: "Describe and compare the larger changes in table tennis, amateur dramatics and musical performances.", tips: ["State that table tennis stayed at 20 in 2005 and 2010 before surging to 36 and then 54.", "Contrast this with amateur dramatics, which peaked at 28 in 2005 and then dropped continuously to 6.", "Mention that musical performances had no participants until after 2005, but rose to 12, 16 and 18, overtaking amateur dramatics in 2015."], starter: "The remaining activities followed more contrasting paths, with table tennis growing rapidly as amateur dramatics lost participants." },
     ],
     vocabulary: [
       { phrase: "remained the most popular", use: "Describe film club across period" },
@@ -866,7 +866,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     whatItAsks: "Summarise and compare the average month-to-month percentage changes in the prices of copper, nickel and zinc from January to December 2014.",
     keyPoints: [
       "Nickel was the most volatile metal, falling from a 6% increase in January to a 3% decrease in June, before recovering to positive growth in November and December.",
-      "Copper showed the smallest changes overall. It moved from 2% in January to minus 1% in June, then remained at 1% from July to September.",
+      "Copper showed the smallest changes overall. It moved from 2% in January to minus 0.5% in June, then remained at 1% from July to September.",
       "All three metals weakened during the first half of 2014 and reached negative territory in June, although nickel experienced the sharpest decline.",
       "By December, every metal had returned to positive monthly growth. Zinc finished highest at 2%, followed by copper at 1.5% and nickel at 1%.",
     ],
@@ -874,7 +874,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     paragraphs: [
       { label: "Introduction", goal: "Paraphrase the task by identifying the three metals, the monthly period and the percentage-change measure.", tips: ["Call the figures monthly percentage changes, rather than metal prices.", "State that the chart covers January to December 2014.", "Name copper, nickel and zinc explicitly."], starter: "The line graph compares the average month-to-month percentage changes in the prices of copper, nickel and zinc throughout 2014." },
       { label: "Overview", goal: "Highlight nickel's volatility, copper's relative stability and the shared end-of-year recovery.", tips: ["Identify nickel as the metal with the widest fluctuations.", "Contrast this with the comparatively modest movement in copper.", "Mention that all three ended with positive changes, without adding figures here."], starter: "Overall, nickel fluctuated much more sharply than the other metals, whereas copper was relatively stable, and all three finished the year positively." },
-      { label: "Detail 1", goal: "Describe the general decline from January to June, focusing on nickel's dramatic fall.", tips: ["Report nickel's drop from 6% in January to 4% in February and 1% in March and April, before its low of minus 3% in June.", "Show copper's gentler decline from 2% in January to minus 1% in June.", "Contrast zinc's February peak of 3% with its fall to minus 1% in June."], starter: "During the first half of the year, the monthly changes for all three metals generally declined, with nickel experiencing the most dramatic movement." },
+      { label: "Detail 1", goal: "Describe the general decline from January to June, focusing on nickel's dramatic fall.", tips: ["Report nickel's drop from 6% in January to 4% in February and 1% in March and April, before its low of minus 3% in June.", "Show copper's gentler decline from 2% in January to minus 0.5% in May and June.", "Contrast zinc's February peak of 3% with its fall to minus 1% in June."], starter: "During the first half of the year, the monthly changes for all three metals generally declined, with nickel experiencing the most dramatic movement." },
       { label: "Detail 2", goal: "Compare the relatively stable summer figures with the recovery during the final two months.", tips: ["State that copper remained at 1% from July to September, slipped to 0.5% in October and November, and rose to 1.5% in December.", "Explain that nickel stayed at minus 1% from July to September, fell to minus 2% in October, then recovered to 1% in November and December.", "Note that zinc was around minus 0.5% from July to September, dipped to minus 1% in October, and then climbed to 1.5% and 2%."], starter: "From July onwards, copper was the steadiest series, while nickel and zinc remained negative until a marked recovery near the year's end." },
     ],
     vocabulary: [
@@ -889,7 +889,7 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     ],
     pitfalls: [
       "Do not claim that nickel's actual price was highest in January. The graph only shows its percentage change compared with the previous month.",
-      "Do not confuse the three lines around June: nickel reached minus 3%, while copper and zinc were only around minus 1%.",
+      "Do not confuse the three lines around June: nickel reached minus 3%, while zinc was only around minus 1% and copper around minus 0.5%.",
       "Do not overlook the late recovery, especially zinc ending at 2%, above copper at 1.5% and nickel at 1%.",
     ],
     timing: "5 minutes planning, 13 minutes writing, and 2 minutes checking.",

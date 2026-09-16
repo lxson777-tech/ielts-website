@@ -28,7 +28,12 @@ const TASK2_GROUPS: { key: string; label: string }[] = [
   { key: 'two-part', label: 'Two-part question' },
 ];
 
+/* The imported exam tasks use one 'chart' variant for line graphs, bar charts
+   and pie charts rather than naming each. Without this group, twelve of the
+   thirty real Task 1 tasks were filtered off the page entirely. The three
+   older, finer-grained keys stay so nothing breaks if they ever come back. */
 const TASK1_GROUPS: { key: string; label: string }[] = [
+  { key: 'chart', label: 'Charts and graphs' },
   { key: 'line-graph', label: 'Line graphs' },
   { key: 'bar-chart', label: 'Bar charts' },
   { key: 'pie-chart', label: 'Pie charts' },

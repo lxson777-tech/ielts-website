@@ -63,42 +63,58 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "A",
-              "textHtml": "He was searching for ancient lakes and came across the charred remains of Mungo Lady, who had been cremated"
+              "textHtml": "He was searching for ancient lakes and came across the charred remains of Mungo Lady, who had been cremated",
+              "explanation": "Paragraph B names the person who was hunting for ancient lakes and came upon the cremated Mungo Lady as the University of Melbourne geologist Jim Bowler. Alan Thorne is the tempting choice because he also dated the remains, but he only appears later, in 1999, and made no discovery.",
+              "evidence": "This treasure-trove of history was found by the University of Melbourne geologist Professor Jim Bowler in 1969."
             },
             {
               "id": "q2",
               "answer": "E",
-              "textHtml": "Professor who hold a skeptical attitude towards reliability for DNA analysis on some fossils"
+              "textHtml": "Professor who hold a skeptical attitude towards reliability for DNA analysis on some fossils",
+              "explanation": "In Paragraph D, Chris Stringer says other laboratories should repeat the work before anyone draws big conclusions from the Australian DNA results, which is a doubting attitude towards that analysis. Bowler is tempting because he calls something unreliable too, but he is talking about dating human bones, not about DNA.",
+              "evidence": "said that the research community would want to see the work repeated in other labs before major conclusions were drawn from the Australian research"
             },
             {
               "id": "q3",
               "answer": "A",
-              "textHtml": "Professor whose determination of the age of Mungo Man to be much younger than the former result which is older than the 62,000 years"
+              "textHtml": "Professor whose determination of the age of Mungo Man to be much younger than the former result which is older than the 62,000 years",
+              "explanation": "Bowler led the study of 25 sediment layers in Paragraph B that dated both graves at 40,000 years, and Paragraph C calls that much younger than the earlier figure of 62,000 years. Thorne is the trap, because 62,000 years is his team's older result, not the younger one.",
+              "evidence": "The comprehensive study of 25 different sediment layers at Mungo concludes that both graves are 40,000 years old."
             },
             {
               "id": "q4",
               "answer": "B",
-              "textHtml": "Determining the age of Mungo Man has little to do with controversy for the origins of Australians"
+              "textHtml": "Determining the age of Mungo Man has little to do with controversy for the origins of Australians",
+              "explanation": "In Paragraph F, Thorne himself now says that how old Mungo Man is makes no difference to the argument about where humans came from. Bowler is tempting because he also calls the debate a distraction, but the words about the age being irrelevant are Thorne's.",
+              "evidence": "Now, however, Thorne says the age of Mungo Man is irrelevant to this origins debate."
             },
             {
               "id": "q5",
               "answer": "C",
-              "textHtml": "Research group who recovered a biological proof of the first Neanderthal found in Europe"
+              "textHtml": "Research group who recovered a biological proof of the first Neanderthal found in Europe",
+              "explanation": "Paragraph D says it was Pddbo's research group that recovered an mtDNA fingerprint, a biological trace, from the German skeleton that was the first Neanderthal ever found. Chris Stringer is tempting because he is the other European scientist in that paragraph, but he only comments on the Australian work.",
+              "evidence": "In 1997, Pddbo’s research group recovered an mtDNA fingerprint from the Feldholer Neanderthal skeleton uncovered in Germany in 1865"
             },
             {
               "id": "q6",
               "answer": "D",
-              "textHtml": "A supporter of the idea that Australia’s megafauna was extinct due to the hunting by the ancient human beings"
+              "textHtml": "A supporter of the idea that Australia’s megafauna was extinct due to the hunting by the ancient human beings",
+              "explanation": "Paragraph G introduces Tim Flannery as someone who backs the theory that Australia's giant animals were killed off by hunting when people arrived. Bowler is the trap, because Paragraph H shows he doubts that theory and prefers climate change.",
+              "evidence": "Dr Tim Flannery, a proponent of the controversial theory that Australia’s megafauna were wiped out 46,000 years ago in a “blitzkrieg” of hunting by the arriving people"
             },
             {
               "id": "q7",
               "answer": "B",
-              "textHtml": "Instead of keep arguing a single source origin, multi-regional explanation has been raised"
+              "textHtml": "Instead of keep arguing a single source origin, multi-regional explanation has been raised",
+              "explanation": "Paragraph C says Alan Thorne backs the multi-regional explanation, the idea that modern humans appeared in several places rather than in one single place. Chris Stringer is tempting, but he argues the opposite, that modern humans came out of Africa.",
+              "evidence": "Dr Alan Thorne supports the multi-regional explanation"
             },
             {
               "id": "q8",
               "answer": "A",
-              "textHtml": "Climate change rather than prehistoric human activities resulted in megafauna’s extinction"
+              "textHtml": "Climate change rather than prehistoric human activities resulted in megafauna’s extinction",
+              "explanation": "In Paragraph H it is Bowler who says the climate change 40,000 years ago was stronger than people had thought and may have helped wipe out the giant animals. Flannery is the trap, because he blames hunting by the first Australians instead.",
+              "evidence": "He argues that climate change at 40,000 years ago was more intense than had been previously realized and could have played a role in the megafauna’s demise."
             }
           ],
           "legendHtml": "<p><strong>A</strong> Jim Bowler<br/>\n<strong>B</strong> Alan Thorne<br/>\n<strong>C</strong> Pddbo<br/>\n<strong>D</strong> Tim Flannery<br/>\n<strong>E</strong> Chris Stringer<br/>\n<strong>F</strong> Rainer Grün</p>",
@@ -119,32 +135,42 @@ const test: PracticeTest = {
             {
               "id": "q9",
               "answer": "True",
-              "textHtml": "The Lake Mungo remains offer the archaeologists the evidence of graphic illustration of human activities around"
+              "textHtml": "The Lake Mungo remains offer the archaeologists the evidence of graphic illustration of human activities around",
+              "explanation": "Paragraph A says the three sets of fossils tell archaeologists the story of how Mungo Man lived by the lake with his family, and the paragraph then paints a detailed picture of his diet, his injuries and his burial. That is exactly the vivid picture of human life the statement describes, so it is True.",
+              "evidence": "The Lake Mungo remains are three prominent sets of fossils which tell the archeologists the story: Mungo Man lived around the shores of Lake Mungo with his family."
             },
             {
               "id": "q10",
               "answer": "Not given",
-              "textHtml": "In Lake Mungo remains, weapons were found used by the Mungo"
+              "textHtml": "In Lake Mungo remains, weapons were found used by the Mungo",
+              "explanation": "Paragraph A says the damage to Mungo Man's elbow is typical of people who threw spears with a woomera, but that is worked out from his bones alone. The passage never says that any weapons themselves were found in the remains, so there is no information on this."
             },
             {
               "id": "q11",
               "answer": "True",
-              "textHtml": "Mungo Man is one of the oldest known archaeological evidence in the world of cultural sophistication such as a burying ritual"
+              "textHtml": "Mungo Man is one of the oldest known archaeological evidence in the world of cultural sophistication such as a burying ritual",
+              "explanation": "Paragraph A says that the careful burial with crossed hands and red ochre makes Mungo Man the oldest known example in the world of such a ritual, and Paragraph D calls the graves the earliest evidence on Earth of cultural sophistication. That agrees with the statement, so it is True.",
+              "evidence": "Mungo Man is the oldest known example in the world of such a ritual."
             },
             {
               "id": "q12",
               "answer": "False",
-              "textHtml": "Mungo Man and woman’s skeletons were uncovered in the same year"
+              "textHtml": "Mungo Man and woman’s skeletons were uncovered in the same year",
+              "explanation": "Paragraph B says Bowler found Mungo Lady in 1969 and then found Mungo Man in 1974, five years later. The statement says the two skeletons were uncovered in the same year, which the passage contradicts.",
+              "evidence": "And in 1974, he found a second complete skeleton, Mungo Man, buried 300 metres away."
             },
             {
               "id": "q13",
               "answer": "True",
-              "textHtml": "There is controversy among scientists about the origin of the oldest Homo sapiens"
+              "textHtml": "There is controversy among scientists about the origin of the oldest Homo sapiens",
+              "explanation": "Paragraphs C and D set two groups of scientists against each other, those who support the Out of Africa theory that Homo sapiens began in one place, and Thorne, who leads the opposition to it. That open disagreement is the controversy the statement describes, so it is True.",
+              "evidence": "However, Out of Africa supporters are not about to let go of their beliefs because of the Australian research"
             },
             {
               "id": "q14",
               "answer": "Not given",
-              "textHtml": "Out of Africa supporters have criticised Australian professors for using an outmoded research method"
+              "textHtml": "Out of Africa supporters have criticised Australian professors for using an outmoded research method",
+              "explanation": "In Paragraph D, Chris Stringer only asks for the work to be repeated in other laboratories before anyone draws firm conclusions. The passage never says that the Australian method was called old-fashioned or out of date, so that part of the statement is not covered."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -194,32 +220,44 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "A",
-              "textHtml": "Geographical Location of the world‘s coral reef"
+              "textHtml": "Geographical Location of the world‘s coral reef",
+              "explanation": "Paragraph A is the one that says where in the world reefs are, giving the share of the total area held by the Indo-Pacific, Southeast Asia, the Pacific and the Caribbean, and the coasts where reefs are rare. Paragraph F is tempting because it names Southeast Asia too, but it does so to say how many reefs there are in danger, not where reefs are found.",
+              "evidence": "They are most commonly found at shallow depths in tropical waters, but deep water and cold water corals also exist on smaller scales in other areas."
             },
             {
               "id": "q16",
               "answer": "C",
-              "textHtml": "How does coral reef benefit economy locally"
+              "textHtml": "How does coral reef benefit economy locally",
+              "explanation": "Paragraph C shows the benefit in particular places, with tourist money in Indonesia, the Caribbean and Australia and a living for more than a million small fishers in the Philippines. Paragraph B is the trap, because it gives only the single worldwide value and says nothing about local people.",
+              "evidence": "In the Philippines, for example, more than one million small-scale fishers depend directly on coral reefs for their livelihoods."
             },
             {
               "id": "q17",
               "answer": "C",
-              "textHtml": "The statistics of coral reef‘s economic significance"
+              "textHtml": "The statistics of coral reef‘s economic significance",
+              "explanation": "Paragraph C is where the passage gathers its figures for what reefs are worth, from a million US dollars per square kilometre in tourist areas to the price of fish caught for aquariums against fish caught for food. Paragraph B is very tempting because it carries the global value of $US375 billion, but it gives one number rather than the set of figures.",
+              "evidence": "The report estimates that reef fisheries were worth between $15,000 and $150,000 per square kilometer a year, while fish caught for aquariums were worth $500 a kilogram against $6 for fish caught as food."
             },
             {
               "id": "q18",
               "answer": "D",
-              "textHtml": "The listed reasons for the declining number of coral reef"
+              "textHtml": "The listed reasons for the declining number of coral reef",
+              "explanation": "Paragraph D opens by saying reefs are dying and then runs through the causes, from mining and runoff to disease, warming seas and destructive fishing. Paragraph E is tempting because it also describes damage, but it covers only sewage from resorts and careless visitors rather than the full list.",
+              "evidence": "In particular, coral mining, agricultural and urban runoff, pollution (organic and inorganic), disease, and the digging of canals and access into islands and bays are localized threats to coral ecosystems."
             },
             {
               "id": "q19",
               "answer": "E",
-              "textHtml": "Physical approach to the coral reef by people"
+              "textHtml": "Physical approach to the coral reef by people",
+              "explanation": "Paragraph E is about people touching the reef itself, grabbing it, kicking it, walking on it, dropping anchors on it and collecting coral. Paragraph D is the trap, because it also describes human damage, but through fishing methods and pollution rather than direct physical contact.",
+              "evidence": "Whenever people grab, kick, and walk on, or stir up sediment in the reefs, they contribute to coral reef destruction."
             },
             {
               "id": "q20",
               "answer": "D",
-              "textHtml": "Unsustainable fishing methods are applied in regions of the world"
+              "textHtml": "Unsustainable fishing methods are applied in regions of the world",
+              "explanation": "Paragraph D names the damaging fishing methods, cyanide fishing, overfishing, banging the reef with sticks and blast fishing, and places them in Asia and the aquarium trade. Paragraph E is tempting because it mentions careless fishing, but there the fishing is a tourist activity, not an unsustainable industry.",
+              "evidence": "These include cyanide fishing, overfishing and blast fishing."
             }
           ],
           "options": [
@@ -227,7 +265,9 @@ const test: PracticeTest = {
             "B",
             "C",
             "D",
-            "E"
+            "E",
+            "F",
+            "G"
           ]
         },
         {
@@ -238,32 +278,41 @@ const test: PracticeTest = {
             {
               "id": "q21",
               "answer": "True",
-              "textHtml": "Coral reefs provide habitat to a variety of marine life"
+              "textHtml": "Coral reefs provide habitat to a variety of marine life",
+              "explanation": "Paragraph A says reefs are home to a quarter of all marine species and then lists fish, molluscs, worms, crustaceans, sponges and more. That matches the statement about a variety of marine life, so it is True.",
+              "evidence": "They provide a home for 25% of all marine species, including fish, mollusks worms, crustaceans, echinoderms, sponges, tunicates and other cnidarians."
             },
             {
               "id": "q22",
               "answer": "True",
-              "textHtml": "Coral reef distributes around the ocean disproportionally"
+              "textHtml": "Coral reef distributes around the ocean disproportionally",
+              "explanation": "Paragraph A gives the Indo-Pacific almost 92 per cent of the world's reef area while the Atlantic and Caribbean have only 7.6 per cent, and it adds that reefs are rare along several coasts. Reefs are therefore spread very unevenly, so the statement is True.",
+              "evidence": "The Indo-Pacific region accounts for 91.9% of this total area."
             },
             {
               "id": "q23",
               "answer": "Not given",
-              "textHtml": "Coral reef is increasingly important for scientific purpose"
+              "textHtml": "Coral reef is increasingly important for scientific purpose",
+              "explanation": "Paragraph F says scientists study many things that affect reefs, such as acidification, viruses, dust storms and pollutants. But the passage never says that reefs matter more to science now than they used to, so this growing importance is not mentioned."
             },
             {
               "id": "q24",
               "answer": "Not given",
-              "textHtml": "Coral reefs are greatly exchanged among and exported to other counties"
+              "textHtml": "Coral reefs are greatly exchanged among and exported to other counties",
+              "explanation": "Paragraph C mentions an export trade, but it is a trade in aquarium fish caught on reefs, not in the reefs themselves. The passage never says that coral reefs are traded between countries or sent abroad, so there is no information on this."
             },
             {
               "id": "q25",
               "answer": "True",
-              "textHtml": "Reef tourism is of economic essence generally for some poor people"
+              "textHtml": "Reef tourism is of economic essence generally for some poor people",
+              "explanation": "Paragraph C says reef tourism is an important source of jobs, and singles out some of the poorest people in the world as the ones who gain most. That agrees with the statement, so it is True.",
+              "evidence": "reef tourism is an important source of employment, especially for some of the world‘s poorest people"
             },
             {
               "id": "q26",
               "answer": "Not given",
-              "textHtml": "As with other fishing business, coral fishery is not suitable to women and children"
+              "textHtml": "As with other fishing business, coral fishery is not suitable to women and children",
+              "explanation": "Paragraph C counts about 30 million small-scale fishers in the developing world and says most of them depend on reefs. It never says who does this work, and women and children are never mentioned anywhere in the passage."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -282,7 +331,9 @@ const test: PracticeTest = {
                 "To tell that coral reef is widely used as a scientific project",
                 "Present the general benefits and an alarming situation of coral reef",
                 "To show the vital efforts made to protect the coral reef in Australia"
-              ]
+              ],
+              "explanation": "The passage first sets out what reefs give us, a home for marine life, tourism income and fishing jobs in Paragraphs A to C, and then turns to how they are dying and how much is at risk in Paragraphs D to F, which is exactly a picture of the benefits plus a worrying situation. Option D is tempting because protection work in Australia appears at the very end, but that is one short example, not the point of the whole passage.",
+              "evidence": "Unfortunately, coral reefs are dying around the world."
             }
           ]
         }
@@ -339,42 +390,58 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "F",
-              "textHtml": "…………………… than those traditional workers on changes in non-commuting travel on weekends. It also is beneficial to the environment as it reduces the"
+              "textHtml": "…………………… than those traditional workers on changes in non-commuting travel on weekends. It also is beneficial to the environment as it reduces the",
+              "explanation": "Paragraph C is the only place that compares home-based workers with traditional workers at weekends, and it says they spend more time shopping away from home. Productivity is the tempting word, but the comparison here is about travel and free time, not about how much work gets done.",
+              "evidence": "spend more time shopping out of the home than traditional workers"
             },
             {
               "id": "q29",
               "answer": "A",
-              "textHtml": "……………… in the atmosphere from decreased street repairs, city heating, or even"
+              "textHtml": "……………… in the atmosphere from decreased street repairs, city heating, or even",
+              "explanation": "Paragraph D talks about cutting carbon emissions and says further savings in the carbon footprint come from fewer roadway repairs and less urban heating, so what falls in the atmosphere is pollution. Materials is tempting because the paragraph lists materials later, but materials are not something found in the atmosphere.",
+              "evidence": "Additional carbon footprint savings will come from reduced: office energy, roadway repairs, urban heating, office construction, business travel, paper usage (as electronic documents replace paper)."
             },
             {
               "id": "q30",
               "answer": "C",
-              "textHtml": "…………………. as staff in office could send documents"
+              "textHtml": "…………………. as staff in office could send documents",
+              "explanation": "In the same list in Paragraph D, the item that follows roadway repairs and urban heating is paper usage, and the next gap explains why, because documents can be sent without printing. Construction and maintenance is tempting, but that idea belongs to the highway work described later in Paragraph E.",
+              "evidence": "paper usage (as electronic documents replace paper)"
             },
             {
               "id": "q31",
               "answer": "I",
-              "textHtml": "………………….. Apart from that, other materials such as Vehicle-related, Highway-related and"
+              "textHtml": "………………….. Apart from that, other materials such as Vehicle-related, Highway-related and",
+              "explanation": "Paragraph D explains the saving in paper by saying that electronic documents replace paper ones, so staff send documents electronically. The gap needs a word describing how documents are sent, and electronically is the only choice in the list that does that job.",
+              "evidence": "as electronic documents replace paper"
             },
             {
               "id": "q32",
               "answer": "M",
-              "textHtml": "………………….. materials will also be saved. Traditionally, a large amount of energy is needed to make"
+              "textHtml": "………………….. materials will also be saved. Traditionally, a large amount of energy is needed to make",
+              "explanation": "Paragraph D names the three areas where energy can be saved, and the third one, after vehicle-related and highway-related, is work-related materials and resources. Materials on its own is tempting, but the summary already prints the word materials straight after the gap.",
+              "evidence": "The three major areas where energy can be conserved are Vehicle-related materials and resources; Highway-related materials and resources; and work-related materials and resources."
             },
             {
               "id": "q33",
               "answer": "K",
-              "textHtml": "…………….., e.g. Public transportation and private cars. With the rise of telecommuting, resources and"
+              "textHtml": "…………….., e.g. Public transportation and private cars. With the rise of telecommuting, resources and",
+              "explanation": "Paragraph E says a huge amount of energy goes into producing transportation equipment such as cars, buses, trains and aircraft, which matches the summary's examples of public transport and private cars. Materials is the tempting choice, but the passage says the energy is used to make the equipment itself.",
+              "evidence": "A tremendous amount of energy is required to produce transportation equipment such as automobiles, buses, trains and jet aircraft."
             },
             {
               "id": "q34",
               "answer": "H",
-              "textHtml": "………………. will be saved. And conservation goes to the energy and materials consumed in all"
+              "textHtml": "………………. will be saved. And conservation goes to the energy and materials consumed in all",
+              "explanation": "Paragraph E says that once there is less of this equipment on the road, the fuel resources and gases needed to run it will also be cut, which is what the summary pairs with resources. Equipment is tempting, but it has already filled the previous gap and the saving here is in what the equipment burns.",
+              "evidence": "Fuel resources and gases needed to operate this equipment will be reduced"
             },
             {
               "id": "q35",
               "answer": "D",
-              "textHtml": "……"
+              "textHtml": "……",
+              "explanation": "Paragraph E ends with the energy eaten up by building and repairing highways, both by the machines and by making and moving the materials, which is construction and maintenance. Materials is the tempting choice, but the summary already says energy and materials consumed in all of this work.",
+              "evidence": "the building and repair of highways and maintenance requires a large consumption of energy"
             }
           ],
           "legendHtml": "<p><strong>A</strong> pollution<br/>\n<strong>B</strong> internet energy<br/>\n<strong>C</strong> paper usage<br/>\n<strong>D</strong> construction and maintenance<br/>\n<strong>E</strong> materials<br/>\n<strong>F</strong> shopping<br/>\n<strong>G</strong> productivity<br/>\n<strong>H</strong> fuels and gases<br/>\n<strong>I</strong> electronically<br/>\n<strong>J</strong> IT<br/>\n<strong>K</strong> equipment L company<br/>\n<strong>M</strong> work-related<br/>\n<strong>N</strong> geography</p><p>Teleworking has been said to have many benefits for both society and companies. Survey identified that telecommuters spend more time on (28)…………………… than those traditional workers on changes in non-commuting travel on weekends. It also is beneficial to the environment as it reduces the (29)……………… in the atmosphere from decreased street repairs, city heating, or even (30)…………………. as staff in office could send documents (31)………………….. Apart from that, other materials such as Vehicle-related, Highway-related and (32)………………….. materials will also be saved. Traditionally, a large amount of energy is needed to make (33)…………….., e.g. Public transportation and private cars. With the rise of telecommuting, resources and (34)………………. will be saved. And conservation goes to the energy and materials consumed in all (35)…….</p>",
@@ -404,25 +471,33 @@ const test: PracticeTest = {
               "id": "q36",
               "answer": "A",
               "before": "More working time is often connected with:",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph G says that working longer hours normally goes with more stress and tension at home, which is ending A. Ending B, consumption of goods, is tempting because the paragraph mentions domestic activities, but the passage links extra hours to pressure, not to spending.",
+              "evidence": "More time working is usually associated with increased stress, domestic tension and other factors that reduce the quality of life."
             },
             {
               "id": "q37",
               "answer": "C",
               "before": "Oracle’s Functional idea aims to improve:",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph F says the FUNctional offices were Oracle's answer to the loss of teamwork among teleworkers and were built to increase communication and face-to-face contact, which is ending C. Ending A is tempting because the paragraph also mentions quality of life, but the offices were designed to bring people together, not to cut stress.",
+              "evidence": "Designed to increase communication and interaction when people are at the office, they are bright and focused around a central cafe to stimulate ideas and face-to-face contact."
             },
             {
               "id": "q38",
               "answer": "F",
               "before": "When you work at office equipment such as computers and printers are maintained by:",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph H says that in an office you can call the IT man and that all your equipment is looked after by technical staff, which matches ending F. Ending D is tempting because the same paragraph is full of broken equipment, but the breakdowns belong to working at home, not at the office.",
+              "evidence": "In fact, all of the equipment that you use at the office is supported by technical staff."
             },
             {
               "id": "q39",
               "answer": "D",
               "before": "When work from home using hardware and software:",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph H says that at home you will certainly meet technical problems and asks where you will then find help, which is ending D. Ending F is tempting because technical staff appear in the same paragraph, but they support the office, and at home there is nobody to call.",
+              "evidence": "you’ll surely encounter technical problems and when you do, where do you get the support and help you need?"
             }
           ],
           "legendHtml": "<p><strong>A</strong> stress and tension<br/>\n<strong>B</strong> consumption of goods.<br/>\n<strong>C</strong> the problem of less communication with colleagues.<br/>\n<strong>D</strong> many problems when equipment doesn’t work<br/>\n<strong>E</strong> transport equipment such as automobiles<br/>\n<strong>F</strong> technical supporters.</p><p>36. More working time is often connected with:<br/>\n37. Oracle’s Functional idea aims to improve:<br/>\n38. When you work at office equipment such as computers and printers are maintained by:<br/>\n39. When work from home using hardware and software:</p>"
@@ -436,7 +511,9 @@ const test: PracticeTest = {
               "id": "q40",
               "answer": "C",
               "before": "Implied in the passage, what is the author’s attitude toward Telework? A surprised by its fast growth B unconcerned about the future pattern C believe it is generally positive and encouraging D worried in the economical problems arise",
-              "after": ""
+              "after": "",
+              "explanation": "Across the passage the writer reports higher productivity, lower absenteeism, less office space needed, large savings in energy and emissions, and a better quality of life for most people surveyed, so the overall tone is favourable towards telework. Option D is the trap, because the last paragraph does raise the cost of broken equipment at home, but that is one late worry rather than the writer's general view.",
+              "evidence": "the SUSTEL research found that most survey respondents felt that teleworking gave them a better quality of life and work-life balance"
             }
           ],
           "legendHtml": "<p>40. Implied in the passage, what is the author’s attitude toward Telework?<br/>\n<strong>A</strong> surprised by its fast growth<br/>\n<strong>B</strong> unconcerned about the future pattern<br/>\n<strong>C</strong> believe it is generally positive and encouraging<br/>\n<strong>D</strong> worried in the economical problems arise</p><p><ins data-full-width-responsive=\"true\"></ins></p>"

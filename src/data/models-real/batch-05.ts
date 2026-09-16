@@ -109,8 +109,8 @@ export const BATCH_05: ModelAnswer[] = [
     task: 'task1',
     band: 8,
     text: [
-      'The line graph shows the average percentage change from one month to the next in the prices of copper, nickel and zinc during 2014.',
-      'Overall, nickel was by far the most volatile of the three metals, swinging from the strongest monthly gain of the year to the steepest fall, while copper moved within a much narrower band. All three metals were losing value in mid-year, and all three were rising again by the end of it.',
+      'The line graph shows the average month-to-month percentage change in the prices of copper, nickel and zinc during 2014.',
+      'Overall, nickel was by far the most volatile of the three metals, swinging from the strongest monthly gain of the year to the steepest fall, while copper moved within a much narrower band. All three were losing value in mid-year and rising again by the end of it.',
       'Nickel began the year with a 6% monthly rise, but this halved to 4% in February and shrank to 1% in March and April, before bottoming out at minus 3% in June. Zinc climbed from 1% in January to a February peak of 3%, after which it fell steadily to minus 1% in June. Copper\'s decline was far gentler, easing from 2% to 0.5% by March and reaching only minus 0.5% in May and June.',
       'From July to September all three series were flat, with copper holding at 1%, zinc at minus 0.5% and nickel at minus 1%. October brought a further dip, nickel falling to minus 2%, before a sharp year-end recovery: by December zinc had risen to 2%, ahead of copper at 1.5% and nickel at 1%.',
     ],

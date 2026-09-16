@@ -59,27 +59,37 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "x",
-              "textHtml": "Paragraph B"
+              "textHtml": "Paragraph B",
+              "explanation": "Paragraph B runs through Harriot's work in algebra, navigation, astronomy, the telescope, the comet and sunspots, so it covers research in many different fields. Heading ii is tempting because the paragraph opens with his dates and a description of him, but it is a list of the subjects he worked on, not the story of his life.",
+              "evidence": "He also studied navigation and astronomy."
             },
             {
               "id": "q2",
               "answer": "v",
-              "textHtml": "Paragraph C"
+              "textHtml": "Paragraph C",
+              "explanation": "Paragraph C describes his 1585 voyage to Virginia, what he recorded on shore and the people he met there, so it is about the trip to the New World. Heading iv is tempting because the 1588 report is mentioned, but that publication is only one detail inside the account of the expedition.",
+              "evidence": "and travelled to Virginia as a scientific observer on a colonising expedition in 1585"
             },
             {
               "id": "q3",
               "answer": "ix",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D is built around the letters Harriot exchanged with Johannes Kepler between 1606 and 1609 and the refraction data he sent. Heading vi is tempting because Harriot was not forthcoming at the end, but his reluctance is only the last step in a paragraph about the whole exchange.",
+              "evidence": "Harriot kept regular correspondence with other scientists and mathematicians, especially in England but also in mainland Europe, notably with Johannes Kepler."
             },
             {
               "id": "q4",
               "answer": "iii",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E says there is no sign that Harriot ever published his refraction results and that only his private notes show how far ahead of Kepler, Snell and Descartes he was, so it is about work he left unpublished. Heading vi is tempting because Kepler is named in the first line, but the letters themselves belong to Paragraph D.",
+              "evidence": "Apart from the correspondence with Kepler, there is no evidence that Harriot ever published his detailed results on refraction."
             },
             {
               "id": "q5",
               "answer": "vii",
-              "textHtml": "Paragraph G"
+              "textHtml": "Paragraph G",
+              "explanation": "Paragraph G tells how his thousands of sheets of notes were lost until 1784 and how scholars only began to value his work in the second half of the twentieth century, which is recognition that came very late. Heading i is tempting, but the idea that science has misread this story is set out in Paragraph A.",
+              "evidence": "an appreciation of Harriot’s contribution started to grow in the second half of the twentieth century"
             }
           ],
           "legendHtml": "<p>i. A misunderstanding in the history of science<br/>\nii. Thomas Harriot’s biography<br/>\niii. Unknown reasons for his unpublished works<br/>\niv. Harriot’s 1588 publication on North America studies<br/>\nv. Expedition to the New World<br/>\nvi. Reluctant cooperation with Kepler<br/>\nvii. Belated appreciation of Harriot’s contribution<br/>\nviii. Religious pressures keeping him from publishing<br/>\nix. Correspondence with Kepler<br/>\nx. Interests and researches into multiple fields of study</p>",
@@ -103,23 +113,42 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q6",
-              "answer": "Magnification"
+              "answer": "Magnification",
+              "explanation": "Paragraph A says a lens uses refraction to form an image of an object for many purposes, and the example it gives is magnification, which is what the gap after 'such as' needs.",
+              "evidence": "A lens uses refraction to form an image of an object for many different purposes, such as magnification."
             },
             {
               "id": "q7",
-              "answer": "Prisms"
+              "answer": [
+                "Prisms",
+                "prism"
+              ],
+              "explanation": "Paragraph A says it is a prism that uses refraction to turn a beam of light into a spectrum of colours, so the gap is filled by the piece of glass that does this.",
+              "evidence": "A prism uses refraction to form a spectrum of colors from an incident beam of light."
             },
             {
               "id": "q8",
-              "answer": "Land and language"
+              "answer": [
+                "Land and language",
+                "topography and language"
+              ],
+              "explanation": "Paragraph C says that in Virginia Harriot studied the place itself, its topography, plants, animals and maps, and also worked out how the native people's speech sounds worked and started learning their language, so his two subjects were the land and the language.",
+              "evidence": "Harriot worked out a phonetic transcription of the native people’s speech sounds and began to learn the language"
             },
             {
               "id": "q9",
-              "answer": "Ship design"
+              "answer": "Ship design",
+              "explanation": "Paragraph C says he took on a study of ballistics, which is the flight dynamics named in the summary, and of ship design, and he did it for his friend Raleigh before the Spanish Armada arrived.",
+              "evidence": "He also undertook a study of ballistics and ship design for Raleigh in advance of the Spanish Armada’s arrival."
             },
             {
               "id": "q10",
-              "answer": "Rainbow refraction"
+              "answer": [
+                "Rainbow refraction",
+                "refraction in the rainbow"
+              ],
+              "explanation": "Paragraph E lists the private studies that came before other scientists, and the one that put a mistaken idea right was his correct understanding of how light bends in a rainbow, which he had before Descartes.",
+              "evidence": "correctly understood refraction in the rainbow before Descartes"
             }
           ],
           "legendHtml": "<p>Various modem applications base on an image produced by lens uses refraction, such as (6)………………. And a spectrum of colors from a beam of light can be produced with (7)……………… Harriot travelled to Virginia and mainly did research which focused on two subjects of American (8)…………………. After, he also enters upon a study of flight dynamics and (9)……………….. for one of his friends much ahead of major European competitor. He undertook extensive other studies which were only noted down personally yet predated than many other great scientists. One result, for example, corrected the misconception about the idea of (10)……………..</p>",
@@ -133,22 +162,30 @@ const test: PracticeTest = {
             {
               "id": "q11",
               "answer": "D",
-              "textHtml": "Discovered the moons of Jupiter"
+              "textHtml": "Discovered the moons of Jupiter",
+              "explanation": "Paragraph B says Harriot watched the moons of Jupiter, but adds that Galileo had already found them, so the discovery belongs to Galileo. Harriot is the tempting answer because he is the one doing the observing, but he was looking at something already discovered.",
+              "evidence": "he observed the moons of Jupiter, which had already discovered by Galileo"
             },
             {
               "id": "q12",
               "answer": "B",
-              "textHtml": "Distracted experimental calculation on refraction"
+              "textHtml": "Distracted experimental calculation on refraction",
+              "explanation": "Paragraph D says Kepler searched for the law of refraction using Ptolemy's early figures, and because those figures were wrong his calculation was thrown off and he could only publish an approximation in 1604. Ptolemy is tempting because the faulty data was his, but the refraction work that went wrong was Kepler's.",
+              "evidence": "Unfortunately, Ptolemy’s data was in error, so Kepler could obtain only an approximation which he published in 1604."
             },
             {
               "id": "q13",
               "answer": "E",
-              "textHtml": "The discovery of sunspots"
+              "textHtml": "The discovery of sunspots",
+              "explanation": "Paragraph B says that while he was watching Jupiter's moons Harriot made a find of his own, sunspots, which he then viewed 199 times, so the sunspots are his discovery and not Galileo's.",
+              "evidence": "he made a discovery of his own: sunspots"
             },
             {
               "id": "q14",
               "answer": "A",
-              "textHtml": "The person whose name the sin law was attributed to"
+              "textHtml": "The person whose name the sin law was attributed to",
+              "explanation": "Paragraph A says the law of refraction is known as Snell's Law after Willobrord Snell, so his is the name attached to it. Harriot is the tempting answer because the same paragraph says he found the sine law first, but the law was never named for him.",
+              "evidence": "The law of refraction is also known as Snell’s Law, named after Willobrord Snell, who discovered the law in 1621."
             }
           ],
           "legendHtml": "<p><strong>A</strong> Willobrord Snell<br/>\n<strong>B</strong> Johannes Kepler<br/>\n<strong>C</strong> Ptolemy<br/>\n<strong>D</strong> Galileo<br/>\n<strong>E</strong> Harriot</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -217,27 +254,36 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "False",
-              "textHtml": "The prospect for the need for freshwater worldwide is obscure"
+              "textHtml": "The prospect for the need for freshwater worldwide is obscure",
+              "explanation": "The statement says the future need for freshwater is unclear, but Paragraph A says demand is already overtaking supply and that this shows no sign of stopping, and Paragraph B gives dated predictions for 2025 and mid century, so the outlook is described as clear rather than obscure.",
+              "evidence": "the world’s demand for freshwater is currently overtaking its ready supply in many places, and this situation shows no sign of abating"
             },
             {
               "id": "q16",
               "answer": "False",
-              "textHtml": "To some extent, the challenge for freshwater is alleviated by common recognition"
+              "textHtml": "To some extent, the challenge for freshwater is alleviated by common recognition",
+              "explanation": "The statement says the water problem is eased a little because everyone knows about it, but Paragraph B says the opposite, that the problem being well known makes it no less disturbing.",
+              "evidence": "That the problem is well-known makes it no less disturbing"
             },
             {
               "id": "q17",
               "answer": "True",
-              "textHtml": "Researchers arrive at the specific conclusion about the water crisis based on persuasive consideration of several factors"
+              "textHtml": "Researchers arrive at the specific conclusion about the water crisis based on persuasive consideration of several factors",
+              "explanation": "Paragraph C gives the reasons scientists expect water scarcity to spread, a rising population, growing wealth and climate change, so their conclusion rests on several convincing factors considered together.",
+              "evidence": "Scientists expect water scarcity to become more common in large part because the world’s population is rising and many people are getting richer (thus expanding demand) and because global climate change is exacerbating aridity and reducing supply in many regions."
             },
             {
               "id": "q18",
               "answer": "Not given",
-              "textHtml": "The fact that people do not actually cherish the usage of water scarcity"
+              "textHtml": "The fact that people do not actually cherish the usage of water scarcity",
+              "explanation": "The passage says how much water each person needs and why supplies are running short, but it never says anything about whether people value the water they use or waste it, so there is no information to judge this statement against."
             },
             {
               "id": "q19",
               "answer": "True",
-              "textHtml": "Controversy can’t be avoided for adjacent nations over the water resource"
+              "textHtml": "Controversy can’t be avoided for adjacent nations over the water resource",
+              "explanation": "Paragraph I describes the Jordan River, which borders on five neighbours that all claim a share of the same limited supply, and says the struggle for freshwater has already fed civil and military disputes there, which agrees with the statement.",
+              "evidence": "The struggle for freshwater has contributed to civil and military disputes in the area."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -250,27 +296,37 @@ const test: PracticeTest = {
             {
               "id": "q20",
               "answer": "F",
-              "textHtml": "The uneven distribution of water around the world"
+              "textHtml": "The uneven distribution of water around the world",
+              "explanation": "Paragraph F contrasts the Americas and northern Eurasia, which have plenty of water, with the regions facing physical or economic scarcity, so it is the paragraph about how unevenly water is spread across the world. Paragraph H is tempting because it also uses the word unevenly, but H is about rain arriving at the wrong time, which is Question 23.",
+              "evidence": "Much of the Americas and northern Eurasia enjoy abundant water supplies."
             },
             {
               "id": "q21",
               "answer": "I",
-              "textHtml": "Other factors regarding nature bothering people who make the policies"
+              "textHtml": "Other factors regarding nature bothering people who make the policies",
+              "explanation": "Paragraph I says the economic users each took a reasonable share but none of them thought about what the natural environment needed, and the Murray-Darling commissioners are now trying to undo the damage, so this is where nature becomes a problem for the decision makers. Paragraph C is tempting because it lists threats such as pollution, but no policy makers appear there.",
+              "evidence": "they just did not consider the needs of the natural environment, which suffered greatly when its inadequate supply was reduced to critical levels by drought"
             },
             {
               "id": "q22",
               "answer": "D",
-              "textHtml": "Joint efforts needed to carry out the detailed solutions combined with various aspects"
+              "textHtml": "Joint efforts needed to carry out the detailed solutions combined with various aspects",
+              "explanation": "Paragraph D says authorities at every level have to draw up and carry out plans covering political, economic and technological measures, which is the combined effort across different aspects that the question describes. Paragraph A is tempting because it mentions policymakers, but it only says they hold power, not that they must work together on a detailed plan.",
+              "evidence": "Governments and authorities at every level have to formulate and execute plans for implementing the political, economic, and technological measures that can ensure water security now and in the coming decades."
             },
             {
               "id": "q23",
               "answer": "H",
-              "textHtml": "No always-in-time match available between the requirements and the actual rainfall"
+              "textHtml": "No always-in-time match available between the requirements and the actual rainfall",
+              "explanation": "Paragraph H says the rain that falls each year would be enough for everybody if only it arrived where and when people needed it, which is exactly the mismatch between what people need and when the rain actually comes.",
+              "evidence": "This huge quantity would easily fulfill the requirements of everyone on the planet if the water arrived where and when people needed it."
             },
             {
               "id": "q24",
               "answer": "E",
-              "textHtml": "The lower limit of the amount of fresh water for a person to survive"
+              "textHtml": "The lower limit of the amount of fresh water for a person to survive",
+              "explanation": "Paragraph E gives the smallest amount of water a person can manage on, 1000 cubic metres a year for drinking, hygiene and growing food, which is the lower limit the question asks for.",
+              "evidence": "each person on the earth needs a minimum of 1000 cubic meters (m3) of water"
             }
           ],
           "options": [
@@ -292,15 +348,24 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q25",
-              "answer": "Physical"
+              "answer": "Physical",
+              "explanation": "Paragraph F names two kinds of shortage. The one caused by there simply not being enough water locally is called physical scarcity, while the other kind, where supplies exist but people cannot reach them, is called economic.",
+              "evidence": "several regions are beset by greater or lesser degrees of “physical” scarcity-whereby demand exceeds local availability"
             },
             {
               "id": "q26",
-              "answer": "Capture of shortage"
+              "answer": [
+                "capture or storage",
+                "Capture of shortage"
+              ],
+              "explanation": "Paragraph G says more than half the rain that falls on land can never be caught or stored because it evaporates from the ground or is given off by plants, so what cannot be achieved is the capture or storage of that rainfall.",
+              "evidence": "More than half of the precipitation that falls on land is never available for capture or storage because it evaporates from the ground or transpires from plants"
             },
             {
               "id": "q27",
-              "answer": "Blue water"
+              "answer": "Blue water",
+              "explanation": "Paragraph H says blue water, the 38.8 per cent that collects in rivers, lakes, wetlands and groundwater, is the share available for withdrawal, so it is the part people can use straight away.",
+              "evidence": "Bluewater (38.8% of total precipitation): collected in rivers, lakes, wetlands, and groundwater: available for withdrawal before it evaporates or reaches the ocean."
             }
           ],
           "legendHtml": "<p>Many severe problems like starvation and military actions etc result from the storage of water which sometimes for some areas seems (25)…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support. (26)……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the (27)……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -351,22 +416,30 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "C",
-              "textHtml": "A reason why newer forests provide howlers with better feeding opportunities than older forests"
+              "textHtml": "A reason why newer forests provide howlers with better feeding opportunities than older forests",
+              "explanation": "Paragraph C explains that young trees spend their limited energy on growing wood, leaves and fruit, so their leaves carry far less poison than the leaves of old trees, which is why regrowing forest feeds howlers better.",
+              "evidence": "In younger forests, trees put most of their limited energy into growing wood, leaves, and fruit, so they produce much lower levels of toxin than do well-established, old-growth trees."
             },
             {
               "id": "q29",
               "answer": "G",
-              "textHtml": "A reference to a change in farmers’ attitudes towards wildlife"
+              "textHtml": "A reference to a change in farmers’ attitudes towards wildlife",
+              "explanation": "Paragraph G says Estrada hopes farmers will start to see wild monkeys as an advantage rather than a nuisance, and quotes him on moving away from the old view of farming against nature. Paragraph F is tempting because farmers there planted trees the monkeys use, but that was done for the cacao crop, not out of any change of heart about wildlife.",
+              "evidence": "He hopes that farmers will begin to see the advantages of associating with wild monkeys"
             },
             {
               "id": "q30",
               "answer": "E",
-              "textHtml": "A description of the means by which howlers select the best available diet for themselves"
+              "textHtml": "A description of the means by which howlers select the best available diet for themselves",
+              "explanation": "The key gives Paragraph E, which describes howlers as very adaptable feeders that manage on a small home range and get their water from the leaves they eat. Note that the step by step account of how they choose their food, sampling many plants and then concentrating on the most nutritious ones, is in Paragraph C.",
+              "evidence": "Howlers are very adaptable feeders, and only need a comparatively small home range."
             },
             {
               "id": "q31",
               "answer": "B",
-              "textHtml": "Figures relating to the reduction of natural wildlife habitat over a period of time"
+              "textHtml": "Figures relating to the reduction of natural wildlife habitat over a period of time",
+              "explanation": "Paragraph B gives the numbers for lost habitat: dry forest once covered most of Central America in the 18th century, but by the 1980s under two per cent was undisturbed and under one per cent protected.",
+              "evidence": "In the 18th century, tropical dry forests once covered most of Central America, but by the 1980s less than two percent remained undisturbed, and less than one percent was protected."
             }
           ],
           "legendHtml": "<p><strong>Question 28 – 31</strong></p>",
@@ -387,19 +460,30 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q32",
-              "answer": "Reproduction"
+              "answer": "Reproduction",
+              "explanation": "Paragraph E says howler reproduction is faster than that of the other native monkeys, and backs it up with first births at about 3.5 years and a baby every two years, so the faster rate is their rate of reproduction.",
+              "evidence": "Howler reproduction is faster than that of other native monkey species."
             },
             {
               "id": "q33",
-              "answer": "Fruit"
+              "answer": "Fruit",
+              "explanation": "Paragraph C says howlers eat fruit when they can get it but, unlike capuchins and spider monkeys, do not depend on large areas of fruiting trees, so fruit is the food they can live without and the reason a small area is enough.",
+              "evidence": "They eat fruit when it is available but, unlike capuchin and spider monkeys, do not depend on large areas of fruiting trees."
             },
             {
               "id": "q34",
-              "answer": "Toxics"
+              "answer": [
+                "toxins",
+                "Toxics"
+              ],
+              "explanation": "Paragraph C says Glander is interested in the howlers' ability to thrive on leaves loaded with poisons that the plants use to protect themselves, which the passage itself spells 'toxins'.",
+              "evidence": "Glander is particularly interested in howlers’ ability to thrive on leaves loaded with toxins- poisonous substances designed to protect the plants."
             },
             {
               "id": "q35",
-              "answer": "Drought"
+              "answer": "Drought",
+              "explanation": "Paragraph E says the leaves howlers eat hold plenty of water, so they can live away from streams, which gives them an advantage over capuchins and spider monkeys during the long dry spell in the area.",
+              "evidence": "which have suffered during the long, ongoing drought in the area"
             }
           ],
           "legendHtml": "<p><strong>Why do howlers have an advantage over other Central American monkeys?</strong></p><p>Howler monkeys have a more rapid rate of (32)………………… than either capuchin of spider monkeys. Unlike the other local monkey species, howlers can survive without eating (33)……………. and so can live inside a relatively small habitat area. Their diet is more flexible, and they are able to tolerate leaves with high levels of (34)……………… Howlers can also survive periods of (35)…………….. better than the other monkey species can.</p>",
@@ -413,30 +497,42 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "B",
-              "textHtml": "It has seen the return of native tree species"
+              "textHtml": "It has seen the return of native tree species",
+              "explanation": "Location B is Santa Rosa National Park, and Paragraph D says that once the area was protected in 1971 native tree species that had been missing for decades started spreading back into the abandoned pastures. Location A is tempting because La Pacifica kept strips of native trees, but those trees were never lost, so nothing returned there.",
+              "evidence": "species of Indigenous Lees which had been absent for decades began to invade the abandoned pastures"
             },
             {
               "id": "q37",
-              "answer": "C",
-              "textHtml": "It supports only one species of native monkey"
+              "answer": [
+                "A",
+                "C"
+              ],
+              "textHtml": "It supports only one species of native monkey",
+              "explanation": "Both the ranch and the cacao farm are described as having howlers and no other native monkey, so A and C are both accepted here. At La Pacifica the capuchins and spider monkeys vanished after the highway was built, and at the cacao farm only howlers moved in.",
+              "evidence": "Other native primates- white-faced capuchin monkeys and spider monkeys were once common in this area, too, but vanished after the Pan-American Highway was built nearby in the 1950s"
             },
             {
               "id": "q38",
               "answer": "C",
-              "textHtml": "Its monkey population helps the agriculture of the area"
+              "textHtml": "Its monkey population helps the agriculture of the area",
+              "explanation": "Location C is the cacao plantation, and Paragraph G says its monkeys spread the seeds of the fig and other shade trees and fertilise the soil, while leaving the valuable cacao pods alone, so they help the farm. Location B is tempting because the park protects monkeys, but nothing is farmed there.",
+              "evidence": "dispersing the seeds of fruits such as fig and other shade trees, and fertilizing the soil"
             },
             {
               "id": "q39",
-              "answer": "A",
-              "textHtml": "It is home to populations of all three local monkey species"
+              "answer": "B",
+              "textHtml": "It is home to populations of all three local monkey species",
+              "explanation": "Santa Rosa is the place where all three monkeys live, because the paragraph on the National Park says capuchins came back to the new forest first, then howlers, and finally spider monkeys. La Pacifica is the tempting answer, but it is the site where two of the three species disappeared."
             },
             {
               "id": "q40",
               "answer": "A",
-              "textHtml": "Its landscape was altered by the construction of a transport link"
+              "textHtml": "Its landscape was altered by the construction of a transport link",
+              "explanation": "Location A is Hacienda La Pacifica, and Paragraph A says the Pan-American Highway was built nearby in the 1950s and most of the surrounding land was then cleared for cattle, which is the transport link that changed the landscape. Location B is tempting because Santa Rosa was also cleared, but that was for ranching and coffee, not for a road.",
+              "evidence": "vanished after the Pan-American Highway was built nearby in the 1950s and most of the surrounding land was cleared for cattle-raising"
             }
           ],
-          "legendHtml": "<p><strong>Question 36 – 40</strong></p><p><strong>A</strong> A<br/>\n<strong>B</strong> B<br/>\n<strong>C</strong> C</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Hacienda La Pacifica<br/>\n<strong>B</strong> Santa Rosa National Park<br/>\n<strong>C</strong> Cholula Cacao Farm, Tabasco</p>",
           "options": [
             "A",
             "B",

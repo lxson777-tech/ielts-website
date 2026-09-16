@@ -76,3 +76,27 @@ test('no option or word list is glued onto a question', () => {
   }
   assert.deepEqual([...new Set(glued)], [], `a list is stuck to these questions:\n${glued.join('\n')}`);
 });
+
+/* The 40/40 check in reading-answer-key.test.ts only walks tests 1 to 20.
+   Tests 21 to 40 were edited in 2026-09 (explanations, accepted variants,
+   three corrected keys), so hold the whole bank to the same bar. */
+test('every reading test scores 40 out of 40 on its own key, and 0 on a blank paper', async () => {
+  const { scoredQuestionIds } = await import('../src/lib/tests/schema.ts');
+  for (const t of READING) {
+    const questions = t.parts.flatMap((p) => p.groups.flatMap((g) => g.questions));
+    assert.equal(questions.length, 40, `${t.id} does not have 40 questions`);
+    const answers: Record<string, string> = {};
+    const usedInPair = new Map<string, number>();
+    for (const q of questions) {
+      const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
+      // Paired questions share one pool, so each slot takes a different member.
+      const slot = q.answerPairId ? usedInPair.get(q.answerPairId) ?? 0 : 0;
+      if (q.answerPairId) usedInPair.set(q.answerPairId, slot + 1);
+      const value = accepted[slot] ?? accepted[0];
+      assert.ok(value && value.trim().length > 0, `${t.id} ${q.id} has no answer`);
+      answers[q.id] = value;
+    }
+    assert.equal(scoredQuestionIds(questions, answers).size, 40, `${t.id} does not score 40/40 on its own key`);
+    assert.equal(scoredQuestionIds(questions, {}).size, 0, `${t.id} scores marks for a blank paper`);
+  }
+});

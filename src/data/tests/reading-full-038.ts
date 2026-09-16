@@ -71,32 +71,44 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "D",
-              "textHtml": "Appointments with an alternative practitioner"
+              "textHtml": "Appointments with an alternative practitioner",
+              "explanation": "Paragraph A tells anyone inventing a new therapy that every session with a patient should run for at least half an hour, so appointments have a minimum length. Option E about treating at the right time is tempting because timing appears in Paragraph B, but that is about when to give a treatment, not how long an appointment lasts.",
+              "evidence": "each session with your patients should last at least half an hour"
             },
             {
               "id": "q2",
               "answer": "A",
-              "textHtml": "An alternative practitioner’s description of the treatment"
+              "textHtml": "An alternative practitioner’s description of the treatment",
+              "explanation": "Paragraph A says the treatment should be described in familiar words, in other words in language patients can follow easily. Option C is the trap, because the same sentence asks for a hint of mysticism rather than telling you to avoid it.",
+              "evidence": "Describe your treatment in familiar words, but embroidered with a hint of mysticism"
             },
             {
               "id": "q3",
               "answer": "G",
-              "textHtml": "An alternative practitioner who has faith in what he does"
+              "textHtml": "An alternative practitioner who has faith in what he does",
+              "explanation": "Paragraph B says a practitioner who is convincing, or who really believes in the therapy, can make a good living from it. Option E is tempting because the same paragraph mentions the right time, but that is about luck with illnesses, not about the practitioner's own belief.",
+              "evidence": "A good living if you are sufficiently convincing, or better still, really believe in your therapy."
             },
             {
               "id": "q4",
               "answer": "B",
-              "textHtml": "The illness of patients convinced of alternative practice"
+              "textHtml": "The illness of patients convinced of alternative practice",
+              "explanation": "Paragraph B says many illnesses clear up by themselves, so a patient who believes in the treatment would often have got better anyway. Option E is tempting because the same sentence mentions the right time, but that describes the practitioner's lucky timing, while the statement is about the illness itself.",
+              "evidence": "Many illnesses get better on their own"
             },
             {
               "id": "q5",
               "answer": "H",
-              "textHtml": "Improvements of patients receiving alternative practice"
+              "textHtml": "Improvements of patients receiving alternative practice",
+              "explanation": "Paragraph D quotes Professor Ernst saying complementary practitioners are far better at producing non-specific effects, so the improvement does not come from any particular treatment. Option B is tempting, but that describes illnesses that clear up on their own rather than the healing the practitioner produces.",
+              "evidence": "Complementary practitioners are miles better at producing non-specific effects and good therapeutic relationships"
             },
             {
               "id": "q6",
               "answer": "F",
-              "textHtml": "Conventional medical doctors (who is aware of placebo)"
+              "textHtml": "Conventional medical doctors (who is aware of placebo)",
+              "explanation": "Paragraph B says conventional medicine does recognise the placebo effect but stays oddly ambivalent about it, and Paragraph C adds that its role is often neglected, so orthodox doctors should give it more recognition. Option H is tempting because placebos work without any direct effect on the body, but that describes how the healing happens, not what conventional doctors fail to do.",
+              "evidence": "a paradoxical force that conventional medicine recognizes but remains oddly ambivalent about"
             }
           ],
           "legendHtml": "<p><strong>A</strong> Should easily be understood<br/>\n<strong>B</strong> Should improve by itself<br/>\n<strong>C</strong> Should not involve any mysticism<br/>\n<strong>D</strong> Ought to last a minimum length of time.<br/>\n<strong>E</strong> Needs to be treated at the right time.<br/>\n<strong>F</strong> Should give more recognition.<br/>\n<strong>G</strong> Can earn valuable money.<br/>\n<strong>H</strong> Do not rely on any specific treatment</p>",
@@ -125,7 +137,9 @@ const test: PracticeTest = {
                 "Scientists don’t understand how the mind influences the body",
                 "Research on the placebo effect is very limited",
                 "How placebo achieves its effect is yet to be understood"
-              ]
+              ],
+              "explanation": "The fifth paragraph uses anger opening the blood vessels of the face and sadness filling the tear glands to show that what a person feels changes what the body does. Option D is tempting because it comes in the very next sentence, but the two emotions are an example of the mind affecting the body, not of placebos being mysterious.",
+              "evidence": "our state of mind can influence our physiology: anger opens the superficial blood vessels of the face; sadness pumps the tear glands"
             },
             {
               "id": "q8",
@@ -136,7 +150,9 @@ const test: PracticeTest = {
                 "Only a limited number of researchers gain relevant experience",
                 "Pain reducing agents might also be involved in the placebo effect",
                 "Patients often experience pain and like to complain about it"
-              ]
+              ],
+              "explanation": "Paragraph F says research has concentrated on pain because pain is one of the most common complaints and is easy to study in experiments. Option C is tempting because the passage does say pain chemicals may be involved in the placebo response, but that is one of the findings, not the reason researchers chose pain in the first place.",
+              "evidence": "because it’s one of the commonest complaints and lends itself to experimental study"
             },
             {
               "id": "q9",
@@ -147,7 +163,9 @@ const test: PracticeTest = {
                 "They can be produced by willful thoughts",
                 "They can be neutralized by introducing naloxone",
                 "Their pain-relieving effects do not last long enough"
-              ]
+              ],
+              "explanation": "Paragraph G says Benedetti wiped out the placebo pain relief by adding naloxone, a drug that blocks endorphins, so endorphins can be cancelled out by that drug. Option B is tempting, but Paragraph H says most people cannot get placebo pain relief simply by willing it.",
+              "evidence": "the placebo effect can be abolished by a drug, naloxone, which blocks the effects of endorphins"
             }
           ]
         },
@@ -159,27 +177,36 @@ const test: PracticeTest = {
             {
               "id": "q10",
               "answer": "False",
-              "textHtml": "There is enough information for scientists to fully understand the placebo effect"
+              "textHtml": "There is enough information for scientists to fully understand the placebo effect",
+              "explanation": "Paragraph F states plainly that how placebos work is still largely unknown, which contradicts the idea that scientists have enough information to understand the effect fully.",
+              "evidence": "But exactly how placebos work their medical magic is still largely unknown."
             },
             {
               "id": "q11",
               "answer": "Not given",
-              "textHtml": "London based researcher discovered that red pills should be taken off the market"
+              "textHtml": "London based researcher discovered that red pills should be taken off the market",
+              "explanation": "Paragraph H does say a London rheumatologist found red dummy capsules worked better as painkillers than blue, green or yellow ones, but the passage never says anything about any pills being withdrawn or taken off the market."
             },
             {
               "id": "q12",
               "answer": "True",
-              "textHtml": "People’s preference for brands would also have an effect on their healing"
+              "textHtml": "People’s preference for brands would also have an effect on their healing",
+              "explanation": "Paragraph H says that if you like a particular brand for your headache, the chemically identical generic version may work less well for you, so what brand people prefer does affect their healing.",
+              "evidence": "if Aspro or Tylenol is what you like to take for a headache, their chemically identical generic equivalents may be less effective"
             },
             {
               "id": "q13",
               "answer": "True",
-              "textHtml": "Medical doctors have a range of views of the newly introduced drug of chlorpromazine"
+              "textHtml": "Medical doctors have a range of views of the newly introduced drug of chlorpromazine",
+              "explanation": "Paragraph I says a doctor in Kansas sorted his colleagues into those who were keen on chlorpromazine, those who were openly sceptical of it, and those who wanted to wait and see, which is a range of views about a newly introduced drug.",
+              "evidence": "a doctor in Kansas categorised his colleagues according to whether they were keen on it, openly skeptical of its benefits, or took a “let’s try and see” attitude"
             },
             {
               "id": "q14",
               "answer": "False",
-              "textHtml": "Alternative practitioners are seldom known for applying the placebo effect"
+              "textHtml": "Alternative practitioners are seldom known for applying the placebo effect",
+              "explanation": "Paragraph J says complementary practitioners are generally the best at mobilising the placebo effect, so they are well known for using it and the statement says the opposite.",
+              "evidence": "complementary practitioners are generally best at mobilising the placebo effect"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -247,7 +274,9 @@ const test: PracticeTest = {
                 "Assist us to map out because it disturbs normal cycle of for wildlife and human",
                 "It has profound theory for both the academic side and practical side",
                 "Tropical Pacific Ocean is where El Nino affects most"
-              ]
+              ],
+              "explanation": "Paragraph A says El Nino disturbs the normal patterns of countless plants and animals as well as hundreds of millions of people, and that scientists study it so societies can plan ahead. Option D is tempting because the tropical Pacific is named, but the passage never says that is where El Nino has its strongest effect.",
+              "evidence": "disrupting the normal patterns of countless species of plants and animals along with hundreds of millions of human beings"
             },
             {
               "id": "q16",
@@ -258,7 +287,9 @@ const test: PracticeTest = {
                 "Its size is large enough to be observed",
                 "El Nino affects seabirds more than other sea creatures",
                 "North America is situated in the area where El Nino affects most"
-              ]
+              ],
+              "explanation": "Paragraph B says that when prey becomes harder to find because of sea surface temperature and the extent of sea ice, seabird populations are affected too, which is why they are worth watching. Option D is tempting because North America is mentioned, but that sentence is about where most United States seabirds breed, not about where El Nino hits hardest.",
+              "evidence": "As prey availability changes in response to climatically driven factors such as surface sea temperature and extent of sea ice, so will populations of seabirds be affected."
             },
             {
               "id": "q17",
@@ -269,7 +300,9 @@ const test: PracticeTest = {
                 "Number of Steller sea lion declined while Number seals grew",
                 "Birth rate and breeding females declined on the Tugidak Island",
                 "The situation of mammals on the island is not that worse than we expected"
-              ]
+              ],
+              "explanation": "Paragraph E says that along with the falling numbers of Steller sea lions in the Gulf of Alaska, where Tugidak Island lies, came a lower birth rate and fewer breeding females. Option A is tempting because the 85% fall in harbor seals really is at Tugidak, but the passage dates it between 1976 and 1988, not to the middle of the 20th century.",
+              "evidence": "Associated with the declines in Steller sea lions are declines in birth rate, fewer breeding females, fewer pups, decreased adult body condition, decreased juvenile survival, and a change in population age structure."
             },
             {
               "id": "q18",
@@ -280,7 +313,9 @@ const test: PracticeTest = {
                 "Walker’s prediction would soon come true",
                 "Drought only affects some parts of Africa",
                 "Drought will affect somewhere of the earth such as Australia and Indonesia"
-              ]
+              ],
+              "explanation": "Paragraph F says Walker noticed that monsoon seasons with low-index conditions are often marked by drought in Australia, Indonesia, India and parts of Africa. Option C is tempting but fails on the word only, because Africa is just one of the four places on his list.",
+              "evidence": "monsoon seasons with low-index conditions are often marked by drought in Australia, Indonesia, India, and parts of Africa"
             }
           ]
         },
@@ -292,47 +327,63 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "True",
-              "textHtml": "Seabirds are regarded as precious indicators of changes in oceanic environment"
+              "textHtml": "Seabirds are regarded as precious indicators of changes in oceanic environment",
+              "explanation": "Paragraph C says the rich store of knowledge about seabirds makes them a valuable indicator species for measuring change in the marine environment, which is what the statement says.",
+              "evidence": "the rich knowledge base about seabirds makes them a valuable resource as indicator species for measurement of change in the marine environment"
             },
             {
               "id": "q20",
               "answer": "True",
-              "textHtml": "Seabirds such as Fulmars and Murres feed by the characteristic of prey in different ways"
+              "textHtml": "Seabirds such as Fulmars and Murres feed by the characteristic of prey in different ways",
+              "explanation": "Paragraph D says fulmars take their prey from the surface or just below it, while murres dive for their food, so these birds do feed in different ways depending on the prey.",
+              "evidence": "Fulmars, storm-petrels and kittiwakes are surface feeders, picking their prey from the surface or just below the surface; murres, auklets, and puffins dive for their food."
             },
             {
               "id": "q21",
               "answer": "False",
-              "textHtml": "Steller sea lions only decline in birth rate and fewer pups, but the whole population wouldn’t be affected by the changes"
+              "textHtml": "Steller sea lions only decline in birth rate and fewer pups, but the whole population wouldn’t be affected by the changes",
+              "explanation": "Paragraph E says Steller sea lion populations fell by 36% and then by a further 59%, so the whole population was affected, not only the birth rate and the number of pups.",
+              "evidence": "Steller sea lion populations declined by 36% in the Gulf of Alaska between 1977 and 1985"
             },
             {
               "id": "q22",
               "answer": "False",
-              "textHtml": "With reply of Walker’s colleague, knowledge of wind patterns will be very helpful"
+              "textHtml": "With reply of Walker’s colleague, knowledge of wind patterns will be very helpful",
+              "explanation": "Paragraph F says it was Walker himself who replied, and he was the one who predicted that the explanation would need a knowledge of wind patterns above ground level. The colleague only criticised him in print, so the statement gives the reply to the wrong person.",
+              "evidence": "In his reply Walker predicted, correctly, that an explanation would be forthcoming, but that it would require a knowledge of wind patterns above ground level, which were not routinely being observed at that time."
             },
             {
               "id": "q23",
               "answer": "True",
-              "textHtml": "It is difficult to investigate El Nino for ornithologists and ecologist because lack of available statistics and inspections"
+              "textHtml": "It is difficult to investigate El Nino for ornithologists and ecologist because lack of available statistics and inspections",
+              "explanation": "Paragraph G says that the lack of data collected beforehand, and the lack of monitoring afterwards, makes it hard to understand how birds respond to El Nino, which agrees with the statement.",
+              "evidence": "lack of preexisting data, and of monitoring afterwards, makes it difficult"
             },
             {
               "id": "q24",
               "answer": "Not given",
-              "textHtml": "Habit of seabirds in Alaska is similar to those in the Northern Hemisphere"
+              "textHtml": "Habit of seabirds in Alaska is similar to those in the Northern Hemisphere",
+              "explanation": "Paragraph H compares Alaska with other regions only by how large and how varied the seabird populations are. It never says anything about the birds' habits being similar, so there is nothing in the passage to judge this by."
             },
             {
               "id": "q25",
               "answer": "Not given",
-              "textHtml": "Number of Shearwaters in the southern hemisphere feed most during the summer"
+              "textHtml": "Number of Shearwaters in the southern hemisphere feed most during the summer",
+              "explanation": "Paragraph H says shearwaters breed in the southern hemisphere and are the most numerous species in Alaskan waters in summer, but the passage never says how much they feed or that they feed most at that time of year."
             },
             {
               "id": "q26",
               "answer": "True",
-              "textHtml": "Hatch thinks that it is too early to determine all the problems that are caused by El Nino"
+              "textHtml": "Hatch thinks that it is too early to determine all the problems that are caused by El Nino",
+              "explanation": "Paragraph I says Hatch believes it is too early to decide whether the seabird die-offs are connected with El Nino, which agrees with the statement.",
+              "evidence": "But Hatch thinks that it is too early to decide the these die-offs reports are somehow connected with effect of El nino."
             },
             {
               "id": "q27",
               "answer": "False",
-              "textHtml": "Byrd and Tobish think that heavy rainfall and storms cause mortality for chicks, which has already been a convincing proof"
+              "textHtml": "Byrd and Tobish think that heavy rainfall and storms cause mortality for chicks, which has already been a convincing proof",
+              "explanation": "Paragraph I does say Byrd and Tobish believe heavy rain and big storms kill chicks, but it then says this view has not been treated as convincing evidence, so the last part of the statement contradicts the passage.",
+              "evidence": "but this view has not been considered as convincing evidence"
             }
           ],
           "legendHtml": "<p><strong>Question 19 – 27</strong></p><dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -385,23 +436,40 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q28",
-              "answer": "Genetic"
+              "answer": [
+                "Genetic",
+                "genetics"
+              ],
+              "explanation": "Paragraph B calls nature our genetic background and gives its rate of influence as 40% to 50%, which matches the first row of the table.",
+              "evidence": "Are we the result of nature (our genetic background) or nurture (our environment)?"
             },
             {
               "id": "q29",
-              "answer": "All of siblings"
+              "answer": [
+                "All of siblings",
+                "all siblings",
+                "all of the siblings"
+              ],
+              "explanation": "Paragraph D says the shared environment may refer to all of the siblings of a family, so that is the range of reference for the shared environment row.",
+              "evidence": "It may also refer to all of siblings of a family, but the rate of influence is less than 10 per cent."
             },
             {
               "id": "q30",
-              "answer": "10%"
+              "answer": "10%",
+              "explanation": "Paragraph D says the rate of influence of the shared environment is less than 10 per cent, so the figure that fills the box in that row is 10%.",
+              "evidence": "but the rate of influence is less than 10 per cent"
             },
             {
               "id": "q31",
-              "answer": "Non-shared environment"
+              "answer": "Non-shared environment",
+              "explanation": "Paragraph E says the non-shared environment refers to part of the siblings of a family, which matches the middle column of the last row of the table.",
+              "evidence": "Non-shared environment, it may refer to the part of siblings of a family, the rate of influence to children is 40 % to 50%."
             },
             {
               "id": "q32",
-              "answer": "40%"
+              "answer": "40%",
+              "explanation": "Paragraph E gives the rate of influence of the non-shared environment as 40% to 50%, so the missing figure before 50% in the last row is 40%.",
+              "evidence": "the rate of influence to children is 40 % to 50%"
             }
           ],
           "legendHtml": "<table><tbody><tr><td width=\"198\"><strong>Type of Impact to Children</strong></td><td width=\"198\"><strong>Range of Reference to Siblings</strong></td><td width=\"198\"><strong>Rate of Influence</strong></td></tr><tr><td width=\"198\">(28)……………. background from parents and family</td><td width=\"198\">including to all of siblings</td><td width=\"198\">40%-50%</td></tr><tr><td width=\"198\">Shared Environment</td><td width=\"198\">to (29)………………</td><td width=\"198\">Less than (30)……………</td></tr><tr><td width=\"198\">(31)……………….</td><td width=\"198\">to part of siblings</td><td width=\"198\">(32)……. – 50%</td></tr></tbody></table>",
@@ -453,15 +521,21 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q33",
-              "answer": "Interrupted"
+              "answer": "Interrupted",
+              "explanation": "Paragraph F says the impact from parents is easily interrupted by the influence of children of the same age, and children of the same age are what the summary calls the peer's pressure.",
+              "evidence": "the impact from parents will be easy to be interrupted by the influence from the children of the same age"
             },
             {
               "id": "q34",
-              "answer": "Variations"
+              "answer": "Variations",
+              "explanation": "Paragraph F says variations of the knowledge children get from other cultures are increasing, so the missing word in the summary is variations.",
+              "evidence": "That also showed that variations of knowledge that children get from other culture are increasing."
             },
             {
               "id": "q35",
-              "answer": "Interests"
+              "answer": "Interests",
+              "explanation": "Paragraph F says a number of interests between mothers and fathers, or between parents and children, are conflicting, which the summary calls competing interests.",
+              "evidence": "A number of interests between, whatever, fathers and mothers or parents and their children are conflicting."
             }
           ],
           "legendHtml": "<p>Research in recent years illuminated that the impact from parents will frequently be (33)……………… by the peer’s pressure. It was also indicated that (34)………………. of knowledge that children learned from other culture is increasing. The study has found quantities of competing (35)………………. between parents and children or even between parents themselves.</p>",
@@ -475,22 +549,28 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "Not given",
-              "textHtml": "The more children there are in a family, the more impacts of environment it is"
+              "textHtml": "The more children there are in a family, the more impacts of environment it is",
+              "explanation": "The passage sets out the shared and non-shared environment and how much influence each one has, but it never mentions how many children a family has, so there is no way to tell what the writer thinks about family size."
             },
             {
               "id": "q37",
               "answer": "Yes",
-              "textHtml": "Methods based on twin studies still meet unexpected differences that cannot be ascribed to be a purely genetic explanation"
+              "textHtml": "Methods based on twin studies still meet unexpected differences that cannot be ascribed to be a purely genetic explanation",
+              "explanation": "Paragraph E says that in quantitative genetic work such as twin and adoption studies, genetic influence never explains all of the variation in complex traits, and whatever is left must be put down to the environment. So these methods do meet differences that genetics alone cannot account for.",
+              "evidence": "because genetic influence never explains all of the variances for complex phenotypes, and the remaining variance must be ascribed to environmental influences"
             },
             {
               "id": "q38",
               "answer": "Not given",
-              "textHtml": "Children prefer to speak the language from the children of the same age to the language spoken by their parents"
+              "textHtml": "Children prefer to speak the language from the children of the same age to the language spoken by their parents",
+              "explanation": "Paragraph F does say children are strongly influenced by children of the same age, but the passage never mentions language or which way of speaking children prefer, so the writer's view on this is impossible to tell."
             },
             {
               "id": "q39",
               "answer": "No",
-              "textHtml": "The Study of non-shared environment influence can be a generally agreed idea among researchers in the field"
+              "textHtml": "The Study of non-shared environment influence can be a generally agreed idea among researchers in the field",
+              "explanation": "Paragraph G is still asking whether these research designs can actually identify systematic non-shared environmental mechanisms, and calls that question the reason for the current study, so the idea is still open rather than something researchers generally agree on.",
+              "evidence": "Thus, the question is whether or not quasi-experimental behavioral genetic designs can be used to actually identify systematic non-shared environmental mechanisms cross-sectionally and longitudinally."
             }
           ],
           "legendHtml": "<p><strong>Question 36 – 39</strong></p><dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
@@ -509,7 +589,9 @@ const test: PracticeTest = {
                 "not sufficiently proved",
                 "very systematic",
                 "can be workable"
-              ]
+              ],
+              "explanation": "Paragraph G says separating the genetic and non-genetic influences that make siblings different is very difficult and that the key question has still not been settled, so the research is not yet sufficiently proved. Option C is the trap, because the passage says these influences may not be systematic at all.",
+              "evidence": "teasing apart the potential influences of genetic and non-genetic factors that differentiate siblings is very difficult"
             }
           ]
         }

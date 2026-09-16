@@ -68,25 +68,33 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "B",
               "before": "Scientists manage to",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph A says the Cargill scientists worked out how to turn lactic acid made from corn into plastic, so what they managed to do was make plastic from a plant. Option D is tempting because fermentation is mentioned, but that is one step in the method rather than what they achieved.",
+              "evidence": "scientists at Cargill got the idea of converting lactic acid made from corn into plastic"
             },
             {
               "id": "q2",
               "answer": "C",
               "before": "Cargill needs to have contacts with",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph B says Cargill needed a partner that could reach the plastics markets, which is why it went to Dow, so the contacts it needed were for selling plastic. Option B is tempting, but Cargill could already make plastic from plants on its own.",
+              "evidence": "The company needed a partner with access to plastics markets and polymerization capabilities"
             },
             {
               "id": "q3",
               "answer": "A",
               "before": "Nature work is used for",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C says the material reaches the shopper in clothes, cups, packaging and other products, so Nature Works is used to make everyday things like clothes. Option F is tempting because packaging is on that list, but the ending has to cover the whole range of products, not only wrapping.",
+              "evidence": "a more environmentally friendly material that reaches the consumer in clothes, cups, packaging and other products"
             },
             {
               "id": "q4",
               "answer": "A",
               "before": "Ingeo is used to",
-              "after": ""
+              "after": "",
+              "explanation": "Ingeo is the brand name of the same Nature Works PLA, and Paragraph G says its fibre uses include clothing, blankets and wipes, so it is used to make things like clothes. Option E is tempting because drape fabrics appear in Paragraph H, but that is one narrow example rather than the general use.",
+              "evidence": "Fiber and non-woven applications include clothing, fiberfill, blankets and wipes."
             }
           ],
           "legendHtml": "<p>A. make things like clothes<br/>\nB. produce plastic from plant<br/>\nC. selling plastic in market<br/>\nD. fermentation process<br/>\nE. drape fabrics<br/>\nF. wrapping products</p><p>1. Scientists manage to<br/>\n2. Cargill needs to have contacts with<br/>\n3. Nature work is used for<br/>\n4. Ingeo is used to</p>"
@@ -98,27 +106,41 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q5",
-              "answer": "Starch",
+              "answer": [
+                "Starch",
+                "corn starch"
+              ],
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "The chart follows Paragraph D: the corn is milled and the milling separates starch from the rest of the grain, and that starch is the stage just before unrefined dextrose.",
+              "evidence": "The process for making Nature Works PLA begins when a renewable resource such as corn is milled, separating starch from the raw material."
             },
             {
               "id": "q6",
-              "answer": "Fermentation",
+              "answer": [
+                "Fermentation",
+                "fermentation process"
+              ],
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says the unrefined dextrose is turned into lactic acid by a fermentation process like the one beer and wine makers use, so fermentation is the step that produces lactic acid.",
+              "evidence": "Cargill Dow turns the unrefined dextrose into lactic acid using a fermentation process similar to that used by beer and wine producers."
             },
             {
               "id": "q7",
               "answer": "Condensation",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says a lactide is formed through a special condensation process, so condensation is the step that sits between lactic acid and lactide on the chart.",
+              "evidence": "Through a special condensation process, a lactide is formed."
             },
             {
               "id": "q8",
               "answer": "Polymer",
               "before": "",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph E says the lactide is purified by vacuum distillation and becomes a polymer, so a polymer is what you get at the end of the chart.",
+              "evidence": "This lactide is purified through vacuum distillation and becomes a polymer (the base for NatureWorks PLA)"
             }
           ],
           "legendHtml": "<p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"562\" src=\"/ielts-website/pics/reading/imported/test-283-1.png\" width=\"797\"/></p>",
@@ -138,7 +160,9 @@ const test: PracticeTest = {
                 "It can save food freshness",
                 "It can be used on other materials",
                 "Some other things need to be revised about it"
-              ]
+              ],
+              "explanation": "Paragraph H says PLA resists oil and grease and holds flavour and aroma in better than petroleum-based plastics, which is how it keeps food fresh. Option A is tempting because aroma is mentioned, but the passage means PLA blocks smells rather than smelling nice itself.",
+              "evidence": "As Nature Works PLA polymers are more oil- and grease-resistant and provide a better flavor and aroma barrier than existing petroleum-based polymers"
             },
             {
               "id": "q10",
@@ -149,7 +173,9 @@ const test: PracticeTest = {
                 "composting facilities",
                 "Packaging fresh food",
                 "manufacturing"
-              ]
+              ],
+              "explanation": "Paragraph H says grocery shops are using this packaging more and more for their fresh foods, so packaging fresh food is what it is used for. Option A is tempting, but taking in moisture is what the fibre does in sportswear, not what the packaging does.",
+              "evidence": "grocery retailers are increasingly using this packaging for their fresh foods"
             }
           ],
           "legendHtml": "<p><strong>Question 9 – 10</strong></p>"
@@ -163,19 +189,25 @@ const test: PracticeTest = {
               "id": "q11",
               "answer": [
                 "A",
-                "C"
+                "B",
+                "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-283-q11-q12"
+              "answerPairId": "reading-283-q11-q12",
+              "explanation": "The paragraph on environmental benefits says the sugar for PLA comes from plants such as corn, which are grown again year after year, so a renewable raw material is one correct feature. Options A and D say this in different words and both count. Option C fails because the passage says production uses 20 to 50 per cent less fossil fuel, which is less, not none.",
+              "evidence": "Because the company is using raw materials that can be regenerated year after year, it is both cost-competitive and environmentally responsible."
             },
             {
               "id": "q12",
               "answer": [
                 "A",
-                "C"
+                "B",
+                "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-283-q11-q12"
+              "answerPairId": "reading-283-q11-q12",
+              "explanation": "The same paragraph says carbon dioxide is taken out of the air while the plants are grown and put back when the polymer breaks down, so removing carbon dioxide is the other correct feature. Option E is tempting because it also mentions absorbing carbon dioxide, but it describes PLA itself as food rather than describing the growing of the crop.",
+              "evidence": "carbon dioxide in the atmosphere is removed when the feedstock is grown and is returned to the earth when the polymer is degraded"
             }
           ],
           "selectCount": 2,
@@ -214,7 +246,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-283-q13-q14"
+              "answerPairId": "reading-283-q13-q14",
+              "explanation": "Paragraph H says PLA has a natural ability to draw moisture away from the skin, which is why sportswear makers are drawn to it, so option A is correct. Option B is tempting, but pulling moisture off the skin is the opposite of being waterproof.",
+              "evidence": "it has an inherent ability to take moisture away from the skin"
             },
             {
               "id": "q14",
@@ -223,7 +257,9 @@ const test: PracticeTest = {
                 "D"
               ],
               "textHtml": "",
-              "answerPairId": "reading-283-q13-q14"
+              "answerPairId": "reading-283-q13-q14",
+              "explanation": "Paragraph H says PLA resists ultraviolet light and that this cuts how much such fabrics fade in the sun, which is the fading point option D is aiming at. Option E is tempting because deep colours are mentioned, but the passage says deep colours are possible without much dye, not that deep colour is the only choice.",
+              "evidence": "Their resistance to ultraviolet light is particularly appealing as this reduces the amount of fading in such fabrics"
             }
           ],
           "selectCount": 2,
@@ -318,37 +354,50 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "False",
-              "textHtml": "In Australia, alternative energies are less expensive than conventional electricity"
+              "textHtml": "In Australia, alternative energies are less expensive than conventional electricity",
+              "explanation": "Paragraph C says Australian electricity is the second cheapest in the world and that this makes it hard for renewables to compete, and it prices coal at about 4 cents a kilowatt-hour against about 7 cents for wind, so alternative energy costs more, not less.",
+              "evidence": "Australia has the second cheapest electricity in the world, and this makes it difficult for renewable to compete"
             },
             {
               "id": "q16",
               "answer": "True",
-              "textHtml": "Geoenergy needs to adapt its system to make it less harmful to the environment"
+              "textHtml": "Geoenergy needs to adapt its system to make it less harmful to the environment",
+              "explanation": "Paragraph G says the Geoenergy system gives off no greenhouse gases but still needs extra features before it can count as environmentally friendly, which agrees with the statement.",
+              "evidence": "the system needs some additional features if it is to be environmentally friendly"
             },
             {
               "id": "q17",
               "answer": "Not given",
-              "textHtml": "Dr Prue Chopra has studied the effects of radon gas on the environment"
+              "textHtml": "Dr Prue Chopra has studied the effects of radon gas on the environment",
+              "explanation": "Paragraph G names Dr Prue Chopra and says the steam brings radon gas up with it, but the passage never says she has researched what radon gas does to the environment, so that part of the statement is simply not there."
             },
             {
               "id": "q18",
               "answer": "True",
-              "textHtml": "Hot, dry rocks could provide enough power for the whole of Australia"
+              "textHtml": "Hot, dry rocks could provide enough power for the whole of Australia",
+              "explanation": "Paragraph G says the Australian hot rock source is so large it could meet the whole country's needs for thousands of years, which agrees with the statement.",
+              "evidence": "the Australian source is so large it could supply the entire country’s needs for thousands of years at current rates of consumption"
             },
             {
               "id": "q19",
               "answer": "False",
-              "textHtml": "The new Enviropower facility will keep tourists away"
+              "textHtml": "The new Enviropower facility will keep tourists away",
+              "explanation": "Paragraph I says the new site will bring in extra money from tourism, so tourists are expected to come to it, and the statement says the opposite.",
+              "evidence": "will mean increased revenue from tourism and use of power for telecommunications"
             },
             {
               "id": "q20",
               "answer": "True",
-              "textHtml": "Wavetech was established when its founders were turned down by another company"
+              "textHtml": "Wavetech was established when its founders were turned down by another company",
+              "explanation": "Paragraph J says Dr Tim Devine set Wavetech up after the world leader in wave generators turned his idea down, which is exactly what the statement says.",
+              "evidence": "Wavetech was created when Dr Tim Devine offered the idea to the world leader in wave generator manufacturers, who rather surprisingly rejected it."
             },
             {
               "id": "q21",
               "answer": "False",
-              "textHtml": "According to AEA, Australia is a world leader in developing renewable energy"
+              "textHtml": "According to AEA, Australia is a world leader in developing renewable energy",
+              "explanation": "Paragraph K quotes Richard Hunter of the AEA saying Australia ought to be at the forefront but is in fact a long way behind, so the AEA says the opposite of the statement.",
+              "evidence": "We should really be at the forefront, but the reality is we are a long way behind."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -361,32 +410,44 @@ const test: PracticeTest = {
             {
               "id": "q22",
               "answer": "B",
-              "textHtml": "During the process, harmful substances are prevented from escaping"
+              "textHtml": "During the process, harmful substances are prevented from escaping",
+              "explanation": "Paragraph G says the radon gas carried up by the steam goes through a heat exchanger and is then sent back underground, so Geoenergy stops the harmful gas getting out. Enviropower is tempting because its tower is clean too, but the passage never describes it trapping anything.",
+              "evidence": "the steam will bring with it radon gas, along through a heat exchanger and then sent back underground for another cycle"
             },
             {
               "id": "q23",
               "answer": "D",
-              "textHtml": "Water is used to force air through a special device"
+              "textHtml": "Water is used to force air through a special device",
+              "explanation": "Paragraph J says the water column inside Wavetech's chamber pushes air back and forth through a turbine. Enviropower is tempting because its tower drives a turbine as well, but there it is rising hot air that does the pushing, not water.",
+              "evidence": "the flowing water column pushes air back and forth through a turbine"
             },
             {
               "id": "q24",
               "answer": "A",
-              "textHtml": "Techniques used by other countries are being copied"
+              "textHtml": "Techniques used by other countries are being copied",
+              "explanation": "Paragraph D says Australian Hydro's wind work is nowhere near the global cutting edge and mostly just copies European designs, and Paragraph B adds that it is living off 30 years of European research. Geoenergy is tempting as another Australian firm, but its hot rock research is described as world leading, not borrowed.",
+              "evidence": "mostly just replicating European designs"
             },
             {
               "id": "q25",
               "answer": "C",
-              "textHtml": "The system can provide services other than energy production"
+              "textHtml": "The system can provide services other than energy production",
+              "explanation": "Paragraph I says the new Enviropower site will earn money from tourism, carry telecommunications and leave the outer 500 metres for farming, so it offers services beyond making electricity. Geoenergy is tempting because it could supply the whole country, but that is still only energy.",
+              "evidence": "We’ll also be able to use the outer 500 metres for agribusiness."
             },
             {
               "id": "q26",
               "answer": "B",
-              "textHtml": "It is planned to force water deep under the ground"
+              "textHtml": "It is planned to force water deep under the ground",
+              "explanation": "Paragraph F says Geoenergy plans to pump water 3.5 kilometres down into the hot granite. Wavetech is tempting because water drives its system too, but its water stays at the surface in the waves.",
+              "evidence": "is proposing to pump water 3.5 kilometres into the earth"
             },
             {
               "id": "q27",
               "answer": "C",
-              "textHtml": "Original estimates for part of the project have been revised"
+              "textHtml": "Original estimates for part of the project have been revised",
+              "explanation": "Paragraph I says Enviropower now accepts that the sunlight at Mildura needs a much bigger collecting area than it first thought, so an original estimate has been changed. Wavetech is tempting because it gives a cost figure, but that 4 cent figure is a claim, not a revised estimate.",
+              "evidence": "the quality of sunlight in the Mildura district will require a substantially larger collecting area than was previously thought"
             }
           ],
           "legendHtml": "<p><span><strong>A</strong> Australian Hydro</span><br/>\n<span><strong>B</strong> Geoenergy</span><br/>\n<span><strong>C</strong> Enviropower</span><br/>\n<span><strong>D</strong> Wavetech</span></p>",
@@ -443,31 +504,47 @@ const test: PracticeTest = {
               "id": "q28",
               "answer": "Trade not aid",
               "before": "What was an early slogan about addressing the imbalance between the developed and developing worlds?",
-              "after": ""
+              "after": "",
+              "explanation": "The second paragraph, which is about the gap between rich and poor countries, says church groups and trade unions used the catchphrase Trade Not Aid.",
+              "evidence": "The catchphrase ‘Trade Not Aid’ was used by church groups and trade unions"
             },
             {
               "id": "q29",
               "answer": "Coffee",
               "before": "What is probably the most well-known fair-trade commodity?",
-              "after": ""
+              "after": "",
+              "explanation": "The third paragraph lists the main fair-trade goods and says coffee is the most recognisable of them, seen in supermarkets and cafe chains across the developed world.",
+              "evidence": "with coffee being the most recognisable"
             },
             {
               "id": "q30",
-              "answer": "A tiny number",
+              "answer": [
+                "A tiny number",
+                "tiny number"
+              ],
               "before": "According to the writer, in terms of total global trade, what do fair-trade producers represent?",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph says the two million people who produce fair-trade items are a tiny number when you set them against total global trade.",
+              "evidence": "this is a tiny number in relation to total global trade"
             },
             {
               "id": "q31",
-              "answer": "Positively",
+              "answer": [
+                "Positively",
+                "positively impacted"
+              ],
               "before": "How do its supporters think fair trade has aﬀected many people?",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph says supporters maintain the system has positively impacted many more people worldwide, so the missing word is positively.",
+              "evidence": "fair-trade advocates maintain that the system has positively impacted upon many more people worldwide"
             },
             {
               "id": "q32",
               "answer": "Higher prices",
               "before": "What do its critics think fair-trade producers would get if they went back to mainstream trade?",
-              "after": ""
+              "after": "",
+              "explanation": "The fourth paragraph says critics claim that if those producers went back to the mainstream system they would receive higher prices for their goods or labour.",
+              "evidence": "they would receive higher prices for their goods or labour"
             }
           ],
           "legendHtml": "<p>28. What was an early slogan about addressing the imbalance between the developed and developing worlds?<br/>\n29. What is probably the most well-known fair-trade commodity?<br/>\n30. According to the writer, in terms of total global trade, what do fair-trade producers represent?<br/>\n31. How do its supporters think fair trade has aﬀected many people?<br/>\n32. What do its critics think fair-trade producers would get if they went back to mainstream trade?</p>",
@@ -482,25 +559,33 @@ const test: PracticeTest = {
               "id": "q33",
               "answer": "D",
               "before": "Consumers of fair-trade products are happy",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says shoppers in rich countries will pay slightly more when they know the producers have been paid fairly, so consumers are happy to pay more for what they see as ethical goods. Ending C is tempting because fair trade does bring social benefits, but this sentence is about the price shoppers accept, not about community gains.",
+              "evidence": "developed-world consumers will pay slightly more for end products in the knowledge that developing-world producers have been equitably remunerated"
             },
             {
               "id": "q34",
               "answer": "A",
               "before": "The fair-trade system may include",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says buyers of fair-trade goods may help with crop pre-financing or with training for producers and workers, so the system may include loans or training. Ending G is tempting if you remember the criticisms later on, but profit-taking is described as a fault of the system, not as part of what it offers.",
+              "evidence": "purchasers of fair-trade products may assist with crop pre-financing or with the training of producers and workers"
             },
             {
               "id": "q35",
               "answer": "H",
               "before": "Some fair-trade practices",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says research shows non-fair-trade farmers copy some fair-trade farming practices, which is ending H. Ending E says something very similar, but its verb has fits a singular subject such as the system, while the plural subject some fair-trade practices needs have been adopted.",
+              "evidence": "Research has shown that non-fair-trade farmers copy some fair-trade farming practices"
             },
             {
               "id": "q36",
               "answer": "B",
               "before": "Fair-trade producers must adopt international employment standards",
-              "after": ""
+              "after": "",
+              "explanation": "The fifth paragraph says producers agree to follow the United Nations Charter on Human Rights and to provide safe workplaces even though these rules are not legally binding at home, which is ending B. Ending F is tempting because the United Nations is named, but the passage stresses that nothing legally forces the producers to do it.",
+              "evidence": "despite these not being legally binding in their own countries"
             }
           ],
           "legendHtml": "<p>A. loans or training for producers and employees.<br/>\nB. although they may not be obliged to do so in their own country<br/>\nC. for the various social benefits fair trade brings.<br/>\nD. to pay more for what they see as ethical products.<br/>\nE. has influenced non-fair-trade producers.<br/>\nF. because these are United Nations obligations.<br/>\nG. too much corruption.<br/>\nH. have been adopted by non-fair-trade producers.</p><p>33. Consumers of fair-trade products are happy<br/>\n34. The fair-trade system may include<br/>\n35. Some fair-trade practices<br/>\n36. Fair-trade producers must adopt international employment standards</p>"
@@ -513,22 +598,29 @@ const test: PracticeTest = {
             {
               "id": "q37",
               "answer": "No",
-              "textHtml": "The fair-trade system assists farmers who are extremely poor"
+              "textHtml": "The fair-trade system assists farmers who are extremely poor",
+              "explanation": "The seventh paragraph says certification costs money, so the desperately poor rarely take part and the very farmers the movement hoped to help are shut out, which contradicts the statement.",
+              "evidence": "there are expenses involved in becoming a fair-trade-certified producer, meaning the desperately poor rarely participate"
             },
             {
               "id": "q38",
               "answer": "Yes",
-              "textHtml": "Some products labelled as fair-trade is in fact not"
+              "textHtml": "Some products labelled as fair-trade is in fact not",
+              "explanation": "The seventh paragraph says monitoring is patchy and that about 12 per cent of produce carrying a fair-trade label is nothing of the kind, which agrees with the statement.",
+              "evidence": "around 12% of fair-trade-labelled produce is nothing of the kind"
             },
             {
               "id": "q39",
               "answer": "Not given",
-              "textHtml": "UK supermarkets and cafes should not charge such high prices for fair-trade items"
+              "textHtml": "UK supermarkets and cafes should not charge such high prices for fair-trade items",
+              "explanation": "The last paragraph reports that packers and retailers in places such as London charge high prices and keep much of the extra money, but the writer never says whether they should stop or lower those prices, so we cannot tell what the writer thinks about it."
             },
             {
               "id": "q40",
               "answer": "No",
-              "textHtml": "Fair trade is mainly a marketing ploy and not a valid way of helping the poor"
+              "textHtml": "Fair trade is mainly a marketing ploy and not a valid way of helping the poor",
+              "explanation": "The last paragraph reports that some critics call the whole system a colossal marketing scam, but the writer then answers that this criticism may be overblown because fair trade has lasted and is praised in the developing world itself, so the writer does not share that view.",
+              "evidence": "but this criticism may be overblown since fair trade has endured for and been praised in the developing world itself"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"

@@ -59,32 +59,44 @@ const test: PracticeTest = {
             {
               "id": "q1",
               "answer": "vii",
-              "textHtml": "Paragraph A"
+              "textHtml": "Paragraph A",
+              "explanation": "Paragraph A puts two things that look unrelated, saving coral reefs and rainforests on one side and traffic pollution on the other, into a single picture and says they are the same problem, which is the whole view of climate change in heading vii. Heading iv is tempting because scientists are mentioned, but the gloomy forecasts from one expert group only start in Paragraph B.",
+              "evidence": "It is tempting to think that the conservation of coral reefs and rainforests is a separate issue from traffic and air pollution."
             },
             {
               "id": "q2",
               "answer": "iv",
-              "textHtml": "Paragraph B"
+              "textHtml": "Paragraph B",
+              "explanation": "Paragraph B is built around what one body, the United Nation's Climate Change Panel, expects to happen: a rise of up to 6°C by 2100, forest fires, dieback and coral bleaching, which are all negative predictions from a single group of experts. Heading i is the trap, because the panel only estimates and believes things here, it does not take any action.",
+              "evidence": "The United Nation’s Climate Change Panel has estimated that the global average temperature rise expected by the year 2100 could be as much as 6°C, causing forest fires and dieback on land and coral bleaching in the ocean."
             },
             {
               "id": "q3",
               "answer": "vi",
-              "textHtml": "Paragraph C"
+              "textHtml": "Paragraph C",
+              "explanation": "Paragraph C explains where fuel-cell technology came from: it was invented in the late nineteenth century but was left undeveloped because the motor industry chose the combustion engine instead, and only now is a prototype being built. Heading v is tempting because a Ford car is described, but how the technology actually works is not explained until Paragraph D.",
+              "evidence": "This was actually invented in the late nineteenth century, but because the world’s motor industry put its effort into developing the combustion engine, it was never refined for mass production."
             },
             {
               "id": "q4",
               "answer": "v",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D answers the question of what the process is: hydrogen goes in, electricity comes out, the only waste is water, and the cell keeps working as long as hydrogen and oxygen are supplied. Heading viii is tempting because the paragraph ends by asking where to get hydrogen from, but that question is only answered in Paragraph E.",
+              "evidence": "Hydrogen goes into the fuel tank, producing electricity."
             },
             {
               "id": "q5",
               "answer": "viii",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E is about finding a supply of the hydrogen the cell needs, looking first at water, then at renewable power, then at splitting natural gas, so it is about locating the essential ingredient. Heading v does not fit, because the paragraph never describes how the vehicle itself runs, only where its fuel would come from.",
+              "evidence": "One source of hydrogen is water."
             },
             {
               "id": "q6",
               "answer": "iii",
-              "textHtml": "Paragraph F"
+              "textHtml": "Paragraph F",
+              "explanation": "Paragraph F is about getting the vehicles into real use in different countries, with buses already running in the US and vans coming in Germany, and about building the refuelling network that would let this spread. Heading ii is the trap, because showrooms are mentioned in passing but the paragraph says nothing about selling or advertising the car to buyers.",
+              "evidence": "Even now, fuel-cell buses are operating in the US, while in Germany a courier company is planning to take delivery of fuel-cell-powered vans in the near future."
             }
           ],
           "legendHtml": "<p>i. Action already taken by the United Nations<br/>\nii. Marketing the hydrogen car<br/>\niii. Making the new technology available worldwide<br/>\niv. Some negative predictions from one group of experts<br/>\nv. How the new vehicle technology works<br/>\nvi. The history of fuel-cell technology<br/>\nvii. A holistic view of climatic change<br/>\nviii. Locating the essential ingredient<br/>\nix. Sustaining car manufacture</p>",
@@ -109,25 +121,36 @@ const test: PracticeTest = {
               "id": "q7",
               "answer": "Combustion engine",
               "before": "In the late nineteenth century, the car industry invested in the development of the ………………… , rather than fuel-cell technology",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph C says the world's motor industry spent its effort on the combustion engine, which is why the fuel cell, invented at the same period, was never developed for mass production.",
+              "evidence": "because the world’s motor industry put its effort into developing the combustion engine, it was never refined for mass production"
             },
             {
               "id": "q8",
               "answer": "Silent",
               "before": "Ford engineers predict that they will eventually design an almost ………………….. car",
-              "after": ""
+              "after": "",
+              "explanation": "The end of Paragraph C says Ford engineers expect to build a vehicle in the future that makes almost no noise, so the missing word is 'silent'.",
+              "evidence": "Ford engineers expect to be able to produce a virtually silent vehicle in the future."
             },
             {
               "id": "q9",
               "answer": "Battery",
               "before": "While a fuel-cell lasts longer, some aspects of it are comparable to a ………………",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says the fuel-cell resembles a battery in some ways, but that unlike a battery it does not run down, which matches the idea of lasting longer while still being comparable.",
+              "evidence": "The fuel-cell is, in some ways similar to a battery, but unlike a battery, it does not run down."
             },
             {
               "id": "q10",
-              "answer": "Portable computers",
+              "answer": [
+                "Portable computers",
+                "computers"
+              ],
               "before": "Fuel-cells can come in many sizes and can be used in power stations and in …………………… as well as in vehicles",
-              "after": ""
+              "after": "",
+              "explanation": "Paragraph D says fuel-cells can be made in a huge range of sizes, small enough for portable computers at one end and big enough for power stations at the other.",
+              "evidence": "Fuel-cells can be made in a huge range of size, small enough for portable computers or large enough for power stations."
             }
           ],
           "legendHtml": "<p>7. In the late nineteenth century, the car industry invested in the development of the ………………… , rather than fuel-cell technology.<br/>\n8. Ford engineers predict that they will eventually design an almost ………………….. car.<br/>\n9. While a fuel-cell lasts longer, some aspects of it are comparable to a ……………….<br/>\n10. Fuel-cells can come in many sizes and can be used in power stations and in …………………… as well as in vehicles.</p>",
@@ -141,22 +164,29 @@ const test: PracticeTest = {
             {
               "id": "q11",
               "answer": "False",
-              "textHtml": "Using electricity produced by burning fossil fuels to access sources of hydrogen may increase the positive effect of the fuel-cell"
+              "textHtml": "Using electricity produced by burning fossil fuels to access sources of hydrogen may increase the positive effect of the fuel-cell",
+              "explanation": "Paragraph E states the opposite of the statement: if the electricity used to get hydrogen out of water comes from coal or another fossil fuel, the carbon saving of the fuel-cell is lost, so the benefit goes down, not up.",
+              "evidence": "if the electricity is produced by a coal-fired power station or other fossil fuel, then the overall carbon reduction benefit of the fuel-cell disappears"
             },
             {
               "id": "q12",
               "answer": "Not given",
-              "textHtml": "The oil company Statoil in Norway owns gas wells in other parts of the world"
+              "textHtml": "The oil company Statoil in Norway owns gas wells in other parts of the world",
+              "explanation": "Paragraph E only says that oil companies such as Norway's Statoil are trying out storing carbon dioxide underground in oil and gas wells. It never says who owns those wells or where in the world they are, so the part about owning gas wells abroad is simply not covered."
             },
             {
               "id": "q13",
               "answer": "True",
-              "textHtml": "Public transport is leading the way in the application of fuel-cell technology"
+              "textHtml": "Public transport is leading the way in the application of fuel-cell technology",
+              "explanation": "Paragraph F says buses and vans run from central depots are the first fuel-cell vehicles, and that public transport and delivery firms are the sensible starting point, which agrees with the idea that public transport is out in front.",
+              "evidence": "Public transport and delivery firms are logical places to start since their vehicles are operated from central depots."
             },
             {
               "id": "q14",
               "answer": "True",
-              "textHtml": "More funding is necessary to ensure the success of the fuel-cell vehicle industry"
+              "textHtml": "More funding is necessary to ensure the success of the fuel-cell vehicle industry",
+              "explanation": "The last paragraph says the technology could do a lot to slow climate change but that more money must be put in if the industry is to have a long-term future, which agrees with the statement about funding.",
+              "evidence": "but further investment is needed"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
@@ -218,22 +248,28 @@ const test: PracticeTest = {
             {
               "id": "q15",
               "answer": "False",
-              "textHtml": "Unemployed Germans have a higher risk of heart attack than employed Germans"
+              "textHtml": "Unemployed Germans have a higher risk of heart attack than employed Germans",
+              "explanation": "Paragraph C says the opposite way round: Germans who work carry a 33 per cent higher risk at the start of the working week, while non-workers are no more at risk on a Monday than on any other day.",
+              "evidence": "Working Germans are particularly vulnerable, with a 33 per cent higher risk at the beginning of the working week."
             },
             {
               "id": "q16",
               "answer": "Not given",
-              "textHtml": "Unemployed Italians have a lower risk of heart attack than unemployed Germans"
+              "textHtml": "Unemployed Italians have a lower risk of heart attack than unemployed Germans",
+              "explanation": "The passage splits the German figures into workers and non-workers, but the Italian study of 11,000 people is only reported as a whole, with the time of day and the over-65s. It never gives a figure for unemployed Italians, so the two groups cannot be compared."
             },
             {
               "id": "q17",
               "answer": "Not given",
-              "textHtml": "Germans risk heart attack because of their high consumption of fatty food"
+              "textHtml": "Germans risk heart attack because of their high consumption of fatty food",
+              "explanation": "The passage mentions diet only once, to say the Monday peak appears in both countries in spite of differences in diet and lifestyle. It never says what Germans eat or that fatty food raises their risk, so the food claim is not covered."
             },
             {
               "id": "q18",
               "answer": "False",
-              "textHtml": "Cholesterol and smoking cause heart attacks"
+              "textHtml": "Cholesterol and smoking cause heart attacks",
+              "explanation": "In Paragraph E, Dr Willich calls smoking and cholesterol long-term risk factors and says in the same sentence that what actually sets off a heart attack is still unknown, so the flat claim that they cause heart attacks goes against what the passage says.",
+              "evidence": "We know a lot about long-term risk factors such as smoking and cholesterol"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -246,47 +282,65 @@ const test: PracticeTest = {
             {
               "id": "q19",
               "answer": "iii",
-              "textHtml": "Paragraph A"
+              "textHtml": "Paragraph A",
+              "explanation": "Paragraph A opens with the physical feelings of a heart attack, a crushing chest pain with sweating and difficulty breathing, which is exactly what heading iii describes. Heading v is tempting because Mondays appear here too, but the figures that show how risky Monday is come in Paragraph B.",
+              "evidence": "That ‘Monday morning feeling’ could be a crushing pain in the chest which leaves you sweating and gasping for breath."
             },
             {
               "id": "q20",
               "answer": "v",
-              "textHtml": "Paragraph B"
+              "textHtml": "Paragraph B",
+              "explanation": "Paragraph B gives the numbers behind the Monday risk, a six-year study of more than 2,600 Germans showing a 20 per cent higher chance of a heart attack on a Monday. Heading vi is tempting because it also names Monday, but the comparison with food and way of life only appears in Paragraph H.",
+              "evidence": "the average person had a 20 per cent higher chance of having a heart attack on a Monday than on any other day"
             },
             {
               "id": "q21",
               "answer": "vii",
-              "textHtml": "Paragraph C"
+              "textHtml": "Paragraph C",
+              "explanation": "Paragraph C contrasts working Germans, who face a 33 per cent higher risk, with people who do not work, who face no extra risk on a Monday, so the jobless are the safer group. Heading v does not fit, because the general Monday figures belong to Paragraph B and each heading is used once only.",
+              "evidence": "Non-workers, by comparison, appear to be no more at risk on a Monday than any other day."
             },
             {
               "id": "q22",
               "answer": "ii",
-              "textHtml": "Paragraph D"
+              "textHtml": "Paragraph D",
+              "explanation": "Paragraph D ends by saying both the German and the Italian study found Sunday to be the least stressful day with fewer heart attacks, which is the safest day of heading ii. Heading v is the trap, because 8 am on Monday is named here as well, but the new point in this paragraph is Sunday.",
+              "evidence": "both studies showed that Sunday is the least stressful day, with fewer heart attacks in both countries"
             },
             {
               "id": "q23",
               "answer": "i",
-              "textHtml": "Paragraph E"
+              "textHtml": "Paragraph E",
+              "explanation": "Paragraph E is about the gap in knowledge: doctors know the long-term risk factors but not what actually sets a heart attack off, which is the exact cause in heading i. Heading iv is tempting because prevention is mentioned, but Willich says here that no specific advice can be given yet, and the actual advice comes in Paragraph I.",
+              "evidence": "we don’t know what actually triggers heart attacks, so we can’t make specific recommendations about how to prevent them"
             },
             {
               "id": "q24",
               "answer": "ix",
-              "textHtml": "Paragraph F"
+              "textHtml": "Paragraph F",
+              "explanation": "Paragraph F describes what happens inside the body when someone gets up and goes back to work, with blood pressure, heart rate and hormones all changing, which matches bodily adaptations. Heading i is tempting, but Willich says at the end that we still need to know how these changes cause heart attacks, so the cause is not settled here.",
+              "evidence": "When people get up, their blood pressure and heart rate go up and there are hormonal changes in their bodies"
             },
             {
               "id": "q25",
               "answer": "viii",
-              "textHtml": "Paragraph G"
+              "textHtml": "Paragraph G",
+              "explanation": "Paragraph G reports that people over 65 are also at risk on a Monday morning even though most of them have stopped working, so the topic is the elderly. Heading vii is the trap, because these people are not working either, but here they turn out to be at risk rather than safer.",
+              "evidence": "Both studies showed that the over-65s are also vulnerable on a Monday morning even though most no longer work."
             },
             {
               "id": "q26",
               "answer": "vi",
-              "textHtml": "Paragraph H"
+              "textHtml": "Paragraph H",
+              "explanation": "Paragraph H makes one point: the Monday peak shows up from northern Germany to southern Italy although the two countries eat and live differently, so Monday matters more than food and way of life. Heading v does not fit, because this paragraph is about the comparison between countries rather than the size of the Monday risk.",
+              "evidence": "the Monday morning peak seems to be consistent from northern Germany to southern Italy in spite of the differences in diet and lifestyle"
             },
             {
               "id": "q27",
               "answer": "iv",
-              "textHtml": "Paragraph I"
+              "textHtml": "Paragraph I",
+              "explanation": "Paragraph I is the advice paragraph: people with heart disease should take Monday mornings gently, push stressful meetings to midweek, and work in a pleasant place, all of which are ways of cutting the danger. Heading i does not fit, because Willich says he is still reluctant to explain the cause and wants to find out more.",
+              "evidence": "he suggests that anyone who suffers from heart disease should take it easy on Monday mornings and leave potentially stressful meetings until midweek"
             }
           ],
           "legendHtml": "<p>i. Exact cause of heart attacks<br/>\nii. The safest day<br/>\niii. Breathless, sweaty and crushed<br/>\niv. Reducing heart attack hazard<br/>\nv. High-risk Monday<br/>\nvi. Mondays: riskier than food and way of life<br/>\nvii. Jobless but safer<br/>\nviii. Elderly also at risk<br/>\nix. Bodily adaptations</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
@@ -353,32 +407,42 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "True",
-              "textHtml": "Findings from studies like GUiNZ will inform public policy"
+              "textHtml": "Findings from studies like GUiNZ will inform public policy",
+              "explanation": "The first paragraph says health and education policies need to rest on hard numbers so that resources can be shared out properly, which is why the study was started, and the fifth paragraph adds that the findings will be useful for public health campaigns.",
+              "evidence": "To allocate resources appropriately, public health and education policies need to be based upon quantifiable data"
             },
             {
               "id": "q29",
               "answer": "True",
-              "textHtml": "Exactly 6,846 babies formed the GUiNZ cohort"
+              "textHtml": "Exactly 6,846 babies formed the GUiNZ cohort",
+              "explanation": "The first paragraph gives the size of the group as 6,846 babies recruited from a densely populated part of New Zealand, which is the same number as the statement.",
+              "evidence": "the 6,846 babies recruited came from a densely populated area of New Zealand"
             },
             {
               "id": "q30",
               "answer": "False",
-              "textHtml": "GUiNZ will probably end when the children reach ten"
+              "textHtml": "GUiNZ will probably end when the children reach ten",
+              "explanation": "The first paragraph says the plan is to follow the children until they are 21, and to extend the study over two decades, so ending at ten goes against the passage.",
+              "evidence": "it is hoped they will be followed until they reach the age of 21"
             },
             {
               "id": "q31",
               "answer": "Not given",
-              "textHtml": "Eventually, there will be 21 reports in GUiNZ"
+              "textHtml": "Eventually, there will be 21 reports in GUiNZ",
+              "explanation": "The number 21 in the passage is the age the children are meant to reach, not a number of reports. The passage says four reports had been published by 2014 and that more will follow, but it never says how many there will be in the end."
             },
             {
               "id": "q32",
               "answer": "False",
-              "textHtml": "So far, GUiNZ has shown New Zealanders today to be rather similar to those of 25 years ago"
+              "textHtml": "So far, GUiNZ has shown New Zealanders today to be rather similar to those of 25 years ago",
+              "explanation": "The second paragraph says the families taking part are markedly different from earlier generations, and the fifth adds that a third of the children had a parent who did not grow up in New Zealand, unlike earlier studies, so the statement is contradicted.",
+              "evidence": "with the participants and their families’ being markedly diﬀerent from those of previous generations"
             },
             {
               "id": "q33",
               "answer": "Not given",
-              "textHtml": "Parents who took part in GUiNZ believe New Zealand is a good place to raise children"
+              "textHtml": "Parents who took part in GUiNZ believe New Zealand is a good place to raise children",
+              "explanation": "The fifth paragraph describes the parents' hopes, dreams and plans for family size, and later paragraphs describe their housing and income. Nowhere does the passage report what the parents think about New Zealand as a place to bring up children."
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
@@ -391,37 +455,51 @@ const test: PracticeTest = {
             {
               "id": "q34",
               "answer": "A",
-              "textHtml": "This is unique because it contains interviews with both parents"
+              "textHtml": "This is unique because it contains interviews with both parents",
+              "explanation": "The fourth paragraph says the first report, Before we are born, made history because it includes interviews with both the mothers and the fathers, which is what makes it unique. Report 3 is the tempting choice because it also used parental interviews, but only the first report is described as the first of its kind for talking to both parents.",
+              "evidence": "the first report, Before we are born, has made history as it contains interviews with the children’s mothers and fathers"
             },
             {
               "id": "q35",
               "answer": "D",
-              "textHtml": "This looks at how children might be at risk"
+              "textHtml": "This looks at how children might be at risk",
+              "explanation": "The fourth paragraph says the fourth report is the analytical one and that it works out what vulnerability means for children in their first thousand days, which is how children might be at risk. Report 3 is tempting because it covers the children's development, but it describes how they are getting on rather than what puts them in danger.",
+              "evidence": "The fourth report, which is more analytical, explores the definition of vulnerability for children in their first one thousand days."
             },
             {
               "id": "q36",
               "answer": "B",
-              "textHtml": "This suggests having a child may lead to financial hardship"
+              "textHtml": "This suggests having a child may lead to financial hardship",
+              "explanation": "The money problems appear in the paragraph on Now we are born, the second report, which says almost all the parents saw their income fall, sometimes sharply, mainly because mothers were not working. Report 4 is the tempting choice because it mentions parents on income-tested benefits, but that is a listed risk factor, not the drop in income these families actually went through.",
+              "evidence": "their parents had almost all experienced a drop in income, sometimes a steep one, mostly due to mothers’ not working"
             },
             {
               "id": "q37",
               "answer": "C",
-              "textHtml": "Information for this came from direct observations of children"
+              "textHtml": "Information for this came from direct observations of children",
+              "explanation": "The paragraph on Now we are two, the third report, says the information came both from watching the children directly and from interviews with parents. Report 1 is tempting because it is built on interviews too, but only the third report mentions direct observation.",
+              "evidence": "Information was collected both from direct observations of the children and from parental interviews."
             },
             {
               "id": "q38",
               "answer": "C",
-              "textHtml": "This shows many children use electronic devices"
+              "textHtml": "This shows many children use electronic devices",
+              "explanation": "The third report, Now we are two, says one two-year-old in seven had used a laptop or a children's computer and that 80% watched TV or DVDs every day, which is the high use of electronic devices. Report 2 is tempting because it also describes daily life at nine months, but screens and computers are only reported at age two.",
+              "evidence": "one in seven two-year-olds had used a laptop or a children’s computer, and 80% watched TV or DVDs daily"
             },
             {
               "id": "q39",
               "answer": "D",
-              "textHtml": "This was modelled on criteria used in Western Europe"
+              "textHtml": "This was modelled on criteria used in Western Europe",
+              "explanation": "The paragraph on the fourth report says its twelve risk factors were taken from work done in Western Europe and were being used in a New Zealand setting for the first time. Report 1 does not fit, because it compares the parents with earlier New Zealand studies rather than borrowing European criteria.",
+              "evidence": "draws on experiences in Western Europe, where the specific factors were collated"
             },
             {
               "id": "q40",
               "answer": "D",
-              "textHtml": "This suggests having a teenage mother could negatively aﬀect a child"
+              "textHtml": "This suggests having a teenage mother could negatively aﬀect a child",
+              "explanation": "The fourth report lists being born to an adolescent mother among the twelve environmental risk factors that make poor outcomes for a child more likely. Report 1 is the tempting choice because it gives the average age of parents as 30, but that is a description of the group, not a warning about risk.",
+              "evidence": "The factors include: being born to an adolescent mother"
             }
           ],
           "legendHtml": "<p>Write the correct letter A, B, C, or D, in boxes 34-40 on your answer sheet.</p><p><strong>A</strong>. Report 1<br/>\n<strong>B</strong>. Report 2<br/>\n<strong>C</strong>. Report 3<br/>\n<strong>D</strong>. Report 4</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
