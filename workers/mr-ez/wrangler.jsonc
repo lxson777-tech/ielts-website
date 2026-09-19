@@ -1,0 +1,62 @@
+// Cloudflare Worker config for Mr EZ, the personal AI tutor.
+// Deploy:  npx wrangler deploy   (from this directory)
+// Secrets: npx wrangler secret put OPENAI_API_KEY
+//          npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+// .dev.vars (gitignored) holds the same two names for local `wrangler dev`.
+//
+// Read workers/mr-ez/README.md before changing anything here. Deploying this
+// Worker is a real, billable action.
+{
+  "name": "ielts-mr-ez",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "vars": {
+    // Everyday tutoring model. Verified 2026-09-19 against the official model
+    // page: Responses API, strict structured outputs, prompt caching,
+    // reasoning effort, 1.05M context, 128K max output.
+    // Deliberately NOT one of the grading models: grading is calibrated on
+    // gpt-5.6-sol and must not be changed as a side effect of tutoring work.
+    "TUTOR_MODEL": "gpt-5.6-luna",
+    // Tutoring is explanation, not assessment. Low effort keeps replies fast
+    // and cheap; raise it only with a measured reason.
+    "TUTOR_REASONING_EFFORT": "low",
+    // Hard ceiling on a reply. Mr EZ is supposed to be concise, so this is a
+    // personality setting as much as a spending one.
+    "TUTOR_MAX_OUTPUT_TOKENS": "700",
+
+    // Comma-separated origins allowed to call this Worker from a browser.
+    // Production only — see LOCAL_ORIGINS below.
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
+    // Additionally allowed, but ONLY when this Worker itself is being reached
+    // at localhost/127.0.0.1 (i.e. under `wrangler dev`). A deployed Worker
+    // ignores this entirely, so a forged "Origin: http://localhost" sent to
+    // production is never trusted. 4321 is the site's dev port; 4322 is
+    // Astro's fallback when 4321 is busy.
+    "LOCAL_ORIGINS": "http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322",
+
+    // Supabase project used to verify students server-side, to read their own
+    // records, and to store conversations and usage. The anon key is never
+    // used here; the service role key is a Worker secret, never a var.
+    "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co",
+
+    // Spending limits, enforced against `mr_ez_turns` so they hold across
+    // every Worker instance rather than per-instance memory. A turn is one
+    // answered request of any task.
+    "TUTOR_MAX_TURNS_PER_USER_PER_DAY": "40",
+    "TUTOR_MAX_SITE_PER_DAY": "600",
+
+    // Published gpt-5.6-luna rates, US dollars per million tokens, checked
+    // 2026-09-19. These are what the usage table's cost column is computed
+    // from — if OpenAI changes its prices, change these or the recorded costs
+    // quietly become fiction.
+    "TUTOR_INPUT_USD_PER_M": "0.20",
+    "TUTOR_CACHED_INPUT_USD_PER_M": "0.02",
+    "TUTOR_OUTPUT_USD_PER_M": "1.20",
+
+    // "on" replaces the model call with a deterministic, clearly-labelled
+    // simulation while leaving auth, ownership, limits, idempotency and
+    // persistence exactly as they are in production. For local development
+    // only. Must stay "off" on any deployed Worker.
+    "TUTOR_SIMULATE": "off"
+  }
+}

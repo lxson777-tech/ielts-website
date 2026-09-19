@@ -51,7 +51,7 @@ const nextInCourse = courseIndex >= 0 ? courseLessons[courseIndex + 1] : undefin
 const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }).minutes;
 ---
 
-<BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description}>
+<BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description} lessonKey={slug}>
   <div class={`skill-${lesson.skill}`}>
     <!-- Lesson hero band -->
     <section class="lesson-hero border-b border-border">
