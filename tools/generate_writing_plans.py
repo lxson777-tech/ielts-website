@@ -182,17 +182,31 @@ labels or features you can see. Never write advice that would fit any other ques
 same type -- if a sentence could be pasted into a different prompt's plan unchanged, rewrite it.
 - Task 1 (a chart, graph, table, process or map): you are given the image. Read it before \
 writing keyPoints, position them as the 3 to 5 features an examiner expects reported (the \
-biggest or smallest, the overall trend, any exception, a comparison between groups), and write \
-one overview sentence that names the headline pattern with no numbers in it.
+biggest or smallest, the overall trend, any exception, a comparison between groups). Do NOT \
+write a finished overview sentence anywhere. Instead write "overviewHints": 3 to 4 short \
+guiding questions or instructions that point the student at what to look for (which line ends \
+highest, is there a crossing point, which category is the exception, and so on) WITHOUT stating \
+the answer. A student who reads only the hints must still look at the chart to write the \
+overview. Never name a specific value, direction, category or ranking in a hint, and never \
+paraphrase the pattern you can see. Vary the hints by visual type (trend chart, static \
+comparison, two visuals, process, map) and include one hint about technique, such as starting \
+with "Overall," and keeping it to one or two sentences with no numbers.
 - Task 2 (an essay): keyPoints are 3 to 4 concrete arguments or ideas for THIS topic, each with \
 a hint of a real-world example a student could develop. Give a clear suggested position (or, if \
-genuinely balanced, say exactly how to pick one and commit).
+genuinely balanced, say exactly how to pick one and commit). Set "overviewHints" to an empty \
+array, since Task 2 essays have no overview paragraph.
 - paragraphs: 4 to 5 rows. Task 1 is always Introduction, Overview, Detail 1, Detail 2. Task 2 \
 is Introduction, Body 1, Body 2, optionally Body 3, Conclusion -- pick the shape that matches \
 this question (for example a two-part question gets one body paragraph per part; an opinion \
 question may want a concession paragraph). Each paragraph needs a one-sentence goal, 2 to 3 \
 tips specific to this question (not "use topic sentences"), and one sentence starter the \
-student can adapt, not copy word for word.
+student can adapt, not copy word for word. For the Task 1 "Overview" paragraph specifically: \
+the goal and tips must guide the student to notice the pattern themselves (for example "decide \
+which line ends highest" or "work out whether every category moves the same way") rather than \
+stating what the pattern is, and the starter must be only a neutral sentence stem such as \
+"Overall, it is clear that" or "Overall, the most noticeable feature is" with no chart-specific \
+content after it. Never let the Overview paragraph's goal, tips or starter give away the answer \
+that the hints are meant to withhold.
 - vocabulary: 6 to 8 words or collocations for THIS topic specifically, each with a five-word \
 note on when to use it.
 - pitfalls: exactly 3 mistakes students actually make on THIS question, not generic IELTS advice.
@@ -201,8 +215,7 @@ note on when to use it.
 - British spelling throughout.
 - Never use an em dash or en dash (\u2014 or \u2013) anywhere in the output. Use a comma, a \
 period, parentheses, or "and"/"but" instead.
-- Set "position" to an empty string for Task 1 and "overview" to an empty string for Task 2 \
-(the field the task doesn't use).
+- Set "position" to an empty string for Task 1 (the field Task 1 doesn't use).
 - Never be generic. Every field must be traceable to this specific question."""
 
 
@@ -216,7 +229,7 @@ def build_user_text(prompt: dict) -> str:
         f"QUESTION TEXT: {prompt['promptText']}",
     ]
     if prompt["images"]:
-        lines.append("The chart/diagram for this question is attached as an image. Read it carefully before writing keyPoints and the overview.")
+        lines.append("The chart/diagram for this question is attached as an image. Read it carefully before writing keyPoints and the overview hints.")
     return "\n".join(lines)
 
 
@@ -227,7 +240,7 @@ RESPONSE_SCHEMA = {
         "whatItAsks": {"type": "string"},
         "keyPoints": {"type": "array", "items": {"type": "string"}},
         "position": {"type": ["string", "null"]},
-        "overview": {"type": ["string", "null"]},
+        "overviewHints": {"type": "array", "items": {"type": "string"}},
         "paragraphs": {
             "type": "array",
             "items": {
@@ -258,7 +271,7 @@ RESPONSE_SCHEMA = {
         "timing": {"type": "string"},
     },
     "required": [
-        "questionType", "whatItAsks", "keyPoints", "position", "overview",
+        "questionType", "whatItAsks", "keyPoints", "position", "overviewHints",
         "paragraphs", "vocabulary", "pitfalls", "timing",
     ],
     "additionalProperties": False,
@@ -378,8 +391,8 @@ def render_plan(plan: dict) -> str:
     ]
     if plan["task"] == "task2" and plan.get("position"):
         lines.append(f"    position: {dq(plan['position'])},")
-    if plan["task"] == "task1" and plan.get("overview"):
-        lines.append(f"    overview: {dq(plan['overview'])},")
+    if plan["task"] == "task1" and plan.get("overviewHints"):
+        lines.append(f"    overviewHints: {render_string_array(plan['overviewHints'], '    ')},")
     paragraphs = ",\n".join(render_paragraph(p, "      ") for p in plan["paragraphs"])
     lines.append(f"    paragraphs: [\n{paragraphs},\n    ],")
     vocab = ",\n".join(render_vocab(v, "      ") for v in plan["vocabulary"])

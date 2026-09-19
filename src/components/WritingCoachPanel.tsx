@@ -90,10 +90,20 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
             </ul>
           </div>
 
-          {plan.task === 'task1' && plan.overview && (
+          {plan.task === 'task1' && plan.overviewHints && plan.overviewHints.length > 0 && (
             <div className="rounded-lg border border-border bg-surface-alt/60 p-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Overview sentence</p>
-              <p className="mt-1 text-sm italic text-ink">{plan.overview}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Build your overview</p>
+              <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
+                {plan.overviewHints.map((h, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span aria-hidden="true">{i + 1}.</span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-ink-muted">
+                Write it yourself first. The AI feedback will tell you whether your overview covers the main features.
+              </p>
             </div>
           )}
 

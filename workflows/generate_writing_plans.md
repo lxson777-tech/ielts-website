@@ -50,16 +50,26 @@ you kick it off; a 3-prompt sample is cheap enough to run without asking first.
 This is model output shown directly to students: after a run, open a couple of the regenerated
 plans in `src/data/writing-plans.ts` and read them against the prompt they're for. Check that
 key points/features actually match the topic (and, for Task 1, the image), the suggested
-position or overview makes sense, and nothing generic slipped through. Run `npx astro check`
+position makes sense, and nothing generic slipped through. For Task 1 plans, also check
+`overviewHints`: they must be questions or instructions that make the student look at the chart,
+never a finished sentence and never the answer (no named value, direction, category or ranking).
+Also check the "Overview" paragraph's `starter`, which must be a bare neutral stem such as
+"Overall, it is clear that" with nothing chart-specific after it, and its `goal`/`tips`, which
+must guide the student to work the pattern out rather than state it. Run `npx astro check`
 and `npm run build` before shipping, and look at the "This question" tab in a dev server for at
-least one regenerated prompt (`npm run dev`, then `/trainers/writing`).
+least one regenerated prompt (`npm run dev`, then `/trainers/writing`) to confirm the "Build your
+overview" box shows hints, not a sentence.
 
 ## Gotchas
 - The parser in `parse_prompts()` depends on the exact template `tools/import_writing.py`
   writes. If that template changes, update the parser to match rather than hand-editing
   `writing-prompts-imported.ts`.
-- `position` is only meaningful for Task 2 and `overview` only for Task 1; the model is told to
-  return an empty string for the one that doesn't apply, and the renderer omits that field
-  entirely rather than writing an empty string into `writing-plans.ts`.
+- `position` is only meaningful for Task 2; the model is told to return an empty string for
+  Task 1, and the renderer omits that field entirely rather than writing an empty string into
+  `writing-plans.ts`. `overviewHints` applies only to Task 1; the model is told to return an
+  empty array for Task 2, and the renderer likewise omits an empty array.
+- The model must never turn `overviewHints` into a giveaway. If a regenerated plan's hints name
+  a specific figure, direction or category, or closely paraphrase the old overview sentence,
+  rewrite them by hand or re-run with a clearer instruction rather than shipping them as is.
 - Never commit or paste the OpenAI key anywhere; `resolve_api_key()` already redacts it from
   error output.

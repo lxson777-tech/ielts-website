@@ -39,8 +39,9 @@ export interface WritingPlan {
   keyPoints: string[];
   /** Task 2 only: a clear suggested position, or how to pick one */
   position?: string;
-  /** Task 1 only: one model overview sentence, no numbers */
-  overview?: string;
+  /** Task 1 only: 3 to 4 guiding questions or prompts that lead the student to
+      build their own overview. Never a finished sentence, never the answer. */
+  overviewHints?: string[];
   /** 4 to 5 paragraphs */
   paragraphs: WritingPlanParagraph[];
   /** 6 to 8 topic-specific words/collocations */
