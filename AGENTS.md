@@ -115,7 +115,8 @@ versioned so a future account sync can migrate it.
 
 ## AI grading subsystem
 
-Three independent Cloudflare Workers back the AI-graded features. Since 2026-09-14 all three
+Three independent Cloudflare Workers back the AI-graded features (a fourth,
+`workers/mr-ez`, backs the tutor and is described in its own section below). Since 2026-09-14 all three
 run on the OpenAI API by default (Gemini kept as a rollback switch in each Worker's
 `wrangler.jsonc`), each deployed and configured separately from the Astro site itself:
 
@@ -124,10 +125,13 @@ run on the OpenAI API by default (Gemini kept as a rollback switch in each Worke
 | Essay grading | `/trainers/writing` (`WritingTester`) | `workers/grade-essay` | `PUBLIC_GRADER_URL` |
 | Speaking grading | `/trainers/speaking` (`SpeakingTester`) | `workers/grade-speaking` | `PUBLIC_SPEAKING_GRADER_URL` |
 | Live voice examiner | `/speaking/examiner` (`LiveExaminer`) | `workers/live-examiner` | `PUBLIC_LIVE_EXAMINER_URL` |
+| Personal AI tutor | everywhere (`MrEzPanel`, `MrEzWelcome`) | `workers/mr-ez` | `PUBLIC_MR_EZ_URL` |
 
-- `grade-essay` grades essays with the OpenAI Responses API (`gpt-5.6-terra`, strict JSON,
+- `grade-essay` grades essays with the OpenAI Responses API (`gpt-5.6-sol` since the
+  2026-09-15 calibration, which found `gpt-5.6-terra` scored a full band low from band 6
+  upward, see docs/GRADING-OPENAI-RESULT.md; strict JSON,
   official public Writing band descriptors verbatim). `grade-speaking` runs a three-step
-  pipeline: `whisper-1` verbatim transcript with word timings, `gpt-5.6-terra` grades Fluency,
+  pipeline: a diarized `gpt-4o-transcribe-diarize` transcript, `gpt-5.6-sol` grades Fluency,
   Lexis and Grammar from the transcript plus measured pauses and pace, and `gpt-audio-1.5`
   judges Pronunciation from the audio itself (official public Speaking descriptors verbatim).
   Recordings are converted to 16 kHz mono MP3 in the browser first (`src/lib/speaking/encode.ts`)
@@ -145,6 +149,54 @@ run on the OpenAI API by default (Gemini kept as a rollback switch in each Worke
 - Deploying a Worker is a real, billable, externally-visible action, confirm with the user
   before running `wrangler deploy` or rotating secrets. Grading and voice sessions are paid
   OpenAI usage; calibration runs cost real money too, so keep them small and say what they cost.
+
+## Mr EZ, the personal AI tutor
+
+A fourth Worker, `workers/mr-ez`, backs **Mr EZ**: the dashboard welcome, the
+conversation panel that follows the student between pages, and "ask Mr EZ to
+explain this result". Read `workers/mr-ez/README.md` before touching it.
+
+Two rules carry most of the weight, and breaking either is worse than a bug:
+
+- **The browser is not a source of truth.** A request carries the task, the
+  message, the conversation id and a few *references* (a lesson key, a test id,
+  an attempt timestamp). Every fact about the student is fetched by the Worker
+  from Supabase against the user id proved by their access token. There is no
+  code path in which the caller names whose data to load.
+- **The model never decides a fact or writes a link.** What is true about a
+  student is counted in `src/lib/tutor/insights.ts`, which stamps every claim
+  MEASURED or TENTATIVE against explicit evidence thresholds. What to
+  recommend is chosen in `src/lib/tutor/recommend.ts` from the real catalogue
+  in `src/lib/tutor/catalog.ts`. The model only writes the wording. A
+  recommendation id that does not resolve is dropped, so a hallucinated link
+  is no link rather than a 404.
+
+Shared layer (imported by both the site and the Worker, like the live
+examiner's instructions module): `src/lib/tutor/{schema,insights,catalog,
+recommend,prompt,assessment}.ts`. Browser-only: `client.ts`, `conversation.ts`,
+`local.ts`, `avatar.ts`. Components under `src/components/tutor/`, styles in
+`src/styles/mr-ez.css`.
+
+- **Do not change the grading models while working on the tutor.** `grade-essay`,
+  `grade-speaking` and `live-examiner` are calibrated separately and belong to
+  a different decision. Mr EZ runs `gpt-5.6-luna`; the graders have run
+  `gpt-5.6-sol` since 2026-09-15.
+- **Mr EZ requires sign-in.** Per-student spending limits and record ownership
+  cannot be enforced without a verified account. Signed-out students get a
+  plain invitation, and the dashboard still shows a real, correctly-linked next
+  step from the deterministic layer with no AI involved.
+- **Artwork is Codex's.** `src/components/tutor/MrEzAvatar.tsx` holds a
+  throwaway placeholder; the real files drop in via one edit to
+  `src/lib/tutor/avatar.ts`. The brief is `docs/MR-EZ-ASSET-SPEC.md`. Never
+  finalise his appearance here.
+- `node tools/mr-ez-dev-server.mjs` stands in for Supabase and the Worker so the
+  interface can be clicked through locally with no key and no spend. Everything
+  it returns is labelled simulated in the UI. Adding
+  `--live` (under the TypeScript loader) runs the REAL Worker handler against
+  the REAL model with that store standing in for Supabase, which is billable at
+  roughly $0.0005 a message. `tools/mr-ez-live-check.mjs` runs the sixteen
+  calibration scenarios the same way; results in `docs/MR-EZ-CALIBRATION.md`.
+  Never present a simulated reply as evidence that the live integration works.
 
 ## Content-automation tools (WAT: Workflows, Agents, Tools)
 

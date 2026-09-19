@@ -417,6 +417,21 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started, submitted]);
 
+  /* Flag a running paper on <body> so the Mr EZ tutor panel switches to
+     invigilator mode (see readPlace() in src/components/tutor/MrEzPanel.tsx).
+     The first line of defence is that this route uses the `bare` layout, so
+     the panel is not mounted here at all; this is the second, which keeps the
+     rule true if the test player is ever embedded somewhere that does have
+     the workspace chrome. Cleared on unmount so it cannot stick on. */
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (started && !submitted) document.body.dataset.examRunning = 'true';
+    else delete document.body.dataset.examRunning;
+    return () => {
+      delete document.body.dataset.examRunning;
+    };
+  }, [started, submitted]);
+
   /* Warn before leaving an in-progress test (can't pause). */
   useEffect(() => {
     if (!started || submitted) return;

@@ -29,6 +29,7 @@ import BandReport from './BandReport';
 import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
 import GradingProgress from './GradingProgress';
+import ExplainResult from './tutor/ExplainResult';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
@@ -50,6 +51,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   // When the grading request went out (ms epoch). GradingProgress derives the
   // real percentage from this, so it survives re-renders of this component.
   const [gradingStartedAt, setGradingStartedAt] = useState(0);
+  /* The ISO timestamp the graded attempt was recorded under. That timestamp
+     IS the attempt's identity in the progress store, so it is what "ask Mr EZ
+     to explain this result" points at — he then reads the marking that was
+     already paid for instead of anything being sent for grading twice. */
+  const [attemptAt, setAttemptAt] = useState<string | null>(null);
 
   // Lightbox for the Task 1 chart: the imported prompt markup hard-caps the
   // image at 560px inline, and students need to read exact numbers off it,
@@ -67,6 +73,20 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
   }, []);
+
+  /* The checker is the exam-conditions counterpart to the coached trainer, so
+     while an essay is in progress here Mr EZ must not help with the task
+     itself. One data attribute on <body>, read by the tutor panel — no prop
+     threading, and it clears itself on unmount so it cannot get stuck on. */
+  const examRunning = !coached && Boolean(prompt) && !result;
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (examRunning) document.body.dataset.examRunning = 'true';
+    else delete document.body.dataset.examRunning;
+    return () => {
+      delete document.body.dataset.examRunning;
+    };
+  }, [examRunning]);
 
   /* Clears any running timer and starts a fresh one from 0, right away. */
   function restartTimer() {
@@ -110,8 +130,10 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       setResult(graded);
       const criteria: Record<string, number> = {};
       for (const key of Object.keys(graded.criteria)) criteria[key] = graded.criteria[key as keyof typeof graded.criteria].band;
+      const at = new Date().toISOString();
+      setAttemptAt(at);
       recordWritingAttempt(prompt.id, {
-        at: new Date().toISOString(),
+        at,
         overallBand: graded.overallBand,
         criteria,
         wordCount,
@@ -358,6 +380,16 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             </div>
           )}
         </BandReport>
+
+        {/* Mr EZ reads the marking above rather than re-marking anything. He
+            points at the stored attempt by its timestamp, so the explanation
+            costs one cheap tutor turn, not a second grading run. */}
+        {attemptAt && (
+          <ExplainResult
+            attempt={{ kind: 'writing', at: attemptAt, promptId: prompt.id }}
+            summary={`Estimated band ${result.overallBand.toFixed(1)}`}
+          />
+        )}
 
         <div className="flex flex-wrap justify-center gap-3">
           <button

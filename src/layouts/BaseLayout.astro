@@ -3,10 +3,12 @@ import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import '../styles/platform.css';
 import '../styles/workspace-redesign.css';
+import '../styles/mr-ez.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WorkspaceHeader from '../components/WorkspaceHeader.astro';
 import WorkspaceFooter from '../components/WorkspaceFooter.astro';
+import MrEzPanel from '../components/tutor/MrEzPanel';
 import VocabQuizInit from '../components/VocabQuizInit.astro';
 import { withBase } from '../lib/url';
 import { isAppRoute as routeIsApp, isWideRoute, toRoute } from '../lib/platform-nav';
@@ -23,6 +25,12 @@ interface Props {
   /** App routes only: use the wider 1100px column instead of 880px, for
       pages whose own content is a split pane or a multi-column grid. */
   wide?: boolean;
+  /** A lesson's progress key, when this page IS a lesson. Written onto
+      <body> so the Mr EZ panel can tell him which lesson the student is
+      looking at without a prop drilled through every island. It is only a
+      key: the Worker resolves it against the real course registry and
+      ignores anything that does not match, so it carries no authority. */
+  lessonKey?: string;
 }
 
 const {
@@ -32,6 +40,7 @@ const {
   ogImage = '/pics/hero.png',
   ogType = 'website',
   wide,
+  lessonKey,
 } = Astro.props;
 const pageTitle = title.replaceAll('IELTS Portal', 'IELTS is EZ');
 
@@ -77,7 +86,11 @@ const jsonLd = {
 
     <ClientRouter />
   </head>
-  <body class:list={["flex min-h-screen flex-col bg-surface text-ink", { "workspace-v2": isAppRoute }]} data-route={route}>
+  <body
+    class:list={["flex min-h-screen flex-col bg-surface text-ink", { "workspace-v2": isAppRoute }]}
+    data-route={route}
+    data-lesson-key={lessonKey}
+  >
     {isAppRoute ? (
       <>
         <WorkspaceHeader />
@@ -86,6 +99,12 @@ const jsonLd = {
           <div class:list={['ws-page', { 'is-wide': isWide }]}><slot /></div>
           <WorkspaceFooter />
         </main>
+        {/* transition:persist keeps the same island, and therefore the same
+            open conversation, across a client-side navigation. Mounted only
+            on app routes: the fullscreen test player and the mock exam use
+            the `bare` layout, so Mr EZ is simply not present during a timed
+            paper rather than relying on him declining to help. */}
+        <MrEzPanel client:load transition:persist="mr-ez" />
       </>
     ) : (
       <>

@@ -22,6 +22,7 @@ import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
 import GradingProgress from './GradingProgress';
+import ExplainResult from './tutor/ExplainResult';
 
 type Mode = 'part1' | 'part2' | 'part3';
 type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report';
@@ -57,6 +58,9 @@ export default function SpeakingTester() {
   const [notes, setNotes] = useState('');
   const [micError, setMicError] = useState<string | null>(null);
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
+  /* Identity of the recorded attempt, so "ask Mr EZ to explain this" points
+     at marking that already happened rather than sending the clip again. */
+  const [attemptAt, setAttemptAt] = useState<string | null>(null);
   const [vocab, setVocab] = useState<TopicVocab[] | undefined>(undefined);
   // The grading wait: when the request went out, and how much speech it has
   // to work through. Both feed the honest progress bar.
@@ -254,8 +258,10 @@ export default function SpeakingTester() {
     // like reading and writing already do (previously it was never recorded).
     const gradedMode = modeRef.current;
     if (gradedMode) {
+      const at = new Date().toISOString();
+      setAttemptAt(at);
       recordSpeakingAttempt({
-        at: new Date().toISOString(),
+        at,
         mode: gradedMode,
         topic: promptTitleRef.current,
         overallBand: graded.overallBand,
@@ -339,6 +345,13 @@ export default function SpeakingTester() {
             </div>
           )}
         </BandReport>
+
+        {attemptAt && (
+          <ExplainResult
+            attempt={{ kind: 'speaking', at: attemptAt }}
+            summary={`Estimated band ${result.overallBand.toFixed(1)}`}
+          />
+        )}
 
         <div className="flex flex-wrap justify-center gap-3">
           <button

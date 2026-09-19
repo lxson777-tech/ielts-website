@@ -101,3 +101,43 @@ npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 Find it at Dashboard → **Project Settings → API → `service_role` `secret`**.
 Unlike the `anon` key, this key must never reach the browser or a public
 repo, it has no RLS restriction at all.
+
+## Mr EZ tutor tables
+
+Four more tables back the personal AI tutor (`workers/mr-ez`):
+`mr_ez_conversations`, `mr_ez_messages`, `mr_ez_turns` and
+`mr_ez_recommendations`. They use a **mixed** access model, unlike the two
+above:
+
+- **Writes are Worker-only** (service role key). The browser must never be able
+  to invent a tutor message, forge a usage row or fabricate a summary: all
+  three would let a modified client put words in Mr EZ's mouth or dodge a
+  spending limit.
+- **Reads and deletes of a student's own conversation ARE granted** to the
+  browser under Row-Level Security. That is what lets the panel restore a
+  conversation with no paid round trip, and what makes "clear my history" an
+  immediate delete rather than a request the student has to trust us to honour.
+- **`mr_ez_turns` is the exception.** It is what the daily spending cap is
+  counted from, so a student cannot delete or edit it, or they would reset
+  their own limit. A **column-scoped grant** (`grant update (reply) ... to
+  authenticated`) lets them blank the one column that carries conversation
+  content, and nothing else. Postgres enforces the column list.
+
+**Separation of memory, which the product depends on:** assessment records live
+in `user_state.progress` and are not touched by any of this. Clearing a
+conversation removes what Mr EZ was told and what he said, including the rolling
+summary and the cached dashboard welcome. It does not remove a single band,
+essay or test attempt, and the settings screen says so in those words.
+
+If your project was set up before these tables existed, **re-run step 2**
+(SQL Editor → paste the whole of `schema.sql` → Run). It is additive and
+idempotent and will not touch `user_state`, `live_examiner_sessions` or their
+policies.
+
+The Mr EZ Worker needs the same service role key as the live examiner:
+
+```sh
+cd workers/mr-ez
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+npx wrangler secret put OPENAI_API_KEY
+```

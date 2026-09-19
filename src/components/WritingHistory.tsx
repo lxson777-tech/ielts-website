@@ -4,6 +4,7 @@ import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
 import { WRITING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import BandReport from './BandReport';
+import ExplainResult from './tutor/ExplainResult';
 
 interface Row {
   promptId: string;
@@ -301,6 +302,14 @@ function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
       ) : (
         <p className="text-xs italic text-ink-muted">Graded before comments were saved.</p>
       )}
+
+      {/* Any past result can be explained, not only the one just graded. The
+          marking is already stored, so this is a cheap tutor turn that reads
+          it, never a second grading run. */}
+      <ExplainResult
+        attempt={{ kind: 'writing', at: attempt.at, promptId: row.promptId }}
+        summary={`Estimated band ${attempt.overallBand.toFixed(1)} on ${fmtDate(attempt.at)}`}
+      />
     </div>
   );
 }

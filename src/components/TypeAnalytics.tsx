@@ -3,27 +3,14 @@ import { motion, MotionConfig } from 'framer-motion';
 import { getTypeStats, onProgressChange, type TypeStat } from '../lib/progress';
 import type { QuestionType } from '../lib/tests/schema';
 import { drillTypes } from '../lib/tests/drills';
-import { readingLessonSlug } from '../data/reading-strategies';
-import { listeningLessonSlug } from '../data/listening-strategies';
+import { QUESTION_TYPE_LABEL, lessonPath, practisePath } from '../lib/tests/question-types';
 import { withBase } from '../lib/url';
 
-/* Friendly labels for the schema's QuestionType keys. Exported so other
-   views (e.g. the Listening Trainer hub, which lists which question types
-   each drill contains) can reuse the same wording instead of duplicating it. */
-export const LABELS: Record<string, string> = {
-  'paragraph-matching': 'Matching Information',
-  'sentence-completion': 'Sentence Completion',
-  tfng: 'True / False / Not Given',
-  'yes-no-notgiven': 'Yes / No / Not Given',
-  'multiple-choice': 'Multiple Choice',
-  'matching-headings': 'Matching Headings',
-  'matching-features': 'Matching Features',
-  'sentence-endings': 'Sentence Endings',
-  categorisation: 'Categorisation',
-  'multiple-answer': 'Multiple Answer',
-  'diagram-labelling': 'Diagram Labelling',
-  'table-completion': 'Table Completion',
-};
+/* Labels and links now live in src/lib/tests/question-types.ts, a plain
+   module the Mr EZ tutor Worker can import too (a Worker cannot import this
+   React component). Re-exported here so every existing call site keeps
+   working against the same single source of truth. */
+export const LABELS = QUESTION_TYPE_LABEL;
 
 function tone(pct: number): { bar: string; text: string } {
   if (pct >= 75) return { bar: 'bg-success', text: 'text-success' };
@@ -32,21 +19,16 @@ function tone(pct: number): { bar: string; text: string } {
 }
 
 /** Base-prefixed URL for the lesson that teaches a question type, or
-    undefined if this skill has no lesson covering it (only possible for a
-    handful of listening types with no dedicated lesson, see
-    listening-strategies.ts). */
+    undefined if this skill has no lesson covering it. */
 export function lessonHref(skill: 'reading' | 'listening', type: QuestionType): string | undefined {
-  const slug = skill === 'listening' ? listeningLessonSlug(type) : readingLessonSlug(type);
-  return slug ? withBase(`/lessons/${skill}/${slug}`) : undefined;
+  const path = lessonPath(skill, type);
+  return path ? withBase(path) : undefined;
 }
 
 /** Base-prefixed URL to the trainer hub, filtered to drills that contain this
-    question type (the hub reads `?type=` client-side, see
-    src/pages/trainers/{reading,listening}/index.astro). Exported so the
-    results screen's "weakest type in this test" line (TestPlayer) can reuse
-    it instead of duplicating the query-string shape. */
+    question type. */
 export function practiseHref(skill: 'reading' | 'listening', type: QuestionType): string {
-  return withBase(`/trainers/${skill}?type=${encodeURIComponent(type)}`);
+  return withBase(practisePath(skill, type));
 }
 
 export default function TypeAnalytics({ skill = 'reading' }: { skill?: 'reading' | 'listening' }) {

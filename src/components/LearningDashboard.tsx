@@ -11,11 +11,13 @@ import { withBase } from '../lib/url';
 import { getProgress, getTypeStats, onProgressChange, type ProgressV1 } from '../lib/progress';
 import { buildCourse, courseStatus } from '../lib/course';
 import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
+import { onStudyPlanChange } from '../lib/study-plan';
 import { getVocabSummary, type VocabSummary } from '../lib/vocab-review';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
 import { LABELS, practiseHref } from './TypeAnalytics';
 import PlanToday from './plan/PlanToday';
+import MrEzWelcome from './tutor/MrEzWelcome';
 
 /** Counts a number up from zero the first time it lands, then tracks it
     exactly. The streak is the one figure on this page worth a beat of
@@ -76,7 +78,12 @@ export default function LearningDashboard() {
   const MODULES = useMemo(() => buildCourse(), []);
   const course = useMemo(() => MODULES.flatMap((module) => module.lessons), [MODULES]);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
+  /* Null while nothing has been read yet, and null again when the only plan
+     we have is the one the app fabricated on first visit. A guessed band
+     shown as "Your goal" reads as a commitment the student never made, and
+     it directly contradicts Mr EZ asking them for one three inches above. */
   const [targetBand, setTargetBand] = useState<string | null>(null);
+  const [targetIsGuess, setTargetIsGuess] = useState(false);
   const [vocab, setVocab] = useState<VocabSummary | null>(null);
   const [streak, setStreak] = useState(0);
   const [goal, setGoal] = useState<{ minutes: number; goal: number } | null>(null);
@@ -93,6 +100,7 @@ export default function LearningDashboard() {
       const plan = loadOrCreateStudyPlan();
       setProgress(getProgress());
       setTargetBand(plan.targetBand);
+      setTargetIsGuess(Boolean(plan.defaulted));
       setVocab(getVocabSummary());
       setStreak(getStreak(plan));
       setGoal(getTodayGoalProgress(plan));
@@ -100,7 +108,15 @@ export default function LearningDashboard() {
     };
     setHour(new Date().getHours());
     read();
-    return onProgressChange(read);
+    // Both stores, not just progress: saving a target band from Mr EZ's
+    // welcome must update "Your goal" and the day's plan immediately, without
+    // a reload.
+    const offProgress = onProgressChange(read);
+    const offPlan = onStudyPlanChange(read);
+    return () => {
+      offProgress();
+      offPlan();
+    };
   }, []);
 
   // Reviewing words and taking drills happen on other pages; refresh on
@@ -133,11 +149,13 @@ export default function LearningDashboard() {
         </div>
       </div>
 
+      <MrEzWelcome />
+
       <div className="dash-workspace">
       <PlanToday />
 
       <aside className="dash-side" aria-label="Your study overview">
-      <div className="dash-target"><span>Your goal</span><strong>Band {targetBand ?? '...'}</strong><a href={withBase('/start')}>Adjust your study plan <span aria-hidden="true">↗</span></a></div>
+      <div className="dash-target"><span>Your goal</span><strong>{targetBand && !targetIsGuess ? `Band ${targetBand}` : 'Not set yet'}</strong><a href={withBase('/start')}>{targetIsGuess ? 'Set your target band' : 'Adjust your study plan'} <span aria-hidden="true">↗</span></a></div>
       <div className="dash-cards">
         {status?.next ? (
           <a className="dash-card" href={withBase(status.next.href)}>

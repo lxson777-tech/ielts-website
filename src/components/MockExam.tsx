@@ -166,6 +166,23 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const [speakingSkipped, setSpeakingSkipped] = useState(false);
   const savedRef = useRef(false);
 
+  /* A mock sitting is a timed assessment from the first paper to the last, so
+     flag it on <body> for the Mr EZ tutor panel (see readPlace() in
+     src/components/tutor/MrEzPanel.tsx). The nested TestPlayer sets the same
+     flag during its own legs; this covers the stages it does not own — the
+     transition screens, Writing and Speaking. This page uses the `bare`
+     layout, so the panel is not mounted here in the first place; the flag is
+     the second line of defence, not the only one. */
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const running = stage !== 'start' && stage !== 'results';
+    if (running) document.body.dataset.examRunning = 'true';
+    else delete document.body.dataset.examRunning;
+    return () => {
+      delete document.body.dataset.examRunning;
+    };
+  }, [stage]);
+
   const listeningTest: PracticeTest | undefined = listeningTests.find((t) => t.id === listeningId) ?? listeningTests[0];
   const readingTest: PracticeTest | undefined = readingTests.find((t) => t.id === readingId) ?? readingTests[0];
 
