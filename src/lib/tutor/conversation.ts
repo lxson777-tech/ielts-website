@@ -11,8 +11,10 @@
      row-level security (a student can only ever select their own rows), so
      restoring a conversation costs nothing and involves no AI.
 
-   Clearing removes BOTH, plus the rolling summary on the conversation row
-   and the cached dashboard welcome. It does not touch a single result: bands,
+   Clearing removes BOTH, plus the rolling summary on the conversation row,
+   the cached dashboard welcome, and every note Mr EZ has written about a week
+   or a course unit. Anything that is his words about the student goes; the
+   student's own record stays. It does not touch a single result: bands,
    essays and test attempts live in `user_state.progress` and are a separate
    record with a separate lifetime. The UI says so in those words, because a
    student who clears a chat and loses their score history would never trust
@@ -144,6 +146,11 @@ export async function clearTutorMemory(): Promise<ClearResult> {
   // The cached welcome is Mr EZ's own words about this student, so it goes
   // with the rest of his memory rather than surviving as a stale greeting.
   const recommendations = await sb.from('mr_ez_recommendations').delete().eq('user_id', auth.user.id);
+  // His weekly reviews and unit notes are the same kind of thing as the
+  // welcome: Mr EZ's own words about this student, saved so re-opening a page
+  // costs nothing. They go with the rest of his memory rather than surviving
+  // as an old opinion the student thought they had deleted.
+  const notes = await sb.from('mr_ez_notes').delete().eq('user_id', auth.user.id);
   // The usage rows stay: they are what the daily spending limit is counted
   // from, and letting a student delete them would let them reset their own
   // cap. What does NOT stay is the copy of Mr EZ's reply each one carries as
@@ -152,7 +159,7 @@ export async function clearTutorMemory(): Promise<ClearResult> {
   // that one column on exactly their own rows, and nothing else.
   const replies = await sb.from('mr_ez_turns').update({ reply: null }).eq('user_id', auth.user.id);
 
-  const failed = messages.error || conversations.error || recommendations.error || replies.error;
+  const failed = messages.error || conversations.error || recommendations.error || notes.error || replies.error;
   if (failed) {
     return {
       ok: false,
@@ -167,7 +174,7 @@ export async function clearTutorMemory(): Promise<ClearResult> {
     conversations: count,
     message:
       count > 0
-        ? `Cleared ${count} conversation${count === 1 ? '' : 's'}, everything Mr EZ had summarised from them, and his saved welcome. Your lessons, test scores and marked work are untouched.`
-        : 'There was nothing stored to clear. Your lessons, test scores and marked work are untouched.',
+        ? `Cleared ${count} conversation${count === 1 ? '' : 's'}, everything Mr EZ had summarised from them, his saved welcome, and his weekly reviews and unit notes. Your lessons, test scores and marked work are untouched.`
+        : 'Cleared his saved welcome and any weekly reviews and unit notes. There were no conversations stored. Your lessons, test scores and marked work are untouched.',
   };
 }

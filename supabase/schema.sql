@@ -211,3 +211,52 @@ drop trigger if exists mr_ez_recommendations_touch on public.mr_ez_recommendatio
 create trigger mr_ez_recommendations_touch
   before update on public.mr_ez_recommendations
   for each row execute function public.touch_user_state_updated_at();
+
+-- Mr EZ's written notes about one week or one course unit.
+--
+-- The same idea as mr_ez_recommendations, one level up: these are notes about
+-- a thing that already happened, so the words stay true until the facts behind
+-- them move. `fingerprint` is a hash of exactly those facts (weekFingerprint in
+-- src/lib/tutor/week.ts, unitFingerprint in src/lib/tutor/units.ts). Same
+-- fingerprint means the note is still correct and re-opening the page costs
+-- nothing; a different one means the note is now a stale claim about the
+-- student, and the Worker writes a new one over the top of it.
+--
+-- One row per (student, kind, week-or-unit), so a superseded weekly review is
+-- replaced rather than piling up. A history of notes Mr EZ no longer stands
+-- behind is not worth keeping, and it would be a growing store of his words
+-- about a student for no benefit to them.
+--
+--   kind      'weekly' | 'unit-intro' | 'unit-wrap'
+--   note_key  the week's Monday as a local date key, or the unit id
+--
+-- Same access model as every other tutor table: WRITES are Worker-only
+-- (service role), because a browser that could insert here could put words in
+-- Mr EZ's mouth. READS and DELETES of your own rows are granted, so the page
+-- can show a saved note without a paid round trip and "clear my history"
+-- removes these too, immediately and under row-level security rather than as a
+-- request the student has to trust us to honour.
+create table if not exists public.mr_ez_notes (
+  user_id     uuid not null references auth.users (id) on delete cascade,
+  kind        text not null,          -- 'weekly' | 'unit-intro' | 'unit-wrap'
+  note_key    text not null,          -- week start date, or unit id
+  fingerprint text not null,
+  reply       jsonb not null,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  primary key (user_id, kind, note_key)
+);
+alter table public.mr_ez_notes enable row level security;
+
+drop policy if exists "mr_ez_notes select own" on public.mr_ez_notes;
+drop policy if exists "mr_ez_notes delete own" on public.mr_ez_notes;
+
+create policy "mr_ez_notes select own" on public.mr_ez_notes
+  for select using (auth.uid() = user_id);
+create policy "mr_ez_notes delete own" on public.mr_ez_notes
+  for delete using (auth.uid() = user_id);
+
+drop trigger if exists mr_ez_notes_touch on public.mr_ez_notes;
+create trigger mr_ez_notes_touch
+  before update on public.mr_ez_notes
+  for each row execute function public.touch_user_state_updated_at();

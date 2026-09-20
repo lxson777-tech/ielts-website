@@ -66,6 +66,10 @@ const db = {
   messages: [],
   turns: [],
   recommendations: new Map(),
+  /** mr_ez_notes rows: { user_id, kind, note_key, fingerprint, reply }.
+      Primary key is (user_id, kind, note_key), so a write with a new
+      fingerprint replaces the row rather than adding one. */
+  notes: [],
   /** Set through POST /__force to make the next requests fail, so the
       interface's unavailable, busy and limit-reached states can be seen
       without restarting anything. */
@@ -240,6 +244,21 @@ async function handleRest(req, res, url) {
     } else if (table === 'mr_ez_recommendations') {
       const row = db.recommendations.get(where.user_id ?? caller);
       rows = row && (!where.fingerprint || row.fingerprint === where.fingerprint) ? [row] : [];
+    } else if (table === 'mr_ez_notes') {
+      // Every filter the Worker actually sends, honoured: a note only comes
+      // back for the right student, the right kind, the right week or unit,
+      // AND the right fingerprint. Ignoring the last one would turn a stale
+      // note into a cache hit, which is the exact bug this table exists to
+      // avoid.
+      // `filters` reads these off URLSearchParams, which has already decoded
+      // them, so they are compared as-is.
+      rows = visible(db.notes).filter(
+        (n) =>
+          (!where.user_id || n.user_id === where.user_id) &&
+          (!where.kind || n.kind === where.kind) &&
+          (!where.note_key || n.note_key === where.note_key) &&
+          (!where.fingerprint || n.fingerprint === where.fingerprint),
+      );
     }
 
     const limit = Number(url.searchParams.get('limit'));
@@ -271,6 +290,15 @@ async function handleRest(req, res, url) {
       db.turns.push(...stamped);
     } else if (table.startsWith('mr_ez_recommendations')) {
       for (const item of stamped) db.recommendations.set(item.user_id, item);
+    } else if (table.startsWith('mr_ez_notes')) {
+      // Upsert on the real primary key, matching
+      // `?on_conflict=user_id,kind,note_key` with merge-duplicates.
+      for (const item of stamped) {
+        db.notes = db.notes.filter(
+          (n) => !(n.user_id === item.user_id && n.kind === item.kind && n.note_key === item.note_key),
+        );
+        db.notes.push(item);
+      }
     }
 
     const prefer = String(req.headers.prefer ?? '');
@@ -284,7 +312,11 @@ async function handleRest(req, res, url) {
       // blank the stored reply on their own rows and nothing else. Any other
       // column in the payload is ignored rather than applied.
       const owner = service ? (where.user_id ?? caller) : caller;
-      if (!service && where.user_id && where.user_id !== caller) return json([]);
+      // `json` is the test harness's helper, not this file's: calling it here
+      // threw a ReferenceError instead of refusing the write. A student
+      // naming someone else's id gets an empty, successful no-op, which is
+      // what the real policy produces (zero rows match).
+      if (!service && where.user_id && where.user_id !== caller) return send(res, 204, null);
       for (const t of db.turns) {
         if (t.user_id !== owner) continue;
         if (service) Object.assign(t, body);
@@ -317,6 +349,9 @@ async function handleRest(req, res, url) {
       const row = db.recommendations.get(owner);
       if (row) removed = [row];
       db.recommendations.delete(owner);
+    } else if (table === 'mr_ez_notes') {
+      removed = db.notes.filter((n) => n.user_id === owner);
+      db.notes = db.notes.filter((n) => n.user_id !== owner);
     }
     const prefer = String(req.headers.prefer ?? '');
     return send(res, 200, prefer.includes('return=representation') || url.searchParams.has('select') ? removed : []);
@@ -332,6 +367,76 @@ async function handleRest(req, res, url) {
    import that TypeScript directly from plain Node, so it reproduces only the
    SHAPE of a reply, and marks every one of them as simulated. The wording is
    deliberately blunt about that. */
+/* A plain-JS echo of the rules in parseTutorRequest (src/lib/tutor/schema.ts),
+   so clicking through the interface hits the same 400s a real deployment
+   would. It is deliberately only the SHAPE rules: whether a week is actually
+   complete, whether a unit is actually finished, and whether a question id
+   actually exists are facts about the student's record, and those are decided
+   by the real Worker (in --live mode, or by the unit tests). Returns an error
+   body, or null when the request is well formed. */
+const TASKS = ['chat', 'welcome', 'explain', 'weekly', 'unit', 'debrief', 'item'];
+const MAX_REVIEW_ITEMS = 40;
+const PUBLISHED_TEST_ID = /^(?:reading|listening)-full-\d{3}$/;
+const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9_:-]{0,79}$/;
+
+function badRequest(message) {
+  return { error: message, code: 'bad-request' };
+}
+
+function validateRequest(request) {
+  if (!request || typeof request !== 'object') return badRequest('Request body must be a JSON object.');
+  if (!TASKS.includes(request.task)) return badRequest('Unknown task.');
+
+  if (request.task === 'chat' && typeof request.message !== 'string') return badRequest('A message is required.');
+  if (request.task === 'explain' && !request.attempt) {
+    return badRequest('Explaining a result needs which result to explain.');
+  }
+
+  if (request.task === 'unit') {
+    const unit = request.unit;
+    if (!unit || typeof unit !== 'object') return badRequest('A unit note needs which unit it is about.');
+    if (!Number.isInteger(unit.unitId) || unit.unitId < 1 || unit.unitId > 8) {
+      return badRequest('unit.unitId must be a whole number from 1 to 8.');
+    }
+    if (unit.kind !== 'intro' && unit.kind !== 'wrap') return badRequest('unit.kind must be intro or wrap.');
+  }
+
+  if (request.task === 'debrief' || request.task === 'item') {
+    const review = request.review;
+    if (!review || typeof review !== 'object') return badRequest('Reviewing answers needs which questions to review.');
+    const testId = String(review.testId ?? '').replace(/-drill-p\d+$/, '');
+    if (!PUBLISHED_TEST_ID.test(testId)) return badRequest('review.testId is not a practice paper on this site.');
+    if (!Array.isArray(review.items)) return badRequest('review.items must be an array.');
+    if (review.items.length === 0) return badRequest('review.items must name at least one question.');
+    if (review.items.length > MAX_REVIEW_ITEMS) {
+      return badRequest(`review.items must name at most ${MAX_REVIEW_ITEMS} questions.`);
+    }
+    for (const item of review.items) {
+      if (!item || typeof item !== 'object') return badRequest('Each review item must be an object.');
+      if (!SAFE_ID.test(String(item.questionId ?? ''))) return badRequest('review.items[].questionId is malformed.');
+      if (typeof item.given !== 'string') return badRequest('review.items[].given must be a string.');
+    }
+    if (request.task === 'item' && review.items.length !== 1) {
+      return badRequest('Explaining one question needs exactly one question.');
+    }
+  }
+
+  return null;
+}
+
+/** The (kind, note_key) a one-shot note would be cached under, or null when
+    the task is not one. The real Worker derives note_key from counted facts
+    (a week's Monday, a unit id); this stand-in cannot count, so it uses a
+    stable stand-in key and caches per student, which is enough to see the
+    "reopening this page is free" behaviour in the interface. */
+function noteKeyFor(request) {
+  if (request.task === 'weekly') return { kind: 'weekly', note_key: 'last-week' };
+  if (request.task === 'unit' && request.unit) {
+    return { kind: request.unit.kind === 'intro' ? 'unit-intro' : 'unit-wrap', note_key: String(request.unit.unitId) };
+  }
+  return null;
+}
+
 function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
   const base = {
     task: request.task,
@@ -366,6 +471,49 @@ function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
         label: 'Write an essay and get an AI band',
         href: '/trainers/writing',
         reason: 'A simulated reason.',
+      },
+    };
+  }
+
+  if (request.task === 'weekly') {
+    return {
+      ...base,
+      text: 'Simulated weekly review from the local dev server. No AI was called and nothing was charged. The real one states only counted facts: days studied out of days planned, minutes against the goal, lessons finished, practice attempts, and the same four numbers for the week before. It never calls one band change a trend.',
+      recommendation: {
+        id: 'tool:report',
+        label: 'Your progress report',
+        href: '/report',
+        reason: 'A simulated reason. The real one is chosen in code from your own record.',
+      },
+    };
+  }
+
+  if (request.task === 'unit') {
+    const kind = request.unit?.kind === 'wrap' ? 'wrap-up' : 'introduction';
+    return {
+      ...base,
+      mood: request.unit?.kind === 'wrap' ? 'celebrating' : 'explaining',
+      text: `Simulated unit ${kind} from the local dev server for unit ${request.unit?.unitId}. No AI was called. A unit note never carries a recommendation: the unit's own lessons are right beneath it.`,
+      // Deliberately null, exactly like the real thing.
+      recommendation: null,
+    };
+  }
+
+  if (request.task === 'debrief' || request.task === 'item') {
+    const items = request.review?.items ?? [];
+    return {
+      ...base,
+      text:
+        `Simulated answer review from the local dev server. No AI was called. Asked about ${items.length} ` +
+        `${items.length === 1 ? 'question' : 'questions'} (${items.map((i) => i.questionId).join(', ')}) in ` +
+        `${request.review?.testId}.\n\nThe real Worker fetches those questions from the site's own published ` +
+        'JSON and never reads a prompt, an answer or an explanation out of the request. This is a review of ' +
+        'answers, not a mark, so it says nothing about a band.',
+      recommendation: {
+        id: 'trainer:reading',
+        label: 'Short Reading drills',
+        href: '/trainers/reading',
+        reason: 'A simulated reason. The real one is chosen in code from the question types that went wrong.',
       },
     };
   }
@@ -420,6 +568,9 @@ async function handleTutor(req, res, url) {
     request = {};
   }
 
+  const invalid = validateRequest(request);
+  if (invalid) return send(res, 400, invalid);
+
   // Repeat-send guard, same contract as the Worker.
   if (request.idempotencyKey) {
     const since = Date.now() - 10 * 60 * 1000; // same window as the Worker
@@ -463,6 +614,15 @@ async function handleTutor(req, res, url) {
     if (cached) return send(res, 200, { ...cached.reply, cached: true });
   }
 
+  /* The weekly review and the unit notes are cached the same way, in
+     mr_ez_notes, so the "you have read this already, it costs nothing to
+     look again" path is visible in the interface too. */
+  const note = noteKeyFor(request);
+  if (note) {
+    const stored = db.notes.find((n) => n.user_id === userId && n.kind === note.kind && n.note_key === note.note_key);
+    if (stored) return send(res, 200, { ...stored.reply, cached: true });
+  }
+
   const turnsToday = db.turns.filter((t) => t.user_id === userId).length;
   const reply = simulatedReply(request, conversation?.id ?? '', turnsToday + 1, 40);
 
@@ -479,6 +639,11 @@ async function handleTutor(req, res, url) {
 
   if (request.task === 'welcome') {
     db.recommendations.set(userId, { user_id: userId, fingerprint: 'dev', reply });
+  }
+
+  if (note) {
+    db.notes = db.notes.filter((n) => !(n.user_id === userId && n.kind === note.kind && n.note_key === note.note_key));
+    db.notes.push({ user_id: userId, ...note, fingerprint: 'dev', reply, created_at: new Date().toISOString() });
   }
 
   if (conversation && request.message) {
@@ -528,6 +693,13 @@ function readOpenAiKey() {
 
 const STUB_SUPABASE = 'https://stub.invalid';
 
+/* In --live mode the real Worker fetches each practice paper's published JSON.
+   Pointed at the Astro dev server, which serves the same route the deployed
+   site does (src/pages/data/tests/[id].json.ts), so the debrief and item tasks
+   run against real question content with no network beyond this machine.
+   Start the site separately with `npm run dev`. */
+const LIVE_SITE_DATA_URL = 'http://localhost:4321/ielts-website/data/tests';
+
 async function initLive() {
   const { createHandler } = await import('../workers/mr-ez/src/index.ts');
   const key = readOpenAiKey();
@@ -543,6 +715,10 @@ async function initLive() {
     fetch: async (input, init) => {
       const url = typeof input === 'string' ? input : (input.url ?? String(input));
       if (url.startsWith('https://api.openai.com/')) return realFetch(input, init);
+      // The published test JSON is a real HTTP request to the Astro dev
+      // server, not a stub: the point of --live is that everything except the
+      // database is the production path.
+      if (url.startsWith(LIVE_SITE_DATA_URL)) return realFetch(input, init);
       if (!url.startsWith(STUB_SUPABASE)) throw new Error('unexpected fetch to ' + url);
 
       const parsed = new URL(url);
@@ -578,6 +754,7 @@ async function initLive() {
     ALLOWED_ORIGINS: 'http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322',
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+    SITE_DATA_URL: LIVE_SITE_DATA_URL,
     OPENAI_API_KEY: key,
   };
 
@@ -621,6 +798,7 @@ const server = createServer(async (req, res) => {
         turns: db.turns.length,
         turnsWithStoredReply: db.turns.filter((t) => t.reply).length,
         recommendations: [...db.recommendations.keys()],
+        notes: db.notes.map(({ user_id, kind, note_key, fingerprint }) => ({ user_id, kind, note_key, fingerprint })),
       });
     }
   } catch (err) {
@@ -639,6 +817,7 @@ server.listen(PORT, '127.0.0.1', () => {
   if (LIVE) {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');
+    console.log(`  Test data         : ${LIVE_SITE_DATA_URL} (needs \`npm run dev\` running)`);
   } else {
     console.log('  Tutor stand-in    : /tutor  (every reply is flagged simulated)');
   }

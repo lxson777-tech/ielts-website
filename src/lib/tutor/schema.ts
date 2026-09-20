@@ -15,6 +15,18 @@
    change whose data it is asked about, and it cannot hand the model a
    fabricated band. */
 
+/* One import, and it points back at a module that imports this one. That
+   cycle is deliberate and safe: `test-items.ts` needs `isRecord` and
+   `sanitiseText` from here, and the request validator below needs that
+   file's test-id rules so a review request is checked against exactly the
+   ids the site actually publishes — one source of truth for both instead of
+   a second copy of the regex living here. Neither module runs any of the
+   other's code while it is still being evaluated (both contain only
+   declarations at the top level), which is the condition under which an ES
+   module cycle is well defined. Keep it that way: no top-level `const x =
+   someFunctionFromTheOtherFile()` in either file. */
+import { MAX_GIVEN_CHARS, MAX_REVIEW_ITEMS, isPublishedTestId, sourceTestId } from './test-items';
+
 /* ── Limits ────────────────────────────────────────────────────────────────
    Deliberately shared so the UI can refuse over-long input before spending a
    round trip, and the Worker can refuse it again because the UI is not to be
@@ -41,11 +53,37 @@ export const MAX_OUTPUT_TOKENS = 700;
 /** Longest stored conversation summary, in characters. */
 export const MAX_SUMMARY_CHARS = 1200;
 
-/* ── Tasks ─────────────────────────────────────────────────────────────────
-   One Worker, three jobs. They share auth, limits, usage accounting and
-   context building; they differ only in prompt and output shape. */
+/** Widest time-zone offset accepted, in minutes east of UTC. Real zones run
+    from UTC-12 to UTC+14; 840 is 14 hours, so both ends fit with nothing to
+    spare for a client inventing one. */
+export const MAX_TZ_OFFSET_MINUTES = 840;
 
-export type TutorTask = 'chat' | 'welcome' | 'explain';
+/** How many units the course has (see COURSE_UNITS in src/lib/course.ts).
+    Repeated here rather than imported because this file is the wire contract
+    and must stay free of the curriculum: a unit id is validated for shape
+    here and looked up for real by the Worker, which does read the course. */
+export const COURSE_UNITS_TOTAL = 8;
+
+/* ── Tasks ─────────────────────────────────────────────────────────────────
+   One Worker, seven jobs. They share auth, limits, usage accounting and
+   context building; they differ only in prompt and in which facts are
+   counted for them.
+
+   chat / welcome / explain   the original three
+   weekly                     "here is how last week actually went"
+   unit                       why a course unit matters, or that it is done
+   debrief                    a whole set of wrong answers from one paper
+   item                       one wrong answer, explained
+
+   The last four are one-shot: no conversation row, no history, nothing
+   appended. They are notes Mr EZ writes about something that happened, not
+   a dialogue. */
+
+/** Every task the Worker answers, as a runtime list as well as a type, so the
+    request validator can never drift from the union. */
+export const TUTOR_TASKS = ['chat', 'welcome', 'explain', 'weekly', 'unit', 'debrief', 'item'] as const;
+
+export type TutorTask = (typeof TUTOR_TASKS)[number];
 
 /* ── What the browser sends ────────────────────────────────────────────── */
 
@@ -81,6 +119,38 @@ export interface TutorAttemptRef {
   testId?: string;
 }
 
+/** Which course unit a note is about, and which of the two notes it is: the
+    "why this matters for you" written when the student opens the unit, or
+    the "you finished it" written after the last lesson in it is ticked. Both
+    are references: the unit's contents, and whether it is actually finished,
+    are read here from the student's own record. */
+export interface TutorUnitRef {
+  unitId: number;
+  kind: 'intro' | 'wrap';
+}
+
+/** One question the student got wrong, and what they put. The QUESTION is
+    deliberately absent: its prompt, its accepted answer and its official
+    explanation are fetched by the Worker from the site's own published test
+    JSON and looked up by this id. A client that invents a prompt, an answer
+    or an explanation is simply ignored, because none of those words are
+    read from here. */
+export interface TutorReviewItem {
+  questionId: string;
+  /** Exactly what the student typed or selected. An empty string is legal
+      and means they left it blank, which is a real and different thing from
+      getting it wrong. */
+  given: string;
+}
+
+/** Points at a set of wrong answers inside one practice paper. */
+export interface TutorReviewRef {
+  /** A published test id, or a drill id borrowed from one (see
+      sourceTestId). Normalised and checked before it ever reaches a URL. */
+  testId: string;
+  items: TutorReviewItem[];
+}
+
 export interface TutorTurn {
   role: 'student' | 'tutor';
   text: string;
@@ -95,6 +165,19 @@ export interface TutorRequest {
   message?: string;
   place?: TutorPlace;
   attempt?: TutorAttemptRef;
+  /** The student's own clock, in minutes EAST of UTC (so Almaty, UTC+5,
+      sends 300). The Worker runs in UTC and `progress.activity` is keyed by
+      the student's LOCAL calendar date, so without this a Monday-to-Sunday
+      week would be cut in the wrong place for anyone outside UTC. It is a
+      preference, not a fact about them: an out-of-range or non-integer value
+      is dropped and treated as 0 rather than refused, because the worst it
+      can do is move a week boundary by a few hours. */
+  tzOffsetMinutes?: number;
+  /** Required for task 'unit'. */
+  unit?: TutorUnitRef;
+  /** Required for 'debrief' (one to MAX_REVIEW_ITEMS questions) and for
+      'item' (exactly one). */
+  review?: TutorReviewRef;
   /** Repeat-send guard. The Worker returns the first reply for a given key
       instead of paying for a second one (double-click, flaky network retry,
       React StrictMode double-invoke). */
@@ -244,11 +327,11 @@ export function parseTutorRequest(raw: unknown): TutorRequest {
   if (!isRecord(raw)) throw new TutorRequestError('bad-request', 'Request body must be a JSON object.');
 
   const task = raw.task;
-  if (task !== 'chat' && task !== 'welcome' && task !== 'explain') {
+  if (typeof task !== 'string' || !(TUTOR_TASKS as readonly string[]).includes(task)) {
     throw new TutorRequestError('bad-request', 'Unknown task.');
   }
 
-  const out: TutorRequest = { task };
+  const out: TutorRequest = { task: task as TutorTask };
 
   if (raw.conversationId !== undefined) {
     if (!isUuid(raw.conversationId)) throw new TutorRequestError('bad-request', 'conversationId must be a uuid.');
@@ -292,6 +375,92 @@ export function parseTutorRequest(raw: unknown): TutorRequest {
 
   if (task === 'explain' && !out.attempt) {
     throw new TutorRequestError('bad-request', 'Explaining a result needs which result to explain.');
+  }
+
+  /* The student's clock. Silently dropped rather than refused when it is not
+     a whole number of minutes inside the real range of time zones, because a
+     missing offset only shifts a week boundary by a few hours and refusing
+     the whole request over it would be a worse outcome than a slightly
+     wrong Monday. */
+  if (
+    typeof raw.tzOffsetMinutes === 'number' &&
+    Number.isInteger(raw.tzOffsetMinutes) &&
+    Math.abs(raw.tzOffsetMinutes) <= MAX_TZ_OFFSET_MINUTES
+  ) {
+    out.tzOffsetMinutes = raw.tzOffsetMinutes;
+  }
+
+  if (raw.unit !== undefined) {
+    if (!isRecord(raw.unit)) throw new TutorRequestError('bad-request', 'unit must be an object.');
+    const unitId = raw.unit.unitId;
+    if (typeof unitId !== 'number' || !Number.isInteger(unitId) || unitId < 1 || unitId > COURSE_UNITS_TOTAL) {
+      throw new TutorRequestError('bad-request', `unit.unitId must be a whole number from 1 to ${COURSE_UNITS_TOTAL}.`);
+    }
+    const kind = raw.unit.kind;
+    if (kind !== 'intro' && kind !== 'wrap') {
+      throw new TutorRequestError('bad-request', 'unit.kind must be intro or wrap.');
+    }
+    out.unit = { unitId, kind };
+  }
+
+  if (task === 'unit' && !out.unit) {
+    throw new TutorRequestError('bad-request', 'A unit note needs which unit it is about.');
+  }
+
+  if (raw.review !== undefined) {
+    if (!isRecord(raw.review)) throw new TutorRequestError('bad-request', 'review must be an object.');
+    if (typeof raw.review.testId !== 'string') {
+      throw new TutorRequestError('bad-request', 'review.testId must be a string.');
+    }
+    /* A drill borrows its source paper's question ids wholesale, so a review
+       of a drill attempt is answered from the full paper's published file.
+       Normalise first, then check: the result is about to become part of a
+       URL path, and only ids this build actually publishes are allowed
+       through. Anything else (a traversal attempt, a made-up skill, a
+       different digit count) is a bad request here and never reaches a
+       fetch. */
+    const testId = sourceTestId(raw.review.testId);
+    if (!isPublishedTestId(testId)) {
+      throw new TutorRequestError('bad-request', 'review.testId is not a practice paper on this site.');
+    }
+
+    const rawItems = raw.review.items;
+    if (!Array.isArray(rawItems)) throw new TutorRequestError('bad-request', 'review.items must be an array.');
+    if (rawItems.length === 0) {
+      throw new TutorRequestError('bad-request', 'review.items must name at least one question.');
+    }
+    // Refused, never quietly truncated: a client that sent 200 questions has
+    // misunderstood something, and answering about a silently chosen 40 of
+    // them would hide that.
+    if (rawItems.length > MAX_REVIEW_ITEMS) {
+      throw new TutorRequestError('bad-request', `review.items must name at most ${MAX_REVIEW_ITEMS} questions.`);
+    }
+
+    const items: TutorReviewItem[] = [];
+    for (const entry of rawItems) {
+      if (!isRecord(entry)) throw new TutorRequestError('bad-request', 'Each review item must be an object.');
+      if (!isSafeId(entry.questionId)) {
+        throw new TutorRequestError('bad-request', 'review.items[].questionId is malformed.');
+      }
+      if (typeof entry.given !== 'string') {
+        throw new TutorRequestError('bad-request', 'review.items[].given must be a string.');
+      }
+      // Only these two fields are copied out. Anything else the client put
+      // in the item (a prompt, an answer, an explanation) is dropped here
+      // and can never reach the model.
+      items.push({ questionId: entry.questionId, given: sanitiseText(entry.given, MAX_GIVEN_CHARS) });
+    }
+    out.review = { testId, items };
+  }
+
+  if (task === 'debrief' && !out.review) {
+    throw new TutorRequestError('bad-request', 'A debrief needs which questions went wrong.');
+  }
+  if (task === 'item') {
+    if (!out.review) throw new TutorRequestError('bad-request', 'Explaining one question needs which question.');
+    if (out.review.items.length !== 1) {
+      throw new TutorRequestError('bad-request', 'Explaining one question needs exactly one question.');
+    }
   }
 
   if (raw.idempotencyKey !== undefined) {

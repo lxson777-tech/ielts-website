@@ -3,14 +3,24 @@
    The site never talks to OpenAI. It talks to this, and this holds the key.
 
    WHAT A REQUEST IS ALLOWED TO SAY
-   The browser sends: which task (chat / welcome / explain), what the student
-   typed, which conversation it belongs to, and a few *references* — a lesson
-   key, a test id, the timestamp of an attempt. It does not send the student's
-   bands, their weaknesses, their goals or their history, and if it did, none
-   of it would be read. Every fact about the student is fetched here, from
-   Supabase, against the user id proved by their access token. That is the
-   whole ownership model: there is no code path in which the caller names
-   whose data to load.
+   The browser sends: which task (chat / welcome / explain / weekly / unit /
+   debrief / item), what the student typed, which conversation it belongs to,
+   and a few *references* — a lesson key, a test id, a unit id, a question id,
+   the timestamp of an attempt. It does not send the student's bands, their
+   weaknesses, their goals or their history, and if it did, none of it would
+   be read. Every fact about the student is fetched here, from Supabase,
+   against the user id proved by their access token. That is the whole
+   ownership model: there is no code path in which the caller names whose
+   data to load.
+
+   The two review tasks stretch that rule the furthest, so it is worth being
+   explicit. A debrief request says "here is a test id, here are question ids,
+   and here is what I put". The QUESTION CONTENT — the prompt, the accepted
+   answer, the official explanation, the evidence — is never accepted from
+   the request. It is fetched here from the site's own published JSON
+   (SITE_DATA_URL) and validated before it is used. The only words the client
+   supplies are the student's own answers, which arrive as quoted data inside
+   a fenced block like every other piece of student text.
 
    WHAT IT COSTS AND WHAT STOPS IT
    Every turn is metered (input, cached input, output tokens → dollars) and
@@ -59,11 +69,20 @@ import {
   type TutorTurn,
   type TutorUsage,
 } from '../../../src/lib/tutor/schema';
-import { MR_EZ_PERSONA, TASK_RULES, TUTOR_OUTPUT_SCHEMA, renderContext } from '../../../src/lib/tutor/prompt';
+import {
+  MR_EZ_PERSONA,
+  TASK_RULES,
+  TUTOR_OUTPUT_SCHEMA,
+  renderContext,
+  type ReviewContext,
+} from '../../../src/lib/tutor/prompt';
 import { readInsights, insightsFingerprint } from '../../../src/lib/tutor/insights';
-import { buildCatalog, findActivity } from '../../../src/lib/tutor/catalog';
+import { buildCatalog, findActivity, lessonForType } from '../../../src/lib/tutor/catalog';
 import { recommendNext, shortlist } from '../../../src/lib/tutor/recommend';
 import { summariseAttempt, activityForAssessment } from '../../../src/lib/tutor/assessment';
+import { readWeek, reviewTarget, weekFingerprint, weekFallbackText, type WeekFacts } from '../../../src/lib/tutor/week';
+import { readUnit, unitFingerprint, unitFallbackText, type UnitFacts, type UnitNoteKind } from '../../../src/lib/tutor/units';
+import { isSiteTest, resolveItems, summariseByType, type SiteTest } from '../../../src/lib/tutor/test-items';
 import { buildCourse, courseLessonCount } from '../../../src/lib/course';
 import type { ProgressV1 } from '../../../src/lib/progress';
 import type { SavedPlan } from '../../../src/lib/study-plan';
@@ -77,6 +96,12 @@ export interface Env {
   TUTOR_MAX_OUTPUT_TOKENS?: string; // vars
   ALLOWED_ORIGINS: string; // vars, comma-separated, production only
   LOCAL_ORIGINS?: string; // vars, honoured only under `wrangler dev`
+  /** Where the site publishes one compact JSON file per practice paper (see
+      src/pages/data/tests/[id].json.ts). The Worker cannot bundle
+      src/data/tests — it is 3.9 MB of passages and transcripts — so it
+      fetches the small file instead. Points at the deployed site by default;
+      local development points it at the Astro dev server. */
+  SITE_DATA_URL?: string; // vars
   TUTOR_MAX_TURNS_PER_USER_PER_DAY?: string; // vars, default '40'
   TUTOR_MAX_SITE_PER_DAY?: string; // vars, default '600'
   TUTOR_INPUT_USD_PER_M?: string; // vars, default '0.20'
@@ -105,6 +130,9 @@ export const defaultDeps: Deps = {
 const DEFAULT_MODEL = 'gpt-5.6-luna';
 const DEFAULT_MAX_TURNS_PER_USER_PER_DAY = 40;
 const DEFAULT_MAX_SITE_PER_DAY = 600;
+/** The live site's published test data. Overridable as a var so a local run
+    can point at the Astro dev server without a code change. */
+const DEFAULT_SITE_DATA_URL = 'https://lxson777-tech.github.io/ielts-website/data/tests';
 /* Published rates for gpt-5.6-luna, US dollars per million tokens, checked
    2026-09-19. Overridable as vars so a price change is a redeploy, not a
    code change — and so the cost figures in the usage table never quietly
@@ -370,6 +398,132 @@ async function countMessages(deps: Deps, env: Env, conversationId: string): Prom
   return restCount(deps, env, `mr_ez_messages?conversation_id=eq.${conversationId}&select=id`);
 }
 
+/* ── The notes cache ───────────────────────────────────────────────────── */
+
+/** Identifies one cached note: which kind, which week or unit it is about,
+    and a hash of exactly the facts it was written from. A new fingerprint
+    means the facts moved and the old words are no longer true. */
+interface NoteKey {
+  kind: 'weekly' | 'unit-intro' | 'unit-wrap';
+  noteKey: string;
+  fingerprint: string;
+}
+
+/** A note already written for this student, this week or unit, and these
+    exact facts. The user_id filter is part of the query, so there is no
+    version of this that could read somebody else's note. */
+async function readNote(deps: Deps, env: Env, userId: string, key: NoteKey): Promise<TutorReply | null> {
+  const rows = await restGet(
+    deps,
+    env,
+    `mr_ez_notes?user_id=eq.${userId}&kind=eq.${encodeURIComponent(key.kind)}` +
+      `&note_key=eq.${encodeURIComponent(key.noteKey)}&fingerprint=eq.${encodeURIComponent(key.fingerprint)}&select=reply`,
+  );
+  const stored = rows[0];
+  if (!isRecord(stored) || !isRecord(stored.reply)) return null;
+  return { ...(stored.reply as unknown as TutorReply), cached: true };
+}
+
+/** Save a freshly written note. One row per (student, kind, week-or-unit):
+    a new fingerprint REPLACES the old words rather than piling up, because
+    a superseded weekly review is not history worth keeping, it is a stale
+    claim about the student. Best-effort — a failed cache write costs a
+    repeat next time and nothing else, and must never fail a turn the
+    student has already been charged for. */
+async function writeNote(deps: Deps, env: Env, userId: string, key: NoteKey, reply: TutorReply): Promise<void> {
+  await restWrite(
+    deps,
+    env,
+    'mr_ez_notes?on_conflict=user_id,kind,note_key',
+    'POST',
+    {
+      user_id: userId,
+      kind: key.kind,
+      note_key: key.noteKey,
+      fingerprint: key.fingerprint,
+      reply,
+      updated_at: deps.now().toISOString(),
+    },
+    'resolution=merge-duplicates,return=minimal',
+  ).catch(() => {
+    console.error('mr-ez: could not cache the note');
+  });
+}
+
+/* ── The published test data ───────────────────────────────────────────── */
+
+/** Fetch one practice paper's published JSON.
+
+    `testId` has ALREADY been through sourceTestId + isPublishedTestId in
+    parseTutorRequest, which is what makes it safe to concatenate into a
+    path: only 'reading-full-nnn' and 'listening-full-nnn' get this far, so
+    there is nothing here a traversal or an absolute URL could ride in on.
+
+    Everything that could go wrong refuses the turn rather than continuing
+    with half a paper: a network failure, a non-200, unparseable JSON, a
+    shape that does not validate, or a file whose own id is not the one we
+    asked for (which would mean a redirect or a misconfigured base, and
+    explaining the wrong paper's questions is worse than explaining none). */
+async function fetchSiteTest(deps: Deps, env: Env, testId: string): Promise<SiteTest> {
+  const base = (env.SITE_DATA_URL || DEFAULT_SITE_DATA_URL).replace(/\/+$/, '');
+  const unavailable = () =>
+    new TutorRequestError('unavailable', 'Mr EZ could not load that practice paper just now. Try again in a moment.');
+
+  let resp: Response;
+  try {
+    resp = await deps.fetch(`${base}/${testId}.json`, { signal: AbortSignal.timeout(10000) });
+  } catch {
+    throw unavailable();
+  }
+  if (resp.status !== 200) {
+    console.error(`mr-ez: test data ${testId} came back ${resp.status}`);
+    throw unavailable();
+  }
+  let parsed: unknown;
+  try {
+    parsed = await resp.json();
+  } catch {
+    throw unavailable();
+  }
+  if (!isSiteTest(parsed) || parsed.id !== testId) {
+    console.error(`mr-ez: test data ${testId} did not validate`);
+    throw unavailable();
+  }
+  return parsed;
+}
+
+/** What to do about a set of wrong answers, decided in code from the counts.
+
+    The type with the most wrong answers is the one worth working on, and the
+    choice between teaching it and drilling it is the same rule recommend.ts
+    uses: reading about a question type you have never been taught beats
+    grinding questions on it. For a single item there is only one type, so
+    this collapses to "that one". */
+function recommendFromWrongAnswers(
+  review: ReviewContext,
+  progress: ProgressV1,
+): { id: string; reason: string } | null {
+  const worst = summariseByType(review.items)[0];
+  if (!worst) return null;
+
+  const lesson = lessonForType(review.skill, worst.type);
+  const lessonKey = lesson?.id.slice('lesson:'.length);
+  const lessonDone = lessonKey ? Boolean(progress.lessons?.[lessonKey]) : true;
+  if (lesson && !lessonDone) {
+    return {
+      id: lesson.id,
+      reason: `${worst.wrong} of these wrong answers ${worst.wrong === 1 ? 'is' : 'are'} ${worst.typeLabel}, and the lesson that teaches it has not been read yet.`,
+    };
+  }
+
+  const drill = findActivity(`practise:${review.skill}:${worst.type}`);
+  if (!drill) return null;
+  return {
+    id: drill.id,
+    reason: `${worst.wrong} of these wrong answers ${worst.wrong === 1 ? 'is' : 'are'} ${worst.typeLabel}, and these drills are filtered to exactly that type.`,
+  };
+}
+
 /* ── Limits and usage ──────────────────────────────────────────────────── */
 
 function startOfDayIso(now: Date): string {
@@ -567,6 +721,46 @@ export function isSimulated(env: Env): boolean {
     only ever repeats what the deterministic layer already worked out. */
 export function simulateReply(request: TutorRequest, context: SimulationContext): ModelOutput {
   const { insights, fallbackReason, activityLabel, activityId, assessmentLine } = context;
+  const nextLine = activityId ? `\n\nNext I would do this: ${activityLabel}. ${fallbackReason}` : '';
+
+  /* The four one-shot notes. Each one repeats the deterministic fallback
+     text verbatim — weekFallbackText and unitFallbackText are already the
+     honest, counted wording used when no model answers, so a simulation has
+     nothing to add and no business inventing anything. */
+  if (request.task === 'weekly' && context.week) {
+    return {
+      text: `Simulated tutor reply (no AI was called). ${weekFallbackText(context.week)}${nextLine}`,
+      recommendation: activityId,
+      reason: fallbackReason,
+      mood: 'explaining',
+    };
+  }
+
+  if (request.task === 'unit' && context.unit) {
+    return {
+      text: `Simulated tutor reply (no AI was called). ${unitFallbackText(context.unit.facts, context.unit.kind)}`,
+      recommendation: null,
+      reason: null,
+      mood: context.unit.kind === 'wrap' ? 'celebrating' : 'explaining',
+    };
+  }
+
+  if ((request.task === 'debrief' || request.task === 'item') && context.review) {
+    const counts = summariseByType(context.review.items)
+      .map((t) => `${t.typeLabel}: ${t.wrong} wrong`)
+      .join('. ');
+    const blanks = context.review.items.filter((i) => !i.given).length;
+    const blankLine = blanks > 0 ? ` ${blanks} of them ${blanks === 1 ? 'was' : 'were'} left blank.` : '';
+    return {
+      text:
+        `Simulated tutor reply (no AI was called). Reviewing ${context.review.items.length} wrong ` +
+        `${context.review.items.length === 1 ? 'answer' : 'answers'} from ${context.review.testTitle}. ` +
+        `${counts}.${blankLine}\n\nThis is a review of answers, not a mark, so it says nothing about a band.${nextLine}`,
+      recommendation: activityId,
+      reason: fallbackReason,
+      mood: 'explaining',
+    };
+  }
 
   if (request.task === 'welcome') {
     const goal = insights.goals.targetBand && !insights.goals.guessed ? `band ${insights.goals.targetBand}` : 'a target band you have not set yet';
@@ -574,7 +768,7 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
       ? `Simulated tutor reply (no AI was called). You are working towards ${goal}, and there are results on record.`
       : `Simulated tutor reply (no AI was called). You are working towards ${goal}, and there are no results on record yet, so there is nothing to estimate from.`;
     return {
-      text: `${head}\n\nNext I would do this: ${activityLabel}. ${fallbackReason}`,
+      text: `${head}${nextLine}`,
       recommendation: activityId,
       reason: fallbackReason,
       mood: 'explaining',
@@ -583,7 +777,7 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
 
   if (request.task === 'explain') {
     return {
-      text: `Simulated tutor reply (no AI was called). ${assessmentLine ?? 'There is no assessment attached to this request.'}\n\nEvery band on this platform is an estimate from its own AI marking, not an official IELTS result.\n\nNext I would do this: ${activityLabel}. ${fallbackReason}`,
+      text: `Simulated tutor reply (no AI was called). ${assessmentLine ?? 'There is no assessment attached to this request.'}\n\nEvery band on this platform is an estimate from its own AI marking, not an official IELTS result.${nextLine}`,
       recommendation: activityId,
       reason: fallbackReason,
       mood: 'explaining',
@@ -606,8 +800,12 @@ export interface SimulationContext {
   insights: ReturnType<typeof readInsights>;
   fallbackReason: string;
   activityLabel: string;
-  activityId: string;
+  /** Null when the task deliberately has no next step (a unit note). */
+  activityId: string | null;
   assessmentLine?: string;
+  week?: WeekFacts;
+  unit?: { facts: UnitFacts; kind: UnitNoteKind };
+  review?: ReviewContext;
 }
 
 /* ── Reply assembly ────────────────────────────────────────────────────── */
@@ -765,12 +963,102 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     }
   }
 
+  /* 3b. The weekly review and the two unit notes are one-shot notes about
+         something that already happened, so each one is counted here first,
+         refused outright when there is nothing honest to say, and otherwise
+         looked up in the notes cache against a fingerprint of exactly the
+         facts it would be written from. All of this is free: the refusals
+         and the cache hit both sit above the limits check, so a student who
+         opens the same dashboard twice pays once. */
+  let week: WeekFacts | undefined;
+  let unit: { facts: UnitFacts; kind: UnitNoteKind } | undefined;
+  let note: NoteKey | null = null;
+
+  if (req.task === 'weekly') {
+    /* Only a FINISHED week is worth paying a model for. A week still in
+       progress, or one with nothing in it, gets deterministic text written
+       by the browser itself, so a request for one of those means the client
+       asked for something it should never have asked for. Saying that
+       plainly beats silently writing a review of half a week. */
+    const offsetMinutes = req.tzOffsetMinutes ?? 0;
+    const target = reviewTarget(progress, plan, deps.now(), offsetMinutes);
+    if (target.mode !== 'last-week') {
+      throw new TutorRequestError('bad-request', 'There is no completed week to review yet.');
+    }
+    const facts = readWeek(progress, plan, target.window, deps.now(), offsetMinutes);
+    if (facts.empty) {
+      throw new TutorRequestError('bad-request', 'Nothing was recorded last week, so there is nothing to review.');
+    }
+    week = facts;
+    note = { kind: 'weekly', noteKey: facts.window.start, fingerprint: weekFingerprint(facts) };
+  }
+
+  if (req.task === 'unit') {
+    // Re-checked rather than asserted: parseTutorRequest guarantees this,
+    // and a guarantee that is only true in another file is not one worth
+    // relying on inside the part that spends money.
+    if (!req.unit) throw new TutorRequestError('bad-request', 'A unit note needs which unit it is about.');
+    const facts = readUnit(req.unit.unitId, progress, plan, insights);
+    if (!facts) throw new TutorRequestError('bad-request', 'That unit is not part of the course.');
+
+    /* Three refusals, all of them "there is nothing honest to say here", and
+       all of them before a penny is spent. Mr EZ must not comment on what a
+       unit is for before the student has told us what they are aiming at;
+       an intro with no relevance would be filler dressed up as advice; and
+       a wrap for an unfinished unit would be congratulating someone for
+       something they have not done. */
+    if (insights.goals.guessed || !insights.goals.targetBand) {
+      throw new TutorRequestError(
+        'bad-request',
+        'Mr EZ needs your target band before he can say what a unit is worth to you.',
+      );
+    }
+    if (req.unit.kind === 'intro' && facts.relevance.length === 0) {
+      throw new TutorRequestError(
+        'bad-request',
+        'Nothing in your record points at this unit in particular yet.',
+      );
+    }
+    if (req.unit.kind === 'wrap' && !facts.complete) {
+      throw new TutorRequestError('bad-request', 'That unit is not finished yet.');
+    }
+
+    unit = { facts, kind: req.unit.kind };
+    note = {
+      kind: req.unit.kind === 'intro' ? 'unit-intro' : 'unit-wrap',
+      noteKey: String(facts.unitId),
+      fingerprint: unitFingerprint(facts, req.unit.kind, insights.goals.targetBand),
+    };
+  }
+
+  if (note) {
+    const cached = await readNote(deps, env, userId, note);
+    if (cached) return cached;
+  }
+
   // 4. Limits. Everything above this line is free; everything below may bill.
   const limits = await checkLimits(deps, env, userId);
 
+  /* 4b. The questions themselves, fetched here from the site's own published
+         JSON — never read out of the request, which carries only ids and the
+         student's own answers. After the limits check (a capped student must
+         not be able to make us fetch anything) and before the model call. */
+  let review: ReviewContext | undefined;
+  if (req.task === 'debrief' || req.task === 'item') {
+    if (!req.review) throw new TutorRequestError('bad-request', 'Reviewing answers needs which questions to review.');
+    const siteTest = await fetchSiteTest(deps, env, req.review.testId);
+    const items = resolveItems(siteTest, req.review.items);
+    // Ids that are not in that paper are dropped by resolveItems. If NONE of
+    // them were, there is genuinely nothing to explain.
+    if (items.length === 0) {
+      throw new TutorRequestError('not-found', 'None of those questions are in that practice paper.');
+    }
+    review = { testId: siteTest.id, testTitle: siteTest.title, skill: siteTest.skill, items };
+  }
+
   // 5. What to recommend, decided in code.
   const recommendation = recommendNext(insights, progress);
-  let chosenActivityId = recommendation.activity.id;
+  let chosenActivityId: string | null = recommendation.activity.id;
   let fallbackReason = recommendation.fallbackReason;
 
   // 6. An assessment, if this is "explain my result". Looked up inside the
@@ -788,7 +1076,31 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     }
   }
 
-  // 7. Conversation, only for chat. Welcome and explain are one-shot.
+  /* 6b. Two tasks override the general recommendation.
+
+         A unit note has none at all: the unit's own lessons are on the screen
+         directly beneath it, and a second next step beside them would just
+         compete with the thing the student is already looking at.
+
+         A review's next step comes from the wrong answers in front of us,
+         not from the student's whole history, because "the type you just got
+         wrong six times" is a better answer than "your worst type overall"
+         at the moment they are reading about those six. */
+  if (req.task === 'unit') {
+    chosenActivityId = null;
+    fallbackReason = '';
+  }
+
+  if (review) {
+    const fromWrong = recommendFromWrongAnswers(review, progress);
+    if (fromWrong) {
+      chosenActivityId = fromWrong.id;
+      fallbackReason = fromWrong.reason;
+    }
+  }
+
+  // 7. Conversation, only for chat. Every other task is one-shot: no
+  //    conversation row, no history, nothing appended.
   let conversation: Conversation | null = null;
   let history: TutorTurn[] = [];
   if (req.task === 'chat') {
@@ -813,7 +1125,10 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     lessonTitle,
     assessment,
     activities,
-    chosenActivityId: req.task === 'chat' ? undefined : chosenActivityId,
+    chosenActivityId: req.task === 'chat' ? undefined : chosenActivityId ?? undefined,
+    week,
+    unit,
+    review,
     history,
     summary: conversation?.summary ?? null,
     message: req.message,
@@ -831,19 +1146,24 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     output = simulateReply(req, {
       insights,
       fallbackReason,
-      activityLabel: findActivity(chosenActivityId)?.label ?? recommendation.activity.label,
+      activityLabel: (chosenActivityId ? findActivity(chosenActivityId)?.label : undefined) ?? recommendation.activity.label,
       activityId: chosenActivityId,
       assessmentLine: assessment
         ? `Your ${assessment.kind} result from ${assessment.at.slice(0, 10)} came out at an estimated band ${assessment.overallBand}.`
         : undefined,
+      week,
+      unit,
+      review,
     });
   }
 
   const text = sanitiseText(output.text, 4000);
   if (!text) throw new TutorRequestError('unavailable', 'Mr EZ had nothing to say. Try again.');
 
-  // For welcome and explain the activity is ours, not the model's, so a
-  // model that ignored the instruction still cannot redirect the student.
+  /* Outside chat the activity is ours, not the model's, so a model that
+     ignored the instruction still cannot redirect the student — and where we
+     deliberately chose none (a unit note), a model that names one anyway
+     gets nothing. */
   const recommendationOut =
     req.task === 'chat'
       ? resolveRecommendation(output.recommendation, output.reason)
@@ -910,6 +1230,8 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
       console.error('mr-ez: could not cache the welcome');
     });
   }
+
+  if (note) await writeNote(deps, env, userId, note, replyOut);
 
   return replyOut;
 }

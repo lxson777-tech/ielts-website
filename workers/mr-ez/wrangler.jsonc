@@ -39,6 +39,17 @@
     // used here; the service role key is a Worker secret, never a var.
     "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co",
 
+    // Where the site publishes one small JSON file per practice paper
+    // (src/pages/data/tests/[id].json.ts). The tutor needs each question's
+    // prompt, accepted answer, official explanation and evidence to walk a
+    // student through their wrong answers, and it fetches them from here
+    // rather than accepting them from the browser. src/data/tests itself is
+    // 3.9 MB of passages and transcripts, far past a Worker's bundle limit,
+    // which is why this is a fetch and not an import. Point it at
+    // http://localhost:4321/ielts-website/data/tests to work against the
+    // Astro dev server.
+    "SITE_DATA_URL": "https://lxson777-tech.github.io/ielts-website/data/tests",
+
     // Spending limits, enforced against `mr_ez_turns` so they hold across
     // every Worker instance rather than per-instance memory. A turn is one
     // answered request of any task.
