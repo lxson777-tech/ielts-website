@@ -24,6 +24,7 @@ import { getStreak } from '../lib/plan/streak';
 import { buildCourse } from '../lib/course';
 import { LABELS } from './TypeAnalytics';
 import type { Skill } from '../data/lessons';
+import WeeklyReview from './tutor/WeeklyReview';
 
 const NAME_KEY = 'ielts.report.name.v1';
 
@@ -233,6 +234,8 @@ export default function ProgressReport() {
         <h1 className="font-display text-2xl font-extrabold">{name ? `${name}'s progress report` : 'Progress report'}</h1>
         <p className="mt-1 text-sm text-ink-muted">Generated {fmtDate(new Date().toISOString())} · IELTS is EZ</p>
       </div>
+
+      <WeeklyReview />
 
       {/* ── Plan summary ── */}
       <section>

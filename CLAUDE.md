@@ -177,6 +177,23 @@ recommend,prompt,assessment}.ts`. Browser-only: `client.ts`, `conversation.ts`,
 `local.ts`, `avatar.ts`. Components under `src/components/tutor/`, styles in
 `src/styles/mr-ez.css`.
 
+- **He guides, he does not interrupt.** Beyond the welcome, the panel and "explain this
+  result", four one-shot tasks exist: `weekly` (a review of the last COMPLETED calendar week,
+  `WeeklyReview` on `/report`), `unit` (an intro on the current course unit and a wrap-up on
+  one finished in the last seven days, `UnitNote` inside `Course`), `debrief` (the wrong
+  answers of a reading or listening paper read as a set, `TestDebrief`) and `item` (why the
+  answer the student gave to one question fails, `AskWhyWrong`). Facts for them are counted
+  in `src/lib/tutor/week.ts` (by the student's own clock, not the Worker's UTC one),
+  `units.ts`, `test-items.ts` and `wrong-items.ts`. Every one is either student-initiated or
+  happens once at a natural milestone; none appears during a timed paper or between the legs
+  of a mock exam. Weekly reviews and unit notes are cached in `mr_ez_notes` against a
+  fingerprint, so re-reading costs nothing.
+- **Test content reaches the Worker by reference.** The site publishes one compact JSON file
+  per practice test at `/data/tests/<id>.json` (`src/pages/data/tests/[id].json.ts`, the only
+  file besides the test pages allowed to import `src/data/tests`). The browser sends a test
+  id, question ids and the student's answers; the Worker fetches the questions itself from
+  `SITE_DATA_URL`. Never make the Worker import `src/data/tests` (3.9 MB), and never accept
+  question text from a request.
 - **Do not change the grading models while working on the tutor.** `grade-essay`,
   `grade-speaking` and `live-examiner` are calibrated separately and belong to
   a different decision. Mr EZ runs `gpt-5.6-luna`; the graders have run

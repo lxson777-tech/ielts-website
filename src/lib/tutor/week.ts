@@ -405,7 +405,13 @@ const SKILL_LABEL: Record<PlanSkill, string> = {
     without saying whether that counts as progress). */
 export function weekFallbackText(facts: WeekFacts): string {
   if (facts.empty) {
-    return `No study activity was recorded for the week of ${facts.window.start} to ${facts.window.end}. That happens sometimes, and the next week is a fresh start.`;
+    // No date range in the sentence: every surface that shows this text also
+    // shows the week's dates beside it, written for a human ("14 to 20
+    // September"), and an ISO range in the middle of a kind sentence reads
+    // like a machine wrote it.
+    return facts.complete
+      ? 'No study activity was recorded last week. That happens sometimes, and this week is a fresh start.'
+      : 'No study activity has been recorded this week yet. There is still time.';
   }
 
   const sentences: string[] = [];
@@ -414,7 +420,7 @@ export function weekFallbackText(facts: WeekFacts): string {
   const plannedPart = facts.plannedDays > 0 ? ` out of ${facts.plannedDays} planned` : '';
   const minuteWord = facts.minutes === 1 ? 'minute' : 'minutes';
   sentences.push(
-    `For the week of ${facts.window.start} to ${facts.window.end}, you studied on ${facts.activeDays} ${dayWord}${plannedPart}, for ${facts.minutes} ${minuteWord} in total.`,
+    `${facts.complete ? 'Last week' : 'So far this week'} you studied on ${facts.activeDays} ${dayWord}${plannedPart}, for ${facts.minutes} ${minuteWord} in total.`,
   );
 
   if (facts.lessons.length > 0) {

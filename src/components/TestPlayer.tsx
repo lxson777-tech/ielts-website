@@ -18,6 +18,8 @@ import StrategyPanel from './StrategyPanel';
 import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
 import { withBase } from '../lib/url';
 import { isBookmarked, toggleBookmark } from '../lib/notes';
+import TestDebrief from './tutor/TestDebrief';
+import AskWhyWrong from './tutor/AskWhyWrong';
 
 interface Props {
   test: PracticeTest;
@@ -561,6 +563,21 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     ? undefined
     : withBase(attemptKind === 'drill' ? `/trainers/${test.skill}/${test.id}` : `/tests/${test.id}`);
 
+  // Mr EZ on the review screen: the whole-paper debrief card below, and the
+  // per-question "why was my answer wrong?" button inside AnswerReview.
+  // Undefined switches both off, and `isRetake` (i.e. an onFinish callback
+  // was passed) is exactly the right switch, because it marks the two places
+  // a TestPlayer is nested inside something bigger:
+  //   - a MOCK EXAM leg (MockExam.tsx renders this with onFinish for its
+  //     Listening and Reading papers). A mock is one timed assessment from
+  //     its first paper to its last, so offering coaching between the legs
+  //     would be helping during an exam.
+  //   - the nested retake of the questions you got wrong, whose synthetic
+  //     `<id>-retake` id has no published paper behind it to look up.
+  // Everything else about showing these (is there a tutor, did anything go
+  // wrong, is the student signed in) is decided by the components.
+  const tutorTestId = isRetake ? undefined : test.id;
+
   function openRetake() {
     const wrongIds = new Set(
       numbered
@@ -894,6 +911,20 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 )}
               </div>
             )}
+            {/* Mr EZ's debrief of the whole paper (see tutorTestId above):
+                above the question list and below the score, never inside the
+                score modal, which is a moment of its own. Its position in
+                this child list is fixed, so switching passage re-renders the
+                questions under it without remounting it and losing what he
+                already said. */}
+            {submitted && tutorTestId && (
+              <TestDebrief
+                test={test}
+                answers={answers}
+                correctIds={scoredIds}
+                scoredTotal={SCORED_TOTAL}
+              />
+            )}
             {part.groups.map((group, groupIndex) => {
               const groupQs = numbered.filter((nq) => nq.group === group);
               const wrongOnly = submitted && reviewFilter === 'wrong';
@@ -963,6 +994,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                         testId={test.id}
                         testTitle={test.title}
                         bookmarkHref={bookmarkBase ? `${bookmarkBase}#q${nq.n}` : undefined}
+                        tutorTestId={tutorTestId}
                       />
                     ))
                   )}
@@ -1179,6 +1211,7 @@ function QuestionItem({
   testId,
   testTitle,
   bookmarkHref,
+  tutorTestId,
 }: {
   nq: Numbered;
   value: string;
@@ -1196,6 +1229,9 @@ function QuestionItem({
   testId?: string;
   testTitle?: string;
   bookmarkHref?: string;
+  /** The paper's id when Mr EZ may be offered for a wrong answer here,
+      undefined when he may not (see tutorTestId in TestPlayer). */
+  tutorTestId?: string;
 }) {
   const { question: q, group, n } = nq;
   const ok = submitted && scored;
@@ -1364,6 +1400,7 @@ function QuestionItem({
           onLocate={onLocate}
           skill={skill}
           className="sm:ml-10"
+          tutorTestId={tutorTestId}
         />
       )}
     </div>
@@ -1435,6 +1472,7 @@ function AnswerReview({
   onLocate,
   skill,
   className,
+  tutorTestId,
 }: {
   q: Question;
   ok: boolean;
@@ -1443,6 +1481,11 @@ function AnswerReview({
   onLocate?: (evidence: string) => void;
   skill: TestSkill;
   className?: string;
+  /** Set only where asking Mr EZ about one wrong answer is offered (see
+      tutorTestId in TestPlayer). Left unset by the table-completion grid:
+      those blanks are marked as one widget, and the debrief card above the
+      list already covers them. */
+  tutorTestId?: string;
 }) {
   /* Our marker forgives more than an examiner will (a hyphen, a currency sign,
      punctuation). Saying nothing would train the student into a habit that
@@ -1487,6 +1530,12 @@ function AnswerReview({
             </button>
           )}
         </div>
+      )}
+      {/* The note above says why the KEY is right. This says why what the
+          student actually wrote is not, which nothing written in advance
+          could. One click, one tutor turn, and only ever on a click. */}
+      {!ok && q.scored !== false && tutorTestId && (
+        <AskWhyWrong testId={tutorTestId} questionId={q.id} given={given} />
       )}
     </div>
   );

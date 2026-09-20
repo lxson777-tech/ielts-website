@@ -1,0 +1,83 @@
+/* Mr EZ's note inside a course unit card (src/components/tutor/UnitNote.tsx).
+
+   This lives INSIDE an existing card (Course.tsx), between the unit blurb
+   and the lesson list, so it has to stay quiet: one soft tinted strip, no
+   border-heavy box-in-a-box. Reuses the --mrez-* tokens and .mrez-sim-badge
+   from mr-ez.css rather than inventing a second palette. */
+
+.mrez-unit-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--mrez-soft, #eef1e8);
+  animation: mrez-unit-fade-in 260ms ease-out;
+}
+
+/* The wrap variant is a small earned moment: the same strip, tinted toward
+   the soft green, still restrained. */
+.mrez-unit-note.is-wrap {
+  background: #e0ebbc;
+}
+
+.mrez-unit-note .mrez-avatar {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mrez-unit-note-body {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.mrez-unit-note-label {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mrez-muted, #616c64);
+}
+
+.mrez-unit-note-label .mrez-sim-badge {
+  margin: 0 0 0 8px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+
+.mrez-unit-note-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--mrez-ink, #263c35);
+}
+
+@keyframes mrez-unit-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Works down to 375px: nothing here is wide enough to need its own rule, but
+   the label wrapping under a long simulated badge should stay legible. */
+@media (max-width: 375px) {
+  .mrez-unit-note {
+    gap: 8px;
+    padding: 11px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrez-unit-note {
+    animation: none;
+  }
+}

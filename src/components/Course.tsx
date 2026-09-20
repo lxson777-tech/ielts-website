@@ -1,7 +1,7 @@
 /* Guided curriculum and calendar. Lesson ticks use existing progress keys;
    exam-readiness checklist ticks stay in the saved plan. */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { withBase } from '../lib/url';
 import {
   saveStudyPlan,
@@ -20,6 +20,8 @@ import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress'
 import { buildCourse, courseStatus, coursePace, isLessonDone } from '../lib/course';
 import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
 import { getPlanSummary } from '../lib/plan/summary';
+import { currentUnitId, recentlyCompletedUnitId } from '../lib/tutor/units';
+import UnitNote from './tutor/UnitNote';
 import WeekView from './plan/WeekView';
 
 const DAILY_MINUTES_OPTIONS: NonNullable<SavedPlan['dailyMinutes']>[] = [15, 25, 40, 60];
@@ -100,6 +102,13 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
     window.addEventListener('focus', refresh);
     return () => window.removeEventListener('focus', refresh);
   }, []);
+
+  // Which unit (if any) gets a Mr EZ note, decided from the same progress
+  // record the rest of the page already reads. Memoised so a re-render that
+  // doesn't touch progress doesn't recompute this on every keystroke in the
+  // settings form.
+  const mrEzCurrentUnit = useMemo(() => currentUnitId(progress ?? getProgress()), [progress]);
+  const mrEzWrapUnit = useMemo(() => recentlyCompletedUnitId(progress ?? getProgress(), new Date()), [progress]);
 
   if (!ready || !plan) return null; // avoid a hydration flash; plan always exists once ready
   // A stable non-null alias: the guard above narrows `plan` for this render,
@@ -361,6 +370,11 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
               </div>
               <p className="mt-1 text-sm text-ink-muted">{mod.blurb}</p>
 
+              {mod.id === mrEzWrapUnit ? (
+                <UnitNote unitId={mod.id} kind="wrap" />
+              ) : mod.id === mrEzCurrentUnit && mod.id !== 8 ? (
+                <UnitNote unitId={mod.id} kind="intro" />
+              ) : null}
 
               {mod.lessons.length > 0 && (
                 <ul className="mt-4 space-y-1">

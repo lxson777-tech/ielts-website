@@ -1,0 +1,100 @@
+/* Mr EZ's weekly review card, on the printable progress report. A sibling
+   of .mrez-welcome in src/styles/mr-ez.css: same tokens, same shape
+   language, nothing new introduced. Reuses .mrez-rec and .mrez-sim-badge
+   from that file rather than redefining them, so the call-to-action and the
+   simulated-reply badge look identical everywhere they appear.
+
+   No animation is added here. The avatar's own motion (mr-ez.css) already
+   respects prefers-reduced-motion, and this card needs none of its own. */
+
+.mrez-weekly {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 22px 24px;
+  margin: 0;
+  border: 1px solid var(--mrez-line);
+  border-radius: 20px;
+  background: var(--mrez-surface);
+  box-shadow: 0 4px 16px rgb(38 60 53 / 3%);
+}
+
+.mrez-weekly-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.mrez-weekly-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--mrez-muted);
+}
+.mrez-weekly-heading .mrez-sim-badge { margin: 0; text-transform: none; letter-spacing: 0; }
+
+.mrez-weekly-range {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--mrez-muted);
+}
+
+.mrez-weekly-text {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--mrez-ink);
+}
+
+.mrez-weekly-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.mrez-weekly-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 108px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--mrez-soft);
+}
+.mrez-weekly-chip-main {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mrez-ink);
+}
+.mrez-weekly-chip-prev {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--mrez-muted);
+}
+.mrez-weekly-chip-label {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--mrez-muted);
+}
+
+.mrez-weekly-cta { margin-top: 16px; }
+
+.mrez-weekly-note { margin-top: 12px; }
+
+@media (max-width: 640px) {
+  .mrez-weekly {
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+  }
+  .mrez-weekly-chip { flex: 1 1 128px; }
+}
