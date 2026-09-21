@@ -26,18 +26,26 @@
  * touches no browser API. Everything resolves storage lazily, inside a
  * function, behind a typeof check.
  *
- * NOT HERE YET: THE PLAN
+ * THE PLAN IS AT THE BOTTOM
  * Plan persistence (PersonalPlanV1, its revision, the derived SavedPlan the
- * old screens still read) belongs to work package 6b and lands in the
- * section marked for it at the bottom of this file, after the planner
- * exists. The evidence half is separated out and brought forward so the
- * practice screens can start recording before the planner is written.
+ * old screens still read) sits in its own section at the end of this file,
+ * beside the record so one owner namespace covers both. It stores and it
+ * notifies; it never decides. Every call to replan() lives in
+ * src/lib/learning/index.ts, which is what makes the active session stable.
  */
 
 import type { Locale } from '../i18n/locale';
 import { getProgress, type ProgressV1 } from '../progress';
-import { loadStudyPlan, type SavedPlan } from '../study-plan';
+import { loadStudyPlan, saveStudyPlan, type SavedPlan } from '../study-plan';
+import {
+  derivedSavedPlan,
+  lessonMapsFor,
+  planSettingsFromSavedPlan,
+  type LegacyPlanSettings,
+} from './adapters';
 import type { LearningCatalogueV1, Paper, Subskill } from './contracts/catalog';
+import type { PersonalPlanV1, PlanSession } from './contracts/plan';
+import { PERSONAL_PLAN_KEY } from './contracts/plan';
 import type {
   AssistanceLevel,
   CompletionState,
@@ -1019,9 +1027,11 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
         events: held.events.length,
         lessonsStudied: studied.size,
         attempts,
-        /* The plan on this device, which until work package 6b means the
-           old SavedPlan. It is the only plan there is to claim, and the
-           screen says so rather than implying a personal plan exists. */
+        /* Whether there are settings on this device to claim at all. The old
+           SavedPlan is the one the student would recognise (a target band, a
+           date, minutes a day); the personal plan is rebuilt from the record
+           and the settings once the work is claimed, so it is not something
+           to offer separately. */
         hasPlan: readLegacy().plan !== null,
       },
       lastAt: last ? last.at : null,
@@ -1189,15 +1199,10 @@ export function lessonMapsFrom(catalogue: LearningCatalogueV1): {
   lessonSubskills: Record<string, Subskill>;
   lessonMinutes: Record<string, number>;
 } {
-  const lessonSubskills: Record<string, Subskill> = {};
-  const lessonMinutes: Record<string, number> = {};
-  for (const activity of catalogue.activities) {
-    if (activity.kind !== 'lesson' || !activity.id.startsWith('lesson:')) continue;
-    const lessonKey = activity.id.slice('lesson:'.length);
-    lessonSubskills[lessonKey] = activity.subskill;
-    lessonMinutes[lessonKey] = activity.expectedMinutes;
-  }
-  return { lessonSubskills, lessonMinutes };
+  /* One implementation, in adapters.ts, because the Mr EZ Worker builds the
+     same maps when it works a plan out from synced progress and must file a
+     completion under the same subskill this browser does. */
+  return lessonMapsFor(catalogue);
 }
 
 export function getLearnerStore(): LearnerStore {
@@ -1288,13 +1293,289 @@ export function declineAnonymousWork(): void {
   getLearnerStore().declineAnonymousWork();
 }
 
-/* ── Work package 6b: the plan store goes here ───────────────────────────────
+/* ── The plan ────────────────────────────────────────────────────────────────
  *
- * PersonalPlanV1 persistence, its revision, and the derived SavedPlan that
- * the nine existing screens still read (lead decision D1) belong in this
- * file, beside the record, so that one owner namespace covers both. They
- * wait for the planner: a plan store written before replan() exists would be
- * guessing at the shape it has to hold. Nothing above needs changing to add
- * them, and the owner, storage, soft cap, status and change notification are
- * all already here to reuse.
+ * PersonalPlanV1 persistence, its revision, and the derived SavedPlan the
+ * nine existing screens still read (lead decision D1), beside the record so
+ * that one owner namespace covers both.
+ *
+ * NOTHING HERE DECIDES ANYTHING. This is storage. `replan()` is called in
+ * exactly one place, `src/lib/learning/index.ts`, which is what makes the
+ * active session stable: a page that reads the plan cannot move it.
  */
+
+/** 'ielts.learning.plan.v1::u:<userId>'. Same namespacing as the record, for
+    the same reason: two students on one browser never see each other's. */
+export function personalPlanKey(owner: CacheOwner): string {
+  return `${PERSONAL_PLAN_KEY}${CACHE_NAMESPACE_SEPARATOR}${ownerNamespace(owner)}`;
+}
+
+/** A quick shape check, the same idea as looksLikeEvent above: a row that is
+    missing anything every reader dereferences is treated as no plan at all,
+    so a hand-edited or half-written copy cannot reach a screen. The full
+    validation belongs to the sync layer. */
+function parsePlan(raw: string | null): PersonalPlanV1 | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<PersonalPlanV1>;
+    if (parsed?.version !== 1) return null;
+    if (typeof parsed.revision !== 'number') return null;
+    const session = parsed.activeSession as PlanSession | undefined;
+    if (!session || typeof session.id !== 'string' || !Array.isArray(session.steps)) return null;
+    if (!parsed.goals || !parsed.constraints) return null;
+    return parsed as PersonalPlanV1;
+  } catch {
+    /* Corrupt JSON reads as no plan. The next ensurePlan() builds a fresh
+       one from the record, which is deterministic, so nothing is lost that
+       was not already unreadable. */
+    return null;
+  }
+}
+
+/** How a plan is kept on this device, and whether it is the student's own
+    settings or still the platform's suggestion. */
+export interface PlanStoreStatus {
+  owner: CacheOwner;
+  persistence: LocalPersistence;
+  problem?: LocalWriteProblem;
+  revision: number | null;
+  confirmed: boolean;
+  /** True once a stored plan exists for this owner. */
+  present: boolean;
+  /** The old study plan this owner's first plan was built from, when there
+      was one, so the interface can say the settings were carried over. */
+  migratedFrom: 'saved-plan' | 'nothing' | null;
+}
+
+/** Change entries kept when the browser is full and the plan has to be
+    written smaller. Far below PLAN_HISTORY_MAX: enough for the weekly
+    review to still have something to quote. */
+const QUOTA_RETRY_PLAN_HISTORY = 5;
+
+export interface PlanStoreOptions {
+  owner?: CacheOwner;
+  storage?: BrowserStorage | null;
+  now?: () => string;
+  /** The old study plan. READ for the one-time migration of the student's
+      settings, and WRITTEN with the derived copy lead decision D1 requires.
+      Injected so a test can watch both halves without a browser. */
+  legacyPlan?: { read: () => SavedPlan | null; write: (plan: SavedPlan) => void };
+}
+
+export interface PlanStore {
+  owner(): CacheOwner;
+  /** The stored plan, synchronously, for first paint. Null when this owner
+      has none yet, which is a question for ensurePlan() and not for this
+      module: nothing here ever builds a plan. */
+  read(): PersonalPlanV1 | null;
+  reload(): PersonalPlanV1 | null;
+  save(plan: PersonalPlanV1): PersonalPlanV1;
+  status(): PlanStoreStatus;
+  setOwner(owner: CacheOwner | null): PersonalPlanV1 | null;
+  subscribe(listener: () => void): () => void;
+  forgetOwner(owner: CacheOwner): void;
+  /** The old settings to build this owner's first plan from, or null. */
+  legacySettings(): LegacyPlanSettings | null;
+  /** The derived copy as it stands, for the agreement test and for a screen
+      that wants to show what the old stores were told. */
+  legacyPlan(): SavedPlan | null;
+}
+
+export function createPlanStore(options: PlanStoreOptions = {}): PlanStore {
+  /* No clock of its own: every timestamp on a plan is stamped by the
+     planner, which takes `now` as an argument so two devices produce the
+     same plan from the same evidence. */
+  const storage: BrowserStorage | null = options.storage === undefined ? deviceStorage() : options.storage;
+  const legacyPlan = options.legacyPlan ?? { read: loadStudyPlan, write: saveStudyPlan };
+
+  let owner: CacheOwner = options.owner ?? anonymousOwner(deviceIdFrom(storage));
+  let plan: PersonalPlanV1 | null = null;
+  let loaded = false;
+  let persistence: LocalPersistence = storage ? 'saved-locally' : 'memory-only';
+  let problem: LocalWriteProblem | undefined = storage ? undefined : 'unavailable';
+  let migratedFrom: PlanStoreStatus['migratedFrom'] = null;
+  const listeners = new Set<() => void>();
+
+  function notify(): void {
+    for (const listener of listeners) {
+      try {
+        listener();
+      } catch {
+        /* A listener throwing must not break the writer. */
+      }
+    }
+  }
+
+  function load(): void {
+    loaded = true;
+    plan = storage ? parsePlan(safeGet(storage, personalPlanKey(owner))) : null;
+    if (storage) {
+      persistence = 'saved-locally';
+      problem = undefined;
+    }
+  }
+
+  function read(): PersonalPlanV1 | null {
+    if (!loaded) load();
+    return plan;
+  }
+
+  /** Write the plan, and on a full browser try once more with the change
+      history trimmed. The history is the only part that grows without
+      bound, and losing the oldest plain-language change entries is a far
+      smaller loss than losing the plan. */
+  function write(next: PersonalPlanV1): PersonalPlanV1 {
+    if (!storage) {
+      persistence = 'memory-only';
+      problem = 'unavailable';
+      return next;
+    }
+    const key = personalPlanKey(owner);
+    try {
+      storage.setItem(key, JSON.stringify(next));
+      persistence = 'saved-locally';
+      problem = undefined;
+      return next;
+    } catch (error) {
+      const why = writeProblemOf(error);
+      if (why === 'quota' && next.history.length > QUOTA_RETRY_PLAN_HISTORY) {
+        const trimmed: PersonalPlanV1 = { ...next, history: next.history.slice(-QUOTA_RETRY_PLAN_HISTORY) };
+        try {
+          storage.setItem(key, JSON.stringify(trimmed));
+          persistence = 'saved-locally';
+          problem = undefined;
+          return trimmed;
+        } catch {
+          /* Still no room. Fall through to memory only. */
+        }
+      }
+      persistence = 'memory-only';
+      problem = why;
+      return next;
+    }
+  }
+
+  function save(next: PersonalPlanV1): PersonalPlanV1 {
+    if (!loaded) load();
+    plan = write(next);
+    /* Lead decision D1: the old store gets a copy of every save so the
+       screens that still read SavedPlan keep working. It is written, never
+       read back as the truth, and derivedSavedPlan() refuses to put a
+       platform guess over a setting the student actually made. */
+    const shadow = derivedSavedPlan(plan, legacyPlan.read());
+    if (shadow) {
+      try {
+        legacyPlan.write(shadow);
+      } catch {
+        /* The shadow failing must never fail the real write. */
+      }
+    }
+    notify();
+    return plan;
+  }
+
+  function legacySettings(): LegacyPlanSettings | null {
+    const settings = planSettingsFromSavedPlan(legacyPlan.read());
+    migratedFrom = settings ? 'saved-plan' : 'nothing';
+    return settings;
+  }
+
+  function setOwner(next: CacheOwner | null): PersonalPlanV1 | null {
+    const resolved = next ?? anonymousOwner(deviceIdFrom(storage));
+    if (ownerNamespace(resolved) === ownerNamespace(owner) && loaded) return plan;
+    owner = resolved;
+    plan = null;
+    loaded = false;
+    migratedFrom = null;
+    const loadedPlan = read();
+    notify();
+    return loadedPlan;
+  }
+
+  function forgetOwner(target: CacheOwner): void {
+    if (storage) safeRemove(storage, personalPlanKey(target));
+    if (ownerNamespace(target) === ownerNamespace(owner)) {
+      plan = null;
+      loaded = false;
+      notify();
+    }
+  }
+
+  return {
+    owner: () => owner,
+    read,
+    reload: () => {
+      loaded = false;
+      return read();
+    },
+    save,
+    status: () => {
+      const current = read();
+      return {
+        owner,
+        persistence,
+        problem,
+        revision: current?.revision ?? null,
+        confirmed: current?.confirmed ?? false,
+        present: current !== null,
+        migratedFrom,
+      };
+    },
+    setOwner,
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    forgetOwner,
+    legacySettings,
+    legacyPlan: () => legacyPlan.read(),
+  };
+}
+
+let defaultPlanStore: PlanStore | null = null;
+let defaultPlanOptions: PlanStoreOptions = {};
+
+/** Hand the plan store its owner, its storage and its clock before anything
+    reads it. Ignored once the store has been built, the same rule as
+    configureLearnerStore, so an island that is already subscribed is never
+    swapped out from under it. */
+export function configurePlanStore(options: PlanStoreOptions): void {
+  defaultPlanOptions = { ...defaultPlanOptions, ...options };
+}
+
+export function getPlanStore(): PlanStore {
+  defaultPlanStore ??= createPlanStore(defaultPlanOptions);
+  return defaultPlanStore;
+}
+
+export function readPersonalPlan(): PersonalPlanV1 | null {
+  return getPlanStore().read();
+}
+
+export function planStoreStatus(): PlanStoreStatus {
+  return getPlanStore().status();
+}
+
+/** Subscribe to plan writes. Returns an unsubscribe, the same shape as
+    onProgressChange, onStudyPlanChange and onLearnerRecordChange. */
+export function onPersonalPlanChange(listener: () => void): () => void {
+  return getPlanStore().subscribe(listener);
+}
+
+/** Sign-in, account switch, or sign-out with null. Always called together
+    with setLearnerOwner: one student's record and one student's plan belong
+    to the same owner or neither does. */
+export function setLearningOwner(owner: CacheOwner | null): void {
+  setLearnerOwner(owner);
+  getPlanStore().setOwner(owner);
+}
+
+/** For tests, and for the one place that needs a clean slate: drop the
+    module-level stores so the next call builds them from the current
+    options. Never called by a screen. */
+export function resetLearningStoresForTest(): void {
+  defaultStore = null;
+  defaultPlanStore = null;
+  defaultOptions = {};
+  defaultPlanOptions = {};
+}

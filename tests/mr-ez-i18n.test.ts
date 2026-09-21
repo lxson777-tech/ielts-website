@@ -532,7 +532,15 @@ test('the reason on a recommendation card is Russian, and the activity is unchan
   assert.equal(english, rec.fallbackReason);
   assert.notEqual(russian, english);
   assert.match(russian, /[Ѐ-ӿ]/);
-  assert.ok(russian.includes('True / False / Not Given'), 'the question type name stays English');
+  /* CHANGED 2026-09-22, personal learning work package 7. This used to look
+     for the question type name, because rule 2 always fired on this fixture
+     and named True / False / Not Given. The recommendation is now a view of
+     the student's one session, and for a learner with nothing recorded in
+     three of the four papers that session goes and finds out about one of
+     them. The rule being tested is the same one either way: an exam word
+     inside a Russian sentence stays English, so the student recognises it
+     on the real paper. */
+  assert.ok(russian.includes('Listening'), 'the paper name stays English');
   assert.doesNotMatch(russian, DASHES);
 });
 
@@ -806,8 +814,14 @@ test('a recommendation card that comes back from a Russian turn is in Russian', 
   state.userState[USER_A] = { progress: emptyProgress(), study_plan: null };
   const { payload } = await run(state, { task: 'welcome', locale: 'ru' }, { TUTOR_SIMULATE: 'on' });
   const rec = payload.recommendation as Record<string, unknown>;
-  assert.equal(rec.id, 'tool:plan');
-  assert.equal(rec.label, 'Настройки учебного плана');
+  /* CHANGED 2026-09-22, personal learning work package 7: a student with no
+     goal and nothing recorded used to be sent to /plan-settings. They now
+     get the first teaching step of their plan, and the intake asks for the
+     goal separately. The card is still Russian and its link is still chosen
+     in code, which is what this test is for. A LESSON's label stays English
+     on purpose: titles live in the course registry and the browser runs
+     them through t() when it renders the card. */
+  assert.equal(rec.id, 'lesson:reading-task1');
+  assert.equal(rec.href, '/lessons/reading-task1', 'the link is chosen in code and never changes with the language');
   assert.match(String(rec.reason), /[Ѐ-ӿ]/);
-  assert.equal(rec.href, '/plan-settings', 'the link is chosen in code and never changes with the language');
 });

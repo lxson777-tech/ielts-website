@@ -1,6 +1,13 @@
 /* A deliberate curriculum. Registry entries own the content and stable progress keys;
-   COURSE_UNITS owns teaching order. Overview always precedes a new paper. */
+   COURSE_UNITS owns teaching order. Overview always precedes a new paper.
+
+   COURSE_UNITS is the LIBRARY and the teaching order, not the mandatory
+   route. Since 2026-09-22 the one next action comes from the student's plan
+   (src/lib/learning), and courseStatus() below is a view of that same
+   session rather than a fourth opinion about what to do next. Every one of
+   the 76 lessons stays listed, in order, and stays reachable. */
 import { LESSONS, SKILLS, type Skill, type Stage } from '../data/lessons';
+import { currentSharedSession, type SharedSessionView } from './learning/adapters';
 import { READING_PARTS } from '../data/reading';
 import { LISTENING_PARTS } from '../data/listening';
 import { WRITING_PARTS } from '../data/writing';
@@ -178,20 +185,60 @@ export interface CourseStatus {
   /** 0-100, lessons only. Extras are tracked but excluded so the headline
       number means "how much of the syllabus have I read". */
   percent: number;
-  /** First lesson in course order the student hasn't completed, or null when
-      every lesson is done. */
+  /** Where the student is in the LIBRARY: the lesson this course order
+      points at. Since 2026-09-22 it follows the shared session when that
+      session names a lesson, so the course card and Today cannot send
+      someone to two different places. It is not the primary next action;
+      `session` is. Null only when every lesson is done. */
   next: CourseLesson | null;
+  /** The one next action every surface shows, from the student's plan.
+      Null when no plan has been wired up on this page (a server render, or
+      an island that has not imported `src/lib/learning`), in which case
+      `next` is the best answer the library alone can give. */
+  session: SharedSessionView | null;
+}
+
+/** The course lesson the shared session is pointing at, if any.
+ *
+ *  The session's current step first, then any other step, because a session
+ *  whose practice step is a drill usually still has a teach step naming the
+ *  lesson that drill is about, and that lesson is where the course card
+ *  should point. */
+function lessonForSession(all: CourseLesson[], session: SharedSessionView): CourseLesson | null {
+  const keys = [session.current, ...session.steps]
+    .map((step) => step?.lessonKey)
+    .filter((key): key is string => typeof key === 'string');
+  for (const key of keys) {
+    const lesson = all.find((l) => l.key === key);
+    if (lesson) return lesson;
+  }
+  return null;
 }
 
 export function courseStatus(modules: CourseModule[], progress: ProgressV1): CourseStatus {
   const all = modules.flatMap((m) => m.lessons);
   const done = all.filter((l) => isLessonDone(progress, l.key));
-  const next = all.find((l) => !isLessonDone(progress, l.key)) ?? null;
+  const firstUnfinished = all.find((l) => !isLessonDone(progress, l.key)) ?? null;
+  const session = currentSharedSession();
+
+  /* With a plan, the library pointer follows it: the lesson the session
+     names, or failing that the first unfinished lesson in the paper the
+     session is about, so "your course" and "today" stay in the same part of
+     the syllabus. Without a plan, the old first-unfinished answer stands. */
+  let next = firstUnfinished;
+  if (session) {
+    next =
+      lessonForSession(all, session) ??
+      (session.paper ? all.find((l) => l.skill === session.paper && !isLessonDone(progress, l.key)) ?? null : null) ??
+      firstUnfinished;
+  }
+
   return {
     doneLessons: done.length,
     totalLessons: all.length,
     percent: all.length ? Math.round((done.length / all.length) * 100) : 0,
     next,
+    session,
   };
 }
 

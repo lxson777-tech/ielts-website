@@ -73,7 +73,7 @@ import {
 } from './contracts/plan';
 import type { LearningAiVersions, ProposalDisagreement, ProposalRejectionCode } from './contracts/ai';
 import { MAX_PROPOSAL_CANDIDATES } from './contracts/ai';
-import { coverageFit, findActivity, learningCatalogue, prerequisiteClosure } from './catalog';
+import { LEARNING_INDEX, coverageFit, findActivity, learningCatalogue, prerequisiteClosure } from './catalog';
 import { canonicalJson, hashContent } from './evidence';
 import { scopeKeyOf } from './policy';
 import type { EligibilityContext, LearnerFacts, PlannedObjective } from './session';
@@ -721,17 +721,44 @@ export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[]
     );
   }
 
-  /* Ties are broken by the order IELTS itself lists the papers and then by
-     the scope key, so two runs over the same evidence rank identically and
-     a brand-new student is not sent somewhere alphabetical. */
+  /* Ties are broken by the order IELTS itself lists the papers, then by how
+     much of that question type the real papers actually contain, and only
+     then by the scope key. Two runs over the same evidence therefore rank
+     identically, and a brand-new student with no evidence anywhere starts
+     on the type they will meet most often rather than on whichever one
+     sorts first alphabetically. */
   const paperRank = (entry: ScoredObjective): number =>
     entry.objective.paper ? PAPERS.indexOf(entry.objective.paper) : PAPERS.length;
   return out.sort(
     (a, b) =>
       b.score - a.score ||
       paperRank(a) - paperRank(b) ||
+      materialWeight(b.objective) - materialWeight(a.objective) ||
       (a.objective.scopeKey < b.objective.scopeKey ? -1 : 1),
   );
+}
+
+/** Questions of each type across the 70 imported papers, per paper, counted
+ *  by the generated index rather than assumed.
+ *
+ *  Used for ONE thing: breaking an exact tie between two objectives. For a
+ *  student with no evidence at all in a paper every question type scores the
+ *  same, and the order the ids happen to sort in decided what they were
+ *  taught first. That is how a brand-new student was being started on
+ *  Matching Features, which is a third as common as sentence completion.
+ *  Frequency is not a teaching judgement and never outranks one: it only
+ *  settles what nothing else can. The paper is still chosen by the score,
+ *  so the paper the student said feels hardest still comes first. */
+const QUESTION_FREQUENCY: ReadonlyMap<string, number> = new Map<string, number>(
+  LEARNING_INDEX.questionTypes.flatMap((coverage): [string, number][] => [
+    [`reading|${coverage.type}`, coverage.reading.questions],
+    [`listening|${coverage.type}`, coverage.listening.questions],
+  ]),
+);
+
+function materialWeight(objective: PlannedObjective): number {
+  if (!objective.paper) return 0;
+  return QUESTION_FREQUENCY.get(`${objective.paper}|${objective.subskill}`) ?? 0;
 }
 
 function eligibilityFor(input: ScoringInput, minutes: number): EligibilityContext {

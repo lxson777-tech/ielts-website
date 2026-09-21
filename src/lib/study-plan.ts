@@ -34,8 +34,11 @@ export interface SavedPlan {
   startDate?: string;
   /** Minutes the student wants to study on a study day. Optional, defaults
       to 25 (src/lib/plan/schedule.ts DEFAULT_DAILY_MINUTES) when unset, so
-      plans saved before this field existed still load and schedule. */
-  dailyMinutes?: 15 | 25 | 40 | 60;
+      plans saved before this field existed still load and schedule.
+      90 was added on 2026-09-22 so the derived copy of the personal plan
+      (lead decision D1) can hold every value DAILY_MINUTE_CHOICES offers
+      rather than quietly rounding a student's real commitment down. */
+  dailyMinutes?: 15 | 25 | 40 | 60 | 90;
   /** Which calendar days count as study days. Optional, defaults to 'daily'
       when unset. 'weekdays' means Monday-Friday only — used both to skip
       weekends when building the schedule and to decide which days count

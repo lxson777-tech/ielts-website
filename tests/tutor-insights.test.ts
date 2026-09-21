@@ -115,8 +115,15 @@ test('the worst question type is named first, not the alphabetically first one',
   const observations = readObservations(readFacts(progress, plan(), LESSON_TOTAL));
   assert.equal(observations[0].id, 'weak:reading:tfng', 'severity decides the order, not the alphabet');
 
+  /* CHANGED 2026-09-22, personal learning work package 7: the observation
+     ORDER is still this file's job, and it is what is being tested here.
+     Which activity follows from it is the planner's, and it weighs three
+     untouched papers against a weakness read out of migrated totals. The
+     recommendation still names one real, resolvable activity and still
+     names the same one every other surface does. */
   const rec = recommendNext(readInsights(progress, plan(), LESSON_TOTAL), progress);
-  assert.equal(rec.activity.href, '/lessons/reading/tfng');
+  assert.ok(rec.activity.href.startsWith('/'), 'a real internal link, never one the model invented');
+  assert.ok(rec.plannedActivityId, 'and the session step behind it');
 });
 
 test('only one weakness is ever called "the weakest"', () => {
@@ -244,35 +251,56 @@ test('criterion trends only look at the recent window', () => {
   assert.equal(trend.graded, 4, 'the window is the last four marked pieces, not all of them');
 });
 
-/* ── Recommendation: real links, defensible rules ──────────────────────── */
+/* ── Recommendation: real links, defensible rules ──────────────────────────
+ *
+ * CHANGED 2026-09-22, personal learning work package 7.
+ *
+ * recommendNext used to run seven rules of its own, and on /dashboard it ran
+ * beside two other engines running theirs: the course card's first
+ * unfinished lesson and Today's calendar. All three could name a different
+ * activity at once, which is the audit's first reproduced finding. It is now
+ * a VIEW of the student's one current session, exactly like courseStatus()
+ * and getTodayPlan(), and the rules that remain choose the WORDING for the
+ * step the plan already picked.
+ *
+ * Two of the tests below therefore no longer describe this function. "A
+ * measured weakness sends an untaught student to the lesson" and "once the
+ * lesson is read, drills of that type" were rules 2 and 5; teaching before
+ * drilling is now the shape of the SESSION (a teach step, then a practise
+ * step, and the teach step is left out for a student who has already
+ * demonstrated the skill), and it is pinned on a learner the planner really
+ * does choose that objective for, in tests/learning-adapters.test.ts.
+ *
+ * They are also no longer the same judgement. These fixtures carry only
+ * `byType` tallies migrated out of the old store, which the evidence policy
+ * caps at `limited` certainty because there is no per-question record behind
+ * them (architecture 4.1). Three whole papers with nothing recorded at all
+ * outrank a shaky reading of old totals, so the plan goes and finds out
+ * about them first, and says so.
+ */
 
-test('no target band means the first recommendation is to set one', () => {
+test('no target band still produces real work, not a settings form', () => {
+  /* Rule 1 used to answer a student with no goal by sending them to
+     /plan-settings. The brief is explicit that a new student gets useful
+     work immediately and is asked for their goal separately (the intake,
+     work package 10), so the card names the first teaching step and the
+     plan stays visibly unconfirmed underneath it. */
   const rec = recommendNext(readInsights(emptyProgress(), null, LESSON_TOTAL), emptyProgress());
-  assert.equal(rec.rule, 'no-goal');
-  assert.equal(rec.activity.id, 'tool:plan');
+  assert.equal(rec.rule, 'course-start');
+  assert.equal(rec.activity.kind, 'lesson', 'a student with no goal is given something to learn, not a form');
+  assert.ok(rec.plannedActivityId, 'and it names the same session step every other surface names');
 });
 
-test('a measured weakness sends an untaught student to the lesson, not the drills', () => {
+test('reading results alone do not stop the plan finding out about the other papers', () => {
   const progress = emptyProgress();
   progress.tests['t'] = [
     readingAttempt('2026-09-10T10:00:00.000Z', { tfng: { correct: 1, total: 5 } }),
     readingAttempt('2026-09-11T10:00:00.000Z', { tfng: { correct: 1, total: 5 } }),
   ];
   const rec = recommendNext(readInsights(progress, plan(), LESSON_TOTAL), progress);
-  assert.equal(rec.rule, 'weakness-teach');
-  assert.equal(rec.activity.href, '/lessons/reading/tfng');
-});
-
-test('once the lesson is read, the same weakness sends them to drills of that type', () => {
-  const progress = emptyProgress();
-  progress.lessons['reading-tfng'] = { completedAt: '2026-09-09T10:00:00.000Z' };
-  progress.tests['t'] = [
-    readingAttempt('2026-09-10T10:00:00.000Z', { tfng: { correct: 1, total: 5 } }),
-    readingAttempt('2026-09-11T10:00:00.000Z', { tfng: { correct: 1, total: 5 } }),
-  ];
-  const rec = recommendNext(readInsights(progress, plan(), LESSON_TOTAL), progress);
-  assert.equal(rec.rule, 'weakness-drill');
-  assert.equal(rec.activity.href, '/trainers/reading?type=tfng');
+  assert.equal(rec.rule, 'missing-paper', 'a paper with nothing recorded is named as unknown, not guessed at');
+  assert.ok(rec.because, 'the reason is a counted claim, not a description');
+  assert.notEqual(rec.activity.kind, 'test', 'and it is not a sixty-minute timed paper');
 });
 
 test('a student with a goal but no results starts the course, not a timed exam', () => {
@@ -287,8 +315,11 @@ test('a missing paper is only recommended once there is other work to compare it
   // Reading has results; listening, writing and speaking have none.
   progress.tests['reading-full-001'] = [readingAttempt('2026-09-10T10:00:00.000Z', { tfng: { correct: 5, total: 6 } })];
   const rec = recommendNext(readInsights(progress, plan(), LESSON_TOTAL), progress);
-  assert.equal(rec.rule, 'missing-paper');
-  assert.equal(rec.because?.confidence, 'measured', 'a missing result is a fact, not a guess');
+  /* Still never a full paper for someone with one result, which is what
+     this test has always been about. Which paper the plan turns to is the
+     planner's judgement now, and it is pinned in tests/learning-planner. */
+  assert.notEqual(rec.activity.kind, 'test', 'one result does not earn a sixty-minute timed paper');
+  assert.ok(rec.plannedActivityId, 'there is exactly one next step, and every surface names it');
 });
 
 test('every recommendation carries a plain non-AI reason', () => {

@@ -110,16 +110,27 @@ test('getTodayPlan on day one of a fresh plan returns 1-4 items and reports on t
   assert.equal(today!.daysBehind, 0);
 });
 
-test('getTodayPlan flags "behind" once more than 3 past study days are left undone', () => {
-  // Backdate the plan by 5 days with nothing completed: every one of those
-  // days should still be sitting in the backlog.
-  const plan = makePlan({ startDate: addDays(START, -5) });
+/* CHANGED 2026-09-22, personal learning work package 7. This test used to
+   assert that five missed study days put five days' worth of unfinished
+   items into today's list. That rolled-forward backlog is exactly what the
+   brief calls "an ever-growing backlog" and what audit finding 3 measured as
+   a 255-minute day under a 15-minute setting: the queue could never be
+   cleared, so the student met it again every morning, larger.
+
+   getTodayPlan is now a view of the one current session, so missed days
+   rebuild the plan from where the student actually is (plan status
+   'recovering', with a change entry saying what was dropped) instead of
+   stacking old days on top of today. What is worth pinning is therefore the
+   new guarantee: however long someone was away, today still fits the day. */
+test('getTodayPlan does not roll a backlog forward: a missed week still fits the day', () => {
+  const plan = makePlan({ startDate: addDays(START, -5), dailyMinutes: 25 });
   const progress = emptyProgress();
   const today = getTodayPlan(plan, progress, new Date(`${START}T12:00:00`));
   assert.ok(today);
-  assert.ok(today!.daysBehind > 3, `expected more than 3 days behind, got ${today!.daysBehind}`);
-  assert.ok(today!.behindMessage && today!.behindMessage.includes('days behind'));
-  assert.equal(today!.onTrack, false);
+  const minutes = today!.items.reduce((total, item) => total + item.minutes, 0);
+  assert.ok(minutes <= 25, `five missed days must not stack up, got ${minutes} minutes`);
+  assert.ok(today!.nextActivityId, 'there is still exactly one next thing to do');
+  assert.equal(today!.finished, false, 'a running plan is never reported as finished');
 });
 
 test('a final mock follows teaching, lasts 150 minutes and links to /tests/mock', () => {
@@ -198,7 +209,18 @@ test('a fresh store (a brand new student, nothing saved yet) still yields a non-
   const progress = emptyProgress();
   const today = getTodayPlan(plan, progress, new Date(`${plan.startDate}T12:00:00`));
   assert.ok(today, 'Today is never null once a plan exists, default or not');
-  assert.ok(today!.items.length >= 1 && today!.items.length <= 4, 'Today lists a normal day worth of items immediately, no onboarding form first');
+  /* CHANGED 2026-09-22, personal learning work package 7. Today is now the
+     steps of the one current session, so what bounds the list is the daily
+     budget rather than a count of items: a sixty-minute session honestly has
+     more than four steps in it, and a fifteen-minute one has two. The thing
+     worth pinning is unchanged: a brand new student gets real work
+     immediately, with no onboarding form in front of it. */
+  assert.ok(today!.items.length >= 1, 'Today lists real work immediately, no onboarding form first');
+  const minutes = today!.items.reduce((total, item) => total + item.minutes, 0);
+  assert.ok(
+    minutes <= today!.session!.budgetMinutes,
+    `the day must fit its own budget: ${minutes} of ${today!.session!.budgetMinutes}`,
+  );
   assert.equal(today!.dayNumber, 1);
 });
 

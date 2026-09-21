@@ -1,5 +1,12 @@
 /* Calendar follows the taught curriculum, not a random rotation of skills.
-   Completion stays in the existing progress store. */
+   Completion stays in the existing progress store.
+
+   buildSchedule() and getWeekPlan() still lay the whole library out over the
+   days available, which is what /start's week view shows. getTodayPlan(),
+   below, no longer does: since 2026-09-22 it is a view of the ONE current
+   session in the student's plan (src/lib/learning), which is also what the
+   course card and Mr EZ read. That is what stopped the three of them naming
+   three different activities on the same screen. */
 import { buildCourse, type CourseLesson } from '../course';
 import type { ProgressV1 } from '../progress';
 import { ALL_TESTS } from '../../data/tests';
@@ -10,6 +17,29 @@ import { getVocabSummary } from '../vocab-review';
 import { getVocabularyPart } from '../../data/vocabulary';
 import { addDays, daysBetween, isWeekday, parseDateKey, toLocalDateKey } from './date';
 import { nt } from '../i18n/translate';
+/* Importing the browser entry point is what installs the shared-session
+   provider, so any page that shows Today also gives the course card and Mr
+   EZ the same session to read. This module is browser-only already (it
+   imports 3.7 MiB of papers), so it is the right place to do it; nothing
+   under src/lib/learning may import it back. The named import is there so
+   no bundler can decide the module is unused and drop the wiring with it. */
+import { ensureLearningWired } from '../learning';
+import {
+  constraintsFrom,
+  currentSharedSession,
+  goalsFrom,
+  legacyItemType,
+  lessonMapsFor,
+  planSettingsFromSavedPlan,
+  sharedSessionFrom,
+  type SharedSessionView,
+  type SharedStepView,
+} from '../learning/adapters';
+import { learningCatalogue } from '../learning/catalog';
+import type { PlanStatus } from '../learning/contracts/plan';
+import { migrateProgress } from '../learning/migrate';
+import { createInitialPlan } from '../learning/planner';
+import { evaluateEvidence } from '../learning/policy';
 
 export const DEFAULT_DAILY_MINUTES = 25;
 export const DEFAULT_PLAN_WEEKS = 8;
@@ -26,11 +56,20 @@ export interface PlanItem {
   /** Vocabulary items only: the topic title on its own, so the label can be
       shown in the student's language. See planItemLabel(). */
   topic?: string;
-  /** Stable id. For lessons this is the progress.lessons key; for drills and
-      tests it's the id progress.tests is keyed by; for review it's
-      `review:<lesson key>`; for vocab it's a fixed placeholder id (there's
-      nowhere to record completion yet — see `trackable` below). */
+  /** Stable id. In buildSchedule() and getWeekPlan() this is still what it
+      always was: the progress.lessons key for a lesson, the progress.tests
+      key for a drill or test, `review:<lesson key>` for a review.
+      In getTodayPlan() it is the SESSION STEP id, because one session can
+      hold the same activity twice (practise it, then recap it) and a list
+      with two identical ids is a bug waiting to happen. Use `activityId`
+      when you want the catalogue id. */
   id: string;
+  /** Today's list only: the catalogue id, which is the id courseStatus and
+      recommendNext name for the same step. */
+  activityId?: string;
+  /** Today's list only: the session step this came from, for marking it
+      started or done (see markStepDone in src/lib/learning). */
+  stepId?: string;
   type: PlanItemType;
   label: string;
   /** Set only when `label` was composed rather than written out (a drill's
@@ -69,7 +108,10 @@ export interface PlanDay {
 export interface PlanParams {
   startDate: string;
   examDate: string;
-  dailyMinutes: 15 | 25 | 40 | 60;
+  /** 90 was added on 2026-09-22 alongside SavedPlan.dailyMinutes, so a
+      student who really does study an hour and a half is scheduled for an
+      hour and a half rather than quietly rounded down to an hour. */
+  dailyMinutes: 15 | 25 | 40 | 60 | 90;
   studyDays: 'daily' | 'weekdays';
 }
 
@@ -367,58 +409,188 @@ function scheduleWithProgress(plan: SavedPlan, progress: ProgressV1): { params: 
 export interface TodayPlan {
   date: string;
   dayNumber: number;
+  /** Study days from the start to the exam. Zero when there is no exam date:
+      a plan with no date paces itself provisionally and no longer invents a
+      deadline eight weeks out. Read `status` before showing "day X of Y". */
   totalDays: number;
   weekNumber: number;
   items: PlanItem[];
   onTrack: boolean;
   daysBehind: number;
   behindMessage: string | null;
-  /** Past the exam date: nothing left to schedule. */
+  /** ALWAYS false since 2026-09-22.
+      A passed exam date used to set this true while introductory lessons
+      were still outstanding, and the card rendered it as "Your plan is
+      complete" (the audit's fifth reproduced finding). A date in the past
+      is now `status: 'date-passed'`, which asks for a new date or a new
+      goal. The field is kept so no caller breaks; read `status`. */
   finished: boolean;
+  /** How the plan as a whole should be presented: on-track,
+      provisional-no-date, recovering, date-passed, exam-imminent or
+      goal-met. */
+  status: PlanStatus;
+  /** The shared session this list is a view of, when one is available. */
+  session: SharedSessionView | null;
+  /** The id of the one next activity, the same id `courseStatus().session`
+      and `recommendNext()` name. */
+  nextActivityId: string | null;
+  /** The session's one objective and the counted reason behind it. */
+  objective: string | null;
+  reason: string | null;
+  /** What honestly will not fit in the time left, when the planner had to
+      leave real work out. Never a promise about a band. */
+  scopeNote: string | null;
 }
 
-/** Today's card for /dashboard: the earliest unfinished items (rolling
-    forward anything missed on previous study days), capped to roughly the
-    daily goal. Null when there's no plan yet — callers show the empty
-    state. */
-export function getTodayPlan(plan: SavedPlan | null, progress: ProgressV1, today: Date = new Date()): TodayPlan | null {
-  if (!plan) return null;
-  const { params, days } = scheduleWithProgress(plan, progress);
-  const todayStr = toLocalDateKey(today);
-  const totalDays = Math.max(1, daysBetween(params.startDate, params.examDate));
-  const dayNumber = Math.min(Math.max(daysBetween(params.startDate, todayStr) + 1, 1), totalDays);
-  const finished = todayStr > params.examDate;
-
-  const past = days.filter((d) => d.date < todayStr);
-  const backlog = past.flatMap((d) => d.items.filter((i) => i.trackable && !i.done));
-  const daysBehind = new Set(past.filter((d) => d.items.some((i) => i.trackable && !i.done)).map((d) => d.date)).size;
-
-  const todayDay = days.find((d) => d.date === todayStr);
-  const todaysOwnItems = todayDay ? todayDay.items : [];
-  const combined = [...backlog, ...todaysOwnItems.filter((i) => !backlog.some((b) => b.id === i.id))];
-
-  const capped: PlanItem[] = [];
-  let minutes = 0;
-  for (const item of combined) {
-    if (capped.length >= 2 && minutes >= params.dailyMinutes) break;
-    if (capped.length >= 6) break;
-    capped.push(item);
-    minutes += item.minutes;
+/** A title for one step, from the real registries where there is one.
+ *
+ *  The learning catalogue stores an objective sentence rather than a title,
+ *  because titles live in the registries and get translated by the site's
+ *  own dictionary. So the lesson, drill, test and vocabulary titles are
+ *  looked up here, where all four are already imported, and anything else
+ *  falls back to the activity's own honest sentence. */
+function stepTitle(step: SharedStepView): { label: string; labelText?: TranslatableText; topic?: string } {
+  if (step.lessonKey) {
+    const lesson = courseLessons().find((l) => l.key === step.lessonKey);
+    if (lesson) return { label: lesson.title };
   }
-  if (capped.length === 0 && todaysOwnItems.length > 0) capped.push(...todaysOwnItems.slice(0, 4));
+  if (step.activityId.startsWith('drill:')) {
+    const id = step.activityId.slice('drill:'.length);
+    const drill = [...ALL_READING_DRILLS, ...ALL_LISTENING_DRILLS].find((d) => d.id === id);
+    if (drill) return { label: drill.test.title, labelText: drill.test.titleText };
+  }
+  if (step.activityId.startsWith('test:')) {
+    const test = ALL_TESTS.find((t) => t.id === step.activityId.slice('test:'.length));
+    if (test) return { label: test.title };
+  }
+  if (step.activityId.startsWith('review:vocabulary:')) {
+    const part = getVocabularyPart(step.activityId.slice('review:vocabulary:'.length));
+    if (part) return { label: `Vocabulary: ${part.title}`, topic: part.title };
+  }
+  return { label: step.objective };
+}
 
-  const behind = daysBehind > 3;
+/** The four paper names stay English wherever they appear, the same rule
+    src/lib/tutor/ru.ts states: a student has to recognise these exact words
+    on the real paper. Deliberately not wrapped for translation. */
+const SKILL_META: Record<string, string> = {
+  reading: 'Reading',
+  listening: 'Listening',
+  writing: 'Writing',
+  speaking: 'Speaking',
+};
+
+function stepItem(step: SharedStepView): PlanItem {
+  const type = legacyItemType(step);
+  const title = stepTitle(step);
+  return {
+    /* The step id, so one session that practises a drill and then recaps it
+       does not produce two items with the same id. */
+    id: step.stepId,
+    activityId: step.activityId,
+    stepId: step.stepId,
+    type,
+    label: title.label,
+    labelText: title.labelText,
+    topic: title.topic,
+    meta: step.paper ? SKILL_META[step.paper] ?? nt('Practice') : nt('Practice'),
+    href: step.href ?? '/dashboard',
+    minutes: step.minutes,
+    skill: step.paper,
+    /* Completion comes from the session's own step state now, not from
+       re-deriving it per item type, so a step the student finished stays
+       finished through a refresh. */
+    done: step.state === 'done' || step.state === 'skipped',
+    trackable: true,
+  };
+}
+
+/** Today's card for /dashboard: the steps of the student's one current
+ *  session, in order, with the step they are on first.
+ *
+ *  Three things changed on 2026-09-22 and all three were audit findings.
+ *  There is no rolled-forward backlog: missed days rebuild the plan from
+ *  where the student actually is (see `status: 'recovering'`) instead of
+ *  stacking old days on top of today. The list is the session, so it can
+ *  never exceed the daily budget. And a passed exam date is `date-passed`,
+ *  never `finished`.
+ *
+ *  Null only when there is genuinely nothing to show: no plan wired up and
+ *  no saved settings to work one out from. Callers show the empty state. */
+export function getTodayPlan(plan: SavedPlan | null, progress: ProgressV1, today: Date = new Date()): TodayPlan | null {
+  ensureLearningWired();
+  const session = currentSharedSession() ?? deriveSession(plan, progress, today);
+  if (!session) return null;
+
+  const todayStr = toLocalDateKey(today);
+  const startDate = plan?.startDate || session.date;
+  const dayNumber = Math.max(daysBetween(startDate, todayStr) + 1, 1);
+  const totalDays = session.examDate ? Math.max(1, daysBetween(startDate, session.examDate)) : 0;
+
+  /* The step the student is on comes first; everything already finished
+     stays visible underneath so the hour reads as one session. */
+  const ordered = [
+    ...session.steps.filter((step) => step.state !== 'done' && step.state !== 'skipped'),
+    ...session.steps.filter((step) => step.state === 'done' || step.state === 'skipped'),
+  ];
+
+  const daysBehind = session.missedStudyDays;
   return {
     date: todayStr,
     dayNumber,
     totalDays,
-    weekNumber: todayDay?.weekNumber ?? Math.ceil(dayNumber / 7),
-    items: capped,
+    weekNumber: Math.ceil(dayNumber / 7),
+    items: ordered.map(stepItem),
     onTrack: daysBehind === 0,
     daysBehind,
-    behindMessage: behind ? `You are ${daysBehind} days behind, here is a lighter plan.` : null,
-    finished,
+    behindMessage:
+      session.planStatus === 'recovering'
+        ? `You missed ${daysBehind} study days, so today was rebuilt from where you are. Nothing has been stacked on it.`
+        : null,
+    finished: false,
+    status: session.planStatus,
+    session,
+    nextActivityId: session.activityId,
+    objective: session.objective,
+    reason: session.reason,
+    scopeNote: session.scopeNote,
   };
+}
+
+/** A session worked out on the spot, for a page that has not wired the
+ *  learning layer up yet and for a server render.
+ *
+ *  The same three pure steps the Mr EZ Worker takes: read the old stores
+ *  forward into a learner record, judge the evidence, plan. It is not
+ *  stored, so it cannot drift from the real plan; it is simply the same
+ *  answer computed again. */
+function deriveSession(plan: SavedPlan | null, progress: ProgressV1, today: Date): SharedSessionView | null {
+  if (!plan) return null;
+  try {
+    const settings = planSettingsFromSavedPlan(plan);
+    const goals = goalsFrom(settings);
+    const now = today.toISOString();
+    const catalogue = learningCatalogue();
+    const maps = lessonMapsFor(catalogue);
+    const record = migrateProgress(progress, plan, maps.lessonMinutes, {
+      now,
+      lessonSubskills: maps.lessonSubskills,
+    });
+    const policy = evaluateEvidence({ record, goals, now });
+    const { plan: personal } = createInitialPlan({
+      catalogue,
+      record,
+      policy,
+      now,
+      today: toLocalDateKey(today),
+      goals,
+      constraints: constraintsFrom(settings),
+    });
+    return sharedSessionFrom({ plan: personal, catalogue, derived: true });
+  } catch {
+    /* A plan that cannot be built is not a reason to break the dashboard. */
+    return null;
+  }
 }
 
 export interface WeekView {

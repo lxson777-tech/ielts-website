@@ -162,6 +162,14 @@ export const RU_STRINGS: Record<string, string> = {
     'Следующий урок курса, который выстроен так, что каждый урок опирается на предыдущий.',
   'Every lesson is done, so the useful work now is full papers under exam timing.':
     'Все уроки пройдены, поэтому дальше полезнее всего полные работы в режиме экзамена.',
+  /* {objective} is the activity's own objective sentence and arrives in
+     English, for the same reason a lesson title does: it lives in the
+     catalogue, which the Worker reads and the site's lazy dictionary
+     cannot. The sentence around it is Russian. */
+  "It is the next step in today's session, which is working on this: {objective}":
+    'Это следующий шаг сегодняшнего занятия, которое посвящено вот чему: {objective}',
+  'The exam date on your plan has passed. Set a new date or change the goal, and the plan will rebuild around it.':
+    'Дата экзамена в вашем плане уже прошла. Укажите новую дату или измените цель, и план перестроится под неё.',
   'It follows directly from this result: {blurb}': 'Это прямо следует из этого результата: {blurb}',
 
   /* ── src/lib/tutor/catalog.ts: the label and the one-line description on

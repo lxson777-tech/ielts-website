@@ -24,14 +24,15 @@
  * step happened to shadow with a same-named file). */
 import { registerHooks } from 'node:module';
 
-function isExtensionlessRelativeImport(specifier) {
-  const isRelative = specifier.startsWith('./') || specifier.startsWith('../');
-  const hasExtension = /\.[a-z0-9]+$/i.test(specifier);
-  return isRelative && !hasExtension;
-}
-
+/* A third gap, found 2026-09-22 wiring the learning layer up: a file named
+   `store.browser.ts` is imported as `./store.browser`, and a dot-anything
+   test reads `.browser` as an extension, so the retry was skipped and the
+   import failed. Since these candidates are only ever tried AFTER the real
+   resolution has already failed, there is nothing to gain by guessing which
+   relative specifiers carry an extension. Try them for all of them. */
 function candidateSpecifiers(specifier) {
-  if (!isExtensionlessRelativeImport(specifier)) return [];
+  const isRelative = specifier.startsWith('./') || specifier.startsWith('../');
+  if (!isRelative) return [];
   return [`${specifier}.ts`, `${specifier}/index.ts`];
 }
 
