@@ -3,41 +3,9 @@
    instead of three bare buttons. Shared by the live-examiner drills menu and
    the recorded-checker fallback so the two start screens can't drift. */
 
-export type SpeakingPart = 'part1' | 'part2' | 'part3';
+import { useT } from '../lib/i18n/react';
 
-const PART_CARDS: {
-  mode: SpeakingPart;
-  title: string;
-  kind: string;
-  description: string;
-  method: string;
-  chips: string[];
-}[] = [
-  {
-    mode: 'part1',
-    title: 'Part 1',
-    kind: 'The Interview',
-    description: 'Short questions about your everyday life: home, work, music, food. Answer in 2 to 4 sentences each.',
-    method: 'A.R.E. method',
-    chips: ['4-5 questions', '~4 min'],
-  },
-  {
-    mode: 'part2',
-    title: 'Part 2',
-    kind: 'The Long Turn',
-    description: 'One cue card, one minute to prepare with notes, then speak on your own for up to two minutes.',
-    method: 'PEEL method',
-    chips: ['1 cue card', '~4 min'],
-  },
-  {
-    mode: 'part3',
-    title: 'Part 3',
-    kind: 'The Discussion',
-    description: 'Deeper follow-up questions on the cue-card theme. Give opinions about people and society, not just yourself.',
-    method: 'OREO formula',
-    chips: ['discussion', '~5 min'],
-  },
-];
+export type SpeakingPart = 'part1' | 'part2' | 'part3';
 
 export default function SpeakingPartCards({
   onStart,
@@ -46,6 +14,44 @@ export default function SpeakingPartCards({
   onStart: (mode: SpeakingPart) => void;
   disabled?: boolean;
 }) {
+  const { t } = useT();
+  const PART_CARDS: {
+    mode: SpeakingPart;
+    title: string;
+    kind: string;
+    description: string;
+    method: string;
+    chips: string[];
+  }[] = [
+    {
+      mode: 'part1',
+      title: 'Part 1',
+      kind: t('The Interview'),
+      description: t(
+        'Short questions about your everyday life: home, work, music, food. Answer in 2 to 4 sentences each.',
+      ),
+      method: t('A.R.E. method'),
+      chips: [t('4-5 questions'), t('~{minutes} min', { minutes: 4 })],
+    },
+    {
+      mode: 'part2',
+      title: 'Part 2',
+      kind: t('The Long Turn'),
+      description: t('One cue card, one minute to prepare with notes, then speak on your own for up to two minutes.'),
+      method: t('PEEL method'),
+      chips: [t('1 cue card'), t('~{minutes} min', { minutes: 4 })],
+    },
+    {
+      mode: 'part3',
+      title: 'Part 3',
+      kind: t('The Discussion'),
+      description: t(
+        'Deeper follow-up questions on the cue-card theme. Give opinions about people and society, not just yourself.',
+      ),
+      method: t('OREO formula'),
+      chips: [t('discussion'), t('~{minutes} min', { minutes: 5 })],
+    },
+  ];
   return (
     <div className="mx-auto mt-7 grid max-w-3xl gap-4 sm:grid-cols-3">
       {PART_CARDS.map((p) => (
@@ -71,7 +77,7 @@ export default function SpeakingPartCards({
             ))}
           </span>
           <span className="mt-4 inline-flex w-full items-center justify-center rounded-button bg-[var(--skill,#0E9F6E)] px-4 py-2.5 font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
-            Start {p.title}
+            {t('Start {task}', { task: p.title })}
           </span>
         </button>
       ))}

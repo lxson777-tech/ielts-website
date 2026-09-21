@@ -17,15 +17,21 @@ import { getModelAnswers, getModelBands, type ModelAnswer, type ModelBand } from
 import type { EssayPrompt } from '../lib/writing/schema';
 import { countWords } from '../lib/writing/mechanics';
 import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
+import { useT } from '../lib/i18n/react';
 import Tabs, { type TabDef } from './Tabs';
 import Html from './Html';
 
+/* Labels are marked with nt() here (module scope, grouped once per data
+   change via useMemo) and translated with t() where they're rendered
+   (PromptGroup), so a locale switch re-translates them without having to
+   recompute the grouping. */
 const TASK2_GROUPS: { key: string; label: string }[] = [
-  { key: 'opinion', label: 'Opinion' },
-  { key: 'discussion', label: 'Discussion' },
-  { key: 'problem-solution', label: 'Problem / Solution' },
-  { key: 'advantages-disadvantages', label: 'Advantages & Disadvantages' },
-  { key: 'two-part', label: 'Two-part question' },
+  { key: 'opinion', label: nt('Opinion') },
+  { key: 'discussion', label: nt('Discussion') },
+  { key: 'problem-solution', label: nt('Problem / Solution') },
+  { key: 'advantages-disadvantages', label: nt('Advantages & Disadvantages') },
+  { key: 'two-part', label: nt('Two-part question') },
 ];
 
 /* The imported exam tasks use one 'chart' variant for line graphs, bar charts
@@ -33,14 +39,14 @@ const TASK2_GROUPS: { key: string; label: string }[] = [
    thirty real Task 1 tasks were filtered off the page entirely. The three
    older, finer-grained keys stay so nothing breaks if they ever come back. */
 const TASK1_GROUPS: { key: string; label: string }[] = [
-  { key: 'chart', label: 'Charts and graphs' },
-  { key: 'line-graph', label: 'Line graphs' },
-  { key: 'bar-chart', label: 'Bar charts' },
-  { key: 'pie-chart', label: 'Pie charts' },
-  { key: 'table', label: 'Tables' },
-  { key: 'process', label: 'Process diagrams' },
-  { key: 'map', label: 'Maps' },
-  { key: 'combination', label: 'Combination' },
+  { key: 'chart', label: nt('Charts and graphs') },
+  { key: 'line-graph', label: nt('Line graphs') },
+  { key: 'bar-chart', label: nt('Bar charts') },
+  { key: 'pie-chart', label: nt('Pie charts') },
+  { key: 'table', label: nt('Tables') },
+  { key: 'process', label: nt('Process diagrams') },
+  { key: 'map', label: nt('Maps') },
+  { key: 'combination', label: nt('Combination') },
 ];
 
 function groupPrompts(
@@ -209,6 +215,7 @@ function EssayPanel({
   activeHighlight: string | null;
   setActiveHighlight: (key: string | null) => void;
 }) {
+  const { t, tn } = useT();
   const wordCount = useMemo(() => countWords(model.text.join(' ')), [model]);
   return (
     <div
@@ -218,9 +225,9 @@ function EssayPanel({
         : {})}
     >
       <div className="ma-panel-head">
-        <span className="ma-band-badge">Band {fmtBand(model.band)}</span>
+        <span className="ma-band-badge">{t('Band {band}', { band: fmtBand(model.band) })}</span>
         <span className="ma-word-count" data-testid="word-count">
-          {wordCount} words
+          {tn(wordCount, { one: '{n} word', other: '{n} words' })}
         </span>
       </div>
       <EssayBody model={model} activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />
@@ -230,6 +237,7 @@ function EssayPanel({
 }
 
 export default function ModelAnswers() {
+  const { t } = useT();
   // Only prompts that actually have a model answer are selectable. The
   // model bank predates the imported prompt set, so most prompts currently
   // have none; this list can be empty, in which case the empty state below
@@ -279,7 +287,7 @@ export default function ModelAnswers() {
     setActiveHighlight(null);
   }
 
-  const tabDefs: TabDef[] = bands.map((b) => ({ id: String(b), label: `Band ${fmtBand(b)}` }));
+  const tabDefs: TabDef[] = bands.map((b) => ({ id: String(b), label: t('Band {band}', { band: fmtBand(b) }) }));
   const modelForBand = (b: ModelBand | null): ModelAnswer | undefined =>
     b == null || !promptId ? undefined : getModelAnswers(promptId).find((m) => m.band === b);
 
@@ -290,16 +298,17 @@ export default function ModelAnswers() {
   if (promptsWithModels.length === 0) {
     return (
       <div className="ma-empty-state">
-        <h2 className="ma-empty-state-title">Model answers are being prepared</h2>
+        <h2 className="ma-empty-state-title">{t('Model answers are being prepared')}</h2>
         <p className="ma-empty-state-text">
-          Model answers for the real exam tasks on this site are on their way. In the meantime the
-          Writing Trainer's AI feedback shows you, sentence by sentence, how to reach the next band.
+          {t(
+            "Model answers for the real exam tasks on this site are on their way. In the meantime the Writing Trainer's AI feedback shows you, sentence by sentence, how to reach the next band.",
+          )}
         </p>
         <a
           href={withBase('/trainers/writing')}
           className="rounded-button bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
         >
-          Go to the Writing Trainer
+          {t('Go to the Writing Trainer')}
         </a>
       </div>
     );
@@ -317,9 +326,14 @@ export default function ModelAnswers() {
 
   return (
     <div className="ma-layout">
-      <nav className="ma-sidebar" aria-label="Model answer prompts">
-        <PromptGroup title="Task 2 essays" groups={task2Groups} activeId={promptId} onSelect={selectPrompt} />
-        <PromptGroup title="Task 1 reports & letters" groups={task1Groups} activeId={promptId} onSelect={selectPrompt} />
+      <nav className="ma-sidebar" aria-label={t('Model answer prompts')}>
+        <PromptGroup title={t('Task 2 essays')} groups={task2Groups} activeId={promptId} onSelect={selectPrompt} />
+        <PromptGroup
+          title={t('Task 1 reports & letters')}
+          groups={task1Groups}
+          activeId={promptId}
+          onSelect={selectPrompt}
+        />
       </nav>
 
       <section className="ma-content" key={promptId}>
@@ -340,21 +354,21 @@ export default function ModelAnswers() {
           ) : (
             <div className="ma-compare-selects">
               <label>
-                Band A
+                {t('Band A')}
                 <select value={bandA ?? ''} onChange={(e) => setBandA(Number(e.target.value) as ModelBand)}>
                   {bands.map((b) => (
                     <option key={b} value={b}>
-                      Band {fmtBand(b)}
+                      {t('Band {band}', { band: fmtBand(b) })}
                     </option>
                   ))}
                 </select>
               </label>
               <label>
-                Band B
+                {t('Band B')}
                 <select value={bandB ?? ''} onChange={(e) => setBandB(Number(e.target.value) as ModelBand)}>
                   {bands.map((b) => (
                     <option key={b} value={b}>
-                      Band {fmtBand(b)}
+                      {t('Band {band}', { band: fmtBand(b) })}
                     </option>
                   ))}
                 </select>
@@ -369,11 +383,11 @@ export default function ModelAnswers() {
                 onClick={() => { setCompare((c) => !c); setActiveHighlight(null); }}
                 aria-pressed={compare}
               >
-                Compare bands
+                {t('Compare bands')}
               </button>
             )}
             <a href={withBase('/trainers/writing')} className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-hover">
-              Write this one
+              {t('Write this one')}
             </a>
           </div>
         </div>
@@ -410,12 +424,13 @@ function PromptGroup({
   activeId: string;
   onSelect: (id: string) => void;
 }) {
+  const { t } = useT();
   return (
     <div className="ma-sidebar-section">
       <p className="ma-sidebar-title">{title}</p>
       {groups.map((g) => (
         <div key={g.key} className="ma-sidebar-group">
-          <p className="ma-sidebar-group-label">{g.label}</p>
+          <p className="ma-sidebar-group-label">{t(g.label)}</p>
           <ul className="ma-sidebar-list">
             {g.prompts.map((p) => (
               <li key={p.id}>

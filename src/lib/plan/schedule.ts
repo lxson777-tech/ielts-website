@@ -9,6 +9,7 @@ import { loadStudyPlan, saveStudyPlan, loadHomeTargetBand, type SavedPlan } from
 import { getVocabSummary } from '../vocab-review';
 import { getVocabularyPart } from '../../data/vocabulary';
 import { addDays, daysBetween, isWeekday, parseDateKey, toLocalDateKey } from './date';
+import { nt } from '../i18n/translate';
 
 export const DEFAULT_DAILY_MINUTES = 25;
 export const DEFAULT_PLAN_WEEKS = 8;
@@ -141,7 +142,7 @@ function drillItem(d: DrillMeta, skill: 'reading' | 'listening'): PlanItem {
     id: d.id,
     type: 'drill',
     label: d.test.title,
-    meta: skill === 'reading' ? 'Reading drill' : 'Listening drill',
+    meta: skill === 'reading' ? nt('Reading drill') : nt('Listening drill'),
     href: `/trainers/${skill}/${d.id}`,
     minutes: d.test.durationMinutes,
     skill,
@@ -155,7 +156,7 @@ function testItem(t: PracticeTest, skill: 'reading' | 'listening'): PlanItem {
     id: t.id,
     type: 'test',
     label: t.title,
-    meta: skill === 'reading' ? 'Full Reading test' : 'Full Listening test',
+    meta: skill === 'reading' ? nt('Full Reading test') : nt('Full Listening test'),
     href: `/tests/${t.id}`,
     minutes: TEST_MINUTES[skill],
     skill,
@@ -177,8 +178,14 @@ function vocabItem(dayNumber: number, vocabTopicSlugs: string[]): PlanItem {
   return {
     id: 'vocab-review',
     type: 'vocab',
-    label: part ? `Vocabulary: ${part.title}` : 'Vocabulary',
-    meta: 'Quick recap',
+    // The topic name is dynamic (a vocabulary topic title, translated by the
+    // course-data batch), so this composite label can't be marked with nt():
+    // the coverage test can only extract static literals. It renders in
+    // English for now; giving it a translated prefix needs a small type
+    // change to PlanItem (a separate topic field), which is out of this
+    // batch's file list (see the i18n batch report).
+    label: part ? `Vocabulary: ${part.title}` : nt('Vocabulary'),
+    meta: nt('Quick recap'),
     href: part ? `/review?topic=${part.slug}` : '/review',
     minutes: VOCAB_MINUTES,
     done: false,
@@ -187,11 +194,11 @@ function vocabItem(dayNumber: number, vocabTopicSlugs: string[]): PlanItem {
 }
 
 function mockItem(date: string): PlanItem {
-  return { id: `mock:${date}`, type: 'mock', label: 'Full mock exam', meta: 'Timed, all four papers', href: '/tests/mock', minutes: MOCK_MINUTES, done: false, trackable: true };
+  return { id: `mock:${date}`, type: 'mock', label: nt('Full mock exam'), meta: nt('Timed, all four papers'), href: '/tests/mock', minutes: MOCK_MINUTES, done: false, trackable: true };
 }
 
 function reviewItem(l: CourseLesson): PlanItem {
-  return { id: `review:${l.key}`, type: 'review', label: l.title, meta: 'Review', href: l.href, minutes: REVIEW_MINUTES, skill: l.skill, done: false, trackable: true };
+  return { id: `review:${l.key}`, type: 'review', label: l.title, meta: nt('Review'), href: l.href, minutes: REVIEW_MINUTES, skill: l.skill, done: false, trackable: true };
 }
 
 /** Up to two earlier lessons to revisit on a review day, picked with a
@@ -265,7 +272,7 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
 
   if (workingDates.length < modules.length) {
     // Very short deadlines cannot honestly contain eight weekly units.
-    teach(lessons, workingDates, 'Condensed course: follow the lesson order');
+    teach(lessons, workingDates, nt('Condensed course: follow the lesson order'));
   } else {
     // Eight equal blocks of study days. At the default daily pace, unit 1 is week 1.
     for (let index = 0; index < modules.length - 1; index++) {
@@ -293,8 +300,8 @@ export function buildSchedule(plan: SavedPlan): PlanDay[] {
   }
   for (const date of dates.filter((d) => lightDates.has(d))) {
     const items = recap();
-    if (!items.length) items.push({ ...reviewItem(lessons[0]!), label: 'Gently review the Speaking overview', trackable: false });
-    addDay(date, items, 'Light review before your exam', true);
+    if (!items.length) items.push({ ...reviewItem(lessons[0]!), label: nt('Gently review the Speaking overview'), trackable: false });
+    addDay(date, items, nt('Light review before your exam'), true);
   }
   return days;
 }

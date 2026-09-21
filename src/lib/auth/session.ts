@@ -7,6 +7,7 @@
 
 import type { Session, User } from '@supabase/supabase-js';
 import { getSupabase } from './supabase';
+import { t } from '../i18n/translate';
 
 /** Which sign-in methods the Supabase project actually has enabled, so the UI
     can hide a provider button that would just error (e.g. Google before it's
@@ -46,7 +47,7 @@ export async function getAccessToken(): Promise<string | null> {
 /** Standard email + password sign-in. */
 export async function signInWithPassword(email: string, password: string): Promise<{ error?: string }> {
   const sb = getSupabase();
-  if (!sb) return { error: 'Accounts are not configured for this site yet.' };
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { error } = await sb.auth.signInWithPassword({ email: email.trim(), password });
   return error ? { error: error.message } : {};
 }
@@ -61,7 +62,7 @@ export async function signUpWithPassword(
   emailRedirectTo: string,
 ): Promise<{ error?: string; needsConfirmation?: boolean }> {
   const sb = getSupabase();
-  if (!sb) return { error: 'Accounts are not configured for this site yet.' };
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { data, error } = await sb.auth.signUp({
     email: email.trim(),
     password,
@@ -78,7 +79,7 @@ export async function signUpWithPassword(
     (see /reset-password). */
 export async function sendPasswordReset(email: string, redirectTo: string): Promise<{ error?: string }> {
   const sb = getSupabase();
-  if (!sb) return { error: 'Accounts are not configured for this site yet.' };
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { error } = await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo });
   return error ? { error: error.message } : {};
 }
@@ -88,7 +89,7 @@ export async function sendPasswordReset(email: string, redirectTo: string): Prom
     given the browser a temporary "recovery" session. */
 export async function updatePassword(password: string): Promise<{ error?: string }> {
   const sb = getSupabase();
-  if (!sb) return { error: 'Accounts are not configured for this site yet.' };
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { error } = await sb.auth.updateUser({ password });
   return error ? { error: error.message } : {};
 }
@@ -98,7 +99,7 @@ export async function updatePassword(password: string): Promise<{ error?: string
     them back (an absolute URL on this origin). */
 export async function sendMagicLink(email: string, redirectTo: string): Promise<{ error?: string }> {
   const sb = getSupabase();
-  if (!sb) return { error: 'Accounts are not configured for this site yet.' };
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { error } = await sb.auth.signInWithOtp({
     email: email.trim(),
     options: { emailRedirectTo: redirectTo },
@@ -108,7 +109,7 @@ export async function sendMagicLink(email: string, redirectTo: string): Promise<
 
 export async function signInWithGoogle(redirectTo: string): Promise<{ error?: string }> {
   const sb = getSupabase();
-  if (!sb) return { error: 'Accounts are not configured for this site yet.' };
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
   return error ? { error: error.message } : {};
 }

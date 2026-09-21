@@ -56,6 +56,7 @@ import { onAuthChange, getAccessToken } from '../lib/auth/session';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
+import { useT } from '../lib/i18n/react';
 import BandReport from './BandReport';
 import GradingProgress from './GradingProgress';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
@@ -111,6 +112,7 @@ export default function LiveExaminer({
   onComplete?: (result: { overallBand: number; criteria: Record<string, number> }) => void;
   onAbort?: () => void;
 }) {
+  const { t, tn } = useT();
   const [phase, setPhase] = useState<Phase>('menu');
   const [stage, setStage] = useState<Stage>('part1');
   const [error, setError] = useState<string | null>(null);
@@ -146,7 +148,7 @@ export default function LiveExaminer({
       topic's vocabulary for the drills' coach panel. */
   const planRef = useRef<{ cueCard?: CueCard; vocab?: TopicVocab[] } | null>(null);
   const modeRef = useRef<LiveMode>('full');
-  const titleRef = useRef('Live mock speaking test');
+  const titleRef = useRef(t('Live mock speaking test'));
   const linkRef = useRef<ExaminerLink | null>(null);
   const startingRef = useRef(false);
   const streamRef = useRef<MediaStream | null>(null);
@@ -201,7 +203,7 @@ export default function LiveExaminer({
         if (!cancelled) setLiveConfig(cfg);
       })
       .catch((e) => {
-        if (!cancelled) setConfigError(e instanceof Error ? e.message : 'Could not reach the live examiner service.');
+        if (!cancelled) setConfigError(e instanceof Error ? e.message : t('Could not reach the live examiner service.'));
       });
     return () => {
       cancelled = true;
@@ -261,7 +263,7 @@ export default function LiveExaminer({
       } catch (e) {
         startingRef.current = false;
         setPhase(mock ? 'error' : 'menu');
-        setError(e instanceof Error ? e.message : 'Could not reach the live examiner service.');
+        setError(e instanceof Error ? e.message : t('Could not reach the live examiner service.'));
         return;
       }
     }
@@ -276,7 +278,7 @@ export default function LiveExaminer({
     } catch {
       startingRef.current = false;
       setPhase(mock ? 'error' : 'menu');
-      setError('Microphone access is required. Please allow the permission and try again.');
+      setError(t('Microphone access is required. Please allow the permission and try again.'));
       return;
     }
     streamRef.current = stream;
@@ -297,7 +299,7 @@ export default function LiveExaminer({
       if (m === 'full') {
         const plan = buildExamPlan();
         planRef.current = { cueCard: plan.cueCard };
-        titleRef.current = 'Live mock speaking test';
+        titleRef.current = t('Live mock speaking test');
         instruction = buildSystemInstruction(plan, provider);
         request = planRequestFor(plan);
       } else {
@@ -324,7 +326,8 @@ export default function LiveExaminer({
             if (endedRef.current) return;
             // The conversation died under us — salvage a report from whatever
             // was said rather than throwing the attempt away.
-            setNotice(`The connection ended early (${wasClean ? reason || 'closed' : 'network problem'}). Grading what we have…`);
+            const reasonText = wasClean ? reason || t('closed') : t('network problem');
+            setNotice(t('The connection ended early ({reason}). Grading what we have…', { reason: reasonText }));
             void finishTest();
           },
           onError: () => {
@@ -338,7 +341,7 @@ export default function LiveExaminer({
       cleanupAudio();
       startingRef.current = false;
       setPhase(mock ? 'error' : 'menu');
-      setError(e instanceof Error ? e.message : 'Could not start the examiner session.');
+      setError(e instanceof Error ? e.message : t('Could not start the examiner session.'));
       return;
     }
 
@@ -531,12 +534,16 @@ export default function LiveExaminer({
 
     if (!gradingAvailable()) {
       setPhase('error');
-      setError('The interview finished, but AI grading is not configured on this site (PUBLIC_SPEAKING_GRADER_URL).');
+      setError(
+        t('The interview finished, but AI grading is not configured on this site ({envVar}).', {
+          envVar: 'PUBLIC_SPEAKING_GRADER_URL',
+        }),
+      );
       return;
     }
     if (recording.durationMs < 30_000 || transcript.length < 2) {
       setPhase('error');
-      setError('The session ended before there was enough speech to grade. Please try again.');
+      setError(t('The session ended before there was enough speech to grade. Please try again.'));
       return;
     }
 
@@ -580,7 +587,7 @@ export default function LiveExaminer({
       }
     } catch (e) {
       setPhase('error');
-      setError(e instanceof Error ? e.message : 'Grading failed.');
+      setError(e instanceof Error ? e.message : t('Grading failed.'));
     }
   }
 
@@ -655,7 +662,7 @@ export default function LiveExaminer({
     } else {
       setStageBoth('part1');
     }
-    setCaption('This is a design preview. The examiner is not connected.');
+    setCaption(t('This is a design preview. The examiner is not connected.'));
     startOrbLoop();
     every(() => setElapsedS((s) => s + 1), 1000);
     every(() => setExaminerTalking(Math.floor(performance.now() / 4500) % 2 === 0), 250);
@@ -711,7 +718,7 @@ export default function LiveExaminer({
     // brief screen, not here.
     content = (
       <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
-        <p className="text-sm text-ink-muted">Preparing the speaking test…</p>
+        <p className="text-sm text-ink-muted">{t('Preparing the speaking test…')}</p>
       </div>
     );
   } else if (phase === 'report' && result) {
@@ -740,17 +747,25 @@ export default function LiveExaminer({
           actionPlan={result.actionPlan}
         >
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-            <h3 className="font-display font-bold">Timing check</h3>
+            <h3 className="font-display font-bold">{t('Timing check')}</h3>
             <div className="mt-3 grid grid-cols-3 gap-3 text-center">
-              <Stat label="Spoke for" value={`${Math.round(m.totalDurationMs / 60000)}m ${Math.round((m.totalDurationMs % 60000) / 1000)}s`} bad={m.underLength} />
-              <Stat label="Silence" value={`${Math.round(m.estSilenceRatio * 100)}%`} bad={m.estSilenceRatio > 0.4} />
-              <Stat label="Longest pause" value={`${(m.longestSilenceMs / 1000).toFixed(1)}s`} bad={m.longestSilenceMs > 4000} />
+              <Stat
+                label={t('Spoke for')}
+                value={`${Math.round(m.totalDurationMs / 60000)}m ${Math.round((m.totalDurationMs % 60000) / 1000)}s`}
+                bad={m.underLength}
+              />
+              <Stat label={t('Silence')} value={`${Math.round(m.estSilenceRatio * 100)}%`} bad={m.estSilenceRatio > 0.4} />
+              <Stat
+                label={t('Longest pause')}
+                value={`${(m.longestSilenceMs / 1000).toFixed(1)}s`}
+                bad={m.longestSilenceMs > 4000}
+              />
             </div>
           </div>
 
           {result.moments.length > 0 && (
             <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-              <h3 className="font-display font-bold">Moments from the interview</h3>
+              <h3 className="font-display font-bold">{t('Moments from the interview')}</h3>
               <ul className="mt-3 space-y-2 text-sm">
                 {result.moments.map((mo, i) => (
                   <li key={i}>
@@ -764,11 +779,11 @@ export default function LiveExaminer({
 
           {finalTranscript.length > 0 && (
             <details className="rounded-card border border-border bg-surface p-5 shadow-card">
-              <summary className="cursor-pointer font-display font-bold">Full interview transcript</summary>
+              <summary className="cursor-pointer font-display font-bold">{t('Full interview transcript')}</summary>
               <div className="mt-3 space-y-2 text-sm">
-                {finalTranscript.map((t, i) => (
-                  <p key={i} className={t.role === 'examiner' ? 'text-ink-muted' : ''}>
-                    <strong>{t.role === 'examiner' ? EXAMINER_NAME : 'You'}:</strong> {t.text}
+                {finalTranscript.map((turn, i) => (
+                  <p key={i} className={turn.role === 'examiner' ? 'text-ink-muted' : ''}>
+                    <strong>{turn.role === 'examiner' ? EXAMINER_NAME : t('You')}:</strong> {turn.text}
                   </p>
                 ))}
               </div>
@@ -788,7 +803,7 @@ export default function LiveExaminer({
                 onClick={() => void startTest(modeRef.current)}
                 className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
               >
-                ↻ Practice this part again
+                ↻ {t('Practice this part again')}
               </button>
             )}
             <button
@@ -796,7 +811,7 @@ export default function LiveExaminer({
               onClick={abandonToMenu}
               className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
             >
-              {variant === 'drills' ? 'Choose a different part' : 'Done'}
+              {variant === 'drills' ? t('Choose a different part') : t('Done')}
             </button>
           </div>
         )}
@@ -806,64 +821,65 @@ export default function LiveExaminer({
     content = (
       <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
         <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking · Live</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking · {t('Live')}</p>
         <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">
-          {variant === 'drills' ? 'Practice One Part with the AI Examiner' : 'Live Mock Test with an AI Examiner'}
+          {variant === 'drills' ? t('Practice One Part with the AI Examiner') : t('Live Mock Test with an AI Examiner')}
         </h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          {variant === 'drills' ? (
-            <>
-              Pick a part. {EXAMINER_NAME} asks questions out loud, listens to your answers, and follows up on
-              what <em>you</em> say, exactly like the real test, just one part at a time. A coach panel with the
-              answer structure, useful phrases, and topic vocabulary stays beside you, and you'll get a band
-              report at the end.
-            </>
-          ) : (
-            <>
-              A real-time spoken interview, all three parts, ~12 minutes. {EXAMINER_NAME} asks questions out loud,
-              listens to your answers, and follows up on what <em>you</em> say, exactly like the real test. You'll
-              get a full band report at the end.
-            </>
-          )}
+          {variant === 'drills'
+            ? t(
+                "Pick a part. {name} asks questions out loud, listens to your answers, and follows up on what you say, exactly like the real test, just one part at a time. A coach panel with the answer structure, useful phrases, and topic vocabulary stays beside you, and you'll get a band report at the end.",
+                { name: EXAMINER_NAME },
+              )
+            : t(
+                "A real-time spoken interview, all three parts, ~12 minutes. {name} asks questions out loud, listens to your answers, and follows up on what you say, exactly like the real test. You'll get a full band report at the end.",
+                { name: EXAMINER_NAME },
+              )}
         </p>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
-          <li>· Use headphones if you can, in a quiet room</li>
-          <li>· Speak naturally, the examiner waits while you think</li>
-          <li>· You can ask her to repeat a question, and in Part 3 to rephrase it, exactly as in the real test</li>
+          <li>· {t('Use headphones if you can, in a quiet room')}</li>
+          <li>· {t('Speak naturally, the examiner waits while you think')}</li>
+          <li>· {t('You can ask her to repeat a question, and in Part 3 to rephrase it, exactly as in the real test')}</li>
         </ul>
         {needsSignIn && (
           <div className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-3 text-xs text-ink-muted">
-            <p>Sign in to use the live examiner (this keeps the paid voice service for real students).</p>
+            <p>{t('Sign in to use the live examiner (this keeps the paid voice service for real students).')}</p>
             <button
               type="button"
               onClick={() => setShowAuthModal(true)}
               className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
-              Sign in
+              {t('Sign in')}
             </button>
           </div>
         )}
         {authUnavailable && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-            The live examiner needs accounts to be enabled on this site.
+            {t('The live examiner needs accounts to be enabled on this site.')}
           </p>
         )}
         {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
         {configError && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-            The live examiner service could not be reached: {configError}. You can still try to start.
+            {t('The live examiner service could not be reached: {error}. You can still try to start.', {
+              error: configError,
+            })}
           </p>
         )}
         {!TOKEN_URL && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-            ⚠ The live examiner is not configured on this site yet (PUBLIC_LIVE_EXAMINER_URL).
+            ⚠{' '}
+            {t('The live examiner is not configured on this site yet ({envVar}).', {
+              envVar: 'PUBLIC_LIVE_EXAMINER_URL',
+            })}
           </p>
         )}
         {variant === 'drills' ? (
           <>
             <SpeakingPartCards onStart={(m) => void startTest(m)} disabled={!TOKEN_URL || needsSignIn || authUnavailable} />
             <p className="mt-4 text-xs text-ink-muted">
-              {SPEAKING_PART1_TOPICS.length} Part 1 topics · {SPEAKING_CUE_CARDS.length} cue cards · free
+              {tn(SPEAKING_PART1_TOPICS.length, { one: '{n} Part 1 topic', other: '{n} Part 1 topics' })} ·{' '}
+              {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })} · {t('free')}
             </p>
           </>
         ) : (
@@ -873,7 +889,7 @@ export default function LiveExaminer({
             disabled={!TOKEN_URL || needsSignIn || authUnavailable}
             className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Start the interview
+            {t('Start the interview')}
           </button>
         )}
         {showAuthModal && <AuthModal initialMode="signin" onClose={() => setShowAuthModal(false)} />}
@@ -882,7 +898,7 @@ export default function LiveExaminer({
   } else if (phase === 'connecting') {
     content = (
       <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
-        <p className="text-sm text-ink-muted">Connecting you to {EXAMINER_NAME}…</p>
+        <p className="text-sm text-ink-muted">{t('Connecting you to {name}…', { name: EXAMINER_NAME })}</p>
       </div>
     );
   } else if (phase === 'grading') {
@@ -906,7 +922,7 @@ export default function LiveExaminer({
           />
 
           <p className="mt-6 text-xs text-ink-muted">
-            Three independent assessments are compared, and the median becomes your report.
+            {t('Three independent assessments are compared, and the median becomes your report.')}
           </p>
         </div>
       </div>
@@ -920,7 +936,7 @@ export default function LiveExaminer({
           onClick={() => (mock ? onAbort?.() : abandonToMenu())}
           className="mt-6 rounded-button border border-border px-5 py-2 text-sm font-semibold hover:bg-surface-alt"
         >
-          Back
+          {t('Back')}
         </button>
       </div>
     );
@@ -931,10 +947,10 @@ export default function LiveExaminer({
      exam-clean, no coaching aids, like the real thing. */
   const drillMethod = variant === 'drills' && modeRef.current !== 'full' ? DRILL_METHOD[modeRef.current] : null;
   const stageLabel =
-    stage === 'part1' ? 'Part 1 · Interview' :
-    stage === 'part2prep' ? 'Part 2 · Preparation' :
-    stage === 'part2talk' ? 'Part 2 · Your talk' :
-    stage === 'part3' ? 'Part 3 · Discussion' : 'Finishing…';
+    stage === 'part1' ? t('Part 1 · Interview') :
+    stage === 'part2prep' ? t('Part 2 · Preparation') :
+    stage === 'part2talk' ? t('Part 2 · Your talk') :
+    stage === 'part3' ? t('Part 3 · Discussion') : t('Finishing…');
 
   const orbMode = stage === 'part2prep' ? 'lx-prep' : examinerTalking ? 'lx-speaking' : 'lx-listening';
 
@@ -953,9 +969,9 @@ export default function LiveExaminer({
 
       {showCueCard && cue && (
         <div className="sticky top-20 z-10 rounded-card border border-border bg-surface p-5 shadow-card">
-          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Cue card</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Cue card')}</p>
           <p className="mt-2 font-semibold">{cue.topic}</p>
-          <p className="mt-2 text-sm text-ink-muted">You should say:</p>
+          <p className="mt-2 text-sm text-ink-muted">{t('You should say:')}</p>
           <ul className="mt-1 space-y-1 text-sm text-ink-muted">
             {cue.bullets.map((b) => (
               <li key={b} className="flex gap-2">
@@ -966,7 +982,7 @@ export default function LiveExaminer({
           </ul>
           {drillMethod && cue.ideas && cue.ideas.length > 0 && (
             <div className="mt-3">
-              <IdeaHints ideas={cue.ideas} label="Stuck? Ideas for this card" />
+              <IdeaHints ideas={cue.ideas} label={t('Stuck? Ideas for this card')} />
             </div>
           )}
           {stage === 'part2prep' && (
@@ -974,7 +990,7 @@ export default function LiveExaminer({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder="Your notes (not graded, the examiner can't see them)…"
+              placeholder={t("Your notes (not graded, the examiner can't see them)…")}
               className="mt-3 w-full rounded-lg border border-border bg-surface-alt p-3 text-sm focus:border-brand focus:outline-none"
             />
           )}
@@ -1033,15 +1049,15 @@ export default function LiveExaminer({
           >
             {stage === 'part2prep' ? (
               <>
-                ✍ Prepare your talk:{' '}
+                ✍ {t('Prepare your talk:')}{' '}
                 <span className="lx-tick inline-block font-display text-base font-extrabold" key={prepSecondsLeft}>
                   {prepSecondsLeft}s
                 </span>
               </>
             ) : examinerTalking ? (
-              `${EXAMINER_NAME} is speaking: listen`
+              t('{name} is speaking: listen', { name: EXAMINER_NAME })
             ) : (
-              'Your turn: speak'
+              t('Your turn: speak')
             )}
           </p>
           {showCaptions && caption && (
@@ -1055,7 +1071,7 @@ export default function LiveExaminer({
             onClick={() => setShowCaptions((v) => !v)}
             className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-alt"
           >
-            {showCaptions ? 'Hide captions' : 'Show captions'}
+            {showCaptions ? t('Hide captions') : t('Show captions')}
           </button>
           {stage === 'part2prep' && (
             <button
@@ -1063,7 +1079,7 @@ export default function LiveExaminer({
               onClick={beginPart2Talk}
               className="rounded-button bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover"
             >
-              I'm ready, start speaking
+              {t("I'm ready, start speaking")}
             </button>
           )}
           {stage === 'part2talk' && (
@@ -1072,7 +1088,7 @@ export default function LiveExaminer({
               onClick={() => beginPart3(false)}
               className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
-              I've finished my talk
+              {t("I've finished my talk")}
             </button>
           )}
           <button
@@ -1080,7 +1096,7 @@ export default function LiveExaminer({
             onClick={() => endEarly('candidate')}
             className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold text-ink-muted hover:bg-surface-alt"
           >
-            End test early
+            {t('End test early')}
           </button>
         </div>
       </div>

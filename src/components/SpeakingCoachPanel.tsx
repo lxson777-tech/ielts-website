@@ -10,6 +10,7 @@ import { useState } from 'react';
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { SPEAKING_STRUCTURE_GUIDES } from '../data/speaking-structure-guides';
 import type { TopicVocab } from '../lib/speaking/schema';
+import { useT } from '../lib/i18n/react';
 import Tabs, { type TabDef } from './Tabs';
 
 function toggle(set: Set<string>, value: string): Set<string> {
@@ -20,13 +21,14 @@ function toggle(set: Set<string>, value: string): Set<string> {
 }
 
 export default function SpeakingCoachPanel({ method, vocab }: { method: StructureMethod; vocab?: TopicVocab[] }) {
+  const { t } = useT();
   const guide = SPEAKING_STRUCTURE_GUIDES[method];
   const hasVocab = !!vocab && vocab.length > 0;
   const tabs: TabDef[] = [
-    { id: 'plan', label: 'Plan' },
-    { id: 'phrases', label: 'Phrases' },
-    ...(hasVocab ? [{ id: 'vocab', label: 'Vocab' }] : []),
-    { id: 'avoid', label: 'Avoid' },
+    { id: 'plan', label: t('Plan') },
+    { id: 'phrases', label: t('Phrases') },
+    ...(hasVocab ? [{ id: 'vocab', label: t('Vocab') }] : []),
+    { id: 'avoid', label: t('Avoid') },
   ];
 
   const [active, setActive] = useState('plan');
@@ -37,7 +39,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
   return (
     <div className="rounded-card border border-border bg-surface p-4 shadow-card">
       <h3 className="font-display text-sm font-bold">
-        Speaking coach: {guide.title}
+        {t('Speaking coach: {structure}', { structure: guide.title })}
         <span className="ml-1.5 font-semibold text-ink-muted">· {guide.part}</span>
       </h3>
       <Tabs tabs={tabs} active={active} onChange={setActive} className="mt-3" />
@@ -45,7 +47,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
       {active === 'plan' && (
         <div id="tabpanel-plan" role="tabpanel" aria-labelledby="tab-plan" className="mt-4">
           <div className="mb-3 rounded-lg bg-brand-tint/60 p-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-brand">How to answer</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('How to answer')}</p>
             <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
               {guide.notes.map((n) => (
                 <li key={n} className="flex gap-2">
@@ -67,7 +69,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
                       checked={isChecked}
                       onChange={() => setChecked((s) => toggle(s, stage.name))}
                       className="h-4 w-4 shrink-0 rounded border-border text-brand focus:ring-brand"
-                      aria-label={`Mark "${stage.name}" done`}
+                      aria-label={t('Mark "{label}" done', { label: stage.name })}
                     />
                     <button
                       type="button"
@@ -128,7 +130,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
 
       {active === 'vocab' && hasVocab && (
         <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4 space-y-2.5">
-          <p className="text-xs text-ink-muted">Topic words to work into your answers. Tap to see what they mean.</p>
+          <p className="text-xs text-ink-muted">{t('Topic words to work into your answers. Tap to see what they mean.')}</p>
           {vocab.map((v) => {
             const isOpen = revealed.has(v.phrase);
             return (

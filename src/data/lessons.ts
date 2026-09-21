@@ -1,3 +1,5 @@
+import { nt } from '../lib/i18n/translate';
+
 export type Skill = 'reading' | 'writing' | 'speaking' | 'listening' | 'vocabulary';
 
 /* ── Lesson ordering ───────────────────────────────────────────────────────
@@ -18,23 +20,23 @@ export type Stage = 1 | 2 | 3 | 4;
 export const STAGES: { id: Stage; name: string; blurb: string }[] = [
   {
     id: 1,
-    name: 'Foundations',
-    blurb: 'How the exam works, plus the sub-skills every other lesson depends on.',
+    name: nt('Foundations'),
+    blurb: nt('How the exam works, plus the sub-skills every other lesson depends on.'),
   },
   {
     id: 2,
-    name: 'Core question types',
-    blurb: 'The question types that carry most of the marks in every paper.',
+    name: nt('Core question types'),
+    blurb: nt('The question types that carry most of the marks in every paper.'),
   },
   {
     id: 3,
-    name: 'Harder types & range',
-    blurb: 'The material that separates a band 6 from a band 7.',
+    name: nt('Harder types & range'),
+    blurb: nt('The material that separates a band 6 from a band 7.'),
   },
   {
     id: 4,
-    name: 'Exam readiness',
-    blurb: 'No new lessons. Full timed tests and AI-graded practice under exam conditions.',
+    name: nt('Exam readiness'),
+    blurb: nt('No new lessons. Full timed tests and AI-graded practice under exam conditions.'),
   },
 ];
 
@@ -84,57 +86,57 @@ export interface LessonMeta {
 }
 
 export const SKILLS: { id: Skill; label: string; blurb: string }[] = [
-  { id: 'reading', label: 'Reading', blurb: 'Passages, question types and timed practice tests.' },
-  { id: 'writing', label: 'Writing', blurb: 'Task 1 reports and Task 2 essays with model answers.' },
-  { id: 'speaking', label: 'Speaking', blurb: 'All three parts of the interview, with sample responses.' },
-  { id: 'listening', label: 'Listening', blurb: 'Part-by-part strategies for the listening paper.' },
-  { id: 'vocabulary', label: 'Vocabulary', blurb: 'High-value academic words with an interactive quiz.' },
+  { id: 'reading', label: 'Reading', blurb: nt('Passages, question types and timed practice tests.') },
+  { id: 'writing', label: 'Writing', blurb: nt('Task 1 reports and Task 2 essays with model answers.') },
+  { id: 'speaking', label: 'Speaking', blurb: nt('All three parts of the interview, with sample responses.') },
+  { id: 'listening', label: 'Listening', blurb: nt('Part-by-part strategies for the listening paper.') },
+  { id: 'vocabulary', label: nt('Vocabulary'), blurb: nt('High-value academic words with an interactive quiz.') },
 ];
 
 export const LESSONS: LessonMeta[] = [
   {
     slug: 'reading-task1',
-    title: 'Reading Overview',
+    title: nt('Reading Overview'),
     skill: 'reading',
-    description: 'How the test works, the band score table, and a lesson for every official question type.',
+    description: nt('How the test works, the band score table, and a lesson for every official question type.'),
     image: '/pics/reading.png',
-    level: 'Beginner',
+    level: nt('Beginner') as LessonLevel,
     minutes: 8,
   },
   {
     slug: 'writing',
-    title: 'Writing Overview',
+    title: nt('Writing Overview'),
     skill: 'writing',
-    description: 'How the test works, how examiners mark it, and a lesson for each task.',
+    description: nt('How the test works, how examiners mark it, and a lesson for each task.'),
     image: '/pics/writing/start-task.png',
-    level: 'Intermediate',
+    level: nt('Intermediate') as LessonLevel,
     minutes: 8,
   },
   {
     slug: 'speaking',
-    title: 'Speaking Overview',
+    title: nt('Speaking Overview'),
     skill: 'speaking',
-    description: 'How the interview works, how examiners mark it, and a lesson for each part.',
+    description: nt('How the interview works, how examiners mark it, and a lesson for each part.'),
     image: '/pics/speaking-part1.png',
-    level: 'Intermediate',
+    level: nt('Intermediate') as LessonLevel,
     minutes: 8,
   },
   {
     slug: 'listening',
-    title: 'Listening Overview',
+    title: nt('Listening Overview'),
     skill: 'listening',
-    description: 'How the test works, how it is scored, and a lesson for each part and every question type.',
+    description: nt('How the test works, how it is scored, and a lesson for each part and every question type.'),
     image: '/pics/listening.png',
-    level: 'Beginner',
+    level: nt('Beginner') as LessonLevel,
     minutes: 8,
   },
   {
     slug: 'vocabulary',
-    title: 'Vocabulary Overview',
+    title: nt('Vocabulary Overview'),
     skill: 'vocabulary',
-    description: 'Why vocabulary decides your band, a lesson per exam topic, and a quiz.',
+    description: nt('Why vocabulary decides your band, a lesson per exam topic, and a quiz.'),
     image: '/pics/vocabulary.png',
-    level: 'All levels',
+    level: nt('All levels') as LessonLevel,
     minutes: 8,
   },
 ];

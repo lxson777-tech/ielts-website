@@ -27,24 +27,29 @@ import {
   type VocabCard,
   type VocabSummary,
 } from '../lib/vocab-review';
+import { useT, type Translator } from '../lib/i18n/react';
+import { nt } from '../lib/i18n/translate';
 
 const GRADES: Grade[] = ['again', 'hard', 'good', 'easy'];
-const GRADE_LABEL: Record<Grade, string> = { again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' };
+const GRADE_LABEL: Record<Grade, string> = { again: nt('Again'), hard: nt('Hard'), good: nt('Good'), easy: nt('Easy') };
 const GRADE_KEY: Record<string, Grade> = { '1': 'again', '2': 'hard', '3': 'good', '4': 'easy' };
 
-function formatInterval(days: number): string {
-  if (days <= 0) return 'later today';
-  if (days === 1) return '1 day';
-  if (days < 30) return `${days} days`;
+/** "Good: 4 days" style captions under each rating button. Takes the
+    translator functions as parameters (rather than importing t/tn at module
+    scope) because this is a plain helper called from render, not a hook. */
+function formatInterval(days: number, t: Translator['t'], tn: Translator['tn']): string {
+  if (days <= 0) return t('later today');
+  if (days < 30) return tn(days, { one: '{n} day', other: '{n} days' }, { n: days });
   const months = Math.round(days / 30);
-  if (months < 12) return months === 1 ? '1 month' : `${months} months`;
+  if (months < 12) return tn(months, { one: '{n} month', other: '{n} months' }, { n: months });
   const years = Math.round(days / 365);
-  return years === 1 ? '1 year' : `${years} years`;
+  return tn(years, { one: '{n} year', other: '{n} years' }, { n: years });
 }
 
 type Phase = 'loading' | 'active' | 'finished';
 
 export default function VocabReview({ topic, onExit }: { topic: string; onExit: () => void }) {
+  const { t, tn } = useT();
   const [phase, setPhase] = useState<Phase>('loading');
   const [queue, setQueue] = useState<VocabCard[]>([]);
   const [index, setIndex] = useState(0);
@@ -132,23 +137,25 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
             {topic}
           </button>
         </p>
-        <h1>Flashcards</h1>
+        <h1>{t('Flashcards')}</h1>
       </div>
 
-      {phase === 'loading' && <p className="vocab-hint">Loading your deck…</p>}
+      {phase === 'loading' && <p className="vocab-hint">{t('Loading your deck…')}</p>}
 
       {phase === 'active' && current && (
         <>
-          <p className="vocab-progress">
-            {index + 1} of {queue.length}
-          </p>
+          <p className="vocab-progress">{t('{current} of {total}', { current: index + 1, total: queue.length })}</p>
 
           <div
             className="vocab-card"
             role="button"
             tabIndex={0}
             aria-pressed={flipped}
-            aria-label={flipped ? `${current.word}: definition shown, tap to hide` : `${current.word}: tap or press space to reveal the definition`}
+            aria-label={
+              flipped
+                ? t('{word}: definition shown, tap to hide', { word: current.word })
+                : t('{word}: tap or press space to reveal the definition', { word: current.word })
+            }
             onClick={() => setFlipped((f) => !f)}
             onKeyDown={(e) => {
               // Space is also handled by the document-level listener below (so it
@@ -176,14 +183,14 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
           </div>
 
           {!flipped ? (
-            <p className="vocab-hint">Tap the card or press space to reveal</p>
+            <p className="vocab-hint">{t('Tap the card or press space to reveal')}</p>
           ) : (
-            <div className="vocab-ratings" role="group" aria-label="Rate how well you knew this word">
+            <div className="vocab-ratings" role="group" aria-label={t('Rate how well you knew this word')}>
               {GRADES.map((g, i) => (
                 <button key={g} type="button" className={`vocab-rating vocab-rating-${g}`} onClick={() => handleRate(g)}>
-                  <span>{GRADE_LABEL[g]}</span>
+                  <span>{t(GRADE_LABEL[g])}</span>
                   <small>
-                    {i + 1} · {formatInterval(intervals ? intervals[g] : 0)}
+                    {i + 1} · {formatInterval(intervals ? intervals[g] : 0, t, tn)}
                   </small>
                 </button>
               ))}
@@ -194,35 +201,38 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
 
       {phase === 'finished' && summary && (
         <div className="vocab-finished">
-          <h2>{sessionCount > 0 ? 'Session complete' : "You're all caught up"}</h2>
+          <h2>{sessionCount > 0 ? t('Session complete') : t("You're all caught up")}</h2>
           <p>
             {sessionCount > 0
-              ? `You reviewed ${sessionCount} word${sessionCount === 1 ? '' : 's'} this session.`
-              : `Nothing from ${topic} is due right now. Come back tomorrow for more.`}
+              ? tn(sessionCount, {
+                  one: 'You reviewed {n} word this session.',
+                  other: 'You reviewed {n} words this session.',
+                })
+              : t('Nothing from {topic} is due right now. Come back tomorrow for more.', { topic })}
           </p>
 
           <div className="vocab-summary-grid">
             <div>
               <strong>{summary.due}</strong>
-              <span>Due now</span>
+              <span>{t('Due now')}</span>
             </div>
             <div>
               <strong>{summary.newToday}</strong>
-              <span>New left today</span>
+              <span>{t('New left today')}</span>
             </div>
             <div>
               <strong>{summary.learned}</strong>
-              <span>Learned</span>
+              <span>{t('Learned')}</span>
             </div>
             <div>
               <strong>{summary.reviewedToday}</strong>
-              <span>Reviewed today</span>
+              <span>{t('Reviewed today')}</span>
             </div>
           </div>
 
           {struggling.length > 0 && (
             <div className="vocab-struggle">
-              <h3>Words you struggle with</h3>
+              <h3>{t('Words you struggle with')}</h3>
               <ul>
                 {struggling.map((c) => (
                   <li key={c.word}>
@@ -236,10 +246,10 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
 
           <div className="vocab-finished-actions">
             <button type="button" onClick={restart}>
-              Review more
+              {t('Review more')}
             </button>
             <button type="button" className="vocab-finished-secondary" onClick={onExit}>
-              Back to {topic}
+              {t('Back to {topic}', { topic })}
             </button>
           </div>
         </div>

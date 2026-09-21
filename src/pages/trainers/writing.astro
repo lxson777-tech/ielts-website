@@ -19,7 +19,7 @@ import { withBase } from '../../lib/url';
     <WritingTester client:load />
 
     <p class="mt-6 text-center text-sm">
-      <a href={withBase('/writing/checker')} class="font-semibold text-brand hover:underline">
+      <a href={withBase('/writing/checker')} class="font-semibold text-brand hover:underline" data-i18n>
         Ready to write without help? Take it under exam conditions in the Writing Checker
       </a>
     </p>
@@ -32,8 +32,8 @@ import { withBase } from '../../lib/url';
       class="mt-6 flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
     >
       <span>
-        <span class="font-display font-bold text-ink">Model answers</span>
-        <span class="mt-0.5 block text-ink-muted">
+        <span class="font-display font-bold text-ink" data-i18n>Model answers</span>
+        <span class="mt-0.5 block text-ink-muted" data-i18n>
           A Band 8 answer for every task here, with examiner notes on all four criteria.
         </span>
       </span>

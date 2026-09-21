@@ -10,17 +10,20 @@ import { getProgress, onProgressChange, type ProgressV1 } from '../../lib/progre
 import { onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
 import { loadOrCreateStudyPlan, getTodayPlan, type PlanItem } from '../../lib/plan/schedule';
 import { getPlanSummary } from '../../lib/plan/summary';
+import { useT } from '../../lib/i18n/react';
+import { nt } from '../../lib/i18n/translate';
 
 const TYPE_LABEL: Record<PlanItem['type'], string> = {
-  lesson: 'Lesson',
-  drill: 'Drill',
-  test: 'Test',
-  vocab: 'Vocabulary',
-  review: 'Review',
-  mock: 'Mock exam',
+  lesson: nt('Lesson'),
+  drill: nt('Drill'),
+  test: nt('Test'),
+  vocab: nt('Vocabulary'),
+  review: nt('Review'),
+  mock: nt('Mock exam'),
 };
 
 export default function PlanToday() {
+  const { t, tn } = useT();
   const [plan, setPlan] = useState<SavedPlan | null>(null);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [ready, setReady] = useState(false);
@@ -68,9 +71,12 @@ export default function PlanToday() {
   return (
     <section className="plan-today" aria-labelledby="today-heading">
       <div className="plan-today-head">
-        <h2 id="today-heading">{today.finished ? 'Your plan is complete' : 'Your next step'}</h2>
+        <h2 id="today-heading">{today.finished ? t('Your plan is complete') : t('Your next step')}</h2>
         <span className="plan-today-progress">
-          Day {today.dayNumber} of {today.totalDays}, {today.onTrack ? 'on track' : `${today.daysBehind} day${today.daysBehind === 1 ? '' : 's'} behind`}
+          {t('Day {day} of {total}', { day: today.dayNumber, total: today.totalDays })},{' '}
+          {today.onTrack
+            ? t('on track')
+            : tn(today.daysBehind, { one: '{n} day behind', other: '{n} days behind' })}
         </span>
       </div>
 
@@ -78,17 +84,22 @@ export default function PlanToday() {
         {summary.text}
         {summary.hint && <span className="plan-today-strip-hint"> · {summary.hint}</span>}
         <a href={withBase('/plan-settings')} className="plan-today-strip-change">
-          Change
+          {t('Change')}
         </a>
       </p>
 
       {today.behindMessage && !dismissedBehind && (
         <div className="plan-today-behind">
-          <span>{today.behindMessage}</span>
+          <span>
+            {tn(today.daysBehind, {
+              one: 'You are {n} day behind, here is a lighter plan.',
+              other: 'You are {n} days behind, here is a lighter plan.',
+            })}
+          </span>
           <span className="plan-today-behind-actions">
-            <a href={withBase('/plan-settings')}>Push back my exam date</a>
+            <a href={withBase('/plan-settings')}>{t('Push back my exam date')}</a>
             <button type="button" onClick={() => setDismissedBehind(true)}>
-              Keep this lighter plan
+              {t('Keep this lighter plan')}
             </button>
           </span>
         </div>
@@ -96,46 +107,58 @@ export default function PlanToday() {
 
       {next && (
         <div className="plan-feature">
-          <div className="plan-feature-meta"><span>{next.meta || TYPE_LABEL[next.type]}</span><span>{next.minutes} min</span></div>
-          <h3>{next.label}</h3>
-          <p>{TYPE_LABEL[next.type]} from your personal study plan.</p>
-          <a className="plan-start" href={withBase(next.href)}>Start {TYPE_LABEL[next.type].toLowerCase()} <span aria-hidden="true">↗</span></a>
+          <div className="plan-feature-meta"><span>{t(next.meta || TYPE_LABEL[next.type])}</span><span>{t('{n} min', { n: next.minutes })}</span></div>
+          <h3>{t(next.label)}</h3>
+          <p>{t('{type} from your personal study plan.', { type: t(TYPE_LABEL[next.type]) })}</p>
+          <a className="plan-start" href={withBase(next.href)}>{t('Start {type}', { type: t(TYPE_LABEL[next.type], undefined, 'accusative').toLowerCase() })} <span aria-hidden="true">↗</span></a>
         </div>
       )}
-      {today.items.length > 0 && <div className="plan-list-heading"><h3>Today's schedule</h3><span>{today.items.filter((item) => item.done).length} / {today.items.length} complete</span></div>}
+      {today.items.length > 0 && (
+        <div className="plan-list-heading">
+          <h3>{t("Today's schedule")}</h3>
+          <span>{t('{done} / {total} complete', { done: today.items.filter((item) => item.done).length, total: today.items.length })}</span>
+        </div>
+      )}
       {today.items.length === 0 ? (
-        <p className="plan-rest-note">Nothing scheduled today. A rest day is fine, your plan adjusts.</p>
+        <p className="plan-rest-note">{t('Nothing scheduled today. A rest day is fine, your plan adjusts.')}</p>
       ) : (
         <ul className="plan-item-list" data-stagger>
-          {today.items.map((item) => (
-            <li key={item.id}>
-              <a
-                href={withBase(item.href)}
-                className={`plan-item${item.done ? ' plan-item-done' : ''}`}
-                aria-label={`${item.label}, ${TYPE_LABEL[item.type]}, ${item.minutes} minutes${item.done ? ', done' : ''}`}
-              >
-                {/* The tick strokes itself in when an item is marked done, and
-                    the circle fills to green underneath it. */}
-                <span className="plan-item-tick" aria-hidden="true">
-                  {item.done && (
-                    <svg className="tick-svg" viewBox="0 0 24 24">
-                      <polyline points="4,12.6 9.6,18.2 20,6.4" pathLength={1} />
-                    </svg>
-                  )}
-                </span>
-                {item.skill && <span className="plan-item-dot" style={{ background: `var(--color-${item.skill})` }} aria-hidden="true" />}
-                <span className="plan-item-body">
-                  <span className="plan-item-label">{item.label}</span>
-                  <span className="plan-item-meta">
-                    {TYPE_LABEL[item.type]} · {item.meta}
+          {today.items.map((item) => {
+            const itemType = t(TYPE_LABEL[item.type]);
+            const itemLabel = t(item.label);
+            const ariaLabel = item.done
+              ? t('{label}, {type}, {minutes} minutes, done', { label: itemLabel, type: itemType, minutes: item.minutes })
+              : t('{label}, {type}, {minutes} minutes', { label: itemLabel, type: itemType, minutes: item.minutes });
+            return (
+              <li key={item.id}>
+                <a
+                  href={withBase(item.href)}
+                  className={`plan-item${item.done ? ' plan-item-done' : ''}`}
+                  aria-label={ariaLabel}
+                >
+                  {/* The tick strokes itself in when an item is marked done, and
+                      the circle fills to green underneath it. */}
+                  <span className="plan-item-tick" aria-hidden="true">
+                    {item.done && (
+                      <svg className="tick-svg" viewBox="0 0 24 24">
+                        <polyline points="4,12.6 9.6,18.2 20,6.4" pathLength={1} />
+                      </svg>
+                    )}
                   </span>
-                </span>
-                <span className="plan-item-minutes" aria-hidden="true">
-                  {item.minutes} min
-                </span>
-              </a>
-            </li>
-          ))}
+                  {item.skill && <span className="plan-item-dot" style={{ background: `var(--color-${item.skill})` }} aria-hidden="true" />}
+                  <span className="plan-item-body">
+                    <span className="plan-item-label">{itemLabel}</span>
+                    <span className="plan-item-meta">
+                      {itemType} · {t(item.meta)}
+                    </span>
+                  </span>
+                  <span className="plan-item-minutes" aria-hidden="true">
+                    {t('{n} min', { n: item.minutes })}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

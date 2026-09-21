@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
+import { useT } from '../lib/i18n/react';
 
 export interface TabDef {
   id: string;
@@ -21,6 +22,7 @@ export default function Tabs({
   onChange: (id: string) => void;
   className?: string;
 }) {
+  const { t: translateText } = useT();
   const listRef = useRef<HTMLDivElement>(null);
 
   function onKeyDown(e: React.KeyboardEvent) {
@@ -66,7 +68,7 @@ export default function Tabs({
                   className="absolute inset-0 rounded-button bg-brand"
                 />
               )}
-              <span className={`relative ${isActive ? 'text-white' : 'text-ink-muted hover:text-ink'}`}>{t.label}</span>
+              <span className={`relative ${isActive ? 'text-white' : 'text-ink-muted hover:text-ink'}`}>{translateText(t.label)}</span>
             </button>
           );
         })}

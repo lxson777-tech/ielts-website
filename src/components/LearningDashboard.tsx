@@ -18,6 +18,7 @@ import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
 import { LABELS, practiseHref } from './TypeAnalytics';
 import PlanToday from './plan/PlanToday';
 import MrEzWelcome from './tutor/MrEzWelcome';
+import { useT } from '../lib/i18n/react';
 
 /** Counts a number up from zero the first time it lands, then tracks it
     exactly. The streak is the one figure on this page worth a beat of
@@ -50,9 +51,9 @@ function useCountUp(target: number, duration = 600): number {
 }
 
 function greeting(hour: number): string {
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
+  if (hour < 12) return 'Good morning.';
+  if (hour < 18) return 'Good afternoon.';
+  return 'Good evening.';
 }
 
 /** The question type the student gets wrong most often, across both scored
@@ -75,6 +76,7 @@ function weakestType(): { label: string; href: string; percent: number } | null 
 }
 
 export default function LearningDashboard() {
+  const { t, tn } = useT();
   const MODULES = useMemo(() => buildCourse(), []);
   const course = useMemo(() => MODULES.flatMap((module) => module.lessons), [MODULES]);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
@@ -141,11 +143,11 @@ export default function LearningDashboard() {
   return (
     <div className="dash">
       <div className="dash-welcome"><h1 className="dash-greeting">
-        {hour === null ? 'Welcome back.' : `${greeting(hour)}.`}<span className="dash-welcome-sub">A little practice. A step closer.</span>
+        {hour === null ? t('Welcome back.') : t(greeting(hour))}<span className="dash-welcome-sub">{t('A little practice. A step closer.')}</span>
       </h1>
         <div className="dash-daily-status">
-          <span className="dash-streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M13 3c1 5-5 6-3 10 1-1 2-2 2-4 4 3 6 5 6 8a6 6 0 0 1-12 0c0-4 2-7 7-14Z"/></svg>{shownStreak} day streak</span>
-          {goal && <span>{goal.minutes} / {goal.goal} min today</span>}
+          <span className="dash-streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M13 3c1 5-5 6-3 10 1-1 2-2 2-4 4 3 6 5 6 8a6 6 0 0 1-12 0c0-4 2-7 7-14Z"/></svg>{tn(shownStreak, { one: '{n} day streak', other: '{n} day streak' })}</span>
+          {goal && <span>{t('{minutes} / {goal} min today', { minutes: goal.minutes, goal: goal.goal })}</span>}
         </div>
       </div>
 
@@ -154,42 +156,42 @@ export default function LearningDashboard() {
       <div className="dash-workspace">
       <PlanToday />
 
-      <aside className="dash-side" aria-label="Your study overview">
-      <div className="dash-target"><span>Your goal</span><strong>{targetBand && !targetIsGuess ? `Band ${targetBand}` : 'Not set yet'}</strong><a href={withBase('/start')}>{targetIsGuess ? 'Set your target band' : 'Adjust your study plan'} <span aria-hidden="true">↗</span></a></div>
+      <aside className="dash-side" aria-label={t('Your study overview')}>
+      <div className="dash-target"><span>{t('Your goal')}</span><strong>{targetBand && !targetIsGuess ? t('Band {band}', { band: targetBand }) : t('Not set yet')}</strong><a href={withBase('/start')}>{targetIsGuess ? t('Set your target band') : t('Adjust your study plan')} <span aria-hidden="true">↗</span></a></div>
       <div className="dash-cards">
         {status?.next ? (
           <a className="dash-card" href={withBase(status.next.href)}>
-            <span className="dash-card-label">Your course</span>
-            <strong className="dash-card-title">{status.doneLessons} of {status.totalLessons} lessons complete</strong>
+            <span className="dash-card-label">{t('Your course')}</span>
+            <strong className="dash-card-title">{t('{done} of {total} lessons complete', { done: status.doneLessons, total: status.totalLessons })}</strong>
             <span className="dash-card-meta">
-              Next in course: {status.next.title}
+              {t('Next in course: {title}', { title: status.next.title })}
             </span>
           </a>
         ) : (
           <a className="dash-card" href={withBase('/start')}>
-            <span className="dash-card-label">Your course</span>
-            <strong className="dash-card-title">Course complete</strong>
+            <span className="dash-card-label">{t('Your course')}</span>
+            <strong className="dash-card-title">{t('Course complete')}</strong>
             <span className="dash-card-meta">
-              {status ? `${status.doneLessons} of ${status.totalLessons} lessons done` : ''}
+              {status ? t('{done} of {total} lessons done', { done: status.doneLessons, total: status.totalLessons }) : ''}
             </span>
           </a>
         )}
 
         <a className="dash-card" href={weak ? weak.href : withBase('/tests')}>
-          <span className="dash-card-label">Weakest area</span>
-          <strong className="dash-card-title">{weak ? weak.label : 'Find your starting point'}</strong>
+          <span className="dash-card-label">{t('Weakest area')}</span>
+          <strong className="dash-card-title">{weak ? weak.label : t('Find your starting point')}</strong>
           <span className="dash-card-meta">
-            {weak ? `${weak.percent}% correct, practise this type` : 'Take a test and we will find it'}
+            {weak ? t('{percent}% correct, practise this type', { percent: weak.percent }) : t('Take a test and we will find it')}
           </span>
         </a>
 
         <a className="dash-card" href={withBase('/review')}>
-          <span className="dash-card-label">Vocabulary</span>
+          <span className="dash-card-label">{t('Vocabulary')}</span>
           <strong className="dash-card-title">
-            {VOCABULARY_PARTS.length} topics, {vocab?.total ?? 0} words
+            {tn(VOCABULARY_PARTS.length, { one: '{n} topic', other: '{n} topics' })}, {tn(vocab?.total ?? 0, { one: '{n} word', other: '{n} words' })}
           </strong>
-          {vocabDue > 0 && <span className="dash-card-due">{vocabDue} due for flashcard practice</span>}
-          <span className="dash-card-meta">Browse topics</span>
+          {vocabDue > 0 && <span className="dash-card-due">{tn(vocabDue, { one: '{n} due for flashcard practice', other: '{n} due for flashcard practice' })}</span>}
+          <span className="dash-card-meta">{t('Browse topics')}</span>
         </a>
       </div>
 
@@ -197,7 +199,7 @@ export default function LearningDashboard() {
 
       <section className="dash-skills" aria-labelledby="dash-skills-heading">
         <h2 id="dash-skills-heading" className="dash-skills-heading">
-          Your learning library
+          {t('Your learning library')}
         </h2>
         <div className="dash-skills-row" data-stagger>
           {SKILLS.map((skill) => {
@@ -206,19 +208,20 @@ export default function LearningDashboard() {
               (lesson) => lesson.skill === skill.id && progress?.lessons[lesson.key],
             ).length;
             const percent = total ? Math.round((finished / total) * 100) : 0;
+            const skillLabel = t(skill.label);
             return (
               <a
                 key={skill.id}
                 className={`dash-skill skill-${skill.id}`}
                 href={withBase(`/learn?skill=${skill.id}`)}
-                aria-label={`${skill.label}, ${finished} of ${total} lessons complete`}
+                aria-label={t('{skill}, {done} of {total} lessons complete', { skill: skillLabel, done: finished, total })}
               >
-                <span className="dash-skill-name">{skill.label}<span aria-hidden="true">↗</span></span>
+                <span className="dash-skill-name">{skillLabel}<span aria-hidden="true">↗</span></span>
                 <span className="dash-skill-track">
                   <span className="dash-skill-fill bar-fill" style={{ width: `${percent}%` }} />
                 </span>
                 <span className="dash-skill-count">
-                  {finished} / {total} lessons
+                  {t('{done} / {total} lessons', { done: finished, total })}
                 </span>
               </a>
             );

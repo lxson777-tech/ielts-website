@@ -13,14 +13,15 @@
    Array position is the lesson number within the section. */
 
 import type { Sequenced } from './lessons';
+import { nt } from '../lib/i18n/translate';
 
 export type ReadingGroup = 'skill' | 'choose' | 'matching' | 'completion';
 
 export const READING_GROUPS: { id: ReadingGroup; label: string; blurb: string }[] = [
-  { id: 'skill', label: 'Core skill', blurb: 'The one skill every question type tests.' },
-  { id: 'choose', label: 'Choose the right option', blurb: 'Pick a letter or decide True, False or Not Given.' },
-  { id: 'matching', label: 'Matching', blurb: 'Match statements, headings or sentence halves to the passage.' },
-  { id: 'completion', label: 'Completion', blurb: 'Write words from the passage into gaps.' },
+  { id: 'skill', label: nt('Core skill'), blurb: nt('The one skill every question type tests.') },
+  { id: 'choose', label: nt('Choose the right option'), blurb: nt('Pick a letter or decide True, False or Not Given.') },
+  { id: 'matching', label: nt('Matching'), blurb: nt('Match statements, headings or sentence halves to the passage.') },
+  { id: 'completion', label: nt('Completion'), blurb: nt('Write words from the passage into gaps.') },
 ];
 
 export type ReadingPart = Sequenced & { group: ReadingGroup };
@@ -28,11 +29,11 @@ export type ReadingPart = Sequenced & { group: ReadingGroup };
 export const READING_PARTS: ReadingPart[] = [
   {
     slug: 'paraphrase',
-    title: 'Spotting Paraphrase',
+    title: nt('Spotting Paraphrase'),
     group: 'skill',
     stage: 1,
     image: '/pics/reading/quiz.png',
-    blurb: 'Not a question type, but the skill behind all of them: recognising the same idea in different words.',
+    blurb: nt('Not a question type, but the skill behind all of them: recognising the same idea in different words.'),
     minutes: 15,
   },
   {
@@ -41,7 +42,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'choose',
     stage: 2,
     image: '/pics/reading/mc.png',
-    blurb: 'Pick the right option and dodge the distractors designed to catch skimmers.',
+    blurb: nt('Pick the right option and dodge the distractors designed to catch skimmers.'),
     minutes: 12,
   },
   {
@@ -50,7 +51,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'choose',
     stage: 2,
     image: '/pics/reading/tfng.png',
-    blurb: 'Decide whether statements agree with the facts in the text, and learn what "Not Given" really means.',
+    blurb: nt('Decide whether statements agree with the facts in the text, and learn what "Not Given" really means.'),
     minutes: 12,
   },
   {
@@ -59,7 +60,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'choose',
     stage: 2,
     image: '/pics/reading/ynng.png',
-    blurb: "Decide whether statements match the writer's opinions and claims, not the facts in the text.",
+    blurb: nt("Decide whether statements match the writer's opinions and claims, not the facts in the text."),
     minutes: 12,
   },
   {
@@ -68,7 +69,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'matching',
     stage: 3,
     image: '/pics/reading/headings.png',
-    blurb: 'Match each paragraph to its main idea, not just repeated words.',
+    blurb: nt('Match each paragraph to its main idea, not just repeated words.'),
     minutes: 14,
   },
   {
@@ -77,7 +78,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'matching',
     stage: 2,
     image: '/pics/reading/para.png',
-    blurb: 'Find which paragraph contains a specific piece of information.',
+    blurb: nt('Find which paragraph contains a specific piece of information.'),
     minutes: 12,
   },
   {
@@ -86,7 +87,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'matching',
     stage: 3,
     image: '/pics/reading/cat.png',
-    blurb: 'Match statements to people, theories, places or dates. Some books call this classification.',
+    blurb: nt('Match statements to people, theories, places or dates. Some books call this classification.'),
     minutes: 13,
   },
   {
@@ -95,7 +96,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'matching',
     stage: 2,
     image: '/pics/reading/endings.png',
-    blurb: 'Match the start of a sentence to the ending that correctly completes it, using the passage.',
+    blurb: nt('Match the start of a sentence to the ending that correctly completes it, using the passage.'),
     minutes: 12,
   },
   {
@@ -104,7 +105,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'completion',
     stage: 2,
     image: '/pics/reading/sentence.png',
-    blurb: 'Fill the gaps within the word limit, keeping the sentence grammatical.',
+    blurb: nt('Fill the gaps within the word limit, keeping the sentence grammatical.'),
     minutes: 10,
   },
   {
@@ -113,7 +114,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'completion',
     stage: 2,
     image: '/pics/reading/summary.png',
-    blurb: 'Fill gaps in a summary, a set of notes, a table or a flow-chart using words taken from the passage.',
+    blurb: nt('Fill gaps in a summary, a set of notes, a table or a flow-chart using words taken from the passage.'),
     minutes: 13,
   },
   {
@@ -122,7 +123,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'completion',
     stage: 3,
     image: '/pics/reading/diagram.png',
-    blurb: 'Label a diagram or process using exact words from the passage.',
+    blurb: nt('Label a diagram or process using exact words from the passage.'),
     minutes: 12,
   },
   {
@@ -131,7 +132,7 @@ export const READING_PARTS: ReadingPart[] = [
     group: 'completion',
     stage: 2,
     image: '/pics/reading/shortanswer.png',
-    blurb: 'Answer questions with a word limit, taking the answer straight from the passage.',
+    blurb: nt('Answer questions with a word limit, taking the answer straight from the passage.'),
     minutes: 10,
   },
 ];

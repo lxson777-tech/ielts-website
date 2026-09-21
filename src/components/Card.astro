@@ -38,20 +38,20 @@ const { title, href, description, image, badge, skill, level, dataKey } = Astro.
   )}
   <div class="flex flex-1 flex-col gap-2 p-5">
     <div class="flex items-center justify-between gap-2">
-      <h3 class="font-display text-base font-bold">{title}</h3>
+      <h3 class="font-display text-base font-bold" data-i18n>{title}</h3>
       <span data-slot="status"></span>
     </div>
-    {description && <p class="text-sm text-ink-muted">{description}</p>}
+    {description && <p class="text-sm text-ink-muted" data-i18n>{description}</p>}
     <div class="mt-auto flex items-center justify-between pt-2">
       <div class="flex items-center gap-2">
         {badge ? <Badge tone="skill">{badge}</Badge> : <span></span>}
         {level && (
-          <span class="rounded-full bg-surface-alt px-2 py-0.5 text-[11px] font-semibold text-ink-muted">
+          <span class="rounded-full bg-surface-alt px-2 py-0.5 text-[11px] font-semibold text-ink-muted" data-i18n>
             {level}
           </span>
         )}
       </div>
-      <span class="text-sm font-semibold text-[var(--skill,var(--color-brand))] opacity-0 transition-opacity group-hover:opacity-100">
+      <span class="text-sm font-semibold text-[var(--skill,var(--color-brand))] opacity-0 transition-opacity group-hover:opacity-100" data-i18n data-i18n-ctx="verb">
         Open
       </span>
     </div>

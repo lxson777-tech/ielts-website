@@ -13,6 +13,7 @@
 import { getProgress } from '../progress';
 import { loadStudyPlan } from '../study-plan';
 import { buildCourse, courseLessonCount } from '../course';
+import { t } from '../i18n/translate';
 import { readInsights, type StudentInsights } from './insights';
 import { recommendNext, type Recommendation } from './recommend';
 import type { TutorRecommendation } from './schema';
@@ -43,14 +44,25 @@ export function toTutorRecommendation(rec: Recommendation): TutorRecommendation 
     pretends to be Mr EZ talking, because it is not. */
 export function localWelcomeText(insights: StudentInsights): string {
   if (!insights.goals.targetBand || insights.goals.guessed) {
-    return 'Tell me the band you need and, if you have one, your exam date. Everything I suggest gets more specific once I know what you are aiming at.';
+    return t(
+      'Tell me the band you need and, if you have one, your exam date. Everything I suggest gets more specific once I know what you are aiming at.',
+    );
   }
   if (!insights.hasAnyResults) {
-    return `You are aiming at band ${insights.goals.targetBand}. There are no results on record yet, so there is nothing to estimate your current level from. Here is where to start.`;
+    return t(
+      'You are aiming at band {band}. There are no results on record yet, so there is nothing to estimate your current level from. Here is where to start.',
+      { band: insights.goals.targetBand },
+    );
   }
+  // measured.text/.evidence and tentative.text/.evidence come from
+  // src/lib/tutor/insights.ts, which is shared with the Worker and out of
+  // this batch's scope (see the i18n batch brief). They render in English
+  // for a Russian student until that file gets an explicit-locale pass.
   const measured = insights.observations.find((o) => o.kind === 'weakness' && o.confidence === 'measured');
   if (measured) return `${measured.text} (${measured.evidence})`;
   const tentative = insights.observations.find((o) => o.kind === 'weakness');
   if (tentative) return `${tentative.text} (${tentative.evidence})`;
-  return `You are aiming at band ${insights.goals.targetBand}. Nothing in your results stands out as a weak spot yet.`;
+  return t('You are aiming at band {band}. Nothing in your results stands out as a weak spot yet.', {
+    band: insights.goals.targetBand,
+  });
 }

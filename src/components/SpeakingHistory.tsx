@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getSpeakingAttempts, onProgressChange, type SpeakingAttempt } from '../lib/progress';
+import { useT } from '../lib/i18n/react';
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -13,6 +14,7 @@ const MODE_LABEL: Record<SpeakingAttempt['mode'], string> = {
 /* Band-over-time line, same visual language as ScoreHistory / WritingHistory,
    plotting each speaking attempt's overall band. */
 function BandChart({ rows }: { rows: SpeakingAttempt[] }) {
+  const { t } = useT();
   const [hover, setHover] = useState<number | null>(null);
   if (rows.length < 2) return null;
 
@@ -33,11 +35,15 @@ function BandChart({ rows }: { rows: SpeakingAttempt[] }) {
 
   return (
     <figure className="mt-6 overflow-x-auto">
-      <figcaption className="mb-2 text-sm font-semibold">Estimated band over attempts</figcaption>
+      <figcaption className="mb-2 text-sm font-semibold">{t('Estimated band over attempts')}</figcaption>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={`Speaking band across ${rows.length} attempts, from ${rows[0]!.overallBand} to ${rows[rows.length - 1]!.overallBand}`}
+        aria-label={t('Speaking band across {count} attempts, from {from} to {to}', {
+          count: rows.length,
+          from: rows[0]!.overallBand,
+          to: rows[rows.length - 1]!.overallBand,
+        })}
         className="w-full max-w-xl"
         onMouseLeave={() => setHover(null)}
       >
@@ -83,7 +89,7 @@ function BandChart({ rows }: { rows: SpeakingAttempt[] }) {
                 <g transform={`translate(${tx},${above ? ty - 12 : ty + 12})`}>
                   <rect x="-62" y={above ? -34 : 0} width="124" height="34" rx="6" fill="var(--color-ink)" opacity="0.92" />
                   <text x="0" y={above ? -21 : 13} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-                    Band {r.overallBand.toFixed(1)}
+                    {t('Band {band}', { band: r.overallBand.toFixed(1) })}
                   </text>
                   <text x="0" y={above ? -9 : 25} textAnchor="middle" fontSize="9" fill="#fff" opacity="0.75">
                     {fmtDate(r.at)}
@@ -99,6 +105,7 @@ function BandChart({ rows }: { rows: SpeakingAttempt[] }) {
 }
 
 export default function SpeakingHistory() {
+  const { t } = useT();
   const [rows, setRows] = useState<SpeakingAttempt[] | null>(null);
 
   useEffect(() => {
@@ -112,8 +119,8 @@ export default function SpeakingHistory() {
   if (rows.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-8 text-center text-ink-muted">
-        <p className="font-display font-semibold text-ink">No attempts yet</p>
-        <p className="mt-1 text-sm">Finish a speaking part and your bands will appear here.</p>
+        <p className="font-display font-semibold text-ink">{t('No attempts yet')}</p>
+        <p className="mt-1 text-sm">{t('Finish a speaking part and your bands will appear here.')}</p>
       </div>
     );
   }
@@ -124,10 +131,10 @@ export default function SpeakingHistory() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-surface-alt text-left text-xs uppercase tracking-wide text-ink-muted">
-              <th className="px-4 py-2.5 font-semibold">Date</th>
-              <th className="px-4 py-2.5 font-semibold">Part</th>
-              <th className="px-4 py-2.5 font-semibold">Topic</th>
-              <th className="px-4 py-2.5 font-semibold">Band</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Date')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Part')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Topic')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Band')}</th>
             </tr>
           </thead>
           <tbody>
@@ -140,7 +147,7 @@ export default function SpeakingHistory() {
                   <span className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-bold text-brand">
                     {r.overallBand.toFixed(1)}
                   </span>
-                  {!r.live && <span className="ml-1.5 text-xs text-ink-muted">(sample)</span>}
+                  {!r.live && <span className="ml-1.5 text-xs text-ink-muted">{t('(sample)')}</span>}
                 </td>
               </tr>
             ))}

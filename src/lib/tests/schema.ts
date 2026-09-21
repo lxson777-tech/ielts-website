@@ -2,6 +2,8 @@
    future listening tests plug in an audio stimulus — the player's rendering
    of the stimulus pane is the only skill-specific branch. */
 
+import { nt } from '../i18n/translate';
+
 export type TestSkill = 'reading' | 'listening';
 
 export type QuestionType =
@@ -214,17 +216,21 @@ function normalizeAnswer(s: string): string {
    ignores them too); the rest are real differences from the printed key, so
    when one of them is what saved the answer the student is told, rather than
    being trained into a habit a real examiner may reject. */
+/* The notes are read out to the student in the review panel, so they are
+   marked with nt(): the English is stored here unchanged (these strings are
+   also what tests/answer-leniency.test.ts asserts on) and translated where it
+   is rendered, in AnswerReview inside src/components/TestPlayer.tsx. */
 const LENIENCY_RULES: { note: string; apply: (s: string) => string }[] = [
-  { note: 'the currency symbol', apply: (s) => s.replace(/[£$€]/g, '') },
-  { note: 'the comma inside the number', apply: (s) => s.replace(/(?<=\d),(?=\d)/g, '') },
+  { note: nt('the currency symbol'), apply: (s) => s.replace(/[£$€]/g, '') },
+  { note: nt('the comma inside the number'), apply: (s) => s.replace(/(?<=\d),(?=\d)/g, '') },
   {
-    note: 'writing percent out in words instead of using the % sign',
+    note: nt('writing percent out in words instead of using the % sign'),
     apply: (s) => s.replace(/per\s*cent/g, 'percent').replace(/%/g, ' percent').replace(/\s+/g, ' ').trim(),
   },
-  { note: 'the hyphen', apply: (s) => s.replace(/(?<=[a-z])-(?=[a-z])/g, ' ') },
-  { note: 'the quotation marks', apply: (s) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"') },
+  { note: nt('the hyphen'), apply: (s) => s.replace(/(?<=[a-z])-(?=[a-z])/g, ' ') },
+  { note: nt('the quotation marks'), apply: (s) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"') },
   {
-    note: 'the punctuation you added',
+    note: nt('the punctuation you added'),
     apply: (s) => s.replace(/^["']+|["']+$/g, '').replace(/[.,;:!?]+$/, '').trim(),
   },
 ];
@@ -388,10 +394,12 @@ export function testBand(raw: number, total: number, skill: TestSkill = 'reading
   return skill === 'listening' ? listeningBand(raw, total) : readingBand(raw, total);
 }
 
-/** Display label for a result, e.g. "7.0" (callers supply the "Band" prefix). */
+/** Display label for a result, e.g. "7.0" (callers supply the "Band" prefix).
+    The one worded case is marked with nt() and translated where it is shown
+    (a stored attempt keeps the English, so old history stays readable). */
 export function bandEstimate(raw: number, total: number, skill: TestSkill = 'reading'): string {
   const band = testBand(raw, total, skill);
-  return band >= 2.5 ? band.toFixed(1) : 'below 2.5';
+  return band >= 2.5 ? band.toFixed(1) : nt('below 2.5');
 }
 
 /** Numeric band for score-history charts and best-band comparisons. */

@@ -30,6 +30,7 @@ import {
   type MockEssay,
 } from '../lib/tests/mock';
 import { withBase } from '../lib/url';
+import { useT } from '../lib/i18n/react';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
 import { fetchLiveConfig, type LiveConfig } from '../lib/speaking/live/link';
@@ -142,6 +143,9 @@ function randomOf<T>(pool: T[]): T | undefined {
 }
 
 export default function MockExam({ hubUrl }: { hubUrl: string }) {
+  /* Interface language. Declared first so the hook order below never moves;
+     nothing in the stage machine or the clocks reads it. */
+  const { t } = useT();
   const listeningTests = useMemo(
     () => ALL_TESTS.filter((t) => t.skill === 'listening').sort((a, b) => a.id.localeCompare(b.id)),
     [],
@@ -308,7 +312,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   if (!listeningTest || !readingTest) {
     return (
       <div className="grid min-h-dvh place-items-center bg-surface-alt p-4 text-center">
-        <p className="text-ink-muted">No practice tests are available to build a mock exam right now.</p>
+        <p className="text-ink-muted">{t('No practice tests are available to build a mock exam right now.')}</p>
       </div>
     );
   }
@@ -337,7 +341,10 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     return (
       <TransitionScreen
         next="Reading"
-        subtitle={`Reading Test ${testNumber(readingTest, readingTests)} · ${readingTest.durationMinutes} minutes`}
+        subtitle={t('Reading Test {n} · {minutes} minutes', {
+          n: testNumber(readingTest, readingTests),
+          minutes: readingTest.durationMinutes,
+        })}
         onContinue={() => setStage('reading')}
       />
     );
@@ -351,7 +358,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     return (
       <TransitionScreen
         next="Writing"
-        subtitle="Task 1 and Task 2 · 60 minutes total"
+        subtitle={t('Task 1 and Task 2 · 60 minutes total')}
         onContinue={() => setStage('writing')}
       />
     );
@@ -443,64 +450,67 @@ function StartScreen({
   pairLabelText: string;
   onStart: () => void;
 }) {
+  const { t } = useT();
   return (
     <div className="screen-in grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover">
-        <p className="text-xs font-bold uppercase tracking-wider text-brand">Mock Exam Day</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold">A full IELTS sitting, back to back</h1>
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Mock Exam Day')}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">{t('A full IELTS sitting, back to back')}</h1>
         <p className="mt-2 text-ink-muted">
-          Listening, then Reading, then Writing, then Speaking, the same order and pace as the real test day, with
-          no breaks in between. About 2 hours 45 minutes for the first three papers, plus 14 minutes for Speaking.
+          {t('Listening, then Reading, then Writing, then Speaking, the same order and pace as the real test day, with no breaks in between. About 2 hours 45 minutes for the first three papers, plus 14 minutes for Speaking.')}
         </p>
 
+        {/* Each bullet opens with a paper name, which is never translated, so
+            the bold stays put and only the sentence after it is a key. Where a
+            second <strong> sat mid sentence it had to go: Russian puts those
+            words somewhere else (docs/I18N-GUIDE.md). */}
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><ListeningIcon /></span>
             <span>
-              <strong>Listening</strong> (about 30 minutes, plus time at the end to check your answers). The
-              recording plays <strong>once</strong>, exam conditions.
+              <strong>Listening</strong>{' '}
+              {t('(about 30 minutes, plus time at the end to check your answers). The recording plays once, exam conditions.')}
             </span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><ReadingIcon /></span>
-            <span><strong>Reading</strong> (60 minutes), straight after.</span>
+            <span><strong>Reading</strong> {t('(60 minutes), straight after.')}</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><WritingIcon /></span>
             <span>
-              <strong>Writing</strong> (60 minutes): Task 1 and Task 2 share one clock, a suggested 20 minutes on
-              Task 1 and 40 on Task 2, same as the real exam.
+              <strong>Writing</strong>{' '}
+              {t('(60 minutes): Task 1 and Task 2 share one clock, a suggested 20 minutes on Task 1 and 40 on Task 2, same as the real exam.')}
             </span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><SpeakingIcon /></span>
             <span>
-              <strong>Speaking</strong> (about 14 minutes): a real-time voice conversation with the AI examiner,
-              Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this
-              site requires one for it. You can skip this stage.
+              <strong>Speaking</strong>{' '}
+              {t('(about 14 minutes): a real-time voice conversation with the AI examiner, Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this site requires one for it. You can skip this stage.')}
             </span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><NoGradingIcon /></span>
             <span>
-              Listening, Reading and Speaking are graded automatically. Writing isn't graded during the mock,
-              score it afterwards in the Writing Checker.
+              {t("Listening, Reading and Speaking are graded automatically. Writing isn't graded during the mock, score it afterwards in the Writing Checker.")}
             </span>
           </li>
         </ul>
 
         <div className="mt-6 space-y-3 rounded-card border border-border bg-surface-alt p-4">
-          <p className="text-sm font-semibold">Choose your tests</p>
+          <p className="text-sm font-semibold">{t('Choose your tests')}</p>
           <label className="block text-sm">
+            {/* The two paper names stay English, here and in the options. */}
             <span className="mb-1 block text-xs font-semibold text-ink-muted">Listening</span>
             <select
               value={listeningId}
               onChange={(e) => onChangeListening(e.target.value)}
               className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium focus:border-brand"
             >
-              {listeningTests.map((t) => (
-                <option key={t.id} value={t.id}>
-                  Listening Test {testNumber(t, listeningTests)}
+              {listeningTests.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {t('Listening Test {n}', { n: testNumber(item, listeningTests) })}
                 </option>
               ))}
             </select>
@@ -512,26 +522,28 @@ function StartScreen({
               onChange={(e) => onChangeReading(e.target.value)}
               className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium focus:border-brand"
             >
-              {readingTests.map((t) => (
-                <option key={t.id} value={t.id}>
-                  Reading Test {testNumber(t, readingTests)}
+              {readingTests.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {t('Reading Test {n}', { n: testNumber(item, readingTests) })}
                 </option>
               ))}
             </select>
           </label>
-          <p className="text-xs text-ink-muted">Defaulted to the next tests you haven't taken: {pairLabelText}.</p>
+          <p className="text-xs text-ink-muted">
+            {t("Defaulted to the next tests you haven't taken: {pair}.", { pair: pairLabelText })}
+          </p>
         </div>
 
         <div className="mt-8 flex items-center justify-between gap-3">
           <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
-            Back
+            {t('Back')}
           </a>
           <button
             type="button"
             onClick={onStart}
             className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
           >
-            Start Mock Exam
+            {t('Start Mock Exam')}
           </button>
         </div>
       </div>
@@ -543,6 +555,9 @@ function StartScreen({
     seconds"). A real sitting has no break, but a screen change still needs a
     beat — the countdown is short and skippable, never a real pause. */
 function TransitionScreen({ next, subtitle, onContinue }: { next: string; subtitle: string; onContinue: () => void }) {
+  // `t`/`tn` are the translator here; the `t` inside the countdown updater
+  // below is its own local number and is deliberately left alone.
+  const { t, tn } = useT();
   const [secondsLeft, setSecondsLeft] = useState(TRANSITION_SECONDS);
   const firedRef = useRef(false);
 
@@ -574,15 +589,22 @@ function TransitionScreen({ next, subtitle, onContinue }: { next: string; subtit
   return (
     <div className="screen-in grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div className="w-full max-w-md rounded-card border border-border bg-surface p-8 text-center shadow-card-hover">
-        <p className="text-xs font-bold uppercase tracking-wider text-brand">Exam continues</p>
-        <h1 className="mt-1 font-display text-xl font-extrabold">{next} starts in {secondsLeft} seconds</h1>
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Exam continues')}</p>
+        <h1 className="mt-1 font-display text-xl font-extrabold">
+          {/* `next` is a paper name (Reading, Writing) and stays English. */}
+          {tn(
+            secondsLeft,
+            { one: '{paper} starts in {n} second', other: '{paper} starts in {n} seconds' },
+            { paper: next },
+          )}
+        </h1>
         <p className="mt-2 text-sm text-ink-muted">{subtitle}</p>
         <button
           type="button"
           onClick={startNow}
           className="mt-6 rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
         >
-          Start now
+          {t('Start now')}
         </button>
       </div>
     </div>
@@ -608,17 +630,18 @@ function WritingLeg({
   secondsLeft: number;
   onFinish: () => void;
 }) {
+  const { t } = useT();
   const timerWarn = secondsLeft <= 300;
   return (
     <div className="screen-in flex min-h-dvh flex-col bg-surface text-ink">
       <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
-        <span className="font-display text-sm font-bold">Mock Exam · Writing</span>
+        <span className="font-display text-sm font-bold">{t('Mock Exam · Writing')}</span>
         <div
           className={`ml-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold sm:gap-2 sm:px-4 ${
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
           }`}
           role="timer"
-          aria-label="Time remaining"
+          aria-label={t('Time remaining')}
         >
           <span aria-hidden="true">⏱</span>
           {fmtClock(secondsLeft)}
@@ -628,15 +651,18 @@ function WritingLeg({
           onClick={onFinish}
           className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover sm:px-4"
         >
-          Finish Writing
+          {t('Finish Writing')}
         </button>
       </header>
 
       <div className="mx-auto w-full max-w-3xl flex-1 space-y-8 px-4 py-6 sm:px-6">
+        {/* One key: the two <strong> minute counts sat mid sentence, where
+            Russian cannot keep them (docs/I18N-GUIDE.md). */}
         <p className="rounded-card border border-border bg-surface-alt px-4 py-3 text-sm text-ink-muted">
-          Suggested timing: about <strong>{task1?.suggestedMinutes ?? 20} minutes</strong> on Task 1, then{' '}
-          <strong>{task2?.suggestedMinutes ?? 40} minutes</strong> on Task 2. One clock for both, split it however
-          suits you, then submit when you're done or when time runs out.
+          {t("Suggested timing: about {first} minutes on Task 1, then {second} minutes on Task 2. One clock for both, split it however suits you, then submit when you're done or when time runs out.", {
+            first: task1?.suggestedMinutes ?? 20,
+            second: task2?.suggestedMinutes ?? 40,
+          })}
         </p>
 
         <WritingTaskBlock label="Task 1 (Academic)" prompt={task1} value={essay1} onChange={onChangeEssay1} />
@@ -657,12 +683,14 @@ function WritingTaskBlock({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const { t } = useT();
   const wordCount = countWords(value);
+  // `label` is "Task 1 (Academic)" / "Task 2", which stay English everywhere.
   if (!prompt) {
     return (
       <section>
         <p className="rounded-card border border-border bg-surface-alt p-4 text-sm text-ink-muted">
-          No {label} prompt is available right now.
+          {t('No {label} prompt is available right now.', { label })}
         </p>
       </section>
     );
@@ -670,22 +698,24 @@ function WritingTaskBlock({
   return (
     <section>
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-        <span className="text-xs font-bold uppercase tracking-wider text-brand">{label} · ~{prompt.suggestedMinutes} min</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-brand">
+          {t('{label} · ~{minutes} min', { label, minutes: prompt.suggestedMinutes })}
+        </span>
         <Html as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
         {prompt.imageUrl && (
-          <img src={asset(prompt.imageUrl)} alt="Task visual" className="mt-3 w-full rounded-lg border border-border" />
+          <img src={asset(prompt.imageUrl)} alt={t('Task visual')} className="mt-3 w-full rounded-lg border border-border" />
         )}
       </div>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={12}
-        placeholder="Write your answer here…"
-        aria-label={`${label} answer`}
+        placeholder={t('Write your answer here…')}
+        aria-label={t('{label} answer', { label })}
         className="mt-3 w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
       />
       <p className={`mt-2 text-sm font-semibold ${wordCount >= prompt.minWords ? 'text-success' : 'text-ink-muted'}`}>
-        {wordCount} / {prompt.minWords}+ words
+        {t('{count} / {min}+ words', { count: wordCount, min: prompt.minWords })}
       </p>
     </section>
   );
@@ -700,6 +730,7 @@ function WritingTaskBlock({
     (no mic, no time, doesn't want to sign in) can still finish the sitting
     with three papers. */
 function SpeakingBriefScreen({ onStart, onSkip }: { onStart: () => void; onSkip: () => void }) {
+  const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -732,33 +763,34 @@ function SpeakingBriefScreen({ onStart, onSkip }: { onStart: () => void; onSkip:
   return (
     <div className="screen-in grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div className="w-full max-w-md rounded-card border border-border bg-surface p-8 text-center shadow-card-hover">
-        <p className="text-xs font-bold uppercase tracking-wider text-brand">Part 4 of 4</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Part 4 of 4')}</p>
+        {/* The paper name itself is never translated. */}
         <h1 className="mt-1 font-display text-2xl font-extrabold">Speaking</h1>
         <p className="mt-2 text-sm text-ink-muted">
-          About 14 minutes with the AI examiner: Part 1 interview, Part 2 long turn, Part 3 discussion. You need a
-          microphone and to be signed in.
+          {t('About 14 minutes with the AI examiner: Part 1 interview, Part 2 long turn, Part 3 discussion. You need a microphone and to be signed in.')}
         </p>
 
         {needsSignIn && (
           <div className="mt-5 rounded-lg bg-warning-tint px-3 py-3 text-left text-xs text-ink-muted">
-            <p>Sign in to take the speaking test (this keeps the paid voice service for real students).</p>
+            <p>{t('Sign in to take the speaking test (this keeps the paid voice service for real students).')}</p>
             <button
               type="button"
               onClick={() => setShowAuthModal(true)}
               className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
-              Sign in
+              {/* "Sign in" is translated once, in dict/ru/shell.ts. */}
+              {t('Sign in')}
             </button>
           </div>
         )}
         {authUnavailable && (
           <p className="mt-5 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-            The speaking test needs accounts to be enabled on this site.
+            {t('The speaking test needs accounts to be enabled on this site.')}
           </p>
         )}
         {!examinerConfigured && (
           <p className="mt-5 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-            The speaking test isn't configured on this site yet.
+            {t("The speaking test isn't configured on this site yet.")}
           </p>
         )}
 
@@ -769,10 +801,10 @@ function SpeakingBriefScreen({ onStart, onSkip }: { onStart: () => void; onSkip:
             disabled={!canStart}
             className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Start speaking test
+            {t('Start speaking test')}
           </button>
           <button type="button" onClick={onSkip} className="px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
-            Skip speaking
+            {t('Skip speaking')}
           </button>
         </div>
 
@@ -807,6 +839,7 @@ function ResultsScreen({
   speakingResult: SpeakingLegResult | null;
   speakingSkipped: boolean;
 }) {
+  const { t, tn } = useT();
   const graderReady = isGraderConfigured();
 
   /* The overall band is the official mean-of-components method (see
@@ -824,28 +857,30 @@ function ResultsScreen({
   if (speakingResult) bandedPapers.push(speakingResult.overallBand);
   const overall = bandedPapers.length > 0 ? overallMockBand(bandedPapers) : null;
   const scoredIntro = speakingResult
-    ? 'Listening, Reading and Speaking are scored automatically.'
+    ? t('Listening, Reading and Speaking are scored automatically.')
     : speakingSkipped
-      ? 'Listening and Reading are scored automatically; you skipped Speaking.'
-      : 'Listening and Reading are scored automatically.';
+      ? t('Listening and Reading are scored automatically; you skipped Speaking.')
+      : t('Listening and Reading are scored automatically.');
 
   return (
     <div className="screen-in mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <p className="text-xs font-bold uppercase tracking-wider text-brand">Mock Exam Day · Results</p>
-      <h1 className="mt-1 font-display text-2xl font-extrabold">You've finished the sitting</h1>
+      <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Mock Exam Day · Results')}</p>
+      <h1 className="mt-1 font-display text-2xl font-extrabold">{t("You've finished the sitting")}</h1>
       <p className="mt-2 text-ink-muted">
-        {scoredIntro} Writing isn't auto-scored here, so get real feedback on your essays in the Writing Checker.
+        {scoredIntro}{' '}
+        {t("Writing isn't auto-scored here, so get real feedback on your essays in the Writing Checker.")}
       </p>
 
       {overall != null && (
         <div className="mt-6 rounded-card border border-brand/25 bg-brand-tint/40 p-5 text-center">
           <p className="text-xs font-bold uppercase tracking-wider text-brand">
-            Overall band · {bandedPapers.length} {bandedPapers.length === 1 ? 'paper' : 'papers'}
+            {tn(bandedPapers.length, { one: 'Overall band · {n} paper', other: 'Overall band · {n} papers' })}
           </p>
           <p className="mt-1 font-display text-4xl font-extrabold text-brand">{overall.toFixed(1)}</p>
           <p className="mt-1 text-xs text-ink-muted">
-            Mean of {speakingResult ? 'Listening, Reading and Speaking' : 'Listening and Reading'}, rounded to the
-            nearest half band. Writing isn't included — it isn't graded during the mock.
+            {t("Mean of {papers}, rounded to the nearest half band. Writing isn't included — it isn't graded during the mock.", {
+              papers: speakingResult ? t('Listening, Reading and Speaking') : t('Listening and Reading'),
+            })}
           </p>
         </div>
       )}
@@ -858,7 +893,7 @@ function ResultsScreen({
       </div>
 
       <div className="mt-8 space-y-6">
-        <h2 className="font-display text-lg font-bold">Your essays</h2>
+        <h2 className="font-display text-lg font-bold">{t('Your essays')}</h2>
         <EssayCard label="Task 1" prompt={task1} text={essay1} />
         <EssayCard label="Task 2" prompt={task2} text={essay2} />
       </div>
@@ -868,24 +903,26 @@ function ResultsScreen({
           href={withBase('/writing/checker')}
           className="mt-6 inline-block rounded-button bg-brand px-5 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
         >
-          Get AI feedback on these essays
+          {t('Get AI feedback on these essays')}
         </a>
       ) : (
         <p className="mt-6 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-          AI feedback isn't available on this build. Your essays are saved on this device either way.
+          {t("AI feedback isn't available on this build. Your essays are saved on this device either way.")}
         </p>
       )}
 
       {speakingSkipped && (
         <p className="mt-6 rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-          You skipped Speaking, so it isn't in your overall band above. You can take a full Speaking test any time
-          at <a href={withBase('/speaking/examiner')} className="font-semibold underline">the live AI examiner</a>.
+          {/* The link sits at the end of the sentence in both languages, so it
+              stays a link instead of collapsing into the translated text. */}
+          {t("You skipped Speaking, so it isn't in your overall band above. You can take a full Speaking test any time at")}{' '}
+          <a href={withBase('/speaking/examiner')} className="font-semibold underline">{t('the live AI examiner')}</a>.
         </p>
       )}
 
       <div className="mt-8">
         <a href={hubUrl} className="text-sm font-semibold text-brand hover:underline">
-          Back to Tests
+          {t('Back to Tests')}
         </a>
       </div>
     </div>
@@ -903,11 +940,17 @@ function ResultCard({
   total?: number;
   bandLabel?: string;
 }) {
+  const { t } = useT();
   return (
     <div className="rounded-card border border-border bg-surface p-5 text-center shadow-card">
+      {/* `title` is the paper's own title, which is exam data and stays as is.
+          `bandLabel` is a number like "7.0" or the one phrase "below 2.5"
+          (marked with nt() in src/lib/tests/schema.ts). */}
       <p className="text-sm font-semibold text-ink-muted">{title}</p>
-      <p className="mt-2 font-display text-3xl font-extrabold text-brand">{bandLabel ?? '—'}</p>
-      {raw != null && total != null && <p className="mt-1 text-xs text-ink-muted">{raw} / {total} correct</p>}
+      <p className="mt-2 font-display text-3xl font-extrabold text-brand">{bandLabel != null ? t(bandLabel) : '—'}</p>
+      {raw != null && total != null && (
+        <p className="mt-1 text-xs text-ink-muted">{t('{raw} / {total} correct', { raw, total })}</p>
+      )}
     </div>
   );
 }
@@ -917,40 +960,52 @@ function ResultCard({
     reminder that real feedback lives one click away in the Writing
     Checker. */
 function WritingResultCard({ essay1, essay2, graderReady }: { essay1: string; essay2: string; graderReady: boolean }) {
+  const { t, tn } = useT();
   const words = countWords(essay1) + countWords(essay2);
   return (
     <div className="rounded-card border border-border bg-surface p-5 text-center shadow-card">
+      {/* Paper name, never translated. */}
       <p className="text-sm font-semibold text-ink-muted">Writing</p>
       <p className="mt-2 font-display text-3xl font-extrabold text-ink-muted">—</p>
       <p className="mt-1 text-xs text-ink-muted">
-        {words} words · {graderReady ? 'score it below' : 'not scored here'}
+        {tn(
+          words,
+          { one: '{n} word · {status}', other: '{n} words · {status}' },
+          { status: graderReady ? t('score it below') : t('not scored here') },
+        )}
       </p>
     </div>
   );
 }
 
 function SpeakingResultCard({ result, skipped }: { result: SpeakingLegResult | null; skipped: boolean }) {
+  const { t } = useT();
   return (
     <div className="rounded-card border border-border bg-surface p-5 text-center shadow-card">
+      {/* Paper name, never translated. */}
       <p className="text-sm font-semibold text-ink-muted">Speaking</p>
       <p className="mt-2 font-display text-3xl font-extrabold text-brand">
         {result ? result.overallBand.toFixed(1) : '—'}
       </p>
-      <p className="mt-1 text-xs text-ink-muted">{result ? 'live AI examiner' : skipped ? 'Skipped' : 'not taken'}</p>
+      <p className="mt-1 text-xs text-ink-muted">
+        {result ? t('live AI examiner') : skipped ? t('Skipped') : t('not taken')}
+      </p>
     </div>
   );
 }
 
 function EssayCard({ label, prompt, text }: { label: string; prompt?: EssayPrompt; text: string }) {
+  const { t, tn } = useT();
   const wordCount = countWords(text);
   return (
     <div className="rounded-card border border-border bg-surface p-5 shadow-card">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
+        {/* "Task 1" / "Task 2" stay English. */}
         <span className="text-xs font-bold uppercase tracking-wider text-brand">{label}</span>
-        <span className="text-xs text-ink-muted">{wordCount} words</span>
+        <span className="text-xs text-ink-muted">{tn(wordCount, { one: '{n} word', other: '{n} words' })}</span>
       </div>
       {prompt && <Html as="p" className="mt-2 text-sm text-ink-muted" html={prompt.promptHtml} />}
-      <p className="mt-3 whitespace-pre-wrap text-[0.95rem] leading-relaxed">{text || <span className="text-ink-muted">(left blank)</span>}</p>
+      <p className="mt-3 whitespace-pre-wrap text-[0.95rem] leading-relaxed">{text || <span className="text-ink-muted">{t('(left blank)')}</span>}</p>
     </div>
   );
 }

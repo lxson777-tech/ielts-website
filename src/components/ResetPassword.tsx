@@ -9,10 +9,12 @@ import { useEffect, useState } from 'react';
 import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange, updatePassword } from '../lib/auth/session';
+import { useT } from '../lib/i18n/react';
 
 type Status = 'checking' | 'signedOut' | 'ready' | 'saving' | 'done';
 
 export default function ResetPassword() {
+  const { t } = useT();
   const [status, setStatus] = useState<Status>('checking');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,8 +32,8 @@ export default function ResetPassword() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    if (password !== confirmPassword) return setError("Passwords don't match.");
-    if (password.length < 6) return setError('Password must be at least 6 characters.');
+    if (password !== confirmPassword) return setError(t("Passwords don't match."));
+    if (password.length < 6) return setError(t('Password must be at least 6 characters.'));
     setStatus('saving');
     const { error } = await updatePassword(password);
     if (error) {
@@ -47,16 +49,18 @@ export default function ResetPassword() {
   if (status === 'signedOut') {
     return (
       <div className="mx-auto max-w-sm rounded-card border border-border bg-surface p-6 text-center shadow-card sm:p-7">
-        <h2 className="font-display text-lg font-extrabold">Link expired or invalid</h2>
+        <h2 className="font-display text-lg font-extrabold">{t('Link expired or invalid')}</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Password-reset links only work once and expire after a while. Open the site, click{' '}
-          <strong>Log in</strong>, then <strong>Forgot password?</strong> to request a fresh one.
+          {t('Password-reset links only work once and expire after a while. Open the site, click {login}, then {forgot} to request a fresh one.', {
+            login: t('Log in'),
+            forgot: t('Forgot password?'),
+          })}
         </p>
         <a
           href={withBase('/')}
           className="mt-5 inline-block rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white hover:bg-brand-hover"
         >
-          Back to home
+          {t('Back to home')}
         </a>
       </div>
     );
@@ -65,13 +69,13 @@ export default function ResetPassword() {
   if (status === 'done') {
     return (
       <div className="mx-auto max-w-sm rounded-card border border-border bg-surface p-6 text-center shadow-card sm:p-7">
-        <h2 className="font-display text-lg font-extrabold">Password updated</h2>
-        <p className="mt-2 text-sm text-ink-muted">You're signed in with your new password.</p>
+        <h2 className="font-display text-lg font-extrabold">{t('Password updated')}</h2>
+        <p className="mt-2 text-sm text-ink-muted">{t("You're signed in with your new password.")}</p>
         <a
           href={withBase('/account')}
           className="mt-5 inline-block rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white hover:bg-brand-hover"
         >
-          Go to my account
+          {t('Go to my account')}
         </a>
       </div>
     );
@@ -82,12 +86,12 @@ export default function ResetPassword() {
       onSubmit={onSubmit}
       className="mx-auto max-w-sm rounded-card border border-border bg-surface p-6 shadow-card sm:p-7"
     >
-      <h2 className="font-display text-lg font-extrabold">Set a new password</h2>
-      <p className="mt-1 text-sm text-ink-muted">Choose a new password for your account.</p>
+      <h2 className="font-display text-lg font-extrabold">{t('Set a new password')}</h2>
+      <p className="mt-1 text-sm text-ink-muted">{t('Choose a new password for your account.')}</p>
 
       <div className="mt-5">
         <label htmlFor="new-password" className="block text-sm font-semibold">
-          New password
+          {t('New password')}
         </label>
         <input
           id="new-password"
@@ -104,7 +108,7 @@ export default function ResetPassword() {
 
       <div className="mt-4">
         <label htmlFor="confirm-new-password" className="block text-sm font-semibold">
-          Confirm new password
+          {t('Confirm new password')}
         </label>
         <input
           id="confirm-new-password"
@@ -126,7 +130,7 @@ export default function ResetPassword() {
         disabled={status === 'saving'}
         className="mt-5 w-full rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:opacity-60"
       >
-        {status === 'saving' ? 'Saving…' : 'Set new password'}
+        {status === 'saving' ? t('Saving…') : t('Set new password')}
       </button>
     </form>
   );

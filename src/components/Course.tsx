@@ -21,6 +21,7 @@ import { buildCourse, courseStatus, coursePace, isLessonDone } from '../lib/cour
 import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
 import { getPlanSummary } from '../lib/plan/summary';
 import { currentUnitId, recentlyCompletedUnitId } from '../lib/tutor/units';
+import { useT } from '../lib/i18n/react';
 import UnitNote from './tutor/UnitNote';
 import WeekView from './plan/WeekView';
 
@@ -36,6 +37,7 @@ const SKILL_DOT: Record<string, string> = {
 };
 
 export default function Course({ settingsOnly = false }: { settingsOnly?: boolean }) {
+  const { t, tn } = useT();
   const [plan, setPlan] = useState<SavedPlan | null>(null);
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [ready, setReady] = useState(false);
@@ -162,7 +164,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">
-              {PLAN_TIER_LABEL[tier]}
+              {t(PLAN_TIER_LABEL[tier])}
             </span>
             <span className="text-sm text-ink-muted">{summary.text}</span>
           </div>
@@ -171,7 +173,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
             onClick={() => setShowEditor((v) => !v)}
             className="shrink-0 rounded-button border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt"
           >
-            {showEditor ? 'Close' : 'Change'}
+            {showEditor ? t('Close') : t('Change')}
           </button>}
         </div>
 
@@ -179,8 +181,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
 
         {clampedFromBand && (
           <p className="mt-2 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
-            Your saved target was Band {clampedFromBand}. The course now starts at Band 6.5, so we've set that here,
-            pick a different band if you'd like.
+            {t("Your saved target was Band {band}. The course now starts at Band 6.5, so we've set that here, pick a different band if you'd like.", { band: clampedFromBand })}
           </p>
         )}
 
@@ -192,7 +193,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
           >
             <div>
               <label className="block text-xs font-semibold" htmlFor="target-band-inline">
-                Target band
+                {t('Target band')}
               </label>
               <select
                 id="target-band-inline"
@@ -205,14 +206,14 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
               >
                 {TARGET_BANDS.map((b) => (
                   <option key={b} value={b}>
-                    Band {b}
+                    {t('Band {band}', { band: b })}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-xs font-semibold" htmlFor="test-date-inline">
-                Exam date <span className="font-normal text-ink-muted">(optional)</span>
+                {t('Exam date')} <span className="font-normal text-ink-muted">{t('(optional)')}</span>
               </label>
               <input
                 id="test-date-inline"
@@ -224,7 +225,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
             </div>
             <div>
               <label className="block text-xs font-semibold" htmlFor="daily-minutes-inline">
-                Daily study time
+                {t('Daily study time')}
               </label>
               <select
                 id="daily-minutes-inline"
@@ -234,14 +235,14 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
               >
                 {DAILY_MINUTES_OPTIONS.map((m) => (
                   <option key={m} value={m}>
-                    {m} min/day
+                    {t('{minutes} min/day', { minutes: m })}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-xs font-semibold" htmlFor="study-days-inline">
-                Study days
+                {t('Study days')}
               </label>
               <select
                 id="study-days-inline"
@@ -249,8 +250,8 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
                 onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
                 className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
               >
-                <option value="daily">Every day</option>
-                <option value="weekdays">Weekdays only</option>
+                <option value="daily">{t('Every day')}</option>
+                <option value="weekdays">{t('Weekdays only')}</option>
               </select>
             </div>
             {/* Most universities ask for an overall band AND a floor in every
@@ -258,11 +259,10 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
                 paper simply uses the overall target. */}
             <div className="w-full">
               <p className="text-xs font-semibold">
-                Minimum in each paper <span className="font-normal text-ink-muted">(optional)</span>
+                {t('Minimum in each paper')} <span className="font-normal text-ink-muted">{t('(optional)')}</span>
               </p>
               <p className="mt-0.5 text-xs text-ink-muted">
-                Set these if your university asks for a minimum in every paper, for example 6.5 overall with nothing
-                below 6.0. Leave one blank and it uses your target band.
+                {t('Set these if your university asks for a minimum in every paper, for example 6.5 overall with nothing below 6.0. Leave one blank and it uses your target band.')}
               </p>
               <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {PLAN_SKILLS.map((skill) => (
@@ -276,10 +276,10 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
                       onChange={(e) => setSkillTargets((s) => ({ ...s, [skill]: e.target.value }))}
                       className="mt-1 w-full rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
                     >
-                      <option value="">Same as target</option>
+                      <option value="">{t('Same as target')}</option>
                       {SKILL_TARGET_BANDS.map((b) => (
                         <option key={b} value={b}>
-                          Band {b}
+                          {t('Band {band}', { band: b })}
                         </option>
                       ))}
                     </select>
@@ -291,18 +291,18 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
               type="submit"
               className="rounded-button bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-hover"
             >
-              Save
+              {t('Save')}
             </button>
           </form>
         )}
 
-        {saved && <p role="status" className="mt-4 text-sm font-semibold text-success">Your plan settings are saved.</p>}
-        {settingsOnly && <a href={withBase('/dashboard')} className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">Back to your dashboard</a>}
+        {saved && <p role="status" className="mt-4 text-sm font-semibold text-success">{t('Your plan settings are saved.')}</p>}
+        {settingsOnly && <a href={withBase('/dashboard')} className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">{t('Back to your dashboard')}</a>}
         {!settingsOnly && <>
         <div className="mt-4">
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
             <span>
-              {status.doneLessons} of {status.totalLessons} lessons done
+              {t('{done} of {total} lessons done', { done: status.doneLessons, total: status.totalLessons })}
             </span>
             <span>{status.percent}%</span>
           </div>
@@ -321,23 +321,25 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
           >
             <span className="min-w-0">
               <span className="block text-[0.7rem] font-bold uppercase tracking-wider opacity-80">
-                {status.doneLessons === 0 ? 'Start with' : 'Continue with'} · {status.next.skillLabel}
+                {t(status.doneLessons === 0 ? 'Start with' : 'Continue with')} · {t(status.next.skillLabel)}
               </span>
-              <span className="block truncate font-display text-sm font-bold">{status.next.title}</span>
+              <span className="block truncate font-display text-sm font-bold">{t(status.next.title)}</span>
             </span>
           </a>
         ) : (
           <p className="mt-5 rounded-button bg-success-tint px-5 py-3 text-sm font-semibold text-success">
-            Every lesson complete. Move on to Exam readiness below.
+            {t('Every lesson complete. Move on to Exam readiness below.')}
           </p>
         )}
 
         <p className="mt-3 text-xs text-ink-muted">
-          {pace.note}
+          {t(pace.note)}
           {pace.lessonsPerWeek !== null && (
             <>
               {' '}
-              <strong className="text-ink">About {pace.lessonsPerWeek} lesson{pace.lessonsPerWeek === 1 ? '' : 's'} a week.</strong>
+              <strong className="text-ink">
+                {tn(pace.lessonsPerWeek, { one: 'About {n} lesson a week.', other: 'About {n} lessons a week.' })}
+              </strong>
             </>
           )}
         </p>
@@ -345,7 +347,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
       </div>
 
       {!settingsOnly && <>
-      <p className="mt-6 text-sm text-ink-muted">Eight learning units, usually one per week. Start each paper with its overview, learn the method, then practise. Your calendar adjusts to your available dates; your completed lessons stay saved.</p>
+      <p className="mt-6 text-sm text-ink-muted">{t('Eight learning units, usually one per week. Start each paper with its overview, learn the method, then practise. Your calendar adjusts to your available dates; your completed lessons stay saved.')}</p>
       <WeekView />
 
       {/* modules */}
@@ -360,15 +362,15 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
             >
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <h3 className="font-display text-lg font-bold">
-                  <span className="text-ink-muted">{mod.id}.</span> {mod.name}
+                  <span className="text-ink-muted">{mod.id}.</span> {t(mod.name)}
                 </h3>
                 {mod.lessons.length > 0 && (
                   <span className="text-xs font-semibold text-ink-muted">
-                    {modDone}/{mod.lessons.length} done
+                    {t('{done}/{total} done', { done: modDone, total: mod.lessons.length })}
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm text-ink-muted">{mod.blurb}</p>
+              <p className="mt-1 text-sm text-ink-muted">{t(mod.blurb)}</p>
 
               {mod.id === mrEzWrapUnit ? (
                 <UnitNote unitId={mod.id} kind="wrap" />
@@ -405,7 +407,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
                               done ? 'text-ink-muted line-through' : 'text-ink group-hover:text-brand'
                             }`}
                           >
-                            {lesson.title}
+                            {t(lesson.title)}
                           </span>
                           <span
                             aria-hidden="true"
@@ -413,7 +415,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
                             style={{ background: SKILL_DOT[lesson.skill] }}
                           />
                           <span className="w-[4.5rem] shrink-0 text-right text-[0.7rem] font-semibold text-ink-muted">
-                            {lesson.skillLabel}
+                            {t(lesson.skillLabel)}
                           </span>
                         </a>
                       </li>
@@ -432,13 +434,13 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
                           type="checkbox"
                           checked={checked}
                           onChange={() => toggleExtra(extra.key)}
-                          aria-label={`Mark complete: ${extra.label}`}
+                          aria-label={t('Mark complete: {label}', { label: t(extra.label) })}
                           className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-brand)] disabled:opacity-40"
                         />
                         <span className={`text-sm ${checked ? 'text-ink-muted line-through' : 'text-ink'}`}>
-                          {extra.label}{' '}
+                          {t(extra.label)}{' '}
                           <a href={withBase(extra.href)} className="font-semibold text-brand hover:underline">
-                            Open
+                            {t('Open', undefined, 'verb')}
                           </a>
                         </span>
                       </li>
@@ -452,7 +454,7 @@ export default function Course({ settingsOnly = false }: { settingsOnly?: boolea
       </div>
 
       <p className="mt-6 text-xs text-ink-muted">
-        Lessons tick themselves off when you mark them complete on the lesson page.
+        {t('Lessons tick themselves off when you mark them complete on the lesson page.')}
       </p>
       </>}
     </div>

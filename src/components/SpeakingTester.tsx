@@ -17,6 +17,7 @@ import { nextInRotation } from '../lib/rotation';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../lib/speaking/recorder';
 import { toAnsweredClip, gradeSpeaking, isSpeakingGraderConfigured } from '../lib/speaking/grader';
 import { recordSpeakingAttempt } from '../lib/progress';
+import { useT } from '../lib/i18n/react';
 import BandReport from './BandReport';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
@@ -47,6 +48,7 @@ interface CollectedClip {
 }
 
 export default function SpeakingTester() {
+  const { t, tn } = useT();
   const [mode, setMode] = useState<Mode | null>(null);
   const [promptTitle, setPromptTitle] = useState('');
   const [phase, setPhase] = useState<Phase>('menu');
@@ -87,7 +89,7 @@ export default function SpeakingTester() {
     try {
       stream = await requestMic();
     } catch {
-      setMicError('Microphone access is required for the Speaking test. Please allow the permission and try again.');
+      setMicError(t('Microphone access is required for the Speaking test. Please allow the permission and try again.'));
       return;
     }
     streamRef.current = stream;
@@ -229,7 +231,7 @@ export default function SpeakingTester() {
       // isSpeakingGraderConfigured() gates the Start cards, so any failure
       // reaching here happened after a real request went out — network,
       // timeout, or the Worker itself failing, not a missing config.
-      setMicError('We could not reach the grading service. Please try again in a minute.');
+      setMicError(t('We could not reach the grading service. Please try again in a minute.'));
       setPhase('menu');
     }
   }
@@ -295,7 +297,9 @@ export default function SpeakingTester() {
           title={promptTitle}
           overallBand={result.overallBand}
           live={result.grader.live}
-          offlineWarning="Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading."
+          offlineWarning={t(
+            'Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading.',
+          )}
           criteria={SPEAKING_CRITERIA.map((c) => {
             const score = result.criteria[c.key];
             return {
@@ -313,11 +317,15 @@ export default function SpeakingTester() {
           actionPlan={result.actionPlan}
         >
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-            <h3 className="font-display font-bold">Timing check</h3>
+            <h3 className="font-display font-bold">{t('Timing check')}</h3>
             <div className="mt-3 grid grid-cols-3 gap-3 text-center">
-              <Stat label="Spoke for" value={`${Math.round(m.totalDurationMs / 1000)}s`} bad={m.underLength} />
-              <Stat label="Silence" value={`${Math.round(m.estSilenceRatio * 100)}%`} bad={m.estSilenceRatio > 0.4} />
-              <Stat label="Longest pause" value={`${(m.longestSilenceMs / 1000).toFixed(1)}s`} bad={m.longestSilenceMs > 4000} />
+              <Stat label={t('Spoke for')} value={`${Math.round(m.totalDurationMs / 1000)}s`} bad={m.underLength} />
+              <Stat label={t('Silence')} value={`${Math.round(m.estSilenceRatio * 100)}%`} bad={m.estSilenceRatio > 0.4} />
+              <Stat
+                label={t('Longest pause')}
+                value={`${(m.longestSilenceMs / 1000).toFixed(1)}s`}
+                bad={m.longestSilenceMs > 4000}
+              />
             </div>
             {m.notes.length > 0 && (
               <ul className="mt-4 space-y-1.5 text-sm text-ink-muted">
@@ -333,7 +341,7 @@ export default function SpeakingTester() {
 
           {result.moments.length > 0 && (
             <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-              <h3 className="font-display font-bold">Moments from your answer</h3>
+              <h3 className="font-display font-bold">{t('Moments from your answer')}</h3>
               <ul className="mt-3 space-y-2 text-sm">
                 {result.moments.map((mo, i) => (
                   <li key={i}>
@@ -359,14 +367,14 @@ export default function SpeakingTester() {
             onClick={() => void startMode(mode!)}
             className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
           >
-            ↻ Practice this part again
+            ↻ {t('Practice this part again')}
           </button>
           <button
             type="button"
             onClick={backToMenu}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Choose a different part
+            {t('Choose a different part')}
           </button>
         </div>
       </div>
@@ -380,23 +388,27 @@ export default function SpeakingTester() {
         <div className="speaking-choice">
           <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking</p>
-          <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">Choose your speaking practice</h3>
+          <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">{t('Choose your speaking practice')}</h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-            Pick a part. Each question appears on screen, you record your answer with your microphone, and an AI
-            examiner grades you on the four official IELTS Speaking criteria. A coach panel with the answer
-            structure, useful phrases, and topic vocabulary stays beside you.
+            {t(
+              'Pick a part. Each question appears on screen, you record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria. A coach panel with the answer structure, useful phrases, and topic vocabulary stays beside you.',
+            )}
           </p>
           {micError && (
             <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
           )}
           {!isSpeakingGraderConfigured() && (
             <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-              ⚠ AI feedback is not available on this build (PUBLIC_SPEAKING_GRADER_URL is not set).
+              ⚠{' '}
+              {t('AI feedback is not available on this build ({envVar} is not set).', {
+                envVar: 'PUBLIC_SPEAKING_GRADER_URL',
+              })}
             </p>
           )}
           <SpeakingPartCards onStart={(m) => void startMode(m)} disabled={!isSpeakingGraderConfigured()} />
           <p className="mt-4 text-xs text-ink-muted">
-            {SPEAKING_PART1_TOPICS.length} Part 1 topics · {SPEAKING_CUE_CARDS.length} cue cards · free
+            {tn(SPEAKING_PART1_TOPICS.length, { one: '{n} Part 1 topic', other: '{n} Part 1 topics' })} ·{' '}
+            {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })} · {t('free')}
           </p>
         </div>
       </div>
@@ -415,7 +427,7 @@ export default function SpeakingTester() {
             {MODE_LABEL[mode!]} · {promptTitle}
           </span>
           <span className="text-xs font-semibold text-ink-muted">
-            Question {turnIndex + 1} / {turnCount}
+            {t('Question {current} / {total}', { current: turnIndex + 1, total: turnCount })}
           </span>
         </div>
         <p className="mt-3 text-[1.05rem] font-semibold leading-relaxed">{currentQuestion}</p>
@@ -428,13 +440,13 @@ export default function SpeakingTester() {
 
       {phase === 'asking' && (
         <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
-          <p className="text-sm text-ink-muted">Read the question above, then continue when you're ready.</p>
+          <p className="text-sm text-ink-muted">{t("Read the question above, then continue when you're ready.")}</p>
           <button
             type="button"
             onClick={confirmReady}
             className="mt-4 rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
           >
-            {turnsRef.current[turnIndex]?.prepMs ? 'Start prep time' : 'Start answering'}
+            {turnsRef.current[turnIndex]?.prepMs ? t('Start prep time') : t('Start answering')}
           </button>
         </div>
       )}
@@ -443,20 +455,20 @@ export default function SpeakingTester() {
         <div className="screen-in space-y-3">
           <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
             <p className="font-display text-4xl font-extrabold text-brand">{prepSecondsLeft}s</p>
-            <p className="mt-1 text-sm text-ink-muted">Prep time: plan what you'll say. You can start early.</p>
+            <p className="mt-1 text-sm text-ink-muted">{t("Prep time: plan what you'll say. You can start early.")}</p>
             <button
               type="button"
               onClick={skipPrep}
               className="mt-4 rounded-button bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
             >
-              Start speaking now
+              {t('Start speaking now')}
             </button>
           </div>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={4}
-            placeholder="Optional notes (not graded)…"
+            placeholder={t('Optional notes (not graded)…')}
             className="w-full rounded-card border border-border bg-surface p-3 text-sm shadow-card focus:border-brand focus:outline-none"
           />
         </div>
@@ -466,14 +478,14 @@ export default function SpeakingTester() {
         <div className="screen-in rounded-card border border-border bg-surface p-6 text-center shadow-card">
           <p className="flex items-center justify-center gap-2 text-sm font-semibold text-error">
             <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-error" aria-hidden="true" />
-            Recording: {Math.ceil(remainingMs / 1000)}s left
+            {t('Recording: {seconds}s left', { seconds: Math.ceil(remainingMs / 1000) })}
           </p>
           <button
             type="button"
             onClick={() => void stopAnswering()}
             className="mt-4 rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover"
           >
-            Stop answering
+            {t('Stop answering')}
           </button>
         </div>
       )}

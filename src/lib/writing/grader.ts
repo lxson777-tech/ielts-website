@@ -6,6 +6,7 @@
 import type { EssayAssessment, EssayGrader, EssayInput, GradeResult, MechanicsReport } from './schema';
 import { overallBand } from './schema';
 import { analyzeEssay } from './mechanics';
+import { t } from '../i18n/translate';
 
 /* Remote grader — POSTs to our Cloudflare Worker, which holds the API key and
    calls the actual model (Gemini Flash today; the site doesn't know or care). */
@@ -64,7 +65,7 @@ export function isGraderConfigured(): boolean {
     caller can tell the student grading failed rather than showing a
     fabricated band. */
 export async function gradeEssay(input: EssayInput): Promise<GradeResult> {
-  if (!GRADER_URL) throw new Error('The AI examiner is not configured for this site yet.');
+  if (!GRADER_URL) throw new Error(t('The AI examiner is not configured for this site yet.'));
   const mechanics = analyzeEssay(input);
   const grader: EssayGrader = new RemoteGrader(GRADER_URL);
   const assessment = await grader.grade(input, mechanics);

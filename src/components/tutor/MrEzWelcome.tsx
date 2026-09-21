@@ -28,6 +28,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
+import { useT } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
 import { localInsights, localRecommendation, localWelcomeText, toTutorRecommendation } from '../../lib/tutor/local';
@@ -67,6 +68,7 @@ function buildLocalView(): LocalView {
 }
 
 export default function MrEzWelcome() {
+  const { t } = useT();
   const [local, setLocal] = useState<LocalView | null>(null);
   const [tutor, setTutor] = useState<TutorView | null>(null);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -166,7 +168,7 @@ export default function MrEzWelcome() {
       <div className="mrez-welcome-body">
         <h2 id="mrez-welcome-heading" className="mrez-welcome-heading">
           Mr EZ
-          {shown.fromTutor && !shown.live && <span className="mrez-sim-badge">Simulated, not a real AI reply</span>}
+          {shown.fromTutor && !shown.live && <span className="mrez-sim-badge">{t('Simulated, not a real AI reply')}</span>}
         </h2>
         <p className="mrez-welcome-text">{shown.text}</p>
 
@@ -177,7 +179,7 @@ export default function MrEzWelcome() {
             <a className="mrez-welcome-cta" href={withBase(shown.recommendation.href)}>
               <span className="mrez-welcome-cta-label">
                 {shown.recommendation.label}
-                {shown.recommendation.minutes ? ` · ${shown.recommendation.minutes} min` : ''}
+                {shown.recommendation.minutes ? ` · ${t('{n} min', { n: shown.recommendation.minutes })}` : ''}
               </span>
               <span className="mrez-welcome-cta-reason">{shown.recommendation.reason}</span>
             </a>
@@ -193,6 +195,7 @@ export default function MrEzWelcome() {
 /** The one thing worth asking a brand-new student, asked once, inline. No
     modal, no multi-step onboarding: a band and an optional date. */
 function GoalForm() {
+  const { t } = useT();
   const [band, setBand] = useState<string>('7.0');
   const [date, setDate] = useState('');
   const [saved, setSaved] = useState(false);
@@ -212,12 +215,12 @@ function GoalForm() {
     setSaved(true);
   }
 
-  if (saved) return <p className="mrez-welcome-note">Saved. Everything I suggest from here is aimed at that.</p>;
+  if (saved) return <p className="mrez-welcome-note">{t('Saved. Everything I suggest from here is aimed at that.')}</p>;
 
   return (
     <form className="mrez-goal" onSubmit={save}>
       <div className="mrez-goal-field">
-        <label htmlFor="mrez-goal-band">Band you need</label>
+        <label htmlFor="mrez-goal-band">{t('Band you need')}</label>
         <select id="mrez-goal-band" value={band} onChange={(e) => setBand(e.target.value)}>
           {TARGET_BANDS.map((b) => (
             <option key={b} value={b}>{b}</option>
@@ -225,10 +228,10 @@ function GoalForm() {
         </select>
       </div>
       <div className="mrez-goal-field">
-        <label htmlFor="mrez-goal-date">Exam date (optional)</label>
+        <label htmlFor="mrez-goal-date">{t('Exam date (optional)')}</label>
         <input id="mrez-goal-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
       </div>
-      <button type="submit" className="mrez-goal-save">Save</button>
+      <button type="submit" className="mrez-goal-save">{t('Save')}</button>
     </form>
   );
 }

@@ -4,6 +4,7 @@
    All functions are pure so they can be unit-tested in isolation. */
 
 import type { EssayInput, MechanicsReport } from './schema';
+import { t, tn } from '../i18n/translate';
 
 /* Small, high-frequency function words. Excluded from content-word stats
    (overuse, topic overlap) so the signal reflects meaning, not grammar. */
@@ -163,42 +164,49 @@ export function analyzeEssay(input: EssayInput): MechanicsReport {
   const notes: string[] = [];
   if (underLength) {
     /* Task 1 is marked on Task Achievement, Task 2 on Task Response. Naming the
-       wrong criterion sends the student to the wrong advice. */
+       wrong criterion sends the student to the wrong advice. Both names are
+       official assessment criteria and stay in English inside the Russian
+       sentence. */
     const criterion = prompt.task === 'task1' ? 'Task Achievement' : 'Task Response';
     notes.push(
-      `Under the ${prompt.minWords}-word minimum (${wordCount} words), which caps your ${criterion} band.`,
+      t('Under the {min}-word minimum ({count} words), which caps your {criterion} band.', {
+        min: prompt.minWords,
+        count: wordCount,
+        criterion,
+      }),
     );
   } else {
-    notes.push(`${wordCount} words, comfortably over the ${prompt.minWords}-word minimum.`);
+    notes.push(t('{count} words, comfortably over the {min}-word minimum.', { count: wordCount, min: prompt.minWords }));
   }
   if (sentenceCount >= 3) {
     if (sentenceLengthSpread < 3) {
-      notes.push('Sentence lengths are very uniform. Mix short and long sentences for rhythm.');
+      notes.push(t('Sentence lengths are very uniform. Mix short and long sentences for rhythm.'));
     } else if (avgSentenceLength > 30) {
-      notes.push('Your sentences are long on average. Check for run-ons you could split.');
+      notes.push(t('Your sentences are long on average. Check for run-ons you could split.'));
     } else {
-      notes.push('Good variation in sentence length.');
+      notes.push(t('Good variation in sentence length.'));
     }
   }
   if (lexicalDiversity < 0.42) {
-    notes.push('Vocabulary is quite repetitive. Vary word choice to lift Lexical Resource.');
+    notes.push(t('Vocabulary is quite repetitive. Vary word choice to lift Lexical Resource.'));
   } else if (lexicalDiversity >= 0.55) {
-    notes.push('Varied vocabulary: a strong Lexical Resource signal.');
+    notes.push(t('Varied vocabulary: a strong Lexical Resource signal.'));
   }
   if (overusedWords.length) {
     const top = overusedWords[0]!;
-    notes.push(`You repeat "${top.word}" ${top.count} times. Try synonyms.`);
+    const timesText = tn(top.count, { one: '{n} time', other: '{n} times' });
+    notes.push(t('You repeat "{word}" {times}. Try synonyms.', { word: top.word, times: timesText }));
   }
   if (linkerTotal === 0 && sentenceCount > 3) {
-    notes.push('No linking words detected. Add cohesive devices (However, Moreover, For example…).');
+    notes.push(t('No linking words detected. Add cohesive devices (However, Moreover, For example…).'));
   } else if (connectiveDensity > 0.8) {
-    notes.push('Heavy use of linking words: a few are being overused; let some ideas connect naturally.');
+    notes.push(t('Heavy use of linking words: a few are being overused; let some ideas connect naturally.'));
   }
   if (flags.length) {
-    notes.push(`${flags.length} likely spelling slip${flags.length > 1 ? 's' : ''} detected.`);
+    notes.push(tn(flags.length, { one: '{n} likely spelling slip detected.', other: '{n} likely spelling slips detected.' }));
   }
   if (offTopicRisk) {
-    notes.push('Low overlap with the question wording. Make sure you are answering the prompt directly.');
+    notes.push(t('Low overlap with the question wording. Make sure you are answering the prompt directly.'));
   }
 
   return {

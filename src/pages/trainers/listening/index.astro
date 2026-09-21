@@ -44,7 +44,7 @@ function drillTypes(drill: (typeof ALL_LISTENING_DRILLS)[number]): string[] {
   description="Timed single-part listening drills with live strategy coaching: practice one part of the recording at a time without a full test."
 >
   <div class="skill-listening mx-auto max-w-5xl px-4 py-12 sm:px-6">
-    <a href={withBase('/trainers')} class="inline-block py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">All trainers</a>
+    <a href={withBase('/trainers')} class="inline-block py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink" data-i18n>All trainers</a>
 
     <SectionHeading
       eyebrow="Listening"
@@ -57,12 +57,12 @@ function drillTypes(drill: (typeof ALL_LISTENING_DRILLS)[number]): string[] {
         this is a static page — the query string doesn't exist at build time. */}
     <div id="type-filter-banner" hidden class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-brand-tint px-4 py-3">
       <div>
-        <h2 class="font-display text-sm font-bold text-ink">Drills with <span id="type-filter-label"></span></h2>
-        <p class="mt-0.5 text-xs text-ink-muted"><span id="type-filter-count">0</span> matching drills</p>
+        <h2 class="font-display text-sm font-bold text-ink"><span data-i18n>Drills with</span> <span id="type-filter-label"></span></h2>
+        <p class="mt-0.5 text-xs text-ink-muted"><span id="type-filter-count">0</span> <span data-i18n>matching drills</span></p>
       </div>
-      <a href={withBase('/trainers/listening')} class="shrink-0 text-sm font-semibold text-brand hover:underline">Show all drills</a>
+      <a href={withBase('/trainers/listening')} class="shrink-0 text-sm font-semibold text-brand hover:underline" data-i18n>Show all drills</a>
     </div>
-    <p id="type-filter-empty" hidden class="mb-4 rounded-card border border-dashed border-border bg-surface-alt p-4 text-center text-sm text-ink-muted">
+    <p id="type-filter-empty" hidden class="mb-4 rounded-card border border-dashed border-border bg-surface-alt p-4 text-center text-sm text-ink-muted" data-i18n>
       No drill happens to isolate this question type on its own yet — try a full listening test instead.
     </p>
 

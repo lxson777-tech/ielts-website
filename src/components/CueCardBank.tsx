@@ -13,6 +13,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CUE_CARDS, CUE_CARD_FAMILIES, type CueCard, type CueCardFamily } from '../data/cue-cards';
 import { withBase } from '../lib/url';
+import { useT } from '../lib/i18n/react';
 import Tabs, { type TabDef } from './Tabs';
 
 type PrepPhase = 'idle' | 'prep' | 'speaking' | 'done';
@@ -42,14 +43,14 @@ function ShuffleIcon() {
   );
 }
 
-const DETAIL_TABS: TabDef[] = [
-  { id: 'plan', label: 'Plan' },
-  { id: 'model', label: 'Model answer' },
-  { id: 'upgrade', label: 'Band 8 upgrade' },
-  { id: 'part3', label: 'Part 3' },
-];
-
 export default function CueCardBank() {
+  const { t, tn } = useT();
+  const DETAIL_TABS: TabDef[] = [
+    { id: 'plan', label: t('Plan') },
+    { id: 'model', label: t('Model answer') },
+    { id: 'upgrade', label: t('Band 8 upgrade') },
+    { id: 'part3', label: 'Part 3' },
+  ];
   const [familyFilter, setFamilyFilter] = useState<CueCardFamily | 'all'>('all');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('plan');
@@ -139,7 +140,7 @@ export default function CueCardBank() {
             onClick={backToGrid}
             className="text-sm font-semibold text-ink-muted hover:text-ink"
           >
-            All cue cards
+            {t('All cue cards')}
           </button>
           <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
             {familyLabel(selected.family)}
@@ -151,9 +152,9 @@ export default function CueCardBank() {
             <CueCardBox card={selected} />
 
             <div className="rounded-card border border-border bg-surface p-4 shadow-card">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Rounding-off questions</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Rounding-off questions')}</p>
               <p className="mt-1 text-xs text-ink-muted">
-                Short questions the examiner may ask right after your two minutes, before moving on to Part 3.
+                {t('Short questions the examiner may ask right after your two minutes, before moving on to Part 3.')}
               </p>
               <div className="mt-3 space-y-2">
                 {selected.roundingOff.map((r) => (
@@ -171,14 +172,14 @@ export default function CueCardBank() {
                 onClick={startPrepareAndSpeak}
                 className="rounded-button bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
               >
-                ▷ Prepare and speak
+                ▷ {t('Prepare and speak')}
               </button>
               <button
                 type="button"
                 onClick={pickRandom}
                 className="inline-flex items-center gap-1.5 rounded-button border border-border px-5 py-2.5 text-sm font-semibold hover:bg-surface-alt"
               >
-                <ShuffleIcon /> Random card
+                <ShuffleIcon /> {t('Random card')}
               </button>
               <label className="ml-auto flex items-center gap-2 text-xs text-ink-muted">
                 <input
@@ -187,7 +188,7 @@ export default function CueCardBank() {
                   onChange={(e) => setShowDuringSpeaking(e.target.checked)}
                   className="h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 />
-                Keep the card visible while I speak
+                {t('Keep the card visible while I speak')}
               </label>
             </div>
 
@@ -197,10 +198,10 @@ export default function CueCardBank() {
                 {activeTab === 'plan' && (
                   <div id="tabpanel-plan" role="tabpanel" aria-labelledby="tab-plan">
                     <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-                      One-minute prep notes
+                      {t('One-minute prep notes')}
                     </p>
                     <p className="mt-1 text-xs text-ink-muted">
-                      Short jotted notes, the way you would actually write them in the real one-minute prep.
+                      {t('Short jotted notes, the way you would actually write them in the real one-minute prep.')}
                     </p>
                     <ul className="mt-3 space-y-1.5 text-sm">
                       {selected.notes.map((n, i) => (
@@ -216,7 +217,7 @@ export default function CueCardBank() {
                 {activeTab === 'model' && (
                   <div id="tabpanel-model" role="tabpanel" aria-labelledby="tab-model">
                     <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-                      Band 7.0 model answer
+                      {t('Band 7.0 model answer')}
                     </p>
                     <div className="mt-3 space-y-3 text-sm leading-relaxed text-ink">
                       {selected.model.map((p, i) => (
@@ -228,9 +229,9 @@ export default function CueCardBank() {
 
                 {activeTab === 'upgrade' && (
                   <div id="tabpanel-upgrade" role="tabpanel" aria-labelledby="tab-upgrade">
-                    <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Band 8 upgrade</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Band 8 upgrade')}</p>
                     <p className="mt-1 text-xs text-ink-muted">
-                      Phrases and structures worth borrowing from the model answer above.
+                      {t('Phrases and structures worth borrowing from the model answer above.')}
                     </p>
                     <ul className="mt-3 space-y-3">
                       {selected.upgrades.map((u) => (
@@ -246,7 +247,7 @@ export default function CueCardBank() {
                 {activeTab === 'part3' && (
                   <div id="tabpanel-part3" role="tabpanel" aria-labelledby="tab-part3">
                     <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-                      Part 3 follow-up questions
+                      {t('Part 3 follow-up questions')}
                     </p>
                     <div className="mt-3 space-y-4">
                       {selected.part3.map((p, i) => (
@@ -267,24 +268,24 @@ export default function CueCardBank() {
           <div className="screen-in space-y-4">
             <div className="rounded-card border border-border bg-surface p-8 text-center shadow-card">
               <p className="text-xs font-bold uppercase tracking-wider text-brand">
-                {prepPhase === 'prep' ? 'Preparation time' : 'Speaking time'}
+                {prepPhase === 'prep' ? t('Preparation time') : t('Speaking time')}
               </p>
               <p className="mt-2 font-display text-6xl font-extrabold tabular-nums text-brand" aria-live="polite">
                 {formatClock(secondsLeft)}
               </p>
               <p className="mt-2 text-sm text-ink-muted">
                 {prepPhase === 'prep'
-                  ? 'Read the card and jot short notes, the way you would with a real pencil and paper.'
+                  ? t('Read the card and jot short notes, the way you would with a real pencil and paper.')
                   : showDuringSpeaking
-                    ? 'Speak until the timer ends. Cover every bullet, then explain why.'
-                    : 'Speak from memory. Nothing is being recorded here, the Speaking Trainer does that.'}
+                    ? t('Speak until the timer ends. Cover every bullet, then explain why.')
+                    : t('Speak from memory. Nothing is being recorded here, the Speaking Trainer does that.')}
               </p>
               <button
                 type="button"
                 onClick={cancelPrepare}
                 className="mt-5 rounded-button border border-border px-5 py-2 text-sm font-semibold hover:bg-surface-alt"
               >
-                Stop
+                {t('Stop')}
               </button>
             </div>
             {(prepPhase === 'prep' || (prepPhase === 'speaking' && showDuringSpeaking)) && (
@@ -296,10 +297,11 @@ export default function CueCardBank() {
         {prepPhase === 'done' && (
           <div className="screen-in space-y-4">
             <div className="rounded-card border border-border bg-surface p-8 text-center shadow-card">
-              <p className="font-display text-2xl font-extrabold">Time's up</p>
+              <p className="font-display text-2xl font-extrabold">{t("Time's up")}</p>
               <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted">
-                That's the full two minutes. Compare what you said against the model answer, or take it to the
-                Speaking Trainer for a real AI-graded attempt with your microphone.
+                {t(
+                  "That's the full two minutes. Compare what you said against the model answer, or take it to the Speaking Trainer for a real AI-graded attempt with your microphone.",
+                )}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <button
@@ -307,13 +309,13 @@ export default function CueCardBank() {
                   onClick={() => setPrepPhase('idle')}
                   className="rounded-button border border-border px-5 py-2.5 text-sm font-semibold hover:bg-surface-alt"
                 >
-                  ↻ Back to this card
+                  ↻ {t('Back to this card')}
                 </button>
                 <a
                   href={withBase('/trainers/speaking')}
                   className="rounded-button bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
                 >
-                  Practise this in the Speaking Trainer
+                  {t('Practise this in the Speaking Trainer')}
                 </a>
               </div>
             </div>
@@ -329,7 +331,7 @@ export default function CueCardBank() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="cue-chip-row flex flex-wrap gap-2">
           <FilterChip active={familyFilter === 'all'} onClick={() => setFamilyFilter('all')}>
-            All ({CUE_CARDS.length})
+            {t('All ({count})', { count: CUE_CARDS.length })}
           </FilterChip>
           {CUE_CARD_FAMILIES.map((f) => {
             const count = CUE_CARDS.filter((c) => c.family === f.id).length;
@@ -345,7 +347,7 @@ export default function CueCardBank() {
           onClick={pickRandom}
           className="inline-flex shrink-0 items-center gap-1.5 rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
         >
-          <ShuffleIcon /> Random card
+          <ShuffleIcon /> {t('Random card')}
         </button>
       </div>
 
@@ -361,14 +363,16 @@ export default function CueCardBank() {
               {familyLabel(c.family)}
             </span>
             <p className="font-display text-base font-bold leading-snug group-hover:text-brand">{c.title}</p>
-            <p className="mt-auto text-xs text-ink-muted">{c.card.points.length + 1} points to cover</p>
+            <p className="mt-auto text-xs text-ink-muted">
+              {tn(c.card.points.length + 1, { one: '{n} point to cover', other: '{n} points to cover' })}
+            </p>
           </button>
         ))}
       </div>
 
       {filtered.length === 0 && (
         <p className="rounded-card border border-dashed border-border p-8 text-center text-sm text-ink-muted">
-          No cards in this family yet.
+          {t('No cards in this family yet.')}
         </p>
       )}
     </div>
@@ -404,10 +408,11 @@ function FilterChip({
     "You should say:" / bulleted points / a closing note), styled from this
     page's own design tokens so it needs no cross-file CSS dependency. */
 function CueCardBox({ card, compact }: { card: CueCard; compact?: boolean }) {
+  const { t } = useT();
   return (
     <div className={`rounded-card border-2 border-brand bg-surface shadow-card ${compact ? 'p-5' : 'p-6'}`}>
       <p className="font-display text-lg font-bold leading-snug">{card.card.topic}</p>
-      <p className="mt-3 text-sm italic text-ink-muted">You should say:</p>
+      <p className="mt-3 text-sm italic text-ink-muted">{t('You should say:')}</p>
       <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
         {card.card.points.map((pt, i) => (
           <li key={i}>{pt}</li>
@@ -415,7 +420,7 @@ function CueCardBox({ card, compact }: { card: CueCard; compact?: boolean }) {
         <li>{card.card.explain}</li>
       </ul>
       <p className="mt-4 border-t border-border pt-3 text-xs text-ink-muted">
-        You will have one minute to prepare before speaking.
+        {t('You will have one minute to prepare before speaking.')}
       </p>
     </div>
   );

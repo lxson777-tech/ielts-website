@@ -17,6 +17,7 @@ import Html from './Html';
 import StrategyPanel from './StrategyPanel';
 import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
 import { withBase } from '../lib/url';
+import { useT } from '../lib/i18n/react';
 import { isBookmarked, toggleBookmark } from '../lib/notes';
 import TestDebrief from './tutor/TestDebrief';
 import AskWhyWrong from './tutor/AskWhyWrong';
@@ -89,10 +90,11 @@ function PartSwitcher({
   activePart: number;
   onSelect: (i: number) => void;
 }) {
+  const { t } = useT();
   return (
     <div
       role="group"
-      aria-label="Choose passage"
+      aria-label={t('Choose passage')}
       className="mb-4 flex flex-wrap gap-1 rounded-full border border-border bg-surface-alt p-1"
     >
       {parts.map((p, i) => {
@@ -195,6 +197,10 @@ function truncatePlain(html: string, max = 90): string {
 }
 
 export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish }: Props) {
+  /* Interface language. Declared first so every hook below keeps a stable
+     order, and read as `t`/`tn` only for text: nothing in the timer, the
+     session or the scoring reads it. */
+  const { t, tn } = useT();
   const numbered = useMemo(() => numberQuestions(test), [test]);
   const TOTAL = numbered.length;
   const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
@@ -518,8 +524,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   const stimulus = part.stimulus;
   const partItems = numbered.filter((nq) => nq.part === part);
   const partRange = partItems.length
-    ? `Questions ${partItems[0]!.n}-${partItems[partItems.length - 1]!.n}`
-    : 'Questions';
+    ? t('Questions {from}-{to}', { from: partItems[0]!.n, to: partItems[partItems.length - 1]!.n })
+    : t('Questions');
   const timerWarn = timeLeft <= 300 && !submitted;
 
   /* Park the ring on the active circle. Runs after every render that could
@@ -625,7 +631,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       {/* ── Top bar ── */}
       <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 sm:gap-3 sm:px-4">
         <a href={hubUrl} className="shrink-0 whitespace-nowrap py-2 text-sm font-semibold text-ink-muted hover:text-ink">
-          <span className="hidden sm:inline">Tests</span>
+          {/* "Tests" is the workspace tab's own word, translated once in
+              dict/ru/shell.ts — no second entry here. */}
+          <span className="hidden sm:inline">{t('Tests')}</span>
         </a>
         <span className="hidden truncate font-display text-sm font-bold md:block">{test.title}</span>
         <div
@@ -633,7 +641,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
           }`}
           role="timer"
-          aria-label="Time remaining"
+          aria-label={t('Time remaining')}
         >
           <span aria-hidden="true">⏱</span>
           {pad(Math.floor(timeLeft / 60))}:{pad(timeLeft % 60)}
@@ -646,7 +654,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           }}
           className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt sm:px-3"
         >
-          Review
+          {/* "Review" here means "take me to the question list to check my
+              answers". The study plan uses the same English word for revising
+              a lesson, so this one carries a context (docs/I18N-GUIDE.md). */}
+          {t('Review', undefined, 'test player')}
         </button>
         {/* Reopens the score modal once it's been dismissed via "Review
             Answers" — without this there was no way back to it, which
@@ -661,7 +672,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             onClick={() => setShowScore(true)}
             className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt sm:px-3"
           >
-            Score
+            {t('Score')}
           </button>
         )}
         <button
@@ -670,7 +681,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           disabled={submitted}
           className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 sm:px-4"
         >
-          Submit
+          {t('Submit')}
         </button>
       </header>
 
@@ -683,7 +694,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         >
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-semibold text-ink">
-              You have {unansweredCount} unanswered {unansweredCount === 1 ? 'question' : 'questions'}. Submit anyway?
+              {tn(unansweredCount, {
+                one: 'You have {n} unanswered question. Submit anyway?',
+                other: 'You have {n} unanswered questions. Submit anyway?',
+              })}
             </p>
             <div className="flex shrink-0 gap-2">
               <button
@@ -691,14 +705,14 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 onClick={() => setConfirmSubmit(false)}
                 className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm font-semibold hover:bg-surface-alt"
               >
-                Go back
+                {t('Go back')}
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
                 className="rounded-button bg-brand px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-hover"
               >
-                Submit
+                {t('Submit')}
               </button>
             </div>
           </div>
@@ -712,14 +726,14 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         <div role="status" className="shrink-0 border-b border-success/30 bg-success-tint px-4 py-3">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-semibold text-ink">
-              You fixed {retakeResult.fixed} of {retakeResult.total}.
+              {t('You fixed {fixed} of {total}.', { fixed: retakeResult.fixed, total: retakeResult.total })}
             </p>
             <button
               type="button"
               onClick={() => setRetakeResult(null)}
               className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm font-semibold hover:bg-surface-alt"
             >
-              Dismiss
+              {t('Dismiss')}
             </button>
           </div>
         </div>
@@ -746,7 +760,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             mobileView === 'stimulus' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
           }`}
         >
-          <BookIcon /> {stimulus.kind === 'passage' ? 'Passage' : 'Question paper'}
+          <BookIcon /> {stimulus.kind === 'passage' ? t('Passage') : t('Question paper')}
         </button>
         <button
           type="button"
@@ -755,7 +769,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             mobileView === 'questions' ? 'border-brand text-brand' : 'border-transparent text-ink-muted'
           }`}
         >
-          <PencilIcon /> {stimulus.kind === 'audio' ? 'Answer sheet' : 'Questions'}{' '}
+          <PencilIcon /> {stimulus.kind === 'audio' ? t('Answer sheet') : t('Questions')}{' '}
           <span className="font-normal opacity-70">
             {numbered.filter((nq) => nq.part === part && nq.question.scored !== false && answers[nq.question.id]).length}/
             {numbered.filter((nq) => nq.part === part && nq.question.scored !== false).length}
@@ -798,8 +812,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             <div className="mx-auto max-w-3xl px-4 py-5 sm:px-6 sm:py-7">
               <div className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
                 <div>
-                  <h2 className="font-display text-2xl font-extrabold">Question paper</h2>
-                  <p className="mt-1 text-sm text-ink-muted">{stimulus.label}. Follow the recording and read each task carefully.</p>
+                  <h2 className="font-display text-2xl font-extrabold">{t('Question paper')}</h2>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    {t('{label}. Follow the recording and read each task carefully.', { label: stimulus.label })}
+                  </p>
                 </div>
                 <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">{partRange}</span>
               </div>
@@ -807,12 +823,12 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 <Html className="listening-question-paper" html={questionAssets(stimulus.questionHtml)} />
               ) : (
                 <p className="rounded-card border border-border bg-surface p-4 text-sm text-ink-muted">
-                  The question paper for this section is unavailable.
+                  {t('The question paper for this section is unavailable.')}
                 </p>
               )}
               {submitted && stimulus.transcriptHtml && (
                 <details ref={transcriptDetailsRef} className="mt-7 rounded-card border border-border bg-surface-alt p-4">
-                  <summary className="cursor-pointer text-sm font-semibold text-[var(--skill,var(--color-brand))]">Review transcript</summary>
+                  <summary className="cursor-pointer text-sm font-semibold text-[var(--skill,var(--color-brand))]">{t('Review transcript')}</summary>
                   <div ref={transcriptContentRef}>
                     <Html className="mt-2 text-sm leading-relaxed text-ink-muted" html={stimulus.transcriptHtml} />
                   </div>
@@ -828,7 +844,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           onMouseDown={startDrag}
           role="separator"
           aria-orientation="vertical"
-          aria-label="Resize panes"
+          aria-label={t('Resize panes')}
         />
 
         {/* Questions pane */}
@@ -839,8 +855,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           <div className="mx-auto max-w-2xl px-5 py-6">
             {stimulus.kind === 'audio' && (
               <div className="mb-7 border-b border-border pb-4">
-                <h2 className="font-display text-2xl font-extrabold">Answer sheet</h2>
-                <p className="mt-1 text-sm text-ink-muted">{stimulus.label}. Enter answers for {partRange.toLowerCase()}.</p>
+                <h2 className="font-display text-2xl font-extrabold">{t('Answer sheet')}</h2>
+                <p className="mt-1 text-sm text-ink-muted">
+                  {t('{label}. Enter answers for {range}.', {
+                    label: stimulus.label,
+                    range: partRange.toLowerCase(),
+                  })}
+                </p>
               </div>
             )}
             {/* Prominent passage/section switcher — the footer pills are easy
@@ -858,14 +879,18 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             )}
             {activePart === 0 && test.skill !== 'listening' && (
               <p className="-mt-2 mb-4 text-xs text-ink-muted">
-                Do the passages in any order. Your answers are kept when you switch.
+                {t('Do the passages in any order. Your answers are kept when you switch.')}
               </p>
             )}
             {/* Desktop-only keyboard-nav hint (feature 3) — shown only while
                 actively answering, never once the test is submitted. */}
+            {/* One sentence, one key: Russian puts the keys and the verb in a
+                different order, so the two kbd chips that used to sit mid
+                sentence became a placeholder rather than three separately
+                translated fragments (docs/I18N-GUIDE.md). */}
             {!submitted && (
               <p className="mb-4 hidden text-xs text-ink-muted md:block">
-                Tip: press <kbd className="rounded border border-border bg-surface-alt px-1 py-0.5 font-mono text-[0.7rem]">j</kbd>/<kbd className="rounded border border-border bg-surface-alt px-1 py-0.5 font-mono text-[0.7rem]">k</kbd> or the arrow keys to move between questions.
+                {t('Tip: press {keys} or the arrow keys to move between questions.', { keys: 'j/k' })}
               </p>
             )}
             {/* Review filter toggle (feature 3) — only meaningful once
@@ -876,7 +901,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             {submitted && (
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-xs font-semibold text-ink-muted">
-                  <span>Show:</span>
+                  <span>{t('Show:')}</span>
                   <div className="inline-flex rounded-full border border-border bg-surface-alt p-0.5">
                     <button
                       type="button"
@@ -886,7 +911,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                         reviewFilter === 'all' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
                       }`}
                     >
-                      All
+                      {t('All')}
                     </button>
                     <button
                       type="button"
@@ -896,7 +921,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                         reviewFilter === 'wrong' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
                       }`}
                     >
-                      Wrong only
+                      {t('Wrong only')}
                     </button>
                   </div>
                 </div>
@@ -906,7 +931,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                     onClick={openRetake}
                     className="text-xs font-semibold text-brand hover:underline"
                   >
-                    Retry the {wrongCount} you got wrong
+                    {tn(wrongCount, {
+                      one: 'Retry the {n} you got wrong',
+                      other: 'Retry the {n} you got wrong',
+                    })}
                   </button>
                 )}
               </div>
@@ -1008,11 +1036,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                   onClick={() => setActivePart(activePart + 1)}
                   className="mt-2 w-full rounded-button bg-brand px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                 >
-                  Continue to {test.parts[activePart + 1]!.label}
+                  {t('Continue to {part}', { part: test.parts[activePart + 1]!.label })}
                 </button>
               ) : (
                 <p className="mt-4 text-center text-sm text-ink-muted">
-                  This is the last passage. Check your answers, then submit using the Submit button above.
+                  {t('This is the last passage. Check your answers, then submit using the Submit button above.')}
                 </p>
               ))}
           </div>
@@ -1065,13 +1093,25 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                     ? 'bg-brand text-white'
                     : 'border border-border text-ink-muted';
                 const isFlagged = flagged.has(question.id);
+                /* Built as two whole sentences rather than glued-together
+                   fragments, so Russian can order "question 5" and its state
+                   its own way. */
+                const status = unavailable
+                  ? t('unavailable and excluded from score')
+                  : answered
+                    ? t('answered')
+                    : t('unanswered');
                 return (
                   <button
                     key={question.id}
                     type="button"
                     data-qid={question.id}
                     onClick={() => jumpToQuestion(question.id)}
-                    aria-label={`Jump to question ${n}${unavailable ? ', unavailable and excluded from score' : answered ? ', answered' : ', unanswered'}${isFlagged ? ', flagged for review' : ''}`}
+                    aria-label={
+                      isFlagged
+                        ? t('Jump to question {n}, {status}, flagged for review', { n, status })
+                        : t('Jump to question {n}, {status}', { n, status })
+                    }
                     className={`relative grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition-colors ${cls} ${
                       isFlagged && !submitted ? 'ring-2 ring-warning ring-offset-1 ring-offset-surface' : ''
                     }`}
@@ -1109,28 +1149,39 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               >
-                <h2 className="font-display text-xl font-extrabold">Your Score</h2>
+                <h2 className="font-display text-xl font-extrabold">{t('Your Score')}</h2>
                 <p className="band-score-pop mt-4 font-display text-5xl font-extrabold text-brand">
                   {correctCount} / {SCORED_TOTAL}
                 </p>
-                <p className="mt-2 text-ink-muted">{Math.round((correctCount / SCORED_TOTAL) * 100)}% correct</p>
+                <p className="mt-2 text-ink-muted">
+                  {t('{percent}% correct', { percent: Math.round((correctCount / SCORED_TOTAL) * 100) })}
+                </p>
                 <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
-                  Estimated Band: {bandEstimate(correctCount, SCORED_TOTAL, test.skill)}
+                  {/* bandEstimate returns a number like "7.0", or the one
+                      phrase "below 2.5" (marked with nt() in tests/schema.ts),
+                      so it goes through t() rather than being printed raw. */}
+                  {t('Estimated Band: {band}', { band: t(bandEstimate(correctCount, SCORED_TOTAL, test.skill)) })}
                 </p>
                 {weakestType && (
                   <p className="mt-4 text-left text-sm text-ink-muted">
-                    Your weakest type in this test:{' '}
-                    <strong className="text-ink">{TYPE_LABELS[weakestType.type] ?? weakestType.type}</strong>,{' '}
-                    {weakestType.correct} of {weakestType.total} correct.{' '}
+                    {/* One sentence, one key. The question type name stays in
+                        English on purpose (the student meets it in that form on
+                        the real paper), and it used to be <strong> mid
+                        sentence, which Russian cannot keep in that position. */}
+                    {t('Your weakest type in this test: {type}, {correct} of {total} correct.', {
+                      type: TYPE_LABELS[weakestType.type] ?? weakestType.type,
+                      correct: weakestType.correct,
+                      total: weakestType.total,
+                    })}{' '}
                     {lessonHref(test.skill, weakestType.type) && (
                       <a href={lessonHref(test.skill, weakestType.type)} className="font-semibold text-brand hover:underline">
-                        Review the lesson
+                        {t('Review the lesson')}
                       </a>
                     )}
                     {lessonHref(test.skill, weakestType.type) && drillTypes(test.skill).has(weakestType.type) && ' · '}
                     {drillTypes(test.skill).has(weakestType.type) && (
                       <a href={practiseHref(test.skill, weakestType.type)} className="font-semibold text-brand hover:underline">
-                        Practise this type
+                        {t('Practise this type')}
                       </a>
                     )}
                   </p>
@@ -1141,7 +1192,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                     onClick={openRetake}
                     className="mt-4 w-full rounded-button border border-brand/30 bg-brand-tint px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint/70"
                   >
-                    Retry the {wrongCount} you got wrong
+                    {tn(wrongCount, {
+                      one: 'Retry the {n} you got wrong',
+                      other: 'Retry the {n} you got wrong',
+                    })}
                   </button>
                 )}
                 <div className="mt-4 flex justify-center gap-3">
@@ -1150,7 +1204,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                     onClick={() => setShowScore(false)}
                     className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
                   >
-                    Review Answers
+                    {t('Review Answers')}
                   </button>
                   {isRetake ? (
                     <button
@@ -1158,14 +1212,14 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                       onClick={() => onFinish!(scoredIds)}
                       className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
                     >
-                      Back to results
+                      {t('Back to results')}
                     </button>
                   ) : (
                     <a
                       href={hubUrl}
                       className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
                     >
-                      More Tests
+                      {t('More Tests')}
                     </a>
                   )}
                 </div>
@@ -1233,6 +1287,7 @@ function QuestionItem({
       undefined when he may not (see tutorTestId in TestPlayer). */
   tutorTestId?: string;
 }) {
+  const { t } = useT();
   const { question: q, group, n } = nq;
   const ok = submitted && scored;
   const showHint = submitted && !ok;
@@ -1256,8 +1311,12 @@ function QuestionItem({
           type="button"
           onClick={onToggleFlag}
           aria-pressed={!!flagged}
-          aria-label={flagged ? `Unflag question ${n} for review` : `Flag question ${n} for review`}
-          title={flagged ? 'Unflag for review' : 'Flag for review'}
+          aria-label={
+            flagged
+              ? t('Unflag question {n} for review', { n })
+              : t('Flag question {n} for review', { n })
+          }
+          title={flagged ? t('Unflag for review') : t('Flag for review')}
           className={`absolute right-3 top-3 text-base leading-none transition-opacity ${
             flagged ? 'opacity-100' : 'opacity-30 hover:opacity-70'
           }`}
@@ -1279,7 +1338,7 @@ function QuestionItem({
             {n}
           </span>
           <p className="text-sm leading-relaxed text-ink-muted">
-            This question is missing from the published source and is excluded from your score.
+            {t('This question is missing from the published source and is excluded from your score.')}
           </p>
         </div>
       ) : q.multiSelect ? (
@@ -1302,8 +1361,8 @@ function QuestionItem({
               value={value}
               disabled={submitted}
               onChange={(e) => onChange(e.target.value)}
-              placeholder="Label…"
-              aria-label={`Question ${n}`}
+              placeholder={t('Label…')}
+              aria-label={t('Question {n}', { n })}
               className="w-48 rounded-lg border border-border bg-surface px-3 py-1 text-sm font-semibold focus:border-brand"
             />
             {q.textHtml && <Html as="span" className="text-sm text-ink-muted" html={q.textHtml} />}
@@ -1324,7 +1383,7 @@ function QuestionItem({
                 disabled={submitted}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder="…"
-                aria-label={`Question ${n}`}
+                aria-label={t('Question {n}', { n })}
                 className="mx-1 w-36 rounded-lg border border-border bg-surface px-2 py-0.5 text-center font-semibold focus:border-brand"
               />{' '}
               {q.after}
@@ -1370,10 +1429,12 @@ function QuestionItem({
             value={value}
             disabled={submitted}
             onChange={(e) => onChange(e.target.value)}
-            aria-label={`Question ${n}`}
+            aria-label={t('Question {n}', { n })}
             className="shrink-0 rounded-lg border border-border bg-surface px-2 py-1 text-sm font-semibold"
           >
-            <option value="">(blank)</option>
+            {/* The option VALUES below (True / False / Not Given and the
+                group's own options) are exam wording and stay English. */}
+            <option value="">{t('(blank)')}</option>
             {(group.type === 'tfng'
               ? ['True', 'False', 'Not Given']
               : group.type === 'yes-no-notgiven'
@@ -1411,10 +1472,11 @@ function QuestionItem({
     stated limit (e.g. "NO MORE THAN TWO WORDS") — a nudge, not a hard block,
     since the real exam only penalises at marking time. */
 function WordLimitWarning({ value, limit, className }: { value: string; limit: number; className?: string }) {
+  const { tn } = useT();
   const count = countWords(value);
   return (
     <p className={`text-xs font-semibold text-warning ${className ?? ''}`}>
-      ⚠ {count} {count === 1 ? 'word' : 'words'}: limit is {limit}
+      ⚠ {tn(count, { one: '{n} word: limit is {limit}', other: '{n} words: limit is {limit}' }, { limit })}
     </p>
   );
 }
@@ -1436,14 +1498,15 @@ function BookmarkToggle({
   href: string;
   subtitle?: string;
 }) {
+  const { t } = useT();
   const [saved, setSaved] = useState(() => (typeof window !== 'undefined' ? isBookmarked('question', id) : false));
   return (
     <button
       type="button"
       onClick={() => setSaved(toggleBookmark('question', id, { title, href, subtitle }))}
       aria-pressed={saved}
-      aria-label={saved ? 'Remove bookmark' : 'Bookmark this question'}
-      title={saved ? 'Remove bookmark' : 'Bookmark this question'}
+      aria-label={saved ? t('Remove bookmark') : t('Bookmark this question')}
+      title={saved ? t('Remove bookmark') : t('Bookmark this question')}
       className={`absolute right-9 top-3 leading-none transition-colors ${
         saved ? 'text-brand' : 'text-ink-muted opacity-40 hover:opacity-80'
       }`}
@@ -1491,29 +1554,34 @@ function AnswerReview({
      punctuation). Saying nothing would train the student into a habit that
      costs a mark on test day, so when the forgiveness is what saved the answer
      we name it and show the exact form from the key. */
+  const { t } = useT();
   const leniency = ok ? answerLeniency(q, given) : null;
   const variants = acceptedVariants(q);
   return (
     <div className={`mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm ${className ?? ''}`}>
       {!ok && (
         <p className="font-semibold text-success">
-          ✓ Correct answer: <span className="font-bold">{answerText}</span>
+          ✓ {t('Correct answer:')} <span className="font-bold">{answerText}</span>
         </p>
       )}
+      {/* Both notes below became ONE key each with placeholders. They used to
+          be sentences with <strong> in the middle, which Russian cannot keep
+          in that position; per docs/I18N-GUIDE.md the whole sentence moves
+          into t() and the inline emphasis goes. The forgiveness reasons
+          themselves are marked with nt() in src/lib/tests/schema.ts. */}
       {leniency && (
         <p className="mb-1 rounded bg-warning-tint px-2 py-1.5 text-warning">
-          Marked right, but write it exactly as <strong>{leniency.expected}</strong> in the real test. We let{' '}
-          {leniency.forgiven.join(' and ')} through here.
+          {t('Marked right, but write it exactly as {expected} in the real test. We let {forgiven} through here.', {
+            expected: leniency.expected,
+            forgiven: leniency.forgiven.map((reason) => t(reason)).join(t(' and ')),
+          })}
         </p>
       )}
       {variants.length > 1 && (
         <p className="mb-1 text-xs text-ink-muted">
-          The key accepts {variants.map((v, i) => (
-            <span key={v}>
-              {i > 0 ? ' or ' : ''}
-              <strong>{v}</strong>
-            </span>
-          ))}. In the test write one answer only, never both with a slash or brackets.
+          {t('The key accepts {variants}. In the test write one answer only, never both with a slash or brackets.', {
+            variants: variants.join(t(' or ')),
+          })}
         </p>
       )}
       {q.explanation && <p className="mt-0.5 text-ink-muted">{q.explanation}</p>}
@@ -1526,7 +1594,7 @@ function AnswerReview({
               onClick={() => onLocate(q.evidence!)}
               className="mt-1 inline-flex items-center gap-1 py-2 -my-1 text-xs font-semibold text-brand hover:underline"
             >
-              🔍 {skill === 'listening' ? 'Show in transcript' : 'Show in passage'}
+              🔍 {skill === 'listening' ? t('Show in transcript') : t('Show in passage')}
             </button>
           )}
         </div>
@@ -1598,6 +1666,7 @@ function MultiAnswer({
   submitted: boolean;
   setAnswer: (qid: string, value: string) => void;
 }) {
+  const { t } = useT();
   const selectCount = group.selectCount ?? slotIds.length;
   const choices = group.choices ?? [];
   const correct = new Set(
@@ -1619,7 +1688,7 @@ function MultiAnswer({
   return (
     <div id={`player-${slotIds[0]}`} className="rounded-card border border-border bg-surface p-4">
       <p className="mb-3 text-xs font-semibold text-ink-muted">
-        Selected {selected.length} of {selectCount}
+        {t('Selected {chosen} of {total}', { chosen: selected.length, total: selectCount })}
       </p>
       <div className="space-y-1.5">
         {choices.map((c) => {
@@ -1690,6 +1759,7 @@ function TableGrid({
   onLocate?: (evidence: string) => void;
   skill: TestSkill;
 }) {
+  const { t } = useT();
   const byId = new Map(items.map((nq) => [nq.question.id, nq]));
 
   return (
@@ -1737,7 +1807,7 @@ function TableGrid({
                       disabled={submitted}
                       onChange={(e) => setAnswer(nq.question.id, e.target.value)}
                       placeholder="…"
-                      aria-label={`Question ${nq.n}`}
+                      aria-label={t('Question {n}', { n: nq.n })}
                       className={`w-32 rounded-lg border px-2 py-0.5 text-center font-semibold focus:border-brand ${cls}`}
                     />
                     {wordLimit != null && !submitted && countWords(value) > wordLimit && (
@@ -1897,6 +1967,7 @@ function Highlightable({
   children: React.ReactNode;
   innerRef?: React.RefObject<HTMLDivElement | null>;
 }) {
+  const { t } = useT();
   const internalRef = useRef<HTMLDivElement>(null);
   const ref = innerRef ?? internalRef;
   const [popover, setPopover] = useState<{ x: number; y: number } | null>(null);
@@ -1947,7 +2018,7 @@ function Highlightable({
           onClick={clearAll}
           className="absolute right-2 top-2 z-10 rounded-full border border-border bg-surface/90 px-2.5 py-1 text-xs font-semibold text-ink-muted backdrop-blur hover:text-ink"
         >
-          Clear highlights
+          {t('Clear highlights')}
         </button>
       )}
       {children}
@@ -1959,7 +2030,7 @@ function Highlightable({
           className="absolute z-20 -translate-x-1/2 -translate-y-full rounded-full bg-ink px-3 py-1 text-xs font-bold text-white shadow-card"
           style={{ left: popover.x, top: popover.y - 6 }}
         >
-          🖍 Highlight
+          🖍 {t('Highlight')}
         </button>
       )}
     </div>
@@ -2002,6 +2073,7 @@ function ListeningAudio({
   endSeconds?: number;
   drillPartNumber: number | null;
 }) {
+  const { t } = useT();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error');
   const [retry, setRetry] = useState(0);
@@ -2043,9 +2115,21 @@ function ListeningAudio({
     audioRef.current?.play();
   }
 
+  /* Two whole sentences rather than one built around a "Part N"/"one part"
+     fragment: Russian needs the phrase in its own place. "Part" itself stays
+     English, like every other exam label. */
   const rangeNote =
     attemptKind === 'drill' && startSeconds != null
-      ? `This drill covers ${partNumber != null ? `Part ${partNumber}` : 'one part'} of the recording (${fmtClock(startSeconds)} to ${fmtClock(endSeconds ?? duration)}).`
+      ? partNumber != null
+        ? t('This drill covers Part {part} of the recording ({from} to {to}).', {
+            part: partNumber,
+            from: fmtClock(startSeconds),
+            to: fmtClock(endSeconds ?? duration),
+          })
+        : t('This drill covers one part of the recording ({from} to {to}).', {
+            from: fmtClock(startSeconds),
+            to: fmtClock(endSeconds ?? duration),
+          })
       : null;
 
   // Before a full exam's recording is started, this bar is the candidate's
@@ -2058,16 +2142,16 @@ function ListeningAudio({
   return (
     <section
       className={`shrink-0 border-b border-border bg-surface-alt px-3 sm:px-4 ${examGate ? 'py-4' : 'py-2.5'}`}
-      aria-label="Listening recording"
+      aria-label={t('Listening recording')}
       data-testid="listening-audio-player"
     >
       <div className="mx-auto flex max-w-5xl flex-col gap-2 sm:flex-row sm:items-center">
         <div className="shrink-0 sm:w-44">
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,var(--color-brand))]">
-            {attemptKind === 'drill' ? 'Drill recording' : 'Full recording'}
+            {attemptKind === 'drill' ? t('Drill recording') : t('Full recording')}
           </p>
           <p className="text-xs text-ink-muted">
-            {attemptKind === 'drill' ? 'Pause and replay freely' : 'Plays once, exam conditions'}
+            {attemptKind === 'drill' ? t('Pause and replay freely') : t('Plays once, exam conditions')}
           </p>
         </div>
 
@@ -2080,7 +2164,7 @@ function ListeningAudio({
             preload="metadata"
             src={src}
             className="h-10 w-full min-w-0 shrink-0 sm:w-auto sm:flex-1"
-            aria-label="Drill recording"
+            aria-label={t('Drill recording')}
             onLoadedMetadata={handleLoadedMetadata}
             onTimeUpdate={handleTimeUpdate}
             onError={() => setStatus('error')}
@@ -2110,11 +2194,11 @@ function ListeningAudio({
                 disabled={status !== 'ready'}
                 className="rounded-button bg-[var(--skill,var(--color-brand))] px-5 py-2 font-display text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
               >
-                ▶ Start recording
+                ▶ {t('Start recording')}
               </button>
             ) : (
               <span className="font-mono text-sm font-semibold text-ink" aria-live="polite">
-                {ended ? 'Recording finished' : 'Recording playing'} · {fmtClock(currentTime)} / {fmtClock(duration)}
+                {ended ? t('Recording finished') : t('Recording playing')} · {fmtClock(currentTime)} / {fmtClock(duration)}
               </span>
             )}
           </div>
@@ -2123,14 +2207,14 @@ function ListeningAudio({
         {!src && <div className="flex-1" />}
 
         <div className="min-h-5 shrink-0 text-xs sm:w-36 sm:text-right" aria-live="polite">
-          {status === 'loading' && <span className="text-ink-muted">Loading recording...</span>}
-          {status === 'ready' && !started && attemptKind === 'drill' && <span className="text-success">Recording ready</span>}
+          {status === 'loading' && <span className="text-ink-muted">{t('Loading recording...')}</span>}
+          {status === 'ready' && !started && attemptKind === 'drill' && <span className="text-success">{t('Recording ready')}</span>}
           {status === 'error' && (
             <span className="text-error">
-              Recording unavailable.{' '}
+              {t('Recording unavailable.')}{' '}
               {src && (
                 <button type="button" onClick={retryLoad} className="font-bold underline underline-offset-2">
-                  Retry
+                  {t('Retry')}
                 </button>
               )}
             </span>
@@ -2159,6 +2243,7 @@ function PerQuestionMultiAnswer({
   submitted: boolean;
   onChange: (value: string) => void;
 }) {
+  const { t } = useT();
   const config = question.multiSelect!;
   const selected = value.split('|').filter(Boolean);
   const selectedSet = new Set(selected);
@@ -2182,7 +2267,7 @@ function PerQuestionMultiAnswer({
           <Html as="span" html={question.textHtml ?? ''} />
         </p>
         <span className="shrink-0 text-xs font-semibold text-ink-muted">
-          {selected.length}/{config.selectCount} selected
+          {t('{chosen}/{total} selected', { chosen: selected.length, total: config.selectCount })}
         </span>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
@@ -2234,8 +2319,15 @@ function InstructionsScreen({
   onStart: () => void;
   attemptKind: 'full' | 'drill';
 }) {
+  const { t, tn } = useT();
   const listening = test.skill === 'listening';
-  const partLabel = listening ? 'parts' : 'passages';
+  /* The caption under the "how many parts" figure. Counted, not a fixed word:
+     Russian needs four forms, and a single-part drill used to print the
+     English plural ("1 passages"). The forms carry no {n}, so only the word
+     itself comes back. */
+  const partLabel = listening
+    ? tn(test.parts.length, { one: 'part', other: 'parts' })
+    : tn(test.parts.length, { one: 'passage', other: 'passages' });
   const numberedTotal = questionCount(test);
   const scoredTotal = test.parts.reduce(
     (total, part) => total + part.groups.reduce(
@@ -2249,7 +2341,7 @@ function InstructionsScreen({
     <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover">
         <p className="text-xs font-bold uppercase tracking-wider text-brand">
-          {listening ? 'Listening Practice Test' : 'Reading Test'}
+          {listening ? t('Listening Practice Test') : t('Reading Test')}
         </p>
         <h1 className="mt-1 font-display text-2xl font-extrabold">{test.title}</h1>
         <p className="mt-2 text-ink-muted">{test.description}</p>
@@ -2261,76 +2353,104 @@ function InstructionsScreen({
           </div>
           <div className="rounded-card bg-surface-alt p-3">
             <p className="font-display text-2xl font-extrabold text-brand">{numberedTotal}</p>
-            <p className="text-xs text-ink-muted">numbered questions</p>
+            <p className="text-xs text-ink-muted">
+              {tn(numberedTotal, { one: 'numbered question', other: 'numbered questions' })}
+            </p>
           </div>
           <div className="rounded-card bg-surface-alt p-3">
             <p className="font-display text-2xl font-extrabold text-brand">{test.durationMinutes}</p>
-            <p className="text-xs text-ink-muted">minutes</p>
+            <p className="text-xs text-ink-muted">{tn(test.durationMinutes, { one: 'minute', other: 'minutes' })}</p>
           </div>
         </div>
 
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">⏱</span>
-            <span>The timer starts as soon as you begin and runs continuously.</span>
+            <span>{t('The timer starts as soon as you begin and runs continuously.')}</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">🚫</span>
-            <span><strong>You cannot pause.</strong> Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.</span>
+            <span><strong>{t('You cannot pause.')}</strong> {t('Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.')}</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">✍️</span>
-            <span>Answer all {scoredTotal} scored questions across {test.parts.length} {partLabel}, then submit. It auto-submits when time runs out.</span>
+            {/* Two counted things in one sentence, and the noun changes with the
+                paper, so each skill gets its own counted phrase rather than a
+                word glued on at the end. */}
+            <span>
+              {listening
+                ? tn(
+                    test.parts.length,
+                    {
+                      one: 'Answer all {scored} scored questions across {n} part, then submit. It auto-submits when time runs out.',
+                      other: 'Answer all {scored} scored questions across {n} parts, then submit. It auto-submits when time runs out.',
+                    },
+                    { scored: scoredTotal },
+                  )
+                : tn(
+                    test.parts.length,
+                    {
+                      one: 'Answer all {scored} scored questions across {n} passage, then submit. It auto-submits when time runs out.',
+                      other: 'Answer all {scored} scored questions across {n} passages, then submit. It auto-submits when time runs out.',
+                    },
+                    { scored: scoredTotal },
+                  )}
+            </span>
           </li>
           {unavailableTotal > 0 && (
             <li className="flex gap-2.5">
               <span aria-hidden="true" className="shrink-0">ℹ️</span>
-              <span>{unavailableTotal} numbered question is missing from the published source and is excluded from your score.</span>
+              <span>
+                {tn(unavailableTotal, {
+                  one: '{n} numbered question is missing from the published source and is excluded from your score.',
+                  other: '{n} numbered questions are missing from the published source and are excluded from your score.',
+                })}
+              </span>
             </li>
           )}
           {listening ? (
             <li className="flex gap-2.5">
               <span aria-hidden="true" className="shrink-0">🎧</span>
+              {/* Each of these was a sentence with <strong> in the middle. A
+                  Russian sentence puts those words elsewhere, so per
+                  docs/I18N-GUIDE.md the whole sentence is one key and the
+                  inline emphasis goes. */}
               <span>
-                {attemptKind === 'drill' ? (
-                  <>This is a single-part drill. You can <strong>play, pause, seek and replay</strong> the recording as many times as you like while you practise.</>
-                ) : (
-                  <>
-                    This is exam conditions: press <strong>Start recording</strong> when ready and it plays <strong>once</strong>, from the beginning, with no pausing, seeking or replaying.
-                    Refreshing keeps your answers and running timer, but restarts the recording from the beginning.
-                  </>
-                )}
+                {attemptKind === 'drill'
+                  ? t('This is a single-part drill. You can play, pause, seek and replay the recording as many times as you like while you practise.')
+                  : t('This is exam conditions: press Start recording when ready and it plays once, from the beginning, with no pausing, seeking or replaying. Refreshing keeps your answers and running timer, but restarts the recording from the beginning.')}
               </span>
             </li>
           ) : (
             <li className="flex gap-2.5">
               <span aria-hidden="true" className="shrink-0">🖍</span>
-              <span>Select any text in a passage to <strong>highlight</strong> it, just like the real computer test. Click a highlight to remove it.</span>
+              <span>{t('Select any text in a passage to highlight it, just like the real computer test. Click a highlight to remove it.')}</span>
             </li>
           )}
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">🚩</span>
-            <span>Not sure about an answer? <strong>Flag it</strong> and jump back later using the numbered circles at the bottom.</span>
+            <span>{t('Not sure about an answer? Flag it and jump back later using the numbered circles at the bottom.')}</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">📊</span>
             <span>
-              At the end you get a score, an estimated band, and a full <strong>answer review</strong>
-              {listening ? ', including the transcript.' : ', with every question explained with the exact line from the passage.'}
+              {listening
+                ? t('At the end you get a score, an estimated band, and a full answer review, including the transcript.')
+                : t('At the end you get a score, an estimated band, and a full answer review, with every question explained with the exact line from the passage.')}
             </span>
           </li>
         </ul>
 
         <div className="mt-8 flex items-center justify-between gap-3">
           <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
-            Back
+            {t('Back')}
           </a>
           <button
             type="button"
             onClick={onStart}
             className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
           >
-            Start test
+            {t('Start test')}
           </button>
         </div>
       </div>

@@ -1,21 +1,22 @@
 ---
 import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
 const year = new Date().getFullYear();
 const columns = [
-  { title: 'Learn', links: [{ label: 'Study plan', href: '/start' }, { label: 'Lessons', href: '/learn' }, { label: 'Vocabulary', href: '/lessons/vocabulary' }] },
-  { title: 'Practice', links: [{ label: 'Skill trainers', href: '/trainers' }, { label: 'Tests', href: '/tests' }, { label: 'AI speaking', href: '/speaking/examiner' }] },
+  { title: nt('Learn'), links: [{ label: nt('Study plan'), href: '/start' }, { label: nt('Lessons'), href: '/learn' }, { label: nt('Vocabulary'), href: '/lessons/vocabulary' }] },
+  { title: nt('Practice'), links: [{ label: nt('Skill trainers'), href: '/trainers' }, { label: nt('Tests'), href: '/tests' }, { label: nt('AI speaking'), href: '/speaking/examiner' }] },
 ];
 ---
 <footer class="marketing-footer">
   <div class="marketing-footer-inner">
     <div class="marketing-footer-brand">
-      <a href={withBase('/')} class="site-wordmark" aria-label="IELTS is EZ home"><span>IELTS is</span> <span class="site-wordmark-accent">EZ</span></a>
-      <p>Clear IELTS preparation that helps you know what to study next.</p>
+      <a href={withBase('/')} class="site-wordmark" aria-label="IELTS is EZ home" data-i18n-attr="aria-label"><span>IELTS is</span> <span class="site-wordmark-accent">EZ</span></a>
+      <p data-i18n>Clear IELTS preparation that helps you know what to study next.</p>
     </div>
-    {columns.map((column) => <div><p class="marketing-footer-heading">{column.title}</p><ul>{column.links.map((link) => <li><a href={withBase(link.href)}>{link.label}</a></li>)}</ul></div>)}
-    <div><p class="marketing-footer-heading">Your space</p><a href={withBase('/dashboard')} class="footer-workspace-link">Open workspace</a></div>
+    {columns.map((column) => <div><p class="marketing-footer-heading" data-i18n>{column.title}</p><ul>{column.links.map((link) => <li><a href={withBase(link.href)} data-i18n>{link.label}</a></li>)}</ul></div>)}
+    <div><p class="marketing-footer-heading" data-i18n>Your space</p><a href={withBase('/dashboard')} class="footer-workspace-link" data-i18n>Open workspace</a></div>
   </div>
-  <div class="marketing-footer-base"><span>© {year} IELTS is EZ</span><span>Made for focused learners.</span></div>
+  <div class="marketing-footer-base"><span>© {year} IELTS is EZ</span><span data-i18n>Made for focused learners.</span></div>
 </footer>
 
 <style>

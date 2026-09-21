@@ -17,7 +17,7 @@ import { WORDS } from '../data/words';
         <svg viewBox="0 0 20 20" fill="currentColor" class="h-3.5 w-3.5" aria-hidden="true">
           <path d="M10 2a6 6 0 00-3.5 10.9V15a1 1 0 001 1h5a1 1 0 001-1v-2.1A6 6 0 0010 2zM8.5 17.5a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
         </svg>
-        Vocabulary Spotlight
+        <span data-i18n>Vocabulary Spotlight</span>
       </p>
       <span id="wotd-topic" class="wotd-fade rounded-full bg-surface px-2.5 py-0.5 text-[0.7rem] font-semibold text-ink-muted shadow-card"></span>
     </div>
@@ -39,7 +39,7 @@ import { WORDS } from '../data/words';
         </svg>
       </span>
     </button>
-    <p id="wotd-hint" class="wotd-fade mt-0.5 text-xs text-ink-muted">Tap the word to reveal its meaning</p>
+    <p id="wotd-hint" class="wotd-fade mt-0.5 text-xs text-ink-muted" data-i18n>Tap the word to reveal its meaning</p>
 
     <div id="wotd-reveal" class="grid-reveal">
       <div class="min-h-0 overflow-hidden">
@@ -54,7 +54,7 @@ import { WORDS } from '../data/words';
     id="wotd-next"
     class="hidden w-full items-center justify-center gap-1.5 border-t border-[var(--skill)]/15 bg-surface/60 py-2.5 text-sm font-semibold text-[var(--skill)] transition-colors hover:bg-[var(--skill-tint)]"
   >
-    Next word
+    <span data-i18n>Next word</span>
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">
       <path d="M4 10h12M11 5l5 5-5 5" />
     </svg>
@@ -70,6 +70,8 @@ import { WORDS } from '../data/words';
   // unclickable. Wiring everything up only inside this listener (not also
   // directly) covers both the first load and every subsequent page swap,
   // since it fires on both.
+  import { t } from '../lib/i18n/translate';
+
   document.addEventListener('astro:page-load', () => {
     const el = document.getElementById('wotd');
     if (!el) return; // not on this page
@@ -88,7 +90,7 @@ import { WORDS } from '../data/words';
       reveal.classList.toggle('is-open', open);
       wordBtn.setAttribute('aria-expanded', String(open));
       chevron.style.transform = open ? 'rotate(180deg)' : '';
-      hint.textContent = open ? '' : 'Tap the word to reveal its meaning';
+      hint.textContent = open ? '' : t('Tap the word to reveal its meaning');
       nextBtn.classList.toggle('hidden', !open);
       nextBtn.classList.toggle('flex', open);
     }

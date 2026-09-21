@@ -12,7 +12,7 @@ const clamped = Math.max(0, Math.min(100, value));
 <div class={extra}>
   {label && (
     <div class="mb-1.5 flex items-baseline justify-between text-sm">
-      <span class="font-medium">{label}</span>
+      <span class="font-medium" data-i18n>{label}</span>
       <span class="text-ink-muted">{clamped}%</span>
     </div>
   )}

@@ -19,6 +19,7 @@
 
 import { useEffect, useState } from 'react';
 import { withBase } from '../../lib/url';
+import { useT } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import { clearTutorMemory, loadConversation } from '../../lib/tutor/conversation';
 import { isTutorConfigured } from '../../lib/tutor/client';
@@ -26,6 +27,7 @@ import { localInsights } from '../../lib/tutor/local';
 import { onAuthChange } from '../../lib/auth/session';
 
 export default function MrEzMemory() {
+  const { t, tn } = useT();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -53,45 +55,59 @@ export default function MrEzMemory() {
     setBusy(false);
   }
 
+  const goalLine =
+    goals?.band && !goals.guessed
+      ? goals.date
+        ? t('Band {band}, exam on {date}', { band: goals.band, date: goals.date })
+        : t('Band {band}', { band: goals.band })
+      : t('Not set yet');
+
+  const conversationLine = signedIn
+    ? turns > 0
+      ? tn(turns, {
+          one: '{n} message in this session, plus anything saved to your account.',
+          other: '{n} messages in this session, plus anything saved to your account.',
+        })
+      : t('Nothing in this session, plus anything saved to your account.')
+    : turns > 0
+      ? tn(turns, { one: '{n} message in this session.', other: '{n} messages in this session.' })
+      : t('Nothing in this session.');
+
   return (
     <section className="mrez-memory" aria-labelledby="mrez-memory-heading">
       <div className="mrez-memory-head">
         <MrEzAvatar mood="idle" size={40} />
         <div>
-          <h2 id="mrez-memory-heading">What Mr EZ remembers</h2>
-          <p>He only ever reads your own record, and only the part he needs for what you just asked.</p>
+          <h2 id="mrez-memory-heading">{t('What Mr EZ remembers')}</h2>
+          <p>{t('He only ever reads your own record, and only the part he needs for what you just asked.')}</p>
         </div>
       </div>
 
       <dl className="mrez-memory-list">
         <div>
-          <dt>Your goal</dt>
+          <dt>{t('Your goal')}</dt>
           <dd>
-            {goals?.band && !goals.guessed ? `Band ${goals.band}` : 'Not set yet'}
-            {goals?.date ? `, exam on ${goals.date}` : ''}
+            {goalLine}
             {' · '}
-            <a href={withBase('/plan-settings')}>Change it</a>
+            <a href={withBase('/plan-settings')}>{t('Change it')}</a>
           </dd>
         </div>
         <div>
-          <dt>Your results</dt>
+          <dt>{t('Your results')}</dt>
           <dd>
-            Completed lessons, test scores and marked work. He reads these as evidence and never changes them.
+            {t('Completed lessons, test scores and marked work. He reads these as evidence and never changes them.')}
             {' · '}
-            <a href={withBase('/report')}>See them</a>
+            <a href={withBase('/report')}>{t('See them')}</a>
           </dd>
         </div>
         <div>
-          <dt>Your conversation</dt>
-          <dd>
-            {turns > 0 ? `${turns} message${turns === 1 ? '' : 's'} in this session` : 'Nothing in this session'}
-            {signedIn ? ', plus anything saved to your account.' : '.'}
-          </dd>
+          <dt>{t('Your conversation')}</dt>
+          <dd>{conversationLine}</dd>
         </div>
       </dl>
 
       {!isTutorConfigured() && (
-        <p className="mrez-memory-note">Mr EZ is not switched on for this build, so there is nothing stored in the cloud to clear.</p>
+        <p className="mrez-memory-note">{t('Mr EZ is not switched on for this build, so there is nothing stored in the cloud to clear.')}</p>
       )}
 
       {result ? (
@@ -99,20 +115,20 @@ export default function MrEzMemory() {
       ) : confirming ? (
         <div className="mrez-memory-confirm">
           <p>
-            This deletes every message between you and Mr EZ, the summary he keeps of older turns, and his saved
-            dashboard welcome. <strong>Your lessons, test scores and marked essays are not affected</strong>, and he
-            will still read them afterwards. It cannot be undone.
+            {t('This deletes every message between you and Mr EZ, the summary he keeps of older turns, and his saved dashboard welcome.')}{' '}
+            <strong>{t('Your lessons, test scores and marked essays are not affected.')}</strong>{' '}
+            {t('He will still read them afterwards. It cannot be undone.')}
           </p>
           <div className="mrez-memory-actions">
             <button type="button" className="mrez-danger" onClick={() => void clear()} disabled={busy}>
-              {busy ? 'Clearing…' : 'Yes, clear the conversation'}
+              {busy ? t('Clearing…') : t('Yes, clear the conversation')}
             </button>
-            <button type="button" onClick={() => setConfirming(false)} disabled={busy}>Cancel</button>
+            <button type="button" onClick={() => setConfirming(false)} disabled={busy}>{t('Cancel')}</button>
           </div>
         </div>
       ) : (
         <button type="button" className="mrez-memory-clear" onClick={() => setConfirming(true)}>
-          Clear Mr EZ's conversation history
+          {t("Clear Mr EZ's conversation history")}
         </button>
       )}
     </section>

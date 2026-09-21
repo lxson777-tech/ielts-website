@@ -25,6 +25,8 @@ import { buildCourse } from '../lib/course';
 import { LABELS } from './TypeAnalytics';
 import type { Skill } from '../data/lessons';
 import WeeklyReview from './tutor/WeeklyReview';
+import { useT } from '../lib/i18n/react';
+import { nt } from '../lib/i18n/translate';
 
 const NAME_KEY = 'ielts.report.name.v1';
 
@@ -45,12 +47,15 @@ function saveName(name: string): void {
   }
 }
 
+// Reading/Listening/Writing/Speaking are the protected paper names (never
+// translated, per docs/I18N-GUIDE.md), so only the 'vocabulary' entry is
+// marked for translation.
 const SKILL_LABEL: Record<Skill, string> = {
   reading: 'Reading',
   listening: 'Listening',
   writing: 'Writing',
   speaking: 'Speaking',
-  vocabulary: 'Vocabulary',
+  vocabulary: nt('Vocabulary'),
 };
 
 const SKILL_COLOR: Record<'reading' | 'listening' | 'writing' | 'speaking', string> = {
@@ -76,6 +81,7 @@ interface TrendPoint {
     one skill's reading/listening attempts internally and has no prop for
     handing it a mixed dataset. */
 function BandTrend({ points }: { points: TrendPoint[] }) {
+  const { t } = useT();
   const [hover, setHover] = useState<number | null>(null);
   if (points.length < 2) return null;
 
@@ -95,7 +101,7 @@ function BandTrend({ points }: { points: TrendPoint[] }) {
 
   return (
     <figure className="mt-4 overflow-x-auto">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Band score across every scored attempt, oldest to newest" className="w-full max-w-2xl" onMouseLeave={() => setHover(null)}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('Band score across every scored attempt, oldest to newest')} className="w-full max-w-2xl" onMouseLeave={() => setHover(null)}>
         {gridBands.map((b) => (
           <g key={b}>
             <line x1={PAD.left} x2={W - PAD.right} y1={y(b)} y2={y(b)} stroke="var(--color-border)" strokeWidth="1" />
@@ -122,7 +128,7 @@ function BandTrend({ points }: { points: TrendPoint[] }) {
                 <g transform={`translate(${tx},${above ? ty - 12 : ty + 12})`}>
                   <rect x="-66" y={above ? -34 : 0} width="132" height="34" rx="6" fill="var(--color-ink)" opacity="0.92" />
                   <text x="0" y={above ? -21 : 13} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-                    {p.label} · Band {p.band.toFixed(1)}
+                    {t('{label} · Band {value}', { label: p.label, value: p.band.toFixed(1) })}
                   </text>
                   <text x="0" y={above ? -9 : 25} textAnchor="middle" fontSize="9" fill="#fff" opacity="0.75">
                     {fmtDate(p.at)}
@@ -138,6 +144,7 @@ function BandTrend({ points }: { points: TrendPoint[] }) {
 }
 
 export default function ProgressReport() {
+  const { t, tn } = useT();
   const [mounted, setMounted] = useState(false);
   const [name, setName] = useState('');
 
@@ -206,7 +213,7 @@ export default function ProgressReport() {
       <div className="report-print-hide flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-sm">
           <label htmlFor="report-name" className="text-xs font-bold uppercase tracking-wide text-ink-muted">
-            Student name (optional)
+            {t('Student name (optional)')}
           </label>
           <input
             id="report-name"
@@ -216,7 +223,7 @@ export default function ProgressReport() {
               setName(e.target.value);
               saveName(e.target.value);
             }}
-            placeholder="Add a name for the printout"
+            placeholder={t('Add a name for the printout')}
             className="mt-1.5 w-full rounded-button border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-brand"
           />
         </div>
@@ -225,61 +232,61 @@ export default function ProgressReport() {
           onClick={() => window.print()}
           className="shrink-0 rounded-button bg-brand px-5 py-2.5 font-display text-sm font-semibold text-white hover:bg-brand-hover"
         >
-          Print or save as PDF
+          {t('Print or save as PDF')}
         </button>
       </div>
 
       {/* ── Print header: only visible on the printed page, see the @media print rule ── */}
       <div className="report-print-only hidden">
-        <h1 className="font-display text-2xl font-extrabold">{name ? `${name}'s progress report` : 'Progress report'}</h1>
-        <p className="mt-1 text-sm text-ink-muted">Generated {fmtDate(new Date().toISOString())} · IELTS is EZ</p>
+        <h1 className="font-display text-2xl font-extrabold">{name ? t("{name}'s progress report", { name }) : t('Progress report')}</h1>
+        <p className="mt-1 text-sm text-ink-muted">{t('Generated {date} · IELTS is EZ', { date: fmtDate(new Date().toISOString()) })}</p>
       </div>
 
       <WeeklyReview />
 
       {/* ── Plan summary ── */}
       <section>
-        <h2 className="font-display text-lg font-bold">Study plan</h2>
+        <h2 className="font-display text-lg font-bold">{t('Study plan')}</h2>
         {plan ? (
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-card border border-border bg-surface p-4">
-              <p className="text-xs text-ink-muted">Target band</p>
+              <p className="text-xs text-ink-muted">{t('Target band')}</p>
               <p className="mt-1 font-display text-xl font-extrabold">{plan.targetBand}</p>
             </div>
             <div className="rounded-card border border-border bg-surface p-4">
-              <p className="text-xs text-ink-muted">Test date</p>
-              <p className="mt-1 font-display text-xl font-extrabold">{plan.testDate || 'Not set'}</p>
+              <p className="text-xs text-ink-muted">{t('Test date')}</p>
+              <p className="mt-1 font-display text-xl font-extrabold">{plan.testDate || t('Not set')}</p>
             </div>
             <div className="rounded-card border border-border bg-surface p-4">
-              <p className="text-xs text-ink-muted">Days to go</p>
+              <p className="text-xs text-ink-muted">{t('Days to go')}</p>
               <p className="mt-1 font-display text-xl font-extrabold">
-                {days ?? <span className="text-sm font-normal text-ink-muted">not yet</span>}
+                {days ?? <span className="text-sm font-normal text-ink-muted">{t('not yet')}</span>}
               </p>
             </div>
             <div className="rounded-card border border-border bg-surface p-4">
-              <p className="text-xs text-ink-muted">Started</p>
+              <p className="text-xs text-ink-muted">{t('Started')}</p>
               <p className="mt-1 font-display text-xl font-extrabold">{plan.startDate ?? plan.createdAt.slice(0, 10)}</p>
             </div>
           </div>
         ) : (
-          <p className="mt-2 text-sm text-ink-muted">No study plan set up yet.</p>
+          <p className="mt-2 text-sm text-ink-muted">{t('No study plan set up yet.')}</p>
         )}
       </section>
 
       {/* ── Streak and study time ── */}
       <section>
-        <h2 className="font-display text-lg font-bold">Consistency</h2>
+        <h2 className="font-display text-lg font-bold">{t('Consistency')}</h2>
         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-2">
           <div className="rounded-card border border-border bg-surface p-4">
-            <p className="text-xs text-ink-muted">Current streak</p>
+            <p className="text-xs text-ink-muted">{t('Current streak')}</p>
             <p className="mt-1 font-display text-xl font-extrabold">
-              {streak} day{streak === 1 ? '' : 's'}
+              {tn(streak, { one: '{n} day', other: '{n} days' })}
             </p>
           </div>
           <div className="rounded-card border border-border bg-surface p-4">
-            <p className="text-xs text-ink-muted">Total study time logged</p>
+            <p className="text-xs text-ink-muted">{t('Total study time logged')}</p>
             <p className="mt-1 font-display text-xl font-extrabold">
-              {Math.round(totalMinutes / 60)}h {totalMinutes % 60}m
+              {t('{hours}h {minutes}m', { hours: Math.round(totalMinutes / 60), minutes: totalMinutes % 60 })}
             </p>
           </div>
         </div>
@@ -287,28 +294,31 @@ export default function ProgressReport() {
 
       {/* ── Lessons completed per skill ── */}
       <section>
-        <h2 className="font-display text-lg font-bold">Lessons completed</h2>
+        <h2 className="font-display text-lg font-bold">{t('Lessons completed')}</h2>
         <div className="mt-3 overflow-x-auto rounded-card border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-surface-alt text-left text-xs uppercase tracking-wide text-ink-muted">
-                <th className="px-4 py-2.5 font-semibold">Skill</th>
-                <th className="px-4 py-2.5 font-semibold">Completed</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Skill')}</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Completed')}</th>
               </tr>
             </thead>
             <tbody>
               {lessonsBySkill.map((row) => (
                 <tr key={row.skill} className="border-t border-border">
-                  <td className="px-4 py-2.5 font-medium">{SKILL_LABEL[row.skill]}</td>
+                  <td className="px-4 py-2.5 font-medium">{row.skill === 'vocabulary' ? t(SKILL_LABEL[row.skill]) : SKILL_LABEL[row.skill]}</td>
                   <td className="px-4 py-2.5">
-                    {row.done} / {row.total}
+                    {t('{done} / {total}', { done: row.done, total: row.total })}
                   </td>
                 </tr>
               ))}
               <tr className="border-t border-border bg-surface-alt font-semibold">
-                <td className="px-4 py-2.5">Total</td>
+                <td className="px-4 py-2.5">{t('Total')}</td>
                 <td className="px-4 py-2.5">
-                  {lessonsBySkill.reduce((n, r) => n + r.done, 0)} / {lessonsBySkill.reduce((n, r) => n + r.total, 0)}
+                  {t('{done} / {total}', {
+                    done: lessonsBySkill.reduce((n, r) => n + r.done, 0),
+                    total: lessonsBySkill.reduce((n, r) => n + r.total, 0),
+                  })}
                 </td>
               </tr>
             </tbody>
@@ -318,16 +328,16 @@ export default function ProgressReport() {
 
       {/* ── Tests taken per skill ── */}
       <section>
-        <h2 className="font-display text-lg font-bold">Test results</h2>
+        <h2 className="font-display text-lg font-bold">{t('Test results')}</h2>
         <div className="mt-3 overflow-x-auto rounded-card border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-surface-alt text-left text-xs uppercase tracking-wide text-ink-muted">
-                <th className="px-4 py-2.5 font-semibold">Skill</th>
-                <th className="px-4 py-2.5 font-semibold">Attempts</th>
-                <th className="px-4 py-2.5 font-semibold">Best band</th>
-                <th className="px-4 py-2.5 font-semibold">Latest band</th>
-                <th className="px-4 py-2.5 font-semibold">Aiming at</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Skill')}</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Attempts')}</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Best band')}</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Latest band')}</th>
+                <th className="px-4 py-2.5 font-semibold">{t('Aiming at')}</th>
               </tr>
             </thead>
             <tbody>
@@ -343,17 +353,17 @@ export default function ProgressReport() {
                   <tr key={row.skill} className="border-t border-border">
                     <td className="px-4 py-2.5 font-medium">{row.skill}</td>
                     <td className="px-4 py-2.5">{row.count}</td>
-                    <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
-                    <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? <span className="text-ink-muted">not yet</span>}</td>
+                    <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? <span className="text-ink-muted">{t('not yet')}</span>}</td>
+                    <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? <span className="text-ink-muted">{t('not yet')}</span>}</td>
                     <td className="px-4 py-2.5">
                       {targetBand === null ? (
-                        <span className="text-ink-muted">no target</span>
+                        <span className="text-ink-muted">{t('no target')}</span>
                       ) : (
                         <>
                           <span className="font-medium">{targetBand.toFixed(1)}</span>
                           {short !== null && (
                             <span className={short <= 0 ? 'text-success' : 'text-ink-muted'}>
-                              {short <= 0 ? ' · reached' : ` · ${short.toFixed(1)} to go`}
+                              {short <= 0 ? t(' · reached') : t(' · {n} to go', { n: short.toFixed(1) })}
                             </span>
                           )}
                         </>
@@ -367,43 +377,42 @@ export default function ProgressReport() {
         </div>
         {plan?.skillTargets && (
           <p className="mt-2 text-xs text-ink-muted">
-            Your own minimum per paper is shown where you set one, otherwise your overall target of Band{' '}
-            {plan.targetBand}. Change these in Course settings.
+            {t('Your own minimum per paper is shown where you set one, otherwise your overall target of Band {band}. Change these in Course settings.', { band: plan.targetBand })}
           </p>
         )}
         {trend.length >= 2 ? (
           <BandTrend points={trend} />
         ) : (
-          <p className="mt-3 text-sm text-ink-muted">Band trend appears once you have at least two scored attempts.</p>
+          <p className="mt-3 text-sm text-ink-muted">{t('Band trend appears once you have at least two scored attempts.')}</p>
         )}
       </section>
 
       {/* ── Weakest / strongest question types ── */}
       <section>
-        <h2 className="font-display text-lg font-bold">Question types</h2>
+        <h2 className="font-display text-lg font-bold">{t('Question types')}</h2>
         {weakest && strongest ? (
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="rounded-card border border-error/40 bg-error-tint p-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-error">Weakest</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-error">{t('Weakest')}</p>
               <p className="mt-1 font-display text-base font-bold">
                 {LABELS[weakest.type] ?? weakest.type} ({weakest.skill})
               </p>
               <p className="mt-0.5 text-sm text-ink-muted">
-                {weakest.correct} / {weakest.total} correct · {weakest.pct}%
+                {t('{correct} / {total} correct · {pct}%', { correct: weakest.correct, total: weakest.total, pct: weakest.pct })}
               </p>
             </div>
             <div className="rounded-card border border-success/40 bg-success-tint p-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-success">Strongest</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-success">{t('Strongest')}</p>
               <p className="mt-1 font-display text-base font-bold">
                 {LABELS[strongest.type] ?? strongest.type} ({strongest.skill})
               </p>
               <p className="mt-0.5 text-sm text-ink-muted">
-                {strongest.correct} / {strongest.total} correct · {strongest.pct}%
+                {t('{correct} / {total} correct · {pct}%', { correct: strongest.correct, total: strongest.total, pct: strongest.pct })}
               </p>
             </div>
           </div>
         ) : (
-          <p className="mt-2 text-sm text-ink-muted">Take a Reading or Listening test to see your weak spots here.</p>
+          <p className="mt-2 text-sm text-ink-muted">{t('Take a Reading or Listening test to see your weak spots here.')}</p>
         )}
       </section>
     </div>

@@ -25,6 +25,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PracticeTest } from '../../lib/tests/schema';
 import { withBase } from '../../lib/url';
+import { useT } from '../../lib/i18n/react';
 import { onAuthChange } from '../../lib/auth/session';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, newIdempotencyKey, TutorClientError } from '../../lib/tutor/client';
@@ -44,6 +45,7 @@ export interface TestDebriefProps {
 }
 
 export default function TestDebrief({ test, answers, correctIds, scoredTotal }: TestDebriefProps) {
+  const { t, tn } = useT();
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [text, setText] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<TutorRecommendation | null>(null);
@@ -84,7 +86,7 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
       setError(
         err instanceof TutorClientError
           ? { message: err.message, code: err.code }
-          : { message: 'Mr EZ could not go through these just now.', code: 'unavailable' },
+          : { message: t('Mr EZ could not go through these just now.'), code: 'unavailable' },
       );
     } finally {
       setBusy(false);
@@ -103,8 +105,8 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
   if (!signedIn) {
     return (
       <p className="mrez-debrief-signin">
-        Sign in and Mr EZ can go through your mistakes with you.{' '}
-        <a href={withBase('/account')}>Sign in</a>
+        {t('Sign in and Mr EZ can go through your mistakes with you.')}{' '}
+        <a href={withBase('/account')}>{t('Sign in')}</a>
       </p>
     );
   }
@@ -112,16 +114,19 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
   const missed = items.length;
 
   return (
-    <section className="mrez-debrief" aria-label="Go through your mistakes with Mr EZ">
+    <section className="mrez-debrief" aria-label={t('Go through your mistakes with Mr EZ')}>
       {!text && (
         <div className="mrez-debrief-cta">
           <MrEzAvatar mood={busy ? 'thinking' : 'idle'} size={34} />
           <div className="mrez-debrief-body">
             <p className="mrez-debrief-lead">
-              You missed {missed} of {scoredTotal}. Want to see what they have in common?
+              {tn(missed, {
+                one: 'You missed {missed} of {total}. Want to see what they have in common?',
+                other: 'You missed {missed} of {total}. Want to see what they have in common?',
+              }, { missed, total: scoredTotal })}
             </p>
             <button type="button" className="mrez-debrief-button" onClick={() => void ask()} disabled={busy}>
-              {busy ? 'Mr EZ is reading them…' : 'Go through my mistakes with Mr EZ'}
+              {busy ? t('Mr EZ is reading them…') : t('Go through my mistakes with Mr EZ')}
             </button>
           </div>
         </div>
@@ -133,7 +138,7 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
             <div className="mrez-debrief-head">
               <MrEzAvatar mood="explaining" size={30} />
               <strong>Mr EZ</strong>
-              {!live && <span className="mrez-sim-badge">Simulated, not a real AI reply</span>}
+              {!live && <span className="mrez-sim-badge">{t('Simulated, not a real AI reply')}</span>}
             </div>
             {text.split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>
@@ -145,7 +150,7 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
               </a>
             )}
             <p className="mrez-debrief-note">
-              He read the marking that was already done. Nothing was re-scored.
+              {t('He read the marking that was already done. Nothing was re-scored.')}
             </p>
           </div>
         )}
@@ -155,7 +160,7 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
             <p>{error.message}</p>
             {error.code !== 'limit-reached' && (
               <button type="button" onClick={() => void ask()} disabled={busy}>
-                Try again
+                {t('Try again')}
               </button>
             )}
           </div>

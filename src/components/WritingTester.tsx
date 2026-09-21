@@ -25,6 +25,7 @@ import { getModelAnswers } from '../data/model-answers';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttempt } from '../lib/progress';
+import { useT } from '../lib/i18n/react';
 import BandReport from './BandReport';
 import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
@@ -41,6 +42,7 @@ function pad(n: number): string {
 }
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
+  const { t, tn } = useT();
   const coached = variant === 'trainer';
   const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
@@ -164,7 +166,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       // timeout, or the Worker itself failing. Show one calm, specific
       // message rather than surfacing the raw error (which might read like a
       // permanent "not configured" state the student can't do anything about).
-      setGradingError('We could not reach the grading service. Your essay is safe on this page; try again in a minute.');
+      setGradingError(
+        t('We could not reach the grading service. Your essay is safe on this page; try again in a minute.'),
+      );
     } finally {
       setGrading(false);
     }
@@ -187,7 +191,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   }
 
   function newTask() {
-    if (essay.trim() && !window.confirm('Get a different task? Your current answer will be cleared.')) return;
+    if (essay.trim() && !window.confirm(t('Get a different task? Your current answer will be cleared.'))) return;
     startTask(taskType!);
   }
 
@@ -223,53 +227,58 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       {
         task: 'task1' as const,
         title: 'Task 1',
-        kind: 'Report',
-        description: 'Describe a chart, graph, table, process or map in your own words.',
+        kind: t('Report'),
+        description: t('Describe a chart, graph, table, process or map in your own words.'),
         minWords: t1Pool[0]?.minWords,
         minutes: t1Pool[0]?.suggestedMinutes,
       },
       {
         task: 'task2' as const,
         title: 'Task 2',
-        kind: 'Essay',
-        description: 'Write a discursive essay responding to an opinion, discussion or problem prompt.',
+        kind: t('Essay'),
+        description: t('Write a discursive essay responding to an opinion, discussion or problem prompt.'),
         minWords: TASK2_PROMPTS[0]?.minWords,
         minutes: TASK2_PROMPTS[0]?.suggestedMinutes,
       },
     ];
     return (
       <div className="writing-choice screen-in">
-        <h3>{coached ? 'Choose your writing practice' : 'Choose your writing task'}</h3>
-        <p className="choice-description">{coached ? 'A different exam-style prompt each attempt, with AI feedback on all four criteria.' : 'A different exam-style prompt each attempt. Just you and the question, under exam conditions.'}</p>
+        <h3>{coached ? t('Choose your writing practice') : t('Choose your writing task')}</h3>
+        <p className="choice-description">
+          {coached
+            ? t('A different exam-style prompt each attempt, with AI feedback on all four criteria.')
+            : t('A different exam-style prompt each attempt. Just you and the question, under exam conditions.')}
+        </p>
         <div className="writing-choice-grid">
-          {taskCards.map((t) => (
+          {taskCards.map((card) => (
             <button
-              key={t.task}
+              key={card.task}
               type="button"
-              onClick={() => startTask(t.task)}
+              onClick={() => startTask(card.task)}
               className="writing-choice-card group"
             >
               <span className="font-display text-lg font-extrabold">
-                {t.title} <span className="font-bold text-ink-muted">· {t.kind}</span>
+                {card.title} <span className="font-bold text-ink-muted">· {card.kind}</span>
               </span>
-              <p className="mt-1.5 flex-1 text-sm text-ink-muted">{t.description}</p>
+              <p className="mt-1.5 flex-1 text-sm text-ink-muted">{card.description}</p>
               <span className="mt-3 flex flex-wrap gap-1.5">
                 <span className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink-muted">
-                  {t.minWords}+ words
+                  {tn(card.minWords ?? 0, { one: '{n}+ word', other: '{n}+ words' })}
                 </span>
                 <span className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink-muted">
-                  ⏱ ~{t.minutes} min
+                  ⏱ {t('~{minutes} min', { minutes: card.minutes })}
                 </span>
               </span>
               <span className="mt-4 inline-flex w-full items-center justify-center rounded-button bg-[var(--skill,#0E9F6E)] px-4 py-2.5 font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
-                Start {t.title}
+                {t('Start {task}', { task: card.title })}
               </span>
             </button>
           ))}
         </div>
 
         <p className="mt-5 text-xs text-ink-muted">
-          {t1Pool.length} Task 1 prompts · {TASK2_PROMPTS.length} Task 2 prompts · free
+          {tn(t1Pool.length, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' })} ·{' '}
+          {tn(TASK2_PROMPTS.length, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })} · {t('free')}
         </p>
       </div>
     );
@@ -290,9 +299,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             📝
           </span>
         </div>
-        <h3 className="mt-6 font-display text-xl font-extrabold">Grading your essay…</h3>
+        <h3 className="mt-6 font-display text-xl font-extrabold">{t('Grading your essay…')}</h3>
         <p className="mx-auto mt-1 max-w-sm text-sm text-ink-muted">
-          Our AI examiner is reading your response against the official IELTS band descriptors.
+          {t('Our AI examiner is reading your response against the official IELTS band descriptors.')}
         </p>
         <GradingProgress kind="writing" startedAt={gradingStartedAt} className="mt-7" />
       </div>
@@ -308,7 +317,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           title={prompt.title}
           overallBand={result.overallBand}
           live={result.grader.live}
-          offlineWarning="The band scores below are illustrative, generated from mechanical signals only, without an AI examiner. Your teacher can enable AI grading."
+          offlineWarning={t(
+            'The band scores below are illustrative, generated from mechanical signals only, without an AI examiner. Your teacher can enable AI grading.',
+          )}
           criteria={CRITERIA.map((c) => {
             const score = result.criteria[c.key];
             const guide = guideFor(WRITING_BAND_GUIDES[c.key], score.band);
@@ -335,9 +346,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
               className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
             >
               <span>
-                <span className="font-display font-bold text-ink">Compare with a Band 8 answer</span>
+                <span className="font-display font-bold text-ink">{t('Compare with a Band 8 answer')}</span>
                 <span className="mt-0.5 block text-ink-muted">
-                  A model written for this same task, with the examiner notes behind every criterion.
+                  {t('A model written for this same task, with the examiner notes behind every criterion.')}
                 </span>
               </span>
               <span aria-hidden="true" className="shrink-0 text-brand">
@@ -348,12 +359,12 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
           {/* Instant mechanics */}
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-            <h3 className="font-display font-bold">Mechanics check</h3>
+            <h3 className="font-display font-bold">{t('Mechanics check')}</h3>
             <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
-              <Stat label="Words" value={`${m.wordCount}`} bad={m.underLength} />
-              <Stat label="Sentences" value={`${m.sentenceCount}`} />
-              <Stat label="Vocab variety" value={`${Math.round(m.lexicalDiversity * 100)}%`} bad={m.lexicalDiversity < 0.42} />
-              <Stat label="Linking words" value={`${m.linkingDevices.reduce((a, l) => a + l.count, 0)}`} bad={m.linkingDevices.length === 0 && m.sentenceCount > 3} />
+              <Stat label={t('Words')} value={`${m.wordCount}`} bad={m.underLength} />
+              <Stat label={t('Sentences')} value={`${m.sentenceCount}`} />
+              <Stat label={t('Vocab variety')} value={`${Math.round(m.lexicalDiversity * 100)}%`} bad={m.lexicalDiversity < 0.42} />
+              <Stat label={t('Linking words')} value={`${m.linkingDevices.reduce((a, l) => a + l.count, 0)}`} bad={m.linkingDevices.length === 0 && m.sentenceCount > 3} />
             </div>
             <ul className="mt-4 space-y-1.5 text-sm text-ink-muted">
               {m.notes.map((n) => (
@@ -368,7 +379,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           {/* Moments */}
           {result.moments.length > 0 && (
             <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-              <h3 className="font-display font-bold">Moments from your essay</h3>
+              <h3 className="font-display font-bold">{t('Moments from your essay')}</h3>
               <ul className="mt-3 space-y-2 text-sm">
                 {result.moments.map((mo, i) => (
                   <li key={i}>
@@ -397,20 +408,20 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             onClick={() => setResult(null)}
             className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
           >
-            ✎ Revise this essay
+            ✎ {t('Revise this essay')}
           </button>
           <button
             type="button"
             onClick={() => startTask(taskType!)}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            Take another test
+            {t('Take another test')}
           </button>
         </div>
         <p className="text-center text-xs text-ink-muted">
-          Your essay and its scores are saved.{' '}
+          {t('Your essay and its scores are saved.')}{' '}
           <a href={withBase('/account#writing')} className="font-semibold text-brand hover:underline">
-            Reread it any time in My progress
+            {t('Reread it any time in My progress')}
           </a>
           .
         </p>
@@ -453,7 +464,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                     className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums ${
                       timerOvertime ? 'border-error text-error' : 'border-border text-ink'
                     }`}
-                    title={timerOvertime ? 'Over the suggested time' : 'Time spent writing'}
+                    title={timerOvertime ? t('Over the suggested time') : t('Time spent writing')}
                   >
                     {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
                   </span>
@@ -462,7 +473,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                     reroll is a practice affordance, so it's trainer-only. */}
                 {coached && (
                   <button type="button" onClick={newTask} className="py-2 -my-2 text-xs font-semibold text-ink-muted hover:text-ink">
-                    ↻ New task
+                    ↻ {t('New task')}
                   </button>
                 )}
               </div>
@@ -473,7 +484,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                 each of those — visibly re-loading the Task 1 chart image. */}
             <Html as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
             {prompt.promptHtml.includes('<img') && (
-              <p className="mt-2 text-xs font-medium text-ink-muted">View larger: click the chart to open it full-size.</p>
+              <p className="mt-2 text-xs font-medium text-ink-muted">
+                {t('View larger: click the chart to open it full-size.')}
+              </p>
             )}
           </div>
 
@@ -481,14 +494,17 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             value={essay}
             onChange={(e) => setEssay(e.target.value)}
             rows={14}
-            placeholder="Write your answer here…"
+            placeholder={t('Write your answer here…')}
             className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
           />
 
           {!isGraderConfigured() && (
             <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
-              ⚠ AI feedback is not available on this build (PUBLIC_GRADER_URL is not set). You can still write and time
-              yourself, but essays can't be graded here yet.
+              ⚠{' '}
+              {t(
+                "AI feedback is not available on this build ({envVar} is not set). You can still write and time yourself, but essays can't be graded here yet.",
+                { envVar: 'PUBLIC_GRADER_URL' },
+              )}
             </p>
           )}
           {gradingError && (
@@ -499,7 +515,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
           <div className="flex items-center justify-between">
             <span className={`text-sm font-semibold ${under ? 'text-ink-muted' : 'text-success'}`}>
-              {wordCount} / {prompt.minWords}+ words
+              {t('{count} / {min}+ words', { count: wordCount, min: prompt.minWords })}
             </span>
             <button
               type="button"
@@ -507,7 +523,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
               disabled={wordCount === 0 || !isGraderConfigured()}
               className="rounded-button bg-brand px-6 py-2.5 font-semibold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Check my essay
+              {t('Check my essay')}
             </button>
           </div>
         </div>
@@ -525,14 +541,14 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={lightboxImg.alt || 'Chart, larger view'}
+          aria-label={lightboxImg.alt || t('Chart, larger view')}
           className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"
           onClick={() => setLightboxImg(null)}
         >
           <button
             type="button"
             onClick={() => setLightboxImg(null)}
-            aria-label="Close"
+            aria-label={t('Close')}
             className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-2xl leading-none text-white/90 transition-colors hover:bg-white/10 hover:text-white"
           >
             ×

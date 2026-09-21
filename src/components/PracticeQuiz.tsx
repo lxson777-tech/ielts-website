@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { PracticeQuestion, PracticeSet, PracticeUnit } from '../data/reading-practice';
+import { useT } from '../lib/i18n/react';
+import { t } from '../lib/i18n/translate';
 
 /** Base-prefixed URL for images stored under /public. */
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
@@ -34,6 +36,7 @@ function fmtClock(seconds: number): string {
     Trainer's player in TestPlayer.tsx). Shown once, above that unit's
     questions. */
 function PracticeSegmentAudio({ segment }: { segment: NonNullable<PracticeUnit['segment']> }) {
+  const { t } = useT();
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(segment.src ? 'loading' : 'error');
 
   function handleLoadedMetadata(el: HTMLAudioElement) {
@@ -67,21 +70,23 @@ function PracticeSegmentAudio({ segment }: { segment: NonNullable<PracticeUnit['
             preload="metadata"
             src={asset(segment.src)}
             className="h-10 w-full min-w-0 shrink-0 sm:w-auto sm:flex-1"
-            aria-label={segment.source ?? 'Listening recording'}
+            aria-label={segment.source ?? t('Listening recording', undefined, 'practice-audio')}
             onLoadedMetadata={(e) => handleLoadedMetadata(e.currentTarget)}
             onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget)}
             onError={() => setStatus('error')}
           />
         )}
-        {status === 'error' && <span className="text-xs text-error">Recording unavailable.</span>}
+        {status === 'error' && <span className="text-xs text-error">{t('Recording unavailable.')}</span>}
         {segment.source && (
           <span className="shrink-0 text-xs font-semibold text-ink-muted sm:text-right">{segment.source}</span>
         )}
       </div>
       {segment.startSeconds != null && (
         <p className="px-3 pb-2 text-xs text-ink-muted">
-          This clip covers {fmtClock(segment.startSeconds)} to {fmtClock(segment.endSeconds ?? segment.startSeconds)}{' '}
-          of the full recording.
+          {t('This clip covers {start} to {end} of the full recording.', {
+            start: fmtClock(segment.startSeconds),
+            end: fmtClock(segment.endSeconds ?? segment.startSeconds),
+          })}
         </p>
       )}
     </div>
@@ -95,6 +100,7 @@ function PracticeSegmentAudio({ segment }: { segment: NonNullable<PracticeUnit['
     `html` is used instead of `paragraphs` for the rare passage that is
     really a table or diagram image rather than running text. */
 function UnitPassage({ passages }: { passages: NonNullable<PracticeUnit['passages']> }) {
+  const { t } = useT();
   const [collapsed, setCollapsed] = useState(false);
   const main = passages[0]!;
 
@@ -110,7 +116,7 @@ function UnitPassage({ passages }: { passages: NonNullable<PracticeUnit['passage
           onClick={() => setCollapsed((c) => !c)}
           className="shrink-0 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-ink-muted transition-colors hover:border-[var(--skill)] hover:text-ink"
         >
-          {collapsed ? 'Expand passage ↓' : 'Collapse passage ↑'}
+          {collapsed ? `${t('Expand passage')} ↓` : `${t('Collapse passage')} ↑`}
         </button>
       </div>
 
@@ -158,11 +164,11 @@ const PRAISE = ['Nice one!', 'Exactly right!', 'Well spotted!', 'Perfect!', 'Cor
 
 function scoreMessage(correct: number, total: number): string {
   const p = correct / total;
-  if (p === 1) return 'Flawless! You have mastered this question type. 🏆';
-  if (p >= 0.8) return 'Excellent work, almost perfect! 🌟';
-  if (p >= 0.6) return 'Good job! Review the explanations you missed and go again. 💪';
-  if (p >= 0.4) return 'Getting there. Reread the strategy above and try again. 📖';
-  return 'Tough round! Study the explanations, then hit Try again. 🔄';
+  if (p === 1) return t('Flawless! You have mastered this question type. 🏆');
+  if (p >= 0.8) return t('Excellent work, almost perfect! 🌟');
+  if (p >= 0.6) return t('Good job! Review the explanations you missed and go again. 💪');
+  if (p >= 0.4) return t('Getting there. Reread the strategy above and try again. 📖');
+  return t('Tough round! Study the explanations, then hit Try again. 🔄');
 }
 
 interface UnitState {
@@ -191,7 +197,9 @@ function UnitBlock({
   onCheck: () => void;
   onReset: () => void;
 }) {
-  const selectNounTitle = selectNoun.charAt(0).toUpperCase() + selectNoun.slice(1);
+  const { t } = useT();
+  const translatedNoun = t(selectNoun);
+  const selectNounTitle = translatedNoun.charAt(0).toUpperCase() + translatedNoun.slice(1);
   const locked = state.checked;
   const answeredCount = state.drafts.filter((d) => d.trim() !== '').length;
   const correctCount = unit.questions.filter((q, qi) => isRight(q, state.drafts[qi]!)).length;
@@ -269,7 +277,7 @@ function UnitBlock({
                     value={g}
                     disabled={locked}
                     onChange={(e) => onDraft(qi, e.target.value)}
-                    aria-label={`${selectNoun} for ${q.prompt}`}
+                    aria-label={t('{noun} for {prompt}', { noun: translatedNoun, prompt: q.prompt })}
                     className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors ${
                       locked
                         ? right
@@ -279,11 +287,11 @@ function UnitBlock({
                     }`}
                   >
                     <option value="" disabled>
-                      Choose {selectNoun}…
+                      {t('Choose {noun}…', { noun: translatedNoun })}
                     </option>
                     {q.options!.map((opt) => (
                       <option key={opt.value} value={opt.value}>
-                        {opt.label ?? `${selectNounTitle} ${opt.value}`}
+                        {opt.label ?? t('{noun} {value}', { noun: selectNounTitle, value: opt.value })}
                       </option>
                     ))}
                   </select>
@@ -295,8 +303,8 @@ function UnitBlock({
                     value={g}
                     disabled={locked}
                     onChange={(e) => onDraft(qi, e.target.value)}
-                    placeholder="Type your answer…"
-                    aria-label={`Answer to question ${startIndex + qi + 1}`}
+                    placeholder={t('Type your answer…')}
+                    aria-label={t('Answer to question {n}', { n: startIndex + qi + 1 })}
                     className={`w-56 rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors ${
                       locked
                         ? right
@@ -316,15 +324,17 @@ function UnitBlock({
                 >
                   {right ? (
                     <p>
-                      <strong className="text-success">🎉 {PRAISE[qi % PRAISE.length]}</strong> {q.explanation}
+                      <strong className="text-success">🎉 {t(PRAISE[qi % PRAISE.length]!)}</strong> {q.explanation}
                     </p>
                   ) : (
                     <p>
-                      <strong className="text-error">💡 Not quite. The answer is “{answerLabel(q)}”.</strong>{' '}
+                      <strong className="text-error">
+                        💡 {t('Not quite. The answer is “{answer}”.', { answer: answerLabel(q) })}
+                      </strong>{' '}
                       {q.explanation}
                     </p>
                   )}
-                  {q.source && <p className="mt-1 text-xs text-ink-muted">Source: {q.source}</p>}
+                  {q.source && <p className="mt-1 text-xs text-ink-muted">{t('Source: {source}', { source: q.source })}</p>}
                 </div>
               )}
             </div>
@@ -336,7 +346,7 @@ function UnitBlock({
         {locked && unit.segment?.transcriptHtml && (
           <details className="rounded-xl border border-border bg-surface p-4">
             <summary className="cursor-pointer font-display text-sm font-bold text-ink">
-              Transcript{unit.segment.source ? ` · ${unit.segment.source}` : ''}
+              {t('Transcript')}{unit.segment.source ? ` · ${unit.segment.source}` : ''}
             </summary>
             <div
               className="mt-3 max-h-72 overflow-y-auto text-sm leading-relaxed text-ink-muted [&_.transcript-note]:mb-2 [&_.transcript-note]:text-xs [&_.transcript-note]:italic [&_.ts]:mr-1 [&_.ts]:font-mono [&_.ts]:text-xs [&_.ts]:text-ink-muted"
@@ -348,27 +358,27 @@ function UnitBlock({
         {locked ? (
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-surface px-4 py-3 text-sm">
             <span className="font-display font-bold text-ink">
-              {correctCount} / {unit.questions.length} correct
+              {t('{correct} / {total} correct', { correct: correctCount, total: unit.questions.length })}
             </span>
             <button
               type="button"
               onClick={onReset}
               className="font-semibold text-ink-muted underline underline-offset-2 hover:text-ink"
             >
-              Try this passage again ↺
+              {t('Try this passage again')} ↺
             </button>
           </div>
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
             <span className="text-sm text-ink-muted">
-              {answeredCount} of {unit.questions.length} answered
+              {t('{done} of {total} answered', { done: answeredCount, total: unit.questions.length })}
             </span>
             <button
               type="submit"
               disabled={answeredCount === 0}
               className="rounded-full bg-[var(--skill,var(--color-brand))] px-6 py-2 font-display text-sm font-bold text-white transition-transform hover:-translate-y-0.5 hover:shadow-card disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
-              Check answers ✓
+              {t('Check answers')} ✓
             </button>
           </div>
         )}
@@ -378,6 +388,7 @@ function UnitBlock({
 }
 
 export default function PracticeQuiz({ set }: Props) {
+  const { t } = useT();
   /* 'select' questions were built for Matching Headings, where the dropdown
      picks a paragraph. Matching Sentence Endings reuses the same control to
      pick an ending, so the noun is configurable and defaults to the original. */
@@ -420,7 +431,7 @@ export default function PracticeQuiz({ set }: Props) {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="font-display text-base font-bold sm:text-lg">🎯 {set.title}</h3>
           <span className="rounded-full bg-white/20 px-3 py-1 font-display text-xs font-bold">
-            {correct} / {total} correct
+            {t('{correct} / {total} correct', { correct, total })}
           </span>
         </div>
         {set.intro && <p className="mt-1 text-sm text-white/85">{set.intro}</p>}
@@ -430,7 +441,7 @@ export default function PracticeQuiz({ set }: Props) {
           aria-valuenow={checkedQuestions}
           aria-valuemin={0}
           aria-valuemax={total}
-          aria-label="Questions checked"
+          aria-label={t('Questions checked')}
         >
           <div
             className="h-full rounded-full bg-white transition-[width] duration-500"
@@ -467,7 +478,7 @@ export default function PracticeQuiz({ set }: Props) {
             onClick={resetAll}
             className="mt-4 rounded-full bg-white px-6 py-2 font-display text-sm font-bold text-brand transition-transform hover:-translate-y-0.5"
           >
-            Try again ↺
+            {t('Try again', undefined, 'practice-quiz')} ↺
           </button>
         </div>
       )}

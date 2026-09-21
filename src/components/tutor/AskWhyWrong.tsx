@@ -19,6 +19,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { onAuthChange } from '../../lib/auth/session';
+import { useT } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, newIdempotencyKey, TutorClientError } from '../../lib/tutor/client';
 import { isPublishedTestId, sourceTestId } from '../../lib/tutor/test-items';
@@ -55,6 +56,7 @@ export interface AskWhyWrongProps {
 }
 
 export default function AskWhyWrong({ testId, questionId, given }: AskWhyWrongProps) {
+  const { t } = useT();
   const cellRef = useRef(slot(testId, questionId, given));
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [text, setText] = useState<string | null>(cellRef.current.text);
@@ -82,7 +84,7 @@ export default function AskWhyWrong({ testId, questionId, given }: AskWhyWrongPr
       setError(
         err instanceof TutorClientError
           ? { message: err.message, code: err.code }
-          : { message: 'Mr EZ could not look at this one just now.', code: 'unavailable' },
+          : { message: t('Mr EZ could not look at this one just now.'), code: 'unavailable' },
       );
     } finally {
       setBusy(false);
@@ -101,7 +103,7 @@ export default function AskWhyWrong({ testId, questionId, given }: AskWhyWrongPr
     <div className="mrez-why">
       {!text && (
         <button type="button" className="mrez-why-button" onClick={() => void ask()} disabled={busy}>
-          {busy ? 'Mr EZ is looking at it…' : 'Why was my answer wrong?'}
+          {busy ? t('Mr EZ is looking at it…') : t('Why was my answer wrong?')}
         </button>
       )}
 
@@ -111,7 +113,7 @@ export default function AskWhyWrong({ testId, questionId, given }: AskWhyWrongPr
             <div className="mrez-why-head">
               <MrEzAvatar mood="explaining" size={24} />
               <strong>Mr EZ</strong>
-              {!live && <span className="mrez-sim-badge">Simulated, not a real AI reply</span>}
+              {!live && <span className="mrez-sim-badge">{t('Simulated, not a real AI reply')}</span>}
             </div>
             {text.split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>
@@ -124,7 +126,7 @@ export default function AskWhyWrong({ testId, questionId, given }: AskWhyWrongPr
             <p>{error.message}</p>
             {error.code !== 'limit-reached' && (
               <button type="button" onClick={() => void ask()} disabled={busy}>
-                Try again
+                {t('Try again')}
               </button>
             )}
           </div>

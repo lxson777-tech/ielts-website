@@ -31,27 +31,27 @@ const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
     <div class="section-header">
       <div class="section-num">T</div>
       <div class="section-title-block">
-        <div class="tag">Practice Tests</div>
-        <h2>Take a Timed Test</h2>
+        <div class="tag" data-i18n>Practice Tests</div>
+        <h2 data-i18n>Take a Timed Test</h2>
       </div>
     </div>
-    <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">
-      Ready to put it together? Every attempt is a real exam: 3 passages, 40 questions, 60 minutes,
-      with instant scoring and an estimated band, and you get a different test each time.
-      Once you start, the clock can’t be paused.
-    </p>
+    <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;" data-i18n>Ready to put it together? Every attempt is a real exam: 3 passages, 40 questions, 60 minutes, with instant scoring and an estimated band, and you get a different test each time. Once you start, the clock can’t be paused.</p>
     <a class="cta-card" href={withBase('/tests')}>
       <span class="cta-card-body">
+        {/* Four numbers pulled from live test data interpolated into one run
+            of text: no clean way to mark this for translation without a
+            counted-phrase mechanism per number, so it stays English (see
+            batch report). */}
         <span class="sample-topic">
           {sample.parts.length} passages · {questionCount(sample)} questions · {sample.durationMinutes} min · {readingTests.length} tests in rotation
         </span>
-        <strong class="sample-title">Take a Reading Test</strong>
-        <span class="sample-go">Start a test</span>
+        <strong class="sample-title" data-i18n>Take a Reading Test</strong>
+        <span class="sample-go" data-i18n>Start a test</span>
       </span>
-      <img src={withBase('/pics/reading/start-test.png')} alt="Stopwatch at 60:00 beside a reading test booklet" loading="lazy" />
+      <img src={withBase('/pics/reading/start-test.png')} alt="Stopwatch at 60:00 beside a reading test booklet" data-i18n-attr="alt" loading="lazy" />
     </a>
     <p class="material-source">
-      Your score history lives on the <a href={withBase('/tests')}>practice tests page</a>.
+      <span data-i18n>Your score history lives on the</span> <a href={withBase('/tests')} data-i18n>practice tests page</a>.
     </p>
   </div>
 </LessonLayout>

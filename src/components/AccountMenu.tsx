@@ -16,11 +16,13 @@ import { startSyncForUser, stopSync } from '../lib/auth/sync';
 import { getProgress, onProgressChange } from '../lib/progress';
 import { loadStudyPlan, onStudyPlanChange } from '../lib/study-plan';
 import { buildCourse, courseStatus } from '../lib/course';
+import { useT } from '../lib/i18n/react';
 import AuthModal from './AuthModal';
 
 const MODULES = buildCourse();
 
 export default function AccountMenu({ compact = false }: { compact?: boolean }) {
+  const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -89,7 +91,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
 
   /* ── Signed in ── */
   if (user) {
-    const label = user.email ?? 'Account';
+    const label = user.email ?? t('Account');
     const initial = (user.email ?? '?').charAt(0).toUpperCase();
     return (
       <div ref={menuRef} className="relative inline-block">
@@ -114,9 +116,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             }`}
           >
             <div className="border-b border-border px-4 py-3">
-              <p className="text-xs text-ink-muted">Signed in as</p>
+              <p className="text-xs text-ink-muted">{t('Signed in as')}</p>
               <p className="truncate text-sm font-semibold">{label}</p>
-              <p className="mt-1 text-xs text-success">Progress is syncing to your account.</p>
+              <p className="mt-1 text-xs text-success">{t('Progress is syncing to your account.')}</p>
             </div>
             <a
               href={withBase('/start')}
@@ -124,7 +126,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             >
               <span className="flex items-center justify-between gap-2">
                 <span className="text-sm font-semibold text-brand">
-                  {course?.started ? 'Continue course' : 'Start the course'}
+                  {course?.started ? t('Continue course') : t('Start the course')}
                 </span>
                 {course?.started && (
                   <span className="shrink-0 text-[0.7rem] font-bold text-ink-muted">{course.percent}%</span>
@@ -132,10 +134,10 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
               </span>
               <span className="mt-0.5 block truncate text-xs text-ink-muted">
                 {!course
-                  ? 'Loading…'
+                  ? t('Loading…')
                   : !course.started
-                    ? 'Every lesson, in the right order'
-                    : (course.nextTitle ?? 'All lessons complete 🎉')}
+                    ? t('Every lesson, in the right order')
+                    : (course.nextTitle ?? t('All lessons complete 🎉'))}
               </span>
               {course?.started && (
                 <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-surface-alt">
@@ -150,7 +152,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
               href={withBase('/account')}
               className="block border-b border-border px-4 py-3 text-left text-sm font-semibold text-brand hover:bg-brand-tint"
             >
-              My progress
+              {t('My progress')}
             </a>
             <button
               type="button"
@@ -160,7 +162,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
               }}
               className="block w-full px-4 py-3 text-left text-sm font-semibold text-ink hover:bg-surface-alt"
             >
-              Sign out
+              {t('Sign out')}
             </button>
           </div>
         )}
@@ -190,7 +192,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             />
           </svg>
         </span>
-        Log in
+        {t('Log in')}
       </button>
 
       {modalOpen && <AuthModal onClose={() => setModalOpen(false)} />}

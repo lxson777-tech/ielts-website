@@ -34,8 +34,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
   <div class="platform-hub tests-hub mx-auto max-w-6xl px-4 py-12 sm:px-6">
     <div class="mb-8 test-page-heading">
 
-      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Put your skills to the test.</h1>
-      <p class="mt-2 max-w-xl text-ink-muted">Full timed tests, exactly like the real exam: no hints, no coaching, just the question and the clock. You get a band estimate and a full answer review afterwards. Results stay on this device so you can see your progress over time.</p>
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>Put your skills to the test.</h1>
+      <p class="mt-2 max-w-xl text-ink-muted" data-i18n>Full timed tests, exactly like the real exam: no hints, no coaching, just the question and the clock. You get a band estimate and a full answer review afterwards. Results stay on this device so you can see your progress over time.</p>
     </div>
 
 
@@ -53,7 +53,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         </div>
         <div class="relative flex flex-1 flex-col p-6">
           <Badge tone="skill">Reading</Badge>
-          <h3 class="mt-3 font-display text-xl font-extrabold">Full Reading Test</h3>
+          <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Reading Test</h3>
+          {/* Opens with a build-time count baked into the sentence: no clean
+              way to mark this for translation without a counted-phrase
+              mechanism reaching static Astro pages, so it stays English
+              (see batch report). */}
           <p class="mt-1.5 text-sm text-ink-muted">
             {readingTests.length} complete exams in rotation, a different one every attempt until you've
             taken them all.
@@ -70,11 +74,12 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               data-test-ids={JSON.stringify(readingTests.map((test) => test.id))}
               data-rotation-key="ielts.rotation.reading-tests.v1"
               class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+              data-i18n
             >
               Start a test
             </button>
-            <p class="text-center text-xs text-ink-muted">Once you begin, the clock cannot be paused.</p>
-            <a href={withBase('/trainers/reading')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline">
+            <p class="text-center text-xs text-ink-muted" data-i18n>Once you begin, the clock cannot be paused.</p>
+            <a href={withBase('/trainers/reading')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
               Only have 20 minutes? Try the Reading Trainer
             </a>
           </div>
@@ -94,8 +99,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
           </div>
           <div class="relative flex flex-1 flex-col p-6">
             <Badge tone="skill">Listening</Badge>
-            <h3 class="mt-3 font-display text-xl font-extrabold">Full Listening Test</h3>
-            <p class="mt-1.5 text-sm text-ink-muted">
+            <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Listening Test</h3>
+            <p class="mt-1.5 text-sm text-ink-muted" data-i18n>
               Hear the complete recording once, answer all four parts, then get your score and estimated band instantly.
             </p>
             <div class="mt-4 flex flex-wrap gap-2">
@@ -110,11 +115,12 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
                 data-test-ids={JSON.stringify(listeningTests.map((test) => test.id))}
                 data-rotation-key="ielts.rotation.listening-tests.v1"
                 class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+                data-i18n
               >
                 Start a listening test
               </button>
-              <p class="text-center text-xs text-ink-muted">Use headphones. The recording cannot be replayed.</p>
-              <a href={withBase('/lessons/listening')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline">
+              <p class="text-center text-xs text-ink-muted" data-i18n>Use headphones. The recording cannot be replayed.</p>
+              <a href={withBase('/lessons/listening')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
                 Learn the four Listening parts first
               </a>
             </div>
@@ -135,27 +141,25 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         <div class="relative flex flex-1 flex-col p-6">
           <div class="flex flex-wrap items-center gap-1.5">
             <Badge tone="skill">Writing</Badge>
-            <Badge tone="brand">Exam conditions</Badge>
+            <Badge tone="brand"><span data-i18n>Exam conditions</span></Badge>
           </div>
-          <h3 class="mt-3 font-display text-xl font-extrabold">Writing Checker</h3>
-          <p class="mt-1.5 text-sm text-ink-muted">
-            Write a Task 1 or Task 2 answer under exam conditions, then get AI-graded feedback
-            plus a mechanics check on length, vocabulary, cohesion and spelling.
-          </p>
+          <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Writing Checker</h3>
+          <p class="mt-1.5 text-sm text-ink-muted" data-i18n>Write a Task 1 or Task 2 answer under exam conditions, then get AI-graded feedback plus a mechanics check on length, vocabulary, cohesion and spelling.</p>
           <div class="mt-4 flex flex-wrap gap-2">
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task1Count} Task 1 prompts</span>
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task2Count} Task 2 prompts</span>
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">AI feedback</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>AI feedback</span>
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
             <a
               href={withBase('/writing/checker')}
               class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+              data-i18n
             >
               Start writing
             </a>
-            <p class="text-center text-xs text-ink-muted">A different prompt every attempt. No coaching aids.</p>
-            <a href={withBase('/trainers/writing')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline">
+            <p class="text-center text-xs text-ink-muted" data-i18n>A different prompt every attempt. No coaching aids.</p>
+            <a href={withBase('/trainers/writing')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
               Want structures and phrases while you write? Try the Writing Trainer
             </a>
           </div>
@@ -175,27 +179,25 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         <div class="relative flex flex-1 flex-col p-6">
           <div class="flex flex-wrap items-center gap-1.5">
             <Badge tone="skill">Speaking</Badge>
-            <Badge tone="brand">Exam conditions</Badge>
+            <Badge tone="brand"><span data-i18n>Exam conditions</span></Badge>
           </div>
-          <h3 class="mt-3 font-display text-xl font-extrabold">Live AI Examiner</h3>
-          <p class="mt-1.5 text-sm text-ink-muted">
-            A full three-part mock speaking test as a real voice conversation: the examiner speaks,
-            listens, and asks follow-ups based on what you actually say.
-          </p>
+          <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Live AI Examiner</h3>
+          <p class="mt-1.5 text-sm text-ink-muted" data-i18n>A full three-part mock speaking test as a real voice conversation: the examiner speaks, listens, and asks follow-ups based on what you actually say.</p>
           <div class="mt-4 flex flex-wrap gap-2">
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">3 parts</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>3 parts</span>
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{SPEAKING_CUE_CARDS.length} cue cards</span>
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">Real-time voice</span>
+            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>Real-time voice</span>
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
             <a
               href={withBase('/speaking/examiner')}
               class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
+              data-i18n
             >
               Start the interview
             </a>
-            <p class="text-center text-xs text-ink-muted">Microphone access required.</p>
-            <a href={withBase('/trainers/speaking')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline">
+            <p class="text-center text-xs text-ink-muted" data-i18n>Microphone access required.</p>
+            <a href={withBase('/trainers/speaking')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
               Want to practice one part at a time instead?
             </a>
           </div>
@@ -209,12 +211,12 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
     >
       <div>
 
-        <h2 class="mt-1 font-display text-xl font-extrabold">Mock Exam Day</h2>
-        <p class="mt-1 max-w-xl text-sm text-ink-muted">
+        <h2 class="mt-1 font-display text-xl font-extrabold" data-i18n>Mock Exam Day</h2>
+        <p class="mt-1 max-w-xl text-sm text-ink-muted" data-i18n>
           One chained sitting: Listening, then Reading, then Writing, then Speaking, no breaks, just like the real test day.
         </p>
       </div>
-      <span class="shrink-0 rounded-button bg-brand px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
+      <span class="shrink-0 rounded-button bg-brand px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90" data-i18n>
         Start Mock Exam Day
       </span>
     </a>
@@ -222,6 +224,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
 
     <PracticeOrTest current="tests" />
 
+    {/* Two inline links inside one running sentence, plus an external
+        attribution: restructuring it would change the rendered English
+        word order (must stay byte-identical for English users), so it is
+        left in English and reported in the batch summary rather than
+        translated in fragments. */}
     {listeningTests.length > 0 && (
       <p class="mt-5 text-center text-xs leading-relaxed text-ink-muted">
         Listening questions and recordings adapted from{' '}
@@ -243,8 +250,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
     <section class="test-catalog" aria-labelledby="catalog-heading">
       <div class="test-catalog-heading">
         <div>
-          <p class="platform-eyebrow">Browse the bank</p>
-          <h2 id="catalog-heading">Every full exam</h2>
+          <p class="platform-eyebrow" data-i18n>Browse the bank</p>
+          <h2 id="catalog-heading" data-i18n>Every full exam</h2>
         </div>
         <p>{readingTests.length} Reading · {listeningTests.length} Listening</p>
       </div>
@@ -267,6 +274,9 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         title="Your weak spots"
         subtitle="Accuracy by question type across every attempt on this device. Drill the red ones first."
       />
+      {/* SectionHeading renders both props with data-i18n internally; "Reading"
+          and "Listening" h3 labels below are protected paper names and stay
+          English on purpose. */}
       <div class="grid gap-8 lg:grid-cols-2">
         <div class="skill-reading">
           <h3 class="mb-3 font-display text-lg font-bold">Reading</h3>
@@ -303,6 +313,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
   import { withBase } from '../../lib/url';
   import { nextInRotation } from '../../lib/rotation';
   import { activeSession, secondsLeft } from '../../lib/test-session';
+  import { t } from '../../lib/i18n/translate';
 
   function initRotation() {
   document.querySelectorAll<HTMLButtonElement>('[data-test-rotation]:not([data-bound])').forEach((btn) => {
@@ -315,7 +326,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
     const session = activeSession();
     const resume = session && ids.includes(session.testId) && secondsLeft(session) > 0 ? session : null;
     if (resume) {
-      btn.textContent = `Resume your test: ${Math.ceil(secondsLeft(resume) / 60)} min left`;
+      // Set through t() directly (this script is a processed module script,
+      // not is:inline/define:vars, so it runs client-side where the real
+      // locale is known) rather than through data-i18n: the button's text is
+      // about to be overwritten with this computed message anyway.
+      btn.textContent = t('Resume your test: {min} min left', { min: Math.ceil(secondsLeft(resume) / 60) });
     }
 
     btn.addEventListener('click', () => {

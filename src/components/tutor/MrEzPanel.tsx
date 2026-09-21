@@ -21,6 +21,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
+import { useT, type Translator } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import {
   askTutor,
@@ -56,23 +57,24 @@ function readPlace(): TutorPlace {
   return place;
 }
 
-function suggestionsFor(place: TutorPlace): string[] {
-  if (place.underExam) return ['How is this paper marked?', 'How should I split my time?'];
+function suggestionsFor(place: TutorPlace, t: Translator['t']): string[] {
+  if (place.underExam) return [t('How is this paper marked?'), t('How should I split my time?')];
   if (place.lessonKey) {
     return [
-      'Explain this lesson in simpler words',
-      'What is the most common mistake here?',
-      'How is this tested in the exam?',
+      t('Explain this lesson in simpler words'),
+      t('What is the most common mistake here?'),
+      t('How is this tested in the exam?'),
     ];
   }
   return [
-    'What should I practise next?',
-    'How am I doing against my target band?',
-    'What does Task Response actually mean?',
+    t('What should I practise next?'),
+    t('How am I doing against my target band?'),
+    t('What does Task Response actually mean?'),
   ];
 }
 
 export default function MrEzPanel() {
+  const { t, tn } = useT();
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ConversationState>(EMPTY_CONVERSATION);
   const [draft, setDraft] = useState('');
@@ -199,7 +201,7 @@ export default function MrEzPanel() {
         const clientError = err instanceof TutorClientError ? err : null;
         setError({
           code: clientError?.code ?? 'unavailable',
-          message: clientError?.message ?? 'Something went wrong. Try again in a moment.',
+          message: clientError?.message ?? t('Something went wrong. Try again in a moment.'),
         });
         // Mark the student's turn as failed so the retry button replaces it
         // rather than stacking a second copy of the same question.
@@ -211,7 +213,7 @@ export default function MrEzPanel() {
         setBusy(false);
       }
     },
-    [busy, state.conversationId],
+    [busy, state.conversationId, t],
   );
 
   const retry = useCallback(() => {
@@ -220,7 +222,7 @@ export default function MrEzPanel() {
     void send(pending.text, pending.key);
   }, [send]);
 
-  const suggestions = suggestionsFor(place);
+  const suggestions = suggestionsFor(place, t);
   const remaining = MAX_MESSAGE_CHARS - draft.length;
 
   return (
@@ -234,14 +236,14 @@ export default function MrEzPanel() {
         onClick={() => setOpen((v) => !v)}
       >
         <MrEzAvatar mood={open ? 'explaining' : mood} size={30} />
-        <span className="mrez-launcher-label">{open ? 'Close' : 'Ask Mr EZ'}</span>
+        <span className="mrez-launcher-label">{open ? t('Close') : t('Ask Mr EZ')}</span>
       </button>
 
       <div
         id="mrez-panel"
         className={`mrez-panel${open ? ' is-open' : ''}`}
         role="dialog"
-        aria-label="Mr EZ, your IELTS tutor"
+        aria-label={t('Mr EZ, your IELTS tutor')}
         aria-modal="false"
         hidden={!open}
       >
@@ -251,33 +253,33 @@ export default function MrEzPanel() {
             <strong>Mr EZ</strong>
             <span>
               {place.underExam
-                ? 'Invigilating: no answers until the timer stops'
+                ? t('Invigilating: no answers until the timer stops')
                 : model === 'simulated'
-                  ? 'Simulated tutor (no AI is being called)'
-                  : 'Your IELTS tutor'}
+                  ? t('Simulated tutor (no AI is being called)')
+                  : t('Your IELTS tutor')}
             </span>
           </div>
           <button type="button" className="mrez-close" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}>
-            <span className="sr-only">Close Mr EZ</span>
+            <span className="sr-only">{t('Close Mr EZ')}</span>
             <span aria-hidden="true">×</span>
           </button>
         </header>
 
         <div className="mrez-log" ref={logRef} role="log" aria-live="polite" aria-relevant="additions text">
           {!configured && (
-            <p className="mrez-note">{unavailableReason} Your next step on the dashboard still works, it just comes with a plain explanation instead of his.</p>
+            <p className="mrez-note">{unavailableReason} {t('Your next step on the dashboard still works, it just comes with a plain explanation instead of his.')}</p>
           )}
 
           {configured && signedIn === false && (
             <p className="mrez-note">
-              Sign in and Mr EZ can see your own results. He never reads anyone else's, which is exactly why he needs to know who you are.{' '}
-              <a href={withBase('/account')}>Sign in</a>
+              {t("Sign in and Mr EZ can see your own results. He never reads anyone else's, which is exactly why he needs to know who you are.")}{' '}
+              <a href={withBase('/account')}>{t('Sign in')}</a>
             </p>
           )}
 
           {state.turns.length === 0 && configured && signedIn !== false && (
             <div className="mrez-empty">
-              <p>Ask me anything about IELTS, this lesson, or what to do next. I will not hand you answers during practice, but I will show you how to get them.</p>
+              <p>{t('Ask me anything about IELTS, this lesson, or what to do next. I will not hand you answers during practice, but I will show you how to get them.')}</p>
               <ul className="mrez-suggestions">
                 {suggestions.map((s) => (
                   <li key={s}>
@@ -294,7 +296,7 @@ export default function MrEzPanel() {
             <article key={turn.id} className={`mrez-turn is-${turn.role}${turn.failed ? ' is-failed' : ''}`}>
               {turn.role === 'tutor' && <MrEzAvatar mood={turn.mood ?? 'explaining'} size={26} />}
               <div className="mrez-bubble">
-                {turn.live === false && <span className="mrez-sim-badge">Simulated, not a real AI reply</span>}
+                {turn.live === false && <span className="mrez-sim-badge">{t('Simulated, not a real AI reply')}</span>}
                 {turn.text.split('\n\n').map((para, i) => (
                   <p key={i}>{para}</p>
                 ))}
@@ -311,7 +313,7 @@ export default function MrEzPanel() {
           {busy && (
             <article className="mrez-turn is-tutor">
               <MrEzAvatar mood="thinking" size={26} />
-              <div className="mrez-bubble mrez-typing" aria-label="Mr EZ is thinking">
+              <div className="mrez-bubble mrez-typing" aria-label={t('Mr EZ is thinking')}>
                 <span /><span /><span />
               </div>
             </article>
@@ -321,9 +323,9 @@ export default function MrEzPanel() {
             <div className="mrez-error" role="status">
               <p>{error.message}</p>
               {(error.code === 'unavailable' || error.code === 'busy') && pendingRef.current && (
-                <button type="button" onClick={retry} disabled={busy}>Try again</button>
+                <button type="button" onClick={retry} disabled={busy}>{t('Try again')}</button>
               )}
-              {error.code === 'sign-in-required' && <a href={withBase('/account')}>Sign in</a>}
+              {error.code === 'sign-in-required' && <a href={withBase('/account')}>{t('Sign in')}</a>}
             </div>
           )}
         </div>
@@ -335,14 +337,14 @@ export default function MrEzPanel() {
             void send(draft);
           }}
         >
-          <label className="sr-only" htmlFor="mrez-input">Your message to Mr EZ</label>
+          <label className="sr-only" htmlFor="mrez-input">{t('Your message to Mr EZ')}</label>
           <textarea
             id="mrez-input"
             ref={inputRef}
             value={draft}
             rows={1}
             maxLength={MAX_MESSAGE_CHARS}
-            placeholder={configured ? 'Ask Mr EZ…' : 'Mr EZ is not available on this build'}
+            placeholder={configured ? t('Ask Mr EZ…') : t('Mr EZ is not available on this build')}
             disabled={!configured || busy || signedIn === false}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
@@ -353,13 +355,15 @@ export default function MrEzPanel() {
             }}
           />
           <button type="submit" className="mrez-send" disabled={!configured || busy || !draft.trim() || signedIn === false}>
-            <span className="sr-only">Send</span>
+            <span className="sr-only">{t('Send')}</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M4 12h15M13 6l6 6-6 6" />
             </svg>
           </button>
           {remaining < 200 && (
-            <span className="mrez-count" aria-live="polite">{remaining} characters left</span>
+            <span className="mrez-count" aria-live="polite">
+              {tn(remaining, { one: '{n} character left', other: '{n} characters left' })}
+            </span>
           )}
         </form>
       </div>

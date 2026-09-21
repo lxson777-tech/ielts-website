@@ -16,6 +16,7 @@ import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { getModelAnswers, type ModelAnswer } from '../data/model-answers';
 import { countWords } from '../lib/writing/mechanics';
 import { withBase } from '../lib/url';
+import { useT } from '../lib/i18n/react';
 import Html from './Html';
 
 /** Which prompt variants belong to each writing lesson. */
@@ -41,6 +42,7 @@ const CRITERION_LABEL: { key: keyof ModelAnswer['criteria']; label: string }[] =
 ];
 
 export default function LessonModelExample({ lesson }: { lesson: string }) {
+  const { t, tn } = useT();
   const variants = LESSON_VARIANTS[lesson] ?? [];
   const examples = WRITING_PROMPTS.filter((p) => variants.includes(p.variant))
     .map((p) => ({ prompt: p, model: getModelAnswers(p.id)[0] }))
@@ -56,9 +58,9 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
     <section className="mt-10 rounded-card border border-border bg-surface shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
         <div>
-          <h2 className="font-display text-lg font-bold">What a Band 8 answer looks like</h2>
+          <h2 className="font-display text-lg font-bold">{t('What a Band 8 answer looks like')}</h2>
           <p className="mt-0.5 text-sm text-ink-muted">
-            A real exam task of this type, answered at Band 8, with the examiner's reasons.
+            {t("A real exam task of this type, answered at Band 8, with the examiner's reasons.")}
           </p>
         </div>
         {examples.length > 1 && (
@@ -70,13 +72,13 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
             }}
             className="shrink-0 rounded-button border border-border px-3.5 py-2 text-xs font-bold transition-colors hover:bg-surface-alt"
           >
-            Another example
+            {t('Another example')}
           </button>
         )}
       </div>
 
       <div className="px-5 py-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">The task</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('The task')}</p>
         <Html as="div" className="lesson-model-prompt mt-1.5 text-sm leading-relaxed" html={prompt.promptHtml} />
 
         {!open ? (
@@ -86,20 +88,20 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
               onClick={() => setOpen(true)}
               className="rounded-button bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
             >
-              Show the Band 8 answer
+              {t('Show the Band 8 answer')}
             </button>
             <a
               href={withBase(`/trainers/writing?task=${encodeURIComponent(prompt.id)}`)}
               className="text-sm font-semibold text-brand hover:underline"
             >
-              Or write this one yourself first
+              {t('Or write this one yourself first')}
             </a>
           </div>
         ) : (
           <>
             <div className="mt-4 border-t border-border pt-4">
               <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-                Band {model.band} answer · {countWords(model.text.join(' '))} words
+                {tn(countWords(model.text.join(' ')), { one: 'Band {band} answer · {n} word', other: 'Band {band} answer · {n} words' }, { band: model.band })}
               </p>
               <div className="mt-2 space-y-3 text-[0.95rem] leading-relaxed">
                 {model.text.map((paragraph, i) => (
@@ -122,13 +124,13 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
                 href={withBase(`/trainers/writing?type=${prompt.task}`)}
                 className="rounded-button bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
               >
-                Write one of these yourself
+                {t('Write one of these yourself')}
               </a>
               <a
                 href={withBase(`/writing/models?task=${encodeURIComponent(prompt.id)}`)}
                 className="text-sm font-semibold text-brand hover:underline"
               >
-                Open it with the phrases highlighted
+                {t('Open it with the phrases highlighted')}
               </a>
             </div>
           </>

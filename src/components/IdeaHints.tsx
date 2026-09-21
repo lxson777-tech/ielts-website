@@ -4,8 +4,11 @@
    student says stays their own English. */
 
 import { useState } from 'react';
+import { nt } from '../lib/i18n/translate';
+import { useT } from '../lib/i18n/react';
 
-export default function IdeaHints({ ideas, label = 'Stuck? Get ideas' }: { ideas: string[]; label?: string }) {
+export default function IdeaHints({ ideas, label = nt('Stuck? Get ideas') }: { ideas: string[]; label?: string }) {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   if (ideas.length === 0) return null;
 
@@ -18,7 +21,7 @@ export default function IdeaHints({ ideas, label = 'Stuck? Get ideas' }: { ideas
         className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs font-bold text-warning"
       >
         <span>
-          <span aria-hidden="true">💡</span> {label}
+          <span aria-hidden="true">💡</span> {t(label)}
         </span>
         <span aria-hidden="true" className="shrink-0">
           {open ? '▾' : '▸'}

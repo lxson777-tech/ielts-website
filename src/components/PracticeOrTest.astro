@@ -8,6 +8,7 @@
  * is a plain link across to it.
  */
 import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
 
 interface Props {
   current: 'practice' | 'tests';
@@ -17,30 +18,30 @@ const { current } = Astro.props;
 const cards = [
   {
     id: 'practice' as const,
-    label: 'Practice',
+    label: nt('Practice'),
     href: '/trainers',
     bullets: [
-      'Guided practice for one skill, with a coach on screen',
-      'Use it while you are still learning the format',
-      'Hints, model phrases and feedback on every attempt',
+      nt('Guided practice for one skill, with a coach on screen'),
+      nt('Use it while you are still learning the format'),
+      nt('Hints, model phrases and feedback on every attempt'),
     ],
   },
   {
     id: 'tests' as const,
-    label: 'Tests',
+    label: nt('Tests'),
     href: '/tests',
     bullets: [
-      'A full test, exactly like the real exam',
-      'Use it when you want to know your band',
-      'Timed, no hints, a band estimate and review after',
+      nt('A full test, exactly like the real exam'),
+      nt('Use it when you want to know your band'),
+      nt('Timed, no hints, a band estimate and review after'),
     ],
   },
 ];
 ---
 
 <details class="mode-help">
-  <summary>What's the difference between Practice and Tests?</summary>
+  <summary data-i18n>What's the difference between Practice and Tests?</summary>
   <div class="mode-help-content">
-    {cards.map((card) => <section><h3>{card.label}</h3><ul>{card.bullets.map((line) => <li>{line}</li>)}</ul>{card.id !== current && <a href={withBase(card.href)}>Go to {card.label} <span aria-hidden="true">↗</span></a>}</section>)}
+    {cards.map((card) => <section><h3 data-i18n>{card.label}</h3><ul>{card.bullets.map((line) => <li data-i18n>{line}</li>)}</ul>{card.id !== current && <a href={withBase(card.href)}><span data-i18n>Go to {card.label}</span> <span aria-hidden="true">↗</span></a>}</section>)}
   </div>
 </details>

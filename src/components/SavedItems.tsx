@@ -13,6 +13,7 @@ import { LISTENING_PARTS } from '../data/listening';
 import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
+import { useT } from '../lib/i18n/react';
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -46,6 +47,7 @@ function firstLine(text: string): string {
 }
 
 export default function SavedItems() {
+  const { t } = useT();
   // Same "ready until mounted" guard as the rest of the account page:
   // notes.ts reads localStorage, which the server can never see, so the
   // very first client render has to match the server's (nothing) until
@@ -77,7 +79,7 @@ export default function SavedItems() {
     <div className="space-y-6">
       {empty ? (
         <div className="rounded-card border border-dashed border-border bg-surface-alt p-8 text-center text-ink-muted">
-          <p className="text-sm">Save a lesson or a tricky question and it will appear here.</p>
+          <p className="text-sm">{t('Save a lesson or a tricky question and it will appear here.')}</p>
         </div>
       ) : (
         <>
@@ -90,7 +92,7 @@ export default function SavedItems() {
                 >
                   <div className="min-w-0">
                     <p className="text-[0.68rem] font-bold uppercase tracking-wide text-ink-muted">
-                      {b.kind === 'lesson' ? 'Lesson' : 'Question'}
+                      {b.kind === 'lesson' ? t('Lesson') : t('Question')}
                     </p>
                     <a href={b.href} className="mt-0.5 block truncate font-display text-sm font-bold text-ink hover:text-brand">
                       {b.title}
@@ -102,7 +104,7 @@ export default function SavedItems() {
                     onClick={() => remove(b)}
                     className="shrink-0 rounded-button border border-border px-3 py-1.5 text-xs font-semibold text-ink-muted transition-colors hover:border-error hover:text-error"
                   >
-                    Remove
+                    {t('Remove')}
                   </button>
                 </li>
               ))}
@@ -111,14 +113,14 @@ export default function SavedItems() {
 
           {notes.length > 0 && (
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">Notes</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">{t('Notes')}</p>
               <ul className="space-y-2">
                 {notes.map((n) => {
                   const lesson = lessonForNote(n.id);
                   return (
                     <li key={n.id} className="rounded-card border border-border bg-surface p-3.5 shadow-card">
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <p className="min-w-0 truncate text-sm text-ink">{firstLine(n.text) || 'Empty note'}</p>
+                        <p className="min-w-0 truncate text-sm text-ink">{firstLine(n.text) || t('Empty note')}</p>
                         <span className="shrink-0 text-xs text-ink-muted">{fmtDate(n.updatedAt)}</span>
                       </div>
                       {lesson && (

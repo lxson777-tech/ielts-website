@@ -13,6 +13,8 @@
    The curve is exponential, so it keeps visibly moving even when a grade
    overruns its estimate, and it can never go backwards. */
 
+import { t, nt } from '../i18n/translate';
+
 export type GradingKind = 'speaking' | 'writing';
 
 /** Default assumed speech length when a caller cannot measure the recording. */
@@ -38,17 +40,20 @@ export function progressPercent(elapsedMs: number, estimateSeconds: number): num
 /** The one-line stage label, driven by how much of the estimate has passed. */
 export function stageLabel(kind: GradingKind, fraction: number): string {
   if (kind === 'writing') {
-    if (fraction < 0.3) return 'Reading your essay';
-    if (fraction < 0.75) return 'Checking it against the official band descriptors';
-    return 'Writing your feedback';
+    if (fraction < 0.3) return t('Reading your essay');
+    if (fraction < 0.75) return t('Checking it against the official band descriptors');
+    return t('Writing your feedback');
   }
-  if (fraction < 0.12) return 'Preparing your recording';
-  if (fraction < 0.55) return 'Writing out exactly what you said';
-  if (fraction < 0.85) return 'Grading fluency, vocabulary and grammar';
-  return 'Checking your pronunciation';
+  if (fraction < 0.12) return t('Preparing your recording');
+  if (fraction < 0.55) return t('Writing out exactly what you said');
+  if (fraction < 0.85) return t('Grading fluency, vocabulary and grammar');
+  return t('Checking your pronunciation');
 }
 
 /** Past this much of the estimate, the wait has overrun and we say so. */
 export const OVERRUN_FRACTION = 1.6;
 
-export const OVERRUN_NOTE = 'This one is taking longer than usual. Please keep this tab open.';
+/* Module-level constant evaluated at import time: marked with nt() for the
+   coverage test, translated at render time with t() where it's shown
+   (GradingProgress.tsx). */
+export const OVERRUN_NOTE = nt('This one is taking longer than usual. Please keep this tab open.');

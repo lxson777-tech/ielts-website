@@ -8,30 +8,31 @@
    both the interview order and a genuine difficulty ramp. */
 
 import type { Sequenced } from './lessons';
+import { nt } from '../lib/i18n/translate';
 
 export type SpeakingPart = Sequenced;
 
 export const SPEAKING_PARTS: SpeakingPart[] = [
   {
     slug: 'part1',
-    title: 'Part 1 Interview',
-    blurb: 'Handle the warm-up interview questions with natural, extended answers.',
+    title: nt('Part 1 Interview'),
+    blurb: nt('Handle the warm-up interview questions with natural, extended answers.'),
     stage: 2,
     image: '/pics/speaking-part1.png',
     minutes: 20,
   },
   {
     slug: 'part2',
-    title: 'Part 2 Cue Card',
-    blurb: 'Speak for two minutes from a cue card without running dry.',
+    title: nt('Part 2 Cue Card'),
+    blurb: nt('Speak for two minutes from a cue card without running dry.'),
     stage: 2,
     image: '/pics/speaking-part2.png',
     minutes: 25,
   },
   {
     slug: 'part3',
-    title: 'Part 3 Discussion',
-    blurb: 'Discuss abstract follow-up questions and show off complex language.',
+    title: nt('Part 3 Discussion'),
+    blurb: nt('Discuss abstract follow-up questions and show off complex language.'),
     stage: 3,
     image: '/pics/speaking-part3.png',
     minutes: 30,

@@ -13,6 +13,7 @@
    MP3 also keeps even a full test's worth of clips well under a 5 MB
    request body. */
 
+import { t } from '../i18n/translate';
 import type {
   AudioMechanicsReport,
   SpeakingAssessment,
@@ -115,7 +116,7 @@ export async function gradeSpeaking(
   clips: { blob: Blob; durationMs: number }[],
   expectedMinMs: number,
 ): Promise<SpeakingGradeResult> {
-  if (!SPEAKING_GRADER_URL) throw new Error('The AI examiner is not configured for this site yet.');
+  if (!SPEAKING_GRADER_URL) throw new Error(t('The AI examiner is not configured for this site yet.'));
   const totalDurationMs = clips.reduce((a, c) => a + c.durationMs, 0);
   const primary = clips.reduce((a, b) => (b.durationMs > a.durationMs ? b : a));
   const mechanics = await analyzeAudio(primary.blob, expectedMinMs);

@@ -7,6 +7,7 @@
 import { daysUntilTest, type SavedPlan } from '../study-plan';
 import { resolvePlanParams } from './schedule';
 import { daysBetween } from './date';
+import { t, tn } from '../i18n/translate';
 
 export interface PlanSummary {
   /** e.g. "Band 7.0 target, 8 weeks, 25 min a day" with no exam date set,
@@ -17,12 +18,22 @@ export interface PlanSummary {
   hint: string | null;
 }
 
+/* Called fresh on every render of its callers (never memoized against
+   locale), so translating directly here with t()/tn() stays reactive to a
+   live language switch, the same as everywhere else in this batch. */
 export function getPlanSummary(plan: SavedPlan): PlanSummary {
   const params = resolvePlanParams(plan);
   const daysToGo = plan.testDate ? daysUntilTest(plan.testDate) : null;
   const weeks = Math.max(1, Math.round(daysBetween(params.startDate, params.examDate) / 7));
-  const pace = daysToGo !== null ? `${daysToGo} day${daysToGo === 1 ? '' : 's'} to go` : `${weeks} week${weeks === 1 ? '' : 's'}`;
-  const text = `Band ${plan.targetBand} target, ${pace}, ${params.dailyMinutes} min a day`;
-  const hint = plan.defaulted ? 'Set your exam date to pace the plan' : null;
+  const pace =
+    daysToGo !== null
+      ? tn(daysToGo, { one: '{n} day to go', other: '{n} days to go' })
+      : tn(weeks, { one: '{n} week', other: '{n} weeks' });
+  const text = t('Band {band} target, {pace}, {minutes} min a day', {
+    band: plan.targetBand,
+    pace,
+    minutes: params.dailyMinutes,
+  });
+  const hint = plan.defaulted ? t('Set your exam date to pace the plan') : null;
   return { text, hint };
 }

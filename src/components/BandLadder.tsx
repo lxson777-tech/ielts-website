@@ -15,6 +15,16 @@ import { WRITING_BAND_GUIDES, SPEAKING_BAND_GUIDES, type BandStepGuide } from '.
 import { CRITERIA } from '../lib/writing/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import Tabs, { type TabDef } from './Tabs';
+import { useT } from '../lib/i18n/react';
+
+/* step.whatChanges / doThis / stopThis / example / practice / task1Note come
+   from src/data/band-guides.ts, a plain-language rephrasing of the official
+   band descriptors. That file isn't in this batch's file list (it isn't
+   assigned to any batch in docs/I18N-GUIDE.md that we could see), so its
+   content is left in English here rather than guessed at (see the i18n
+   batch report). PAPERS, WRITING_TABS and SPEAKING_TABS are the protected
+   paper names and the four assessment criteria names, which the guide says
+   must always stay English, so they're deliberately not wrapped either. */
 
 type Paper = 'writing' | 'speaking';
 
@@ -39,11 +49,12 @@ function guidesFor(paper: Paper, criterion: string): BandStepGuide[] {
 }
 
 function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
+  const { t } = useT();
   return (
     <details open={open} className="group rounded-card border border-border bg-surface shadow-card">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
         <span className="font-display text-base font-bold">
-          Band {step.from} to band {step.to}
+          {t('Band {from} to band {to}', { from: step.from, to: step.to })}
         </span>
         <span
           className="inline-block text-xs text-ink-muted transition-transform duration-200 group-open:rotate-90"
@@ -57,7 +68,7 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
         <p>{step.whatChanges}</p>
 
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-ink">Do this</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-ink">{t('Do this')}</p>
           <ul className="mt-1.5 space-y-1.5">
             {step.doThis.map((d) => (
               <li key={d} className="flex gap-2">
@@ -71,7 +82,7 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
         </div>
 
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-ink">Stop this</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-ink">{t('Stop this')}</p>
           <ul className="mt-1.5 space-y-1.5">
             {step.stopThis.map((s) => (
               <li key={s} className="flex gap-2">
@@ -91,13 +102,13 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
         </div>
 
         <p className="rounded-lg bg-brand-tint/60 px-3 py-2.5 text-ink">
-          <span className="font-bold">Practice today. </span>
+          <span className="font-bold">{t('Practice today.')} </span>
           {step.practice}
         </p>
 
         {step.task1Note && (
           <p className="rounded-lg bg-warning-tint px-3 py-2.5">
-            <span className="font-bold text-ink">Task 1 is different. </span>
+            <span className="font-bold text-ink">{t('Task 1 is different.')} </span>
             {step.task1Note}
           </p>
         )}
@@ -107,6 +118,7 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
 }
 
 export default function BandLadder() {
+  const { t } = useT();
   const [paper, setPaper] = useState<Paper>('writing');
   const [writingCriterion, setWritingCriterion] = useState<string>(CRITERIA[0]!.key);
   const [speakingCriterion, setSpeakingCriterion] = useState<string>(SPEAKING_CRITERIA[0]!.key);
@@ -128,7 +140,7 @@ export default function BandLadder() {
       />
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-ink-muted">Where are you now?</span>
+        <span className="text-sm text-ink-muted">{t('Where are you now?')}</span>
         {[4, 5, 6, 7, 8].map((b) => (
           <button
             key={b}
@@ -141,7 +153,7 @@ export default function BandLadder() {
                 : 'border border-border bg-surface text-ink-muted hover:border-brand hover:text-brand'
             }`}
           >
-            Band {b}
+            {t('Band {n}', { n: b })}
           </button>
         ))}
       </div>
@@ -153,9 +165,7 @@ export default function BandLadder() {
       </div>
 
       <p className="rounded-card border border-border bg-surface-alt px-4 py-3 text-xs text-ink-muted">
-        Every band on this page is the official public band descriptor for that criterion, put into plain words. In
-        Writing and Speaking the examiner gives a whole band for each of the four criteria, and the band for the paper
-        is the average of those four, reported in whole and half bands.
+        {t('Every band on this page is the official public band descriptor for that criterion, put into plain words. In Writing and Speaking the examiner gives a whole band for each of the four criteria, and the band for the paper is the average of those four, reported in whole and half bands.')}
       </p>
     </div>
   );

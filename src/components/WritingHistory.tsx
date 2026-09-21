@@ -3,6 +3,7 @@ import { getWritingAttempts, onProgressChange, type WritingAttempt } from '../li
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
 import { WRITING_BAND_GUIDES, guideFor } from '../data/band-guides';
+import { useT } from '../lib/i18n/react';
 import BandReport from './BandReport';
 import ExplainResult from './tutor/ExplainResult';
 
@@ -25,6 +26,7 @@ const fmtDate = (iso: string) =>
 /* Single-series band-over-time line, same visual language as ScoreHistory's
    BandChart but plotting overallBand instead of a raw-score band. */
 function BandChart({ rows }: { rows: Row[] }) {
+  const { t } = useT();
   const [hover, setHover] = useState<number | null>(null);
   if (rows.length < 2) return null;
 
@@ -46,11 +48,15 @@ function BandChart({ rows }: { rows: Row[] }) {
 
   return (
     <figure className="mt-6 overflow-x-auto">
-      <figcaption className="mb-2 text-sm font-semibold">Estimated band over attempts</figcaption>
+      <figcaption className="mb-2 text-sm font-semibold">{t('Estimated band over attempts')}</figcaption>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={`Writing band across ${rows.length} attempts, from ${rows[0]!.attempt.overallBand} to ${rows[rows.length - 1]!.attempt.overallBand}`}
+        aria-label={t('Writing band across {count} attempts, from {from} to {to}', {
+          count: rows.length,
+          from: rows[0]!.attempt.overallBand,
+          to: rows[rows.length - 1]!.attempt.overallBand,
+        })}
         className="w-full max-w-xl"
         onMouseLeave={() => setHover(null)}
       >
@@ -96,7 +102,7 @@ function BandChart({ rows }: { rows: Row[] }) {
                 <g transform={`translate(${tx},${above ? ty - 12 : ty + 12})`}>
                   <rect x="-62" y={above ? -34 : 0} width="124" height="34" rx="6" fill="var(--color-ink)" opacity="0.92" />
                   <text x="0" y={above ? -21 : 13} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-                    Band {r.attempt.overallBand.toFixed(1)}
+                    {t('Band {band}', { band: r.attempt.overallBand.toFixed(1) })}
                   </text>
                   <text x="0" y={above ? -9 : 25} textAnchor="middle" fontSize="9" fill="#fff" opacity="0.75">
                     {fmtDate(r.attempt.at)}
@@ -112,6 +118,7 @@ function BandChart({ rows }: { rows: Row[] }) {
 }
 
 export default function WritingHistory() {
+  const { t } = useT();
   const [rows, setRows] = useState<Row[] | null>(null);
   // Index (within the displayed, newest-first list) of the row whose review
   // panel (essay + AI report) is expanded below it. One at a time keeps the
@@ -130,8 +137,8 @@ export default function WritingHistory() {
   if (rows.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-8 text-center text-ink-muted">
-        <p className="font-display font-semibold text-ink">No attempts yet</p>
-        <p className="mt-1 text-sm">Check an essay and your scores will appear here.</p>
+        <p className="font-display font-semibold text-ink">{t('No attempts yet')}</p>
+        <p className="mt-1 text-sm">{t('Check an essay and your scores will appear here.')}</p>
       </div>
     );
   }
@@ -142,12 +149,12 @@ export default function WritingHistory() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-surface-alt text-left text-xs uppercase tracking-wide text-ink-muted">
-              <th className="px-4 py-2.5 font-semibold">Date</th>
-              <th className="px-4 py-2.5 font-semibold">Task</th>
-              <th className="px-4 py-2.5 font-semibold">Words</th>
-              <th className="px-4 py-2.5 font-semibold">Band</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Date')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Task')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Words')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Band')}</th>
               <th className="px-4 py-2.5 font-semibold">
-                <span className="sr-only">Essay</span>
+                <span className="sr-only">{t('Essay')}</span>
               </th>
             </tr>
           </thead>
@@ -164,7 +171,7 @@ export default function WritingHistory() {
                       <span className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-bold text-brand">
                         {r.attempt.overallBand.toFixed(1)}
                       </span>
-                      {!r.attempt.live && <span className="ml-1.5 text-xs text-ink-muted">(sample)</span>}
+                      {!r.attempt.live && <span className="ml-1.5 text-xs text-ink-muted">{t('(sample)')}</span>}
                     </td>
                     <td className="px-4 py-2.5 text-right">
                       {canOpen ? (
@@ -174,12 +181,15 @@ export default function WritingHistory() {
                           aria-expanded={openEssay === i}
                           className="whitespace-nowrap text-xs font-semibold text-brand hover:underline"
                         >
-                          {openEssay === i ? 'Close' : 'Open'}
+                          {openEssay === i ? t('Close') : t('Open')}
                         </button>
                       ) : (
                         // Attempts recorded before essays were saved have nothing to show.
-                        <span className="text-xs text-ink-muted" title="This attempt was recorded before essays were saved.">
-                          n/a
+                        <span
+                          className="text-xs text-ink-muted"
+                          title={t('This attempt was recorded before essays were saved.')}
+                        >
+                          {t('n/a')}
                         </span>
                       )}
                     </td>
@@ -209,6 +219,7 @@ export default function WritingHistory() {
     saved (or past the MAX_SAVED_REPORTS cap in progress.ts) fall back to
     the essay text alone with a muted note. */
 function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
+  const { t } = useT();
   const { attempt } = row;
   const report = attempt.report;
   const task = attempt.task ?? 'task2';
@@ -225,13 +236,13 @@ function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
           onClick={onClose}
           className="shrink-0 rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface"
         >
-          Close
+          {t('Close')}
         </button>
       </div>
 
       {attempt.essay && (
         <div className="rounded-card border border-border bg-surface p-4 shadow-card">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">Your answer</p>
+          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Your answer')}</p>
           <p className="max-h-80 overflow-y-auto whitespace-pre-wrap text-[0.9rem] leading-relaxed">{attempt.essay}</p>
         </div>
       )}
@@ -241,7 +252,9 @@ function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
           title={rowTitle(row)}
           overallBand={attempt.overallBand}
           live={report.grader.live}
-          offlineWarning="The band scores below are illustrative, generated from mechanical signals only, without an AI examiner."
+          offlineWarning={t(
+            'The band scores below are illustrative, generated from mechanical signals only, without an AI examiner.',
+          )}
           criteria={CRITERIA.map((c) => {
             const score = report.criteria[c.key];
             const guide = guideFor(WRITING_BAND_GUIDES[c.key], score.band);
@@ -260,17 +273,17 @@ function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
           actionPlan={report.actionPlan}
         >
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-            <h3 className="font-display font-bold">Mechanics check</h3>
+            <h3 className="font-display font-bold">{t('Mechanics check')}</h3>
             <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
-              <Stat label="Words" value={`${report.mechanics.wordCount}`} bad={report.mechanics.underLength} />
-              <Stat label="Sentences" value={`${report.mechanics.sentenceCount}`} />
+              <Stat label={t('Words')} value={`${report.mechanics.wordCount}`} bad={report.mechanics.underLength} />
+              <Stat label={t('Sentences')} value={`${report.mechanics.sentenceCount}`} />
               <Stat
-                label="Vocab variety"
+                label={t('Vocab variety')}
                 value={`${Math.round(report.mechanics.lexicalDiversity * 100)}%`}
                 bad={report.mechanics.lexicalDiversity < 0.42}
               />
               <Stat
-                label="Linking words"
+                label={t('Linking words')}
                 value={`${report.mechanics.linkingDevices.reduce((a, l) => a + l.count, 0)}`}
                 bad={report.mechanics.linkingDevices.length === 0 && report.mechanics.sentenceCount > 3}
               />
@@ -287,7 +300,7 @@ function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
 
           {report.moments.length > 0 && (
             <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-              <h3 className="font-display font-bold">Moments from your essay</h3>
+              <h3 className="font-display font-bold">{t('Moments from your essay')}</h3>
               <ul className="mt-3 space-y-2 text-sm">
                 {report.moments.map((mo, mi) => (
                   <li key={mi}>
@@ -300,7 +313,7 @@ function EssayReviewPanel({ row, onClose }: { row: Row; onClose: () => void }) {
           )}
         </BandReport>
       ) : (
-        <p className="text-xs italic text-ink-muted">Graded before comments were saved.</p>
+        <p className="text-xs italic text-ink-muted">{t('Graded before comments were saved.')}</p>
       )}
 
       {/* Any past result can be explained, not only the one just graded. The

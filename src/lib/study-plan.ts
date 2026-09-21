@@ -4,6 +4,8 @@
    JSON all degrade to null. A change listener lets sync push on edit and lets
    an open StudyPlan refresh when a cloud pull updates the plan. */
 
+import { nt } from './i18n/translate';
+
 export const STUDY_PLAN_KEY = 'ielts.studyplan.v1';
 
 export interface SavedPlan {
@@ -206,10 +208,10 @@ export function mergeStudyPlans(a: SavedPlan | null, b: SavedPlan | null): Saved
 export type PlanTier = 'sprint' | 'month' | 'season' | 'foundation';
 
 export const PLAN_TIER_LABEL: Record<PlanTier, string> = {
-  sprint: 'Sprint plan',
-  month: 'One-month plan',
-  season: '2-3 month plan',
-  foundation: 'Foundation plan',
+  sprint: nt('Sprint plan'),
+  month: nt('One-month plan'),
+  season: nt('2-3 month plan'),
+  foundation: nt('Foundation plan'),
 };
 
 /** Whole days from today until the test date (>=0), or null if no date given. */

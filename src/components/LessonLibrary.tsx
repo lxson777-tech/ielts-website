@@ -3,6 +3,7 @@ import { LESSONS, SKILLS, type Skill } from '../data/lessons';
 import { withBase } from '../lib/url';
 import { isLessonComplete } from '../lib/progress';
 import { buildCourse } from '../lib/course';
+import { useT } from '../lib/i18n/react';
 
 function updateSkillInUrl(skill: string) {
   if (typeof window === 'undefined') return;
@@ -15,6 +16,7 @@ function updateSkillInUrl(skill: string) {
 const BOILERPLATE_DESCRIPTION = (skillLabel: string) => `Build your ${skillLabel.toLowerCase()} skills with this focused lesson.`;
 
 export default function LessonLibrary() {
+  const { t, tn } = useT();
   // Always start at 'all' on both server and client render so hydration matches
   // (this page is statically rendered, so the ?skill= query can only be read after
   // mount). The URL filter is applied in the effect below.
@@ -36,7 +38,7 @@ export default function LessonLibrary() {
     updateSkillInUrl(skill);
   };
   const entries = useMemo(() => [
-    ...LESSONS.map((lesson) => ({ ...lesson, key: lesson.slug, href: `/lessons/${lesson.slug}`, description: lesson.description, overview: true, moduleLabel: null as string | null })),
+    ...LESSONS.map((lesson) => ({ ...lesson, key: lesson.slug, href: `/lessons/${lesson.slug}`, description: lesson.description, overview: true, moduleLabel: null as string | null, skillLabel: null as string | null, blurb: null as string | null })),
     ...buildCourse().flatMap((module) => module.lessons.map((lesson) => ({
       ...lesson,
       // Real blurb from the registry (reading.ts, listening.ts, ...); only
@@ -48,9 +50,9 @@ export default function LessonLibrary() {
   ], []);
   const visible = useMemo(() => entries.filter((lesson) => (filter === 'all' || lesson.skill === filter) && `${lesson.title} ${lesson.description}`.toLowerCase().includes(query.toLowerCase())), [entries, filter, query]);
   return <div className="library-space">
-    <div className="library-heading"><div><p className="platform-eyebrow">Lesson library</p><h1>Learn at your pace.</h1><p>Choose a skill, open a lesson, and mark it complete when you are ready to move on.</p></div><div className="library-count"><strong>{visible.length}</strong><span>lessons shown</span></div></div>
-    <div className="library-controls"><label className="sr-only" htmlFor="lesson-search">Search lessons</label><input id="lesson-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search lessons" /> <div className="library-filters" role="group" aria-label="Filter lessons"><button className={filter === 'all' ? 'is-selected' : ''} onClick={() => selectFilter('all')}>All</button>{SKILLS.map((skill) => <button key={skill.id} className={filter === skill.id ? 'is-selected' : ''} onClick={() => selectFilter(skill.id as Skill)}>{skill.label}</button>)}</div></div>
-    <div className="library-grid">{visible.map((lesson) => { const complete = mounted && isLessonComplete(lesson.key); return <a className={`library-card skill-${lesson.skill}`} key={lesson.key} href={withBase(lesson.href)}><div className="library-card-top"><span>{SKILLS.find((skill) => skill.id === lesson.skill)?.label}{lesson.overview ? ' · Overview' : ''}</span>{complete && <span className="library-complete">✓ Complete</span>}</div>{lesson.moduleLabel && <span className="library-card-module">{lesson.moduleLabel}</span>}<h2>{lesson.title}</h2><p>{lesson.description}</p><div className="library-card-link"><span>Open lesson</span>{typeof lesson.minutes === 'number' && <span className="library-card-minutes">{lesson.minutes} min</span>}</div></a>; })}</div>
-    {visible.length === 0 && <p className="library-empty">No lessons match that search yet. Try another skill or phrase.</p>}
+    <div className="library-heading"><div><p className="platform-eyebrow">{t('Lesson library')}</p><h1>{t('Learn at your pace.')}</h1><p>{t('Choose a skill, open a lesson, and mark it complete when you are ready to move on.')}</p></div><div className="library-count"><strong>{visible.length}</strong><span>{tn(visible.length, { one: 'lesson shown', other: 'lessons shown' })}</span></div></div>
+    <div className="library-controls"><label className="sr-only" htmlFor="lesson-search">{t('Search lessons')}</label><input id="lesson-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('Search lessons')} /> <div className="library-filters" role="group" aria-label={t('Filter lessons')}><button className={filter === 'all' ? 'is-selected' : ''} onClick={() => selectFilter('all')}>{t('All')}</button>{SKILLS.map((skill) => <button key={skill.id} className={filter === skill.id ? 'is-selected' : ''} onClick={() => selectFilter(skill.id as Skill)}>{t(skill.label)}</button>)}</div></div>
+    <div className="library-grid">{visible.map((lesson) => { const complete = mounted && isLessonComplete(lesson.key); const skillLabel = SKILLS.find((skill) => skill.id === lesson.skill)?.label; return <a className={`library-card skill-${lesson.skill}`} key={lesson.key} href={withBase(lesson.href)}><div className="library-card-top"><span>{skillLabel ? t(skillLabel) : ''}{lesson.overview ? ` · ${t('Overview')}` : ''}</span>{complete && <span className="library-complete">✓ {t('Complete', undefined, 'status')}</span>}</div>{lesson.moduleLabel && <span className="library-card-module">{t(lesson.moduleLabel)}</span>}<h2>{t(lesson.title)}</h2><p>{lesson.overview ? t(lesson.description) : lesson.blurb ? t(lesson.blurb) : t('Build your {skill} skills with this focused lesson.', { skill: (skillLabel ? t(skillLabel) : lesson.skillLabel ?? '').toLowerCase() })}</p><div className="library-card-link"><span>{t('Open lesson')}</span>{typeof lesson.minutes === 'number' && <span className="library-card-minutes">{t('{n} min', { n: lesson.minutes })}</span>}</div></a>; })}</div>
+    {visible.length === 0 && <p className="library-empty">{t('No lessons match that search yet. Try another skill or phrase.')}</p>}
   </div>;
 }

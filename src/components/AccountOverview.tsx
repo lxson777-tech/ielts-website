@@ -18,6 +18,7 @@ import {
 } from '../lib/progress';
 import { loadStudyPlan, onStudyPlanChange, daysUntilTest, type SavedPlan } from '../lib/study-plan';
 import { buildCourse, courseStatus, type CourseStatus } from '../lib/course';
+import { useT } from '../lib/i18n/react';
 
 const MODULES = buildCourse();
 
@@ -51,6 +52,7 @@ function StatTile({ label, value, accent }: { label: string; value: string; acce
 }
 
 export default function AccountOverview() {
+  const { t, tn } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -103,14 +105,26 @@ export default function AccountOverview() {
                 </span>
                 <div>
                   <p className="text-sm font-semibold">{user.email}</p>
-                  <p className="text-xs text-success">Synced across your devices</p>
+                  <p className="text-xs text-success">{t('Synced across your devices')}</p>
                 </div>
               </div>
             </>
           ) : (
             <p className="text-sm text-ink-muted">
-              Saved on this device only.{' '}
-              <span className="font-semibold text-brand">Log in</span> (top of the page) to sync across devices.
+              {/* {loginLink} is left literal by t() with no vars, so it can be
+                  split by hand and the bold "Log in" re-inserted in place,
+                  wherever the translation puts it. */}
+              {t('Saved on this device only. {loginLink} (top of the page) to sync across devices.')
+                .split(/(\{loginLink\})/)
+                .map((part, i) =>
+                  part === '{loginLink}' ? (
+                    <span key={i} className="font-semibold text-brand">
+                      {t('Log in')}
+                    </span>
+                  ) : (
+                    <span key={i}>{part}</span>
+                  ),
+                )}
             </p>
           )}
         </div>
@@ -118,10 +132,10 @@ export default function AccountOverview() {
 
       {/* ── At a glance ── */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile label={`Lessons done (of ${course.totalLessons})`} value={String(course.doneLessons)} />
-        <StatTile label="Best reading band" value={stats.readingBand ?? '-'} accent="var(--color-reading)" />
-        <StatTile label="Best writing band" value={stats.writingBand?.toFixed(1) ?? '-'} accent="var(--color-writing)" />
-        <StatTile label="Best speaking band" value={stats.speakingBand?.toFixed(1) ?? '-'} accent="var(--color-speaking)" />
+        <StatTile label={t('Lessons done (of {total})', { total: course.totalLessons })} value={String(course.doneLessons)} />
+        <StatTile label={t('Best {skill} band', { skill: 'reading' })} value={stats.readingBand ?? '-'} accent="var(--color-reading)" />
+        <StatTile label={t('Best {skill} band', { skill: 'writing' })} value={stats.writingBand?.toFixed(1) ?? '-'} accent="var(--color-writing)" />
+        <StatTile label={t('Best {skill} band', { skill: 'speaking' })} value={stats.speakingBand?.toFixed(1) ?? '-'} accent="var(--color-speaking)" />
       </div>
 
       {/* ── Course summary ── */}
@@ -130,23 +144,23 @@ export default function AccountOverview() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="font-display font-bold">
-                Course · Band {plan.targetBand}
+                {t('Course · Band {band}', { band: plan.targetBand })}
                 {days !== null && (
                   <span className="ml-2 font-normal text-ink-muted">
-                    {days} day{days === 1 ? '' : 's'} to go
+                    {tn(days, { one: '{n} day to go', other: '{n} days to go' })}
                   </span>
                 )}
               </p>
               <p className="mt-1 text-xs text-ink-muted">
-                {course.doneLessons} of {course.totalLessons} lessons done
-                {course.next && <> · next: <span className="font-semibold text-ink">{course.next.title}</span></>}
+                {t('{done} of {total} lessons done', { done: course.doneLessons, total: course.totalLessons })}
+                {course.next && <> · {t('next: {title}', { title: course.next.title })}</>}
               </p>
             </div>
             <a
               href={withBase('/start')}
               className="shrink-0 rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
             >
-              {course.next ? 'Continue' : 'View course'}
+              {course.next ? t('Continue') : t('View course')}
             </a>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-alt">
@@ -157,14 +171,17 @@ export default function AccountOverview() {
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-dashed border-border bg-surface-alt p-5">
           <p className="text-sm text-ink-muted">
             {course.doneLessons > 0
-              ? `You have completed ${course.doneLessons} lesson${course.doneLessons === 1 ? '' : 's'}. Set a target band to build your plan.`
-              : "You haven't started the course yet."}
+              ? tn(course.doneLessons, {
+                  one: 'You have completed {n} lesson. Set a target band to build your plan.',
+                  other: 'You have completed {n} lessons. Set a target band to build your plan.',
+                })
+              : t("You haven't started the course yet.")}
           </p>
           <a
             href={withBase('/start')}
             className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            {course.doneLessons > 0 ? 'Set your target' : 'Start the course'}
+            {course.doneLessons > 0 ? t('Set your target') : t('Start the course')}
           </a>
         </div>
       )}

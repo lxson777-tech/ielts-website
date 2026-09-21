@@ -4,6 +4,7 @@
    exam-style assessment, so it points at the exam-conditions page, not the
    coached trainer. */
 import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
 
 interface Props {
   /** Which page the CTA sits on — tunes the copy. */
@@ -12,32 +13,39 @@ interface Props {
 const { task } = Astro.props;
 const blurb =
   task === 'task2'
-    ? 'Written a Task 2 essay? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.'
+    ? nt(
+        'Written a Task 2 essay? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.',
+      )
     : task === 'task1'
-      ? 'Written a practice answer? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.'
-      : 'Ready to write? Take a writing test and get your answer assessed like the real exam: a band for each of the four marking criteria, examiner-style comments, corrections, and one tip per criterion to reach the next band.';
+      ? nt(
+          'Written a practice answer? Get it assessed like the real exam: a band for each of the four marking criteria above, examiner-style comments, corrections, and one tip per criterion to reach the next band.',
+        )
+      : nt(
+          'Ready to write? Take a writing test and get your answer assessed like the real exam: a band for each of the four marking criteria, examiner-style comments, corrections, and one tip per criterion to reach the next band.',
+        );
 ---
 
 <hr class="divider" />
 <div class="section" id="essay-checker">
   <div class="section-header">
-    <div class="section-num">AI</div>
+    <div class="section-num" data-i18n>AI</div>
     <div class="section-title-block">
-      <div class="tag">Instant Feedback</div>
-      <h2>Check Your Writing</h2>
+      <div class="tag" data-i18n>Instant Feedback</div>
+      <h2 data-i18n>Check Your Writing</h2>
     </div>
   </div>
-  <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;">{blurb}</p>
+  <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;" data-i18n>{blurb}</p>
   <a class="cta-card" href={withBase('/writing/checker')}>
     <span class="cta-card-body">
-      <span class="sample-topic">✨ AI examiner · official band descriptors · free</span>
-      <strong class="sample-title">Open the Writing Checker</strong>
-      <span class="sample-go">Check my writing</span>
+      <span class="sample-topic" data-i18n>✨ AI examiner · official band descriptors · free</span>
+      <strong class="sample-title" data-i18n>Open the Writing Checker</strong>
+      <span class="sample-go" data-i18n>Check my writing</span>
     </span>
     <img
       src={withBase('/pics/writing/start-task.png')}
       alt="Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge"
       loading="lazy"
+      data-i18n-attr="alt"
     />
   </a>
 </div>

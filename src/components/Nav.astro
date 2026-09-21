@@ -1,5 +1,6 @@
 ---
 import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
 import AccountMenu from './AccountMenu';
 
 const current = Astro.url.pathname;
@@ -9,47 +10,49 @@ const isActive = (href: string) => {
   return current === target || current.startsWith(`${target}/`);
 };
 const links = [
-  { href: '/learn', label: 'Learn', fallbacks: ['/lessons', '/start'] },
-  { href: '/trainers', label: 'Practice', fallbacks: ['/trainers', '/writing'] },
-  { href: '/tests', label: 'Tests', fallbacks: ['/tests'] },
-  { href: '/speaking/examiner', label: 'AI Tutor', fallbacks: ['/speaking'] },
+  { href: '/learn', label: nt('Learn'), fallbacks: ['/lessons', '/start'] },
+  { href: '/trainers', label: nt('Practice'), fallbacks: ['/trainers', '/writing'] },
+  { href: '/tests', label: nt('Tests'), fallbacks: ['/tests'] },
+  { href: '/speaking/examiner', label: nt('AI Tutor'), fallbacks: ['/speaking'] },
 ];
 const linkActive = (link: (typeof links)[number]) => isActive(link.href) || link.fallbacks.some(isActive);
 ---
 
 <header class="site-header">
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href={withBase('/')} class="site-wordmark" aria-label="IELTS is EZ home"><span>IELTS is</span> <span class="site-wordmark-accent">EZ</span></a>
-    <div class="site-nav-links" aria-label="Study areas">
-      {links.map((link) => <a href={withBase(link.href)} class:list={['site-nav-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
+  <nav class="site-nav" aria-label="Main navigation" data-i18n-attr="aria-label">
+    <a href={withBase('/')} class="site-wordmark" aria-label="IELTS is EZ home" data-i18n-attr="aria-label"><span>IELTS is</span> <span class="site-wordmark-accent">EZ</span></a>
+    <div class="site-nav-links" aria-label="Study areas" data-i18n-attr="aria-label">
+      {links.map((link) => <a href={withBase(link.href)} data-i18n class:list={['site-nav-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
     </div>
     <div class="site-nav-actions">
-      <a href={withBase('/dashboard')} class="site-workspace-button">My workspace</a>
+      <a href={withBase('/dashboard')} class="site-workspace-button" data-i18n>My workspace</a>
       <div class="site-account-menu"><AccountMenu client:load /></div>
-      <button type="button" id="nav-toggle" class="site-menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile"><span></span><span></span><span></span></button>
+      <button type="button" id="nav-toggle" class="site-menu-toggle" aria-label="Open menu" data-i18n-attr="aria-label" aria-expanded="false" aria-controls="nav-mobile"><span></span><span></span><span></span></button>
     </div>
   </nav>
   <div id="nav-mobile" class="site-mobile-menu" hidden>
     <div class="site-mobile-menu-inner">
-      {links.map((link) => <a href={withBase(link.href)} class:list={['site-mobile-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
-      <a href={withBase('/dashboard')} class="site-mobile-workspace">My workspace</a>
+      {links.map((link) => <a href={withBase(link.href)} data-i18n class:list={['site-mobile-link', { 'is-active': linkActive(link) }]} aria-current={linkActive(link) ? 'page' : undefined}>{link.label}</a>)}
+      <a href={withBase('/dashboard')} class="site-mobile-workspace" data-i18n>My workspace</a>
       <div class="site-mobile-account"><AccountMenu client:load compact /></div>
     </div>
   </div>
 </header>
 
 <script>
+  import { t } from '../lib/i18n/translate';
+
   function initSiteNav() {
     const toggle = document.getElementById('nav-toggle');
     const menu = document.getElementById('nav-mobile');
     if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement) || toggle.dataset.ready) return;
     toggle.dataset.ready = 'true';
-    const close = () => { menu.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open menu'); };
+    const close = () => { menu.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', t('Open menu')); };
     toggle.addEventListener('click', () => {
       const opening = menu.hidden;
       menu.hidden = !opening;
       toggle.setAttribute('aria-expanded', String(opening));
-      toggle.setAttribute('aria-label', opening ? 'Close menu' : 'Open menu');
+      toggle.setAttribute('aria-label', opening ? t('Close menu') : t('Open menu'));
       if (opening) menu.querySelector<HTMLElement>('a, button')?.focus();
     });
     menu.addEventListener('click', (event) => { if ((event.target as HTMLElement).closest('a')) close(); });

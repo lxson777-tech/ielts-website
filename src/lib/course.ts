@@ -7,6 +7,7 @@ import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import type { ProgressV1 } from './progress';
+import { nt, t } from './i18n/translate';
 
 /** One lesson's place in the course. */
 export interface CourseLesson {
@@ -84,39 +85,39 @@ function allLessons(): Omit<CourseLesson, 'position'>[] {
 }
 
 export const COURSE_UNITS: { name: string; blurb: string; stage: Stage; keys: string[] }[] = [
-  { name: 'Start speaking with confidence', stage: 1,
-    blurb: 'Understand the Speaking test, then answer Part 1 questions about familiar topics. Build the vocabulary to talk about yourself, family, study and work.',
+  { name: nt('Start speaking with confidence'), stage: 1,
+    blurb: nt('Understand the Speaking test, then answer Part 1 questions about familiar topics. Build the vocabulary to talk about yourself, family, study and work.'),
     keys: ['speaking', 'speaking-part1', 'vocabulary', 'vocabulary-family', 'vocabulary-education', 'vocabulary-work'] },
-  { name: 'Listen for everyday information', stage: 1,
-    blurb: 'Start with the Listening overview and Part 1. Learn to capture details before moving to Part 2 and directions on a map.',
+  { name: nt('Listen for everyday information'), stage: 1,
+    blurb: nt('Start with the Listening overview and Part 1. Learn to capture details before moving to Part 2 and directions on a map.'),
     keys: ['listening', 'listening-part1', 'listening-form-completion', 'listening-short-answer', 'listening-sentence-completion', 'listening-part2', 'listening-map-labelling', 'vocabulary-travel'] },
-  { name: 'Read for meaning and detail', stage: 2,
-    blurb: 'Understand Reading first. Recognise paraphrases, find precise answers, then work through completion questions with increasingly complex layouts.',
+  { name: nt('Read for meaning and detail'), stage: 2,
+    blurb: nt('Understand Reading first. Recognise paraphrases, find precise answers, then work through completion questions with increasingly complex layouts.'),
     keys: ['reading-task1', 'reading-paraphrase', 'reading-short-answer', 'reading-sentence', 'reading-summary-completion', 'reading-diagram', 'vocabulary-health', 'vocabulary-environment'] },
-  { name: 'Build a clear Task 1 report', stage: 2,
-    blurb: 'Learn how Writing is marked and practise the Task 1 method before applying it to charts, processes and maps. Linking and location language support your reports.',
+  { name: nt('Build a clear Task 1 report'), stage: 2,
+    blurb: nt('Learn how Writing is marked and practise the Task 1 method before applying it to charts, processes and maps. Linking and location language support your reports.'),
     keys: ['writing', 'writing-method', 'vocabulary-conjunctions', 'writing-charts', 'writing-process', 'vocabulary-housing', 'writing-maps'] },
-  { name: 'Develop and support your ideas', stage: 2,
-    blurb: 'Extend short answers into Speaking Part 2. Learn the Task 2 essay method before opinion essays, then distinguish facts, claims and distractors in Reading.',
+  { name: nt('Develop and support your ideas'), stage: 2,
+    blurb: nt('Extend short answers into Speaking Part 2. Learn the Task 2 essay method before opinion essays, then distinguish facts, claims and distractors in Reading.'),
     keys: ['speaking-part2', 'writing-task2-method', 'writing-opinion', 'vocabulary-technology', 'reading-mc', 'reading-tfng', 'reading-ynng', 'vocabulary-social-media'] },
-  { name: 'Follow and compare arguments', stage: 3,
-    blurb: 'Progress to academic Listening Parts 3 and 4, then weigh different views in discussion and advantages essays. Reuse social issues vocabulary across both papers.',
+  { name: nt('Follow and compare arguments'), stage: 3,
+    blurb: nt('Progress to academic Listening Parts 3 and 4, then weigh different views in discussion and advantages essays. Reuse social issues vocabulary across both papers.'),
     keys: ['listening-part3', 'listening-multiple-choice', 'listening-matching', 'listening-part4', 'vocabulary-society', 'writing-discussion', 'writing-advantages', 'vocabulary-crime'] },
-  { name: 'Handle complex questions', stage: 3,
-    blurb: 'Move from reading individual answers to connecting ideas. Finish the remaining essay types and Speaking Part 3, using wider topic vocabulary to explain and evaluate.',
+  { name: nt('Handle complex questions'), stage: 3,
+    blurb: nt('Move from reading individual answers to connecting ideas. Finish the remaining essay types and Speaking Part 3, using wider topic vocabulary to explain and evaluate.'),
     keys: ['reading-headings', 'reading-matching-information', 'reading-matching-features', 'reading-matching-sentence-endings', 'vocabulary-government', 'writing-problem', 'writing-twopart', 'vocabulary-ai', 'speaking-part3'] },
-  { name: 'Put it together under exam conditions', stage: 4,
-    blurb: 'After learning the material, take timed tests, try a complete mock and use your results to revisit weak areas. Keep the final two study days light.', keys: [] },
+  { name: nt('Put it together under exam conditions'), stage: 4,
+    blurb: nt('After learning the material, take timed tests, try a complete mock and use your results to revisit weak areas. Keep the final two study days light.'), keys: [] },
 ];
 
 /* The exam-readiness module. These are the only course steps that are not
    lessons, which is why stage 4 has no entries in any registry. */
 const EXAM_READINESS: CourseExtra[] = [
-  { key: 'extra:mock-reading', label: 'Sit a full Reading test under exam timing', href: '/tests#reading-tests' },
-  { key: 'extra:mock-listening', label: 'Sit a full Listening test under exam timing', href: '/tests#listening-tests' },
-  { key: 'extra:writing-checker', label: 'Write a Task 2 essay and get an AI band', href: '/writing/checker' },
-  { key: 'extra:speaking-examiner', label: 'Do a full mock interview with the Live AI Examiner', href: '/speaking/examiner' },
-  { key: 'extra:review', label: 'Review your score history and re-target your weakest paper', href: '/account' },
+  { key: 'extra:mock-reading', label: nt('Sit a full Reading test under exam timing'), href: '/tests#reading-tests' },
+  { key: 'extra:mock-listening', label: nt('Sit a full Listening test under exam timing'), href: '/tests#listening-tests' },
+  { key: 'extra:writing-checker', label: nt('Write a Task 2 essay and get an AI band'), href: '/writing/checker' },
+  { key: 'extra:speaking-examiner', label: nt('Do a full mock interview with the Live AI Examiner'), href: '/speaking/examiner' },
+  { key: 'extra:review', label: nt('Review your score history and re-target your weakest paper'), href: '/account' },
 ];
 
 /** Eight learning units, normally one per week. Shorter plans keep the same order. */
@@ -213,9 +214,9 @@ export function coursePace(days: number | null, modules: CourseModule[]): Course
     focusThrough: 3,
     lessonsPerWeek: days === null ? null : Math.ceil(total / Math.max(days / 7, 0.5)),
     note: days === null
-      ? 'Follow the eight units in order. Add an exam date to adjust the calendar; lesson times show the actual workload.'
+      ? t('Follow the eight units in order. Add an exam date to adjust the calendar; lesson times show the actual workload.')
       : days < 56
-        ? 'This is a condensed schedule. Keep the same learning order and expect longer sessions; extend the date if the daily workload is too high.'
-        : 'Follow the units at a steady pace, then use the final unit for timed practice and light review.',
+        ? t('This is a condensed schedule. Keep the same learning order and expect longer sessions; extend the date if the daily workload is too high.')
+        : t('Follow the units at a steady pace, then use the final unit for timed practice and light review.'),
   };
 }

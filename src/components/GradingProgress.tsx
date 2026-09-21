@@ -20,13 +20,9 @@ import {
   stageLabel,
   type GradingKind,
 } from '../lib/grading/progress';
+import { useT } from '../lib/i18n/react';
 
 const TICK_MS = 200;
-
-const TASK_LABEL: Record<GradingKind, string> = {
-  speaking: 'Grading your speaking',
-  writing: 'Grading your essay',
-};
 
 export default function GradingProgress({
   kind,
@@ -39,6 +35,11 @@ export default function GradingProgress({
   startedAt: number;
   className?: string;
 }) {
+  const { t } = useT();
+  const TASK_LABEL: Record<GradingKind, string> = {
+    speaking: t('Grading your speaking'),
+    writing: t('Grading your essay'),
+  };
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function GradingProgress({
       <p className="mt-3 text-sm text-ink-muted" aria-live="polite">
         {label}
       </p>
-      {overrun && <p className="mt-1.5 text-xs text-ink-muted/80">{OVERRUN_NOTE}</p>}
+      {overrun && <p className="mt-1.5 text-xs text-ink-muted/80">{t(OVERRUN_NOTE)}</p>}
     </div>
   );
 }

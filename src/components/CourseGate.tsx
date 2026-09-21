@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
+import { useT } from '../lib/i18n/react';
 import AuthModal, { type AuthMode } from './AuthModal';
 import Course from './Course';
 import CourseSections from './CourseSections';
@@ -34,6 +35,7 @@ function isCourseView(value: string | null): value is CourseView {
 }
 
 export default function CourseGate() {
+  const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [modalMode, setModalMode] = useState<AuthMode | null>(null);
@@ -81,7 +83,7 @@ export default function CourseGate() {
       <div
         className="inline-flex rounded-full border border-border bg-surface-alt p-1"
         role="group"
-        aria-label="Course view"
+        aria-label={t('Course view')}
       >
         {(
           [
@@ -98,7 +100,7 @@ export default function CourseGate() {
               view === id ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
             }`}
           >
-            {label}
+            {t(label)}
           </button>
         ))}
       </div>
@@ -151,9 +153,9 @@ export default function CourseGate() {
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
         </span>
-        <h3 className="mt-4 font-display text-2xl font-extrabold">Your course lives in your account</h3>
+        <h3 className="mt-4 font-display text-2xl font-extrabold">{t('Your course lives in your account')}</h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
-          A course only works if it remembers where you got to. Create a free account so your place in the course, completed lessons and scores are saved and follow you to any device.
+          {t('A course only works if it remembers where you got to. Create a free account so your place in the course, completed lessons and scores are saved and follow you to any device.')}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button
@@ -161,17 +163,17 @@ export default function CourseGate() {
             onClick={() => setModalMode('signup')}
             className="rounded-button bg-brand px-6 py-2.5 font-display text-sm font-bold text-white transition-colors hover:bg-brand-hover"
           >
-            Create my free account
+            {t('Create my free account')}
           </button>
           <button
             type="button"
             onClick={() => setModalMode('signin')}
             className="rounded-button border border-border px-6 py-2.5 font-display text-sm font-bold transition-colors hover:bg-surface-alt"
           >
-            Log in
+            {t('Log in', undefined, 'course-gate')}
           </button>
         </div>
-        <p className="mt-4 text-xs text-ink-muted">Free, takes under a minute. Lessons and practice tests stay open to everyone.</p>
+        <p className="mt-4 text-xs text-ink-muted">{t('Free, takes under a minute. Lessons and practice tests stay open to everyone.')}</p>
 
         {modalMode && <AuthModal initialMode={modalMode} onClose={() => setModalMode(null)} />}
       </div>

@@ -19,29 +19,32 @@ import {
   type LevelConfidence,
   type SkillLevel,
 } from '../lib/level';
+import { useT } from '../lib/i18n/react';
+import { nt } from '../lib/i18n/translate';
 
 const CONFIDENCE_COPY: Record<LevelConfidence, { label: string; tone: string; note: string }> = {
   none: { label: '', tone: '', note: '' },
   low: {
-    label: 'Low confidence',
+    label: nt('Low confidence'),
     tone: 'bg-warning-tint text-warning',
-    note: 'Based on very little practice so far. Treat this as a first impression, not a score.',
+    note: nt('Based on very little practice so far. Treat this as a first impression, not a score.'),
   },
   medium: {
-    label: 'Medium confidence',
+    label: nt('Medium confidence'),
     tone: 'bg-brand-tint text-brand',
-    note: 'A reasonable read on your level. More attempts, especially in the papers below, will sharpen it.',
+    note: nt('A reasonable read on your level. More attempts, especially in the papers below, will sharpen it.'),
   },
   high: {
-    label: 'Good confidence',
+    label: nt('Good confidence'),
     tone: 'bg-success-tint text-success',
-    note: 'Built from a solid spread of recent attempts across several papers.',
+    note: nt('Built from a solid spread of recent attempts across several papers.'),
   },
 };
 
 function TrendPill({ trend }: { trend: number }) {
+  const { t } = useT();
   if (Math.abs(trend) < 0.25) {
-    return <span className="text-xs font-semibold text-ink-muted">→ steady</span>;
+    return <span className="text-xs font-semibold text-ink-muted">{t('→ steady')}</span>;
   }
   const up = trend > 0;
   return (
@@ -52,6 +55,7 @@ function TrendPill({ trend }: { trend: number }) {
 }
 
 function SkillRow({ level }: { level: SkillLevel }) {
+  const { t, tn } = useT();
   const accent = `var(--color-${level.skill})`;
   const practice = SKILL_PRACTICE[level.skill];
 
@@ -64,7 +68,7 @@ function SkillRow({ level }: { level: SkillLevel }) {
           href={withBase(practice.href)}
           className="shrink-0 text-xs font-semibold text-brand hover:text-brand-hover"
         >
-          {practice.label}
+          {t(practice.label)}
         </a>
       </div>
     );
@@ -90,7 +94,7 @@ function SkillRow({ level }: { level: SkillLevel }) {
           <TrendPill trend={level.trend} />
         ) : (
           <span className="text-xs text-ink-muted">
-            {level.attempts} {level.attempts === 1 ? 'try' : 'tries'}
+            {tn(level.attempts, { one: '{n} try', other: '{n} tries' })}
           </span>
         )}
       </span>
@@ -99,31 +103,31 @@ function SkillRow({ level }: { level: SkillLevel }) {
 }
 
 function EmptyState() {
+  const { t } = useT();
   return (
     <div className="rounded-card border border-dashed border-border bg-surface-alt p-6">
-      <p className="font-display font-bold">Your approximate level</p>
+      <p className="font-display font-bold">{t('Your approximate level')}</p>
       <p className="mt-1 text-sm text-ink-muted">
-        Nothing to estimate from yet. Take a practice test or get one essay or speaking answer graded, and your
-        estimated band will appear here.
+        {t('Nothing to estimate from yet. Take a practice test or get one essay or speaking answer graded, and your estimated band will appear here.')}
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <a
           href={withBase('/tests')}
           className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
         >
-          Take a reading test
+          {t('Take a reading test')}
         </a>
         <a
           href={withBase('/trainers/writing')}
           className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface"
         >
-          Grade an essay
+          {t('Grade an essay')}
         </a>
         <a
           href={withBase('/trainers/speaking')}
           className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface"
         >
-          Speak to the examiner
+          {t('Speak to the examiner')}
         </a>
       </div>
     </div>
@@ -131,6 +135,7 @@ function EmptyState() {
 }
 
 export default function CurrentLevel() {
+  const { t, tn } = useT();
   const [level, setLevel] = useState<LevelEstimate | null>(null);
 
   useEffect(() => {
@@ -152,39 +157,51 @@ export default function CurrentLevel() {
   const conf = CONFIDENCE_COPY[level.confidence];
   const weakest = level.weakest;
 
+  // "Your true band is most likely between {low} and {high}." has bold on
+  // the two numbers. t() with no vars leaves the {low}/{high} markers in
+  // place (interpolate() only fills vars it's given), so we can split on
+  // them by hand and re-insert <strong>, keeping the emphasis instead of
+  // flattening the sentence to plain text. It still lets Russian reorder
+  // the two placeholders however the translation needs.
+  const rangeParts = level.range
+    ? t('Your true band is most likely between {low} and {high}.').split(/(\{low\}|\{high\})/)
+    : null;
+
   return (
     <section
       className="rounded-card border border-border bg-surface p-6 shadow-card"
-      aria-label="Your current approximate level"
+      aria-label={t('Your current approximate level')}
     >
       <div className="flex flex-wrap items-start gap-6">
         {/* ── The number ── */}
         <div className="min-w-[8.5rem] text-center">
-          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Approximate level</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Approximate level')}</p>
           <p className="band-score-pop mt-1 font-display text-5xl font-extrabold text-brand">
             {level.overall.toFixed(1)}
           </p>
-          <p className="mt-1 text-sm font-semibold">{bandDescriptor(level.overall)}</p>
-          <p className="text-xs text-ink-muted">≈ CEFR {cefrFor(level.overall)}</p>
+          <p className="mt-1 text-sm font-semibold">{t(bandDescriptor(level.overall))}</p>
+          <p className="text-xs text-ink-muted">{t('≈ CEFR {code}', { code: cefrFor(level.overall) })}</p>
         </div>
 
         {/* ── What it's built from ── */}
         <div className="min-w-[15rem] flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${conf.tone}`}>{conf.label}</span>
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${conf.tone}`}>{t(conf.label)}</span>
             <span className="text-xs text-ink-muted">
-              {level.covered} of 4 papers · {level.totalAttempts} graded{' '}
-              {level.totalAttempts === 1 ? 'attempt' : 'attempts'}
+              {t('{covered} of 4 papers', { covered: level.covered })}{' '}
+              · {tn(level.totalAttempts, { one: '{n} graded attempt', other: '{n} graded attempts' })}
             </span>
           </div>
-          {level.range && (
+          {level.range && rangeParts && (
             <p className="mt-2 text-sm text-ink-muted">
-              Your true band is most likely between{' '}
-              <strong className="text-ink">{level.range[0].toFixed(1)}</strong> and{' '}
-              <strong className="text-ink">{level.range[1].toFixed(1)}</strong>.
+              {rangeParts.map((part, i) => {
+                if (part === '{low}') return <strong key={i} className="text-ink">{level.range![0].toFixed(1)}</strong>;
+                if (part === '{high}') return <strong key={i} className="text-ink">{level.range![1].toFixed(1)}</strong>;
+                return <span key={i}>{part}</span>;
+              })}
             </p>
           )}
-          <p className="mt-1 text-xs text-ink-muted">{conf.note}</p>
+          <p className="mt-1 text-xs text-ink-muted">{t(conf.note)}</p>
 
           <div className="mt-3 divide-y divide-border border-t border-border">
             {level.skills.map((s) => (
@@ -198,18 +215,14 @@ export default function CurrentLevel() {
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface-alt px-4 py-3">
         <p className="text-sm text-ink-muted">
           {level.missing.length > 0 ? (
-            <>
-              This estimate skips{' '}
-              <strong className="text-ink">
-                {level.missing.map((m) => SKILL_LABEL[m]).join(', ')}
-              </strong>
-              . Practise {level.missing.length === 1 ? 'it' : 'them'} to get a full-exam estimate.
-            </>
+            tn(level.missing.length, {
+              one: 'This estimate skips {list}. Practise it to get a full-exam estimate.',
+              other: 'This estimate skips {list}. Practise them to get a full-exam estimate.',
+            }, { list: level.missing.map((m) => SKILL_LABEL[m]).join(', ') })
           ) : weakest ? (
-            <>
-              <strong className="text-ink">{SKILL_LABEL[weakest.skill]}</strong> is holding your overall band down.
-              Every 0.5 you gain there lifts this number.
-            </>
+            t('{skill} is holding your overall band down. Every 0.5 you gain there lifts this number.', {
+              skill: SKILL_LABEL[weakest.skill],
+            })
           ) : null}
         </p>
         {weakest && (
@@ -217,14 +230,13 @@ export default function CurrentLevel() {
             href={withBase(SKILL_PRACTICE[level.missing[0] ?? weakest.skill].href)}
             className="shrink-0 rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            {SKILL_PRACTICE[level.missing[0] ?? weakest.skill].label}
+            {t(SKILL_PRACTICE[level.missing[0] ?? weakest.skill].label)}
           </a>
         )}
       </div>
 
       <p className="mt-3 text-xs text-ink-muted">
-        Estimated from your recent practice, weighted towards your latest attempts. It is a study guide, not an
-        official IELTS result.
+        {t('Estimated from your recent practice, weighted towards your latest attempts. It is a study guide, not an official IELTS result.')}
       </p>
     </section>
   );

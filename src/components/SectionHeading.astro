@@ -10,7 +10,7 @@ const { title, subtitle, eyebrow, id } = Astro.props;
 ---
 
 <div class="section-heading mb-8" id={id}>
-  <h2 class="text-3xl font-extrabold tracking-tight">{title}</h2>
-  {eyebrow && !title.toLowerCase().includes(eyebrow.toLowerCase()) && <p class="heading-context">{eyebrow}</p>}
-  {subtitle && <p class="mt-2 max-w-xl text-ink-muted">{subtitle}</p>}
+  <h2 class="text-3xl font-extrabold tracking-tight" data-i18n>{title}</h2>
+  {eyebrow && !title.toLowerCase().includes(eyebrow.toLowerCase()) && <p class="heading-context" data-i18n>{eyebrow}</p>}
+  {subtitle && <p class="mt-2 max-w-xl text-ink-muted" data-i18n>{subtitle}</p>}
 </div>

@@ -19,7 +19,7 @@ const { order, of, section } = Astro.props;
 ---
 
 <div class="lesson-step" aria-label={`Lesson ${order} of ${of} in ${section}`}>
-  <span class="lesson-step-label">Lesson {order} of {of}</span>
+  <span class="lesson-step-label"><span data-i18n data-i18n-ctx="lesson-step">Lesson</span> {order} <span data-i18n data-i18n-ctx="lesson-step">of</span> {of}</span>
   <span class="lesson-step-track" aria-hidden="true">
     {Array.from({ length: of }, (_, i) => <span class:list={['lesson-step-tick', i < order && 'is-done']} />)}
   </span>

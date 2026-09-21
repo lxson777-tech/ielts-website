@@ -13,9 +13,11 @@ import { useEffect, useRef, useState } from 'react';
 import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
+import { useT } from '../lib/i18n/react';
 import AuthModal from './AuthModal';
 
 export default function HeroStartCta() {
+  const { t } = useT();
   const [signedIn, setSignedIn] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   // Ref mirror of modalOpen for the auth subscription's closure: when the
@@ -62,7 +64,7 @@ export default function HeroStartCta() {
           <circle cx="12" cy="12" r="10" />
           <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
         </svg>
-        Start my IELTS preparation
+        {t('Start my IELTS preparation')}
       </a>
 
       {modalOpen && <AuthModal initialMode="signup" onClose={() => setModal(false)} />}

@@ -21,6 +21,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { withBase } from '../lib/url';
 import type { VocabTopicData } from '../lib/vocab-review';
+import { useT } from '../lib/i18n/react';
 import VocabReview from './VocabReview';
 
 type View = 'landing' | 'topic' | 'session';
@@ -41,6 +42,7 @@ function setUrlTopic(slug: string | null): void {
 }
 
 export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
+  const { t, tn } = useT();
   const [view, setView] = useState<View>('landing');
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
@@ -89,7 +91,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
         <div className="vocab-review-head">
           <p className="vocab-back-link">
             <button type="button" className="vocab-text-link" onClick={backToTopics}>
-              All topics
+              {t('All topics')}
             </button>
           </p>
           <h1>{active.title}</h1>
@@ -97,7 +99,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
 
         {active.words.length > 0 && (
           <section className="vocab-topic-group">
-            <h2>Words and phrases</h2>
+            <h2>{t('Words and phrases')}</h2>
             <ul className="vocab-word-list">
               {active.words.map((w) => (
                 <li key={w.word}>
@@ -127,7 +129,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
 
         <div className="vocab-topic-practise">
           <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
-            Practise this topic with flashcards
+            {t('Practise this topic with flashcards')}
           </button>
         </div>
       </div>
@@ -138,10 +140,10 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
     <div className="vocab-review-space">
       <div className="vocab-review-head">
         <p className="vocab-back-link">
-          <a href={withBase('/dashboard')}>Dashboard</a>
+          <a href={withBase('/dashboard')}>{t('Dashboard')}</a>
         </p>
-        <h1>Vocabulary</h1>
-        <p>Every IELTS topic, its vocabulary, meanings and examples. Pick a topic to see it all at once.</p>
+        <h1>{t('Vocabulary')}</h1>
+        <p>{t('Every IELTS topic, its vocabulary, meanings and examples. Pick a topic to see it all at once.')}</p>
       </div>
 
       <div className="vocab-topic-grid">
@@ -149,7 +151,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           <button key={s.slug} type="button" className="vocab-topic-card" onClick={() => openTopic(s.slug)}>
             <span className="vocab-topic-card-title">{s.title}</span>
             <span className="vocab-topic-card-count">
-              {s.count} word{s.count === 1 ? '' : 's'}
+              {tn(s.count, { one: '{n} word', other: '{n} words' })}
             </span>
             {s.preview.length > 0 && <span className="vocab-topic-card-preview">{s.preview.join(', ')}</span>}
           </button>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAttempts, onProgressChange, resetProgress, type TestAttempt } from '../lib/progress';
 import { ALL_TESTS } from '../data/tests';
+import { useT } from '../lib/i18n/react';
 
 interface Row {
   testId: string;
@@ -17,6 +18,7 @@ const fmtDate = (iso: string) =>
 /* Single-series band-over-time line: brand hue (validated vs light surface),
    2px line, 8px markers, recessive grid, hover tooltip per point, y = 4–9. */
 function BandChart({ rows, skill }: { rows: Row[]; skill: 'reading' | 'listening' }) {
+  const { t, tn } = useT();
   const [hover, setHover] = useState<number | null>(null);
   if (rows.length < 2) return null;
 
@@ -39,11 +41,14 @@ function BandChart({ rows, skill }: { rows: Row[]; skill: 'reading' | 'listening
 
   return (
     <figure className="mt-6 overflow-x-auto">
-      <figcaption className="mb-2 text-sm font-semibold">Estimated band over attempts</figcaption>
+      <figcaption className="mb-2 text-sm font-semibold">{t('Estimated band over attempts')}</figcaption>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={`Band score across ${rows.length} attempts, from ${rows[0]!.attempt.bandLabel} to ${rows[rows.length - 1]!.attempt.bandLabel}`}
+        aria-label={tn(rows.length, {
+          one: 'Band score across {n} attempt, from {from} to {to}',
+          other: 'Band score across {n} attempts, from {from} to {to}',
+        }, { from: rows[0]!.attempt.bandLabel, to: rows[rows.length - 1]!.attempt.bandLabel })}
         className="w-full max-w-xl"
         onMouseLeave={() => setHover(null)}
       >
@@ -117,7 +122,7 @@ function BandChart({ rows, skill }: { rows: Row[]; skill: 'reading' | 'listening
                     opacity="0.92"
                   />
                   <text x="0" y={above ? -21 : 13} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-                    Band {r.attempt.bandLabel} · {r.attempt.raw}/{r.attempt.total}
+                    {t('Band {label} · {raw}/{total}', { label: r.attempt.bandLabel, raw: r.attempt.raw, total: r.attempt.total })}
                   </text>
                   <text x="0" y={above ? -9 : 25} textAnchor="middle" fontSize="9" fill="#fff" opacity="0.75">
                     {fmtDate(r.attempt.at)}
@@ -139,6 +144,7 @@ export default function ScoreHistory({
   skill?: 'reading' | 'listening';
   showReset?: boolean;
 }) {
+  const { t } = useT();
   const [rows, setRows] = useState<Row[] | null>(null);
 
   useEffect(() => {
@@ -160,8 +166,8 @@ export default function ScoreHistory({
   if (rows.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-8 text-center text-ink-muted">
-        <p className="font-display font-semibold text-ink">No attempts yet</p>
-        <p className="mt-1 text-sm">Finish a {skill} test and your scores will appear here.</p>
+        <p className="font-display font-semibold text-ink">{t('No attempts yet')}</p>
+        <p className="mt-1 text-sm">{t('Finish a {skill} test and your scores will appear here.', { skill })}</p>
       </div>
     );
   }
@@ -172,11 +178,11 @@ export default function ScoreHistory({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-surface-alt text-left text-xs uppercase tracking-wide text-ink-muted">
-              <th className="px-4 py-2.5 font-semibold">Date</th>
-              <th className="px-4 py-2.5 font-semibold">Test</th>
-              <th className="px-4 py-2.5 font-semibold">Score</th>
-              <th className="px-4 py-2.5 font-semibold">Band</th>
-              <th className="px-4 py-2.5 font-semibold">Time used</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Date')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Test')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Score')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Band')}</th>
+              <th className="px-4 py-2.5 font-semibold">{t('Time used')}</th>
             </tr>
           </thead>
           <tbody>
@@ -193,7 +199,7 @@ export default function ScoreHistory({
                   </span>
                 </td>
                 <td className="px-4 py-2.5 text-ink-muted">
-                  {Math.floor(r.attempt.secondsUsed / 60)}m {r.attempt.secondsUsed % 60}s
+                  {t('{minutes}m {seconds}s', { minutes: Math.floor(r.attempt.secondsUsed / 60), seconds: r.attempt.secondsUsed % 60 })}
                 </td>
               </tr>
             ))}
@@ -206,14 +212,14 @@ export default function ScoreHistory({
       {showReset && <button
         type="button"
         onClick={() => {
-          if (window.confirm('Clear all saved progress and scores on this device?')) {
+          if (window.confirm(t('Clear all saved progress and scores on this device?'))) {
             resetProgress();
             setRows([]);
           }
         }}
         className="mt-6 text-xs font-semibold text-ink-muted underline underline-offset-2 hover:text-error"
       >
-        Reset all progress
+        {t('Reset all progress')}
       </button>}
     </div>
   );

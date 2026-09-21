@@ -21,6 +21,7 @@
 */
 
 import { getAttempts, getWritingAttempts, getSpeakingAttempts } from './progress';
+import { nt } from './i18n/translate';
 
 export type LevelSkill = 'reading' | 'listening' | 'writing' | 'speaking';
 
@@ -36,10 +37,10 @@ export const SKILL_LABEL: Record<LevelSkill, string> = {
 /** Where to send a student who has no evidence (or weak evidence) for a skill.
     Paths are base-less; callers wrap them in withBase(). */
 export const SKILL_PRACTICE: Record<LevelSkill, { label: string; href: string }> = {
-  reading: { label: 'Take a reading test', href: '/tests' },
-  listening: { label: 'Take a listening test', href: '/tests#listening-tests' },
-  writing: { label: 'Get an essay graded', href: '/trainers/writing' },
-  speaking: { label: 'Speak to the examiner', href: '/trainers/speaking' },
+  reading: { label: nt('Take a reading test'), href: '/tests' },
+  listening: { label: nt('Take a listening test'), href: '/tests#listening-tests' },
+  writing: { label: nt('Get an essay graded'), href: '/trainers/writing' },
+  speaking: { label: nt('Speak to the examiner'), href: '/trainers/speaking' },
 };
 
 /** Attempts older than this many positions back stop counting at all. Six is

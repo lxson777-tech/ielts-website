@@ -12,6 +12,7 @@
 
 import { getAccessToken } from '../auth/session';
 import { isAuthConfigured } from '../auth/supabase';
+import { t } from '../i18n/translate';
 import { MAX_MESSAGE_CHARS, type TutorErrorCode, type TutorReply, type TutorRequest } from './schema';
 
 const TUTOR_URL: string | undefined = import.meta.env?.PUBLIC_MR_EZ_URL;
@@ -40,8 +41,8 @@ export function isTutorConfigured(): boolean {
 /** Why the tutor is unavailable, when it is — used for the one-line notice
     in the panel rather than a generic shrug. */
 export function tutorUnavailableReason(): string | null {
-  if (!TUTOR_URL) return 'Mr EZ is not switched on for this build yet.';
-  if (!isAuthConfigured()) return 'Mr EZ needs accounts to be configured, because he only ever reads your own record.';
+  if (!TUTOR_URL) return t('Mr EZ is not switched on for this build yet.');
+  if (!isAuthConfigured()) return t('Mr EZ needs accounts to be configured, because he only ever reads your own record.');
   return null;
 }
 
@@ -87,12 +88,12 @@ async function post(url: string, token: string, req: TutorRequest, signal?: Abor
     });
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError' && signal?.aborted) throw err;
-    throw new TutorClientError('unavailable', 'Mr EZ could not be reached. Check your connection and try again.');
+    throw new TutorClientError('unavailable', t('Mr EZ could not be reached. Check your connection and try again.'));
   }
 
   if (!resp.ok) {
     let code: TutorErrorCode = 'unavailable';
-    let message = 'Mr EZ could not answer just now.';
+    let message = t('Mr EZ could not answer just now.');
     let retryAfter: number | undefined;
     try {
       const body = (await resp.json()) as { error?: string; code?: TutorErrorCode; retryAfter?: number };
@@ -112,13 +113,16 @@ async function post(url: string, token: string, req: TutorRequest, signal?: Abor
 /** Ask Mr EZ. Throws TutorClientError with a code the UI maps to a state:
     sign in, limit reached, temporarily unavailable, and so on. */
 export async function askTutor(req: TutorRequest, options: AskOptions = {}): Promise<TutorReply> {
-  if (!TUTOR_URL) throw new TutorClientError('not-configured', 'Mr EZ is not switched on for this build yet.');
+  if (!TUTOR_URL) throw new TutorClientError('not-configured', t('Mr EZ is not switched on for this build yet.'));
   if (req.message && req.message.length > MAX_MESSAGE_CHARS) {
-    throw new TutorClientError('too-long', `That is a bit long. Keep it under ${MAX_MESSAGE_CHARS} characters.`);
+    throw new TutorClientError(
+      'too-long',
+      t('That is a bit long. Keep it under {max} characters.', { max: MAX_MESSAGE_CHARS }),
+    );
   }
 
   const token = await getAccessToken();
-  if (!token) throw new TutorClientError('sign-in-required', 'Sign in and Mr EZ can see your own results.');
+  if (!token) throw new TutorClientError('sign-in-required', t('Sign in and Mr EZ can see your own results.'));
 
   // Generated here, once, so the retry below cannot buy a second answer.
   const withKey: TutorRequest = { ...req, idempotencyKey: req.idempotencyKey ?? newIdempotencyKey() };

@@ -1,13 +1,14 @@
 ---
 import '../../styles/game-student.css';
 import { withBase } from '../../lib/url';
+import { nt } from '../../lib/i18n/translate';
 interface Props { class?: string; title?: string; }
-const { class: className = '', title = 'IELTS student' } = Astro.props;
+const { class: className = '', title = nt('IELTS student') } = Astro.props;
 const pose = (name: string) => withBase('/pics/home/student-' + name + '-v5.png');
 const rig = (name: string) => withBase('/pics/home/walk-rig/' + name + '.png');
 ---
 <!-- Controller: .game-student[data-state][data-facing]. Logical ground anchor: (80,250). -->
-<svg class:list={['game-student-art', className]} viewBox="0 0 160 260" width="160" height="260" role="img" aria-label={title}>
+<svg class:list={['game-student-art', className]} viewBox="0 0 160 260" width="160" height="260" role="img" aria-label={title} data-i18n-attr="aria-label">
   <g class="gs-facing">
     <image class="gs-pose gs-pose-idle" href={pose('idle')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>
     <image class="gs-pose gs-pose-read" href={pose('read')} width="160" height="250" preserveAspectRatio="xMidYMax meet"/>

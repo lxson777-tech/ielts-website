@@ -56,29 +56,29 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     <!-- Lesson hero band -->
     <section class="lesson-hero border-b border-border">
       <div class="lesson-hero-content mx-auto max-w-4xl px-4 py-12 sm:px-6">
-        <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb">
+        <nav class="mb-4 flex items-center gap-1.5 text-sm text-ink-muted" aria-label="Breadcrumb" data-i18n-attr="aria-label">
           {/* py-2/-my-2 pad the tap target to 24px+ without growing the row visually */}
-          <a href={withBase('/')} class="inline-block py-2 -my-2 hover:text-ink">Home</a>
+          <a href={withBase('/')} class="inline-block py-2 -my-2 hover:text-ink" data-i18n>Home</a>
           <span aria-hidden="true">/</span>
           {
             parent && (
               <>
-                <a href={parent.href} class="inline-block py-2 -my-2 hover:text-ink">{parent.label}</a>
+                <a href={parent.href} class="inline-block py-2 -my-2 hover:text-ink" data-i18n>{parent.label}</a>
                 <span aria-hidden="true">/</span>
               </>
             )
           }
-          <span class="font-medium text-ink">{lesson.title}</span>
+          <span class="font-medium text-ink" data-i18n>{lesson.title}</span>
         </nav>
         <div class="flex items-center gap-2.5">
-          <Badge tone="skill">{skill.label}</Badge>
+          <Badge tone="skill"><span data-i18n>{skill.label}</span></Badge>
           {typeof minutes === 'number' && (
-            <span class="text-xs font-semibold text-ink-muted">{minutes} min</span>
+            <span class="text-xs font-semibold text-ink-muted">{minutes} <span data-i18n>min</span></span>
           )}
         </div>
-        <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{lesson.title}</h1>
-        <p class="mt-3 max-w-2xl text-ink-muted">{lesson.description}</p>
-      <div class="lesson-word-quiz"><span>Vocabulary quick check</span>
+        <h1 class="mt-3 max-w-3xl font-display text-4xl font-extrabold tracking-tight sm:text-5xl" data-i18n>{lesson.title}</h1>
+        <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>{lesson.description}</p>
+      <div class="lesson-word-quiz"><span data-i18n>Vocabulary quick check</span>
         <button
           type="button"
           id="lesson-hero-word-text"
@@ -88,14 +88,15 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
           aria-controls="lesson-hero-word-panel"
           data-vocab-quiz-trigger
           data-words={JSON.stringify(WORDS.map(({ word, def }) => ({ word, def })))}
+          data-i18n-attr="aria-label"
         ></button>
       </div>
         <!-- The floating word drifts and can't host its own panel, so its
              quiz expands here instead, in the static content column. -->
         <div id="lesson-hero-word-panel" class="vocab-quiz-panel mt-4" hidden>
-          <p class="vocab-quiz-panel-eyebrow">Quick check</p>
+          <p class="vocab-quiz-panel-eyebrow" data-i18n>Quick check</p>
           <h2 class="vocab-quiz-panel-word"></h2>
-          <p class="vocab-quiz-panel-prompt">Which definition is correct?</p>
+          <p class="vocab-quiz-panel-prompt" data-i18n>Which definition is correct?</p>
           <div class="vocab-quiz-panel-opts"></div>
         </div>
       </div>
@@ -114,7 +115,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
             class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-success hover:text-success data-[done]:border-success data-[done]:bg-success-tint data-[done]:text-success"
           >
             <span data-icon>○</span>
-            <span data-label>Mark lesson as complete</span>
+            <span data-label data-i18n>Mark lesson as complete</span>
           </button>
           <button
             type="button"
@@ -123,17 +124,17 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
             data-title={lesson.title}
             class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-brand hover:text-brand data-[saved]:border-brand data-[saved]:bg-brand-tint data-[saved]:text-brand"
           >
-            <span data-label>Save lesson</span>
+            <span data-label data-i18n>Save lesson</span>
           </button>
         </div>
 
-        <nav class="flex flex-wrap items-center justify-center gap-4 text-sm" aria-label="Guided course">
-          <a href={withBase('/start')} class="font-semibold text-ink-muted hover:text-brand">Back to course</a>
-          {nextInCourse && <a data-course-next href={withBase(nextInCourse.href)} class="rounded-button bg-brand px-5 py-3 font-semibold text-white">Next in course: {nextInCourse.title}</a>}
+        <nav class="flex flex-wrap items-center justify-center gap-4 text-sm" aria-label="Guided course" data-i18n-attr="aria-label">
+          <a href={withBase('/start')} class="font-semibold text-ink-muted hover:text-brand" data-i18n>Back to course</a>
+          {nextInCourse && <a data-course-next href={withBase(nextInCourse.href)} class="rounded-button bg-brand px-5 py-3 font-semibold text-white"><span data-i18n>Next in course:</span> <span data-i18n>{nextInCourse.title}</span></a>}
         </nav>
         <div class="w-full max-w-xl">
           <div class="flex items-baseline justify-between gap-2">
-            <label for="lesson-notes" class="text-xs font-bold uppercase tracking-[0.1em] text-ink-muted">My notes</label>
+            <label for="lesson-notes" class="text-xs font-bold uppercase tracking-[0.1em] text-ink-muted" data-i18n>My notes</label>
             <span id="lesson-notes-status" class="text-xs text-ink-muted opacity-0 transition-opacity duration-300" aria-live="polite"></span>
           </div>
           <textarea
@@ -142,6 +143,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
             rows="4"
             placeholder="Jot down anything you want to remember about this lesson."
             class="mt-2 w-full resize-y rounded-card border border-border bg-surface p-3 text-sm text-ink outline-none transition-colors focus:border-brand"
+            data-i18n-attr="placeholder"
           ></textarea>
         </div>
       </div>
@@ -158,6 +160,13 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   import type { VocabWord } from '../scripts/vocab-quiz';
   import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
   import { toggleBookmark, isBookmarked, setNote, getNote } from '../lib/notes';
+  import { t, onLocaleChange } from '../lib/i18n';
+
+  // Re-subscribed on every astro:page-load (see below) so a live language
+  // switch (no navigation) refreshes this page's JS-set text without
+  // leaking a listener per past page: the previous page's subscription is
+  // torn down before a new one is created.
+  let offLocale: (() => void) | null = null;
 
   // Module scripts only execute once, on the initial hard load — they don't
   // re-run after a client-side (astro:transitions) navigation, and this
@@ -167,6 +176,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   // both the first load and every subsequent page swap, since it fires on
   // both (same pattern as VocabQuizInit.astro).
   document.addEventListener('astro:page-load', () => {
+    offLocale?.();
     initReadingQuiz();
 
     // Floating vocabulary word that drifts across the hero panel — one
@@ -201,8 +211,8 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
         btn.toggleAttribute('data-done', done);
         btn.querySelector('[data-icon]')!.textContent = done ? '✓' : '○';
         btn.querySelector('[data-label]')!.textContent = done
-          ? 'Lesson completed, tap to undo'
-          : 'Mark lesson as complete';
+          ? t('Lesson completed, tap to undo')
+          : t('Mark lesson as complete');
       };
       render(isLessonComplete(slug));
       btn.addEventListener('click', () => {
@@ -229,7 +239,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
       const href = window.location.pathname;
       const renderSaved = (saved: boolean) => {
         saveBtn.toggleAttribute('data-saved', saved);
-        saveBtn.querySelector('[data-label]')!.textContent = saved ? 'Saved, tap to remove' : 'Save lesson';
+        saveBtn.querySelector('[data-label]')!.textContent = saved ? t('Saved, tap to remove') : t('Save lesson');
       };
       renderSaved(isBookmarked('lesson', slug));
       saveBtn.addEventListener('click', () => {
@@ -237,6 +247,25 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
         renderSaved(saved);
       });
     }
+
+    // A live language switch (no navigation) needs to refresh this page's
+    // own JS-set text: applyTranslations() (see BaseLayout) only reaches
+    // elements marked data-i18n, not textContent this script set directly.
+    offLocale = onLocaleChange(() => {
+      if (btn) {
+        btn.querySelector('[data-label]')!.textContent = btn.hasAttribute('data-done')
+          ? t('Lesson completed, tap to undo')
+          : t('Mark lesson as complete');
+      }
+      if (saveBtn) {
+        saveBtn.querySelector('[data-label]')!.textContent = saveBtn.hasAttribute('data-saved')
+          ? t('Saved, tap to remove')
+          : t('Save lesson');
+      }
+      document.querySelectorAll<HTMLElement>('.sample-status').forEach((el) => {
+        el.title = t('Completed');
+      });
+    });
 
     // My notes — a free-text note per lesson, saved on blur and after a
     // short pause in typing, so a note survives even if the student never
@@ -252,7 +281,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
       const save = () => {
         setNote(slug, notesBox.value);
         if (notesStatus) {
-          notesStatus.textContent = 'Saved';
+          notesStatus.textContent = t('Saved', undefined, 'lesson-notes');
           notesStatus.style.opacity = '1';
           clearTimeout(fadeTimer);
           fadeTimer = setTimeout(() => {
@@ -286,7 +315,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
       if (!isLessonComplete(lessonSlug)) return;
       const status = document.createElement('span');
       status.className = 'sample-status';
-      status.title = 'Completed';
+      status.title = t('Completed');
       status.textContent = '✓';
       card.prepend(status);
     });

@@ -23,6 +23,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
+import { useT, type Translator } from '../../lib/i18n/react';
+import type { Locale } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
 import { localRecommendation, toTutorRecommendation } from '../../lib/tutor/local';
@@ -53,34 +55,47 @@ interface TutorView {
   live: boolean;
 }
 
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
 /** A week's two date keys written the way a person would say them, e.g.
-    "14 to 20 September" or, when the week crosses a month boundary,
-    "29 September to 5 October". Built from the date keys directly (no
-    Date, no locale) so it can never disagree with the calendar week the
-    facts were actually counted over. */
-function formatWeekRange(window: WeekWindow): string {
-  const [startYear, startMonth, startDay] = window.start.split('-').map(Number);
-  const [endYear, endMonth, endDay] = window.end.split('-').map(Number);
-  const startName = MONTH_NAMES[startMonth! - 1];
-  const endName = MONTH_NAMES[endMonth! - 1];
-  if (startYear === endYear && startMonth === endMonth) {
-    return `${startDay} to ${endDay} ${endName}`;
-  }
-  return `${startDay} ${startName} to ${endDay} ${endName}`;
+    "14 to 20 September" (English) or "с 14 по 20 сентября" (Russian), or,
+    when the week crosses a month boundary, "29 September to 5 October" /
+    "с 29 сентября по 5 октября". Built from the date keys directly (no
+    Date arithmetic beyond naming the month) so it can never disagree with
+    the calendar week the facts were actually counted over. The month name
+    itself follows the interface language via Intl.DateTimeFormat, asked
+    together with a day number so Russian returns the genitive form that
+    reads naturally next to one ("14 сентября", not "14 сентябрь"). */
+function monthName(locale: Locale, monthIndex0: number): string {
+  const sample = new Date(2024, monthIndex0, 15);
+  const withDay = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(sample);
+  const word = withDay.split(' ').find((part) => !/^\d/.test(part));
+  return word ?? withDay;
 }
 
-function headingFor(mode: ReviewMode): string {
-  if (mode === 'last-week') return 'Last week with Mr EZ';
-  if (mode === 'this-week') return 'This week so far';
+function formatWeekRange(window: WeekWindow, t: Translator['t'], locale: Locale): string {
+  const [startYear, startMonth, startDay] = window.start.split('-').map(Number);
+  const [endYear, endMonth, endDay] = window.end.split('-').map(Number);
+  const endName = monthName(locale, endMonth! - 1);
+  // Same key names and text as the study-plan week range
+  // (dict/ru/dashboard-plan.ts), so both reuse one Russian entry.
+  if (startYear === endYear && startMonth === endMonth) {
+    return t('{startDay} to {endDay} {month}', { startDay: startDay!, endDay: endDay!, month: endName });
+  }
+  const startName = monthName(locale, startMonth! - 1);
+  return t('{startDay} {startMonth} to {endDay} {endMonth}', {
+    startDay: startDay!,
+    startMonth: startName,
+    endDay: endDay!,
+    endMonth: endName,
+  });
+}
+
+function headingFor(mode: ReviewMode, t: Translator['t']): string {
+  if (mode === 'last-week') return t('Last week with Mr EZ');
+  if (mode === 'this-week') return t('This week so far');
   return 'Mr EZ';
 }
 
-function buildLocalView(): LocalView {
+function buildLocalView(t: Translator['t']): LocalView {
   const progress = getProgress();
   const plan = loadStudyPlan();
   const now = new Date();
@@ -89,7 +104,7 @@ function buildLocalView(): LocalView {
   const facts = readWeek(progress, plan, target.window, now, offsetMinutes);
   const fallbackText =
     target.mode === 'none'
-      ? 'Nothing recorded in the last two weeks. Here is an easy way back in.'
+      ? t('Nothing recorded in the last two weeks. Here is an easy way back in.')
       : weekFallbackText(facts);
   return {
     mode: target.mode,
@@ -101,6 +116,7 @@ function buildLocalView(): LocalView {
 }
 
 export default function WeeklyReview() {
+  const { t, locale } = useT();
   const [local, setLocal] = useState<LocalView | null>(null);
   const [tutor, setTutor] = useState<TutorView | null>(null);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -119,7 +135,7 @@ export default function WeeklyReview() {
   // the server render and the first client render must agree on "nothing
   // yet" and print nothing.
   useEffect(() => {
-    const refresh = () => setLocal(buildLocalView());
+    const refresh = () => setLocal(buildLocalView(t));
     refresh();
     const offProgress = onProgressChange(refresh);
     const offPlan = onStudyPlanChange(refresh);
@@ -129,7 +145,7 @@ export default function WeeklyReview() {
       offPlan();
       offAuth();
     };
-  }, []);
+  }, [t]);
 
   // Mr EZ's own wording, only for a completed week, only once per
   // fingerprint. 'this-week' and 'none' never reach this: the server
@@ -198,11 +214,13 @@ export default function WeeklyReview() {
       <MrEzAvatar mood={asking ? 'thinking' : shown.mood} size={44} />
       <div className="mrez-weekly-body">
         <h2 id="mrez-weekly-heading" className="mrez-weekly-heading">
-          {headingFor(local.mode)}
-          {shown.fromTutor && !shown.live && <span className="mrez-sim-badge">Simulated, not a real AI reply</span>}
+          {headingFor(local.mode, t)}
+          {shown.fromTutor && !shown.live && <span className="mrez-sim-badge">{t('Simulated, not a real AI reply')}</span>}
         </h2>
 
-        {local.mode === 'last-week' && <p className="mrez-weekly-range">{formatWeekRange(local.facts.window)}</p>}
+        {local.mode === 'last-week' && (
+          <p className="mrez-weekly-range">{formatWeekRange(local.facts.window, t, locale)}</p>
+        )}
 
         <p className="mrez-weekly-text">{shown.text}</p>
 
@@ -212,7 +230,7 @@ export default function WeeklyReview() {
           <a className="mrez-rec mrez-weekly-cta" href={withBase(shown.recommendation.href)}>
             <span className="mrez-rec-label">
               {shown.recommendation.label}
-              {shown.recommendation.minutes ? ` · ${shown.recommendation.minutes} min` : ''}
+              {shown.recommendation.minutes ? ` · ${t('{n} min', { n: shown.recommendation.minutes })}` : ''}
             </span>
             <span className="mrez-rec-reason">{shown.recommendation.reason}</span>
           </a>
@@ -229,31 +247,33 @@ export default function WeeklyReview() {
     previous week actually had something in it. An empty "0 the week
     before" reads like a criticism the facts do not support. */
 function WeeklyChips({ facts, showPrevious }: { facts: WeekFacts; showPrevious: boolean }) {
+  const { t, tn } = useT();
   const prev = facts.previous;
   const previousHadActivity = prev.activeDays > 0 || prev.minutes > 0 || prev.lessons > 0 || prev.attempts > 0;
   const withPrevious = showPrevious && previousHadActivity;
+  const weekBefore = (n: number) => t('{n} the week before', { n });
 
   return (
     <div className="mrez-weekly-chips">
       <WeeklyChip
-        value={`${facts.activeDays} of ${facts.plannedDays}`}
-        label={facts.activeDays === 1 ? 'day studied' : 'days studied'}
-        previous={withPrevious ? `${prev.activeDays} the week before` : undefined}
+        value={t('{active} of {planned}', { active: facts.activeDays, planned: facts.plannedDays })}
+        label={tn(facts.activeDays, { one: 'day studied', other: 'days studied' })}
+        previous={withPrevious ? weekBefore(prev.activeDays) : undefined}
       />
       <WeeklyChip
-        value={`${facts.minutes} min`}
-        label="study time"
-        previous={withPrevious ? `${prev.minutes} the week before` : undefined}
+        value={t('{n} min', { n: facts.minutes })}
+        label={t('study time')}
+        previous={withPrevious ? weekBefore(prev.minutes) : undefined}
       />
       <WeeklyChip
         value={String(facts.lessons.length)}
-        label={facts.lessons.length === 1 ? 'lesson' : 'lessons'}
-        previous={withPrevious ? `${prev.lessons} the week before` : undefined}
+        label={tn(facts.lessons.length, { one: 'lesson', other: 'lessons' })}
+        previous={withPrevious ? weekBefore(prev.lessons) : undefined}
       />
       <WeeklyChip
         value={String(facts.attempts.length)}
-        label={facts.attempts.length === 1 ? 'practice attempt' : 'practice attempts'}
-        previous={withPrevious ? `${prev.attempts} the week before` : undefined}
+        label={tn(facts.attempts.length, { one: 'practice attempt', other: 'practice attempts' })}
+        previous={withPrevious ? weekBefore(prev.attempts) : undefined}
       />
     </div>
   );

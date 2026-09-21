@@ -20,6 +20,7 @@
    a second request. */
 
 import { useEffect, useRef, useState } from 'react';
+import { useT } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured } from '../../lib/tutor/client';
 import { localInsights } from '../../lib/tutor/local';
@@ -70,6 +71,7 @@ export interface UnitNoteProps {
 }
 
 export default function UnitNote({ unitId, kind }: UnitNoteProps) {
+  const { t } = useT();
   const [local, setLocal] = useState<LocalView | null>(null);
   const [tutor, setTutor] = useState<TutorView | null>(null);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -148,12 +150,12 @@ export default function UnitNote({ unitId, kind }: UnitNoteProps) {
         : 'idle';
 
   return (
-    <div className={`mrez-unit-note is-${kind}`} role="note" aria-label="Mr EZ on this unit">
+    <div className={`mrez-unit-note is-${kind}`} role="note" aria-label={t('Mr EZ on this unit')}>
       <MrEzAvatar mood={mood} size={28} />
       <div className="mrez-unit-note-body">
         <span className="mrez-unit-note-label">
           Mr EZ
-          {showSimBadge && <span className="mrez-sim-badge">Simulated, not a real AI reply</span>}
+          {showSimBadge && <span className="mrez-sim-badge">{t('Simulated, not a real AI reply')}</span>}
         </span>
         <p className="mrez-unit-note-text">{text}</p>
       </div>

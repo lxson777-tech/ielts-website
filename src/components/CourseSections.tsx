@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { withBase } from '../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
 import { buildSections, isLessonDone } from '../lib/course';
+import { useT } from '../lib/i18n/react';
 
 const SECTIONS = buildSections();
 
@@ -25,6 +26,7 @@ const SECTIONS = buildSections();
 const PHONE_QUERY = '(max-width: 760px)';
 
 export default function CourseSections() {
+  const { t, tn } = useT();
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   const [mounted, setMounted] = useState(false);
   // Starts with every section open: that is correct for desktop and, more
@@ -67,12 +69,14 @@ export default function CourseSections() {
               className="flex w-full items-center justify-between gap-3 text-left"
             >
               <span className="min-w-0">
-                <span className="font-display text-lg font-bold">{section.label}</span>
-                <span className="mt-1 block text-sm text-ink-muted">{section.blurb}</span>
+                <span className="font-display text-lg font-bold">{t(section.label)}</span>
+                <span className="mt-1 block text-sm text-ink-muted">{t(section.blurb)}</span>
               </span>
               <span className="flex shrink-0 items-center gap-3">
                 <span className="text-xs font-semibold text-ink-muted">
-                  {mounted ? `${doneCount} of ${section.lessons.length} done` : `${section.lessons.length} lessons`}
+                  {mounted
+                    ? t('{done} of {total} done', { done: doneCount, total: section.lessons.length })
+                    : tn(section.lessons.length, { one: '{n} lesson', other: '{n} lessons' })}
                 </span>
                 <svg
                   className={`h-4 w-4 shrink-0 text-ink-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
@@ -118,11 +122,11 @@ export default function CourseSections() {
                             done ? 'text-ink-muted line-through' : 'text-ink group-hover:text-brand'
                           }`}
                         >
-                          {lesson.title}
+                          {t(lesson.title)}
                         </span>
                         {typeof lesson.minutes === 'number' && (
                           <span className="shrink-0 text-[0.7rem] font-semibold text-ink-muted">
-                            {lesson.minutes} min
+                            {t('{n} min', { n: lesson.minutes })}
                           </span>
                         )}
                       </a>

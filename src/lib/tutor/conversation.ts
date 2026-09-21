@@ -21,6 +21,7 @@
    the button again. */
 
 import { getSupabase } from '../auth/supabase';
+import { t, tn } from '../i18n/translate';
 import type { TutorMood, TutorRecommendation } from './schema';
 
 const SESSION_KEY = 'ielts.mrez.conversation.v1';
@@ -132,11 +133,11 @@ export async function clearTutorMemory(): Promise<ClearResult> {
 
   const sb = getSupabase();
   if (!sb) {
-    return { ok: true, conversations: 0, message: 'Cleared on this device. Nothing was stored in the cloud.' };
+    return { ok: true, conversations: 0, message: t('Cleared on this device. Nothing was stored in the cloud.') };
   }
   const { data: auth } = await sb.auth.getUser();
   if (!auth.user) {
-    return { ok: true, conversations: 0, message: 'Cleared on this device.' };
+    return { ok: true, conversations: 0, message: t('Cleared on this device.') };
   }
 
   // Messages first: the cascade would take them anyway, but deleting them
@@ -164,7 +165,7 @@ export async function clearTutorMemory(): Promise<ClearResult> {
     return {
       ok: false,
       conversations: 0,
-      message: 'Some of it could not be cleared just now. Try again in a moment.',
+      message: t('Some of it could not be cleared just now. Try again in a moment.'),
     };
   }
 
@@ -174,7 +175,13 @@ export async function clearTutorMemory(): Promise<ClearResult> {
     conversations: count,
     message:
       count > 0
-        ? `Cleared ${count} conversation${count === 1 ? '' : 's'}, everything Mr EZ had summarised from them, his saved welcome, and his weekly reviews and unit notes. Your lessons, test scores and marked work are untouched.`
-        : 'Cleared his saved welcome and any weekly reviews and unit notes. There were no conversations stored. Your lessons, test scores and marked work are untouched.',
+        ? tn(count, {
+            one: 'Cleared {count} conversation, everything Mr EZ had summarised from it, his saved welcome, and his weekly reviews and unit notes. Your lessons, test scores and marked work are untouched.',
+            other:
+              'Cleared {count} conversations, everything Mr EZ had summarised from them, his saved welcome, and his weekly reviews and unit notes. Your lessons, test scores and marked work are untouched.',
+          }, { count })
+        : t(
+            'Cleared his saved welcome and any weekly reviews and unit notes. There were no conversations stored. Your lessons, test scores and marked work are untouched.',
+          ),
   };
 }

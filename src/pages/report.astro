@@ -10,8 +10,12 @@ import { withBase } from '../lib/url';
 >
   <div class="report-page platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <header class="report-print-hide mb-10 border-b border-border pb-8">
-      <p class="font-display text-xs font-extrabold uppercase tracking-[0.12em] text-brand">Progress report</p>
-      <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Your progress, one page.</h1>
+      <p class="font-display text-xs font-extrabold uppercase tracking-[0.12em] text-brand" data-i18n>Progress report</p>
+      <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>Your progress, one page.</h1>
+      {/* Sentence has a link in the middle; restructuring it would change the
+          rendered English word order, which must stay byte-identical for
+          English users, so it is left in English (reported in the batch
+          summary) rather than translated in fragments. */}
       <p class="mt-3 max-w-2xl text-ink-muted">
         Everything from your <a href={withBase('/account')} class="font-semibold text-brand hover:underline">account page</a> laid out for printing or saving as a PDF.
       </p>

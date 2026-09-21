@@ -13,15 +13,8 @@ import { useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
 import { WRITING_STRUCTURES, PROMPT_VARIANT_STRUCTURE } from '../data/writing-structures';
 import { getWritingPlan } from '../data/writing-plans';
+import { useT } from '../lib/i18n/react';
 import Tabs, { type TabDef } from './Tabs';
-
-const TABS: TabDef[] = [
-  { id: 'question', label: 'This question' },
-  { id: 'structure', label: 'Structure' },
-  { id: 'language', label: 'Language' },
-  { id: 'vocab', label: 'Vocabulary' },
-  { id: 'avoid', label: 'Avoid' },
-];
 
 function toggle(set: Set<string>, value: string): Set<string> {
   const next = new Set(set);
@@ -31,6 +24,14 @@ function toggle(set: Set<string>, value: string): Set<string> {
 }
 
 export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
+  const { t, tn } = useT();
+  const TABS: TabDef[] = [
+    { id: 'question', label: t('This question') },
+    { id: 'structure', label: t('Structure') },
+    { id: 'language', label: t('Language') },
+    { id: 'vocab', label: t('Vocabulary') },
+    { id: 'avoid', label: t('Avoid') },
+  ];
   const structureKey = PROMPT_VARIANT_STRUCTURE[prompt.variant];
   const guide = structureKey ? WRITING_STRUCTURES[structureKey] : null;
   const plan = getWritingPlan(prompt.id);
@@ -60,12 +61,12 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
 
   return (
     <div className="rounded-card border border-border bg-surface p-4 shadow-card">
-      <h3 className="font-display text-sm font-bold">Writing coach: {guide.label}</h3>
+      <h3 className="font-display text-sm font-bold">{t('Writing coach: {structure}', { structure: guide.label })}</h3>
       <Tabs tabs={TABS} active={active} onChange={setActive} className="mt-3" />
 
       {active === 'question' && !plan && (
         <div id="tabpanel-question" role="tabpanel" aria-labelledby="tab-question" className="mt-4 rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-ink-muted">
-          A plan for this question is coming.
+          {t('A plan for this question is coming.')}
         </div>
       )}
 
@@ -78,7 +79,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
 
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-              {plan.task === 'task1' ? 'Key features' : 'Key points'}
+              {plan.task === 'task1' ? t('Key features') : t('Key points')}
             </p>
             <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
               {plan.keyPoints.map((k, i) => (
@@ -92,7 +93,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
 
           {plan.task === 'task1' && plan.overviewHints && plan.overviewHints.length > 0 && (
             <div className="rounded-lg border border-border bg-surface-alt/60 p-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Build your overview</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Build your overview')}</p>
               <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
                 {plan.overviewHints.map((h, i) => (
                   <li key={i} className="flex gap-2">
@@ -102,14 +103,14 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                 ))}
               </ul>
               <p className="mt-2 text-xs text-ink-muted">
-                Write it yourself first. The AI feedback will tell you whether your overview covers the main features.
+                {t('Write it yourself first. The AI feedback will tell you whether your overview covers the main features.')}
               </p>
             </div>
           )}
 
           {plan.task === 'task2' && plan.position && (
             <div className="rounded-lg border border-border bg-surface-alt/60 p-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Suggested position</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Suggested position')}</p>
               <p className="mt-1 text-sm text-ink">{plan.position}</p>
             </div>
           )}
@@ -126,7 +127,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       checked={isChecked}
                       onChange={() => setPlanChecked((s) => toggle(s, p.label))}
                       className="h-4 w-4 shrink-0 rounded border-border text-brand focus:ring-brand"
-                      aria-label={`Mark "${p.label}" done`}
+                      aria-label={t('Mark "{label}" done', { label: p.label })}
                     />
                     <button
                       type="button"
@@ -172,14 +173,14 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
               className="flex w-full items-center justify-between gap-2 rounded-lg border border-[var(--color-vocabulary)]/25 bg-[var(--color-vocabulary-tint)]/60 px-3 py-2 text-left"
             >
               <span className="text-sm font-bold text-[var(--color-vocabulary)]">
-                {plan.vocabulary.length} phrases for this question
+                {tn(plan.vocabulary.length, { one: '{n} phrase for this question', other: '{n} phrases for this question' })}
               </span>
-              <span className="text-xs font-semibold text-ink-muted">Vocabulary tab &rsaquo;</span>
+              <span className="text-xs font-semibold text-ink-muted">{t('Vocabulary tab')} &rsaquo;</span>
             </button>
           )}
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">Pitfalls on this question</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Pitfalls on this question')}</p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {plan.pitfalls.map((m, i) => (
                 <span key={i} className="rounded-full bg-error-tint px-2.5 py-0.5 text-xs font-semibold text-error">
@@ -190,7 +191,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
           </div>
 
           <p className="text-xs text-ink-muted">
-            <span className="font-bold uppercase tracking-wider">Timing. </span>
+            <span className="font-bold uppercase tracking-wider">{t('Timing.')} </span>
             {plan.timing}
           </p>
         </div>
@@ -200,7 +201,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
         <div id="tabpanel-structure" role="tabpanel" aria-labelledby="tab-structure" className="mt-4">
           {guide.notes && guide.notes.length > 0 && (
             <div className="mb-3 rounded-lg bg-brand-tint/60 p-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-brand">What to look for</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('What to look for')}</p>
               <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
                 {guide.notes.map((n) => (
                   <li key={n} className="flex gap-2">
@@ -223,7 +224,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       checked={isChecked}
                       onChange={() => setChecked((s) => toggle(s, p.name))}
                       className="h-4 w-4 shrink-0 rounded border-border text-brand focus:ring-brand"
-                      aria-label={`Mark "${p.name}" done`}
+                      aria-label={t('Mark "{label}" done', { label: p.name })}
                     />
                     <button
                       type="button"
@@ -273,7 +274,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
           does have topic phrases, so show those instead of an apology. */}
       {active === 'vocab' && prompt.suggestedVocab.length === 0 && plan && plan.vocabulary.length > 0 && (
         <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4">
-          <p className="text-sm text-ink-muted">Phrases chosen for this exact question. Tap one to see when to use it.</p>
+          <p className="text-sm text-ink-muted">{t('Phrases chosen for this exact question. Tap one to see when to use it.')}</p>
           <div className="mt-2.5 grid items-start gap-2.5 sm:grid-cols-2">
             {plan.vocabulary.map((v) => {
               const isOpen = planVocabRevealed.has(v.phrase);
@@ -300,8 +301,8 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                         <button
                           type="button"
                           onClick={() => copyPhrase(v.phrase)}
-                          title="Copy phrase"
-                          aria-label={`Copy "${v.phrase}"`}
+                          title={t('Copy phrase')}
+                          aria-label={t('Copy "{phrase}"', { phrase: v.phrase })}
                           className="shrink-0 rounded p-1 text-ink-muted transition-colors hover:bg-surface hover:text-ink"
                         >
                           {copied === v.phrase ? '✓' : '⧉'}
@@ -318,7 +319,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
 
       {active === 'vocab' && prompt.suggestedVocab.length === 0 && (!plan || plan.vocabulary.length === 0) && (
         <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4 rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-ink-muted">
-          No topic vocabulary for this task yet.
+          {t('No topic vocabulary for this task yet.')}
         </div>
       )}
 

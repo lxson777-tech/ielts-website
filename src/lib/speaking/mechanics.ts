@@ -4,6 +4,7 @@
    supporting context, not a substitute for the model's own judgment). */
 
 import type { AudioMechanicsReport } from './schema';
+import { t } from '../i18n/translate';
 
 const WINDOW_MS = 50;
 
@@ -42,18 +43,23 @@ export async function analyzeAudio(blob: Blob, expectedMinMs: number): Promise<A
   } catch {
     // Decoding failed (unsupported format in this browser) — length is still
     // known from the recorder itself, so grading can proceed without this signal.
-    notes.push('Could not analyze pacing in this browser. Length was still measured.');
+    notes.push(t('Could not analyze pacing in this browser. Length was still measured.'));
   }
 
   const underLength = totalDurationMs < expectedMinMs;
   if (underLength) {
-    notes.push(`Under the suggested length (${Math.round(totalDurationMs / 1000)}s of ${Math.round(expectedMinMs / 1000)}s+).`);
+    notes.push(
+      t('Under the suggested length ({spoken}s of {expected}s+).', {
+        spoken: Math.round(totalDurationMs / 1000),
+        expected: Math.round(expectedMinMs / 1000),
+      }),
+    );
   }
   if (longestSilenceMs > 4000) {
-    notes.push('A long pause was detected. Try to keep talking even while you think of what to say next.');
+    notes.push(t('A long pause was detected. Try to keep talking even while you think of what to say next.'));
   }
   if (estSilenceRatio > 0.4) {
-    notes.push('A large portion of the recording was silence.');
+    notes.push(t('A large portion of the recording was silence.'));
   }
 
   return { totalDurationMs, expectedMinMs, underLength, estSilenceRatio, longestSilenceMs, notes };

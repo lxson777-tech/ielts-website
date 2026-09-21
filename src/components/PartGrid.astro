@@ -45,11 +45,11 @@ const total = totalOverride ?? ordered.length;
   <div class="section-header">
     {num && <div class="section-num">{num}</div>}
     <div class="section-title-block">
-      <div class="tag">{tag}</div>
-      <h2>{heading}</h2>
+      <div class="tag" data-i18n>{tag}</div>
+      <h2 data-i18n>{heading}</h2>
     </div>
   </div>
-  <p class="part-grid-intro">{intro}</p>
+  <p class="part-grid-intro" data-i18n>{intro}</p>
   <div class="samples-grid">
     {
       ordered.map((part) => {
@@ -63,11 +63,11 @@ const total = totalOverride ?? ordered.length;
             {part.image && <img src={withBase(part.image)} alt="" loading="lazy" />}
             <span class="sample-topic">
               <span class="part-num">{n}</span>
-              <span class="part-num-of">of {total}</span>
-              {part.eyebrow && <span class="part-eyebrow">{part.eyebrow}</span>}
+              <span class="part-num-of"><span data-i18n data-i18n-ctx="lesson-step">of</span> {total}</span>
+              {part.eyebrow && <span class="part-eyebrow" data-i18n>{part.eyebrow}</span>}
             </span>
-            <strong class="sample-title">{part.title}</strong>
-            <span class="sample-go">Open lesson</span>
+            <strong class="sample-title" data-i18n>{part.title}</strong>
+            <span class="sample-go" data-i18n>Open lesson</span>
           </a>
         );
       })

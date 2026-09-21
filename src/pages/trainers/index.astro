@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PracticeOrTest from '../../components/PracticeOrTest.astro';
 import { withBase } from '../../lib/url';
+import { nt } from '../../lib/i18n/translate';
 import { ALL_DRILLS, ALL_LISTENING_DRILLS } from '../../lib/tests/drills';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../../data/speaking-prompts';
 import { WRITING_PROMPTS } from '../../data/writing-prompts';
@@ -13,45 +14,52 @@ const trainers = [
   {
     skill: 'reading',
     title: 'Reading Trainer',
-    description:
+    description: nt(
       'One timed passage at a time, with a live "how to approach it" strategy panel and trap warnings for every question type.',
+    ),
     perk: 'Strategy panel and trap warnings while you read',
+    // A build-time count baked into plain text: no counted-phrase mechanism
+    // reaches text this dynamic without touching src/lib/i18n, so it is left
+    // English (see batch report).
     stats: `${ALL_DRILLS.length} drills`,
     href: '/trainers/reading',
-    cta: 'Start a drill',
+    cta: nt('Start a drill'),
     image: '/pics/trainers/reading-drill.png',
   },
   {
     skill: 'listening',
     title: 'Listening Trainer',
-    description:
+    description: nt(
       'One part of the recording at a time, with a live "how to approach it" strategy panel, full pause/seek/replay control while you practise, unlike the bare-conditions full test.',
+    ),
     perk: 'Pause, seek and replay while you practise',
     stats: `${ALL_LISTENING_DRILLS.length} drills`,
     href: '/trainers/listening',
-    cta: 'Start a drill',
+    cta: nt('Start a drill'),
     image: '/pics/tests/listening-exam.svg',
   },
   {
     skill: 'speaking',
     title: 'Speaking Trainer',
-    description:
+    description: nt(
       'Practice Part 1, 2 or 3 on its own, with a live coach panel: the answer structure (A.R.E. / PEEL / OREO), useful phrases, topic vocabulary and idea hints when you get stuck.',
+    ),
     perk: 'Coach panel with structure, phrases and idea hints',
     stats: `${SPEAKING_PART1_TOPICS.length} Part 1 topics · ${SPEAKING_CUE_CARDS.length} cue cards`,
     href: '/trainers/speaking',
-    cta: 'Start a part',
+    cta: nt('Start a part'),
     image: '/pics/trainers/speaking-drill.png',
   },
   {
     skill: 'writing',
     title: 'Writing Trainer',
-    description:
+    description: nt(
       'Write against a rotating prompt with a live coach panel: the paragraph plan for that exact question type, useful phrases and topic vocabulary, then get instant AI feedback.',
+    ),
     perk: 'Coach panel with a paragraph plan and instant feedback',
     stats: `${task1Count} Task 1 prompts · ${task2Count} Task 2 prompts`,
     href: '/trainers/writing',
-    cta: 'Start writing',
+    cta: nt('Start writing'),
     image: '/pics/trainers/writing-drill.png',
   },
 ];
@@ -62,20 +70,20 @@ const trainers = [
   description="Coached, single-skill practice with hints and feedback on every attempt: the guided alternative to a full timed exam."
 >
   <div class="platform-hub mx-auto max-w-6xl px-4 py-12 sm:px-6">
-    <header class="hub-heading"><div><h1>Practice, at your pace.</h1><p>Build one skill at a time, with a coach beside you.</p></div><span class="hub-mode">Guided practice</span></header>
+    <header class="hub-heading"><div><h1 data-i18n>Practice, at your pace.</h1><p data-i18n>Build one skill at a time, with a coach beside you.</p></div><span class="hub-mode" data-i18n>Guided practice</span></header>
     <div class="practice-grid">
       {trainers.map((t) => (
         <article class={`practice-tile skill-${t.skill}`}>
           <div class="practice-tile-top"><img src={withBase(t.image)} alt="" width="56" height="56" /><span>{t.stats}</span></div>
           <h2>{t.title.replace(' Trainer', '')}</h2>
-          <p>{t.description.replace('instant AI feedback', 'AI feedback')}</p>
-          <a href={withBase(t.href)} class="activity-start">{t.cta}<span aria-hidden="true">↗</span></a>
+          <p data-i18n>{t.description.replace('instant AI feedback', 'AI feedback')}</p>
+          <a href={withBase(t.href)} class="activity-start"><span data-i18n>{t.cta}</span><span aria-hidden="true">↗</span></a>
         </article>
       ))}
     </div>
     <PracticeOrTest current="practice" />
     <p class="mt-8 text-center text-sm">
-      <a href={withBase('/tests')} class="font-semibold text-brand hover:underline">
+      <a href={withBase('/tests')} class="font-semibold text-brand hover:underline" data-i18n>
         Looking for a full timed exam instead?
       </a>
     </p>

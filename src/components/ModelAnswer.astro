@@ -1,8 +1,10 @@
 ---
+import { nt } from '../lib/i18n/translate';
+
 interface Props {
   summary?: string;
 }
-const { summary = 'Show model answer' } = Astro.props;
+const { summary = nt('Show model answer') } = Astro.props;
 ---
 
 <details class="group my-4 rounded-card border border-border bg-surface-alt">
@@ -19,7 +21,7 @@ const { summary = 'Show model answer' } = Astro.props;
     >
       <path d="M6 4l4 4-4 4"></path>
     </svg>
-    {summary}
+    <span data-i18n>{summary}</span>
   </summary>
   <div class="border-t border-border px-5 py-4 text-[0.95rem] leading-relaxed">
     <slot />

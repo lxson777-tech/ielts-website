@@ -18,24 +18,34 @@ import {
   sendMagicLink,
   signInWithGoogle,
 } from '../lib/auth/session';
+import { useT } from '../lib/i18n/react';
+import { nt } from '../lib/i18n/translate';
 
 export type AuthMode = 'signin' | 'signup' | 'forgot' | 'magiclink';
 type Phase = 'idle' | 'submitting' | 'done';
 
 const MODE_COPY: Record<AuthMode, { title: string; subtitle: string; cta: string }> = {
-  signin: { title: 'Log in', subtitle: 'Sync your course progress and scores across devices.', cta: 'Log in' },
+  signin: { title: nt('Log in'), subtitle: nt('Sync your course progress and scores across devices.'), cta: nt('Log in') },
   signup: {
-    title: 'Create your account',
-    subtitle: 'Save your course progress, essays and scores, and sync them across devices.',
-    cta: 'Create account',
+    title: nt('Create your account'),
+    subtitle: nt('Save your course progress, essays and scores, and sync them across devices.'),
+    cta: nt('Create account'),
   },
-  forgot: { title: 'Reset your password', subtitle: "We'll email you a link to set a new one.", cta: 'Send reset link' },
-  magiclink: { title: 'Email me a link', subtitle: "We'll email you a one-time link, no password needed.", cta: 'Send sign-in link' },
+  // 'Reset your password' also appears as the /reset-password page heading
+  // (owned by the pages.ts batch) with its own Russian wording, so this
+  // title is looked up with a 'modal' ctx below instead of through the
+  // generic MODE_COPY[mode].title path every other mode uses.
+  forgot: { title: 'Reset your password', subtitle: nt("We'll email you a link to set a new one."), cta: nt('Send reset link') },
+  magiclink: {
+    title: nt('Email me a link'),
+    subtitle: nt("We'll email you a one-time link, no password needed."),
+    cta: nt('Send sign-in link'),
+  },
 };
 
 export default function AuthModal({
   initialMode = 'signin',
-  dismissLabel = 'Maybe later',
+  dismissLabel = nt('Maybe later'),
   onClose,
 }: {
   initialMode?: AuthMode;
@@ -43,6 +53,7 @@ export default function AuthModal({
   dismissLabel?: string;
   onClose: () => void;
 }) {
+  const { t } = useT();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,8 +83,8 @@ export default function AuthModal({
     setError(null);
 
     if (mode === 'signup') {
-      if (password !== confirmPassword) return setError("Passwords don't match.");
-      if (password.length < 6) return setError('Password must be at least 6 characters.');
+      if (password !== confirmPassword) return setError(t("Passwords don't match."));
+      if (password.length < 6) return setError(t('Password must be at least 6 characters.'));
     }
 
     setPhase('submitting');
@@ -95,7 +106,9 @@ export default function AuthModal({
         setError(error);
         setPhase('idle');
       } else if (needsConfirmation) {
-        setDoneMessage(`We sent a confirmation link to ${email}. Open it on this device to finish creating your account.`);
+        setDoneMessage(
+          t('We sent a confirmation link to {email}. Open it on this device to finish creating your account.', { email }),
+        );
         setPhase('done');
       } else {
         onClose(); // confirmation was off — already signed in
@@ -109,7 +122,9 @@ export default function AuthModal({
         setError(error);
         setPhase('idle');
       } else {
-        setDoneMessage(`We sent a password-reset link to ${email}. Open it on this device to set a new password.`);
+        setDoneMessage(
+          t('We sent a password-reset link to {email}. Open it on this device to set a new password.', { email }),
+        );
         setPhase('done');
       }
       return;
@@ -121,7 +136,7 @@ export default function AuthModal({
       setError(error);
       setPhase('idle');
     } else {
-      setDoneMessage(`We sent a sign-in link to ${email}. Open it on this device to finish.`);
+      setDoneMessage(t('We sent a sign-in link to {email}. Open it on this device to finish.', { email }));
       setPhase('done');
     }
   }
@@ -144,18 +159,20 @@ export default function AuthModal({
       >
         {phase === 'done' ? (
           <>
-            <h2 className="font-display text-lg font-extrabold">Check your email</h2>
+            <h2 className="font-display text-lg font-extrabold">{t('Check your email')}</h2>
             <div className="mt-4 rounded-card bg-brand-tint p-4 text-sm text-brand">{doneMessage}</div>
           </>
         ) : (
           <>
-            <h2 className="font-display text-lg font-extrabold">{MODE_COPY[mode].title}</h2>
-            <p className="mt-1 text-sm text-ink-muted">{MODE_COPY[mode].subtitle}</p>
+            <h2 className="font-display text-lg font-extrabold">
+              {mode === 'forgot' ? t('Reset your password', undefined, 'modal') : t(MODE_COPY[mode].title)}
+            </h2>
+            <p className="mt-1 text-sm text-ink-muted">{t(MODE_COPY[mode].subtitle)}</p>
 
             <form onSubmit={onSubmit} className="mt-5 space-y-4">
               <div>
                 <label htmlFor="account-email" className="block text-sm font-semibold">
-                  Email
+                  {t('Email')}
                 </label>
                 <input
                   id="account-email"
@@ -173,7 +190,7 @@ export default function AuthModal({
                 <div>
                   <div className="flex items-center justify-between">
                     <label htmlFor="account-password" className="block text-sm font-semibold">
-                      Password
+                      {t('Password')}
                     </label>
                     {mode === 'signin' && (
                       <button
@@ -181,7 +198,7 @@ export default function AuthModal({
                         onClick={() => switchMode('forgot')}
                         className="py-2 -my-2 text-xs font-semibold text-brand hover:underline"
                       >
-                        Forgot password?
+                        {t('Forgot password?')}
                       </button>
                     )}
                   </div>
@@ -202,7 +219,7 @@ export default function AuthModal({
               {mode === 'signup' && (
                 <div>
                   <label htmlFor="account-confirm" className="block text-sm font-semibold">
-                    Confirm password
+                    {t('Confirm password')}
                   </label>
                   <input
                     id="account-confirm"
@@ -225,7 +242,7 @@ export default function AuthModal({
                 disabled={phase === 'submitting'}
                 className="w-full rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:opacity-60"
               >
-                {phase === 'submitting' ? 'Please wait…' : MODE_COPY[mode].cta}
+                {phase === 'submitting' ? t('Please wait…') : t(MODE_COPY[mode].cta)}
               </button>
             </form>
 
@@ -237,7 +254,7 @@ export default function AuthModal({
                     onClick={() => void signInWithGoogle(redirectTo)}
                     className="w-full rounded-button border border-border px-5 py-2.5 font-display text-sm font-bold transition-colors hover:bg-surface-alt"
                   >
-                    Continue with Google
+                    {t('Continue with Google')}
                   </button>
                 )}
                 <button
@@ -245,7 +262,7 @@ export default function AuthModal({
                   onClick={() => switchMode('magiclink')}
                   className="w-full py-2 text-center text-xs font-semibold text-ink-muted hover:text-brand"
                 >
-                  Email me a sign-in link instead
+                  {t('Email me a sign-in link instead')}
                 </button>
               </div>
             )}
@@ -253,25 +270,25 @@ export default function AuthModal({
             <p className="mt-5 text-center text-sm text-ink-muted">
               {mode === 'signup' && (
                 <>
-                  Already have an account?{' '}
+                  {t('Already have an account?')}{' '}
                   <button type="button" onClick={() => switchMode('signin')} className="font-semibold text-brand hover:underline">
-                    Log in
+                    {t('Log in')}
                   </button>
                 </>
               )}
               {(mode === 'forgot' || mode === 'magiclink') && (
                 <>
-                  Remembered it?{' '}
+                  {t('Remembered it?')}{' '}
                   <button type="button" onClick={() => switchMode('signin')} className="font-semibold text-brand hover:underline">
-                    Back to log in
+                    {t('Back to log in')}
                   </button>
                 </>
               )}
               {mode === 'signin' && (
                 <>
-                  Don&apos;t have an account?{' '}
+                  {t("Don't have an account?")}{' '}
                   <button type="button" onClick={() => switchMode('signup')} className="font-semibold text-brand hover:underline">
-                    Sign up
+                    {t('Sign up')}
                   </button>
                 </>
               )}
@@ -284,7 +301,7 @@ export default function AuthModal({
           onClick={onClose}
           className="mt-2 w-full py-2 text-center text-xs font-semibold text-ink-muted hover:text-ink"
         >
-          {phase === 'done' ? 'Done' : dismissLabel}
+          {phase === 'done' ? t('Done') : t(dismissLabel)}
         </button>
       </div>
     </div>,

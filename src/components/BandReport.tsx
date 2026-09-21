@@ -18,6 +18,7 @@ import { motion, MotionConfig } from 'framer-motion';
 import type { NextBandAdvice } from '../lib/grading/next-band';
 import type { BandStepGuide } from '../data/band-guides';
 import { withBase } from '../lib/url';
+import { useT } from '../lib/i18n/react';
 
 export interface BandReportCriterion {
   key: string;
@@ -57,14 +58,15 @@ export default function BandReport({
   actionPlan,
   children,
 }: BandReportProps) {
+  const { t } = useT();
   return (
     <>
       <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
         <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-          {live ? '✨ AI-assessed' : 'Sample assessment (offline)'} · {title}
+          {live ? `✨ ${t('AI-assessed')}` : t('Sample assessment (offline)')} · {title}
         </p>
         <p className="band-score-pop mt-2 font-display text-5xl font-extrabold text-brand">{overallBand.toFixed(1)}</p>
-        <p className="mt-1 text-sm text-ink-muted">Estimated overall band</p>
+        <p className="mt-1 text-sm text-ink-muted">{t('Estimated overall band')}</p>
         {!live && (
           <p className="mx-auto mt-3 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
             ⚠ {offlineWarning}
@@ -103,7 +105,7 @@ export default function BandReport({
                     {c.tip && (
                       <p>
                         <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
-                          <strong className="text-brand">Band {targetBand}:</strong> {c.tip}
+                          <strong className="text-brand">{t('Band {band}:', { band: targetBand })}</strong> {c.tip}
                         </span>
                       </p>
                     )}
@@ -111,7 +113,7 @@ export default function BandReport({
                     {c.nextBand && (
                       <div className="rounded-lg border border-border bg-surface-alt/60 p-3">
                         <p className="text-xs font-bold uppercase tracking-wider text-brand">
-                          Reach band {c.nextBand.target}
+                          {t('Reach band {band}', { band: c.nextBand.target })}
                         </p>
                         <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">{c.nextBand.gap}</p>
 
@@ -139,7 +141,7 @@ export default function BandReport({
                         {c.guide && (
                           <details className="group mt-3 border-t border-border pt-2.5">
                             <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-semibold text-brand [&::-webkit-details-marker]:hidden">
-                              Full guide: band {c.guide.from} to {c.guide.to}
+                              {t('Full guide: band {from} to {to}', { from: c.guide.from, to: c.guide.to })}
                               <span
                                 className="inline-block text-[0.6rem] transition-transform duration-200 group-open:rotate-90"
                                 aria-hidden="true"
@@ -151,7 +153,7 @@ export default function BandReport({
                               <p>{c.guide.whatChanges}</p>
 
                               <div>
-                                <p className="font-semibold text-ink">Do this</p>
+                                <p className="font-semibold text-ink">{t('Do this')}</p>
                                 <ul className="mt-1 space-y-1">
                                   {c.guide.doThis.map((d) => (
                                     <li key={d} className="flex gap-1.5">
@@ -163,7 +165,7 @@ export default function BandReport({
                               </div>
 
                               <div>
-                                <p className="font-semibold text-ink">Stop this</p>
+                                <p className="font-semibold text-ink">{t('Stop this')}</p>
                                 <ul className="mt-1 space-y-1">
                                   {c.guide.stopThis.map((s) => (
                                     <li key={s} className="flex gap-1.5">
@@ -181,7 +183,7 @@ export default function BandReport({
                               </div>
 
                               <p>
-                                <span className="font-semibold text-ink">Practice today: </span>
+                                <span className="font-semibold text-ink">{t('Practice today:')} </span>
                                 {c.guide.practice}
                               </p>
 
@@ -202,11 +204,11 @@ export default function BandReport({
       {children}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <ListCard title="✓ Strengths" items={strengths} tone="success" />
+        <ListCard title={`✓ ${t('Strengths')}`} items={strengths} tone="success" />
         {actionPlan && actionPlan.length > 0 ? (
           <ActionPlanCard steps={actionPlan} />
         ) : (
-          <ListCard title="Improve next" items={improvements} tone="brand" />
+          <ListCard title={t('Improve next')} items={improvements} tone="brand" />
         )}
       </div>
 
@@ -217,9 +219,9 @@ export default function BandReport({
         className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
       >
         <span>
-          <span className="font-display font-bold text-ink">What each band needs</span>
+          <span className="font-display font-bold text-ink">{t('What each band needs')}</span>
           <span className="mt-0.5 block text-ink-muted">
-            The official descriptors for every criterion, in plain words.
+            {t('The official descriptors for every criterion, in plain words.')}
           </span>
         </span>
         <span aria-hidden="true" className="shrink-0 text-brand">
@@ -231,9 +233,10 @@ export default function BandReport({
 }
 
 function ActionPlanCard({ steps }: { steps: string[] }) {
+  const { t } = useT();
   return (
     <div className="rounded-card border border-border bg-surface p-5 shadow-card">
-      <h3 className="font-display font-bold text-brand">↗ Your action plan</h3>
+      <h3 className="font-display font-bold text-brand">↗ {t('Your action plan')}</h3>
       <ol className="mt-2.5 space-y-2.5 text-sm text-ink-muted">
         {steps.map((s, i) => (
           <li key={i} className="flex gap-2.5">
