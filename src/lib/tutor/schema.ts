@@ -29,6 +29,31 @@ import { MAX_GIVEN_CHARS, MAX_REVIEW_ITEMS, isPublishedTestId, sourceTestId } fr
 /* Type only, so nothing of the site's i18n layer (its lazy loader, its
    localStorage reads) is pulled into the Worker bundle. */
 import type { Locale } from '../i18n/locale';
+/* The three learning tasks share this endpoint, so their wire rules live
+   here beside the other seven. The contract itself (what each task is for,
+   and what the model may and may not do) is
+   src/lib/learning/contracts/ai.ts; this file is only how it travels. Its
+   runtime exports are four constants and a list of names, so nothing of the
+   learning layer's weight comes with them. */
+import {
+  LEARNING_AI_TASKS,
+  MAX_HINTS_PER_ITEM,
+  MAX_PRACTICE_SUBMISSION_CHARS,
+  MAX_PROPOSAL_CANDIDATES,
+  type EvaluatePracticeReply,
+  type EvaluatePracticeRequest,
+  type LearningAiTask,
+  type LearningAiVersions,
+  type LessonHelpKind,
+  type LessonHelpReply,
+  type LessonHelpRequest,
+  type ProposalDisagreement,
+  type ProposalRejectionCode,
+  type ProposeNextReply,
+  type ProposeNextRequest,
+} from '../learning/contracts/ai';
+import { ASSISTANCE_ORDER, type AssistanceLevel } from '../learning/contracts/evidence';
+import { isLessonBlockId, isLessonSlug } from '../learning/lesson-blocks';
 
 /* ── Limits ────────────────────────────────────────────────────────────────
    Deliberately shared so the UI can refuse over-long input before spending a
@@ -335,6 +360,22 @@ export class TutorRequestError extends Error {
   }
 }
 
+/** Where the student is standing. Shared by every task on this endpoint,
+    including the three learning ones: `underExam` is the flag that closes
+    the assistance boundary, and a boundary that only some tasks checked
+    would not be one. */
+function parsePlace(raw: unknown): TutorPlace {
+  if (!isRecord(raw)) throw new TutorRequestError('bad-request', 'place must be an object.');
+  const place: TutorPlace = {};
+  if (isSafeId(raw.lessonKey)) place.lessonKey = raw.lessonKey;
+  if (isSafeId(raw.testId)) place.testId = raw.testId;
+  if (typeof raw.route === 'string' && /^\/[A-Za-z0-9/_-]{0,80}$/.test(raw.route)) {
+    place.route = raw.route;
+  }
+  if (raw.underExam === true) place.underExam = true;
+  return place;
+}
+
 /** Parses and validates an untrusted request body into a TutorRequest.
     Throws TutorRequestError with a code the caller maps to an HTTP status.
     Unknown fields are dropped rather than passed through. */
@@ -368,17 +409,7 @@ export function parseTutorRequest(raw: unknown): TutorRequest {
     out.message = message;
   }
 
-  if (raw.place !== undefined) {
-    if (!isRecord(raw.place)) throw new TutorRequestError('bad-request', 'place must be an object.');
-    const place: TutorPlace = {};
-    if (isSafeId(raw.place.lessonKey)) place.lessonKey = raw.place.lessonKey;
-    if (isSafeId(raw.place.testId)) place.testId = raw.place.testId;
-    if (typeof raw.place.route === 'string' && /^\/[A-Za-z0-9/_-]{0,80}$/.test(raw.place.route)) {
-      place.route = raw.place.route;
-    }
-    if (raw.place.underExam === true) place.underExam = true;
-    out.place = place;
-  }
+  if (raw.place !== undefined) out.place = parsePlace(raw.place);
 
   if (raw.attempt !== undefined) {
     if (!isRecord(raw.attempt)) throw new TutorRequestError('bad-request', 'attempt must be an object.');
@@ -489,4 +520,291 @@ export function parseTutorRequest(raw: unknown): TutorRequest {
   }
 
   return out;
+}
+
+/* ── The three learning tasks ──────────────────────────────────────────────
+   Same endpoint, same auth, same caps, same idempotency key, same "the
+   browser is not a source of truth". What travels is REFERENCES plus the
+   student's own words: a lesson slug, a block id, an item's identity, an
+   activity id, the versions the request was made against. The lesson text,
+   the question, the accepted answer, the objective and the eligible
+   shortlist are all worked out by the Worker from the site's own published
+   data and the student's own record.
+
+   Two fields go beyond src/lib/learning/contracts/ai.ts and are listed in
+   the work package report as contract gaps rather than being written into
+   the contract, which another package owns:
+
+   - `place`, so `underExam` can close the assistance boundary for these
+     tasks the same way it does for a chat message. HELP_BLOCKED_MODES is
+     server side, and a boundary only some tasks checked would not be one.
+   - `item.testId` / `item.questionId` on lesson help, which are references
+     into the published test JSON. They let the Worker fetch the question's
+     own accepted answer and official explanation, exactly the way the
+     debrief task already does, so the non-AI fallback has something real to
+     say after an attempt. Nothing about the question is ever read from the
+     request itself. */
+
+export type { LearningAiTask, LearningAiVersions, LessonHelpKind, ProposalRejectionCode };
+
+export function isLearningTask(value: unknown): value is LearningAiTask {
+  return typeof value === 'string' && (LEARNING_AI_TASKS as readonly string[]).includes(value);
+}
+
+/** One reference into the published test data, when a lesson check's
+    question was lifted from a real paper. */
+export interface LessonHelpItemRef {
+  setId: string;
+  itemKey: string;
+  itemVersion: string;
+  given: string;
+  testId?: string;
+  questionId?: string;
+}
+
+export interface LessonHelpWireRequest extends Omit<LessonHelpRequest, 'item'> {
+  item?: LessonHelpItemRef;
+  place?: TutorPlace;
+}
+
+export interface EvaluatePracticeWireRequest extends EvaluatePracticeRequest {
+  place?: TutorPlace;
+}
+
+export interface ProposeNextWireRequest extends ProposeNextRequest {
+  place?: TutorPlace;
+}
+
+export type LearningAiRequest = LessonHelpWireRequest | EvaluatePracticeWireRequest | ProposeNextWireRequest;
+
+/** What comes back. Each one is the contract's reply plus the few fields a
+    surface needs to record what happened honestly. */
+export interface LessonHelpWireReply extends LessonHelpReply {
+  /** The kind of help actually given, which is not always the kind asked
+      for: an explanation before any attempt is served as a hint. */
+  kind: LessonHelpKind;
+  usage?: TutorUsage;
+}
+
+export interface EvaluatePracticeWireReply extends EvaluatePracticeReply {
+  /** met, partly or not yet. `met` above stays for the contract's readers;
+      this is the one the interface shows, because "partly" is a real and
+      common answer and flattening it to false would be a lie. */
+  verdict: 'met' | 'partly' | 'not-yet';
+  /** False when nothing actually judged the work (AI off, over the cap,
+      unreachable, or a reply that failed validation). A verdict with
+      `judged: false` is not a verdict and the interface must not show it as
+      one. */
+  judged: boolean;
+  observations: readonly string[];
+  usage?: TutorUsage;
+}
+
+export interface ProposeNextWireReply extends ProposeNextReply {
+  /** Whether the model's proposal was used. False means the deterministic
+      choice stands, which is the normal, safe outcome. */
+  accepted: boolean;
+  rejection?: ProposalRejectionCode;
+  /** The activity to actually put in front of the student, resolved from
+      the catalogue here. The model never writes a link. */
+  recommendation: TutorRecommendation | null;
+  /** Recorded whether or not the proposal was accepted, and written into
+      the plan's history by the browser. This is the teacher-reference
+      material the brief asks for: model self evaluation alone is not
+      evidence, so the disagreements are what can actually be reviewed. */
+  disagreement?: ProposalDisagreement;
+  usage?: TutorUsage;
+}
+
+/** Longest single hint that may travel back in `previousHints`. They are
+    Mr EZ's own earlier words being handed back so the next one does not
+    repeat, and a client that pads them is padding our bill. */
+export const MAX_HINT_CHARS = 800;
+
+/** How many earlier hints a request may carry. One more than the escalation
+    limit, so the last step still sees everything that came before it. */
+export const MAX_PREVIOUS_HINTS = MAX_HINTS_PER_ITEM + 1;
+
+/** Items a focused exercise may name at once. */
+export const MAX_PRACTICE_ITEMS = 20;
+
+function parseVersions(raw: unknown): LearningAiVersions {
+  if (!isRecord(raw)) throw new TutorRequestError('bad-request', 'versions must be an object.');
+  const planRevision = raw.planRevision;
+  const evidenceVersion = raw.evidenceVersion;
+  if (typeof planRevision !== 'number' || !Number.isInteger(planRevision) || planRevision < 0) {
+    throw new TutorRequestError('bad-request', 'versions.planRevision must be a whole number.');
+  }
+  if (typeof evidenceVersion !== 'number' || !Number.isInteger(evidenceVersion) || evidenceVersion < 0) {
+    throw new TutorRequestError('bad-request', 'versions.evidenceVersion must be a whole number.');
+  }
+  if (!isSafeId(raw.indexVersion)) throw new TutorRequestError('bad-request', 'versions.indexVersion is malformed.');
+  return { planRevision, evidenceVersion, indexVersion: raw.indexVersion };
+}
+
+function isAssistanceLevel(value: unknown): value is AssistanceLevel {
+  return typeof value === 'string' && (ASSISTANCE_ORDER as readonly string[]).includes(value);
+}
+
+/** Parses and validates an untrusted body into one of the three learning
+    requests. Same contract as parseTutorRequest: throws with a code, drops
+    unknown fields rather than passing them through. */
+export function parseLearningRequest(raw: unknown): LearningAiRequest {
+  if (!isRecord(raw)) throw new TutorRequestError('bad-request', 'Request body must be a JSON object.');
+  const task = raw.task;
+  if (!isLearningTask(task)) throw new TutorRequestError('bad-request', 'Unknown task.');
+
+  const base = {
+    versions: parseVersions(raw.versions),
+    locale: (raw.locale === 'ru' ? 'ru' : 'en') as Locale,
+  };
+  const common: { sessionId?: string; idempotencyKey?: string; place?: TutorPlace } = {};
+  if (raw.sessionId !== undefined) {
+    if (!isSafeId(raw.sessionId)) throw new TutorRequestError('bad-request', 'sessionId is malformed.');
+    common.sessionId = raw.sessionId;
+  }
+  if (raw.idempotencyKey !== undefined) {
+    if (!isSafeId(raw.idempotencyKey)) throw new TutorRequestError('bad-request', 'idempotencyKey is malformed.');
+    common.idempotencyKey = raw.idempotencyKey;
+  }
+  if (raw.place !== undefined) common.place = parsePlace(raw.place);
+
+  if (task === 'lesson-help') {
+    const kind = raw.kind;
+    if (kind !== 'explain' && kind !== 'hint' && kind !== 'example') {
+      throw new TutorRequestError('bad-request', 'kind must be explain, hint or example.');
+    }
+    /* The lesson key becomes part of a URL path when the block text is
+       fetched, so it is checked against the published slug shape here and
+       never concatenated on trust. */
+    if (!isLessonSlug(raw.lessonKey)) throw new TutorRequestError('bad-request', 'lessonKey is not a lesson on this site.');
+    if (!isLessonBlockId(raw.blockId)) throw new TutorRequestError('bad-request', 'blockId is malformed.');
+
+    let item: LessonHelpItemRef | undefined;
+    if (raw.item !== undefined) {
+      if (!isRecord(raw.item)) throw new TutorRequestError('bad-request', 'item must be an object.');
+      if (!isSafeId(raw.item.setId) || !isSafeId(raw.item.itemKey) || !isSafeId(raw.item.itemVersion)) {
+        throw new TutorRequestError('bad-request', 'item.setId, item.itemKey and item.itemVersion are required.');
+      }
+      if (typeof raw.item.given !== 'string') throw new TutorRequestError('bad-request', 'item.given must be a string.');
+      item = {
+        setId: raw.item.setId,
+        itemKey: raw.item.itemKey,
+        itemVersion: raw.item.itemVersion,
+        given: sanitiseText(raw.item.given, MAX_GIVEN_CHARS),
+      };
+      /* Both are references into the site's own published test JSON. The
+         Worker looks the question up there; nothing about it is read from
+         here. An id that is not a published paper is refused before it can
+         reach a URL, exactly like a review request. */
+      if (raw.item.testId !== undefined || raw.item.questionId !== undefined) {
+        if (typeof raw.item.testId !== 'string' || !isSafeId(raw.item.questionId)) {
+          throw new TutorRequestError('bad-request', 'item.testId and item.questionId must be given together.');
+        }
+        const testId = sourceTestId(raw.item.testId);
+        if (!isPublishedTestId(testId)) {
+          throw new TutorRequestError('bad-request', 'item.testId is not a practice paper on this site.');
+        }
+        item.testId = testId;
+        item.questionId = raw.item.questionId;
+      }
+    }
+
+    const rawHints = raw.previousHints;
+    if (rawHints !== undefined && !Array.isArray(rawHints)) {
+      throw new TutorRequestError('bad-request', 'previousHints must be an array.');
+    }
+    const hints = (rawHints ?? []) as unknown[];
+    if (hints.length > MAX_PREVIOUS_HINTS) {
+      throw new TutorRequestError('bad-request', `previousHints must name at most ${MAX_PREVIOUS_HINTS} earlier hints.`);
+    }
+    const previousHints = hints
+      .filter((hint): hint is string => typeof hint === 'string')
+      .map((hint) => sanitiseText(hint, MAX_HINT_CHARS))
+      .filter(Boolean);
+
+    const assistanceSoFar = isAssistanceLevel(raw.assistanceSoFar) ? raw.assistanceSoFar : 'none';
+
+    return {
+      task: 'lesson-help',
+      ...base,
+      ...common,
+      kind,
+      lessonKey: raw.lessonKey,
+      blockId: raw.blockId,
+      ...(item ? { item } : {}),
+      previousHints,
+      assistanceSoFar,
+    };
+  }
+
+  if (task === 'evaluate-practice') {
+    if (!isSafeId(raw.activityId)) throw new TutorRequestError('bad-request', 'activityId is malformed.');
+    const contentVersion = raw.contentVersion;
+    if (typeof contentVersion !== 'number' || !Number.isInteger(contentVersion) || contentVersion < 0) {
+      throw new TutorRequestError('bad-request', 'contentVersion must be a whole number.');
+    }
+    if (!isSafeId(raw.subskill)) throw new TutorRequestError('bad-request', 'subskill is malformed.');
+    if (!Array.isArray(raw.itemIds)) throw new TutorRequestError('bad-request', 'itemIds must be an array.');
+    if (raw.itemIds.length > MAX_PRACTICE_ITEMS) {
+      throw new TutorRequestError('bad-request', `itemIds must name at most ${MAX_PRACTICE_ITEMS} items.`);
+    }
+    const itemIds = raw.itemIds.filter(isSafeId);
+    if (typeof raw.submission !== 'string') throw new TutorRequestError('bad-request', 'submission must be a string.');
+    if (raw.submission.length > MAX_PRACTICE_SUBMISSION_CHARS) {
+      /* Refused rather than trimmed. Anything this long is an essay, and an
+         essay belongs with the calibrated grader, not with a paragraph
+         exercise that cannot produce a band. */
+      throw new TutorRequestError(
+        'too-long',
+        `That is longer than ${MAX_PRACTICE_SUBMISSION_CHARS} characters, which is more than this exercise is for. A full essay goes to the writing grader instead.`,
+      );
+    }
+
+    const out: EvaluatePracticeWireRequest = {
+      task: 'evaluate-practice',
+      ...base,
+      ...common,
+      activityId: raw.activityId,
+      contentVersion,
+      subskill: raw.subskill as EvaluatePracticeWireRequest['subskill'],
+      itemIds,
+      submission: sanitiseText(raw.submission, MAX_PRACTICE_SUBMISSION_CHARS),
+    };
+    if (raw.revisionOf !== undefined) {
+      if (!isSafeId(raw.revisionOf)) throw new TutorRequestError('bad-request', 'revisionOf is malformed.');
+      out.revisionOf = raw.revisionOf;
+    }
+    return out;
+  }
+
+  /* propose-next. The shortlist on the request is a HINT and nothing more:
+     the Worker builds its own from the student's plan and only ever offers
+     the model ids that are on both lists. A client cannot widen it, and a
+     client that sends none still gets an answer. */
+  if (!Array.isArray(raw.candidateActivityIds)) {
+    throw new TutorRequestError('bad-request', 'candidateActivityIds must be an array.');
+  }
+  if (raw.candidateActivityIds.length > MAX_PROPOSAL_CANDIDATES) {
+    throw new TutorRequestError(
+      'bad-request',
+      `candidateActivityIds must name at most ${MAX_PROPOSAL_CANDIDATES} activities.`,
+    );
+  }
+  const budgetMinutes = raw.budgetMinutes;
+  if (typeof budgetMinutes !== 'number' || !Number.isInteger(budgetMinutes) || budgetMinutes < 0 || budgetMinutes > 600) {
+    throw new TutorRequestError('bad-request', 'budgetMinutes must be a whole number of minutes.');
+  }
+  if (!isSafeId(raw.deterministicChoiceId)) {
+    throw new TutorRequestError('bad-request', 'deterministicChoiceId is malformed.');
+  }
+
+  return {
+    task: 'propose-next',
+    ...base,
+    ...common,
+    candidateActivityIds: raw.candidateActivityIds.filter(isSafeId),
+    budgetMinutes,
+    deterministicChoiceId: raw.deterministicChoiceId,
+  };
 }

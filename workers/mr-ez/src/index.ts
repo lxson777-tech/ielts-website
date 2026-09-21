@@ -69,9 +69,18 @@ import {
   MAX_OUTPUT_TOKENS,
   MAX_SUMMARY_CHARS,
   TutorRequestError,
+  isLearningTask,
   isRecord,
+  parseLearningRequest,
   parseTutorRequest,
   sanitiseText,
+  type EvaluatePracticeWireReply,
+  type EvaluatePracticeWireRequest,
+  type LearningAiRequest,
+  type LessonHelpWireReply,
+  type LessonHelpWireRequest,
+  type ProposeNextWireReply,
+  type ProposeNextWireRequest,
   type TutorErrorCode,
   type TutorRecommendation,
   type TutorReply,
@@ -97,6 +106,53 @@ import { buildCourse, courseLessonCount } from '../../../src/lib/course';
 import type { Locale } from '../../../src/lib/i18n/locale';
 import type { ProgressV1 } from '../../../src/lib/progress';
 import type { SavedPlan } from '../../../src/lib/study-plan';
+/* The learning layer. Every one of these is pure: the browser entry point
+   (src/lib/learning/index.ts) is deliberately NOT imported here, because its
+   stores are per-process singletons and a Worker serves every student from
+   one process. */
+import {
+  EXAM_MODE_RULES,
+  EVALUATE_PRACTICE_OUTPUT_SCHEMA,
+  HELP_FAMILY_TASKS,
+  LEARNING_AI_DEFAULT_CAPS,
+  LESSON_HELP_OUTPUT_SCHEMA,
+  PROPOSE_NEXT_OUTPUT_SCHEMA,
+  asksForExamHelp,
+  assistanceAfterHelp,
+  buildEvaluateInstructions,
+  buildLessonHelpInstructions,
+  buildProposeInstructions,
+  effectiveHelpKind,
+  fallbackLessonHelp,
+  fallbackPracticeEvaluation,
+  fallbackProposalReason,
+  helpBlockedUnderAssessmentText,
+  learningAiCacheKey,
+  renderEvaluateContext,
+  renderLessonHelpContext,
+  renderProposeContext,
+  taskFamily,
+  validateEvaluateOutput,
+  validateLessonHelpOutput,
+  validateProposeOutput,
+  type LessonHelpPromptInput,
+  type PracticePromptInput,
+} from '../../../src/lib/learning/ai-prompt';
+import {
+  isPublishedLessonBlocks,
+  readPublishedBlock,
+  type PublishedLessonBlocks,
+} from '../../../src/lib/learning/lesson-blocks';
+import { learningCatalogue, findActivity as findCatalogueActivity } from '../../../src/lib/learning/catalog';
+import { appendAllEvidence, emptyLearnerRecord, firstAnswerFor, validateEvidenceEvent } from '../../../src/lib/learning/evidence';
+import { migrateProgress } from '../../../src/lib/learning/migrate';
+import { createInitialPlan, proposalShortlist, validatePlanProposal } from '../../../src/lib/learning/planner';
+import { evaluateEvidence } from '../../../src/lib/learning/policy';
+import { constraintsFrom, goalsFrom, lessonMapsFor, planSettingsFromSavedPlan, type LegacyPlanSettings } from '../../../src/lib/learning/adapters';
+import type { LearnerRecordV1, EvidenceEvent } from '../../../src/lib/learning/contracts/evidence';
+import type { PersonalPlanV1 } from '../../../src/lib/learning/contracts/plan';
+import type { PolicyOutputV1 } from '../../../src/lib/learning/contracts/policy';
+import type { CatalogueActivity } from '../../../src/lib/learning/contracts/catalog';
 
 export interface Env {
   OPENAI_API_KEY?: string; // wrangler secret
@@ -113,7 +169,22 @@ export interface Env {
       fetches the small file instead. Points at the deployed site by default;
       local development points it at the Astro dev server. */
   SITE_DATA_URL?: string; // vars
+  /** Where the site publishes one compact JSON file per lesson, cut into
+      teaching blocks (see src/pages/data/lesson-blocks/[slug].json.ts). Same
+      reasoning as SITE_DATA_URL: the lesson bodies are 1.6 MB across 152
+      files and a Worker cannot bundle them, so it fetches the one lesson it
+      is being asked about. */
+  LESSON_BLOCKS_URL?: string; // vars
   TUTOR_MAX_TURNS_PER_USER_PER_DAY?: string; // vars, default '40'
+  /** The separate daily allowance for contextual lesson help and focused
+      practice evaluation (lead decision Q3). Conversation keeps its own 40
+      above; the whole-site cap below still covers everything. */
+  TUTOR_MAX_HELP_PER_USER_PER_DAY?: string; // vars, default '60'
+  /** How long a learning reply stays cacheable, in days. A cached reply is
+      keyed by the plan revision, the evidence version, the catalogue index,
+      the language and the student's own input, so it can only come back
+      while every one of those still holds. */
+  TUTOR_LEARNING_CACHE_DAYS?: string; // vars, default '30'
   TUTOR_MAX_SITE_PER_DAY?: string; // vars, default '600'
   TUTOR_INPUT_USD_PER_M?: string; // vars, default '0.20'
   TUTOR_CACHED_INPUT_USD_PER_M?: string; // vars, default '0.02'
@@ -144,6 +215,12 @@ const DEFAULT_MAX_SITE_PER_DAY = 600;
 /** The live site's published test data. Overridable as a var so a local run
     can point at the Astro dev server without a code change. */
 const DEFAULT_SITE_DATA_URL = 'https://lxson777-tech.github.io/ielts-website/data/tests';
+/** The live site's published lesson blocks. Overridable for the same reason
+    as SITE_DATA_URL above. */
+const DEFAULT_LESSON_BLOCKS_URL = 'https://lxson777-tech.github.io/ielts-website/data/lesson-blocks';
+/** How long a learning reply may be replayed from the usage table, in days,
+    when the request has not changed in any way that matters. */
+const DEFAULT_LEARNING_CACHE_DAYS = 30;
 /* Published rates for gpt-5.6-luna, US dollars per million tokens, checked
    2026-09-19. Overridable as vars so a price change is a redeploy, not a
    code change — and so the cost figures in the usage table never quietly
@@ -266,6 +343,48 @@ async function restGet(deps: Deps, env: Env, path: string): Promise<unknown[]> {
     });
   } catch {
     throw new SupabaseError('request failed');
+  }
+  if (!resp.ok) throw new SupabaseError(`query failed (${resp.status})`);
+  let body: unknown;
+  try {
+    body = await resp.json();
+  } catch {
+    throw new SupabaseError('malformed response');
+  }
+  if (!Array.isArray(body)) throw new SupabaseError('malformed response shape');
+  return body;
+}
+
+/** A read of a table that may not exist yet.
+ *
+ *  The three personal learning tables are a PROPOSAL
+ *  (supabase/migrations/2026-09-21-learning.sql) and have not been applied
+ *  to the production project. A Worker that fell over because of that would
+ *  be a Worker that could not ship until the migration did. So a missing
+ *  relation is `null` here, which the caller reads as "derive it from the
+ *  synced progress instead", and every OTHER failure still throws and still
+ *  fails closed. PostgREST answers a missing relation with 404 and a body
+ *  naming the table; some versions use 400 with code 42P01. Both are treated
+ *  as absence, and nothing else is. */
+async function restGetOptional(deps: Deps, env: Env, path: string): Promise<unknown[] | null> {
+  let resp: Response;
+  try {
+    resp = await deps.fetch(`${env.SUPABASE_URL}/rest/v1/${path}`, {
+      headers: serviceHeaders(env),
+      signal: AbortSignal.timeout(10000),
+    });
+  } catch {
+    throw new SupabaseError('request failed');
+  }
+  if (resp.status === 404 || resp.status === 400) {
+    let body = '';
+    try {
+      body = await resp.text();
+    } catch {
+      body = '';
+    }
+    if (/42P01|PGRST20[05]|does not exist|Could not find the table/i.test(body)) return null;
+    throw new SupabaseError(`query failed (${resp.status})`);
   }
   if (!resp.ok) throw new SupabaseError(`query failed (${resp.status})`);
   let body: unknown;
@@ -503,6 +622,169 @@ async function fetchSiteTest(deps: Deps, env: Env, testId: string): Promise<Site
   return parsed;
 }
 
+/* ── The published lesson blocks ───────────────────────────────────────── */
+
+/** One lesson's teaching blocks, fetched from the site's own published JSON.
+
+    Exactly the same rules as fetchSiteTest above, for exactly the same
+    reasons. `slug` has already been through isLessonSlug in
+    parseLearningRequest, so only [a-z0-9-] reaches this path and there is
+    nothing a traversal or an absolute URL could ride in on. A network
+    failure, a non-200, unparseable JSON, a shape that does not validate, or
+    a file whose own slug is not the one we asked for all refuse the turn:
+    teaching from the wrong lesson is worse than teaching from none.
+
+    Cached in Worker memory for the life of the isolate. A lesson body only
+    changes on a deploy, and twenty students working through the same lesson
+    in the same minute should cost one fetch, not twenty. The cache is keyed
+    by the URL, so pointing LESSON_BLOCKS_URL somewhere else cannot serve a
+    stale copy of the other one. */
+const lessonBlockCache = new Map<string, PublishedLessonBlocks>();
+
+async function fetchLessonBlocks(deps: Deps, env: Env, slug: string): Promise<PublishedLessonBlocks> {
+  const base = (env.LESSON_BLOCKS_URL || DEFAULT_LESSON_BLOCKS_URL).replace(/\/+$/, '');
+  const url = `${base}/${slug}.json`;
+  const hit = lessonBlockCache.get(url);
+  if (hit) return hit;
+
+  const unavailable = () =>
+    new TutorRequestError('unavailable', 'Mr EZ could not load that lesson just now. Try again in a moment.');
+
+  let resp: Response;
+  try {
+    resp = await deps.fetch(url, { signal: AbortSignal.timeout(10000) });
+  } catch {
+    throw unavailable();
+  }
+  if (resp.status === 404) {
+    throw new TutorRequestError('not-found', 'That lesson is not one this build publishes.');
+  }
+  if (resp.status !== 200) {
+    console.error(`mr-ez: lesson blocks ${slug} came back ${resp.status}`);
+    throw unavailable();
+  }
+  let parsed: unknown;
+  try {
+    parsed = await resp.json();
+  } catch {
+    throw unavailable();
+  }
+  if (!isPublishedLessonBlocks(parsed) || parsed.slug !== slug) {
+    console.error(`mr-ez: lesson blocks ${slug} did not validate`);
+    throw unavailable();
+  }
+  lessonBlockCache.set(url, parsed);
+  return parsed;
+}
+
+/* ── The student's learning plan ───────────────────────────────────────── */
+
+interface LearningState {
+  plan: PersonalPlanV1;
+  record: LearnerRecordV1;
+  policy: PolicyOutputV1;
+  /** True when the plan and the evidence came from the learning tables
+      rather than being worked out here from the old synced stores. Recorded
+      so a reply can never quietly claim more provenance than it has. */
+  stored: boolean;
+}
+
+/** How many evidence rows are read for one turn. The policy layer needs
+    history, not all of it; the local soft cap is 4,000 and this is the
+    server-side equivalent of the same judgement. */
+const LEARNING_EVENTS_LIMIT = 2000;
+
+/** The plan and the evidence this student is actually on.
+ *
+ *  Two paths, and the fallback is the one that runs today:
+ *
+ *  1. The learning tables, when they exist. `learning_plan` holds the plan
+ *     the student's own devices agreed on, and `learning_events` the
+ *     evidence log. Both are read with the service role and filtered by the
+ *     VERIFIED user id, so there is no argument here a caller could
+ *     influence.
+ *  2. Otherwise the same three pure steps the browser took, run again over
+ *     the synced progress: read the old stores forward, judge the evidence,
+ *     plan. Identical to deriveSession in src/lib/tutor/recommend.ts,
+ *     repeated here because that function is private to it.
+ *
+ *  A missing relation is never an error: the tables are a proposal that has
+ *  not been applied, and this has to work before and after it is.
+ */
+async function loadLearningState(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  progress: ProgressV1,
+  savedPlan: SavedPlan | null,
+  now: string,
+  today: string,
+): Promise<LearningState> {
+  const catalogue = learningCatalogue();
+  const maps = lessonMapsFor(catalogue);
+  const settings: LegacyPlanSettings = planSettingsFromSavedPlan(savedPlan) ?? {
+    targetBand: null,
+    examDate: null,
+    perPaperTargets: {},
+    defaulted: true,
+  };
+  const goals = goalsFrom(settings);
+
+  let storedPlan: PersonalPlanV1 | null = null;
+  let storedEvents: EvidenceEvent[] | null = null;
+
+  try {
+    const planRows = await restGetOptional(deps, env, `learning_plan?user_id=eq.${userId}&select=plan`);
+    if (planRows) {
+      const row = planRows[0];
+      if (isRecord(row) && isRecord(row.plan)) storedPlan = row.plan as unknown as PersonalPlanV1;
+    }
+    const eventRows = await restGetOptional(
+      deps,
+      env,
+      `learning_events?user_id=eq.${userId}&select=event&order=occurred_at.asc&limit=${LEARNING_EVENTS_LIMIT}`,
+    );
+    if (eventRows) {
+      storedEvents = [];
+      for (const row of eventRows) {
+        const event = isRecord(row) ? row.event : undefined;
+        /* Validated, not trusted. These rows were written by the student's
+           own device, which makes them theirs, not correct. */
+        if (validateEvidenceEvent(event).length === 0) storedEvents.push(event as unknown as EvidenceEvent);
+      }
+    }
+  } catch (err) {
+    /* A learning table that exists but could not be read is not a reason to
+       answer with a different student's plan or with none: fall back to the
+       derivation, which uses data we already have in hand. */
+    console.error('mr-ez: learning tables unreadable, deriving instead', err instanceof Error ? err.message : 'unknown');
+    storedPlan = null;
+    storedEvents = null;
+  }
+
+  const record =
+    storedEvents && storedEvents.length > 0
+      ? appendAllEvidence(emptyLearnerRecord(), storedEvents)
+      : migrateProgress(progress, savedPlan, maps.lessonMinutes, { now, lessonSubskills: maps.lessonSubskills });
+
+  const policy = evaluateEvidence({ record, goals: storedPlan?.goals ?? goals, now });
+
+  if (storedPlan && typeof storedPlan.revision === 'number' && isRecord(storedPlan.activeSession)) {
+    return { plan: storedPlan, record, policy, stored: true };
+  }
+
+  const { plan } = createInitialPlan({
+    catalogue,
+    record,
+    policy,
+    now,
+    today,
+    goals,
+    constraints: constraintsFrom(settings),
+  });
+  return { plan, record, policy, stored: false };
+}
+
 /** What to do about a set of wrong answers, decided in code from the counts.
 
     The type with the most wrong answers is the one worth working on, and the
@@ -577,17 +859,44 @@ interface LimitCheck {
 
 /** Both caps, read from the shared table so they hold across every Worker
     instance. Throws SupabaseError (→ 503) rather than allowing the turn if
-    either count cannot be read. */
-async function checkLimits(deps: Deps, env: Env, userId: string): Promise<LimitCheck> {
+    either count cannot be read.
+ *
+ *  Two per-student allowances since lead decision Q3, counted separately
+ *  from the same table by the `task` column: conversation (the seven
+ *  original tasks plus plan proposals, which sit beside the welcome) and
+ *  help (contextual lesson help and focused practice evaluation). A student
+ *  working through a lesson should not spend the questions they were going
+ *  to ask Mr EZ, and a student asking questions should not spend their
+ *  hints. The whole-site cap below is unchanged and still covers
+ *  everything, which is what stops two allowances meaning twice the
+ *  exposure on a bad day. */
+async function checkLimits(deps: Deps, env: Env, userId: string, family: 'conversation' | 'help' = 'conversation'): Promise<LimitCheck> {
   const since = startOfDayIso(deps.now());
-  const perUser = intVar(env.TUTOR_MAX_TURNS_PER_USER_PER_DAY, DEFAULT_MAX_TURNS_PER_USER_PER_DAY);
+  const perUser =
+    family === 'help'
+      ? intVar(env.TUTOR_MAX_HELP_PER_USER_PER_DAY, LEARNING_AI_DEFAULT_CAPS.helpPerUserPerDay)
+      : intVar(env.TUTOR_MAX_TURNS_PER_USER_PER_DAY, DEFAULT_MAX_TURNS_PER_USER_PER_DAY);
   const perSite = intVar(env.TUTOR_MAX_SITE_PER_DAY, DEFAULT_MAX_SITE_PER_DAY);
 
-  const turnsToday = await restCount(deps, env, `mr_ez_turns?user_id=eq.${userId}&created_at=gte.${since}&select=id`);
+  /* `not.in` rather than a list of the conversation tasks, so a task added
+     later is counted against the conversation allowance by default instead
+     of quietly escaping both per-student caps. */
+  const familyFilter =
+    family === 'help'
+      ? `&task=in.(${HELP_FAMILY_TASKS.join(',')})`
+      : `&task=not.in.(${HELP_FAMILY_TASKS.join(',')})`;
+
+  const turnsToday = await restCount(
+    deps,
+    env,
+    `mr_ez_turns?user_id=eq.${userId}&created_at=gte.${since}${familyFilter}&select=id`,
+  );
   if (turnsToday >= perUser) {
     throw new TutorRequestError(
       'limit-reached',
-      `That is ${perUser} questions today, which is the daily limit. Mr EZ will be back tomorrow.`,
+      family === 'help'
+        ? `That is ${perUser} pieces of help today, which is the daily limit. It resets tomorrow.`
+        : `That is ${perUser} questions today, which is the daily limit. Mr EZ will be back tomorrow.`,
     );
   }
   const siteToday = await restCount(deps, env, `mr_ez_turns?created_at=gte.${since}&select=id`);
@@ -630,10 +939,28 @@ export interface OpenAiRequestSpec {
   body: Record<string, unknown>;
 }
 
+/** One strict JSON shape a task's reply must arrive in. */
+export interface OutputFormat {
+  name: string;
+  schema: unknown;
+}
+
+const TUTOR_FORMAT: OutputFormat = { name: 'mr_ez_reply', schema: TUTOR_OUTPUT_SCHEMA };
+
 /** The persona and the task rules go in `instructions`, byte-identical for
     every student, which is exactly the prefix OpenAI's prompt caching
-    rewards. The per-student data goes in `input`, where it belongs. */
-export function buildOpenAiRequest(env: Env, instructions: string, userText: string): OpenAiRequestSpec {
+    rewards. The per-student data goes in `input`, where it belongs.
+
+    `format` defaults to the seven original tasks' shape; the three learning
+    tasks pass their own, because "two or three observations, each quoting
+    the student's own words" is a different shape from "text, recommendation,
+    reason, mood" and pretending otherwise would mean parsing prose. */
+export function buildOpenAiRequest(
+  env: Env,
+  instructions: string,
+  userText: string,
+  format: OutputFormat = TUTOR_FORMAT,
+): OpenAiRequestSpec {
   return {
     url: 'https://api.openai.com/v1/responses',
     headers: {
@@ -649,9 +976,9 @@ export function buildOpenAiRequest(env: Env, instructions: string, userText: str
       text: {
         format: {
           type: 'json_schema',
-          name: 'mr_ez_reply',
+          name: format.name,
           strict: true,
-          schema: TUTOR_OUTPUT_SCHEMA,
+          schema: format.schema,
         },
       },
       store: false,
@@ -661,8 +988,11 @@ export function buildOpenAiRequest(env: Env, instructions: string, userText: str
 
 /** Pull the JSON payload and the token counts out of a Responses API reply.
     Same walk as workers/grade-essay: find the 'message' output item, then its
-    'output_text' content item. A 'reasoning' item is ignored. */
-export function parseOpenAiOutput(responseJson: unknown): { output: ModelOutput; usage: TokenUsage } | null {
+    'output_text' content item. A 'reasoning' item is ignored.
+
+    Shape-agnostic on purpose: what a valid payload LOOKS like depends on
+    which task asked, so that check belongs with the task. */
+export function parseOpenAiPayload(responseJson: unknown): { parsed: unknown; usage: TokenUsage } | null {
   if (!isRecord(responseJson)) return null;
   if (responseJson.status === 'incomplete' || responseJson.error) return null;
 
@@ -678,10 +1008,26 @@ export function parseOpenAiOutput(responseJson: unknown): { output: ModelOutput;
       }
     }
   }
-  if (!isRecord(parsed) || typeof parsed.text !== 'string') return null;
+  if (parsed === null) return null;
 
   const usageRaw = isRecord(responseJson.usage) ? responseJson.usage : {};
   const details = isRecord(usageRaw.input_tokens_details) ? usageRaw.input_tokens_details : {};
+  return {
+    parsed,
+    usage: {
+      inputTokens: Number(usageRaw.input_tokens) || 0,
+      cachedInputTokens: Number(details.cached_tokens) || 0,
+      outputTokens: Number(usageRaw.output_tokens) || 0,
+    },
+  };
+}
+
+/** The seven original tasks' shape, on top of the walk above. */
+export function parseOpenAiOutput(responseJson: unknown): { output: ModelOutput; usage: TokenUsage } | null {
+  const payload = parseOpenAiPayload(responseJson);
+  if (!payload) return null;
+  const parsed = payload.parsed;
+  if (!isRecord(parsed) || typeof parsed.text !== 'string') return null;
   return {
     output: {
       text: parsed.text,
@@ -689,12 +1035,51 @@ export function parseOpenAiOutput(responseJson: unknown): { output: ModelOutput;
       reason: typeof parsed.reason === 'string' ? parsed.reason : null,
       mood: typeof parsed.mood === 'string' ? parsed.mood : 'explaining',
     },
-    usage: {
-      inputTokens: Number(usageRaw.input_tokens) || 0,
-      cachedInputTokens: Number(details.cached_tokens) || 0,
-      outputTokens: Number(usageRaw.output_tokens) || 0,
-    },
+    usage: payload.usage,
   };
+}
+
+/** One model call, returning whatever JSON came back and what it cost. The
+    caller decides whether the shape is acceptable. Every failure here is a
+    refusal, never a quiet empty answer. */
+async function callModelJson(
+  deps: Deps,
+  env: Env,
+  instructions: string,
+  userText: string,
+  format: OutputFormat,
+): Promise<{ parsed: unknown; usage: TokenUsage }> {
+  const { url, headers, body } = buildOpenAiRequest(env, instructions, userText, format);
+  let resp: Response;
+  try {
+    resp = await deps.fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(45000),
+    });
+  } catch {
+    throw new TutorRequestError('unavailable', 'Mr EZ could not be reached just now. Try again in a moment.');
+  }
+  if (resp.status === 429) {
+    throw new TutorRequestError('busy', 'Mr EZ is busy right now. Give it a few seconds and ask again.');
+  }
+  if (resp.status === 401 || resp.status === 403) {
+    console.error('mr-ez: OpenAI rejected the key');
+    throw new TutorRequestError('unavailable', 'Mr EZ is not available at the moment.');
+  }
+  if (!resp.ok) {
+    throw new TutorRequestError('unavailable', 'Mr EZ had trouble answering. Try again in a moment.');
+  }
+  let raw: unknown;
+  try {
+    raw = await resp.json();
+  } catch {
+    throw new TutorRequestError('unavailable', 'Mr EZ sent back something unreadable. Try again.');
+  }
+  const payload = parseOpenAiPayload(raw);
+  if (!payload) throw new TutorRequestError('unavailable', 'Mr EZ sent back something unreadable. Try again.');
+  return payload;
 }
 
 async function callModel(
@@ -960,6 +1345,9 @@ export function createHandler(deps: Deps) {
           live: !isSimulated(env),
           requiresSignIn: true,
           turnsPerDay: intVar(env.TUTOR_MAX_TURNS_PER_USER_PER_DAY, DEFAULT_MAX_TURNS_PER_USER_PER_DAY),
+          /* The second allowance, so a lesson page can show the right
+             number rather than the conversation one. */
+          helpPerDay: intVar(env.TUTOR_MAX_HELP_PER_USER_PER_DAY, LEARNING_AI_DEFAULT_CAPS.helpPerUserPerDay),
           configured: missingConfig(env).length === 0,
         },
         200,
@@ -982,6 +1370,15 @@ export function createHandler(deps: Deps) {
       if (!userId) return fail('sign-in-required', 'Sign in to talk to Mr EZ.', cors);
 
       const body = await readBody(request);
+
+      /* One endpoint, two request families. The three learning tasks have
+         their own shapes and their own replies (see the block above
+         runLearningTurn), so they are parsed and answered separately;
+         everything that protects a turn is shared, not copied. */
+      if (isRecord(body) && isLearningTask(body.task)) {
+        return json(await runLearningTurn(deps, env, userId, parseLearningRequest(body)), 200, cors);
+      }
+
       const req = parseTutorRequest(body);
 
       const reply = await runTurn(deps, env, userId, req);
@@ -1025,6 +1422,33 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
      to write in, which language the sentences written by this file come
      out in, and which cache entry all of that lands in. */
   const locale: Locale = req.locale ?? 'en';
+
+  /* 1b. The assistance boundary, for the tasks that carry paper content.
+
+        The persona has always told Mr EZ to refuse help during a timed
+        paper, and an instruction is not a boundary. Two refusals happen
+        here instead, before anything is fetched or spent:
+
+        - a debrief or a single-item explanation while a paper is running
+          is help with a paper in front of the student, whichever paper it
+          names, so it waits until the timer stops;
+        - a chat message that is directly asking for an answer is refused
+          by asksForExamHelp (src/lib/learning/ai-prompt.ts), which is a
+          written-down list of phrasings in English and Russian rather than
+          a claim to detect intent.
+
+        The list is the belt. The braces are that a chat turn under exam
+        conditions gets EXAM_MODE_RULES appended below and is given no
+        lesson name to work from, so there is nothing to help with even if
+        the wording slipped past. Brief verification scenario 13. */
+  if (req.place?.underExam) {
+    if (req.task === 'debrief' || req.task === 'item') {
+      throw new TutorRequestError('bad-request', helpBlockedUnderAssessmentText(locale));
+    }
+    if (req.task === 'chat' && req.message && asksForExamHelp(req.message)) {
+      throw new TutorRequestError('bad-request', helpBlockedUnderAssessmentText(locale));
+    }
+  }
 
   // 2. The student's own record, fetched here, never accepted from the wire.
   const { progress, plan } = await loadStudentState(deps, env, userId);
@@ -1199,16 +1623,28 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     history = await loadRecentTurns(deps, env, conversation.id);
   }
 
-  const lessonTitle = req.place?.lessonKey
-    ? modules.flatMap((m) => m.lessons).find((l) => l.key === req.place?.lessonKey)?.title
-    : undefined;
+  /* Withheld while a timed paper is running: naming the lesson is naming
+     the subject of the paper in front of them, which is the first step
+     towards helping with it. */
+  const underExam = req.place?.underExam === true;
+  const lessonTitle =
+    req.place?.lessonKey && !underExam
+      ? modules.flatMap((m) => m.lessons).find((l) => l.key === req.place?.lessonKey)?.title
+      : undefined;
 
   const activities = shortlist(insights, progress, recommendation.activity);
   /* The persona and the task rules, plus the language rules when the
      student is not reading English. The DATA below stays English whatever
      the language: the model reads English facts and writes Russian prose.
-     See the note above RUSSIAN_REPLY_RULES in src/lib/tutor/prompt.ts. */
-  const instructions = buildInstructions(req.task, locale);
+     See the note above RUSSIAN_REPLY_RULES in src/lib/tutor/prompt.ts.
+
+     EXAM_MODE_RULES goes on top while a paper is running: the same refusal
+     the persona already carries, said again in full and said last, because
+     this is the one refusal where being talked out of it costs the student
+     their result. */
+  const instructions = underExam
+    ? `${buildInstructions(req.task, locale)}\n\n${EXAM_MODE_RULES}`
+    : buildInstructions(req.task, locale);
   const userText = renderContext({
     task: req.task,
     insights,
@@ -1219,6 +1655,11 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     chosenActivityId: req.task === 'chat' ? undefined : chosenActivityId ?? undefined,
     week,
     unit,
+    /* A unit note is told what the student's one current session is working
+       on, and is told not to name a next unit. The eight units are how the
+       library is arranged, not a route, and the shared session is the only
+       thing allowed to say what comes next. */
+    sessionObjective: recommendation.session?.objective,
     review,
     history,
     summary: conversation?.summary ?? null,
@@ -1331,6 +1772,567 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
   if (note) await writeNote(deps, env, userId, note, replyOut);
 
   return replyOut;
+}
+
+/* ══ The three learning tasks ═══════════════════════════════════════════════
+
+   Contextual lesson help, judging one focused exercise, and proposing the
+   next teaching move. They join the seven above on this endpoint and reuse
+   every protection it already has: the same auth, the same ownership rule
+   (the caller never names whose data to load), the same daily caps counted
+   from the same table, the same replay guard, the same usage accounting.
+   Nothing here opens a second billable path.
+
+   Three differences worth knowing before reading the code:
+
+   1. THE CACHE KEY IS DERIVED, not supplied. It is a hash of the task, the
+      references, the plan revision, the evidence version, the catalogue
+      index version, the language and the student's own input. Two requests
+      that agree on all of that get the stored answer free, and any of them
+      moving means the old answer is no longer about this student.
+   2. AI IS NEVER LOAD BEARING. Every one of these has a deterministic
+      fallback that is a real answer, and it runs whenever AI is off, over
+      its cap, unreachable, or answers with something that fails validation.
+   3. THE MODEL'S REPLY IS NEVER THE DECISION. The help level is decided
+      here from what was actually given; the objective verdict is checked
+      for anything that reads like a band; the proposal is put through
+      validatePlanProposal against the student's real plan, and anything
+      that fails is dropped with a named reason while the planner's own
+      choice stands. */
+
+type LearningReply = LessonHelpWireReply | EvaluatePracticeWireReply | ProposeNextWireReply;
+
+/** Everything that decides whether an earlier answer is still this answer. */
+function learningCacheKeyFor(req: LearningAiRequest): string {
+  const locale: Locale = req.locale ?? 'en';
+  if (req.task === 'lesson-help') {
+    return learningAiCacheKey({
+      task: req.task,
+      versions: req.versions,
+      locale,
+      lessonKey: req.lessonKey,
+      blockId: req.blockId,
+      itemKey: req.item?.itemKey,
+      itemVersion: req.item?.itemVersion,
+      kind: req.kind,
+      assistanceSoFar: req.assistanceSoFar,
+      studentInput: `${req.item?.given ?? ''}${req.previousHints.join('')}`,
+    });
+  }
+  if (req.task === 'evaluate-practice') {
+    return learningAiCacheKey({
+      task: req.task,
+      versions: req.versions,
+      locale,
+      activityId: req.activityId,
+      itemVersion: String(req.contentVersion),
+      studentInput: req.submission,
+    });
+  }
+  return learningAiCacheKey({
+    task: req.task,
+    versions: req.versions,
+    locale,
+    activityId: req.deterministicChoiceId,
+    studentInput: [...req.candidateActivityIds].sort().join(''),
+  });
+}
+
+/** Only ever the caller's own row, and only while it is still fresh. */
+async function readLearningCache(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  key: string,
+): Promise<LearningReply | null> {
+  const days = intVar(env.TUTOR_LEARNING_CACHE_DAYS, DEFAULT_LEARNING_CACHE_DAYS);
+  const since = new Date(deps.now().getTime() - days * 24 * 60 * 60 * 1000).toISOString();
+  const rows = await restGet(
+    deps,
+    env,
+    `mr_ez_turns?user_id=eq.${userId}&idempotency_key=eq.${encodeURIComponent(key)}&created_at=gte.${since}&select=reply`,
+  );
+  const stored = rows[0];
+  if (!isRecord(stored) || !isRecord(stored.reply)) return null;
+  return { ...(stored.reply as unknown as LearningReply), cached: true };
+}
+
+async function recordLearningTurn(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  req: LearningAiRequest,
+  key: string,
+  usage: TokenUsage,
+  reply: LearningReply,
+): Promise<void> {
+  await restWrite(deps, env, 'mr_ez_turns', 'POST', {
+    user_id: userId,
+    conversation_id: null,
+    task: req.task,
+    model: reply.model,
+    input_tokens: usage.inputTokens,
+    cached_input_tokens: usage.cachedInputTokens,
+    output_tokens: usage.outputTokens,
+    cost_usd: costUsd(env, usage),
+    idempotency_key: key,
+    reply,
+  });
+}
+
+const NO_USAGE: TokenUsage = { inputTokens: 0, cachedInputTokens: 0, outputTokens: 0 };
+
+function usageOut(env: Env, usage: TokenUsage, limits: LimitCheck): TutorUsage {
+  return {
+    ...usage,
+    costUsd: costUsd(env, usage),
+    turnsToday: limits.turnsToday + 1,
+    turnsPerDay: limits.turnsPerDay,
+  };
+}
+
+async function runLearningTurn(deps: Deps, env: Env, userId: string, req: LearningAiRequest): Promise<LearningReply> {
+  const locale: Locale = req.locale ?? 'en';
+
+  /* 1. The assistance boundary, first and free.
+
+     HELP_BLOCKED_MODES (src/lib/learning/contracts/ai.ts) is checked HERE,
+     server side, because a hidden button is not a boundary. A student
+     inside a timed paper gets the same refusal whichever surface asked,
+     nothing is fetched, nothing is spent, and no turn is recorded against
+     their allowance for being told no. */
+  if (req.place?.underExam) {
+    throw new TutorRequestError('bad-request', helpBlockedUnderAssessmentText(locale));
+  }
+
+  // 2. Replay. Cheaper than everything below it, so it goes above everything.
+  const cacheKey = learningCacheKeyFor(req);
+  const cached = await readLearningCache(deps, env, userId, cacheKey);
+  if (cached) return cached;
+
+  if (req.task === 'lesson-help') return runLessonHelp(deps, env, userId, req, cacheKey, locale);
+  if (req.task === 'evaluate-practice') return runEvaluatePractice(deps, env, userId, req, cacheKey, locale);
+  return runProposeNext(deps, env, userId, req, cacheKey, locale);
+}
+
+/* ── 1. Contextual lesson help ─────────────────────────────────────────── */
+
+async function runLessonHelp(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  req: LessonHelpWireRequest,
+  cacheKey: string,
+  locale: Locale,
+): Promise<LessonHelpWireReply> {
+  // The cap first: a student who has used today's help must not be able to
+  // make us fetch anything.
+  const limits = await checkLimits(deps, env, userId, 'help');
+
+  /* The block's words, fetched here from the site's own published JSON. The
+     request named a lesson and a block id and nothing else; not one word of
+     teaching material is read from it. */
+  const published = await fetchLessonBlocks(deps, env, req.lessonKey);
+  const block = readPublishedBlock(published, req.blockId);
+  if (!block) {
+    /* A block id that does not resolve almost always means the lesson was
+       edited and the ids moved with it, which is exactly what the content
+       hash in an id is for. Saying so beats teaching from a neighbouring
+       paragraph. */
+    throw new TutorRequestError('not-found', 'That part of the lesson has changed since this page was opened. Reload it and ask again.');
+  }
+
+  /* The question, when the check's item came from a real paper. Same rule
+     again: the prompt, the accepted answer and the official explanation are
+     fetched from the published test file, never read from the request. */
+  let question: string | undefined;
+  let acceptedAnswer: string | undefined;
+  let officialExplanation: string | undefined;
+  if (req.item?.testId && req.item.questionId) {
+    const siteTest = await fetchSiteTest(deps, env, req.item.testId);
+    const resolved = resolveItems(siteTest, [{ questionId: req.item.questionId, given: req.item.given }])[0];
+    if (resolved) {
+      question = resolved.question.prompt;
+      acceptedAnswer = resolved.question.answer;
+      officialExplanation = resolved.question.explanation;
+    }
+  }
+
+  /* Whether they have actually had a go. The teaching principle Alex set on
+     19 September 2026: hints lead toward the answer, and a full solution is
+     offered only after the student's own attempt. Decided here, from what
+     was recorded, rather than by the model deciding it deserves to. */
+  const attempted = Boolean(req.item?.given.trim()) || req.assistanceSoFar !== 'none';
+  const kind = effectiveHelpKind(req.kind, attempted);
+
+  const promptInput: LessonHelpPromptInput = {
+    kind,
+    lessonTitle: lessonTitleFor(req.lessonKey),
+    blockHeading: locale === 'ru' && block.ruHeading ? block.ruHeading : block.heading,
+    blockText: block.text,
+    blockRu: block.ru,
+    question,
+    acceptedAnswer,
+    officialExplanation,
+    given: req.item?.given ?? '',
+    previousHints: req.previousHints,
+    attempted,
+    locale,
+  };
+
+  const live = !isSimulated(env);
+  let text: string;
+  let revealedAnswer: boolean;
+  let usage: TokenUsage = NO_USAGE;
+  let model = 'simulated';
+
+  if (live) {
+    model = env.TUTOR_MODEL || DEFAULT_MODEL;
+    const result = await callModelJson(
+      deps,
+      env,
+      buildLessonHelpInstructions(kind, locale),
+      renderLessonHelpContext(promptInput),
+      { name: 'mr_ez_lesson_help', schema: LESSON_HELP_OUTPUT_SCHEMA },
+    );
+    usage = result.usage;
+    const checked = validateLessonHelpOutput(result.parsed, promptInput);
+    if (checked.ok) {
+      text = checked.text;
+      revealedAnswer = checked.revealedAnswer;
+    } else {
+      /* Paid for and thrown away, on purpose. A reply that put a band in a
+         hint, worked the student's own question as its "example", or handed
+         the answer over before an attempt is worse than no reply, and the
+         lesson's own sentence is a real answer. */
+      console.error(`mr-ez: lesson help rejected (${checked.problem}), using the lesson's own sentence`);
+      const fallback = fallbackLessonHelp(promptInput);
+      text = fallback.text;
+      revealedAnswer = fallback.revealedAnswer;
+      model = `${model} (reply rejected: ${checked.problem})`;
+    }
+  } else {
+    const fallback = fallbackLessonHelp(promptInput);
+    text = `${tutorText(locale, 'Simulated tutor reply (no AI was called).')} ${fallback.text}`;
+    revealedAnswer = fallback.revealedAnswer;
+  }
+
+  const reply: LessonHelpWireReply = {
+    task: 'lesson-help',
+    kind,
+    text: sanitiseText(text, 4000),
+    assistanceAfter: assistanceAfterHelp(kind, req.assistanceSoFar, revealedAnswer),
+    revealedAnswer,
+    live,
+    model,
+    usage: usageOut(env, usage, limits),
+  };
+
+  await recordLearningTurn(deps, env, userId, req, cacheKey, usage, reply);
+  return reply;
+}
+
+/** A lesson's own title, for wording only. Read from the course registry
+    here, never from the request. English in both languages, like every
+    other lesson title the Worker handles: the browser translates it. */
+function lessonTitleFor(lessonKey: string): string | undefined {
+  return buildCourse()
+    .flatMap((module) => module.lessons)
+    .find((lesson) => lesson.key === lessonKey)?.title;
+}
+
+/* ── 2. Judging one focused exercise ───────────────────────────────────── */
+
+async function runEvaluatePractice(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  req: EvaluatePracticeWireRequest,
+  cacheKey: string,
+  locale: Locale,
+): Promise<EvaluatePracticeWireReply> {
+  const catalogue = learningCatalogue();
+  const activity = findCatalogueActivity(req.activityId, catalogue);
+  if (!activity) throw new TutorRequestError('not-found', 'That exercise is not in the library.');
+  if (activity.contentVersion !== req.contentVersion) {
+    /* A regenerated exercise is a new thing (architecture section 5.3), and
+       judging this attempt against the old objective would file the result
+       under a version it was never about. */
+    throw new TutorRequestError('bad-request', 'That exercise has been updated since this page was opened. Reload it and try again.');
+  }
+
+  const limits = await checkLimits(deps, env, userId, 'help');
+
+  /* The earlier attempt, when this is a revision. Read from the student's
+     own evidence log, never from the request, so "what changed" is about
+     what they actually wrote last time. */
+  let previousSubmission: string | undefined;
+  if (req.revisionOf) {
+    const earlier = await findEarlierSubmission(deps, env, userId, req.revisionOf, req.itemIds);
+    if (earlier) previousSubmission = earlier;
+  }
+
+  const promptInput: PracticePromptInput = {
+    objective: activity.objective,
+    activityLabel: activityLabelFor(activity),
+    subskill: activity.subskill,
+    submission: req.submission,
+    previousSubmission,
+    locale,
+  };
+
+  const live = !isSimulated(env);
+  let verdict: EvaluatePracticeWireReply['verdict'];
+  let observations: string[];
+  let nextMove: string;
+  let judged: boolean;
+  let usage: TokenUsage = NO_USAGE;
+  let model = 'simulated';
+
+  if (live && req.submission.trim()) {
+    model = env.TUTOR_MODEL || DEFAULT_MODEL;
+    const result = await callModelJson(
+      deps,
+      env,
+      buildEvaluateInstructions(locale),
+      renderEvaluateContext(promptInput),
+      { name: 'mr_ez_practice_evaluation', schema: EVALUATE_PRACTICE_OUTPUT_SCHEMA },
+    );
+    usage = result.usage;
+    const checked = validateEvaluateOutput(result.parsed);
+    if (checked.ok) {
+      verdict = checked.verdict;
+      observations = checked.observations;
+      nextMove = checked.nextMove;
+      judged = true;
+    } else {
+      /* The band check is the one that matters here. This platform has
+         calibrated graders; a paragraph exercise that produced a number
+         would quietly compete with them and the student would believe the
+         cheap one. A reply with a number in it is dropped and nothing is
+         claimed about the objective at all. */
+      console.error(`mr-ez: practice evaluation rejected (${checked.problem}), reporting it as unjudged`);
+      const fallback = fallbackPracticeEvaluation(promptInput);
+      verdict = fallback.verdict;
+      observations = fallback.observations;
+      nextMove = fallback.nextMove;
+      judged = false;
+      model = `${model} (reply rejected: ${checked.problem})`;
+    }
+  } else {
+    const fallback = fallbackPracticeEvaluation(promptInput);
+    verdict = fallback.verdict;
+    observations = live
+      ? fallback.observations
+      : [tutorText(locale, 'Simulated tutor reply (no AI was called).'), ...fallback.observations];
+    nextMove = fallback.nextMove;
+    judged = false;
+  }
+
+  const reply: EvaluatePracticeWireReply = {
+    task: 'evaluate-practice',
+    verdict,
+    judged,
+    met: judged && verdict === 'met',
+    observations,
+    feedback: observations.join(' '),
+    suggestions: [nextMove],
+    isBand: false,
+    live,
+    model,
+    usage: usageOut(env, usage, limits),
+  };
+
+  await recordLearningTurn(deps, env, userId, req, cacheKey, usage, reply);
+  return reply;
+}
+
+/** A catalogue activity's label for the prompt. The learning catalogue's
+    entries carry an objective sentence and an id; the tutor catalogue has
+    the friendly label, so use that when the two agree on an id. */
+function activityLabelFor(activity: CatalogueActivity): string {
+  return findActivity(activity.id)?.label ?? activity.id;
+}
+
+/** The student's own earlier answer to the same exercise, from their own
+    evidence log. Returns undefined when the learning tables do not exist
+    yet, which is the normal case today. */
+async function findEarlierSubmission(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  eventId: string,
+  itemIds: readonly string[],
+): Promise<string | undefined> {
+  let rows: unknown[] | null;
+  try {
+    rows = await restGetOptional(
+      deps,
+      env,
+      `learning_events?user_id=eq.${userId}&event_id=eq.${encodeURIComponent(eventId)}&select=event`,
+    );
+  } catch {
+    return undefined;
+  }
+  const row = rows?.[0];
+  const event = isRecord(row) ? row.event : undefined;
+  if (validateEvidenceEvent(event).length > 0) return undefined;
+  for (const itemId of itemIds) {
+    const answer = firstAnswerFor(event as unknown as EvidenceEvent, itemId);
+    if (answer) return answer;
+  }
+  return undefined;
+}
+
+/* ── 3. Proposing the next teaching move ───────────────────────────────── */
+
+async function runProposeNext(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  req: ProposeNextWireRequest,
+  cacheKey: string,
+  locale: Locale,
+): Promise<ProposeNextWireReply> {
+  const limits = await checkLimits(deps, env, userId, 'conversation');
+
+  const { progress, plan: savedPlan } = await loadStudentState(deps, env, userId);
+  const now = deps.now().toISOString();
+  const today = now.slice(0, 10);
+  const state = await loadLearningState(deps, env, userId, progress, savedPlan, now, today);
+  const catalogue = learningCatalogue();
+
+  /* The shortlist is built HERE, from the student's own plan. What the
+     request carried is a hint and nothing more: the model is only ever
+     offered ids that are on both lists, so a modified client can narrow the
+     choice but can never widen it. A client that sent nothing usable still
+     gets the planner's full shortlist. */
+  const ours = proposalShortlist({
+    plan: state.plan,
+    record: state.record,
+    policy: state.policy,
+    catalogue,
+    today,
+    budgetMinutes: req.budgetMinutes || state.plan.activeSession.budgetMinutes,
+  });
+  const asked = new Set(req.candidateActivityIds);
+  const offered = ours.filter((activity) => asked.size === 0 || asked.has(activity.id));
+  const candidates = offered.length > 0 ? offered : ours;
+
+  const deterministic =
+    state.plan.activeSession.steps.find((step) => step.role === 'practise')?.activityId ??
+    state.plan.activeSession.steps[0]?.activityId ??
+    '';
+
+  const evidence = [
+    `Today's objective: ${state.plan.activeSession.objective}`,
+    `Why the planner chose it: ${state.plan.activeSession.reason}`,
+    ...state.plan.activeSession.evidenceRefs.map((ref) => `[${ref.kind}] ${ref.evidence}`),
+  ];
+
+  const live = !isSimulated(env);
+  let proposedId: string | null = null;
+  let proposedReason: string | null = null;
+  let usage: TokenUsage = NO_USAGE;
+  let model = 'simulated';
+
+  if (live && candidates.length > 0) {
+    model = env.TUTOR_MODEL || DEFAULT_MODEL;
+    const result = await callModelJson(
+      deps,
+      env,
+      buildProposeInstructions(locale),
+      renderProposeContext({
+        candidates: candidates.map((activity) => ({
+          id: activity.id,
+          label: activityLabelFor(activity),
+          objective: activity.objective,
+          minutes: activity.expectedMinutes,
+        })),
+        deterministicChoiceId: deterministic,
+        budgetMinutes: req.budgetMinutes || state.plan.activeSession.budgetMinutes,
+        evidence,
+        locale,
+      }),
+      { name: 'mr_ez_proposal', schema: PROPOSE_NEXT_OUTPUT_SCHEMA },
+    );
+    usage = result.usage;
+    const checked = validateProposeOutput(result.parsed);
+    if (checked.ok) {
+      proposedId = checked.activityId;
+      proposedReason = checked.reason;
+    } else {
+      console.error(`mr-ez: proposal rejected (${checked.problem}), the plan's own choice stands`);
+      model = `${model} (reply rejected: ${checked.problem})`;
+    }
+  }
+
+  /* Every refusal has a name, and a disagreement is recorded whether or not
+     the proposal was accepted. Model self evaluation alone is not evidence;
+     these records are the reviewable material. */
+  const verdict: ReturnType<typeof validatePlanProposal> = validatePlanProposal({
+    plan: state.plan,
+    record: state.record,
+    policy: state.policy,
+    catalogue,
+    versions: req.versions,
+    shortlist: candidates.map((activity) => activity.id),
+    proposedActivityId: proposedId,
+    reason: proposedReason ?? undefined,
+    today,
+    at: now,
+    budgetMinutes: req.budgetMinutes || state.plan.activeSession.budgetMinutes,
+    underAssessment: req.place?.underExam === true,
+  });
+
+  /* AGREEING WITH THE PLANNER IS NOT A PROPOSAL.
+
+     The eligibility rules exist to stop the MODEL reaching something the
+     planner would not offer. They are not a second opinion on the planner's
+     own session, and applied to it they refuse most of it: today's practise
+     step legitimately depends on today's teach step, which the student has
+     not done yet because they are about to. So when the model names exactly
+     what the planner named, the eligibility verdict is not what decides it.
+     Staleness and the exam boundary still do, because those are about
+     whether this reply is about this student at all. */
+  const staleOrBlocked =
+    !verdict.accepted &&
+    (verdict.rejection === 'stale-plan-revision' ||
+      verdict.rejection === 'stale-evidence-version' ||
+      verdict.rejection === 'stale-index-version' ||
+      verdict.rejection === 'blocked-under-assessment');
+  const agreed = !verdict.accepted && !staleOrBlocked && Boolean(proposedId) && proposedId === deterministic;
+  const accepted = verdict.accepted || agreed;
+
+  const chosenId = verdict.accepted ? verdict.activity.id : deterministic;
+  const reason = accepted
+    ? proposedReason ?? fallbackProposalReason(locale, state.plan.activeSession.reason)
+    : fallbackProposalReason(locale, state.plan.activeSession.reason);
+
+  if (!accepted) {
+    console.error(`mr-ez: proposal not used (${verdict.rejection})`);
+  }
+
+  const reply: ProposeNextWireReply = {
+    task: 'propose-next',
+    activityId: chosenId || null,
+    reason,
+    accepted,
+    ...(accepted ? {} : { rejection: verdict.accepted ? undefined : verdict.rejection }),
+    /* The link is resolved here from the catalogue, so a hallucinated id is
+       no link rather than a 404. */
+    recommendation: resolveRecommendation(chosenId || null, reason, locale),
+    /* Recorded whether or not it was accepted, and absent only when the
+       model chose exactly what the planner chose, which is nothing to
+       review. */
+    disagreement: agreed ? undefined : verdict.disagreement ?? undefined,
+    live,
+    model,
+    usage: usageOut(env, usage, limits),
+  };
+
+  await recordLearningTurn(deps, env, userId, req, cacheKey, usage, reply);
+  return reply;
 }
 
 /** Fold the older half of a long conversation into a short précis, so the

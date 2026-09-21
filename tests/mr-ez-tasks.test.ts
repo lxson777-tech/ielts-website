@@ -430,7 +430,6 @@ test('a finished unit is acknowledged, and reading the note again is free', asyn
   const sent = recorder.openAiCalls[0].userText;
   assert.match(sent, /Note kind: WRAP/);
   assert.match(sent, new RegExp(`Lessons: ${UNIT_1_KEYS.length} of ${UNIT_1_KEYS.length} completed`));
-  assert.match(sent, /Next unit after this one: Listen for everyday information/);
   assert.equal(state.notes[0].kind, 'unit-wrap');
   assert.equal(state.notes[0].note_key, '1');
 
@@ -438,6 +437,45 @@ test('a finished unit is acknowledged, and reading the note again is free', asyn
   assert.equal(again.cached, true);
   assert.equal(recorder.openAiCalls.length, 1);
   assert.equal(state.turns.length, 1);
+});
+
+/* Changed on 22 September 2026: the wrap used to be handed "Next unit after
+   this one: ..." as a fact, and the test above asserted it. The eight units
+   are how the library is arranged, not a route a student walks in order, and
+   what they do next is their one current session. Handing the model the
+   positionally next unit invited "next up is Unit 2", which competes with
+   that session and can send a student somewhere their own plan did not
+   choose. The deterministic wrap-up text had already stopped saying it
+   (src/lib/tutor/units.ts), so this closes the live path behind it. */
+test('a unit note is never given a next unit to send the student to', async () => {
+  const state = makeState();
+  state.userState[USER_A] = { progress: { ...emptyProgress(), lessons: unitOneDone() }, study_plan: plan() };
+  state.openAi = { body: modelReply('You finished it.', null, null) };
+
+  const { recorder } = await run(state, { task: 'unit', unit: { unitId: 1, kind: 'wrap' } });
+  const sent = recorder.openAiCalls[0].userText;
+
+  assert.doesNotMatch(sent, /Next unit after this one/, 'the positionally next unit is not a fact the model is given');
+  assert.match(sent, /Do not name a next unit/, 'and it is told so in the block itself');
+  assert.match(
+    recorder.openAiCalls[0].instructions,
+    /NEVER NAME A NEXT UNIT/,
+    'the task rules say it too, for both kinds of note',
+  );
+  assert.match(
+    sent,
+    /What their current session is actually working on:/,
+    'what comes next is the one shared session, and the note is told what that is',
+  );
+});
+
+test('a unit intro is held to the same rule', async () => {
+  const state = makeState();
+  state.userState[USER_A] = { progress: tfngWeaknessProgress(), study_plan: plan() };
+  state.openAi = { body: modelReply('This unit is where that gets fixed.', null, null) };
+
+  const { recorder } = await run(state, { task: 'unit', unit: { unitId: 5, kind: 'intro' } });
+  assert.doesNotMatch(recorder.openAiCalls[0].userText, /Next unit after this one/);
 });
 
 /* ── Reviewing wrong answers ───────────────────────────────────────────── */

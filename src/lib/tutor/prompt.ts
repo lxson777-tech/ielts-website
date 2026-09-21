@@ -99,7 +99,9 @@ The UNIT block says whether this is an INTRO (the student is starting the unit) 
 
 INTRO: two sentences on why this unit matters for THIS student, built on the relevance items in the block. Each relevance item names a real lesson inside the unit and carries the evidence behind it. A TENTATIVE item is one occasion and must be spoken of as one occasion, never as a habit. Do not recite the lesson list back at them: they can see it, and it is right there under your note.
 
-WRAP: two or three sentences acknowledging a unit they have finished, with the specifics the block gives you (how many lessons, how many days it took), then naming the next unit. Never say a band went up unless the RESULTS block actually shows it. Finishing a unit is one of the few moments that honestly earns "celebrating" as the mood, so use it here when it fits.
+WRAP: two or three sentences acknowledging a unit they have finished, with the specifics the block gives you (how many lessons, how many days it took). Never say a band went up unless the RESULTS block actually shows it. Finishing a unit is one of the few moments that honestly earns "celebrating" as the mood, so use it here when it fits.
+
+NEVER NAME A NEXT UNIT, in either kind. The eight units are how the library is arranged, not a route a student walks in order, and what they do next comes from their one current session. Saying "next up is Unit 5" would compete with that and send them somewhere their own plan did not choose.
 
 Set "recommendation" and "reason" to null for both kinds. The unit's own lessons are already on the screen beside this note, and a second, competing next step would just be noise.`,
 
@@ -358,7 +360,7 @@ function renderWeek(facts: WeekFacts): string {
   return lines.join('\n');
 }
 
-function renderUnit(facts: UnitFacts, kind: UnitNoteKind): string {
+function renderUnit(facts: UnitFacts, kind: UnitNoteKind, sessionObjective?: string): string {
   const lines: string[] = [
     kind === 'intro'
       ? 'Note kind: INTRO. The student is about to work through this unit.'
@@ -372,7 +374,20 @@ function renderUnit(facts: UnitFacts, kind: UnitNoteKind): string {
   if (facts.extrasTotal > 0) lines.push(`Other steps in the unit: ${facts.extrasDone} of ${facts.extrasTotal} done.`);
   if (facts.startedAt) lines.push(`First lesson in it finished on: ${facts.startedAt.slice(0, 10)}`);
   if (facts.completedAt) lines.push(`Last lesson in it finished on: ${facts.completedAt.slice(0, 10)}`);
-  lines.push(facts.nextUnit ? `Next unit after this one: ${facts.nextUnit.name}` : 'This is the last unit in the course.');
+  /* The unit AFTER this one is deliberately not here.
+     The eight units are how the library is arranged; they are not a route a
+     student walks in order, and what they do next is their one current
+     session. Handing the model "next unit after this one" as a fact invited
+     it to say "next up is Unit 5", which competes with that session and can
+     send a student somewhere their own plan did not choose. The
+     deterministic wrap-up text stopped saying it too (src/lib/tutor/
+     units.ts), so the live path must not be the one place it survives. */
+  lines.push(
+    'Do not name a next unit. The units are how the library is arranged, not an order to work through, and what this student does next comes from their own current session.',
+  );
+  if (sessionObjective) {
+    lines.push(`What their current session is actually working on: ${sessionObjective}`);
+  }
 
   lines.push('');
   if (facts.relevance.length === 0) {
@@ -446,6 +461,10 @@ export interface ContextInput {
   week?: WeekFacts;
   /** Counted facts for a unit intro or wrap. */
   unit?: { facts: UnitFacts; kind: UnitNoteKind };
+  /** The objective of the student's one current session, so a unit note can
+      point at what they are actually doing instead of at the unit that
+      happens to come next in the list. */
+  sessionObjective?: string;
   /** Resolved wrong answers for a debrief or a single item. */
   review?: ReviewContext;
   /** Earlier turns, oldest first, already trimmed to MAX_HISTORY_TURNS. */
@@ -477,7 +496,7 @@ export function renderContext(input: ContextInput): string {
   if (input.assessment) blocks.push(fence('ASSESSMENT', renderAssessment(input.assessment)));
 
   if (input.week) blocks.push(fence('WEEK', renderWeek(input.week)));
-  if (input.unit) blocks.push(fence('UNIT', renderUnit(input.unit.facts, input.unit.kind)));
+  if (input.unit) blocks.push(fence('UNIT', renderUnit(input.unit.facts, input.unit.kind, input.sessionObjective)));
   if (input.review) blocks.push(fence('WRONG ANSWERS', renderWrongAnswers(input.review)));
 
   if (input.summary) {

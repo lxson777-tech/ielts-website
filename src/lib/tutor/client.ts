@@ -13,9 +13,21 @@
 import { getAccessToken } from '../auth/session';
 import { isAuthConfigured } from '../auth/supabase';
 import { t } from '../i18n/translate';
-import { getLocale } from '../i18n/locale';
+import { getLocale, type Locale } from '../i18n/locale';
 import { tutorErrorMessage } from './errors';
-import { MAX_MESSAGE_CHARS, type TutorErrorCode, type TutorReply, type TutorRequest } from './schema';
+import {
+  MAX_MESSAGE_CHARS,
+  type EvaluatePracticeWireReply,
+  type EvaluatePracticeWireRequest,
+  type LearningAiRequest,
+  type LessonHelpWireReply,
+  type LessonHelpWireRequest,
+  type ProposeNextWireReply,
+  type ProposeNextWireRequest,
+  type TutorErrorCode,
+  type TutorReply,
+  type TutorRequest,
+} from './schema';
 
 const TUTOR_URL: string | undefined = import.meta.env?.PUBLIC_MR_EZ_URL;
 
@@ -52,7 +64,13 @@ export interface TutorConfig {
   model: string;
   live: boolean;
   requiresSignIn: boolean;
+  /** The conversation allowance: questions, the welcome, the notes, the
+      reviews and plan proposals. */
   turnsPerDay: number;
+  /** The separate allowance for contextual lesson help and focused practice
+      evaluation (lead decision Q3). Optional because a Worker deployed
+      before the learning tasks existed does not report it. */
+  helpPerDay?: number;
   configured: boolean;
 }
 
@@ -79,7 +97,7 @@ interface AskOptions {
   retry?: boolean;
 }
 
-async function post(url: string, token: string, req: TutorRequest, signal?: AbortSignal): Promise<TutorReply> {
+async function post<TReply>(url: string, token: string, req: unknown, signal?: AbortSignal): Promise<TReply> {
   let resp: Response;
   try {
     resp = await fetch(url, {
@@ -112,7 +130,37 @@ async function post(url: string, token: string, req: TutorRequest, signal?: Abor
     throw new TutorClientError(code, message, retryAfter);
   }
 
-  return (await resp.json()) as TutorReply;
+  return (await resp.json()) as TReply;
+}
+
+/** Sign in, stamp the language and the repeat-send key, send, and retry a
+    transient failure exactly once with the SAME key. Shared by the tutor
+    tasks and the three learning ones, so a retry can never buy a second
+    answer on any of them. */
+async function send<TRequest extends { locale?: Locale; idempotencyKey?: string }, TReply>(
+  req: TRequest,
+  options: AskOptions,
+): Promise<TReply> {
+  if (!TUTOR_URL) throw new TutorClientError('not-configured', t('Mr EZ is not switched on for this build yet.'));
+
+  const token = await getAccessToken();
+  if (!token) throw new TutorClientError('sign-in-required', t('Sign in and Mr EZ can see your own results.'));
+
+  const withKey = {
+    ...req,
+    locale: req.locale ?? getLocale(),
+    idempotencyKey: req.idempotencyKey ?? newIdempotencyKey(),
+  };
+
+  try {
+    return await post<TReply>(TUTOR_URL, token, withKey, options.signal);
+  } catch (err) {
+    const transient = err instanceof TutorClientError && (err.code === 'busy' || err.code === 'unavailable');
+    if (!transient || options.retry === false || options.signal?.aborted) throw err;
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    if (options.signal?.aborted) throw err;
+    return post<TReply>(TUTOR_URL, token, withKey, options.signal);
+  }
 }
 
 /** Ask Mr EZ. Throws TutorClientError with a code the UI maps to a state:
@@ -126,27 +174,73 @@ export async function askTutor(req: TutorRequest, options: AskOptions = {}): Pro
     );
   }
 
-  const token = await getAccessToken();
-  if (!token) throw new TutorClientError('sign-in-required', t('Sign in and Mr EZ can see your own results.'));
+  /* The key is generated once per user action inside send(), so the retry
+     in there cannot buy a second answer. The locale rides along for the same
+     reason it is on the request at all: the Worker has no other way to know
+     which language to answer in, and a display preference is the one thing
+     the browser genuinely does own (see the comment on TutorRequest.locale
+     in ./schema.ts). */
+  return send<TutorRequest, TutorReply>(req, options);
+}
 
-  /* Generated here, once, so the retry below cannot buy a second answer.
-     The locale rides along for the same reason it is on the request at all:
-     the Worker has no other way to know which language to answer in, and a
-     display preference is the one thing the browser genuinely does own
-     (see the comment on TutorRequest.locale in ./schema.ts). */
-  const withKey: TutorRequest = {
-    ...req,
-    locale: req.locale ?? getLocale(),
-    idempotencyKey: req.idempotencyKey ?? newIdempotencyKey(),
-  };
+/* ── The three learning tasks ──────────────────────────────────────────────
+   Same endpoint, same sign-in, same repeat-send key, same single retry.
+   What each one may carry is REFERENCES: which lesson, which block, which
+   item, which activity, and the versions the request was made against. The
+   lesson text, the question, the accepted answer, the objective and the
+   eligible shortlist are all worked out by the Worker, so there is nothing
+   a surface here has to look up and nothing it could get wrong.
 
-  try {
-    return await post(TUTOR_URL, token, withKey, options.signal);
-  } catch (err) {
-    const transient = err instanceof TutorClientError && (err.code === 'busy' || err.code === 'unavailable');
-    if (!transient || options.retry === false || options.signal?.aborted) throw err;
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    if (options.signal?.aborted) throw err;
-    return post(TUTOR_URL, token, withKey, options.signal);
-  }
+   `versions` is not optional and is not a formality. A reply written against
+   a plan revision or an evidence version that has since moved is refused by
+   the Worker rather than acted on, which is what stops a slow answer from
+   changing what a student is doing after they have already moved on. Take
+   them from the current session, never from memory. */
+
+/** Everything a caller supplies. The task name is added here, and the
+    language and the repeat-send key are stamped on by send(). */
+export type LessonHelpAsk = Omit<LessonHelpWireRequest, 'task'>;
+export type PracticeEvaluationAsk = Omit<EvaluatePracticeWireRequest, 'task'>;
+export type NextStepProposalAsk = Omit<ProposeNextWireRequest, 'task'>;
+
+/** Explain, hint or example at one exact teaching point.
+ *
+ *  The level asked for is not always the level given: an explanation before
+ *  the student has attempted anything comes back as a hint. Read `kind` on
+ *  the reply, not the one you sent, and write `assistanceAfter` into the
+ *  evidence event so an assisted answer can never later read as independent.
+ *
+ *  Never call this on render, on a timer or on navigation. It is a response
+ *  to the student pressing something. */
+export function askLessonHelp(ask: LessonHelpAsk, options: AskOptions = {}): Promise<LessonHelpWireReply> {
+  return send<LearningAiRequest, LessonHelpWireReply>({ task: 'lesson-help', ...ask }, options);
+}
+
+/** Judge one short piece of focused practice against its one objective.
+ *
+ *  `judged: false` means nothing looked at it (AI off, over the cap,
+ *  unreachable, or a reply that failed validation). The verdict beside it is
+ *  not a verdict and must not be shown as one. Nothing here is ever a band:
+ *  a full essay goes to the calibrated writing grader instead, and a
+ *  submission over MAX_PRACTICE_SUBMISSION_CHARS is refused with
+ *  `too-long`. */
+export function askPracticeEvaluation(
+  ask: PracticeEvaluationAsk,
+  options: AskOptions = {},
+): Promise<EvaluatePracticeWireReply> {
+  return send<LearningAiRequest, EvaluatePracticeWireReply>({ task: 'evaluate-practice', ...ask }, options);
+}
+
+/** Ask for one next activity from the planner's shortlist, with a reason.
+ *
+ *  `accepted: false` is the normal, safe outcome, not an error: the model
+ *  proposed something that did not survive validation and the plan's own
+ *  choice stands. Show `recommendation`, and write `disagreement` into the
+ *  plan's history when there is one, because that record is the reviewable
+ *  material, not the reply. */
+export function askNextStepProposal(
+  ask: NextStepProposalAsk,
+  options: AskOptions = {},
+): Promise<ProposeNextWireReply> {
+  return send<LearningAiRequest, ProposeNextWireReply>({ task: 'propose-next', ...ask }, options);
 }

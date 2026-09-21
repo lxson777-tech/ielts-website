@@ -18,6 +18,14 @@
  *   /auth/v1/*  and  /rest/v1/*   a minimal, in-memory Supabase
  *   /tutor                        the Mr EZ Worker's request/response shape
  *
+ * /tutor answers the seven original tasks AND the three learning ones
+ * (lesson-help, evaluate-practice, propose-next). The simulated versions of
+ * those three are deterministic and clearly labelled, so the interface
+ * packages that call them can be built and clicked through for nothing. The
+ * assistance boundary (no help while a timed paper is running) and the two
+ * separate daily allowances are modelled here as well, because those are
+ * behaviour an interface has to handle rather than details of the Worker.
+ *
  * /rest/v1/* also serves the three personal learning tables proposed in
  * supabase/migrations/2026-09-21-learning.sql (learning_events,
  * learning_plan, learning_companions), NOT applied to any real project. See
@@ -527,16 +535,72 @@ async function handleRest(req, res, url) {
    by the real Worker (in --live mode, or by the unit tests). Returns an error
    body, or null when the request is well formed. */
 const TASKS = ['chat', 'welcome', 'explain', 'weekly', 'unit', 'debrief', 'item'];
+/* The three learning tasks (src/lib/learning/contracts/ai.ts). They ride on
+   the same endpoint and, in this stand-in, on the same store, the same
+   caps and the same replay guard. Every reply they produce here is flagged
+   `live: false` and says "simulated" in its own first sentence, so an
+   interface package can be built and clicked through for nothing. */
+const LEARNING_TASKS = ['lesson-help', 'evaluate-practice', 'propose-next'];
 const MAX_REVIEW_ITEMS = 40;
+const MAX_PRACTICE_SUBMISSION_CHARS = 1200;
 const PUBLISHED_TEST_ID = /^(?:reading|listening)-full-\d{3}$/;
 const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9_:-]{0,79}$/;
+const LESSON_SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const BLOCK_ID = /^b\d{1,3}-[0-9a-f]{4,32}$/;
 
 function badRequest(message) {
   return { error: message, code: 'bad-request' };
 }
 
+/** The shape rules for the three learning tasks, the same way
+    validateRequest below echoes parseTutorRequest: only the SHAPE, because
+    whether a block id still resolves, whether an exercise has been
+    regenerated and what the student's plan revision actually is are facts
+    the real Worker decides. Returns an error body, or null. */
+function validateLearningRequest(request) {
+  const versions = request.versions;
+  if (!versions || typeof versions !== 'object') return badRequest('versions must be an object.');
+  if (!Number.isInteger(versions.planRevision) || versions.planRevision < 0) {
+    return badRequest('versions.planRevision must be a whole number.');
+  }
+  if (!Number.isInteger(versions.evidenceVersion) || versions.evidenceVersion < 0) {
+    return badRequest('versions.evidenceVersion must be a whole number.');
+  }
+  if (!SAFE_ID.test(String(versions.indexVersion ?? ''))) return badRequest('versions.indexVersion is malformed.');
+
+  if (request.task === 'lesson-help') {
+    if (!['explain', 'hint', 'example'].includes(request.kind)) return badRequest('kind must be explain, hint or example.');
+    if (!LESSON_SLUG.test(String(request.lessonKey ?? ''))) return badRequest('lessonKey is not a lesson on this site.');
+    if (!BLOCK_ID.test(String(request.blockId ?? ''))) return badRequest('blockId is malformed.');
+    if (request.previousHints !== undefined && !Array.isArray(request.previousHints)) {
+      return badRequest('previousHints must be an array.');
+    }
+  }
+
+  if (request.task === 'evaluate-practice') {
+    if (!SAFE_ID.test(String(request.activityId ?? ''))) return badRequest('activityId is malformed.');
+    if (!Number.isInteger(request.contentVersion)) return badRequest('contentVersion must be a whole number.');
+    if (typeof request.submission !== 'string') return badRequest('submission must be a string.');
+    if (request.submission.length > MAX_PRACTICE_SUBMISSION_CHARS) {
+      return {
+        error: `That is longer than ${MAX_PRACTICE_SUBMISSION_CHARS} characters, which is more than this exercise is for. A full essay goes to the writing grader instead.`,
+        code: 'too-long',
+      };
+    }
+  }
+
+  if (request.task === 'propose-next') {
+    if (!Array.isArray(request.candidateActivityIds)) return badRequest('candidateActivityIds must be an array.');
+    if (!Number.isInteger(request.budgetMinutes)) return badRequest('budgetMinutes must be a whole number of minutes.');
+    if (!SAFE_ID.test(String(request.deterministicChoiceId ?? ''))) return badRequest('deterministicChoiceId is malformed.');
+  }
+
+  return null;
+}
+
 function validateRequest(request) {
   if (!request || typeof request !== 'object') return badRequest('Request body must be a JSON object.');
+  if (LEARNING_TASKS.includes(request.task)) return validateLearningRequest(request);
   if (!TASKS.includes(request.task)) return badRequest('Unknown task.');
 
   if (request.task === 'chat' && typeof request.message !== 'string') return badRequest('A message is required.');
@@ -626,7 +690,109 @@ function localeOf(request) {
   return request?.locale === 'ru' ? 'ru' : 'en';
 }
 
+/* ── The three learning tasks, simulated ───────────────────────────────── */
+
+/* Deterministic, free, and unmistakably not a model. The interface packages
+   (the Explain / Hint / Example controls, the focused exercise, the
+   proposal card) can be built and clicked through against these without a
+   key and without a cent, and none of them can be mistaken for live AI:
+   every reply says "simulated" in its own first sentence and carries
+   `live: false`, which is what the interface labels.
+
+   What the real Worker does that this cannot: fetch the lesson block from
+   the site's published JSON and ground the reply in it, judge a submission,
+   build the eligible shortlist from the student's plan. Those are covered
+   by tests/learning-ai.test.ts against the real handler. */
+const SIM_LEARNING_RU = {
+  head: 'Симулированный ответ репетитора от локального dev-сервера. Запрос к ИИ не отправлялся и ничего не потрачено.',
+  hint: 'Настоящая подсказка строится на том самом фрагменте урока, который вы читаете, на вашем ответе и на подсказках, которые уже были, и она никогда не выдаёт ответ до вашей попытки.',
+  example: 'Настоящий пример разбирает тот же приём на ДРУГОМ материале, а не на вашем вопросе.',
+  explain: 'Настоящее объяснение доступно только после вашей попытки: сначала вы пробуете сами.',
+  evaluate:
+    'Настоящая проверка смотрит только на одну заявленную цель задания, цитирует ваши собственные слова и никогда не называет балл.',
+  evaluateNext: 'Перечитайте свой ответ рядом с целью задания и отметьте слова, которые ей отвечают.',
+  propose: 'Симулированная причина. Настоящую пишет модель, а сам шаг выбирает код из вашего плана.',
+};
+
+function simulatedLearningReply(request, turnsToday, turnsPerDay) {
+  const ru = localeOf(request) === 'ru';
+  const head = ru
+    ? SIM_LEARNING_RU.head
+    : 'Simulated tutor reply from the local dev server. No AI was called and nothing was charged.';
+  const usage = { inputTokens: 0, cachedInputTokens: 0, outputTokens: 0, costUsd: 0, turnsToday, turnsPerDay };
+  const base = { live: false, model: 'simulated (local dev server)', usage };
+
+  if (request.task === 'lesson-help') {
+    /* The level is decided by the server, not asked for: an explanation
+       before any attempt is served as a hint, exactly like the real Worker
+       (effectiveHelpKind in src/lib/learning/ai-prompt.ts). */
+    const attempted = Boolean(request.item?.given?.trim()) || (request.assistanceSoFar ?? 'none') !== 'none';
+    const kind = request.kind === 'explain' && !attempted ? 'hint' : request.kind;
+    const body = ru
+      ? { hint: SIM_LEARNING_RU.hint, example: SIM_LEARNING_RU.example, explain: SIM_LEARNING_RU.explain }[kind]
+      : {
+          hint: 'A real hint is built from the exact lesson block you are reading, your own answer and the hints you have already had, and it never gives the answer away before you have tried.',
+          example:
+            'A real example works the same method on DIFFERENT content, never on the question you are answering.',
+          explain:
+            'A real explanation is only offered after your own attempt, and it starts from what your answer assumed.',
+        }[kind];
+    const assistance =
+      kind === 'hint' ? 'hint' : kind === 'example' ? 'worked-example' : 'tutor-explained';
+    const order = ['none', 'hint', 'worked-example', 'answer-shown', 'tutor-explained'];
+    const before = request.assistanceSoFar ?? 'none';
+    return {
+      ...base,
+      task: 'lesson-help',
+      kind,
+      text: `${head} ${body}`,
+      assistanceAfter: order.indexOf(before) > order.indexOf(assistance) ? before : assistance,
+      revealedAnswer: false,
+    };
+  }
+
+  if (request.task === 'evaluate-practice') {
+    const observations = ru
+      ? [SIM_LEARNING_RU.head, SIM_LEARNING_RU.evaluate]
+      : [
+          head,
+          'A real evaluation looks at the one stated objective of the exercise, quotes your own words back to you, and never produces a band or a score.',
+        ];
+    const nextMove = ru
+      ? SIM_LEARNING_RU.evaluateNext
+      : 'Read your own answer against the exercise\'s one objective and mark the words that meet it.';
+    return {
+      ...base,
+      task: 'evaluate-practice',
+      // Nothing judged it, so nothing is claimed about the objective.
+      verdict: 'not-yet',
+      judged: false,
+      met: false,
+      observations,
+      feedback: observations.join(' '),
+      suggestions: [nextMove],
+      isBand: false,
+    };
+  }
+
+  // propose-next. The stand-in always agrees with the deterministic choice,
+  // because inventing a disagreement would be inventing evidence.
+  const reason = ru
+    ? SIM_LEARNING_RU.propose
+    : 'A simulated reason. The real one is written by the model, and the step itself is chosen in code from your own plan.';
+  return {
+    ...base,
+    task: 'propose-next',
+    activityId: request.deterministicChoiceId ?? null,
+    reason,
+    accepted: true,
+    recommendation: null,
+    disagreement: undefined,
+  };
+}
+
 function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
+  if (LEARNING_TASKS.includes(request.task)) return simulatedLearningReply(request, turnsToday, turnsPerDay);
   const ru = localeOf(request) === 'ru';
   const label = (english) => (ru ? SIM_RU.labels[english] ?? english : english);
   const base = {
@@ -739,6 +905,7 @@ async function handleTutor(req, res, url) {
       live: LIVE,
       requiresSignIn: true,
       turnsPerDay: 40,
+      helpPerDay: 60,
       configured: true,
     });
   }
@@ -777,7 +944,29 @@ async function handleTutor(req, res, url) {
   }
 
   const invalid = validateRequest(request);
-  if (invalid) return send(res, 400, invalid);
+  if (invalid) return send(res, invalid.code === 'too-long' ? 413 : 400, invalid);
+
+  /* The assistance boundary, the same way the real Worker enforces it: a
+     hidden button is not a boundary, so a help request made while a timed
+     paper is running is refused here too, whichever surface asked. The
+     wording is this file's own; the real one is localised properly in
+     src/lib/learning/ai-prompt.ts. */
+  if (request.place?.underExam) {
+    const blocked =
+      LEARNING_TASKS.includes(request.task) ||
+      request.task === 'debrief' ||
+      request.task === 'item' ||
+      (request.task === 'chat' && /answer|ответ/i.test(String(request.message ?? '')));
+    if (blocked) {
+      return send(res, 400, {
+        error:
+          localeOf(request) === 'ru'
+            ? 'Идёт работа на время, поэтому подсказок и ответов не будет, пока она не закончится.'
+            : 'A timed paper is running, so there are no hints or answers until it is finished.',
+        code: 'bad-request',
+      });
+    }
+  }
 
   // Repeat-send guard, same contract as the Worker.
   if (request.idempotencyKey) {
@@ -834,8 +1023,18 @@ async function handleTutor(req, res, url) {
     if (stored) return send(res, 200, { ...stored.reply, cached: true });
   }
 
-  const turnsToday = db.turns.filter((t) => t.user_id === userId).length;
-  const reply = simulatedReply(request, conversation?.id ?? '', turnsToday + 1, 40);
+  /* Two per-student allowances, counted separately, exactly like the real
+     Worker since lead decision Q3: contextual lesson help and focused
+     practice evaluation share 60; everything else, including plan
+     proposals, shares the conversation's 40. */
+  const helpFamily = request.task === 'lesson-help' || request.task === 'evaluate-practice';
+  const turnsPerDay = helpFamily ? 60 : 40;
+  const turnsToday = db.turns.filter(
+    (t) =>
+      t.user_id === userId &&
+      (t.task === 'lesson-help' || t.task === 'evaluate-practice') === helpFamily,
+  ).length;
+  const reply = simulatedReply(request, conversation?.id ?? '', turnsToday + 1, turnsPerDay);
 
   db.turns.push({
     id: randomUUID(),
@@ -910,6 +1109,9 @@ const STUB_SUPABASE = 'https://stub.invalid';
    run against real question content with no network beyond this machine.
    Start the site separately with `npm run dev`. */
 const LIVE_SITE_DATA_URL = 'http://localhost:4321/ielts-website/data/tests';
+/* And the published lesson blocks, which contextual help is grounded in.
+   Same Astro dev server, same reasoning. */
+const LIVE_LESSON_BLOCKS_URL = 'http://localhost:4321/ielts-website/data/lesson-blocks';
 
 async function initLive() {
   const { createHandler } = await import('../workers/mr-ez/src/index.ts');
@@ -929,7 +1131,7 @@ async function initLive() {
       // The published test JSON is a real HTTP request to the Astro dev
       // server, not a stub: the point of --live is that everything except the
       // database is the production path.
-      if (url.startsWith(LIVE_SITE_DATA_URL)) return realFetch(input, init);
+      if (url.startsWith(LIVE_SITE_DATA_URL) || url.startsWith(LIVE_LESSON_BLOCKS_URL)) return realFetch(input, init);
       if (!url.startsWith(STUB_SUPABASE)) throw new Error('unexpected fetch to ' + url);
 
       const parsed = new URL(url);
@@ -966,6 +1168,7 @@ async function initLive() {
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
     SITE_DATA_URL: LIVE_SITE_DATA_URL,
+    LESSON_BLOCKS_URL: LIVE_LESSON_BLOCKS_URL,
     OPENAI_API_KEY: key,
   };
 
@@ -1049,6 +1252,7 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');
     console.log(`  Test data         : ${LIVE_SITE_DATA_URL} (needs \`npm run dev\` running)`);
+    console.log(`  Lesson blocks     : ${LIVE_LESSON_BLOCKS_URL}`);
   } else {
     console.log('  Tutor stand-in    : /tutor  (every reply is flagged simulated)');
   }

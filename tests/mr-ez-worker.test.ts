@@ -396,16 +396,41 @@ test('a body far over the limit is refused without being parsed', async () => {
   assert.equal(recorder.openAiCalls.length, 0);
 });
 
+/* Changed on 22 September 2026 with the three learning AI tasks (work
+   package 15). It used to assert that a direct "what is the answer to
+   question 12" during a timed paper still reached the model, relying on the
+   persona to refuse it. Brief verification scenario 13 requires that
+   boundary to hold for direct chat requests and not only for hidden
+   buttons, so that exact message is now refused server side, before
+   anything is fetched or spent. The invigilator path itself is still
+   exercised below, with a question a student is genuinely allowed to ask
+   mid-paper. */
+test('a direct request for an answer during a timed paper is refused before anything is spent', async () => {
+  const state = makeState();
+  state.userState[USER_A] = { progress: emptyProgress(), study_plan: null };
+  const { response, payload, recorder } = await run(state, {
+    task: 'chat',
+    message: 'what is the answer to question 12',
+    place: { underExam: true },
+  });
+  assert.equal(response.status, 400);
+  assert.equal(payload.code, 'bad-request');
+  assert.match(String(payload.error), /timed paper is running/);
+  assert.equal(recorder.openAiCalls.length, 0);
+  assert.equal(state.turns.length, 0, 'a refusal must not spend a turn of their allowance');
+});
+
 test('a running timed paper puts the tutor into invigilator mode', async () => {
   const state = makeState();
   state.userState[USER_A] = { progress: emptyProgress(), study_plan: null };
   const { recorder } = await run(state, {
     task: 'chat',
-    message: 'what is the answer to question 12',
+    message: 'how long do I have left for this part',
     place: { underExam: true },
   });
   assert.match(recorder.openAiCalls[0].userText, /UNDER EXAM CONDITIONS/);
   assert.match(recorder.openAiCalls[0].instructions, /must not help with the content of the paper/);
+  assert.match(recorder.openAiCalls[0].instructions, /A TIMED ASSESSMENT IS RUNNING RIGHT NOW/);
 });
 
 /* ── Upstream failure ──────────────────────────────────────────────────── */

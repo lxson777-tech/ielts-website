@@ -50,11 +50,38 @@
     // Astro dev server.
     "SITE_DATA_URL": "https://lxson777-tech.github.io/ielts-website/data/tests",
 
+    // Where the site publishes one small JSON file per lesson, cut into
+    // teaching blocks (src/pages/data/lesson-blocks/[slug].json.ts). The
+    // contextual help task needs the exact paragraph a student is reading,
+    // and src/content/lesson-bodies is 1.6 MB across 152 files, so this is a
+    // fetch for the same reason SITE_DATA_URL is. Point it at
+    // http://localhost:4321/ielts-website/data/lesson-blocks to work against
+    // the Astro dev server.
+    "LESSON_BLOCKS_URL": "https://lxson777-tech.github.io/ielts-website/data/lesson-blocks",
+
     // Spending limits, enforced against `mr_ez_turns` so they hold across
     // every Worker instance rather than per-instance memory. A turn is one
     // answered request of any task.
+    //
+    // Two per-student allowances since lead decision Q3, counted from the
+    // same table by the `task` column. Conversation covers the seven
+    // original tasks plus plan proposals; help covers contextual lesson
+    // help and focused practice evaluation. Working through a lesson should
+    // not spend the questions a student was going to ask Mr EZ, and asking
+    // questions should not spend their hints. The whole-site cap below is
+    // unchanged and still covers everything, which is what stops two
+    // allowances meaning twice the exposure on a bad day.
     "TUTOR_MAX_TURNS_PER_USER_PER_DAY": "40",
+    "TUTOR_MAX_HELP_PER_USER_PER_DAY": "60",
     "TUTOR_MAX_SITE_PER_DAY": "600",
+
+    // How long a learning reply may be replayed from `mr_ez_turns`, in days.
+    // The key it is stored under is derived from the plan revision, the
+    // evidence version, the catalogue index version, the language and the
+    // student's own input, so a cached answer can only come back while every
+    // one of those still holds. Set it to "1" to effectively switch the
+    // cache off without a code change.
+    "TUTOR_LEARNING_CACHE_DAYS": "30",
 
     // Published gpt-5.6-luna rates, US dollars per million tokens, checked
     // 2026-09-19. These are what the usage table's cost column is computed

@@ -23,6 +23,7 @@
    No Cloudflare runtime, no Supabase project, no OpenAI key, no money. */
 
 import type { SiteTest } from '../src/lib/tutor/test-items.ts';
+import type { PublishedLessonBlocks } from '../src/lib/learning/lesson-blocks.ts';
 
 export const PROD_ORIGIN = 'https://lxson777-tech.github.io';
 export const WORKER_URL = 'https://ielts-mr-ez.example.workers.dev/';
@@ -31,6 +32,8 @@ export const SUPABASE_URL = 'https://proj.supabase.co';
     production URL, so a test that somehow escaped the stub would fail loudly
     rather than quietly reaching the internet. */
 export const SITE_DATA_URL = 'https://site.test/data/tests';
+/** And its lesson blocks, for the contextual help task. Same reasoning. */
+export const LESSON_BLOCKS_URL = 'https://site.test/data/lesson-blocks';
 export const SERVICE_KEY = 'service-role-dummy';
 export const OPENAI_KEY = 'sk-test-dummy';
 
@@ -53,6 +56,7 @@ export function baseEnv(overrides: Record<string, unknown> = {}) {
     SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
     SITE_DATA_URL,
+    LESSON_BLOCKS_URL,
     OPENAI_API_KEY: OPENAI_KEY,
     ...overrides,
   } as never;
@@ -86,9 +90,21 @@ export interface FakeState {
       here is a 404. A string is served verbatim, which is how malformed JSON
       is tested. */
   siteTests: Record<string, SiteTest | string>;
+  /** The same, for the published lesson blocks the contextual help task
+      grounds itself in. */
+  lessonBlocks: Record<string, PublishedLessonBlocks | string>;
   /** Force every published-data fetch to this status instead. */
   siteDataStatus?: number;
   siteDataUnreachable?: boolean;
+  /* ── The three personal learning tables ──────────────────────────────
+     supabase/migrations/2026-09-21-learning.sql is a PROPOSAL and has not
+     been applied to the production project, so 'missing' is the default and
+     is what production looks like today: PostgREST answers a query for an
+     absent relation with a 404 naming it. 'present' serves the rows below.
+     Both paths have to work, which is why the fake models both. */
+  learningTables?: 'missing' | 'present';
+  learningPlans?: { user_id: string; plan: unknown }[];
+  learningEvents?: { user_id: string; event_id: string; event: unknown; occurred_at: string }[];
 }
 
 export interface Recorder {
@@ -109,6 +125,7 @@ export function makeState(overrides: Partial<FakeState> = {}): FakeState {
     recommendations: [],
     notes: [],
     siteTests: {},
+    lessonBlocks: {},
     ...overrides,
   };
 }
@@ -172,6 +189,22 @@ export function makeDeps(state: FakeState, recorder: Recorder) {
       return json(body);
     }
 
+    // The site's published lesson blocks. The contextual help task grounds
+    // itself in one block fetched from here, so a test that wants to prove
+    // the prompt carries that block and not the whole lesson depends on this
+    // being the only place the text can come from.
+    if (url.startsWith(`${LESSON_BLOCKS_URL}/`)) {
+      if (state.siteDataUnreachable) throw new Error('site unreachable');
+      if (state.siteDataStatus) return new Response('{}', { status: state.siteDataStatus });
+      const slug = url.slice(`${LESSON_BLOCKS_URL}/`.length).replace(/\.json$/, '');
+      const body = state.lessonBlocks[slug];
+      if (body === undefined) return new Response('{}', { status: 404 });
+      if (typeof body === 'string') {
+        return new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return json(body);
+    }
+
     if (url.startsWith(`${SUPABASE_URL}/rest/v1/`)) return rest(url, method, init, headers, state);
 
     throw new Error(`unexpected fetch to ${url}`);
@@ -205,6 +238,22 @@ function filters(url: string): Record<string, string> {
   return out;
 }
 
+/** The `col=in.(a,b)` and `col=not.in.(a,b)` filters, which the per-family
+    daily caps are counted with. A fake that ignored them would count every
+    task against both allowances and the cap tests would pass while proving
+    nothing. */
+function setFilters(url: string): Record<string, { values: string[]; negated: boolean }> {
+  const query = url.split('?')[1] ?? '';
+  const out: Record<string, { values: string[]; negated: boolean }> = {};
+  for (const [key, value] of new URLSearchParams(query)) {
+    const negated = value.startsWith('not.in.(');
+    if (!negated && !value.startsWith('in.(')) continue;
+    const inner = value.slice(value.indexOf('(') + 1, value.lastIndexOf(')'));
+    out[key] = { values: inner.split(',').map((entry) => entry.trim()).filter(Boolean), negated };
+  }
+  return out;
+}
+
 function rest(
   url: string,
   method: string,
@@ -219,7 +268,12 @@ function rest(
   if (counting) {
     if (state.breakCounts) return new Response('{}', { status: 500 });
     if (table === 'mr_ez_turns') {
-      const rows = state.turns.filter((t) => !where.user_id || t.user_id === where.user_id);
+      const byTask = setFilters(url).task;
+      const rows = state.turns.filter(
+        (t) =>
+          (!where.user_id || t.user_id === where.user_id) &&
+          (!byTask || (byTask.negated ? !byTask.values.includes(t.task) : byTask.values.includes(t.task))),
+      );
       return countResponse(rows.length);
     }
     if (table === 'mr_ez_messages') {
@@ -258,6 +312,27 @@ function rest(
     if (table === 'mr_ez_recommendations') {
       return json(
         state.recommendations.filter((r) => r.user_id === where.user_id && r.fingerprint === where.fingerprint),
+      );
+    }
+    /* The two learning tables. Absent by default, because that is what the
+       production project looks like today: the migration that creates them
+       is a proposal nobody has applied, and PostgREST answers a query for a
+       relation that does not exist with a 404 naming it. The Worker has to
+       work either way, so both answers are modelled here. */
+    if (table === 'learning_plan' || table === 'learning_events') {
+      if (state.learningTables !== 'present') {
+        return new Response(
+          JSON.stringify({ code: '42P01', message: `relation "public.${table}" does not exist` }),
+          { status: 404, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+      if (table === 'learning_plan') {
+        return json((state.learningPlans ?? []).filter((row) => row.user_id === where.user_id));
+      }
+      return json(
+        (state.learningEvents ?? [])
+          .filter((row) => row.user_id === where.user_id && (!where.event_id || row.event_id === where.event_id))
+          .map((row) => ({ event: row.event })),
       );
     }
     if (table === 'mr_ez_notes') {
@@ -337,4 +412,9 @@ export function post(body: unknown, token: string | null = GOOD_TOKEN, origin: s
     that a rejected request never reached it. */
 export function dataUrls(recorder: Recorder): string[] {
   return recorder.urls.filter((u) => u.startsWith(SITE_DATA_URL));
+}
+
+/** The same, for the published lesson blocks. */
+export function lessonBlockUrls(recorder: Recorder): string[] {
+  return recorder.urls.filter((u) => u.startsWith(LESSON_BLOCKS_URL));
 }
