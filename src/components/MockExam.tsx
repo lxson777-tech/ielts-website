@@ -29,6 +29,8 @@ import {
   overallMockBand,
   type MockEssay,
 } from '../lib/tests/mock';
+import { recordSubmission } from '../lib/learning/store.browser';
+import { paperExposureKey } from '../lib/learning/evidence';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
 import { isAuthConfigured } from '../lib/auth/supabase';
@@ -258,6 +260,33 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       speakingBand: speakingResult?.overallBand,
       speakingSkipped,
       secondsUsed: listeningResult.secondsUsed + readingResult.secondsUsed + (WRITING_SECONDS - writingSecondsLeft),
+    });
+
+    /* Learner-evidence recording (WP12): one aggregate event for the whole
+       indivisible sitting (catalogue activity 'test:mock', domain
+       'exam-skills', see catalog.ts's buildFixedActivities). The Listening
+       and Reading legs already wrote their own detailed, per-item events as
+       ordinary full papers (TestPlayer's own recording, attemptKind="full"
+       above), and the Speaking leg's LiveExaminer records its own graded
+       event too (see LiveExaminer.tsx). This is only the "a mock happened"
+       summary, so it carries no items of its own, just the combined raw
+       score and the same rounded overall band the results screen shows.
+       Writing is never graded during a mock (see the header comment), so it
+       has nothing to contribute here beyond the time spent, already folded
+       into secondsUsed. */
+    const bands = [listeningResult.band, readingResult.band];
+    if (speakingResult) bands.push(speakingResult.overallBand);
+    recordSubmission({
+      activityId: 'test:mock',
+      at: startedAt || new Date().toISOString(),
+      mode: 'assessment',
+      completion: 'completed',
+      items: [],
+      raw: listeningResult.raw + readingResult.raw,
+      total: listeningResult.total + readingResult.total,
+      bandEstimate: overallMockBand(bands),
+      secondsUsed: listeningResult.secondsUsed + readingResult.secondsUsed + (WRITING_SECONDS - writingSecondsLeft),
+      sourceMaterial: [paperExposureKey(listeningTest.id), paperExposureKey(readingTest.id)],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);

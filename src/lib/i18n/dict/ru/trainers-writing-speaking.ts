@@ -113,6 +113,10 @@ export const strings: Record<string, string> = {
     'Для теста Speaking нужен доступ к микрофону. Разрешите доступ и попробуйте снова.',
   'We could not reach the grading service. Please try again in a minute.':
     'Не удалось связаться со службой проверки. Попробуйте ещё раз через минуту.',
+  'We could not reach the grading service. Your answers are still here, try grading them again in a minute.':
+    'Не удалось связаться со службой проверки. Ваши ответы никуда не делись, попробуйте проверить их снова через минуту.',
+  'Try grading again': 'Проверить ещё раз',
+  'Start over': 'Начать заново',
   'Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading.':
     'Без ИИ-экзаменатора реальный сигнал есть только по критерию Fluency & Coherence (по одному хронометражу). Для оценки Словарного запаса, Грамматики и Pronunciation нужна модель, которая слушает вашу запись. Ваш преподаватель может включить проверку ИИ.',
   'Timing check': 'Проверка времени',

@@ -31,6 +31,8 @@ import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
 import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
+import { getLearnerStore, ownerNamespace } from '../lib/learning/store.browser';
+import { writingActivityId } from '../lib/learning/catalog';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
@@ -39,6 +41,48 @@ const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
 
 function pad(n: number): string {
   return String(n).padStart(2, '0');
+}
+
+/* ── Learner-evidence recording (WP12): a local draft of the essay ───────
+ * A safety net for the essay text itself while grading is in flight or has
+ * just failed: convenience, per-viewer storage, never evidence, and scoped
+ * by the same owner the learner record already uses so one student's
+ * unfinished essay can never surface for the next one signed in on the
+ * same browser (architecture section 1.1's account-isolation finding).
+ * Cleared the moment a real report comes back, since after that the essay
+ * lives in ielts.progress.v1's writing history instead, which is durable. */
+const ESSAY_DRAFT_PREFIX = 'ielts.writing.draft.v1';
+
+function draftKey(promptId: string): string {
+  return `${ESSAY_DRAFT_PREFIX}::${ownerNamespace(getLearnerStore().owner())}::${promptId}`;
+}
+
+function loadEssayDraft(promptId: string): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    return window.localStorage.getItem(draftKey(promptId)) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function saveEssayDraft(promptId: string, text: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (text) window.localStorage.setItem(draftKey(promptId), text);
+    else window.localStorage.removeItem(draftKey(promptId));
+  } catch {
+    /* Best effort, the essay is still safe in this tab's own state. */
+  }
+}
+
+function clearEssayDraft(promptId: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(draftKey(promptId));
+  } catch {
+    /* Nothing to do. */
+  }
 }
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
@@ -69,12 +113,25 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const [elapsedMs, setElapsedMs] = useState(0);
   const timerStartedRef = useRef(false);
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
     };
   }, []);
+
+  /* Keep the local draft current as the student types, so a failed grading
+     request or a closed tab never loses the essay. Debounced so a fast
+     typist is not writing to localStorage on every keystroke. */
+  function handleEssayChange(value: string) {
+    setEssay(value);
+    if (!prompt) return;
+    const promptId = prompt.id;
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = setTimeout(() => saveEssayDraft(promptId, value), 600);
+  }
 
   /* The checker is the exam-conditions counterpart to the coached trainer, so
      while an essay is in progress here Mr EZ must not help with the task
@@ -160,6 +217,30 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           grader: graded.grader,
         },
       });
+
+      /* Learner-evidence recording (WP12), written alongside the row above,
+         never instead of it: the prompt identity, Task 1/2 scope, word
+         count, the four criterion bands, whether this was a live grade, and
+         a pointer back into the row just saved rather than a second copy of
+         the essay text. A not-live (stub) grade is still recorded here for
+         the student's own history, but classifyEvidence excludes it with
+         reason 'stub-graded', so it can never move an ability estimate. */
+      getLearnerStore().recordWritingGraded({
+        activityId: writingActivityId(prompt.id),
+        paper: 'writing',
+        promptId: prompt.id,
+        task: prompt.task,
+        at,
+        overallBand: graded.overallBand,
+        criteria,
+        wordCount,
+        grader: graded.grader,
+        legacyRef: { store: 'writing', key: prompt.id, at },
+      });
+      // The report just landed, so the working draft this prompt was kept
+      // under is no longer the only copy of the essay: it now lives in
+      // ielts.progress.v1's writing history, which is durable.
+      clearEssayDraft(prompt.id);
     } catch {
       // The button is disabled whenever isGraderConfigured() is false, so any
       // error reaching here happened after a real request went out - network,
@@ -183,15 +264,23 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       rotationKey,
       pool.map((p) => p.id),
     );
+    const nextPrompt = pool.find((p) => p.id === id) ?? pool[0];
     setTaskType(task);
-    setPrompt(pool.find((p) => p.id === id) ?? pool[0]);
-    setEssay('');
+    setPrompt(nextPrompt);
+    // Restore an unfinished draft of this exact prompt if one is sitting
+    // there from an earlier visit (a failed or abandoned grading attempt);
+    // otherwise a genuinely fresh prompt starts blank, same as before.
+    setEssay(nextPrompt ? loadEssayDraft(nextPrompt.id) : '');
     setResult(null);
     restartTimer();
   }
 
   function newTask() {
     if (essay.trim() && !window.confirm(t('Get a different task? Your current answer will be cleared.'))) return;
+    // A confirmed "clear it" is a deliberate discard, not a failure or a
+    // navigation away, so the draft this prompt was kept under should not
+    // reappear next time the rotation serves it again.
+    if (prompt && essay.trim()) clearEssayDraft(prompt.id);
     startTask(taskType!);
   }
 
@@ -209,7 +298,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       if (found) {
         setTaskType(found.task);
         setPrompt(found);
-        setEssay('');
+        setEssay(loadEssayDraft(found.id));
         setResult(null);
         restartTimer();
         return;
@@ -492,7 +581,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
           <textarea
             value={essay}
-            onChange={(e) => setEssay(e.target.value)}
+            onChange={(e) => handleEssayChange(e.target.value)}
             rows={14}
             placeholder={t('Write your answer here…')}
             className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"

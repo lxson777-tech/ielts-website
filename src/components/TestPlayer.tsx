@@ -13,7 +13,7 @@ import {
   scoredQuestionIds,
 } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
-import { clearSession, loadSession, saveAnswers, secondsLeft, startSession } from '../lib/test-session';
+import { activeSession, clearSession, loadSession, saveAnswers, secondsLeft, startSession, type TestSession } from '../lib/test-session';
 import { drillTypes } from '../lib/tests/drills';
 import Html from './Html';
 import StrategyPanel from './StrategyPanel';
@@ -30,6 +30,16 @@ import {
 import { isBookmarked, toggleBookmark } from '../lib/notes';
 import TestDebrief from './tutor/TestDebrief';
 import AskWhyWrong from './tutor/AskWhyWrong';
+import { recordSubmission, recordUnfinishedAttempt } from '../lib/learning/store.browser';
+import {
+  attemptActivityId,
+  attemptEvidenceMode,
+  attemptEvidenceModeFromId,
+  baseAttemptId,
+  buildQuestionItems,
+  isEntirelyBlank,
+  paperFromAttemptId,
+} from './attempt-recording';
 
 interface Props {
   test: PracticeTest;
@@ -205,6 +215,35 @@ function truncatePlain(html: string, max = 90): string {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
+/** Learner-evidence recording (WP12): a stale TestSession found for some
+    other test id, as an evidence event. There is no PracticeTest object for
+    that other id here, only what test-session.ts itself kept, which is
+    exactly what is honestly known: which paper, roughly how long was spent
+    (capped at the session's own clock, never open-ended), and that it was
+    never submitted. No items, no score: fabricating either from nothing
+    would make an abandoned attempt look like measured evidence, which is
+    the one thing the whole evidence layer exists to prevent (architecture
+    section 4.1's same rule for the legacy migration). `at` is derived from
+    the session's own startedAt, not from now(), so re-discovering the same
+    stale session on a later visit to some other test page writes the same
+    deterministic id rather than a second row. */
+function recordStaleSessionAbandonment(stale: TestSession): void {
+  const at = new Date(stale.startedAt).toISOString();
+  const cappedEnd = Math.min(Date.now(), stale.endsAt);
+  const secondsUsed = Math.max(0, Math.round((cappedEnd - stale.startedAt) / 1000));
+  const expired = Date.now() >= stale.endsAt;
+  const baseId = baseAttemptId(stale.testId);
+  recordUnfinishedAttempt({
+    activityId: attemptActivityId(stale.testId),
+    paper: paperFromAttemptId(stale.testId),
+    at,
+    mode: attemptEvidenceModeFromId(stale.testId),
+    completion: expired ? 'expired' : 'abandoned',
+    secondsUsed,
+    sourceTestId: baseId,
+  });
+}
+
 export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish }: Props) {
   /* Interface language. Declared first so every hook below keeps a stable
      order, and read as `t`/`tn` only for text: nothing in the timer, the
@@ -253,6 +292,15 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   // Review-list filter (feature 3): "wrong only" hides fully-correct groups
   // from the post-submit review, see the group-render loop below.
   const [reviewFilter, setReviewFilter] = useState<'all' | 'wrong'>('all');
+  // Learner-evidence recording (WP12): question ids that had drill-mode help
+  // available and actually used before their answer was settled: the
+  // strategy panel opened, or the recording replayed/sought past its first
+  // play. Recorded as `assistance: 'hint'` on exactly those items; every
+  // other item stays 'none'. A timed full paper or the mock never offers
+  // this help in the first place (see ListeningAudio and the
+  // attemptKind === 'drill' guard on StrategyPanel below), so this set stays
+  // empty there regardless.
+  const [assistedIds, setAssistedIds] = useState<Set<string>>(new Set());
   // j/k and arrow-key navigation between questions in the active part
   // (feature 3), reset whenever the student switches part/passage.
   /* Cursor for j/k keyboard navigation within the current part. */
@@ -263,6 +311,36 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      instead of every circle having to announce itself. */
   const [activeQId, setActiveQId] = useState<string | null>(null);
   const qnavRef = useRef<HTMLDivElement>(null);
+
+  /* Learner-evidence recording (WP12): drill-mode help, marked on exactly
+     the items it applied to. A strategy panel is per question group, so
+     opening it assists every question in that group; a replayed or sought
+     recording covers the one shared passage/section, so it assists every
+     scored question in the drill. Both are no-ops once the paper is
+     submitted (nothing left to mark), and neither is ever wired up outside
+     attemptKind === 'drill' (see the render below), so a timed full paper
+     or the mock can never pick up help it was never offered. */
+  function markGroupAssisted(group: QuestionGroup) {
+    if (submittedRef.current) return;
+    setAssistedIds((prev) => {
+      const ids = group.questions.map((q) => q.id).filter((id) => !prev.has(id));
+      if (ids.length === 0) return prev;
+      const next = new Set(prev);
+      for (const id of ids) next.add(id);
+      return next;
+    });
+  }
+
+  function markAllAssisted() {
+    if (submittedRef.current) return;
+    setAssistedIds((prev) => {
+      const ids = numbered.map((nq) => nq.question.id).filter((id) => !prev.has(id));
+      if (ids.length === 0) return prev;
+      const next = new Set(prev);
+      for (const id of ids) next.add(id);
+      return next;
+    });
+  }
 
   function toggleFlag(qid: string) {
     if (submittedRef.current) return;
@@ -302,6 +380,27 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       const s = startSession(test);
       setTimeLeft(secondsLeft(s));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* Learner-evidence recording (WP12): a paper or drill "starting" IS the
+     TestSession written by startSession() above (and by start() below),
+     there is no separate started marker to write. What needs catching here
+     is the other half: a student who opened a DIFFERENT test, left without
+     submitting, and is only now loading a test page again. test-session.ts
+     keeps a single session at a time, so if one is sitting there for some
+     OTHER test id the moment this instance mounts, that is exactly the
+     "detect on the next load" case. Recording it, once, as abandoned (or
+     expired, if its clock had already run out while nobody was looking) is
+     the only reliable place to catch it, since a beforeunload handler is not
+     guaranteed to run (a killed tab, a crashed browser). The stale session
+     itself is left untouched: clearing it here would break a legitimate
+     "come back to this exact test" resume later, and the deterministic id
+     below means finding the same stale session again on some other test
+     page is harmless, it re-records the identical row, not a new one. */
+  useEffect(() => {
+    const stale = activeSession();
+    if (stale && stale.testId !== test.id) recordStaleSessionAbandonment(stale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -382,8 +481,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       t.total += 1;
       if (scoredIds.has(question.id)) t.correct += 1;
     }
+    const at = new Date().toISOString();
     recordTestAttempt(test.id, {
-      at: new Date().toISOString(),
+      at,
       raw,
       total: SCORED_TOTAL,
       band: bandMidpoint(raw, SCORED_TOTAL, test.skill),
@@ -394,6 +494,38 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       skill: test.skill,
     });
     setByTypeStats(byType);
+
+    /* Learner-evidence recording (WP12), written alongside the row above,
+       never instead of it: per-item detail for every scored question the
+       student saw (buildQuestionItems includes the blank ones too, which is
+       what makes exposure honest and a wholly-empty paper detectable as
+       `blank` rather than "attempted and got zero"). `baseId` is the real
+       paper's own id: for a retake that is the ORIGINAL paper it retries,
+       not its synthetic "-retake" id, so the store's own retry detection
+       (store.browser.ts's earlierAttempt, matched by shared item ids) links
+       this event to the first attempt automatically: no explicit retryOf is
+       passed. attemptEvidenceMode turns attemptKind straight into the right
+       mode: a retake is always rendered with attemptKind="drill" regardless
+       of what it retries (see buildRetakeTest / the nested render below), so
+       this one flag already keeps a mock leg (attemptKind="full") assessed
+       and a retake practised, exactly as required. */
+    const baseId = baseAttemptId(test.id);
+    const items = buildQuestionItems(baseId, numbered, answers, scoredIds, assistedIds);
+    const blank = isEntirelyBlank(numbered, answers);
+    recordSubmission({
+      activityId: attemptActivityId(test.id),
+      paper: test.skill,
+      at,
+      mode: attemptEvidenceMode(attemptKind),
+      completion: blank ? 'blank' : 'completed',
+      items,
+      raw,
+      total: SCORED_TOTAL,
+      bandEstimate: attemptKind === 'full' ? bandMidpoint(raw, SCORED_TOTAL, test.skill) : undefined,
+      secondsUsed: test.durationMinutes * 60 - timeLeft,
+      sourceTestId: baseId,
+    });
+
     clearSession(); // in-progress state done; permanent attempt kept in progress history
     // onFinish itself is wired to the score modal's "Back to results" button,
     // not called here — the retake still shows its own score/review first.
@@ -766,6 +898,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           startSeconds={stimulus.kind === 'audio' ? stimulus.startSeconds : undefined}
           endSeconds={stimulus.kind === 'audio' ? stimulus.endSeconds : undefined}
           drillPartNumber={attemptKind === 'drill' ? drillPartNumber(test.id) : null}
+          onAssistanceUsed={markAllAssisted}
         />
       )}
 
@@ -1009,7 +1142,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                       html={group.legendHtml}
                     />
                   )}
-                  {attemptKind === 'drill' && <StrategyPanel skill={test.skill} type={group.type} />}
+                  {attemptKind === 'drill' && (
+                    <div onClickCapture={() => markGroupAssisted(group)}>
+                      <StrategyPanel skill={test.skill} type={group.type} />
+                    </div>
+                  )}
                   {group.type === 'diagram-labelling' && group.diagram && (
                     <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
                   )}
@@ -2090,12 +2227,19 @@ function ListeningAudio({
   startSeconds,
   endSeconds,
   drillPartNumber: partNumber,
+  onAssistanceUsed,
 }: {
   src?: string;
   attemptKind: 'full' | 'drill';
   startSeconds?: number;
   endSeconds?: number;
   drillPartNumber: number | null;
+  /** Learner-evidence recording (WP12): fired the first time the student
+      replays or seeks the drill recording after it has actually started
+      playing. Never wired for attemptKind === 'full' by the caller, and
+      also guarded here, so a full exam's bare single-play button (which
+      has no seek bar to begin with) can never fire it. */
+  onAssistanceUsed?: () => void;
 }) {
   const { t } = useT();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -2105,12 +2249,18 @@ function ListeningAudio({
   const [ended, setEnded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  // Set the first time playback actually begins, so the programmatic seek
+  // handleLoadedMetadata does to line the drill up on its own startSeconds
+  // is never itself read as the student replaying something.
+  const hasPlayedRef = useRef(false);
+  const assistanceFiredRef = useRef(false);
 
   function retryLoad() {
     if (!src) return;
     setStatus('loading');
     setStarted(false);
     setEnded(false);
+    hasPlayedRef.current = false;
     setRetry((n) => n + 1);
   }
 
@@ -2132,6 +2282,16 @@ function ListeningAudio({
     if (attemptKind === 'drill' && endSeconds != null && el.currentTime >= endSeconds) {
       el.pause();
     }
+  }
+
+  function handlePlay() {
+    hasPlayedRef.current = true;
+  }
+
+  function handleSeeked() {
+    if (attemptKind !== 'drill' || !hasPlayedRef.current || assistanceFiredRef.current) return;
+    assistanceFiredRef.current = true;
+    onAssistanceUsed?.();
   }
 
   function startRecording() {
@@ -2191,6 +2351,8 @@ function ListeningAudio({
             aria-label={t('Drill recording')}
             onLoadedMetadata={handleLoadedMetadata}
             onTimeUpdate={handleTimeUpdate}
+            onPlay={handlePlay}
+            onSeeked={handleSeeked}
             onError={() => setStatus('error')}
           />
         )}

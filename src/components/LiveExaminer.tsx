@@ -48,6 +48,7 @@ import {
   CLOSING_PHRASE,
   EXAMINER_NAME,
   type DrillMode,
+  type DrillPlan,
 } from '../lib/speaking/live/script';
 import { gradeInterview, gradingAvailable, FULL_TEST_EXPECTED_MIN_MS } from '../lib/speaking/live/grade';
 import { recordSpeakingAttempt } from '../lib/progress';
@@ -63,6 +64,9 @@ import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
 import AuthModal from './AuthModal';
+import { getLearnerStore } from '../lib/learning/store.browser';
+import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
+import { parseSpeakingDeepLink } from './attempt-recording';
 
 const TOKEN_URL: string | undefined = import.meta.env?.PUBLIC_LIVE_EXAMINER_URL;
 
@@ -169,6 +173,15 @@ export default function LiveExaminer({
      ran (so it doesn't also report an abort for a normal finish). */
   const mockAutoStartedRef = useRef(false);
   const mockCompletedRef = useRef(false);
+  /* Learner-evidence recording (WP12): the catalogue prompt id a drill is
+     evidence about (a Part 1 topic id, or a cue-card id for Part 2/3), set
+     the moment the plan is built in startTest: from an exact deep link
+     when one was given, otherwise whatever buildDrillPlan drew. Null for
+     the full three-part interview, which has no single prompt id. */
+  const promptIdRef = useRef<string | null>(null);
+  // True once the ?part=/?topic=/?card= deep-link effect below has run, so
+  // it never fires twice.
+  const deepLinkHandledRef = useRef(false);
 
   const later = (fn: () => void, ms: number) => {
     const t = setTimeout(fn, ms);
@@ -236,9 +249,35 @@ export default function LiveExaminer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mock, liveConfig, configError, needsSignIn, authUnavailable]);
 
+  /* Exact deep link (WP12 requirement 4), variant="drills" only: ?part=1&
+     topic=<id> opens that Part 1 topic directly, ?part=2&card=<id> opens
+     that cue card's Part 2 monologue, ?part=3&card=<id> opens the same
+     card's Part 3 follow-ups, the same query shape SpeakingTester (the
+     fallback when the live token service is not configured) understands,
+     built from the catalogue's own speakingActivityId /
+     speakingPart3ActivityId ids. Skipped for the mock embed, which never
+     shows its own menu to begin from. Builds the DrillPlan by hand rather
+     than calling buildDrillPlan(m), which only ever draws from the
+     rotation and has no way to be told which prompt to use. */
+  useEffect(() => {
+    if (variant !== 'drills' || mock || deepLinkHandledRef.current) return;
+    if (phase !== 'menu' || typeof window === 'undefined') return;
+    deepLinkHandledRef.current = true;
+    const link = parseSpeakingDeepLink(window.location.search);
+    if (!link) return;
+    if (link.part === 1) {
+      const topic = SPEAKING_PART1_TOPICS.find((t) => t.id === link.topicId);
+      if (topic) void startTest('part1', { mode: 'part1', title: topic.topic, part1Topic: topic });
+      return;
+    }
+    const cue = SPEAKING_CUE_CARDS.find((c) => c.id === link.cardId);
+    if (cue) void startTest(link.part === 2 ? 'part2' : 'part3', { mode: link.part === 2 ? 'part2' : 'part3', title: cue.topic, cueCard: cue });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variant, mock, phase]);
+
   /* session start */
 
-  async function startTest(m: LiveMode = 'full') {
+  async function startTest(m: LiveMode = 'full', overridePlan?: DrillPlan) {
     if (!TOKEN_URL) return;
     if (needsSignIn || authUnavailable) return;
     if (startingRef.current || !(phase === 'menu' || phase === 'report' || phase === 'error')) return;
@@ -300,12 +339,18 @@ export default function LiveExaminer({
         const plan = buildExamPlan();
         planRef.current = { cueCard: plan.cueCard };
         titleRef.current = t('Live mock speaking test');
+        promptIdRef.current = null; // no single prompt id for the whole interview
         instruction = buildSystemInstruction(plan, provider);
         request = planRequestFor(plan);
       } else {
-        const plan = buildDrillPlan(m);
+        // An exact deep link (?part=1&topic=<id>, ?part=2|3&card=<id>) hands
+        // in the plan directly, built from the SAME topic/cue-card objects
+        // buildDrillPlan would have drawn from the rotation; everything
+        // downstream (the instruction, the session request) is unchanged.
+        const plan = overridePlan ?? buildDrillPlan(m);
         planRef.current = { cueCard: plan.cueCard, vocab: plan.part1Topic?.vocab ?? plan.cueCard?.vocab };
         titleRef.current = plan.title;
+        promptIdRef.current = plan.part1Topic?.id ?? plan.cueCard?.id ?? null;
         instruction = buildDrillSystemInstruction(plan, provider);
         request = planRequestFor(plan);
       }
@@ -559,10 +604,11 @@ export default function LiveExaminer({
           ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS }
           : { expectedMinMs: DRILL_EXPECTED_MIN_MS[m], scope: DRILL_GRADE_SCOPE[m] },
       );
+      const at = new Date().toISOString();
       // Drills feed the same band-over-time history as the recorded checker did.
       if (m !== 'full') {
         recordSpeakingAttempt({
-          at: new Date().toISOString(),
+          at,
           mode: m,
           topic: titleRef.current,
           overallBand: graded.overallBand,
@@ -570,6 +616,37 @@ export default function LiveExaminer({
           live: true,
         });
       }
+
+      /* Learner-evidence recording (WP12), written alongside the row above
+         for a drill and freshly for the full interview (which the legacy
+         store above never captured): part scope for a drill, none for the
+         whole three-part interview, the four criterion bands, always live
+         here (this pipeline has no offline stub), and NO audio: the
+         MediaRecorder blob stays local to gradeInterview's own request and
+         is never part of what gets recorded as evidence. promptIdRef names
+         the exact topic or cue card for a drill, set when the plan was
+         built in startTest, so a deep-linked prompt and a rotated one write
+         against the same catalogue id either way. */
+      const promptId = promptIdRef.current;
+      const activityId =
+        m === 'full'
+          ? 'trainer:examiner'
+          : promptId
+            ? m === 'part3'
+              ? speakingPart3ActivityId(promptId)
+              : speakingActivityId(promptId)
+            : 'trainer:speaking';
+      getLearnerStore().recordSpeakingGraded({
+        activityId,
+        paper: 'speaking',
+        promptId: promptId ?? undefined,
+        part: m === 'full' ? undefined : m === 'part1' ? 1 : m === 'part2' ? 2 : 3,
+        at,
+        overallBand: graded.overallBand,
+        criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
+        grader: graded.grader,
+      });
+
       setResult(graded);
       setPhase('report');
       // Mock embed: report straight back to MockExam instead of waiting on a

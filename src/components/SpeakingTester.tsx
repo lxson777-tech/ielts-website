@@ -7,7 +7,7 @@
    is audio-native — the actual recordings go to gradeSpeaking(), never a
    transcript — so Pronunciation can be judged from what was really said. */
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
@@ -24,9 +24,12 @@ import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
 import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
+import { getLearnerStore } from '../lib/learning/store.browser';
+import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
+import { parseSpeakingDeepLink } from './attempt-recording';
 
 type Mode = 'part1' | 'part2' | 'part3';
-type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report';
+type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report' | 'error';
 
 const STRUCTURE_METHOD: Record<Mode, StructureMethod> = { part1: 'ARE', part2: 'PEEL', part3: 'OREO' };
 const MODE_LABEL: Record<Mode, string> = { part1: 'Speaking Part 1', part2: 'Speaking Part 2', part3: 'Speaking Part 3' };
@@ -77,12 +80,42 @@ export default function SpeakingTester() {
   const expectedMinMsRef = useRef(0);
   const modeRef = useRef<Mode | null>(null);
   const promptTitleRef = useRef('');
+  // Learner-evidence recording (WP12): the catalogue prompt id this attempt
+  // is evidence about (a Part 1 topic id, or a cue card id for Part 2/3),
+  // set the moment a mode starts: from an exact deep link (?topic=/?card=)
+  // when one was given, otherwise whatever the rotation served.
+  const promptIdRef = useRef<string | null>(null);
+  // True once the deep-link effect below has run, so it never fires twice.
+  const deepLinkHandledRef = useRef(false);
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prepResolveRef = useRef<(() => void) | null>(null);
   const readyResolveRef = useRef<(() => void) | null>(null);
 
-  async function startMode(m: Mode) {
+  /* Exact deep link (WP12 requirement 4): ?part=1&topic=<id> opens that
+     Part 1 topic directly, ?part=2&card=<id> opens that cue card's Part 2
+     monologue, and ?part=3&card=<id> opens the same card's Part 3 follow
+     ups, the query shape the catalogue's speaking activities are built
+     around (src/lib/learning/catalog.ts's speakingActivityId /
+     speakingPart3ActivityId). Runs once, only from the menu, and only when
+     the requested prompt actually exists: an unmatched link is silently
+     left for the ordinary menu to handle rather than shown as an error. */
+  useEffect(() => {
+    if (deepLinkHandledRef.current || phase !== 'menu' || typeof window === 'undefined') return;
+    deepLinkHandledRef.current = true;
+    const link = parseSpeakingDeepLink(window.location.search);
+    if (!link) return;
+    if (link.part === 1) {
+      if (SPEAKING_PART1_TOPICS.some((t) => t.id === link.topicId)) void startMode('part1', link.topicId);
+      return;
+    }
+    if (SPEAKING_CUE_CARDS.some((c) => c.id === link.cardId)) {
+      void startMode(link.part === 2 ? 'part2' : 'part3', link.cardId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
+  async function startMode(m: Mode, explicitId?: string) {
     if (!isSpeakingGraderConfigured()) return; // the start cards are disabled for this too; belt and braces
     setMicError(null);
     let stream: MediaStream;
@@ -100,8 +133,12 @@ export default function SpeakingTester() {
 
     let turns: Turn[];
     if (m === 'part1') {
-      const id = nextInRotation('ielts.rotation.speaking-part1.v1', SPEAKING_PART1_TOPICS.map((t) => t.id));
+      // An exact deep link (?part=1&topic=<id>) picks this prompt directly
+      // and does not consume a rotation slot; otherwise the rotation serves
+      // the next one, same as clicking the card always has.
+      const id = explicitId ?? nextInRotation('ielts.rotation.speaking-part1.v1', SPEAKING_PART1_TOPICS.map((t) => t.id));
       const topic = SPEAKING_PART1_TOPICS.find((t) => t.id === id) ?? SPEAKING_PART1_TOPICS[0]!;
+      promptIdRef.current = topic.id;
       promptTitleRef.current = topic.topic;
       setPromptTitle(topic.topic);
       setVocab(topic.vocab);
@@ -109,8 +146,9 @@ export default function SpeakingTester() {
       turns = topic.questions.map((q) => ({ question: q.text, maxMs: 45_000, ideas: q.ideas }));
       expectedMinMsRef.current = turns.length * 15_000;
     } else {
-      const id = nextInRotation('ielts.rotation.speaking-part23.v1', SPEAKING_CUE_CARDS.map((c) => c.id));
+      const id = explicitId ?? nextInRotation('ielts.rotation.speaking-part23.v1', SPEAKING_CUE_CARDS.map((c) => c.id));
       const cue = SPEAKING_CUE_CARDS.find((c) => c.id === id) ?? SPEAKING_CUE_CARDS[0]!;
+      promptIdRef.current = cue.id;
       promptTitleRef.current = cue.topic;
       setPromptTitle(cue.topic);
       setVocab(cue.vocab);
@@ -224,6 +262,12 @@ export default function SpeakingTester() {
     } catch {
       // Without this, any failure in the pipeline (audio decode, blob
       // conversion, grading) left the student stuck on "Grading…" forever.
+      // The mic is released (recording is over either way), but the clips
+      // already captured are NOT discarded and the phase does not fall back
+      // to the menu: 'error' offers grading them again from exactly what
+      // was recorded, with no re-answering, alongside a plain way to give
+      // up and start over. Losing a student's spoken answers to a network
+      // blip would be strictly worse than the failure itself.
       if (streamRef.current) {
         releaseMic(streamRef.current);
         streamRef.current = null;
@@ -231,8 +275,8 @@ export default function SpeakingTester() {
       // isSpeakingGraderConfigured() gates the Start cards, so any failure
       // reaching here happened after a real request went out — network,
       // timeout, or the Worker itself failing, not a missing config.
-      setMicError(t('We could not reach the grading service. Please try again in a minute.'));
-      setPhase('menu');
+      setMicError(t('We could not reach the grading service. Your answers are still here, try grading them again in a minute.'));
+      setPhase('error');
     }
   }
 
@@ -270,6 +314,31 @@ export default function SpeakingTester() {
         criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
         live: graded.grader.live,
       });
+
+      /* Learner-evidence recording (WP12), written alongside the row above,
+         never instead of it: part scope, the four criterion bands, whether
+         this was a live grade, and NO audio anywhere in it (createEvidenceEvent
+         refuses anything that looks like a recording, see evidence.ts's
+         assertNoRawAudio). promptIdRef names the exact topic or cue card, set
+         when this mode started (startMode), so the activity id matches the
+         catalogue exactly whether the prompt came from the rotation or from
+         an exact deep link. */
+      const promptId = promptIdRef.current;
+      getLearnerStore().recordSpeakingGraded({
+        activityId: promptId
+          ? gradedMode === 'part3'
+            ? speakingPart3ActivityId(promptId)
+            : speakingActivityId(promptId)
+          : 'trainer:speaking',
+        paper: 'speaking',
+        promptId: promptId ?? undefined,
+        part: gradedMode === 'part1' ? 1 : gradedMode === 'part2' ? 2 : 3,
+        at,
+        overallBand: graded.overallBand,
+        criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
+        grader: graded.grader,
+        legacyRef: { store: 'speaking', key: gradedMode, at },
+      });
     }
     setResult(graded);
     setPhase('report');
@@ -283,9 +352,46 @@ export default function SpeakingTester() {
       releaseMic(streamRef.current);
       streamRef.current = null;
     }
+    // A deliberate "start over" (including from the grading-failure screen)
+    // discards whatever was recorded. retryGrading() below is the only path
+    // that reuses clipsRef, and it never goes through here first.
+    clipsRef.current = [];
     setMode(null);
     setPhase('menu');
     setResult(null);
+    setMicError(null);
+  }
+
+  /** Grade again from the clips already recorded, with no re-answering.
+      Offered only from the 'error' phase (see its screen below), where
+      clipsRef.current still holds the failed attempt's audio. */
+  function retryGrading() {
+    void finishAndGrade();
+  }
+
+  /* ── Grading failed: the recorded answers are still here ── */
+  if (phase === 'error') {
+    return (
+      <div className="screen-in mx-auto max-w-md space-y-4 rounded-card border border-border bg-surface p-6 text-center shadow-card">
+        <p className="rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <button
+            type="button"
+            onClick={retryGrading}
+            className="rounded-button bg-brand px-5 py-2.5 font-semibold text-white hover:bg-brand-hover"
+          >
+            {t('Try grading again')}
+          </button>
+          <button
+            type="button"
+            onClick={backToMenu}
+            className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+          >
+            {t('Start over')}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   /* ── Report screen ── */
