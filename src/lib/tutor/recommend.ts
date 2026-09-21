@@ -17,18 +17,66 @@
 
 import type { ProgressV1 } from '../progress';
 import { buildCatalog, findActivity, lessonForType, practiseActivity, type Activity } from './catalog';
-import type { Observation, StudentInsights } from './insights';
+import { observationEvidence, observationText, type Observation, type StudentInsights } from './insights';
 import { buildCourse, courseStatus } from '../course';
+import type { Locale } from '../i18n/locale';
+import { tutorText, type TextVars } from './ru';
 
 export interface Recommendation {
   activity: Activity;
-  /** Deterministic explanation, used verbatim when no model answers. */
+  /** Deterministic explanation in ENGLISH, used verbatim when no model
+      answers and the student reads English. For any other language call
+      recommendationReason(), which rebuilds it from `template` and `vars`
+      (plus the observation, whose own wording is language-dependent). */
   fallbackReason: string;
+  /** The whole-sentence English template `fallbackReason` came from, which
+      is also its key in src/lib/tutor/ru.ts. */
+  template: string;
+  vars: TextVars;
   /** Which rule fired, for tests and for the Worker's own logging. */
   rule: string;
   /** The observation behind it, when there was one — this is what the model
       is told to build its wording on. */
   because?: Observation;
+}
+
+/** The reason, in the student's language.
+
+    `{claim}` and `{evidence}` are whole translated sentences in their own
+    right, dropped into a whole translated sentence. That is the one kind of
+    composition Russian survives: never a fragment beside a fragment. */
+export function recommendationReason(rec: Recommendation, locale: Locale): string {
+  if (locale === 'en') return rec.fallbackReason;
+  const vars: TextVars = { ...rec.vars };
+  if (rec.because) {
+    vars.claim = observationText(rec.because, locale);
+    vars.evidence = observationEvidence(rec.because, locale);
+  }
+  return tutorText(locale, rec.template, vars);
+}
+
+/** Build a recommendation, rendering its English reason eagerly and keeping
+    what is needed to render it again in another language. */
+function reason(
+  activity: Activity,
+  rule: string,
+  template: string,
+  vars: TextVars,
+  because?: Observation,
+): Recommendation {
+  const english: TextVars = { ...vars };
+  if (because) {
+    english.claim = because.text;
+    english.evidence = because.evidence;
+  }
+  return {
+    activity,
+    rule,
+    because,
+    template,
+    vars,
+    fallbackReason: tutorText('en', template, english),
+  };
 }
 
 /** The first course lesson this student has not completed, as an activity. */
@@ -51,22 +99,24 @@ function forTypeWeakness(observation: Observation, progress: ProgressV1): Recomm
   const lessonDone = lessonKey ? Boolean(progress.lessons?.[lessonKey]) : true;
 
   if (lesson && !lessonDone) {
-    return {
-      activity: lesson,
-      rule: 'weakness-teach',
-      because: observation,
-      fallbackReason: `${observation.text} You have not worked through the lesson on it yet (${observation.evidence}).`,
-    };
+    return reason(
+      lesson,
+      'weakness-teach',
+      '{claim} You have not worked through the lesson on it yet ({evidence}).',
+      {},
+      observation,
+    );
   }
 
   const drill = practiseActivity(`practise:${skill}:${type}`);
   if (!drill) return null;
-  return {
-    activity: drill,
-    rule: 'weakness-drill',
-    because: observation,
-    fallbackReason: `${observation.text} These drills are filtered to exactly that type (${observation.evidence}).`,
-  };
+  return reason(
+    drill,
+    'weakness-drill',
+    '{claim} These drills are filtered to exactly that type ({evidence}).',
+    {},
+    observation,
+  );
 }
 
 /** Decide the next activity. `progress` is needed as well as `insights`
@@ -81,11 +131,12 @@ export function recommendNext(insights: StudentInsights, progress: ProgressV1): 
   if (!goals.targetBand || goals.guessed) {
     const plan = findActivity('tool:plan');
     if (plan) {
-      return {
-        activity: plan,
-        rule: 'no-goal',
-        fallbackReason: 'Setting a target band (and an exam date if you have one) is what makes every other suggestion here specific rather than generic.',
-      };
+      return reason(
+        plan,
+        'no-goal',
+        'Setting a target band (and an exam date if you have one) is what makes every other suggestion here specific rather than generic.',
+        {},
+      );
     }
   }
 
@@ -97,12 +148,13 @@ export function recommendNext(insights: StudentInsights, progress: ProgressV1): 
     if (fromType) return fromType;
     const activity = measuredWeakness.activityId ? findActivity(measuredWeakness.activityId) : undefined;
     if (activity) {
-      return {
+      return reason(
         activity,
-        rule: 'weakness-criterion',
-        because: measuredWeakness,
-        fallbackReason: `${measuredWeakness.text} Another marked attempt is the fastest way to move it (${measuredWeakness.evidence}).`,
-      };
+        'weakness-criterion',
+        '{claim} Another marked attempt is the fastest way to move it ({evidence}).',
+        {},
+        measuredWeakness,
+      );
     }
   }
 
@@ -114,11 +166,12 @@ export function recommendNext(insights: StudentInsights, progress: ProgressV1): 
   if (!insights.hasAnyResults) {
     const lesson = nextCourseLesson(progress);
     if (lesson) {
-      return {
-        activity: lesson,
-        rule: 'course-start',
-        fallbackReason: 'The course is ordered so each lesson builds on the last, and this is where you are up to.',
-      };
+      return reason(
+        lesson,
+        'course-start',
+        'The course is ordered so each lesson builds on the last, and this is where you are up to.',
+        {},
+      );
     }
   }
 
@@ -130,12 +183,7 @@ export function recommendNext(insights: StudentInsights, progress: ProgressV1): 
   if (gap?.activityId) {
     const activity = findActivity(gap.activityId);
     if (activity) {
-      return {
-        activity,
-        rule: 'missing-paper',
-        because: gap,
-        fallbackReason: `${gap.text} One attempt gives you a starting point to work from.`,
-      };
+      return reason(activity, 'missing-paper', '{claim} One attempt gives you a starting point to work from.', {}, gap);
     }
   }
 
@@ -150,20 +198,22 @@ export function recommendNext(insights: StudentInsights, progress: ProgressV1): 
   // 6. Keep moving through the course.
   const lesson = nextCourseLesson(progress);
   if (lesson) {
-    return {
-      activity: lesson,
-      rule: 'course-continue',
-      fallbackReason: 'Next in the course, which is ordered so each lesson builds on the one before.',
-    };
+    return reason(
+      lesson,
+      'course-continue',
+      'Next in the course, which is ordered so each lesson builds on the one before.',
+      {},
+    );
   }
 
   // 7. Course finished: the remaining work is exam conditions.
   const mock = findActivity('test:mock') ?? buildCatalog()[0]!;
-  return {
-    activity: mock,
-    rule: 'course-complete',
-    fallbackReason: 'Every lesson is done, so the useful work now is full papers under exam timing.',
-  };
+  return reason(
+    mock,
+    'course-complete',
+    'Every lesson is done, so the useful work now is full papers under exam timing.',
+    {},
+  );
 }
 
 /** The handful of activities worth offering the model as alternatives, so a

@@ -13,6 +13,8 @@
 import { getAccessToken } from '../auth/session';
 import { isAuthConfigured } from '../auth/supabase';
 import { t } from '../i18n/translate';
+import { getLocale } from '../i18n/locale';
+import { tutorErrorMessage } from './errors';
 import { MAX_MESSAGE_CHARS, type TutorErrorCode, type TutorReply, type TutorRequest } from './schema';
 
 const TUTOR_URL: string | undefined = import.meta.env?.PUBLIC_MR_EZ_URL;
@@ -93,17 +95,20 @@ async function post(url: string, token: string, req: TutorRequest, signal?: Abor
 
   if (!resp.ok) {
     let code: TutorErrorCode = 'unavailable';
-    let message = t('Mr EZ could not answer just now.');
+    let fromWorker: string | null = null;
     let retryAfter: number | undefined;
     try {
       const body = (await resp.json()) as { error?: string; code?: TutorErrorCode; retryAfter?: number };
       if (body.code) code = body.code;
-      if (body.error) message = body.error;
+      if (body.error) fromWorker = body.error;
       retryAfter = body.retryAfter;
     } catch {
       /* a non-JSON error body still gets a sensible code below */
     }
     if (resp.status === 401) code = 'sign-in-required';
+    /* Ours first, the Worker's English only for a code we have no wording
+       of our own for. See src/lib/tutor/errors.ts for why that way round. */
+    const message = tutorErrorMessage(code) ?? fromWorker ?? t('Mr EZ could not answer just now.');
     throw new TutorClientError(code, message, retryAfter);
   }
 
@@ -124,8 +129,16 @@ export async function askTutor(req: TutorRequest, options: AskOptions = {}): Pro
   const token = await getAccessToken();
   if (!token) throw new TutorClientError('sign-in-required', t('Sign in and Mr EZ can see your own results.'));
 
-  // Generated here, once, so the retry below cannot buy a second answer.
-  const withKey: TutorRequest = { ...req, idempotencyKey: req.idempotencyKey ?? newIdempotencyKey() };
+  /* Generated here, once, so the retry below cannot buy a second answer.
+     The locale rides along for the same reason it is on the request at all:
+     the Worker has no other way to know which language to answer in, and a
+     display preference is the one thing the browser genuinely does own
+     (see the comment on TutorRequest.locale in ./schema.ts). */
+  const withKey: TutorRequest = {
+    ...req,
+    locale: req.locale ?? getLocale(),
+    idempotencyKey: req.idempotencyKey ?? newIdempotencyKey(),
+  };
 
   try {
     return await post(TUTOR_URL, token, withKey, options.signal);

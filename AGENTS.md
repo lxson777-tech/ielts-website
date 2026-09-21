@@ -173,9 +173,30 @@ Two rules carry most of the weight, and breaking either is worse than a bug:
 
 Shared layer (imported by both the site and the Worker, like the live
 examiner's instructions module): `src/lib/tutor/{schema,insights,catalog,
-recommend,prompt,assessment}.ts`. Browser-only: `client.ts`, `conversation.ts`,
-`local.ts`, `avatar.ts`. Components under `src/components/tutor/`, styles in
-`src/styles/mr-ez.css`.
+recommend,prompt,assessment,ru}.ts`. Browser-only: `client.ts`,
+`conversation.ts`, `local.ts`, `errors.ts`, `avatar.ts`. Components under
+`src/components/tutor/`, styles in `src/styles/mr-ez.css`.
+
+- **He answers in the student's language.** `TutorRequest.locale` ('en' or 'ru')
+  rides on every request. It is the one field read straight off the browser and
+  that is fine: "the browser is not a source of truth" is about facts and
+  identity, and a language is neither. For 'ru' a block of language rules is
+  appended AFTER the task rules; `MR_EZ_PERSONA` stays byte-identical in both
+  languages and a test pins that. The FACTS blocks stay English in both: the
+  model reads English and writes Russian, and IELTS, the paper names, question
+  type names, criterion names and Part / Task / Passage stay English inside the
+  Russian sentence.
+- **The shared layer's own Russian lives in `src/lib/tutor/ru.ts`, not in the
+  site's dictionary.** That dictionary is a lazily fetched browser chunk and the
+  Worker cannot read it, so the sentences this layer writes itself get a small
+  synchronous map of whole sentences keyed by the English, with Russian plurals
+  through `Intl.PluralRules`. Every shared function takes an EXPLICIT `locale`;
+  none of them calls `getLocale()`. `tests/mr-ez-i18n.test.ts` scans those files
+  and fails by name if a sentence has no Russian. Lesson titles and unit names
+  are the deliberate exception and stay English there, because they belong to
+  the course registry and the browser translates them when it renders the card.
+  The three cache fingerprints all fold the locale in, so switching language
+  never serves the other language's cached paragraph.
 
 - **He guides, he does not interrupt.** Beyond the welcome, the panel and "explain this
   result", four one-shot tasks exist: `weekly` (a review of the last COMPLETED calendar week,

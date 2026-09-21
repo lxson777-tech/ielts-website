@@ -236,7 +236,7 @@ never edit the same file. Add your entries to yours and nothing else.
 | Tests hub, test player, analytics, debrief, mock exam | `tests-player.ts` |
 | Writing and speaking trainers, band report, live examiner | `trainers-writing-speaking.ts` |
 | Account, sign-in, password reset, vocabulary and word of the day | `account-auth-vocab.ts` |
-| Mr EZ's interface and his deterministic sentences | `tutor.ts` |
+| Mr EZ's interface and his browser-side error wording | `tutor.ts` |
 | Page-level copy in `src/pages`, marketing nav and footer | `pages.ts` |
 | Drill names and blurbs built in `src/lib/tests/drills.ts` | `trainers-drills.ts` |
 
@@ -322,6 +322,50 @@ A part is only worth it for a big block of text with a small audience.
 Anything small, a few drill titles or a handful of leftover interface
 strings, goes in an ordinary batch file of the main dictionary. Three parts
 is meant to be close to the final number.
+
+## The one place outside this dictionary: Mr EZ's shared layer
+
+There is exactly one set of Russian strings in this codebase that does **not**
+live under `src/lib/i18n/dict/`, and it is worth understanding why before you
+add a second one.
+
+Everything above assumes a browser: a chunk is fetched, merged into memory, and
+read through `getLocale()`. Mr EZ's counting layer
+(`src/lib/tutor/{insights,recommend,catalog,week,units}.ts`) is imported by the
+site **and** by the Cloudflare Worker in `workers/mr-ez`. Inside that Worker
+there is no fetch to a chunk, no memory to merge it into, no `localStorage` to
+read a locale from, and a hard bundle-size limit. The same function has to write
+"True / False / Not Given in Reading is consistently the weakest question type."
+in a browser and in a Worker, in whichever language the student reads.
+
+So that layer has its own map: **`src/lib/tutor/ru.ts`**. Same idea as this
+dictionary (the English is the key, a missing entry falls back to its own
+English, no dashes, `Intl.PluralRules` for the four Russian forms), but small,
+synchronous, dependency-free and importable by both sides.
+
+Three rules keep the split from spreading:
+
+1. **Only the shared layer.** If a string is written by a React island or an
+   `.astro` page, it belongs in a batch file here, translated with `t()`. Only
+   sentences written by code that the Worker also runs go in `ru.ts`.
+2. **Explicit locale, always.** Nothing under `src/lib/tutor/` calls
+   `getLocale()`. Every function that produces student-visible text takes a
+   `locale` argument, and the components pass `useT().locale` down. Ambient
+   state would simply be undefined in the Worker.
+3. **Whole sentences with `{holes}`, never fragments.** The same rule as here,
+   enforced harder, because these sentences are assembled from counts, question
+   type names and dates. `tutorCount()` is the `tn()` of that file.
+
+`tests/mr-ez-i18n.test.ts` guards it the way `tests/i18n.test.ts` guards this
+dictionary: it reads the shared files, pulls out every sentence they write, and
+fails by name if one has no Russian, if a Russian value has different
+`{placeholders}` from its English key, if anything contains a dash, or if an
+entry is left behind that no code writes any more.
+
+What deliberately stays English there: **lesson titles and unit names** (they
+come from the course registry, are translated in `course-data.ts` here, and the
+browser runs them through `t()` when it renders a recommendation card), and the
+**facts the model is handed**, because Mr EZ reads English and writes Russian.
 
 ## Running the coverage test on its own
 

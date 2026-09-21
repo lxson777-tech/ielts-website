@@ -437,7 +437,46 @@ function noteKeyFor(request) {
   return null;
 }
 
+/* The stand-in speaks Russian too, so a Russian interface can be clicked
+   through end to end. It cannot import src/lib/tutor/ru.ts (that is
+   TypeScript and this is plain Node), and it is not meant to: the real
+   Worker's own wording is covered by the unit tests. These are this
+   server's own sentences, and they say "simulated" just as loudly in both
+   languages. */
+const SIM_RU = {
+  welcome:
+    'Симулированный ответ репетитора от локального dev-сервера. Запрос к ИИ не отправлялся и ничего не потрачено. С настоящей моделью здесь было бы приветствие и причина следующего шага.',
+  welcomeReason: 'Симулированная причина. Настоящую пишет модель по вашей собственной истории.',
+  explain: (kind, at) =>
+    `Симулированный ответ репетитора от локального dev-сервера. Запрос к ИИ не отправлялся. Разбирается результат (${kind}), записанный ${at}.\n\nЛюбой балл на этой платформе получен по ИИ-проверке и не является официальным результатом IELTS.`,
+  explainReason: 'Симулированная причина.',
+  weekly:
+    'Симулированный еженедельный обзор от локального dev-сервера. Запрос к ИИ не отправлялся и ничего не потрачено. Настоящий называет только посчитанные факты: сколько дней из запланированных, минуты против цели, пройденные уроки, тренировочные попытки и те же четыре числа за прошлую неделю. Он никогда не называет одно изменение балла тенденцией.',
+  weeklyReason: 'Симулированная причина. Настоящую выбирает код по вашей собственной истории.',
+  unit: (kind, unitId) =>
+    `Симулированная заметка по разделу ${unitId} (${kind}) от локального dev-сервера. Запрос к ИИ не отправлялся. Заметка по разделу никогда не несёт рекомендации: уроки этого раздела и так прямо под ней.`,
+  unitIntro: 'вступление',
+  unitWrap: 'итог',
+  review: (count, ids, testId) =>
+    `Симулированный разбор ответов от локального dev-сервера. Запрос к ИИ не отправлялся. Спрошено про ${count} вопрос(ов) (${ids}) в ${testId}.\n\nНастоящий Worker берёт эти вопросы из опубликованного JSON самого сайта и никогда не читает формулировку, ответ или объяснение из запроса. Это разбор ответов, а не оценка, поэтому о балле здесь ничего не говорится.`,
+  reviewReason: 'Симулированная причина. Настоящую выбирает код по типам вопросов, в которых были ошибки.',
+  chat: (message) =>
+    `Симулированный ответ репетитора от локального dev-сервера. Запрос к ИИ не отправлялся и ничего не потрачено.\n\nВы спросили: "${message}"\n\nС настоящей моделью Mr EZ ответил бы, опираясь только на ваши цели, результаты и открытый урок.`,
+  labels: {
+    'Your progress report': 'Ваш отчёт о прогрессе',
+    'Write an essay and get an AI band': 'Написать эссе и получить балл от ИИ',
+    'Short Reading drills': 'Короткие тренировки Reading',
+  },
+};
+
+/** 'ru' only when the request says so, exactly like parseTutorRequest. */
+function localeOf(request) {
+  return request?.locale === 'ru' ? 'ru' : 'en';
+}
+
 function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
+  const ru = localeOf(request) === 'ru';
+  const label = (english) => (ru ? SIM_RU.labels[english] ?? english : english);
   const base = {
     task: request.task,
     conversationId,
@@ -452,12 +491,16 @@ function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
     return {
       ...base,
       mood: 'encouraging',
-      text: 'Simulated tutor reply from the local dev server. No AI was called and nothing was charged. With a real model configured, this is where the greeting and the reason for the next step would be written.',
+      text: ru
+        ? SIM_RU.welcome
+        : 'Simulated tutor reply from the local dev server. No AI was called and nothing was charged. With a real model configured, this is where the greeting and the reason for the next step would be written.',
       recommendation: {
         id: 'tool:report',
-        label: 'Your progress report',
+        label: label('Your progress report'),
         href: '/report',
-        reason: 'A simulated reason. The real one is written by the model from your own record.',
+        reason: ru
+          ? SIM_RU.welcomeReason
+          : 'A simulated reason. The real one is written by the model from your own record.',
       },
     };
   }
@@ -465,12 +508,14 @@ function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
   if (request.task === 'explain') {
     return {
       ...base,
-      text: `Simulated tutor reply from the local dev server. No AI was called. The result being explained is the ${request.attempt?.kind} attempt recorded at ${request.attempt?.at}.\n\nEvery band on this platform is an estimate from its own AI marking, not an official IELTS result.`,
+      text: ru
+        ? SIM_RU.explain(request.attempt?.kind, request.attempt?.at)
+        : `Simulated tutor reply from the local dev server. No AI was called. The result being explained is the ${request.attempt?.kind} attempt recorded at ${request.attempt?.at}.\n\nEvery band on this platform is an estimate from its own AI marking, not an official IELTS result.`,
       recommendation: {
         id: 'trainer:writing',
-        label: 'Write an essay and get an AI band',
+        label: label('Write an essay and get an AI band'),
         href: '/trainers/writing',
-        reason: 'A simulated reason.',
+        reason: ru ? SIM_RU.explainReason : 'A simulated reason.',
       },
     };
   }
@@ -478,22 +523,27 @@ function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
   if (request.task === 'weekly') {
     return {
       ...base,
-      text: 'Simulated weekly review from the local dev server. No AI was called and nothing was charged. The real one states only counted facts: days studied out of days planned, minutes against the goal, lessons finished, practice attempts, and the same four numbers for the week before. It never calls one band change a trend.',
+      text: ru
+        ? SIM_RU.weekly
+        : 'Simulated weekly review from the local dev server. No AI was called and nothing was charged. The real one states only counted facts: days studied out of days planned, minutes against the goal, lessons finished, practice attempts, and the same four numbers for the week before. It never calls one band change a trend.',
       recommendation: {
         id: 'tool:report',
-        label: 'Your progress report',
+        label: label('Your progress report'),
         href: '/report',
-        reason: 'A simulated reason. The real one is chosen in code from your own record.',
+        reason: ru ? SIM_RU.weeklyReason : 'A simulated reason. The real one is chosen in code from your own record.',
       },
     };
   }
 
   if (request.task === 'unit') {
-    const kind = request.unit?.kind === 'wrap' ? 'wrap-up' : 'introduction';
+    const wrap = request.unit?.kind === 'wrap';
+    const kind = wrap ? 'wrap-up' : 'introduction';
     return {
       ...base,
-      mood: request.unit?.kind === 'wrap' ? 'celebrating' : 'explaining',
-      text: `Simulated unit ${kind} from the local dev server for unit ${request.unit?.unitId}. No AI was called. A unit note never carries a recommendation: the unit's own lessons are right beneath it.`,
+      mood: wrap ? 'celebrating' : 'explaining',
+      text: ru
+        ? SIM_RU.unit(wrap ? SIM_RU.unitWrap : SIM_RU.unitIntro, request.unit?.unitId)
+        : `Simulated unit ${kind} from the local dev server for unit ${request.unit?.unitId}. No AI was called. A unit note never carries a recommendation: the unit's own lessons are right beneath it.`,
       // Deliberately null, exactly like the real thing.
       recommendation: null,
     };
@@ -501,26 +551,32 @@ function simulatedReply(request, conversationId, turnsToday, turnsPerDay) {
 
   if (request.task === 'debrief' || request.task === 'item') {
     const items = request.review?.items ?? [];
+    const ids = items.map((i) => i.questionId).join(', ');
     return {
       ...base,
-      text:
-        `Simulated answer review from the local dev server. No AI was called. Asked about ${items.length} ` +
-        `${items.length === 1 ? 'question' : 'questions'} (${items.map((i) => i.questionId).join(', ')}) in ` +
-        `${request.review?.testId}.\n\nThe real Worker fetches those questions from the site's own published ` +
-        'JSON and never reads a prompt, an answer or an explanation out of the request. This is a review of ' +
-        'answers, not a mark, so it says nothing about a band.',
+      text: ru
+        ? SIM_RU.review(items.length, ids, request.review?.testId)
+        : `Simulated answer review from the local dev server. No AI was called. Asked about ${items.length} ` +
+          `${items.length === 1 ? 'question' : 'questions'} (${ids}) in ` +
+          `${request.review?.testId}.\n\nThe real Worker fetches those questions from the site's own published ` +
+          'JSON and never reads a prompt, an answer or an explanation out of the request. This is a review of ' +
+          'answers, not a mark, so it says nothing about a band.',
       recommendation: {
         id: 'trainer:reading',
-        label: 'Short Reading drills',
+        label: label('Short Reading drills'),
         href: '/trainers/reading',
-        reason: 'A simulated reason. The real one is chosen in code from the question types that went wrong.',
+        reason: ru
+          ? SIM_RU.reviewReason
+          : 'A simulated reason. The real one is chosen in code from the question types that went wrong.',
       },
     };
   }
 
   return {
     ...base,
-    text: `Simulated tutor reply from the local dev server. No AI was called and nothing was charged.\n\nYou asked: "${request.message}"\n\nWith a real model configured, Mr EZ would answer this using only your own goals, results and the lesson you have open.`,
+    text: ru
+      ? SIM_RU.chat(request.message)
+      : `Simulated tutor reply from the local dev server. No AI was called and nothing was charged.\n\nYou asked: "${request.message}"\n\nWith a real model configured, Mr EZ would answer this using only your own goals, results and the lesson you have open.`,
   };
 }
 
@@ -609,9 +665,10 @@ async function handleTutor(req, res, url) {
      changes; this stand-in cannot compute that fingerprint from plain Node,
      so it caches per student until the history is cleared. The fingerprint
      behaviour itself is covered by tests/mr-ez-worker.test.ts. */
+  const locale = localeOf(request);
   if (request.task === 'welcome') {
     const cached = db.recommendations.get(userId);
-    if (cached) return send(res, 200, { ...cached.reply, cached: true });
+    if (cached && cached.fingerprint === `dev-${locale}`) return send(res, 200, { ...cached.reply, cached: true });
   }
 
   /* The weekly review and the unit notes are cached the same way, in
@@ -619,7 +676,9 @@ async function handleTutor(req, res, url) {
      look again" path is visible in the interface too. */
   const note = noteKeyFor(request);
   if (note) {
-    const stored = db.notes.find((n) => n.user_id === userId && n.kind === note.kind && n.note_key === note.note_key);
+    const stored = db.notes.find(
+      (n) => n.user_id === userId && n.kind === note.kind && n.note_key === note.note_key && n.fingerprint === `dev-${locale}`,
+    );
     if (stored) return send(res, 200, { ...stored.reply, cached: true });
   }
 
@@ -638,12 +697,12 @@ async function handleTutor(req, res, url) {
   });
 
   if (request.task === 'welcome') {
-    db.recommendations.set(userId, { user_id: userId, fingerprint: 'dev', reply });
+    db.recommendations.set(userId, { user_id: userId, fingerprint: `dev-${locale}`, reply });
   }
 
   if (note) {
     db.notes = db.notes.filter((n) => !(n.user_id === userId && n.kind === note.kind && n.note_key === note.note_key));
-    db.notes.push({ user_id: userId, ...note, fingerprint: 'dev', reply, created_at: new Date().toISOString() });
+    db.notes.push({ user_id: userId, ...note, fingerprint: `dev-${locale}`, reply, created_at: new Date().toISOString() });
   }
 
   if (conversation && request.message) {

@@ -7,19 +7,21 @@
    local.ts.
 
    Mr EZ's own generated speech is not a dictionary job: the Worker is told
-   which language to answer in. Only the fixed wording around him lives here.
+   which language to answer in (TutorRequest.locale, and the language rules
+   appended to the prompt in src/lib/tutor/prompt.ts). Only the fixed
+   wording around him lives here.
 
-   Known gap: src/lib/tutor/insights.ts, recommend.ts, catalog.ts, week.ts,
-   units.ts, assessment.ts, prompt.ts, schema.ts, test-items.ts and
-   wrong-items.ts are shared with the Cloudflare Worker and out of this
-   batch's scope (see .tmp/I18N-BATCH-BRIEF.md). Sentences and recommendation
-   labels/reasons produced by those files, plus any error text a Worker
-   response supplies directly (body.error in src/lib/tutor/client.ts) and
-   Mr EZ's own model replies, stay in English for a Russian student until
-   those files get an explicit-locale pass. That is a known and accepted gap,
-   not an oversight in this file.
+   And the SHARED layer is not a dictionary job either. src/lib/tutor/
+   {insights,recommend,catalog,week,units}.ts run inside the Cloudflare
+   Worker as well as in the browser, where this lazy dictionary does not
+   exist, so the Russian for the sentences THEY write lives in
+   src/lib/tutor/ru.ts: one small synchronous map both sides import. If a
+   string you are looking for is produced by one of those files, it belongs
+   there, not here. Its own coverage test (tests/mr-ez-i18n.test.ts) will
+   name it if it is missing.
 
-   See docs/I18N-GUIDE.md for the style rules and the glossary. */
+   See docs/I18N-GUIDE.md for the style rules, the glossary, and a short
+   section on why the tutor's Russian is split across two places. */
 
 export const strings: Record<string, string> = {
   /* Suggested questions (MrEzPanel.tsx). Sent to the model as the student's
@@ -137,8 +139,22 @@ export const strings: Record<string, string> = {
   'Mr EZ is looking at it…': 'Mr EZ смотрит…',
   'Why was my answer wrong?': 'Почему мой ответ неверный?',
 
-  /* Browser client errors (src/lib/tutor/client.ts). */
+  /* Browser client errors (src/lib/tutor/client.ts and errors.ts).
+
+     The Worker answers a refusal with a stable `code` and an English
+     sentence. The browser prefers its own wording for every code it knows
+     and only shows the Worker's sentence for a code it does not (in
+     practice 'bad-request', whose sentence is genuinely more specific than
+     a code could be). That is why these read a little more generally than
+     the Worker's own: they have to be true every time the code comes back. */
   'Mr EZ is not switched on for this build yet.': 'Mr EZ пока не включён в этой версии.',
+  'That is all your questions for today. Mr EZ will be back tomorrow.':
+    'На сегодня вопросы закончились. Mr EZ вернётся завтра.',
+  'Mr EZ has hit the whole-site limit for today. Please try again tomorrow.':
+    'Mr EZ достиг общего дневного лимита сайта. Попробуйте, пожалуйста, завтра.',
+  'Mr EZ could not find that in your own record.': 'Mr EZ не нашёл этого в вашей истории.',
+  'Mr EZ is busy right now. Give it a few seconds and ask again.':
+    'Mr EZ сейчас занят. Подождите несколько секунд и спросите ещё раз.',
   'Mr EZ needs accounts to be configured, because he only ever reads your own record.':
     'Для Mr EZ нужны настроенные аккаунты, ведь он читает только вашу собственную историю.',
   'Mr EZ could not be reached. Check your connection and try again.':

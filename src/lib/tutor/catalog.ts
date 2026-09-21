@@ -17,6 +17,8 @@
 import { buildCourse, type CourseLesson } from '../course';
 import { practisePath, lessonPath, questionTypeLabel } from '../tests/question-types';
 import type { QuestionType } from '../tests/schema';
+import type { Locale } from '../i18n/locale';
+import { tutorText, type TextVars } from './ru';
 
 export type ActivityKind = 'lesson' | 'drill' | 'test' | 'trainer' | 'review' | 'tool';
 
@@ -24,13 +26,43 @@ export interface Activity {
   /** Stable id the model may name, e.g. 'lesson:reading-tfng'. */
   id: string;
   kind: ActivityKind;
+  /** English, which is also its key in src/lib/tutor/ru.ts. Read it through
+      activityLabel() anywhere a student will see it. */
   label: string;
   /** Unprefixed internal path. The client applies withBase(). */
   href: string;
-  /** One line on what it is, from the real registry entry where there is one. */
+  /** One line on what it is, from the real registry entry where there is
+      one. English; see activityBlurb(). */
   blurb: string;
   minutes?: number;
   skill?: 'reading' | 'listening' | 'writing' | 'speaking' | 'vocabulary';
+  /** For a label and blurb built from a template (the per-question-type
+      drills, which there is one of per skill and type), the English
+      template and the holes it is filled from, so another language can put
+      the same pieces in its own word order. Absent for a fixed entry,
+      whose `label` and `blurb` ARE their own keys. */
+  labelTemplate?: string;
+  blurbTemplate?: string;
+  labelVars?: TextVars;
+}
+
+/** The card's title, in the student's language.
+
+    A LESSON's title is not translated here and cannot be: lesson titles
+    live in the course registry and are translated by the site's own lazy
+    dictionary, which a Cloudflare Worker has no way to read. They fall
+    through as English, and the browser runs them through t() when it
+    renders the card, which is where that dictionary does exist. */
+export function activityLabel(activity: Activity, locale: Locale): string {
+  if (locale === 'en') return activity.label;
+  return tutorText(locale, activity.labelTemplate ?? activity.label, activity.labelVars);
+}
+
+/** The card's one-line description, in the student's language. Same lesson
+    caveat as activityLabel(). */
+export function activityBlurb(activity: Activity, locale: Locale): string {
+  if (locale === 'en') return activity.blurb;
+  return tutorText(locale, activity.blurbTemplate ?? activity.blurb, activity.labelVars);
 }
 
 /** The fixed destinations: practice surfaces and tools that are not lessons.
@@ -182,14 +214,27 @@ export function practiseActivity(id: string): Activity | undefined {
   const [, skill, type] = id.split(':');
   if (skill !== 'reading' && skill !== 'listening') return undefined;
   if (!type || !(type in ALL_QUESTION_TYPE_LABELS)) return undefined;
+  /* Both strings are whole templates with the same two holes, so Russian
+     can put the paper name and the question type wherever its grammar
+     wants them. Both holes are filled with English on purpose: a student
+     has to recognise "Matching Headings" and "Reading" on the real paper. */
+  const labelVars: TextVars = {
+    type: questionTypeLabel(type),
+    skill: skill === 'reading' ? 'Reading' : 'Listening',
+  };
+  const labelTemplate = '{type} drills in {skill}';
+  const blurbTemplate = 'Short {skill} drills filtered to {type} questions.';
   return {
     id,
     kind: 'drill',
-    label: `${questionTypeLabel(type)} drills in ${skill === 'reading' ? 'Reading' : 'Listening'}`,
+    label: tutorText('en', labelTemplate, labelVars),
     href: practisePath(skill, type as QuestionType),
-    blurb: `Short ${skill} drills filtered to ${questionTypeLabel(type)} questions.`,
+    blurb: tutorText('en', blurbTemplate, labelVars),
     minutes: 10,
     skill,
+    labelTemplate,
+    blurbTemplate,
+    labelVars,
   };
 }
 

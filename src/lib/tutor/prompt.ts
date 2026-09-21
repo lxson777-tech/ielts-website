@@ -30,6 +30,7 @@
 import type { Activity } from './catalog';
 import type { StudentInsights } from './insights';
 import type { TutorPlace, TutorTask, TutorTurn } from './schema';
+import type { Locale } from '../i18n/locale';
 import type { WeekFacts } from './week';
 import type { UnitFacts, UnitNoteKind } from './units';
 import { summariseByType, type ResolvedItem } from './test-items';
@@ -119,6 +120,38 @@ If they left it blank, that is a timing or a guessing matter, and say so.
 Finish with one sentence of method for next time.
 Never state a band. Use the RECOMMENDED ACTIVITY: put its id in "recommendation" and the reason in "reason".`,
 };
+
+/* ── Language ──────────────────────────────────────────────────────────────
+   A separate block, appended AFTER the persona and the task rules, never
+   woven into them. Two reasons, and the second is the one that matters.
+
+   MR_EZ_PERSONA has to stay byte-identical for every student and every
+   turn: it is the whole of what makes the instructions reasonable to test
+   and change in one place, and it is the only part that could ever cache.
+   Editing it per language would give two personas to keep in step, which is
+   how a character quietly becomes two characters.
+
+   And the STUDENT RECORD stays English whatever language the reply is in.
+   The model reads English facts and writes Russian prose. Translating the
+   facts would mean translating counted evidence, question type names and
+   band descriptors on the way in, which is work with nothing to gain and a
+   new way to be wrong about what a student actually did. */
+export const RUSSIAN_REPLY_RULES = `The language of your reply:
+- Write your reply in natural, warm Russian. Address the student as "вы", lowercase, never "ты".
+- The STUDENT RECORD below is written in English. You read English and you write Russian. Do not remark on the language of the record, and do not translate it back to the student as though it were a document.
+- Keep the following in English, inside your Russian sentences, because the student has to recognise these exact words on the real exam paper: IELTS itself; the four paper names Reading, Listening, Writing and Speaking; official question type names such as True / False / Not Given, Yes / No / Not Given, Matching Headings, Matching Features, Sentence Completion, Multiple Choice, Table Completion and Diagram Labelling; the assessment criterion names Task Response, Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy, Fluency and Coherence and Pronunciation; and the words Part, Task and Passage together with their numbers.
+- Quote English exactly as it was written, and put a short English quotation in quotation marks so the student can see where the English starts and stops. That covers evidence from a passage or a recording, the student's own words, an accepted answer, and any English word or phrase you are teaching them.
+- Numbers, bands and dates are written as they are.
+- Everything the persona says about honesty, evidence and never promising a band applies word for word in Russian.
+- The ban on em dashes and en dashes applies to Russian too.
+- In your JSON answer, "reason" is shown to the student and is therefore Russian as well. "recommendation" is an activity id and never changes, in any language.`;
+
+/** The full instruction block for one turn: the persona, the task rules,
+    and the language rules when the student is not reading English. */
+export function buildInstructions(task: TutorTask, locale: Locale = 'en'): string {
+  const base = `${MR_EZ_PERSONA}\n\n${TASK_RULES[task]}`;
+  return locale === 'ru' ? `${base}\n\n${RUSSIAN_REPLY_RULES}` : base;
+}
 
 /** The JSON shape every task returns. One schema for all three keeps the
     Worker's parsing, validation and failure handling identical everywhere. */

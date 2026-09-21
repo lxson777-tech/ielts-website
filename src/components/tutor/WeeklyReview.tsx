@@ -95,7 +95,7 @@ function headingFor(mode: ReviewMode, t: Translator['t']): string {
   return 'Mr EZ';
 }
 
-function buildLocalView(t: Translator['t']): LocalView {
+function buildLocalView(t: Translator['t'], locale: Locale): LocalView {
   const progress = getProgress();
   const plan = loadStudyPlan();
   const now = new Date();
@@ -105,13 +105,15 @@ function buildLocalView(t: Translator['t']): LocalView {
   const fallbackText =
     target.mode === 'none'
       ? t('Nothing recorded in the last two weeks. Here is an easy way back in.')
-      : weekFallbackText(facts);
+      : weekFallbackText(facts, locale);
   return {
     mode: target.mode,
     facts,
-    fingerprint: weekFingerprint(facts),
+    // The language is part of the fingerprint, so switching it asks Mr EZ
+    // for a review in the new one instead of keeping the old paragraph.
+    fingerprint: weekFingerprint(facts, locale),
     fallbackText,
-    recommendation: toTutorRecommendation(localRecommendation()),
+    recommendation: toTutorRecommendation(localRecommendation(), locale),
   };
 }
 
@@ -135,7 +137,7 @@ export default function WeeklyReview() {
   // the server render and the first client render must agree on "nothing
   // yet" and print nothing.
   useEffect(() => {
-    const refresh = () => setLocal(buildLocalView(t));
+    const refresh = () => setLocal(buildLocalView(t, locale));
     refresh();
     const offProgress = onProgressChange(refresh);
     const offPlan = onStudyPlanChange(refresh);
@@ -145,7 +147,7 @@ export default function WeeklyReview() {
       offPlan();
       offAuth();
     };
-  }, [t]);
+  }, [t, locale]);
 
   // Mr EZ's own wording, only for a completed week, only once per
   // fingerprint. 'this-week' and 'none' never reach this: the server
@@ -229,7 +231,10 @@ export default function WeeklyReview() {
         {shown.recommendation && (
           <a className="mrez-rec mrez-weekly-cta" href={withBase(shown.recommendation.href)}>
             <span className="mrez-rec-label">
-              {shown.recommendation.label}
+              {/* Lesson titles arrive English from the Worker and are
+                  translated here; anything already translated passes
+                  through t() unchanged. */}
+              {t(shown.recommendation.label)}
               {shown.recommendation.minutes ? ` · ${t('{n} min', { n: shown.recommendation.minutes })}` : ''}
             </span>
             <span className="mrez-rec-reason">{shown.recommendation.reason}</span>

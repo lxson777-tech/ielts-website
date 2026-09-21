@@ -302,7 +302,9 @@ export default function MrEzPanel() {
                 ))}
                 {turn.recommendation && (
                   <a className="mrez-rec" href={withBase(turn.recommendation.href)}>
-                    <span className="mrez-rec-label">{turn.recommendation.label}</span>
+                    {/* Lesson titles arrive English from the Worker and are
+                        translated here; anything else passes through. */}
+                    <span className="mrez-rec-label">{t(turn.recommendation.label)}</span>
                     <span className="mrez-rec-reason">{turn.recommendation.reason}</span>
                   </a>
                 )}

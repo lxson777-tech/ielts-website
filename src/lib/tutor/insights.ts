@@ -23,6 +23,8 @@ import type { SavedPlan } from '../study-plan';
 import { PLAN_SKILLS, skillTargetFor, daysUntilTest, type PlanSkill } from '../study-plan';
 import { questionTypeLabel } from '../tests/question-types';
 import { CRITERIA as WRITING_CRITERIA } from '../writing/schema';
+import type { Locale } from '../i18n/locale';
+import { tutorText, tutorCount, type CountForms, type TextVars } from './ru';
 
 /* ── Evidence thresholds ───────────────────────────────────────────────────
    The single most important block in this file. Change these and you change
@@ -115,17 +117,87 @@ export interface StudentGoals {
 }
 
 /** One thing worth saying about this student, with the evidence behind it
-    and how far we are entitled to push it. */
+    and how far we are entitled to push it.
+
+    `text` and `evidence` are ENGLISH, always, and they are what goes into
+    the FACTS blocks the model reads. The four fields beside them are how
+    the same two sentences are rebuilt in the student's own language:
+    `template`/`vars` for the claim, `evidenceForms`/`evidenceCount`/
+    `evidenceVars` for the counting. Use observationText() and
+    observationEvidence() rather than reading `text`/`evidence` directly
+    anywhere a student will see the result. */
 export interface Observation {
   id: string;
   kind: 'weakness' | 'strength' | 'habit' | 'gap';
   confidence: Confidence;
-  /** Neutral wording, already safe to show to the student verbatim. */
+  /** Neutral wording in English, already safe to show verbatim. */
   text: string;
-  /** The counting behind it, e.g. "9 of 16 correct across 3 tests". */
+  /** The whole-sentence English template `text` was rendered from. It is
+      also the lookup key for the Russian version (src/lib/tutor/ru.ts). */
+  template: string;
+  vars: TextVars;
+  /** The counting behind it, in English, e.g. "9 of 16 correct across 3
+      sittings". */
   evidence: string;
+  /** The English one/other forms `evidence` was rendered from, plus the
+      number the plural turns on and the rest of its holes. */
+  evidenceForms: CountForms;
+  evidenceCount: number;
+  evidenceVars: TextVars;
   /** Catalogue id of the activity that addresses it, when there is one. */
   activityId?: string;
+}
+
+/** The claim, in the student's language. English is the source of truth and
+    the key, so 'en' is a straight read of what was already rendered. */
+export function observationText(o: Observation, locale: Locale): string {
+  return locale === 'en' ? o.text : tutorText(locale, o.template, o.vars);
+}
+
+/** The counting behind the claim, in the student's language. */
+export function observationEvidence(o: Observation, locale: Locale): string {
+  return locale === 'en'
+    ? o.evidence
+    : tutorCount(locale, o.evidenceCount, o.evidenceForms, o.evidenceVars);
+}
+
+/* The two counted phrases every observation's evidence is written with,
+   spelled out once so the English, the Russian key and the coverage test
+   cannot drift apart. */
+const SITTINGS_FORMS: CountForms = {
+  one: '{correct} of {total} correct across {n} sitting',
+  other: '{correct} of {total} correct across {n} sittings',
+};
+const MARKED_PIECES_FORMS: CountForms = {
+  one: 'lowest in {lowest} of {n} marked piece',
+  other: 'lowest in {lowest} of {n} marked pieces',
+};
+const ATTEMPTS_FORMS: CountForms = { one: '{n} attempt', other: '{n} attempts' };
+const ACTIVE_DAYS_FORMS: CountForms = {
+  one: '{n} active day in the last 14',
+  other: '{n} active days in the last 14',
+};
+
+/** Build one observation, rendering its English text and evidence eagerly
+    and keeping everything needed to render them again in another language. */
+function observation(
+  base: Pick<Observation, 'id' | 'kind' | 'confidence' | 'activityId'>,
+  template: string,
+  vars: TextVars,
+  evidenceForms: CountForms,
+  evidenceCount: number,
+  evidenceVars: TextVars = {},
+): Observation {
+  return {
+    ...base,
+    template,
+    vars,
+    text: tutorText('en', template, vars),
+    evidenceForms,
+    evidenceCount,
+    evidenceVars,
+    evidence: tutorCount('en', evidenceCount, evidenceForms, evidenceVars),
+  };
 }
 
 export interface StudentInsights {
@@ -376,67 +448,103 @@ export function readObservations(facts: StudentFacts): Observation[] {
     if (!pattern && t.total < TENTATIVE_MIN_QUESTIONS) continue;
     const superlative = pattern && !namedWeakest;
     if (pattern) namedWeakest = true;
-    out.push({
-      id: `weak:${t.skill}:${t.type}`,
-      kind: 'weakness',
-      confidence: pattern ? 'measured' : 'tentative',
-      text: pattern
-        ? superlative
-          ? `${t.label} in ${SKILL_LABEL[t.skill]} is consistently the weakest question type.`
-          : `${t.label} in ${SKILL_LABEL[t.skill]} is consistently weak too, though not as weak as the type above.`
-        : `${t.label} in ${SKILL_LABEL[t.skill]} went badly the one time it came up. Not enough evidence yet to call it a pattern.`,
-      evidence: `${t.correct} of ${t.total} correct across ${t.sittings} ${t.sittings === 1 ? 'sitting' : 'sittings'}`,
-      activityId: `practise:${t.skill}:${t.type}`,
-    });
+    out.push(
+      observation(
+        {
+          id: `weak:${t.skill}:${t.type}`,
+          kind: 'weakness',
+          confidence: pattern ? 'measured' : 'tentative',
+          activityId: `practise:${t.skill}:${t.type}`,
+        },
+        pattern
+          ? superlative
+            ? '{type} in {skill} is consistently the weakest question type.'
+            : '{type} in {skill} is consistently weak too, though not as weak as the type above.'
+          : '{type} in {skill} went badly the one time it came up. Not enough evidence yet to call it a pattern.',
+        { type: t.label, skill: SKILL_LABEL[t.skill] },
+        SITTINGS_FORMS,
+        t.sittings,
+        { correct: t.correct, total: t.total },
+      ),
+    );
   }
 
   for (const t of facts.typeAccuracy) {
     if (t.percent < STRONG_PERCENT || t.total < PATTERN_MIN_QUESTIONS) continue;
-    out.push({
-      id: `strong:${t.skill}:${t.type}`,
-      kind: 'strength',
-      confidence: t.sittings >= PATTERN_MIN_SITTINGS ? 'measured' : 'tentative',
-      text: `${t.label} in ${SKILL_LABEL[t.skill]} is reliably strong.`,
-      evidence: `${t.correct} of ${t.total} correct across ${t.sittings} ${t.sittings === 1 ? 'sitting' : 'sittings'}`,
-    });
+    out.push(
+      observation(
+        {
+          id: `strong:${t.skill}:${t.type}`,
+          kind: 'strength',
+          confidence: t.sittings >= PATTERN_MIN_SITTINGS ? 'measured' : 'tentative',
+        },
+        '{type} in {skill} is reliably strong.',
+        { type: t.label, skill: SKILL_LABEL[t.skill] },
+        SITTINGS_FORMS,
+        t.sittings,
+        { correct: t.correct, total: t.total },
+      ),
+    );
   }
 
   for (const c of facts.criterionTrends) {
     if (c.timesLowest === 0) continue;
     const pattern = c.graded >= CRITERION_MIN_GRADED && c.timesLowest >= CRITERION_MIN_GRADED;
     if (!pattern && c.graded > 1) continue; // lowest once out of several is noise
-    out.push({
-      id: `criterion:${c.skill}:${c.key}`,
-      kind: 'weakness',
-      confidence: pattern ? 'measured' : 'tentative',
-      text: pattern
-        ? `${c.label} is the lowest ${c.skill} criterion most times it is marked (average band ${c.meanBand}).`
-        : `${c.label} was the lowest criterion in the one ${c.skill} piece marked so far (band ${c.bands[c.bands.length - 1]}). One piece is not a pattern.`,
-      evidence: `lowest in ${c.timesLowest} of ${c.graded} marked ${c.graded === 1 ? 'piece' : 'pieces'}`,
-      activityId: c.skill === 'writing' ? 'trainer:writing' : 'trainer:speaking',
-    });
+    out.push(
+      observation(
+        {
+          id: `criterion:${c.skill}:${c.key}`,
+          kind: 'weakness',
+          confidence: pattern ? 'measured' : 'tentative',
+          activityId: c.skill === 'writing' ? 'trainer:writing' : 'trainer:speaking',
+        },
+        pattern
+          ? '{criterion} is the lowest {skill} criterion most times it is marked (average band {band}).'
+          : '{criterion} was the lowest criterion in the one {skill} piece marked so far (band {band}). One piece is not a pattern.',
+        {
+          criterion: c.label,
+          // The paper name, capitalised, because it stays English inside a
+          // Russian sentence and a paper is a proper noun on this site.
+          skill: SKILL_LABEL[c.skill],
+          band: pattern ? c.meanBand : (c.bands[c.bands.length - 1] ?? 0),
+        },
+        MARKED_PIECES_FORMS,
+        c.graded,
+        { lowest: c.timesLowest },
+      ),
+    );
   }
 
   for (const r of facts.results) {
     if (r.attempts > 0 || !r.target) continue;
-    out.push({
-      id: `gap:${r.skill}`,
-      kind: 'gap',
-      confidence: 'measured',
-      text: `No ${SKILL_LABEL[r.skill]} result recorded yet, so there is no band estimate for that paper.`,
-      evidence: '0 attempts',
-      activityId: r.skill === 'writing' ? 'trainer:writing' : r.skill === 'speaking' ? 'trainer:speaking' : `test:${r.skill}`,
-    });
+    out.push(
+      observation(
+        {
+          id: `gap:${r.skill}`,
+          kind: 'gap',
+          confidence: 'measured',
+          activityId:
+            r.skill === 'writing' ? 'trainer:writing' : r.skill === 'speaking' ? 'trainer:speaking' : `test:${r.skill}`,
+        },
+        'No {skill} result recorded yet, so there is no band estimate for that paper.',
+        { skill: SKILL_LABEL[r.skill] },
+        ATTEMPTS_FORMS,
+        0,
+      ),
+    );
   }
 
   if (facts.activeDaysLast14 >= 8) {
-    out.push({
-      id: 'habit:consistent',
-      kind: 'habit',
-      confidence: 'measured',
-      text: 'Study days have been consistent over the last fortnight.',
-      evidence: `${facts.activeDaysLast14} active days in the last 14`,
-    });
+    out.push(
+      observation(
+        { id: 'habit:consistent', kind: 'habit', confidence: 'measured' },
+        'Study days have been consistent over the last fortnight.',
+        {},
+        ACTIVE_DAYS_FORMS,
+        facts.activeDaysLast14,
+      ),
+    );
   }
 
   /* Sort by kind, then by how much evidence stands behind it, and STOP
@@ -477,10 +585,17 @@ export function readInsights(
     When this is unchanged, the saved recommendation is still valid and the
     dashboard must NOT pay for a new one. Deliberately excludes anything
     time-based apart from the exam countdown in whole days, so simply
-    reopening the dashboard never invalidates it. */
-export function insightsFingerprint(insights: StudentInsights): string {
+    reopening the dashboard never invalidates it.
+
+    The LOCALE is part of it. The cached welcome is a paragraph of prose in
+    one language, so a student who switches to Russian must not be handed
+    the English one back (and the other way round). Folding it into the
+    hashed string keeps that out of the database schema entirely: two
+    languages are simply two different fingerprints. */
+export function insightsFingerprint(insights: StudentInsights, locale: Locale = 'en'): string {
   const { goals, facts } = insights;
   const parts = [
+    locale,
     goals.targetBand ?? '-',
     goals.examDate ?? '-',
     String(goals.daysUntilExam ?? '-'),

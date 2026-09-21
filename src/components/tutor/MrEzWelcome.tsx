@@ -29,6 +29,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
+import type { Locale } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
 import { localInsights, localRecommendation, localWelcomeText, toTutorRecommendation } from '../../lib/tutor/local';
@@ -56,19 +57,23 @@ interface TutorView {
   live: boolean;
 }
 
-function buildLocalView(): LocalView {
+/* The language is passed in rather than read inside the tutor modules: they
+   are shared with the Worker, where there is no stored locale to read. It is
+   also part of the fingerprint, so switching language asks Mr EZ for a
+   welcome in the new one instead of leaving the old paragraph on screen. */
+function buildLocalView(locale: Locale): LocalView {
   const insights = localInsights();
   const needsGoal = !insights.goals.targetBand || insights.goals.guessed;
   return {
-    fingerprint: insightsFingerprint(insights),
-    text: localWelcomeText(insights),
-    recommendation: needsGoal ? null : toTutorRecommendation(localRecommendation()),
+    fingerprint: insightsFingerprint(insights, locale),
+    text: localWelcomeText(insights, locale),
+    recommendation: needsGoal ? null : toTutorRecommendation(localRecommendation(), locale),
     needsGoal,
   };
 }
 
 export default function MrEzWelcome() {
-  const { t } = useT();
+  const { t, locale } = useT();
   const [local, setLocal] = useState<LocalView | null>(null);
   const [tutor, setTutor] = useState<TutorView | null>(null);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -89,7 +94,7 @@ export default function MrEzWelcome() {
   // Everything is read after mount: the stores are localStorage-backed, so a
   // server render and the first client render must agree on "nothing yet".
   useEffect(() => {
-    const refresh = () => setLocal(buildLocalView());
+    const refresh = () => setLocal(buildLocalView(locale));
     refresh();
     const offProgress = onProgressChange(refresh);
     const offPlan = onStudyPlanChange(refresh);
@@ -99,7 +104,7 @@ export default function MrEzWelcome() {
       offPlan();
       offAuth();
     };
-  }, []);
+  }, [locale]);
 
   // Mr EZ's own wording, once there is someone to ask about and something
   // new to ask. The server caches this against the same fingerprint, so the
@@ -178,7 +183,11 @@ export default function MrEzWelcome() {
           shown.recommendation && (
             <a className="mrez-welcome-cta" href={withBase(shown.recommendation.href)}>
               <span className="mrez-welcome-cta-label">
-                {shown.recommendation.label}
+                {/* A lesson's label arrives as its English course title (the
+                    Worker cannot read the site's dictionary); everything
+                    else is already translated and passes through t()
+                    unchanged, because it is not a key it knows. */}
+                {t(shown.recommendation.label)}
                 {shown.recommendation.minutes ? ` · ${t('{n} min', { n: shown.recommendation.minutes })}` : ''}
               </span>
               <span className="mrez-welcome-cta-reason">{shown.recommendation.reason}</span>

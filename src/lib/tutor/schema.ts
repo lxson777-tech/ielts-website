@@ -26,6 +26,9 @@
    module cycle is well defined. Keep it that way: no top-level `const x =
    someFunctionFromTheOtherFile()` in either file. */
 import { MAX_GIVEN_CHARS, MAX_REVIEW_ITEMS, isPublishedTestId, sourceTestId } from './test-items';
+/* Type only, so nothing of the site's i18n layer (its lazy loader, its
+   localStorage reads) is pulled into the Worker bundle. */
+import type { Locale } from '../i18n/locale';
 
 /* ── Limits ────────────────────────────────────────────────────────────────
    Deliberately shared so the UI can refuse over-long input before spending a
@@ -178,6 +181,18 @@ export interface TutorRequest {
   /** Required for 'debrief' (one to MAX_REVIEW_ITEMS questions) and for
       'item' (exactly one). */
   review?: TutorReviewRef;
+  /** Which language Mr EZ answers in, and which language the sentences the
+      Worker writes itself come back in. 'en' unless the request says 'ru'.
+
+      This one field IS read from the browser, and that is not a hole in
+      "the browser is not a source of truth". That rule is about FACTS and
+      IDENTITY: whose record to load, what band they got, what they have
+      finished. None of those can be named by a caller and none of them are
+      here. A language is a display preference, the student sets it with the
+      EN / RU switch on the page, and the worst a forged value can do is
+      answer one request in the wrong language to the person who forged it.
+      Nothing it can say changes what is true about them. */
+  locale?: Locale;
   /** Repeat-send guard. The Worker returns the first reply for a given key
       instead of paying for a second one (double-click, flaky network retry,
       React StrictMode double-invoke). */
@@ -331,7 +346,12 @@ export function parseTutorRequest(raw: unknown): TutorRequest {
     throw new TutorRequestError('bad-request', 'Unknown task.');
   }
 
-  const out: TutorRequest = { task: task as TutorTask };
+  /* Locale is resolved to a concrete value here rather than left undefined,
+     so no caller downstream has to decide what "no locale" means. Anything
+     that is not exactly 'ru' becomes 'en': a display preference is never
+     worth refusing a whole request over, and English is the fallback
+     everywhere else in this codebase too. */
+  const out: TutorRequest = { task: task as TutorTask, locale: raw.locale === 'ru' ? 'ru' : 'en' };
 
   if (raw.conversationId !== undefined) {
     if (!isUuid(raw.conversationId)) throw new TutorRequestError('bad-request', 'conversationId must be a uuid.');

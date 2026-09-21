@@ -91,7 +91,10 @@ export default function ExplainResult({ attempt, summary }: ExplainResultProps) 
           ))}
           {recommendation && (
             <a className="mrez-rec" href={withBase(recommendation.href)}>
-              <span className="mrez-rec-label">{recommendation.label}</span>
+              {/* A lesson title arrives English from the Worker (course
+                  titles live in the site dictionary, which it cannot read);
+                  an already-translated label passes through unchanged. */}
+              <span className="mrez-rec-label">{t(recommendation.label)}</span>
               <span className="mrez-rec-reason">{recommendation.reason}</span>
             </a>
           )}

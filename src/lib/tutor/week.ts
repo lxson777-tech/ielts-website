@@ -25,6 +25,8 @@ import type { ProgressV1 } from '../progress';
 import type { SavedPlan, PlanSkill } from '../study-plan';
 import { PLAN_SKILLS } from '../study-plan';
 import { buildCourse } from '../course';
+import type { Locale } from '../i18n/locale';
+import { tutorText, tutorCount } from './ru';
 
 /* ── Week windows ─────────────────────────────────────────────────────── */
 
@@ -360,9 +362,15 @@ export function reviewTarget(
     from false to true the moment the week ends even though the student did
     nothing at that instant, which is exactly the kind of "changed merely
     because time passed" the cache key must not react to. `empty` is left out
-    too since it is fully determined by the fields that are included. */
-export function weekFingerprint(facts: WeekFacts): string {
+    too since it is fully determined by the fields that are included.
+
+    The LOCALE is part of it, for the same reason it is part of
+    insightsFingerprint: a cached note is a paragraph of prose in one
+    language, and a student who switches language must get a note written
+    in the one they are reading, not the one they left. */
+export function weekFingerprint(facts: WeekFacts, locale: Locale = 'en'): string {
   const parts = [
+    locale,
     facts.window.start,
     facts.window.end,
     String(facts.activeDays),
@@ -403,43 +411,79 @@ const SKILL_LABEL: Record<PlanSkill, string> = {
     nothing is judged, and a single week's numbers are never called a trend
     (see the bandMoves wording below, which reports two estimated bands
     without saying whether that counts as progress). */
-export function weekFallbackText(facts: WeekFacts): string {
+export function weekFallbackText(facts: WeekFacts, locale: Locale = 'en'): string {
   if (facts.empty) {
     // No date range in the sentence: every surface that shows this text also
     // shows the week's dates beside it, written for a human ("14 to 20
     // September"), and an ISO range in the middle of a kind sentence reads
     // like a machine wrote it.
     return facts.complete
-      ? 'No study activity was recorded last week. That happens sometimes, and this week is a fresh start.'
-      : 'No study activity has been recorded this week yet. There is still time.';
+      ? tutorText(
+          locale,
+          'No study activity was recorded last week. That happens sometimes, and this week is a fresh start.',
+        )
+      : tutorText(locale, 'No study activity has been recorded this week yet. There is still time.');
   }
 
   const sentences: string[] = [];
 
-  const dayWord = facts.activeDays === 1 ? 'day' : 'days';
-  const plannedPart = facts.plannedDays > 0 ? ` out of ${facts.plannedDays} planned` : '';
-  const minuteWord = facts.minutes === 1 ? 'minute' : 'minutes';
-  sentences.push(
-    `${facts.complete ? 'Last week' : 'So far this week'} you studied on ${facts.activeDays} ${dayWord}${plannedPart}, for ${facts.minutes} ${minuteWord} in total.`,
-  );
+  /* One counted sentence, not four fragments. The day count is what the
+     plural turns on; the minutes arrive as a counted phrase of their own,
+     because a sentence cannot inflect on two numbers at once and "100
+     минут" is a noun phrase that drops safely into either language. */
+  const minutes = tutorCount(locale, facts.minutes, { one: '{n} minute', other: '{n} minutes' });
+  const planned = facts.plannedDays > 0;
+  const forms = facts.complete
+    ? planned
+      ? {
+          one: 'Last week you studied on {n} day out of {planned} planned, for {minutes} in total.',
+          other: 'Last week you studied on {n} days out of {planned} planned, for {minutes} in total.',
+        }
+      : {
+          one: 'Last week you studied on {n} day, for {minutes} in total.',
+          other: 'Last week you studied on {n} days, for {minutes} in total.',
+        }
+    : planned
+      ? {
+          one: 'So far this week you studied on {n} day out of {planned} planned, for {minutes} in total.',
+          other: 'So far this week you studied on {n} days out of {planned} planned, for {minutes} in total.',
+        }
+      : {
+          one: 'So far this week you studied on {n} day, for {minutes} in total.',
+          other: 'So far this week you studied on {n} days, for {minutes} in total.',
+        };
+  sentences.push(tutorCount(locale, facts.activeDays, forms, { planned: facts.plannedDays, minutes }));
 
   if (facts.lessons.length > 0) {
-    const lessonWord = facts.lessons.length === 1 ? 'lesson' : 'lessons';
-    sentences.push(`You completed ${facts.lessons.length} ${lessonWord}.`);
+    sentences.push(
+      tutorCount(locale, facts.lessons.length, {
+        one: 'You completed {n} lesson.',
+        other: 'You completed {n} lessons.',
+      }),
+    );
   }
 
   if (facts.attempts.length > 0) {
-    const attemptWord = facts.attempts.length === 1 ? 'attempt' : 'attempts';
-    sentences.push(`You recorded ${facts.attempts.length} practice ${attemptWord}.`);
+    sentences.push(
+      tutorCount(locale, facts.attempts.length, {
+        one: 'You recorded {n} practice attempt.',
+        other: 'You recorded {n} practice attempts.',
+      }),
+    );
   }
 
   for (const move of facts.bandMoves) {
-    const label = SKILL_LABEL[move.skill];
-    if (move.before !== null) {
-      sentences.push(`Your estimated ${label} band this week is ${move.after}, compared with an estimated ${move.before} before this week.`);
-    } else {
-      sentences.push(`Your estimated ${label} band this week is ${move.after}.`);
-    }
+    // The paper name stays English inside the Russian sentence.
+    const skill = SKILL_LABEL[move.skill];
+    sentences.push(
+      move.before !== null
+        ? tutorText(
+            locale,
+            'Your estimated {skill} band this week is {after}, compared with an estimated {before} before this week.',
+            { skill, after: move.after, before: move.before },
+          )
+        : tutorText(locale, 'Your estimated {skill} band this week is {after}.', { skill, after: move.after }),
+    );
   }
 
   return sentences.join(' ');

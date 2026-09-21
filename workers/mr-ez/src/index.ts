@@ -13,6 +13,16 @@
    ownership model: there is no code path in which the caller names whose
    data to load.
 
+   The one field that IS read from the request and is not a reference is
+   `locale`, the language to answer in. That is a display preference the
+   student sets with the EN / RU switch, not a fact about them, and the
+   worst a forged value can do is answer the forger in the wrong language.
+   The FACTS this Worker assembles stay English in every language: the
+   model reads English and writes Russian, and the sentences this file
+   writes itself get their Russian from src/lib/tutor/ru.ts, a small
+   synchronous map the Worker can bundle (the site's own dictionary is a
+   lazy browser chunk and is never imported here).
+
    The two review tasks stretch that rule the furthest, so it is worth being
    explicit. A debrief request says "here is a test id, here are question ids,
    and here is what I put". The QUESTION CONTENT — the prompt, the accepted
@@ -70,20 +80,21 @@ import {
   type TutorUsage,
 } from '../../../src/lib/tutor/schema';
 import {
-  MR_EZ_PERSONA,
-  TASK_RULES,
   TUTOR_OUTPUT_SCHEMA,
+  buildInstructions,
   renderContext,
   type ReviewContext,
 } from '../../../src/lib/tutor/prompt';
-import { readInsights, insightsFingerprint } from '../../../src/lib/tutor/insights';
-import { buildCatalog, findActivity, lessonForType } from '../../../src/lib/tutor/catalog';
-import { recommendNext, shortlist } from '../../../src/lib/tutor/recommend';
+import { observationEvidence, observationText, readInsights, insightsFingerprint } from '../../../src/lib/tutor/insights';
+import { buildCatalog, findActivity, lessonForType, activityBlurb, activityLabel } from '../../../src/lib/tutor/catalog';
+import { recommendNext, recommendationReason, shortlist } from '../../../src/lib/tutor/recommend';
 import { summariseAttempt, activityForAssessment } from '../../../src/lib/tutor/assessment';
 import { readWeek, reviewTarget, weekFingerprint, weekFallbackText, type WeekFacts } from '../../../src/lib/tutor/week';
 import { readUnit, unitFingerprint, unitFallbackText, type UnitFacts, type UnitNoteKind } from '../../../src/lib/tutor/units';
 import { isSiteTest, resolveItems, summariseByType, type SiteTest } from '../../../src/lib/tutor/test-items';
+import { formatDate, tutorCount, tutorText } from '../../../src/lib/tutor/ru';
 import { buildCourse, courseLessonCount } from '../../../src/lib/course';
+import type { Locale } from '../../../src/lib/i18n/locale';
 import type { ProgressV1 } from '../../../src/lib/progress';
 import type { SavedPlan } from '../../../src/lib/study-plan';
 
@@ -502,17 +513,28 @@ async function fetchSiteTest(deps: Deps, env: Env, testId: string): Promise<Site
 function recommendFromWrongAnswers(
   review: ReviewContext,
   progress: ProgressV1,
+  locale: Locale,
 ): { id: string; reason: string } | null {
   const worst = summariseByType(review.items)[0];
   if (!worst) return null;
 
+  // The question type name is filled in as a variable and stays English in
+  // either language: the student has to recognise it on the real paper.
   const lesson = lessonForType(review.skill, worst.type);
   const lessonKey = lesson?.id.slice('lesson:'.length);
   const lessonDone = lessonKey ? Boolean(progress.lessons?.[lessonKey]) : true;
   if (lesson && !lessonDone) {
     return {
       id: lesson.id,
-      reason: `${worst.wrong} of these wrong answers ${worst.wrong === 1 ? 'is' : 'are'} ${worst.typeLabel}, and the lesson that teaches it has not been read yet.`,
+      reason: tutorCount(
+        locale,
+        worst.wrong,
+        {
+          one: '{n} of these wrong answers is {type}, and the lesson that teaches it has not been read yet.',
+          other: '{n} of these wrong answers are {type}, and the lesson that teaches it has not been read yet.',
+        },
+        { type: worst.typeLabel },
+      ),
     };
   }
 
@@ -520,7 +542,15 @@ function recommendFromWrongAnswers(
   if (!drill) return null;
   return {
     id: drill.id,
-    reason: `${worst.wrong} of these wrong answers ${worst.wrong === 1 ? 'is' : 'are'} ${worst.typeLabel}, and these drills are filtered to exactly that type.`,
+    reason: tutorCount(
+      locale,
+      worst.wrong,
+      {
+        one: '{n} of these wrong answers is {type}, and these drills are filtered to exactly that type.',
+        other: '{n} of these wrong answers are {type}, and these drills are filtered to exactly that type.',
+      },
+      { type: worst.typeLabel },
+    ),
   };
 }
 
@@ -720,8 +750,16 @@ export function isSimulated(env: Env): boolean {
     UI labels it. It never claims a band and never invents a fact, because it
     only ever repeats what the deterministic layer already worked out. */
 export function simulateReply(request: TutorRequest, context: SimulationContext): ModelOutput {
-  const { insights, fallbackReason, activityLabel, activityId, assessmentLine } = context;
-  const nextLine = activityId ? `\n\nNext I would do this: ${activityLabel}. ${fallbackReason}` : '';
+  const { insights, fallbackReason, activityLabel: label, activityId, assessmentLine } = context;
+  /* The stand-in speaks the student's language too, so a Russian interface
+     can actually be clicked through end to end. It is no less obviously a
+     simulation for it: the first sentence says so in both languages, and
+     every reply is still flagged `live: false`. */
+  const locale: Locale = context.locale ?? 'en';
+  const head = tutorText(locale, 'Simulated tutor reply (no AI was called).');
+  const nextLine = activityId
+    ? `\n\n${tutorText(locale, 'Next I would do this: {label}. {reason}', { label, reason: fallbackReason })}`
+    : '';
 
   /* The four one-shot notes. Each one repeats the deterministic fallback
      text verbatim — weekFallbackText and unitFallbackText are already the
@@ -729,7 +767,7 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
      nothing to add and no business inventing anything. */
   if (request.task === 'weekly' && context.week) {
     return {
-      text: `Simulated tutor reply (no AI was called). ${weekFallbackText(context.week)}${nextLine}`,
+      text: `${head} ${weekFallbackText(context.week, locale)}${nextLine}`,
       recommendation: activityId,
       reason: fallbackReason,
       mood: 'explaining',
@@ -738,7 +776,7 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
 
   if (request.task === 'unit' && context.unit) {
     return {
-      text: `Simulated tutor reply (no AI was called). ${unitFallbackText(context.unit.facts, context.unit.kind)}`,
+      text: `${head} ${unitFallbackText(context.unit.facts, context.unit.kind, locale)}`,
       recommendation: null,
       reason: null,
       mood: context.unit.kind === 'wrap' ? 'celebrating' : 'explaining',
@@ -746,16 +784,26 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
   }
 
   if ((request.task === 'debrief' || request.task === 'item') && context.review) {
+    // "Matching Headings: 3 wrong" is a label and a number, in that order in
+    // both languages, so it needs no template of its own.
     const counts = summariseByType(context.review.items)
       .map((t) => `${t.typeLabel}: ${t.wrong} wrong`)
       .join('. ');
     const blanks = context.review.items.filter((i) => !i.given).length;
-    const blankLine = blanks > 0 ? ` ${blanks} of them ${blanks === 1 ? 'was' : 'were'} left blank.` : '';
+    const blankLine =
+      blanks > 0
+        ? ` ${tutorCount(locale, blanks, { one: '{n} of them was left blank.', other: '{n} of them were left blank.' })}`
+        : '';
+    const lead = tutorText(locale, 'Reviewing {count} from {title}.', {
+      count: tutorCount(locale, context.review.items.length, {
+        one: '{n} wrong answer',
+        other: '{n} wrong answers',
+      }),
+      title: context.review.testTitle,
+    });
+    const caveat = tutorText(locale, 'This is a review of answers, not a mark, so it says nothing about a band.');
     return {
-      text:
-        `Simulated tutor reply (no AI was called). Reviewing ${context.review.items.length} wrong ` +
-        `${context.review.items.length === 1 ? 'answer' : 'answers'} from ${context.review.testTitle}. ` +
-        `${counts}.${blankLine}\n\nThis is a review of answers, not a mark, so it says nothing about a band.${nextLine}`,
+      text: `${head} ${lead} ${counts}.${blankLine}\n\n${caveat}${nextLine}`,
       recommendation: activityId,
       reason: fallbackReason,
       mood: 'explaining',
@@ -763,12 +811,19 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
   }
 
   if (request.task === 'welcome') {
-    const goal = insights.goals.targetBand && !insights.goals.guessed ? `band ${insights.goals.targetBand}` : 'a target band you have not set yet';
-    const head = insights.hasAnyResults
-      ? `Simulated tutor reply (no AI was called). You are working towards ${goal}, and there are results on record.`
-      : `Simulated tutor reply (no AI was called). You are working towards ${goal}, and there are no results on record yet, so there is nothing to estimate from.`;
+    const goal =
+      insights.goals.targetBand && !insights.goals.guessed
+        ? tutorText(locale, 'band {band}', { band: insights.goals.targetBand })
+        : tutorText(locale, 'a target band you have not set yet');
+    const line = insights.hasAnyResults
+      ? tutorText(locale, 'You are working towards {goal}, and there are results on record.', { goal })
+      : tutorText(
+          locale,
+          'You are working towards {goal}, and there are no results on record yet, so there is nothing to estimate from.',
+          { goal },
+        );
     return {
-      text: `${head}${nextLine}`,
+      text: `${head} ${line}${nextLine}`,
       recommendation: activityId,
       reason: fallbackReason,
       mood: 'explaining',
@@ -776,8 +831,13 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
   }
 
   if (request.task === 'explain') {
+    const estimate = tutorText(
+      locale,
+      'Every band on this platform is an estimate from its own AI marking, not an official IELTS result.',
+    );
+    const line = assessmentLine ?? tutorText(locale, 'There is no assessment attached to this request.');
     return {
-      text: `Simulated tutor reply (no AI was called). ${assessmentLine ?? 'There is no assessment attached to this request.'}\n\nEvery band on this platform is an estimate from its own AI marking, not an official IELTS result.${nextLine}`,
+      text: `${head} ${line}\n\n${estimate}${nextLine}`,
       recommendation: activityId,
       reason: fallbackReason,
       mood: 'explaining',
@@ -786,10 +846,20 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
 
   const measured = insights.observations.filter((o) => o.confidence === 'measured');
   const evidence = measured.length
-    ? `What the record actually shows: ${measured.slice(0, 2).map((o) => `${o.text} (${o.evidence})`).join(' ')}`
-    : 'The record does not yet hold enough work to say anything about strengths or weaknesses.';
+    ? tutorText(locale, 'What the record actually shows: {evidence}', {
+        evidence: measured
+          .slice(0, 2)
+          .map((o) => `${observationText(o, locale)} (${observationEvidence(o, locale)})`)
+          .join(' '),
+      })
+    : tutorText(locale, 'The record does not yet hold enough work to say anything about strengths or weaknesses.');
+  const asked = tutorText(locale, 'You asked: "{message}"', { message: request.message ?? '' });
+  const closing = tutorText(
+    locale,
+    'With a real model configured, Mr EZ would answer the question itself here, using the same record.',
+  );
   return {
-    text: `Simulated tutor reply (no AI was called). You asked: "${request.message ?? ''}"\n\n${evidence}\n\nWith a real model configured, Mr EZ would answer the question itself here, using the same record.`,
+    text: `${head} ${asked}\n\n${evidence}\n\n${closing}`,
     recommendation: null,
     reason: null,
     mood: 'explaining',
@@ -798,11 +868,13 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
 
 export interface SimulationContext {
   insights: ReturnType<typeof readInsights>;
+  /** Already in the student's language: see runTurn, which builds it. */
   fallbackReason: string;
   activityLabel: string;
   /** Null when the task deliberately has no next step (a unit note). */
   activityId: string | null;
   assessmentLine?: string;
+  locale?: Locale;
   week?: WeekFacts;
   unit?: { facts: UnitFacts; kind: UnitNoteKind };
   review?: ReviewContext;
@@ -813,15 +885,18 @@ export interface SimulationContext {
 /** Map whatever the model named back onto a real catalogue entry. An id that
     does not resolve is dropped rather than guessed at, which is what makes a
     404 impossible. */
-function resolveRecommendation(id: string | null, reason: string | null): TutorRecommendation | null {
+function resolveRecommendation(id: string | null, reason: string | null, locale: Locale): TutorRecommendation | null {
   if (!id) return null;
   const activity = findActivity(id);
   if (!activity) return null;
   return {
     id: activity.id,
-    label: activity.label,
+    // A LESSON's label is its course title and stays English here: titles
+    // live in the site's own dictionary, which a Worker cannot read. The
+    // browser runs the label through t() when it renders the card.
+    label: activityLabel(activity, locale),
     href: activity.href,
-    reason: reason?.trim() || activity.blurb,
+    reason: reason?.trim() || activityBlurb(activity, locale),
     minutes: activity.minutes,
   };
 }
@@ -943,14 +1018,24 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     }
   }
 
+  /* The language this turn is answered in. It is the one thing on the
+     request that is about the reader rather than about the student's
+     record, and parseTutorRequest has already forced it to 'en' or 'ru'.
+     From here it decides three things: which language the model is asked
+     to write in, which language the sentences written by this file come
+     out in, and which cache entry all of that lands in. */
+  const locale: Locale = req.locale ?? 'en';
+
   // 2. The student's own record, fetched here, never accepted from the wire.
   const { progress, plan } = await loadStudentState(deps, env, userId);
   const modules = buildCourse();
   const insights = readInsights(progress, plan, courseLessonCount(modules), deps.now());
 
   // 3. The welcome is cached against a fingerprint of everything it depends
-  //    on. Reopening the dashboard must not cost anything.
-  const fingerprint = insightsFingerprint(insights);
+  //    on, INCLUDING the language it was written in. Reopening the dashboard
+  //    must not cost anything; switching language must not hand back a
+  //    paragraph in the language the student just left.
+  const fingerprint = insightsFingerprint(insights, locale);
   if (req.task === 'welcome' && !req.message) {
     const rows = await restGet(
       deps,
@@ -990,7 +1075,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
       throw new TutorRequestError('bad-request', 'Nothing was recorded last week, so there is nothing to review.');
     }
     week = facts;
-    note = { kind: 'weekly', noteKey: facts.window.start, fingerprint: weekFingerprint(facts) };
+    note = { kind: 'weekly', noteKey: facts.window.start, fingerprint: weekFingerprint(facts, locale) };
   }
 
   if (req.task === 'unit') {
@@ -1027,7 +1112,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     note = {
       kind: req.unit.kind === 'intro' ? 'unit-intro' : 'unit-wrap',
       noteKey: String(facts.unitId),
-      fingerprint: unitFingerprint(facts, req.unit.kind, insights.goals.targetBand),
+      fingerprint: unitFingerprint(facts, req.unit.kind, insights.goals.targetBand, locale),
     };
   }
 
@@ -1059,7 +1144,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
   // 5. What to recommend, decided in code.
   const recommendation = recommendNext(insights, progress);
   let chosenActivityId: string | null = recommendation.activity.id;
-  let fallbackReason = recommendation.fallbackReason;
+  let fallbackReason = recommendationReason(recommendation, locale);
 
   // 6. An assessment, if this is "explain my result". Looked up inside the
   //    student's own record, which is the ownership check.
@@ -1072,7 +1157,9 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     const suggested = findActivity(activityForAssessment(assessment));
     if (suggested) {
       chosenActivityId = suggested.id;
-      fallbackReason = `It follows directly from this result: ${suggested.blurb}`;
+      fallbackReason = tutorText(locale, 'It follows directly from this result: {blurb}', {
+        blurb: activityBlurb(suggested, locale),
+      });
     }
   }
 
@@ -1092,7 +1179,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
   }
 
   if (review) {
-    const fromWrong = recommendFromWrongAnswers(review, progress);
+    const fromWrong = recommendFromWrongAnswers(review, progress, locale);
     if (fromWrong) {
       chosenActivityId = fromWrong.id;
       fallbackReason = fromWrong.reason;
@@ -1117,7 +1204,11 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     : undefined;
 
   const activities = shortlist(insights, progress, recommendation.activity);
-  const instructions = `${MR_EZ_PERSONA}\n\n${TASK_RULES[req.task]}`;
+  /* The persona and the task rules, plus the language rules when the
+     student is not reading English. The DATA below stays English whatever
+     the language: the model reads English facts and writes Russian prose.
+     See the note above RUSSIAN_REPLY_RULES in src/lib/tutor/prompt.ts. */
+  const instructions = buildInstructions(req.task, locale);
   const userText = renderContext({
     task: req.task,
     insights,
@@ -1143,13 +1234,19 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     output = result.output;
     usage = result.usage;
   } else {
+    const chosenActivity = (chosenActivityId ? findActivity(chosenActivityId) : undefined) ?? recommendation.activity;
     output = simulateReply(req, {
       insights,
       fallbackReason,
-      activityLabel: (chosenActivityId ? findActivity(chosenActivityId)?.label : undefined) ?? recommendation.activity.label,
+      activityLabel: activityLabel(chosenActivity, locale),
       activityId: chosenActivityId,
+      locale,
       assessmentLine: assessment
-        ? `Your ${assessment.kind} result from ${assessment.at.slice(0, 10)} came out at an estimated band ${assessment.overallBand}.`
+        ? tutorText(locale, 'Your {kind} result from {date} came out at an estimated band {band}.', {
+            kind: assessment.kind,
+            date: formatDate(assessment.at, locale),
+            band: assessment.overallBand ?? '',
+          })
         : undefined,
       week,
       unit,
@@ -1166,8 +1263,8 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
      gets nothing. */
   const recommendationOut =
     req.task === 'chat'
-      ? resolveRecommendation(output.recommendation, output.reason)
-      : resolveRecommendation(chosenActivityId, output.reason ?? fallbackReason);
+      ? resolveRecommendation(output.recommendation, output.reason, locale)
+      : resolveRecommendation(chosenActivityId, output.reason ?? fallbackReason, locale);
 
   const cost = costUsd(env, usage);
   const usageOut: TutorUsage = {

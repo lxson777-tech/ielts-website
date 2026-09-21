@@ -24,17 +24,23 @@
 
 import { buildCourse, isLessonDone, type CourseLesson, type CourseModule } from '../course';
 import { lessonForType } from './catalog';
-import type { Observation, StudentInsights, Confidence } from './insights';
+import { observationEvidence, observationText, type Observation, type StudentInsights, type Confidence } from './insights';
 import type { ProgressV1 } from '../progress';
 import type { SavedPlan } from '../study-plan';
+import type { Locale } from '../i18n/locale';
+import { tutorText, tutorCount } from './ru';
 
 /** One reason this unit matters to THIS student: an observation from their
     record tied to a lesson inside the unit. */
 export interface UnitRelevance {
   observationId: string;
   confidence: Confidence;
+  /** English, which is what the prompt's UNIT block carries. */
   text: string;
   evidence: string;
+  /** The observation itself, kept so the same claim can be written in the
+      student's own language without re-deriving it (see introText). */
+  observation: Observation;
   lessonKey: string;
   lessonTitle: string;
   lessonDone: boolean;
@@ -113,6 +119,7 @@ function unitRelevance(unit: CourseModule, progress: ProgressV1, insights: Stude
       confidence: o.confidence,
       text: o.text,
       evidence: o.evidence,
+      observation: o,
       lessonKey: lesson.key,
       lessonTitle: lesson.title,
       lessonDone: isLessonDone(progress, lesson.key),
@@ -211,54 +218,76 @@ export type UnitNoteKind = 'intro' | 'wrap';
     relevance list) or in what they are aiming at (the target band) should.
     'wrap' is only ever shown once, right after completedAt is set, so it
     only needs to track unitId and that timestamp. */
-export function unitFingerprint(facts: UnitFacts, kind: UnitNoteKind, targetBand: string | null): string {
+export function unitFingerprint(
+  facts: UnitFacts,
+  kind: UnitNoteKind,
+  targetBand: string | null,
+  locale: Locale = 'en',
+): string {
   const parts = kind === 'intro'
-    ? ['intro', String(facts.unitId), targetBand ?? '-', facts.relevance.map((r) => `${r.observationId}:${r.confidence}`).join(',')]
-    : ['wrap', String(facts.unitId), facts.completedAt ?? '-'];
+    ? ['intro', locale, String(facts.unitId), targetBand ?? '-', facts.relevance.map((r) => `${r.observationId}:${r.confidence}`).join(',')]
+    // The locale is in here for the same reason it is in weekFingerprint:
+    // a cached note is prose in one language, and switching language must
+    // not hand a student back the other one.
+    : ['wrap', locale, String(facts.unitId), facts.completedAt ?? '-'];
   return fnv1a(parts.join('|'));
-}
-
-function pluralize(n: number, singular: string, plural: string = `${singular}s`): string {
-  return `${n} ${n === 1 ? singular : plural}`;
 }
 
 /** "This unit matters because..." — used verbatim when no model answers, so
     a signed-out student or a down/unconfigured Worker still gets a real,
     honest reason rather than silence about something the app clearly knows. */
-function introText(facts: UnitFacts): string {
+function introText(facts: UnitFacts, locale: Locale): string {
   const top = facts.relevance[0];
   if (!top) return '';
-  // top.text already carries its own hedge (insights.ts writes tentative
+  // The claim already carries its own hedge (insights.ts writes tentative
   // observations as "the one time" / "not a pattern", never as a habit), so
   // this only needs to introduce it, not add a claim of its own. Fold the
   // evidence into the same sentence (drop the claim's own trailing period)
   // rather than tacking on a third one, so this stays one or two sentences.
-  const claim = top.text.replace(/\.$/, '');
-  return `This unit matters for you right now: ${claim} (${top.evidence}).`;
+  const claim = observationText(top.observation, locale).replace(/\.$/, '');
+  return tutorText(locale, 'This unit matters for you right now: {claim} ({evidence}).', {
+    claim,
+    evidence: observationEvidence(top.observation, locale),
+  });
 }
 
 /** "You just finished..." — states what happened, never a band. */
-function wrapText(facts: UnitFacts): string {
+function wrapText(facts: UnitFacts, locale: Locale): string {
   const isExtrasUnit = facts.lessonsTotal === 0;
-  const count = isExtrasUnit ? facts.extrasTotal : facts.lessonsTotal;
-  const noun = isExtrasUnit ? pluralize(count, 'step') : pluralize(count, 'lesson');
-  let text = `You finished all ${noun} in ${facts.name}.`;
+  const total = isExtrasUnit ? facts.extrasTotal : facts.lessonsTotal;
+  const count = isExtrasUnit
+    ? tutorCount(locale, total, { one: '{n} step', other: '{n} steps' })
+    : tutorCount(locale, total, { one: '{n} lesson', other: '{n} lessons' });
+  /* The unit NAME arrives in English from the course registry. Unit names
+     are translated by the site's own dictionary, which the Worker cannot
+     read, so it is filled as a variable and stays English here. */
+  const sentences = [tutorText(locale, 'You finished all {count} in {unit}.', { count, unit: facts.name })];
 
   if (facts.startedAt && facts.completedAt) {
     const days = Math.round(
       (new Date(facts.completedAt).getTime() - new Date(facts.startedAt).getTime()) / 86_400_000,
     );
-    if (days >= 1) text += ` That took ${pluralize(days, 'day')}.`;
+    if (days >= 1) {
+      sentences.push(
+        tutorText(locale, 'That took {days}.', {
+          days: tutorCount(locale, days, { one: '{n} day', other: '{n} days' }),
+        }),
+      );
+    }
   }
 
-  text += facts.nextUnit ? ` Next up: ${facts.nextUnit.name}.` : ' That was the last unit in the course.';
-  return text;
+  sentences.push(
+    facts.nextUnit
+      ? tutorText(locale, 'Next up: {unit}.', { unit: facts.nextUnit.name })
+      : tutorText(locale, 'That was the last unit in the course.'),
+  );
+  return sentences.join(' ');
 }
 
 /** Plain sentences stating the facts, used verbatim when no AI model
     answers. See introText/wrapText for the wording rules behind each. */
-export function unitFallbackText(facts: UnitFacts, kind: UnitNoteKind): string {
-  return kind === 'intro' ? introText(facts) : wrapText(facts);
+export function unitFallbackText(facts: UnitFacts, kind: UnitNoteKind, locale: Locale = 'en'): string {
+  return kind === 'intro' ? introText(facts, locale) : wrapText(facts, locale);
 }
 
 /** Small non-cryptographic hash, copied from insights.ts rather than

@@ -145,7 +145,9 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
             ))}
             {recommendation && (
               <a className="mrez-rec" href={withBase(recommendation.href)}>
-                <span className="mrez-rec-label">{recommendation.label}</span>
+                {/* Lesson titles arrive English from the Worker and are
+                    translated here; anything else passes through. */}
+                <span className="mrez-rec-label">{t(recommendation.label)}</span>
                 <span className="mrez-rec-reason">{recommendation.reason}</span>
               </a>
             )}

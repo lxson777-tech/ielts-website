@@ -68,9 +68,67 @@ appended. They are notes about something that happened, not a dialogue.
 a whole number inside -840 to 840 is dropped and treated as 0 rather than
 refused: the worst it can do is move a week boundary by a few hours.
 
+`locale` is `'en'` or `'ru'`, and anything else becomes `'en'`. See **Answering
+in Russian** below for why a field read straight off the browser does not
+contradict the rule above it.
+
 The request and reply shapes live in `src/lib/tutor/schema.ts`, imported by
 **both** this Worker and the browser client, the same way the live examiner
 shares `src/lib/speaking/live/instructions.ts`. They cannot drift.
+
+---
+
+## Answering in Russian
+
+The site has a Russian version, and Mr EZ was the last English thing a Russian
+student met. Four pieces, in the order they matter.
+
+**1. The language rides on the request.** `TutorRequest.locale` is the only
+field here that is read from the browser and is not a reference. That is not a
+hole in "the browser is not a source of truth": that rule is about facts and
+identity, and a language is neither. The student picks it with the EN / RU
+switch on the page, and the worst a forged value can do is answer the forger in
+the wrong language. Nothing it can say changes what is true about them.
+
+**2. The model writes Russian; the record stays English.** For `'ru'` a block
+of language rules (`RUSSIAN_REPLY_RULES` in `src/lib/tutor/prompt.ts`) is
+appended **after** the persona and the task rules. `MR_EZ_PERSONA` is
+byte-identical in both languages and a test pins that: two personas would
+quietly become two characters. The FACTS blocks are English in both languages,
+because the model reads English and writes Russian, and translating counted
+evidence on the way in would be a new way to be wrong about what a student did.
+The rules also list what stays English inside a Russian sentence: IELTS, the
+four paper names, question type names, criterion names, Part / Task / Passage,
+and any English the student is meant to recognise or learn.
+
+**3. The sentences this Worker writes itself get their Russian from
+`src/lib/tutor/ru.ts`.** The shared layer (`insights`, `recommend`, `catalog`,
+`week`, `units`) runs here as well as in the browser, and the site's own
+dictionary is a lazily fetched browser chunk that a Worker cannot read. So that
+layer has a second, much smaller home for its Russian: one synchronous,
+dependency-free map of **whole sentences**, keyed by the English, with Russian
+plural forms through `Intl.PluralRules`. Every function in the shared layer
+takes an explicit `locale`; none of them reads an ambient one. Never import the
+site's dictionary here.
+
+Two things stay English on purpose, and both are marked in the code: **lesson
+titles and unit names**, which come from the course registry and are translated
+by the site's own dictionary when the browser renders the card, and the
+**FACTS** the model reads.
+
+**4. A cache is a cache of one language.** `insightsFingerprint`,
+`weekFingerprint` and `unitFingerprint` all fold the locale into the hashed
+string, so a student who switches language gets a new answer rather than the
+paragraph they just left. No schema change: two languages are simply two
+fingerprints. The idempotency replay is untouched, since a key is generated per
+user action and a language switch is a different action.
+
+Refusals are the mirror image. This Worker keeps returning its stable `code`
+plus an English sentence; the **browser** prefers its own translated wording for
+every code it knows (`src/lib/tutor/errors.ts`, Russian in
+`src/lib/i18n/dict/ru/tutor.ts`) and only falls back to the Worker's sentence
+for a code it does not, which in practice means `bad-request`, where the
+Worker's sentence is genuinely the more specific one.
 
 ---
 
@@ -299,6 +357,14 @@ request, however much question content the request tries to carry.
 `tests/tutor-insights.test.ts` covers the deterministic layer: the evidence
 thresholds that decide what may be called a pattern, and a filesystem check that
 every recommendable link is a page that exists in this repo.
+
+`tests/mr-ez-i18n.test.ts` covers the Russian: the locale on the wire, the
+persona staying byte-identical while the language rules are appended, the
+fingerprints differing by language, the browser's own error wording, and a
+**coverage scan** that reads the shared files and fails by name if any sentence
+they write has no Russian in `src/lib/tutor/ru.ts` (and the other way round, so
+a dead entry is caught too). If you add an English sentence to the shared layer,
+that test tells you exactly what to add and where.
 
 For clicking through the interface without a Supabase project or an API key,
 `node tools/mr-ez-dev-server.mjs` stands in for both backends. Everything it

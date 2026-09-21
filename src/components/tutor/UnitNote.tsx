@@ -21,6 +21,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
+import type { Locale } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured } from '../../lib/tutor/client';
 import { localInsights } from '../../lib/tutor/local';
@@ -50,7 +51,7 @@ interface TutorView {
     says when it does. Returns null for every case Course.tsx's caller is
     told to render nothing for: no goal yet, no unit, nothing relevant for an
     intro, not actually finished for a wrap, or an empty fallback string. */
-function buildLocalView(unitId: number, kind: UnitNoteKind): LocalView | null {
+function buildLocalView(unitId: number, kind: UnitNoteKind, locale: Locale): LocalView | null {
   const insights = localInsights();
   if (!insights.goals.targetBand || insights.goals.guessed) return null;
 
@@ -59,10 +60,12 @@ function buildLocalView(unitId: number, kind: UnitNoteKind): LocalView | null {
   if (kind === 'intro' && facts.relevance.length === 0) return null;
   if (kind === 'wrap' && !facts.complete) return null;
 
-  const text = unitFallbackText(facts, kind);
+  const text = unitFallbackText(facts, kind, locale);
   if (!text) return null;
 
-  return { fingerprint: unitFingerprint(facts, kind, insights.goals.targetBand), text };
+  // The language is part of the fingerprint, so switching it asks for a
+  // note in the new one rather than leaving the old one on screen.
+  return { fingerprint: unitFingerprint(facts, kind, insights.goals.targetBand, locale), text };
 }
 
 export interface UnitNoteProps {
@@ -71,7 +74,7 @@ export interface UnitNoteProps {
 }
 
 export default function UnitNote({ unitId, kind }: UnitNoteProps) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const [local, setLocal] = useState<LocalView | null>(null);
   const [tutor, setTutor] = useState<TutorView | null>(null);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -88,7 +91,7 @@ export default function UnitNote({ unitId, kind }: UnitNoteProps) {
   // Everything is read after mount: these stores are localStorage-backed, so
   // a server render and the first client render must agree on "nothing yet".
   useEffect(() => {
-    const refresh = () => setLocal(buildLocalView(unitId, kind));
+    const refresh = () => setLocal(buildLocalView(unitId, kind, locale));
     refresh();
     const offProgress = onProgressChange(refresh);
     const offPlan = onStudyPlanChange(refresh);
@@ -98,7 +101,7 @@ export default function UnitNote({ unitId, kind }: UnitNoteProps) {
       offPlan();
       offAuth();
     };
-  }, [unitId, kind]);
+  }, [unitId, kind, locale]);
 
   const fingerprint = local?.fingerprint ?? null;
 
