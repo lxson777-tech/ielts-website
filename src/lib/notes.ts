@@ -12,12 +12,12 @@ export interface Bookmark {
   savedAt: string;
 }
 
-interface NoteEntry {
+export interface NoteEntry {
   text: string;
   updatedAt: string;
 }
 
-interface NotesStore {
+export interface NotesStore {
   version: 1;
   bookmarks: Bookmark[];
   notes: Record<string, NoteEntry>;
@@ -57,6 +57,25 @@ function writeStore(store: NotesStore): void {
 
 function bookmarkKey(kind: Bookmark['kind'], id: string): string {
   return `${kind}:${id}`;
+}
+
+/* Saved lessons and notes live in one store, so one snapshot carries both.
+   These two functions exist only so the sync layer
+   (src/lib/learning/sync.browser.ts) can carry them between a student's
+   devices: they are the SAME read and write every function below already
+   uses, exposed rather than reimplemented, so nothing about how saving and
+   note taking behaves on this device changes. The merge rule (bookmarks by
+   kind and id, notes by lesson, later wins) lives in the sync layer beside
+   the other companion rules. */
+
+/** Saved lessons and notes as they stand, for sending to the account. */
+export function readNotesSyncSnapshot(): NotesStore {
+  return readStore();
+}
+
+/** Replace them with the merged version from the account. */
+export function writeNotesSyncSnapshot(store: NotesStore): void {
+  writeStore(store);
 }
 
 export function toggleBookmark(

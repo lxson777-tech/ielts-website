@@ -455,6 +455,19 @@ export interface LearnerStore {
 
   recordEvents(drafts: readonly EvidenceDraft[]): EvidenceEvent[];
   recordEvent(draft: EvidenceDraft): EvidenceEvent | null;
+  /** Fold events that came back from this student's own account into the
+      browser copy, as a union by id, and say how many were new.
+   *
+   * The one way the sync layer (work package 14) writes events it did not
+   * record itself. It is a union, so pulling the same log twice changes
+   * nothing, and it cannot invent a retry link: an event arriving from
+   * another device already carries whatever link it was recorded with.
+   *
+   * Validation belongs to the caller. `src/lib/learning/sync.browser.ts`
+   * runs validateEvidenceEvent and the raw-audio check on every row before
+   * it gets here, which is exactly what the note on looksLikeEvent above
+   * promises. */
+  mergeRemoteEvents(events: readonly EvidenceEvent[]): number;
   recordLessonStudied(input: LessonStudiedInput): EvidenceEvent | null;
   recordLessonCheckAnswer(input: LessonCheckAnswerInput): EvidenceEvent | null;
   recordSubmission(input: SubmissionInput): EvidenceEvent | null;
@@ -748,6 +761,16 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
 
   function recordEvent(draft: EvidenceDraft): EvidenceEvent | null {
     return recordEvents([draft])[0] ?? null;
+  }
+
+  function mergeRemoteEvents(events: readonly EvidenceEvent[]): number {
+    const before = read();
+    const merged = appendAllEvidence(before, events);
+    if (merged === before) return 0;
+    const added = merged.events.length - before.events.length;
+    record = merged;
+    save();
+    return added;
   }
 
   /* ── the convenience recorders ── */
@@ -1150,6 +1173,7 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
     },
     recordEvents,
     recordEvent,
+    mergeRemoteEvents,
     recordLessonStudied,
     recordLessonCheckAnswer,
     recordSubmission,

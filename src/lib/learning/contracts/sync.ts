@@ -102,6 +102,16 @@ export type PlanRejection = 'malformed' | 'not-owner' | 'stale-evidence-version'
 /** The companion stores that must travel with the record: vocabulary review
     state, saved lessons and notes, and the learning preferences that are not
     part of the plan. All three are union-merged by their own natural key. */
+/** The companion documents that travel by kind, one row each in
+    learning_companions. Free text in the database on purpose (see
+    supabase/migrations/2026-09-21-learning.sql), so adding a kind later is a
+    row shape and never a migration. These three are what the browser holds
+    today; what Mr EZ remembers lives server side in mr_ez_conversations and
+    is written by the Worker, so it is deliberately not one of them. */
+export type CompanionKind = 'vocab' | 'notes' | 'preferences';
+
+export const COMPANION_KINDS: readonly CompanionKind[] = ['vocab', 'notes', 'preferences'] as const;
+
 export interface CompanionSyncPayload {
   /** Word to scheduling state, exactly VocabStoreV1.cards today. Merged per
       word by taking the most recently reviewed side. */
@@ -147,6 +157,18 @@ export interface SyncStatus {
   lastSyncedAt: string | null;
   /** Present when state is 'error', as a code the interface has wording for. */
   error?: EvidenceRejection | PlanRejection | 'network' | 'not-configured';
+  /** When the student's plan was last replaced by a newer one from another
+      device. Architecture risk 4: a plan edited in two places means one edit
+      loses, and the interface must SAY so rather than reconcile silently.
+      Set together with state 'conflict', and both stay until the interface
+      calls acknowledgePlanChange(), so a later successful push cannot swallow
+      the message before the student has seen it. */
+  planChangedElsewhereAt?: string;
+  /** True when the account's learning tables are not there to sync with, so
+      this device is working on its own. Not an error the student caused, and
+      not a reason to keep retrying: the layer stops until the next sign-in.
+      Reported with state 'error' and error 'not-configured'. */
+  unavailable?: boolean;
 }
 
 /** Whether the browser copy of the learner record actually reached this
@@ -276,6 +298,21 @@ export const SYNC_DEBOUNCE_MS = 1500;
 /** How long a device keeps retrying a failed push before it tells the
     student plainly that their work is only on this device. */
 export const SYNC_RETRY_WINDOW_MS = 5 * 60 * 1000;
+
+/** First retry delay after a failed push, then doubling. */
+export const SYNC_BACKOFF_BASE_MS = 1000;
+
+/** The longest a device ever waits between retries. A ceiling rather than an
+    ever-growing wait: a laptop that was shut for a week should come back
+    within a minute of the network returning, and a minute apart is not a
+    retry storm. */
+export const SYNC_BACKOFF_CEILING_MS = 60 * 1000;
+
+/** Where this device keeps its own note of what the server has already
+    acknowledged. Namespaced by owner exactly like the record and the plan:
+    'ielts.learning.sync.v1::u:<userId>'. It holds ids waiting to be sent,
+    not evidence, so losing it costs one extra push and never any work. */
+export const SYNC_STATE_KEY = 'ielts.learning.sync.v1';
 
 /** The rule that decides a plan conflict, stated once so every caller and
     every test agrees:

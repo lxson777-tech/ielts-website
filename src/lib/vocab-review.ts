@@ -36,7 +36,7 @@ export interface VocabCard {
 export type Grade = 'again' | 'hard' | 'good' | 'easy';
 export type NewPerDay = 5 | 10 | 20;
 
-interface VocabCardState {
+export interface VocabCardState {
   ease: number;
   /** Current interval in days. 0 means "due again today". */
   interval: number;
@@ -50,7 +50,7 @@ interface VocabCardState {
   lastReviewed?: string;
 }
 
-interface VocabStoreV1 {
+export interface VocabStoreV1 {
   version: 1;
   settings: { newPerDay: NewPerDay };
   cards: Record<string, VocabCardState>;
@@ -441,6 +441,25 @@ function saveStore(store: VocabStoreV1): void {
   } catch {
     /* storage full/blocked — review progress is a nice-to-have, never fatal */
   }
+}
+
+/* The two functions below exist only so the sync layer
+   (src/lib/learning/sync.browser.ts) can carry review state between a
+   student's devices. They are the SAME read and write every function in this
+   file already uses, exposed rather than reimplemented, so nothing about how
+   vocabulary behaves on this device changes. The merge rule (per word, the
+   later review wins, and an interval never goes backwards because of an
+   older device) lives in the sync layer, next to the other companion rules,
+   not here. */
+
+/** The whole review store as it stands, for sending to the account. */
+export function readVocabSyncSnapshot(): VocabStoreV1 {
+  return loadStore();
+}
+
+/** Replace the review store with the merged version from the account. */
+export function writeVocabSyncSnapshot(store: VocabStoreV1): void {
+  saveStore(store);
 }
 
 export function getSettings(): { newPerDay: NewPerDay } {

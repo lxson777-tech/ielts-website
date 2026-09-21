@@ -4,12 +4,31 @@
    the first-login migration), write the merged result back to localStorage, and
    PUSH it up. After that, any local change debounces a push to the cloud.
 
-   Everything no-ops when accounts are unconfigured (getSupabase() → null). */
+   Everything no-ops when accounts are unconfigured (getSupabase() → null).
+
+   SINCE THE PERSONAL LEARNING BUILD, THIS FILE DOES TWO JOBS
+   The first is everything above, unchanged: `user_state.progress` and
+   `user_state.study_plan` are still pulled, merged and pushed exactly as they
+   were, because the writing, speaking and score history screens read them and
+   they are not this build's to risk.
+
+   The second is starting and stopping the learning layer's own sync
+   (src/lib/learning/sync.browser.ts), which carries the learner record, the
+   personal plan and the companion stores across three NEW tables. It runs
+   beside the old one, never instead of it, and every call into it is wrapped
+   so that a failure there can never break the old sync or a sign-in. */
 
 import type { User } from '@supabase/supabase-js';
 import { getSupabase } from './supabase';
 import { getProgress, replaceProgress, mergeProgress, onProgressChange, type ProgressV1 } from '../progress';
 import { loadStudyPlan, saveStudyPlan, mergeStudyPlans, onStudyPlanChange, type SavedPlan } from '../study-plan';
+import type { CacheOwner } from '../learning/contracts/sync';
+import {
+  createRestTransport,
+  startLearningSync,
+  stopLearningSync,
+  type SyncTransport,
+} from '../learning/sync.browser';
 
 interface Row {
   progress: ProgressV1;
@@ -59,6 +78,73 @@ function schedulePush(userId: string): void {
   pushTimer = setTimeout(() => void push(userId), 1500);
 }
 
+/* ── The learning layer's own sync ───────────────────────────────────────── */
+
+/* Loaded on demand, and kept once it is. src/lib/learning/index.ts owns the
+   cached "current session" every screen reads, so it is the one that must be
+   told when the student changes: dropping the record without dropping that
+   cache would let one student's session view survive into the next one's.
+   It is imported dynamically because it carries the activity catalogue, and
+   no page should pay for that merely for having an account menu on it. */
+type LearningModule = typeof import('../learning');
+let learningModule: LearningModule | null = null;
+
+async function learning(): Promise<LearningModule | null> {
+  if (learningModule) return learningModule;
+  try {
+    learningModule = await import('../learning');
+    return learningModule;
+  } catch {
+    /* The learning layer failing to load must never stop a sign-in. */
+    return null;
+  }
+}
+
+/** Sets the owner on the learner record, the plan and the shared session
+    cache together. Falls back to doing nothing when the module is absent, in
+    which case the sync layer moves the two stores itself. */
+function setLearningOwner(owner: CacheOwner | null): void {
+  try {
+    learningModule?.setLearningOwner(owner);
+  } catch {
+    /* A store refusing to move is not a reason to fail a sign-out. */
+  }
+}
+
+/** How the learning tables are reached, or null when accounts are not
+    configured here. The access token is read fresh on every request, so a
+    refreshed session is picked up and a signed-out one simply stops. */
+function learningTransport(): SyncTransport | null {
+  const url = import.meta.env?.PUBLIC_SUPABASE_URL as string | undefined;
+  const anonKey = import.meta.env?.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+  if (!url || !anonKey) return null;
+  return createRestTransport({
+    baseUrl: url,
+    apiKey: anonKey,
+    accessToken: async () => {
+      const sb = getSupabase();
+      if (!sb) return null;
+      const { data } = await sb.auth.getSession();
+      return data.session?.access_token ?? null;
+    },
+  });
+}
+
+async function startLearningFor(userId: string): Promise<void> {
+  try {
+    const module = await learning();
+    await startLearningSync(userId, {
+      transport: learningTransport(),
+      setOwner: module ? (owner) => setLearningOwner(owner) : undefined,
+    });
+  } catch {
+    /* The learning sync is an addition. It fails quietly and the student
+       keeps working on this device, which is what the status says. */
+  }
+}
+
+/* ── Start and stop ──────────────────────────────────────────────────────── */
+
 /** Begin syncing for a signed-in user: merge cloud ↔ local, then keep pushing
     local changes. Safe to call repeatedly; it resets any prior subscription. */
 export async function startSyncForUser(user: User): Promise<void> {
@@ -90,9 +176,29 @@ export async function startSyncForUser(user: User): Promise<void> {
   };
   unsub.push(onProgressChange(onChange));
   unsub.push(onStudyPlanChange(onChange));
+
+  // The learner record, the personal plan and the companion stores, on their
+  // own tables, beside everything above.
+  await startLearningFor(user.id);
 }
 
-/** Stop syncing (sign-out). Local data is left untouched on the device. */
+/** Stop syncing (sign-out, or switching to another account).
+ *
+ * THE OLD STORES ARE STILL LEFT ALONE. `ielts.progress.v1` and
+ * `ielts.studyplan.v1` have nobody's name on them and are read by the writing,
+ * speaking and score history screens; emptying them on sign-out would delete a
+ * student's history from their own machine. The learner record's one-time
+ * migration already stamps which owner claimed them, which is what stops a
+ * second student on this browser inheriting them (see
+ * LEGACY_MIGRATION_OWNER_KEY in src/lib/learning/contracts/sync.ts).
+ *
+ * WHAT IS FIXED HERE is the half the architecture calls out in section 1.4:
+ * this function used to leave the signed-in student loaded in memory, so the
+ * next screen to ask still got their work. It now moves both learning stores
+ * off that student, and the sync layer removes their cached copy from the
+ * device once the account has everything (it keeps it when something is still
+ * waiting to be sent, because losing a student's work is the worse mistake,
+ * and that copy is namespaced by user id so no other session can read it). */
 export function stopSync(): void {
   for (const u of unsub) u();
   unsub = [];
@@ -101,4 +207,14 @@ export function stopSync(): void {
     pushTimer = null;
   }
   currentUserId = null;
+
+  /* The layer's teardown pushes nothing and awaits nothing, so its whole
+     body runs before this line returns: there is no window in which a screen
+     could still read the student who just signed out. */
+  void stopLearningSync({ forget: true }).catch(() => {
+    /* The owner reset below is the part that matters and happens anyway. */
+  });
+  /* Belt and braces, and the only path when the layer was never started
+     (accounts unconfigured, or the learning module failed to load). */
+  setLearningOwner(null);
 }
