@@ -53,6 +53,11 @@ export interface PlanGoals {
   route: 'academic';
   /** What the student says they already scored, with when. Always labelled. */
   selfReported: readonly { paper?: Paper; band: number; takenOn: string; reportedAt: string }[];
+  /** The paper the student says feels hardest, asked during the staged
+      diagnostic (lead decision Q4). Self-reported, never measured: it orders
+      the diagnostic steps and gives that paper a small starting priority,
+      and the first real evidence about any paper overrides it. */
+  selfReportedHardestPaper?: { paper: Paper; reportedAt: string };
 }
 
 /* ── Constraints ─────────────────────────────────────────────────────────── */
@@ -196,6 +201,9 @@ export interface PlanAlternative {
 export type PlanOverride =
   | { kind: 'less-time-today'; date: string; minutes: DailyMinutes; createdAt: string }
   | { kind: 'chose-other-skill'; date: string; paper: Paper; createdAt: string }
+  /** The student picked one exact objective rather than a whole paper. Scored
+      normally, but it wins ties, and the choice is written into history. */
+  | { kind: 'chose-objective'; date: string; scopeKey: PolicyScopeKey; activityId?: string; createdAt: string }
   | { kind: 'skip-activity'; activityId: string; createdAt: string; until?: string }
   | { kind: 'accepted-longer-commitment'; date: string; activityId: string; minutes: number; createdAt: string }
   | { kind: 'deferred-diagnostic'; paper: Paper; createdAt: string; until?: string }
@@ -283,6 +291,12 @@ export interface PersonalPlanV1 {
   /** Staged diagnostics still outstanding, so the interface can show what
       is still unknown without pretending to know it. */
   diagnosticsOutstanding: readonly Paper[];
+  /** What honestly fits in the time that is left, and what does not, in one
+      or two plain sentences. Set whenever the planner had to leave real work
+      out: a short deadline, a recovery, a paper with no material short
+      enough to sample. Never a promise about a band. Absent when there is
+      nothing to warn about. */
+  scopeNote?: string;
 }
 
 /* ── Named constants ─────────────────────────────────────────────────────── */
@@ -326,3 +340,103 @@ export const DIAGNOSTIC_MAX_MINUTES_PER_SESSION = 15;
 /** Days before the exam below which the planner stops introducing new
     teaching and prioritises consolidation and timing. */
 export const SHORT_DEADLINE_DAYS = 10;
+
+/* ── Session shape ───────────────────────────────────────────────────────── */
+
+/** Shorter than this and a step is not worth putting on a screen: the
+    student spends the time reading the heading. A step that cannot reach it
+    is left out rather than squeezed in. */
+export const MIN_STEP_MINUTES = 3;
+
+/** Caps per role, so no single step eats a session. They are ceilings, not
+    targets: a step gets the smaller of its cap, its activity's own estimate
+    and whatever minutes are still free. All provisional. */
+export const RECALL_MAX_MINUTES = 5;
+export const TEACH_MAX_MINUTES = 12;
+export const CHECK_MAX_MINUTES = 15;
+export const RECAP_MAX_MINUTES = 5;
+
+/** The share of a session reserved for doing rather than reading, when
+    there is anything to practise at all. Teaching is trimmed before
+    practice is. */
+export const PRACTISE_MIN_SHARE = 0.4;
+
+/* ── Planner weights ─────────────────────────────────────────────────────── */
+
+/** Every term in the objective score, by name. They are provisional
+ *  teaching judgements, configurable in one place so a teacher review can
+ *  move them, and nothing in the interface may present them as validated
+ *  IELTS science.
+ *
+ *  All the pressure terms are normalised to roughly 0 to 1 before they are
+ *  weighted, so the weights below can be read against each other directly. */
+export interface PlannerWeights {
+  /** How far this scope is from the band it actually has to reach. The
+      largest term: a real, measured shortfall against the student's own
+      requirement is the best reason there is to work on something. */
+  gap: number;
+  /** How far below the weak threshold this exact question type or objective
+      is measuring. The paper-level gap says which paper matters; this says
+      which part of it, so a Reading student short of their target works on
+      the type they keep getting wrong rather than the first one
+      alphabetically. */
+  weakness: number;
+  /** Never assessed at all. Just below a measured gap, because finding out
+      is worth nearly as much as fixing a known problem and a plan built on
+      nothing is a guess. */
+  unknown: number;
+  /** Spacing says it is time to prove this again. Retention is cheap to
+      keep and expensive to rebuild, so it outranks broad coverage. */
+  dueReview: number;
+  /** A paper nobody has touched lately. Small: it stops a paper vanishing
+      from the plan without letting freshness outrank a real gap. */
+  coverage: number;
+  /** The exam getting closer. Small on its own; its job is to break ties
+      toward work that can still move in the days available. */
+  deadline: number;
+  /** Subtracted for something worked on in the last few days, so the plan
+      does not grind one drill day after day. */
+  recency: number;
+  /** Subtracted for a measured strength. This is what stops a strong
+      Reading student being taught Reading. Deliberately as large as the
+      unknown term: demonstrated ability should silence a topic. */
+  strength: number;
+  /** Subtracted for teaching that would have to happen first. Small,
+      because a prerequisite is a detour and not a refusal. */
+  prerequisite: number;
+  /** Subtracted when the only lesson the library has for this objective is
+      about a neighbouring question type. Five lessons deliberately do this
+      (multiple-answer, categorisation, table completion on both papers,
+      diagram labelling on Listening). The link is real and worth keeping,
+      but a lesson about the thing next door teaches less, so an objective
+      with a direct lesson wins first. */
+  borrowedFit: number;
+  /** What the student told us: a self-reported score below target, or the
+      paper they said feels hardest. Small on purpose, and multiplied by
+      zero as soon as there is real evidence about that paper. */
+  selfReported: number;
+  /** Added to the objective the session is already running, so a plan does
+      not swap under a working student for a rounding difference. */
+  incumbent: number;
+  /** A challenger must beat the incumbent by more than this before the
+      active session is replaced. Together with `incumbent` this is the
+      brief's "do not force different tasks merely to make a test pass if
+      the same task remains sensible". */
+  replanMargin: number;
+}
+
+export const DEFAULT_PLANNER_WEIGHTS: PlannerWeights = {
+  gap: 4,
+  weakness: 2,
+  unknown: 2.5,
+  dueReview: 1.4,
+  coverage: 1.2,
+  deadline: 1,
+  recency: 1.5,
+  strength: 2.5,
+  prerequisite: 0.8,
+  borrowedFit: 0.6,
+  selfReported: 0.75,
+  incumbent: 0.5,
+  replanMargin: 0.25,
+};
