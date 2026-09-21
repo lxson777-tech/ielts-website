@@ -16,10 +16,21 @@ import { startSyncForUser, stopSync } from '../lib/auth/sync';
 import { getProgress, onProgressChange } from '../lib/progress';
 import { loadStudyPlan, onStudyPlanChange } from '../lib/study-plan';
 import { buildCourse, courseStatus } from '../lib/course';
+import { ensureLearningWired } from '../lib/learning';
+import type { SharedSessionView } from '../lib/learning/adapters';
 import { useT } from '../lib/i18n/react';
 import AuthModal from './AuthModal';
 
 const MODULES = buildCourse();
+
+// AccountMenu is mounted in the site nav on every page (Nav.astro), so it
+// is often the ONLY thing on a page that touches the personal-learning
+// layer. Importing this module is what wires courseStatus()'s `session`
+// field to the student's real plan instead of the library-position
+// fallback; without it, "Continue" here could name a different activity
+// than Today does, which is exactly the bug this shared session exists to
+// close (see src/lib/learning/index.ts's header comment).
+ensureLearningWired();
 
 export default function AccountMenu({ compact = false }: { compact?: boolean }) {
   const { t } = useT();
@@ -31,8 +42,11 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
   /* Course entry for the menu. Computed only while the menu is open so the
      nav island doesn't read two stores on every page load. `started` is what
      decides the copy: a student who hasn't begun gets an invitation, one who
-     has gets their next lesson by name. */
-  const [course, setCourse] = useState<{ started: boolean; nextTitle: string | null; percent: number } | null>(null);
+     has gets the shared session's real objective, the exact same one Today
+     and every other surface show (courseStatus().session is
+     currentSharedSession(), see src/lib/course.ts). `percent` is library
+     progress (lessons opened), shown as that and never as readiness. */
+  const [course, setCourse] = useState<{ started: boolean; session: SharedSessionView | null; percent: number } | null>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -40,7 +54,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
       const status = courseStatus(MODULES, getProgress());
       setCourse({
         started: Boolean(loadStudyPlan()),
-        nextTitle: status.next?.title ?? null,
+        session: status.session,
         percent: status.percent,
       });
     };
@@ -121,7 +135,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
               <p className="mt-1 text-xs text-success">{t('Progress is syncing to your account.')}</p>
             </div>
             <a
-              href={withBase('/start')}
+              href={withBase(course?.session?.current?.href ?? '/start')}
               className="block border-b border-border px-4 py-3 text-left hover:bg-brand-tint"
             >
               <span className="flex items-center justify-between gap-2">
@@ -129,7 +143,12 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
                   {course?.started ? t('Continue course') : t('Start the course')}
                 </span>
                 {course?.started && (
-                  <span className="shrink-0 text-[0.7rem] font-bold text-ink-muted">{course.percent}%</span>
+                  <span
+                    className="shrink-0 text-[0.7rem] font-bold text-ink-muted"
+                    title={t('{percent}% of lessons studied', { percent: course.percent })}
+                  >
+                    {t('{percent}% studied', { percent: course.percent })}
+                  </span>
                 )}
               </span>
               <span className="mt-0.5 block truncate text-xs text-ink-muted">
@@ -137,7 +156,10 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
                   ? t('Loading…')
                   : !course.started
                     ? t('Every lesson, in the right order')
-                    : (course.nextTitle ?? t('All lessons complete 🎉'))}
+                    : /* The session's own one-sentence objective, the same
+                         text Today shows for this student, not a library
+                         pointer re-derived here. */
+                      (course.session?.objective ?? t('All lessons complete 🎉'))}
               </span>
               {course?.started && (
                 <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-surface-alt">

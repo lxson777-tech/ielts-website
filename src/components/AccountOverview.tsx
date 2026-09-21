@@ -18,9 +18,16 @@ import {
 } from '../lib/progress';
 import { loadStudyPlan, onStudyPlanChange, daysUntilTest, type SavedPlan } from '../lib/study-plan';
 import { buildCourse, courseStatus, type CourseStatus } from '../lib/course';
+import { ensureLearningWired } from '../lib/learning';
 import { useT } from '../lib/i18n/react';
 
 const MODULES = buildCourse();
+
+// /account can be the only page load that ever touches the learning layer
+// for a given visit, so this island wires it itself (see the identical note
+// in AccountMenu.tsx). Without this, course.session below would fall back
+// to the library position instead of the student's real plan.
+ensureLearningWired();
 
 interface Stats {
   readingBand: string | null;
@@ -138,7 +145,12 @@ export default function AccountOverview() {
         <StatTile label={t('Best {skill} band', { skill: 'speaking' })} value={stats.speakingBand?.toFixed(1) ?? '-'} accent="var(--color-speaking)" />
       </div>
 
-      {/* ── Course summary ── */}
+      {/* ── Course summary ──
+          The headline sentence is the shared session's own objective and
+          reason: the exact same next step Today, the account menu and Mr EZ
+          show, not a library position worked out again here. `done of total
+          lessons` stays as a studied count, kept visibly apart from that
+          objective rather than folded into one number. */}
       {plan ? (
         <div className="rounded-card border border-border bg-surface p-5 shadow-card">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -151,16 +163,18 @@ export default function AccountOverview() {
                   </span>
                 )}
               </p>
-              <p className="mt-1 text-xs text-ink-muted">
-                {t('{done} of {total} lessons done', { done: course.doneLessons, total: course.totalLessons })}
-                {course.next && <> · {t('next: {title}', { title: course.next.title })}</>}
+              {course.session && (
+                <p className="mt-1 text-xs text-ink-muted">{course.session.objective}</p>
+              )}
+              <p className="mt-1 text-[0.7rem] text-ink-muted">
+                {t('{done} of {total} lessons studied', { done: course.doneLessons, total: course.totalLessons })}
               </p>
             </div>
             <a
-              href={withBase('/start')}
+              href={withBase(course.session?.current?.href ?? '/start')}
               className="shrink-0 rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
             >
-              {course.next ? t('Continue') : t('View course')}
+              {course.session?.current || course.next ? t('Continue') : t('View course')}
             </a>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-alt">

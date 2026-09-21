@@ -27,6 +27,11 @@ import type { Skill } from '../data/lessons';
 import WeeklyReview from './tutor/WeeklyReview';
 import { useT } from '../lib/i18n/react';
 import { nt } from '../lib/i18n/translate';
+import { ensurePlan, readLearnerRecord } from '../lib/learning';
+import { evaluateEvidence } from '../lib/learning/policy';
+import { skillTrendPanels } from './reportTrends';
+import SkillTrendGrid from './SkillTrendGrid';
+import '../styles/learning-progress.css';
 
 const NAME_KEY = 'ielts.report.name.v1';
 
@@ -58,90 +63,8 @@ const SKILL_LABEL: Record<Skill, string> = {
   vocabulary: nt('Vocabulary'),
 };
 
-const SKILL_COLOR: Record<'reading' | 'listening' | 'writing' | 'speaking', string> = {
-  reading: 'var(--color-reading)',
-  listening: 'var(--color-listening)',
-  writing: 'var(--color-writing)',
-  speaking: 'var(--color-speaking)',
-};
-
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-
-interface TrendPoint {
-  at: string;
-  band: number;
-  skill: 'reading' | 'listening' | 'writing' | 'speaking';
-  label: string;
-}
-
-/** One combined chronological trend across every scored paper, so the
-    report shows a single trajectory rather than four separate charts.
-    Built by hand instead of reusing ScoreHistory's chart, which only reads
-    one skill's reading/listening attempts internally and has no prop for
-    handing it a mixed dataset. */
-function BandTrend({ points }: { points: TrendPoint[] }) {
-  const { t } = useT();
-  const [hover, setHover] = useState<number | null>(null);
-  if (points.length < 2) return null;
-
-  const W = 640;
-  const H = 200;
-  const PAD = { top: 16, right: 16, bottom: 24, left: 34 };
-  const innerW = W - PAD.left - PAD.right;
-  const innerH = H - PAD.top - PAD.bottom;
-  const yMin = 3;
-  const yMax = 9;
-
-  const x = (i: number) => PAD.left + (points.length === 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
-  const y = (band: number) =>
-    PAD.top + innerH - ((Math.max(yMin, Math.min(yMax, band)) - yMin) / (yMax - yMin)) * innerH;
-  const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.band).toFixed(1)}`).join(' ');
-  const gridBands = [4, 5, 6, 7, 8, 9];
-
-  return (
-    <figure className="mt-4 overflow-x-auto">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('Band score across every scored attempt, oldest to newest')} className="w-full max-w-2xl" onMouseLeave={() => setHover(null)}>
-        {gridBands.map((b) => (
-          <g key={b}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y(b)} y2={y(b)} stroke="var(--color-border)" strokeWidth="1" />
-            <text x={PAD.left - 8} y={y(b) + 3.5} textAnchor="end" fontSize="10" fill="var(--color-ink-muted)">
-              {b}
-            </text>
-          </g>
-        ))}
-        <path d={path} fill="none" stroke="var(--color-brand,#e76f51)" strokeWidth="2" strokeLinejoin="round" />
-        {points.map((p, i) => (
-          <g key={i}>
-            <circle cx={x(i)} cy={y(p.band)} r="10" fill="transparent" onMouseEnter={() => setHover(i)} />
-            <circle cx={x(i)} cy={y(p.band)} r="4" fill={SKILL_COLOR[p.skill]} stroke="var(--color-surface)" strokeWidth="2" pointerEvents="none" />
-          </g>
-        ))}
-        {hover !== null && (
-          <g pointerEvents="none">
-            {(() => {
-              const p = points[hover]!;
-              const tx = Math.min(Math.max(x(hover), PAD.left + 66), W - PAD.right - 66);
-              const ty = y(p.band);
-              const above = ty > 60;
-              return (
-                <g transform={`translate(${tx},${above ? ty - 12 : ty + 12})`}>
-                  <rect x="-66" y={above ? -34 : 0} width="132" height="34" rx="6" fill="var(--color-ink)" opacity="0.92" />
-                  <text x="0" y={above ? -21 : 13} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-                    {t('{label} · Band {value}', { label: p.label, value: p.band.toFixed(1) })}
-                  </text>
-                  <text x="0" y={above ? -9 : 25} textAnchor="middle" fontSize="9" fill="#fff" opacity="0.75">
-                    {fmtDate(p.at)}
-                  </text>
-                </g>
-              );
-            })()}
-          </g>
-        )}
-      </svg>
-    </figure>
-  );
-}
 
 export default function ProgressReport() {
   const { t, tn } = useT();
@@ -193,12 +116,15 @@ export default function ProgressReport() {
     { skill: 'Speaking', key: 'speaking', best: speakingBest, latest: speakingAttempts.at(-1)?.overallBand ?? null, count: speakingAttempts.length },
   ];
 
-  const trend: TrendPoint[] = [
-    ...readingAttempts.map((a) => ({ at: a.attempt.at, band: a.attempt.band, skill: 'reading' as const, label: 'Reading' })),
-    ...listeningAttempts.map((a) => ({ at: a.attempt.at, band: a.attempt.band, skill: 'listening' as const, label: 'Listening' })),
-    ...writingAttempts.map((a) => ({ at: a.attempt.at, band: a.attempt.overallBand, skill: 'writing' as const, label: 'Writing' })),
-    ...speakingAttempts.map((a) => ({ at: a.at, band: a.overallBand, skill: 'speaking' as const, label: 'Speaking' })),
-  ].sort((a, b) => a.at.localeCompare(b.at));
+  // Four separate skill estimates from the one evidence policy, never
+  // joined into a single line across papers (see reportTrends.ts).
+  // ensurePlan() is safe on every render: with a plan already stored for
+  // today it only reads it, and the same call is how every other surface
+  // reaches the student's real goals.
+  const learningPlan = ensurePlan();
+  const learnerRecord = readLearnerRecord();
+  const policy = evaluateEvidence({ record: learnerRecord, goals: learningPlan.goals, now: new Date().toISOString() });
+  const skillPanels = skillTrendPanels(policy);
 
   const typeStats = [
     ...getTypeStats('reading').map((t) => ({ ...t, skill: 'Reading' })),
@@ -284,7 +210,11 @@ export default function ProgressReport() {
             </p>
           </div>
           <div className="rounded-card border border-border bg-surface p-4">
-            <p className="text-xs text-ink-muted">{t('Total study time logged')}</p>
+            {/* Each lesson and test carries a fixed estimated allowance
+                (12/40/10 minutes in src/lib/progress.ts), never a measured
+                time-on-page, so this is labelled as an estimate rather than
+                as logged, measured time. */}
+            <p className="text-xs text-ink-muted">{t('Estimated study time')}</p>
             <p className="mt-1 font-display text-xl font-extrabold">
               {t('{hours}h {minutes}m', { hours: Math.round(totalMinutes / 60), minutes: totalMinutes % 60 })}
             </p>
@@ -380,11 +310,15 @@ export default function ProgressReport() {
             {t('Your own minimum per paper is shown where you set one, otherwise your overall target of Band {band}. Change these in Course settings.', { band: plan.targetBand })}
           </p>
         )}
-        {trend.length >= 2 ? (
-          <BandTrend points={trend} />
-        ) : (
-          <p className="mt-3 text-sm text-ink-muted">{t('Band trend appears once you have at least two scored attempts.')}</p>
-        )}
+      </section>
+
+      {/* ── Skill trends: four separate estimates, never joined into one
+          line. See reportTrends.ts for why. ── */}
+      <section>
+        <h2 className="font-display text-lg font-bold">{t('Skill trends')}</h2>
+        <div className="mt-3">
+          <SkillTrendGrid panels={skillPanels} />
+        </div>
       </section>
 
       {/* ── Weakest / strongest question types ── */}

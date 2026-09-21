@@ -242,6 +242,11 @@ const SHARED_SOURCES = [
   'src/lib/tutor/week.ts',
   'src/lib/tutor/units.ts',
   'workers/mr-ez/src/index.ts',
+  /* Added with the three learning AI tasks (work package 15). It writes the
+     deterministic answers the student reads when no model answered, and the
+     Worker runs it, so architecture section 1.6 puts its Russian in
+     src/lib/tutor/ru.ts with everything else the Worker says. */
+  'src/lib/learning/ai-prompt.ts',
 ];
 
 /* Where a whole-sentence English template sits in each call that carries
@@ -428,7 +433,10 @@ test('the coverage scanner finds what it is supposed to find', () => {
     keys.has('Next in the course, which is ordered so each lesson builds on the one before.'),
     'reason() templates in recommend.ts',
   );
-  assert.ok(keys.has('That was the last unit in the course.'), 'tutorText() calls in units.ts');
+  // Since 2026-09-22 the eight fixed units are a library, not the
+  // student's route (src/lib/learning owns the real plan), so units.ts no
+  // longer calls this a "course" or says "Next up": see its wrapText().
+  assert.ok(keys.has('That was the last unit in the library.'), 'tutorText() calls in units.ts');
   assert.ok(keys.has('Simulated tutor reply (no AI was called).'), 'tutorText() calls in the Worker');
   assert.ok(keys.has('You completed {n} lessons.'), 'counted phrases written as { one, other } literals');
   assert.ok(

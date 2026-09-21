@@ -3,7 +3,6 @@ import BaseLayout from './BaseLayout.astro';
 import Badge from '../components/Badge.astro';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
-import { buildCourse } from '../lib/course';
 import { WORDS } from '../data/words';
 import { READING_PARTS } from '../data/reading';
 import { LISTENING_PARTS } from '../data/listening';
@@ -45,9 +44,6 @@ function lookupPartMinutes(lessonSlug: string): number | undefined {
   }
   return undefined;
 }
-const courseLessons = buildCourse().flatMap((unit) => unit.lessons);
-const courseIndex = courseLessons.findIndex((entry) => entry.key === slug);
-const nextInCourse = courseIndex >= 0 ? courseLessons[courseIndex + 1] : undefined;
 const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }).minutes;
 ---
 
@@ -135,7 +131,12 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
 
         <nav class="flex flex-wrap items-center justify-center gap-4 text-sm" aria-label="Guided course" data-i18n-attr="aria-label">
           <a href={withBase('/start')} class="font-semibold text-ink-muted hover:text-brand" data-i18n>Back to course</a>
-          {nextInCourse && <a data-course-next href={withBase(nextInCourse.href)} class="rounded-button bg-brand px-5 py-3 font-semibold text-white"><span data-i18n>Next in course:</span> <span data-i18n>{nextInCourse.title}</span></a>}
+          {/* Filled in by script below from the student's shared session
+              (src/lib/learning), not from course position: a lesson opened
+              from the library is never given a contradictory next step. */}
+          <a id="lesson-next-control" data-course-next href={withBase('/dashboard')} class="rounded-button bg-brand px-5 py-3 font-semibold text-white" hidden>
+            <span id="lesson-next-label" data-i18n>Back to today's session</span>
+          </a>
         </nav>
         <div class="w-full max-w-xl">
           <div class="flex items-baseline justify-between gap-2">
@@ -163,11 +164,15 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
 <script>
   import { initReadingQuiz } from '../scripts/lesson-quiz';
   import type { VocabWord } from '../scripts/vocab-quiz';
-  import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
+  import { isLessonComplete, markLessonComplete, onProgressChange, unmarkLessonComplete } from '../lib/progress';
   import { recordLessonStudied } from '../lib/learning/store.browser';
+  import { ensureLearningWired, getCurrentSession, markStepDone } from '../lib/learning';
   import { toggleBookmark, isBookmarked, setNote, getNote } from '../lib/notes';
   import { t, onLocaleChange } from '../lib/i18n';
   import { onLessonBodySwap } from '../lib/i18n/lesson-body';
+  import { withBase } from '../lib/url';
+
+  ensureLearningWired();
 
   // Completion ticks on any "<skill> lessons" grid on this page — the
   // per-skill overview (e.g. /lessons/writing) and the cross-links inside
@@ -204,6 +209,60 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     return document.getElementById('lesson-complete-btn')?.dataset.slug;
   }
 
+  // The shared "next" control: if this lesson is a step of today's session
+  // (src/lib/learning), continue to the session's next step, marking this
+  // one done first when the student has pressed "studied". Otherwise offer
+  // "Back to today's session" — never a positional guess through the
+  // library, which is what this control used to do and the one thing WP8
+  // exists to stop it doing for a student who opened the lesson directly.
+  function refreshNextControl() {
+    const link = document.getElementById('lesson-next-control') as HTMLAnchorElement | null;
+    const label = document.getElementById('lesson-next-label');
+    if (!link || !label) return;
+    const slug = lessonSlug();
+    if (!slug) return;
+
+    const backToToday = () => {
+      link.href = withBase('/dashboard');
+      label.textContent = t("Back to today's session");
+      link.hidden = false;
+    };
+
+    let session;
+    try {
+      session = getCurrentSession();
+    } catch {
+      link.hidden = true;
+      return;
+    }
+
+    const step = session.steps.find((s) => s.lessonKey === slug);
+    if (!step) {
+      backToToday();
+      return;
+    }
+
+    if (isLessonComplete(slug) && step.state !== 'done' && step.state !== 'skipped') {
+      try {
+        markStepDone(step.stepId);
+        session = getCurrentSession();
+      } catch {
+        // A failed write costs the plan's own bookkeeping, never the tick
+        // the student just pressed on the button above.
+      }
+    }
+
+    const index = session.steps.findIndex((s) => s.stepId === step.stepId);
+    const next = session.steps[index + 1];
+    if (next && next.href) {
+      link.href = withBase(next.href);
+      label.textContent = t('Next step: {title}', { title: t(next.objective) });
+      link.hidden = false;
+      return;
+    }
+    backToToday();
+  }
+
   onLessonBodySwap(() => {
     initReadingQuiz({ lessonKey: lessonSlug() });
     markCompletedLessonCards();
@@ -214,6 +273,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   // leaking a listener per past page: the previous page's subscription is
   // torn down before a new one is created.
   let offLocale: (() => void) | null = null;
+  let offNextControlProgress: (() => void) | null = null;
 
   // Module scripts only execute once, on the initial hard load — they don't
   // re-run after a client-side (astro:transitions) navigation, and this
@@ -291,8 +351,16 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
         btn.classList.remove('is-toggling');
         void btn.offsetWidth;
         btn.classList.add('is-toggling');
+        refreshNextControl();
       });
     }
+
+    refreshNextControl();
+    offNextControlProgress?.();
+    // Progress changes on this page only through the studied button above,
+    // but the same lesson can also be marked studied from another tab or
+    // from a cloud pull, and the control should catch up either way.
+    offNextControlProgress = onProgressChange(() => refreshNextControl());
 
     // Save lesson — a plain bookmark toggle (kind 'lesson'), independent of
     // completion. Stored by notes.ts under the page's own slug/title/href
@@ -317,6 +385,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     // own JS-set text: applyTranslations() (see BaseLayout) only reaches
     // elements marked data-i18n, not textContent this script set directly.
     offLocale = onLocaleChange(() => {
+      refreshNextControl();
       if (btn) {
         btn.querySelector('[data-label]')!.textContent = btn.hasAttribute('data-done')
           ? t('Studied, tap to undo')

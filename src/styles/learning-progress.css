@@ -1,0 +1,136 @@
+/* New styling introduced by the personal-learning account, report and
+   tutor surfaces (WP9). Two families, kept in one file because both are
+   small additions to an existing visual language rather than a new one:
+
+   1. .mrez-proposal*  extends the existing .mrez-rec card (src/styles/
+      mr-ez.css) with the "reconcile a suggestion into the plan" states used
+      by ProposalCard.tsx (ExplainResult, TestDebrief). Reuses the --mrez-*
+      tokens defined there; introduces no new colour.
+
+   2. .skill-trend*    the four separate per-paper panels on the progress
+      report (ProgressReport.tsx), replacing the old single joined trend
+      line. Reuses the --color-* tokens from src/styles/global.css (the same
+      ones StatTile and the rest of that page already use) and the per-skill
+      --color-reading / --color-listening / --color-writing / --color-speaking
+      accents. Nothing in src/styles/workspace-redesign.css is edited.
+
+   Reduced motion: the only motion either family uses is a colour/background
+   transition already covered by the site-wide prefers-reduced-motion rule
+   in global.css, so nothing extra is declared here. */
+
+/* ── Proposal reconciliation (Mr EZ) ─────────────────────────────────────── */
+
+.mrez-proposal {
+  gap: 6px;
+}
+.mrez-proposal-kicker {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--mrez-muted);
+}
+.mrez-proposal.is-current {
+  background: var(--mrez-soft);
+  border-style: dashed;
+}
+.mrez-proposal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.mrez-proposal-button {
+  border: none;
+  border-radius: 999px;
+  background: var(--mrez-ink);
+  color: #fffefa;
+  padding: 8px 16px;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+.mrez-proposal-button:hover { background: #1c2e29; }
+.mrez-proposal-button:focus-visible { outline: 2px solid var(--mrez-ink); outline-offset: 2px; }
+.mrez-proposal.is-added {
+  background: #eef3ea;
+  border-color: #cddcc3;
+}
+.mrez-proposal-goto {
+  align-self: flex-start;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--mrez-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mrez-proposal.is-unresolvable .mrez-rec-label { text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── Skill trend panels (progress report) ────────────────────────────────── */
+
+.skill-trend-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 640px) {
+  .skill-trend-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.skill-trend-card {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--color-surface);
+  border-top: 3px solid var(--skill, var(--color-border));
+}
+.skill-trend-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.skill-trend-paper {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--color-ink);
+}
+.skill-trend-certainty {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+.skill-trend-certainty.is-measured { background: var(--color-success-tint); color: var(--color-success); }
+.skill-trend-certainty.is-unknown { background: var(--color-surface-alt); color: var(--color-ink-muted); }
+
+.skill-trend-band {
+  margin-top: 8px;
+  font-family: var(--font-display, inherit);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+.skill-trend-band .unit { font-size: 12px; font-weight: 600; color: var(--color-ink-muted); margin-left: 3px; }
+.skill-trend-unknown {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--color-ink-muted);
+}
+
+.skill-trend-meta {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11.5px;
+  color: var(--color-ink-muted);
+}
+.skill-trend-meta .is-met { color: var(--color-success); font-weight: 600; }
+.skill-trend-meta .is-short { color: var(--color-ink-muted); }

@@ -17,7 +17,20 @@
    read as "something new to ask Mr EZ about". The tutor-asking effect below
    depends on the fingerprint STRING alone, never on the local view object,
    so a progress change that leaves the fingerprint unchanged can never fire
-   a second request. */
+   a second request.
+
+   STATUS (2026-09-22, personal-learning rework): the eight fixed units are
+   a library now, not the student's route (src/lib/learning owns the real
+   plan). This component still only ever names WHICH unit a student is in
+   and what they finished; it never claimed a "next step" itself. The one
+   place that did, the 'wrap' note's closing sentence, lived in
+   src/lib/tutor/units.ts's wrapText() ("Next up: {unit}.") and has been
+   reworded there to name the following unit as library orientation only,
+   never as an instruction. Mounted from src/components/Course.tsx (owned by
+   the Today/Course package): `<UnitNote unitId={mod.id} kind="wrap" />` and
+   `<UnitNote unitId={mod.id} kind="intro" />` inside the unit card. Whether
+   Course.tsx keeps showing unit cards at all, now that the plan does not
+   follow their order, is that package's call to make. */
 
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';

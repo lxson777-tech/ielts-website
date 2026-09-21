@@ -236,8 +236,11 @@ export const RU_STRINGS: Record<string, string> = {
     'Этот раздел важен для вас прямо сейчас: {claim} ({evidence}).',
   'You finished all {count} in {unit}.': 'Вы прошли все {count} в разделе {unit}.',
   'That took {days}.': 'На это ушло {days}.',
-  'Next up: {unit}.': 'Дальше: {unit}.',
-  'That was the last unit in the course.': 'Это был последний раздел курса.',
+  /* Since 2026-09-22: no longer "Next up" (a route). Names the following
+     unit in the library only, never as an instruction. */
+  '{unit} is next in the library, if you want to keep browsing it in order.':
+    '{unit} следующий раздел в библиотеке, если хотите продолжить просматривать по порядку.',
+  'That was the last unit in the library.': 'Это был последний раздел библиотеки.',
 
   /* ── workers/mr-ez/src/index.ts: the clearly-labelled simulation used in
      local development. Russian so the interface can be clicked through in
@@ -265,6 +268,32 @@ export const RU_STRINGS: Record<string, string> = {
     'В истории пока недостаточно работы, чтобы говорить о сильных или слабых сторонах.',
   'With a real model configured, Mr EZ would answer the question itself here, using the same record.':
     'С настоящей моделью Mr EZ ответил бы здесь на сам вопрос, опираясь на ту же историю.',
+
+  /* ── src/lib/learning/ai-prompt.ts: what the three learning tasks say
+     when no model answered them. Every one of these is a real answer built
+     from the lesson's own words or the exercise's own objective, never an
+     apology, and none of them claims anything was judged. {sentence},
+     {explanation} and {objective} arrive in English, like every other piece
+     of exam material inside a Russian sentence. */
+  'A timed paper is running, so there are no hints or answers until it is finished. Mr EZ will go through it with you the moment the timer stops.':
+    'Идёт работа на время, поэтому подсказок и ответов не будет, пока она не закончится. Mr EZ разберёт её с вами, как только таймер остановится.',
+  'Mr EZ is not answering right now, so here is the example the lesson itself gives under "{heading}": {sentence}':
+    'Mr EZ сейчас не отвечает, поэтому вот пример, который даёт сам урок в разделе "{heading}": {sentence}',
+  'Mr EZ is not answering right now, and this part of the lesson has no worked example in it. The sentence that carries the method is this one, under "{heading}": {sentence}':
+    'Mr EZ сейчас не отвечает, а в этой части урока разобранного примера нет. Вот предложение, в котором лежит сам способ, из раздела "{heading}": {sentence}',
+  'Mr EZ is not answering right now. You have already had a go, so here is the explanation this question comes with: {explanation} The lesson puts it this way, under "{heading}": {sentence}':
+    'Mr EZ сейчас не отвечает. Вы уже попробовали сами, поэтому вот объяснение, которое идёт с этим вопросом: {explanation} А урок говорит об этом так, в разделе "{heading}": {sentence}',
+  'Mr EZ is not answering right now, so here is the sentence from "{heading}" that decides this one: {sentence}':
+    'Mr EZ сейчас не отвечает, поэтому вот предложение из раздела "{heading}", которое решает этот вопрос: {sentence}',
+  'Nothing was submitted, so there is nothing to look at yet.':
+    'Ничего не отправлено, поэтому смотреть пока не на что.',
+  'Your writing was saved, but nothing looked at it this time: Mr EZ is not answering right now. This is not a judgement of your work.':
+    'Ваш текст сохранён, но в этот раз его никто не разобрал: Mr EZ сейчас не отвечает. Это не оценка вашей работы.',
+  'What this exercise was asking for: {objective}': 'Вот о чём было это задание: {objective}',
+  'Read your own answer against that one sentence and mark the exact words that meet it. Ask again later and Mr EZ will go through it with you.':
+    'Перечитайте свой ответ рядом с этим одним предложением и отметьте те самые слова, которые ему отвечают. Спросите позже, и Mr EZ разберёт это с вами.',
+  'This is the next step your plan already chose, and it still fits today.':
+    'Это следующий шаг, который ваш план уже выбрал, и он по-прежнему подходит на сегодня.',
 };
 
 export const RU_PLURALS: Record<string, PluralForms> = {

@@ -1,24 +1,42 @@
 /* /dashboard. Reads top to bottom as: a quiet greeting with the streak on
-   the same line, the day's plan as the hero, one row of three cards worth
-   acting on, and a compact five-skill progress row. Everything that used to
-   be a second copy of the same number (stat tiles, a separate streak strip,
-   a "next lesson" hero duplicating the plan) is gone, and the library links
-   moved into the header's avatar menu. */
+   the same line, the day's ONE session as the hero (src/components/learning/
+   today/TodaySession.tsx, mounted through PlanToday.tsx), a quiet context
+   column, and a compact five-skill progress row.
+
+   Since 2026-09-22 this page no longer runs three competing "what's next"
+   engines at once. The old "Your course" card (its own courseStatus() call)
+   and the old "Weakest area" card (its own weakest-type scan) both named an
+   activity that could disagree with the session Today was already showing,
+   which was the audit's first reproduced finding. Today is now the only
+   primary action on this page; the sidebar shows quiet context instead:
+   the goal, focus areas by paper in words (never a second band guess) and
+   the vocabulary shelf, none of which claim to be "what's next". */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { SKILLS } from '../data/lessons';
 import { withBase } from '../lib/url';
-import { getProgress, getTypeStats, onProgressChange, type ProgressV1 } from '../lib/progress';
-import { buildCourse, courseStatus } from '../lib/course';
+import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
+import { buildCourse } from '../lib/course';
 import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
 import { onStudyPlanChange } from '../lib/study-plan';
 import { getVocabSummary, type VocabSummary } from '../lib/vocab-review';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
-import { LABELS, practiseHref } from './TypeAnalytics';
+import {
+  ensureLearningWired,
+  getCurrentSession,
+  onLearnerRecordChange,
+  onPersonalPlanChange,
+  readPersonalPlan,
+} from '../lib/learning';
+import { PAPER_LABEL, focusAreas, type FocusAreaCertainty } from './learning/today/todayViewModel';
 import PlanToday from './plan/PlanToday';
-import MrEzWelcome from './tutor/MrEzWelcome';
 import { useT } from '../lib/i18n/react';
+import '../styles/learning-today.css';
+
+const ALL_PAPERS = ['reading', 'listening', 'writing', 'speaking'] as const;
+
+ensureLearningWired();
 
 /** Counts a number up from zero the first time it lands, then tracks it
     exactly. The streak is the one figure on this page worth a beat of
@@ -56,25 +74,6 @@ function greeting(hour: number): string {
   return 'Good evening.';
 }
 
-/** The question type the student gets wrong most often, across both scored
-    skills. Needs a few questions of evidence before it is worth naming. */
-function weakestType(): { label: string; href: string; percent: number } | null {
-  let worst: { type: string; skill: 'reading' | 'listening'; percent: number } | null = null;
-  for (const skill of ['reading', 'listening'] as const) {
-    for (const stat of getTypeStats(skill)) {
-      if (stat.total < 4) continue;
-      const percent = Math.round((stat.correct / stat.total) * 100);
-      if (!worst || percent < worst.percent) worst = { type: stat.type, skill, percent };
-    }
-  }
-  if (!worst) return null;
-  return {
-    label: LABELS[worst.type] ?? worst.type,
-    href: practiseHref(worst.skill, worst.type as never),
-    percent: worst.percent,
-  };
-}
-
 export default function LearningDashboard() {
   const { t, tn } = useT();
   const MODULES = useMemo(() => buildCourse(), []);
@@ -82,14 +81,13 @@ export default function LearningDashboard() {
   const [progress, setProgress] = useState<ProgressV1 | null>(null);
   /* Null while nothing has been read yet, and null again when the only plan
      we have is the one the app fabricated on first visit. A guessed band
-     shown as "Your goal" reads as a commitment the student never made, and
-     it directly contradicts Mr EZ asking them for one three inches above. */
+     shown as "Your goal" reads as a commitment the student never made. */
   const [targetBand, setTargetBand] = useState<string | null>(null);
   const [targetIsGuess, setTargetIsGuess] = useState(false);
   const [vocab, setVocab] = useState<VocabSummary | null>(null);
   const [streak, setStreak] = useState(0);
   const [goal, setGoal] = useState<{ minutes: number; goal: number } | null>(null);
-  const [weak, setWeak] = useState<ReturnType<typeof weakestType>>(null);
+  const [focus, setFocus] = useState<FocusAreaCertainty[]>([]);
   const [hour, setHour] = useState<number | null>(null);
 
   // Everything is read after mount: the stores are localStorage-backed, so
@@ -106,37 +104,41 @@ export default function LearningDashboard() {
       setVocab(getVocabSummary());
       setStreak(getStreak(plan));
       setGoal(getTodayGoalProgress(plan));
-      setWeak(weakestType());
+      try {
+        getCurrentSession(); // ensures the plan exists before reading it raw
+        const personalPlan = readPersonalPlan();
+        setFocus(focusAreas(ALL_PAPERS, personalPlan?.diagnosticsOutstanding ?? []));
+      } catch {
+        setFocus([]);
+      }
     };
     setHour(new Date().getHours());
     read();
-    // Both stores, not just progress: saving a target band from Mr EZ's
-    // welcome must update "Your goal" and the day's plan immediately, without
-    // a reload.
+    // Both stores, not just progress: saving a target band updates "Your
+    // goal" and the day's session immediately, without a reload.
     const offProgress = onProgressChange(read);
     const offPlan = onStudyPlanChange(read);
+    const offRecord = onLearnerRecordChange(read);
+    const offPersonalPlan = onPersonalPlanChange(read);
     return () => {
       offProgress();
       offPlan();
+      offRecord();
+      offPersonalPlan();
     };
   }, []);
 
-  // Reviewing words and taking drills happen on other pages; refresh on
-  // return so the cards do not show a stale count.
+  // Reviewing words happens on other pages; refresh on return so the
+  // vocabulary card does not show a stale count.
   useEffect(() => {
     const refresh = () => {
       setVocab(getVocabSummary());
       setProgress(getProgress());
-      setWeak(weakestType());
     };
     window.addEventListener('focus', refresh);
     return () => window.removeEventListener('focus', refresh);
   }, []);
 
-  // The single source of truth for "what's next": the same courseStatus()
-  // call Course.tsx uses for its own Continue button, so the two can never
-  // disagree on which lesson comes next.
-  const status = useMemo(() => (progress ? courseStatus(MODULES, progress) : null), [MODULES, progress]);
   const vocabDue = vocab?.due ?? 0;
   const shownStreak = useCountUp(streak);
 
@@ -151,40 +153,25 @@ export default function LearningDashboard() {
         </div>
       </div>
 
-      <MrEzWelcome />
-
       <div className="dash-workspace">
       <PlanToday />
 
       <aside className="dash-side" aria-label={t('Your study overview')}>
       <div className="dash-target"><span>{t('Your goal')}</span><strong>{targetBand && !targetIsGuess ? t('Band {band}', { band: targetBand }) : t('Not set yet')}</strong><a href={withBase('/start')}>{targetIsGuess ? t('Set your target band') : t('Adjust your study plan')} <span aria-hidden="true">↗</span></a></div>
+
+      <div className="dash-focus" aria-label={t('Focus areas')}>
+        <span className="dash-card-label">{t('Focus areas')}</span>
+        <ul className="dash-focus-list">
+          {focus.map((area) => (
+            <li key={area.paper} className="dash-focus-item">
+              <span className="dash-focus-paper">{t(PAPER_LABEL[area.paper])}</span>
+              <span className="dash-focus-certainty">{area.certain ? t('Has evidence recorded') : t('Not yet assessed')}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <div className="dash-cards">
-        {status?.next ? (
-          <a className="dash-card" href={withBase(status.next.href)}>
-            <span className="dash-card-label">{t('Your course')}</span>
-            <strong className="dash-card-title">{t('{done} of {total} lessons complete', { done: status.doneLessons, total: status.totalLessons })}</strong>
-            <span className="dash-card-meta">
-              {t('Next in course: {title}', { title: status.next.title })}
-            </span>
-          </a>
-        ) : (
-          <a className="dash-card" href={withBase('/start')}>
-            <span className="dash-card-label">{t('Your course')}</span>
-            <strong className="dash-card-title">{t('Course complete')}</strong>
-            <span className="dash-card-meta">
-              {status ? t('{done} of {total} lessons done', { done: status.doneLessons, total: status.totalLessons }) : ''}
-            </span>
-          </a>
-        )}
-
-        <a className="dash-card" href={weak ? weak.href : withBase('/tests')}>
-          <span className="dash-card-label">{t('Weakest area')}</span>
-          <strong className="dash-card-title">{weak ? weak.label : t('Find your starting point')}</strong>
-          <span className="dash-card-meta">
-            {weak ? t('{percent}% correct, practise this type', { percent: weak.percent }) : t('Take a test and we will find it')}
-          </span>
-        </a>
-
         <a className="dash-card" href={withBase('/review')}>
           <span className="dash-card-label">{t('Vocabulary')}</span>
           <strong className="dash-card-title">

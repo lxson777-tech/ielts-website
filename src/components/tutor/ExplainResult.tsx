@@ -11,11 +11,11 @@
    lecture the moment their band appears. */
 
 import { useRef, useState } from 'react';
-import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, newIdempotencyKey, tutorUnavailableReason, TutorClientError } from '../../lib/tutor/client';
 import type { TutorAttemptRef, TutorRecommendation } from '../../lib/tutor/schema';
+import ProposalCard from './ProposalCard';
 
 export interface ExplainResultProps {
   attempt: TutorAttemptRef;
@@ -89,15 +89,7 @@ export default function ExplainResult({ attempt, summary }: ExplainResultProps) 
           {text.split('\n\n').map((para, i) => (
             <p key={i}>{para}</p>
           ))}
-          {recommendation && (
-            <a className="mrez-rec" href={withBase(recommendation.href)}>
-              {/* A lesson title arrives English from the Worker (course
-                  titles live in the site dictionary, which it cannot read);
-                  an already-translated label passes through unchanged. */}
-              <span className="mrez-rec-label">{t(recommendation.label)}</span>
-              <span className="mrez-rec-reason">{recommendation.reason}</span>
-            </a>
-          )}
+          {recommendation && <ProposalCard recommendation={recommendation} />}
           <p className="mrez-explain-note">
             {t("This band is an estimate from this platform's AI marking. It is not an official IELTS result.")}
           </p>

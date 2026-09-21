@@ -32,6 +32,7 @@ import { askTutor, isTutorConfigured, newIdempotencyKey, TutorClientError } from
 import { isPublishedTestId, sourceTestId } from '../../lib/tutor/test-items';
 import { wrongItems } from '../../lib/tutor/wrong-items';
 import type { TutorErrorCode, TutorRecommendation } from '../../lib/tutor/schema';
+import ProposalCard from './ProposalCard';
 import '../../styles/mr-ez-debrief.css';
 
 export interface TestDebriefProps {
@@ -143,14 +144,7 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal }: 
             {text.split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>
             ))}
-            {recommendation && (
-              <a className="mrez-rec" href={withBase(recommendation.href)}>
-                {/* Lesson titles arrive English from the Worker and are
-                    translated here; anything else passes through. */}
-                <span className="mrez-rec-label">{t(recommendation.label)}</span>
-                <span className="mrez-rec-reason">{recommendation.reason}</span>
-              </a>
-            )}
+            {recommendation && <ProposalCard recommendation={recommendation} />}
             <p className="mrez-debrief-note">
               {t('He read the marking that was already done. Nothing was re-scored.')}
             </p>

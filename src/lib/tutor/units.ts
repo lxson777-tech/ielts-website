@@ -276,10 +276,16 @@ function wrapText(facts: UnitFacts, locale: Locale): string {
     }
   }
 
+  /* Since 2026-09-22 the eight fixed units are a library, not the student's
+     route (their real next step comes from the shared plan session, see
+     src/lib/learning). Naming which unit follows in the numbering is still
+     useful orientation, but it must never read as an instruction to go
+     there, so this stops short of "next up" and stays a fact about the
+     library. */
   sentences.push(
     facts.nextUnit
-      ? tutorText(locale, 'Next up: {unit}.', { unit: facts.nextUnit.name })
-      : tutorText(locale, 'That was the last unit in the course.'),
+      ? tutorText(locale, '{unit} is next in the library, if you want to keep browsing it in order.', { unit: facts.nextUnit.name })
+      : tutorText(locale, 'That was the last unit in the library.'),
   );
   return sentences.join(' ');
 }

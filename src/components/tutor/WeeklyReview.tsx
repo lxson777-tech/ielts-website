@@ -33,7 +33,18 @@ import type { TutorMood, TutorRecommendation } from '../../lib/tutor/schema';
 import { onAuthChange } from '../../lib/auth/session';
 import { getProgress, onProgressChange } from '../../lib/progress';
 import { loadStudyPlan, onStudyPlanChange } from '../../lib/study-plan';
+import { ensureLearningWired } from '../../lib/learning';
 import '../../styles/mr-ez-weekly.css';
+
+// localRecommendation() below runs recommendNext(), which is a VIEW of the
+// student's shared session (src/lib/tutor/recommend.ts's header comment).
+// It still gives a correct, self-consistent answer with no wiring at all
+// (it derives a session on the spot from progress and the saved plan), but
+// only wiring reads the student's actual STORED plan, the same one Today
+// and every override apply to. /report can be opened with nothing else on
+// the page having imported the learning layer, so this card wires it itself
+// rather than relying on another island having done so first.
+ensureLearningWired();
 
 type ReviewMode = 'last-week' | 'this-week' | 'none';
 

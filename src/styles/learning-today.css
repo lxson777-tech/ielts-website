@@ -1,0 +1,218 @@
+/* The Today block (src/components/learning/today/). Built on the approved
+   capsule workspace: reuses the CSS custom properties workspace-redesign.css
+   defines on .workspace-v2 (colour, radius, shadow) rather than redeclaring
+   them, and follows the same visual language as the "featured task" card
+   that used to be .plan-feature. This file only adds new class names; it
+   never edits workspace-redesign.css itself. */
+
+.today { display: flex; flex-direction: column; gap: 16px; }
+
+.today-storage-note {
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #f6e9c8;
+  color: #6b5312;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.today-card {
+  border-radius: 22px;
+  padding: 30px 32px;
+}
+
+.today-broken { padding: 22px; border: 1px solid var(--color-border); border-radius: 16px; color: var(--color-ink-muted); font-size: 13px; }
+
+/* ── The ordinary session ─────────────────────────────────────────────────── */
+
+.today-active { background: var(--color-ink); color: #fffefa; }
+.today-head { display: flex; flex-direction: column; gap: 8px; }
+.today-countdown {
+  align-self: flex-start;
+  margin: 0;
+  padding: 5px 12px;
+  border: 1px solid #607164;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: #dae1cd;
+}
+.today-objective {
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--font-display-ui);
+  font-size: clamp(24px, 2.8vw, 32px);
+  font-weight: 550;
+  line-height: 1.18;
+  color: #fffefa;
+}
+
+.today-voice { display: flex; gap: 14px; align-items: flex-start; margin-top: 18px; }
+.today-voice-body { min-width: 0; flex: 1; }
+.today-voice-name { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: #b7c2b0; display: flex; align-items: center; gap: 8px; }
+.today-voice-text { margin: 0; font-size: 14.5px; line-height: 1.65; color: #eef1e8; }
+.today-voice-note { margin: 8px 0 0; font-size: 12px; color: #b7c2b0; }
+
+.today-scope-note {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .08);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #eef1e8;
+}
+
+.today-budget { margin: 16px 0 0; font-size: 13px; color: #c6cfc0; }
+.today-budget-note { color: #9aa694; }
+
+.today-steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; }
+.today-step { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid rgba(255, 255, 255, .12); }
+.today-step:first-child { border-top: 0; }
+.today-step-marker {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .35);
+  color: #263c35;
+}
+.today-step.is-done .today-step-marker { background: #e0ebbc; border-color: #e0ebbc; }
+.today-step.is-done .today-step-marker .tick-svg { width: 12px; height: 12px; }
+.today-step.is-current .today-step-marker { border-color: #e0ebbc; box-shadow: 0 0 0 3px rgba(224, 235, 188, .25); }
+.today-step.is-skipped .today-step-marker { border-style: dashed; color: #9aa694; font-size: 11px; }
+.today-step-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.today-step-role { font-size: 11px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: #9aa694; }
+.today-step.is-current .today-step-role { color: #e0ebbc; }
+.today-step-purpose { font-size: 13.5px; color: #eef1e8; line-height: 1.45; }
+.today-step.is-done .today-step-purpose, .today-step.is-skipped .today-step-purpose { color: #9aa694; }
+.today-step-minutes { flex: 0 0 auto; font-size: 12px; color: #9aa694; }
+
+.today-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-top: 22px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #e0ebbc;
+  color: #263c35;
+  font-family: var(--font-display-ui);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 180ms ease, transform 180ms ease;
+}
+.today-start:hover { background: #eef6d4; }
+.today-start:focus-visible { outline: 2px solid #fffefa; outline-offset: 3px; }
+
+.today-longer {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, .3);
+}
+.today-longer p { margin: 0 0 10px; font-size: 13px; color: #eef1e8; }
+.today-longer-accept {
+  height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #fffefa;
+  color: #263c35;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.today-diagnostic-note { margin: 14px 0 0; font-size: 12.5px; color: #c6cfc0; }
+
+.today-link-button { border: 0; background: none; padding: 0; color: #e0ebbc; font: inherit; font-weight: 650; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
+.today-secondary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.today-secondary-toggle {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 999px;
+  background: transparent;
+  color: #eef1e8;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.today-secondary-toggle:hover, .today-secondary-toggle[aria-expanded="true"] { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .5); }
+.today-secondary-toggle:focus-visible { outline: 2px solid #fffefa; outline-offset: 2px; }
+
+.today-why, .today-less-time, .today-other-skill {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .06);
+  font-size: 13px;
+  line-height: 1.6;
+  color: #eef1e8;
+}
+.today-why p, .today-less-time p { margin: 0 0 8px; }
+.today-why-uncertain { color: #b7c2b0; font-size: 12px; }
+.today-less-time-choices, .today-other-skill { display: flex; flex-wrap: wrap; gap: 8px; }
+.today-less-time-choices button, .today-other-skill button {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  background: transparent;
+  color: #fffefa;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.today-less-time-choices button:hover, .today-other-skill button:hover { background: rgba(255, 255, 255, .12); }
+
+/* ── Intake, date-passed and finished screens: light cards, not the dark
+     "working on it" treatment, since none of them is an active task ── */
+
+.today-intake, .today-planning, .today-finished {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.today-intake-heading, .today-planning h2, .today-finished h2 {
+  margin: 0 0 8px;
+  font-family: var(--font-display-ui);
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.today-intake-sub, .today-planning p, .today-finished p { margin: 0 0 12px; font-size: 14px; line-height: 1.7; color: var(--color-ink-muted); }
+.today-planning .today-start, .today-finished .today-start { background: var(--color-ink); color: #fffefa; }
+.today-planning .today-start:hover, .today-finished .today-start:hover { background: #1c2e29; }
+.today-planning .today-start:focus-visible, .today-finished .today-start:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+
+.today-finished-objective { font-weight: 650; color: var(--color-ink); }
+.today-finished-list { margin: 0 0 14px; padding-left: 18px; list-style: disc; color: var(--color-ink-muted); font-size: 13.5px; line-height: 1.8; }
+.today-finished-uncertain { font-size: 12.5px; color: var(--color-ink-muted); }
+.today-finished-next { font-weight: 600; color: var(--color-ink); }
+
+/* ── Quiet dashboard sidebar context (LearningDashboard.tsx) ─────────────── */
+
+.dash-focus { padding: 20px 0 4px; border-top: 1px solid var(--color-border); }
+.dash-focus-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.dash-focus-item { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; }
+.dash-focus-paper { font-weight: 600; color: var(--color-ink); }
+.dash-focus-certainty { font-size: 11.5px; color: var(--color-ink-muted); text-align: right; }
+
+@media (max-width: 640px) {
+  .today-card { padding: 24px; border-radius: 19px; }
+  .today-objective { font-size: 25px; }
+  .today-secondary { gap: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .today-start, .today-secondary-toggle { transition: none; }
+}

@@ -1,462 +1,169 @@
-/* Guided curriculum and calendar. Lesson ticks use existing progress keys;
-   exam-readiness checklist ticks stay in the saved plan. */
+/* Your route: the guided plan on /start.
+   Since 2026-09-22 the guided list is the student's actual plan (Course.tsx
+   architecture, WP8): the active session, the rolling schedule just ahead
+   of it, the milestones further out, and a plain-language account of why
+   the plan changed recently.
 
-import { useEffect, useMemo, useState } from 'react';
+   NO SETTINGS FORM HERE ANY MORE (2026-09-22, follow-up). This file used to
+   carry its own inline "Change" editor that wrote straight to the legacy
+   SavedPlan store through saveStudyPlan, bypassing updateGoalsAndConstraints
+   and unconditionally marking defaulted: false even when nothing had been
+   confirmed. Once a student also touched the real settings surface
+   (src/pages/plan-settings.astro, which now mounts <Intake variant=
+   "settings">), the two would fight over the same student's plan. The whole
+   form and its `settingsOnly` mode (once needed because plan-settings.astro
+   used to mount this component directly) are gone. In their place: a quiet
+   one-line summary read straight off the real plan, and a link to
+   /plan-settings for anyone who wants to change it. Nothing in this file
+   writes the old study plan store. */
+
+import { useEffect, useState } from 'react';
 import { withBase } from '../lib/url';
-import {
-  saveStudyPlan,
-  onStudyPlanChange,
-  daysUntilTest,
-  planTierFor,
-  sanitiseSkillTargets,
-  PLAN_TIER_LABEL,
-  PLAN_SKILLS,
-  PLAN_SKILL_LABEL,
-  SKILL_TARGET_BANDS,
-  TARGET_BANDS,
-  type SavedPlan,
-} from '../lib/study-plan';
-import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
-import { buildCourse, courseStatus, coursePace, isLessonDone } from '../lib/course';
-import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
-import { getPlanSummary } from '../lib/plan/summary';
-import { currentUnitId, recentlyCompletedUnitId } from '../lib/tutor/units';
+import { ensureLearningWired, getCurrentSession, onLearnerRecordChange, onPersonalPlanChange, readPersonalPlan } from '../lib/learning';
+import type { PersonalPlanV1 } from '../lib/learning/contracts/plan';
 import { useT } from '../lib/i18n/react';
-import UnitNote from './tutor/UnitNote';
+import { daysUntil } from './learning/today/todayViewModel';
+import TodaySession from './learning/today/TodaySession';
 import WeekView from './plan/WeekView';
 
-const DAILY_MINUTES_OPTIONS: NonNullable<SavedPlan['dailyMinutes']>[] = [15, 25, 40, 60];
-const MODULES = buildCourse();
+ensureLearningWired();
 
-const SKILL_DOT: Record<string, string> = {
-  reading: 'var(--color-reading)',
-  listening: 'var(--color-listening)',
-  writing: 'var(--color-writing)',
-  speaking: 'var(--color-speaking)',
-  vocabulary: 'var(--color-vocabulary)',
-};
+/** The quiet one-line summary: the confirmed goal and the daily time, read
+    straight off the real plan. Honest when there is no confirmed goal yet
+    or no exam date yet, rather than guessing at either. Pure enough to be
+    a plain function (no hooks), but kept beside its one caller rather than
+    in todayViewModel.ts: it composes whole translated sentences, which has
+    to happen where `t`/`tn` are in scope. */
+function routeSummaryText(
+  plan: PersonalPlanV1,
+  t: (key: string, vars?: Record<string, string | number>) => string,
+  tn: (n: number, forms: { one: string; other: string }, vars?: Record<string, string | number>) => string,
+): string {
+  const target = plan.goals.overallTarget;
+  const minutes = plan.constraints.regularDailyMinutes;
+  if (!target || target.status !== 'confirmed') {
+    return t('No confirmed goal yet, {minutes} min a day for now', { minutes });
+  }
+  const exam = plan.goals.examDate;
+  const daysToExam = exam ? daysUntil(exam.date, plan.activeSession.date) : null;
+  const pace =
+    exam && daysToExam !== null && daysToExam >= 0
+      ? tn(daysToExam, { one: '{n} day to go', other: '{n} days to go' })
+      : t('no exam date yet');
+  return t('Band {band} target, {pace}, {minutes} min a day', { band: target.band.toFixed(1), pace, minutes });
+}
 
-export default function Course({ settingsOnly = false }: { settingsOnly?: boolean }) {
+export default function Course() {
   const { t, tn } = useT();
-  const [plan, setPlan] = useState<SavedPlan | null>(null);
-  const [progress, setProgress] = useState<ProgressV1 | null>(null);
+  const [personalPlan, setPersonalPlan] = useState<PersonalPlanV1 | null>(null);
   const [ready, setReady] = useState(false);
-  const [showEditor, setShowEditor] = useState(settingsOnly);
-  const [saved, setSaved] = useState(false);
-  const [targetBand, setTargetBand] = useState('6.5');
-  const [testDate, setTestDate] = useState('');
-  const [dailyMinutes, setDailyMinutes] = useState<NonNullable<SavedPlan['dailyMinutes']>>(25);
-  const [studyDays, setStudyDays] = useState<NonNullable<SavedPlan['studyDays']>>('daily');
-  // Set when a saved plan predates the 2026-09 band range (it held 5.0-6.0,
-  // the course now starts at 6.5): the select can't show that value since it
-  // no longer has a matching option, so it's clamped to 6.5 and this drives a
-  // note explaining why, right on the field, rather than silently swapping
-  // the student's saved target the next time they submit the form.
-  const [clampedFromBand, setClampedFromBand] = useState<string | null>(null);
-  /* Per-paper minimums. '' means "no minimum of its own", which falls back to
-     the overall target, so a student who does not care about per-paper floors
-     never has to touch these four fields. */
-  const [skillTargets, setSkillTargets] = useState<Record<string, string>>({});
-
-  function seedEditorFields(saved: SavedPlan) {
-    const savedBandValid = (TARGET_BANDS as readonly string[]).includes(saved.targetBand);
-    setTargetBand(savedBandValid ? saved.targetBand : '6.5');
-    setClampedFromBand(savedBandValid ? null : saved.targetBand);
-    setTestDate(saved.testDate);
-    setDailyMinutes(saved.dailyMinutes ?? 25);
-    setStudyDays(saved.studyDays ?? 'daily');
-    setSkillTargets({ ...(saved.skillTargets ?? {}) });
-  }
 
   useEffect(() => {
-    // A plan always exists from the first visit: loadOrCreateStudyPlan()
-    // hands back the saved one, or fabricates and persists a default (see
-    // createDefaultPlan in src/lib/plan/schedule.ts) so the course never
-    // opens on a blank onboarding form.
-    const initialPlan = loadOrCreateStudyPlan();
-    setPlan(initialPlan);
-    seedEditorFields(initialPlan);
-    setProgress(getProgress());
-    setReady(true);
-    // Keep in step with both stores: a cloud pull can rewrite either, and
-    // finishing a lesson in another tab must re-tick this list.
-    const offPlan = onStudyPlanChange(() => setPlan(loadOrCreateStudyPlan()));
-    const offProgress = onProgressChange(() => setProgress(getProgress()));
+    const refresh = () => {
+      try {
+        getCurrentSession(); // ensures the plan exists before reading it raw
+        setPersonalPlan(readPersonalPlan());
+      } catch {
+        setPersonalPlan(null);
+      }
+      setReady(true);
+    };
+    refresh();
+    const offRecord = onLearnerRecordChange(refresh);
+    const offPersonalPlan = onPersonalPlanChange(refresh);
     return () => {
-      offPlan();
-      offProgress();
+      offRecord();
+      offPersonalPlan();
     };
   }, []);
 
-  // Re-seed the editor's fields whenever the plan changes from outside (a
-  // cloud pull, another tab, the initial load) while the editor itself is
-  // closed - never mid-edit, that would blow away what the student just
-  // typed.
-  useEffect(() => {
-    if (plan && !showEditor) seedEditorFields(plan);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan]);
+  if (!ready) return null; // avoid a hydration flash; a plan always builds once ready
 
-  // Returning from a lesson is a normal back-navigation, which may be served
-  // from the bfcache without remounting. Re-read on focus so the tick appears.
-  useEffect(() => {
-    const refresh = () => setProgress(getProgress());
-    window.addEventListener('focus', refresh);
-    return () => window.removeEventListener('focus', refresh);
-  }, []);
-
-  // Which unit (if any) gets a Mr EZ note, decided from the same progress
-  // record the rest of the page already reads. Memoised so a re-render that
-  // doesn't touch progress doesn't recompute this on every keystroke in the
-  // settings form.
-  const mrEzCurrentUnit = useMemo(() => currentUnitId(progress ?? getProgress()), [progress]);
-  const mrEzWrapUnit = useMemo(() => recentlyCompletedUnitId(progress ?? getProgress(), new Date()), [progress]);
-
-  if (!ready || !plan) return null; // avoid a hydration flash; plan always exists once ready
-  // A stable non-null alias: the guard above narrows `plan` for this render,
-  // but TypeScript won't carry that into the closures below (they could, in
-  // principle, run after a later render where it's null again — it never
-  // actually does, since loadOrCreateStudyPlan() always returns a plan, but
-  // the alias says so in a way the type checker can verify too).
-  const activePlan = plan;
-
-  const prog = progress ?? getProgress();
-  const status = courseStatus(MODULES, prog);
-  const summary = getPlanSummary(activePlan);
-
-  /* Settings, not onboarding: saving re-paces the plan in place (start date
-     and doneKeys carry over unchanged, everything else is recomputed from
-     the new settings) rather than gating the course behind a form. */
-  function saveSettings(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const next: SavedPlan = {
-      ...activePlan,
-      targetBand,
-      testDate,
-      dailyMinutes,
-      studyDays,
-      skillTargets: sanitiseSkillTargets(skillTargets),
-      defaulted: false,
-    };
-    saveStudyPlan(next);
-    setPlan(next);
-    setShowEditor(settingsOnly);
-    setSaved(true);
-  }
-
-  function toggleExtra(key: string) {
-    const current = activePlan.doneKeys ?? [];
-    const doneKeys = current.includes(key) ? current.filter((k) => k !== key) : [...current, key];
-    const next = { ...activePlan, doneKeys };
-    saveStudyPlan(next);
-    setPlan(next);
-  }
-
-  const days = daysUntilTest(plan.testDate);
-  const tier = planTierFor(days);
-  const pace = coursePace(days, MODULES);
-  const doneKeys = plan.doneKeys ?? [];
+  const milestones = personalPlan?.milestones ?? [];
+  const recentChanges = [...(personalPlan?.history ?? [])].slice(-5).reverse();
 
   return (
     <div className="mx-auto max-w-4xl">
-      {/* settings strip, then progress, then the week view, then the modules */}
-      <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand">
-              {t(PLAN_TIER_LABEL[tier])}
-            </span>
-            <span className="text-sm text-ink-muted">{summary.text}</span>
-          </div>
-          {!settingsOnly && <button
-            type="button"
-            onClick={() => setShowEditor((v) => !v)}
+      {personalPlan && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+          <span className="text-sm text-ink-muted">{routeSummaryText(personalPlan, t, tn)}</span>
+          <a
+            href={withBase('/plan-settings')}
             className="shrink-0 rounded-button border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt"
           >
-            {showEditor ? t('Close') : t('Change')}
-          </button>}
-        </div>
-
-        {summary.hint && !showEditor && <p className="mt-2 text-xs text-ink-muted">{summary.hint}</p>}
-
-        {clampedFromBand && (
-          <p className="mt-2 rounded-lg bg-warning-tint px-2.5 py-1.5 text-xs text-warning">
-            {t("Your saved target was Band {band}. The course now starts at Band 6.5, so we've set that here, pick a different band if you'd like.", { band: clampedFromBand })}
-          </p>
-        )}
-
-        {showEditor && (
-          <form
-            onSubmit={saveSettings}
-            onChange={() => setSaved(false)}
-            className="mt-4 flex flex-wrap items-end gap-3 rounded-lg border border-dashed border-border bg-surface-alt p-3.5"
-          >
-            <div>
-              <label className="block text-xs font-semibold" htmlFor="target-band-inline">
-                {t('Target band')}
-              </label>
-              <select
-                id="target-band-inline"
-                value={targetBand}
-                onChange={(e) => {
-                  setTargetBand(e.target.value);
-                  setClampedFromBand(null); // they've made their own choice, the note no longer applies
-                }}
-                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-              >
-                {TARGET_BANDS.map((b) => (
-                  <option key={b} value={b}>
-                    {t('Band {band}', { band: b })}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold" htmlFor="test-date-inline">
-                {t('Exam date')} <span className="font-normal text-ink-muted">{t('(optional)')}</span>
-              </label>
-              <input
-                id="test-date-inline"
-                type="date"
-                value={testDate}
-                onChange={(e) => setTestDate(e.target.value)}
-                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold" htmlFor="daily-minutes-inline">
-                {t('Daily study time')}
-              </label>
-              <select
-                id="daily-minutes-inline"
-                value={dailyMinutes}
-                onChange={(e) => setDailyMinutes(Number(e.target.value) as NonNullable<SavedPlan['dailyMinutes']>)}
-                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-              >
-                {DAILY_MINUTES_OPTIONS.map((m) => (
-                  <option key={m} value={m}>
-                    {t('{minutes} min/day', { minutes: m })}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold" htmlFor="study-days-inline">
-                {t('Study days')}
-              </label>
-              <select
-                id="study-days-inline"
-                value={studyDays}
-                onChange={(e) => setStudyDays(e.target.value as NonNullable<SavedPlan['studyDays']>)}
-                className="mt-1 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-              >
-                <option value="daily">{t('Every day')}</option>
-                <option value="weekdays">{t('Weekdays only')}</option>
-              </select>
-            </div>
-            {/* Most universities ask for an overall band AND a floor in every
-                paper, so one target is not enough to aim at. Left blank, a
-                paper simply uses the overall target. */}
-            <div className="w-full">
-              <p className="text-xs font-semibold">
-                {t('Minimum in each paper')} <span className="font-normal text-ink-muted">{t('(optional)')}</span>
-              </p>
-              <p className="mt-0.5 text-xs text-ink-muted">
-                {t('Set these if your university asks for a minimum in every paper, for example 6.5 overall with nothing below 6.0. Leave one blank and it uses your target band.')}
-              </p>
-              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {PLAN_SKILLS.map((skill) => (
-                  <div key={skill}>
-                    <label className="block text-xs text-ink-muted" htmlFor={`skill-target-${skill}`}>
-                      {PLAN_SKILL_LABEL[skill]}
-                    </label>
-                    <select
-                      id={`skill-target-${skill}`}
-                      value={skillTargets[skill] ?? ''}
-                      onChange={(e) => setSkillTargets((s) => ({ ...s, [skill]: e.target.value }))}
-                      className="mt-1 w-full rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-semibold focus:border-brand focus:outline-none"
-                    >
-                      <option value="">{t('Same as target')}</option>
-                      {SKILL_TARGET_BANDS.map((b) => (
-                        <option key={b} value={b}>
-                          {t('Band {band}', { band: b })}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="rounded-button bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-hover"
-            >
-              {t('Save')}
-            </button>
-          </form>
-        )}
-
-        {saved && <p role="status" className="mt-4 text-sm font-semibold text-success">{t('Your plan settings are saved.')}</p>}
-        {settingsOnly && <a href={withBase('/dashboard')} className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">{t('Back to your dashboard')}</a>}
-        {!settingsOnly && <>
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
-            <span>
-              {t('{done} of {total} lessons done', { done: status.doneLessons, total: status.totalLessons })}
-            </span>
-            <span>{status.percent}%</span>
-          </div>
-          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-alt">
-            <div
-              className="bar-fill h-full rounded-full bg-brand transition-[width] duration-300"
-              style={{ width: `${status.percent}%` }}
-            />
-          </div>
-        </div>
-
-        {status.next ? (
-          <a
-            href={withBase(status.next.href)}
-            className="mt-5 flex items-center justify-between gap-3 rounded-button bg-brand px-5 py-3 text-white transition-colors hover:bg-brand-hover"
-          >
-            <span className="min-w-0">
-              <span className="block text-[0.7rem] font-bold uppercase tracking-wider opacity-80">
-                {t(status.doneLessons === 0 ? 'Start with' : 'Continue with')} · {t(status.next.skillLabel)}
-              </span>
-              <span className="block truncate font-display text-sm font-bold">{t(status.next.title)}</span>
-            </span>
+            {t('Change')}
           </a>
-        ) : (
-          <p className="mt-5 rounded-button bg-success-tint px-5 py-3 text-sm font-semibold text-success">
-            {t('Every lesson complete. Move on to Exam readiness below.')}
-          </p>
+        </div>
+      )}
+
+      <div className="mt-6 space-y-6">
+        <TodaySession />
+
+        <WeekView />
+
+        {milestones.length > 0 && (
+          <section className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+            <h3 className="font-display text-lg font-bold">{t('Milestones ahead')}</h3>
+            <ul className="mt-3 space-y-2.5">
+              {milestones.map((milestone) => (
+                <li key={milestone.id} className="flex items-start justify-between gap-3 text-sm">
+                  <span
+                    className={
+                      milestone.state === 'dropped'
+                        ? 'text-ink-muted line-through'
+                        : milestone.state === 'met'
+                          ? 'font-semibold text-success'
+                          : 'text-ink'
+                    }
+                  >
+                    {milestone.label}
+                    {milestone.droppedReason && <span className="mt-0.5 block text-xs text-ink-muted">{milestone.droppedReason}</span>}
+                  </span>
+                  {milestone.targetDate && (
+                    <span className="shrink-0 text-xs font-semibold text-ink-muted">{milestone.targetDate}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
-        <p className="mt-3 text-xs text-ink-muted">
-          {t(pace.note)}
-          {pace.lessonsPerWeek !== null && (
-            <>
-              {' '}
-              <strong className="text-ink">
-                {tn(pace.lessonsPerWeek, { one: 'About {n} lesson a week.', other: 'About {n} lessons a week.' })}
-              </strong>
-            </>
-          )}
-        </p>
-        </>}
+        {/* A quiet, always-present way to reach the mock exam, the full tests
+            hub and the progress report: the old stage-4 checklist named
+            these directly, and losing that must not orphan the routes
+            (brief acceptance scenario 14). Not a checklist, just links. */}
+        <section className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+          <h3 className="font-display text-lg font-bold">{t('Exam practice')}</h3>
+          <p className="mt-1 text-sm text-ink-muted">
+            {t('Full timed papers and your record, whenever you want them, outside today\'s session.')}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2.5">
+            <a href={withBase('/tests/mock')} className="rounded-full border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt">
+              {t('Full mock exam')}
+            </a>
+            <a href={withBase('/tests')} className="rounded-full border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt">
+              {t('All practice tests')}
+            </a>
+            <a href={withBase('/report')} className="rounded-full border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt">
+              {t('Your progress report')}
+            </a>
+          </div>
+        </section>
+
+        {recentChanges.length > 0 && (
+          <section className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+            <h3 className="font-display text-lg font-bold">{t('Why your plan changed recently')}</h3>
+            <ul className="mt-3 space-y-3">
+              {recentChanges.map((change) => (
+                <li key={`${change.at}-${change.toRevision}`} className="text-sm">
+                  <span className="text-ink">{change.summary}</span>
+                  <span className="ml-2 text-xs text-ink-muted">{change.at.slice(0, 10)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
-
-      {!settingsOnly && <>
-      <p className="mt-6 text-sm text-ink-muted">{t('Eight learning units, usually one per week. Start each paper with its overview, learn the method, then practise. Your calendar adjusts to your available dates; your completed lessons stay saved.')}</p>
-      <WeekView />
-
-      {/* modules */}
-      <div className="mt-6 space-y-6" data-stagger>
-        {MODULES.map((mod) => {
-          const modDone = mod.lessons.filter((l) => isLessonDone(prog, l.key)).length;
-          return (
-            <section
-              key={mod.id}
-              id={mod.stage === 4 ? 'exam-readiness' : undefined}
-              className="scroll-mt-24 rounded-card border border-border bg-surface p-5 shadow-card sm:p-6"
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <h3 className="font-display text-lg font-bold">
-                  <span className="text-ink-muted">{mod.id}.</span> {t(mod.name)}
-                </h3>
-                {mod.lessons.length > 0 && (
-                  <span className="text-xs font-semibold text-ink-muted">
-                    {t('{done}/{total} done', { done: modDone, total: mod.lessons.length })}
-                  </span>
-                )}
-              </div>
-              <p className="mt-1 text-sm text-ink-muted">{t(mod.blurb)}</p>
-
-              {mod.id === mrEzWrapUnit ? (
-                <UnitNote unitId={mod.id} kind="wrap" />
-              ) : mod.id === mrEzCurrentUnit && mod.id !== 8 ? (
-                <UnitNote unitId={mod.id} kind="intro" />
-              ) : null}
-
-              {mod.lessons.length > 0 && (
-                <ul className="mt-4 space-y-1">
-                  {mod.lessons.map((lesson) => {
-                    const done = isLessonDone(prog, lesson.key);
-                    return (
-                      <li key={lesson.key}>
-                        <a
-                          href={withBase(lesson.href)}
-                          className="group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-surface-alt"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.65rem] font-bold transition-colors duration-[240ms] ${
-                              done ? 'bg-success text-white' : 'border border-border text-ink-muted'
-                            }`}
-                          >
-                            {done ? (
-                              <svg className="tick-svg" viewBox="0 0 24 24">
-                                <polyline points="4,12.6 9.6,18.2 20,6.4" pathLength={1} />
-                              </svg>
-                            ) : (
-                              lesson.position
-                            )}
-                          </span>
-                          <span
-                            className={`min-w-0 flex-1 truncate text-sm ${
-                              done ? 'text-ink-muted line-through' : 'text-ink group-hover:text-brand'
-                            }`}
-                          >
-                            {t(lesson.title)}
-                          </span>
-                          <span
-                            aria-hidden="true"
-                            className="h-1.5 w-1.5 shrink-0 rounded-full"
-                            style={{ background: SKILL_DOT[lesson.skill] }}
-                          />
-                          <span className="w-[4.5rem] shrink-0 text-right text-[0.7rem] font-semibold text-ink-muted">
-                            {t(lesson.skillLabel)}
-                          </span>
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-
-              {mod.extras.length > 0 && (
-                <ul className="mt-4 space-y-2.5">
-                  {mod.extras.map((extra) => {
-                    const checked = doneKeys.includes(extra.key);
-                    return (
-                      <li key={extra.key} className="flex items-start gap-3">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleExtra(extra.key)}
-                          aria-label={t('Mark complete: {label}', { label: t(extra.label) })}
-                          className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-brand)] disabled:opacity-40"
-                        />
-                        <span className={`text-sm ${checked ? 'text-ink-muted line-through' : 'text-ink'}`}>
-                          {t(extra.label)}{' '}
-                          <a href={withBase(extra.href)} className="font-semibold text-brand hover:underline">
-                            {t('Open', undefined, 'verb')}
-                          </a>
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </section>
-          );
-        })}
-      </div>
-
-      <p className="mt-6 text-xs text-ink-muted">
-        {t('Lessons tick themselves off when you mark them complete on the lesson page.')}
-      </p>
-      </>}
     </div>
   );
 }

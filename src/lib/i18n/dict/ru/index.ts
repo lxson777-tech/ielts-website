@@ -18,6 +18,9 @@ import * as accountAuthVocab from './account-auth-vocab';
 import * as tutor from './tutor';
 import * as pages from './pages';
 import * as trainersDrills from './trainers-drills';
+import * as learningIntake from './learning-intake';
+import * as learningToday from './learning-today';
+import * as learningAccount from './learning-account';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -31,6 +34,9 @@ export const BATCHES = [
   tutor,
   pages,
   trainersDrills,
+  learningIntake,
+  learningToday,
+  learningAccount,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));
