@@ -32,6 +32,15 @@
 .workspace-v2 .ws-tab:focus-visible { outline-offset: 2px; }
 .workspace-v2 .ws-avatar { width: 44px; height: 44px; background: #eaece3; border-color: transparent; color: #263c35; }
 .workspace-v2 .ws-account { margin-left: 0; }
+/* The always-visible language switch beside the account button. A quiet
+   two-option capsule in the same family as the tabs: the chosen language is
+   the filled one. */
+.workspace-v2 .ws-account { gap: 10px; }
+.workspace-v2 .ws-lang { display: inline-flex; padding: 3px; border-radius: 999px; background: #eaece3; }
+.workspace-v2 .ws-lang-option { min-width: 36px; height: 32px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; color: #5d6b64; font-family: var(--font-display-ui, inherit); font-size: .74rem; font-weight: 700; letter-spacing: .04em; cursor: pointer; transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease; }
+.workspace-v2 .ws-lang-option:hover { color: #263c35; }
+.workspace-v2 .ws-lang-option[aria-pressed='true'] { background: #fffdf8; color: #263c35; box-shadow: 0 1px 2px rgba(38, 60, 53, .12); cursor: default; }
+.workspace-v2 .ws-lang-option:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
 .workspace-v2 .ws-page { max-width: 1032px; padding: 35px 28px 64px; }
 .workspace-v2 .ws-page.is-wide { max-width: 1176px; }
 .workspace-v2 .ws-page:has(> .writing-trainer-page) { max-width: 1280px; }

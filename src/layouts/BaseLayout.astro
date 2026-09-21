@@ -120,6 +120,19 @@ const jsonLd = {
       (function () {
         var el = document.documentElement;
         try {
+          // A link can choose the language: /lessons/reading/tfng?lang=ru.
+          // It is saved exactly as if the student had used the switch, so
+          // the rest of the visit stays in that language, and then removed
+          // from the address so a copied link does not force it on the next
+          // reader. Done here, before first paint, so there is no English
+          // flash on a shared Russian link.
+          var asked = new URLSearchParams(window.location.search).get('lang');
+          if (asked && locales.indexOf(asked) !== -1) {
+            window.localStorage.setItem(key, asked);
+            var url = new URL(window.location.href);
+            url.searchParams.delete('lang');
+            window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+          }
           var stored = window.localStorage.getItem(key);
           var locale = locales.indexOf(stored) === -1 ? fallback : stored;
           el.lang = locale;

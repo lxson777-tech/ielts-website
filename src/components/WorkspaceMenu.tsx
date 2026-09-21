@@ -78,6 +78,29 @@ export default function WorkspaceMenu() {
 
   return (
     <div className="ws-account" ref={wrapRef}>
+      {/* The language switch, always on screen. It used to live only at the
+          bottom of the account menu, behind an unlabelled person icon, which
+          a student who reads no English would never open. Short codes
+          rather than names so it stays small on a phone; the full names are
+          the accessible labels and are never translated. */}
+      <div className="ws-lang" role="group" aria-label={t('Language')}>
+        {SUPPORTED_LOCALES.map((code) => (
+          <button
+            key={code}
+            type="button"
+            className="ws-lang-option"
+            lang={code}
+            aria-pressed={code === locale}
+            aria-label={LOCALE_LABEL[code]}
+            title={LOCALE_LABEL[code]}
+            onClick={() => {
+              if (code !== locale) void switchLocale(code);
+            }}
+          >
+            {code.toUpperCase()}
+          </button>
+        ))}
+      </div>
       <button
         type="button"
         ref={buttonRef}
