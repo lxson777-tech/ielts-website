@@ -227,6 +227,10 @@ export const RU_STRINGS: Record<string, string> = {
     'Ваш примерный балл по {skill} на этой неделе {after}, против примерного {before} до начала недели.',
   'Your estimated {skill} band this week is {after}.':
     'Ваш примерный балл по {skill} на этой неделе {after}.',
+  /* WP23, 2026-09-22: quotes PersonalPlanV1.history's own summary sentence
+     verbatim, so the quotation marks matter as much in Russian as in
+     English (the plan changed, not the review). */
+  'Your plan changed: "{summary}"': 'Ваш план изменился: «{summary}»',
 
   /* ── src/lib/tutor/units.ts: the note at the top of a course unit ──
      {unit} is a unit name from the course registry, so it arrives English

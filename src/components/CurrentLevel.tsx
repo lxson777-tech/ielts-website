@@ -1,24 +1,37 @@
-/* "Your current approximate level" card. One estimated overall band built from
-   every scored attempt across the four papers, plus the per-skill breakdown it
-   rests on and the honest caveats (how many papers, how much evidence).
+/* "Your current approximate level" card. One estimated overall band, read
+   from the same evidence policy every other surface reads
+   (src/lib/learning/policy.ts), plus the per-skill breakdown it rests on and
+   the honest caveats (how many papers, how much evidence, how sure).
 
-   The estimate itself lives in src/lib/level.ts; this file only renders it, so
-   the homepage strip and any future surface can reuse the same numbers rather
-   than each re-deriving "how good is this student" their own way. */
+   The estimate itself lives in src/lib/level.ts; this file only renders it,
+   so the homepage strip and any future surface reuse the same numbers rather
+   than each re-deriving "how good is this student" their own way.
+
+   ONE HONEST DIFFERENCE FROM THE OLD CARD: the overall band is null more
+   often now, because the policy refuses to blend four different papers into
+   one number until all four qualify (see level.ts's header comment). A
+   student with three good papers and one untouched used to see an "overall"
+   built from the three; now they see the three, plainly, and a note about
+   the fourth, never a number the policy would not stand behind. There is
+   also no separate "take a reading test" style call to action any more: the
+   student's plan already has one current session, chosen the same way
+   everywhere else on the site, so this card points at that instead of
+   inventing a second opinion. */
 
 import { useEffect, useState } from 'react';
 import { withBase } from '../lib/url';
 import { onProgressChange } from '../lib/progress';
+import { onLearnerRecordChange, onPersonalPlanChange } from '../lib/learning';
 import {
   estimateLevel,
   bandDescriptor,
   cefrFor,
   SKILL_LABEL,
-  SKILL_PRACTICE,
   type LevelEstimate,
   type LevelConfidence,
   type SkillLevel,
 } from '../lib/level';
+import { CERTAINTY_LABEL } from './reportTrends';
 import { useT } from '../lib/i18n/react';
 import { nt } from '../lib/i18n/translate';
 
@@ -27,7 +40,7 @@ const CONFIDENCE_COPY: Record<LevelConfidence, { label: string; tone: string; no
   low: {
     label: nt('Low confidence'),
     tone: 'bg-warning-tint text-warning',
-    note: nt('Based on very little practice so far. Treat this as a first impression, not a score.'),
+    note: nt('Based on very little practice so far, or on a self-reported score rather than something measured here. Treat this as a first impression, not a score.'),
   },
   medium: {
     label: nt('Medium confidence'),
@@ -37,7 +50,7 @@ const CONFIDENCE_COPY: Record<LevelConfidence, { label: string; tone: string; no
   high: {
     label: nt('Good confidence'),
     tone: 'bg-success-tint text-success',
-    note: nt('Built from a solid spread of recent attempts across several papers.'),
+    note: nt('Built from a solid spread of recent attempts across all four papers.'),
   },
 };
 
@@ -57,25 +70,20 @@ function TrendPill({ trend }: { trend: number }) {
 function SkillRow({ level }: { level: SkillLevel }) {
   const { t, tn } = useT();
   const accent = `var(--color-${level.skill})`;
-  const practice = SKILL_PRACTICE[level.skill];
 
   if (level.band === null) {
     return (
       <div className="flex items-center gap-3 py-2">
         <span className="w-20 shrink-0 text-sm font-semibold text-ink-muted">{SKILL_LABEL[level.skill]}</span>
         <span className="h-2 flex-1 rounded-full bg-surface-alt" />
-        <a
-          href={withBase(practice.href)}
-          className="shrink-0 text-xs font-semibold text-brand hover:text-brand-hover"
-        >
-          {t(practice.label)}
-        </a>
+        <span className="shrink-0 text-xs text-ink-muted">{t(CERTAINTY_LABEL[level.certainty])}</span>
       </div>
     );
   }
 
   // Bar spans bands 4-9, the range practice scores realistically fall in.
   const pct = Math.max(4, Math.min(100, ((level.band - 4) / 5) * 100));
+  const selfReported = level.certainty === 'self-reported';
 
   return (
     <div className="flex items-center gap-3 py-2">
@@ -83,14 +91,16 @@ function SkillRow({ level }: { level: SkillLevel }) {
       <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface-alt">
         <span
           className="block h-full rounded-full transition-[width] duration-500"
-          style={{ width: `${pct}%`, background: accent }}
+          style={{ width: `${pct}%`, background: accent, opacity: selfReported ? 0.55 : 1 }}
         />
       </span>
       <span className="w-10 shrink-0 text-right font-display text-sm font-extrabold" style={{ color: accent }}>
         {level.band.toFixed(1)}
       </span>
-      <span className="w-16 shrink-0 text-right">
-        {level.trend !== null ? (
+      <span className="w-20 shrink-0 text-right">
+        {selfReported ? (
+          <span className="text-xs text-ink-muted">{t(CERTAINTY_LABEL['self-reported'])}</span>
+        ) : level.trend !== null ? (
           <TrendPill trend={level.trend} />
         ) : (
           <span className="text-xs text-ink-muted">
@@ -102,35 +112,67 @@ function SkillRow({ level }: { level: SkillLevel }) {
   );
 }
 
+/** Nothing measured on any paper yet. One link, to the student's own plan
+    (which already has a first step chosen for them), never a second set of
+    "start here" links competing with it. */
 function EmptyState() {
   const { t } = useT();
   return (
     <div className="rounded-card border border-dashed border-border bg-surface-alt p-6">
       <p className="font-display font-bold">{t('Your approximate level')}</p>
       <p className="mt-1 text-sm text-ink-muted">
-        {t('Nothing to estimate from yet. Take a practice test or get one essay or speaking answer graded, and your estimated band will appear here.')}
+        {t('Nothing measured yet. Your plan already has a first step chosen for you.')}
       </p>
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4">
         <a
-          href={withBase('/tests')}
+          href={withBase('/dashboard')}
           className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
         >
-          {t('Take a reading test')}
-        </a>
-        <a
-          href={withBase('/trainers/writing')}
-          className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface"
-        >
-          {t('Grade an essay')}
-        </a>
-        <a
-          href={withBase('/trainers/speaking')}
-          className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface"
-        >
-          {t('Speak to the examiner')}
+          {t("Go to today's session")}
         </a>
       </div>
     </div>
+  );
+}
+
+/** Some papers measured, not all four: the honest middle state the policy
+    introduces (level.ts's header comment). Shows the four skills plainly,
+    with no blended headline number, and says what is still missing rather
+    than inventing one. */
+function PartialState({ level }: { level: LevelEstimate }) {
+  const { t, tn } = useT();
+  const missingList = level.missing.map((m) => SKILL_LABEL[m]).join(', ');
+  return (
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-card"
+      aria-label={t('Your current approximate level')}
+    >
+      <p className="font-display font-bold">{t('Your approximate level')}</p>
+      <p className="mt-1 text-sm text-ink-muted">
+        {tn(level.covered, {
+          one: 'Measured on {n} of 4 papers so far. Once all four have real evidence, one overall band appears here.',
+          other: 'Measured on {n} of 4 papers so far. Once all four have real evidence, one overall band appears here.',
+        })}
+      </p>
+      <div className="mt-4 divide-y divide-border border-t border-border">
+        {level.skills.map((s) => (
+          <SkillRow key={s.skill} level={s} />
+        ))}
+      </div>
+      {level.missing.length > 0 && (
+        <p className="mt-3 text-xs text-ink-muted">
+          {t('Still unknown: {list}.', { list: missingList })}
+        </p>
+      )}
+      <div className="mt-4">
+        <a
+          href={withBase('/dashboard')}
+          className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+        >
+          {t("Go to today's session")}
+        </a>
+      </div>
+    </section>
   );
 }
 
@@ -141,18 +183,24 @@ export default function CurrentLevel() {
   useEffect(() => {
     const read = () => setLevel(estimateLevel());
     read();
-    // Stay live for attempts recorded in this tab, and refresh on focus so a
-    // cloud pull in another tab (or another device) shows up on return.
-    const off = onProgressChange(read);
+    // Stay live for evidence recorded in this tab (the new learner record,
+    // and the legacy progress store some surfaces still write to directly),
+    // and refresh on focus so a cloud pull in another tab (or another
+    // device) shows up on return.
+    const offProgress = onProgressChange(read);
+    const offRecord = onLearnerRecordChange(read);
+    const offPlan = onPersonalPlanChange(read);
     window.addEventListener('focus', read);
     return () => {
-      off();
+      offProgress();
+      offRecord();
+      offPlan();
       window.removeEventListener('focus', read);
     };
   }, []);
 
   if (level === null) return null; // pre-hydration
-  if (level.overall === null) return <EmptyState />;
+  if (level.overall === null) return level.covered > 0 ? <PartialState level={level} /> : <EmptyState />;
 
   const conf = CONFIDENCE_COPY[level.confidence];
   const weakest = level.weakest;
@@ -211,32 +259,26 @@ export default function CurrentLevel() {
         </div>
       </div>
 
-      {/* ── What to do about it ── */}
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface-alt px-4 py-3">
-        <p className="text-sm text-ink-muted">
-          {level.missing.length > 0 ? (
-            tn(level.missing.length, {
-              one: 'This estimate skips {list}. Practise it to get a full-exam estimate.',
-              other: 'This estimate skips {list}. Practise them to get a full-exam estimate.',
-            }, { list: level.missing.map((m) => SKILL_LABEL[m]).join(', ') })
-          ) : weakest ? (
-            t('{skill} is holding your overall band down. Every 0.5 you gain there lifts this number.', {
+      {/* What to do about it: the one shared session, never a second
+          opinion picked from this card alone. */}
+      {weakest && (
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface-alt px-4 py-3">
+          <p className="text-sm text-ink-muted">
+            {t('{skill} is holding your overall band down. Every 0.5 you gain there lifts this number.', {
               skill: SKILL_LABEL[weakest.skill],
-            })
-          ) : null}
-        </p>
-        {weakest && (
+            })}
+          </p>
           <a
-            href={withBase(SKILL_PRACTICE[level.missing[0] ?? weakest.skill].href)}
+            href={withBase('/dashboard')}
             className="shrink-0 rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
           >
-            {t(SKILL_PRACTICE[level.missing[0] ?? weakest.skill].label)}
+            {t("Go to today's session")}
           </a>
-        )}
-      </div>
+        </div>
+      )}
 
       <p className="mt-3 text-xs text-ink-muted">
-        {t('Estimated from your recent practice, weighted towards your latest attempts. It is a study guide, not an official IELTS result.')}
+        {t('Estimated from your recent evidence, weighted towards your latest attempts. It is a study guide, not an official IELTS result.')}
       </p>
     </section>
   );

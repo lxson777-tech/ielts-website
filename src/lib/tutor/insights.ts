@@ -16,7 +16,32 @@
 
    Pure functions over a ProgressV1 blob and a SavedPlan — no localStorage,
    no browser APIs — so the tutor Worker can run exactly the same code over
-   the copy of that blob it reads from Supabase. */
+   the copy of that blob it reads from Supabase.
+
+   ONE EVIDENCE POLICY (WP23, 2026-09-22)
+   The thresholds above used to be a private copy, duplicated by hand from
+   the ones src/lib/level.ts and src/components/ProgressReport.tsx each kept
+   for themselves (architecture section 1.3, "the three competing evidence
+   policies"). They are gone. The numbers below come from
+   `DEFAULT_POLICY_THRESHOLDS` in src/lib/learning/contracts/policy.ts, the
+   one place a teacher review changes them now.
+
+   readFacts() also runs the real evidence policy (evaluateEvidence, over a
+   record built on the spot from this same ProgressV1 with migrateProgress)
+   and attaches its own five-level `certainty` to every SkillResults,
+   TypeAccuracy and CriterionTrend row, ADDITIVELY: nothing that read `total`,
+   `correct`, `percent` or `sittings` before needs to change. That field is
+   the honest, strict answer, and because ProgressV1 has only ever held
+   per-type tallies, never one answer at a time, it is capped at `limited`
+   the same way any other coarse, itemless evidence is (LEGACY_MAX_CERTAINTY
+   in policy.ts). This file's own `confidence` ('measured' | 'tentative')
+   keeps deciding what Mr EZ may say the way it always has, off the SAME
+   threshold numbers, because the Worker that reads this every turn has not
+   been rewired to read the richer, item-level record yet (that is a later
+   package, not this one) and a "measured" claim it already made correctly
+   off a repeated type-accuracy pattern should not quietly become
+   "tentative" under it. `confidenceFromCertainty()` is exported below for
+   any caller that wants the conservative five-to-two collapse instead. */
 
 import type { ProgressV1, TestAttempt, WritingAttempt, SpeakingAttempt } from '../progress';
 import type { SavedPlan } from '../study-plan';
@@ -25,35 +50,28 @@ import { questionTypeLabel } from '../tests/question-types';
 import { CRITERIA as WRITING_CRITERIA } from '../writing/schema';
 import type { Locale } from '../i18n/locale';
 import { tutorText, tutorCount, type CountForms, type TextVars } from './ru';
+import { goalsFrom, planSettingsFromSavedPlan } from '../learning/adapters';
+import { migrateProgress } from '../learning/migrate';
+import { evaluateEvidence } from '../learning/policy';
+import { DEFAULT_POLICY_THRESHOLDS } from '../learning/contracts/policy';
+import type { Certainty, PolicyOutputV1, PolicyScopeKey } from '../learning/contracts/policy';
 
 /* ── Evidence thresholds ───────────────────────────────────────────────────
-   The single most important block in this file. Change these and you change
-   what Mr EZ is willing to call a pattern. */
-
-/** Questions of one type that must have been answered before a low score is
-    a pattern rather than a bad morning. */
-const PATTERN_MIN_QUESTIONS = 8;
-/** ...across at least this many separate sittings. Eight questions inside
-    one test is still one occasion. */
-const PATTERN_MIN_SITTINGS = 2;
-/** Below this percentage a question type counts as weak. */
-const WEAK_PERCENT = 65;
-/** At or above this it counts as a strength worth naming back to them. */
-const STRONG_PERCENT = 80;
-/** Enough to mention at all, with a "so far" hedge. */
-const TENTATIVE_MIN_QUESTIONS = 4;
-
-/** Graded pieces of writing (or speaking) needed before "this criterion is
-    consistently your lowest" is a pattern. */
-const CRITERION_MIN_GRADED = 2;
-
-/** How many recent graded pieces the criterion trend looks at. */
-const CRITERION_WINDOW = 4;
+   Read, never redefined. See the header comment above. */
+const THRESHOLDS = DEFAULT_POLICY_THRESHOLDS;
 
 export type ScoredSkill = 'reading' | 'listening';
 export type GradedSkill = 'writing' | 'speaking';
 
 export type Confidence = 'measured' | 'tentative';
+
+/** The conservative five-to-two collapse WP23's report asks every exported
+    two-level shape to use: 'measured' stays 'measured', and everything else
+    (that is, 'tentative', 'limited', 'self-reported' and 'unknown') reads as
+    'tentative'. 'limited' and 'self-reported' are never 'measured'. */
+export function confidenceFromCertainty(certainty: Certainty): Confidence {
+  return certainty === 'measured' ? 'measured' : 'tentative';
+}
 
 /* ── Measured facts ────────────────────────────────────────────────────── */
 
@@ -66,6 +84,11 @@ export interface SkillResults {
   bestBand: number | null;
   /** The band this student is aiming at in this paper. */
   target: string | null;
+  /** The one evidence policy's own certainty for this paper, added by
+      readFacts() (see this file's header comment). Undefined when this row
+      was built by a caller with no plan/instant to run the policy against,
+      e.g. a direct call to a function that only takes `progress`. */
+  certainty?: Certainty;
 }
 
 export interface TypeAccuracy {
@@ -77,6 +100,8 @@ export interface TypeAccuracy {
   percent: number;
   /** Separate sittings that contributed. One sitting is not a pattern. */
   sittings: number;
+  /** The policy's own certainty for this subskill. See SkillResults.certainty. */
+  certainty?: Certainty;
 }
 
 export interface CriterionTrend {
@@ -89,6 +114,8 @@ export interface CriterionTrend {
   /** How often it was the lowest (or joint-lowest) criterion in the window. */
   timesLowest: number;
   graded: number;
+  /** The policy's own certainty for this criterion. See SkillResults.certainty. */
+  certainty?: Certainty;
 }
 
 export interface StudentFacts {
@@ -130,6 +157,15 @@ export interface Observation {
   id: string;
   kind: 'weakness' | 'strength' | 'habit' | 'gap';
   confidence: Confidence;
+  /** The one evidence policy's own five-level certainty for the scope this
+      observation is about, when it is about one exact scope (a subskill or
+      a criterion). `confidence` above is `confidenceFromCertainty(this)`
+      EXCEPT where noted in this file's header comment: a subskill or
+      criterion pattern Mr EZ already called 'measured' off the raw counts
+      keeps reading 'measured' even though the strict policy view of the
+      same itemless data is capped lower, and `certainty` is where that
+      strict view still lives, honestly, for anything that wants it. */
+  certainty?: Certainty;
   /** Neutral wording in English, already safe to show verbatim. */
   text: string;
   /** The whole-sentence English template `text` was rendered from. It is
@@ -181,7 +217,7 @@ const ACTIVE_DAYS_FORMS: CountForms = {
 /** Build one observation, rendering its English text and evidence eagerly
     and keeping everything needed to render them again in another language. */
 function observation(
-  base: Pick<Observation, 'id' | 'kind' | 'confidence' | 'activityId'>,
+  base: Pick<Observation, 'id' | 'kind' | 'confidence' | 'activityId' | 'certainty'>,
   template: string,
   vars: TextVars,
   evidenceForms: CountForms,
@@ -297,12 +333,12 @@ export function criterionTrends(progress: ProgressV1): CriterionTrend[] {
   const windows: { skill: GradedSkill; rows: { criteria: Record<string, number> }[]; labels: Record<string, string> }[] = [
     {
       skill: 'writing',
-      rows: writingAttempts(progress).slice(-CRITERION_WINDOW),
+      rows: writingAttempts(progress).slice(-THRESHOLDS.criterionWindow),
       labels: Object.fromEntries(WRITING_CRITERIA.map((c) => [c.key, c.label])),
     },
     {
       skill: 'speaking',
-      rows: speakingAttempts(progress).slice(-CRITERION_WINDOW),
+      rows: speakingAttempts(progress).slice(-THRESHOLDS.criterionWindow),
       labels: {
         fluencyCoherence: 'Fluency & Coherence',
         lexicalResource: 'Lexical Resource',
@@ -357,6 +393,27 @@ function countActivity(progress: ProgressV1, days: number, today: Date): { activ
   return { activeDays, minutes };
 }
 
+/* The one evidence policy, run over this same ProgressV1.
+ *
+ * A pure, on-the-spot pass: no storage, nothing cached. `migrateProgress`
+ * reads this exact `progress`/`plan` forward into a `LearnerRecordV1` the
+ * same way the one-time account migration does (src/lib/learning/migrate.ts)
+ * and `evaluateEvidence` judges it. Every row therefore carries
+ * `provenance: 'legacy'`, honestly, because ProgressV1 has only ever held
+ * per-type tallies, never one answer at a time, which is what caps the
+ * strict `certainty` this attaches at `limited` (see this file's header
+ * comment for why `confidence` does not follow it down). */
+function policyForProgress(progress: ProgressV1, plan: SavedPlan | null, now: Date): PolicyOutputV1 {
+  const nowIso = now.toISOString();
+  const record = migrateProgress(progress, plan, {}, { now: nowIso });
+  const goals = goalsFrom(planSettingsFromSavedPlan(plan));
+  return evaluateEvidence({ record, goals, now: nowIso });
+}
+
+function certaintyOf(policy: PolicyOutputV1, scopeKey: PolicyScopeKey): Certainty | undefined {
+  return policy.estimates.find((estimate) => estimate.scopeKey === scopeKey)?.certainty;
+}
+
 /* ── Facts ─────────────────────────────────────────────────────────────── */
 
 export function readFacts(
@@ -365,6 +422,7 @@ export function readFacts(
   lessonsTotal: number,
   now: Date = new Date(),
 ): StudentFacts {
+  const policy = policyForProgress(progress, plan, now);
   const results: SkillResults[] = [];
 
   for (const skill of ['reading', 'listening'] as const) {
@@ -377,6 +435,7 @@ export function readFacts(
       latestAt: last?.at ?? null,
       bestBand: attempts.length ? Math.max(...attempts.map((a) => a.band)) : null,
       target: skillTargetFor(plan, skill),
+      certainty: certaintyOf(policy, `paper:${skill}`),
     });
   }
 
@@ -389,6 +448,7 @@ export function readFacts(
     latestAt: lastWriting?.at ?? null,
     bestBand: writing.length ? Math.max(...writing.map((a) => a.overallBand)) : null,
     target: skillTargetFor(plan, 'writing'),
+    certainty: certaintyOf(policy, 'paper:writing'),
   });
 
   const speaking = speakingAttempts(progress);
@@ -400,6 +460,7 @@ export function readFacts(
     latestAt: lastSpeaking?.at ?? null,
     bestBand: speaking.length ? Math.max(...speaking.map((a) => a.overallBand)) : null,
     target: skillTargetFor(plan, 'speaking'),
+    certainty: certaintyOf(policy, 'paper:speaking'),
   });
 
   const recentLessonKeys = Object.entries(progress.lessons ?? {})
@@ -410,13 +471,22 @@ export function readFacts(
   const last14 = countActivity(progress, 14, now);
   const last7 = countActivity(progress, 7, now);
 
+  const types = typeAccuracy(progress).map((row) => ({
+    ...row,
+    certainty: certaintyOf(policy, `subskill:${row.skill}:${row.type}`),
+  }));
+  const criteria = criterionTrends(progress).map((row) => ({
+    ...row,
+    certainty: certaintyOf(policy, `criterion:${row.skill}:${row.key}`),
+  }));
+
   return {
     lessonsCompleted: Object.keys(progress.lessons ?? {}).length,
     lessonsTotal,
     recentLessonKeys,
     results,
-    typeAccuracy: typeAccuracy(progress),
-    criterionTrends: criterionTrends(progress),
+    typeAccuracy: types,
+    criterionTrends: criteria,
     activeDaysLast14: last14.activeDays,
     minutesLast7: last7.minutes,
   };
@@ -443,9 +513,9 @@ export function readObservations(facts: StudentFacts): Observation[] {
      of what Mr EZ tells them. */
   let namedWeakest = false;
   for (const t of facts.typeAccuracy) {
-    if (t.percent >= WEAK_PERCENT) continue;
-    const pattern = t.total >= PATTERN_MIN_QUESTIONS && t.sittings >= PATTERN_MIN_SITTINGS;
-    if (!pattern && t.total < TENTATIVE_MIN_QUESTIONS) continue;
+    if (t.percent >= THRESHOLDS.weakPercent) continue;
+    const pattern = t.total >= THRESHOLDS.patternMinItems && t.sittings >= THRESHOLDS.patternMinOccasions;
+    if (!pattern && t.total < THRESHOLDS.tentativeMinItems) continue;
     const superlative = pattern && !namedWeakest;
     if (pattern) namedWeakest = true;
     out.push(
@@ -454,6 +524,7 @@ export function readObservations(facts: StudentFacts): Observation[] {
           id: `weak:${t.skill}:${t.type}`,
           kind: 'weakness',
           confidence: pattern ? 'measured' : 'tentative',
+          certainty: t.certainty,
           activityId: `practise:${t.skill}:${t.type}`,
         },
         pattern
@@ -470,13 +541,14 @@ export function readObservations(facts: StudentFacts): Observation[] {
   }
 
   for (const t of facts.typeAccuracy) {
-    if (t.percent < STRONG_PERCENT || t.total < PATTERN_MIN_QUESTIONS) continue;
+    if (t.percent < THRESHOLDS.strongPercent || t.total < THRESHOLDS.patternMinItems) continue;
     out.push(
       observation(
         {
           id: `strong:${t.skill}:${t.type}`,
           kind: 'strength',
-          confidence: t.sittings >= PATTERN_MIN_SITTINGS ? 'measured' : 'tentative',
+          confidence: t.sittings >= THRESHOLDS.patternMinOccasions ? 'measured' : 'tentative',
+          certainty: t.certainty,
         },
         '{type} in {skill} is reliably strong.',
         { type: t.label, skill: SKILL_LABEL[t.skill] },
@@ -489,7 +561,7 @@ export function readObservations(facts: StudentFacts): Observation[] {
 
   for (const c of facts.criterionTrends) {
     if (c.timesLowest === 0) continue;
-    const pattern = c.graded >= CRITERION_MIN_GRADED && c.timesLowest >= CRITERION_MIN_GRADED;
+    const pattern = c.graded >= THRESHOLDS.criterionMinGraded && c.timesLowest >= THRESHOLDS.criterionMinGraded;
     if (!pattern && c.graded > 1) continue; // lowest once out of several is noise
     out.push(
       observation(
@@ -497,6 +569,7 @@ export function readObservations(facts: StudentFacts): Observation[] {
           id: `criterion:${c.skill}:${c.key}`,
           kind: 'weakness',
           confidence: pattern ? 'measured' : 'tentative',
+          certainty: c.certainty,
           activityId: c.skill === 'writing' ? 'trainer:writing' : 'trainer:speaking',
         },
         pattern
@@ -524,6 +597,7 @@ export function readObservations(facts: StudentFacts): Observation[] {
           id: `gap:${r.skill}`,
           kind: 'gap',
           confidence: 'measured',
+          certainty: r.certainty,
           activityId:
             r.skill === 'writing' ? 'trainer:writing' : r.skill === 'speaking' ? 'trainer:speaking' : `test:${r.skill}`,
         },

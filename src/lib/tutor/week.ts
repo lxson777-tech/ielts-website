@@ -120,6 +120,20 @@ export interface BandMove {
   after: number;
 }
 
+/** One concrete, quoted change to the plan (WP23's brief, section 9: "one
+    consistent evidence policy... explain what changed in the schedule").
+    `summary` is the exact plain-English sentence the planner already wrote
+    into PersonalPlanV1.history (contracts/plan.ts PlanChange), quoted
+    verbatim rather than re-described, so a student can trust it says what
+    the plan actually did. Browser-only: the Worker does not build a
+    PersonalPlanV1 for this task yet, so its own call passes none and this
+    array is simply empty there, an honest gap, not a lie. */
+export interface WeekPlanChange {
+  at: string;
+  trigger: string;
+  summary: string;
+}
+
 export interface WeekFacts {
   window: WeekWindow;
   /** True when the whole window is in the past (window.end is before today's
@@ -144,6 +158,14 @@ export interface WeekFacts {
       latest band inside the window (`after`) and the latest full band before
       the window started (`before`, null when there was none). */
   bandMoves: BandMove[];
+  /** Practice attempts this window, by paper, for all four papers, even
+      the ones with zero, so a review can say a paper had no practice this
+      week rather than staying silent about it (WP23's "all four papers
+      represented"). */
+  paperAttempts: Record<PlanSkill, number>;
+  /** Plan changes quoted verbatim from PersonalPlanV1.history that happened
+      inside this window. See WeekPlanChange. */
+  planChanges: readonly WeekPlanChange[];
   /** True when nothing at all was recorded in the window. */
   empty: boolean;
 }
@@ -289,12 +311,37 @@ function bandMovesFor(progress: ProgressV1, window: WeekWindow, offsetMinutes: n
   return moves;
 }
 
+/** Every paper, even the ones this window never touched: the count a
+    review needs to say "no practice this week" honestly rather than by
+    omission. */
+function paperAttemptsIn(attempts: readonly WeekAttempt[]): Record<PlanSkill, number> {
+  const counts: Record<PlanSkill, number> = { reading: 0, listening: 0, writing: 0, speaking: 0 };
+  for (const attempt of attempts) counts[attempt.skill] += 1;
+  return counts;
+}
+
+/** Plan changes (PersonalPlanV1.history, contracts/plan.ts PlanChange) whose
+    `at` falls on a local date inside this window, oldest first. The caller
+    passes the plan's own history; a caller with none (the Worker, today,
+    see WeekPlanChange's doc comment) simply supplies none. */
+function planChangesIn(
+  history: readonly { at: string; trigger: string; summary: string }[],
+  window: WeekWindow,
+  offsetMinutes: number,
+): WeekPlanChange[] {
+  return history
+    .filter((change) => inWindow(localDateKey(new Date(change.at), offsetMinutes), window))
+    .map((change) => ({ at: change.at, trigger: change.trigger, summary: change.summary }))
+    .sort((a, b) => a.at.localeCompare(b.at));
+}
+
 export function readWeek(
   progress: ProgressV1,
   plan: SavedPlan | null,
   window: WeekWindow,
   now: Date,
   offsetMinutes: number,
+  planHistory: readonly { at: string; trigger: string; summary: string }[] = [],
 ): WeekFacts {
   const today = localDateKey(now, offsetMinutes);
   const complete = window.end < today;
@@ -307,6 +354,8 @@ export function readWeek(
   const lessons = weekLessons(progress, window, offsetMinutes, titles);
   const attempts = weekAttempts(progress, window, offsetMinutes);
   const bandMoves = bandMovesFor(progress, window, offsetMinutes);
+  const paperAttempts = paperAttemptsIn(attempts);
+  const planChanges = planChangesIn(planHistory, window, offsetMinutes);
 
   const prevWindow = previousWeek(window);
   const prevActivity = weekActivity(progress, prevWindow);
@@ -331,6 +380,8 @@ export function readWeek(
       attempts: prevAttempts,
     },
     bandMoves,
+    paperAttempts,
+    planChanges,
     empty,
   };
 }
@@ -381,6 +432,7 @@ export function weekFingerprint(facts: WeekFacts, locale: Locale = 'en'): string
     facts.attempts.map((a) => `${a.skill}:${a.at}:${a.band}:${a.drill ? 1 : 0}`).join(','),
     `prev:${facts.previous.activeDays}:${facts.previous.minutes}:${facts.previous.lessons}:${facts.previous.attempts}`,
     facts.bandMoves.map((m) => `${m.skill}:${m.before ?? '-'}:${m.after}`).join(','),
+    facts.planChanges.map((c) => `${c.at}:${c.trigger}:${c.summary}`).join(','),
   ];
   return fnv1a(parts.join('|'));
 }
@@ -484,6 +536,17 @@ export function weekFallbackText(facts: WeekFacts, locale: Locale = 'en'): strin
           )
         : tutorText(locale, 'Your estimated {skill} band this week is {after}.', { skill, after: move.after }),
     );
+  }
+
+  /* Concrete, quoted changes to the plan (WP23's brief, section 9). The
+     summary is quoted verbatim, never re-described, because a student
+     should be able to trust it says what the plan actually did, the same
+     rule that keeps a counted evidence sentence unparaphrased everywhere
+     else in this codebase. At most two, newest first, so a busy week does
+     not turn this card into a change log. */
+  const changes = [...facts.planChanges].reverse().slice(0, 2);
+  for (const change of changes) {
+    sentences.push(tutorText(locale, 'Your plan changed: "{summary}"', { summary: change.summary }));
   }
 
   return sentences.join(' ');

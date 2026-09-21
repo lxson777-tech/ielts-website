@@ -1,26 +1,29 @@
-/* "Your current approximate level": a single estimated overall band derived
-   from everything the student has actually been scored on: practice tests,
-   AI-graded essays, and AI-graded speaking attempts.
+/* "Your current approximate level": one estimated overall band, built from
+   the SAME evidence policy every other surface reads
+   (src/lib/learning/policy.ts evaluateEvidence). This file used to run its
+   own recency-weighted mean over src/lib/progress.ts with its own decay,
+   window and drill weight (architecture section 1.3's second competing
+   policy). All of that is gone. What is left is a thin view: read the
+   student's real plan and learner record, ask the policy what it knows, and
+   shape the answer for this one widget.
 
-   This is deliberately NOT "best band". Best band answers "what's the highest
-   you've ever hit", which flatters a student and never moves down; a level
-   estimate has to answer "where are you now", so it is a recency-weighted mean
-   over recent attempts and it can fall as well as rise.
+   WHY THE OVERALL NUMBER CAN NOW BE NULL MORE OFTEN
+   The old version averaged whatever papers happened to be covered, so one
+   good Reading score could stand in for a number called "your overall
+   level". The policy refuses to do that: `overall` is null unless all four
+   papers carry at least tentative evidence from a whole attempt
+   (contracts/policy.ts PolicyOutputV1.overall). That is the honest answer
+   far more often than the old blended figure was, and CurrentLevel.tsx is
+   written to show the four papers on their own while that number is still
+   building rather than hide behind an empty state.
 
-   Three rules keep the number honest:
-   - Stub-graded writing/speaking attempts (`live: false`) are excluded outright.
-     The offline grader invents plausible bands so the trainers still work when a
-     Worker is down; feeding those into a level estimate would be fabricating
-     evidence, not degrading gracefully.
-   - Single-passage drills count for less than full exams. `readingBand` already
-     scales a drill onto the /40 curve, but a 13-question sample is far noisier
-     than a 40-question one, so it gets a smaller weight rather than equal say.
-   - Every estimate carries its own confidence, and the UI shows a range, not
-     just a point. With two attempts on one skill the honest answer is "roughly
-     6, give or take a band", not "6.0".
-*/
+   This module is browser-only (it reads the student's live plan and
+   record), so it is never imported by the Mr EZ Worker. src/lib/tutor/
+   insights.ts is the thin view for the Worker's side of the same policy. */
 
-import { getAttempts, getWritingAttempts, getSpeakingAttempts } from './progress';
+import { ensurePlan, readLearnerRecord } from './learning';
+import { evaluateEvidence } from './learning/policy';
+import type { Certainty, PolicyOutputV1 } from './learning/contracts/policy';
 import { nt } from './i18n/translate';
 
 export type LevelSkill = 'reading' | 'listening' | 'writing' | 'speaking';
@@ -34,8 +37,8 @@ export const SKILL_LABEL: Record<LevelSkill, string> = {
   speaking: 'Speaking',
 };
 
-/** Where to send a student who has no evidence (or weak evidence) for a skill.
-    Paths are base-less; callers wrap them in withBase(). */
+/** Where to send a student who has no evidence (or weak evidence) for a
+    skill. Paths are base-less; callers wrap them in withBase(). */
 export const SKILL_PRACTICE: Record<LevelSkill, { label: string; href: string }> = {
   reading: { label: nt('Take a reading test'), href: '/tests' },
   listening: { label: nt('Take a listening test'), href: '/tests#listening-tests' },
@@ -43,64 +46,48 @@ export const SKILL_PRACTICE: Record<LevelSkill, { label: string; href: string }>
   speaking: { label: nt('Speak to the examiner'), href: '/trainers/speaking' },
 };
 
-/** Attempts older than this many positions back stop counting at all. Six is
-    about a month of steady practice: far enough back to smooth out one bad
-    day, close enough that a student who has genuinely improved isn't dragged
-    down by where they started. */
-const RECENT_WINDOW = 6;
-
-/** Per-position recency decay. At 0.65 the newest attempt carries ~3x the
-    weight of the third-newest, so recent work dominates without a single
-    fluke attempt being able to define the estimate on its own. */
-const DECAY = 0.65;
-
-/** A single-passage drill is a smaller, noisier sample than a full 40-question
-    exam, so it contributes proportionally less. */
-const DRILL_WEIGHT = 0.6;
-
-/** The lowest band the official Academic Reading table defines. `readingBand`
-    returns 0 below it, which is not a real IELTS band and would drag an
-    average into nonsense, so reading contributions are floored here. */
-const MIN_REPORTABLE_BAND = 2.5;
-
-interface Sample {
-  at: string;
-  band: number;
-  /** reliability multiplier, before recency decay */
-  weight: number;
-}
-
 export interface SkillLevel {
   skill: LevelSkill;
-  /** Recency-weighted estimate, or null when there's no usable evidence. */
+  /** The policy's own estimate for this paper, or null when it has none. */
   band: number | null;
-  /** Usable attempts behind the estimate (excludes stub-graded ones). */
+  /** Independent whole attempts behind the estimate (a full paper, or a full
+      graded task), the same count the policy's own band rests on. */
   attempts: number;
-  /** Band movement across the attempt history, or null under 4 attempts. */
+  /** Band movement across the evidence, or null under the policy's own
+      trendMinSamples. */
   trend: number | null;
-  /** ISO datetime of the most recent usable attempt. */
+  /** ISO instant of the most recent usable evidence of any kind. */
   latestAt: string | null;
+  /** The policy's own five-level certainty for this paper. Added so a
+      caller can show "self-reported" or "limited evidence" honestly rather
+      than folding everything into a confidence badge computed here. */
+  certainty: Certainty;
 }
 
 export type LevelConfidence = 'none' | 'low' | 'medium' | 'high';
 
 export interface LevelEstimate {
-  /** Overall band, IELTS-rounded, or null when nothing has been scored yet. */
+  /** Overall band, IELTS-rounded, or null. Null whenever the policy's own
+      `overall` is null, which includes "nothing measured yet" AND "some
+      papers measured, not all four", both honest reasons to show no single
+      number (see this file's header comment). */
   overall: number | null;
   /** Honest interval around `overall`, widened when evidence is thin. */
   range: [low: number, high: number] | null;
+  /** The policy's own certainty for `overall`, when it has one. */
+  certainty: Certainty | null;
   skills: SkillLevel[];
-  /** Skills with a usable estimate. */
+  /** Skills with a usable band estimate. */
   covered: number;
   totalAttempts: number;
   confidence: LevelConfidence;
   /** Lowest-scoring covered skill: the one worth working on next. */
   weakest: SkillLevel | null;
-  /** Skills with no usable evidence yet, in display order. */
+  /** Skills with no usable band estimate yet, in display order. */
   missing: LevelSkill[];
 }
 
-/* ── Band vocabulary ───────────────────────────────────────────────────────── */
+/* Band vocabulary. */
 
 /** Official IELTS band descriptor (the "user" labels published with the band
     scale), for the band the student is currently at. */
@@ -126,128 +113,66 @@ export function cefrFor(band: number): string {
   return 'A2';
 }
 
-/** Round to the nearest half band. This is also the official overall-score
-    rule: an average ending in .25 rounds up to the next half band and .75 up
-    to the next whole band, which is exactly what nearest-half does. */
-export function toHalfBand(band: number): number {
-  return Math.round(band * 2) / 2;
+/** Re-exported so a caller that only has this module still gets the same
+    half-band rounding the policy uses everywhere else, the same three
+    lines as toHalfBand in src/lib/learning/policy.ts, not reimplemented. */
+export { toHalfBand } from './learning/policy';
+
+/* Confidence, from the policy's own certainty. */
+
+/** How sure `overall` is, in the four words this widget already showed.
+    Conservative: only the policy's own 'measured' reaches 'high', and
+    'limited' or 'self-reported' never reach it either, the same rule
+    WP23's report asks for everywhere a five-level certainty is folded down
+    to fewer words. */
+function confidenceFromCertainty(certainty: Certainty | null, covered: number): LevelConfidence {
+  if (certainty === 'measured') return 'high';
+  if (certainty === 'tentative') return 'medium';
+  if (certainty === 'limited' || certainty === 'self-reported') return 'low';
+  return covered > 0 ? 'low' : 'none';
 }
 
-/* ── Estimation ────────────────────────────────────────────────────────────── */
+/* Building the view from a policy output. */
 
-function collectSamples(): Record<LevelSkill, Sample[]> {
-  const out: Record<LevelSkill, Sample[]> = { reading: [], listening: [], writing: [], speaking: [] };
-
-  for (const { attempt } of getAttempts()) {
-    // Attempts predating the `skill` field are reading: that was the only
-    // skill with scored attempts when they were written.
-    const skill = attempt.skill ?? 'reading';
-    out[skill].push({
-      at: attempt.at,
-      band: Math.max(MIN_REPORTABLE_BAND, attempt.band),
-      weight: attempt.kind === 'drill' ? DRILL_WEIGHT : 1,
-    });
-  }
-
-  for (const { attempt } of getWritingAttempts()) {
-    if (!attempt.live) continue; // stub grades are invented, not measured
-    out.writing.push({ at: attempt.at, band: attempt.overallBand, weight: 1 });
-  }
-
-  for (const attempt of getSpeakingAttempts()) {
-    if (!attempt.live) continue;
-    out.speaking.push({ at: attempt.at, band: attempt.overallBand, weight: 1 });
-  }
-
-  for (const skill of LEVEL_SKILLS) out[skill].sort((a, b) => a.at.localeCompare(b.at));
-  return out;
-}
-
-/** Recency-weighted mean over the most recent RECENT_WINDOW attempts. */
-function weightedBand(samples: Sample[]): number | null {
-  const recent = samples.slice(-RECENT_WINDOW);
-  let weighted = 0;
-  let totalWeight = 0;
-  for (let i = recent.length - 1, age = 0; i >= 0; i--, age++) {
-    const w = recent[i]!.weight * DECAY ** age;
-    weighted += recent[i]!.band * w;
-    totalWeight += w;
-  }
-  return totalWeight === 0 ? null : weighted / totalWeight;
-}
-
-/** Newer half's mean minus older half's mean, so a student can see whether
-    they're moving. Needs 4+ attempts, below which the difference is noise. */
-function trendOf(samples: Sample[]): number | null {
-  if (samples.length < 4) return null;
-  const half = Math.floor(samples.length / 2);
-  const mean = (xs: Sample[]) => xs.reduce((sum, s) => sum + s.band, 0) / xs.length;
-  return Math.round((mean(samples.slice(-half)) - mean(samples.slice(0, half))) * 10) / 10;
-}
-
-function confidenceFor(covered: number, totalAttempts: number): LevelConfidence {
-  if (covered === 0) return 'none';
-  if (covered >= 3 && totalAttempts >= 6) return 'high';
-  if (covered <= 1 || totalAttempts < 3) return 'low';
-  return 'medium';
-}
-
-/** Half-band margin shown either side of the estimate. Thin evidence gets a
-    full band of slack; anything better gets the tightest interval a half-band
-    scale can honestly express. */
-function marginFor(confidence: LevelConfidence): number {
-  return confidence === 'low' ? 1 : 0.5;
-}
-
-export function estimateLevel(): LevelEstimate {
-  const samples = collectSamples();
-
+/** Pure: everything here reads only the `PolicyOutputV1` it is given. Kept
+    separate from `estimateLevel()` so a caller that already computed the
+    policy (ProgressReport.tsx does, for the same instant) never pays for a
+    second pass over the record. */
+export function levelFromPolicy(policy: PolicyOutputV1): LevelEstimate {
   const skills: SkillLevel[] = LEVEL_SKILLS.map((skill) => {
-    const s = samples[skill];
+    const estimate = policy.estimates.find((e) => e.scopeKey === `paper:${skill}`);
     return {
       skill,
-      band: weightedBand(s),
-      attempts: s.length,
-      trend: trendOf(s),
-      latestAt: s.length ? s[s.length - 1]!.at : null,
+      band: estimate?.band ?? null,
+      attempts: estimate?.evidence.wholeAttempts ?? 0,
+      trend: estimate?.trend ?? null,
+      latestAt: estimate?.evidence.latestAt ?? null,
+      certainty: estimate?.certainty ?? 'unknown',
     };
   });
 
   const scored = skills.filter((s): s is SkillLevel & { band: number } => s.band !== null);
   const totalAttempts = skills.reduce((sum, s) => sum + s.attempts, 0);
-  const confidence = confidenceFor(scored.length, totalAttempts);
-
-  if (scored.length === 0) {
-    return {
-      overall: null,
-      range: null,
-      skills,
-      covered: 0,
-      totalAttempts: 0,
-      confidence,
-      weakest: null,
-      missing: [...LEVEL_SKILLS],
-    };
-  }
-
-  // Average the skills we have. Averaging only covered skills (rather than
-  // treating an untested skill as 0) is why this is an *approximate* level and
-  // why the UI states how many of the four papers it rests on.
-  const mean = scored.reduce((sum, s) => sum + s.band, 0) / scored.length;
-  const overall = toHalfBand(mean);
-  const margin = marginFor(confidence);
+  const certainty = policy.overall?.certainty ?? null;
 
   return {
-    overall,
-    range: [
-      Math.max(1, toHalfBand(mean - margin)),
-      Math.min(9, toHalfBand(mean + margin)),
-    ],
+    overall: policy.overall?.band ?? null,
+    range: policy.overall ? [...policy.overall.range] as [number, number] : null,
+    certainty,
     skills,
     covered: scored.length,
     totalAttempts,
-    confidence,
-    weakest: scored.reduce((low, s) => (s.band < low.band ? s : low), scored[0]!),
+    confidence: confidenceFromCertainty(certainty, scored.length),
+    weakest: scored.length ? scored.reduce((low, s) => (s.band < low.band ? s : low), scored[0]!) : null,
     missing: skills.filter((s) => s.band === null).map((s) => s.skill),
   };
+}
+
+/** The student's approximate level, read live from their own plan and
+    learner record. Browser-only (see this file's header comment). */
+export function estimateLevel(): LevelEstimate {
+  const plan = ensurePlan();
+  const record = readLearnerRecord();
+  const policy = evaluateEvidence({ record, goals: plan.goals, now: new Date().toISOString() });
+  return levelFromPolicy(policy);
 }

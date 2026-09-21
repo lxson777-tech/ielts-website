@@ -134,3 +134,116 @@
 }
 .skill-trend-meta .is-met { color: var(--color-success); font-weight: 600; }
 .skill-trend-meta .is-short { color: var(--color-ink-muted); }
+
+/* ── Per-paper four-question detail (progress report, WP23) ──────────────── */
+
+.report-detail {
+  transition: background-color 160ms ease;
+}
+.report-detail-summary {
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+}
+.report-detail-summary::-webkit-details-marker { display: none; }
+.report-detail-summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--color-ink-muted);
+  transition: transform 160ms ease;
+}
+.report-detail[open] > .report-detail-summary::before { transform: rotate(90deg); }
+.report-detail-summary:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.report-detail-heading {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--color-ink-muted);
+  margin-bottom: 4px;
+}
+.report-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-ink);
+  padding-left: 0;
+  list-style: none;
+}
+.report-detail-list li { padding-left: 14px; position: relative; }
+.report-detail-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-ink-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .report-detail,
+  .report-detail-summary::before {
+    transition: none;
+  }
+}
+
+/* Print: every paper's detail is fully expanded and the disclosure marker
+   is hidden, so a printed or PDF-saved report reads as plain text rather
+   than a row of closed triangles (see the site-wide report-print-hide /
+   report-print-only rules this reuses). */
+@media print {
+  .report-detail { border: none !important; padding: 8px 0 !important; }
+  .report-detail-summary::before { display: none; }
+  .report-detail > div { display: grid !important; }
+}
+
+/* ── Weekly review: all four papers, and their effort against the goal
+   (WP23) ─────────────────────────────────────────────────────────────── */
+
+.mrez-weekly-papers { margin-top: 14px; }
+.mrez-weekly-papers-heading {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--mrez-muted, var(--color-ink-muted));
+  margin-bottom: 6px;
+}
+.mrez-weekly-papers-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 480px) {
+  .mrez-weekly-papers-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.mrez-weekly-paper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--mrez-soft, var(--color-surface-alt));
+}
+.mrez-weekly-paper-name { font-size: 12.5px; font-weight: 700; }
+.mrez-weekly-paper-effort { font-size: 11.5px; color: var(--mrez-muted, var(--color-ink-muted)); }
+.mrez-weekly-paper-gap { font-size: 11px; color: var(--mrez-muted, var(--color-ink-muted)); }
+
+/* ── "What your plan knows about you" (MrEzMemory.tsx, WP23) ─────────────── */
+
+.mrez-memory-override-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--mrez-muted, var(--color-ink-muted));
+}

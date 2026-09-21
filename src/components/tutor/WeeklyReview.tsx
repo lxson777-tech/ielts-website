@@ -33,8 +33,13 @@ import type { TutorMood, TutorRecommendation } from '../../lib/tutor/schema';
 import { onAuthChange } from '../../lib/auth/session';
 import { getProgress, onProgressChange } from '../../lib/progress';
 import { loadStudyPlan, onStudyPlanChange } from '../../lib/study-plan';
-import { ensureLearningWired } from '../../lib/learning';
+import { ensureLearningWired, ensurePlan, readLearnerRecord } from '../../lib/learning';
+import { evaluateEvidence } from '../../lib/learning/policy';
+import type { GapAssessment } from '../../lib/learning/contracts/policy';
+import type { Paper } from '../../lib/learning/contracts/catalog';
+import { PAPERS } from '../../lib/learning/contracts/catalog';
 import '../../styles/mr-ez-weekly.css';
+import '../../styles/learning-progress.css';
 
 // localRecommendation() below runs recommendNext(), which is a VIEW of the
 // student's shared session (src/lib/tutor/recommend.ts's header comment).
@@ -55,6 +60,12 @@ interface LocalView {
   fingerprint: string;
   fallbackText: string;
   recommendation: TutorRecommendation | null;
+  /** Where the goal is furthest from being met, biggest shortfall first,
+      from the same evidence policy the progress report reads. Used to show
+      effort against the gaps that matter (WP23's brief, section 9) rather
+      than a second, competing read of what the student should work on:
+      `recommendation` above still names the one shared next step. */
+  topGaps: readonly GapAssessment[];
 }
 
 /** Mr EZ's own wording, tagged with the week it was written about. */
@@ -112,7 +123,18 @@ function buildLocalView(t: Translator['t'], locale: Locale): LocalView {
   const now = new Date();
   const offsetMinutes = -now.getTimezoneOffset();
   const target = reviewTarget(progress, plan, now, offsetMinutes);
-  const facts = readWeek(progress, plan, target.window, now, offsetMinutes);
+
+  // The real plan and learner record, for the quoted change history and the
+  // gaps-against-effort section. ensureLearningWired() above (module load)
+  // means this reads the same stored plan Today and every other surface
+  // read, not a second derivation of it.
+  const learningPlan = ensurePlan();
+  const facts = readWeek(progress, plan, target.window, now, offsetMinutes, learningPlan.history);
+  const policy = evaluateEvidence({ record: readLearnerRecord(), goals: learningPlan.goals, now: now.toISOString() });
+  const topGaps = [...policy.gaps]
+    .filter((gap) => gap.scope.kind === 'paper' && gap.shortfall !== null && !gap.meetsRequirement)
+    .slice(0, 2);
+
   const fallbackText =
     target.mode === 'none'
       ? t('Nothing recorded in the last two weeks. Here is an easy way back in.')
@@ -124,6 +146,7 @@ function buildLocalView(t: Translator['t'], locale: Locale): LocalView {
     // for a review in the new one instead of keeping the old paragraph.
     fingerprint: weekFingerprint(facts, locale),
     fallbackText,
+    topGaps,
     recommendation: toTutorRecommendation(localRecommendation(), locale),
   };
 }
@@ -239,6 +262,8 @@ export default function WeeklyReview() {
 
         {local.mode !== 'none' && <WeeklyChips facts={local.facts} showPrevious={local.mode === 'last-week'} />}
 
+        {local.mode !== 'none' && <PaperEffortRow facts={local.facts} gaps={local.topGaps} />}
+
         {shown.recommendation && (
           <a className="mrez-rec mrez-weekly-cta" href={withBase(shown.recommendation.href)}>
             <span className="mrez-rec-label">
@@ -303,6 +328,55 @@ function WeeklyChip({ value, label, previous }: { value: string; label: string; 
         {previous && <span className="mrez-weekly-chip-prev"> · {previous}</span>}
       </span>
       <span className="mrez-weekly-chip-label">{label}</span>
+    </div>
+  );
+}
+
+const PAPER_LABEL: Record<Paper, string> = {
+  reading: 'Reading',
+  listening: 'Listening',
+  writing: 'Writing',
+  speaking: 'Speaking',
+};
+
+/** All four papers, every week, even the ones this week never touched
+    (WP23's brief, section 9: "all four papers represented"), with the one
+    or two biggest gaps against the student's own goal named alongside the
+    effort actually spent on them this week. This never proposes a
+    different next step: `gaps` only decides what gets a sentence here, the
+    one shared session (the card's recommendation link) is unchanged. */
+function PaperEffortRow({ facts, gaps }: { facts: WeekFacts; gaps: readonly GapAssessment[] }) {
+  const { t, tn } = useT();
+  const gapByPaper = new Map(
+    gaps
+      .filter((gap): gap is GapAssessment & { scope: { kind: 'paper'; paper: Paper } } => gap.scope.kind === 'paper')
+      .map((gap) => [gap.scope.paper, gap]),
+  );
+
+  return (
+    <div className="mrez-weekly-papers">
+      <p className="mrez-weekly-papers-heading">{t('This week, by paper')}</p>
+      <div className="mrez-weekly-papers-grid">
+        {PAPERS.map((paper) => {
+          const attempts = facts.paperAttempts[paper];
+          const gap = gapByPaper.get(paper);
+          return (
+            <div key={paper} className="mrez-weekly-paper">
+              <span className="mrez-weekly-paper-name">{PAPER_LABEL[paper]}</span>
+              <span className="mrez-weekly-paper-effort">
+                {attempts > 0
+                  ? tn(attempts, { one: '{n} attempt this week', other: '{n} attempts this week' })
+                  : t('No practice this week')}
+              </span>
+              {gap && gap.shortfall !== null && (
+                <span className="mrez-weekly-paper-gap">
+                  {t('{n} band short of your goal', { n: gap.shortfall.toFixed(1) })}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -1,11 +1,20 @@
 /* The printable progress report at /report: one page a student (or their
    teacher) can save as a PDF, pulling together the study plan, lessons
-   completed, test history, weakest/strongest question types, and the daily
-   streak. Reads the same localStorage stores as the rest of the account
-   pages (progress.ts, study-plan.ts, plan/streak.ts) — nothing here is
+   completed, test history, the four skill trends, the four-question detail
+   per paper, and the daily streak. Reads the same localStorage stores as
+   the rest of the account pages (progress.ts, study-plan.ts, plan/
+   streak.ts) plus the one evidence policy (src/lib/learning/policy.ts) for
+   everything about certainty, gaps and what changed, and nothing here is
    stored separately except the optional name field, which is cosmetic only
    and kept in its own small key so it never touches the shared progress
-   shape. */
+   shape.
+
+   WP23, 2026-09-22: the old "weakest / strongest question types" section
+   (raw lifetime correct/total off src/lib/progress.ts's getTypeStats, a
+   third counting method with no certainty gating of its own) is gone. Its
+   job is now done honestly by the "What each paper tells us" section below,
+   which reads the same policy the skill-trend panels above it do. See
+   architecture section 1.3 for the audit finding this responds to. */
 
 import { useEffect, useState } from 'react';
 import {
@@ -16,20 +25,27 @@ import {
   getBestBand,
   getBestWritingBand,
   getBestSpeakingBand,
-  getTypeStats,
   getActivity,
 } from '../lib/progress';
 import { loadStudyPlan, daysUntilTest, skillTargetFor, type PlanSkill, type SavedPlan } from '../lib/study-plan';
 import { getStreak } from '../lib/plan/streak';
 import { buildCourse } from '../lib/course';
-import { LABELS } from './TypeAnalytics';
 import type { Skill } from '../data/lessons';
 import WeeklyReview from './tutor/WeeklyReview';
-import { useT } from '../lib/i18n/react';
+import { useT, type Translator } from '../lib/i18n/react';
 import { nt } from '../lib/i18n/translate';
-import { ensurePlan, readLearnerRecord } from '../lib/learning';
+import { ensurePlan, readLearnerRecord, getCurrentSession } from '../lib/learning';
 import { evaluateEvidence } from '../lib/learning/policy';
-import { skillTrendPanels } from './reportTrends';
+import { PAPERS } from '../lib/learning/contracts/catalog';
+import type { IgnoredReason } from '../lib/learning/contracts/policy';
+import {
+  skillTrendPanels,
+  paperNarratives,
+  recentIndependentEvidence,
+  statedMistakeReasons,
+  IGNORED_REASONS,
+  type NarrativeLine,
+} from './reportTrends';
 import SkillTrendGrid from './SkillTrendGrid';
 import '../styles/learning-progress.css';
 
@@ -126,13 +142,21 @@ export default function ProgressReport() {
   const policy = evaluateEvidence({ record: learnerRecord, goals: learningPlan.goals, now: new Date().toISOString() });
   const skillPanels = skillTrendPanels(policy);
 
-  const typeStats = [
-    ...getTypeStats('reading').map((t) => ({ ...t, skill: 'Reading' })),
-    ...getTypeStats('listening').map((t) => ({ ...t, skill: 'Listening' })),
-  ].filter((t) => t.total > 0);
-  const withPct = typeStats.map((t) => ({ ...t, pct: Math.round((t.correct / t.total) * 100) }));
-  const weakest = withPct.length ? withPct.reduce((a, b) => (b.pct < a.pct ? b : a)) : null;
-  const strongest = withPct.length ? withPct.reduce((a, b) => (b.pct > a.pct ? b : a)) : null;
+  // The four questions per paper (what improved, what is uncertain, what is
+  // next, what changed and why): brief section 9. `session` is the one
+  // shared next step every other surface reads, never a second opinion
+  // built here.
+  const session = getCurrentSession();
+  const narratives = paperNarratives(policy, learningPlan, session);
+
+  // Teacher-review evidence: goals, recent independent evidence, the
+  // student's own stated reasons, flagged scopes, and recent plan changes.
+  // Everything here is the student's own data, read locally, never sent
+  // anywhere (deliverable 5). It is part of the same printable page, so no
+  // separate export mechanism is needed.
+  const recentEvidence = recentIndependentEvidence(learnerRecord, 10);
+  const mistakes = statedMistakeReasons(learnerRecord, 6);
+  const recentPlanChanges = [...learningPlan.history].slice(-5).reverse();
 
   return (
     <div className="space-y-10">
@@ -321,34 +345,269 @@ export default function ProgressReport() {
         </div>
       </section>
 
-      {/* ── Weakest / strongest question types ── */}
+      {/* The four questions, per paper: what improved, what remains
+          uncertain, what to work on next, and what changed in the schedule
+          and why (brief section 9). Open by default so the page stays
+          readable, and open in print. */}
       <section>
-        <h2 className="font-display text-lg font-bold">{t('Question types')}</h2>
-        {weakest && strongest ? (
-          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-card border border-error/40 bg-error-tint p-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-error">{t('Weakest')}</p>
-              <p className="mt-1 font-display text-base font-bold">
-                {LABELS[weakest.type] ?? weakest.type} ({weakest.skill})
-              </p>
-              <p className="mt-0.5 text-sm text-ink-muted">
-                {t('{correct} / {total} correct · {pct}%', { correct: weakest.correct, total: weakest.total, pct: weakest.pct })}
-              </p>
-            </div>
-            <div className="rounded-card border border-success/40 bg-success-tint p-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-success">{t('Strongest')}</p>
-              <p className="mt-1 font-display text-base font-bold">
-                {LABELS[strongest.type] ?? strongest.type} ({strongest.skill})
-              </p>
-              <p className="mt-0.5 text-sm text-ink-muted">
-                {t('{correct} / {total} correct · {pct}%', { correct: strongest.correct, total: strongest.total, pct: strongest.pct })}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <p className="mt-2 text-sm text-ink-muted">{t('Take a Reading or Listening test to see your weak spots here.')}</p>
-        )}
+        <h2 className="font-display text-lg font-bold">{t('What each paper tells us')}</h2>
+        <div className="mt-3 space-y-3">
+          {narratives.map((narrative) => (
+            <PaperDetail key={narrative.paper} narrative={narrative} t={t} />
+          ))}
+        </div>
       </section>
+
+      {/* Teacher-review summary: everything a teacher would need to help,
+          generated locally from the student's own data, never sent
+          anywhere. Part of the same printable page (deliverable 5), so
+          "Print or save as PDF" above already exports it. */}
+      <TeacherReviewSummary
+        t={t}
+        tn={tn}
+        goals={learningPlan.goals}
+        policy={policy}
+        recentEvidence={recentEvidence}
+        mistakes={mistakes}
+        planChanges={recentPlanChanges}
+      />
     </div>
+  );
+}
+
+/* One paper's four-question detail. */
+
+function Line({ line, t }: { line: NarrativeLine; t: Translator['t'] }) {
+  return <li>{t(line.template, line.vars)}</li>;
+}
+
+function PaperDetail({ narrative, t }: { narrative: ReturnType<typeof paperNarratives>[number]; t: Translator['t'] }) {
+  return (
+    <details className="report-detail rounded-card border border-border bg-surface p-4" open>
+      <summary className="report-detail-summary font-display text-sm font-bold">
+        {SKILL_LABEL[narrative.paper]}
+      </summary>
+      <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <p className="report-detail-heading">{t('What improved')}</p>
+          {narrative.improved.length > 0 ? (
+            <ul className="report-detail-list">
+              {narrative.improved.map((line_, i) => (
+                <Line key={i} line={line_} t={t} />
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-ink-muted">{t('Nothing to report yet from independent evidence alone.')}</p>
+          )}
+        </div>
+        <div>
+          <p className="report-detail-heading">{t('What remains uncertain')}</p>
+          {narrative.uncertain.length > 0 ? (
+            <ul className="report-detail-list">
+              {narrative.uncertain.map((line_, i) => (
+                <Line key={i} line={line_} t={t} />
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-ink-muted">{t('Nothing flagged as uncertain right now.')}</p>
+          )}
+        </div>
+        <div>
+          <p className="report-detail-heading">{t('What to work on next')}</p>
+          <p className="text-sm">{t(narrative.nextStep.template, narrative.nextStep.vars)}</p>
+        </div>
+        <div>
+          <p className="report-detail-heading">{t('What changed in the schedule, and why')}</p>
+          {narrative.scheduleChanges.length > 0 ? (
+            <ul className="report-detail-list">
+              {narrative.scheduleChanges.map((summary, i) => (
+                // The planner's own sentence, quoted verbatim, never
+                // translated (the same rule session.objective and
+                // session.reason already follow everywhere on this site).
+                <li key={i}>&ldquo;{summary}&rdquo;</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-ink-muted">{t('No change to the schedule for this paper recently.')}</p>
+          )}
+        </div>
+      </div>
+    </details>
+  );
+}
+
+/* Teacher-review summary. */
+
+function GoalLine({ t, paper, band, status }: { t: Translator['t']; paper: string; band: number; status: string }) {
+  return (
+    <li>
+      {t('{paper}: band {band} ({status})', { paper, band, status: t(status) })}
+    </li>
+  );
+}
+
+/** One `tn()` call per reason, literal, so the coverage scanner finds each
+    counted phrase (the same discipline SkillTrendGrid.tsx already follows
+    for freshness; see IGNORED_REASONS's doc comment in reportTrends.ts). */
+function IgnoredReasonLine({ reason, count, tn }: { reason: IgnoredReason; count: number; tn: Translator['tn'] }) {
+  switch (reason) {
+    case 'blank':
+      return <li>{tn(count, { one: '{n} submission was left blank, so it was not counted.', other: '{n} submissions were left blank, so they were not counted.' })}</li>;
+    case 'abandoned':
+      return <li>{tn(count, { one: '{n} attempt was abandoned partway through, so it was not counted.', other: '{n} attempts were abandoned partway through, so they were not counted.' })}</li>;
+    case 'repeat-of-seen-material':
+      return <li>{tn(count, { one: '{n} attempt was a repeat of material you had already seen, so it is not counted as new proof.', other: '{n} attempts were repeats of material you had already seen, so they are not counted as new proof.' })}</li>;
+    case 'stub-graded':
+      return <li>{tn(count, { one: '{n} result came from a stand-in grader, not the real one, so it was not counted.', other: '{n} results came from a stand-in grader, not the real one, so they were not counted.' })}</li>;
+    case 'simulated':
+      return <li>{tn(count, { one: '{n} result was simulated for testing, so it was not counted.', other: '{n} results were simulated for testing, so they were not counted.' })}</li>;
+    case 'superseded':
+      return <li>{tn(count, { one: '{n} result was replaced by a later, corrected one, so the earlier one was not counted.', other: '{n} results were replaced by later, corrected ones, so the earlier ones were not counted.' })}</li>;
+    case 'stale-content-version':
+      return <li>{tn(count, { one: '{n} result was about an older version of the material, so it was not counted.', other: '{n} results were about an older version of the material, so they were not counted.' })}</li>;
+    case 'self-reported-claim':
+      return <li>{tn(count, { one: '{n} score was told to us by you rather than measured here, so it is kept separate.', other: '{n} scores were told to us by you rather than measured here, so they are kept separate.' })}</li>;
+    case 'older-than-window':
+      return <li>{tn(count, { one: '{n} result is old enough that it no longer counts as current.', other: '{n} results are old enough that they no longer count as current.' })}</li>;
+    default:
+      return null;
+  }
+}
+
+interface TeacherReviewSummaryProps {
+  t: Translator['t'];
+  tn: Translator['tn'];
+  goals: ReturnType<typeof ensurePlan>['goals'];
+  policy: ReturnType<typeof evaluateEvidence>;
+  recentEvidence: ReturnType<typeof recentIndependentEvidence>;
+  mistakes: ReturnType<typeof statedMistakeReasons>;
+  planChanges: ReturnType<typeof ensurePlan>['history'];
+}
+
+function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, planChanges }: TeacherReviewSummaryProps) {
+  const ignoredByReason = new Map(policy.ignored.map((entry) => [entry.reason, entry.count]));
+
+  return (
+    <section>
+      <h2 className="font-display text-lg font-bold">{t('Teacher review summary')}</h2>
+      <p className="mt-1 text-sm text-ink-muted">
+        {t('Generated locally from your own data and never sent anywhere. Print or save this whole page as a PDF to share it.')}
+      </p>
+
+      <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('Goals')}</h3>
+          <ul className="report-detail-list mt-2">
+            {goals.overallTarget && (
+              <GoalLine t={t} paper={t('Overall')} band={goals.overallTarget.band} status={goals.overallTarget.status === 'confirmed' ? nt('confirmed') : nt('provisional')} />
+            )}
+            {PAPERS.map((paper) => {
+              const minimum = goals.perPaperMinimums[paper];
+              if (!minimum) return null;
+              return (
+                <GoalLine
+                  key={paper}
+                  t={t}
+                  paper={SKILL_LABEL[paper]}
+                  band={minimum.band}
+                  status={minimum.status === 'confirmed' ? nt('confirmed') : nt('provisional')}
+                />
+              );
+            })}
+            {!goals.overallTarget && Object.keys(goals.perPaperMinimums).length === 0 && (
+              <li className="text-ink-muted">{t('No goal set yet.')}</li>
+            )}
+          </ul>
+          {goals.selfReported.length > 0 && (
+            <>
+              <h4 className="mt-3 text-xs font-bold uppercase tracking-wide text-ink-muted">{t('Self-reported scores')}</h4>
+              <ul className="report-detail-list mt-1">
+                {goals.selfReported.map((score, i) => (
+                  <li key={i}>
+                    {score.paper
+                      ? t('{paper}: band {band}, taken {date}', { paper: SKILL_LABEL[score.paper], band: score.band, date: fmtDate(score.takenOn) })
+                      : t('Overall: band {band}, taken {date}', { band: score.band, date: fmtDate(score.takenOn) })}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('Flagged for a teacher')}</h3>
+          {policy.needsTeacherInput.length > 0 ? (
+            <ul className="report-detail-list mt-2">
+              {policy.needsTeacherInput.map((entry) => (
+                <li key={entry.scopeKey}>
+                  {t('{scope}: no improvement after {n} attempts in a row', {
+                    scope: entry.scopeKey.split(':').slice(1).join(' ').replace(/-/g, ' '),
+                    n: entry.consecutiveUnimprovedAttempts,
+                  })}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-ink-muted">{t('Nothing currently flagged.')}</p>
+          )}
+
+          {policy.ignored.length > 0 && (
+            <>
+              <h4 className="mt-3 text-xs font-bold uppercase tracking-wide text-ink-muted">{t('How much was not counted, and why')}</h4>
+              <ul className="report-detail-list mt-1">
+                {IGNORED_REASONS.filter((reason) => (ignoredByReason.get(reason) ?? 0) > 0).map((reason) => (
+                  <IgnoredReasonLine key={reason} reason={reason} count={ignoredByReason.get(reason) ?? 0} tn={tn} />
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('Recent independent evidence')}</h3>
+        {recentEvidence.length > 0 ? (
+          <ul className="report-detail-list mt-2">
+            {recentEvidence.map((item, i) => (
+              <li key={i}>
+                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]} · {item.subskillLabel} · {t(item.summary.template, item.summary.vars)}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-2 text-sm text-ink-muted">{t('No independent evidence recorded yet.')}</p>
+        )}
+      </div>
+
+      {mistakes.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('The student\'s own account of mistakes')}</h3>
+          <p className="mt-1 text-xs text-ink-muted">{t('In the student\'s own words. Never a finding on its own, always tentative.')}</p>
+          <ul className="report-detail-list mt-2">
+            {mistakes.map((item, i) => (
+              <li key={i}>
+                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]} · {item.subskillLabel} · {item.reasonId}
+                {item.note ? `: "${item.note}"` : ''}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mt-6">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('Recent plan changes')}</h3>
+        {planChanges.length > 0 ? (
+          <ul className="report-detail-list mt-2">
+            {planChanges.map((change, i) => (
+              <li key={i}>
+                {fmtDate(change.at)} · &ldquo;{change.summary}&rdquo;
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-2 text-sm text-ink-muted">{t('No plan changes recorded yet.')}</p>
+        )}
+      </div>
+    </section>
   );
 }
