@@ -1,0 +1,231 @@
+/* Vocabulary review, WP21: the recall and use-in-a-sentence modes on top of
+   the existing flashcard session (src/components/VocabReview.tsx).
+
+   Deliberately reuses the token names and the visual language
+   src/styles/platform-pages.css already established for .vocab-card,
+   .vocab-review-space and friends (var(--color-ink), var(--color-surface),
+   var(--color-border), var(--radius-card), var(--font-display), the motion
+   tokens from global.css) rather than introducing a second palette on the
+   same page. This file is additive only: platform-pages.css is not edited,
+   and every selector here is new or scoped to the three new modes. */
+
+.vocab-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+.vocab-mode-row .vocab-progress {
+  margin: 0;
+}
+
+.vocab-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-vocabulary, #d99000) 12%, transparent);
+  color: var(--color-vocabulary, #d99000);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Recall and use-in-a-sentence share the card shell (.vocab-card) but are
+   read left to right, top to bottom, rather than centred like the flip
+   card, and are never themselves the clickable control (their input is). */
+.vocab-card-static {
+  cursor: default;
+  align-items: stretch;
+  text-align: left;
+  gap: 14px;
+  padding: 32px 28px;
+}
+.vocab-card-static .vocab-card-topic {
+  position: static;
+  display: block;
+  text-align: left;
+  margin: 0;
+}
+.vocab-card-static .vocab-card-def {
+  text-align: left;
+}
+.vocab-recall-prompt {
+  font-size: 1.15rem;
+}
+.vocab-use-word {
+  font-size: clamp(1.4rem, 3.2vw, 1.8rem);
+  text-align: left;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.vocab-recall-form,
+.vocab-recall-result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.vocab-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.vocab-text-input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button, 10px);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 13px 16px;
+  transition: border-color var(--dur-base, 240ms) ease, box-shadow var(--dur-base, 240ms) ease;
+}
+.vocab-text-input::placeholder {
+  color: var(--color-ink-muted);
+}
+.vocab-text-input:focus-visible {
+  outline: none;
+  border-color: var(--color-vocabulary, #d99000);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-vocabulary, #d99000) 22%, transparent);
+}
+
+.vocab-recall-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.vocab-primary-action {
+  border: 0;
+  border-radius: var(--radius-button, 10px);
+  background: var(--color-vocabulary, #d99000);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: transform var(--dur-base, 240ms) var(--ease-out-expo, ease),
+    box-shadow var(--dur-base, 240ms) ease;
+}
+@media (hover: hover) {
+  .vocab-primary-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--color-vocabulary, #d99000) 60%, transparent);
+  }
+}
+.vocab-primary-action:focus-visible {
+  outline: 2px solid var(--color-vocabulary, #d99000);
+  outline-offset: 2px;
+}
+
+.vocab-outcome-good {
+  color: var(--color-success, #16a34a);
+  font-weight: 800;
+  margin: 0;
+}
+.vocab-outcome-again {
+  color: var(--color-error, #dc2626);
+  font-weight: 800;
+  margin: 0;
+}
+.vocab-sentence-error {
+  font-size: 0.85rem;
+}
+
+.vocab-recall-answer {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  text-align: left;
+}
+
+.vocab-sentence-own {
+  color: var(--color-ink);
+  font-style: normal;
+}
+
+.vocab-self-rate-prompt {
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.vocab-mode-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+.vocab-mode-breakdown li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.vocab-mode-breakdown strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--color-ink);
+}
+.vocab-mode-breakdown span {
+  font-size: 0.68rem;
+  color: var(--color-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vocab-next-review {
+  margin: 10px 0 0;
+  color: var(--color-ink-muted);
+  font-size: 0.85rem;
+}
+
+.vocab-session-continue-wrap {
+  margin-top: 24px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vocab-primary-action {
+    transition: none;
+  }
+  .vocab-primary-action:hover {
+    transform: none;
+  }
+  .vocab-text-input {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .vocab-card-static {
+    padding: 26px 20px;
+  }
+  .vocab-recall-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .vocab-mode-breakdown {
+    gap: 16px;
+  }
+}

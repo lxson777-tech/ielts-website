@@ -48,6 +48,15 @@ export interface VocabCardState {
   introducedDate: string;
   /** ISO datetime of the most recent rating, if any. */
   lastReviewed?: string;
+  /** Distinct local dates (YYYY-MM-DD) on which this word was recalled
+      correctly, unassisted, in 'recall' direction (never 'recognise' or
+      'use'). A word only counts as known for planning once this reaches two
+      DIFFERENT days (see isWordKnown, below): recognising a definition,
+      however many times, is not enough on its own, and neither is a single
+      successful recall. Optional and additive: a store written before this
+      field existed loads with it simply absent, which reads exactly like
+      "no successful recall yet" everywhere it is used. */
+  recallSuccessDates?: string[];
 }
 
 export interface VocabStoreV1 {
@@ -171,7 +180,18 @@ function parseVocabFragment(raw: string): { rows: VocabWordRow[]; collocations: 
   return { rows, collocations };
 }
 
-function buildCardSet(): VocabCard[] {
+/** Pure: WORDS.ts plus a map of vocabulary lesson fragments (whatever
+    import.meta.glob's eager result looks like: relative path to raw HTML),
+    merged and deduped by word, case-insensitively, first copy wins.
+    Extracted from buildCardSet() below so a test can drive it with the real
+    36 lesson bodies read from disk (fs.readFileSync, under plain Node),
+    which is the only way to prove the real-build deck actually loads. The
+    module-level CARD_SET export a few lines down always falls back to the
+    words.ts-only 146-word deck under Node, because import.meta.glob is a
+    Vite feature (see the guard in buildCardSet()); that fallback is correct
+    for CARD_SET's own callers (see the comment there) but useless for
+    verifying the real 36-topic deck, which is what this function is for. */
+export function buildCardSetFromFragments(fragments: Readonly<Record<string, string>>): VocabCard[] {
   const seen = new Set<string>();
   const cards: VocabCard[] = [];
 
@@ -187,21 +207,6 @@ function buildCardSet(): VocabCard[] {
       topic: slug ? topicTitleForSlug(slug, w.topic) : w.topic,
     });
   }
-
-  // import.meta.glob is a Vite/Astro build-time feature: guarded so this
-  // module can also be imported under plain Node (the tests/*.test.ts
-  // runner has no Vite plugin — see src/lib/plan/schedule.ts, which needs
-  // getVocabSummary() for the daily plan's vocabulary item). Falls back to
-  // the words.ts-only card set there; the real Astro build always has
-  // import.meta.glob and gets the full set.
-  const fragments =
-    typeof import.meta.glob === 'function'
-      ? import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
-          query: '?raw',
-          import: 'default',
-          eager: true,
-        })
-      : {};
 
   for (const path of Object.keys(fragments).sort()) {
     const match = path.match(/vocabulary-([a-z-]+)\.html$/);
@@ -224,6 +229,26 @@ function buildCardSet(): VocabCard[] {
   }
 
   return cards;
+}
+
+function buildCardSet(): VocabCard[] {
+  // import.meta.glob is a Vite/Astro build-time feature: guarded so this
+  // module can also be imported under plain Node (the tests/*.test.ts
+  // runner has no Vite plugin; see src/lib/plan/schedule.ts, which needs
+  // getVocabSummary() for the daily plan's vocabulary item). Falls back to
+  // the words.ts-only card set there; the real Astro build always has
+  // import.meta.glob and gets the full set. tests/vocab-learning.test.ts
+  // proves the real-build path separately, by feeding the real 36 lesson
+  // bodies (read from disk) into buildCardSetFromFragments() above.
+  const fragments =
+    typeof import.meta.glob === 'function'
+      ? import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
+          query: '?raw',
+          import: 'default',
+          eager: true,
+        })
+      : {};
+  return buildCardSetFromFragments(fragments);
 }
 
 export const CARD_SET: VocabCard[] = buildCardSet();
@@ -543,8 +568,12 @@ export function previewIntervals(word: string): Record<Grade, number> {
   return out;
 }
 
-export function rate(word: string, grade: Grade): void {
-  if (!CARD_BY_WORD.has(word)) return;
+/** Returns the card's new state, additively: existing callers that treated
+    this as void (every one before the recall/use modes) are unaffected,
+    and recordReviewOutcome() (below) uses the return value to report the
+    resulting due date without a second read of storage. */
+export function rate(word: string, grade: Grade): VocabCardState | undefined {
+  if (!CARD_BY_WORD.has(word)) return undefined;
   const store = loadStore();
   const today = todayStr();
   const base = store.cards[word] ?? freshState(today);
@@ -552,6 +581,7 @@ export function rate(word: string, grade: Grade): void {
   next.lastReviewed = new Date().toISOString();
   store.cards[word] = next;
   saveStore(store);
+  return next;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -619,4 +649,345 @@ export function getStrugglingCards(): StrugglingCard[] {
     .map(([word, state]) => ({ ...(CARD_BY_WORD.get(word) as VocabCard), lapses: state.lapses }))
     .filter((c) => c.word)
     .sort((a, b) => b.lapses - a.lapses);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Review modes: recognise (existing), recall, use in a sentence          */
+/*                                                                          */
+/* Vocabulary is supporting knowledge, never a fifth IELTS paper: nothing */
+/* below produces a band, and "known" (isWordKnown) is a planning signal, */
+/* not a score. Every function in this section is pure: no window, no     */
+/* localStorage, so tests/vocab-learning.test.ts drives all of it with    */
+/* plain objects, and the planner-facing functions further down can be    */
+/* called from anywhere without a browser.                                */
+/* ---------------------------------------------------------------------- */
+
+export type ReviewMode = 'recognise' | 'recall' | 'use';
+
+const KNOWN_RECALL_DAYS = 2;
+
+/** True once a word has been recalled correctly, unassisted, on at least
+    two DIFFERENT days. Recognising a definition (however many times) and a
+    single successful recall never satisfy this on their own. */
+export function isWordKnown(state: VocabCardState | undefined): boolean {
+  return new Set(state?.recallSuccessDates ?? []).size >= KNOWN_RECALL_DAYS;
+}
+
+/** Which mode a card is ready for, from its own stored state alone: no
+    randomness, so the same state always chooses the same mode.
+      - never reviewed, or just reset by a lapse (reps back to 0): recognise,
+        to (re)teach it;
+      - reviewed at least once but not yet known: alternate recall and use,
+        so production (recall) and application (use) both happen before the
+        word is trusted;
+      - known: mostly recall, with use in a sentence every third pass, to
+        keep both skills fresh under ordinary spaced review. */
+export function chooseReviewMode(state: VocabCardState | undefined): ReviewMode {
+  if (!state || state.reps === 0) return 'recognise';
+  if (!isWordKnown(state)) return state.reps % 2 === 1 ? 'recall' : 'use';
+  return state.reps % 3 === 0 ? 'use' : 'recall';
+}
+
+/** Lenient recall check: case and repeated/surrounding whitespace are
+    normalised, nothing else. A near-miss spelling is marked wrong rather
+    than silently corrected: typed answers are never auto-corrected. */
+export function checkRecallAnswer(typed: string, word: string): boolean {
+  const normalise = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ');
+  return normalise(typed) === normalise(word);
+}
+
+/** Whether revealing the answer (instead of answering it) counts as
+    assistance. A named, independently testable one-liner rather than a
+    literal scattered through the component: revealing is always assisted,
+    and assistance is what keeps a word out of both "known" and "correct". */
+export function vocabAssistanceLevel(revealed: boolean): 'none' | 'answer-shown' {
+  return revealed ? 'answer-shown' : 'none';
+}
+
+/** The SM-2 grade an outcome maps to, the same way across all three modes:
+    an unassisted correct answer is 'good', everything else sends the card
+    back for more, sooner ('again', SM-2's own convention for a lapse). This
+    is deliberately not the four-level self-rating recognise mode still
+    offers on its own card face (Again/Hard/Good/Easy), which stays exactly
+    as it was, calling rate() directly with the student's own choice. */
+export function outcomeGrade(correct: boolean, assisted: boolean): Grade {
+  return correct && !assisted ? 'good' : 'again';
+}
+
+/** A recall success (the only thing that can ever move a word toward
+    "known") is an unassisted correct answer in 'recall' direction
+    specifically. Recognising a definition never counts, and neither does a
+    correct sentence in 'use' mode: the brief names recall by name. */
+export function isRecallSuccess(direction: ReviewMode, correct: boolean, assisted: boolean): boolean {
+  return direction === 'recall' && correct && !assisted;
+}
+
+/** A shallow, deliberately modest stem: strip a handful of common English
+    suffixes so "pollution"/"polluting" or "environment"/"environmental" are
+    recognised as related without pretending to be a real lemmatiser. Used
+    by checkSentenceUsage below and by relevantVocabTopics further down, the
+    same modest bar in both places, never claimed as more than it is. */
+function looseStem(word: string): string {
+  return word.toLowerCase().replace(/(ational|ation|ative|ing|ies|edly|ed|ly|al|er|est|es|s)$/, '');
+}
+
+/** True when `sentence` uses `word`, or a simple inflection of it. A
+    multi-word term ("carbon footprint") must appear as the exact phrase,
+    case-insensitively; a single word matches by shared stem, guarded so a
+    short stem (3 characters or fewer, where a false match is likeliest)
+    only matches the exact word. */
+export function sentenceMentionsWord(sentence: string, word: string): boolean {
+  const tokens: string[] = sentence.toLowerCase().match(/[a-z']+/g) ?? [];
+  const wordTokens: string[] = word.toLowerCase().match(/[a-z']+/g) ?? [];
+  if (wordTokens.length === 0) return false;
+  if (wordTokens.length > 1) {
+    const joined = ` ${tokens.join(' ')} `;
+    const phrase = ` ${wordTokens.join(' ')} `;
+    return joined.includes(phrase);
+  }
+  const [only] = wordTokens as [string];
+  const stem = looseStem(only);
+  if (stem.length <= 3) return tokens.includes(only);
+  return tokens.some((t) => t === only || looseStem(t) === stem);
+}
+
+/** How many words a "use it in a sentence" answer needs before it is even
+    worth comparing against the real example. Modest on purpose: this is a
+    mechanical floor, not a grammar check, and nothing here judges grammar
+    without a model. */
+export const MIN_SENTENCE_WORDS = 4;
+
+export interface SentenceCheckResult {
+  mentionsWord: boolean;
+  longEnough: boolean;
+  /** Both of the above. Passing this is not correctness: it only means the
+      attempt is real enough to compare against the lesson's own example and
+      ask the student to judge it themselves. */
+  passes: boolean;
+}
+
+export function checkSentenceUsage(sentence: string, word: string): SentenceCheckResult {
+  const mentionsWord = sentenceMentionsWord(sentence, word);
+  const wordCount = sentence.trim().split(/\s+/).filter(Boolean).length;
+  const longEnough = wordCount >= MIN_SENTENCE_WORDS;
+  return { mentionsWord, longEnough, passes: mentionsWord && longEnough };
+}
+
+/** Every due card paired with the mode it is ready for (chooseReviewMode).
+    The session-building counterpart of getDueCards(): same queue, same
+    shuffle, with each card's mode already decided so the component never
+    reaches back into storage per-card while rendering. */
+export function getDueCardsWithModes(topic?: string): { card: VocabCard; mode: ReviewMode }[] {
+  const store = loadStore();
+  return getDueCards(topic).map((card) => ({ card, mode: chooseReviewMode(store.cards[card.word]) }));
+}
+
+/** Records one review outcome against the local spaced-review state: the
+    same scheduler every mode has always used (rate(), unchanged behaviour
+    and unchanged stored shape), plus, for an unassisted correct RECALL
+    only, today's local date added to the word's recallSuccessDates.
+    Browser-only, like rate() itself; the pure decisions above (outcomeGrade,
+    isRecallSuccess) are what make this a thin, testable-by-composition
+    wrapper rather than new scheduling logic of its own. */
+export function recordReviewOutcome(
+  word: string,
+  direction: ReviewMode,
+  correct: boolean,
+  assisted: boolean,
+  today: string = todayStr(),
+): VocabCardState | undefined {
+  const grade = outcomeGrade(correct, assisted);
+  const next = rate(word, grade);
+  if (!next || !isRecallSuccess(direction, correct, assisted)) return next;
+
+  const store = loadStore();
+  const state = store.cards[word];
+  if (!state) return next;
+  const dates = new Set(state.recallSuccessDates ?? []);
+  dates.add(today);
+  state.recallSuccessDates = Array.from(dates).sort();
+  saveStore(store);
+  return state;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Pure functions for the planner. Data in, data out: nothing here reads  */
+/* localStorage or any other browser API, so the planner (or a test) can  */
+/* drive them with a VocabStoreV1 it already has in hand. See this        */
+/* package's report for the exact recipe the planner calls.               */
+/* ---------------------------------------------------------------------- */
+
+export interface VocabDueWord {
+  word: string;
+  topic: string;
+  due: string;
+  mode: Extract<ReviewMode, 'recall' | 'use'>;
+}
+
+/** Words ready for production practice today: already introduced (rated at
+    least once) AND due AND past the point where recognise is still the
+    right mode. Deliberately narrower than getDueCards(), which also offers
+    brand-new words: a plan's "recall" step is for testing production on
+    words the student has already met, not first exposure. Pure and
+    deterministic for a fixed `today`: no shuffling here, that stays a
+    session-building concern (getDueCardsWithModes, above). */
+export function wordsDueForRecall(
+  cardSet: readonly VocabCard[],
+  store: VocabStoreV1,
+  today: string,
+): VocabDueWord[] {
+  const out: VocabDueWord[] = [];
+  for (const card of cardSet) {
+    const state = store.cards[card.word];
+    if (!state || state.reps === 0 || state.due > today) continue;
+    const mode = chooseReviewMode(state);
+    if (mode === 'recognise') continue;
+    out.push({ word: card.word, topic: card.topic, due: state.due, mode });
+  }
+  return out;
+}
+
+/** wordsDueForRecall's count plus a per-topic breakdown, for a plan step's
+    "N words due, mostly from Environment" without the caller re-deriving it
+    from the array every time. */
+export function vocabRecallDueSummary(
+  cardSet: readonly VocabCard[],
+  store: VocabStoreV1,
+  today: string,
+): { count: number; byTopic: Readonly<Record<string, number>> } {
+  const words = wordsDueForRecall(cardSet, store, today);
+  const byTopic: Record<string, number> = {};
+  for (const w of words) byTopic[w.topic] = (byTopic[w.topic] ?? 0) + 1;
+  return { count: words.length, byTopic };
+}
+
+export interface VocabTopicRelevance {
+  slug: string;
+  title: string;
+  score: number;
+}
+
+const TOPIC_TITLE_STOPWORDS = new Set(['and', 'the', 'of', 'in', 'for', 'a', 'an']);
+
+/** Words common enough, across unrelated essay prompts, that matching one
+    says nothing about topic. Most come from the imported pool's own
+    boilerplate ("Give reasons for your answer and include any relevant
+    examples from your own knowledge or experience.", "Write at least {n}
+    words.", appended to nearly every prompt) rather than from the question
+    itself, plus a couple of everyday nouns generic enough to turn up in any
+    topic's title or word list without being what the text is actually
+    about. Kept short and named, not a general-purpose stopword list. */
+const GENERIC_NOISE_WORDS = new Set([
+  'people',
+  'words',
+  'word',
+  'experience',
+  'experiences',
+  'knowledge',
+  'reason',
+  'reasons',
+  'answer',
+  'answers',
+  'example',
+  'examples',
+  'things',
+  'thing',
+]);
+
+/** A topic (or a prompt, a lesson blurb, anything) is "about" a vocabulary
+    topic when its text shares a stemmed word, not in GENERIC_NOISE_WORDS,
+    with either that topic's own title ("Environment & Ecology" -> environment,
+    ecology: the existing VOCABULARY_PARTS taxonomy, not an invented one) or
+    one of its CARD_SET words. Checking the title as well as the curated
+    words matters in practice: a real essay prompt often uses the everyday
+    adjective ("environmental benefits") without ever using one of the twenty
+    curated nouns, and would otherwise score every topic zero. */
+export function relevantVocabTopics(
+  text: string,
+  cardSet: readonly VocabCard[] = CARD_SET,
+  limit = 3,
+): VocabTopicRelevance[] {
+  const textTokens = (text.toLowerCase().match(/[a-z']+/g) ?? []).filter((tok) => !GENERIC_NOISE_WORDS.has(tok));
+  const textStems = new Set(textTokens.map(looseStem));
+
+  const matchesText = (term: string): boolean => {
+    const termTokens = (term.toLowerCase().match(/[a-z']+/g) ?? []).filter((tok) => !GENERIC_NOISE_WORDS.has(tok));
+    return (
+      termTokens.length > 0 &&
+      termTokens.every((tok) => textTokens.includes(tok) || textStems.has(looseStem(tok)))
+    );
+  };
+
+  const scoreBySlug = new Map<string, number>();
+  for (const part of VOCABULARY_PARTS) {
+    let score = 0;
+    for (const titleWord of part.title.toLowerCase().match(/[a-z']+/g) ?? []) {
+      if (TOPIC_TITLE_STOPWORDS.has(titleWord)) continue;
+      if (matchesText(titleWord)) score += 1;
+    }
+    if (score > 0) scoreBySlug.set(part.slug, score);
+  }
+  for (const card of cardSet) {
+    if (!matchesText(card.word)) continue;
+    const slug = VOCABULARY_PARTS.find((p) => p.title === card.topic)?.slug;
+    if (!slug) continue;
+    // A curated vocabulary word is stronger evidence of "aboutness" than a
+    // topic's own title word (which can be a fairly ordinary noun, like
+    // "Society" or "Family"), so it counts for more.
+    scoreBySlug.set(slug, (scoreBySlug.get(slug) ?? 0) + 2);
+  }
+
+  return [...scoreBySlug.entries()]
+    .map(([slug, score]) => ({ slug, title: topicTitleForSlug(slug, slug), score }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+}
+
+export type VocabProblemReason = 'repeated-recall-failure' | 'low-lexical-resource';
+
+export interface VocabProblem {
+  reason: VocabProblemReason;
+  /** Set for 'repeated-recall-failure'; absent for 'low-lexical-resource',
+      which is a general signal rather than a single word. */
+  word?: string;
+  topic?: string;
+  lapses?: number;
+}
+
+/** Provisional, like every threshold named in
+    docs/personal-learning/ARCHITECTURE.md's policy section: not validated
+    IELTS science, just a configurable line the lead can move. A recent
+    Lexical Resource average under this counts as an observed vocabulary
+    problem worth a plan nudge. */
+export const LOW_LEXICAL_RESOURCE_BAND = 5.5;
+
+/** Genuinely observed vocabulary problems, never invented ones:
+      - a word the student has failed to recall at least twice (the same
+        lapses count getStrugglingCards() already reads, so "struggling" and
+        "a vocabulary problem" always agree);
+      - a recent Lexical Resource average below LOW_LEXICAL_RESOURCE_BAND,
+        when the caller supplies one.
+    This function never reads graded writing or speaking itself, and never
+    writes anything: it takes the bands already read from the policy
+    output, because doing otherwise would mean importing the browser store
+    or the policy layer into what has to stay a pure, parameter-in
+    function. See this package's report for the exact call the planner
+    makes. */
+export function observedVocabProblems(
+  store: VocabStoreV1,
+  cardSet: readonly VocabCard[] = CARD_SET,
+  recentLexicalResourceBands: readonly number[] = [],
+): VocabProblem[] {
+  const problems: VocabProblem[] = [];
+  const cardByWord = new Map(cardSet.map((c) => [c.word, c] as const));
+  for (const [word, state] of Object.entries(store.cards)) {
+    if (state.lapses < 2) continue;
+    const card = cardByWord.get(word);
+    problems.push({ reason: 'repeated-recall-failure', word, topic: card?.topic, lapses: state.lapses });
+  }
+  if (recentLexicalResourceBands.length > 0) {
+    const average = recentLexicalResourceBands.reduce((a, b) => a + b, 0) / recentLexicalResourceBands.length;
+    if (average < LOW_LEXICAL_RESOURCE_BAND) problems.push({ reason: 'low-lexical-resource' });
+  }
+  return problems.sort((a, b) => (b.lapses ?? 0) - (a.lapses ?? 0));
 }
