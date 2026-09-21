@@ -254,6 +254,7 @@ export const strings: Record<string, string> = {
   'Take a Reading or Listening test to see your weak spots here.': 'Пройдите тест Reading или Listening, чтобы увидеть здесь свои слабые места.',
   '{label} · Band {value}': '{label} · Балл {value}',
   'Band score across every scored attempt, oldest to newest': 'Баллы по всем оценённым попыткам, от старых к новым',
+  'Vocabulary: {topic}': 'Словарь: {topic}',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {

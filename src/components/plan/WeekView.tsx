@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../../lib/progress';
 import { onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
-import { loadOrCreateStudyPlan, getWeekPlan } from '../../lib/plan/schedule';
+import { loadOrCreateStudyPlan, getWeekPlan, planItemLabel } from '../../lib/plan/schedule';
 import { parseDateKey, toLocalDateKey } from '../../lib/plan/date';
 import { useT } from '../../lib/i18n/react';
 import { nt, type Vars } from '../../lib/i18n/translate';
@@ -170,12 +170,12 @@ export default function WeekView() {
                     key={item.id}
                     href={withBase(item.href)}
                     className={`plan-week-item${item.done ? ' is-done' : ''}`}
-                    title={t('{label} ({minutes} min)', { label: t(item.label), minutes: item.minutes })}
+                    title={t('{label} ({minutes} min)', { label: planItemLabel(item, t), minutes: item.minutes })}
                   >
                     <span className="plan-week-item-tick" aria-hidden="true">
                       {item.done ? '✓' : ''}
                     </span>
-                    <span className="plan-week-item-label">{t(item.label)}</span>
+                    <span className="plan-week-item-label">{planItemLabel(item, t)}</span>
                   </a>
                 ))
               )}

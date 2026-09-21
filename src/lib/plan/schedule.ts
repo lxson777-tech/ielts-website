@@ -23,6 +23,9 @@ const TEST_MINUTES: Record<'reading' | 'listening', number> = { reading: 60, lis
 export type PlanItemType = 'lesson' | 'drill' | 'test' | 'vocab' | 'review' | 'mock';
 
 export interface PlanItem {
+  /** Vocabulary items only: the topic title on its own, so the label can be
+      shown in the student's language. See planItemLabel(). */
+  topic?: string;
   /** Stable id. For lessons this is the progress.lessons key; for drills and
       tests it's the id progress.tests is keyed by; for review it's
       `review:<lesson key>`; for vocab it's a fixed placeholder id (there's
@@ -178,13 +181,12 @@ function vocabItem(dayNumber: number, vocabTopicSlugs: string[]): PlanItem {
   return {
     id: 'vocab-review',
     type: 'vocab',
-    // The topic name is dynamic (a vocabulary topic title, translated by the
-    // course-data batch), so this composite label can't be marked with nt():
-    // the coverage test can only extract static literals. It renders in
-    // English for now; giving it a translated prefix needs a small type
-    // change to PlanItem (a separate topic field), which is out of this
-    // batch's file list (see the i18n batch report).
+    // The English label stays a plain string so nothing that reads it changes.
+    // `topic` carries the topic title on its own, so planItemLabel() below can
+    // translate the prefix and the topic separately: the coverage test can only
+    // see static literals, and a composite `Vocabulary: ${title}` is not one.
     label: part ? `Vocabulary: ${part.title}` : nt('Vocabulary'),
+    topic: part?.title,
     meta: nt('Quick recap'),
     href: part ? `/review?topic=${part.slug}` : '/review',
     minutes: VOCAB_MINUTES,
@@ -447,4 +449,15 @@ export function getWeekPlan(plan: SavedPlan, progress: ProgressV1, weekNumber?: 
     weekDays.push({ date, dayNumber: daysBetween(params.startDate, date) + 1, weekNumber: week, isReview: false, isExamLight: false, items: [] });
   }
   return { weekNumber: week, totalWeeks, startDate: weekStartDate, endDate: addDays(weekStartDate, 6), days: weekDays };
+}
+
+
+/** The label to SHOW for a plan item, in the student's language. Takes the
+    translator as an argument so this module stays free of React and of any
+    locale of its own. */
+export function planItemLabel(
+  item: Pick<PlanItem, 'label' | 'topic'>,
+  t: (text: string, vars?: Record<string, string | number>) => string,
+): string {
+  return item.topic ? t('Vocabulary: {topic}', { topic: t(item.topic) }) : t(item.label);
 }

@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../../lib/progress';
 import { onStudyPlanChange, type SavedPlan } from '../../lib/study-plan';
-import { loadOrCreateStudyPlan, getTodayPlan, type PlanItem } from '../../lib/plan/schedule';
+import { loadOrCreateStudyPlan, getTodayPlan, type PlanItem, planItemLabel } from '../../lib/plan/schedule';
 import { getPlanSummary } from '../../lib/plan/summary';
 import { useT } from '../../lib/i18n/react';
 import { nt } from '../../lib/i18n/translate';
@@ -108,7 +108,7 @@ export default function PlanToday() {
       {next && (
         <div className="plan-feature">
           <div className="plan-feature-meta"><span>{t(next.meta || TYPE_LABEL[next.type])}</span><span>{t('{n} min', { n: next.minutes })}</span></div>
-          <h3>{t(next.label)}</h3>
+          <h3>{planItemLabel(next, t)}</h3>
           <p>{t('{type} from your personal study plan.', { type: t(TYPE_LABEL[next.type]) })}</p>
           <a className="plan-start" href={withBase(next.href)}>{t('Start {type}', { type: t(TYPE_LABEL[next.type], undefined, 'accusative').toLowerCase() })} <span aria-hidden="true">↗</span></a>
         </div>
@@ -125,7 +125,7 @@ export default function PlanToday() {
         <ul className="plan-item-list" data-stagger>
           {today.items.map((item) => {
             const itemType = t(TYPE_LABEL[item.type]);
-            const itemLabel = t(item.label);
+            const itemLabel = planItemLabel(item, t);
             const ariaLabel = item.done
               ? t('{label}, {type}, {minutes} minutes, done', { label: itemLabel, type: itemType, minutes: item.minutes })
               : t('{label}, {type}, {minutes} minutes', { label: itemLabel, type: itemType, minutes: item.minutes });

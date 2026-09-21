@@ -273,12 +273,12 @@
 
 /* Phones: a bottom sheet, clear of the workspace tab bar. */
 @media (max-width: 720px) {
-  .mrez-launcher { right: 14px; bottom: calc(68px + env(safe-area-inset-bottom, 0px)); height: 46px; padding: 0 16px 0 9px; }
+  .mrez-launcher { right: 14px; bottom: calc(88px + env(safe-area-inset-bottom, 0px)); height: 46px; padding: 0 16px 0 9px; }
   .mrez-panel {
-    right: 8px; left: 8px; bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+    right: 8px; left: 8px; bottom: calc(142px + env(safe-area-inset-bottom, 0px));
     width: auto;
     max-width: none;
-    max-height: min(74vh, calc(100vh - 190px));
+    max-height: min(72vh, calc(100vh - 212px));
   }
 }
 

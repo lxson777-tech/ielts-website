@@ -140,7 +140,7 @@ export const strings: Record<string, string> = {
 
   /* StrategyPanel.tsx: only the panel's own chrome; the strategy content
      itself (label, steps, traps) is data, out of scope for this batch. */
-  'How to approach {type}': 'Как подступиться к теме {type}',
+  'How to approach {type}': 'Как выполнять задания {type}',
 
   /* PracticeQuiz.tsx: only interface chrome around the practice exercise.
      Passages, questions, options, explanations, transcripts and sources are
