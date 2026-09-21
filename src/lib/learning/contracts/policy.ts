@@ -89,9 +89,27 @@ export interface EvidenceCount {
   assistedOccasions: number;
   /** Items answered independently, across those occasions. */
   independentItems: number;
+  /** Of those, how many were right. Kept beside the total so a report can
+      show the fraction it counted rather than a bare percentage. */
+  independentCorrect: number;
+  /** Items answered with help, or on material already met. Reported as
+      guided practice and never folded into an ability number. */
+  assistedItems: number;
+  /** Independent occasions that were a WHOLE thing: a complete paper under
+      timing, or a full graded task. A single-passage drill is not one, and
+      this is the count a band estimate rests on (bandMeasuredMinPapers). */
+  wholeAttempts: number;
+  /** Completion clicks. Reported separately as "studied" so the work is
+      visible, and added to nothing above it. */
+  studiedOccasions: number;
   /** Days since the most recent independent occasion, or null when there
       has never been one. */
   daysSinceLatest: number | null;
+  /** The instant of the most recent usable evidence of any kind, or null.
+      Independent, assisted and studied all count here: it answers "when did
+      they last touch this", which is not the same question as
+      `daysSinceLatest`. */
+  latestAt: string | null;
   /** Events that were ignored and why, so a report can say "two blank
       submissions were not counted" rather than silently dropping them. */
   ignored: readonly { reason: IgnoredReason; count: number }[];
@@ -104,7 +122,16 @@ export type IgnoredReason =
   | 'stub-graded'
   | 'simulated'
   | 'superseded'
-  | 'stale-content-version';
+  | 'stale-content-version'
+  /** The student's own account of a score from somewhere else. Real, kept
+      and shown with its date, but never work done here. evidence.ts already
+      produces this reason; naming it here means every reason it can produce
+      has a word in this list. */
+  | 'self-reported-claim'
+  /** Older than `staleDays`, so it no longer describes the student. Counted
+      rather than dropped in silence, because "your work from March stopped
+      counting" is something a report should be able to say out loud. */
+  | 'older-than-window';
 
 /** One conclusion, with its evidence and its limits attached. The successor
     to src/lib/tutor/insights.ts Observation, and deliberately the same
@@ -130,6 +157,36 @@ export interface AbilityEstimate {
   /** True when the student has never been assessed on this at all, so the
       planner knows to schedule a diagnostic rather than a drill. */
   needsAssessment: boolean;
+  /** What the student told us about this scope, when they told us anything.
+      Kept BESIDE the estimate and never averaged into it: a score from
+      another exam, on another day, is not evidence produced here. Carries
+      its dates so every screen showing it can say when it was. */
+  selfReported?: { band: number; takenOn: string; reportedAt: string };
+}
+
+/** How current a paper's evidence is. Separate from the estimate, because
+    "we measured 6.5" and "we measured it four months ago" are two different
+    facts and a report has to be able to say both. */
+export interface EvidenceFreshness {
+  paper: Paper;
+  daysSinceLatest: number | null;
+  /** `none` is never any evidence; `fresh` is inside `freshnessDays`;
+      `ageing` is past that but still counted; `stale` is past `staleDays`,
+      which means it no longer feeds the estimate at all. */
+  state: 'none' | 'fresh' | 'ageing' | 'stale';
+}
+
+/** A scope the student has attempted independently several times in a row
+    without improving. The planner stops offering more of the same drill and
+    the progress page lists it for a teacher (lead decision Q2). */
+export interface RepeatedDifficulty {
+  scopeKey: PolicyScopeKey;
+  scope: PolicyScope;
+  /** Consecutive independent occasions below `weakPercent`, none of them an
+      improvement on the one before it. */
+  consecutiveUnimprovedAttempts: number;
+  /** The first occasion of that run, so the note can say since when. */
+  since: string;
 }
 
 /** How far the student is from what they need, per scope. Uses BOTH the
@@ -178,6 +235,27 @@ export interface PolicyOutputV1 {
   /** Scopes with no usable evidence, in display order, so the interface can
       show unknown as unknown rather than as a low score. */
   unknownScopes: readonly PolicyScopeKey[];
+  /** How current each paper's evidence is. Four entries, always. */
+  freshness: readonly EvidenceFreshness[];
+  /** Scopes demonstrated well enough to skip teaching: `measured`, and at or
+      above `strongPercent` (or already past what the student needs). The
+      planner subtracts for these so a strong Reading student stops being
+      taught Reading. */
+  strengths: readonly PolicyScopeKey[];
+  /** Scopes stuck after `repeatedDifficultyLimit` unimproved independent
+      attempts. */
+  needsTeacherInput: readonly RepeatedDifficulty[];
+  /** Papers with no usable evidence of any kind yet, so the planner knows
+      which diagnostics are still owed and the interface can show what is
+      genuinely unknown. */
+  diagnosticsOutstanding: readonly Paper[];
+  /** Everything thrown out across the whole record, by reason, so a report
+      can be honest about what was not counted instead of quietly dropping
+      it. Per-scope counts are on each estimate's `evidence.ignored`. */
+  ignored: readonly { reason: IgnoredReason; count: number }[];
+  /** Scores the student reported themselves, with their dates, exactly as
+      given. Never mixed into a measured number anywhere. */
+  selfReported: readonly { paper?: Paper; band: number; takenOn: string; reportedAt: string }[];
   /** An overall band ONLY when every one of the four papers has at least
       `tentative` evidence from a complete paper or a full graded task.
       Null otherwise, and null is the honest answer far more often than the
@@ -233,6 +311,27 @@ export interface PolicyThresholds {
   /** Consecutive failures on the same subskill after which the plan stops
       offering more of the same drill and flags it for teacher review. */
   repeatedDifficultyLimit: number;
+  /** How much each step back in time is worth, per position rather than per
+      day. At 0.65 the newest attempt carries about three times the weight of
+      the third-newest, so recent work leads without one fluke defining the
+      estimate. Carried over from DECAY in src/lib/level.ts. */
+  recencyDecay: number;
+  /** How many recent attempts on one scope are looked at at all. Older ones
+      stop counting rather than fading forever. From RECENT_WINDOW in
+      src/lib/level.ts. */
+  recentWindow: number;
+  /** Percentage points an attempt has to beat the one before it by before it
+      counts as improvement rather than noise. Used only to decide whether a
+      run of attempts is going nowhere. */
+  improvementMarginPercent: number;
+  /** Distinct sections of a multi-part paper (Writing Task 1 and Task 2,
+      Speaking Parts 1 to 3) needed before the WHOLE paper's estimate may be
+      called `measured`. One Task 2 essay is evidence about Task 2. */
+  paperCoverageMinSections: number;
+  /** Results on one scope before movement between them is reported as a
+      trend. Below this the difference is noise, which is the rule
+      trendOf() already applies in src/lib/level.ts. */
+  trendMinSamples: number;
 }
 
 /** The starting values. Chosen to preserve today's tutor behaviour where it
@@ -261,6 +360,11 @@ export const DEFAULT_POLICY_THRESHOLDS: PolicyThresholds = {
   assistedWeight: 0.25,
   reviewSpacingDays: [3, 7, 16, 35],
   repeatedDifficultyLimit: 3,
+  recencyDecay: 0.65,
+  recentWindow: 6,
+  improvementMarginPercent: 5,
+  paperCoverageMinSections: 2,
+  trendMinSamples: 4,
 };
 
 /** The lowest band the official Academic Reading table defines. Reading
@@ -275,6 +379,28 @@ export const LEGACY_MAX_CERTAINTY: Certainty = 'limited';
 /** A self-reported score never exceeds this, whatever the student says. */
 export const SELF_REPORTED_MAX_CERTAINTY: Certainty = 'self-reported';
 
+/** Once the local soft cap has folded old events into per-subskill tallies
+    (EvidenceSummaryV1), what is left is counts with no item detail. They
+    still say how much work was done, and they can never again stand behind
+    "demonstrated", so a scope resting only on them is capped here. */
+export const SUMMARY_MAX_CERTAINTY: Certainty = 'limited';
+
 /** A partial exercise (a focused exercise, a lesson check, a drill) can
     inform a subskill estimate but never a paper band. */
 export const PARTIAL_EXERCISE_CAN_SET_BAND = false;
+
+/** A diagnostic is a short sample taken to find out where somebody is. It
+    is real evidence and it is deliberately thin, so it can point the plan
+    somewhere without ever becoming a settled finding. */
+export const DIAGNOSTIC_MAX_CERTAINTY: Certainty = 'tentative';
+
+/** Every paper must reach at least this before an overall band is reported
+    at all. Below it the honest answer is null, which it is far more often
+    than the current /report page admits. */
+export const OVERALL_MIN_CERTAINTY: Certainty = 'tentative';
+
+/** The reportable band scale. A shown interval is clamped here, the same
+    way src/lib/level.ts clamps its range, so thin evidence never produces a
+    range running off either end of the scale. */
+export const BAND_FLOOR = 1;
+export const BAND_CEILING = 9;
