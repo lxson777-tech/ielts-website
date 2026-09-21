@@ -18,6 +18,13 @@ import StrategyPanel from './StrategyPanel';
 import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
+import {
+  ExplanationsContext,
+  baseTestId,
+  groupKey,
+  useExplanation,
+  useExplanations,
+} from '../lib/i18n/test-explanations';
 import { isBookmarked, toggleBookmark } from '../lib/notes';
 import TestDebrief from './tutor/TestDebrief';
 import AskWhyWrong from './tutor/AskWhyWrong';
@@ -200,7 +207,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   /* Interface language. Declared first so every hook below keeps a stable
      order, and read as `t`/`tn` only for text: nothing in the timer, the
      session or the scoring reads it. */
-  const { t, tn } = useT();
+  const { t, tn, locale } = useT();
   const numbered = useMemo(() => numberQuestions(test), [test]);
   const TOTAL = numbered.length;
   const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
@@ -584,6 +591,17 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   // wrong, is the student signed in) is decided by the components.
   const tutorTestId = isRetake ? undefined : test.id;
 
+  /* The student's own language for the answer notes (src/lib/i18n/
+     test-explanations.ts). Three things are worth knowing here:
+       - `submitted` is the switch. Nothing is downloaded while the paper
+         is being sat, because nothing shows an explanation until then;
+       - a retake reuses its parent's notes, hence baseTestId: its id has
+         a "-retake" suffix with no published file behind it, and its
+         questions are the very same objects;
+       - an English student never enters this at all (the hook returns the
+         English unchanged and makes no request). */
+  const explain = useExplanations(baseTestId(test.id), locale, submitted);
+
   function openRetake() {
     const wrongIds = new Set(
       numbered
@@ -614,7 +632,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   }
 
   return (
-    <>
+    <ExplanationsContext.Provider value={explain}>
     {/* While a retake (feature 1) is open, the underlying results screen is
         unmounted rather than merely covered — two TestPlayer instances open
         at once would duplicate every question's `player-<id>` DOM id and
@@ -1248,7 +1266,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         }}
       />
     )}
-    </>
+    </ExplanationsContext.Provider>
   );
 }
 
@@ -1557,6 +1575,10 @@ function AnswerReview({
   const { t } = useT();
   const leniency = ok ? answerLeniency(q, given) : null;
   const variants = acceptedVariants(q);
+  /* The note itself is teaching, so a Russian student reads it in
+     Russian; the evidence line right below it is the sentence they have
+     to find in the passage or the transcript, so it stays English. */
+  const explanation = useExplanation(q.id, q.explanation);
   return (
     <div className={`mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm ${className ?? ''}`}>
       {!ok && (
@@ -1584,7 +1606,7 @@ function AnswerReview({
           })}
         </p>
       )}
-      {q.explanation && <p className="mt-0.5 text-ink-muted">{q.explanation}</p>}
+      {explanation && <p className="mt-0.5 text-ink-muted">{explanation}</p>}
       {q.evidence && (
         <div className="mt-1.5 border-l-2 border-brand/40 pl-2.5">
           <p className="italic text-ink-muted">“{q.evidence}”</p>
@@ -1669,6 +1691,9 @@ function MultiAnswer({
   const { t } = useT();
   const selectCount = group.selectCount ?? slotIds.length;
   const choices = group.choices ?? [];
+  /* One note under the whole group. It has no question of its own, so it
+     is keyed by the group's first slot (groupKey). */
+  const explanationHtml = useExplanation(groupKey(slotIds[0] ?? ''), group.explanationHtml);
   const correct = new Set(
     Array.isArray(group.questions[0]?.answer) ? (group.questions[0]!.answer as string[]) : [],
   );
@@ -1725,11 +1750,8 @@ function MultiAnswer({
           );
         })}
       </div>
-      {submitted && group.explanationHtml && (
-        <Html
-          className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm text-ink-muted"
-          html={group.explanationHtml}
-        />
+      {submitted && explanationHtml && (
+        <Html className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm text-ink-muted" html={explanationHtml} />
       )}
     </div>
   );

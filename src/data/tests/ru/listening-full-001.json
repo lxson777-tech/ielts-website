@@ -1,0 +1,166 @@
+{
+  "id": "listening-full-001",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "d7429dcf0ab1ed92",
+      "ru": "На 02:42 агент говорит, что Blue Bay находится \"only 300 metres\" от пляжа. Это и есть пропущенное расстояние."
+    },
+    "q2": {
+      "sha": "a4c001ea9e4ab6d6",
+      "ru": "На 03:10 агент поправляет сам себя: \"I think you meant the sunshade apartments.\" Слово из этой фразы и нужно в пропуске."
+    },
+    "q3": {
+      "sha": "73a7c4f4905be0ec",
+      "ru": "На 04:08 агент говорит, что в Grand в каждом номере есть греческие картины \"and a balcony outside\"."
+    },
+    "q4": {
+      "sha": "d996a5ab7a4f9f7f",
+      "ru": "На 04:33 агент говорит, что Grand выходит на место, где \"there are forests all round\"."
+    },
+    "q5": {
+      "sha": "27499fce5dc00804",
+      "ru": "На 04:33 агент называет цену Grand: \"319 pounds at that time\"."
+    },
+    "q6": {
+      "sha": "d2713499ddf580f8",
+      "ru": "На 06:24 агент называет предел выплаты при отмене поездки: \"our maximum is £10,000\"."
+    },
+    "q7": {
+      "sha": "6b2c8fea43bd1220",
+      "ru": "На 06:24 агент говорит, что выплата на случай больницы позволяет ещё и \"a relative to travel to your holiday resort\"."
+    },
+    "q8": {
+      "sha": "7f432408fa227c01",
+      "ru": "На 06:52 агент рассказывает про покрытие \"Miss Departure\" с выплатой до £1,000. В расшифровке название записано на слух, на самом деле речь о \"missed departure\"."
+    },
+    "q9": {
+      "sha": "29823531731f34ab",
+      "ru": "На 07:18 агент ограничивает выплату за личные вещи: \"not more than £500 for a single item\"."
+    },
+    "q10": {
+      "sha": "b5921e8081215794",
+      "ru": "На 07:34 помощник управляющего диктует свою фамилию по буквам: \"Ben, Ludlow. That's L-U-D-L-O-W.\""
+    },
+    "q11": {
+      "sha": "18b2dbdf18d2abb7",
+      "ru": "На 10:15 Simon говорит, что идея появилась после поездки: \"I went on a trip to a theme park near Birmingham and decided we could do a much better job.\" Это вариант C."
+    },
+    "q12": {
+      "sha": "90ae5f4aa7e398b6",
+      "ru": "На 10:42 Simon говорит, что парк открывали только в июле, \"our driest month\", то есть дождей там не ждали. Это вариант A."
+    },
+    "q13": {
+      "sha": "3a575dbb07ffb545",
+      "ru": "На 11:08 Simon говорит: \"a million and a half people have been through our doors since we opened\". Это и есть 1,500,000 посетителей, вариант C."
+    },
+    "q14": {
+      "sha": "76e6d74f4f56ca14",
+      "ru": "На 12:07 Simon говорит, что теперь он \"only concern[s] myself with looking after the mechanical side of things, keeping the trains going\", то есть следит за техникой. Это вариант E."
+    },
+    "q15": {
+      "sha": "8d03be7b276a896a",
+      "ru": "На 12:07 Simon говорит, что Liz \"devotes all her energies to recruiting and supporting the large squadron of workers\", то есть отвечает за персонал. Это вариант H."
+    },
+    "q16": {
+      "sha": "31bb1c69a7c6051f",
+      "ru": "На 12:37 Simon говорит, что Sarah \"make[s] sure the visitors are kept fed and watered\", то есть отвечает за еду и напитки. Это вариант F."
+    },
+    "q17": {
+      "sha": "0637273bd1467c58",
+      "ru": "На 12:37 Simon говорит, что Duncan взял на себя \"the area of construction\", то есть стройку. Это вариант C."
+    },
+    "q18": {
+      "sha": "f169bb141dde4299",
+      "ru": "На 13:01 Simon говорит, что Judith \"joined the team in charge of retail\", то есть занимается продажами. Это вариант G."
+    },
+    "q19": {
+      "sha": "e01f6784dce338c6",
+      "ru": "На 13:23 Simon называет размер площадки для картинга: \"120 square metres in area\"."
+    },
+    "q20": {
+      "sha": "5fe4b685ab23ccd9",
+      "ru": "На 13:49 Simon говорит, что они \"wanted to enable 5 to 12 year olds to use the go-karts\"."
+    },
+    "q21": {
+      "sha": "bd47021f73beadae",
+      "ru": "На 16:06 Caroline подтверждает свою тему: \"the fishing industry\"."
+    },
+    "q22": {
+      "sha": "99b7912c8b87ee3d",
+      "ru": "На 16:06 Caroline говорит о себе: \"coping well with statistics and I'm never bored by it\"."
+    },
+    "q23": {
+      "sha": "c1ba831cf6a5b3bc",
+      "ru": "На 16:35 Caroline признаётся, что она \"very weak at note taking\"."
+    },
+    "q24": {
+      "sha": "6d5b620ffc7c8b47",
+      "ru": "На 17:50 преподаватель говорит, что обсуждение в группе сокурсников \"really helps build confidence\"."
+    },
+    "q25": {
+      "sha": "3774c3d14bfda77e",
+      "ru": "На 18:10 преподаватель предупреждает: в такой группе каждый \"seems to share the same ideas\", и потом одно и то же повторяется в дипломных работах."
+    },
+    "q26": {
+      "sha": "aa84d9c1fb2faeb0",
+      "ru": "На 18:10 преподаватель советует \"a service called Student Support\", где есть выстроенная программа занятий."
+    },
+    "q27": {
+      "sha": "cfa807304b02a358",
+      "ru": "На 18:10 преподаватель предупреждает, что в Student Support \"there are only a few places\"."
+    },
+    "q28": {
+      "sha": "aac588625b8dbda2",
+      "ru": "На 18:35 преподаватель говорит, что книги по учебным навыкам \"are sometimes too general\"."
+    },
+    "q29": {
+      "sha": "9db98ba5d25e1bbc",
+      "ru": "На 18:58 преподаватель советует \"read everything three times\", чтобы записи улеглись в голове."
+    },
+    "q30": {
+      "sha": "35645322f0201c97",
+      "ru": "На 20:00 они договариваются о дате: \"We'll go for the 25th then.\""
+    },
+    "q31": {
+      "sha": "6e40352f7273e116",
+      "ru": "На 22:24 лектор говорит, что у владельцев \"chief aim was to create somewhere that was as environmentally friendly as possible\". Это вариант B."
+    },
+    "q32": {
+      "sha": "9c39f3b6962341ce",
+      "ru": "На 22:51 лектор говорит про участок бывшего карьера: \"The price was relatively low.\" Это вариант A."
+    },
+    "q33": {
+      "sha": "bee1c7120cb075ce",
+      "ru": "На 23:53 лектор говорит, что южная сторона дома \"was made of a double layer of very strong glass\"."
+    },
+    "q34": {
+      "sha": "852f0b88a3b8c132",
+      "ru": "На 23:53 лектор говорит, что пену добавили \"to increase the insulation\"."
+    },
+    "q35": {
+      "sha": "df523fa4b23bbccf",
+      "ru": "На 24:29 лектор говорит, что свет расходится по дому за счёт \"lots of mirrors and windows inside the house\"."
+    },
+    "q36": {
+      "sha": "2a110694bf2724ae",
+      "ru": "На 24:59 лектор говорит, что дом может \"generate an electricity surplus\" и продавать излишек в общую сеть."
+    },
+    "q37": {
+      "sha": "f41b35350867f4a2",
+      "ru": "На 24:59 лектор говорит: \"the floors are made of reclaimed wood\"."
+    },
+    "q38": {
+      "sha": "56c25775a2e02cfd",
+      "ru": "На 25:31 лектор говорит, что household waste \"is dealt with organically\": его пропускают через заросли тростника."
+    },
+    "q39": {
+      "sha": "c9c708bf6f117d15",
+      "ru": "На 25:59 лектор говорит, что при стройке \"had to use massive amounts of concrete\", и это навредило природе."
+    },
+    "q40": {
+      "sha": "51b5d65a92330d46",
+      "ru": "На 26:32 лектор говорит, что долг перед природой \"will only take 15 years\" закрыть."
+    }
+  }
+}

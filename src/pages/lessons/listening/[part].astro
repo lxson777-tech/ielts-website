@@ -44,7 +44,7 @@ const practice = LISTENING_PRACTICE[part.slug];
       <p class="mt-1 text-sm text-ink-muted" data-i18n>The recording and questions below come from a real IELTS Listening test.</p>
     </div>
   )}
-  {practice && <PracticeQuiz client:load set={practice} />}
+  {practice && <PracticeQuiz client:load set={practice} setId={`practice-listening-${part.slug}`} />}
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Listening section" data-i18n-attr="aria-label">
     {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { PracticeQuestion, PracticeSet, PracticeUnit } from '../data/reading-practice';
 import { useT } from '../lib/i18n/react';
 import { t } from '../lib/i18n/translate';
+import { practiceKey, useExplanations, type Explain } from '../lib/i18n/test-explanations';
 
 /** Base-prefixed URL for images stored under /public. */
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
@@ -22,6 +23,12 @@ const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}
 
 interface Props {
   set: PracticeSet;
+  /** Which set this is, e.g. "practice-reading-tfng": the name its
+      translated explanations are stored under (src/data/tests/ru/, see
+      src/lib/i18n/test-explanations.ts). A set has no id of its own, so
+      the page passes the one it looked the set up by. Leave it out and
+      the exercise simply reads in English. */
+  setId?: string;
 }
 
 function fmtClock(seconds: number): string {
@@ -182,17 +189,24 @@ function emptyUnitState(unit: PracticeUnit): UnitState {
 
 function UnitBlock({
   unit,
+  unitIndex,
   state,
   startIndex,
   selectNoun,
+  explain,
   onDraft,
   onCheck,
   onReset,
 }: {
   unit: PracticeUnit;
+  /** Where this unit sits in the set. Part of the key its explanations
+      are stored under, since a practice question has no id. */
+  unitIndex: number;
   state: UnitState;
   startIndex: number;
   selectNoun: string;
+  /** One note in the student's language, falling back to the English. */
+  explain: Explain;
   onDraft: (qi: number, value: string) => void;
   onCheck: () => void;
   onReset: () => void;
@@ -225,6 +239,7 @@ function UnitBlock({
         {unit.questions.map((q, qi) => {
           const g = state.drafts[qi]!;
           const right = locked && isRight(q, g);
+          const explanation = explain(practiceKey(unitIndex, qi), q.explanation);
 
           return (
             <div
@@ -324,14 +339,14 @@ function UnitBlock({
                 >
                   {right ? (
                     <p>
-                      <strong className="text-success">🎉 {t(PRAISE[qi % PRAISE.length]!)}</strong> {q.explanation}
+                      <strong className="text-success">🎉 {t(PRAISE[qi % PRAISE.length]!)}</strong> {explanation}
                     </p>
                   ) : (
                     <p>
                       <strong className="text-error">
                         💡 {t('Not quite. The answer is “{answer}”.', { answer: answerLabel(q) })}
                       </strong>{' '}
-                      {q.explanation}
+                      {explanation}
                     </p>
                   )}
                   {q.source && <p className="mt-1 text-xs text-ink-muted">{t('Source: {source}', { source: q.source })}</p>}
@@ -387,8 +402,8 @@ function UnitBlock({
   );
 }
 
-export default function PracticeQuiz({ set }: Props) {
-  const { t } = useT();
+export default function PracticeQuiz({ set, setId }: Props) {
+  const { t, locale } = useT();
   /* 'select' questions were built for Matching Headings, where the dropdown
      picks a paragraph. Matching Sentence Endings reuses the same control to
      pick an ending, so the noun is configurable and defaults to the original. */
@@ -403,6 +418,14 @@ export default function PracticeQuiz({ set }: Props) {
     0,
   );
   const allDone = units.every((s) => s.checked);
+
+  /* The explanations in the student's language, fetched the moment the
+     first unit is checked and not a moment before: nothing on this page
+     shows a note until then, and an English student never asks for the
+     file at all (see src/lib/i18n/test-explanations.ts). With no setId
+     there is nothing to ask for, so this stays English throughout. */
+  const anyChecked = units.some((s) => s.checked);
+  const explain = useExplanations(setId ?? '', locale, anyChecked && !!setId);
 
   function setDraft(unitIndex: number, qi: number, value: string) {
     setUnits((prev) =>
@@ -455,9 +478,11 @@ export default function PracticeQuiz({ set }: Props) {
       {set.units.map((unit, unitIndex) => {
         const props = {
           unit,
+          unitIndex,
           state: units[unitIndex]!,
           startIndex,
           selectNoun,
+          explain,
           onDraft: (qi: number, value: string) => setDraft(unitIndex, qi, value),
           onCheck: () => checkUnit(unitIndex),
           onReset: () => resetUnit(unitIndex),

@@ -44,7 +44,7 @@ const practice = READING_PRACTICE[part.slug];
       <p class="mt-1 text-sm text-ink-muted" data-i18n>The passage and questions below come from a real IELTS Academic Reading test.</p>
     </div>
   )}
-  {practice && <PracticeQuiz client:load set={practice} />}
+  {practice && <PracticeQuiz client:load set={practice} setId={`practice-reading-${part.slug}`} />}
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Reading section" data-i18n-attr="aria-label">
     {
