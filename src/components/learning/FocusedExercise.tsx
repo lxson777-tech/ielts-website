@@ -42,6 +42,7 @@ import { recordSubmission } from '../../lib/learning/store.browser';
 import type { ItemOutcomeDraft } from '../../lib/learning/evidence';
 import SessionContinueBar from './SessionContinueBar';
 import LessonHelpControls from './LessonHelpControls';
+import AudioSegmentPlayer, { type AudioSegmentPlayerHandle } from './AudioSegmentPlayer';
 import {
   NO_DIAGNOSIS_SENTENCE,
   NO_HELP,
@@ -53,6 +54,7 @@ import {
   feedbackFor,
   isCorrect,
   itemDrafts,
+  itemsAffectedBySeek,
   modeFor,
   tentativeDiagnosis,
   withHelp,
@@ -87,6 +89,7 @@ export default function FocusedExercise({ view }: Props) {
   const [planChange, setPlanChange] = useState<string | null>(null);
   const [storageProblem, setStorageProblem] = useState(false);
   const recorded = useRef(false);
+  const audioPlayerRef = useRef<AudioSegmentPlayerHandle>(null);
 
   /* Explanations are teaching prose, so a Russian student reads them in
      Russian. Nothing is fetched until the student is actually looking at
@@ -132,6 +135,34 @@ export default function FocusedExercise({ view }: Props) {
 
   function noteHelp(itemId: string, change: Partial<ItemHelpState>) {
     setHelp((held) => ({ ...held, [itemId]: withHelp(held[itemId] ?? NO_HELP, change) }));
+  }
+
+  /* Listening only: re-listening is help, exactly like a hint or a pointed
+     sentence. A seek is scoped to whichever item's own located window it
+     lands in (or every item still open, when none could be located); a
+     full replay from the top could be revisiting any of them, so it marks
+     every item. Never called in check mode, because AudioSegmentPlayer
+     never offers a seek bar or a replay button there. */
+  function noteAudioSeek(atSeconds: number) {
+    const affected = itemsAffectedBySeek(
+      view.items.map((item) => ({ itemId: item.itemId, audioReplay: item.audioReplay })),
+      atSeconds,
+    );
+    for (const itemId of affected) noteHelp(itemId, { assistance: 'hint' });
+  }
+
+  function noteAudioReplayFromStart() {
+    for (const item of view.items) noteHelp(item.itemId, { assistance: 'hint' });
+  }
+
+  /* The "hear that again" control next to one item's evidence: a few
+     seconds around its own located answer, never the whole segment.
+     Listening the offer is itself pointing at the answer, so it raises
+     assistance exactly like openRetry's evidenceShown does for Reading. */
+  function replayItemAudio(item: FocusedItemView) {
+    if (!item.audioReplay) return;
+    noteHelp(item.itemId, { evidenceShown: true, assistance: 'hint' });
+    audioPlayerRef.current?.playWindow(item.audioReplay);
   }
 
   /** Write one run to the learner record. Never throws into the exercise:
@@ -211,7 +242,9 @@ export default function FocusedExercise({ view }: Props) {
         </p>
         <h1 className="focused-title">{t(view.title)}</h1>
         <p className="focused-objective">{t(view.objective)}</p>
-        <p className="focused-source">{t('Real exam material.')} {view.attribution}</p>
+        <p className="focused-source">
+          {view.authored ? t('Written for this site, not a real exam question.') : t('Real exam material.')} {view.attribution}
+        </p>
       </header>
 
       {isCheck && phase === 'working' && (
@@ -229,17 +262,51 @@ export default function FocusedExercise({ view }: Props) {
       )}
 
       <div className="focused-body">
-        <section className="focused-passage" aria-label={t('Passage')}>
-          <div className="focused-passage-head">
-            <p className="focused-passage-label">{view.passage.label}</p>
-            <h2 className="focused-passage-title">{view.passage.title}</h2>
-          </div>
-          <div className="focused-passage-text">
-            {view.passage.paragraphs.map((paragraph, index) => (
-              <div key={index} dangerouslySetInnerHTML={{ __html: paragraph.html }} />
-            ))}
-          </div>
-        </section>
+        {view.passage && (
+          <section className="focused-passage" aria-label={t('Passage')}>
+            <div className="focused-passage-head">
+              <p className="focused-passage-label">{view.passage.label}</p>
+              <h2 className="focused-passage-title">{view.passage.title}</h2>
+            </div>
+            <div className="focused-passage-text">
+              {view.passage.paragraphs.map((paragraph, index) => (
+                <div key={index} dangerouslySetInnerHTML={{ __html: paragraph.html }} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {view.audio && (
+          <section className="focused-passage focused-audio-panel" aria-label={t('Recording')}>
+            <div className="focused-passage-head">
+              <p className="focused-passage-label">{view.audio.partLabel}</p>
+              <h2 className="focused-passage-title">
+                {view.audio.narrowed
+                  ? t('The section covering these questions')
+                  : t('The whole part this exercise is from')}
+              </h2>
+            </div>
+            <AudioSegmentPlayer
+              ref={audioPlayerRef}
+              src={withBase(view.audio.recordingSrc)}
+              segment={view.audio.segment}
+              mode={isCheck ? 'check' : 'guided'}
+              onSeek={isCheck ? undefined : noteAudioSeek}
+              onReplayFromStart={isCheck ? undefined : noteAudioReplayFromStart}
+            />
+            {isCheck && phase === 'working' ? (
+              <p className="focused-audio-note">
+                {t('It plays once, exactly like the real recording. There is no way to pause, rewind or hear it again.')}
+              </p>
+            ) : (
+              !isCheck && (
+                <p className="focused-audio-note">
+                  {t('Play, pause and replay as often as you like. Each replay is recorded as help, the same as a hint.')}
+                </p>
+              )
+            )}
+          </section>
+        )}
 
         <section className="focused-questions" aria-label={t('Questions')}>
           <div className="focused-instructions" dangerouslySetInnerHTML={{ __html: view.instructionHtml }} />
@@ -269,20 +336,62 @@ export default function FocusedExercise({ view }: Props) {
                   <div className="focused-item-head">
                     <span className="focused-item-number">{item.number}</span>
                     <span className="focused-item-label">{item.label}</span>
-                    <select
-                      className="focused-answer"
-                      value={given}
-                      disabled={locked}
-                      aria-label={t('Heading for {label}', { label: item.label })}
-                      onChange={(event) => setAnswer(item.itemId, event.target.value)}
-                    >
-                      <option value="">{t('Choose a heading')}</option>
-                      {view.options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                    {item.before !== undefined ? (
+                      /* Sentence completion, and table completion's own
+                         blanks (the table itself is shown read-only above,
+                         via legendHtml): a typed answer, not a choice. */
+                      <span className="focused-answer-text">
+                        {item.before}{' '}
+                        <input
+                          type="text"
+                          className="focused-answer focused-answer-input"
+                          value={given}
+                          disabled={locked}
+                          placeholder="..."
+                          aria-label={t('Answer for {label}', { label: item.label })}
+                          onChange={(event) => setAnswer(item.itemId, event.target.value)}
+                        />{' '}
+                        {item.after}
+                        {view.wordLimit != null && (
+                          <span className="focused-word-limit">
+                            {t('Up to {n} words.', { n: view.wordLimit })}
+                          </span>
+                        )}
+                      </span>
+                    ) : item.options ? (
+                      /* Multiple choice and multiple answer: this item has
+                         its own value list rather than sharing the group's
+                         (see FocusedItemView.options). */
+                      <select
+                        className="focused-answer"
+                        value={given}
+                        disabled={locked}
+                        aria-label={t('Answer for {label}', { label: item.label })}
+                        onChange={(event) => setAnswer(item.itemId, event.target.value)}
+                      >
+                        <option value="">{t('Choose an option')}</option>
+                        {item.options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <select
+                        className="focused-answer"
+                        value={given}
+                        disabled={locked}
+                        aria-label={t('Heading for {label}', { label: item.label })}
+                        onChange={(event) => setAnswer(item.itemId, event.target.value)}
+                      >
+                        <option value="">{t('Choose a heading')}</option>
+                        {view.options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </div>
 
                   {/* Before an answer, in guided practice only: a hint that
@@ -312,7 +421,9 @@ export default function FocusedExercise({ view }: Props) {
                     <div className="focused-wrong">
                       <p className="focused-wrong-line">
                         {first
-                          ? t('You chose {given}. That is not the one.', { given: first })
+                          ? item.before !== undefined
+                            ? t('You wrote {given}. That is not the one.', { given: first })
+                            : t('You chose {given}. That is not the one.', { given: first })
                           : t('You left this one blank.')}
                       </p>
 
@@ -367,6 +478,15 @@ export default function FocusedExercise({ view }: Props) {
                             <p className="focused-evidence">
                               <span className="focused-evidence-label">{t('The sentence that decides this one:')}</span>{' '}
                               <q>{item.evidence}</q>
+                              {view.audio && !isCheck && item.audioReplay && (
+                                <button
+                                  type="button"
+                                  className="focused-evidence-replay"
+                                  onClick={() => replayItemAudio(item)}
+                                >
+                                  {t('Hear that again')}
+                                </button>
+                              )}
                             </p>
                           )}
                           {!retrying[item.itemId] && !itemHelp.explanationShown && (

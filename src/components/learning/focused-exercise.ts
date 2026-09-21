@@ -28,7 +28,28 @@ import type { ItemOutcomeDraft } from '../../lib/learning/evidence';
 
 /* ── What the page hands the component ───────────────────────────────────── */
 
-/** One question, already resolved from its real paper at build time. */
+/** One question, already resolved from its real paper at build time.
+ *
+ *  Pilot A's shape covers a question answered by picking one value from a
+ *  SHARED list (`FocusedExerciseView.options`): matching headings, matching
+ *  information, matching features, categorisation, sentence endings. WP18a
+ *  extends this additively for the other Reading types, which the real
+ *  papers shape differently and which FocusedExercise.tsx branches on by
+ *  which optional field is present, never by `subskill` (so a future type
+ *  reusing one of these shapes needs no new branch):
+ *
+ *   - `options` (per item): multiple choice and multiple answer, where each
+ *     ITEM has its own value list rather than the group sharing one. Values
+ *     are the paper's own letters (A, B, C...), which is what the answer key
+ *     and the shared `isCorrect()` still compare against.
+ *   - `before`/`after`: sentence completion and the free-text half of table
+ *     completion, where the student types a word rather than choosing one.
+ *     `before` is set (even to `''`) exactly when this is a free-text item;
+ *     that, not the subskill, is what the component checks.
+ *   - `answer` as an array: multiple answer's real material always shares
+ *     one accepted pair across two numbered questions (see schema.ts's
+ *     `answerPairId`), so both items in the pair carry the same accepted
+ *     set and `isCorrect()` accepts membership in it from either slot. */
 export interface FocusedItemView {
   /** `<testId>:<questionId>`: the same id the paper and its drill record,
       which is what makes answering it here spend it there too. */
@@ -39,20 +60,262 @@ export interface FocusedItemView {
   number: number;
   /** "Paragraph B", "Section C": what this question points at. */
   label: string;
-  /** The accepted answer, exactly as the paper has it. */
-  answer: string;
+  /** The accepted answer, exactly as the paper has it. An array only for a
+      multiple answer pair, where either accepted value earns the mark
+      whichever of the two numbered slots it is written in. */
+  answer: string | readonly string[];
   /** The publisher's own note on why that is the answer. Teaching prose, so
       it is translated where a translation exists. */
   explanation?: string;
   /** The exact sentence in the passage that decides it. Exam material, so
       it stays English in both languages. */
   evidence?: string;
+  /** This item's OWN value list, letter and label together, when the group
+      does not share one list across every item (multiple choice: each
+      question has its own four options; multiple answer: the pair's shared
+      pool, offered on both slots). Overrides `FocusedExerciseView.options`
+      for this item only. */
+  options?: readonly { value: string; label: string }[];
+  /** Sentence text either side of the blank, for a free-text item. `before`
+      is set, even to `''`, exactly when this item takes typed text rather
+      than a choice; that is the check the component makes, not the
+      subskill. */
+  before?: string;
+  after?: string;
+  /** A short clip around this item's own evidence, for a Listening
+   *  exercise's "hear that again" control (WP18b/WP19, 2026-09-22). Set
+   *  only when the transcript's own timestamps let the evidence sentence be
+   *  located reliably (see locateEvidenceWindow below); absent means the
+   *  exercise falls back to showing `evidence` as text only, exactly as
+   *  Reading already does, rather than guessing an offset that could cut
+   *  the answer off. Unused outside Listening. */
+  audioReplay?: AudioSegmentWindow;
 }
 
 export interface FocusedPassageView {
   label: string;
   title: string;
   paragraphs: readonly { label?: string; html: string }[];
+}
+
+/* ── Audio stimulus (Listening, WP18b/WP19) ──────────────────────────────── */
+
+/** A span of the shared recording, in seconds from its own start. The same
+    convention src/lib/tests/schema.ts's AudioStimulus already uses for
+    startSeconds/endSeconds, so a window here can be handed straight to an
+    <audio> element with no conversion. */
+export interface AudioSegmentWindow {
+  startSeconds: number;
+  endSeconds: number;
+}
+
+/** What a Listening focused exercise plays, in place of `passage`. The
+ *  recording itself is never copied or re-encoded: this is a byte range of
+ *  the same file every full paper and drill already stream from. */
+export interface FocusedAudioView {
+  /** The one recording all four parts share (PracticeTest.audioSrc, or the
+      part's own legacy src when the paper has no shared one). Unprefixed;
+      the caller applies withBase()/asset(). */
+  recordingSrc: string;
+  /** 'Part 2', for the label a student would see on the real thing. */
+  partLabel: string;
+  /** The part's own bounds. The segment actually played is never wider than
+      this and never narrower than one located item's own window, so a
+      check always plays at least as much as the part it is drawn from
+      needs, whatever the transcript could locate. */
+  part: AudioSegmentWindow;
+  /** What is actually offered for playback: the part's own bounds by
+      default, or a tighter window around this exercise's items when every
+      one of them could be located in the transcript (see
+      groupAudioWindow). Never wider than `part` and never narrower than
+      covering every located item in full. */
+  segment: AudioSegmentWindow;
+  /** True when `segment` was narrowed to the exercise's own items rather
+      than falling back to the whole part. Shown to the student as "just
+      this part" versus "the section covering these questions", and read by
+      tests/focused-listening-types.test.ts to check the fallback is honest. */
+  narrowed: boolean;
+}
+
+/* ── Locating a moment in a transcript ───────────────────────────────────── */
+
+/** One paragraph of a transcript, plain text, with the second it starts at
+    (absolute in the shared recording, the same axis as startSeconds and
+    endSeconds). Built once per transcript and reused for every item, so a
+    group of six items parses the same HTML six times, not thirty-six. */
+export interface TranscriptParagraph {
+  startSeconds: number;
+  text: string;
+}
+
+/** HTML entities the automatic transcripts actually use (see any
+    src/data/tests/listening-full-*.ts), decoded before matching so an
+    evidence line written with a plain straight quote still finds the
+    transcript's &#x27;. Deliberately small: this is matching text a
+    publisher wrote, not sanitising arbitrary HTML. */
+function decodeEntities(value: string): string {
+  return value
+    .replace(/&#x27;/gi, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/gi, '"')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&nbsp;/gi, ' ');
+}
+
+/** Case, curly quotes and repeated whitespace never decide whether a
+    transcript line matches an evidence sentence, the same leniency the rest
+    of the site gives a typed answer (src/lib/tests/schema.ts's
+    normalizeAnswer). */
+function normaliseForMatch(value: string): string {
+  return decodeEntities(value)
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Strip tags after the timestamp marker has already been read off a
+    paragraph, leaving plain text an evidence sentence can be searched in. */
+function stripTags(html: string): string {
+  return decodeEntities(html.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+}
+
+const TRANSCRIPT_PARAGRAPH_RE = /<p\b[^>]*>([\s\S]*?)<\/p>/g;
+const TIMESTAMP_RE = /<span class="ts">\[(\d{1,2}):(\d{2})\]<\/span>/;
+
+/** Every timestamped paragraph of a transcript, in order, each carrying the
+ *  second it starts at.
+ *
+ *  Only paragraphs that open with a `[mm:ss]` marker are kept: the
+ *  automatic transcript's own note ("Automatic transcript. It may contain
+ *  small recognition errors...") carries none and is correctly dropped.
+ *  Timestamps are ABSOLUTE in the shared recording (checked against every
+ *  part's own startSeconds when this was built: a part beginning at 535.39
+ *  seconds opens its transcript at [08:55]), so a paragraph's second can be
+ *  compared straight against AudioStimulus.startSeconds/endSeconds with no
+ *  conversion. */
+export function parseTranscriptParagraphs(transcriptHtml: string): readonly TranscriptParagraph[] {
+  const out: TranscriptParagraph[] = [];
+  let match: RegExpExecArray | null;
+  TRANSCRIPT_PARAGRAPH_RE.lastIndex = 0;
+  while ((match = TRANSCRIPT_PARAGRAPH_RE.exec(transcriptHtml))) {
+    const inner = match[1] ?? '';
+    const ts = TIMESTAMP_RE.exec(inner);
+    if (!ts) continue;
+    const seconds = Number(ts[1]) * 60 + Number(ts[2]);
+    const text = stripTags(inner.slice((ts.index ?? 0) + ts[0].length));
+    out.push({ startSeconds: seconds, text });
+  }
+  return out;
+}
+
+/** Where one evidence sentence sits in a transcript, or null when it cannot
+ *  be found reliably.
+ *
+ *  The window is the WHOLE paragraph the sentence starts in, through to the
+ *  start of the next paragraph (or `partEndSeconds` for the transcript's
+ *  last one): paragraph boundaries are the one thing in this data that is
+ *  exact rather than inferred, so using them, instead of the matched
+ *  sentence's own guessed length, is what keeps this from ever cutting an
+ *  answer off mid-word. A sentence that cannot be found (rare: the survey
+ *  behind this package located about 96 percent of Listening evidence
+ *  lines this way; the rest were free paraphrase in the explanation rather
+ *  than a quoted line) returns null, and the caller falls back to showing
+ *  `evidence` as text only, never a guessed offset. */
+export function locateEvidenceWindow(
+  paragraphs: readonly TranscriptParagraph[],
+  evidence: string,
+  partEndSeconds: number,
+): AudioSegmentWindow | null {
+  const needle = normaliseForMatch(evidence);
+  if (!needle) return null;
+  const index = paragraphs.findIndex((paragraph) => normaliseForMatch(paragraph.text).includes(needle));
+  if (index === -1) return null;
+  const start = paragraphs[index]!.startSeconds;
+  const next = paragraphs[index + 1];
+  const end = next ? next.startSeconds : partEndSeconds;
+  return { startSeconds: start, endSeconds: Math.max(end, start) };
+}
+
+/** A short clip around one located evidence line, for the "hear that again"
+ *  control after a wrong answer: from three seconds before the paragraph
+ *  starts (so the clause is not cut into mid-word), through to the start of
+ *  the NEXT paragraph, exactly as locateEvidenceWindow bounds it. Clamped
+ *  to the part, so a replay can never reach into a different question
+ *  group's audio. */
+export function replayWindow(
+  located: AudioSegmentWindow,
+  part: AudioSegmentWindow,
+  preRollSeconds = 3,
+): AudioSegmentWindow {
+  return {
+    startSeconds: Math.max(part.startSeconds, located.startSeconds - preRollSeconds),
+    endSeconds: Math.min(part.endSeconds, located.endSeconds),
+  };
+}
+
+/** The segment one exercise offers for playback, and each item's own replay
+ *  window inside it.
+ *
+ *  Narrowed only when EVERY item's evidence could be located: one
+ *  unlocatable item among six means the group could contain material this
+ *  page has no way to bound safely, so the honest fallback is the part's
+ *  own bounds, unnarrowed, rather than a window that might cut the
+ *  unlocated item's answer off. An item that IS located still gets its own
+ *  `audioReplay` clip even when the group as a whole did not narrow, so a
+ *  single hard-to-place item never costs the other five their "hear that
+ *  again" button. */
+export function groupAudioWindow(
+  transcriptHtml: string,
+  items: readonly { itemId: string; evidence?: string }[],
+  part: AudioSegmentWindow,
+): { segment: AudioSegmentWindow; narrowed: boolean; itemWindows: ReadonlyMap<string, AudioSegmentWindow> } {
+  const paragraphs = parseTranscriptParagraphs(transcriptHtml);
+  const itemWindows = new Map<string, AudioSegmentWindow>();
+  const located: AudioSegmentWindow[] = [];
+  let allLocated = items.length > 0;
+
+  for (const item of items) {
+    const window = item.evidence ? locateEvidenceWindow(paragraphs, item.evidence, part.endSeconds) : null;
+    if (window) {
+      itemWindows.set(item.itemId, window);
+      located.push(window);
+    } else {
+      allLocated = false;
+    }
+  }
+
+  if (!allLocated || located.length === 0) {
+    return { segment: part, narrowed: false, itemWindows };
+  }
+
+  const startSeconds = Math.max(part.startSeconds, Math.min(...located.map((w) => w.startSeconds)));
+  const endSeconds = Math.min(part.endSeconds, Math.max(...located.map((w) => w.endSeconds)));
+  return { segment: { startSeconds, endSeconds }, narrowed: true, itemWindows };
+}
+
+/** Which items a seek or a replay to `atSeconds` should mark as assisted.
+ *
+ *  When the exercise has at least one located `audioReplay` window, only
+ *  the items whose own window contains the target second are affected: a
+ *  student scrubbing near question 3's answer has not necessarily heard
+ *  question 6's again. When NONE of the exercise's items could be located
+ *  (an unnarrowed, whole-part segment with no item windows at all), there
+ *  is nothing to discriminate by, so every item still unanswered is marked:
+ *  the honest reading of "I do not know which answer they were listening
+ *  for again" is "any of them still open", not "none of them". */
+export function itemsAffectedBySeek(
+  items: readonly { itemId: string; audioReplay?: AudioSegmentWindow }[],
+  atSeconds: number,
+): readonly string[] {
+  const withWindows = items.filter((item) => item.audioReplay);
+  if (withWindows.length === 0) return items.map((item) => item.itemId);
+  return withWindows
+    .filter((item) => atSeconds >= item.audioReplay!.startSeconds && atSeconds <= item.audioReplay!.endSeconds)
+    .map((item) => item.itemId);
 }
 
 export interface FocusedExerciseView {
@@ -67,9 +330,15 @@ export interface FocusedExerciseView {
   objective: string;
   expectedMinutes: number;
   /** The paper these questions come from, and the publisher line shown with
-      them. Nothing here was written by this project. */
+      them. Nothing here was written by this project, UNLESS `authored` is
+      true (WP18a's sentence endings set, lead decision Q1): then `testId`
+      is a synthetic `authored:<id>` that names nothing real, and
+      `attribution` says plainly that this was written for the site rather
+      than taken from an exam, which FocusedExercise.tsx shows instead of
+      its usual "Real exam material." line. */
   testId: string;
   attribution: string;
+  authored?: boolean;
   /** The lesson that teaches this question type, and the exact teaching
    *  block inside it, resolved at build time by the same function that
    *  stamps the ids onto the rendered page (src/lib/learning/lesson-blocks
@@ -84,23 +353,46 @@ export interface FocusedExerciseView {
   blockText: string;
   /** The group's instructions as plain text, for the same fallback. */
   instructionText: string;
-  passage: FocusedPassageView;
+  /** Exactly one of `passage` or `audio` is set, by paper: Reading shows the
+   *  passage it was written against, Listening plays the recording segment
+   *  it was heard in (WP18b/WP19, 2026-09-22). Kept as two optional fields
+   *  rather than a discriminated union so every exercise written before
+   *  Listening had a stimulus of its own keeps compiling unchanged. */
+  passage?: FocusedPassageView;
+  audio?: FocusedAudioView;
   instructionHtml: string;
   legendHtml?: string;
-  /** The shared list of headings, as the paper prints them. */
+  /** The shared list of headings, as the paper prints them. Ignored for an
+      item that carries its own `options` (see FocusedItemView), and unused
+      by a free-text item. */
   options: readonly string[];
   items: readonly FocusedItemView[];
   /** The typical wrong turnings for this question type, as data. */
   reasons: readonly MistakeReason[];
+  /** The stated word limit ("NO MORE THAN TWO WORDS"), for a free-text
+      exercise (sentence completion, table completion). Undefined when
+      nothing in the group is free text. Table completion's own grid is not
+      reproduced here: `legendHtml` already carries the publisher's table
+      with its numbered blanks as printed, which is shown as read-only
+      context above the same numbered free-text items every other free-text
+      exercise uses (see FocusedItemView.before), so answering it needs no
+      second interactive widget. */
+  wordLimit?: number;
 }
 
 /* ── Marking ─────────────────────────────────────────────────────────────── */
 
 /** The same leniency the rest of the site uses for a one-word answer: case
-    and surrounding space never decide a mark. */
-export function isCorrect(given: string, answer: string): boolean {
+    and surrounding space never decide a mark. An array answer is a multiple
+    answer pair (see FocusedItemView.answer): the given value only has to be
+    A member of the accepted set, because the real pair's two numbered slots
+    share one pool and either slot may carry either accepted value. */
+export function isCorrect(given: string, answer: string | readonly string[]): boolean {
   const norm = (value: string) => value.toLowerCase().trim().replace(/\s+/g, ' ');
-  return norm(given) !== '' && norm(given) === norm(answer);
+  const normalisedGiven = norm(given);
+  if (normalisedGiven === '') return false;
+  if (Array.isArray(answer)) return answer.some((candidate) => norm(candidate) === normalisedGiven);
+  return normalisedGiven === norm(answer as string);
 }
 
 export function countCorrect(
