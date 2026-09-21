@@ -216,8 +216,8 @@ test('every section starts with its overview and keeps existing completion keys'
   for (const section of buildSections()) assert.equal(section.lessons[0]!.key, overviews[section.skill]);
   const modules = buildCourse();
   const keys = modules.flatMap((m) => m.lessons.map((l) => l.key));
-  assert.equal(keys.length, 64);
-  assert.equal(new Set(keys).size, 64);
+  assert.equal(keys.length, 76);
+  assert.equal(new Set(keys).size, 76);
   for (const [before, after] of [['speaking','speaking-part1'], ['speaking-part1','speaking-part2'], ['speaking-part2','speaking-part3'], ['writing-method','writing-charts'], ['writing-task2-method','writing-opinion'], ['reading-paraphrase','reading-tfng'], ['listening-part1','listening-part2'], ['listening-part2','listening-part3'], ['listening-part3','listening-part4']]) {
     assert.ok(keys.indexOf(before!) < keys.indexOf(after!), `${before} must precede ${after}`);
   }
