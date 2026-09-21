@@ -10,12 +10,15 @@
    Deliberately one step at a time rather than a wall of five: a student who
    wants the whole ladder can open the steps below the one they picked. */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { WRITING_BAND_GUIDES, SPEAKING_BAND_GUIDES, type BandStepGuide } from '../data/band-guides';
 import { CRITERIA } from '../lib/writing/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import Tabs, { type TabDef } from './Tabs';
 import { useT } from '../lib/i18n/react';
+import { LIBRARY_REASON_SENTENCES, parseLibraryReason } from './library-links';
+import { recordLessonStudied } from '../lib/learning/store.browser';
+import SessionContinueBar from './learning/SessionContinueBar';
 
 /* step.whatChanges / doThis / stopThis / example.why / practice / task1Note
    come from src/data/band-guides.ts, a plain-language rephrasing of the
@@ -120,22 +123,71 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
   );
 }
 
+/** ?paper=writing|speaking&criterion=<key>&from=<4-8>&reason=<key> opens the
+    ladder straight on one exact band and criterion, the same deep-link
+    convention ModelAnswers.tsx and CueCardBank.tsx use. Read once, outside
+    render, because the query string is not consulted again after mount:
+    a student choosing a different tab afterwards is their own navigation,
+    not a stale deep link reasserting itself. */
+function deepLinkFromQuery(search: string): { paper: Paper; criterion: string; from: number } | null {
+  const params = new URLSearchParams(search);
+  const askedPaper = params.get('paper');
+  const askedCriterion = params.get('criterion');
+  if (askedPaper !== 'writing' && askedPaper !== 'speaking') return null;
+  const validCriteria = askedPaper === 'writing' ? CRITERIA.map((c) => c.key) : SPEAKING_CRITERIA.map((c) => c.key);
+  if (!askedCriterion || !(validCriteria as string[]).includes(askedCriterion)) return null;
+  const askedFrom = Number(params.get('from'));
+  const from = Number.isFinite(askedFrom) && askedFrom >= 4 && askedFrom <= 8 ? askedFrom : 6;
+  return { paper: askedPaper, criterion: askedCriterion, from };
+}
+
 export default function BandLadder() {
   // Asked for here too, not only in StepCard, so the fetch starts with the
   // page rather than with the first card that happens to render.
   const { t } = useT('band-guides');
-  const [paper, setPaper] = useState<Paper>('writing');
-  const [writingCriterion, setWritingCriterion] = useState<string>(CRITERIA[0]!.key);
-  const [speakingCriterion, setSpeakingCriterion] = useState<string>(SPEAKING_CRITERIA[0]!.key);
+  // Read once, via the lazy initializer, so the query string is parsed on
+  // the very first render only and never again on a later one.
+  const [initial] = useState(() => (typeof window !== 'undefined' ? deepLinkFromQuery(window.location.search) : null));
+  const deepLinked = useRef(initial !== null);
+  const [paper, setPaper] = useState<Paper>(initial?.paper ?? 'writing');
+  const [writingCriterion, setWritingCriterion] = useState<string>(
+    initial?.paper === 'writing' ? initial.criterion : CRITERIA[0]!.key,
+  );
+  const [speakingCriterion, setSpeakingCriterion] = useState<string>(
+    initial?.paper === 'speaking' ? initial.criterion : SPEAKING_CRITERIA[0]!.key,
+  );
   /* Which step opens first. Not a score and not a guess about the student:
      they say where they are, and the ladder opens at that rung. */
-  const [from, setFrom] = useState(6);
+  const [from, setFrom] = useState(initial?.from ?? 6);
+  const [reason] = useState(() => (typeof window !== 'undefined' ? parseLibraryReason(window.location.search) : null));
 
   const criterion = paper === 'writing' ? writingCriterion : speakingCriterion;
   const steps = guidesFor(paper, criterion);
 
+  /* Voluntary use of a reference page is "studied" context, never a
+     demonstration (lead decision, brief section 7), recorded once and only
+     for a visit the URL actually pointed at. */
+  const evidenceRecorded = useRef(false);
+  useEffect(() => {
+    if (!deepLinked.current || evidenceRecorded.current) return;
+    evidenceRecorded.current = true;
+    recordLessonStudied({
+      lessonKey: 'band-ladder',
+      activityId: 'tool:bands',
+      subskill: 'exam-format',
+      mode: 'practice',
+      estimatedMinutes: 2,
+    });
+  }, []);
+
   return (
     <div className="space-y-5">
+      {deepLinked.current && reason && (
+        <p className="rounded-card border border-brand/25 bg-brand-tint/40 px-4 py-3 text-sm text-ink">
+          {t(LIBRARY_REASON_SENTENCES[reason])}
+        </p>
+      )}
+
       <Tabs tabs={PAPERS} active={paper} onChange={(id) => setPaper(id as Paper)} />
 
       <Tabs
@@ -172,6 +224,8 @@ export default function BandLadder() {
       <p className="rounded-card border border-border bg-surface-alt px-4 py-3 text-xs text-ink-muted">
         {t('Every band on this page is the official public band descriptor for that criterion, put into plain words. In Writing and Speaking the examiner gives a whole band for each of the four criteria, and the band for the paper is the average of those four, reported in whole and half bands.')}
       </p>
+
+      <SessionContinueBar activityId="tool:bands" compact />
     </div>
   );
 }

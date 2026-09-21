@@ -41,6 +41,7 @@ import {
 } from '../../lib/tutor/conversation';
 import { MAX_MESSAGE_CHARS, type TutorMood, type TutorPlace } from '../../lib/tutor/schema';
 import { onAuthChange } from '../../lib/auth/session';
+import { BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER, chatBlocked } from './mrez-boundary';
 
 /** Where the student is, read off the DOM the layout already labelled. */
 function readPlace(): TutorPlace {
@@ -58,7 +59,9 @@ function readPlace(): TutorPlace {
 }
 
 function suggestionsFor(place: TutorPlace, t: Translator['t']): string[] {
-  if (place.underExam) return [t('How is this paper marked?'), t('How should I split my time?')];
+  // The exam-time case is handled entirely by the caller (see `blocked` in
+  // MrEzPanel below): no suggestion is offered at all while the boundary is
+  // up, rather than two that would silently do nothing if pressed.
   if (place.lessonKey) {
     return [
       t('Explain this lesson in simpler words'),
@@ -125,6 +128,21 @@ export default function MrEzPanel() {
     return () => document.removeEventListener('astro:page-load', sync);
   }, []);
 
+  // A timed full paper ends, or an independent check is submitted, on the
+  // SAME page: no navigation fires, so astro:page-load above never runs.
+  // Without this, the panel would keep saying "invigilating" through the
+  // whole review screen that follows, which is exactly the "help is
+  // available again after submission" case the boundary has to get right.
+  // Watching the one attribute every exam surface writes is cheaper than
+  // polling and needs no cooperation from those screens beyond what they
+  // already do.
+  useEffect(() => {
+    if (typeof MutationObserver === 'undefined') return;
+    const observer = new MutationObserver(() => setPlace(readPlace()));
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-exam-running'] });
+    return () => observer.disconnect();
+  }, []);
+
   // Escape closes, and focus goes back where it came from.
   useEffect(() => {
     if (!open) return;
@@ -158,6 +176,13 @@ export default function MrEzPanel() {
     async (text: string, idempotencyKey?: string) => {
       const trimmed = text.trim();
       if (!trimmed || busy) return;
+      // The client-side half of the assessment boundary: place is re-read
+      // fresh rather than trusted from the closure, because a message can be
+      // queued (Enter, then a slow render) right as a timer ends or starts.
+      // No network call happens at all here; the Worker's own refusal
+      // (HELP_BLOCKED_MODES) is the real boundary and stays in place
+      // independently of this check.
+      if (chatBlocked(readPlace())) return;
 
       const key = idempotencyKey ?? newIdempotencyKey();
       pendingRef.current = { text: trimmed, key };
@@ -222,7 +247,8 @@ export default function MrEzPanel() {
     void send(pending.text, pending.key);
   }, [send]);
 
-  const suggestions = suggestionsFor(place, t);
+  const blocked = chatBlocked(place);
+  const suggestions = blocked ? [] : suggestionsFor(place, t);
   const remaining = MAX_MESSAGE_CHARS - draft.length;
 
   return (
@@ -252,7 +278,7 @@ export default function MrEzPanel() {
           <div className="mrez-head-text">
             <strong>Mr EZ</strong>
             <span>
-              {place.underExam
+              {blocked
                 ? t('Invigilating: no answers until the timer stops')
                 : model === 'simulated'
                   ? t('Simulated tutor (no AI is being called)')
@@ -266,25 +292,35 @@ export default function MrEzPanel() {
         </header>
 
         <div className="mrez-log" ref={logRef} role="log" aria-live="polite" aria-relevant="additions text">
-          {state.turns.length === 0 && (
+          {state.turns.length === 0 && !blocked && (
             <div className="mrez-intro">
               <span className="mrez-intro-eyebrow">A little guidance. A lot of progress.</span>
               <h2>Let’s figure it out together.</h2>
               <p>Understand a tricky question, learn from your results, or find your next step.</p>
             </div>
           )}
+          {/* The boundary notice: shown above everything else while a timed
+              paper, the mock or an independent check is running, whether or
+              not there is an older conversation underneath it, so the panel
+              always says why it has gone quiet rather than just looking
+              broken. Help picks back up the moment the flag clears. */}
+          {blocked && (
+            <div className="mrez-note" role="status">
+              <p>{t(BOUNDARY_EXPLANATION)}</p>
+            </div>
+          )}
           {!configured && (
             <p className="mrez-note">{unavailableReason} {t('Your next step on the dashboard still works, it just comes with a plain explanation instead of his.')}</p>
           )}
 
-          {configured && signedIn === false && (
+          {configured && signedIn === false && !blocked && (
             <p className="mrez-note">
               {t("Sign in and Mr EZ can see your own results. He never reads anyone else's, which is exactly why he needs to know who you are.")}{' '}
               <a href={withBase('/account')}>{t('Sign in')}</a>
             </p>
           )}
 
-          {state.turns.length === 0 && configured && signedIn !== false && (
+          {state.turns.length === 0 && configured && signedIn !== false && !blocked && (
             <div className="mrez-empty">
               <p>{t('Where shall we start? During practice, I guide you without giving away the answer.')}</p>
               <ul className="mrez-suggestions">
@@ -353,8 +389,14 @@ export default function MrEzPanel() {
             value={draft}
             rows={1}
             maxLength={MAX_MESSAGE_CHARS}
-            placeholder={configured ? t('Ask Mr EZ…') : t('Mr EZ is not available on this build')}
-            disabled={!configured || busy || signedIn === false}
+            placeholder={
+              blocked
+                ? t(BOUNDARY_PLACEHOLDER)
+                : configured
+                  ? t('Ask Mr EZ…')
+                  : t('Mr EZ is not available on this build')
+            }
+            disabled={!configured || busy || signedIn === false || blocked}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -363,7 +405,11 @@ export default function MrEzPanel() {
               }
             }}
           />
-          <button type="submit" className="mrez-send" disabled={!configured || busy || !draft.trim() || signedIn === false}>
+          <button
+            type="submit"
+            className="mrez-send"
+            disabled={!configured || busy || !draft.trim() || signedIn === false || blocked}
+          >
             <span className="sr-only">{t('Send')}</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M4 12h15M13 6l6 6-6 6" />

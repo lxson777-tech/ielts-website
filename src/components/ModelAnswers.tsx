@@ -11,14 +11,18 @@
    prompt text itself stays in writing-prompts.ts and is only referenced by
    id, per that file's own comment about being the source of truth. */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { WRITING_PROMPTS, getWritingPrompt } from '../data/writing-prompts';
 import { getModelAnswers, getModelBands, type ModelAnswer, type ModelBand } from '../data/model-answers';
 import type { EssayPrompt } from '../lib/writing/schema';
 import { countWords } from '../lib/writing/mechanics';
+import { getWritingAttempts } from '../lib/progress';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { useT } from '../lib/i18n/react';
+import { canLinkModelAnswer, parseLibraryReason, LIBRARY_REASON_SENTENCES } from './library-links';
+import { recordLessonStudied } from '../lib/learning/store.browser';
+import SessionContinueBar from './learning/SessionContinueBar';
 import Tabs, { type TabDef } from './Tabs';
 import Html from './Html';
 
@@ -249,18 +253,55 @@ export default function ModelAnswers() {
   const task2Groups = useMemo(() => groupPrompts('task2', TASK2_GROUPS, promptsWithModels), [promptsWithModels]);
   const task1Groups = useMemo(() => groupPrompts('task1', TASK1_GROUPS, promptsWithModels), [promptsWithModels]);
 
-  /* ?task=<promptId> opens straight on one task, so the Writing Trainer can
-     send a student from their own graded essay to the model for that exact
-     question. An unknown id just falls back to the first task. */
+  /* ?task=<promptId> opens straight on one task, so a future caller (the
+     Writing report, a session step) can send a student from their own
+     graded essay to the model for that exact question. An unknown id just
+     falls back to the first task. `deepLinked` records whether the URL
+     really named this exact prompt, which is what decides whether the
+     visit is worth a modest evidence event below, so a student who simply
+     clicks around the sidebar does not generate noise. */
+  const deepLinked = useRef(false);
   const [promptId, setPromptId] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const asked = new URLSearchParams(window.location.search).get('task');
-      if (asked && promptsWithModels.some((p) => p.id === asked)) return asked;
+      if (asked && promptsWithModels.some((p) => p.id === asked)) {
+        deepLinked.current = true;
+        return asked;
+      }
     }
     return promptsWithModels[0]?.id ?? '';
   });
   const prompt = promptId ? (getWritingPrompt(promptId) as EssayPrompt | undefined) : undefined;
   const bands = useMemo(() => (promptId ? getModelBands(promptId) : []), [promptId]);
+
+  /* The reason a caller sent the student here, read once: the URL is not
+     re-read on every render, only what selectPrompt() cares about (a fresh
+     click on the sidebar is the student's own choice and clears it). */
+  const [reason] = useState(() => (typeof window !== 'undefined' ? parseLibraryReason(window.location.search) : null));
+  const hasAttempted = useMemo(() => (promptId ? getWritingAttempts(promptId).length > 0 : false), [promptId]);
+  // The rule from library-links.ts: the "compare with your attempt" framing
+  // is only honoured once a real attempt on THIS prompt actually exists,
+  // whatever the URL claims. Independent browsing is unaffected either way.
+  const showAttemptNote = deepLinked.current && reason === 'after-writing-attempt' && canLinkModelAnswer(hasAttempted);
+  const showSessionNote = deepLinked.current && reason === 'from-session' && !showAttemptNote;
+
+  /* Voluntary use of a reference page is "studied" context, never a
+     demonstration (lead decision, brief section 7). Recorded once, only for
+     a visit the URL actually pointed at, not for ordinary sidebar
+     browsing. */
+  const evidenceRecorded = useRef(false);
+  useEffect(() => {
+    if (!deepLinked.current || evidenceRecorded.current) return;
+    evidenceRecorded.current = true;
+    recordLessonStudied({
+      lessonKey: 'model-answers',
+      activityId: 'tool:models',
+      subskill: 'exam-format',
+      mode: showAttemptNote ? 'review' : 'practice',
+      estimatedMinutes: 2,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [band, setBand] = useState<ModelBand | null>(bands[0] ?? null);
   const [compare, setCompare] = useState(false);
@@ -337,6 +378,11 @@ export default function ModelAnswers() {
       </nav>
 
       <section className="ma-content" key={promptId}>
+        {(showAttemptNote || showSessionNote) && (
+          <p className="mb-4 rounded-card border border-brand/25 bg-brand-tint/40 px-4 py-3 text-sm text-ink">
+            {t(LIBRARY_REASON_SENTENCES[showAttemptNote ? 'after-writing-attempt' : 'from-session'])}
+          </p>
+        )}
         <div className="ma-prompt-card">
           <p className="ma-prompt-eyebrow">
             {prompt.task === 'task2' ? 'Task 2' : 'Task 1'} · {prompt.title}
@@ -408,6 +454,13 @@ export default function ModelAnswers() {
             {modelB && <EssayPanel model={modelB} compact activeHighlight={activeHighlight} setActiveHighlight={setActiveHighlight} />}
           </div>
         )}
+
+        {/* A quiet way back when today's session sent the student here as
+            one of its own steps; nothing at all when they simply browsed
+            in on their own (see SessionContinueBar's own fallback). */}
+        <div className="mt-6">
+          <SessionContinueBar activityId="tool:models" compact />
+        </div>
       </section>
     </div>
   );

@@ -5,6 +5,7 @@ import Badge from '../../components/Badge.astro';
 import PracticeOrTest from '../../components/PracticeOrTest.astro';
 import ScoreHistory from '../../components/ScoreHistory';
 import TypeAnalytics from '../../components/TypeAnalytics';
+import TestsHubCheckpoints from '../../components/learning/TestsHubCheckpoints';
 import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
 import { questionCount } from '../../lib/tests/schema';
@@ -205,6 +206,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
       </div>
     </div>
 
+    <TestsHubCheckpoints client:load />
+
     <a
       href={withBase('/tests/mock')}
       class="mock-invite group mb-8 flex flex-col items-start justify-between gap-4 rounded-card border border-brand/25 bg-brand-tint/40 p-6 transition-colors duration-300 hover:bg-brand-tint/70 sm:flex-row sm:items-center"
@@ -261,7 +264,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <h3>{group.label}<span>{group.tests.length} exams</span></h3>
             <ul>
               {group.tests.map((test, index) => (
-                <li><a href={withBase(`/tests/${test.id}`)}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`}</span></a></li>
+                <li><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`}</span></a></li>
               ))}
             </ul>
           </div>

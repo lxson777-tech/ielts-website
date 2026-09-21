@@ -31,6 +31,7 @@ import {
 } from '../lib/tests/mock';
 import { recordSubmission } from '../lib/learning/store.browser';
 import { paperExposureKey } from '../lib/learning/evidence';
+import { mockOverallAllowed } from './mock-summary';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
 import { isAuthConfigured } from '../lib/auth/supabase';
@@ -868,23 +869,26 @@ function ResultsScreen({
   speakingResult: SpeakingLegResult | null;
   speakingSkipped: boolean;
 }) {
-  const { t, tn } = useT();
+  const { t } = useT();
   const graderReady = isGraderConfigured();
 
-  /* The overall band is the official mean-of-components method (see
-     overallMockBand in src/lib/tests/mock.ts), taken over whichever papers
-     actually have a band: Listening and Reading always do; Speaking adds a
-     third when the student took it. Writing isn't part of it — this mock,
-     like the rest of the site (see the Trainer/checker split noted in
-     WritingLeg above), never auto-grades essays, so there's no fourth
-     number to average in. The card names exactly how many papers went in
-     rather than implying a fixed four, so the figure stays honest whether
-     or not Speaking was taken. */
-  const bandedPapers: number[] = [];
-  if (listeningResult) bandedPapers.push(listeningResult.band);
-  if (readingResult) bandedPapers.push(readingResult.band);
-  if (speakingResult) bandedPapers.push(speakingResult.overallBand);
-  const overall = bandedPapers.length > 0 ? overallMockBand(bandedPapers) : null;
+  /* Each paper's result stands on its own here, on purpose. The site's real
+     evidence policy shows one "overall" band only once all four papers
+     carry real scored or graded evidence (PolicyOutputV1.overall, see
+     contracts/policy.ts), and Writing is never graded inside the mock (see
+     the header comment above and WritingResultCard below), so that
+     condition never holds for a mock sitting recorded today, and
+     mockOverallAllowed(...) says so explicitly rather than this screen
+     quietly averaging whatever it happens to have. A combined figure built
+     from two or three papers would look like the real thing without being
+     it, so it is not shown at all; the four cards below carry the honest
+     detail instead. */
+  const overallAllowed = mockOverallAllowed({
+    listeningScored: listeningResult != null,
+    readingScored: readingResult != null,
+    writingGraded: false,
+    speakingScored: speakingResult != null,
+  });
   const scoredIntro = speakingResult
     ? t('Listening, Reading and Speaking are scored automatically.')
     : speakingSkipped
@@ -900,16 +904,13 @@ function ResultsScreen({
         {t("Writing isn't auto-scored here, so get real feedback on your essays in the Writing Checker.")}
       </p>
 
-      {overall != null && (
-        <div className="mt-6 rounded-card border border-brand/25 bg-brand-tint/40 p-5 text-center">
-          <p className="text-xs font-bold uppercase tracking-wider text-brand">
-            {tn(bandedPapers.length, { one: 'Overall band · {n} paper', other: 'Overall band · {n} papers' })}
-          </p>
-          <p className="mt-1 font-display text-4xl font-extrabold text-brand">{overall.toFixed(1)}</p>
+      {!overallAllowed && (
+        <div className="mt-6 rounded-card border border-border bg-surface-alt p-5">
+          <p className="text-sm font-semibold text-ink">{t('Each paper below stands on its own.')}</p>
           <p className="mt-1 text-xs text-ink-muted">
-            {t("Mean of {papers}, rounded to the nearest half band. Writing isn't included — it isn't graded during the mock.", {
-              papers: speakingResult ? t('Listening, Reading and Speaking') : t('Listening and Reading'),
-            })}
+            {t(
+              "There is no single overall band on this screen. Writing isn't graded during the mock, so an honest overall would need a fourth number this sitting does not have yet. Send your essays to the Writing Checker afterwards, then read each paper's result for what it is.",
+            )}
           </p>
         </div>
       )}

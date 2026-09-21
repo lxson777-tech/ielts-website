@@ -14,6 +14,9 @@ import { useEffect, useRef, useState } from 'react';
 import { CUE_CARDS, CUE_CARD_FAMILIES, type CueCard, type CueCardFamily } from '../data/cue-cards';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
+import { LIBRARY_REASON_SENTENCES, parseLibraryReason } from './library-links';
+import { recordLessonStudied } from '../lib/learning/store.browser';
+import SessionContinueBar from './learning/SessionContinueBar';
 import Tabs, { type TabDef } from './Tabs';
 
 type PrepPhase = 'idle' | 'prep' | 'speaking' | 'done';
@@ -52,7 +55,21 @@ export default function CueCardBank() {
     { id: 'part3', label: 'Part 3' },
   ];
   const [familyFilter, setFamilyFilter] = useState<CueCardFamily | 'all'>('all');
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  /* ?card=<id> opens straight on that card, the same deep-link convention
+     ModelAnswers.tsx uses for ?task=. deepLinked marks a visit the URL
+     actually named, so the evidence recording below never fires for
+     ordinary browsing of the grid. */
+  const deepLinked = useRef(false);
+  const [selectedId, setSelectedId] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const asked = new URLSearchParams(window.location.search).get('card');
+    if (asked && CUE_CARDS.some((c) => c.id === asked)) {
+      deepLinked.current = true;
+      return asked;
+    }
+    return null;
+  });
+  const [reason] = useState(() => (typeof window !== 'undefined' ? parseLibraryReason(window.location.search) : null));
   const [activeTab, setActiveTab] = useState('plan');
   const [prepPhase, setPrepPhase] = useState<PrepPhase>('idle');
   const [secondsLeft, setSecondsLeft] = useState(0);
@@ -60,6 +77,23 @@ export default function CueCardBank() {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const cancelRef = useRef(false);
+  const evidenceRecorded = useRef(false);
+
+  /* Voluntary use of a reference page is "studied" context, never a
+     demonstration (lead decision, brief section 7), recorded once and only
+     for a visit the URL actually pointed at. */
+  useEffect(() => {
+    if (!deepLinked.current || evidenceRecorded.current) return;
+    evidenceRecorded.current = true;
+    recordLessonStudied({
+      lessonKey: 'cue-card-bank',
+      activityId: 'tool:cue-cards',
+      subskill: 'part2-narrative-structure',
+      paper: 'speaking',
+      mode: 'practice',
+      estimatedMinutes: 2,
+    });
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -146,6 +180,12 @@ export default function CueCardBank() {
             {familyLabel(selected.family)}
           </span>
         </div>
+
+        {deepLinked.current && reason && (reason === 'same-family' || reason === 'from-session') && (
+          <p className="rounded-card border border-brand/25 bg-brand-tint/40 px-4 py-3 text-sm text-ink">
+            {t(LIBRARY_REASON_SENTENCES[reason])}
+          </p>
+        )}
 
         {prepPhase === 'idle' && (
           <>
@@ -261,6 +301,8 @@ export default function CueCardBank() {
                 )}
               </div>
             </div>
+
+            <SessionContinueBar activityId="tool:cue-cards" compact />
           </>
         )}
 
