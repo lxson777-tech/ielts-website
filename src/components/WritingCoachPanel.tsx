@@ -24,7 +24,10 @@ function toggle(set: Set<string>, value: string): Set<string> {
 }
 
 export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
-  const { t, tn } = useT();
+  // 'structures' is a lazily loaded dictionary part: only the writing
+  // trainer shows this guidance, so it stays out of the chunk every Russian
+  // page downloads. See src/lib/i18n/dict/parts.ts.
+  const { t, tn } = useT('structures');
   const TABS: TabDef[] = [
     { id: 'question', label: t('This question') },
     { id: 'structure', label: t('Structure') },
@@ -61,7 +64,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
 
   return (
     <div className="rounded-card border border-border bg-surface p-4 shadow-card">
-      <h3 className="font-display text-sm font-bold">{t('Writing coach: {structure}', { structure: guide.label })}</h3>
+      <h3 className="font-display text-sm font-bold">{t('Writing coach: {structure}', { structure: t(guide.label) })}</h3>
       <Tabs tabs={TABS} active={active} onChange={setActive} className="mt-3" />
 
       {active === 'question' && !plan && (
@@ -206,7 +209,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                 {guide.notes.map((n) => (
                   <li key={n} className="flex gap-2">
                     <span aria-hidden="true">·</span>
-                    <span>{n}</span>
+                    <span>{t(n)}</span>
                   </li>
                 ))}
               </ul>
@@ -224,7 +227,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       checked={isChecked}
                       onChange={() => setChecked((s) => toggle(s, p.name))}
                       className="h-4 w-4 shrink-0 rounded border-border text-brand focus:ring-brand"
-                      aria-label={t('Mark "{label}" done', { label: p.name })}
+                      aria-label={t('Mark "{label}" done', { label: t(p.name) })}
                     />
                     <button
                       type="button"
@@ -232,7 +235,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       aria-expanded={isOpen}
                       className="flex flex-1 items-center justify-between gap-2 text-left text-sm font-semibold"
                     >
-                      <span className={isChecked ? 'text-ink-muted line-through' : ''}>{p.name}</span>
+                      <span className={isChecked ? 'text-ink-muted line-through' : ''}>{t(p.name)}</span>
                       <span aria-hidden="true" className="shrink-0 text-ink-muted">
                         {isOpen ? '▾' : '▸'}
                       </span>
@@ -242,7 +245,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       floor on the collapsed 0fr track and leaks clipped text. */}
                   <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
                     <div className="min-h-0 overflow-hidden">
-                      <p className="px-3 pb-3 pl-9 text-sm text-ink-muted">{p.description}</p>
+                      <p className="px-3 pb-3 pl-9 text-sm text-ink-muted">{t(p.description)}</p>
                     </div>
                   </div>
                 </div>
@@ -256,7 +259,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
         <div id="tabpanel-language" role="tabpanel" aria-labelledby="tab-language" className="mt-4 space-y-3">
           {guide.language.map((row) => (
             <div key={row.job}>
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{row.job}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t(row.job)}</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {row.phrases.split(' / ').map((phrase) => (
                   <span key={phrase} className="rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand">
@@ -351,8 +354,8 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
                       <button
                         type="button"
                         onClick={() => copyPhrase(v.phrase)}
-                        title="Copy phrase"
-                        aria-label={`Copy "${v.phrase}"`}
+                        title={t('Copy phrase')}
+                        aria-label={t('Copy "{phrase}"', { phrase: v.phrase })}
                         className="shrink-0 rounded p-1 text-ink-muted transition-colors hover:bg-surface hover:text-ink"
                       >
                         {copied === v.phrase ? '✓' : '⧉'}
@@ -370,7 +373,7 @@ export default function WritingCoachPanel({ prompt }: { prompt: EssayPrompt }) {
         <div id="tabpanel-avoid" role="tabpanel" aria-labelledby="tab-avoid" className="mt-4 flex flex-wrap gap-1.5">
           {guide.mistakes.map((m, i) => (
             <span key={i} className="rounded-full bg-error-tint px-2.5 py-0.5 text-xs font-semibold text-error">
-              ⚠ {m}
+              ⚠ {t(m)}
             </span>
           ))}
         </div>

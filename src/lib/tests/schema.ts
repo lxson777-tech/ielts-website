@@ -126,11 +126,30 @@ export interface TestPart {
   groups: QuestionGroup[];
 }
 
+/** A piece of display text as a dictionary key plus the values to fill into
+    it. Needed for text that is COMPOSED rather than written out, where the
+    finished English sentence cannot itself be a dictionary key: a drill's
+    name is built from a part label and a passage title, so the key has to be
+    the template and the parts have to arrive as values. See
+    src/lib/tests/drills.ts. */
+export interface TranslatableText {
+  /** The English template, marked with nt() where it is written. */
+  key: string;
+  /** Values for the key's `{placeholders}`. Passage titles and part labels
+      are exam material and stay English inside a Russian sentence. */
+  vars?: Record<string, string | number>;
+}
+
 export interface PracticeTest {
   id: string;
   skill: TestSkill;
   title: string;
   description: string;
+  /** Present only when `title` was composed (drills). When it is absent the
+      title is hand-written and is its own key. Read both through
+      practiceTestTitle() rather than branching at the call site. */
+  titleText?: TranslatableText;
+  descriptionText?: TranslatableText;
   durationMinutes: number;
   /** One complete recording for all four listening parts. */
   audioSrc?: string;
@@ -141,6 +160,23 @@ export interface PracticeTest {
     permission: string;
   };
   parts: TestPart[];
+}
+
+/** The shape of `t` from useT(), passed in rather than imported so this
+    module stays free of any i18n runtime (it is shared with the test data
+    and the per-test JSON endpoint). */
+export type TranslateFn = (text: string, vars?: Record<string, string | number>) => string;
+
+/** A test's name in the student's language. A hand-authored title is its own
+    key; a composed one (a drill) carries its template and values. Either way
+    an untranslated title falls back to the English already on screen. */
+export function practiceTestTitle(test: PracticeTest, t: TranslateFn): string {
+  return test.titleText ? t(test.titleText.key, test.titleText.vars) : t(test.title);
+}
+
+/** The blurb under the name, same rule as practiceTestTitle(). */
+export function practiceTestDescription(test: PracticeTest, t: TranslateFn): string {
+  return test.descriptionText ? t(test.descriptionText.key, test.descriptionText.vars) : t(test.description);
 }
 
 export function questionCount(test: PracticeTest): number {

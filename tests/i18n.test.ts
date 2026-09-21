@@ -25,7 +25,20 @@ import {
   pluralWith,
   CONTEXT_SEPARATOR,
 } from '../src/lib/i18n/translate.ts';
-import { loadDictionary, getLoadedDictionary, type Dictionary } from '../src/lib/i18n/dict/index.ts';
+import {
+  loadDictionary,
+  getLoadedDictionary,
+  loadDictionaryPart,
+  isDictionaryPartLoaded,
+  availableDictionaryParts,
+  type Dictionary,
+} from '../src/lib/i18n/dict/index.ts';
+import {
+  DICTIONARY_PARTS,
+  PART_SOURCES,
+  partForSourceFile,
+  type DictionaryPart,
+} from '../src/lib/i18n/dict/parts.ts';
 
 import * as ruMerged from '../src/lib/i18n/dict/ru/index.ts';
 import * as shell from '../src/lib/i18n/dict/ru/shell.ts';
@@ -37,6 +50,11 @@ import * as trainers from '../src/lib/i18n/dict/ru/trainers-writing-speaking.ts'
 import * as accountAuthVocab from '../src/lib/i18n/dict/ru/account-auth-vocab.ts';
 import * as tutor from '../src/lib/i18n/dict/ru/tutor.ts';
 import * as pages from '../src/lib/i18n/dict/ru/pages.ts';
+import * as trainersDrills from '../src/lib/i18n/dict/ru/trainers-drills.ts';
+
+import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
+import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
+import * as partBandGuides from '../src/lib/i18n/dict/ru/parts/band-guides.ts';
 
 /* Every batch file, with the name an agent would recognise. Add a line here
    when a new batch file is created. */
@@ -50,7 +68,20 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/account-auth-vocab.ts', mod: accountAuthVocab },
   { file: 'dict/ru/tutor.ts', mod: tutor },
   { file: 'dict/ru/pages.ts', mod: pages },
+  { file: 'dict/ru/trainers-drills.ts', mod: trainersDrills },
 ];
+
+/* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching
+   texts, fetched only by the screens that show them. Each one is a separate
+   chunk, so a Russian student who never opens the band ladder never
+   downloads 72 KB of band guidance. Add a line here when a part is added. */
+type DictModule = { strings: Record<string, string>; plurals: Record<string, unknown> };
+
+const PART_FILES: Record<DictionaryPart, { file: string; mod: DictModule }> = {
+  strategies: { file: 'dict/ru/parts/strategies.ts', mod: partStrategies },
+  structures: { file: 'dict/ru/parts/structures.ts', mod: partStructures },
+  'band-guides': { file: 'dict/ru/parts/band-guides.ts', mod: partBandGuides },
+};
 
 const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SRC_DIR = path.join(REPO_ROOT, 'src');
@@ -232,6 +263,9 @@ interface Extracted {
   /** Path relative to the repo root, for failure messages. */
   file: string;
   kind: 'string' | 'plural';
+  /** The extra dictionary part this file's text belongs to, or null for the
+      main dictionary. Decided by PART_SOURCES, never guessed at here. */
+  part: DictionaryPart | null;
 }
 
 function sourceFiles(): string[] {
@@ -345,6 +379,7 @@ function attrValue(attrs: string, name: string): string | null {
 function extractFromFile(rel: string): Extracted[] {
   const source = fs.readFileSync(path.join(SRC_DIR, rel), 'utf8');
   const file = `src/${rel}`;
+  const part = partForSourceFile(rel);
   const found: Extracted[] = [];
 
   for (const fn of ['t', 'nt'] as const) {
@@ -352,7 +387,7 @@ function extractFromFile(rel: string): Extracted[] {
       const text = literal(args[0]);
       if (text === null || text === '') continue;
       const ctx = fn === 't' ? literal(args[2]) : null;
-      found.push({ key: messageKey(text, ctx ?? undefined), text, file, kind: 'string' });
+      found.push({ key: messageKey(text, ctx ?? undefined), text, file, kind: 'string', part });
     }
   }
 
@@ -362,7 +397,7 @@ function extractFromFile(rel: string): Extracted[] {
     const other = /\bother\s*:\s*('([^']*)'|"([^"]*)")/.exec(forms);
     const text = other?.[2] ?? other?.[3];
     if (!text) continue;
-    found.push({ key: text, text, file, kind: 'plural' });
+    found.push({ key: text, text, file, kind: 'plural', part });
   }
 
   if (rel.endsWith('.astro')) {
@@ -379,7 +414,7 @@ function extractFromFile(rel: string): Extracted[] {
         // `{tab.label}` and friends cannot be read statically; the English
         // literal is wrapped with nt() where it is actually written.
         if (text && !text.includes('{') && !text.includes('}')) {
-          found.push({ key: messageKey(text, ctx), text, file, kind: 'string' });
+          found.push({ key: messageKey(text, ctx), text, file, kind: 'string', part });
         }
       }
 
@@ -392,7 +427,7 @@ function extractFromFile(rel: string): Extracted[] {
           if (!value) continue;
           const text = value.trim();
           if (!text || text.includes('{')) continue;
-          found.push({ key: messageKey(text, ctx), text, file, kind: 'string' });
+          found.push({ key: messageKey(text, ctx), text, file, kind: 'string', part });
         }
       }
     }
@@ -422,13 +457,34 @@ test('the extractor finds what it is supposed to find', () => {
   assert.ok(keys.has('Help'), 'data-i18n in src/components/WorkspaceFooter.astro should be extracted');
 });
 
+/** The dictionary an extracted string has to be translated in, and the file
+    an agent should open to add it. The main dictionary for most files; the
+    named part for the few big guidance files listed in PART_SOURCES. */
+function dictionaryFor(part: DictionaryPart | null): {
+  strings: Record<string, string>;
+  plurals: Record<string, unknown>;
+  where: string;
+} {
+  if (!part) return { strings: ruMerged.strings, plurals: ruMerged.plurals, where: 'the main dictionary (src/lib/i18n/dict/ru/*.ts)' };
+  const entry = PART_FILES[part];
+  return { strings: entry.mod.strings, plurals: entry.mod.plurals, where: `the "${part}" part (src/lib/i18n/${entry.file})` };
+}
+
+/** Every dictionary file in the project: the main batches and the parts.
+    The dash rule and the conflict rule apply to all of them equally. */
+const ALL_DICT_FILES: { file: string; mod: DictModule }[] = [
+  ...BATCH_FILES,
+  ...DICTIONARY_PARTS.map((part) => PART_FILES[part]),
+];
+
 test('every wrapped English string has a Russian translation', () => {
   const missing: string[] = [];
   for (const item of extractAll()) {
+    const dict = dictionaryFor(item.part);
     if (item.kind === 'plural') {
-      const forms = ruMerged.plurals[item.key] as Record<string, string> | undefined;
+      const forms = dict.plurals[item.key] as Record<string, string> | undefined;
       if (!forms) {
-        missing.push(`${item.file}: no Russian plural forms for "${item.key}"`);
+        missing.push(`${item.file}: no Russian plural forms for "${item.key}" in ${dict.where}`);
         continue;
       }
       for (const form of ['one', 'few', 'many', 'other']) {
@@ -436,8 +492,8 @@ test('every wrapped English string has a Russian translation', () => {
       }
       continue;
     }
-    const value = ruMerged.strings[item.key];
-    if (!value) missing.push(`${item.file}: no Russian for "${item.text}"`);
+    const value = dict.strings[item.key];
+    if (!value) missing.push(`${item.file}: no Russian for "${item.text}" in ${dict.where}`);
   }
   assert.deepEqual(missing, [], `Untranslated strings:\n  ${missing.join('\n  ')}`);
 });
@@ -445,7 +501,7 @@ test('every wrapped English string has a Russian translation', () => {
 test('every placeholder in an English key survives into its Russian value', () => {
   const problems: string[] = [];
   for (const item of extractAll()) {
-    const value = item.kind === 'plural' ? undefined : ruMerged.strings[item.key];
+    const value = item.kind === 'plural' ? undefined : dictionaryFor(item.part).strings[item.key];
     if (!value) continue;
     for (const name of placeholders(item.text)) {
       if (!value.includes(`{${name}}`)) {
@@ -458,7 +514,7 @@ test('every placeholder in an English key survives into its Russian value', () =
 
 test('no Russian value contains an em dash or an en dash', () => {
   const problems: string[] = [];
-  for (const { file, mod } of BATCH_FILES) {
+  for (const { file, mod } of ALL_DICT_FILES) {
     for (const [key, value] of Object.entries(mod.strings)) {
       if (DASHES.test(value)) problems.push(`${file}: "${key}" contains a dash character; rephrase it`);
     }
@@ -471,10 +527,10 @@ test('no Russian value contains an em dash or an en dash', () => {
   assert.deepEqual(problems, [], `Dash characters found:\n  ${problems.join('\n  ')}`);
 });
 
-test('no key has two different Russian values across batch files', () => {
+test('no key has two different Russian values across batch files or parts', () => {
   const seen = new Map<string, { file: string; value: string }>();
   const conflicts: string[] = [];
-  for (const { file, mod } of BATCH_FILES) {
+  for (const { file, mod } of ALL_DICT_FILES) {
     for (const [key, value] of Object.entries(mod.strings)) {
       const previous = seen.get(key);
       if (previous && previous.value !== value) {
@@ -488,6 +544,102 @@ test('no key has two different Russian values across batch files', () => {
     }
   }
   assert.deepEqual(conflicts, [], `Conflicting translations:\n  ${conflicts.join('\n  ')}`);
+});
+
+/* ================================================================== */
+/* The extra dictionary parts                                          */
+/* ================================================================== */
+
+test('the part registry cannot drift: names, loaders, files and sources all line up', () => {
+  // Every part has a dictionary file listed in this test...
+  assert.deepEqual(Object.keys(PART_FILES).sort(), [...DICTIONARY_PARTS].sort(), 'PART_FILES here and DICTIONARY_PARTS in src/lib/i18n/dict/parts.ts must list the same parts');
+
+  // ...a Russian loader in dict/index.ts...
+  assert.deepEqual(availableDictionaryParts('ru').sort(), [...DICTIONARY_PARTS].sort(), 'every part in DICTIONARY_PARTS needs a Russian loader in PART_LOADERS (src/lib/i18n/dict/index.ts)');
+
+  // ...both exports, like any batch file...
+  for (const part of DICTIONARY_PARTS) {
+    const { file, mod } = PART_FILES[part];
+    assert.equal(typeof mod.strings, 'object', `${file} must export a strings object`);
+    assert.ok(mod.strings && !Array.isArray(mod.strings), `${file}: strings must be a plain object`);
+    assert.equal(typeof mod.plurals, 'object', `${file} must export a plurals object`);
+    assert.ok(mod.plurals && !Array.isArray(mod.plurals), `${file}: plurals must be a plain object`);
+  }
+
+  // ...and at least one real source file, which must still exist. A renamed
+  // or deleted data file would otherwise leave a part quietly translating
+  // nothing.
+  const claimed = new Set<string>();
+  for (const part of DICTIONARY_PARTS) {
+    const sources = PART_SOURCES[part];
+    assert.ok(sources.length > 0, `PART_SOURCES["${part}"] is empty: a part with no source files has nothing to translate`);
+    for (const rel of sources) {
+      assert.ok(fs.existsSync(path.join(SRC_DIR, rel)), `PART_SOURCES["${part}"] names src/${rel}, which does not exist`);
+      assert.ok(!claimed.has(rel), `src/${rel} is claimed by more than one part`);
+      claimed.add(rel);
+      assert.equal(partForSourceFile(rel), part, `partForSourceFile("${rel}") should return "${part}"`);
+    }
+  }
+  assert.equal(partForSourceFile('components/WorkspaceMenu.tsx'), null, 'an ordinary file belongs to the main dictionary');
+});
+
+test('a part holds exactly its own source files, with nothing dead and nothing duplicated', () => {
+  const problems: string[] = [];
+  const extracted = extractAll();
+
+  for (const part of DICTIONARY_PARTS) {
+    const { file, mod } = PART_FILES[part];
+    const wanted = new Set(extracted.filter((e) => e.part === part && e.kind === 'string').map((e) => e.key));
+    const wantedPlurals = new Set(extracted.filter((e) => e.part === part && e.kind === 'plural').map((e) => e.key));
+
+    for (const key of Object.keys(mod.strings)) {
+      // A leftover from an English edit: the key no longer exists in any of
+      // the part's source files, so it can never be looked up again.
+      if (!wanted.has(key)) {
+        problems.push(`${file}: "${key}" is not marked in any of ${PART_SOURCES[part].map((s) => `src/${s}`).join(', ')} any more. Delete it, or restore the English.`);
+      }
+      // A part is merged ON TOP of the main dictionary, so a key that is in
+      // both and disagrees would silently change that text everywhere else
+      // on the page the moment the part lands. An incidental overlap on a
+      // short label is fine as long as both say the same thing.
+      const inMain = ruMerged.strings[key];
+      if (inMain && inMain !== mod.strings[key]) {
+        problems.push(
+          `${file}: "${key}" is also in the main dictionary, with a different Russian value ` +
+            `("${inMain}" there, "${mod.strings[key]}" here). Loading this part would change it everywhere. Make them agree.`,
+        );
+      }
+    }
+    for (const key of Object.keys(mod.plurals)) {
+      if (!wantedPlurals.has(key)) {
+        problems.push(`${file}: plural "${key}" is not used by any of ${PART_SOURCES[part].map((s) => `src/${s}`).join(', ')} any more.`);
+      }
+    }
+  }
+  assert.deepEqual(problems, [], `Part problems:\n  ${problems.join('\n  ')}`);
+});
+
+test('loading a part merges it into the same lookup, and t() picks it up', async () => {
+  await loadDictionary('ru');
+
+  const sample = Object.keys(PART_FILES['strategies'].mod.strings)[0]!;
+  const russian = PART_FILES['strategies'].mod.strings[sample]!;
+
+  // English is always "ready": there is nothing to fetch.
+  assert.equal(isDictionaryPartLoaded('en', 'strategies'), true);
+
+  await loadDictionaryPart('ru', 'strategies');
+  assert.equal(isDictionaryPartLoaded('ru', 'strategies'), true);
+  assert.equal(t(sample, undefined, undefined, 'ru'), russian, 't() should read the part through the ordinary dictionary');
+  assert.equal(t(sample), sample, 'English is untouched by a part');
+
+  // Idempotent, and the main dictionary object the batch files export is
+  // never mutated by a part merge.
+  await loadDictionaryPart('ru', 'strategies');
+  assert.ok(!(sample in ruMerged.strings), 'merging a part must not write into dict/ru/index.ts');
+
+  // English has nothing to load, and never throws.
+  await loadDictionaryPart('en', 'band-guides');
 });
 
 test('a device set to Russian or Kazakh opens in Russian, anything else in English', async () => {

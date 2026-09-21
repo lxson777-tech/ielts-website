@@ -20,7 +20,21 @@ export {
 } from './locale';
 
 export { t, tn, nt, messageKey, interpolate, translateWith, pluralWith, type CountForms, type Vars } from './translate';
-export { loadDictionary, getLoadedDictionary, type Dictionary, type PluralForms } from './dict/index';
+export {
+  loadDictionary,
+  getLoadedDictionary,
+  loadDictionaryPart,
+  loadDictionaryParts,
+  isDictionaryPartLoaded,
+  availableDictionaryParts,
+  DICTIONARY_PARTS,
+  PART_SOURCES,
+  isDictionaryPart,
+  partForSourceFile,
+  type Dictionary,
+  type PluralForms,
+  type DictionaryPart,
+} from './dict/index';
 export { applyTranslations } from './dom';
 
 /**

@@ -7,6 +7,8 @@ import {
   bandEstimate,
   bandMidpoint,
   isCorrect,
+  practiceTestDescription,
+  practiceTestTitle,
   questionCount,
   scoredQuestionIds,
 } from '../lib/tests/schema';
@@ -653,7 +655,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
               dict/ru/shell.ts — no second entry here. */}
           <span className="hidden sm:inline">{t('Tests')}</span>
         </a>
-        <span className="hidden truncate font-display text-sm font-bold md:block">{test.title}</span>
+        <span className="hidden truncate font-display text-sm font-bold md:block">{practiceTestTitle(test, t)}</span>
         <div
           className={`tp-timer mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold sm:gap-2 sm:px-4 ${
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
@@ -2365,8 +2367,8 @@ function InstructionsScreen({
         <p className="text-xs font-bold uppercase tracking-wider text-brand">
           {listening ? t('Listening Practice Test') : t('Reading Test')}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold">{test.title}</h1>
-        <p className="mt-2 text-ink-muted">{test.description}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">{practiceTestTitle(test, t)}</h1>
+        <p className="mt-2 text-ink-muted">{practiceTestDescription(test, t)}</p>
 
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-card bg-surface-alt p-3">

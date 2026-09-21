@@ -58,7 +58,10 @@ export default function BandReport({
   actionPlan,
   children,
 }: BandReportProps) {
-  const { t } = useT();
+  // 'band-guides' is the lazily loaded dictionary part holding the band
+  // playbooks (src/lib/i18n/dict/parts.ts). example.before / example.after
+  // stay English: they are the sentences the student writes.
+  const { t } = useT('band-guides');
   return (
     <>
       <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
@@ -150,7 +153,7 @@ export default function BandReport({
                               </span>
                             </summary>
                             <div className="mt-2.5 space-y-3 text-xs leading-relaxed text-ink-muted">
-                              <p>{c.guide.whatChanges}</p>
+                              <p>{t(c.guide.whatChanges)}</p>
 
                               <div>
                                 <p className="font-semibold text-ink">{t('Do this')}</p>
@@ -158,7 +161,7 @@ export default function BandReport({
                                   {c.guide.doThis.map((d) => (
                                     <li key={d} className="flex gap-1.5">
                                       <span aria-hidden="true">·</span>
-                                      <span>{d}</span>
+                                      <span>{t(d)}</span>
                                     </li>
                                   ))}
                                 </ul>
@@ -170,7 +173,7 @@ export default function BandReport({
                                   {c.guide.stopThis.map((s) => (
                                     <li key={s} className="flex gap-1.5">
                                       <span aria-hidden="true">·</span>
-                                      <span>{s}</span>
+                                      <span>{t(s)}</span>
                                     </li>
                                   ))}
                                 </ul>
@@ -179,15 +182,15 @@ export default function BandReport({
                               <div className="rounded-lg border border-border bg-surface p-2.5">
                                 <p className="italic">&ldquo;{c.guide.example.before}&rdquo;</p>
                                 <p className="mt-1.5 text-success">{c.guide.example.after}</p>
-                                <p className="mt-1.5">{c.guide.example.why}</p>
+                                <p className="mt-1.5">{t(c.guide.example.why)}</p>
                               </div>
 
                               <p>
                                 <span className="font-semibold text-ink">{t('Practice today:')} </span>
-                                {c.guide.practice}
+                                {t(c.guide.practice)}
                               </p>
 
-                              {c.guide.task1Note && <p className="italic">{c.guide.task1Note}</p>}
+                              {c.guide.task1Note && <p className="italic">{t(c.guide.task1Note)}</p>}
                             </div>
                           </details>
                         )}

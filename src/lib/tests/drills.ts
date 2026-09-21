@@ -10,8 +10,9 @@
    of its parts is no longer unseen. Worth it for the pacing practice; flag to
    the user if this becomes a problem once more tests are authored. */
 
-import type { PracticeTest, QuestionType, TestSkill } from './schema';
+import type { PracticeTest, QuestionType, TestSkill, TranslatableText } from './schema';
 import { ALL_TESTS } from '../../data/tests';
+import { nt, interpolate } from '../i18n/translate';
 
 export interface DrillMeta {
   id: string;
@@ -34,18 +35,26 @@ function passageTitle(test: PracticeTest, partIndex: number): string {
 /** Shared drill builder: lifts one part out of a full test into its own
     single-part PracticeTest. Carries `audioSrc` through so a listening drill
     can still play the shared recording (a prior bug dropped it here, which
-    silently left drills for listening tests with no audio at all). */
+    silently left drills for listening tests with no audio at all).
+
+    A drill's name and blurb are COMPOSED from the source test, so the
+    finished English sentence cannot be a dictionary key. The template and
+    its values are carried on `titleText` / `descriptionText`, and `title` /
+    `description` stay the finished English so nothing downstream changes.
+    Read them with practiceTestTitle() / practiceTestDescription(). */
 function buildDrill(
   source: PracticeTest,
   partIndex: number,
-  opts: { title: string; description: string; minutes: number },
+  opts: { title: TranslatableText; description: TranslatableText; minutes: number },
 ): PracticeTest {
   const part = source.parts[partIndex]!;
   return {
     id: `${source.id}-drill-p${partIndex + 1}`,
     skill: source.skill,
-    title: opts.title,
-    description: opts.description,
+    title: interpolate(opts.title.key, opts.title.vars),
+    description: interpolate(opts.description.key, opts.description.vars),
+    titleText: opts.title,
+    descriptionText: opts.description,
     durationMinutes: opts.minutes,
     audioSrc: source.audioSrc,
     parts: [part],
@@ -57,8 +66,16 @@ function buildReadingDrill(source: PracticeTest, partIndex: number): PracticeTes
   const questionCount = part.groups.reduce((s, g) => s + g.questions.length, 0);
   const minutes = Math.max(10, Math.round(source.durationMinutes / source.parts.length));
   return buildDrill(source, partIndex, {
-    title: `${part.label} Drill: ${passageTitle(source, partIndex)}`,
-    description: `One timed passage from "${source.title}", ${questionCount} questions in ${minutes} minutes. Good for practicing pace on a single passage without committing to a full exam.`,
+    title: {
+      key: nt('{part} Drill: {passage}'),
+      vars: { part: part.label, passage: passageTitle(source, partIndex) },
+    },
+    description: {
+      key: nt(
+        'One timed passage from "{test}", {questions} questions in {minutes} minutes. Good for practicing pace on a single passage without committing to a full exam.',
+      ),
+      vars: { test: source.title, questions: questionCount, minutes },
+    },
     minutes,
   });
 }
@@ -76,8 +93,14 @@ function buildListeningDrill(source: PracticeTest, partIndex: number): PracticeT
   const questionCount = part.groups.reduce((s, g) => s + g.questions.length, 0);
   const minutes = 8;
   return buildDrill(source, partIndex, {
-    title: `Test ${testNumber(source)} · Part ${partIndex + 1}`,
-    description: `One timed part from "${source.title}", ${questionCount} questions in about ${minutes} minutes. Good for practicing pace on a single part without committing to a full test.`,
+    // "Part" stays English, like every other Part number on the site.
+    title: { key: nt('Test {test} · Part {part}'), vars: { test: testNumber(source), part: partIndex + 1 } },
+    description: {
+      key: nt(
+        'One timed part from "{test}", {questions} questions in about {minutes} minutes. Good for practicing pace on a single part without committing to a full test.',
+      ),
+      vars: { test: source.title, questions: questionCount, minutes },
+    },
     minutes,
   });
 }

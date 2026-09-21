@@ -21,7 +21,10 @@ function toggle(set: Set<string>, value: string): Set<string> {
 }
 
 export default function SpeakingCoachPanel({ method, vocab }: { method: StructureMethod; vocab?: TopicVocab[] }) {
-  const { t } = useT();
+  // 'structures' is a lazily loaded dictionary part: this guidance is only
+  // shown on the speaking trainers, so it is not in the chunk every Russian
+  // page downloads. See src/lib/i18n/dict/parts.ts.
+  const { t } = useT('structures');
   const guide = SPEAKING_STRUCTURE_GUIDES[method];
   const hasVocab = !!vocab && vocab.length > 0;
   const tabs: TabDef[] = [
@@ -39,7 +42,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
   return (
     <div className="rounded-card border border-border bg-surface p-4 shadow-card">
       <h3 className="font-display text-sm font-bold">
-        {t('Speaking coach: {structure}', { structure: guide.title })}
+        {t('Speaking coach: {structure}', { structure: t(guide.title) })}
         <span className="ml-1.5 font-semibold text-ink-muted">· {guide.part}</span>
       </h3>
       <Tabs tabs={tabs} active={active} onChange={setActive} className="mt-3" />
@@ -52,7 +55,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
               {guide.notes.map((n) => (
                 <li key={n} className="flex gap-2">
                   <span aria-hidden="true">·</span>
-                  <span>{n}</span>
+                  <span>{t(n)}</span>
                 </li>
               ))}
             </ul>
@@ -79,7 +82,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
                     >
                       <span className={isChecked ? 'text-ink-muted line-through' : ''}>
                         {stage.name}
-                        {stage.timing && <span className="ml-1.5 font-normal text-ink-muted">({stage.timing})</span>}
+                        {stage.timing && <span className="ml-1.5 font-normal text-ink-muted">({t(stage.timing)})</span>}
                       </span>
                       <span aria-hidden="true" className="shrink-0 text-ink-muted">
                         {isOpen ? '▾' : '▸'}
@@ -91,7 +94,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
                   <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
                     <div className="min-h-0 overflow-hidden">
                       <div className="px-3 pb-3 pl-9">
-                        <p className="text-sm text-ink-muted">{stage.description}</p>
+                        <p className="text-sm text-ink-muted">{t(stage.description)}</p>
                         {stage.phrases.length > 0 && (
                           <div className="mt-1.5 flex flex-wrap gap-1.5">
                             {stage.phrases.map((phrase) => (
@@ -115,7 +118,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
         <div id="tabpanel-phrases" role="tabpanel" aria-labelledby="tab-phrases" className="mt-4 space-y-3">
           {guide.language.map((row) => (
             <div key={row.job}>
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{row.job}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t(row.job)}</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {row.phrases.map((phrase) => (
                   <span key={phrase} className="rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand">
@@ -167,7 +170,7 @@ export default function SpeakingCoachPanel({ method, vocab }: { method: Structur
         <div id="tabpanel-avoid" role="tabpanel" aria-labelledby="tab-avoid" className="mt-4 flex flex-wrap gap-1.5">
           {guide.mistakes.map((m, i) => (
             <span key={i} className="rounded-full bg-error-tint px-2.5 py-0.5 text-xs font-semibold text-error">
-              ⚠ {m}
+              ⚠ {t(m)}
             </span>
           ))}
         </div>

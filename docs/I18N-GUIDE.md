@@ -152,6 +152,14 @@ blanked, so a typo shows up as `{nmae}` instead of vanishing.
 
 - **Exam material**: reading passages, listening transcripts, questions and
   answer options, essay prompts, cue cards, model answers, vocabulary items.
+- **The English a student is meant to reuse**: the sentence starters and
+  useful phrases in the writing and speaking coach panels, and the
+  before/after example sentences in the band guides. A Russian translation of
+  a model sentence takes away the only thing the panel exists to give. When
+  a field is guidance it is marked with `nt()`; when it is English-to-learn
+  it is left alone, and the interface comment beside it says which it is.
+- **Mnemonics**: the stage names of A.R.E., PEEL and OREO spell the method
+  out, so they stay English with the Russian explanation underneath.
 - **The four paper names**, in English even inside a Russian sentence:
   Reading, Listening, Writing, Speaking.
 - **IELTS** itself, and the product wordmark **IELTS is EZ**.
@@ -230,6 +238,7 @@ never edit the same file. Add your entries to yours and nothing else.
 | Account, sign-in, password reset, vocabulary and word of the day | `account-auth-vocab.ts` |
 | Mr EZ's interface and his deterministic sentences | `tutor.ts` |
 | Page-level copy in `src/pages`, marketing nav and footer | `pages.ts` |
+| Drill names and blurbs built in `src/lib/tests/drills.ts` | `trainers-drills.ts` |
 
 Every batch file exports two objects, both required even if one stays empty:
 
@@ -240,6 +249,79 @@ export const plurals: Record<string, { one: string; few: string; many: string; o
 
 `dict/ru/index.ts` merges them. A new batch file needs one import there and
 one line in `BATCH_FILES` in `tests/i18n.test.ts`.
+
+## Extra parts, for the big guidance texts
+
+Everything above is the **main dictionary**: about 1,250 short interface
+phrases in one chunk, which every Russian page downloads once. That is the
+right home for almost everything.
+
+It is the wrong home for a few files. The band guides alone are 72 KB of
+English, and only the band ladder and the band report ever show a word of
+them. Putting that in the main chunk would make a student who never opens
+those screens pay for it anyway.
+
+So there are **named extra parts**, listed in `src/lib/i18n/dict/parts.ts`:
+
+| Part | What it holds | Source files |
+|---|---|---|
+| `strategies` | "How to approach it" advice per question type | `src/data/reading-strategies.ts`, `src/data/listening-strategies.ts` |
+| `structures` | Essay and speaking structure guides | `src/data/writing-structures.ts`, `src/data/speaking-structure-guides.ts` |
+| `band-guides` | The band-to-band playbooks | `src/data/band-guides.ts` |
+
+A part is a normal dictionary file (`strings` and `plurals`, same as a batch)
+living under `src/lib/i18n/dict/ru/parts/`. It is fetched as its own chunk
+and merged into the same dictionary object, so **`t()` does not change at
+all**: it still reads one dictionary, which simply grows when a part lands.
+
+### Using one
+
+A React island that renders the text asks for it by name:
+
+```tsx
+const { t } = useT('band-guides');
+```
+
+That does two things: it starts the fetch when the component mounts, and it
+re-renders the component when the part arrives, through the same
+`notifyLocaleListeners()` revision the main dictionary already uses. Until
+then the English shows, which is the same one-tick window an island already
+has for the main dictionary, and a part that fails to load simply leaves the
+English in place. Nothing is ever blank.
+
+`useT()` also returns `ready`, which is false only while a requested part is
+still on its way, for a component that would rather wait than flash English.
+
+Outside React, `loadDictionaryPart(locale, part)` and
+`loadDictionaryParts(locale, parts)` do the same thing. Both are idempotent
+and neither throws. A part asked for in one language is re-fetched
+automatically if the student switches language afterwards, so a panel that
+is already on screen does not have to ask again.
+
+### Adding one
+
+1. A name in `DICTIONARY_PARTS` and its source files in `PART_SOURCES`, both
+   in `src/lib/i18n/dict/parts.ts`.
+2. `src/lib/i18n/dict/ru/parts/<name>.ts`, exporting `strings` and `plurals`.
+3. One line in `PART_LOADERS` in `src/lib/i18n/dict/index.ts`.
+4. One line in `PART_FILES` in `tests/i18n.test.ts`.
+
+The coverage test then does the rest. It reads `PART_SOURCES` to decide where
+each extracted English string has to be translated, so a string marked in
+`src/data/band-guides.ts` must have its Russian in the `band-guides` part and
+nowhere else, and the failure message names the part and the file to open. It
+also fails if a part has no loader, if a source file named in `PART_SOURCES`
+does not exist, if two parts claim the same file, if a part file still holds a
+key no source file marks any more, and if a part and the main dictionary give
+the same key two different Russian values (which would silently change that
+text everywhere else on the page the moment the part loaded).
+
+### When NOT to use one
+
+A part is only worth it for a big block of text with a small audience.
+Anything small, a few drill titles or a handful of leftover interface
+strings, goes in an ordinary batch file of the main dictionary. Three parts
+is meant to be close to the final number.
 
 ## Running the coverage test on its own
 

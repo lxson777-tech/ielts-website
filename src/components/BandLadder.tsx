@@ -17,14 +17,17 @@ import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import Tabs, { type TabDef } from './Tabs';
 import { useT } from '../lib/i18n/react';
 
-/* step.whatChanges / doThis / stopThis / example / practice / task1Note come
-   from src/data/band-guides.ts, a plain-language rephrasing of the official
-   band descriptors. That file isn't in this batch's file list (it isn't
-   assigned to any batch in docs/I18N-GUIDE.md that we could see), so its
-   content is left in English here rather than guessed at (see the i18n
-   batch report). PAPERS, WRITING_TABS and SPEAKING_TABS are the protected
-   paper names and the four assessment criteria names, which the guide says
-   must always stay English, so they're deliberately not wrapped either. */
+/* step.whatChanges / doThis / stopThis / example.why / practice / task1Note
+   come from src/data/band-guides.ts, a plain-language rephrasing of the
+   official band descriptors. They are marked with nt() there and translated
+   here through the lazily loaded "band-guides" dictionary part, so a student
+   who never opens this page never downloads it.
+
+   example.before and example.after stay English on purpose: they are the
+   sentences a student writes, and the whole point of the pair is to see the
+   difference between them. PAPERS, WRITING_TABS and SPEAKING_TABS are the
+   protected paper names and the four assessment criteria names, which always
+   stay English, so they are deliberately not wrapped either. */
 
 type Paper = 'writing' | 'speaking';
 
@@ -49,7 +52,7 @@ function guidesFor(paper: Paper, criterion: string): BandStepGuide[] {
 }
 
 function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
-  const { t } = useT();
+  const { t } = useT('band-guides');
   return (
     <details open={open} className="group rounded-card border border-border bg-surface shadow-card">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
@@ -65,7 +68,7 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
       </summary>
 
       <div className="space-y-4 border-t border-border px-5 py-4 text-sm leading-relaxed text-ink-muted">
-        <p>{step.whatChanges}</p>
+        <p>{t(step.whatChanges)}</p>
 
         <div>
           <p className="text-xs font-bold uppercase tracking-wider text-ink">{t('Do this')}</p>
@@ -75,7 +78,7 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
                 <span aria-hidden="true" className="text-success">
                   ✓
                 </span>
-                <span>{d}</span>
+                <span>{t(d)}</span>
               </li>
             ))}
           </ul>
@@ -89,7 +92,7 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
                 <span aria-hidden="true" className="text-error">
                   ✕
                 </span>
-                <span>{s}</span>
+                <span>{t(s)}</span>
               </li>
             ))}
           </ul>
@@ -98,18 +101,18 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
         <div className="rounded-lg border border-border bg-surface-alt p-3">
           <p className="italic">&ldquo;{step.example.before}&rdquo;</p>
           <p className="mt-2 text-success">{step.example.after}</p>
-          <p className="mt-2 text-xs">{step.example.why}</p>
+          <p className="mt-2 text-xs">{t(step.example.why)}</p>
         </div>
 
         <p className="rounded-lg bg-brand-tint/60 px-3 py-2.5 text-ink">
           <span className="font-bold">{t('Practice today.')} </span>
-          {step.practice}
+          {t(step.practice)}
         </p>
 
         {step.task1Note && (
           <p className="rounded-lg bg-warning-tint px-3 py-2.5">
             <span className="font-bold text-ink">{t('Task 1 is different.')} </span>
-            {step.task1Note}
+            {t(step.task1Note)}
           </p>
         )}
       </div>
@@ -118,7 +121,9 @@ function StepCard({ step, open }: { step: BandStepGuide; open: boolean }) {
 }
 
 export default function BandLadder() {
-  const { t } = useT();
+  // Asked for here too, not only in StepCard, so the fetch starts with the
+  // page rather than with the first card that happens to render.
+  const { t } = useT('band-guides');
   const [paper, setPaper] = useState<Paper>('writing');
   const [writingCriterion, setWritingCriterion] = useState<string>(CRITERIA[0]!.key);
   const [speakingCriterion, setSpeakingCriterion] = useState<string>(SPEAKING_CRITERIA[0]!.key);

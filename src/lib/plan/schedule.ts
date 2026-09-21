@@ -4,7 +4,7 @@ import { buildCourse, type CourseLesson } from '../course';
 import type { ProgressV1 } from '../progress';
 import { ALL_TESTS } from '../../data/tests';
 import { ALL_READING_DRILLS, ALL_LISTENING_DRILLS, type DrillMeta } from '../tests/drills';
-import type { PracticeTest } from '../tests/schema';
+import type { PracticeTest, TranslatableText } from '../tests/schema';
 import { loadStudyPlan, saveStudyPlan, loadHomeTargetBand, type SavedPlan } from '../study-plan';
 import { getVocabSummary } from '../vocab-review';
 import { getVocabularyPart } from '../../data/vocabulary';
@@ -33,6 +33,11 @@ export interface PlanItem {
   id: string;
   type: PlanItemType;
   label: string;
+  /** Set only when `label` was composed rather than written out (a drill's
+      name is built from a part label and a passage title), so the label has
+      a dictionary key of its own plus the values to fill in. planItemLabel()
+      prefers this when it is there. */
+  labelText?: TranslatableText;
   /** Short line under the label, e.g. "Reading" or "Full Listening test". */
   meta: string;
   /** Unprefixed path — callers apply withBase(), same convention as
@@ -145,6 +150,7 @@ function drillItem(d: DrillMeta, skill: 'reading' | 'listening'): PlanItem {
     id: d.id,
     type: 'drill',
     label: d.test.title,
+    labelText: d.test.titleText,
     meta: skill === 'reading' ? nt('Reading drill') : nt('Listening drill'),
     href: `/trainers/${skill}/${d.id}`,
     minutes: d.test.durationMinutes,
@@ -456,8 +462,12 @@ export function getWeekPlan(plan: SavedPlan, progress: ProgressV1, weekNumber?: 
     translator as an argument so this module stays free of React and of any
     locale of its own. */
 export function planItemLabel(
-  item: Pick<PlanItem, 'label' | 'topic'>,
+  item: Pick<PlanItem, 'label' | 'topic' | 'labelText'>,
   t: (text: string, vars?: Record<string, string | number>) => string,
 ): string {
-  return item.topic ? t('Vocabulary: {topic}', { topic: t(item.topic) }) : t(item.label);
+  if (item.topic) return t('Vocabulary: {topic}', { topic: t(item.topic) });
+  // A composed label (a drill) carries its own key and values; everything
+  // else is written out, so the English label IS the key.
+  if (item.labelText) return t(item.labelText.key, item.labelText.vars);
+  return t(item.label);
 }
