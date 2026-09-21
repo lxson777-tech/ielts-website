@@ -82,15 +82,34 @@ export function getLast14Days(plan: SavedPlan | null, today: Date = new Date()):
 
 export interface TodayGoalProgress {
   minutes: number;
-  goal: number;
-  percent: number;
+  /** Null while there is no honest target to show (see getTodayGoalProgress
+      below): a surface should show the streak on its own and no minutes
+      target at all rather than invent one. */
+  goal: number | null;
+  percent: number | null;
 }
 
-/** Today's minutes studied against the plan's daily goal, for the slim
-    progress bar. Capped at 100% — going past the goal doesn't overflow the
-    bar, it just stays full. */
-export function getTodayGoalProgress(plan: SavedPlan | null, today: Date = new Date()): TodayGoalProgress {
-  const goal = goalMinutes(plan);
+/** Today's minutes studied against a daily goal, for the slim progress bar
+    and the dashboard's "{minutes} / {goal} min today" chip. Capped at
+    100% — going past the goal doesn't overflow the bar, it just stays
+    full.
+ *
+ *  `goal` is supplied by the caller rather than read from the old
+ *  `SavedPlan` here (which is what this function did until the Today
+ *  polish round, 2026-09-22: `plan?.dailyMinutes ?? DEFAULT_DAILY_MINUTES`
+ *  fell back to a flat 25 for a student who had never confirmed any daily
+ *  time, showing "0 / 25 min today" on a brand-new dashboard, a number
+ *  nobody chose and one that contradicts the platform's own 60-minute
+ *  recommendation). The caller (LearningDashboard.tsx) now works the
+ *  honest figure out from the shared session view: null while
+ *  `regularDailyMinutesStatus` is 'provisional', otherwise today's actual
+ *  planned budget (`session.budgetMinutes`), which is already the
+ *  student's own regular minutes on an ordinary day and today's shorter
+ *  budget on a temporary short day, with `regularDailyMinutes` itself
+ *  untouched either way. Passing `null` here shows no target, only the
+ *  minutes actually studied. */
+export function getTodayGoalProgress(goal: number | null, today: Date = new Date()): TodayGoalProgress {
   const minutes = getActivity()[toLocalDateKey(today)]?.minutes ?? 0;
+  if (goal === null) return { minutes, goal: null, percent: null };
   return { minutes, goal, percent: Math.min(100, Math.round((minutes / goal) * 100)) };
 }

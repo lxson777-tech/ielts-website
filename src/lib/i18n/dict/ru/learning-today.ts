@@ -109,6 +109,52 @@ export const strings: Record<string, string> = {
   /* LessonLayout.astro: the shared "next" control */
   "Back to today's session": 'Вернуться к сегодняшнему занятию',
   'Next step: {title}': 'Следующий шаг: {title}',
+
+  /* TodaySession.tsx: the scope note, short sentence plus collapsed list
+     (Today polish round, item 7) */
+  'Show less': 'Свернуть',
+  'and {n} more': 'и ещё {n}',
+
+  /* TodaySession.tsx: a provisional plan, deferred goal (item 4) */
+  'Your plan is provisional until you set a goal.': 'Ваш план предварительный, пока вы не укажете цель.',
+  'Set your goal': 'Указать цель',
+
+  /* TodaySession.tsx: fallbackStepTitle, a step's main line when the
+     catalogue has no lesson-style title for it yet (item 2). The {type}
+     half (a question type or subskill, e.g. "sentence completion") is
+     deliberately left untranslated wherever it is filled in, the same
+     rule src/lib/i18n/dict/ru/parts/strategies.ts's header states for the
+     exam's own question-type names. */
+  '{paper} timed drill, {type}': '{paper}, тренировка на время: {type}',
+  'Timed drill, {type}': 'Тренировка на время: {type}',
+  'Full mock test': 'Полный пробный экзамен',
+  '{paper} timed test': '{paper}, тест на время',
+  'Timed test': 'Тест на время',
+  '{paper} focused practice, {type}': '{paper}, точечная практика: {type}',
+  'Focused practice, {type}': 'Точечная практика: {type}',
+  '{paper} graded attempt': '{paper}, попытка с оценкой',
+  'Graded attempt': 'Попытка с оценкой',
+  'Vocabulary review': 'Повторение слов',
+  'Reference, {type}': 'Справочный материал: {type}',
+  'Plan settings': 'Настройки плана',
+  '{paper} quick check, {type}': '{paper}, короткая проверка: {type}',
+  'Quick check, {type}': 'Короткая проверка: {type}',
+  // 'Practice' (the very last resort in fallbackStepTitle) already has an
+  // entry in course-lessons.ts, pages.ts and shell.ts; not repeated here.
 };
 
-export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};
+/* LearningDashboard.tsx: the vocabulary card's second line (item 8).
+   LearningDashboard.tsx's older strings ("Vocabulary", "Browse topics",
+   the {n} topics/{n} words plurals) live in dashboard-plan.ts, which is
+   outside this package (see the report); this one new plural is added
+   here instead, in the file this package owns for Russian. The merged
+   dictionary does not care which batch file supplies a key. */
+
+export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
+  '{n} reviewed so far': {
+    one: '{n} слово повторено',
+    few: '{n} слова повторено',
+    many: '{n} слов повторено',
+    other: '{n} слова повторено',
+  },
+};

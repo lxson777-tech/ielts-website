@@ -19,7 +19,7 @@ import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress'
 import { buildCourse } from '../lib/course';
 import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
 import { onStudyPlanChange } from '../lib/study-plan';
-import { getVocabSummary, type VocabSummary } from '../lib/vocab-review';
+import { CARD_SET, getVocabSummary, type VocabSummary } from '../lib/vocab-review';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
 import {
@@ -28,8 +28,9 @@ import {
   onLearnerRecordChange,
   onPersonalPlanChange,
   readPersonalPlan,
+  type SharedSessionView,
 } from '../lib/learning';
-import { PAPER_LABEL, focusAreas, type FocusAreaCertainty } from './learning/today/todayViewModel';
+import { PAPER_LABEL, dailyMinutesGoal, focusAreas, type FocusAreaCertainty } from './learning/today/todayViewModel';
 import PlanToday from './plan/PlanToday';
 import { useT } from '../lib/i18n/react';
 import '../styles/learning-today.css';
@@ -86,7 +87,7 @@ export default function LearningDashboard() {
   const [targetIsGuess, setTargetIsGuess] = useState(false);
   const [vocab, setVocab] = useState<VocabSummary | null>(null);
   const [streak, setStreak] = useState(0);
-  const [goal, setGoal] = useState<{ minutes: number; goal: number } | null>(null);
+  const [goal, setGoal] = useState<{ minutes: number; goal: number | null } | null>(null);
   const [focus, setFocus] = useState<FocusAreaCertainty[]>([]);
   const [hour, setHour] = useState<number | null>(null);
 
@@ -103,12 +104,20 @@ export default function LearningDashboard() {
       setTargetIsGuess(Boolean(plan.defaulted));
       setVocab(getVocabSummary());
       setStreak(getStreak(plan));
-      setGoal(getTodayGoalProgress(plan));
       try {
-        getCurrentSession(); // ensures the plan exists before reading it raw
+        // The one shared session, not the old SavedPlan: its
+        // regularDailyMinutesStatus is what tells the real "never
+        // confirmed a daily time" case apart from a real 25 or 60, and
+        // its budgetMinutes is already today's shorter figure on a
+        // temporary short day (item 5, Today polish round). Reading it
+        // here also ensures the plan exists before readPersonalPlan below.
+        const session: SharedSessionView | null = getCurrentSession();
+        const target = dailyMinutesGoal(session?.regularDailyMinutesStatus, session?.budgetMinutes ?? 0);
+        setGoal(getTodayGoalProgress(target));
         const personalPlan = readPersonalPlan();
         setFocus(focusAreas(ALL_PAPERS, personalPlan?.diagnosticsOutstanding ?? []));
       } catch {
+        setGoal(getTodayGoalProgress(null));
         setFocus([]);
       }
     };
@@ -149,7 +158,15 @@ export default function LearningDashboard() {
       </h1>
         <div className="dash-daily-status">
           <span className="dash-streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M13 3c1 5-5 6-3 10 1-1 2-2 2-4 4 3 6 5 6 8a6 6 0 0 1-12 0c0-4 2-7 7-14Z"/></svg>{tn(shownStreak, { one: '{n} day streak', other: '{n} day streak' })}</span>
-          {goal && <span>{t('{minutes} / {goal} min today', { minutes: goal.minutes, goal: goal.goal })}</span>}
+          {/* No minutes target at all while the daily time has never been
+              confirmed (goal.goal is null): a brand-new student has not
+              chosen one yet, and "0 / 25 min today" showed a number nobody
+              picked. Once confirmed this is the student's own regular
+              minutes, or today's shorter figure on a temporary short day
+              (see streak.ts's getTodayGoalProgress and item 5's report). */}
+          {goal && goal.goal !== null && (
+            <span>{t('{minutes} / {goal} min today', { minutes: goal.minutes, goal: goal.goal })}</span>
+          )}
         </div>
       </div>
 
@@ -174,9 +191,25 @@ export default function LearningDashboard() {
       <div className="dash-cards">
         <a className="dash-card" href={withBase('/review')}>
           <span className="dash-card-label">{t('Vocabulary')}</span>
+          {/* Item 8: this headline is the LIBRARY's own size (36 topics,
+              CARD_SET.length words), a build-time constant that is the
+              same for every student and never needs `vocab` state to have
+              loaded, so it can never flash "0 words" while that state is
+              still null. It used to read vocab?.total, which is the exact
+              same constant once loaded (getVocabSummary returns
+              CARD_SET.length as `total`), so this changes nothing once
+              settled, only the brief null-state flicker before it did.
+              A student's own progress (how many of those words they have
+              actually started reviewing) is the separate line below,
+              distinct on purpose from the library's fixed size. */}
           <strong className="dash-card-title">
-            {tn(VOCABULARY_PARTS.length, { one: '{n} topic', other: '{n} topics' })}, {tn(vocab?.total ?? 0, { one: '{n} word', other: '{n} words' })}
+            {tn(VOCABULARY_PARTS.length, { one: '{n} topic', other: '{n} topics' })}, {tn(CARD_SET.length, { one: '{n} word', other: '{n} words' })}
           </strong>
+          {vocab && vocab.learned > 0 && (
+            <span className="dash-card-due">
+              {tn(vocab.learned, { one: '{n} reviewed so far', other: '{n} reviewed so far' })}
+            </span>
+          )}
           {vocabDue > 0 && <span className="dash-card-due">{tn(vocabDue, { one: '{n} due for flashcard practice', other: '{n} due for flashcard practice' })}</span>}
           <span className="dash-card-meta">{t('Browse topics')}</span>
         </a>

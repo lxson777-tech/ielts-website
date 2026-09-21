@@ -19,16 +19,30 @@
  * costs accuracy, never a crash and never a wrong link.
  *
  * NOTHING RUNTIME IS IMPORTED THAT IS NOT NEEDED
- * The type imports below are erased at build time. The only runtime imports
- * are the two tiny helpers from the old study plan and the named constants
- * from the plan contract, because `src/lib/course.ts` imports this file and
- * every page that shows a course card imports that. The catalogue, which is
- * a few hundred kilobytes, is passed IN rather than imported here.
+ * The type imports below are erased at build time. The runtime imports are
+ * the two tiny helpers from the old study plan, the named constants from the
+ * plan contract, and (since the Today polish round, 2026-09-22) the six
+ * small lesson-metadata registries (`src/data/lessons.ts` plus one per
+ * skill) so a step can show a real lesson title instead of the generic
+ * per-role purpose sentence. Those six are already in every bundle that
+ * reaches this file, because `src/lib/course.ts` (which imports this file)
+ * imports the very same registries to build the course; nothing new is
+ * pulled in. The catalogue itself, and the ~200 KB generated index behind
+ * it, are a few hundred kilobytes and stay OUT: passed in as an argument
+ * rather than imported here, and `src/lib/course.ts` is never imported back
+ * (that would be a cycle, since it imports this file), so a lesson's title
+ * is looked up from the same raw registries course.ts reads, not through it.
  */
 
 import type { Locale } from '../i18n/locale';
 import type { SavedPlan } from '../study-plan';
 import { PLAN_SKILLS, sanitiseSkillTargets } from '../study-plan';
+import { LESSONS as LESSON_META } from '../../data/lessons';
+import { READING_PARTS } from '../../data/reading';
+import { LISTENING_PARTS } from '../../data/listening';
+import { WRITING_PARTS } from '../../data/writing';
+import { SPEAKING_PARTS } from '../../data/speaking';
+import { VOCABULARY_PARTS } from '../../data/vocabulary';
 import type {
   ActivityKind,
   ActivityTarget,
@@ -77,6 +91,23 @@ export interface SharedStepView {
   /** The `progress.lessons` key when this step is a library lesson, so the
       course view can find the same lesson in `COURSE_UNITS`. */
   lessonKey: string | null;
+  /** The real, short name of the thing this step opens (a lesson's own
+      title, or the catalogue's own `label` once one exists for drills and
+      tests too), distinct from `purpose` (the planner's per-role sentence,
+      which reads the same for every step of that role and is what made two
+      TEACH steps look identical). Null when nothing more specific than
+      kind/paper/subskill is known yet: a surface should compose its own
+      quiet fallback from those rather than show nothing. Always an English
+      literal that is ALREADY registered with the i18n system wherever it
+      came from (a lesson's title in its own registry), so a caller may
+      safely pass it through t(): an overview title translates, and a
+      question-type title such as "Sentence Completion" passes through
+      unchanged, matching this codebase's own rule that the exam's names
+      for its question types stay English even in Russian text. Optional
+      (rather than always-present-but-nullable) so an older hand-built
+      fixture that does not know about it still type-checks: treat a
+      missing key the same as null. */
+  title?: string | null;
 }
 
 /** Everything every surface reads. Built once from the plan, so two screens
@@ -106,6 +137,14 @@ export interface SharedSessionView {
   targetBand: number | null;
   examDate: string | null;
   regularDailyMinutes: number;
+  /** Whether `regularDailyMinutes` is the student's own choice, or the
+      platform's placeholder recommendation nobody has confirmed yet. A
+      surface must not present the placeholder as a target the student
+      picked (see the dashboard's daily-minutes chip). Optional for the
+      same reason as SharedStepView.title: an older hand-built fixture
+      that predates this field still type-checks; treat a missing key as
+      'provisional', the safer of the two to assume. */
+  regularDailyMinutesStatus?: Confirmation;
   /** What honestly will not fit, when the planner had to leave real work
       out. Never a promise about a band. */
   scopeNote: string | null;
@@ -144,6 +183,58 @@ function activityById(id: string, catalogue: LearningCatalogueV1): CatalogueActi
   return catalogue.activities.find((activity) => activity.id === id);
 }
 
+/* ── Lesson titles, for a step's real name (item 2 of the Today polish
+   round) ─────────────────────────────────────────────────────────────────
+   The catalogue does not (yet) carry a short display title for every
+   activity, only the long one-sentence `objective`, which is the same
+   sentence for every lesson of a given role and is exactly what made two
+   TEACH steps read identically. A lesson's real title does exist, in the
+   same six small registries `src/lib/course.ts`'s `allLessons()` reads, so
+   it is looked up the same way here: `l.slug` for the five overview pages,
+   `${base}-${p.slug}` for everything else, matching `lessonActivityId`'s
+   own key exactly (see catalog.ts). Built once, at module load: these
+   registries are plain arrays, not a hook or a store. */
+const LESSON_TITLE_BY_KEY: Readonly<Record<string, string>> = (() => {
+  const titles: Record<string, string> = {};
+  for (const lesson of LESSON_META) titles[lesson.slug] = lesson.title;
+  const sections: { base: string; parts: readonly { slug: string; title: string }[] }[] = [
+    { base: 'reading', parts: READING_PARTS },
+    { base: 'listening', parts: LISTENING_PARTS },
+    { base: 'writing', parts: WRITING_PARTS },
+    { base: 'speaking', parts: SPEAKING_PARTS },
+    { base: 'vocabulary', parts: VOCABULARY_PARTS },
+  ];
+  for (const { base, parts } of sections) {
+    for (const part of parts) titles[`${base}-${part.slug}`] = part.title;
+  }
+  return titles;
+})();
+
+/** The real, short name for one step, or null when nothing more specific
+    than kind/paper/subskill is known (see SharedStepView.title). Prefers
+    the catalogue's own `label` so that once catalog.ts starts populating
+    one (for drills and tests, from the generated index's own titles) it
+    takes over here with no further change. */
+function catalogueStepTitle(step: SessionStep, activity: CatalogueActivity | undefined): string | null {
+  if (activity?.label) return activity.label;
+  if (!activity) return null;
+  if (activity.kind === 'lesson') {
+    const key = lessonKeyOf(step.activityId);
+    return (key && LESSON_TITLE_BY_KEY[key]) || null;
+  }
+  if (activity.kind === 'lesson-check') {
+    // The check has no route or title of its own (it lives at the bottom
+    // of its lesson's page); its first prerequisite is always that lesson
+    // (see buildCheckActivities in catalog.ts), so its title is the
+    // lesson's, and the step's own role ("Independent check" and so on)
+    // already says what kind of visit this is.
+    const parentLessonId = activity.prerequisites[0];
+    const key = parentLessonId ? lessonKeyOf(parentLessonId) : null;
+    return (key && LESSON_TITLE_BY_KEY[key]) || null;
+  }
+  return null;
+}
+
 function stepView(step: SessionStep, catalogue: LearningCatalogueV1): SharedStepView {
   const activity = activityById(step.activityId, catalogue);
   return {
@@ -160,6 +251,7 @@ function stepView(step: SessionStep, catalogue: LearningCatalogueV1): SharedStep
     objective: activity?.objective ?? step.purpose,
     indivisible: activity?.indivisible ?? false,
     lessonKey: lessonKeyOf(step.activityId),
+    title: catalogueStepTitle(step, activity),
   };
 }
 
@@ -196,6 +288,7 @@ export function sharedSessionFrom(input: SharedSessionInput): SharedSessionView 
     targetBand: plan.goals.overallTarget?.band ?? null,
     examDate: plan.goals.examDate?.date ?? null,
     regularDailyMinutes: plan.constraints.regularDailyMinutes,
+    regularDailyMinutesStatus: plan.constraints.regularDailyMinutesStatus,
     scopeNote: plan.scopeNote ?? null,
     missedStudyDays: input.missedStudyDays ?? 0,
     derived: input.derived ?? false,

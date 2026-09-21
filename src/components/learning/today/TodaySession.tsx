@@ -14,7 +14,7 @@
    small honest banner on top of whichever screen is showing, because "this
    is not saving on this device" is true regardless of what the plan says. */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { withBase } from '../../../lib/url';
 import { useT } from '../../../lib/i18n/react';
 import { onAuthChange } from '../../../lib/auth/session';
@@ -45,9 +45,16 @@ import {
   humaniseSubskill,
   isSessionFinished,
   mainAction,
+  scopeNoteView,
   selectTodayScreen,
+  sessionKicker,
+  stepForeignPaper,
+  stepPurposeAddsSomething,
   stepStatus,
+  stepTitleFor,
+  type ScopeNoteView,
 } from './todayViewModel';
+import { clearIntakeDeferral, isDeferralActive, readIntakeDeferral, writeIntakeDeferral } from './intakeDeferral';
 import '../../../styles/learning-today.css';
 
 ensureLearningWired();
@@ -60,18 +67,43 @@ export default function TodaySession() {
   const [plan, setPlan] = useState<PersonalPlanV1 | null>(null);
   const [ready, setReady] = useState(false);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  /** True while a deferral (this visit's or a recent one, read from
+      storage) is currently covering the intake. Recomputed from storage on
+      every refresh, so it is never out of sync with what was last written
+      here or on another tab. */
   const [intakeDeferred, setIntakeDeferred] = useState(false);
+  /** Sticky once the intake is first shown: only ever set back to false by
+      the intake's own onDone/onDefer. See todayViewModel.ts's
+      TodayScreenInput.intakeInProgress for why this exists: without it,
+      the save inside the intake confirms the plan and unmounts the intake
+      before its own "plan saved" screen can paint. */
+  const [intakeInProgress, setIntakeInProgress] = useState(false);
   const [storageProblem, setStorageProblem] = useState<string | null>(null);
+  /** Read by `refresh()`, which is defined once and called from several
+      effects and handlers; a ref avoids every one of those needing to
+      depend on `userId` (same pattern as MrEzWelcome.tsx's sessionRef). */
+  const userIdRef = useRef<string | null>(null);
 
   const refresh = () => {
+    let view: SharedSessionView | null = null;
     try {
-      const view = getCurrentSession();
+      view = getCurrentSession();
       setSession(view);
       setPlan(readPersonalPlan());
     } catch {
       // A plan that cannot be built must not take the page down with it.
       setSession(null);
       setPlan(null);
+    }
+    if (view) {
+      const deferredSince = readIntakeDeferral(userIdRef.current);
+      const persistedDeferred = isDeferralActive(deferredSince, view.date);
+      setIntakeDeferred(persistedDeferred);
+      // Monotonic: only ever turns true here. Turning it false again is
+      // the intake's own job (handleIntakeDone / handleIntakeDefer below),
+      // never a side effect of the plan becoming confirmed mid-render.
+      const localView = view;
+      setIntakeInProgress((prev) => prev || (!localView.confirmed && !persistedDeferred));
     }
     const planStatus = planStoreStatus();
     const learnerStatus = learnerStoreStatus();
@@ -92,7 +124,11 @@ export default function TodaySession() {
     refresh();
     const offRecord = onLearnerRecordChange(refresh);
     const offPlan = onPersonalPlanChange(refresh);
-    const offAuth = onAuthChange((user) => setSignedIn(Boolean(user)));
+    const offAuth = onAuthChange((user) => {
+      setSignedIn(Boolean(user));
+      userIdRef.current = user?.id ?? null;
+      refresh(); // the deferral record is per owner; re-read it once auth resolves
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
       offRecord();
@@ -125,7 +161,30 @@ export default function TodaySession() {
     planStatus: session.planStatus,
     finished: isSessionFinished(session),
     intakeDeferred,
+    intakeInProgress,
   });
+
+  function finishIntake() {
+    setIntakeInProgress(false);
+  }
+
+  function handleIntakeDone() {
+    finishIntake();
+    refresh();
+  }
+
+  function handleIntakeDefer() {
+    // session is non-null here: the intake only renders once it is.
+    writeIntakeDeferral(userIdRef.current, session!.date);
+    finishIntake();
+    refresh();
+  }
+
+  function reopenIntake() {
+    clearIntakeDeferral(userIdRef.current);
+    finishIntake(); // cleared defensively; refresh() below re-latches it true
+    refresh();
+  }
 
   return (
     <div className="today">
@@ -143,7 +202,7 @@ export default function TodaySession() {
           <p className="today-intake-sub">
             {t('One short question set makes every suggestion here specific to you instead of generic.')}
           </p>
-          <Intake variant="first-visit" onDone={refresh} onDefer={() => setIntakeDeferred(true)} />
+          <Intake variant="first-visit" onDone={handleIntakeDone} onDefer={handleIntakeDefer} />
         </section>
       )}
 
@@ -152,9 +211,52 @@ export default function TodaySession() {
       {screen === 'finished' && <FinishedCard session={session} plan={plan} />}
 
       {screen === 'active' && (
-        <ActiveSessionCard session={session} plan={plan} signedIn={signedIn} onRefresh={refresh} />
+        <ActiveSessionCard session={session} plan={plan} signedIn={signedIn} onRefresh={refresh} onSetGoal={reopenIntake} />
       )}
     </div>
+  );
+}
+
+/* ── The scope note: a short line, with a collapsed list past three items ─── */
+
+/** Formats whatever planner.ts wrote into `scopeNote` (see the module doc
+    comment on scopeNoteView in todayViewModel.ts): the words are never
+    changed here, only how they break. Shared between the date-passed card
+    and the active session card, the two places Today shows a scope note;
+    Course.tsx shows the same `plan.scopeNote` too and would want the same
+    treatment (see this package's report). */
+function ScopeNote({ note }: { note: string | null | undefined }) {
+  const { t } = useT();
+  const [expanded, setExpanded] = useState(false);
+  const view: ScopeNoteView | null = scopeNoteView(note);
+  if (!view) return null;
+  return (
+    <p className="today-scope-note">
+      {view.headline}
+      {view.inline.map((sentence) => (
+        <span key={sentence}> {sentence}</span>
+      ))}
+      {view.collapsed.length > 0 && (
+        <>
+          {' '}
+          <button
+            type="button"
+            className="today-scope-toggle"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded ? t('Show less') : t('and {n} more', { n: view.collapsed.length })}
+          </button>
+          {expanded && (
+            <span className="today-scope-more">
+              {view.collapsed.map((sentence) => (
+                <span key={sentence}> {sentence}</span>
+              ))}
+            </span>
+          )}
+        </>
+      )}
+    </p>
   );
 }
 
@@ -173,7 +275,7 @@ function DatePassedCard({ session }: { session: SharedSessionView }) {
       <a className="today-start" href={withBase('/plan-settings')}>
         {t('Set a new date or goal')}
       </a>
-      {session.scopeNote && <p className="today-scope-note">{session.scopeNote}</p>}
+      <ScopeNote note={session.scopeNote} />
     </section>
   );
 }
@@ -217,11 +319,13 @@ function ActiveSessionCard({
   plan,
   signedIn,
   onRefresh,
+  onSetGoal,
 }: {
   session: SharedSessionView;
   plan: PersonalPlanV1 | null;
   signedIn: boolean | null;
   onRefresh: () => void;
+  onSetGoal: () => void;
 }) {
   const { t } = useT();
   const [showWhy, setShowWhy] = useState(false);
@@ -233,6 +337,7 @@ function ActiveSessionCard({
   const longerCommitment = plan?.alternatives.find((alt) => alt.kind === 'longer-commitment') ?? null;
   const outstanding = plan?.diagnosticsOutstanding ?? [];
   const daysToExam = session.examDate ? daysUntil(session.examDate, session.date) : null;
+  const kicker = sessionKicker(session.paper, session.subskill);
 
   function startClick() {
     if (current) markStepStarted(current.stepId);
@@ -271,14 +376,30 @@ function ActiveSessionCard({
             {t('{n} days to your exam', { n: daysToExam })}
           </p>
         )}
+        {kicker && (
+          <p className="today-kicker">
+            {t(PAPER_LABEL[kicker.paper])}
+            {', '}
+            {kicker.type}
+          </p>
+        )}
         <h2 id="today-heading" className="today-objective">
           {session.objective}
         </h2>
       </header>
 
+      {!session.confirmed && (
+        <p className="today-provisional-note">
+          {t('Your plan is provisional until you set a goal.')}{' '}
+          <button type="button" className="today-link-button" onClick={onSetGoal}>
+            {t('Set your goal')}
+          </button>
+        </p>
+      )}
+
       <MrEzVoice session={session} signedIn={signedIn} />
 
-      {session.scopeNote && <p className="today-scope-note">{session.scopeNote}</p>}
+      <ScopeNote note={session.scopeNote} />
 
       <p className="today-budget">
         {t('About {n} minutes today.', { n: session.budgetMinutes })}
@@ -289,7 +410,12 @@ function ActiveSessionCard({
 
       <ol className="today-steps">
         {session.steps.map((step) => (
-          <StepRow key={step.stepId} step={step} status={stepStatus(step, current?.stepId ?? null)} />
+          <StepRow
+            key={step.stepId}
+            step={step}
+            status={stepStatus(step, current?.stepId ?? null)}
+            sessionPaper={session.paper}
+          />
         ))}
       </ol>
 
@@ -381,8 +507,68 @@ function ActiveSessionCard({
   );
 }
 
-function StepRow({ step, status }: { step: SharedStepView; status: ReturnType<typeof stepStatus> }) {
+/** What to call a step when the catalogue has no real title for it yet
+    (SharedStepView.title is null: every kind but a lesson or a lesson
+    check today, see adapters.ts's catalogueStepTitle). Composed from
+    fields the shared view already carries (kind, paper, subskill), so two
+    different activities of the same kind and paper can still end up
+    reading the same until the catalogue names them individually. This is
+    a smaller version of the same gap `title` closes for lessons, reported
+    to the lead rather than guessed at further here (see this package's
+    report, item 2). The type half is never translated: see
+    src/lib/i18n/dict/ru/parts/strategies.ts's header on why an exam
+    question type's own name stays English. */
+function fallbackStepTitle(t: ReturnType<typeof useT>['t'], step: SharedStepView): string {
+  const paperLabel = step.paper ? t(PAPER_LABEL[step.paper]) : '';
+  const type = humaniseSubskill(step.subskill);
+  switch (step.kind) {
+    case 'drill':
+      return paperLabel ? t('{paper} timed drill, {type}', { paper: paperLabel, type }) : t('Timed drill, {type}', { type });
+    case 'full-test':
+      return step.activityId === 'test:mock'
+        ? t('Full mock test')
+        : paperLabel
+          ? t('{paper} timed test', { paper: paperLabel })
+          : t('Timed test');
+    case 'focused-exercise':
+      return paperLabel
+        ? t('{paper} focused practice, {type}', { paper: paperLabel, type })
+        : t('Focused practice, {type}', { type });
+    case 'graded-task':
+      return paperLabel ? t('{paper} graded attempt', { paper: paperLabel }) : t('Graded attempt');
+    case 'vocab-review':
+      return t('Vocabulary review');
+    case 'reference':
+      return t('Reference, {type}', { type });
+    case 'planning':
+      return t('Plan settings');
+    case 'lesson-check':
+      return paperLabel ? t('{paper} quick check, {type}', { paper: paperLabel, type }) : t('Quick check, {type}', { type });
+    default:
+      return type || t('Practice');
+  }
+}
+
+function StepRow({
+  step,
+  status,
+  sessionPaper,
+}: {
+  step: SharedStepView;
+  status: ReturnType<typeof stepStatus>;
+  sessionPaper?: Paper;
+}) {
   const { t } = useT();
+  // step.title (when present) is a lesson title already registered with the
+  // i18n system elsewhere, safe to translate; the composed fallback is
+  // translated as it is built; step.purpose is the planner's own English
+  // sentence and is never translated here, matching how it was already
+  // shown before this change.
+  const catalogueTitle = step.title ? t(step.title) : null;
+  const fallback = fallbackStepTitle(t, step);
+  const title = stepTitleFor({ title: catalogueTitle, purpose: step.purpose }, fallback);
+  const showPurpose = stepPurposeAddsSomething(title, step.purpose);
+  const foreignPaper = stepForeignPaper(step.paper, sessionPaper);
   return (
     <li className={`today-step is-${status}`}>
       <span className="today-step-marker" aria-hidden="true">
@@ -397,8 +583,12 @@ function StepRow({ step, status }: { step: SharedStepView; status: ReturnType<ty
         )}
       </span>
       <span className="today-step-body">
-        <span className="today-step-role">{t(STEP_ROLE_LABEL[step.role])}</span>
-        <span className="today-step-purpose">{step.purpose || humaniseSubskill(step.subskill)}</span>
+        <span className="today-step-role">
+          {t(STEP_ROLE_LABEL[step.role])}
+          {foreignPaper && <span className="today-step-foreign-paper"> · {t(PAPER_LABEL[foreignPaper])}</span>}
+        </span>
+        <span className="today-step-title">{title}</span>
+        {showPurpose && <span className="today-step-purpose">{step.purpose}</span>}
       </span>
       <span className="today-step-minutes">{t('{n} min', { n: step.minutes })}</span>
     </li>

@@ -38,6 +38,17 @@
   font-weight: 650;
   color: #dae1cd;
 }
+/* The kicker: which paper, which question type, quiet and small, directly
+   above the headline so the student knows what the objective sentence is
+   about without it having to say "Reading" itself. */
+.today-kicker {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #9aa694;
+}
 .today-objective {
   margin: 0;
   max-width: 26ch;
@@ -47,6 +58,16 @@
   line-height: 1.18;
   color: #fffefa;
 }
+
+/* A provisional plan (goal deferred, see intakeDeferral.ts): one quiet,
+   non-blocking line, never styled as a warning. */
+.today-provisional-note {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #c6cfc0;
+}
+.today-provisional-note .today-link-button { color: #e0ebbc; }
 
 .today-voice { display: flex; gap: 14px; align-items: flex-start; margin-top: 18px; }
 .today-voice-body { min-width: 0; flex: 1; }
@@ -63,6 +84,28 @@
   line-height: 1.6;
   color: #eef1e8;
 }
+/* Card-specific colours for the note on the light finished/planning cards
+   (see .today-planning, .today-finished below): kept legible there too. */
+.today-planning .today-scope-note, .today-finished .today-scope-note {
+  background: var(--color-brand-tint);
+  color: var(--color-ink);
+}
+.today-scope-toggle {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-left: 2px;
+  color: inherit;
+  font: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  opacity: .85;
+}
+.today-scope-toggle:hover { opacity: 1; }
+.today-scope-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
+.today-scope-more { display: block; margin-top: 6px; }
 
 .today-budget { margin: 16px 0 0; font-size: 13px; color: #c6cfc0; }
 .today-budget-note { color: #9aa694; }
@@ -84,13 +127,26 @@
 .today-step.is-done .today-step-marker .tick-svg { width: 12px; height: 12px; }
 .today-step.is-current .today-step-marker { border-color: #e0ebbc; box-shadow: 0 0 0 3px rgba(224, 235, 188, .25); }
 .today-step.is-skipped .today-step-marker { border-style: dashed; color: #9aa694; font-size: 11px; }
-.today-step-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.today-step-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .today-step-role { font-size: 11px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: #9aa694; }
 .today-step.is-current .today-step-role { color: #e0ebbc; }
-.today-step-purpose { font-size: 13.5px; color: #eef1e8; line-height: 1.45; }
-.today-step.is-done .today-step-purpose, .today-step.is-skipped .today-step-purpose { color: #9aa694; }
+.today-step-foreign-paper { text-transform: none; font-weight: 650; }
+/* The step's main line: the real thing it opens (a lesson's title, a
+   drill's own name, or a composed fallback), not the generic per-role
+   purpose sentence, which is why this is the prominent line now and
+   .today-step-purpose (below) is the quieter second one. */
+.today-step-title { font-size: 13.5px; font-weight: 550; color: #eef1e8; line-height: 1.4; }
+.today-step.is-done .today-step-title, .today-step.is-skipped .today-step-title { color: #9aa694; font-weight: 500; }
+.today-step-purpose { font-size: 12px; color: #9aa694; line-height: 1.45; }
+.today-step.is-done .today-step-purpose, .today-step.is-skipped .today-step-purpose { color: #7c8478; }
 .today-step-minutes { flex: 0 0 auto; font-size: 12px; color: #9aa694; }
 
+/* The primary action keeps the APPROVED design (DESIGN.md, approved by the
+   owner on 16 September 2026): "The pale green next-action button is specific
+   to the dark featured task", colors.next-action #e0ebbc with ink text in a
+   capsule. A polish round briefly moved it to the rust brand colour on the
+   lead's instruction; that contradicted the approved design and was undone.
+   Ink #263c35 on #e0ebbc measures about 9:1, well above WCAG AA. */
 .today-start {
   display: inline-flex;
   align-items: center;
@@ -100,15 +156,17 @@
   margin-top: 22px;
   padding: 12px 24px;
   border-radius: 999px;
+  border: 0;
   background: #e0ebbc;
-  color: #263c35;
+  color: var(--color-ink);
   font-family: var(--font-display-ui);
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
   transition: background 180ms ease, transform 180ms ease;
 }
-.today-start:hover { background: #eef6d4; }
+.today-start:hover { background: #eef5d3; }
+.today-start:active { background: #d3e0a8; transform: translateY(1px); }
 .today-start:focus-visible { outline: 2px solid #fffefa; outline-offset: 3px; }
 
 .today-longer {
@@ -133,6 +191,7 @@
 .today-diagnostic-note { margin: 14px 0 0; font-size: 12.5px; color: #c6cfc0; }
 
 .today-link-button { border: 0; background: none; padding: 0; color: #e0ebbc; font: inherit; font-weight: 650; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.today-link-button:focus-visible { outline: 2px solid #fffefa; outline-offset: 2px; border-radius: 2px; }
 
 .today-secondary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .today-secondary-toggle {
