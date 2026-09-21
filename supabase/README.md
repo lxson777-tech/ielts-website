@@ -141,3 +141,91 @@ cd workers/mr-ez
 npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put OPENAI_API_KEY
 ```
+
+## Personal learning tables (proposal, not applied)
+
+`migrations/2026-09-21-learning.sql` adds three more tables for the personal
+learning build: `learning_events`, `learning_plan` and `learning_companions`.
+
+**This has NOT been applied to the production project.** It is a reviewed
+proposal, written and tested against the local dev stand-in
+(`tools/mr-ez-dev-server.mjs`, exercised by `tests/learning-sync-server.test.ts`),
+never against a real Supabase project. Nobody but Alex applies it, and only
+after reading this section.
+
+### What it adds
+
+- **`learning_events`**, one row per piece of evidence a student's work
+  produces (a test attempt, a lesson check, an essay grade). Append only:
+  there is a select policy and an insert policy, and deliberately no update
+  or delete policy, so a stored event can never be edited or removed from the
+  browser. The primary key is `(user_id, event_id)`, so resending the same
+  batch (a retry after a dropped connection, two tabs syncing at once)
+  inserts nothing new for a row the server already has.
+- **`learning_plan`**, one row per student holding their current study plan.
+  Reads and writes are scoped to the signed-in student exactly like every
+  other table here, but writes also pass through a trigger that enforces the
+  same rule the site's own contract states once
+  (`src/lib/learning/contracts/sync.ts`, `PLAN_CONFLICT_RULE`): a confirmed
+  plan beats an unconfirmed one, a higher revision wins next, and a later
+  `updatedAt` breaks an exact tie. A write that does not outrank what is
+  stored is silently kept as the stored row, and that row is what comes back
+  to the caller, so a device that lost a conflict knows to rebuild from the
+  reply rather than assuming its write took.
+- **`learning_companions`**, one jsonb document per student per `kind`
+  (vocabulary review progress, notes and saved lessons, interface
+  preferences, and room for what Mr EZ remembers). Plain upsert, last write
+  wins: the merging happens on the device before a push, so the server only
+  ever needs to hold the latest merged copy.
+
+None of this touches `user_state`, `live_examiner_sessions` or any `mr_ez_*`
+table, and it does not migrate a single existing row. The current sync
+(`src/lib/auth/sync.ts` and `user_state`) keeps working exactly as it does
+today, side by side with the new tables.
+
+### How to apply it (when Alex is ready)
+
+Same method as `schema.sql`: **Supabase dashboard, SQL Editor, paste the
+whole of `migrations/2026-09-21-learning.sql`, Run.** It depends on
+`schema.sql` already being applied (it reuses the `touch_user_state_updated_at`
+function defined there), which it already is on the live project. The file is
+idempotent, safe to run more than once.
+
+The CLI equivalent, for later once this project adopts `supabase db push` for
+its migrations, is `supabase db push` with this file placed under the
+standard `supabase/migrations/` naming Supabase's CLI expects. That is a
+description of the option, not a command anyone has run here.
+
+### How to verify it
+
+After applying, in the SQL Editor:
+
+```sql
+select table_name from information_schema.tables
+where table_schema = 'public'
+  and table_name in ('learning_events', 'learning_plan', 'learning_companions');
+```
+
+should list all three, and:
+
+```sql
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public'
+  and tablename in ('learning_events', 'learning_plan', 'learning_companions');
+```
+
+should show `rowsecurity = true` for each. The real end to end proof is the
+one this repo can already give without touching production: run
+`tests/learning-sync-server.test.ts` (part of `npm test`), which serves the
+same three tables from the local dev stand-in and proves the isolation, the
+idempotent insert and the plan conflict rule against fixtures.
+
+### How to roll it back
+
+The bottom of `migrations/2026-09-21-learning.sql` has a commented rollback
+section, the drop statements in the right order. They are comments on
+purpose, not something this file or any script runs; the owner pastes them
+into the SQL Editor by hand if this ever needs to come out. Rolling back
+cannot affect `user_state` or any other existing table: nothing in this
+migration alters them, so there is nothing for a rollback to undo there
+either.

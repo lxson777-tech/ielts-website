@@ -18,6 +18,14 @@
  *   /auth/v1/*  and  /rest/v1/*   a minimal, in-memory Supabase
  *   /tutor                        the Mr EZ Worker's request/response shape
  *
+ * /rest/v1/* also serves the three personal learning tables proposed in
+ * supabase/migrations/2026-09-21-learning.sql (learning_events,
+ * learning_plan, learning_companions), NOT applied to any real project. See
+ * that file and supabase/README.md for the schema; tests/learning-sync-
+ * server.test.ts exercises this stand-in's copy of it: the same batch
+ * pushed twice stores one copy, one student can never read or write
+ * another's rows, and a losing plan write gets back the plan that won.
+ *
  * Two modes:
  *
  *   node tools/mr-ez-dev-server.mjs
@@ -70,6 +78,22 @@ const db = {
       Primary key is (user_id, kind, note_key), so a write with a new
       fingerprint replaces the row rather than adding one. */
   notes: [],
+  /** learning_events rows: { user_id, event_id, event, occurred_at,
+      activity_id, paper, mode, created_at }. Insert-only from the client,
+      deduped on (user_id, event_id) exactly like the unique primary key in
+      supabase/migrations/2026-09-21-learning.sql. */
+  learningEvents: [],
+  /** learning_plan: user_id -> { user_id, plan, revision, confirmed,
+      updated_at }. One row per user, guarded by the same PLAN_CONFLICT_RULE
+      (src/lib/learning/contracts/sync.ts) the migration's trigger enforces
+      in the real project: confirmed beats unconfirmed, then the higher
+      revision, then the later updatedAt. */
+  learningPlans: new Map(),
+  /** learning_companions rows: { user_id, kind, data, revision, updated_at },
+      keyed by (user_id, kind). Plain last-write-wins: the sync contract
+      already union-merges vocab/notes/preferences client-side by their own
+      natural key before a push, so what arrives here is already merged. */
+  learningCompanions: [],
   /** Set through POST /__force to make the next requests fail, so the
       interface's unavailable, busy and limit-reached states can be seen
       without restarting anything. */
@@ -259,6 +283,34 @@ async function handleRest(req, res, url) {
           (!where.note_key || n.note_key === where.note_key) &&
           (!where.fingerprint || n.fingerprint === where.fingerprint),
       );
+    } else if (table === 'learning_events') {
+      // Same RLS shape as user_state above: an anon-key caller asking for
+      // someone else's user_id gets nothing back, whatever else they filter
+      // on, because the real policy is "auth.uid() = user_id", not "the
+      // user_id you happened to ask for".
+      if (!service && where.user_id && where.user_id !== caller) {
+        rows = [];
+      } else {
+        rows = visible(db.learningEvents);
+        if (where.event_id) rows = rows.filter((e) => e.event_id === where.event_id);
+        if (where.activity_id) rows = rows.filter((e) => e.activity_id === where.activity_id);
+        rows = [...rows].sort((a, b) => a.occurred_at.localeCompare(b.occurred_at));
+      }
+    } else if (table === 'learning_plan') {
+      const id = service ? (where.user_id ?? caller) : caller;
+      if (!service && where.user_id && where.user_id !== caller) {
+        rows = [];
+      } else {
+        const row = db.learningPlans.get(id);
+        rows = row ? [row] : [];
+      }
+    } else if (table === 'learning_companions') {
+      if (!service && where.user_id && where.user_id !== caller) {
+        rows = [];
+      } else {
+        rows = visible(db.learningCompanions);
+        if (where.kind) rows = rows.filter((c) => c.kind === where.kind);
+      }
     }
 
     const limit = Number(url.searchParams.get('limit'));
@@ -271,6 +323,106 @@ async function handleRest(req, res, url) {
   }
 
   if (req.method === 'POST') {
+    // The three personal learning tables (supabase/migrations/2026-09-21-
+    // learning.sql, not applied anywhere real) each need write behaviour the
+    // generic path below does not model, so they are handled first and
+    // return directly: real RLS "with check (auth.uid() = user_id)" fails
+    // the whole write when a row names someone else as owner, which is
+    // checked once here for all three rather than duplicated per table.
+    if (table === 'learning_events' || table === 'learning_plan' || table === 'learning_companions') {
+      const body = await readBody(req);
+      const items = Array.isArray(body) ? body : [body];
+      if (!service && items.some((item) => item.user_id !== caller)) {
+        return send(res, 403, { message: 'new row violates row-level security policy' });
+      }
+      const prefer = String(req.headers.prefer ?? '');
+      const wantsRepresentation = prefer.includes('return=representation');
+
+      if (table === 'learning_events') {
+        // Idempotent insert: the primary key on (user_id, event_id) in the
+        // real migration makes a duplicate id a silent no-op, matching
+        // `Prefer: resolution=ignore-duplicates`, never a second row and
+        // never an error, so a retried push (a dropped connection, two tabs
+        // syncing at once) is always safe.
+        const inserted = [];
+        for (const item of items) {
+          const exists = db.learningEvents.some(
+            (e) => e.user_id === item.user_id && e.event_id === item.event_id,
+          );
+          if (exists) continue;
+          const row = {
+            user_id: item.user_id,
+            event_id: item.event_id,
+            event: item.event,
+            occurred_at: item.occurred_at,
+            activity_id: item.activity_id,
+            paper: item.paper ?? null,
+            mode: item.mode,
+            created_at: new Date().toISOString(),
+          };
+          db.learningEvents.push(row);
+          inserted.push(row);
+        }
+        return send(res, 201, wantsRepresentation ? inserted : []);
+      }
+
+      if (table === 'learning_plan') {
+        const item = items[0];
+        const owner = item.user_id;
+        const existing = db.learningPlans.get(owner) ?? null;
+        const incoming = {
+          user_id: owner,
+          plan: item.plan,
+          revision: Number(item.revision ?? 0),
+          confirmed: Boolean(item.confirmed),
+          updated_at: item.updated_at ?? new Date().toISOString(),
+        };
+        // PLAN_CONFLICT_RULE (src/lib/learning/contracts/sync.ts), the same
+        // rule the migration's guard_learning_plan_write() trigger enforces
+        // in the real project: confirmed beats unconfirmed, then the higher
+        // revision wins, then the later updatedAt breaks an exact tie. An
+        // incoming plan that does not outrank what is stored is dropped,
+        // and the row that actually won is what comes back, so a losing
+        // device can rebuild from the reply instead of assuming its write
+        // took.
+        let winner = incoming;
+        if (existing) {
+          const outranks =
+            (incoming.confirmed && !existing.confirmed) ||
+            (incoming.confirmed === existing.confirmed && incoming.revision > existing.revision) ||
+            (incoming.confirmed === existing.confirmed &&
+              incoming.revision === existing.revision &&
+              incoming.updated_at > existing.updated_at);
+          winner = outranks ? incoming : existing;
+        }
+        db.learningPlans.set(owner, winner);
+        return send(res, 201, wantsRepresentation ? [winner] : []);
+      }
+
+      // learning_companions: plain upsert by (user_id, kind). The sync
+      // contract already union-merges vocab/notes/preferences client-side
+      // by their own natural key before a push (contracts/sync.ts,
+      // CompanionSyncPayload), so the document arriving here is already the
+      // merged result and the server only needs to hold the latest one,
+      // unlike the plan above.
+      const written = [];
+      for (const item of items) {
+        const row = {
+          user_id: item.user_id,
+          kind: item.kind,
+          data: item.data,
+          revision: Number(item.revision ?? 1),
+          updated_at: new Date().toISOString(),
+        };
+        db.learningCompanions = db.learningCompanions.filter(
+          (c) => !(c.user_id === row.user_id && c.kind === row.kind),
+        );
+        db.learningCompanions.push(row);
+        written.push(row);
+      }
+      return send(res, 201, wantsRepresentation ? written : []);
+    }
+
     const body = await readBody(req);
     const items = Array.isArray(body) ? body : [body];
     const stamped = items.map((item) => ({
@@ -858,6 +1010,19 @@ const server = createServer(async (req, res) => {
         turnsWithStoredReply: db.turns.filter((t) => t.reply).length,
         recommendations: [...db.recommendations.keys()],
         notes: db.notes.map(({ user_id, kind, note_key, fingerprint }) => ({ user_id, kind, note_key, fingerprint })),
+        learningEvents: db.learningEvents.map(({ user_id, event_id, activity_id, occurred_at }) => ({
+          user_id,
+          event_id,
+          activity_id,
+          occurred_at,
+        })),
+        learningPlans: [...db.learningPlans.values()].map(({ user_id, revision, confirmed, updated_at }) => ({
+          user_id,
+          revision,
+          confirmed,
+          updated_at,
+        })),
+        learningCompanions: db.learningCompanions.map(({ user_id, kind, revision }) => ({ user_id, kind, revision })),
       });
     }
   } catch (err) {
@@ -867,6 +1032,13 @@ const server = createServer(async (req, res) => {
 
   return send(res, 404, { message: 'not found' });
 });
+
+// Exported so tests/learning-sync-server.test.ts can start this same server
+// on an OS-assigned free port (MR_EZ_DEV_PORT=0) and close it when done,
+// without spawning a second process or duplicating any of the logic above.
+// Exporting does not change plain `node tools/mr-ez-dev-server.mjs` usage at
+// all: nothing here reads these exports back.
+export { server, db };
 
 if (LIVE) await initLive();
 
