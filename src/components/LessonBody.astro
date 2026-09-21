@@ -9,10 +9,11 @@
  * its own, and every rule in src/styles/lesson.css is a descendant
  * selector under .lesson-body, so it changes nothing visually.
  *
- * Two lessons (listening.astro, reading-task1.astro) split their fragment
- * around a generated card grid. They render TWO of these with the same
- * slug, and the swapper cuts the translated file on the same
- * "<!-- lesson-cards -->" marker.
+ * Two lessons (listening.astro, reading-task1.astro) have a generated card
+ * grid in the middle of their fragment. They do NOT use this component:
+ * the cut falls inside an open section, so they write one data-lesson-body
+ * wrapper around both halves and the grid by hand. See LESSON_CARDS_ATTR in
+ * src/lib/i18n/lesson-body.ts for why.
  */
 interface Props {
   /** The lesson's progress key, e.g. "reading-tfng" — also the name of the

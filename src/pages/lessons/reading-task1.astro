@@ -1,6 +1,5 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
-import LessonBody from '../../components/LessonBody.astro';
 import LessonTypeGrid from '../../components/LessonTypeGrid.astro';
 import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
@@ -23,9 +22,18 @@ const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
 ---
 
 <LessonLayout slug="reading-task1">
-  <LessonBody slug="reading-task1" html={bodyBeforeCards} />
-  <LessonTypeGrid groups={READING_GROUPS} parts={READING_PARTS} hrefBase="reading" />
-  <LessonBody slug="reading-task1" html={bodyAfterCards} />
+  {/* One wrapper, not one per half: the marker sits inside an open
+      <div class="section">, so the halves are not balanced HTML on their
+      own. The grid is wrapped so a language swap can lift it out and put
+      the same node back (see src/lib/i18n/lesson-body.ts). display:contents
+      keeps it laid out as a direct child of the section, as before. */}
+  <div data-lesson-body="reading-task1">
+    <Fragment set:html={bodyBeforeCards} />
+    <div data-lesson-cards style="display:contents">
+      <LessonTypeGrid groups={READING_GROUPS} parts={READING_PARTS} hrefBase="reading" />
+    </div>
+    <Fragment set:html={bodyAfterCards} />
+  </div>
 
   <hr class="divider" />
   <div class="section" id="timed-test">
