@@ -149,6 +149,74 @@ export interface SyncStatus {
   error?: EvidenceRejection | PlanRejection | 'network' | 'not-configured';
 }
 
+/** Whether the browser copy of the learner record actually reached this
+    device's storage.
+      saved-locally  the last write landed, and the next one will too
+      memory-only    it did not, so this session's work is held in memory and
+                     will be gone when the tab closes. The interface says so
+                     plainly rather than showing a tick it has not earned. */
+export type LocalPersistence = 'saved-locally' | 'memory-only';
+
+/** Why a local write did not land, as a code the interface has wording for.
+      quota        the browser is full
+      blocked      storage is switched off or refused (private mode, policy)
+      unavailable  there is no browser storage here at all (server render) */
+export type LocalWriteProblem = 'quota' | 'blocked' | 'unavailable';
+
+/** What the browser copy of one student's record can honestly say about
+    itself at any moment. Separate from SyncStatus on purpose: "not saved on
+    this device" and "not yet sent to your account" are different sentences,
+    and a student is owed the right one. */
+export interface LearnerStoreStatus {
+  owner: CacheOwner;
+  persistence: LocalPersistence;
+  /** Present only when persistence is 'memory-only'. */
+  problem?: LocalWriteProblem;
+  /** Events held in the browser copy right now. */
+  events: number;
+  /** Events folded into tallies by the local soft cap and no longer held in
+      full here. The server keeps them. */
+  summarised: number;
+  evidenceVersion: number;
+  /** True once the one-time ProgressV1 migration has run for this owner. */
+  migrated: boolean;
+  /** True when the old stores on this device were already migrated into a
+      different owner's record, so they are deliberately not read again. The
+      work is not lost: it belongs to that other record, and the explicit
+      ownership claim is how it moves. */
+  legacyHeldByAnotherOwner: boolean;
+  /** Reserved for the sync layer (work package 14). Null until it sets one;
+      nothing here invents a sync state it cannot observe. */
+  sync: SyncStatus | null;
+}
+
+/** What an anonymous record on this device contains, so the screen offering
+    the claim can state it rather than asking the student to take it on
+    trust. Null `lastAt` means there is nothing dated in it. */
+export interface AnonymousWorkOffer {
+  deviceId: string;
+  summary: OwnershipClaim['summary'];
+  lastAt: string | null;
+}
+
+export type OwnershipClaimOutcome =
+  /** The work is now in the signed-in student's record. */
+  | 'claimed'
+  /** There was nothing to claim, which is also what a second claim of the
+      same work sees. Not an error. */
+  | 'nothing-to-claim'
+  /** Nobody is signed in, so there is no account to claim it into. */
+  | 'not-signed-in';
+
+export interface OwnershipClaimResult {
+  outcome: OwnershipClaimOutcome;
+  /** What was agreed to, when something was. */
+  claim: OwnershipClaim | null;
+  /** Events the account did not already hold. Claiming twice adds none,
+      because the union is by event id. */
+  newEvents: number;
+}
+
 /** The explicit step by which work done signed out becomes part of an
     account. Never automatic: the student is shown what would be claimed and
     says yes. */
@@ -181,6 +249,21 @@ export const USER_NAMESPACE_PREFIX = 'u:';
 /** Stable id for this browser while signed out, so anonymous work has an
     owner to claim from. */
 export const DEVICE_ID_KEY = 'ielts.device.v1';
+
+/** Which owner the OLD stores on this browser (ielts.progress.v1 and
+    ielts.studyplan.v1) were migrated into. Deliberately NOT namespaced:
+    those stores are one shared pile with no owner written on them, so the
+    first record to migrate them claims them and a second student signing in
+    on the same browser does not inherit them. The old stores themselves are
+    never modified or removed. */
+export const LEGACY_MIGRATION_OWNER_KEY = 'ielts.learning.legacy.v1';
+
+/** What was decided about the anonymous record on this device, per owner:
+    claimed, or declined. Once any account has decided, no other account is
+    offered that work, which is what stops a second student inheriting the
+    first one's anonymous session. Cleared when a claim empties the
+    anonymous record, because there is then nothing left to decide about. */
+export const OWNERSHIP_DECISION_KEY = 'ielts.learning.claim.v1';
 
 /** Events sent in one push. Keeps a request well inside the Worker's body
     limit (MAX_BODY_BYTES in src/lib/tutor/schema.ts is 32 KB). */

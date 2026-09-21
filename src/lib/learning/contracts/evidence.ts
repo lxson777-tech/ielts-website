@@ -377,6 +377,13 @@ export const MAX_OBJECTIVE_FEEDBACK_CHARS = 600;
     The server keeps everything. Provisional. */
 export const LOCAL_EVENT_SOFT_CAP = 4000;
 
+/** Events kept when a save fails because the browser has run out of room.
+    The soft cap above is the everyday ceiling; this is the emergency one,
+    applied once as a second attempt before the browser copy gives up and
+    keeps the record in memory for the session only. Everything dropped is
+    folded into tallies first, and the server keeps the full log. */
+export const QUOTA_RETRY_EVENT_CAP = 400;
+
 /** Prefix on every id created for a newly recorded event, so a recorded row
     and a migrated one are told apart at a glance (see
     LEGACY_EVENT_ID_PREFIX). The rest of the id is a hash of the event's own
