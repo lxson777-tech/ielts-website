@@ -31,6 +31,7 @@ import * as ruMerged from '../src/lib/i18n/dict/ru/index.ts';
 import * as shell from '../src/lib/i18n/dict/ru/shell.ts';
 import * as dashboardPlan from '../src/lib/i18n/dict/ru/dashboard-plan.ts';
 import * as courseLessons from '../src/lib/i18n/dict/ru/course-lessons.ts';
+import * as courseData from '../src/lib/i18n/dict/ru/course-data.ts';
 import * as testsPlayer from '../src/lib/i18n/dict/ru/tests-player.ts';
 import * as trainers from '../src/lib/i18n/dict/ru/trainers-writing-speaking.ts';
 import * as accountAuthVocab from '../src/lib/i18n/dict/ru/account-auth-vocab.ts';
@@ -43,6 +44,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/shell.ts', mod: shell },
   { file: 'dict/ru/dashboard-plan.ts', mod: dashboardPlan },
   { file: 'dict/ru/course-lessons.ts', mod: courseLessons },
+  { file: 'dict/ru/course-data.ts', mod: courseData },
   { file: 'dict/ru/tests-player.ts', mod: testsPlayer },
   { file: 'dict/ru/trainers-writing-speaking.ts', mod: trainers },
   { file: 'dict/ru/account-auth-vocab.ts', mod: accountAuthVocab },

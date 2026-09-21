@@ -217,7 +217,8 @@ never edit the same file. Add your entries to yours and nothing else.
 |---|---|
 | Workspace shell: tabs, avatar menu, app footer, skip link (done) | `shell.ts` |
 | Dashboard, study plan, weekly review, report | `dashboard-plan.ts` |
-| Course, units, lessons library, lesson chrome | `course-lessons.ts` |
+| Course, units, lessons library, lesson chrome (the components) | `course-lessons.ts` |
+| Unit names and blurbs in `course.ts`, lesson titles and blurbs in the `src/data` registries | `course-data.ts` |
 | Tests hub, test player, analytics, debrief, mock exam | `tests-player.ts` |
 | Writing and speaking trainers, band report, live examiner | `trainers-writing-speaking.ts` |
 | Account, sign-in, password reset, vocabulary and word of the day | `account-auth-vocab.ts` |
