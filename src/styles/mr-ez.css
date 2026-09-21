@@ -439,3 +439,46 @@
   .mrez-welcome-cta:hover { transform: none; }
   .mrez-log { scroll-behavior: auto; }
 }
+
+/* Approved Mr EZ identity. Scoped to tutor surfaces only. */
+:root { --mrez-ink: #193335; --mrez-surface: #fffcf6; --mrez-soft: #f2eee4; --mrez-accent: #995024; --mrez-muted: #53665b; --mrez-line: #deded1; --mrez-panel-width: 408px; }
+.mrez-avatar.has-approved-art { position: relative; overflow: hidden; border-radius: 50%; background: #f7f1e7; }
+.mrez-avatar.has-approved-art img { position: absolute; max-width: none; width: 205%; height: auto; left: -49%; top: -4%; border-radius: 0; }
+.mrez-avatar.has-approved-art.is-thinking img { width: 260%; left: -14%; top: -254%; }
+.mrez-avatar.has-approved-art.is-celebrating img { width: 260%; left: -143%; top: -254%; }
+.mrez-avatar.has-approved-art.is-unavailable { opacity: 1; filter: saturate(.65); }
+.mrez-launcher { height: 64px; padding: 8px 23px 8px 9px; gap: 11px; background: var(--mrez-ink); color: var(--mrez-surface); border-color: var(--mrez-ink); box-shadow: 0 8px 28px #19333528; }
+.mrez-launcher-label { text-align: left; font-family: 'Manrope Variable', sans-serif; font-size: 14px; font-weight: 750; }
+.mrez-launcher-label small { display: block; margin-top: 2px; font-family: Inter,sans-serif; font-size: 10px; font-weight: 500; color: #efa260; }
+.mrez-panel { bottom: 98px; border-radius: 24px; max-height: min(660px,calc(100dvh - 122px)); box-shadow: 0 24px 70px #19333526; }
+.mrez-head { padding: 20px; background: var(--mrez-ink); border-bottom: 0; gap: 13px; }
+.mrez-head-text strong { font-family: 'Manrope Variable',sans-serif; color: #fffcf6; font-size: 21px; letter-spacing: -.6px; font-weight: 750; }
+.mrez-head-text span { color: #efa260; font-size: 11px; line-height: 1.5; }
+.mrez-close { width: 36px; height: 36px; flex-shrink: 0; color: #fffcf6; background: #ffffff10; }
+.mrez-close:hover { background: #ffffff22; color: #fffcf6; }
+.mrez-close:focus-visible { outline-color: #efa260; }
+.mrez-log { padding: 24px 20px; gap: 18px; min-height: 230px; background: #f7f1e7; overscroll-behavior: contain; }
+.mrez-intro-eyebrow { font-size: 10px; font-weight: 650; color: var(--mrez-accent); }
+.mrez-intro h2 { margin: 9px 0 10px; font-family: 'Manrope Variable',sans-serif; font-size: 26px; font-weight: 750; letter-spacing: -.9px; line-height: 1.2; color: var(--mrez-ink); max-width: 280px; }
+.mrez-intro p { font-size: 13px; line-height: 1.65; color: var(--mrez-muted); margin: 0; }
+.mrez-note { background: #fffcf6; border: 1px solid var(--mrez-line); font-size: 12px; }
+.mrez-note a { color: var(--mrez-accent); text-decoration: underline; text-underline-offset: 3px; }
+.mrez-suggestions button { padding: 13px 15px; background: #fffcf6; border-radius: 12px; line-height: 1.5; }
+.mrez-suggestions button:hover:not(:disabled) { background: #fae5d1; border-color: #efa260; }
+.mrez-turn.is-student .mrez-bubble { background: var(--mrez-ink); }
+.mrez-composer { padding: 14px 16px 18px; background: #fffcf6; align-items: center; }
+.mrez-composer textarea { min-width: 0; min-height: 48px; border-radius: 15px; padding: 13px 14px; font-size: 13px; }
+.mrez-send { width: 44px; height: 44px; background: #efa260; color: #193335; }
+.mrez-send:hover:not(:disabled) { background: #f5b67e; }
+.mrez-send:disabled { opacity: .5; }
+.mrez-count { bottom: 1px; }
+.mrez-welcome-heading, .mrez-memory-head h2 { font-family: 'Manrope Variable',sans-serif; }
+.mrez-welcome-cta { background: #fae5d1; }
+.mrez-welcome-cta:hover { background: #f6d6b6; }
+@media (max-width:720px) {
+ .mrez-launcher { height: 58px; padding: 6px 17px 6px 7px; }
+ .mrez-panel { bottom: calc(136px + env(safe-area-inset-bottom,0px)); max-height: calc(100dvh - 154px - env(safe-area-inset-bottom,0px)); }
+ .mrez-head { padding: 16px; }
+ .mrez-log { padding: 19px 16px; min-height: 0; }
+ .mrez-intro h2 { font-size: 24px; }
+}
