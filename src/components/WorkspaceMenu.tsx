@@ -14,6 +14,8 @@ import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange, signOut } from '../lib/auth/session';
 import { startSyncForUser, stopSync } from '../lib/auth/sync';
 import { WORKSPACE_MENU } from '../lib/platform-nav';
+import { LOCALE_LABEL, SUPPORTED_LOCALES, switchLocale } from '../lib/i18n';
+import { useT } from '../lib/i18n/react';
 import AuthModal from './AuthModal';
 
 /** Up to two letters from the email's local part, e.g. alex.p@x.com -> AP. */
@@ -26,6 +28,7 @@ function initialsFor(email: string | undefined): string {
 }
 
 export default function WorkspaceMenu() {
+  const { t, locale } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -81,7 +84,7 @@ export default function WorkspaceMenu() {
         className="ws-avatar"
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={open ? 'Close menu' : 'Open menu'}
+        aria-label={open ? t('Close menu') : t('Open menu')}
         onClick={() => setOpen((o) => !o)}
       >
         {initials ? (
@@ -101,7 +104,7 @@ export default function WorkspaceMenu() {
         <div className="ws-menu" role="menu">
           {user?.email && (
             <p className="ws-menu-identity" style={{ '--i': step() } as React.CSSProperties}>
-              <span>Signed in as</span>
+              <span>{t('Signed in as')}</span>
               <strong>{user.email}</strong>
             </p>
           )}
@@ -115,7 +118,7 @@ export default function WorkspaceMenu() {
                   style={{ '--i': step() } as React.CSSProperties}
                   onClick={() => setOpen(false)}
                 >
-                  {item.label}
+                  {t(item.label)}
                 </a>
               ))}
             </div>
@@ -132,7 +135,7 @@ export default function WorkspaceMenu() {
                     void signOut();
                   }}
                 >
-                  Sign out
+                  {t('Sign out')}
                 </button>
               ) : (
                 <button
@@ -144,11 +147,39 @@ export default function WorkspaceMenu() {
                     setModalOpen(true);
                   }}
                 >
-                  Sign in
+                  {t('Sign in')}
                 </button>
               )}
             </div>
           )}
+
+          {/* The language switch. Two quiet options rather than a select, so
+              the current choice is visible without opening anything, and each
+              language is named in its own language (never translated). The
+              menu deliberately stays open: the student sees the whole shell
+              change under them, which is the confirmation that it worked. */}
+          <div className="ws-menu-group">
+            <p className="ws-menu-lang-label" style={{ '--i': step() } as React.CSSProperties}>
+              {t('Language')}
+            </p>
+            <div className="ws-menu-langs" role="group" aria-label={t('Language')}>
+              {SUPPORTED_LOCALES.map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  className="ws-menu-lang"
+                  lang={code}
+                  aria-pressed={code === locale}
+                  style={{ '--i': step() } as React.CSSProperties}
+                  onClick={() => {
+                    void switchLocale(code);
+                  }}
+                >
+                  {LOCALE_LABEL[code]}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

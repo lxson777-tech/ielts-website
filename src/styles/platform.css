@@ -94,7 +94,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 /* Each row follows the panel by 20ms, so the menu unrolls rather than
    appearing whole. --i is set per item by WorkspaceMenu. */
 @keyframes ws-menu-item-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
-.ws-menu-identity, .ws-menu a, .ws-menu button { animation: ws-menu-item-in 180ms var(--ease-out-expo) both; animation-delay: calc(var(--i, 0) * 20ms); }
+.ws-menu-identity, .ws-menu-lang-label, .ws-menu a, .ws-menu button { animation: ws-menu-item-in 180ms var(--ease-out-expo) both; animation-delay: calc(var(--i, 0) * 20ms); }
 .ws-menu-identity { margin: 0; padding: 8px 10px 10px; }
 .ws-menu-identity span { display: block; color: var(--color-ink-muted); font-size: .7rem; }
 .ws-menu-identity strong { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; font-weight: 700; }
@@ -103,6 +103,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .ws-menu a, .ws-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 9px; background: none; color: var(--color-ink); font: inherit; font-size: .84rem; font-weight: 600; text-align: left; text-decoration: none; cursor: pointer; transition: background 200ms ease, color 200ms ease; }
 .ws-menu a:hover, .ws-menu button:hover { background: var(--color-surface-alt); }
 .ws-menu-identity strong, .ws-avatar-initials { font-family: var(--font-display-ui); }
+
+/* Language switch: a quiet two-option segment at the foot of the menu. It is
+   a setting, not a destination, so it reads lighter than the links above it
+   and only the chosen option carries a surface. */
+.ws-menu-lang-label { margin: 0; padding: 8px 10px 4px; color: var(--color-ink-muted); font-size: .7rem; }
+.ws-menu-langs { display: flex; gap: 4px; padding: 0 2px 2px; }
+.ws-menu .ws-menu-lang { flex: 1; width: auto; padding: 6px 8px; border: 1px solid transparent; border-radius: 9px; color: var(--color-ink-muted); font-size: .78rem; text-align: center; }
+.ws-menu .ws-menu-lang:hover { background: var(--color-surface-alt); color: var(--color-ink); }
+.ws-menu .ws-menu-lang[aria-pressed='true'] { border-color: var(--color-border); background: var(--color-surface-alt); color: var(--color-ink); }
 
 .ws-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .ws-page { flex: 1; width: 100%; max-width: 880px; margin-inline: auto; padding: 40px 24px 72px; }
@@ -163,7 +172,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
   .site-nav-link, .site-workspace-button, .ws-header, .ws-wordmark, .ws-tab, .ws-tab::before, .ws-tab-indicator, .ws-tabs.is-ready .ws-tab-indicator, .ws-avatar, .ws-menu a, .ws-menu button, .ws-tabbar-link, .ws-tabbar-label, .ws-footer a { transition-duration: 1ms; }
   .site-nav-link:hover, .site-workspace-button:hover { transform: none; }
   .ws-tab::before { transform: none; }
-  .ws-menu, .ws-menu-identity, .ws-menu a, .ws-menu button { animation-duration: 1ms; animation-delay: 0ms; }
+  .ws-menu, .ws-menu-identity, .ws-menu-lang-label, .ws-menu a, .ws-menu button { animation-duration: 1ms; animation-delay: 0ms; }
   .ws-tabbar-link.is-active .ws-tabbar-label { transform: none; }
 }
 

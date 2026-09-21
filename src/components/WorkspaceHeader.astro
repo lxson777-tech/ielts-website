@@ -41,10 +41,20 @@ const TAB_ICON_PATHS: Record<WorkspaceTab['icon'], string> = {
 
 <header class="ws-header" transition:persist="ws-header">
   <div class="ws-header-inner">
-    <a class="ws-wordmark" href={withBase('/dashboard')} aria-label="IELTS is EZ workspace">
+    {/* The wordmark itself is the brand and stays in English; only the
+        spoken label around it is translated. Tab labels come from
+        WORKSPACE_TABS, so the literal is not visible here — data-i18n reads
+        the rendered English text and looks it up, and the nt() wrappers in
+        platform-nav.ts are what make the coverage test require them. */}
+    <a
+      class="ws-wordmark"
+      href={withBase('/dashboard')}
+      aria-label="IELTS is EZ workspace"
+      data-i18n-attr="aria-label"
+    >
       <span>IELTS is</span> <span class="ws-wordmark-accent">EZ</span>
     </a>
-    <nav class="ws-tabs" aria-label="Workspace">
+    <nav class="ws-tabs" aria-label="Workspace" data-i18n-attr="aria-label">
       {tabs.map((tab) => (
         <a
           href={withBase(tab.href)}
@@ -65,7 +75,7 @@ const TAB_ICON_PATHS: Record<WorkspaceTab['icon'], string> = {
             aria-hidden="true"
             set:html={TAB_ICON_PATHS[tab.icon]}
           />
-          <span class="ws-tab-label">{tab.label}</span>
+          <span class="ws-tab-label" data-i18n>{tab.label}</span>
         </a>
       ))}
       <span class="ws-tab-indicator" aria-hidden="true"></span>
@@ -74,7 +84,7 @@ const TAB_ICON_PATHS: Record<WorkspaceTab['icon'], string> = {
   </div>
 </header>
 
-<nav class="ws-tabbar" aria-label="Workspace" transition:persist="ws-tabbar">
+<nav class="ws-tabbar" aria-label="Workspace" data-i18n-attr="aria-label" transition:persist="ws-tabbar">
   {tabs.map((tab) => (
     <a
       href={withBase(tab.href)}
@@ -95,7 +105,7 @@ const TAB_ICON_PATHS: Record<WorkspaceTab['icon'], string> = {
         aria-hidden="true"
         set:html={TAB_ICON_PATHS[tab.icon]}
       />
-      <span class="ws-tabbar-label">{tab.label}</span>
+      <span class="ws-tabbar-label" data-i18n>{tab.label}</span>
     </a>
   ))}
 </nav>

@@ -6,6 +6,8 @@
    That split is the whole point of the 2026-09 shell: one row of five
    destinations you use every day, one quiet drawer for the rest. */
 
+import { nt } from './i18n/translate';
+
 export interface WorkspaceTab {
   href: string;
   label: string;
@@ -15,12 +17,16 @@ export interface WorkspaceTab {
   icon: 'today' | 'course' | 'practice' | 'tests' | 'words';
 }
 
+/* Labels are wrapped in nt() — "mark for translation", gettext's N_(). They
+   stay plain English data here (the header renders them, not this file), but
+   the wrapper is what the i18n coverage test extracts, so a missing Russian
+   tab label fails the test instead of silently shipping. */
 export const WORKSPACE_TABS: WorkspaceTab[] = [
-  { href: '/dashboard', label: 'Today', also: ['/report', '/plan-settings'], icon: 'today' },
-  { href: '/start', label: 'Course', also: ['/learn', '/lessons'], icon: 'course' },
-  { href: '/trainers', label: 'Practice', also: ['/writing', '/speaking'], icon: 'practice' },
-  { href: '/tests', label: 'Tests', icon: 'tests' },
-  { href: '/review', label: 'Vocabulary', icon: 'words' },
+  { href: '/dashboard', label: nt('Today'), also: ['/report', '/plan-settings'], icon: 'today' },
+  { href: '/start', label: nt('Course'), also: ['/learn', '/lessons'], icon: 'course' },
+  { href: '/trainers', label: nt('Practice'), also: ['/writing', '/speaking'], icon: 'practice' },
+  { href: '/tests', label: nt('Tests'), icon: 'tests' },
+  { href: '/review', label: nt('Vocabulary'), icon: 'words' },
 ];
 
 export interface WorkspaceMenuItem {
@@ -31,16 +37,16 @@ export interface WorkspaceMenuItem {
 /** The avatar menu, grouped. Auth actions are appended by the island itself. */
 export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
   [
-    { href: '/account', label: 'Account' },
-    { href: '/plan-settings', label: 'Study plan settings' },
-    { href: '/account#saved', label: 'Saved and notes' },
-    { href: '/report', label: 'Progress report' },
+    { href: '/account', label: nt('Account') },
+    { href: '/plan-settings', label: nt('Study plan settings') },
+    { href: '/account#saved', label: nt('Saved and notes') },
+    { href: '/report', label: nt('Progress report') },
   ],
   [
-    { href: '/learn', label: 'Lessons library' },
-    { href: '/learn/bands', label: 'What each band needs' },
-    { href: '/writing/models', label: 'Model answers' },
-    { href: '/speaking/cue-cards', label: 'Cue cards' },
+    { href: '/learn', label: nt('Lessons library') },
+    { href: '/learn/bands', label: nt('What each band needs') },
+    { href: '/writing/models', label: nt('Model answers') },
+    { href: '/speaking/cue-cards', label: nt('Cue cards') },
   ],
 ];
 
