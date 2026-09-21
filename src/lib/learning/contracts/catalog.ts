@@ -269,9 +269,16 @@ export interface LearningCatalogueV1 {
  *  build until the index is regenerated. */
 export interface GeneratedIndexV1 {
   version: 1;
-  /** Hash of the generator's inputs. Also LearningCatalogueV1.indexVersion. */
+  /** Hash of the file's own content. Also LearningCatalogueV1.indexVersion.
+      A version that can be recomputed and checked, rather than one that has
+      to be trusted. */
   indexVersion: string;
-  generatedAt: string;
+  /** Deliberately NOT written. A run timestamp would make the file
+      impossible to reproduce, and the staleness test compares the committed
+      bytes with a fresh run, so the two cannot both exist. Kept in the type
+      only so an older reader still compiles; `indexVersion` is what says
+      which index this is. */
+  generatedAt?: string;
   tests: readonly TestIndexEntry[];
   drills: readonly DrillIndexEntry[];
   lessonChecks: readonly LessonCheckIndexEntry[];
@@ -279,6 +286,40 @@ export interface GeneratedIndexV1 {
   writingPrompts: readonly WritingPromptIndexEntry[];
   speakingPrompts: readonly SpeakingPromptIndexEntry[];
   vocabTopics: readonly VocabTopicIndexEntry[];
+  /** Every question type in the schema's union, including the ones no paper
+      contains. See QuestionTypeCoverage. */
+  questionTypes: readonly QuestionTypeCoverage[];
+}
+
+/** How much real material one question type actually has, counted from the
+    papers rather than assumed from the lesson library.
+ *
+ *  This exists because the site currently offers links that lead nowhere:
+ *  `practisePath` (src/lib/tests/question-types.ts) will happily build
+ *  `/trainers/listening?type=tfng`, a filter that matches nothing, and
+ *  `sentence-endings` has a lesson, a label and a strategy but zero
+ *  questions in any of the 70 papers. The catalogue is built from these
+ *  counts, so an activity with no material is marked unavailable and said
+ *  to be unavailable, instead of being linked and dead-ending. */
+export interface QuestionTypeCoverage {
+  /** A member of QuestionType in src/lib/tests/schema.ts. */
+  type: string;
+  /** True when neither skill has a single question of this type. The
+      planner may not schedule an independent check for it, and the
+      catalogue says so in plain words rather than hiding the gap. */
+  absent: boolean;
+  reading: QuestionTypeCounts;
+  listening: QuestionTypeCounts;
+}
+
+export interface QuestionTypeCounts {
+  /** Questions of this type across every paper of this skill. */
+  questions: number;
+  /** How many papers contain at least one. */
+  papers: number;
+  /** How many single-part drills contain at least one, which is what
+      decides whether "practise this type" has anywhere to send a student. */
+  drills: number;
 }
 
 export interface TestIndexEntry {
@@ -326,10 +367,21 @@ export interface LessonCheckItem {
   /** Short hash of the English prompt plus answer. Changes when the question
       changes; that is the point. */
   itemVersion: string;
+  /** Measured from the paper this item was lifted from, never assumed from
+      the lesson it sits on: five lessons deliberately teach a neighbouring
+      type, and the matching-sentence-endings lesson's own check is built
+      from questions the papers label `sentence-completion`. */
   type: Subskill;
   /** True when the unit quotes a real imported passage, so exposure of that
       passage is recorded too. */
   fromImportedPaper: boolean;
+  /** The paper this item was lifted from, when there is one. Without it
+      "the student has already seen this" cannot be answered, because
+      sitting the lesson check spends the paper's question too. */
+  sourceTestId?: string;
+  /** That paper's own id for this question, e.g. `q14`. Question ids are
+      unique within a paper, not across the bank, so the pair is the item. */
+  sourceQuestionId?: string;
 }
 
 export interface FocusedExerciseIndexEntry {
@@ -349,6 +401,16 @@ export interface WritingPromptIndexEntry {
   title: string;
   /** Chart, process, map, opinion, discussion, and so on. */
   form: string;
+  /** 150 for Task 1, 250 for Task 2, straight from the prompt. */
+  minWords: number;
+  /** The exam's own budget for the task, 20 or 40 minutes. A focused
+      exercise on one objective is far shorter and says so itself. */
+  suggestedMinutes: number;
+  /** The bands of the model answers that exist for this prompt, ascending.
+      Empty when there is none. A lesson that teaches from a contrast
+      between two models has to know there is more than one before it
+      offers the comparison. */
+  modelAnswerBands: readonly number[];
   provenance: ContentProvenance;
 }
 
@@ -356,7 +418,12 @@ export interface SpeakingPromptIndexEntry {
   id: string;
   part: 1 | 2 | 3;
   topic: string;
+  /** Questions the student answers in this prompt's own part. A Part 1
+      topic has several; a cue card is one two-minute talk, so it is 1. */
   questionCount: number;
+  /** A cue card's Part 3 follow-ups, counted separately because Part 3 is
+      scheduled as its own objective with its own subskills. */
+  part3QuestionCount?: number;
   provenance: ContentProvenance;
 }
 

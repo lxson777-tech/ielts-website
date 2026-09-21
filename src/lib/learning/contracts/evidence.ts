@@ -176,6 +176,16 @@ export type EvidenceOutcome =
 
 /* ── The event ───────────────────────────────────────────────────────────── */
 
+/** Which Writing task or Speaking part a WHOLE graded submission belongs to.
+    Present only when the event covers a whole task rather than one
+    objective: a focused exercise says what it practised through `subskill`
+    instead. The policy needs this to keep Task 1 apart from Task 2, and the
+    three Speaking parts apart from each other, which it must: they are
+    marked on different criteria and behave differently. */
+export type TaskScope =
+  | { kind: 'writing-task'; task: 'task1' | 'task2' }
+  | { kind: 'speaking-part'; part: 1 | 2 | 3 };
+
 export interface EvidenceEvent {
   /** Deterministic, content-derived, stable across devices and re-runs. */
   id: string;
@@ -204,6 +214,15 @@ export interface EvidenceEvent {
   /** Per-item detail, when the surface has it. Absent on legacy rows and on
       graded tasks. */
   items?: readonly ItemOutcome[];
+  /** Which Writing task or Speaking part, for a whole graded submission.
+      See TaskScope. */
+  taskScope?: TaskScope;
+  /** Exposure keys for the material this activity drew on, in the same form
+      as ExposureEntry.key ('paper:<testId>', 'prompt:<promptId>'). Item
+      exposure comes from `items`; this covers the case where a whole paper
+      or prompt was met without per-item detail, so a re-sit of it is
+      correctly marked seen rather than read as fresh evidence. */
+  sourceMaterial?: readonly string[];
   /** The event this is a second go at. Chains, so a third attempt points at
       the second. */
   retryOf?: string;
@@ -236,6 +255,44 @@ export interface ExposureEntry {
   occasions: number;
 }
 
+/* ── Compaction ──────────────────────────────────────────────────────────── */
+
+/** One subskill's folded-up history, after the oldest events were compacted
+    away locally (see LOCAL_EVENT_SOFT_CAP). Counts only. There is no item
+    detail here and there never can be, which is the point: a tally can
+    inform "how much work has been done" and can never be mistaken for the
+    item-level evidence the policy needs to call something demonstrated. */
+export interface SubskillTally {
+  subskill: Subskill;
+  paper?: Paper;
+  mode: EvidenceMode;
+  /** Kept per tally so a migrated legacy block can never be counted as if it
+      had been recorded live. */
+  provenance: EvidenceProvenance;
+  independentOccasions: number;
+  assistedOccasions: number;
+  independentItems: number;
+  correctItems: number;
+  /** Completion clicks, kept apart from anything that was answered. */
+  studiedCount: number;
+  earliestAt: string;
+  latestAt: string;
+}
+
+/** A block of compacted events. Deliberately NOT an EvidenceEvent: different
+    shape, different id prefix, no `outcome`, no `items`. */
+export interface EvidenceSummaryV1 {
+  kind: 'evidence-summary';
+  /** Derived from the range it covers, so two devices that compact the same
+      block agree and the union by id collapses them into one. */
+  id: string;
+  from: string;
+  to: string;
+  /** How many events were folded in. */
+  eventCount: number;
+  tallies: readonly SubskillTally[];
+}
+
 /* ── The record ──────────────────────────────────────────────────────────── */
 
 export interface LearnerRecordV1 {
@@ -244,6 +301,10 @@ export interface LearnerRecordV1 {
       were computed against, so a stale reply can be rejected. */
   evidenceVersion: number;
   events: readonly EvidenceEvent[];
+  /** Oldest events, folded into counts by the local soft cap. Optional so a
+      record written before compaction existed still loads. The server keeps
+      the full log; this is the browser's memory of what it dropped. */
+  summaries?: readonly EvidenceSummaryV1[];
   exposure: readonly ExposureEntry[];
   /** What the student told us about themselves, kept apart from what was
       measured. */
@@ -274,6 +335,17 @@ export interface MigrationStamp {
   testAttemptsMigrated: number;
   writingAttemptsMigrated: number;
   speakingAttemptsMigrated: number;
+  /** Lesson completions migrated without the caller naming the lesson's
+      subskill, so they carry UNCLASSIFIED_LESSON_SUBSKILL. Counted rather
+      than hidden: it is how many rows are grouped under a placeholder. */
+  lessonsWithoutSubskill?: number;
+  /** Plan steps (the exam-readiness extras in SavedPlan.doneKeys) migrated
+      as completion clicks. */
+  planStepsMigrated?: number;
+  /** Rows in the old store that could not be read (a hand-edited or
+      half-written entry). Skipped rather than guessed at, and counted here
+      rather than hidden. */
+  rowsSkipped?: number;
 }
 
 /* ── Named constants ─────────────────────────────────────────────────────── */
@@ -304,3 +376,45 @@ export const MAX_OBJECTIVE_FEEDBACK_CHARS = 600;
     summarised into per-subskill tallies and dropped from local storage.
     The server keeps everything. Provisional. */
 export const LOCAL_EVENT_SOFT_CAP = 4000;
+
+/** Prefix on every id created for a newly recorded event, so a recorded row
+    and a migrated one are told apart at a glance (see
+    LEGACY_EVENT_ID_PREFIX). The rest of the id is a hash of the event's own
+    content. */
+export const EVENT_ID_PREFIX = 'ev:';
+
+/** Prefix on a compacted block's id. Same reason: it must be impossible to
+    mistake a block of tallies for an event. */
+export const EVIDENCE_SUMMARY_ID_PREFIX = 'sum:';
+
+/** `contentVersion` for an event whose activity version is genuinely not
+    known, which is every migrated row: ProgressV1 never recorded one. It is
+    never treated as stale, because "we do not know" is not the same as "we
+    know it is old", and throwing a student's history away on a guess would
+    be worse than keeping it. */
+export const UNKNOWN_CONTENT_VERSION = 0;
+
+/** The `subskill` an event carries when it is about a WHOLE activity (a full
+    timed paper, a graded essay, a whole Speaking part) rather than one
+    objective. The contract needs exactly one subskill per event and a
+    40-question paper does not have one: the real breakdown lives in
+    `outcome.bySubskill` for a scored paper, in `outcome.criteria` for a
+    graded task, and in `taskScope` for Writing and Speaking. Sitting the
+    whole thing under its own timing is what these activities have in common,
+    which is why the value comes from the exam-skills family. Provisional:
+    change it here and every caller follows. */
+export const WHOLE_ACTIVITY_SUBSKILL: Subskill = 'timing-strategy';
+
+/** The `subskill` a migrated lesson completion carries when the caller did
+    not supply the lesson's own subskill. A completion click is `studied` and
+    can never move an ability estimate, so this placeholder cannot inflate
+    anything: it only decides which heading the lesson appears under in a
+    study list. The migration counts how many rows land here
+    (MigrationStamp.lessonsWithoutSubskill) rather than hiding it. */
+export const UNCLASSIFIED_LESSON_SUBSKILL: Subskill = 'exam-format';
+
+/** Two pieces of work this far apart in time are separate sittings, even on
+    the same day. Eight questions answered in one sitting is one occasion,
+    which is the distinction the policy's `patternMinOccasions` rests on.
+    Provisional. */
+export const OCCASION_GAP_MINUTES = 45;

@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "learning:index": "node --import ./tests/ts-extension-loader.mjs tools/generate-learning-index.mjs",
     "test": "node --import ./tests/ts-extension-loader.mjs --test tests/*.test.ts"
   },
   "dependencies": {
