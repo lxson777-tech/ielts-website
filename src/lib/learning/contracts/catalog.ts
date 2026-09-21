@@ -457,6 +457,25 @@ export interface FocusedExerciseIndexEntry {
   provenance: ContentProvenance;
   /** Every item's stable id, authored by hand rather than positional. */
   itemIds: readonly string[];
+  /** What the exercise is FOR (added by the Matching Headings pilot, WP16).
+   *
+   *  `guided-practice` is worked with hints and explanations, so it can
+   *  never be an independent demonstration. `independent-check` is unseen
+   *  material with no help at all, and its papers are RESERVED: the
+   *  catalogue marks their drills as check material so ordinary practice
+   *  cannot spend them first. Absent on an older index, which reads as
+   *  guided practice, exactly the behaviour there was before. */
+  role?: 'guided-practice' | 'independent-check';
+  /** The exercise's own one-sentence objective, when it has one. Absent
+      falls back to the catalogue's generic sentence. */
+  objective?: string;
+  /** The papers these items were lifted from. Without it the planner
+      cannot tell whether a check is really unseen, because sitting the
+      paper or its drill spends the very same questions. */
+  sourcePaperIds?: readonly string[];
+  /** Catalogue ids that hold the same questions (the source paper and the
+      single-part drill built from it). */
+  sharesItemsWith?: readonly string[];
 }
 
 export interface WritingPromptIndexEntry {

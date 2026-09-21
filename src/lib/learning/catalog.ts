@@ -811,6 +811,7 @@ function buildCheckActivities(index: GeneratedIndexV1): CatalogueActivity[] {
 
 function buildDrillActivities(index: GeneratedIndexV1): CatalogueActivity[] {
   const noRussian = new Set(TESTS_WITHOUT_RUSSIAN_EXPLANATIONS);
+  const reserved = reservedCheckPapers(index);
   return index.drills.map((drill: DrillIndexEntry) => ({
     id: drillActivityId(drill.id),
     contentVersion: 1,
@@ -836,6 +837,9 @@ function buildDrillActivities(index: GeneratedIndexV1): CatalogueActivity[] {
        hand a student the very questions they drilled last week. */
     sharesItemsWith: [paperActivityId(drill.sourceTestId)],
     sourcePaperIds: [drill.sourceTestId],
+    /* This part comes out of a paper a focused check draws on, so spending
+       it on practice would spend the check with it. */
+    ...(reserved.has(drill.sourceTestId) ? { tags: [CHECK_ONLY_TAG] } : {}),
   }));
 }
 
@@ -996,14 +1000,23 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
 
 /* ── Focused exercises ───────────────────────────────────────────────────── */
 
-/** Empty today. src/data/focused-exercises.ts is authored by a later work
-    package and the generator already picks it up, so the day it lands these
-    appear with no change here. Anything authored in this project is
-    unverified until a teacher checks it, which is what keeps it out of the
-    independent-check slot (lead decision Q1). */
+/** One question group out of one real paper, opened on its own page.
+ *
+ *  Anything authored in this project is unverified until a teacher checks
+ *  it, which is what keeps it out of the independent-check slot (lead
+ *  decision Q1). An exercise lifted from a publisher's paper is verified by
+ *  its source, and it carries that paper's id so the planner can tell
+ *  whether the student has already met these questions.
+ *
+ *  A Reading or Listening exercise has a real answer key, so what it
+ *  produces is scored items: that is what lets a fresh check move an
+ *  estimate. A Writing or Speaking one is judged against its one objective
+ *  instead, and never carries a band. */
 function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
   return index.focusedExercises.map((exercise) => {
     const verified = isVerified(exercise.provenance);
+    const scored = exercise.paper === 'reading' || exercise.paper === 'listening';
+    const isCheck = exercise.role === 'independent-check';
     return {
       id: focusedActivityId(exercise.id),
       contentVersion: 1,
@@ -1011,16 +1024,12 @@ function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       domain: exercise.paper,
       paper: exercise.paper,
       subskill: exercise.subskill,
-      objective: 'Practise one thing on a few unseen items, with no help and no timer.',
+      objective: exercise.objective ?? 'Practise one thing on a few unseen items, with no help and no timer.',
       prerequisites: [],
       expectedMinutes: exercise.expectedMinutes,
       indivisible: false,
-      target: {
-        kind: 'task',
-        taskId: 'focused-exercise',
-        indexRef: { section: 'focusedExercises', id: exercise.id },
-      },
-      completionEvidence: 'objective-judged',
+      target: route(FOCUSED_EXERCISE_ROUTE + exercise.id),
+      completionEvidence: scored ? 'scored-items' : 'objective-judged',
       explanationLocales: BILINGUAL,
       provenance: exercise.provenance,
       verified,
@@ -1031,9 +1040,49 @@ function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
             reason:
               'This set was written here and no teacher has checked it yet, so it can be used for guided practice but not as a check on its own.',
           },
-      tags: ['unseen-reserved'],
+      ...(exercise.sharesItemsWith ? { sharesItemsWith: [...exercise.sharesItemsWith].sort() } : {}),
+      ...(exercise.sourcePaperIds ? { sourcePaperIds: exercise.sourcePaperIds } : {}),
+      /* A check is held back from ordinary practice, and a guided set is
+         held back from being a check: it is worked with hints and with the
+         answers explained, so whatever it scores it shows guided work. */
+      tags: isCheck ? ['unseen-reserved', CHECK_ONLY_TAG] : ['unseen-reserved', GUIDED_ONLY_TAG],
     };
   });
+}
+
+/** Where a focused exercise is opened. Must stay in step with
+    focusedExerciseHref in src/data/focused-exercises.ts and with the route
+    at src/pages/trainers/focused/[id].astro; tests/pilot-matching-headings
+    .test.ts asserts the three agree. It sits under /trainers because that
+    is the Practice tab, which is what a focused exercise is. */
+const FOCUSED_EXERCISE_ROUTE = '/trainers/focused/';
+
+/** Material held back so that an independent check still has somewhere to
+ *  happen.
+ *
+ *  An independent check has to be material this student has never met, and
+ *  there is only so much of it. Once an ordinary practice drill has been
+ *  sat, its paper is spent for good: the questions are the same questions.
+ *  So the papers the check exercises draw on are marked here, and
+ *  practiceForSubskill leaves anything carrying this tag alone. They stay
+ *  in the library, they stay linkable, and a student who goes looking for
+ *  them can still sit them; the PLAN simply never spends them on practice.
+ *
+ *  Derived from the exercises themselves rather than listed by hand, so
+ *  adding a check for another question type reserves its paper with it. */
+const CHECK_ONLY_TAG = 'check-only';
+
+/** The other half of the same rule: an exercise meant to be worked WITH
+    help cannot be an independent check, however fresh its questions are. */
+const GUIDED_ONLY_TAG = 'guided-only';
+
+function reservedCheckPapers(index: GeneratedIndexV1): ReadonlySet<string> {
+  const out = new Set<string>();
+  for (const exercise of index.focusedExercises) {
+    if (exercise.role !== 'independent-check') continue;
+    for (const paperId of exercise.sourcePaperIds ?? []) out.add(paperId);
+  }
+  return out;
 }
 
 /* ── Vocabulary ──────────────────────────────────────────────────────────── */
@@ -1521,15 +1570,33 @@ const PRACTICE_KINDS = new Set(['drill', 'focused-exercise', 'graded-task', 'les
 const CHECK_KINDS = new Set(['drill', 'lesson-check', 'focused-exercise', 'full-test']);
 
 /** Activities that TEACH a subskill, the ones that fit it directly first.
-    A borrowed lesson is still returned: it is the nearest thing the library
-    has, and saying nothing would be worse than saying "close, not exact". */
+ *  A borrowed lesson is still returned: it is the nearest thing the library
+ *  has, and saying nothing would be worse than saying "close, not exact".
+ *
+ *  A lesson always comes before a focused exercise. A focused exercise is
+ *  practice; it is in this list only so that an objective with no lesson at
+ *  all (several Writing ones) still has somewhere to start, and it must
+ *  never push a real lesson out of the teaching slot. Anything reserved for
+ *  a check is not here at all: it is the material being saved. */
 export function activitiesThatTeach(
   subskill: Subskill,
   catalogue: LearningCatalogueV1 = learningCatalogue(),
 ): readonly CatalogueActivity[] {
   return catalogue.activities
-    .filter((a) => TEACHING_KINDS.has(a.kind) && !a.unavailable && coversSubskill(a, subskill))
-    .sort((a, b) => rankFit(a, b, subskill) || a.expectedMinutes - b.expectedMinutes);
+    .filter(
+      (a) =>
+        TEACHING_KINDS.has(a.kind) &&
+        !a.unavailable &&
+        !(a.tags ?? []).includes(CHECK_ONLY_TAG) &&
+        coversSubskill(a, subskill),
+    )
+    .sort((a, b) => rankFit(a, b, subskill) || rankLesson(a, b) || a.expectedMinutes - b.expectedMinutes);
+}
+
+function rankLesson(a: CatalogueActivity, b: CatalogueActivity): number {
+  const left = a.kind === 'lesson' ? 0 : 1;
+  const right = b.kind === 'lesson' ? 0 : 1;
+  return left - right;
 }
 
 function rankFit(a: CatalogueActivity, b: CatalogueActivity, subskill: Subskill): number {
@@ -1538,11 +1605,18 @@ function rankFit(a: CatalogueActivity, b: CatalogueActivity, subskill: Subskill)
   return left - right;
 }
 
-/** Practice for a subskill that fits the minutes left, longest first, so a
-    session fills its practice slot rather than padding it with three tiny
-    ones. Unavailable activities and indivisible ones that do not fit are
-    left out: an indivisible activity too big for today is a longer
-    commitment the planner offers separately, not a candidate. */
+/** Practice for a subskill that fits the minutes left. Unavailable
+ *  activities and indivisible ones that do not fit are left out: an
+ *  indivisible activity too big for today is a longer commitment the
+ *  planner offers separately, not a candidate. So is anything reserved for
+ *  an independent check, which is the whole point of reserving it.
+ *
+ *  Order: a direct fit first, then a focused exercise before a whole drill,
+ *  then the longest that fits, so a slot is filled once rather than padded
+ *  with three tiny ones. The middle rule is the one the architecture asks
+ *  for in section 6.2: a twenty minute passage and a six question group
+ *  both practise Matching Headings, and the group is the one that leaves
+ *  room in the same session to teach it first and check it afterwards. */
 export function practiceForSubskill(
   subskill: Subskill,
   minutes: number,
@@ -1553,10 +1627,23 @@ export function practiceForSubskill(
       (a) =>
         PRACTICE_KINDS.has(a.kind) &&
         !a.unavailable &&
+        !(a.tags ?? []).includes(CHECK_ONLY_TAG) &&
         a.expectedMinutes <= minutes &&
         coversSubskill(a, subskill),
     )
-    .sort((a, b) => rankFit(a, b, subskill) || b.expectedMinutes - a.expectedMinutes || compareIds(a, b));
+    .sort(
+      (a, b) =>
+        rankFit(a, b, subskill) ||
+        rankFocused(a, b) ||
+        b.expectedMinutes - a.expectedMinutes ||
+        compareIds(a, b),
+    );
+}
+
+function rankFocused(a: CatalogueActivity, b: CatalogueActivity): number {
+  const left = a.kind === 'focused-exercise' ? 0 : 1;
+  const right = b.kind === 'focused-exercise' ? 0 : 1;
+  return left - right;
 }
 
 function compareIds(a: CatalogueActivity, b: CatalogueActivity): number {
@@ -1577,7 +1664,9 @@ export interface SubskillCheck {
  *  Only verified material qualifies: lead decision Q1 allows unverified
  *  authored sets for guided practice, never for a check. A hub is left out
  *  too, because "go to the drills page and pick something" names no items
- *  and so cannot be reserved as unseen. */
+ *  and so cannot be reserved as unseen. So is anything marked guided-only:
+ *  an exercise built to be worked with hints and explanations shows guided
+ *  work whatever it scores. */
 export function checksForSubskill(
   subskill: Subskill,
   catalogue: LearningCatalogueV1 = learningCatalogue(),
@@ -1585,7 +1674,12 @@ export function checksForSubskill(
   return catalogue.activities
     .filter(
       (a) =>
-        CHECK_KINDS.has(a.kind) && a.verified && !a.unavailable && !isHub(a) && coversSubskill(a, subskill),
+        CHECK_KINDS.has(a.kind) &&
+        a.verified &&
+        !a.unavailable &&
+        !isHub(a) &&
+        !(a.tags ?? []).includes(GUIDED_ONLY_TAG) &&
+        coversSubskill(a, subskill),
     )
     .sort((a, b) => a.expectedMinutes - b.expectedMinutes || compareIds(a, b))
     .map((activity) => ({ activity, sourceTestIds: activity.sourcePaperIds ?? [] }));

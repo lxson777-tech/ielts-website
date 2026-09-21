@@ -18,6 +18,9 @@ import {
   type RecordedAnswers,
 } from '../lib/learning/lesson-check';
 import { getLearnerStore, ownerNamespace, type BrowserStorage } from '../lib/learning/store.browser';
+import type { AssistanceLevel } from '../lib/learning/contracts/evidence';
+import LessonHelpControls from './learning/LessonHelpControls';
+import { currentLessonBlockContext, type LessonBlockContext } from './learning/lesson-block-help';
 
 /** Base-prefixed URL for images stored under /public. */
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
@@ -206,6 +209,11 @@ function scoreMessage(correct: number, total: number, repeat: boolean): string {
   return t('Tough round! Study the explanations, then hit Try again. 🔄');
 }
 
+/** The lesson block a quick check's help is grounded in, plus the set id
+    the item reference needs. Absent when the check is not on a lesson page
+    or has no id of its own, and then no help controls are shown. */
+type QuizHelp = LessonBlockContext & { setId: string };
+
 interface UnitState {
   drafts: string[];
   checked: boolean;
@@ -246,6 +254,10 @@ function UnitBlock({
   startIndex,
   selectNoun,
   explain,
+  help,
+  assistance,
+  identityFor,
+  onHelpUsed,
   onDraft,
   onCheck,
   onReset,
@@ -259,6 +271,14 @@ function UnitBlock({
   selectNoun: string;
   /** One note in the student's language, falling back to the English. */
   explain: Explain;
+  /** The teaching block this check sits under, read off the lesson page.
+      Null means no help controls at all, which is what a check rendered
+      anywhere else, or one with no set id, gets. */
+  help: QuizHelp | null;
+  /** What has already been shown about each question, by its key. */
+  assistance: Readonly<Record<string, AssistanceLevel>>;
+  identityFor: (key: string) => { version: string; testId?: string; questionId?: string } | undefined;
+  onHelpUsed: (key: string, level: AssistanceLevel) => void;
   onDraft: (qi: number, value: string) => void;
   onCheck: () => void;
   onReset: () => void;
@@ -404,6 +424,41 @@ function UnitBlock({
                   {q.source && <p className="mt-1 text-xs text-ink-muted">{t('Source: {source}', { source: q.source })}</p>}
                 </div>
               )}
+
+              {/* Help at the teaching point: a hint that leads toward the
+                  answer before it is given, and a second explanation after
+                  the attempt for anyone the official note did not reach.
+                  Whatever is used raises this question's assistance level,
+                  so a right answer after help is recorded as assisted. */}
+              {help && (
+                <LessonHelpControls
+                  inline
+                  lessonKey={help.lessonKey}
+                  lessonTitle={help.lessonTitle}
+                  blockId={help.blockId}
+                  blockHeading={help.blockHeading}
+                  blockText={help.blockText}
+                  question={q.prompt}
+                  officialExplanation={locked ? explanation : undefined}
+                  attempted={locked}
+                  kinds={locked ? ['explain'] : ['hint']}
+                  assistance={assistance[practiceKey(unitIndex, qi)] ?? 'none'}
+                  item={(() => {
+                    const key = practiceKey(unitIndex, qi);
+                    const identity = identityFor(key);
+                    if (!identity) return undefined;
+                    return {
+                      setId: help.setId,
+                      itemKey: key,
+                      itemVersion: identity.version,
+                      given: g,
+                      testId: identity.testId,
+                      questionId: identity.questionId,
+                    };
+                  })()}
+                  onHelp={(result) => onHelpUsed(practiceKey(unitIndex, qi), result.assistanceAfter)}
+                />
+              )}
             </div>
           );
         })}
@@ -465,6 +520,13 @@ export default function PracticeQuiz({ set, setId }: Props) {
   /* True once these questions are known to have been met before: an
      earlier go at this set, or a paper the student has already sat. */
   const [repeat, setRepeat] = useState(false);
+  /* What has been shown about each question before its answer was settled.
+     A question that had a hint is assisted for good, whatever it scores. */
+  const [assistance, setAssistance] = useState<Record<string, AssistanceLevel>>({});
+  /* The teaching block this check sits under. Read after mount, because
+     the ids are stamped onto the lesson by a script and there is no DOM
+     during the server render. */
+  const [help, setHelp] = useState<QuizHelp | null>(null);
 
   const total = set.units.reduce((n, u) => n + u.questions.length, 0);
   const checkedQuestions = units.reduce((n, s, i) => (s.checked ? n + set.units[i]!.questions.length : n), 0);
@@ -506,6 +568,16 @@ export default function PracticeQuiz({ set, setId }: Props) {
     } catch {
       return null;
     }
+  }, [setId]);
+
+  /* The lesson block behind this check, once the page has stamped its ids.
+     A check rendered anywhere but a lesson page finds nothing and simply
+     has no help controls, which is the honest outcome: there is no
+     teaching block to ground an answer in. */
+  useEffect(() => {
+    if (!setId) return;
+    const context = currentLessonBlockContext();
+    if (context) setHelp({ ...context, setId });
   }, [setId]);
 
   /* Answers already given are not lost by leaving the page. Restored
@@ -550,11 +622,16 @@ export default function PracticeQuiz({ set, setId }: Props) {
       const identity = identityByKey.get(lessonCheckItemKey(unitIndex, qi));
       if (!identity) return;
       const given = state.drafts[qi] ?? '';
+      const helped = assistance[lessonCheckItemKey(unitIndex, qi)];
       submissions.push({
         identity,
         given,
         correct: given.trim() !== '' && isRight(question, given),
         attempt: state.attempt,
+        /* Only when help was really used. Left out, the shared module
+           applies its own rule: a first go is unassisted, a later one
+           carries what this surface had already shown. */
+        ...(helped && helped !== 'none' ? { assistance: helped } : {}),
       });
     });
     if (submissions.length === 0) return;
@@ -647,6 +724,11 @@ export default function PracticeQuiz({ set, setId }: Props) {
           startIndex,
           selectNoun,
           explain,
+          help,
+          assistance,
+          identityFor: (key: string) => identityByKey.get(key),
+          onHelpUsed: (key: string, level: AssistanceLevel) =>
+            setAssistance((held) => ({ ...held, [key]: level })),
           onDraft: (qi: number, value: string) => setDraft(unitIndex, qi, value),
           onCheck: () => checkUnit(unitIndex),
           onReset: () => resetUnit(unitIndex),

@@ -103,6 +103,18 @@ export interface ItemOutcome extends ItemIdentity {
   /** Seconds spent on this item, when the surface measures it honestly.
       Omitted rather than estimated. */
   seconds?: number;
+  /** Why the student says they chose what they chose, when a surface asked
+      and they answered (added by the Matching Headings pilot, WP16).
+   *
+   *  This is the line between an OBSERVED mistake and a CONJECTURED cause,
+   *  which the brief asks for by name. What is observed is the wrong
+   *  answer, and it is in `correct` and `firstAnswer`. This field is the
+   *  student's own account of how they got there: `reasonId` is one of the
+   *  ids in that question type's list (src/data/focused-exercises.ts), and
+   *  `note` is anything they added in their own words. Nothing derived from
+   *  it may ever be stated as a finding: every sentence built on it says
+   *  that it came from them and that it is tentative. */
+  statedReason?: { reasonId: string; note?: string };
 }
 
 /* ── Scored and graded results ───────────────────────────────────────────── */

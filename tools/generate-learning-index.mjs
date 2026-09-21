@@ -330,20 +330,35 @@ export function buildLessonChecks() {
 /* Focused exercises (authored later, in WP18)                         */
 /* ------------------------------------------------------------------ */
 
+/* An exercise names a real paper, a part and a group (see
+   src/data/focused-exercises.ts). Everything below is carried through so
+   the catalogue can answer three questions without ever loading a paper:
+   what this exercise is for, which papers it would spend, and which other
+   activities hold the same questions. */
 export async function buildFocusedExercises() {
   if (!existsSync(FOCUSED_EXERCISES_FILE)) return [];
   const module = await import(pathToFileURL(FOCUSED_EXERCISES_FILE).href);
   const authored = module.FOCUSED_EXERCISES ?? [];
   return authored
-    .map((exercise) => ({
-      id: exercise.id,
-      subskill: exercise.subskill,
-      paper: exercise.paper,
-      itemCount: exercise.items.length,
-      expectedMinutes: exercise.expectedMinutes,
-      provenance: exercise.provenance ?? 'project-authored',
-      itemIds: exercise.items.map((item) => item.id),
-    }))
+    .map((exercise) => {
+      const source = exercise.source;
+      const entry = {
+        id: exercise.id,
+        subskill: exercise.subskill,
+        paper: exercise.paper,
+        itemCount: exercise.items.length,
+        expectedMinutes: exercise.expectedMinutes,
+        provenance: exercise.provenance ?? 'project-authored',
+        itemIds: exercise.items.map((item) => item.id),
+      };
+      if (exercise.role) entry.role = exercise.role;
+      if (exercise.objective) entry.objective = exercise.objective;
+      if (source?.testId) {
+        entry.sourcePaperIds = [source.testId];
+        entry.sharesItemsWith = [`test:${source.testId}`, ...(source.drillId ? [`drill:${source.drillId}`] : [])];
+      }
+      return entry;
+    })
     .sort(byId);
 }
 

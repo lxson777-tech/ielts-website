@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "indexVersion": "b4af1c0eb9282ca1",
+  "indexVersion": "624c8fea1528bbb4",
   "tests": [
     {
       "id": "listening-full-001",
@@ -3460,7 +3460,47 @@
       ]
     }
   ],
-  "focusedExercises": [],
+  "focusedExercises": [
+    {
+      "id": "reading-matching-headings-check-a",
+      "subskill": "matching-headings",
+      "paper": "reading",
+      "itemCount": 6,
+      "expectedMinutes": 8,
+      "provenance": "imported-paper",
+      "itemIds": ["reading-full-029:q1", "reading-full-029:q2", "reading-full-029:q3", "reading-full-029:q4", "reading-full-029:q5", "reading-full-029:q6"],
+      "role": "independent-check",
+      "objective": "Show on a passage you have not seen that you can match headings to paragraphs on your own.",
+      "sourcePaperIds": ["reading-full-029"],
+      "sharesItemsWith": ["test:reading-full-029", "drill:reading-full-029-drill-p1"]
+    },
+    {
+      "id": "reading-matching-headings-check-b",
+      "subskill": "matching-headings",
+      "paper": "reading",
+      "itemCount": 5,
+      "expectedMinutes": 8,
+      "provenance": "imported-paper",
+      "itemIds": ["reading-full-037:q1", "reading-full-037:q2", "reading-full-037:q3", "reading-full-037:q4", "reading-full-037:q5"],
+      "role": "independent-check",
+      "objective": "Show on a second unseen passage that you can match headings to paragraphs on your own.",
+      "sourcePaperIds": ["reading-full-037"],
+      "sharesItemsWith": ["test:reading-full-037", "drill:reading-full-037-drill-p1"]
+    },
+    {
+      "id": "reading-matching-headings-guided",
+      "subskill": "matching-headings",
+      "paper": "reading",
+      "itemCount": 6,
+      "expectedMinutes": 12,
+      "provenance": "imported-paper",
+      "itemIds": ["reading-full-020:q14", "reading-full-020:q15", "reading-full-020:q16", "reading-full-020:q17", "reading-full-020:q18", "reading-full-020:q19"],
+      "role": "guided-practice",
+      "objective": "Match a heading to a paragraph by what the whole paragraph is about, not by a word it repeats.",
+      "sourcePaperIds": ["reading-full-020"],
+      "sharesItemsWith": ["test:reading-full-020", "drill:reading-full-020-drill-p2"]
+    }
+  ],
   "writingPrompts": [
     {
       "id": "pte-wt-103-task1",

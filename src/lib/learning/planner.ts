@@ -1796,6 +1796,10 @@ export function proposalShortlist(input: {
     unavailableSurfaces: input.plan.constraints.unavailable ?? [],
     minutes: budget,
     thresholds,
+    /* The same rule validatePlanProposal applies, for the same reason: the
+       shortlist and the check on what comes back must agree, or the model
+       would be offered something that is then refused. */
+    satisfiedIds: sessionSatisfiedIds(input.plan),
   };
 
   const out = new Map<string, CatalogueActivity>();
@@ -1812,6 +1816,21 @@ export function proposalShortlist(input: {
     if (activity && isEligible(activity, context)) out.set(activity.id, activity);
   }
   return [...out.values()].slice(0, MAX_PROPOSAL_CANDIDATES);
+}
+
+/** Activity ids today's session already carries, which therefore satisfy a
+ *  prerequisite for anything proposed alongside them.
+ *
+ *  `except` leaves the proposal itself out, so an activity can never be its
+ *  own prerequisite. Everything else in the session counts: the student
+ *  either has done it or is committed to doing it today, and the teaching
+ *  in front of a practice step is the whole reason the step is there. */
+function sessionSatisfiedIds(plan: PersonalPlanV1, except?: string): ReadonlySet<string> {
+  return new Set(
+    plan.activeSession.steps
+      .map((step) => step.activityId)
+      .filter((activityId) => activityId !== except),
+  );
 }
 
 export interface ProposalCheck {
@@ -1899,6 +1918,14 @@ export function validatePlanProposal(input: ProposalCheck): ProposalVerdict {
     minutes: budget,
     thresholds,
     allowHub: true,
+    /* An earlier step of the same session satisfies a later step's
+       prerequisite. Session assembly has always worked this way (see
+       `satisfied` in assembleSession), which is how a new student can be
+       taught the overview and then practise a question type in the same
+       hour. Without the same rule here, the session's own practise step
+       was refused as prerequisite-unmet the moment a model proposed it:
+       its prerequisite is the teach step immediately above it. */
+    satisfiedIds: sessionSatisfiedIds(input.plan, activity.id),
   };
 
   const reason = ineligibleReason(activity, context);

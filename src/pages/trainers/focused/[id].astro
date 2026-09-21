@@ -1,0 +1,130 @@
+---
+/* One focused exercise, resolved against the real paper at build time.
+ *
+ * The data (src/data/focused-exercises.ts) names a paper, a part and a
+ * question group. This page is where that becomes a passage, six questions,
+ * an answer key, the publisher's explanations and the sentences in the
+ * passage that decide them. Nothing is fetched at runtime and nothing is
+ * carried by the catalogue, which is the same split the drill pages use:
+ * src/data/tests is 3.9 MB and belongs on the build side of the line.
+ *
+ * If a named group is not there, or is not the type the exercise claims,
+ * the build FAILS here rather than shipping an empty page.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FocusedExercise from '../../../components/learning/FocusedExercise';
+import { FOCUSED_EXERCISES, MISTAKE_REASONS, type FocusedExercise as FocusedExerciseData } from '../../../data/focused-exercises';
+import { ALL_TESTS } from '../../../data/tests';
+import { focusedActivityId } from '../../../lib/learning/catalog';
+import { blockPlainText, segmentLessonBody } from '../../../lib/learning/lesson-blocks';
+import type { FocusedExerciseView, FocusedItemView } from '../../../components/learning/focused-exercise';
+
+/* Every English lesson body, read at build time only, so an exercise can
+   point at the exact teaching block that explains it. Same glob the
+   lesson-block endpoint uses. */
+const LESSON_BODIES = import.meta.glob<string>('../../../content/lesson-bodies/*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+export function getStaticPaths() {
+  return FOCUSED_EXERCISES.map((exercise) => ({ params: { id: exercise.id }, props: { exercise } }));
+}
+
+const { exercise } = Astro.props as { exercise: FocusedExerciseData };
+
+const test = ALL_TESTS.find((entry) => entry.id === exercise.source.testId);
+if (!test) throw new Error(`Focused exercise ${exercise.id} names a paper that does not exist: ${exercise.source.testId}`);
+const part = test.parts[exercise.source.partIndex];
+if (!part) throw new Error(`Focused exercise ${exercise.id} names part ${exercise.source.partIndex} of ${test.id}, which has ${test.parts.length}.`);
+const group = part.groups[exercise.source.groupIndex];
+if (!group) throw new Error(`Focused exercise ${exercise.id} names group ${exercise.source.groupIndex}, which is not in ${test.id} part ${exercise.source.partIndex}.`);
+if (group.type !== exercise.subskill) {
+  throw new Error(`Focused exercise ${exercise.id} says ${exercise.subskill} but ${test.id} group ${exercise.source.groupIndex} is ${group.type}.`);
+}
+if (part.stimulus.kind !== 'passage') {
+  throw new Error(`Focused exercise ${exercise.id} points at a part with no passage, which this page cannot render.`);
+}
+
+/* The numbered slot a student would see on the real paper, so a question
+   that is "14" there is "14" here. Counted across the whole paper, exactly
+   as numberQuestions does in TestPlayer. */
+const numberById = new Map<string, number>();
+let counter = 0;
+for (const testPart of test.parts) {
+  for (const testGroup of testPart.groups) {
+    for (const question of testGroup.questions) {
+      counter += 1;
+      numberById.set(question.id, counter);
+    }
+  }
+}
+
+const items: FocusedItemView[] = exercise.items.map((item) => {
+  const question = group.questions.find((entry) => entry.id === item.questionId);
+  if (!question) throw new Error(`Focused exercise ${exercise.id} names ${item.questionId}, which is not in that group.`);
+  const answer = Array.isArray(question.answer) ? (question.answer[0] as string) : question.answer;
+  return {
+    itemId: item.id,
+    questionId: question.id,
+    number: numberById.get(question.id) ?? 0,
+    label: blockPlainText(question.textHtml ?? question.id),
+    answer,
+    explanation: question.explanation,
+    evidence: question.evidence,
+  };
+});
+
+/* The teaching block this exercise practises, found by its heading so a
+   rewritten lesson cannot silently point the help at another paragraph. */
+const lessonHtml = exercise.lesson
+  ? LESSON_BODIES[`../../../content/lesson-bodies/${exercise.lesson.key}.html`]
+  : undefined;
+const blocks = lessonHtml ? segmentLessonBody(lessonHtml) : [];
+const block =
+  blocks.find((entry) => entry.heading === exercise.lesson?.blockHeading) ?? blocks[blocks.length - 1];
+const lessonSegments = exercise.lesson?.key.split('-') ?? [];
+const lessonHref =
+  exercise.lesson && block
+    ? `/lessons/${lessonSegments[0]}/${lessonSegments.slice(1).join('-')}#${block.id}`
+    : undefined;
+
+const view: FocusedExerciseView = {
+  exerciseId: exercise.id,
+  activityId: focusedActivityId(exercise.id),
+  contentVersion: 1,
+  role: exercise.role,
+  paper: exercise.paper,
+  subskill: exercise.subskill,
+  title: exercise.title,
+  objective: exercise.objective,
+  expectedMinutes: exercise.expectedMinutes,
+  testId: test.id,
+  attribution: exercise.source.attribution,
+  lessonHref,
+  lessonKey: exercise.lesson?.key,
+  blockId: block?.id ?? '',
+  blockHeading: block?.heading ?? '',
+  blockText: block?.text ?? '',
+  instructionText: blockPlainText(group.instructionHtml ?? ''),
+  passage: {
+    label: part.stimulus.label,
+    title: part.stimulus.title,
+    paragraphs: part.stimulus.paragraphs,
+  },
+  instructionHtml: group.instructionHtml ?? '',
+  legendHtml: group.legendHtml,
+  options: group.options ?? [],
+  items,
+  reasons: MISTAKE_REASONS[exercise.reasons] ?? MISTAKE_REASONS.generic,
+};
+---
+
+<BaseLayout
+  wide
+  title={`${exercise.title} · IELTS Portal`}
+  description="A short focused exercise on one question type, built from real exam material."
+>
+  <FocusedExercise client:load view={view} />
+</BaseLayout>

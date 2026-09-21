@@ -54,6 +54,7 @@ import * as trainersDrills from '../src/lib/i18n/dict/ru/trainers-drills.ts';
 import * as learningIntake from '../src/lib/i18n/dict/ru/learning-intake.ts';
 import * as learningToday from '../src/lib/i18n/dict/ru/learning-today.ts';
 import * as learningAccount from '../src/lib/i18n/dict/ru/learning-account.ts';
+import * as learningFocus from '../src/lib/i18n/dict/ru/learning-focus.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -75,6 +76,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/learning-intake.ts', mod: learningIntake },
   { file: 'dict/ru/learning-today.ts', mod: learningToday },
   { file: 'dict/ru/learning-account.ts', mod: learningAccount },
+  { file: 'dict/ru/learning-focus.ts', mod: learningFocus },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching

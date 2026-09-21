@@ -785,6 +785,11 @@ test('the whole catalogue is the size the report says it is', () => {
     [...kinds.entries()].sort(),
     [
       ['drill', 266],
+      /* The Matching Headings pilot (WP16) authored the first three: one
+         guided set and two checks, each one question group lifted out of a
+         real paper. Before it, this line read 0 and the catalogue did not
+         pretend otherwise. */
+      ['focused-exercise', 3],
       ['full-test', 73],
       ['graded-task', 189],
       ['lesson', 76],
@@ -795,6 +800,10 @@ test('the whole catalogue is the size the report says it is', () => {
     ],
     'the counts in the work package report, asserted so they cannot drift silently',
   );
-  assert.equal(activities.length, 669);
-  assert.equal(byKind('focused-exercise').length, 0, 'none are authored yet, and the catalogue does not pretend');
+  assert.equal(activities.length, 672);
+  assert.equal(
+    byKind('focused-exercise').every((activity) => activity.verified),
+    true,
+    'every one of them is publisher material, verified by its source',
+  );
 });

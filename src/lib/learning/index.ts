@@ -329,6 +329,49 @@ export function markStepSkipped(stepId: string): PersonalPlanV1 {
   return setStepState(stepId, 'skipped');
 }
 
+/** Tick off any step of today's session that the record now says was done.
+ *
+ *  Before this, every surface had to remember to call markStepDone, and a
+ *  surface that forgot left a student looking at a step they had just
+ *  finished. The evidence is the better signal anyway: it is written by the
+ *  activity itself, it names the activity, and it knows how the work ended.
+ *
+ *  An event completes a step when it is ABOUT that step's activity, it
+ *  finished (a blank or abandoned attempt never ticks anything off), and it
+ *  belongs to this session or to today. Matching on the session id alone
+ *  would miss work opened straight from the library that happens to be
+ *  exactly what today asked for, which is the case the audit's "direct
+ *  entry" scenario is about.
+ *
+ *  Idempotent: a step already done is left alone, and setStepState returns
+ *  the plan untouched when nothing changed, so no revision is burned. The
+ *  explicit markStepDone calls keep working exactly as they did. */
+export function completeStepsFromEvidence(): PersonalPlanV1 | null {
+  const stored = getPlanStore().read();
+  if (!stored) return null;
+  const session = stored.activeSession;
+  if (session.state !== 'active') return stored;
+
+  const record = getLearnerStore().read();
+  const today = localToday();
+  let plan = stored;
+  for (const step of session.steps) {
+    if (step.state === 'done' || step.state === 'skipped') continue;
+    /* Newest first: the same activity can have several events, and the one
+       that just arrived is the one this is about. */
+    const event = [...record.events]
+      .reverse()
+      .find(
+        (entry) =>
+          entry.activityId === step.activityId &&
+          (entry.completion === 'completed' || entry.completion === 'partial') &&
+          (entry.sessionId === session.id || entry.localDate === today),
+      );
+    if (event) plan = markStepDone(step.stepId, [event.id]);
+  }
+  return plan;
+}
+
 /* ── What counts as meaningful evidence ──────────────────────────────────── */
 
 /** Exactly the `new-evidence` trigger the architecture defines: an event
@@ -388,6 +431,10 @@ let unsubscribeEvidence: (() => void) | null = null;
 export function watchEvidence(): () => void {
   if (unsubscribeEvidence) return unsubscribeEvidence;
   const off = getLearnerStore().subscribe(() => {
+    /* Progress through today first, then whether what was learnt changes
+       the plan. In that order, because a replan reads the session it is
+       about and should see the step as finished. */
+    completeStepsFromEvidence();
     onEvidenceRecorded();
   });
   unsubscribeEvidence = () => {

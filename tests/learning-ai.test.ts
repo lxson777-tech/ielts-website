@@ -666,8 +666,14 @@ test('a client cannot widen the shortlist it is offered', async () => {
   const { recorder } = await run(state, {
     task: 'propose-next',
     versions: derived.versions,
-    // A modified client claiming an extra candidate.
-    candidateActivityIds: [...derived.shortlist.map((a) => a.id), notOffered!.id],
+    // A modified client swapping in a candidate of its own. It replaces one
+    // rather than appending: the planner's shortlist fills the ten places
+    // MAX_PROPOSAL_CANDIDATES allows (it did not before WP16 taught the
+    // eligibility check that an earlier step of today's session satisfies a
+    // later step's prerequisite, which left one place empty), and an
+    // eleventh id is refused by the request parser before this rule is even
+    // reached. What is being tested here is the rule, not the cap.
+    candidateActivityIds: [...derived.shortlist.slice(1).map((a) => a.id), notOffered!.id],
     budgetMinutes: derived.plan.activeSession.budgetMinutes,
     deterministicChoiceId: derived.deterministicChoiceId,
   });

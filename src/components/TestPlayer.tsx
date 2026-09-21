@@ -30,6 +30,7 @@ import {
 import { isBookmarked, toggleBookmark } from '../lib/notes';
 import TestDebrief from './tutor/TestDebrief';
 import AskWhyWrong from './tutor/AskWhyWrong';
+import SessionContinueBar from './learning/SessionContinueBar';
 import { recordSubmission, recordUnfinishedAttempt } from '../lib/learning/store.browser';
 import {
   attemptActivityId,
@@ -1355,6 +1356,12 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                     })}
                   </button>
                 )}
+                {/* Where "next" really goes, read from the student's own
+                    session rather than guessed here: continue today's
+                    session when this paper was a step of it, and a quiet
+                    way back when they opened it themselves. Not on a
+                    retake, which is a nested run with its own way out. */}
+                {!isRetake && <SessionContinueBar compact activityId={attemptActivityId(test.id)} />}
                 <div className="mt-4 flex justify-center gap-3">
                   <button
                     type="button"

@@ -9,6 +9,7 @@ import { LISTENING_PARTS } from '../data/listening';
 import { WRITING_PARTS } from '../data/writing';
 import { SPEAKING_PARTS } from '../data/speaking';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
+import { segmentLessonBody } from '../lib/learning/lesson-blocks';
 
 interface Props {
   slug: string;
@@ -45,6 +46,23 @@ function lookupPartMinutes(lessonSlug: string): number | undefined {
   return undefined;
 }
 const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }).minutes;
+
+/* Teaching-block ids, derived from the ENGLISH body at build time by the
+   same pure function the /data/lesson-blocks endpoint and the tests use
+   (lead decision D2: no lesson body file is edited). The script below
+   stamps them onto the rendered headings, so a session or a tutoring turn
+   can name one teaching point, and a link can open the lesson AT it.
+
+   The Russian body is a translation of the same structure, so stamping by
+   position gives it the same ids. Both are checked in
+   tests/pilot-matching-headings.test.ts. */
+const LESSON_BODIES = import.meta.glob<string>('../content/lesson-bodies/*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+const bodyHtml = LESSON_BODIES[`../content/lesson-bodies/${slug}.html`];
+const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id) : [];
 ---
 
 <BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description} lessonKey={slug}>
@@ -99,7 +117,11 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     </section>
 
     <!-- Migrated lesson content -->
-    <article class="lesson-body mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <article
+      class="lesson-body mx-auto max-w-4xl px-4 py-10 sm:px-6"
+      data-lesson-blocks={blockIds.length ? JSON.stringify(blockIds) : undefined}
+      data-lesson-title={lesson.title}
+    >
       <slot />
 
       <div class="mt-12 flex flex-col items-center gap-4 border-t border-border pt-8">
@@ -159,10 +181,14 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
 
 <style is:global>
   @import '../styles/lesson.css';
+  /* The help controls at the end of each teaching block are built in plain
+     DOM (no island on a lesson page), so their styles come from here. */
+  @import '../styles/learning-focus.css';
 </style>
 
 <script>
   import { initReadingQuiz } from '../scripts/lesson-quiz';
+  import { mountLessonBlockHelp } from '../components/learning/lesson-block-help';
   import type { VocabWord } from '../scripts/vocab-quiz';
   import { isLessonComplete, markLessonComplete, onProgressChange, unmarkLessonComplete } from '../lib/progress';
   import { recordLessonStudied } from '../lib/learning/store.browser';
@@ -207,6 +233,31 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   // compiled on its own and cannot read the frontmatter above.
   function lessonSlug(): string | undefined {
     return document.getElementById('lesson-complete-btn')?.dataset.slug;
+  }
+
+  // Teaching-block ids and the help controls that sit at the end of each
+  // block. Run on every page load AND after a language swap, because the
+  // swap replaces the whole body: the ids go with it, and a control that
+  // survived it would have no listeners left. mountLessonBlockHelp clears
+  // what it made last time, so running it twice is one set of controls.
+  function refreshLessonBlocks() {
+    const article = document.querySelector<HTMLElement>('.lesson-body[data-lesson-blocks]');
+    const slug = lessonSlug();
+    if (!article || !slug) return;
+    let ids: string[] = [];
+    try {
+      ids = JSON.parse(article.dataset.lessonBlocks ?? '[]');
+    } catch {
+      return;
+    }
+    const body = article.querySelector('[data-lesson-body]');
+    if (!body) return;
+    mountLessonBlockHelp({
+      lessonKey: slug,
+      lessonTitle: article.dataset.lessonTitle,
+      ids,
+      root: body,
+    });
   }
 
   // The shared "next" control: if this lesson is a step of today's session
@@ -266,6 +317,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   onLessonBodySwap(() => {
     initReadingQuiz({ lessonKey: lessonSlug() });
     markCompletedLessonCards();
+    refreshLessonBlocks();
   });
 
   // Re-subscribed on every astro:page-load (see below) so a live language
@@ -285,6 +337,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   document.addEventListener('astro:page-load', () => {
     offLocale?.();
     initReadingQuiz({ lessonKey: lessonSlug() });
+    refreshLessonBlocks();
 
     // Floating vocabulary word that drifts across the hero panel — one
     // word per lap, swapped to a new random word (never repeating the
@@ -386,6 +439,9 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     // elements marked data-i18n, not textContent this script set directly.
     offLocale = onLocaleChange(() => {
       refreshNextControl();
+      // The help controls' own labels are set in JS, so they need the same
+      // rebuild a lesson without a translation would otherwise miss.
+      refreshLessonBlocks();
       if (btn) {
         btn.querySelector('[data-label]')!.textContent = btn.hasAttribute('data-done')
           ? t('Studied, tap to undo')
