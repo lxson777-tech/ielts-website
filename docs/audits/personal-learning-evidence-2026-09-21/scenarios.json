@@ -1,0 +1,41 @@
+{
+  "lessonCount": 76,
+  "testsInCatalog": 70,
+  "conflict": {
+    "tutor": "Matching Headings",
+    "rule": "weakness-teach",
+    "today": [
+      "Speaking Overview",
+      "Part 1 Interview"
+    ],
+    "course": "Speaking Overview"
+  },
+  "targetChangesSchedule": false,
+  "shortDeadline": {
+    "budget": 15,
+    "maxDay": 255,
+    "today": [
+      {
+        "label": "Speaking Overview",
+        "minutes": 8
+      },
+      {
+        "label": "Part 1 Interview",
+        "minutes": 20
+      }
+    ]
+  },
+  "expired": {
+    "finished": true,
+    "remaining": [
+      "Speaking Overview",
+      "Part 1 Interview"
+    ]
+  },
+  "completionWithoutAssessment": {
+    "speaking": {
+      "completedAt": "2026-09-21T17:16:24.963Z"
+    }
+  },
+  "mobileOverflow": false
+}
