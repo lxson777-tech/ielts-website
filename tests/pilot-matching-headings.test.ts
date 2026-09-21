@@ -129,13 +129,39 @@ test('every focused exercise names a real group of a real paper, of the type it 
         `${entry.id}: ${item.id} must be the paper's own item id, or exposure is not shared`,
       );
     }
-    assert.ok(entry.items.length >= 5 && entry.items.length <= 8, `${entry.id} should be a short set`);
-    assert.ok(entry.expectedMinutes <= 12, `${entry.id} should fit between teaching and a check`);
+    /* "A short set" was 5 to 8 when only Matching Headings existed. WP18a
+       and WP19 (2026-09-22) added types whose real material is genuinely
+       shorter: a Reading multiple answer group is always one pair sharing
+       one "choose two" pool (2 to 3 items, never 5, because that is how
+       the schema's own answerPairId groups every real paper prints it,
+       see reading-multiple-answer.ts), and a handful of real Listening
+       groups run as short. The floor is loosened to 2 rather than dropped,
+       so "short" still means something. */
+    assert.ok(entry.items.length >= 2 && entry.items.length <= 8, `${entry.id} should be a short set`);
+    assert.ok(entry.expectedMinutes <= 13, `${entry.id} should fit between teaching and a check`);
   }
 });
 
 test('the reserved check papers are exactly the papers the checks draw on', () => {
-  assert.deepEqual([...RESERVED_CHECK_PAPER_IDS], ['reading-full-029', 'reading-full-037']);
+  /* Pinned to Pilot A's own two papers when only Matching Headings existed.
+     WP18a (2026-09-22) reserves four more for types the original two
+     papers have no material for (see reading-yes-no-notgiven.ts,
+     reading-table-completion.ts, reading-multiple-answer.ts,
+     reading-categorisation.ts for why each one), and WP19 reserves its own
+     Listening papers on the same rule. So this now checks the DEFINITION
+     RESERVED_CHECK_PAPER_IDS itself promises, rather than a frozen list:
+     exactly the papers an independent-check exercise draws on, with
+     Pilot A's own two still among them. */
+  const expected = [
+    ...new Set(
+      FOCUSED_EXERCISES.filter((exercise) => exercise.role === 'independent-check').map(
+        (exercise) => exercise.source.testId,
+      ),
+    ),
+  ].sort();
+  assert.deepEqual([...RESERVED_CHECK_PAPER_IDS], expected);
+  assert.ok(RESERVED_CHECK_PAPER_IDS.includes('reading-full-029'));
+  assert.ok(RESERVED_CHECK_PAPER_IDS.includes('reading-full-037'));
 });
 
 test('reserved material is never offered as practice, and guided material is never offered as a check', () => {
