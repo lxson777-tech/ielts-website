@@ -29,6 +29,15 @@ import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/cat
 import { parseSpeakingDeepLink } from './attempt-recording';
 import SessionContinueBar from './learning/SessionContinueBar';
 import SpeakingObjectiveHandoff from './learning/SpeakingObjectiveHandoff';
+import { readPersonalPlan } from '../lib/learning';
+import { withBase } from '../lib/url';
+import {
+  CUE_CARD_FAMILY_EXAMPLE,
+  bandLadderHref,
+  cueCardFamilyOf,
+  cueCardHref,
+  lowestCriterionBelow,
+} from './library-links';
 
 type Mode = 'part1' | 'part2' | 'part3';
 type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report' | 'error';
@@ -50,6 +59,21 @@ interface CollectedClip {
   blob: Blob;
   mimeType: string;
   durationMs: number;
+}
+
+/** What this student needs on Speaking, from their own plan: the Speaking
+ *  minimum if they set one, otherwise the overall target. Null when they
+ *  have no plan or no target, in which case nothing below is offered:
+ *  "this is under what you need" is not a sentence that can be said to
+ *  somebody who has not said what they need. Never throws into the page. */
+function requiredSpeakingBand(): number | null {
+  try {
+    const plan = readPersonalPlan();
+    if (!plan) return null;
+    return plan.goals.perPaperMinimums.speaking?.band ?? plan.goals.overallTarget?.band ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export default function SpeakingTester() {
@@ -478,6 +502,8 @@ export default function SpeakingTester() {
           <SpeakingObjectiveHandoff result={result} mode={mode} />
         )}
 
+        <SpeakingLibraryLinks result={result} mode={mode} topic={promptTitle} />
+
         {/* The one control at the end of a piece of work, reading the same
             session every other surface reads (WP20; mirrors WritingTester's
             own mounting of this bar). */}
@@ -643,5 +669,66 @@ function Stat({ label, value, bad }: { label: string; value: string; bad?: boole
       <p className={`font-display text-lg font-extrabold ${bad ? 'text-error' : ''}`}>{value}</p>
       <p className="text-xs text-ink-muted">{label}</p>
     </div>
+  );
+}
+
+/** Two quiet ways on from a graded Speaking result, into the reference
+ *  libraries WP22 built the receiving end of.
+ *
+ *  Both are SECONDARY on purpose. The report already carries at most one
+ *  real hand-off (SpeakingObjectiveHandoff), which puts a piece of work
+ *  into the student's one plan; these are places to read, not things to
+ *  do, and they are rendered as plain text links under it so that nothing
+ *  here competes with it for the same decision.
+ *
+ *  Neither is ever invented. The band ladder link appears only when the
+ *  student has said what they need and one criterion really is under it,
+ *  and it opens on that criterion at the band they actually got. The cue
+ *  card link appears only when the topic's own wording plainly names one
+ *  of the eight families (see cueCardFamilyOf); a topic that does not gets
+ *  no link rather than a wrong one. */
+function SpeakingLibraryLinks({
+  result,
+  mode,
+  topic,
+}: {
+  result: SpeakingGradeResult;
+  mode: Mode | null;
+  topic: string;
+}) {
+  const { t } = useT();
+  const required = requiredSpeakingBand();
+  const weakest = lowestCriterionBelow(
+    SPEAKING_CRITERIA.map((c) => ({ key: c.key, band: result.criteria[c.key]?.band ?? Number.NaN })),
+    required,
+  );
+  const criterionLabel = SPEAKING_CRITERIA.find((c) => c.key === weakest?.key)?.label ?? '';
+  const family = mode === 'part2' || mode === 'part3' ? cueCardFamilyOf(topic) : null;
+
+  if (!weakest && !family) return null;
+
+  return (
+    <nav className="rounded-card border border-border bg-surface-alt px-5 py-4 text-sm" aria-label={t('Where to read more')}>
+      <ul className="space-y-1.5 text-ink-muted">
+        {weakest && (
+          <li>
+            <a className="underline decoration-border underline-offset-4 hover:text-ink" href={withBase(bandLadderHref('speaking', weakest.key, weakest.band))}>
+              {t('What band {band} to {next} looks like on {criterion}', {
+                band: weakest.band.toFixed(1),
+                next: (weakest.band + 0.5).toFixed(1),
+                criterion: t(criterionLabel),
+              })}
+            </a>
+          </li>
+        )}
+        {family && (
+          <li>
+            <a className="underline decoration-border underline-offset-4 hover:text-ink" href={withBase(cueCardHref(CUE_CARD_FAMILY_EXAMPLE[family]))}>
+              {t('Another cue card of the same kind')}
+            </a>
+          </li>
+        )}
+      </ul>
+    </nav>
   );
 }

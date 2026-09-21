@@ -943,6 +943,18 @@ export function relevantVocabTopics(
     .slice(0, limit);
 }
 
+/** The lesson slug of a vocabulary topic, given the TITLE a card carries.
+ *
+ *  Cards are grouped by title ("Ageing & Retirement"); everything that
+ *  links to a topic, including the catalogue's own `review:vocabulary:<slug>`
+ *  activities, is keyed by slug. Added 22 September 2026 so the planner's
+ *  browser layer can turn a per-topic due count into a real activity id
+ *  without repeating this lookup inline. Null for a title that belongs to
+ *  no lesson topic, which is never guessed at. */
+export function vocabTopicSlugFor(title: string): string | null {
+  return VOCABULARY_PARTS.find((part) => part.title === title)?.slug ?? null;
+}
+
 export type VocabProblemReason = 'repeated-recall-failure' | 'low-lexical-resource';
 
 export interface VocabProblem {

@@ -45,15 +45,14 @@ import {
   humaniseSubskill,
   isSessionFinished,
   mainAction,
-  scopeNoteView,
   selectTodayScreen,
   sessionKicker,
   stepForeignPaper,
   stepPurposeAddsSomething,
   stepStatus,
   stepTitleFor,
-  type ScopeNoteView,
 } from './todayViewModel';
+import ScopeNote from '../ScopeNote';
 import { clearIntakeDeferral, isDeferralActive, readIntakeDeferral, writeIntakeDeferral } from './intakeDeferral';
 import '../../../styles/learning-today.css';
 
@@ -214,49 +213,6 @@ export default function TodaySession() {
         <ActiveSessionCard session={session} plan={plan} signedIn={signedIn} onRefresh={refresh} onSetGoal={reopenIntake} />
       )}
     </div>
-  );
-}
-
-/* ── The scope note: a short line, with a collapsed list past three items ─── */
-
-/** Formats whatever planner.ts wrote into `scopeNote` (see the module doc
-    comment on scopeNoteView in todayViewModel.ts): the words are never
-    changed here, only how they break. Shared between the date-passed card
-    and the active session card, the two places Today shows a scope note;
-    Course.tsx shows the same `plan.scopeNote` too and would want the same
-    treatment (see this package's report). */
-function ScopeNote({ note }: { note: string | null | undefined }) {
-  const { t } = useT();
-  const [expanded, setExpanded] = useState(false);
-  const view: ScopeNoteView | null = scopeNoteView(note);
-  if (!view) return null;
-  return (
-    <p className="today-scope-note">
-      {view.headline}
-      {view.inline.map((sentence) => (
-        <span key={sentence}> {sentence}</span>
-      ))}
-      {view.collapsed.length > 0 && (
-        <>
-          {' '}
-          <button
-            type="button"
-            className="today-scope-toggle"
-            aria-expanded={expanded}
-            onClick={() => setExpanded((v) => !v)}
-          >
-            {expanded ? t('Show less') : t('and {n} more', { n: view.collapsed.length })}
-          </button>
-          {expanded && (
-            <span className="today-scope-more">
-              {view.collapsed.map((sentence) => (
-                <span key={sentence}> {sentence}</span>
-              ))}
-            </span>
-          )}
-        </>
-      )}
-    </p>
   );
 }
 

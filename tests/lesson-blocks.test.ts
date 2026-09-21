@@ -226,3 +226,63 @@ test('every real block id passes the guard a request is checked against', () => 
     assert.ok(isLessonSlug(slug), `${slug} would be refused by the request validator`);
   }
 });
+
+/* ── The blocks the focused exercises point at ─────────────────────────── */
+
+/* Every focused exercise names a lesson AND the heading of the block inside
+   it that it teaches from (src/data/focused-exercises.ts). The generated
+   index turns that heading into a block id so a session's teach step can
+   open the lesson AT that part rather than at the top of a long page, and a
+   heading that stops matching resolves to nothing and falls back to the top
+   of the lesson. That fallback is the right behaviour at RUNTIME, and it is
+   also exactly the kind of silent decay nobody notices, so these two tests
+   are the tripwire: rename a heading in a lesson body and they name every
+   exercise that has just lost its deep link. Both languages, because the
+   lesson a Russian student opens is the Russian body. */
+
+test('every focused exercise points at a heading that really exists in its lesson', async () => {
+  const { ALL_FOCUSED_EXERCISES } = await import('../src/data/focused-exercises.ts');
+  const missing: string[] = [];
+  for (const exercise of ALL_FOCUSED_EXERCISES) {
+    const lesson = (exercise as { lesson?: { key: string; blockHeading: string } }).lesson;
+    if (!lesson) continue;
+    if (!englishSlugs().includes(lesson.key)) {
+      missing.push(`${exercise.id}: there is no lesson "${lesson.key}"`);
+      continue;
+    }
+    const headings = segmentLessonBody(readEnglish(lesson.key)).map((block) => block.heading);
+    if (!headings.includes(lesson.blockHeading)) {
+      missing.push(
+        `${exercise.id}: "${lesson.blockHeading}" is not a heading in ${lesson.key} ` +
+          `(it has: ${headings.filter(Boolean).join(' | ')})`,
+      );
+    }
+  }
+  assert.deepEqual(
+    missing,
+    [],
+    'these exercises would open their lesson at the top instead of at the part they teach from. ' +
+      'Either the heading was renamed in the lesson body, or the exercise names the wrong one.',
+  );
+});
+
+test('and the Russian body of that lesson has a heading in the same place', () => {
+  /* Block ids come from the ENGLISH body and are carried onto the Russian
+     one by position, so what has to be true for a Russian student is that
+     the Russian body reaches that block at all and that the block has a
+     heading to land on. A Russian body that lost a section would otherwise
+     scroll somebody to nothing. */
+  const problems: string[] = [];
+  for (const slug of englishSlugs()) {
+    if (!russianSlugs().includes(slug)) continue;
+    const english = segmentLessonBody(readEnglish(slug));
+    const russian = segmentLessonBody(readRussian(slug), english.map((block) => block.id));
+    for (const block of english) {
+      if (!block.heading) continue;
+      const counterpart = russian[block.index];
+      if (!counterpart) problems.push(`${slug}: the Russian body has no block ${block.index} ("${block.heading}")`);
+      else if (!counterpart.heading) problems.push(`${slug}: block ${block.index} ("${block.heading}") has no Russian heading`);
+    }
+  }
+  assert.deepEqual(problems, []);
+});

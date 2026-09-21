@@ -89,6 +89,10 @@ export default function FocusedExercise({ view }: Props) {
   const [planChange, setPlanChange] = useState<string | null>(null);
   const [storageProblem, setStorageProblem] = useState(false);
   const recorded = useRef(false);
+  /* Items whose stated reason has already reached the record, so saying
+     how you chose and then also correcting the answer does not file the
+     same sentence twice. */
+  const reasonRecorded = useRef<Set<string>>(new Set());
   const audioPlayerRef = useRef<AudioSegmentPlayerHandle>(null);
 
   /* Explanations are teaching prose, so a Russian student reads them in
@@ -215,6 +219,25 @@ export default function FocusedExercise({ view }: Props) {
        assisted from here on whatever happens next. */
     noteHelp(item.itemId, { evidenceShown: true, assistance: 'hint' });
     setRetrying((held) => ({ ...held, [item.itemId]: true }));
+  }
+
+  /** What the student says about how they chose, written down the moment
+   *  they say it.
+   *
+   *  It used to ride along with the CORRECTION ATTEMPT, so a student who
+   *  answered "how did you choose it?" and then read the explanation
+   *  instead of trying again told us something that was never kept. Pilot
+   *  finding, 22 September 2026. The reason is their own account and the
+   *  only record of it, so it is stored on its own; a correction attempt
+   *  afterwards is a separate, later fact and records itself as before. */
+  function noteStatedReason(item: FocusedItemView, reason: StatedReason) {
+    setStated((held) => ({ ...held, [item.itemId]: reason }));
+    if (reasonRecorded.current.has(item.itemId)) return;
+    reasonRecorded.current.add(item.itemId);
+    record(
+      itemDrafts({ view, answers, help, stated: { [item.itemId]: reason }, onlyItemIds: [item.itemId] }),
+      answers,
+    );
   }
 
   function submitRetry(item: FocusedItemView) {
@@ -440,13 +463,10 @@ export default function FocusedExercise({ view }: Props) {
                                 type="button"
                                 className="focused-reason-option"
                                 onClick={() =>
-                                  setStated((held) => ({
-                                    ...held,
-                                    [item.itemId]: {
-                                      reasonId: option.id,
-                                      note: (notes[item.itemId] ?? '').trim().slice(0, MAX_REASON_NOTE_CHARS) || undefined,
-                                    },
-                                  }))
+                                  noteStatedReason(item, {
+                                    reasonId: option.id,
+                                    note: (notes[item.itemId] ?? '').trim().slice(0, MAX_REASON_NOTE_CHARS) || undefined,
+                                  })
                                 }
                               >
                                 {t(option.label)}

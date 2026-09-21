@@ -347,6 +347,10 @@ interface VocabCardStateLike {
   lapses: number;
   introducedDate: string;
   lastReviewed?: string;
+  /** Distinct local dates on which the word was recalled unassisted. Two
+      DIFFERENT days is what makes a word count as known (isWordKnown in
+      src/lib/vocab-review.ts), so this list is evidence, not a cache. */
+  recallSuccessDates?: string[];
 }
 
 interface VocabStoreLike {
@@ -368,6 +372,13 @@ interface VocabStoreLike {
  *   - `lapses` keeps the HIGHER count. Each device counts its own failures,
  *     and the honest answer to "how often has this word been missed" is
  *     never the smaller of two true counts.
+ *   - `recallSuccessDates` is a UNION, de-duplicated and sorted, for the
+ *     same reason as `lapses`. Added 22 September 2026, when the field
+ *     itself was. Taking the winning card's list wholesale would have lost
+ *     a real successful recall: recall on the laptop on Monday and on the
+ *     phone on Tuesday is two different days, which is exactly what makes a
+ *     word count as known, and picking one device's card would have thrown
+ *     one of them away and quietly under-counted "known".
  *
  * `settings.newPerDay` has no clock of its own, so it follows the document's
  * `updatedAt`: the side the student changed more recently. */
@@ -395,12 +406,22 @@ export function mergeVocabValue(
     if (mineAt !== theirsAt) winner = mineAt > theirsAt ? mine : theirs;
     else if (mine.interval !== theirs.interval) winner = mine.interval > theirs.interval ? mine : theirs;
     else winner = mine.reps >= theirs.reps ? mine : theirs;
-    cards[word] = {
+    const recallDates = [...new Set([...(mine.recallSuccessDates ?? []), ...(theirs.recallSuccessDates ?? [])])].sort();
+    /* The interval comes from the WINNER, never from Math.max of the two.
+       A lapse deliberately shortens an interval, so taking the larger one
+       would quietly undo every failed review that happened on the other
+       device. The rule that stops an interval going backwards by accident
+       is the tie-break above: on an identical review time the longer
+       interval wins, so the order two copies arrive in cannot matter. */
+    const merged: VocabCardStateLike = {
       ...winner,
       introducedDate:
         mine.introducedDate <= theirs.introducedDate ? mine.introducedDate : theirs.introducedDate,
       lapses: Math.max(mine.lapses, theirs.lapses),
     };
+    if (recallDates.length > 0) merged.recallSuccessDates = recallDates;
+    else delete merged.recallSuccessDates;
+    cards[word] = merged;
   }
   const newer = localAt >= remoteAt ? local : remote;
   return { version: 1, settings: { ...newer.settings }, cards };

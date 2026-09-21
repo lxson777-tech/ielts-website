@@ -59,6 +59,7 @@ import type {
   ReplanTrigger,
   ScheduledDay,
   SessionEvidenceRef,
+  VocabularySignalV1,
 } from './contracts/plan';
 import {
   DAILY_MINUTE_CHOICES,
@@ -153,8 +154,15 @@ export const PLANNER_SENTENCES = {
   changeGoal: 'Your goal or your settings changed, so the priorities were worked out again.',
 
   /* Honest scope. */
+  /* Four short sentences, never one long one. Every surface that shows a
+     scope note splits it at its own sentence boundaries and collapses
+     what is past the first (scopeNoteView in
+     src/components/learning/today/todayViewModel.ts), so a run-on here
+     arrives on the screen as a wall of text that cannot be broken up.
+     The lists inside it are joined with commas and a final "and" for the
+     same reason: "A and B and C" read as one breathless clause. */
   scopeShortDeadline:
-    'There are {days} study days left and {minutes} minutes a day, which is about {total} minutes in total. That is enough to work on {covered}. {missed} will not get real coverage in the time left, and no plan can promise a band.',
+    'There are {days} study days left and {minutes} minutes a day, which is about {total} minutes in total. That is enough to work on {covered}. {missed} will not get real coverage in the time left. No plan can promise a band.',
   scopeNoDate:
     'There is no exam date on this plan, so the pacing is provisional. Add a date and the plan will pace itself to it.',
   scopeDatePassed:
@@ -257,6 +265,12 @@ export interface PlannerInput {
   newOverrides?: readonly PlanOverride[];
   weights?: PlannerWeights;
   thresholds?: PolicyThresholds;
+  /** What the browser knows about this student's vocabulary, gathered by
+      the orchestration layer (src/lib/learning/index.ts) and handed in as
+      plain data. Additive and optional: absent means no vocabulary state
+      is available, which is always true on the Worker, and the session's
+      recall step then behaves exactly as it did before. */
+  vocabulary?: VocabularySignalV1 | null;
 }
 
 export interface ReplanResult {
@@ -414,6 +428,7 @@ export function replan(input: PlannerInput): ReplanResult {
       overrides,
       unavailableSurfaces: constraints.unavailable ?? [],
       thresholds,
+      vocabulary: input.vocabulary ?? null,
       diagnosticPaper: status === 'date-passed' ? undefined : diagnosticPaper ?? undefined,
       chosenByStudent: candidate.objective.chosenActivityId !== undefined || chosenByOverride(overrides, candidate, today),
       acceptedCommitment:
@@ -477,6 +492,7 @@ export function replan(input: PlannerInput): ReplanResult {
         overrides,
         unavailableSurfaces: constraints.unavailable ?? [],
         thresholds,
+        vocabulary: input.vocabulary ?? null,
       }).session,
   });
 
@@ -1057,14 +1073,41 @@ function overallShortfallOf(goals: PlanGoals, policy: PolicyOutputV1, facts: Lea
   return Math.max(0, target - mean);
 }
 
+/** How much a student would have to do FIRST before this objective could be
+ *  started at all: the shortest way in, not the nicest one.
+ *
+ *  It used to ask only about `teachOptions(...)[0]`, the single activity
+ *  that happened to sort first. That was fine while teaching meant lessons,
+ *  and it broke on 22 September 2026 when WP18 to WP22 added 93 focused
+ *  exercises. A subskill with a real lesson of its own (reading sentence
+ *  completion) was charged for that lesson's prerequisites, while a subskill
+ *  with no lesson at all (reading table completion) was charged nothing,
+ *  because its first teaching option was a prerequisite-free focused
+ *  exercise. The planner was rewarding a question type for having LESS
+ *  teaching material, and a brand new student was started on the type the
+ *  papers contain 67 questions of instead of the one they contain 431 of.
+ *
+ *  So the term is the MINIMUM across every way of teaching the objective.
+ *  If any route can be started today, the objective can be started today,
+ *  which is exactly what the score is trying to say. */
 function unmetPrerequisiteDepth(objective: PlannedObjective, input: ScoringInput): number {
+  const routes = teachOptions(objective, input.catalogue);
+  const anchors = routes.length > 0 ? routes : practiceOptions(objective, Number.POSITIVE_INFINITY, input.catalogue);
+  if (anchors.length === 0) return 0;
+  let shortest = Number.POSITIVE_INFINITY;
+  for (const anchor of anchors) {
+    shortest = Math.min(shortest, unmetPrerequisitesOf(anchor.id, input));
+    if (shortest === 0) break;
+  }
+  return shortest;
+}
+
+/** The prerequisites of one activity that this student has not already
+    satisfied, by completion or by proven strength. */
+function unmetPrerequisitesOf(activityId: string, input: ScoringInput): number {
   const context = eligibilityFor(input, Number.POSITIVE_INFINITY);
-  const anchor =
-    teachOptions(objective, input.catalogue)[0] ??
-    practiceOptions(objective, Number.POSITIVE_INFINITY, input.catalogue)[0];
-  if (!anchor) return 0;
   let unmet = 0;
-  for (const id of prerequisiteClosure(anchor.id, input.catalogue)) {
+  for (const id of prerequisiteClosure(activityId, input.catalogue)) {
     if (input.facts.completedActivityIds.has(id)) continue;
     const activity = findActivity(id, input.catalogue);
     if (!activity) continue;
@@ -1601,9 +1644,17 @@ function shortDeadlineNote(input: {
     days: studyDays,
     minutes: input.constraints.regularDailyMinutes,
     total,
-    covered: covered.join(' and ') || 'the one thing that fits',
-    missed: missed.join(' and ') || 'Everything else',
+    covered: joinList(covered) || 'the one thing that fits',
+    missed: joinList(missed) || 'Everything else',
   });
+}
+
+/** "A", "A and B", "A, B and C". Never "A and B and C", which is what this
+    replaced: three items joined by two "and"s read as one breathless
+    clause inside an already long sentence. */
+function joinList(items: readonly string[]): string {
+  if (items.length <= 1) return items[0] ?? '';
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
 /* ── What changed ────────────────────────────────────────────────────────── */

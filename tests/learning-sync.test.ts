@@ -670,6 +670,100 @@ test('vocabulary merges per word, and an interval never goes backwards because o
   assert.equal(other.settings.newPerDay, 20);
 });
 
+test('two devices that each recalled a word on a different day keep both days', () => {
+  /* A word counts as KNOWN once it has been recalled unassisted on two
+     different days (isWordKnown in src/lib/vocab-review.ts). Recall it on
+     the laptop on Monday and on the phone on Tuesday and that is two
+     different days, so the word is known. The merge used to take one
+     device's card wholesale, which threw one of the two days away and
+     under-counted what the student could really do. Both lists are
+     unioned, de-duplicated and sorted, exactly like the lapse count. */
+  const laptop = {
+    version: 1 as const,
+    settings: { newPerDay: 10 },
+    cards: {
+      resilient: {
+        ease: 2.5,
+        interval: 3,
+        due: '2026-09-24',
+        reps: 1,
+        lapses: 0,
+        introducedDate: '2026-09-18',
+        lastReviewed: '2026-09-21T09:00:00.000Z',
+        recallSuccessDates: ['2026-09-21'],
+      },
+    },
+  };
+  const phone = {
+    version: 1 as const,
+    settings: { newPerDay: 10 },
+    cards: {
+      resilient: {
+        ease: 2.5,
+        interval: 4,
+        due: '2026-09-26',
+        reps: 2,
+        lapses: 0,
+        introducedDate: '2026-09-18',
+        lastReviewed: '2026-09-22T09:00:00.000Z',
+        recallSuccessDates: ['2026-09-22'],
+      },
+    },
+  };
+
+  const merged = mergeVocabValue(laptop, phone, '2026-09-21T10:00:00.000Z', '2026-09-22T10:00:00.000Z');
+  assert.deepEqual(merged.cards.resilient?.recallSuccessDates, ['2026-09-21', '2026-09-22']);
+
+  /* Whichever order they sync in, and however many times they sync. */
+  const reversed = mergeVocabValue(phone, laptop, '2026-09-22T10:00:00.000Z', '2026-09-21T10:00:00.000Z');
+  assert.deepEqual(reversed.cards.resilient?.recallSuccessDates, ['2026-09-21', '2026-09-22']);
+  const again = mergeVocabValue(merged, phone, '2026-09-22T11:00:00.000Z', '2026-09-22T10:00:00.000Z');
+  assert.deepEqual(again.cards.resilient?.recallSuccessDates, ['2026-09-21', '2026-09-22']);
+
+  /* The same day on both devices is still one day. */
+  const sameDay = mergeVocabValue(
+    { ...laptop, cards: { resilient: { ...laptop.cards.resilient, recallSuccessDates: ['2026-09-22'] } } },
+    phone,
+    '2026-09-22T10:00:00.000Z',
+    '2026-09-22T10:00:00.000Z',
+  );
+  assert.deepEqual(sameDay.cards.resilient?.recallSuccessDates, ['2026-09-22']);
+
+  /* A store written before the field existed still merges, and stays
+     without it rather than gaining an empty list. */
+  const oldShape = {
+    version: 1 as const,
+    settings: { newPerDay: 10 },
+    cards: {
+      resilient: {
+        ease: 2.5,
+        interval: 1,
+        due: '2026-09-20',
+        reps: 1,
+        lapses: 1,
+        introducedDate: '2026-09-18',
+        lastReviewed: '2026-09-19T09:00:00.000Z',
+      },
+    },
+  };
+  const mixed = mergeVocabValue(oldShape, phone, '2026-09-19T10:00:00.000Z', '2026-09-22T10:00:00.000Z');
+  assert.deepEqual(mixed.cards.resilient?.recallSuccessDates, ['2026-09-22']);
+  assert.equal(mixed.cards.resilient?.lapses, 1, 'and the lapse the old device counted still stands');
+  const bothOld = mergeVocabValue(oldShape, oldShape, '2026-09-19T10:00:00.000Z', '2026-09-19T10:00:00.000Z');
+  assert.equal(bothOld.cards.resilient?.recallSuccessDates, undefined);
+
+  /* A lapse on the newer device still shortens the interval: the winner's
+     interval stands, it is never the larger of the two. */
+  const lapsed = {
+    ...phone,
+    cards: {
+      resilient: { ...phone.cards.resilient, interval: 0, lapses: 1, lastReviewed: '2026-09-23T09:00:00.000Z' },
+    },
+  };
+  const afterLapse = mergeVocabValue(laptop, lapsed, '2026-09-21T10:00:00.000Z', '2026-09-23T10:00:00.000Z');
+  assert.equal(afterLapse.cards.resilient?.interval, 0, 'a failed review is not undone by the other device');
+});
+
 test('notes and saved lessons merge by their own keys, later wins', () => {
   const local: NotesStore = {
     version: 1,

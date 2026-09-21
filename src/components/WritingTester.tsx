@@ -33,6 +33,7 @@ import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
 import SessionContinueBar from './learning/SessionContinueBar';
 import WorkOnOverview from './learning/WorkOnOverview';
+import { modelAnswerHref } from './library-links';
 import { getLearnerStore, ownerNamespace } from '../lib/learning/store.browser';
 import { writingActivityId } from '../lib/learning/catalog';
 
@@ -430,10 +431,15 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           actionPlan={result.actionPlan}
         >
           {/* The moment a model answer is worth most: the student has just
-              written this exact task and read their own bands. */}
+              written this exact task and read their own bands. The link
+              carries `reason=after-writing-attempt`, which is what makes
+              ModelAnswers.tsx frame the model as a comparison with their
+              own work instead of as plain browsing. It never asserts the
+              attempt: that page checks the student's own recorded
+              attempts on this prompt before it honours the reason. */}
           {getModelAnswers(prompt.id).length > 0 && (
             <a
-              href={withBase(`/writing/models?task=${encodeURIComponent(prompt.id)}`)}
+              href={withBase(modelAnswerHref(prompt.id))}
               className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-5 py-4 text-sm shadow-card transition-colors hover:border-brand"
             >
               <span>

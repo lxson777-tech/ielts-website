@@ -45,6 +45,7 @@ import type {
   PlanOverride,
   PlanSession,
   ReplanTrigger,
+  VocabularySignalV1,
 } from './contracts/plan';
 import type { PolicyOutputV1, PolicyScopeKey } from './contracts/policy';
 import type { CacheOwner } from './contracts/sync';
@@ -67,6 +68,20 @@ import {
 
 /* ── Setting up ──────────────────────────────────────────────────────────── */
 
+/** What the orchestration layer asks the vocabulary module for, and what it
+    hands to the planner. See VocabularySignalV1 and readVocabularySignal. */
+export type VocabularyReader = (input: {
+  /** The student's own calendar date. */
+  today: string;
+  /** The words today's work is about: the objective sentence, and the
+      prompt or lesson behind it. Matched against the real word lists by
+      relevantVocabTopics(), never guessed from the paper. */
+  focusText: string;
+  /** Lexical Resource bands the graders really returned, most recent
+      first. Empty when nothing has been graded. */
+  lexicalResourceBands: readonly number[];
+}) => VocabularySignalV1 | null;
+
 export interface LearningOptions {
   /** Where both stores keep their copies. Defaults to this browser's own. */
   storage?: BrowserStorage | null;
@@ -79,6 +94,10 @@ export interface LearningOptions {
   legacy?: LearnerStoreOptions['legacy'];
   legacyPlan?: PlanStoreOptions['legacyPlan'];
   catalogue?: LearningCatalogueV1;
+  /** Where the vocabulary signal comes from. Left out, the real one is
+      loaded on demand (see vocabularySignalFor). Passed in by tests, and
+      by anything that wants to switch it off. */
+  vocabulary?: VocabularyReader | null;
 }
 
 let clock: () => string = () => new Date().toISOString();
@@ -106,6 +125,7 @@ export function configureLearning(options: LearningOptions = {}): void {
   if (options.now) clock = options.now;
   if (options.today) localToday = options.today;
   if (options.catalogue) catalogueOverride = options.catalogue;
+  if (options.vocabulary !== undefined) vocabularyReader = options.vocabulary;
   configureLearnerStore({
     ...(options.storage !== undefined ? { storage: options.storage } : {}),
     ...(options.owner ? { owner: options.owner } : {}),
@@ -126,6 +146,121 @@ export function configureLearning(options: LearningOptions = {}): void {
    store's one-time migration, done on load so that a page which only
    records a lesson completion still files it under the right subskill. */
 configureLearning();
+
+/* ── Vocabulary, gathered here and handed to the planner ─────────────────── */
+
+/* WHY IT IS LOADED ON DEMAND
+ *
+ * src/lib/vocab-review.ts builds the whole flashcard deck at module load,
+ * out of words.ts plus all 36 vocabulary lesson bodies, which is about
+ * 292 KB of HTML. THIS file is imported by the account menu and the lesson
+ * layout, which are on every page of the site, so a plain import would put
+ * the entire vocabulary library into every page's bundle to answer a
+ * question only the plan asks. sync.browser.ts loads it the same way and
+ * for the same reason.
+ *
+ * So the deck is fetched once, in the background, the first time a plan is
+ * built, and the answer is cached for the rest of the session. A plan built
+ * before it arrives simply gets no vocabulary signal, which is the same
+ * thing the Worker always gets and behaves exactly as this did before. The
+ * first plan a brand new student ever gets is the one case that can happen
+ * in practice, and that student has no vocabulary history for it to have
+ * reported anyway.
+ *
+ * THE 146-WORD TRAP
+ * The reader below passes the FULL card set explicitly. Under plain Node,
+ * and inside a Worker, vocab-review's own default deck silently falls back
+ * to words.ts alone: 146 words across 14 topics instead of 719 across 36
+ * (risk 6 in docs/personal-learning/ARCHITECTURE.md). A default argument
+ * would quietly plan around a fifth of the library.
+ */
+
+let vocabularyReader: VocabularyReader | null = null;
+let vocabularyLoading = false;
+/** Bumped by resetLearningForTest(), so a load that was already in flight
+    cannot install itself over a test that has just cleared the reader. */
+let vocabularyGeneration = 0;
+
+/** Start loading the real vocabulary reader, once. Fire and forget: nothing
+    waits on it, and a failure leaves the signal absent rather than breaking
+    a plan. */
+function primeVocabularyReader(): void {
+  if (vocabularyReader || vocabularyLoading) return;
+  vocabularyLoading = true;
+  const generation = vocabularyGeneration;
+  void import('../vocab-review')
+    .then((vocab) => {
+      if (generation !== vocabularyGeneration) return;
+      vocabularyLoading = false;
+      vocabularyReader = ({ today, focusText, lexicalResourceBands }) => {
+        const store = vocab.readVocabSyncSnapshot();
+        /* CARD_SET explicitly, never the parameter default. See above. */
+        const cards = vocab.CARD_SET;
+        const due = vocab.vocabRecallDueSummary(cards, store, today);
+        const relevant = focusText ? vocab.relevantVocabTopics(focusText, cards) : [];
+        const problems = vocab.observedVocabProblems(store, cards, lexicalResourceBands);
+        return {
+          dueCount: due.count,
+          dueByTopic: slugsByTopicTitle(due.byTopic, vocab.vocabTopicSlugFor),
+          relevantTopics: relevant.map((topic) => topic.slug),
+          problems: problems.map((problem) => ({
+            reason: problem.reason,
+            ...(problem.word ? { word: problem.word } : {}),
+            ...(problem.topic ? { topic: vocab.vocabTopicSlugFor(problem.topic) ?? undefined } : {}),
+            ...(problem.lapses !== undefined ? { lapses: problem.lapses } : {}),
+          })),
+        };
+      };
+    })
+    .catch(() => {
+      /* Left null. A plan with no vocabulary signal is a plan, not an
+         error, and the recall step falls back to what it did before. */
+      if (generation === vocabularyGeneration) vocabularyLoading = false;
+    });
+}
+
+/** The due counts arrive keyed by a topic's TITLE (that is what a card
+    carries); the catalogue's review activities are keyed by its slug. */
+function slugsByTopicTitle(
+  byTitle: Readonly<Record<string, number>>,
+  slugFor: (title: string) => string | null,
+): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [title, count] of Object.entries(byTitle)) {
+    const slug = slugFor(title);
+    if (slug) out[slug] = (out[slug] ?? 0) + count;
+  }
+  return out;
+}
+
+/** Lexical Resource bands the graders really returned, newest first, read
+    off the policy rather than out of the record a second time. */
+function lexicalResourceBandsFrom(policy: PolicyOutputV1): number[] {
+  const bands: number[] = [];
+  for (const paper of ['writing', 'speaking'] as const) {
+    const estimate = policy.estimates.find((entry) => entry.scopeKey === `criterion:${paper}:lexicalResource`);
+    if (estimate?.band !== null && estimate?.band !== undefined) bands.push(estimate.band);
+  }
+  return bands;
+}
+
+/** The vocabulary signal for a plan about to be built, or null when the
+    deck has not arrived yet (see the note above). */
+function vocabularySignalFor(policy: PolicyOutputV1, previous: PersonalPlanV1 | null, today: string): VocabularySignalV1 | null {
+  primeVocabularyReader();
+  if (!vocabularyReader) return null;
+  /* What today's work is ABOUT, in the plan's own words. The previous
+     session's objective is the only text available before the new session
+     exists, and it is the right text: a replan almost always keeps the
+     objective, and a student with no previous plan has no vocabulary
+     history for a topic match to matter to. */
+  const focusText = previous ? `${previous.activeSession.objective} ${previous.activeSession.reason}` : '';
+  try {
+    return vocabularyReader({ today, focusText, lexicalResourceBands: lexicalResourceBandsFrom(policy) });
+  } catch {
+    return null;
+  }
+}
 
 /* ── The plan, and the five things that may move it ──────────────────────── */
 
@@ -161,6 +296,7 @@ export function ensurePlan(): PersonalPlanV1 {
       today,
       goals,
       constraints,
+      vocabulary: vocabularySignalFor(policy, null, today),
     });
     lastPlanningSignature = planningSignature(policy);
     return store.save(plan);
@@ -196,6 +332,7 @@ function runReplan(trigger: ReplanTrigger, options: ReplanOptions): PersonalPlan
     goals: options.goals,
     constraints: options.constraints,
     newOverrides: options.newOverrides,
+    vocabulary: vocabularySignalFor(policy, options.previous, options.today),
   });
   lastPlanningSignature = planningSignature(policy);
   /* A replan that changed nothing returns the plan it was given, and
@@ -519,6 +656,12 @@ export function resetLearningForTest(): void {
   catalogueOverride = null;
   clock = () => new Date().toISOString();
   localToday = () => localDateKey(new Date());
+  /* A test's plan must not depend on whether a background import happened
+     to finish first. Cleared here, and a load already in flight is told to
+     drop what it was about to install. */
+  vocabularyGeneration += 1;
+  vocabularyReader = null;
+  vocabularyLoading = false;
   if (unsubscribeEvidence) unsubscribeEvidence();
   resetLearningStoresForTest();
   configureLearning();

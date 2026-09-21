@@ -44,6 +44,7 @@ import { lessonPath, practisePath, questionTypeLabel } from '../tests/question-t
 import type { QuestionType } from '../tests/schema';
 import type { Locale } from '../i18n/locale';
 import committedIndex from '../../data/generated/learning-index.json' with { type: 'json' };
+import { decodeLearningIndex, type CompactLearningIndexV1 } from './index-format';
 import { SPOKEN_FOCUSED_TASKS, spokenFocusedTaskHref, type SpokenFocusedTask } from '../../data/focused-exercises';
 
 import type {
@@ -67,10 +68,21 @@ import type {
   WritingSubskill,
 } from './contracts/catalog';
 
-/** The committed index, as the site and the Worker bundle it. Exported so a
-    caller that fetched /data/learning-index.json instead can pass its own
-    copy to buildLearningCatalogue() and get the same shape back. */
-export const LEARNING_INDEX = committedIndex as unknown as GeneratedIndexV1;
+/** The committed index, as the site and the Worker bundle it.
+ *
+ *  The FILE is the compact shape (see index-format.ts): it says each fact
+ *  once, which is what keeps it inside LEARNING_INDEX_MAX_BYTES. This is
+ *  the comfortable shape every reader here expects, rebuilt from it once,
+ *  at import. Nothing is lost in either direction; the round trip is
+ *  asserted in tests/learning-index.test.ts.
+ *
+ *  Exported so a caller that fetched /data/learning-index.json instead can
+ *  pass its own copy to buildLearningCatalogue() and get the same shape
+ *  back. That caller must run the same decodeLearningIndex() over what it
+ *  downloaded, because the published bytes are the committed bytes. */
+export const LEARNING_INDEX: GeneratedIndexV1 = decodeLearningIndex(
+  committedIndex as unknown as CompactLearningIndexV1,
+);
 
 /* ── Honest planning estimates ───────────────────────────────────────────── */
 
@@ -1082,6 +1094,14 @@ function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       ...(exercise.sharesItemsWith ? { sharesItemsWith: [...exercise.sharesItemsWith].sort() } : {}),
       ...(exercise.sourcePaperIds ? { sourcePaperIds: exercise.sourcePaperIds } : {}),
       ...(exercise.sourcePromptIds ? { sourcePromptIds: exercise.sourcePromptIds } : {}),
+      /* Which part of which lesson this exercise teaches from, so a teach
+         step can open the lesson at that block (see CatalogueActivity
+         .lessonBlock). Only when the generator could resolve the exercise's
+         heading to a real block; a heading that stopped matching leaves
+         this absent and the link goes to the top of the lesson. */
+      ...(exercise.lessonKey && exercise.lessonBlockId
+        ? { lessonBlock: { lessonKey: exercise.lessonKey, blockId: exercise.lessonBlockId } }
+        : {}),
       /* A check is held back from ordinary practice, and a guided set is
          held back from being a check: it is worked with hints and with the
          answers explained, so whatever it scores it shows guided work.
@@ -1684,15 +1704,25 @@ const TEACHING_KINDS = new Set(['lesson', 'focused-exercise']);
 const PRACTICE_KINDS = new Set(['drill', 'focused-exercise', 'graded-task', 'lesson-check', 'vocab-review']);
 const CHECK_KINDS = new Set(['drill', 'lesson-check', 'focused-exercise', 'full-test']);
 
-/** Activities that TEACH a subskill, the ones that fit it directly first.
- *  A borrowed lesson is still returned: it is the nearest thing the library
- *  has, and saying nothing would be worse than saying "close, not exact".
+/** Activities that TEACH a subskill.
  *
- *  A lesson always comes before a focused exercise. A focused exercise is
+ *  A lesson always comes before a focused exercise, and among the lessons
+ *  the one that fits directly comes first. A borrowed lesson is still
+ *  returned: it is the nearest thing the library has, and saying nothing
+ *  would be worse than saying "close, not exact". A focused exercise is
  *  practice; it is in this list only so that an objective with no lesson at
  *  all (several Writing ones) still has somewhere to start, and it must
  *  never push a real lesson out of the teaching slot. Anything reserved for
- *  a check is not here at all: it is the material being saved. */
+ *  a check is not here at all: it is the material being saved.
+ *
+ *  FIXED 22 September 2026. The sort read `rankFit || rankLesson`, which is
+ *  the opposite of the paragraph above wherever a subskill has a borrowed
+ *  lesson and a direct focused exercise: the five deliberately borrowed
+ *  lessons (table completion, multiple answer, categorisation, diagram
+ *  labelling) all gained direct focused exercises in WP18, and every one of
+ *  them lost its teaching slot to a six minute exercise. The session then
+ *  taught, practised and recapped on that one screen, and the Reading
+ *  overview was never scheduled at all. */
 export function activitiesThatTeach(
   subskill: Subskill,
   catalogue: LearningCatalogueV1 = learningCatalogue(),
@@ -1705,7 +1735,36 @@ export function activitiesThatTeach(
         !(a.tags ?? []).includes(CHECK_ONLY_TAG) &&
         coversSubskill(a, subskill),
     )
-    .sort((a, b) => rankFit(a, b, subskill) || rankLesson(a, b) || a.expectedMinutes - b.expectedMinutes);
+    .sort((a, b) => rankLesson(a, b) || rankFit(a, b, subskill) || a.expectedMinutes - b.expectedMinutes || compareIds(a, b));
+}
+
+/** The block of one lesson that teaches a given subskill, or null.
+ *
+ *  Read off the focused exercises, because they are the only things in the
+ *  library that say which PART of a lesson they are about. A teach step
+ *  that opens `lesson:reading-tfng` for the objective "True False Not
+ *  Given" can therefore open it at "How to Approach It" rather than at the
+ *  top of a long page.
+ *
+ *  Null is the honest answer whenever nothing says otherwise: no exercise
+ *  for this subskill, no exercise pointing at this lesson, or a heading
+ *  that no longer matches the body (the generator leaves the id out rather
+ *  than guessing). Every one of those falls back to the top of the lesson,
+ *  which is a worse link and never a wrong one. */
+export function lessonBlockFor(
+  subskill: Subskill,
+  lesson: CatalogueActivity,
+  catalogue: LearningCatalogueV1 = learningCatalogue(),
+): string | null {
+  if (lesson.kind !== 'lesson') return null;
+  for (const activity of catalogue.activities) {
+    if (activity.kind !== 'focused-exercise') continue;
+    const block = activity.lessonBlock;
+    if (!block || lessonActivityId(block.lessonKey) !== lesson.id) continue;
+    if (!coversSubskill(activity, subskill)) continue;
+    return block.blockId;
+  }
+  return null;
 }
 
 function rankLesson(a: CatalogueActivity, b: CatalogueActivity): number {
@@ -1808,7 +1867,20 @@ export interface SubskillMaterial {
   teach: readonly CatalogueActivity[];
   practise: readonly CatalogueActivity[];
   checks: readonly SubskillCheck[];
+  /** One plain sentence saying why this subskill cannot be PRACTISED at
+      all, when it cannot. Null when there is practice. */
   unavailable: string | null;
+  /** One plain sentence saying why this subskill has no INDEPENDENT CHECK,
+      when it has none.
+   *
+   *  Separate from `unavailable` on purpose. Lead decision Q1 allows a type
+   *  to have guided practice and no check whatsoever: sentence endings has
+   *  an authored practice set written for it, and not one question of that
+   *  type in any of the 70 papers, so a student can work on it with help
+   *  and can never demonstrate it unaided. Before this field existed the
+   *  two facts collapsed into one, and the moment the authored set landed
+   *  the catalogue went quiet about the missing check. */
+  checksUnavailable: string | null;
 }
 
 export function subskillMaterial(
@@ -1818,14 +1890,23 @@ export function subskillMaterial(
   const teach = activitiesThatTeach(subskill, catalogue);
   const practise = practiceForSubskill(subskill, Number.POSITIVE_INFINITY, catalogue);
   const checks = checksForSubskill(subskill, catalogue);
-  let unavailable: string | null = null;
-  if (practise.length === 0) {
-    const blocked = catalogue.activities.find((a) => a.unavailable && coversSubskill(a, subskill));
-    unavailable =
-      blocked?.unavailable?.reason ??
-      'There is nothing in the library to practise this on yet, so it cannot be scheduled.';
-  }
-  return { subskill, teach, practise, checks, unavailable };
+  const blocked = catalogue.activities.find((a) => a.unavailable && coversSubskill(a, subskill));
+
+  const unavailable =
+    practise.length > 0
+      ? null
+      : (blocked?.unavailable?.reason ??
+        'There is nothing in the library to practise this on yet, so it cannot be scheduled.');
+
+  const checksUnavailable =
+    checks.length > 0
+      ? null
+      : (blocked?.unavailable?.reason ??
+        (practise.some((activity) => !activity.verified)
+          ? 'The practice written for this has not been checked by a teacher yet, so you can work through it with help but it cannot show what you can do on your own.'
+          : 'There is nothing unseen in the library to check this on its own yet.'));
+
+  return { subskill, teach, practise, checks, unavailable, checksUnavailable };
 }
 
 /** The objectives a Writing or Speaking criterion is made of, and the

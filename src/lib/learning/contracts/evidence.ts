@@ -91,8 +91,24 @@ export interface ItemIdentity {
 export interface ItemOutcome extends ItemIdentity {
   /** What the student put the FIRST time, before any help, capped short.
       An empty string means they left it blank, which is different from
-      wrong. */
+      wrong. The cap is MAX_FIRST_ANSWER_CHARS, or
+      MAX_WRITTEN_RESPONSE_CHARS when `written` is set. */
   firstAnswer: string;
+  /** True when the item's answer is the student's OWN WRITING rather than
+   *  a word, a letter or a short phrase: a Task 1 overview, a corrected
+   *  sentence, a topic sentence.
+   *
+   *  It exists for one reason: how much of `firstAnswer` is worth keeping.
+   *  A gap fill is a handful of characters and 120 is generous; one or two
+   *  written sentences do not fit in 120 at all, and an excerpt is no use
+   *  for showing a student their own before and after. Added 22 September
+   *  2026 after the pilots reported exactly that. Optional and additive:
+   *  an older row without it is a short answer, which is what it was.
+   *
+   *  It is NOT a licence to store an essay. A whole Writing task is graded
+   *  evidence (GradedResult) and carries no item rows at all, so nothing
+   *  copies 250 words into the record through here. */
+  written?: boolean;
   correct: boolean;
   /** Help used before the first answer was settled. */
   assistance: AssistanceLevel;
@@ -381,12 +397,35 @@ export const MIGRATION_VERSION = 1;
     src/lib/tutor/test-items.ts so the two limits cannot drift. */
 export const MAX_FIRST_ANSWER_CHARS = 120;
 
+/** Longest first answer kept for an item the student WROTE (see
+ *  ItemOutcome.written).
+ *
+ *  One or two sentences, or a short paragraph. A Task 1 overview runs to
+ *  about 300 characters and the longest the pilots produced was under 500,
+ *  so this holds the whole of one rather than an excerpt of it, which is
+ *  what the before and after comparison needs. The same number as
+ *  MAX_OBJECTIVE_FEEDBACK_CHARS, for the same reason: it is a paragraph,
+ *  not a document. A whole essay never reaches an item row (see `written`),
+ *  so this is not the limit that stops one. Provisional. */
+export const MAX_WRITTEN_RESPONSE_CHARS = 600;
+
 /** Longest objective feedback stored per event. */
 export const MAX_OBJECTIVE_FEEDBACK_CHARS = 600;
 
 /** Hard cap on events held in the browser copy before the oldest are
-    summarised into per-subskill tallies and dropped from local storage.
-    The server keeps everything. Provisional. */
+ *  summarised into per-subskill tallies and dropped from local storage.
+ *  The server keeps everything. Provisional.
+ *
+ *  THE ARITHMETIC, kept honest when MAX_WRITTEN_RESPONSE_CHARS was added
+ *  on 22 September 2026. An ordinary event is a few hundred bytes plus its
+ *  item rows, and an item row's free text is capped at 120 characters, so
+ *  4,000 events is comfortably inside the few megabytes localStorage
+ *  allows. A written response is ONE item on its event and may now hold
+ *  600 characters instead of 120, which is 480 bytes more on an event a
+ *  student produces a handful of times a week, not forty at a time like a
+ *  paper's questions. Even a history made entirely of written responses
+ *  would add under 2 MB at the cap, and the quota path below
+ *  (QUOTA_RETRY_EVENT_CAP) still catches a browser that says no. */
 export const LOCAL_EVENT_SOFT_CAP = 4000;
 
 /** Events kept when a save fails because the browser has run out of room.

@@ -48,7 +48,11 @@ import {
   type EvidenceDraft,
 } from '../src/lib/learning/evidence.ts';
 import type { EvidenceEvent, ItemOutcome, LearnerRecordV1 } from '../src/lib/learning/contracts/evidence.ts';
-import { LOCAL_EVENT_SOFT_CAP, MAX_FIRST_ANSWER_CHARS } from '../src/lib/learning/contracts/evidence.ts';
+import {
+  LOCAL_EVENT_SOFT_CAP,
+  MAX_FIRST_ANSWER_CHARS,
+  MAX_WRITTEN_RESPONSE_CHARS,
+} from '../src/lib/learning/contracts/evidence.ts';
 
 /* ── Synthetic fixtures ──────────────────────────────────────────────────── */
 
@@ -482,6 +486,79 @@ test('a first answer is capped rather than stored whole', () => {
   const long = 'x'.repeat(MAX_FIRST_ANSWER_CHARS + 50);
   const event = createEvidenceEvent(drillDraft({ items: [item({ itemId: 'q1', firstAnswer: long })] }));
   assert.equal(event.items?.[0]!.firstAnswer.length, MAX_FIRST_ANSWER_CHARS);
+});
+
+test('something the student WROTE is kept whole, not as the first 120 characters of it', () => {
+  /* Pilot finding, 22 September 2026. A Task 1 overview is one or two
+     sentences; at 120 characters the record held the beginning of one, so
+     showing a student their own before and after had to fall back on a
+     separate local draft store. A written item says so, and gets room for
+     a short paragraph. */
+  const overview =
+    'Overall, the chart shows that electricity generation from renewable sources rose steadily across the whole period, ' +
+    'while coal fell away after the middle of it, and by the final year the two had swapped places entirely.';
+  assert.ok(overview.length > MAX_FIRST_ANSWER_CHARS, 'the fixture is longer than the short cap');
+  assert.ok(overview.length < MAX_WRITTEN_RESPONSE_CHARS, 'and shorter than the written one');
+
+  const written = createEvidenceEvent(
+    drillDraft({ items: [item({ itemId: 'prompt:pte-wt-103-task1', firstAnswer: overview, written: true })] }),
+  );
+  assert.equal(written.items?.[0]!.firstAnswer, overview, 'the whole overview is kept');
+  assert.equal(written.items?.[0]!.written, true);
+
+  /* Everything else keeps the short cap, exactly as before. */
+  const gapFill = createEvidenceEvent(drillDraft({ items: [item({ itemId: 'q1', firstAnswer: overview })] }));
+  assert.equal(gapFill.items?.[0]!.firstAnswer.length, MAX_FIRST_ANSWER_CHARS);
+  assert.equal(gapFill.items?.[0]!.written, undefined);
+});
+
+test('and a written answer is still capped, so nothing stores an essay through an item row', () => {
+  const essay = 'word '.repeat(300);
+  const event = createEvidenceEvent(
+    drillDraft({ items: [item({ itemId: 'prompt:x', firstAnswer: essay, written: true })] }),
+  );
+  assert.equal(event.items?.[0]!.firstAnswer.length, MAX_WRITTEN_RESPONSE_CHARS);
+});
+
+test('a graded Writing task never copies the essay into the record at all', () => {
+  /* The real protection against an essay reaching the record is not the
+     cap above: a whole Writing task is GRADED evidence, and graded
+     evidence has no item rows. The bands and the criteria are kept; the
+     student's 250 words are not. */
+  const essay = 'The widespread adoption of remote work has changed cities. '.repeat(20);
+  const event = createEvidenceEvent({
+    ...drillDraft(),
+    activityId: 'write:pte-wt-103-task1',
+    paper: 'writing',
+    items: undefined,
+    outcome: {
+      kind: 'graded',
+      overallBand: 6.5,
+      criteria: { taskAchievement: 6, coherenceCohesion: 6.5, lexicalResource: 6, grammaticalRange: 7 },
+      grader: { name: 'grade-essay', live: true },
+    },
+  });
+  assert.equal(event.items, undefined, 'a graded task carries no item rows');
+  assert.equal(JSON.stringify(event).includes('remote work'), false, 'and not a word of the essay');
+  assert.ok(essay.length > MAX_WRITTEN_RESPONSE_CHARS, 'the essay really is longer than any item cap');
+});
+
+test('a stated reason survives on its own, with no correction attempt after it', () => {
+  /* Pilot finding, 22 September 2026. In the guided Reading flow the
+     student is asked how they chose, and the answer used to ride along
+     with the CORRECTION ATTEMPT, so anyone who said how they chose and
+     then read the explanation instead of trying again told us something
+     that was never kept. It is their own account and the only record of
+     it, so it is stored the moment it is given. */
+  const reason = { reasonId: 'matched-a-word', note: 'I saw the same word in the heading.' };
+  const event = createEvidenceEvent(
+    drillDraft({ items: [item({ itemId: 'q3', firstAnswer: 'iv', correct: false, statedReason: reason })] }),
+  );
+  assert.deepEqual(event.items?.[0]!.statedReason, reason);
+
+  /* And it stays their account, never an observation: the event still
+     says only that the answer was wrong. */
+  assert.equal(event.items?.[0]!.correct, false);
 });
 
 test('the local date follows the instant when the caller does not give one', () => {

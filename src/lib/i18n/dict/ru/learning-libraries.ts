@@ -61,6 +61,13 @@ export const strings: Record<string, string> = {
     'Из той же группы тем, что и карточка, которую вы только что отрабатывали, поэтому только что использованная лексика всё ещё подходит.',
   'The exact part of the lesson you saved.': 'Именно та часть урока, которую вы сохранили.',
   'Sent here for a reason: read the note above before you move on.': 'Вас отправили сюда не просто так: прочитайте заметку выше, прежде чем двигаться дальше.',
+
+  /* SpeakingTester.tsx: the two quiet links from a graded Speaking result
+     into the band ladder and the cue card bank. Added when the linking
+     side was built, 22 September 2026. */
+  'Where to read more': 'Где почитать подробнее',
+  'What band {band} to {next} looks like on {criterion}': 'Как выглядит переход с {band} на {next} по критерию {criterion}',
+  'Another cue card of the same kind': 'Ещё одна карточка того же типа',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

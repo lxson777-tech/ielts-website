@@ -471,9 +471,30 @@ test('a question type with no questions is marked unavailable and says so plainl
 
   const material = subskillMaterial('sentence-endings');
   assert.ok(material.teach.length > 0, 'there is still somewhere to learn it');
-  assert.equal(material.practise.length, 0, 'but nowhere real to practise it');
+
+  /* CHANGED 22 September 2026, and the change is the point of lead decision
+     Q1. This used to read `practise.length === 0`, because the only honest
+     answer then was "nothing". WP18a authored the small practice set Q1
+     asked for, so there is now somewhere to work on this type, and the
+     expectation that there is not is simply out of date.
+     What Q1 does NOT allow is the set being passed off as the real thing:
+     it is project-authored, no teacher has verified it, and it is tagged
+     guided-only, so it may be worked through WITH help and may never be an
+     independent demonstration. That is what is asserted instead. */
+  assert.ok(material.practise.length > 0, 'the authored set from lead decision Q1 gives it somewhere to practise');
+  for (const activity of material.practise) {
+    assert.equal(activity.verified, false, `${activity.id} has not been verified by a teacher`);
+    assert.notEqual(activity.provenance, 'imported-paper', `${activity.id} is not from a real paper`);
+    assert.ok(activity.tags?.includes('guided-only'), `${activity.id} is guided practice only`);
+  }
+  assert.equal(material.unavailable, null, 'so there is no "nothing to practise" notice any more');
+
   assert.equal(material.checks.length, 0, 'and it can never be an independent check');
-  assert.ok((material.unavailable ?? '').length > 20, 'and the catalogue says why in a sentence');
+  assert.ok(
+    (material.checksUnavailable ?? '').length > 20,
+    'and the catalogue still says in a sentence why it can never be checked on its own',
+  );
+  assert.ok(!/[–—]/.test(material.checksUnavailable ?? ''), 'no dashes in anything a student reads');
 });
 
 test('a practise link only exists where a real drill contains that type', () => {

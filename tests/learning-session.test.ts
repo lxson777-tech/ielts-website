@@ -547,3 +547,165 @@ test('calendar arithmetic counts whole days and never goes through a time zone',
   assert.equal(calendarDaysBetween('2026-09-22', '2026-09-20'), -2);
   assert.equal(calendarDaysBetween('2026-03-28', '2026-03-30'), 2);
 });
+
+/* ── Vocabulary in the recall slot ─────────────────────────────────────── */
+
+/* The vocabulary package exposes pure functions over a card set and a
+   review store, both of which live in the browser. The planner is pure and
+   runs in a Cloudflare Worker too, so the browser gathers a small summary
+   and hands it in as plain data (VocabularySignalV1). These tests are that
+   contract, from both sides: what a real signal does to a session, and
+   what happens on the Worker, where there is none. */
+
+const NO_VOCABULARY = { dueCount: 0, dueByTopic: {}, relevantTopics: [], problems: [] } as const;
+
+test('words due today fill the recall step with that topic', () => {
+  const profile = syntheticNew();
+  const { session } = assembleSession(
+    request(profile, objectiveFor('reading', 'matching-headings'), 60, {
+      vocabulary: {
+        dueCount: 12,
+        dueByTopic: { environment: 9, 'crime': 3 },
+        relevantTopics: [],
+        problems: [],
+      },
+    }),
+  );
+  const recall = session.steps.find((step) => step.role === 'recall');
+  assert.ok(recall, 'a student with words due gets them back before anything new');
+  assert.equal(recall.activityId, 'review:vocabulary:environment', 'the topic with the most due words');
+  assert.equal(recall.purpose, SESSION_SENTENCES.recallVocabDue);
+  assertWithinBudget(session);
+});
+
+test('a topic that is both due and relevant to today beats a topic that is only due', () => {
+  const profile = syntheticNew();
+  const { session } = assembleSession(
+    request(profile, objectiveFor('writing', 'task2-support-a-claim'), 60, {
+      vocabulary: {
+        dueCount: 12,
+        dueByTopic: { environment: 9, 'crime': 3 },
+        relevantTopics: ['crime', 'education'],
+        problems: [],
+      },
+    }),
+  );
+  const recall = session.steps.find((step) => step.role === 'recall');
+  assert.equal(recall?.activityId, 'review:vocabulary:crime');
+});
+
+test('a Lexical Resource the graders keep marking low raises vocabulary as support, never as a paper', () => {
+  const profile = syntheticNew();
+  const { session } = assembleSession(
+    request(profile, objectiveFor('writing', 'task2-support-a-claim'), 60, {
+      vocabulary: {
+        dueCount: 0,
+        dueByTopic: {},
+        relevantTopics: ['education'],
+        problems: [{ reason: 'low-lexical-resource' }],
+      },
+    }),
+  );
+  const recall = session.steps.find((step) => step.role === 'recall');
+  assert.ok(recall, 'the vocabulary behind the criterion is worth a step');
+  assert.equal(recall.activityId, 'review:vocabulary:education');
+  assert.equal(recall.purpose, SESSION_SENTENCES.recallVocabForCriterion);
+
+  /* Support, and nothing more. The session is still about Writing, the
+     vocabulary step is one recall step inside it, and nothing anywhere
+     turns vocabulary into a fifth paper or gives it a band. */
+  assert.equal(session.paper, 'writing');
+  assert.equal(session.objectiveScope, 'subskill:writing:task2-support-a-claim');
+  assert.ok(!/band/i.test(recall.purpose), 'a vocabulary step never mentions a band');
+  const vocabActivity = findActivity(recall.activityId, CATALOGUE);
+  assert.equal(vocabActivity?.paper, undefined, 'a vocabulary activity belongs to no paper');
+  assert.equal(vocabActivity?.domain, 'vocabulary');
+});
+
+test('the same Lexical Resource signal does nothing on Reading or Listening', () => {
+  /* Lexical Resource is a criterion on Writing and Speaking. Stretching it
+     to a Reading session would be inventing a link the graders never made. */
+  const profile = syntheticNew();
+  for (const paper of ['reading', 'listening'] as const) {
+    const { session } = assembleSession(
+      request(profile, objectiveFor(paper, 'sentence-completion'), 60, {
+        vocabulary: {
+          dueCount: 0,
+          dueByTopic: {},
+          relevantTopics: ['education'],
+          problems: [{ reason: 'low-lexical-resource' }],
+        },
+      }),
+    );
+    assert.equal(session.steps.find((step) => step.role === 'recall'), undefined, `${paper} got a vocabulary step`);
+  }
+});
+
+test('a word this student keeps failing is worth a step even with nothing due', () => {
+  const profile = syntheticNew();
+  const { session } = assembleSession(
+    request(profile, objectiveFor('speaking', 'part2-hold-the-two-minutes'), 60, {
+      vocabulary: {
+        dueCount: 0,
+        dueByTopic: {},
+        relevantTopics: [],
+        problems: [{ reason: 'repeated-recall-failure', word: 'mitigate', topic: 'environment', lapses: 3 }],
+      },
+    }),
+  );
+  assert.equal(session.steps.find((step) => step.role === 'recall')?.activityId, 'review:vocabulary:environment');
+});
+
+test('nothing due and nothing relevant means no vocabulary step at all', () => {
+  /* The slot is never filled for the sake of filling it. "Review
+     vocabulary" with no vocabulary to review is padding, and padding is
+     the one thing a session may not be. */
+  const profile = syntheticNew();
+  const { session } = assembleSession(
+    request(profile, objectiveFor('reading', 'matching-headings'), 60, { vocabulary: { ...NO_VOCABULARY } }),
+  );
+  assert.equal(session.steps.find((step) => step.role === 'recall'), undefined);
+});
+
+test('on the Worker, with no vocabulary state at all, the session is exactly what it was', () => {
+  /* The Worker has no localStorage and never loads the deck, so it passes
+     nothing. A plan built with no signal must be identical to one built
+     before any of this existed, id included. */
+  const profile = syntheticNew();
+  const objective = objectiveFor('reading', 'matching-headings');
+  const withoutField = assembleSession(request(profile, objective, 60));
+  const withNull = assembleSession(request(profile, objective, 60, { vocabulary: null }));
+  assert.deepEqual(withNull.session, withoutField.session);
+  assert.equal(withoutField.session.steps.find((step) => step.role === 'recall'), undefined);
+});
+
+test('the vocabulary step fits its budget like every other step', () => {
+  const profile = syntheticNew();
+  for (const budget of DAILY_MINUTE_CHOICES) {
+    const { session } = assembleSession(
+      request(profile, objectiveFor('writing', 'task2-support-a-claim'), budget, {
+        vocabulary: {
+          dueCount: 30,
+          dueByTopic: { environment: 30 },
+          relevantTopics: ['environment'],
+          problems: [{ reason: 'low-lexical-resource' }],
+        },
+      }),
+    );
+    assertWithinBudget(session);
+    assert.ok(sessionMinutes(session) <= budget, `${budget}: ${sessionMinutes(session)} minutes planned`);
+  }
+});
+
+test('the same signal always builds the same session', () => {
+  const profile = syntheticNew();
+  const signal = {
+    dueCount: 5,
+    dueByTopic: { environment: 3, health: 2 },
+    relevantTopics: ['health'],
+    problems: [{ reason: 'repeated-recall-failure' as const, word: 'sedentary', topic: 'health', lapses: 2 }],
+  };
+  const once = assembleSession(request(profile, objectiveFor('reading', 'matching-headings'), 60, { vocabulary: signal }));
+  const twice = assembleSession(request(profile, objectiveFor('reading', 'matching-headings'), 60, { vocabulary: signal }));
+  assert.deepEqual(once.session, twice.session);
+});

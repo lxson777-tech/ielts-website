@@ -64,7 +64,19 @@ import { emptyPlanGoals } from '../src/lib/learning/planner.ts';
 import { assembleSession, learnerFacts, type PlannedObjective } from '../src/lib/learning/session.ts';
 import { chatBlocked, BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER } from '../src/components/tutor/mrez-boundary.ts';
 import { mockOverallAllowed } from '../src/components/mock-summary.ts';
-import { canLinkModelAnswer, parseLibraryReason, LIBRARY_REASON_SENTENCES } from '../src/components/library-links.ts';
+import {
+  CUE_CARD_FAMILY_EXAMPLE,
+  LIBRARY_REASON_SENTENCES,
+  bandLadderHref,
+  canLinkModelAnswer,
+  cueCardFamilyOf,
+  cueCardHref,
+  lowestCriterionBelow,
+  modelAnswerHref,
+  parseLibraryReason,
+} from '../src/components/library-links.ts';
+import { CUE_CARDS } from '../src/data/cue-cards.ts';
+import { SPEAKING_CUE_CARDS } from '../src/data/speaking-prompts.ts';
 import {
   SKILLS,
   badgeClass,
@@ -572,4 +584,95 @@ test('self-check: the catalogue ids this file assumes still resolve', () => {
   assert.ok(findActivity('test:reading', CATALOGUE), 'test:reading');
   assert.ok(findActivity('test:mock', CATALOGUE), 'test:mock');
   assert.ok(SKILLS.includes('reading') && SKILLS.includes('listening'));
+});
+
+/* ------------------------------------------------------------------ */
+/* 7. The links INTO the libraries, from the graded reports            */
+/* ------------------------------------------------------------------ */
+
+/* WP22 built the four libraries and the vocabulary that gets a student
+   into them with a sentence saying why. It could not build the links
+   themselves, because a graded report belongs to the trainer that made it.
+   These are those links: every one of them is a pure function here, so the
+   rule behind it is a test rather than a condition inside a template. */
+
+test('a writing report links to the model answer for its OWN prompt, framed as a comparison', () => {
+  const href = modelAnswerHref('pte-wt-103-task1');
+  assert.equal(href, '/writing/models?task=pte-wt-103-task1&reason=after-writing-attempt');
+  assert.equal(parseLibraryReason(href.slice(href.indexOf('?'))), 'after-writing-attempt');
+
+  /* The framing is a claim about the student, so the receiving page checks
+     it for itself rather than trusting the link. */
+  assert.equal(canLinkModelAnswer(false), false);
+  assert.equal(canLinkModelAnswer(true), true);
+});
+
+test('the band ladder opens on the criterion holding the student short, at the band they got', () => {
+  const criteria = [
+    { key: 'fluencyCoherence', band: 6.5 },
+    { key: 'lexicalResource', band: 5.5 },
+    { key: 'grammaticalRange', band: 6 },
+    { key: 'pronunciation', band: 5.5 },
+  ];
+  /* The LOWEST below the target, and ties break on the order the exam
+     reports the criteria, so the same result always sends them to the same
+     place. */
+  assert.deepEqual(lowestCriterionBelow(criteria, 7), { key: 'lexicalResource', band: 5.5 });
+  const href = bandLadderHref('speaking', 'lexicalResource', 5.5);
+  assert.equal(href, '/learn/bands?paper=speaking&criterion=lexicalResource&from=6&reason=after-speaking-result');
+  assert.equal(parseLibraryReason(href.slice(href.indexOf('?'))), 'after-speaking-result');
+});
+
+test('and nothing is offered when nothing is really below what the student needs', () => {
+  const criteria = [
+    { key: 'fluencyCoherence', band: 7 },
+    { key: 'lexicalResource', band: 7.5 },
+  ];
+  assert.equal(lowestCriterionBelow(criteria, 7), null, 'every criterion meets the target');
+  assert.equal(lowestCriterionBelow(criteria, null), null, 'and a student with no target is told nothing');
+  assert.equal(
+    lowestCriterionBelow([{ key: 'pronunciation', band: Number.NaN }], 7),
+    null,
+    'an ungraded criterion is not a weakness',
+  );
+});
+
+test('a cue card of the same family is offered only when the topic plainly says which family', () => {
+  assert.equal(cueCardFamilyOf('Describe a skill you taught yourself without a teacher.'), 'skill');
+  assert.equal(cueCardFamilyOf('Describe a close friend who matters a lot to you.'), 'person');
+  assert.equal(cueCardFamilyOf('Describe a city you have visited and would like to visit again.'), 'place');
+  assert.equal(cueCardFamilyOf('Describe a film you watched recently and liked.'), 'media');
+  assert.equal(cueCardFamilyOf(''), null);
+  assert.equal(cueCardFamilyOf('Describe something you would tell a visitor.'), null, 'no family, no link');
+
+  const href = cueCardHref(CUE_CARD_FAMILY_EXAMPLE.skill);
+  assert.equal(href, '/speaking/cue-cards?card=skill-useful&reason=same-family');
+  assert.equal(parseLibraryReason(href.slice(href.indexOf('?'))), 'same-family');
+});
+
+test('every family example is a real card of that family, so no link can rot quietly', () => {
+  /* The examples are repeated as plain strings rather than imported: the
+     cue card bank is 110 KB of model answers and the Speaking trainer must
+     not carry it to build one link. This is what keeps the copy honest. */
+  const byId = new Map(CUE_CARDS.map((card) => [card.id, card]));
+  for (const [family, id] of Object.entries(CUE_CARD_FAMILY_EXAMPLE)) {
+    const card = byId.get(id);
+    assert.ok(card, `${family} points at ${id}, which is not a cue card`);
+    assert.equal(card.family, family, `${id} is a ${card.family} card, not a ${family} one`);
+  }
+  const families = new Set(CUE_CARDS.map((card) => card.family));
+  assert.deepEqual([...families].sort(), Object.keys(CUE_CARD_FAMILY_EXAMPLE).sort(), 'a family has appeared or gone');
+});
+
+test('the real Part 2 topics mostly resolve, and whatever resolves resolves to a real family', () => {
+  /* The matcher is deliberately narrow, so the number that resolve matters
+     less than the rule that none of them resolves wrongly. */
+  let resolved = 0;
+  for (const card of SPEAKING_CUE_CARDS) {
+    const family = cueCardFamilyOf(card.topic);
+    if (!family) continue;
+    resolved += 1;
+    assert.ok(CUE_CARD_FAMILY_EXAMPLE[family], `${card.id} resolved to "${family}", which is not a family`);
+  }
+  assert.ok(resolved > SPEAKING_CUE_CARDS.length / 2, `only ${resolved} of ${SPEAKING_CUE_CARDS.length} topics resolved`);
 });

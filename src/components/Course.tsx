@@ -23,6 +23,7 @@ import { ensureLearningWired, getCurrentSession, onLearnerRecordChange, onPerson
 import type { PersonalPlanV1 } from '../lib/learning/contracts/plan';
 import { useT } from '../lib/i18n/react';
 import { daysUntil } from './learning/today/todayViewModel';
+import ScopeNote from './learning/ScopeNote';
 import TodaySession from './learning/today/TodaySession';
 import WeekView from './plan/WeekView';
 
@@ -85,14 +86,21 @@ export default function Course() {
   return (
     <div className="mx-auto max-w-4xl">
       {personalPlan && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
-          <span className="text-sm text-ink-muted">{routeSummaryText(personalPlan, t, tn)}</span>
-          <a
-            href={withBase('/plan-settings')}
-            className="shrink-0 rounded-button border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt"
-          >
-            {t('Change')}
-          </a>
+        <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-sm text-ink-muted">{routeSummaryText(personalPlan, t, tn)}</span>
+            <a
+              href={withBase('/plan-settings')}
+              className="shrink-0 rounded-button border border-border px-4 py-2 text-xs font-bold text-ink transition-colors hover:bg-surface-alt"
+            >
+              {t('Change')}
+            </a>
+          </div>
+          {/* What will and will not fit, in the planner's own words. The
+              same string Today shows, broken and collapsed the same way
+              (see ScopeNote): one plan cannot read as two different plans
+              on two pages. */}
+          <ScopeNote note={personalPlan.scopeNote} className="mt-3 text-sm text-ink-muted" />
         </div>
       )}
 

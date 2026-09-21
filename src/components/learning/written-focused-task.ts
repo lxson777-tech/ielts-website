@@ -636,12 +636,15 @@ export function mayShowModel(attempts: readonly WrittenAttemptRecord[]): boolean
 
 /** The one item row an attempt is worth.
  *
- *  `firstAnswer` is capped at MAX_FIRST_ANSWER_CHARS by the learner store,
- *  so what the record keeps is an EXCERPT of the overview, not the whole
- *  of it. That is deliberate: the record is what the policy and the tutor
- *  reason over, and the student's own full text lives in the draft store
- *  below, which is per owner and per exercise and is what the before and
- *  after panel reads. `correct` follows the objective judgement, and is
+ *  `firstAnswer` is marked `written`, so the learner store keeps it up to
+ *  MAX_WRITTEN_RESPONSE_CHARS rather than the 120 an ordinary gap fill
+ *  gets. That matters: an overview is one or two sentences, and at 120 the
+ *  record held an excerpt the before and after comparison could not use.
+ *  The student's own full text still lives in the draft store below, which
+ *  is per owner and per exercise; this is the copy the policy and the
+ *  tutor reason over, and it is now a whole overview rather than the start
+ *  of one. A whole essay is graded evidence and never comes through here
+ *  at all. `correct` follows the objective judgement, and is
  *  false whenever nothing judged the work, so an unjudged attempt can never
  *  be counted as a demonstration. */
 export function writtenItemDraft(input: {
@@ -653,6 +656,7 @@ export function writtenItemDraft(input: {
   return {
     itemId: input.view.itemId,
     firstAnswer: input.text.trim(),
+    written: true,
     correct: input.met,
     assistance: input.help.assistance,
     subskill: input.view.subskill,

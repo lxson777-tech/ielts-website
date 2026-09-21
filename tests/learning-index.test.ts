@@ -44,6 +44,11 @@ import {
   LEARNING_INDEX_PATH,
   LEARNING_INDEX_SOURCE,
 } from '../src/lib/learning/contracts/catalog.ts';
+import {
+  LEARNING_INDEX_FORMAT,
+  decodeLearningIndex,
+  encodeLearningIndex,
+} from '../src/lib/learning/index-format.ts';
 
 import { ALL_TESTS } from '../src/data/tests/index.ts';
 import { ALL_LISTENING_DRILLS, ALL_READING_DRILLS } from '../src/lib/tests/drills.ts';
@@ -57,7 +62,16 @@ import { VOCABULARY_PARTS } from '../src/data/vocabulary.ts';
 import { CARD_SET } from '../src/lib/vocab-review.ts';
 
 const committedText = readFileSync(INDEX_FILE, 'utf8');
-const index = JSON.parse(committedText);
+
+/** Exactly what is on disk: the COMPACT shape (src/lib/learning/index-
+    format.ts), which says each fact once so the file fits its cap. */
+const committed = JSON.parse(committedText);
+
+/** The same index in the shape every reader uses, rebuilt the way
+    src/lib/learning/catalog.ts rebuilds it at import. The checks below all
+    run against this, because what matters is what the planner sees, not
+    which of the two spellings the bytes happen to use. */
+const index = decodeLearningIndex(committed);
 
 const REGENERATE =
   'Run `npm run learning:index` and commit src/data/generated/learning-index.json.';
@@ -122,16 +136,46 @@ test('the index stays under its size cap', () => {
   assert.ok(
     bytes < LEARNING_INDEX_MAX_BYTES,
     `the index is ${bytes} bytes, over the ${LEARNING_INDEX_MAX_BYTES} byte cap. ` +
-      'Compress the shape (question ids are derivable from a from/to pair) rather than dropping ' +
+      'Compress the shape further (see src/lib/learning/index-format.ts) rather than dropping ' +
       'anything the planner needs, and raise the cap only on purpose.',
   );
+});
+
+test('the committed shape is the compact one, with real headroom left', () => {
+  /* The cap is the Worker and browser bundle budget, so it is worth
+     knowing HOW far under it the file sits rather than only that it is
+     under. Fifteen per cent is roughly two more work packages of material
+     at the rate WP18 to WP22 added it. */
+  assert.equal(committed.format, LEARNING_INDEX_FORMAT, 'the committed file is written in an older shape');
+  const bytes = Buffer.byteLength(committedText, 'utf8');
+  const headroom = 1 - bytes / LEARNING_INDEX_MAX_BYTES;
+  assert.ok(
+    headroom >= 0.15,
+    `the index is ${bytes} bytes, only ${(headroom * 100).toFixed(1)} per cent under the ` +
+      `${LEARNING_INDEX_MAX_BYTES} byte cap. Compress the shape before the next package needs the room.`,
+  );
+});
+
+test('the compact file and the shape readers use say exactly the same things', async () => {
+  /* The whole argument for a compact file is that nothing was dropped to
+     get it, so that claim is the test: take the comfortable index the
+     generator builds, write it the compact way, read it back, and require
+     it to be identical field for field. A derivation that quietly lost a
+     type, a paper id or an item hash fails here rather than in a plan. */
+  const full = await buildLearningIndex();
+  assert.deepEqual(decodeLearningIndex(encodeLearningIndex(full)), full);
+
+  /* And the committed bytes decode to that same index, so what is shipped
+     is what the generator meant. */
+  assert.deepEqual(index, full);
 });
 
 test('no passage, transcript, question, option or answer reached the index', () => {
   /* The longest string in the file is a drill name that quotes its
      passage's title (159 characters today). Anything much longer than that
      would be real content, which is the one thing this file may never
-     hold. */
+     hold. Walked over the COMMITTED bytes, because those are what is
+     bundled and published. */
   const tooLong: string[] = [];
   const walk = (value: unknown, where: string): void => {
     if (typeof value === 'string') {
@@ -140,7 +184,7 @@ test('no passage, transcript, question, option or answer reached the index', () 
       for (const [key, inner] of Object.entries(value)) walk(inner, `${where}.${key}`);
     }
   };
-  walk(index, 'index');
+  walk(committed, 'index');
   assert.deepEqual(tooLong, []);
 
   for (const banned of ['promptHtml', 'transcriptHtml', 'paragraphs', 'explanation', 'audioSrc']) {

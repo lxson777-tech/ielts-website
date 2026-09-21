@@ -46,7 +46,9 @@ import {
   tutorActivityIdFor,
   type SharedStepView,
 } from '../src/lib/learning/adapters.ts';
-import { learningCatalogue } from '../src/lib/learning/catalog.ts';
+import { findActivity, learningCatalogue, lessonBlockFor } from '../src/lib/learning/catalog.ts';
+import { segmentLessonBody } from '../src/lib/learning/lesson-blocks.ts';
+import { readEnglish } from '../tools/lesson-ru-lib.mjs';
 import { evaluateEvidence } from '../src/lib/learning/policy.ts';
 import { createInitialPlan } from '../src/lib/learning/planner.ts';
 import { getLearnerStore, learnerRecordKey, lessonMapsFrom, userOwner, type BrowserStorage } from '../src/lib/learning/store.browser.ts';
@@ -413,5 +415,158 @@ test('and the paper the student says feels hardest still chooses the paper', () 
       /./,
       'and nothing about a self-reported answer is presented as a measurement',
     );
+    /* Added 22 September 2026. This test only ever checked the PAPER, so it
+       stayed green through the regression above and the Listening student
+       was quietly started on table completion (44 questions in the papers)
+       instead of sentence completion (629). Inside the chosen paper the
+       same rule has to hold as outside it. */
+    if (paper === 'listening') {
+      assert.equal(plan.activeSession.objectiveScope, 'subskill:listening:sentence-completion');
+    }
   }
+});
+
+test('adding focused exercises for other types does not change who goes first', () => {
+  /* The regression above, stated as the rule that caused it.
+   *
+   * `unmetPrerequisiteDepth` charges an objective for the work a student
+   * would have to do before it can be started. It used to look at ONE
+   * teaching activity, whichever sorted first. Reading sentence completion
+   * owns a lesson, so it was charged for that lesson's prerequisites;
+   * reading table completion owns no lesson, so its first teaching option
+   * was a prerequisite-free focused exercise and it was charged nothing.
+   * Having more material made a subskill score worse, and on 22 September
+   * 2026, when 93 focused exercises landed where 7 had been, that flipped
+   * the first session of every new student.
+   *
+   * So: run the same brand new student against the catalogue as it is, and
+   * against the catalogue as it was before those exercises existed. The
+   * first objective has to be the same either way. Teaching material is
+   * added to help a student, and adding it must not move somebody onto a
+   * different question type. */
+  const firstObjective = (catalogue: typeof CATALOGUE): string => {
+    const profile = syntheticNew();
+    const policy = evaluateEvidence({ record: profile.record, goals: profile.goals, now: profile.now });
+    const { plan } = createInitialPlan({
+      catalogue,
+      record: profile.record,
+      policy,
+      now: profile.now,
+      today: profile.today,
+      goals: profile.goals,
+      constraints: profile.constraints,
+    });
+    return plan.activeSession.objectiveScope;
+  };
+
+  const withoutFocused = {
+    ...CATALOGUE,
+    activities: CATALOGUE.activities.filter((activity) => activity.kind !== 'focused-exercise'),
+  };
+  assert.equal(firstObjective(withoutFocused), 'subskill:reading:sentence-completion');
+  assert.equal(firstObjective(CATALOGUE), firstObjective(withoutFocused));
+});
+
+/* ------------------------------------------------------------------ */
+/* 6. A teach step opens the lesson AT the part it is about             */
+/* ------------------------------------------------------------------ */
+
+test('a teach step opens the lesson at the block it teaches from, not at the top', () => {
+  /* Lesson pages are long. A session that says "read the Matching
+     Headings lesson" and drops the student at the top of it has handed
+     them a reading list. Every focused exercise already names the lesson
+     AND the heading inside it that it teaches from; the generated index
+     turns that heading into the block id the lesson layout stamps on its
+     own headings at build time, so the step can link straight to it. */
+  const profile = syntheticMatchingHeadings();
+  const policy = evaluateEvidence({ record: profile.record, goals: profile.goals, now: profile.now });
+  const { plan } = createInitialPlan({
+    catalogue: CATALOGUE,
+    record: profile.record,
+    policy,
+    now: profile.now,
+    today: profile.today,
+    goals: profile.goals,
+    constraints: profile.constraints,
+  });
+  assert.equal(plan.activeSession.objectiveScope, 'subskill:reading:matching-headings');
+
+  const teach = plan.activeSession.steps.filter((step) => step.activityId === 'lesson:reading-headings');
+  assert.equal(teach.length, 1, 'the Matching Headings lesson is taught');
+  const blockId = teach[0]!.blockId;
+  assert.ok(blockId, 'the step names the block it opens at');
+
+  /* And it is a real anchor on that page, not a guess: the same id the
+     layout stamps, found at the heading the exercise names. */
+  const blocks = segmentLessonBody(readEnglish('reading-headings'));
+  const block = blocks.find((entry) => entry.id === blockId);
+  assert.ok(block, `${blockId} is not a block of the reading-headings lesson`);
+  assert.equal(block.heading, 'How to Approach It');
+
+  const activity = findActivity('lesson:reading-headings', CATALOGUE);
+  assert.ok(activity);
+  assert.equal(stepHref(activity.target, blockId), `/lessons/reading/headings#${blockId}`);
+});
+
+test('a lesson with nothing pointing into it still links to the top of the page', () => {
+  /* The fallback, stated. Nothing names a block of the Reading overview,
+     and a heading that is renamed in a lesson body resolves to nothing in
+     the index, so both cases come out here as "no anchor". A link to the
+     top of the right page is a worse link; a link to an anchor that is no
+     longer there would be a broken one. */
+  const overview = findActivity('lesson:reading-task1', CATALOGUE);
+  assert.ok(overview);
+  assert.equal(lessonBlockFor('matching-headings', overview, CATALOGUE), null);
+  assert.equal(stepHref(overview.target, null), '/lessons/reading-task1');
+  assert.equal(stepHref(overview.target, undefined), '/lessons/reading-task1');
+
+  /* And a drill, which is not a lesson at all, never gains an anchor. */
+  const drill = findActivity('drill:reading-full-001-drill-p1', CATALOGUE);
+  assert.ok(drill);
+  assert.equal(lessonBlockFor('matching-headings', drill, CATALOGUE), null);
+});
+
+/* ------------------------------------------------------------------ */
+/* 7. The browser gathers the vocabulary signal and hands it over       */
+/* ------------------------------------------------------------------ */
+
+test('the browser layer passes vocabulary through to the plan, and asks about today', () => {
+  /* The planner is pure and runs in a Cloudflare Worker, so it can never
+     read the flashcard deck or this device's review state. This file's
+     layer gathers a small summary and passes it in as plain data. The
+     reader is injected here so the test does not depend on a 292 KB deck
+     loading in the background. */
+  const profile = syntheticMatchingHeadings();
+  seed(profile);
+  const asked: { today: string; focusText: string; lexicalResourceBands: readonly number[] }[] = [];
+  configureLearning({
+    vocabulary: (input) => {
+      asked.push(input);
+      return {
+        dueCount: 7,
+        dueByTopic: { education: 7 },
+        relevantTopics: ['education'],
+        problems: [],
+      };
+    },
+  });
+
+  const session = getCurrentSession();
+  assert.ok(asked.length > 0, 'the plan asked about vocabulary');
+  assert.equal(asked[0]!.today, profile.today, 'and it asked about this student\'s own date');
+
+  const recall = session.steps.find((step) => step.role === 'recall');
+  assert.ok(recall, 'words due today reach the session');
+  assert.equal(recall.activityId, 'review:vocabulary:education');
+  assert.equal(recall.href, '/review?topic=education', 'and it opens that topic, not the whole deck');
+});
+
+test('with no vocabulary reader at all the plan is built exactly as before', () => {
+  /* The Worker's case, and any browser where the deck has not loaded yet. */
+  const profile = syntheticMatchingHeadings();
+  seed(profile);
+  configureLearning({ vocabulary: null });
+  const session = getCurrentSession();
+  assert.equal(session.steps.find((step) => step.role === 'recall'), undefined);
+  assert.ok(session.steps.length > 0, 'and it is still a real session');
 });

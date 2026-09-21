@@ -315,6 +315,18 @@ export interface CatalogueActivity {
       a student who has already written about this chart has met it, so an
       independent check built on it is no longer unseen. */
   sourcePromptIds?: readonly string[];
+  /** The exact part of a lesson this activity is about: a lesson key and
+   *  the id of one block inside it.
+   *
+   *  Lesson pages stamp block ids onto their own headings at build time
+   *  (lead decision D2, src/lib/learning/lesson-blocks.ts), so a block id
+   *  is a real anchor. A focused exercise names its lesson and the HEADING
+   *  it teaches from; the generator turns that heading into the id. This is
+   *  what lets a session open a teach step at the right part of a lesson
+   *  instead of at the top of it. Absent when the exercise names no lesson,
+   *  or when the heading no longer matches anything in the body, in which
+   *  case the link is simply the top of the lesson. */
+  lessonBlock?: { lessonKey: string; blockId: string };
   /** Free tags for selection heuristics, e.g. 'diagnostic-safe',
       'unseen-reserved', 'needs-audio', 'needs-microphone'. */
   tags?: readonly string[];
@@ -483,6 +495,15 @@ export interface FocusedExerciseIndexEntry {
   /** The exercise's own one-sentence objective, when it has one. Absent
       falls back to the catalogue's generic sentence. */
   objective?: string;
+  /** The lesson this exercise teaches from, when it names one. */
+  lessonKey?: string;
+  /** The id of the BLOCK inside that lesson the exercise is about, resolved
+      at build time from the heading the exercise names
+      (src/lib/learning/lesson-blocks.ts). This is what lets a session's
+      teach step open the lesson at the right part instead of at the top.
+      Absent when the heading no longer matches anything in the body, which
+      is a link to the top of the lesson rather than a broken one. */
+  lessonBlockId?: string;
   /** The papers these items were lifted from. Without it the planner
       cannot tell whether a check is really unseen, because sitting the
       paper or its drill spends the very same questions. */
@@ -499,8 +520,13 @@ export interface FocusedExerciseIndexEntry {
       task built on it). */
   sharesItemsWith?: readonly string[];
   /** What the student produces. Absent means the item-answers shape, which
-      is what every exercise written before the Writing pilot is. */
-  kind?: 'item-answers' | 'written-response';
+      is what every exercise written before the Writing pilot is.
+      `authored-practice` is written here rather than lifted from a paper
+      (lead decision Q1: guided practice only until a teacher verifies it).
+      Widened on 2026-09-22 to match what src/data/focused-exercises.ts
+      really emits; the index had been carrying `authored-practice` while
+      this union still named two kinds. */
+  kind?: 'item-answers' | 'written-response' | 'authored-practice';
 }
 
 export interface WritingPromptIndexEntry {

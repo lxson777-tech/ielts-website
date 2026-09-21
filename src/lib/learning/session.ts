@@ -50,6 +50,7 @@ import type {
   SessionEvidenceRef,
   SessionStep,
   SessionStepRole,
+  VocabularySignalV1,
 } from './contracts/plan';
 import {
   BUDGET_OVERRUN_ALLOWANCE,
@@ -65,8 +66,10 @@ import {
   activitiesThatTeach,
   checksForSubskill,
   findActivity,
+  lessonBlockFor,
   practiceForSubskill,
   prerequisiteClosure,
+  vocabReviewActivityId,
 } from './catalog';
 import { canonicalJson, hashContent, paperExposureKey, promptExposureKey, seenKeys } from './evidence';
 
@@ -81,6 +84,12 @@ import { canonicalJson, hashContent, paperExposureKey, promptExposureKey, seenKe
  *  when something is uncertain. */
 export const SESSION_SENTENCES = {
   recall: 'Bring back what you already did on this before anything new.',
+  /* Vocabulary in the recall slot. Support for the paper being worked on,
+     never a paper of its own and never a band. */
+  recallVocabDue: 'Bring back the words that are due today before anything new.',
+  recallVocabTopic: 'Bring back the words for what you are working on today.',
+  recallVocabForCriterion:
+    'Bring back the words for this topic first. Your marked work keeps coming back lowest on vocabulary, so this is the part that holds the rest back.',
   teach: 'Read the part of the lesson that explains this, not the whole page.',
   teachFirst: 'Start with what this question type actually asks you for.',
   practise: 'Work through real questions with help available when you get stuck.',
@@ -420,6 +429,11 @@ export interface SessionRequest {
   overrides: readonly PlanOverride[];
   unavailableSurfaces?: readonly ('microphone' | 'audio' | 'long-session')[];
   thresholds?: PolicyThresholds;
+  /** What the browser knows about this student's vocabulary, as plain data
+      (see VocabularySignalV1). Absent on the Worker, where no vocabulary
+      state exists, and the recall step then falls back to what it did
+      before this was added. */
+  vocabulary?: VocabularySignalV1 | null;
   /** Sample this paper with one short `assess` step, capped at
       DIAGNOSTIC_MAX_MINUTES_PER_SESSION. */
   diagnosticPaper?: Paper;
@@ -449,6 +463,9 @@ interface StepPlan {
   activity: CatalogueActivity;
   minutes: number;
   purpose: string;
+  /** The lesson block this step opens at, when there is one (see
+      SessionStep.blockId). Null, never guessed, everywhere else. */
+  blockId?: string | null;
 }
 
 /** Display order. Allocation happens by need, display happens in this
@@ -579,10 +596,15 @@ export function assembleSession(request: SessionRequest): AssembledSession {
     }
   }
 
-  /* 2. Recall, only when spacing says something related is actually due. */
+  /* 2. Recall, only when spacing says something related is actually due.
+        Spaced review of today's own objective comes first: it is measured
+        evidence that something needs bringing back. When nothing is due
+        there, the slot goes to vocabulary if the browser told us any is
+        waiting (see vocabularyRecallStep). */
   const due =
     policy.dueReview.find((entry) => entry.scopeKey === objective.scopeKey) ??
     policy.dueReview.find((entry) => samePaper(entry.scopeKey, objective.paper));
+  let recallFilled = false;
   if (due && free >= MIN_STEP_MINUTES) {
     const activity = findActivity(due.activityId, catalogue);
     if (activity && isEligible(activity, context(free, { chosenActivityIds: [activity.id] }))) {
@@ -590,7 +612,15 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       if (minutes >= MIN_STEP_MINUTES) {
         steps.push({ role: 'recall', activity, minutes, purpose: SESSION_SENTENCES.recall });
         free -= minutes;
+        recallFilled = true;
       }
+    }
+  }
+  if (!recallFilled && free >= MIN_STEP_MINUTES) {
+    const vocab = vocabularyRecallStep(objective, request.vocabulary ?? null, catalogue, free);
+    if (vocab) {
+      steps.push(vocab);
+      free -= vocab.minutes;
     }
   }
 
@@ -613,7 +643,13 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       const purpose = facts.completedActivityIds.has(activity.id)
         ? SESSION_SENTENCES.teach
         : SESSION_SENTENCES.teachFirst;
-      steps.push({ role: 'teach', activity, minutes, purpose });
+      /* Open the lesson AT the part that teaches today's objective, when
+         the library says which part that is. A lesson page is long, and
+         sending a student to the top of it to find one section themselves
+         is the difference between a plan and a reading list. Null whenever
+         nothing says otherwise, which is the top of the lesson. */
+      const blockId = lessonBlockFor(objective.subskill, activity, catalogue);
+      steps.push({ role: 'teach', activity, minutes, purpose, blockId });
       satisfied.add(activity.id);
       free -= minutes;
     }
@@ -649,9 +685,29 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       (candidate.sharesItemsWith ?? []).some((id) => reserved.has(id))
     );
   };
+  /* And never practise on the very screen the teach step just opened. A
+     focused exercise is allowed in the teaching slot when an objective has
+     no lesson at all, and when that happens the same exercise is usually
+     also the best practice, so the session would send the student to one
+     URL twice and then recap on it a third time. Prefer anything else. */
   const practise =
+    practiseCandidates.find(
+      (candidate) => practisable(candidate) && !wouldSpendTheCheck(candidate) && !satisfied.has(candidate.id),
+    ) ??
     practiseCandidates.find((candidate) => practisable(candidate) && !wouldSpendTheCheck(candidate)) ??
     practiseCandidates.find(practisable);
+
+  /* If there really is nothing else, keep the step that says what the
+     activity honestly is (practice) and give the teaching minutes back,
+     rather than listing the same exercise under two different roles. */
+  if (practise && practise.kind !== 'lesson') {
+    const duplicate = steps.findIndex((step) => step.role === 'teach' && step.activity.id === practise.id);
+    if (duplicate >= 0) {
+      free += steps[duplicate]!.minutes;
+      steps.splice(duplicate, 1);
+    }
+  }
+
   if (practise && free >= MIN_STEP_MINUTES) {
     const minutes = practise.indivisible ? practise.expectedMinutes : Math.min(practise.expectedMinutes, free);
     if (minutes <= free && minutes >= MIN_STEP_MINUTES) {
@@ -745,6 +801,90 @@ export function assembleSession(request: SessionRequest): AssembledSession {
 
 function samePaper(scopeKey: PolicyScopeKey, paper: Paper | undefined): boolean {
   return paper !== undefined && scopeKey.includes(`:${paper}`);
+}
+
+/* ── Vocabulary in the recall slot ───────────────────────────────────────── */
+
+/** The vocabulary review that belongs in today's recall step, or null.
+ *
+ *  Vocabulary is never a fifth paper and never carries a band. It is
+ *  SUPPORT: a topic whose words are due for recall today, or the topic
+ *  today's own work is about, or, for Writing and Speaking, the answer to a
+ *  Lexical Resource that the graders have really been marking low. It only
+ *  ever occupies the recall slot, which is the one part of a session that
+ *  is about bringing something back rather than learning something new.
+ *
+ *  Null whenever there is nothing real to say: no signal at all (the
+ *  Worker, and any browser that has not loaded the deck), no words due, and
+ *  no topic that this session's work is actually about. Nothing here
+ *  invents a topic to fill a slot. */
+function vocabularyRecallStep(
+  objective: PlannedObjective,
+  signal: VocabularySignalV1 | null,
+  catalogue: LearningCatalogueV1,
+  free: number,
+): StepPlan | null {
+  if (!signal) return null;
+
+  const slug = vocabularyTopicFor(objective, signal);
+  /* Nothing due, and no topic today's work is about: there is nothing
+     honest to put here, so the slot stays empty rather than sending
+     somebody to "review vocabulary" with no vocabulary to review. */
+  if (!slug && signal.dueCount === 0) return null;
+
+  const activityId = slug ? vocabReviewActivityId(slug) : 'review:vocabulary';
+  const activity = findActivity(activityId, catalogue) ?? findActivity('review:vocabulary', catalogue);
+  if (!activity) return null;
+
+  const minutes = Math.min(activity.expectedMinutes, RECALL_MAX_MINUTES, free);
+  if (minutes < MIN_STEP_MINUTES) return null;
+
+  return { role: 'recall', activity, minutes, purpose: vocabularyRecallPurpose(objective, signal, slug !== null) };
+}
+
+/** Which topic, in order of how much the student would get from it: a topic
+    with words genuinely due today, then a topic today's work is about, then
+    a topic whose words this student keeps failing to recall. */
+function vocabularyTopicFor(objective: PlannedObjective, signal: VocabularySignalV1): string | null {
+  const dueSlugs = Object.keys(signal.dueByTopic).filter((slug) => (signal.dueByTopic[slug] ?? 0) > 0);
+
+  /* A topic that is BOTH due and relevant to today is the best of both. */
+  const relevantAndDue = signal.relevantTopics.find((slug) => dueSlugs.includes(slug));
+  if (relevantAndDue) return relevantAndDue;
+
+  if (dueSlugs.length > 0) {
+    /* The most due, and the alphabetically first of those, so two runs
+       over the same state give the same session. */
+    return [...dueSlugs].sort(
+      (a, b) => (signal.dueByTopic[b] ?? 0) - (signal.dueByTopic[a] ?? 0) || (a < b ? -1 : 1),
+    )[0]!;
+  }
+
+  if (signal.relevantTopics.length > 0 && supportsLexicalResource(objective, signal)) {
+    return signal.relevantTopics[0]!;
+  }
+
+  const failing = signal.problems.find((problem) => problem.reason === 'repeated-recall-failure' && problem.topic);
+  return failing?.topic ?? null;
+}
+
+/** Whether a Lexical Resource problem the graders really measured makes
+    vocabulary worth a step today. Writing and Speaking only: Lexical
+    Resource is a criterion on those two papers and nowhere else, and
+    stretching it to Reading or Listening would be inventing a link. */
+function supportsLexicalResource(objective: PlannedObjective, signal: VocabularySignalV1): boolean {
+  if (objective.paper !== 'writing' && objective.paper !== 'speaking') return false;
+  return signal.problems.some((problem) => problem.reason === 'low-lexical-resource');
+}
+
+function vocabularyRecallPurpose(
+  objective: PlannedObjective,
+  signal: VocabularySignalV1,
+  named: boolean,
+): string {
+  if (supportsLexicalResource(objective, signal)) return SESSION_SENTENCES.recallVocabForCriterion;
+  if (signal.dueCount > 0) return SESSION_SENTENCES.recallVocabDue;
+  return named ? SESSION_SENTENCES.recallVocabTopic : SESSION_SENTENCES.recallVocabDue;
 }
 
 /** A whole timed paper needs its own later session to go through the
@@ -869,6 +1009,7 @@ function finish(
     minutes: step.minutes,
     purpose: step.purpose,
     state: 'pending',
+    ...(step.blockId ? { blockId: step.blockId } : {}),
   }));
 
   const session: PlanSession = {

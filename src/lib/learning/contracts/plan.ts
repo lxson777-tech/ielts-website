@@ -116,6 +116,15 @@ export interface SessionStep {
   /** True while the step is waiting on something external, such as a grader
       that has not answered yet. Shown honestly rather than as done. */
   pending?: boolean;
+  /** The block of the lesson this step should OPEN AT, when the activity is
+   *  a lesson and something in the library says which part of it teaches
+   *  today's objective (see lessonBlockFor in catalog.ts). Appended to the
+   *  step's link as a `#` anchor; the lesson layout stamps the same ids
+   *  onto its own headings at build time.
+   *
+   *  Optional and additive: a step without it links to the top of the
+   *  lesson, exactly as every step did before 22 September 2026. */
+  blockId?: string;
 }
 
 export interface PlanSession {
@@ -297,6 +306,48 @@ export interface PersonalPlanV1 {
       enough to sample. Never a promise about a band. Absent when there is
       nothing to warn about. */
   scopeNote?: string;
+}
+
+/* ── Vocabulary, as the planner is told about it ─────────────────────────── */
+
+/** One genuinely observed vocabulary problem. Never an inferred one: either
+    a word this student has actually failed to recall more than once, or a
+    Lexical Resource average the graders really returned. */
+export interface VocabularyProblemSignal {
+  reason: 'repeated-recall-failure' | 'low-lexical-resource';
+  /** The word itself, for a repeated recall failure. */
+  word?: string;
+  /** The vocabulary topic's SLUG, so a step can be built from it without a
+      second lookup. Absent when the word belongs to no lesson topic. */
+  topic?: string;
+  lapses?: number;
+}
+
+/** What the browser knows about this student's vocabulary, gathered once by
+ *  the orchestration layer and handed to the planner as plain data.
+ *
+ *  WHY IT IS PASSED IN RATHER THAN READ
+ *  The planner and the session builder are pure and run inside a Cloudflare
+ *  Worker as well as a browser. The vocabulary deck (src/lib/vocab-review.ts)
+ *  is built from 292 KB of lesson bodies through a Vite-only feature, and
+ *  the review state lives in this device's localStorage. Neither can be
+ *  reached from pure code, and under plain Node the deck silently shrinks
+ *  from 719 words to 146 (risk 6 in the architecture), so the full card set
+ *  has to be passed explicitly by whoever loads it.
+ *
+ *  Absent is a perfectly good answer. On the Worker there is no vocabulary
+ *  state at all, and the session's recall step then does exactly what it
+ *  did before this existed. */
+export interface VocabularySignalV1 {
+  /** Words due for RECALL today, never for mere recognition. */
+  dueCount: number;
+  /** Those words per vocabulary topic SLUG, so a step can name the topic. */
+  dueByTopic: Readonly<Record<string, number>>;
+  /** Topic slugs relevant to today's objective or prompt, best first.
+      Measured by relevantVocabTopics() against the real word lists, not
+      guessed from the paper. */
+  relevantTopics: readonly string[];
+  problems: readonly VocabularyProblemSignal[];
 }
 
 /* ── Named constants ─────────────────────────────────────────────────────── */

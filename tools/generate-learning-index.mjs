@@ -23,22 +23,33 @@
  * SHAPE AND SIZE
  * --------------
  * The cap is LEARNING_INDEX_MAX_BYTES (262,144 bytes, in
- * src/lib/learning/contracts/catalog.ts). The file is 227,314 bytes today,
- * so it fits with about 13 per cent to spare and nothing had to be left
- * out: every schedulable unit carries its item ids in full rather than a
- * range or a count, and a drill lists the exact question ids it shares with
- * its source paper. That is what lets "this student has already seen these
- * items" be answered later without loading a single paper.
+ * src/lib/learning/contracts/catalog.ts).
  *
- * Only the FORMATTING was compressed, never the content: a list of plain
- * values and an object whose fields are all plain values each stay on one
- * line, which saved about 32 KB of indentation and line endings.
+ * This script builds the COMFORTABLE shape (GeneratedIndexV1: every
+ * question id spelled out, every lesson-check item naming its own paper and
+ * question), and then writes the COMPACT shape defined in
+ * src/lib/learning/index-format.ts. On 22 September 2026, after WP18 to
+ * WP22 added 93 focused exercises where 7 had been, the comfortable shape
+ * reached 286,068 bytes, over the cap; the compact one is about 175,000,
+ * roughly a third under it.
  *
- * If the data grows past the cap, compress the SHAPE next, in this order,
- * before dropping anything the planner needs. Every paper holds exactly
- * "q1" to "q40" in order and every drill holds a contiguous run of them, so
- * a from/to pair would replace roughly 35 KB of ids losslessly. Only then
- * raise the cap, and raise it on purpose.
+ * Nothing was dropped to get there. The compact file says each fact once
+ * (a paper holds q1 to qN, so it writes N; a drill holds a contiguous run,
+ * so it writes the first and last number; a drill's id is its paper plus
+ * its part, so it writes neither twice), and decodeLearningIndex() puts the
+ * comfortable shape back at import. The round-trip is asserted in
+ * tests/learning-index.test.ts, which is what makes "compact" different
+ * from "incomplete".
+ *
+ * The FORMATTING is compressed too: a list of plain values and an object
+ * whose fields are all plain values each stay on one line, which saves
+ * about 30 KB of indentation and line endings.
+ *
+ * If the data grows past the cap again, compress the shape further before
+ * dropping anything the planner needs. The drill titles (about 27 KB of
+ * real passage names) and the focused exercises' objective sentences (about
+ * 10 KB) are the two biggest remaining blocks, and both are real content
+ * that a student reads. Only then raise the cap, and raise it on purpose.
  *
  * DETERMINISM
  * -----------
@@ -90,6 +101,8 @@ import { MODEL_ANSWERS } from '../src/data/model-answers.ts';
 import { SPEAKING_CUE_CARDS, SPEAKING_PART1_TOPICS } from '../src/data/speaking-prompts.ts';
 import { VOCABULARY_PARTS } from '../src/data/vocabulary.ts';
 import { buildVocabTopicData } from '../src/lib/vocab-review.ts';
+import { encodeLearningIndex } from '../src/lib/learning/index-format.ts';
+import { segmentLessonBody } from '../src/lib/learning/lesson-blocks.ts';
 
 /* ------------------------------------------------------------------ */
 /* Where things live                                                   */
@@ -330,6 +343,55 @@ export function buildLessonChecks() {
 /* Focused exercises (authored later, in WP18)                         */
 /* ------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------ */
+/* Lesson blocks the exercises point at                                */
+/* ------------------------------------------------------------------ */
+
+/* Every focused exercise names the lesson it is built on AND the HEADING of
+   the block inside it ("How to Approach It", "The Four Paragraphs"). A
+   heading is not a link: the deep links the lesson pages publish are block
+   IDS, which are derived at build time from the body's own markup (lead
+   decision D2, src/lib/learning/lesson-blocks.ts). Resolving the heading to
+   that id here is what lets a session's teach step open the lesson AT the
+   part it is about rather than at the top.
+
+   Only the blocks the exercises really reference are resolved: 25 headings
+   across 15 lessons, not all 433 blocks in the library. A heading that no
+   longer matches resolves to nothing, and the step falls back to the top of
+   the lesson, which is a worse link but never a wrong one. The tripwire is
+   tests/lesson-blocks.test.ts, which lists every exercise whose heading has
+   stopped matching, in English AND in Russian. */
+
+function lessonBodyPath(lessonKey, locale) {
+  return locale === 'en'
+    ? path.join(LESSON_BODIES_DIR, `${lessonKey}.html`)
+    : path.join(LESSON_BODIES_DIR, locale, `${lessonKey}.html`);
+}
+
+/** Block id by `<lesson key>\n<heading>`, for the headings passed in. Only
+    the English body decides an id: a Russian body's blocks are the same
+    blocks by position and carry the same ids (see lesson-blocks.ts). */
+export function resolveLessonBlocks(wanted) {
+  const byLesson = new Map();
+  for (const { lessonKey, heading } of wanted) {
+    if (!byLesson.has(lessonKey)) byLesson.set(lessonKey, new Set());
+    byLesson.get(lessonKey).add(heading);
+  }
+  const resolved = new Map();
+  for (const lessonKey of [...byLesson.keys()].sort()) {
+    const file = lessonBodyPath(lessonKey, 'en');
+    if (!existsSync(file)) {
+      throw new Error(`A focused exercise names lesson "${lessonKey}", which has no body at ${file}.`);
+    }
+    const blocks = segmentLessonBody(readFileSync(file, 'utf8'));
+    for (const heading of byLesson.get(lessonKey)) {
+      const block = blocks.find((entry) => entry.heading === heading);
+      if (block) resolved.set(`${lessonKey}\n${heading}`, block.id);
+    }
+  }
+  return resolved;
+}
+
 /* An exercise names a real paper, a part and a group, or a real exam prompt
    (see src/data/focused-exercises.ts). Everything below is carried through
    so the catalogue can answer three questions without ever loading a paper
@@ -346,6 +408,11 @@ export async function buildFocusedExercises() {
   const module = await import(pathToFileURL(FOCUSED_EXERCISES_FILE).href);
   const authored = module.ALL_FOCUSED_EXERCISES ?? module.FOCUSED_EXERCISES ?? [];
   const writtenItemId = module.writtenItemId ?? ((promptId) => `prompt:${promptId}`);
+  const blockIds = resolveLessonBlocks(
+    authored
+      .filter((exercise) => exercise.lesson)
+      .map((exercise) => ({ lessonKey: exercise.lesson.key, heading: exercise.lesson.blockHeading })),
+  );
   return authored
     .map((exercise) => {
       const written = exercise.kind === 'written-response';
@@ -362,6 +429,12 @@ export async function buildFocusedExercises() {
       if (exercise.kind) entry.kind = exercise.kind;
       if (exercise.role) entry.role = exercise.role;
       if (exercise.objective) entry.objective = exercise.objective;
+      if (exercise.lesson) {
+        entry.lessonKey = exercise.lesson.key;
+        /* Absent, never guessed, when the heading no longer matches. */
+        const blockId = blockIds.get(`${exercise.lesson.key}\n${exercise.lesson.blockHeading}`);
+        if (blockId) entry.lessonBlockId = blockId;
+      }
       if (written) {
         entry.sourcePromptIds = [source.promptId];
         entry.sharesItemsWith = [`write:${source.promptId}`];
@@ -527,8 +600,9 @@ export async function buildLearningIndex() {
   /* The version IS the content: hash the file as it would be written with
      the field blank, then fill it in. Nothing else can be checked rather
      than trusted, and a timestamp here would make the file impossible to
-     reproduce. */
-  body.indexVersion = shortHash(render(body));
+     reproduce. The hash is taken over the COMPACT rendering, because that
+     is what is committed and what a reader downloads. */
+  body.indexVersion = shortHash(render(encodeLearningIndex(body)));
   return body;
 }
 
@@ -570,9 +644,10 @@ function render(value, depth = 0) {
   return JSON.stringify(value);
 }
 
-/** The exact bytes of the committed file, for the index the caller built. */
+/** The exact bytes of the committed file, for the index the caller built.
+    The argument is the comfortable shape; the file is the compact one. */
 export function serialiseIndex(index) {
-  return `${render(index)}\n`;
+  return `${render(encodeLearningIndex(index))}\n`;
 }
 
 /* ------------------------------------------------------------------ */

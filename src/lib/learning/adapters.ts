@@ -165,13 +165,19 @@ export interface SharedSessionView {
  *  The same rule as `activityHref` in catalog.ts, rewritten over the target
  *  alone so that this file can stay free of the catalogue module and the
  *  generated index it carries. */
-export function stepHref(target: ActivityTarget): string | null {
+export function stepHref(target: ActivityTarget, blockId?: string | null): string | null {
   if (target.kind !== 'route') return null;
   const query = target.query ?? {};
   const pairs = Object.keys(query)
     .sort()
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(query[key] as string)}`);
-  return target.href + (pairs.length ? `?${pairs.join('&')}` : '') + (target.hash ? `#${target.hash}` : '');
+  /* The step's own block wins over the activity's fixed hash: the activity
+     says where the page is, the step says which part of it today is about
+     (see SessionStep.blockId). Lesson pages stamp these ids onto their own
+     headings at build time, so this is a real anchor and not a guess; a
+     step with no block simply opens the page at the top. */
+  const hash = blockId ?? target.hash;
+  return target.href + (pairs.length ? `?${pairs.join('&')}` : '') + (hash ? `#${hash}` : '');
 }
 
 /** The `progress.lessons` key a library lesson is filed under, or null. */
@@ -247,7 +253,7 @@ function stepView(step: SessionStep, catalogue: LearningCatalogueV1): SharedStep
     minutes: step.minutes,
     purpose: step.purpose,
     state: step.state,
-    href: activity ? stepHref(activity.target) : null,
+    href: activity ? stepHref(activity.target, step.blockId) : null,
     objective: activity?.objective ?? step.purpose,
     indivisible: activity?.indivisible ?? false,
     lessonKey: lessonKeyOf(step.activityId),
