@@ -68,7 +68,7 @@ import {
   practiceForSubskill,
   prerequisiteClosure,
 } from './catalog';
-import { canonicalJson, hashContent, paperExposureKey, seenKeys } from './evidence';
+import { canonicalJson, hashContent, paperExposureKey, promptExposureKey, seenKeys } from './evidence';
 
 /* ── Every sentence this file can write ──────────────────────────────────── */
 
@@ -309,6 +309,12 @@ function prerequisitesSatisfied(activity: CatalogueActivity, context: Eligibilit
 export function isUnseen(activity: CatalogueActivity, facts: LearnerFacts): boolean {
   for (const testId of activity.sourcePaperIds ?? []) {
     if (facts.seen.has(paperExposureKey(testId))) return false;
+  }
+  /* A Writing or Speaking prompt is met the same way a paper is: a student
+     who has already written about this chart has seen it, whether that was
+     the full graded report or a short overview task on the same prompt. */
+  for (const promptId of activity.sourcePromptIds ?? []) {
+    if (facts.seen.has(promptExposureKey(promptId))) return false;
   }
   if (facts.lastWorkedByActivity.has(activity.id)) return false;
   for (const shared of activity.sharesItemsWith ?? []) {
@@ -794,12 +800,22 @@ export function teachingNeeded(
 
 /** Real, marked, short samples for one paper, shortest first.
  *
- *  A diagnostic has to produce real marks: scored items, a scored paper, or
- *  a report from one of the calibrated graders. Unverified authored material
- *  is allowed ONLY where a calibrated grader does the marking; lead decision
- *  Q1 bars it from checks and assessment because the material itself would
- *  be deciding the answer, which a grader-marked task does not let it do. */
-const DIAGNOSTIC_EVIDENCE = new Set(['scored-items', 'scored-paper', 'graded-rubric']);
+ *  A diagnostic has to produce real marks: scored items, a scored paper, a
+ *  report from one of the calibrated graders, or one short piece of the
+ *  student's own writing judged against one stated objective. Unverified
+ *  authored material is allowed ONLY where a calibrated grader does the
+ *  marking; lead decision Q1 bars it from checks and assessment because the
+ *  material itself would be deciding the answer, which a grader-marked task
+ *  does not let it do.
+ *
+ *  `objective-judged` was added by the Task 1 overview pilot (WP17). Before
+ *  it, Writing could not be diagnosed at all inside a fifteen minute step,
+ *  because the shortest Writing activity in the library was a twenty minute
+ *  graded report and the planner had nothing to offer. A seven minute
+ *  overview on an unseen chart closes that, and the policy caps what it can
+ *  claim: a diagnostic never rises above tentative, and an objective
+ *  judgement carries no band at any certainty. */
+const DIAGNOSTIC_EVIDENCE = new Set(['scored-items', 'scored-paper', 'graded-rubric', 'objective-judged']);
 
 export function diagnosticCandidates(paper: Paper, context: EligibilityContext): CatalogueActivity[] {
   return context.catalogue.activities

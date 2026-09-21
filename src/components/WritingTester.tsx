@@ -31,6 +31,8 @@ import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
 import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
+import SessionContinueBar from './learning/SessionContinueBar';
+import WorkOnOverview from './learning/WorkOnOverview';
 import { getLearnerStore, ownerNamespace } from '../lib/learning/store.browser';
 import { writingActivityId } from '../lib/learning/catalog';
 
@@ -490,6 +492,35 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             summary={`Estimated band ${result.overallBand.toFixed(1)}`}
           />
         )}
+
+        {/* The teaching hand-off (WP17). It appears only when this very
+            report gives a reason: the examiner said something about the
+            overview, or a plain check of the essay found no summarising
+            sentence. It never touches the band above, and pressing it
+            reconciles into the ONE plan rather than offering a competing
+            next step. */}
+        {attemptAt && prompt.task === 'task1' && (
+          <WorkOnOverview
+            attempt={{
+              at: attemptAt,
+              promptId: prompt.id,
+              promptTitle: prompt.title,
+              task: prompt.task,
+              essay,
+              live: result.grader.live,
+              report: {
+                criteria: result.criteria,
+                moments: result.moments,
+                improvements: result.improvements,
+                grader: result.grader,
+              },
+            }}
+          />
+        )}
+
+        {/* The one control at the end of a piece of work, reading the same
+            session every other surface reads. */}
+        <SessionContinueBar activityId={writingActivityId(prompt.id)} compact />
 
         <div className="flex flex-wrap justify-center gap-3">
           <button

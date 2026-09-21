@@ -1,0 +1,341 @@
+/* The written focused task, and the hand-off that sends a student to one.
+
+   Built on top of learning-focus.css rather than beside it: the header, the
+   primary action, the closing certainty lines, the session bar and the help
+   controls are the same components doing the same job, so they are the same
+   classes. What is new here is a writing surface, which the Reading pattern
+   has no equivalent of.
+
+   The same rules as everywhere in the approved workspace: custom properties
+   from workspace-redesign.css are read, never redeclared; one primary
+   action per screen; everything else revealed on demand; motion is small
+   and always behind prefers-reduced-motion.
+
+   THE LAYOUT DECISION WORTH WRITING DOWN
+   The chart and the writing box sit side by side on a wide screen, because
+   a student describing a chart is looking at it and typing at the same
+   time. At phone width they stack with the chart first, and the chart panel
+   is capped and scrollable so the box is always reachable without a long
+   scroll past an image. */
+
+/* ── The two panels ───────────────────────────────────────────────────────── */
+
+.written-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+@media (min-width: 900px) {
+  .written-body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+}
+
+.written-prompt {
+  padding: 22px 24px;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-radius: 20px;
+  background: var(--color-surface, #fffefa);
+}
+.written-prompt-label {
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted, #616c64);
+}
+.written-prompt-text { font-size: 14.5px; line-height: 1.7; color: var(--color-ink, #263c35); }
+/* The prompt markup carries the publisher's own inline width cap on the
+   chart. This overrides it so the image fills the panel it is in, which is
+   what a student reading numbers off it needs. */
+.written-prompt-text img {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  margin-top: 14px;
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* ── Writing ──────────────────────────────────────────────────────────────── */
+
+.written-work {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-radius: 20px;
+  background: var(--color-surface, #fffefa);
+}
+.written-instruction { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--color-ink, #263c35); }
+.written-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted, #616c64);
+}
+
+/* Generous on purpose: the box is where the work happens, and a cramped one
+   tells a student their two sentences are an afterthought. */
+.written-input {
+  width: 100%;
+  min-height: 170px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-radius: 16px;
+  background: var(--color-surface-alt, #f5f5f0);
+  font-family: inherit;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--color-ink, #263c35);
+  resize: vertical;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+.written-input:focus {
+  border-color: var(--color-brand, #b94b36);
+  background: var(--color-surface, #fffefa);
+  outline: none;
+}
+.written-input:disabled { opacity: 0.6; }
+.written-count { margin: 0; font-size: 12.5px; color: var(--color-ink-muted, #616c64); }
+.written-count.is-over { color: var(--color-brand, #b94b36); font-weight: 600; }
+.written-actions { display: flex; justify-content: flex-end; padding-top: 4px; }
+
+/* ── The guiding questions ────────────────────────────────────────────────── */
+
+.written-guide-open,
+.written-model-open,
+.written-revise {
+  align-self: flex-start;
+  min-height: 38px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-radius: 999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink-muted, #616c64);
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.written-guide-open:hover,
+.written-model-open:hover,
+.written-revise:hover {
+  background: var(--color-surface-alt, #f5f5f0);
+  border-color: var(--color-ink-muted, #616c64);
+  color: var(--color-ink, #263c35);
+}
+.written-guide-open-panel {
+  padding: 14px 16px;
+  border-left: 3px solid #c8a24a;
+  border-radius: 0 14px 14px 0;
+  background: var(--color-surface-alt, #f5f5f0);
+  animation: focused-rise 240ms ease both;
+}
+.written-guide-title {
+  margin: 0 0 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted, #616c64);
+}
+.written-guide-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.written-guide-list li { font-size: 13.5px; line-height: 1.6; color: var(--color-ink, #263c35); }
+.written-guide-note { margin: 10px 0 0; font-size: 11.5px; line-height: 1.55; color: var(--color-ink-muted, #616c64); }
+
+/* ── What it meant ────────────────────────────────────────────────────────── */
+
+.written-result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 28px;
+  border-radius: 22px;
+  background: var(--color-ink, #263c35);
+  color: #fffefa;
+  animation: focused-rise 320ms ease both;
+}
+.written-verdict {
+  margin: 0;
+  font-family: var(--font-display-ui, inherit);
+  font-size: 21px;
+  font-weight: 550;
+  line-height: 1.3;
+}
+.written-verdict.is-met { color: #e0ebbc; }
+.written-verdict.is-partly { color: #f1dfa8; }
+.written-verdict.is-not-yet { color: #f3cfc2; }
+.written-simulated { margin: 0; font-size: 11.5px; font-weight: 700; color: #f1dfa8; }
+.written-observations { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.written-observations li { font-size: 14.5px; line-height: 1.65; }
+.written-next-move { margin: 4px 0 0; padding: 12px 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.08); font-size: 14px; line-height: 1.6; }
+.written-next-move-label { font-weight: 700; }
+.written-unjudged { margin: 0; font-size: 14.5px; line-height: 1.65; }
+
+.written-checks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.written-check {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 14px;
+  border-left: 3px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0 12px 12px 0;
+  background: rgba(255, 255, 255, 0.06);
+}
+.written-check.is-pass { border-left-color: #e0ebbc; }
+.written-check.is-look { border-left-color: #f1dfa8; }
+.written-check-label { font-size: 12px; font-weight: 700; }
+.written-check-result { font-size: 13px; line-height: 1.6; color: #c6cfc0; }
+.written-checks-note,
+.written-not-a-band { margin: 0; font-size: 12.5px; line-height: 1.6; color: #c6cfc0; }
+/* The one line that separates this screen from the band report. Given its
+   own rule above it so it reads as a standing fact rather than as the tail
+   of the feedback. */
+.written-not-a-band { padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+
+/* ── The model, afterwards only ───────────────────────────────────────────── */
+
+.written-model { margin-top: 4px; }
+.written-model-open { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); color: #fffefa; }
+.written-model-open:hover { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.4); color: #fffefa; }
+.written-model-panel {
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  animation: focused-rise 240ms ease both;
+}
+.written-model-title,
+.written-model-notice-title {
+  margin: 0 0 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c6cfc0;
+}
+.written-model-notice-title { margin-top: 14px; }
+.written-model-text {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px solid #e0ebbc;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.written-model-notice { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.written-model-notice li { font-size: 13.5px; line-height: 1.6; color: #e3e9dd; }
+.written-model-warning { margin: 12px 0 0; font-size: 12px; line-height: 1.55; color: #c6cfc0; }
+
+/* ── Before and after ─────────────────────────────────────────────────────── */
+
+.written-before-after { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 4px; }
+@media (min-width: 720px) {
+  .written-before-after { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+.written-before-after-label {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c6cfc0;
+}
+.written-before,
+.written-after {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.written-after { border-left: 3px solid #e0ebbc; }
+.written-revise { align-self: flex-start; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); color: #fffefa; }
+.written-revise:hover { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.4); color: #fffefa; }
+
+/* ── The hand-off from a marked report ────────────────────────────────────── */
+
+.overview-handoff {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-left: 3px solid var(--color-brand, #b94b36);
+  border-radius: 18px;
+  background: var(--color-surface, #fffefa);
+}
+.overview-handoff-kicker {
+  margin: 0;
+  font-family: var(--font-display-ui, inherit);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-ink, #263c35);
+}
+.overview-handoff-body { margin: 0; font-size: 14px; line-height: 1.65; color: var(--color-ink, #263c35); }
+.overview-handoff-quote {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--color-border, #dddfd6);
+  border-radius: 0 12px 12px 0;
+  background: var(--color-surface-alt, #f5f5f0);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--color-ink, #263c35);
+}
+.overview-handoff-source,
+.overview-handoff-note { margin: 0; font-size: 11.5px; line-height: 1.55; color: var(--color-ink-muted, #616c64); }
+.overview-handoff-added { margin: 0; font-size: 13.5px; font-weight: 600; color: var(--color-ink, #263c35); }
+.overview-handoff-action {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 11px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-brand, #b94b36);
+  font-family: var(--font-display-ui, inherit);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fffefa;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+.overview-handoff-action:hover { background: var(--color-brand-hover, #9b3c29); transform: translateY(-1px); }
+.overview-handoff-link {
+  align-self: flex-start;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-brand, #b94b36);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Keyboard and motion ──────────────────────────────────────────────────── */
+
+.written-input:focus-visible,
+.written-guide-open:focus-visible,
+.written-revise:focus-visible,
+.overview-handoff-action:focus-visible,
+.overview-handoff-link:focus-visible {
+  outline: 2px solid var(--color-brand, #b94b36);
+  outline-offset: 2px;
+}
+.written-model-open:focus-visible,
+.written-result .written-revise:focus-visible {
+  outline: 2px solid #e0ebbc;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .written-result,
+  .written-guide-open-panel,
+  .written-model-panel { animation: none; }
+  .overview-handoff-action:hover { transform: none; }
+}
+
+@media (max-width: 480px) {
+  .written-prompt,
+  .written-work { padding: 16px 18px; }
+  .written-prompt-text { max-height: 52vh; overflow-y: auto; }
+  .written-result { padding: 20px; }
+  .overview-handoff { padding: 16px 18px; }
+}

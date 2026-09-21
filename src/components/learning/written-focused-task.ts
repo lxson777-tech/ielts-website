@@ -1,0 +1,854 @@
+/* The judgement calls behind one written focused task, with no DOM in them.
+ *
+ * WHY A PLAIN .ts FILE
+ * The same split as ./focused-exercise.ts: tests/ts-extension-loader.mjs
+ * strips TypeScript types for node:test but does not transform JSX, so
+ * anything a test imports directly must be free of it. The component is
+ * glue; everything that decides what a student's writing MEANS lives here
+ * where it can be tested with no browser.
+ *
+ * THE FOUR RULES THIS FILE EXISTS TO KEEP
+ * 1. A gap is found from EVIDENCE, never from a guess. Either the marker
+ *    said something about the overview, in which case the student is shown
+ *    the marker's own sentence word for word, or a plain visible check of
+ *    their own text found something, in which case it is called a check and
+ *    not a judgement, or nothing is known and it says so.
+ * 2. Nothing here is ever a band. Not the verdict, not the checks, not the
+ *    wording. A reply with a number in it is refused and the automatic
+ *    checks are shown instead, because this platform has calibrated graders
+ *    and a cheap number beside them would be believed.
+ * 3. Help makes an attempt assisted, for good. Opening the prompt's guiding
+ *    questions, reading the model overview and being talked through the
+ *    work by Mr EZ all raise the level, and it never comes back down.
+ * 4. The student's words are never lost. The draft store below is written
+ *    on every keystroke and survives a failed evaluation, a closed tab and
+ *    a refused write, and it keeps the original beside the revision so the
+ *    two can be read as before and after.
+ */
+
+import { countWords } from '../../lib/writing/mechanics';
+import type { WrittenCheckId } from '../../data/focused-exercises';
+import type { Paper, Subskill } from '../../lib/learning/contracts/catalog';
+import type { AssistanceLevel, CompletionState, EvidenceMode } from '../../lib/learning/contracts/evidence';
+import type { EvidenceDraft, ItemOutcomeDraft } from '../../lib/learning/evidence';
+import { promptExposureKey } from '../../lib/learning/evidence';
+import { raise } from './focused-exercise';
+
+/* ── What the page hands the component ───────────────────────────────────── */
+
+export interface WrittenTaskView {
+  exerciseId: string;
+  /** `focus:<exerciseId>`, the catalogue id every event is written against. */
+  activityId: string;
+  contentVersion: number;
+  role: 'guided-practice' | 'independent-check';
+  paper: Paper;
+  subskill: Subskill;
+  title: string;
+  /** THE sentence the work is judged against, and the only one. Shown to
+      the student, because they are owed the standard they are held to, and
+      read by the Worker from the catalogue rather than from the request. */
+  objective: string;
+  /** What to do, in the student's own terms. */
+  instruction: string;
+  expectedMinutes: number;
+  minWords: number;
+  maxWords: number;
+  checks: readonly WrittenCheckId[];
+  /** The prompt, exactly as the Writing trainer shows it: the publisher's
+      own wording and their own chart, in their own markup. */
+  promptId: string;
+  promptTitle: string;
+  promptHtml: string;
+  /** chart, process, map, table, combination. */
+  form: string;
+  attribution: string;
+  /** The one item every attempt on this task is recorded against, which is
+      what links a revision to the attempt it revises. */
+  itemId: string;
+  /** The prompt's own "Build your overview" questions, written by an IELTS
+      teacher on 19 September 2026 to lead a student to their own answer.
+      Empty on a check: that is what makes a check a check. */
+  guidingQuestions: readonly string[];
+  /** The band 8 model's overview paragraph. Never rendered before the
+      student's own attempt; after one it is "one way to write it". */
+  modelOverview: string | null;
+  noticeInTheModel: readonly string[];
+  /** The teaching block this practises, resolved at build time exactly as
+      an item-answers exercise resolves it. */
+  lessonHref?: string;
+  lessonKey?: string;
+  blockId: string;
+  blockHeading: string;
+  blockText: string;
+}
+
+/* ── Reading the band 8 model ────────────────────────────────────────────── */
+
+/** Sentence openings that announce a summary rather than a detail. Used in
+    two places: finding the overview inside a model answer, and the
+    automatic check on the student's own text. Kept as one list so the
+    check and the model agree about what an overview sounds like. */
+const SUMMARISING_OPENERS =
+  /^\s*(overall|in general|generally speaking|broadly|in summary|to summarise|taken as a whole|it is (immediately )?clear that|the most (striking|noticeable|obvious|significant) )/i;
+
+/** Split text into sentences. Crude on purpose: an overview is one or two
+    of them, and a splitter that handled every edge case would be a bigger
+    thing than the feature it serves. */
+export function sentencesOf(text: string): string[] {
+  return text
+    .split(/\n+/)
+    .flatMap((line) => line.split(/(?<=[.!?])\s+/))
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.length > 0);
+}
+
+/** The overview paragraph of a band 8 Task 1 model answer.
+ *
+ *  Deterministic and checkable rather than positional: the paragraph that
+ *  OPENS with a summarising word is the overview, and every Task 1 model in
+ *  the library has exactly one. Falls back to the second paragraph, which
+ *  is where the four paragraph method puts it, and to null when there is no
+ *  second paragraph at all rather than offering the introduction as though
+ *  it were the overview. */
+export function modelOverviewOf(paragraphs: readonly string[]): string | null {
+  const signalled = paragraphs.find((paragraph) => SUMMARISING_OPENERS.test(paragraph));
+  if (signalled) return signalled.trim();
+  return paragraphs[1]?.trim() ?? null;
+}
+
+/* ── The automatic checks ────────────────────────────────────────────────── */
+
+/** One plain, visible rule over the words the student typed.
+ *
+ *  These are shown when nothing judged the work, and they are labelled as
+ *  automatic checks every time. They are not a verdict and they never add
+ *  up to one: four passes do not mean the overview is good, and one failure
+ *  does not mean it is wrong. What they do is give a student with no tutor
+ *  something real to do, which is to look at their own sentence against the
+ *  model afterwards. */
+export interface WrittenCheckResult {
+  id: WrittenCheckId;
+  passed: boolean;
+  /** What was looked for, in plain words. A dictionary key. */
+  labelKey: string;
+  /** What was found. A dictionary key, with its own variables. */
+  resultKey: string;
+  resultVars?: Record<string, string | number>;
+}
+
+/** Words that join a second main point onto the first. Counted because an
+    overview of two features is usually one sentence with a contrast in it,
+    not two sentences. */
+const JOINING_WORDS = /\b(while|whilst|whereas|although|though|but|meanwhile)\b|\bin contrast\b|\bcompared with\b/gi;
+
+/** Anything that reads as a figure. Digits settle most of it; the two
+    spellings of per cent catch the student who writes the number out. */
+const FIGURES = /\d+(?:[.,]\d+)?%?|%|\bper ?cents?\b|\bpercent(?:age)?s?\b/gi;
+
+export function hasSummarisingSignal(text: string): boolean {
+  return sentencesOf(text).some((sentence) => SUMMARISING_OPENERS.test(sentence));
+}
+
+/** Every figure the text contains, as the student wrote it. */
+export function figuresIn(text: string): string[] {
+  return text.match(FIGURES) ?? [];
+}
+
+/** How many main points the text makes, counted the only way a machine
+ *  honestly can: one per sentence, plus one for every word that joins a
+ *  second point onto the first. "Overall, X rose while Y fell" is two.
+ *  Said in exactly those words on the screen, so the student can see what
+ *  was counted rather than trusting a number. */
+export function mainFeatureCount(text: string): number {
+  const sentences = sentencesOf(text);
+  const joins = (text.match(JOINING_WORDS) ?? []).length;
+  return sentences.length + joins;
+}
+
+export function wordsIn(text: string): number {
+  return countWords(text);
+}
+
+export const CHECK_LABELS: Readonly<Record<WrittenCheckId, string>> = {
+  'summarising-signal': 'Does it open as a summary?',
+  'two-main-features': 'Does it make more than one point?',
+  'no-figures': 'Is it free of figures?',
+  'length-in-range': 'Is it about the right length?',
+};
+
+/** The minimum number of main points a passing overview makes. Two,
+    because "the main trends" is plural in the descriptor itself. */
+export const MIN_MAIN_FEATURES = 2;
+
+export function runAutomaticChecks(
+  text: string,
+  rules: { minWords: number; maxWords: number; checks: readonly WrittenCheckId[] },
+): WrittenCheckResult[] {
+  const words = wordsIn(text);
+  const figures = figuresIn(text);
+  const features = mainFeatureCount(text);
+  const signal = hasSummarisingSignal(text);
+
+  const results: Record<WrittenCheckId, WrittenCheckResult> = {
+    'summarising-signal': {
+      id: 'summarising-signal',
+      passed: signal,
+      labelKey: CHECK_LABELS['summarising-signal'],
+      resultKey: signal
+        ? 'It opens with a summarising word, so a reader knows straight away that this is the big picture.'
+        : 'No sentence starts with a summarising word such as "Overall". An examiner looks for the overview first, so it is worth signalling.',
+    },
+    'two-main-features': {
+      id: 'two-main-features',
+      passed: features >= MIN_MAIN_FEATURES,
+      labelKey: CHECK_LABELS['two-main-features'],
+      resultKey:
+        features >= MIN_MAIN_FEATURES
+          ? 'Counting sentences and joining words such as "while", this makes {count} points.'
+          : 'Counting sentences and joining words such as "while", this makes {count} point. The descriptor asks for the main features, which is more than one.',
+      resultVars: { count: features },
+    },
+    'no-figures': {
+      id: 'no-figures',
+      passed: figures.length === 0,
+      labelKey: CHECK_LABELS['no-figures'],
+      resultKey:
+        figures.length === 0
+          ? 'No figures, which is what keeps an overview an overview.'
+          : 'This contains {count} figure or figures, starting with "{first}". Figures belong in the detail paragraphs.',
+      resultVars: { count: figures.length, first: figures[0] ?? '' },
+    },
+    'length-in-range': {
+      id: 'length-in-range',
+      passed: words >= rules.minWords && words <= rules.maxWords,
+      labelKey: CHECK_LABELS['length-in-range'],
+      resultKey:
+        words >= rules.minWords && words <= rules.maxWords
+          ? '{words} words, inside the {min} to {max} this task asks for.'
+          : '{words} words, against the {min} to {max} this task asks for.',
+      resultVars: { words, min: rules.minWords, max: rules.maxWords },
+    },
+  };
+
+  return rules.checks.map((id) => results[id]);
+}
+
+/* ── Nothing here is ever a band ─────────────────────────────────────────── */
+
+export type WrittenVerdict = 'met' | 'partly' | 'not-yet';
+
+/** What came back from asking Mr EZ, once this side has checked it too. */
+export interface WrittenEvaluation {
+  verdict: WrittenVerdict;
+  observations: readonly string[];
+  nextMove: string;
+  /** False when nothing actually looked at the work: AI off, over its cap,
+      unreachable, or a reply this side refused. A verdict with judged false
+      is NOT a verdict and the screen must not show it as one. */
+  judged: boolean;
+  /** Live, simulated or nothing at all. A simulated reply is never shown as
+      a live one. */
+  source: 'live' | 'simulated' | 'none';
+  /** Named when a reply was refused here, so the reason is reviewable
+      rather than swallowed. */
+  refused?: string;
+}
+
+/** Half bands and anything a number beside a scoring word. The same rule
+ *  src/lib/learning/ai-prompt.ts applies at the Worker, repeated on this
+ *  side deliberately: a reply can reach a screen from a cache, from another
+ *  device's sync or from a Worker running older code, and the one thing
+ *  that must never happen is an uncalibrated number in front of a student
+ *  who has a calibrated grader one page away. */
+const BAND_WORDS = /(band|bands|score|scored|scores|scoring|grade|graded|out of \d|балл|балла|баллов|баллы|оценк)/i;
+const HALF_BAND = /\b\d\.[05]\b/;
+const BAND_PROXIMITY = 30;
+
+export function looksLikeABand(text: string): boolean {
+  if (HALF_BAND.test(text)) return true;
+  const lower = text.toLowerCase();
+  for (const match of lower.matchAll(/\d/g)) {
+    const at = match.index ?? 0;
+    if (BAND_WORDS.test(lower.slice(Math.max(0, at - BAND_PROXIMITY), at + BAND_PROXIMITY))) return true;
+  }
+  return false;
+}
+
+/** The reply as it arrived from the tutor client, narrowed to what this
+    screen reads. */
+export interface EvaluationReply {
+  verdict?: unknown;
+  observations?: unknown;
+  suggestions?: unknown;
+  judged?: unknown;
+  live?: unknown;
+}
+
+/** Take the reply, or refuse it and say why.
+ *
+ *  Refusing costs the student the deterministic answer below, which is a
+ *  real thing to read. Accepting a bad one costs them a number they will
+ *  believe. */
+export function acceptEvaluation(reply: EvaluationReply): WrittenEvaluation | { refused: string } {
+  const verdict = reply.verdict;
+  if (verdict !== 'met' && verdict !== 'partly' && verdict !== 'not-yet') return { refused: 'bad-verdict' };
+
+  const observations = Array.isArray(reply.observations)
+    ? reply.observations.filter((entry): entry is string => typeof entry === 'string' && entry.trim().length > 0)
+    : [];
+  if (observations.length < 2) return { refused: 'too-few-observations' };
+
+  const suggestions = Array.isArray(reply.suggestions)
+    ? reply.suggestions.filter((entry): entry is string => typeof entry === 'string' && entry.trim().length > 0)
+    : [];
+  const nextMove = suggestions[0] ?? '';
+  if (!nextMove) return { refused: 'no-next-move' };
+
+  const whole = [...observations, nextMove].join(' ');
+  if (looksLikeABand(whole)) return { refused: 'band-claim' };
+
+  /* `judged: false` is the Worker saying nothing looked at this. The words
+     beside it are the deterministic fallback, not a verdict, and they are
+     passed through with judged false so the screen says so. */
+  const judged = reply.judged === true;
+  return {
+    verdict,
+    observations,
+    nextMove,
+    judged,
+    source: reply.live === true ? 'live' : 'simulated',
+  };
+}
+
+/** What the student is told when nothing judged their writing.
+ *
+ *  Honest above all: this does NOT say the objective was missed, because
+ *  nothing looked at it. It restates the objective, hands the checking back
+ *  to them against the model, and is labelled an automatic check
+ *  everywhere it appears. */
+export function unjudgedEvaluation(refused?: string): WrittenEvaluation {
+  return {
+    verdict: 'not-yet',
+    observations: [],
+    nextMove: '',
+    judged: false,
+    source: 'none',
+    ...(refused ? { refused } : {}),
+  };
+}
+
+/* ── What becomes evidence ───────────────────────────────────────────────── */
+
+/** What has been shown to the student about this task so far. */
+export interface WrittenHelpState {
+  /** True once the prompt's guiding questions have been opened. */
+  guidingQuestionsOpened: boolean;
+  /** True once the band 8 overview has been shown. */
+  modelShown: boolean;
+  /** True once Mr EZ has judged an attempt and the student has read it. */
+  tutorJudged: boolean;
+  assistance: AssistanceLevel;
+}
+
+export const NO_WRITTEN_HELP: WrittenHelpState = {
+  guidingQuestionsOpened: false,
+  modelShown: false,
+  tutorJudged: false,
+  assistance: 'none',
+};
+
+/** Assistance never comes down, so an attempt written after the guiding
+ *  questions were opened can never later read as unaided work.
+ *
+ *  `assistance` in the change is what Mr EZ's own reply says this item has
+ *  reached (a hint, a worked example, an explanation). It is raised in like
+ *  everything else and can never lower what the flags already set. */
+export function withWrittenHelp(
+  state: WrittenHelpState,
+  change: Partial<Omit<WrittenHelpState, 'assistance'>> & { assistance?: AssistanceLevel },
+): WrittenHelpState {
+  const next = { ...state, ...change, assistance: state.assistance };
+  let level = raise(state.assistance, change.assistance ?? state.assistance);
+  if (next.guidingQuestionsOpened) level = raise(level, 'hint');
+  if (next.modelShown) level = raise(level, 'worked-example');
+  if (next.tutorJudged) level = raise(level, 'tutor-explained');
+  return { ...next, assistance: level };
+}
+
+/** Practice with help available, a check with none, or a short sample taken
+ *  to find out where the student is.
+ *
+ *  The mode is set by the exercise's own role and by the step the plan put
+ *  it in, never by the student. A diagnostic is capped at tentative by the
+ *  policy however well it goes, which is exactly right for two sentences. */
+export function modeForWritten(
+  role: WrittenTaskView['role'],
+  stepRole?: string | null,
+): EvidenceMode {
+  if (stepRole === 'assess') return 'diagnostic';
+  return role === 'independent-check' ? 'assessment' : 'practice';
+}
+
+/** 'completed' when something was written, 'blank' when nothing was. A
+    blank attempt is never read as a bad result; the policy ignores it. */
+export function completionOfWritten(text: string): CompletionState {
+  return text.trim().length === 0 ? 'blank' : 'completed';
+}
+
+/** The guiding questions this task actually offers.
+ *
+ *  A check offers none, whatever the prompt carries, and that is what makes
+ *  it a check. Decided here rather than in the page so the rule is one line
+ *  that a test can hold, instead of a condition inside a template. */
+export function guidingQuestionsFor(
+  role: WrittenTaskView['role'],
+  hints: readonly string[] | undefined,
+): readonly string[] {
+  return role === 'independent-check' ? [] : (hints ?? []);
+}
+
+/** May the band 8 overview be shown yet?
+ *
+ *  Only after the student's own attempt, in either kind of task. Before one
+ *  it is not a model, it is the answer, and Alex's teaching principle from
+ *  19 September 2026 is that trainers guide the student to the answer and
+ *  do not give it. One line, here, so that it is a rule with a test rather
+ *  than a condition inside a template. */
+export function mayShowModel(attempts: readonly WrittenAttemptRecord[]): boolean {
+  return attempts.length > 0;
+}
+
+/** The one item row an attempt is worth.
+ *
+ *  `firstAnswer` is capped at MAX_FIRST_ANSWER_CHARS by the learner store,
+ *  so what the record keeps is an EXCERPT of the overview, not the whole
+ *  of it. That is deliberate: the record is what the policy and the tutor
+ *  reason over, and the student's own full text lives in the draft store
+ *  below, which is per owner and per exercise and is what the before and
+ *  after panel reads. `correct` follows the objective judgement, and is
+ *  false whenever nothing judged the work, so an unjudged attempt can never
+ *  be counted as a demonstration. */
+export function writtenItemDraft(input: {
+  view: WrittenTaskView;
+  text: string;
+  help: WrittenHelpState;
+  met: boolean;
+}): ItemOutcomeDraft {
+  return {
+    itemId: input.view.itemId,
+    firstAnswer: input.text.trim(),
+    correct: input.met,
+    assistance: input.help.assistance,
+    subskill: input.view.subskill,
+  };
+}
+
+/** One attempt, as the learner record holds it.
+ *
+ *  Built here rather than in the component so that every rule it encodes
+ *  can be tested with no browser, and there are five of them:
+ *
+ *  - `met` is true only when something actually JUDGED the work. A tutor
+ *    that was off, over its cap or unreachable is not a failure and is
+ *    never recorded as one, so an unjudged attempt carries met false and
+ *    byModel false and the policy reads it as work done rather than as a
+ *    demonstration.
+ *  - `taskScope` is always the task the prompt really is, which is what
+ *    keeps Task 1 evidence out of the Task 2 scope.
+ *  - `assistance` comes from the help state, which only ever rises.
+ *  - `sourceMaterial` names the prompt, so writing about this chart marks
+ *    it met and a later check built on it is correctly not unseen.
+ *  - the revision is NOT named here. The learner store links a second go to
+ *    the first by their shared item id, which is the one way a surface
+ *    cannot get it wrong. */
+export function writtenEvidenceDraft(input: {
+  view: WrittenTaskView;
+  text: string;
+  help: WrittenHelpState;
+  evaluation: WrittenEvaluation;
+  at: string;
+  task: 'task1' | 'task2';
+  stepRole?: string | null;
+  sessionId?: string;
+  locale?: string;
+}): EvidenceDraft {
+  const met = input.evaluation.judged && input.evaluation.verdict === 'met';
+  return {
+    activityId: input.view.activityId,
+    contentVersion: input.view.contentVersion,
+    at: input.at,
+    paper: input.view.paper,
+    subskill: input.view.subskill,
+    mode: modeForWritten(input.view.role, input.stepRole),
+    completion: completionOfWritten(input.text),
+    assistance: input.help.assistance,
+    taskScope: { kind: 'writing-task', task: input.task },
+    outcome: {
+      kind: 'objective',
+      met,
+      subskill: input.view.subskill,
+      ...(input.evaluation.judged ? { feedback: input.evaluation.observations.join(' ') } : {}),
+      byModel: input.evaluation.judged,
+    },
+    items: [writtenItemDraft({ view: input.view, text: input.text, help: input.help, met })],
+    sourceMaterial: [promptExposureKey(input.view.promptId)],
+    ...(input.sessionId ? { sessionId: input.sessionId } : {}),
+    ...(input.locale === 'en' || input.locale === 'ru' ? { locale: input.locale } : {}),
+  };
+}
+
+/* ── Finding the gap, from evidence and never from a guess ───────────────── */
+
+/** Exactly what src/lib/progress.ts stores for one graded essay, narrowed
+    to the parts this reads. Nothing is inferred that is not in the box. */
+export interface GradedWritingAttempt {
+  at: string;
+  promptId: string;
+  task?: 'task1' | 'task2';
+  essay?: string;
+  promptTitle?: string;
+  live?: boolean;
+  report?: {
+    criteria?: Record<string, { band?: number; comment?: string; tip?: string; nextBand?: { gap?: string; actions?: readonly { do?: string }[] } }>;
+    moments?: readonly { quote?: string; note?: string }[];
+    improvements?: readonly string[];
+    grader?: { name?: string; live?: boolean };
+  };
+}
+
+export type OverviewGapBasis = 'marker' | 'automatic-check' | 'nothing-found' | 'no-evidence';
+
+/** Where in the marker's report the sentence came from, so the screen can
+    say so rather than presenting it as a floating claim. */
+export type MarkerSource =
+  | 'task-achievement-comment'
+  | 'task-achievement-tip'
+  | 'next-band-advice'
+  | 'quoted-moment'
+  | 'improvement';
+
+export interface OverviewGapFinding {
+  basis: OverviewGapBasis;
+  /** True when there is a real reason to work on the overview. */
+  found: boolean;
+  /** The marker's own sentence, word for word, when the basis is 'marker'. */
+  quote?: string;
+  where?: MarkerSource;
+  /** Which automatic checks failed, when the basis is 'automatic-check'. */
+  failedChecks?: readonly WrittenCheckId[];
+  /** The attempt this is about, when there is one. */
+  promptId?: string;
+  promptTitle?: string;
+  at?: string;
+}
+
+/** What the marker calls it. Deliberately narrow: "main features" on its
+    own is the task instruction and appears in almost every report. */
+const OVERVIEW_WORD = '(?:overview|overall statement|summary (?:paragraph|statement))';
+
+/** How close a complaint has to sit to that word for it to be ABOUT it.
+ *
+ *  This is the whole trick, and a first draft of this rule got it wrong.
+ *  Looking for an overview word anywhere in a sentence and a negative word
+ *  anywhere else in the same sentence reads "A clear overview separates the
+ *  trends from the detail and quotes no figures" as a complaint, because of
+ *  the "no" forty characters away that belongs to the figures. So the two
+ *  have to sit next to each other, in one order or the other, with no more
+ *  than a clause between them. */
+const NEAR = '[^.!?]{0,40}';
+
+/** The overview is not there. */
+const MISSING = new RegExp(
+  `\\b(?:no|not|never|without|lacks?|lacking|missing|absent|omits?|omitted)\\b${NEAR}\\b${OVERVIEW_WORD}\\b` +
+    `|\\b${OVERVIEW_WORD}\\b${NEAR}\\b(?:missing|absent|lacking|nowhere|not (?:there|present|clear|stated))\\b`,
+  'i',
+);
+
+/** The overview is there but is not doing its job. */
+const WEAK = new RegExp(
+  `\\b${OVERVIEW_WORD}\\b${NEAR}\\b(?:weak|weaker|unclear|vague|generic|buried|thin|underdeveloped|limited|too general|merged|hard to find)\\b` +
+    `|\\b(?:weak|weaker|unclear|vague|generic|buried|thin|underdeveloped|merged)\\b${NEAR}\\b${OVERVIEW_WORD}\\b`,
+  'i',
+);
+
+/** Something is being asked for. A marker's tip is written as an
+    instruction, and an instruction about the overview is a gap. */
+const ASKED_FOR = new RegExp(
+  `\\b(?:should|needs? to|must|would benefit|try to|add|include|write|move|separate out|start(?:ing)? with|give)\\b${NEAR}\\b${OVERVIEW_WORD}\\b` +
+    `|\\b${OVERVIEW_WORD}\\b${NEAR}\\b(?:should|needs? to|must|would benefit)\\b`,
+  'i',
+);
+
+/** One sentence of the marker's own words that says the overview was
+ *  missing, weak, or needs to change.
+ *
+ *  Returns the sentence itself, so the student reads what the examiner
+ *  wrote rather than our paraphrase of it, and null for a sentence that
+ *  praises the overview. Getting that second case right is what the
+ *  adjacency rule above is for: the cost of a false positive is telling a
+ *  student an examiner asked for work the examiner never asked for. */
+export function overviewComplaintIn(text: string | undefined): string | null {
+  if (!text) return null;
+  for (const sentence of sentencesOf(text)) {
+    if (MISSING.test(sentence) || WEAK.test(sentence) || ASKED_FOR.test(sentence)) return sentence;
+  }
+  return null;
+}
+
+/** The most recent Task 1 attempt, or undefined when there is none. */
+export function latestTask1(attempts: readonly GradedWritingAttempt[]): GradedWritingAttempt | undefined {
+  return [...attempts]
+    .filter((attempt) => attempt.task === 'task1')
+    .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))[0];
+}
+
+/** Is there a reason to work on this student's overview?
+ *
+ *  Three bases, in order of how much they are worth:
+ *
+ *  1. 'marker'. The calibrated grader said something about the overview in
+ *     its Task Achievement comment, its tip, its next band advice, one of
+ *     the moments it quoted, or its list of improvements. The sentence is
+ *     handed back word for word so the student reads what the marker wrote
+ *     and not our paraphrase of it. Only a LIVE grade counts: the offline
+ *     stub's wording is canned, and quoting it as a marker would be a lie.
+ *  2. 'automatic-check'. Nothing was said about the overview, so their own
+ *     essay is checked for one: no summarising signal anywhere, or a
+ *     summarising sentence with figures in it. Called a check on the
+ *     screen, never a judgement.
+ *  3. 'no-evidence'. No Task 1 has been written at all, so nothing is
+ *     known. That is a reason to take a short sample, not a reason to
+ *     claim a weakness.
+ *
+ *  'nothing-found' is the fourth answer and the one that keeps the other
+ *  three honest: a Task 1 was written, the marker liked the overview and
+ *  the text check found nothing, so this objective is not the gap. */
+export function findOverviewGap(attempts: readonly GradedWritingAttempt[]): OverviewGapFinding {
+  const attempt = latestTask1(attempts);
+  if (!attempt) return { basis: 'no-evidence', found: false };
+
+  const about = { promptId: attempt.promptId, promptTitle: attempt.promptTitle, at: attempt.at };
+  const report = attempt.report;
+  const live = attempt.live === true || report?.grader?.live === true;
+
+  if (report && live) {
+    const achievement = report.criteria?.taskResponse;
+    const sources: { where: MarkerSource; text: string | undefined }[] = [
+      { where: 'task-achievement-comment', text: achievement?.comment },
+      { where: 'task-achievement-tip', text: achievement?.tip },
+      { where: 'next-band-advice', text: achievement?.nextBand?.gap },
+      ...(achievement?.nextBand?.actions ?? []).map((action) => ({
+        where: 'next-band-advice' as const,
+        text: action.do,
+      })),
+      ...(report.moments ?? []).map((moment) => ({ where: 'quoted-moment' as const, text: moment.note })),
+      ...(report.improvements ?? []).map((line) => ({ where: 'improvement' as const, text: line })),
+    ];
+    for (const source of sources) {
+      const quote = overviewComplaintIn(source.text);
+      if (quote) return { basis: 'marker', found: true, quote, where: source.where, ...about };
+    }
+  }
+
+  const essay = attempt.essay ?? '';
+  if (essay.trim()) {
+    const failed = failedOverviewChecksIn(essay);
+    if (failed.length > 0) return { basis: 'automatic-check', found: true, failedChecks: failed, ...about };
+  }
+
+  return { basis: 'nothing-found', found: false, ...about };
+}
+
+/** The transparent check of a whole Task 1 essay: is there an overview in
+ *  it at all, and if there is, does it stay out of the figures?
+ *
+ *  Only these two, because they are the two that can be seen in the words
+ *  themselves. Whether an overview names the RIGHT features is a judgement
+ *  and is not attempted here. */
+export function failedOverviewChecksIn(essay: string): WrittenCheckId[] {
+  const overview = sentencesOf(essay).find((sentence) => SUMMARISING_OPENERS.test(sentence));
+  if (!overview) return ['summarising-signal'];
+  return figuresIn(overview).length > 0 ? ['no-figures'] : [];
+}
+
+/* ── Keeping the student's words ─────────────────────────────────────────── */
+
+/** The three methods of a Storage object, and nothing else. Taken as an
+    interface so a test can hand in a few lines of memory, exactly the way
+    src/lib/learning/store.browser.ts does. */
+export interface WrittenDraftStorage {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+}
+
+/** One saved attempt at a written task, in the student's own full words. */
+export interface WrittenAttemptRecord {
+  at: string;
+  text: string;
+  /** The learner record event this attempt produced, when one was written. */
+  evidenceId?: string;
+  /** The attempt this one revises. */
+  revisionOf?: string;
+}
+
+export interface WrittenTaskDraft {
+  /** What is in the box right now, sent or not. */
+  draft: string;
+  /** Everything submitted so far, oldest first, so the original and the
+      revision can be read side by side. */
+  attempts: readonly WrittenAttemptRecord[];
+}
+
+export const EMPTY_WRITTEN_DRAFT: WrittenTaskDraft = { draft: '', attempts: [] };
+
+/** Per viewer and per exercise, scoped by the same owner namespace the
+ *  learner record uses, so one student's unfinished overview can never
+ *  surface for the next one signed in on this browser. Convenience
+ *  storage, never evidence: it is what stops a failed evaluation or a
+ *  closed tab losing the words, and what the before and after panel
+ *  reads. */
+export const WRITTEN_DRAFT_PREFIX = 'ielts.learning.written.v1';
+
+export function writtenDraftKey(ownerNamespace: string, exerciseId: string): string {
+  return `${WRITTEN_DRAFT_PREFIX}::${ownerNamespace}::${exerciseId}`;
+}
+
+export function readWrittenDraft(
+  storage: WrittenDraftStorage | null,
+  ownerNamespace: string,
+  exerciseId: string,
+): WrittenTaskDraft {
+  if (!storage) return EMPTY_WRITTEN_DRAFT;
+  try {
+    const raw = storage.getItem(writtenDraftKey(ownerNamespace, exerciseId));
+    if (!raw) return EMPTY_WRITTEN_DRAFT;
+    const parsed = JSON.parse(raw) as Partial<WrittenTaskDraft>;
+    return {
+      draft: typeof parsed.draft === 'string' ? parsed.draft : '',
+      attempts: Array.isArray(parsed.attempts)
+        ? parsed.attempts.filter((entry): entry is WrittenAttemptRecord => typeof entry?.text === 'string')
+        : [],
+    };
+  } catch {
+    /* Corrupt or blocked reads as nothing kept, exactly the way the learner
+       record treats corrupt JSON. The exercise still works. */
+    return EMPTY_WRITTEN_DRAFT;
+  }
+}
+
+export function writeWrittenDraft(
+  storage: WrittenDraftStorage | null,
+  ownerNamespace: string,
+  exerciseId: string,
+  value: WrittenTaskDraft,
+): boolean {
+  if (!storage) return false;
+  try {
+    storage.setItem(writtenDraftKey(ownerNamespace, exerciseId), JSON.stringify(value));
+    return true;
+  } catch {
+    /* A full or blocked browser store costs the copy, never the work: the
+       text is still in this tab's own state. */
+    return false;
+  }
+}
+
+/** Add one submitted attempt, keeping everything before it. The draft box
+    is left holding the same words, so a student who submitted and is about
+    to revise does not find an empty box. */
+export function withAttempt(held: WrittenTaskDraft, attempt: WrittenAttemptRecord): WrittenTaskDraft {
+  return { draft: attempt.text, attempts: [...held.attempts, attempt] };
+}
+
+/* ── What the student is told afterwards ─────────────────────────────────── */
+
+/** Everything the closing panel says, as keys and values rather than
+ *  sentences, so the component puts them through t() and Russian gets the
+ *  same structure. Nothing here is a band and nothing claims mastery. */
+export interface WrittenFeedbackText {
+  demonstratedKey: string;
+  demonstratedVars?: Record<string, string | number>;
+  certaintyKey: string;
+  uncertainKey: string;
+}
+
+export function writtenFeedbackFor(input: {
+  role: WrittenTaskView['role'];
+  evaluation: WrittenEvaluation;
+  assisted: boolean;
+}): WrittenFeedbackText {
+  if (!input.evaluation.judged) {
+    return {
+      demonstratedKey:
+        'Nothing looked at your writing this time, so there is no judgement of it here. The checks below are automatic: they look at the words you typed and nothing else.',
+      certaintyKey:
+        'This is recorded as written but not judged, which is what it is. It changes nothing about what your plan thinks you can do.',
+      uncertainKey: 'Read your own sentence against the model below and mark the words that meet the objective.',
+    };
+  }
+  if (input.role === 'independent-check') {
+    return {
+      demonstratedKey:
+        'On a visual you had not seen, with no guiding questions and no help, Mr EZ judged this against the one objective above.',
+      certaintyKey:
+        'That is one short sample judged against one objective. It is enough to move what your plan works on next, and it is not a band and not a score for a whole report.',
+      uncertainKey:
+        'What two sentences cannot show is whether the rest of the report holds up under twenty minutes. A full Task 1 marked by the examiner is what shows that.',
+    };
+  }
+  return {
+    demonstratedKey: input.assisted
+      ? 'You wrote this with the guiding questions available, so it shows guided work rather than what you can do on your own.'
+      : 'You wrote this without opening the guiding questions.',
+    certaintyKey:
+      'This was practice. The check that follows, on a chart you have not seen, is what shows whether the method travels.',
+    uncertainKey: 'Nothing here is a band, and one overview is never mastery.',
+  };
+}
+
+/* ── The hand-off from a graded report ───────────────────────────────────── */
+
+/** What the "Work on your overview" card says, built from the finding so
+ *  the wording can never drift from the evidence behind it.
+ *
+ *  `quote` is the marker's own sentence and is rendered as a quotation, in
+ *  English, because it is what an examiner wrote about this student's own
+ *  work. Everything around it is translated. */
+export interface OverviewHandoffText {
+  headlineKey: string;
+  bodyKey: string;
+  bodyVars?: Record<string, string | number>;
+  /** Shown as a quotation under the body, never reworded. */
+  quote?: string;
+  /** One line naming where the quote came from. */
+  sourceKey?: string;
+}
+
+const MARKER_SOURCE_LABEL: Readonly<Record<MarkerSource, string>> = {
+  'task-achievement-comment': 'From your Task Achievement comment.',
+  'task-achievement-tip': "From the marker's tip on Task Achievement.",
+  'next-band-advice': "From the marker's advice on reaching the next band.",
+  'quoted-moment': 'From a moment the marker quoted from your report.',
+  improvement: "From the marker's list of what to improve.",
+};
+
+export function overviewHandoffText(finding: OverviewGapFinding): OverviewHandoffText | null {
+  if (!finding.found) return null;
+  if (finding.basis === 'marker') {
+    return {
+      headlineKey: 'Work on your overview',
+      bodyKey: 'The examiner who marked this report said something about your overview.',
+      quote: finding.quote,
+      sourceKey: finding.where ? MARKER_SOURCE_LABEL[finding.where] : undefined,
+    };
+  }
+  const missingSignal = (finding.failedChecks ?? []).includes('summarising-signal');
+  return {
+    headlineKey: 'Work on your overview',
+    bodyKey: missingSignal
+      ? 'An automatic check of your own report found no sentence that opens as a summary. That is a check of the words you typed, not a judgement of your writing.'
+      : 'An automatic check of your own report found figures inside the sentence that summarises it. That is a check of the words you typed, not a judgement of your writing.',
+  };
+}

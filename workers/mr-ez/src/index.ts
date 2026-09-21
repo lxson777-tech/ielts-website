@@ -2285,24 +2285,18 @@ async function runProposeNext(
     underAssessment: req.place?.underExam === true,
   });
 
-  /* AGREEING WITH THE PLANNER IS NOT A PROPOSAL.
-
-     The eligibility rules exist to stop the MODEL reaching something the
-     planner would not offer. They are not a second opinion on the planner's
-     own session, and applied to it they refuse most of it: today's practise
-     step legitimately depends on today's teach step, which the student has
-     not done yet because they are about to. So when the model names exactly
-     what the planner named, the eligibility verdict is not what decides it.
-     Staleness and the exam boundary still do, because those are about
-     whether this reply is about this student at all. */
-  const staleOrBlocked =
-    !verdict.accepted &&
-    (verdict.rejection === 'stale-plan-revision' ||
-      verdict.rejection === 'stale-evidence-version' ||
-      verdict.rejection === 'stale-index-version' ||
-      verdict.rejection === 'blocked-under-assessment');
-  const agreed = !verdict.accepted && !staleOrBlocked && Boolean(proposedId) && proposedId === deterministic;
-  const accepted = verdict.accepted || agreed;
+  /* EVERY PROPOSAL IS VALIDATED THE SAME WAY.
+     There used to be a special case here that skipped the eligibility
+     verdict when the model named exactly what the planner named, because
+     the eligibility rules refused today's own practise step: its
+     prerequisite is today's teach step, which the student has not done yet
+     because they are about to. That was a bug in the check, not a reason to
+     stop checking. `validatePlanProposal` now counts the rest of today's
+     session as satisfying a prerequisite (see `sessionSatisfiedIds` in
+     src/lib/learning/planner.ts), so agreeing with the planner survives the
+     check on its own merits and nothing here has to look the other way.
+     Removed by the Task 1 overview pilot, WP17. */
+  const accepted = verdict.accepted;
 
   const chosenId = verdict.accepted ? verdict.activity.id : deterministic;
   const reason = accepted
@@ -2324,8 +2318,9 @@ async function runProposeNext(
     recommendation: resolveRecommendation(chosenId || null, reason, locale),
     /* Recorded whether or not it was accepted, and absent only when the
        model chose exactly what the planner chose, which is nothing to
-       review. */
-    disagreement: agreed ? undefined : verdict.disagreement ?? undefined,
+       review: validatePlanProposal returns a null disagreement in exactly
+       that case. */
+    disagreement: verdict.disagreement ?? undefined,
     live,
     model,
     usage: usageOut(env, usage, limits),

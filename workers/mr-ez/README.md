@@ -209,13 +209,19 @@ it. A client that sends none still gets the planner's full shortlist.
 
 ### Agreeing with the planner
 
-When the model names exactly what the planner named, the eligibility rules
-are **not** what decides it. Those rules exist to stop the model reaching
-something the planner would not offer; applied to the planner's own session
-they refuse most of it, because today's practise step legitimately depends on
-today's teach step, which the student has not done yet for the good reason
-that they are about to. Staleness and the exam boundary still decide, because
-those are about whether the reply is about this student at all.
+Agreeing is a real answer and is often the right one, and it goes through
+**exactly the same validation as any other proposal**. There is no special
+case for it any more.
+
+There was one until the Task 1 overview pilot (WP17). The eligibility rules
+used to refuse the planner's own session: today's practise step legitimately
+depends on today's teach step, which the student has not done yet for the
+good reason that they are about to, so a model that agreed was told
+`prerequisite-unmet`. That was a bug in the check rather than a reason to
+skip it. `validatePlanProposal` now counts the rest of today's session as
+satisfying a prerequisite (`sessionSatisfiedIds` in
+`src/lib/learning/planner.ts`), so agreement survives the check on its own
+merits, and the Worker no longer looks the other way for it.
 
 ### The assistance boundary
 

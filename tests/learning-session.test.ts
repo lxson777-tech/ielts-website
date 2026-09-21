@@ -357,23 +357,48 @@ test('a diagnostic step is short, real and never longer than its cap', () => {
       const activity = findActivity(assess.activityId, CATALOGUE)!;
       assert.equal(activity.paper, paper);
       assert.ok(
-        ['scored-items', 'scored-paper', 'graded-rubric'].includes(activity.completionEvidence),
-        'a diagnostic must produce real marks',
+        /* 'objective-judged' joined this list with the Task 1 overview
+           pilot (WP17). A short piece of the student's own writing judged
+           against one stated objective is a real result: it is not a mark
+           and it never carries a band, and the policy caps a diagnostic at
+           tentative on top of that. What it is not is a guess, which is
+           what the list exists to keep out. */
+        ['scored-items', 'scored-paper', 'graded-rubric', 'objective-judged'].includes(activity.completionEvidence),
+        'a diagnostic must produce a real result',
       );
     }
   }
 });
 
-test('Writing has nothing short enough to sample, and the session says so instead of skipping it', () => {
+/* This test used to read "Writing has nothing short enough to sample, and
+   the session says so instead of skipping it", and it was right: the
+   shortest Writing activity in the library was a twenty minute graded
+   report, a diagnostic step is capped at fifteen, and the honest answer was
+   to say so.
+
+   The Task 1 overview pilot (WP17) closed that gap with a seven minute
+   overview task on a chart the student has not seen, judged against one
+   objective and capped at tentative by the policy. So the behaviour under
+   test legitimately changed, and what is defended now is the other half of
+   the same promise: the sample is short, it is real, and it is never
+   mistaken for a band. */
+test('Writing can now be sampled in a short step, and the sample is never a band', () => {
   const profile = syntheticNew();
   const assembled = assembleSession(
     request(profile, objectiveFor('reading', 'matching-headings'), 60, { diagnosticPaper: 'writing' }),
   );
-  assert.equal(assembled.diagnosticUnavailable, true);
-  assert.equal(assembled.diagnosticPaper, null);
-  assert.ok(
-    assembled.longerCommitments.length > 0,
-    'the full task should still be offered as a longer commitment',
+  assert.equal(assembled.diagnosticUnavailable, false);
+  assert.equal(assembled.diagnosticPaper, 'writing');
+
+  const assess = assembled.session.steps.find((step) => step.role === 'assess');
+  assert.ok(assess, 'there is a Writing sample in the session');
+  assert.ok(assess!.minutes <= DIAGNOSTIC_MAX_MINUTES_PER_SESSION);
+  const activity = findActivity(assess!.activityId, CATALOGUE)!;
+  assert.equal(activity.paper, 'writing');
+  assert.equal(
+    activity.completionEvidence,
+    'objective-judged',
+    'a short Writing sample is judged against one objective, never scored and never banded',
   );
 });
 
