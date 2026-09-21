@@ -34,7 +34,7 @@ import { recommendNext, recommendationReason } from '../src/lib/tutor/recommend.
 import { activityBlurb, activityLabel, buildCatalog, practiseActivity } from '../src/lib/tutor/catalog.ts';
 import { tutorErrorMessage } from '../src/lib/tutor/errors.ts';
 import { loadDictionary } from '../src/lib/i18n/dict/index.ts';
-import { buildCourse, courseLessonCount } from '../src/lib/course.ts';
+import { COURSE_UNITS, buildCourse, courseLessonCount } from '../src/lib/course.ts';
 import { createHandler } from '../workers/mr-ez/src/index.ts';
 
 import {
@@ -625,22 +625,18 @@ test('a unit note written without a model is Russian for both kinds', () => {
   assert.ok(introRu.includes('True / False / Not Given'), 'the question type name stays English');
   assert.doesNotMatch(introRu, DASHES);
 
-  const unitOneKeys = [
-    'speaking',
-    'speaking-part1',
-    'vocabulary',
-    'vocabulary-family',
-    'vocabulary-education',
-    'vocabulary-work',
-  ];
+  // Read from the course, not written out: the unit grows when lessons are added.
+  const unitOneKeys = COURSE_UNITS[0]!.keys;
   const done = {
     ...emptyProgress(),
-    lessons: Object.fromEntries(unitOneKeys.map((key, i) => [key, { completedAt: `2026-09-0${i + 1}T09:00:00.000Z` }])),
+    lessons: Object.fromEntries(
+      unitOneKeys.map((key, i) => [key, { completedAt: `2026-09-0${Math.min(i + 1, 6)}T09:00:00.000Z` }]),
+    ),
   };
   const wrapFacts = readUnit(1, done as never, plan() as never, insightsFor(done))!;
-  assert.match(unitFallbackText(wrapFacts, 'wrap', 'en'), /^You finished all 6 lessons in /);
+  assert.match(unitFallbackText(wrapFacts, 'wrap', 'en'), new RegExp(`^You finished all ${unitOneKeys.length} lessons in `));
   const wrapRu = unitFallbackText(wrapFacts, 'wrap', 'ru');
-  assert.match(wrapRu, /Вы прошли все 6 уроков/);
+  assert.match(wrapRu, new RegExp(`Вы прошли все ${unitOneKeys.length} урок`));
   assert.doesNotMatch(wrapRu, DASHES);
 });
 

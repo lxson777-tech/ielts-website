@@ -39,7 +39,7 @@ export default function MrEzAvatar({ mood, size = 44, label }: MrEzAvatarProps) 
 
   return (
     <span
-      className={`mrez-avatar is-${mood}`}
+      className={`mrez-avatar is-${mood}${showArt ? ' has-approved-art' : ''}`}
       style={{ width: size, height: size }}
       role={label ? 'img' : undefined}
       aria-label={label}

@@ -92,3 +92,6 @@ Navigation, active tabs, and primary task actions are fully rounded capsules. Pr
 ## Approved for future work
 
 Alex approved this direction on 2026-09-16 for ongoing IELTS platform work. Reuse this system for future features and new material. Primary practice actions use a filled forest capsule with cream text, at least 48px height, and visible hover and keyboard focus states.
+
+## Mr EZ design (2026-09-21, local preview)
+Only tutor surfaces adopt the approved human teacher illustration, Manrope headings, forest #193335, apricot #efa260 and warm cream #fffcf6. The rest of the platform keeps its existing design. The approved character sheet is cropped with CSS for face portraits, including thinking and celebrating poses. Existing mood events, image failure fallback, reduced motion, authentication and tutor logic remain intact. Preview awaits Alex's review before deployment.

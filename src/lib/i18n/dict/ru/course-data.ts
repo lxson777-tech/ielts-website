@@ -236,7 +236,7 @@ export const strings: Record<string, string> = {
      lists in some blurbs are the actual items the lesson teaches, so they
      stay English inside the Russian sentence; only the descriptive part is
      translated. */
-  '10 words · collocations · exercise': '10 слов · коллокации · упражнение',
+  '20 words · collocations · exercise': '20 слов · коллокации · упражнение',
   '18 words · 6 functions · exercise': '18 слов · 6 функций · упражнение',
 
   'Conjunctions & Linking Words': 'Союзы и слова-связки',
@@ -294,6 +294,74 @@ export const strings: Record<string, string> = {
   'Family & Relationships': 'Семья и отношения',
   'Family structure, childcare and generational change. A Speaking Part 1-2 staple.':
     'Структура семьи, уход за детьми и смена поколений. Основная тема в Speaking Part 1-2.',
+
+  // The twenty-two topics added on 2026-09-21 (vocabulary expansion).
+  'Food & Diet': 'Еда и питание',
+  'Fast food, food waste and what a balanced diet is. A Speaking Part 1 and health-essay regular.':
+    'Фастфуд, пищевые отходы и что такое сбалансированное питание. Постоянная тема Speaking Part 1 и эссе о здоровье.',
+  'Transport & Traffic': 'Транспорт и дорожное движение',
+  'Congestion, commuting and cleaner vehicles. The language every city-problems essay needs.':
+    'Пробки, поездки на работу и экологичный транспорт. Лексика, без которой не обойтись в эссе о проблемах города.',
+  'Leisure & Entertainment': 'Досуг и развлечения',
+  'Hobbies, films, music and books. The everyday language Speaking Parts 1 and 2 ask for most.':
+    'Хобби, фильмы, музыка и книги. Повседневная лексика, которая чаще всего нужна в Speaking Part 1 и Part 2.',
+  'People & Personality': 'Люди и характер',
+  'The words to describe character. Speaking Part 2 asks you to describe a person more than anything else.':
+    'Слова для описания характера. В Speaking Part 2 чаще всего просят описать человека.',
+  'Hometown & Describing Places': 'Родной город и описание мест',
+  'Every Speaking test opens with your hometown. The language to describe any place well.':
+    'Любой Speaking начинается с вопросов о родном городе. Лексика, чтобы хорошо описать любое место.',
+  'Childhood & Growing Up': 'Детство и взросление',
+  'Memories, upbringing and growing up. Behind a large share of Part 2 cue cards.':
+    'Воспоминания, воспитание и взросление. На этом построена большая часть карточек Part 2.',
+  'Weather, Seasons & Nature': 'Погода, времена года и природа',
+  'Climate, seasons and the outdoors. A Speaking Part 1 regular and useful in environment essays.':
+    'Климат, времена года и жизнь на природе. Частая тема Speaking Part 1, пригодится и в эссе об окружающей среде.',
+  'Music, Film & Television': 'Музыка, кино и телевидение',
+  'Talk about what you watch and listen to, with the words reviewers actually use.':
+    'Говорите о том, что смотрите и слушаете, словами, которыми действительно пользуются критики.',
+  'Books & Reading': 'Книги и чтение',
+  'Reading habits, e-books and libraries. A Speaking Part 1 topic and a recurring essay question.':
+    'Привычка читать, электронные книги и библиотеки. Тема Speaking Part 1 и повторяющийся вопрос в эссе.',
+  'Sport & Fitness': 'Спорт и фитнес',
+  'Team sport, fitness and hosting major events. A Speaking staple and a frequent Task 2 subject.':
+    'Командные виды спорта, фитнес и проведение крупных соревнований. Основная тема Speaking и частая тема Task 2.',
+  'Money & Consumerism': 'Деньги и общество потребления',
+  'Debt, spending and the throwaway culture. The vocabulary behind most consumer-society essays.':
+    'Долги, траты и культура одноразовых вещей. Лексика для большинства эссе об обществе потребления.',
+  'Media & Advertising': 'СМИ и реклама',
+  'The press, fake news and how advertising works on us. A classic Task 2 pairing.':
+    'Пресса, фейковые новости и то, как на нас действует реклама. Классическая пара тем для Task 2.',
+  'Language & Communication': 'Язык и общение',
+  'Learning languages, dying languages and a single world language. A recurring Task 2 question.':
+    'Изучение языков, исчезающие языки и единый мировой язык. Повторяющийся вопрос Task 2.',
+  'Arts & Culture': 'Искусство и культура',
+  'Museums, creativity and whether governments should fund the arts. A frequent opinion essay.':
+    'Музеи, творчество и вопрос о том, должно ли государство финансировать искусство. Частая тема эссе с мнением.',
+  'Science & Space': 'Наука и космос',
+  "Research, evidence and space exploration. The language for \"is this money well spent\" essays.":
+    'Исследования, доказательства и освоение космоса. Лексика для эссе о том, разумно ли тратятся эти деньги.',
+  'Animals & Wildlife': 'Животные и дикая природа',
+  'Endangered species, zoos and animal testing. A common environment and ethics topic.':
+    'Исчезающие виды, зоопарки и опыты на животных. Частая тема на стыке экологии и этики.',
+  'Business & Entrepreneurship': 'Бизнес и предпринимательство',
+  'Start-ups, big corporations and who they answer to. Distinct from the money you spend.':
+    'Стартапы, крупные корпорации и то, перед кем они отвечают. Это отдельная тема, не путайте её с личными расходами.',
+  'Traditions, Festivals & Customs': 'Традиции, праздники и обычаи',
+  'Customs, festivals and what globalisation costs them. A frequent essay and cue card.':
+    'Обычаи, праздники и то, чем им грозит глобализация. Частая тема эссе и карточек задания.',
+  'Fashion & Clothing': 'Мода и одежда',
+  'Clothes, uniforms and fast fashion. A Speaking Part 1 topic with a serious essay side.':
+    'Одежда, форма и быстрая мода. Тема Speaking Part 1, у которой есть и серьёзная сторона для эссе.',
+  'Volunteering & Community': 'Волонтёрство и местное сообщество',
+  'Charities, community work and civic duty. Common in both Task 2 and Part 3.':
+    'Благотворительность, общественная работа и гражданский долг. Часто встречается и в Task 2, и в Part 3.',
+  'Ageing & Retirement': 'Старение и выход на пенсию',
+  'Retirement age, elderly care and an ageing population. One of the most repeated essay themes.':
+    'Пенсионный возраст, уход за пожилыми и старение населения. Одна из самых повторяющихся тем эссе.',
+  'Success, Goals & Ambition': 'Успех, цели и амбиции',
+  'Achievement, failure and what success means. The abstract language Part 3 keeps asking for.':
+    'Достижения, неудачи и что значит успех. Абстрактная лексика, которую снова и снова требует Part 3.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

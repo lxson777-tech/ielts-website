@@ -18,17 +18,17 @@ import type { TutorMood } from './schema';
 /** Flip to true once real files exist under public/mr-ez/. Until then every
     surface renders the neutral placeholder, which is deliberately plain so
     nobody mistakes it for a design decision. */
-export const hasArtwork = false;
+export const hasArtwork = true;
 
 /** One image per state. Paths are relative to the site root; the component
     applies withBase(). Leave a state empty and it falls back to `idle`. */
 export const MR_EZ_ART: Record<TutorMood, string> = {
-  idle: '/mr-ez/idle.svg',
-  thinking: '/mr-ez/thinking.svg',
-  explaining: '/mr-ez/explaining.svg',
-  encouraging: '/mr-ez/encouraging.svg',
-  celebrating: '/mr-ez/celebrating.svg',
-  unavailable: '/mr-ez/unavailable.svg',
+  idle: '/mr-ez/approved-character.png',
+  thinking: '/mr-ez/approved-character.png',
+  explaining: '/mr-ez/approved-character.png',
+  encouraging: '/mr-ez/approved-character.png',
+  celebrating: '/mr-ez/approved-character.png',
+  unavailable: '/mr-ez/approved-character.png',
 };
 
 /** What each state means, so the artwork brief and the code agree on when

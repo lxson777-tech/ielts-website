@@ -44,7 +44,11 @@ export const strings: Record<string, string> = {
   'Invigilating: no answers until the timer stops': 'Идёт наблюдение: ответов не будет, пока не остановится таймер',
   'Simulated tutor (no AI is being called)': 'Симулированный репетитор (запрос к ИИ не отправляется)',
   'Your IELTS tutor': 'Ваш репетитор по IELTS',
-  'Close Mr EZ': 'Закрыть окно Mr EZ',
+  'Close Mr EZ': 'Закрыть Mr EZ',
+  'Your AI tutor': 'Ваш ИИ-репетитор',
+  'Your personal AI tutor': 'Ваш личный ИИ-репетитор',
+  'Where shall we start? During practice, I guide you without giving away the answer.':
+    'С чего начнём? Во время практики я подсказываю путь, но не выдаю ответ.',
   'Your next step on the dashboard still works, it just comes with a plain explanation instead of his.':
     'Ваш следующий шаг на главной странице всё равно работает, просто с обычным объяснением вместо его.',
   "Sign in and Mr EZ can see your own results. He never reads anyone else's, which is exactly why he needs to know who you are.":

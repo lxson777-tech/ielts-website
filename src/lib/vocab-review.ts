@@ -3,7 +3,7 @@
 
    The card set is built once, at module load, from two sources:
      1. every word in src/data/words.ts (the Word-of-the-Day bank)
-     2. every word row inside the 14 vocabulary topic lessons
+     2. every word row inside the vocabulary topic lessons
         (src/content/lesson-bodies/vocabulary-*.html), parsed from the raw
         HTML at build time the same way the lesson routers do
         (import.meta.glob with `?raw`, eager).
@@ -74,7 +74,7 @@ export interface StrugglingCard extends VocabCard {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Card set: words.ts + the 14 vocabulary lesson fragments                */
+/* Card set: words.ts + every vocabulary lesson fragment                  */
 /* ---------------------------------------------------------------------- */
 
 /* words.ts uses short topic names ("Crime"); the lesson fragments and

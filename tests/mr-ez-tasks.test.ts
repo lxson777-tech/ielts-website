@@ -23,6 +23,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHandler } from '../workers/mr-ez/src/index.ts';
 import { parseTutorRequest, TutorRequestError } from '../src/lib/tutor/schema.ts';
+import { COURSE_UNITS } from '../src/lib/course.ts';
 import type { SiteQuestion, SiteTest } from '../src/lib/tutor/test-items.ts';
 
 import {
@@ -120,12 +121,15 @@ function tfngWeaknessProgress(lessons: Record<string, { completedAt: string }> =
   };
 }
 
-/** Every lesson in unit 1, which is what "complete" means for that unit. */
-const UNIT_1_KEYS = ['speaking', 'speaking-part1', 'vocabulary', 'vocabulary-family', 'vocabulary-education', 'vocabulary-work'];
+/** Every lesson in unit 1, which is what "complete" means for that unit.
+    Read from the course itself: this list was once written out by hand, and
+    adding vocabulary lessons to the unit (2026-09-21) silently turned "the
+    student finished unit 1" into "the student finished six tenths of it". */
+const UNIT_1_KEYS = COURSE_UNITS[0]!.keys;
 
 function unitOneDone(): Record<string, { completedAt: string }> {
   return Object.fromEntries(
-    UNIT_1_KEYS.map((key, i) => [key, { completedAt: `2026-09-0${i + 1}T09:00:00.000Z` }]),
+    UNIT_1_KEYS.map((key, i) => [key, { completedAt: `2026-09-0${Math.min(i + 1, 6)}T09:00:00.000Z` }]),
   );
 }
 
@@ -425,7 +429,7 @@ test('a finished unit is acknowledged, and reading the note again is free', asyn
   assert.equal(first.status, 200);
   const sent = recorder.openAiCalls[0].userText;
   assert.match(sent, /Note kind: WRAP/);
-  assert.match(sent, /Lessons: 6 of 6 completed/);
+  assert.match(sent, new RegExp(`Lessons: ${UNIT_1_KEYS.length} of ${UNIT_1_KEYS.length} completed`));
   assert.match(sent, /Next unit after this one: Listen for everyday information/);
   assert.equal(state.notes[0].kind, 'unit-wrap');
   assert.equal(state.notes[0].note_key, '1');
@@ -709,7 +713,7 @@ test('the simulated replies for the new tasks state facts and never claim a band
   const unit = makeState();
   unit.userState[USER_A] = { progress: { ...emptyProgress(), lessons: unitOneDone() }, study_plan: plan() };
   const unitRun = await run(unit, { task: 'unit', unit: { unitId: 1, kind: 'wrap' } }, { TUTOR_SIMULATE: 'on' });
-  assert.match(String(unitRun.payload.text), /You finished all 6 lessons in Start speaking with confidence\./);
+  assert.match(String(unitRun.payload.text), new RegExp(`You finished all ${UNIT_1_KEYS.length} lessons in Start speaking with confidence\\.`));
   assert.equal(unitRun.payload.recommendation, null);
   assert.doesNotMatch(String(unitRun.payload.text), /band [0-9]/);
 
