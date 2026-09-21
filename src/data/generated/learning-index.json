@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "indexVersion": "624c8fea1528bbb4",
+  "indexVersion": "0c02b35d81980535",
   "tests": [
     {
       "id": "listening-full-001",
@@ -3499,6 +3499,62 @@
       "objective": "Match a heading to a paragraph by what the whole paragraph is about, not by a word it repeats.",
       "sourcePaperIds": ["reading-full-020"],
       "sharesItemsWith": ["test:reading-full-020", "drill:reading-full-020-drill-p2"]
+    },
+    {
+      "id": "writing-task1-overview-check-a",
+      "subskill": "task1-overview",
+      "paper": "writing",
+      "itemCount": 1,
+      "expectedMinutes": 7,
+      "provenance": "publisher",
+      "itemIds": ["prompt:pte-wt-117-task1"],
+      "kind": "written-response",
+      "role": "independent-check",
+      "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.",
+      "sourcePromptIds": ["pte-wt-117-task1"],
+      "sharesItemsWith": ["write:pte-wt-117-task1"]
+    },
+    {
+      "id": "writing-task1-overview-check-b",
+      "subskill": "task1-overview",
+      "paper": "writing",
+      "itemCount": 1,
+      "expectedMinutes": 7,
+      "provenance": "publisher",
+      "itemIds": ["prompt:pte-wt-112-task1"],
+      "kind": "written-response",
+      "role": "independent-check",
+      "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.",
+      "sourcePromptIds": ["pte-wt-112-task1"],
+      "sharesItemsWith": ["write:pte-wt-112-task1"]
+    },
+    {
+      "id": "writing-task1-overview-check-c",
+      "subskill": "task1-overview",
+      "paper": "writing",
+      "itemCount": 1,
+      "expectedMinutes": 7,
+      "provenance": "publisher",
+      "itemIds": ["prompt:pte-wt-126-task1"],
+      "kind": "written-response",
+      "role": "independent-check",
+      "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.",
+      "sourcePromptIds": ["pte-wt-126-task1"],
+      "sharesItemsWith": ["write:pte-wt-126-task1"]
+    },
+    {
+      "id": "writing-task1-overview-guided",
+      "subskill": "task1-overview",
+      "paper": "writing",
+      "itemCount": 1,
+      "expectedMinutes": 8,
+      "provenance": "publisher",
+      "itemIds": ["prompt:pte-wt-129-task1"],
+      "kind": "written-response",
+      "role": "guided-practice",
+      "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.",
+      "sourcePromptIds": ["pte-wt-129-task1"],
+      "sharesItemsWith": ["write:pte-wt-129-task1"]
     }
   ],
   "writingPrompts": [

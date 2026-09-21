@@ -22,6 +22,7 @@ import * as learningIntake from './learning-intake';
 import * as learningToday from './learning-today';
 import * as learningAccount from './learning-account';
 import * as learningFocus from './learning-focus';
+import * as learningWritingFocus from './learning-writing-focus';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -39,6 +40,7 @@ export const BATCHES = [
   learningToday,
   learningAccount,
   learningFocus,
+  learningWritingFocus,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));

@@ -788,8 +788,12 @@ test('the whole catalogue is the size the report says it is', () => {
       /* The Matching Headings pilot (WP16) authored the first three: one
          guided set and two checks, each one question group lifted out of a
          real paper. Before it, this line read 0 and the catalogue did not
-         pretend otherwise. */
-      ['focused-exercise', 3],
+         pretend otherwise. The Task 1 overview pilot (WP17) added four
+         more, of the other kind: one real exam prompt each, answered in the
+         student's own words and judged against one objective rather than
+         marked, with three of the four prompts held back for transfer
+         checks. */
+      ['focused-exercise', 7],
       ['full-test', 73],
       ['graded-task', 189],
       ['lesson', 76],
@@ -800,7 +804,7 @@ test('the whole catalogue is the size the report says it is', () => {
     ],
     'the counts in the work package report, asserted so they cannot drift silently',
   );
-  assert.equal(activities.length, 672);
+  assert.equal(activities.length, 676);
   assert.equal(
     byKind('focused-exercise').every((activity) => activity.verified),
     true,

@@ -103,9 +103,9 @@ export const INDEX_FILE = path.join(REPO_ROOT, 'src', 'data', 'generated', 'lear
 
 const LESSON_BODIES_DIR = path.join(REPO_ROOT, 'src', 'content', 'lesson-bodies');
 
-/** Where WP18's authored focused exercises will land. Absent today, so the
-    index carries an empty list; the moment the file exists and exports
-    FOCUSED_EXERCISES, it is picked up with no change here. */
+/** The focused exercise registries, both kinds. Read by name at generate
+    time: ALL_FOCUSED_EXERCISES when it exists, FOCUSED_EXERCISES otherwise,
+    so an older checkout of the data file still indexes. */
 const FOCUSED_EXERCISES_FILE = path.join(REPO_ROOT, 'src', 'data', 'focused-exercises.ts');
 
 /** Same length the explanation translations use for their content hashes
@@ -330,30 +330,42 @@ export function buildLessonChecks() {
 /* Focused exercises (authored later, in WP18)                         */
 /* ------------------------------------------------------------------ */
 
-/* An exercise names a real paper, a part and a group (see
-   src/data/focused-exercises.ts). Everything below is carried through so
-   the catalogue can answer three questions without ever loading a paper:
-   what this exercise is for, which papers it would spend, and which other
-   activities hold the same questions. */
+/* An exercise names a real paper, a part and a group, or a real exam prompt
+   (see src/data/focused-exercises.ts). Everything below is carried through
+   so the catalogue can answer three questions without ever loading a paper
+   or a prompt bank: what this exercise is for, which material it would
+   spend, and which other activities hold the same questions.
+
+   Two kinds, and the difference matters to every one of those answers. An
+   item-answers exercise has real questions with a real key, so it carries
+   its item ids and its source paper. A written response has one prompt and
+   one piece of the student's own writing, so its single item IS the prompt
+   (writtenItemId), and what it would spend is that prompt. */
 export async function buildFocusedExercises() {
   if (!existsSync(FOCUSED_EXERCISES_FILE)) return [];
   const module = await import(pathToFileURL(FOCUSED_EXERCISES_FILE).href);
-  const authored = module.FOCUSED_EXERCISES ?? [];
+  const authored = module.ALL_FOCUSED_EXERCISES ?? module.FOCUSED_EXERCISES ?? [];
+  const writtenItemId = module.writtenItemId ?? ((promptId) => `prompt:${promptId}`);
   return authored
     .map((exercise) => {
+      const written = exercise.kind === 'written-response';
       const source = exercise.source;
       const entry = {
         id: exercise.id,
         subskill: exercise.subskill,
         paper: exercise.paper,
-        itemCount: exercise.items.length,
+        itemCount: written ? 1 : exercise.items.length,
         expectedMinutes: exercise.expectedMinutes,
         provenance: exercise.provenance ?? 'project-authored',
-        itemIds: exercise.items.map((item) => item.id),
+        itemIds: written ? [writtenItemId(source.promptId)] : exercise.items.map((item) => item.id),
       };
+      if (exercise.kind) entry.kind = exercise.kind;
       if (exercise.role) entry.role = exercise.role;
       if (exercise.objective) entry.objective = exercise.objective;
-      if (source?.testId) {
+      if (written) {
+        entry.sourcePromptIds = [source.promptId];
+        entry.sharesItemsWith = [`write:${source.promptId}`];
+      } else if (source?.testId) {
         entry.sourcePaperIds = [source.testId];
         entry.sharesItemsWith = [`test:${source.testId}`, ...(source.drillId ? [`drill:${source.drillId}`] : [])];
       }

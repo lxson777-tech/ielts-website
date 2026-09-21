@@ -884,6 +884,7 @@ function buildPaperActivities(index: GeneratedIndexV1): CatalogueActivity[] {
 /* ── Graded tasks ────────────────────────────────────────────────────────── */
 
 function buildWritingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
+  const reservedPrompts = reservedCheckPrompts(index);
   return index.writingPrompts.map((prompt) => {
     const subskill = WRITING_FORM_SUBSKILL[prompt.form] ?? (prompt.task === 'task1'
       ? 'task1-select-key-features'
@@ -903,6 +904,17 @@ function buildWritingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       covers: mergeCoverage([
         { subskill, fit: 'direct' },
         { subskill: 'task-length-and-timing', fit: 'direct' },
+        /* Every Task 1 report contains an overview, and the calibrated
+           grader's Task Achievement comment is where a missing one shows
+           up. So a full report does exercise the objective, but it is the
+           whole task that is marked and not the overview on its own, which
+           is exactly what 'borrowed' means here. A short overview task
+           fits it directly and therefore comes first; this entry is what
+           lets the plan schedule the full graded task once the short one
+           has been demonstrated. */
+        ...(prompt.task === 'task1'
+          ? ([{ subskill: 'task1-overview', fit: 'borrowed' }] as const)
+          : []),
       ]),
       criterion: prompt.task === 'task1' ? 'taskAchievement' : 'taskResponse',
       objective,
@@ -917,9 +929,21 @@ function buildWritingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       explanationLocales: BILINGUAL,
       provenance: prompt.provenance,
       verified: isVerified(prompt.provenance),
-      tags: prompt.modelAnswerBands.length > 1 ? ['has-contrasting-models'] : undefined,
+      /* Writing about this chart is what makes it seen, so a transfer
+         check built on it is no longer a transfer check. */
+      sourcePromptIds: [prompt.id],
+      tags: tagsOrNothing([
+        ...(prompt.modelAnswerBands.length > 1 ? ['has-contrasting-models'] : []),
+        ...(reservedPrompts.has(prompt.id) ? [CHECK_ONLY_TAG] : []),
+      ]),
     };
   });
+}
+
+/** Leave `tags` off when there are none, the same way `covers` is left off
+    when it says nothing: sixty empty arrays are pure weight in a Worker. */
+function tagsOrNothing(tags: readonly string[]): readonly string[] | undefined {
+  return tags.length > 0 ? tags : undefined;
 }
 
 function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
@@ -1042,10 +1066,19 @@ function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
           },
       ...(exercise.sharesItemsWith ? { sharesItemsWith: [...exercise.sharesItemsWith].sort() } : {}),
       ...(exercise.sourcePaperIds ? { sourcePaperIds: exercise.sourcePaperIds } : {}),
+      ...(exercise.sourcePromptIds ? { sourcePromptIds: exercise.sourcePromptIds } : {}),
       /* A check is held back from ordinary practice, and a guided set is
          held back from being a check: it is worked with hints and with the
-         answers explained, so whatever it scores it shows guided work. */
-      tags: isCheck ? ['unseen-reserved', CHECK_ONLY_TAG] : ['unseen-reserved', GUIDED_ONLY_TAG],
+         answers explained, so whatever it scores it shows guided work.
+         The kind rides as a tag rather than a field because `kind` on an
+         activity already means what sort of thing it is; what a student
+         actually produces is a second question, and the screen that asks
+         it reads the registry anyway. */
+      tags: [
+        'unseen-reserved',
+        isCheck ? CHECK_ONLY_TAG : GUIDED_ONLY_TAG,
+        ...(exercise.kind === 'written-response' ? [WRITTEN_RESPONSE_TAG] : []),
+      ],
     };
   });
 }
@@ -1076,11 +1109,31 @@ const CHECK_ONLY_TAG = 'check-only';
     help cannot be an independent check, however fresh its questions are. */
 const GUIDED_ONLY_TAG = 'guided-only';
 
+/** The student writes their own sentences here rather than answering items
+    with a key, so the screen is a different one and the evidence is an
+    objective judgement, never a mark. */
+export const WRITTEN_RESPONSE_TAG = 'written-response';
+
 function reservedCheckPapers(index: GeneratedIndexV1): ReadonlySet<string> {
   const out = new Set<string>();
   for (const exercise of index.focusedExercises) {
     if (exercise.role !== 'independent-check') continue;
     for (const paperId of exercise.sourcePaperIds ?? []) out.add(paperId);
+  }
+  return out;
+}
+
+/** The exam prompts held back for an independent check, on the same rule.
+ *
+ *  Writing the full report on one of these would spend the very chart the
+ *  transfer check needs, so the full graded task built on each of them is
+ *  marked check material below. It stays in the library and stays in the
+ *  Writing trainer's own rotation; the PLAN simply never spends it. */
+function reservedCheckPrompts(index: GeneratedIndexV1): ReadonlySet<string> {
+  const out = new Set<string>();
+  for (const exercise of index.focusedExercises) {
+    if (exercise.role !== 'independent-check') continue;
+    for (const promptId of exercise.sourcePromptIds ?? []) out.add(promptId);
   }
   return out;
 }

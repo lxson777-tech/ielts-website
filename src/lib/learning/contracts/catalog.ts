@@ -264,6 +264,15 @@ export interface CatalogueActivity {
       able to do afterwards. It is also its own dictionary key (see the nt()
       convention in src/lib/i18n/translate.ts). */
   objective: string;
+  /** The short, real name of this activity (a lesson title, a drill's own
+      "Reading Test 1, passage 1", a prompt's title), when the registry it
+      is built from has one that is distinct from `objective`. Added by the
+      Today polish round (2026-09-22) so a step can show what it actually
+      opens instead of the generic per-role purpose sentence; not yet
+      populated for drills, tests or prompts (see adapters.ts's own lookup
+      for lessons in the meantime). Optional and additive: an activity with
+      none falls back to a caller-composed label from kind/paper/subskill. */
+  label?: string;
   /** Activity ids that should normally come first. Advisory: strong
       independent evidence on a prerequisite's subskill satisfies it without
       the activity being completed (see policy.ts). */
@@ -301,6 +310,11 @@ export interface CatalogueActivity {
       generated index records them. The planner needs this to reserve unseen
       material: sitting a drill spends its source paper's questions too. */
   sourcePaperIds?: readonly string[];
+  /** The ids of the exam PROMPTS this activity is built on, for Writing and
+      Speaking work. Exactly the same job as `sourcePaperIds` for a paper:
+      a student who has already written about this chart has met it, so an
+      independent check built on it is no longer unseen. */
+  sourcePromptIds?: readonly string[];
   /** Free tags for selection heuristics, e.g. 'diagnostic-safe',
       'unseen-reserved', 'needs-audio', 'needs-microphone'. */
   tags?: readonly string[];
@@ -473,9 +487,20 @@ export interface FocusedExerciseIndexEntry {
       cannot tell whether a check is really unseen, because sitting the
       paper or its drill spends the very same questions. */
   sourcePaperIds?: readonly string[];
+  /** The exam PROMPTS this exercise is built on, for a written response
+      (added by the Task 1 overview pilot, WP17). The prompt plays the part
+      the paper plays above: a student who has already written about this
+      chart has seen it, so a transfer check on it would not be a transfer
+      check. Exposure for a prompt is keyed `prompt:<id>`, which is what
+      the writing recorders already write. */
+  sourcePromptIds?: readonly string[];
   /** Catalogue ids that hold the same questions (the source paper and the
-      single-part drill built from it). */
+      single-part drill built from it), or the same prompt (the full graded
+      task built on it). */
   sharesItemsWith?: readonly string[];
+  /** What the student produces. Absent means the item-answers shape, which
+      is what every exercise written before the Writing pilot is. */
+  kind?: 'item-answers' | 'written-response';
 }
 
 export interface WritingPromptIndexEntry {
