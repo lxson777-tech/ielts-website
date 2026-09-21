@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonBody from '../../components/LessonBody.astro';
 import EssayCheckerCta from '../../components/EssayCheckerCta.astro';
 import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
@@ -16,7 +17,7 @@ const task2 = WRITING_PARTS.filter((p) => p.task === 'task2');
 ---
 
 <LessonLayout slug="writing">
-  <Fragment set:html={body} />
+  <LessonBody slug="writing" html={body} />
 
   <PartGrid
     id="task1"

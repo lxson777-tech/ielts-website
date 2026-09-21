@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonBody from '../../components/LessonBody.astro';
 import LessonTypeGrid from '../../components/LessonTypeGrid.astro';
 import { withBase } from '../../lib/url';
 import { ALL_TESTS } from '../../data/tests';
@@ -22,9 +23,9 @@ const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
 ---
 
 <LessonLayout slug="reading-task1">
-  <Fragment set:html={bodyBeforeCards} />
+  <LessonBody slug="reading-task1" html={bodyBeforeCards} />
   <LessonTypeGrid groups={READING_GROUPS} parts={READING_PARTS} hrefBase="reading" />
-  <Fragment set:html={bodyAfterCards} />
+  <LessonBody slug="reading-task1" html={bodyAfterCards} />
 
   <hr class="divider" />
   <div class="section" id="timed-test">

@@ -161,6 +161,40 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
   import { toggleBookmark, isBookmarked, setNote, getNote } from '../lib/notes';
   import { t, onLocaleChange } from '../lib/i18n';
+  import { onLessonBodySwap } from '../lib/i18n/lesson-body';
+
+  // Completion ticks on any "<skill> lessons" grid on this page — the
+  // per-skill overview (e.g. /lessons/writing) and the cross-links inside
+  // "start here" method lessons both use .sample-card, and those cards
+  // live inside the lesson body itself, so a language swap recreates
+  // them. Resolve via the anchor's fully-qualified pathname (not the raw
+  // href) so it works whether the link is written as "writing/charts"
+  // (from the overview, one directory up) or just "charts" (from a
+  // sibling lesson page, same directory) — both resolve to the same last
+  // two path segments.
+  function markCompletedLessonCards() {
+    document.querySelectorAll<HTMLAnchorElement>('.sample-card[href]').forEach((card) => {
+      if (card.querySelector('.sample-status')) return; // already marked
+      const segments = card.pathname.split('/').filter(Boolean);
+      const lessonSlug = segments.slice(-2).join('-');
+      if (!isLessonComplete(lessonSlug)) return;
+      const status = document.createElement('span');
+      status.className = 'sample-status';
+      status.title = t('Completed');
+      status.textContent = '✓';
+      card.prepend(status);
+    });
+  }
+
+  // Reading a lesson in Russian replaces the whole lesson body, taking the
+  // quiz's click handlers and the completion ticks with it. Both helpers
+  // are guarded against running twice on the same node, and the
+  // subscription replays, so this is correct whichever order the swap and
+  // astro:page-load happen to land in.
+  onLessonBodySwap(() => {
+    initReadingQuiz();
+    markCompletedLessonCards();
+  });
 
   // Re-subscribed on every astro:page-load (see below) so a live language
   // switch (no navigation) refreshes this page's JS-set text without
@@ -302,22 +336,6 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
       });
     }
 
-    // Completion checkmarks on any "<skill> lessons" grid on this page — the
-    // per-skill overview (e.g. /lessons/writing) and the cross-links inside
-    // "start here" method lessons both use .sample-card. Resolve via the
-    // anchor's fully-qualified pathname (not the raw href) so it works
-    // whether the link is written as "writing/charts" (from the overview,
-    // one directory up) or just "charts" (from a sibling lesson page, same
-    // directory) — both resolve to the same last two path segments.
-    document.querySelectorAll<HTMLAnchorElement>('.sample-card[href]').forEach((card) => {
-      const segments = card.pathname.split('/').filter(Boolean);
-      const lessonSlug = segments.slice(-2).join('-');
-      if (!isLessonComplete(lessonSlug)) return;
-      const status = document.createElement('span');
-      status.className = 'sample-status';
-      status.title = t('Completed');
-      status.textContent = '✓';
-      card.prepend(status);
-    });
+    markCompletedLessonCards();
   });
 </script>

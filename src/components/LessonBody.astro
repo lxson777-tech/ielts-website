@@ -1,0 +1,27 @@
+---
+/**
+ * One lesson's migrated teaching HTML, wrapped in a marker the language
+ * switch can find.
+ *
+ * The English fragment is baked in at build time exactly as before; the
+ * wrapper only gives src/lib/i18n/lesson-body.ts something to replace when
+ * a student reads in Russian. The div is a plain block with no styles of
+ * its own, and every rule in src/styles/lesson.css is a descendant
+ * selector under .lesson-body, so it changes nothing visually.
+ *
+ * Two lessons (listening.astro, reading-task1.astro) split their fragment
+ * around a generated card grid. They render TWO of these with the same
+ * slug, and the swapper cuts the translated file on the same
+ * "<!-- lesson-cards -->" marker.
+ */
+interface Props {
+  /** The lesson's progress key, e.g. "reading-tfng" — also the name of the
+      translated file under src/content/lesson-bodies/ru/. */
+  slug: string;
+  /** The fragment HTML, already passed through the ../pics/ rewrite. */
+  html: string;
+}
+const { slug, html } = Astro.props;
+---
+
+<div data-lesson-body={slug} set:html={html} />

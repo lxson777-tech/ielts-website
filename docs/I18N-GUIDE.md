@@ -168,6 +168,12 @@ Reading".
 Also off limits to every batch: `src/data/tests/`, `src/content/`,
 `workers/`, `supabase/`, and any grading code.
 
+The lesson bodies under `src/content/lesson-bodies/` are a separate job with
+its own instructions and its own checker: see
+`docs/LESSON-TRANSLATION-BRIEF.md` and `node tools/lesson-ru.mjs`. They are
+whole HTML files, not dictionary keys, so nothing about this page applies to
+them except the style rules below.
+
 ## Russian style
 
 - Natural, warm, concise Russian, the way a good Russian learning app writes.

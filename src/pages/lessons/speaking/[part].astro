@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import LessonBody from '../../../components/LessonBody.astro';
 import LessonStep from '../../../components/LessonStep.astro';
 import { withBase } from '../../../lib/url';
 import { SPEAKING_PARTS } from '../../../data/speaking';
@@ -32,7 +33,7 @@ const overviewUrl = withBase('/lessons/speaking');
 >
   <LessonStep order={order} of={of} section="Speaking" />
 
-  <Fragment set:html={body} />
+  <LessonBody slug={`speaking-${part.slug}`} html={body} />
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Speaking section" data-i18n-attr="aria-label">
     {

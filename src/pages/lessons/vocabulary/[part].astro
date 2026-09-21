@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import LessonBody from '../../../components/LessonBody.astro';
 import LessonStep from '../../../components/LessonStep.astro';
 import { withBase } from '../../../lib/url';
 import { VOCABULARY_PARTS } from '../../../data/vocabulary';
@@ -32,7 +33,7 @@ const overviewUrl = withBase('/lessons/vocabulary');
 >
   <LessonStep order={order} of={of} section="Vocabulary" />
 
-  <Fragment set:html={body} />
+  <LessonBody slug={`vocabulary-${part.slug}`} html={body} />
 
   <nav class="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-3" aria-label="Vocabulary section" data-i18n-attr="aria-label">
     {

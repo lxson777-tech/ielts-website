@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import LessonBody from '../../../components/LessonBody.astro';
 import LessonStep from '../../../components/LessonStep.astro';
 import EssayCheckerCta from '../../../components/EssayCheckerCta.astro';
 import LessonModelExample from '../../../components/LessonModelExample';
@@ -34,7 +35,7 @@ const overviewUrl = withBase('/lessons/writing');
 >
   <LessonStep order={order} of={of} section="Writing" />
 
-  <Fragment set:html={body} />
+  <LessonBody slug={`writing-${part.slug}`} html={body} />
 
   {/* A Band 8 answer to a real task of the type this lesson teaches, so the
       method is followed straight away by what it produces. */}

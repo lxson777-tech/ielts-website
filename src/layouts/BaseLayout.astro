@@ -97,7 +97,14 @@ const jsonLd = {
         an unconditional un-hide, so a dictionary chunk that never arrives
         leaves an English page, never a blank one. English students skip all
         of it: no class, no hidden body, no dictionary. */}
-    <style is:inline>html.i18n-pending body { visibility: hidden; }</style>
+    {/* The second rule covers the lesson body specifically. On a hard load
+        the whole page is hidden by i18n-pending above, but a client-side
+        navigation paints the new page immediately, which would show the
+        English lesson for the moment it takes the translated fragment to
+        arrive. Hiding just that one block (it keeps its height, so nothing
+        jumps) is enough, and it is removed unconditionally after 1500 ms by
+        the same failsafe reasoning. */}
+    <style is:inline>html.i18n-pending body { visibility: hidden; } [data-lesson-body-loading] { visibility: hidden; }</style>
     {/* define:vars already makes this inline and unprocessed (Astro emits it
         verbatim in the head, which is exactly what "before first paint"
         needs); adding is:inline on top would make the type-checker try to
@@ -173,6 +180,7 @@ const jsonLd = {
       import { getLocale, onLocaleChange, applyDocumentLocale, PENDING_CLASS } from '../lib/i18n/locale';
       import { loadDictionary } from '../lib/i18n/dict/index';
       import { applyTranslations } from '../lib/i18n/dom';
+      import { applyLessonBody } from '../lib/i18n/lesson-body';
 
       async function refreshTranslations() {
         const locale = getLocale();
@@ -180,6 +188,13 @@ const jsonLd = {
         // Awaited, so the page is only revealed once the real text is in.
         // loadDictionary never rejects: a failed chunk leaves English.
         if (locale !== 'en') await loadDictionary(locale);
+        // The interface strings come from the dictionary; a lesson's
+        // teaching content is a whole HTML file, fetched and swapped by
+        // lesson-body.ts. Also awaited, and also unable to reject: a lesson
+        // with no translation yet simply stays English. On a page that is
+        // not a lesson it returns immediately, and for English it does
+        // nothing but restore the original if we had swapped it.
+        await applyLessonBody();
         applyTranslations();
         document.documentElement.classList.remove(PENDING_CLASS);
       }
@@ -192,6 +207,8 @@ const jsonLd = {
       onLocaleChange(() => void refreshTranslations());
     </script>
     <script>
+      import { onLessonBodySwap } from '../lib/i18n/lesson-body';
+
       const REVEAL_SELECTOR = [
         '[data-reveal]',
         '.lesson-body .section',
@@ -363,6 +380,22 @@ const jsonLd = {
 
       initDetailsAnimation();
       document.addEventListener('astro:page-load', initDetailsAnimation);
+
+      // Reading a lesson in Russian replaces every node inside the lesson
+      // body, so the reveal classes and the accordion wrappers those two
+      // functions installed are gone with the English markup. Both are
+      // guarded against running twice on the same node (.reveal-init and
+      // [data-animated]), so this is only ever doing the new nodes.
+      //
+      // onLessonBodySwap replays: if the swap already happened before this
+      // script block executed, the callback fires straight away. That is
+      // what keeps the fix independent of the order the bundled module
+      // scripts happen to run in.
+      onLessonBodySwap(() => {
+        initScrollReveal();
+        revealReached();
+        initDetailsAnimation();
+      });
     </script>
   </body>
 </html>

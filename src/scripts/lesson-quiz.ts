@@ -5,6 +5,12 @@ export function initReadingQuiz(): void {
   document.querySelectorAll<HTMLElement>('[data-quiz="reading"]').forEach((container) => {
     const btn = container.querySelector<HTMLButtonElement>('.quiz-check-btn');
     if (!btn) return;
+    // This now runs both on astro:page-load and after a language swap
+    // replaces the lesson body, and the two can land in either order on
+    // the same nodes. Without this guard the check button would collect a
+    // second listener and grade twice per click.
+    if (container.dataset.quizBound) return;
+    container.dataset.quizBound = 'true';
     btn.addEventListener('click', () => {
       const items = container.querySelectorAll<HTMLElement>('.quiz-item[data-answer]');
       let correct = 0;

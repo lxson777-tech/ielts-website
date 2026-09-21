@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../../layouts/LessonLayout.astro';
+import LessonBody from '../../../components/LessonBody.astro';
 import LessonStep from '../../../components/LessonStep.astro';
 import PracticeQuiz from '../../../components/PracticeQuiz';
 import { withBase } from '../../../lib/url';
@@ -35,7 +36,7 @@ const practice = READING_PRACTICE[part.slug];
 >
   <LessonStep order={order} of={of} section="Reading" />
 
-  <Fragment set:html={body} />
+  <LessonBody slug={`reading-${part.slug}`} html={body} />
 
   {practice && (
     <div class="mt-10 text-center">

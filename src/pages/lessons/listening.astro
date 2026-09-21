@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonBody from '../../components/LessonBody.astro';
 import LessonTypeGrid from '../../components/LessonTypeGrid.astro';
 import { withBase } from '../../lib/url';
 import { LISTENING_GROUPS, LISTENING_PARTS } from '../../data/listening';
@@ -18,7 +19,7 @@ const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
 ---
 
 <LessonLayout slug="listening">
-  <Fragment set:html={bodyBeforeCards} />
+  <LessonBody slug="listening" html={bodyBeforeCards} />
   <LessonTypeGrid groups={LISTENING_GROUPS} parts={LISTENING_PARTS} hrefBase="listening" />
-  <Fragment set:html={bodyAfterCards} />
+  <LessonBody slug="listening" html={bodyAfterCards} />
 </LessonLayout>

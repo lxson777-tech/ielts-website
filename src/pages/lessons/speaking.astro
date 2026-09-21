@@ -1,5 +1,6 @@
 ---
 import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonBody from '../../components/LessonBody.astro';
 import PartGrid from '../../components/PartGrid.astro';
 import { withBase } from '../../lib/url';
 import { SPEAKING_PARTS } from '../../data/speaking';
@@ -9,7 +10,7 @@ const body = raw.replaceAll('../pics/', withBase('/pics/'));
 ---
 
 <LessonLayout slug="speaking">
-  <Fragment set:html={body} />
+  <LessonBody slug="speaking" html={body} />
 
   <PartGrid
     id="parts"
