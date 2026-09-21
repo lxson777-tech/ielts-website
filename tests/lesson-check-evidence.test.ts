@@ -63,6 +63,7 @@ import { PRACTICE_ITEM_IDENTITY } from '../src/data/reading-practice.ts';
 import { LEARNING_INDEX, checkActivityId, learningCatalogue } from '../src/lib/learning/catalog.ts';
 import { practiceKey } from '../src/lib/i18n/test-explanations.ts';
 import { buildLessonChecks } from '../tools/generate-learning-index.mjs';
+import { testItemId } from '../src/components/attempt-recording.ts';
 
 /* ── Stand-ins for the browser ───────────────────────────────────────────── */
 
@@ -237,6 +238,22 @@ test('a question from a real paper is called what that paper calls it', () => {
   const [authored] = identitiesOf(PARAPHRASE_SET);
   assert.ok(authored && !authored.testId, 'the paraphrase drill is hand written');
   assert.equal(lessonCheckItemId(PARAPHRASE_SET, authored), 'check:practice-reading-paraphrase:u0-q0');
+});
+
+test('a lesson check and a drill or full paper name the same real question identically', () => {
+  /* lessonCheckItemId (this file) and testItemId (src/components/
+     attempt-recording.ts, what TestPlayer's buildQuestionItems stamps on a
+     drill or full-paper submission) both defer to paperItemId in
+     src/lib/learning/evidence.ts now. Meeting question 14 of
+     reading-full-006 through the lesson check, a drill of that paper, or
+     the paper itself must produce one item id, or exposure and the retry
+     link would silently split into two. */
+  const [first] = identitiesOf(HEADINGS_SET);
+  assert.ok(first?.testId && first.questionId, 'this set is lifted from a real paper');
+  const fromLessonCheck = lessonCheckItemId(HEADINGS_SET, first);
+  const fromDrillOrPaper = testItemId(first.testId, first.questionId);
+  assert.equal(fromLessonCheck, fromDrillOrPaper);
+  assert.equal(fromLessonCheck, 'reading-full-006:q14');
 });
 
 test('the activity id and the content version are the catalogue own', () => {

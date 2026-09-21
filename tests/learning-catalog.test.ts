@@ -58,6 +58,8 @@ import type { CatalogueActivity, QuestionTypeCoverage } from '../src/lib/learnin
 import { buildCatalog, practiseActivity } from '../src/lib/tutor/catalog.ts';
 import { buildCourse } from '../src/lib/course.ts';
 import { englishSlugs, russianSlugs } from '../tools/lesson-ru-lib.mjs';
+import { parseSpeakingDeepLink } from '../src/components/attempt-recording.ts';
+import { SPEAKING_CUE_CARDS, SPEAKING_PART1_TOPICS } from '../src/data/speaking-prompts.ts';
 
 const catalogue = learningCatalogue();
 const activities = catalogue.activities;
@@ -256,6 +258,14 @@ test('every route in the catalogue is a page that exists', () => {
 });
 
 test('every in-place task names a real entry in the generated index', () => {
+  /* The speaking prompts used to be the bulk of what this loop checked, but
+     they are routes now (see the next test): SpeakingTester's own deep
+     link parser expects ?part=&topic=/card= on a page it can be sent to,
+     not an in-place task with no href. That leaves only focused exercises
+     as 'task' targets, and WP18 has not authored any yet, so today's real
+     count is zero. This loop, and the assertion below, stay so the day a
+     focused exercise lands it is checked automatically rather than by
+     someone remembering to write this test then. */
   const sections: Record<string, Set<string>> = {
     drills: new Set(LEARNING_INDEX.drills.map((d) => d.id)),
     tests: new Set(LEARNING_INDEX.tests.map((t) => t.id)),
@@ -272,7 +282,53 @@ test('every in-place task names a real entry in the generated index', () => {
     assert.ok(sections[section]?.has(id), `${activity.id} points at a missing ${section} entry "${id}"`);
     checked += 1;
   }
-  assert.ok(checked > 100, 'the speaking prompts really are in-place tasks, so this proved something');
+  assert.equal(checked, 0, 'only a focused exercise is an in-place task now, and none is authored yet');
+});
+
+test('every speaking activity resolves to a route the trainer can open, naming a prompt that really exists', () => {
+  /* Task 2 of the WP12 tidy-up: speak:<id>, speak:<id>:part3 and the Part 1
+     topics used to be { kind: 'task' }, which activityHref cannot turn
+     into a link, so nothing on a session card was clickable. They are
+     routes at /trainers/speaking now, in exactly the query shape
+     SpeakingTester's and LiveExaminer's own parseSpeakingDeepLink expects
+     (src/components/attempt-recording.ts), the same pattern the writing
+     prompts already use for ?task=<id>. This walks every real prompt in
+     the index, resolves its catalogue activity, and proves the round trip:
+     catalogue target -> href -> parsed deep link -> an id that really is a
+     Part 1 topic or cue card in src/data/speaking-prompts.ts. */
+  const part1Ids = new Set(SPEAKING_PART1_TOPICS.map((t) => t.id));
+  const cueCardIds = new Set(SPEAKING_CUE_CARDS.map((c) => c.id));
+  const searchOf = (href: string): string => (href.includes('?') ? href.slice(href.indexOf('?')) : '');
+
+  assert.ok(LEARNING_INDEX.speakingPrompts.length > 0, 'there are real prompts to check');
+  for (const prompt of LEARNING_INDEX.speakingPrompts) {
+    const activity = findActivity(`speak:${prompt.id}`) as CatalogueActivity;
+    assert.ok(activity, `speak:${prompt.id} is in the catalogue`);
+    assert.equal(activity.target.kind, 'route', `${activity.id} must be clickable, not run in place`);
+
+    const href = activityHref(activity) as string;
+    assert.ok(href.startsWith('/trainers/speaking'), `${activity.id} -> ${href}`);
+    const link = parseSpeakingDeepLink(searchOf(href));
+    assert.ok(link, `${activity.id}'s route does not parse as a speaking deep link: ${href}`);
+
+    if (prompt.part === 1) {
+      assert.deepEqual(link, { part: 1, topicId: prompt.id });
+      assert.ok(part1Ids.has(link!.topicId), `${prompt.id} is a real Part 1 topic`);
+    } else {
+      assert.deepEqual(link, { part: 2, cardId: prompt.id });
+      assert.ok(cueCardIds.has(link!.cardId), `${prompt.id} is a real cue card`);
+    }
+
+    if (!prompt.part3QuestionCount) continue;
+    const part3 = findActivity(`speak:${prompt.id}:part3`) as CatalogueActivity;
+    assert.ok(part3, `speak:${prompt.id}:part3 is in the catalogue`);
+    assert.equal(part3.target.kind, 'route');
+    const href3 = activityHref(part3) as string;
+    assert.ok(href3.startsWith('/trainers/speaking'), `${part3.id} -> ${href3}`);
+    const link3 = parseSpeakingDeepLink(searchOf(href3));
+    assert.deepEqual(link3, { part: 3, cardId: prompt.id });
+    assert.ok(cueCardIds.has(link3!.cardId), `${prompt.id} is a real cue card`);
+  }
 });
 
 /* ------------------------------------------------------------------ */

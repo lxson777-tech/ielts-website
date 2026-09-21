@@ -16,7 +16,7 @@
 
 import type { Paper } from '../lib/learning/contracts/catalog';
 import type { AssistanceLevel, EvidenceMode } from '../lib/learning/contracts/evidence';
-import type { ItemOutcomeDraft } from '../lib/learning/evidence';
+import { paperItemId, type ItemOutcomeDraft } from '../lib/learning/evidence';
 import { drillActivityId, paperActivityId } from '../lib/learning/catalog';
 import type { Question, QuestionGroup } from '../lib/tests/schema';
 
@@ -86,10 +86,13 @@ export function attemptEvidenceModeFromId(testId: string): EvidenceMode {
     7's "Learner evidence" note: identity is the PAIR of paper id and
     question id). `baseId` is always the real paper's id, never a retake's
     synthetic one, so a retried question shares its first attempt's item id
-    and the store links the two as a retry automatically. */
-export function testItemId(baseId: string, questionId: string): string {
-  return `${baseId}:${questionId}`;
-}
+    and the store links the two as a retry automatically.
+ *
+ *  The identity rule itself is paperItemId in
+ *  src/lib/learning/evidence.ts, the shared pure layer this file and
+ *  src/lib/learning/lesson-check.ts both import it from, so a lesson check
+ *  and a drill or full paper name the very same real question identically. */
+export const testItemId = paperItemId;
 
 export interface ScoredQuestionEntry {
   question: Question;

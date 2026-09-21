@@ -949,7 +949,11 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
         objective: 'Answer a Part 1 topic out loud and get a band on the four criteria.',
         prerequisites: [lessonActivityId('speaking-part1')],
         expectedMinutes: SPEAKING_PART1_MINUTES,
-        target: { kind: 'task', taskId: 'speaking-part1-topic', indexRef: { section: 'speakingPrompts', id: prompt.id } },
+        /* Sends the student straight into that topic: the query shape
+           SpeakingTester's deep link parses (attempt-recording.ts's
+           parseSpeakingDeepLink), same pattern as the writing prompts' own
+           ?task=<id> route below. */
+        target: route('/trainers/speaking', { query: { part: '1', topic: prompt.id } }),
       });
       continue;
     }
@@ -966,7 +970,7 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       objective: 'Plan and deliver a two-minute Part 2 talk and get a band on the four criteria.',
       prerequisites: [lessonActivityId('speaking-part2')],
       expectedMinutes: SPEAKING_CUE_CARD_MINUTES,
-      target: { kind: 'task', taskId: 'speaking-cue-card', indexRef: { section: 'speakingPrompts', id: prompt.id } },
+      target: route('/trainers/speaking', { query: { part: '2', card: prompt.id } }),
     });
     if (prompt.part3QuestionCount) {
       activities.push({
@@ -980,11 +984,7 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
         objective: 'Discuss the Part 3 follow-up questions and get a band on the four criteria.',
         prerequisites: [lessonActivityId('speaking-part3')],
         expectedMinutes: prompt.part3QuestionCount * SPEAKING_PART3_MINUTES_PER_QUESTION,
-        target: {
-          kind: 'task',
-          taskId: 'speaking-part3-followups',
-          indexRef: { section: 'speakingPrompts', id: prompt.id },
-        },
+        target: route('/trainers/speaking', { query: { part: '3', card: prompt.id } }),
         /* The follow-ups belong to the same cue card, so answering both in
            one sitting is one exposure, not two. */
         sharesItemsWith: [speakingActivityId(prompt.id)],

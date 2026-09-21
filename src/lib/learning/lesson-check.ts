@@ -33,7 +33,14 @@ import type { Locale } from '../i18n/locale';
 import type { Paper, Subskill } from './contracts/catalog';
 import type { AssistanceLevel, CompletionState, EvidenceMode } from './contracts/evidence';
 import type { BrowserStorage } from './store.browser';
-import { hashContent, paperExposureKey, type EvidenceDraft, type ItemOutcomeDraft } from './evidence';
+import { hashContent, paperExposureKey, paperItemId, type EvidenceDraft, type ItemOutcomeDraft } from './evidence';
+
+/** Re-exported so every existing caller of the identity rule (tests,
+    src/data/reading-practice.ts) keeps working unchanged. The rule itself
+    now lives in evidence.ts, the one place this file and
+    src/components/attempt-recording.ts both import it from, so a real
+    paper's question is named the same way everywhere it is met. */
+export { paperItemId };
 
 /* ── Identity ────────────────────────────────────────────────────────────── */
 
@@ -80,17 +87,6 @@ export const LESSON_CHECK_CONTENT_VERSION = 1;
 /** Every lesson-check event is recorded in this mode: a check inside a
     lesson page, where help is available. */
 export const LESSON_CHECK_MODE: EvidenceMode = 'lesson-check';
-
-/** One question of a real paper, named the same way wherever it is met.
- *
- *  This is the whole point of recording the source: a lesson check, a
- *  single-part drill and the full paper can all ask question 24 of Reading
- *  Test 19, and the student has only answered it once. Question ids are
- *  unique inside a paper and not across the bank, so the pair is the item.
- *  Every surface that asks a real paper's question must name it this way. */
-export function paperItemId(testId: string, questionId: string): string {
-  return `${testId}:${questionId}`;
-}
 
 /** What a quick-check question is called in the learner record.
  *
