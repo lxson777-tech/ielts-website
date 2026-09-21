@@ -1,0 +1,78 @@
+{
+  "id": "practice-reading-summary-completion",
+  "locale": "ru",
+  "entries": {
+    "u0-q0": {
+      "sha": "c1708b410503afa0",
+      "ru": "В третьем абзаце сказано, что искусство 'appeal[s] purely at the level of the imagination' (A), а во втором абзаце сказано, что искусство 'not restricted by the confines of practicality' (D). Значит, для этой строки подходит любая из этих букв."
+    },
+    "u0-q1": {
+      "sha": "d5561a23ac1d0034",
+      "ru": "Во втором абзаце сказано, что чайник ремесленника 'should normally be able to hold tea or flowers', то есть у него только практическое применение (C), а ремесло остаётся 'lodged firmly in the practicality of the everyday world', без претензии на что-то большее (B)."
+    },
+    "u0-q2": {
+      "sha": "b677e69c93adca09",
+      "ru": "Эта строка использует тот же набор вариантов, что и вопрос 1: в третьем абзаце сказано, что искусство обращается 'at the level of the imagination' (A), а во втором сказано, что у искусства 'no practical purpose', поскольку оно 'not restricted by the confines of practicality' (D)."
+    },
+    "u0-q3": {
+      "sha": "e31c8e1e186b9668",
+      "ru": "Эта строка использует тот же набор вариантов, что и вопрос 2: конечный продукт ремесла оценивают только по функции (C, второй абзац), а само ремесло остаётся 'lodged firmly in the practicality of the everyday world', без претензии на что-то большее (B)."
+    },
+    "u0-q4": {
+      "sha": "65df070e9a667bff",
+      "ru": "В восьмом абзаце сказано, что в искусстве акцент 'is placed instead on the act of creation itself' (F); в пятом абзаце описан 'trial-and-error approach' художника (G); в четвёртом абзаце сказано, что искусство 'evolves non-deterministically' (J)."
+    },
+    "u0-q5": {
+      "sha": "cf0e4857d32c9955",
+      "ru": "В восьмом абзаце сказано, что ремесло существует ради 'monetary compensation', поэтому сам процесс лишь средство для достижения цели (E); в четвёртом абзаце сказано, что ремесленник 'knows what he wants to make before he makes it', то есть цель поставлена заранее (I) и места для эксперимента не остаётся (H)."
+    },
+    "u0-q6": {
+      "sha": "ce57d6bb0427f190",
+      "ru": "Эта строка использует тот же набор вариантов про искусство, что и вопрос 5: в четвёртом абзаце сказано, что искусство 'evolves non-deterministically' (J), в пятом абзаце описан 'a trial-and-error approach' (G), а в восьмом абзаце акцент делается на процессе, а не на результате (F)."
+    },
+    "u0-q7": {
+      "sha": "d2dc741615d9d0c9",
+      "ru": "Эта строка использует тот же набор вариантов про ремесло, что и вопрос 6: Collingwood говорит, что заранее известный ремесленнику результат 'must not be vague but precise', то есть места для эксперимента не остаётся (H), когда цель уже определена (I)."
+    },
+    "u0-q8": {
+      "sha": "4e6c4b0103c9b2ca",
+      "ru": "Эта строка тоже опирается на варианты F, G и J: художник работает методом проб и ошибок (пятый абзац) в неопределённом, развивающемся процессе (четвёртый абзац), где сам готовый объект вторичен (восьмой абзац)."
+    },
+    "u0-q9": {
+      "sha": "8fa586aad78cff48",
+      "ru": "Эта строка завершает набор вариантов про ремесло: планирование 'indispensable' для ремесла (четвёртый абзац, подтверждает H и I), а поскольку ремесленник должен предоставить результат, процесс здесь лишь средство для получения готового изделия (E)."
+    },
+    "u1-q0": {
+      "sha": "d455a56abcda2cc1",
+      "ru": "В шестом абзаце сказано, что автобусы ездят по ‘bus lanes separated from other traffic… to reduce stoppages’. Отсюда и берётся слово для этого пропуска."
+    },
+    "u1-q1": {
+      "sha": "debe5023e1a0ac34",
+      "ru": "В том же абзаце сказано: ‘ticket purchase and control takes place at stations prior to boarding’. Это и подходит к пропуску."
+    },
+    "u1-q2": {
+      "sha": "0c0d11b1393ce37d",
+      "ru": "В тексте сказано, что автобусы без ступенек делают маршрут ‘accessible to people using wheelchairs’. Отсюда и берётся слово для этого пропуска."
+    },
+    "u1-q3": {
+      "sha": "0b57e0be432c0cc3",
+      "ru": "Paulas George жалуется, что ‘drivers often refuse to turn on the air conditioning to save fuel’. Это и подходит к пропуску."
+    },
+    "u1-q4": {
+      "sha": "ad4d0a1ea93f2a5d",
+      "ru": "В тексте сказано, что есть ‘a shortage of buses after a serious flood at the main depot’. Отсюда и берётся слово для этого пропуска."
+    },
+    "u1-q5": {
+      "sha": "543a092b0472bf6c",
+      "ru": "В тексте сказано: ‘smartcards can’t be used as the mechanical readers aren’t working’. Это и подходит к пропуску про неисправное оборудование."
+    },
+    "u1-q6": {
+      "sha": "2544e4a199a42c98",
+      "ru": "В тексте сказано: ‘staff stand by the gates and tear tickets as people enter’. Отсюда и берётся слово для этого пропуска."
+    },
+    "u1-q7": {
+      "sha": "9895a6d29aa7b606",
+      "ru": "В тексте делается вывод: ‘as a result, queues are considerable at peak times’. Это и подходит к последнему пропуску."
+    }
+  }
+}

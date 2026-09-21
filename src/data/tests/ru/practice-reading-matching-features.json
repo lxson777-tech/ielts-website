@@ -1,0 +1,58 @@
+{
+  "id": "practice-reading-matching-features",
+  "locale": "ru",
+  "entries": {
+    "u0-q0": {
+      "sha": "862a131b2ad7fd3e",
+      "ru": "Rees говорит, что роботов нужно держать не умнее idiot savants, которые не смогут нас перехитрить. Это желание ограничить их возможности ради безопасности."
+    },
+    "u0-q1": {
+      "sha": "51bbabff189bea0a",
+      "ru": "Richardson говорит, что роботы никогда всерьёз не бросали вызов превосходству человека, поэтому она считает опасность меньше, чем люди боятся."
+    },
+    "u0-q2": {
+      "sha": "0d5977cc4f74dbb8",
+      "ru": "Wolpert говорит, что достичь творческого интеллекта уровня человека в ближайшие 50 лет было бы крайне амбициозной задачей, то есть на это уйдёт много времени."
+    },
+    "u0-q3": {
+      "sha": "fbd41d5416ef220f",
+      "ru": "Rees задаётся вопросом, не стоит ли нам чувствовать вину за эксплуатацию продвинутых роботов или беспокоиться, не скучно ли им. Так поднимается вопрос о справедливом отношении к ним."
+    },
+    "u0-q4": {
+      "sha": "903ec7643b863d9f",
+      "ru": "Wolpert говорит, что добывать ресурсы ближе к дому было бы более разумным применением роботов, чем колонизация других планет."
+    },
+    "u0-q5": {
+      "sha": "1ff778e2878c42f4",
+      "ru": "Rees говорит, что лучше читать первоклассную научную фантастику, чем второсортную науку, потому что ошибиться в ней не более вероятно."
+    },
+    "u0-q6": {
+      "sha": "acc232621984b5dd",
+      "ru": "Richardson говорит, что многие люди приветствуют машинный интеллект, а значит, кто-то действительно ждёт, что роботы станут умнее."
+    },
+    "u1-q0": {
+      "sha": "42cfe71ea67181ec",
+      "ru": "Suzuki пишет: 'we are using up the ecological capital of the planet'. Это соответствует C."
+    },
+    "u1-q1": {
+      "sha": "81bc63e109216820",
+      "ru": "Kaplan предсказывает, что крах 'could sweep the planet, first in Eastern Europe and then the industrialised countries'. Это соответствует A."
+    },
+    "u1-q2": {
+      "sha": "77f4edaec167f0ee",
+      "ru": "Оптимизм Gee основан на вере в 'the boundless potential of science and technology to overcome the physical constraints'. Это соответствует B."
+    },
+    "u1-q3": {
+      "sha": "df182e6461a4bc3a",
+      "ru": "Kaplan предвидит 'disintegration of social, political and economic infrastructure' по мере разрушения экосистем. Это соответствует A."
+    },
+    "u1-q4": {
+      "sha": "67a26ecfc65d9c93",
+      "ru": "Suzuki предупреждает: 'the life support systems of the planet continue to decline'. Эту тревогу он разделяет со сценарием краха у Kaplan. Это соответствует C и A."
+    },
+    "u1-q5": {
+      "sha": "c7bcebed5ff619ef",
+      "ru": "Gee заключает, что 'little evidence they are serious enough to halt or even reverse human progress'. Это соответствует B."
+    }
+  }
+}

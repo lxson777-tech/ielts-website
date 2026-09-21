@@ -1,0 +1,166 @@
+{
+  "id": "listening-full-015",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "7f66c791c1e757de",
+      "ru": "На 01:10 Keith называет имя жены: \"Her name is Melissa Waters\"."
+    },
+    "q2": {
+      "sha": "3cf61af37e390ff3",
+      "ru": "На 01:23 Keith говорит: \"my wife's 30\"."
+    },
+    "q3": {
+      "sha": "7d48351ee0726fb0",
+      "ru": "На 01:38 Keith добавляет: \"We're interested in cinema and history\"."
+    },
+    "q4": {
+      "sha": "bd08760d69c2a184",
+      "ru": "На 01:47 Keith называет верхнюю границу бюджета: \"between $7,000 and $11,000\"."
+    },
+    "q5": {
+      "sha": "f6deb7c52f3ed9d8",
+      "ru": "На 02:08 Keith говорит: \"at least 14 nights on the ship\"."
+    },
+    "q6": {
+      "sha": "fbf2dcd010736e6a",
+      "ru": "На 03:18 Penny говорит: \"the flights to get to Barcelona will be extra\", то есть перелёт не входит в цену $10,500."
+    },
+    "q7": {
+      "sha": "49f6725b3a5d242d",
+      "ru": "На 03:35 Penny упоминает: \"there are also lectures on the places where you will be visiting\"."
+    },
+    "q8": {
+      "sha": "309a61dae5d1fda0",
+      "ru": "На 03:56 Penny говорит: \"Travel insurance is incorporated within the price\"."
+    },
+    "q9": {
+      "sha": "8d342eccfe523577",
+      "ru": "На 04:14 Penny называет цену Sea Queen: \"This costs $9,000 for both of you\", перелёт уже включён."
+    },
+    "q10": {
+      "sha": "1d4ce975a046f177",
+      "ru": "На 04:28 Penny говорит: \"There is a swimming pool and gym\"."
+    },
+    "q11": {
+      "sha": "6c6c772730bef292",
+      "ru": "На 06:56 Jake говорит: \"chiefly low-income parents\"."
+    },
+    "q12": {
+      "sha": "28d7b027f2e74daa",
+      "ru": "На 07:08 Jake говорит: \"Our key focus is at hospitals where children are born\"."
+    },
+    "q13": {
+      "sha": "68119150c111e3c4",
+      "ru": "На 07:46 Jake говорит: \"come to our center or website\"."
+    },
+    "q14": {
+      "sha": "54aaaeb9a785e969",
+      "ru": "На 08:15 Jake говорит: \"It only cost a dollar\"."
+    },
+    "q15": {
+      "sha": "d89a83ec78d6bc25",
+      "ru": "На 08:44 Jake говорит: \"immigrant families can read or listen to the stories\"."
+    },
+    "q16": {
+      "sha": "1da59c32ccb24662",
+      "ru": "На 09:34 Jake говорит: \"one particular donor who supplies... at least 60%.\" Это вариант B."
+    },
+    "q17": {
+      "sha": "ae50776ed3cdf812",
+      "ru": "На 10:20 Jake говорит про \"an icon on the homepage labeled donations\". Это вариант A."
+    },
+    "q18": {
+      "sha": "2d69a9f387ce513f",
+      "ru": "На 10:42 Jake говорит: \"pay for some modest expenditure incurred for travel... if we can get receipts.\" Это вариант C."
+    },
+    "q19": {
+      "sha": "5efa4dbab282b9a3",
+      "ru": "На 11:18 Jake говорит: \"there's a cinema on the corner\", кинотеатр на углу второго поворота направо с Bellard Street. Точное место на карте нужно смотреть по изображению, одного аудио недостаточно. Это вариант D."
+    },
+    "q20": {
+      "sha": "8511799ced051cbc",
+      "ru": "На 11:41 Jake говорит: \"the main town post office which is right opposite our offices\". Точку на карте тоже нужно смотреть по изображению. Это вариант G."
+    },
+    "q21": {
+      "sha": "ac611650885e9907",
+      "ru": "На 13:33 Amy говорит, что тема эссе: \"how global oil prices have affected the car industry\"."
+    },
+    "q22": {
+      "sha": "49dee313f2275e10",
+      "ru": "На 13:56 Amy говорит, что главная сложность: \"creating the citations in the correct way\"."
+    },
+    "q23": {
+      "sha": "48de6d7cb603a733",
+      "ru": "На 14:22 Mr Stevenson советует посмотреть \"a guidance sheet that details all the procedures\" на сайте факультета."
+    },
+    "q24": {
+      "sha": "93dba6e7c03a7cee",
+      "ru": "На 15:04 William говорит, что его тема: \"effects of immigration on employment figures\"."
+    },
+    "q25": {
+      "sha": "04e4e76cb4795b50",
+      "ru": "На 15:32 Mr Stevenson советует: \"work on the task of revision\", чтобы сократить эссе."
+    },
+    "q26": {
+      "sha": "1eead6f524d198ad",
+      "ru": "На 16:33 Anna говорит: \"I got ill and I spent quite a few days in bed.\" Это вариант A."
+    },
+    "q27": {
+      "sha": "bd1bd36635fd674d",
+      "ru": "На 17:11 Mr Stevenson предлагает: \"my special evening work sessions.\" Это вариант B."
+    },
+    "q28": {
+      "sha": "5926380bcf1981cc",
+      "ru": "На 17:24 Mr Stevenson говорит: \"you need to supply a doctor's note.\" Это вариант B."
+    },
+    "q29": {
+      "sha": "70e762a642b7f972",
+      "ru": "На 18:08 первая идея Anna: \"tax breaks offered by the Australian government can stimulate overseas investment.\" Это вариант A."
+    },
+    "q30": {
+      "sha": "bc441cdf72a9a50a",
+      "ru": "На 18:37 вторая идея Anna: \"a historical overview of imports and exports between Australia and New Zealand.\" Это вариант C."
+    },
+    "q31": {
+      "sha": "040b2f3d299a52b2",
+      "ru": "На 21:34 лектор говорит, что шумеры \"created seals... to identify possession.\" Это вариант D."
+    },
+    "q32": {
+      "sha": "320a2a1b07eeb564",
+      "ru": "На 21:57 лектор говорит: \"earliest actual handwriting signature... Valentinian III.\" Это вариант C."
+    },
+    "q33": {
+      "sha": "09280c1c821c681b",
+      "ru": "На 22:15 лектор говорит: \"Camila Baldi wrote a book\", с которой началась наука, позже названная графологией. Это вариант F."
+    },
+    "q34": {
+      "sha": "2bc4117e91d01222",
+      "ru": "На 22:38 лектор говорит: \"He formed Graphological Societies, published magazines and founded an academy.\" Это вариант E."
+    },
+    "q35": {
+      "sha": "644f5bc728ee6172",
+      "ru": "На 23:31 приводят слова Preyer: \"writing originates in the brain... handwriting is actually brainwriting.\" Это вариант A."
+    },
+    "q36": {
+      "sha": "b5d1af1e5f272c1a",
+      "ru": "На 23:31 лектор говорит, что технологии, возможно, \"made the handwritten signature obsolete\"."
+    },
+    "q37": {
+      "sha": "ec727ce710d0069e",
+      "ru": "На 24:18 лектор говорит, что по закону подпись должна \"leave a physical mark or trace\", а у электронной подписи такого следа нет."
+    },
+    "q38": {
+      "sha": "9f89ee0f4e973bf9",
+      "ru": "На 24:48 лектор говорит, что в 1996 году ООН \"developed the framework\" для правил электронной коммерции."
+    },
+    "q39": {
+      "sha": "e2405d981dc0fd20",
+      "ru": "На 25:06 лектор говорит, что по этому своду правил электронные договоры \"receive equal treatment to paper contracts\"."
+    },
+    "q40": {
+      "sha": "88c841ecc58eaf24",
+      "ru": "На 25:23 лектор говорит, что рукописная электронная подпись помогает \"enhance legal verification\" и добавляет человеческий штрих."
+    }
+  }
+}

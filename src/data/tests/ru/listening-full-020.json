@@ -1,0 +1,178 @@
+{
+  "id": "listening-full-020",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "7eb84882b2020f2e",
+      "ru": "На 01:32 Mr Jones говорит Rebecca: \"we've only just moved to Los Angeles two days ago.\" Это вариант C."
+    },
+    "q2": {
+      "sha": "c17e1cba8ead5d67",
+      "ru": "На 01:48 Mr Jones говорит: \"I don't have to go into office until next Monday\"."
+    },
+    "q3": {
+      "sha": "7abc7a1baf37b74b",
+      "ru": "На 01:48 Mr Jones говорит: \"my companies were in real estate\" (в расшифровке неточность вместо \"my company's in real estate\"). Это вариант C."
+    },
+    "q4": {
+      "sha": "1c37b33163b2602d",
+      "ru": "На 02:21 Rebecca предлагает \"nine a.m. Thursday\", это же время подтверждают снова на 03:12. Отсюда час: девять."
+    },
+    "q5": {
+      "sha": "3b445762c954f0ad",
+      "ru": "На 02:21 и снова на 03:12 встречу подтверждают на \"nine a.m. Thursday\"."
+    },
+    "q6": {
+      "sha": "79045fd2325dc4a2",
+      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". В ключе ответов принимаются blood pressure, urine и ECG как три анализа."
+    },
+    "q7": {
+      "sha": "79045fd2325dc4a2",
+      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". В ключе ответов принимаются blood pressure, urine и ECG как три анализа."
+    },
+    "q8": {
+      "sha": "79045fd2325dc4a2",
+      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". В ключе ответов принимаются blood pressure, urine и ECG как три анализа."
+    },
+    "q9": {
+      "sha": "9e9bea95e38c5dc6",
+      "ru": "На 04:36 Mr Jones называет домашний номер: \"area called 805-523-0296\" (расшифровка перепутала \"area code\" с \"area called\"), то есть 8055230296."
+    },
+    "q10": {
+      "sha": "ac496a83169098bb",
+      "ru": "На 01:32 Rebecca представляется: \"my name's Rebecca. I'm Doctor Ritter's secretary\"."
+    },
+    "q11": {
+      "sha": "ffd4f256aa695a09",
+      "ru": "На 06:29 Rick Smith говорит, что занимается турами \"to Australia, New Zealand and the South Sea Islands\"."
+    },
+    "q12": {
+      "sha": "9b75ef7d4d0162b9",
+      "ru": "На 06:53 Rick говорит, что новый тур появился \"after doing some market research\", который показал спрос на более долгую поездку."
+    },
+    "q13": {
+      "sha": "0c0f653235dfb398",
+      "ru": "На 07:58 Rick говорит, что из отеля открываются \"fantastic views of Sydney Harbour, the famous Opera House and Sydney Harbour Bridge\", это и есть третья достопримечательность."
+    },
+    "q14": {
+      "sha": "817aa48c1f0fd23f",
+      "ru": "На 08:25 Rick говорит, что от смены часовых поясов помогает: \"it's best to get out and do something energetic.\" Это вариант C."
+    },
+    "q15": {
+      "sha": "1556449e36d7aa88",
+      "ru": "На 09:20 Rick говорит, что вомбат \"looks like a bear with short legs\"."
+    },
+    "q16": {
+      "sha": "ba290ac37fab97b0",
+      "ru": "На 10:20 Rick говорит, что после олимпийского комплекса \"we'll take a cruise down the Parramatta River... into Sydney Harbour\", то есть группа возвращается на лодке. Это вариант B."
+    },
+    "q17": {
+      "sha": "bf34930596653762",
+      "ru": "На 10:34 Rick говорит, что вид на Bondi Beach открывается \"from 500 feet in the air\"."
+    },
+    "q18": {
+      "sha": "5f797f42671eaa95",
+      "ru": "На 11:36 Rick говорит, что в австралийских городах есть кухня \"Greek, Chinese, Mexican\" и не только."
+    },
+    "q19": {
+      "sha": "c2e65b1874f9c551",
+      "ru": "Там же, на 11:36, Rick перечисляет кухни: \"Greek, Chinese, Mexican\"."
+    },
+    "q20": {
+      "sha": "977eeeeb5f7de194",
+      "ru": "На 12:03 Rick говорит: \"then we'll move on to Melbourne\" после Sydney."
+    },
+    "q21": {
+      "sha": "575d30868d776e07",
+      "ru": "На 13:56 Ann объясняет: \"we can't afford to employ someone to help her\" (C) и \"the neighbours are all too busy\" (D), а ещё её мама болеет (A). Совет врача (B) и компьютерные игры (E) не входят в её причины."
+    },
+    "q22": {
+      "sha": "575d30868d776e07",
+      "ru": "На 13:56 Ann объясняет: \"we can't afford to employ someone to help her\" (C) и \"the neighbours are all too busy\" (D), а ещё её мама болеет (A). Совет врача (B) и компьютерные игры (E) не входят в её причины."
+    },
+    "q23": {
+      "sha": "575d30868d776e07",
+      "ru": "На 13:56 Ann объясняет: \"we can't afford to employ someone to help her\" (C) и \"the neighbours are all too busy\" (D), а ещё её мама болеет (A). Совет врача (B) и компьютерные игры (E) не входят в её причины."
+    },
+    "group:q21": {
+      "sha": "e09de9b83c22f8f6",
+      "ru": "<p>На 13:56 Ann говорит: “we can't afford to employ someone to help her” (C) и “the neighbours are all too busy” (D), а ещё её мама болеет (A). Совет врача (B) и компьютерные игры (E) относятся к другой части разговора, поэтому верные буквы это A, C и D.</p>"
+    },
+    "q24": {
+      "sha": "230ce13353e21434",
+      "ru": "На 14:20 Bill говорит, что читал об эксперименте \"in social studies at high school\"."
+    },
+    "q25": {
+      "sha": "423fc743c15b1c61",
+      "ru": "Там же, на 14:20, Bill говорит, что тема была: \"how wearing a uniform can change people's personalities\"."
+    },
+    "q26": {
+      "sha": "28c40b8b5f0920b7",
+      "ru": "На 14:56 Bill говорит, что, как он думает, профессор \"was from the University of California at Los Angeles.\" Это вариант B."
+    },
+    "q27": {
+      "sha": "4f97e54118fe1501",
+      "ru": "На 15:46 Bill говорит, что полиция привезла студентов \"to a school building that had been made to look like\" тюрьму, то есть на самом деле это была школа. Это вариант A."
+    },
+    "q28": {
+      "sha": "87b47cae3c376d33",
+      "ru": "На 16:32 Bill говорит, что студенты в роли охранников были из \"different schools\" (B), \"because otherwise the ones who thought they'd been arrested might have realized it was the experiment\" (C)."
+    },
+    "q29": {
+      "sha": "87b47cae3c376d33",
+      "ru": "На 16:32 Bill говорит, что студенты в роли охранников были из \"different schools\" (B), \"because otherwise the ones who thought they'd been arrested might have realized it was the experiment\" (C)."
+    },
+    "group:q28": {
+      "sha": "307325ca9af3fc70",
+      "ru": "<p>На 16:32 Bill объясняет, что студенты в роли охранников были из “different schools” (B), чтобы арестованные студенты не поняли, что это тот самый эксперимент, на который они подписались (C), то есть верная пара это B и C.</p>"
+    },
+    "q30": {
+      "sha": "deae72dd09937cc2",
+      "ru": "На 16:58 Bill говорит, что студенты, считавшие себя заключёнными, \"started having nervous breakdowns\"."
+    },
+    "q31": {
+      "sha": "e53aeae44b3be345",
+      "ru": "На 19:02 лектор говорит, что расскажет про \"different types of advertising\" и \"different types of message\", то есть про сообщение (C) и рекламу (E)."
+    },
+    "q32": {
+      "sha": "e53aeae44b3be345",
+      "ru": "На 19:02 лектор говорит, что расскажет про \"different types of advertising\" и \"different types of message\", то есть про сообщение (C) и рекламу (E)."
+    },
+    "group:q31": {
+      "sha": "474a6b78cf0d6fa9",
+      "ru": "<p>На 19:02 лектор говорит, что сегодняшняя лекция охватывает “different types of advertising. Different types of message”, то есть два предмета его рассказа это реклама (E) и сообщение (C).</p>"
+    },
+    "q33": {
+      "sha": "891ece1b031c2559",
+      "ru": "На 20:09 лектор говорит, что важно использовать \"the right type of advertising with the right message\"."
+    },
+    "q34": {
+      "sha": "4521123a75e08f7b",
+      "ru": "Там же, на 20:09, лектор говорит, что рекламе нужен \"the right type of advertising with the right message\"."
+    },
+    "q35": {
+      "sha": "0b75b1c066266db2",
+      "ru": "На 20:57 лектор говорит, что рекламодатели хотят изменить отношение людей и, чаще всего, их \"buying habits\". Это вариант A."
+    },
+    "q36": {
+      "sha": "f14e54c28ee30602",
+      "ru": "На 21:49 лектор говорит: \"consumers buy these products primarily because they recognize the brand name\"."
+    },
+    "q37": {
+      "sha": "503ec27a2b5e69c2",
+      "ru": "На 22:24 лектор представляет: \"what if shell had bought a brewery\"."
+    },
+    "q38": {
+      "sha": "b7e9f3fb4476a5d3",
+      "ru": "На 22:24 лектор называет воображаемое пиво \"Grand Dads Old Ale\", это игра слов на тему, будто Shell продаёт пиво вместо нефти. В официальном ключе было написано \"grandads old air\" (опечатка вместо ale), здесь это исправлено, чтобы принимался и вариант с апострофом, и без него."
+    },
+    "q39": {
+      "sha": "9bcb94cc2e60fdeb",
+      "ru": "На 23:37 лектор говорит, что San Fran Video Store раздавал \"little cards with the same message on them\"."
+    },
+    "q40": {
+      "sha": "29cf1e3434b0a5a7",
+      "ru": "Там же, на 23:37, на карточках также был \"a list of the store locations\"."
+    }
+  }
+}

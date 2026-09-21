@@ -1,0 +1,166 @@
+{
+  "id": "listening-full-012",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "0cf8e99776714d9f",
+      "ru": "На 01:19 Susan поправляет себя: \"No, sorry. I meant the following Saturday, the 25th.\""
+    },
+    "q2": {
+      "sha": "aff9f0e8fd118895",
+      "ru": "На 01:43 число гостей меняется с 40 на 60, а потом Susan уточняет: \"I think it's back to 55 now.\" Итоговое число: 55."
+    },
+    "q3": {
+      "sha": "cd5bba1991c17d12",
+      "ru": "На 02:16 Susan добавляет в заказ \"knives and forks too, five dozen sets\", то есть пять дюжин наборов вилок и ножей."
+    },
+    "q4": {
+      "sha": "d8e5c9b63d42b195",
+      "ru": "На 02:52 Susan выбирает сорок штук \"stackable plastic garden chairs\"."
+    },
+    "q5": {
+      "sha": "946aca991d7229bb",
+      "ru": "На 03:18 Susan просит \"six ice buckets for keeping the drinks cold\", чтобы напитки оставались холодными."
+    },
+    "q6": {
+      "sha": "d63b7980154f184c",
+      "ru": "На 04:40 сотрудник называет более дешёвый вариант: \"That's called the same day package.\""
+    },
+    "q7": {
+      "sha": "1180168259c90dc9",
+      "ru": "На 05:04 сотрудник объясняет, что доплата это \"an extra home delivery charge of $50\", то есть плата за доставку на дом."
+    },
+    "q8": {
+      "sha": "5ec468c48b01c802",
+      "ru": "На 05:21 сотрудник называет стоимость замены маленького стакана: \"small glasses are $3.50\"."
+    },
+    "q9": {
+      "sha": "7ba28a9a9f72f3fd",
+      "ru": "На 06:03 Susan диктует фамилию по буквам: \"It's M-I-L-L-I-N-S.\" Сотрудник сначала расслышал Miller, но правильно Millins."
+    },
+    "q10": {
+      "sha": "e5815d4593b30149",
+      "ru": "На 06:31 Susan называет номер: \"The phone number is 084-398-7695.\" Цифры после 084, то есть 3987695, и есть ответ."
+    },
+    "q11": {
+      "sha": "7da1251aeecb1e65",
+      "ru": "На 08:27 гид говорит, что поручни покрыты помётом, \"and this makes a feast for the cockroaches\", то есть тараканы кормятся именно там. Это вариант C."
+    },
+    "q12": {
+      "sha": "be2c33251da14394",
+      "ru": "На 08:48 гид предупреждает: \"these centipedes have a very nasty poisonous bite\", то есть зелёные многоножки опасны для людей. Это вариант D."
+    },
+    "q13": {
+      "sha": "ad6b5c71f6f3ca23",
+      "ru": "На 09:39 гид говорит, что летучие мыши \"clustered high up against the walls, maybe a hundred or two hundred together\", то есть собираются большими группами. Это вариант B."
+    },
+    "q14": {
+      "sha": "5b8935b47180425e",
+      "ru": "На 09:57 гид говорит, что летучие мыши спят весь день и \"leave the cave in a massive flock on their nightly hunt\", то есть летают только ночью. Это вариант B."
+    },
+    "q15": {
+      "sha": "bdbafe54ad7d721e",
+      "ru": "На 10:32 гид говорит: \"The swifts make nests usually higher up on the ceiling of the cave\", то есть стрижи живут под сводом пещеры. Это вариант A."
+    },
+    "q16": {
+      "sha": "f29cc24a80eefb43",
+      "ru": "На 11:37 гид говорит: \"The guano is very valuable as fertilizer.\""
+    },
+    "q17": {
+      "sha": "28e0f2113d7c0324",
+      "ru": "На 11:58 гид говорит, что собранные гнёзда это \"the main ingredient in bird's nests soup\"."
+    },
+    "q18": {
+      "sha": "ced1701904cc2f12",
+      "ru": "На 12:37 гид напоминает: \"insisted you bring a working light\"."
+    },
+    "q19": {
+      "sha": "8dd6915c05ab9ff6",
+      "ru": "На 12:48 гид говорит: \"put your waterproof jacket on now\"."
+    },
+    "q20": {
+      "sha": "cb322b7d2dbc8ad8",
+      "ru": "На 13:30 гид настаивает: \"You absolutely must follow the marked trails.\""
+    },
+    "q21": {
+      "sha": "dd5ed003b030fd5e",
+      "ru": "На 15:34 Mr Hadstone говорит: \"thanks for volunteering to run this project\", то есть благодарит Mary за то, что она вызвалась руководить поездкой. Это вариант B."
+    },
+    "q22": {
+      "sha": "5f9fd6b2b6678fc9",
+      "ru": "На 16:14 он говорит: \"consider the dangers and come up with ways of countering or avoiding them\", то есть главное в планировании: предвидеть и снижать опасности. Это вариант C."
+    },
+    "q23": {
+      "sha": "253fdfcbaa9242c2",
+      "ru": "На 16:48 он говорит, что руководителям нужно разработать \"a well-thought-out hazard management plan\". Это вариант C."
+    },
+    "q24": {
+      "sha": "68361447d147ea1e",
+      "ru": "На 17:31 Mr Hadstone говорит: \"we call those the significant factors\", имея в виду погоду, рельеф и состав группы."
+    },
+    "q25": {
+      "sha": "9ba3af12924e1474",
+      "ru": "На 17:54 он говорит: \"The official name for those is unlikely events\", имея в виду ураганы и серьёзные болезни, которые Mary можно не учитывать."
+    },
+    "q26": {
+      "sha": "4685e6647e6ff7ee",
+      "ru": "На 18:56 Mary добавляет: \"a raincoat too, of course\", к тёплой одежде на случай непогоды."
+    },
+    "q27": {
+      "sha": "8f8bb19edb0474c6",
+      "ru": "На 19:23 к аптечке и карте добавляют: \"a compass too\"."
+    },
+    "q28": {
+      "sha": "ad526088aed2051e",
+      "ru": "На 19:59 Mr Hadstone перечисляет маршруты, которых стоит избегать: \"an avalanche or a mudslide or a flash flood\"."
+    },
+    "q29": {
+      "sha": "57eba882a2dac410",
+      "ru": "На 20:36 он говорит, что нужно учитывать \"the physical strength and experience of the party\"."
+    },
+    "q30": {
+      "sha": "8331a630f544f2bb",
+      "ru": "На 21:00 он говорит: \"don't allow student drivers to bring their own cars\", то есть перевозку нельзя доверять студентам за рулём."
+    },
+    "q31": {
+      "sha": "1a896211f38f5f1f",
+      "ru": "На 23:22 лектор описывает, как звук проходит \"through the ear canal to the eardrum\". Это подпись к первому изображению."
+    },
+    "q32": {
+      "sha": "7dc7b1ab07432c0a",
+      "ru": "На 23:43 лектор говорит, что клетки внутреннего уха \"transfer this information to the auditory nerve\"."
+    },
+    "q33": {
+      "sha": "b13309f5cb4a3e1d",
+      "ru": "На 24:25 лектор называет \"its associated speech processor, which is a tiny computer\": он стоит за микрофоном на втором изображении."
+    },
+    "q34": {
+      "sha": "efd4979b49249127",
+      "ru": "На 24:43 лектор указывает на \"a surgically implanted receiver\" под кожей."
+    },
+    "q35": {
+      "sha": "101a0dbadce6b00c",
+      "ru": "На 25:24 лектор говорит, что слуховые аппараты просто \"amplify the normal sound waves\"."
+    },
+    "q36": {
+      "sha": "fba1b8fc9de916c8",
+      "ru": "На 26:02 лектор говорит: \"The sound signals that the brain receives from an implant are quite different\", поэтому людям приходится заново учиться слышать."
+    },
+    "q37": {
+      "sha": "ac055ef886a9bdba",
+      "ru": "На 26:45 лектор говорит, что вдобавок к чтению по губам и жестовому языку нужно \"augment this with speech therapy\"."
+    },
+    "q38": {
+      "sha": "e69bf4fa4e48bca9",
+      "ru": "На 27:25 лектор предупреждает, что операция может \"remove any natural hearing that the deaf person still retains\"."
+    },
+    "q39": {
+      "sha": "eb0fe79190a2f877",
+      "ru": "На 27:44 лектор называет самым важным фактором отбора \"the duration of the deafness\"."
+    },
+    "q40": {
+      "sha": "f40a8104268e87c1",
+      "ru": "На 28:20 лектор говорит, что нервные клетки улитки повреждает именно \"disease\"."
+    }
+  }
+}

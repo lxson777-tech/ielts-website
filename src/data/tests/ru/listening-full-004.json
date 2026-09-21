@@ -1,0 +1,174 @@
+{
+  "id": "listening-full-004",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "f33d3a640b8ea0bd",
+      "ru": "На 01:41 отель \"looking for waiters at the moment\"."
+    },
+    "q2": {
+      "sha": "a914c5ad4c6a75d3",
+      "ru": "На 02:02 сотрудники могут договориться, какой у них day off, но \"it has to be the same one every week\"."
+    },
+    "q3": {
+      "sha": "2ff8851045bcf403",
+      "ru": "На 02:24 оплата: \"£5.50 an hour, and that includes a break\"."
+    },
+    "q4": {
+      "sha": "f0149ffeaca12c20",
+      "ru": "На 02:24 сотрудники \"can get a meal in the hotel... no charge for it\"."
+    },
+    "q5": {
+      "sha": "9207ddf266133ac5",
+      "ru": "На 03:34 форма должна включать \"a white shirt... and dark trousers\", которые отель не выдаёт."
+    },
+    "q6": {
+      "sha": "03ab4ebd65184048",
+      "ru": "На 03:34 сказано: \"you have to wear a jacket, but the hotel lends you that\"."
+    },
+    "q7": {
+      "sha": "7e390c1ebe985661",
+      "ru": "На 03:55 дата начала работы: \"the 28th [of June], in time for the summer\"."
+    },
+    "q8": {
+      "sha": "946ebfb7d54cc1af",
+      "ru": "На 04:15 имя менеджера диктуют по буквам: \"U-R-W-I-N\", то есть Urwin, хотя на слух в записи звучит как \"Erwin\"."
+    },
+    "q9": {
+      "sha": "d9585cc2ce644d3c",
+      "ru": "На 04:15 она \"starts checking the rooms at midday\", поэтому звонить нужно \"before then\"."
+    },
+    "q10": {
+      "sha": "861df0f01019d7e9",
+      "ru": "На 04:36 звонящей говорят: \"she will ask you for a reference\"."
+    },
+    "q11": {
+      "sha": "70c9171792adecaa",
+      "ru": "На 06:57 жители \"mainly worried about traffic... the increasing speed of cars near schools\". Это вариант A."
+    },
+    "q12": {
+      "sha": "ec19827da2a7e33f",
+      "ru": "На 07:34 энергокомпания \"agreed to move the power lines underground\". Это вариант B."
+    },
+    "q13": {
+      "sha": "e40f81bca214ad53",
+      "ru": "На 08:01 сказано: \"the power company have agreed to bear the cost of this themselves\". Это вариант B."
+    },
+    "q14": {
+      "sha": "9db72b22c38599e9",
+      "ru": "На 09:06 деревья сажают \"just to the right of the supermarket in Days Road\". Это вариант C."
+    },
+    "q15": {
+      "sha": "a13d334b45247dd3",
+      "ru": "На 09:06 сказано: \"the pavements on the corner of Carberry and Thomas Street will be widened\". Это вариант D."
+    },
+    "q16": {
+      "sha": "ed059f48e13fd4b6",
+      "ru": "На 09:28 въезд на Thomas Street со стороны Days Road \"will be painted red\". Это вариант G."
+    },
+    "q17": {
+      "sha": "352f0454647fdfb4",
+      "ru": "На 09:49 сказано: \"a keep clear sign will be erected at the junction of Evelyn Street and Hill Street\". Это вариант B."
+    },
+    "q18": {
+      "sha": "249ac494d5a7a8f3",
+      "ru": "На 09:49 светофор ставят \"halfway down Hill Street where it crosses Days Road\". Это вариант F."
+    },
+    "q19": {
+      "sha": "a5eff015a1a38990",
+      "ru": "На 10:13 роспись размещают на \"the wall of a building on the other side of Hill Street from the supermarket\". Это вариант A."
+    },
+    "q20": {
+      "sha": "2b9de2bd3b182328",
+      "ru": "На 10:13 площадка находится \"at the other end of Hill Street close to the intersection with Carberry Street\". Это вариант E."
+    },
+    "q21": {
+      "sha": "03ed03aa2615fe98",
+      "ru": "На 13:13 Jeannie говорит про родителей: \"took pity on me\", то есть семья согласилась помочь. Это вариант B."
+    },
+    "q22": {
+      "sha": "b6e8389a5da30e5d",
+      "ru": "На 12:55 бывший начальник \"said they'd make a contribution\" на оплату курса. Это вариант E."
+    },
+    "group:q21": {
+      "sha": "0d257167cc81f252",
+      "ru": "На 12:55 Jeannie говорит, что бывший начальник \"said they'd make a contribution\" (E, бывший работодатель), а на 13:13, что родители \"took pity on me\" (B, семья согласилась помочь), после того как не получилось с финансированием от совета и государства."
+    },
+    "q23": {
+      "sha": "96fac03c7ff6dd02",
+      "ru": "На 13:59 Jeannie говорит про хор: \"I don't think the conductor stretches us enough\", то есть ей не хватает нагрузки. Это вариант A."
+    },
+    "q24": {
+      "sha": "c04b4ca23855aed5",
+      "ru": "На 13:59 про дебаты она говорит: \"with all the rehearsing I'm doing, something has to go\", то есть не хватает времени. Это вариант C."
+    },
+    "group:q23": {
+      "sha": "8a3f8b5af5f308ba",
+      "ru": "На 13:59 Jeannie говорит, что бросит хор, потому что \"I don't think the conductor stretches us enough\" (A, ей не хватает нагрузки), и дебаты, потому что \"something has to go\" из-за репетиций в театральном кружке (C, не хватает времени)."
+    },
+    "q25": {
+      "sha": "0edfbc2d68710feb",
+      "ru": "На 14:43 Dan говорит, что другие студенты говорят \"clever things that I could never think of\", и от этого он чувствует себя хуже других. Это вариант B."
+    },
+    "q26": {
+      "sha": "822a1d749e51c813",
+      "ru": "На 15:04 Jeannie говорит про своего научного руководителя: \"gives me lots of feedback and advice, so I've got much better at writing essays\". Это вариант C."
+    },
+    "q27": {
+      "sha": "d3c5d89fc5b1828f",
+      "ru": "На 16:21 они обсуждают \"priorities based on what's most likely to come up\"."
+    },
+    "q28": {
+      "sha": "d991a84f20d87820",
+      "ru": "На 16:21 сказано: \"you also need a timetable to see how you can fit everything in\"."
+    },
+    "q29": {
+      "sha": "bf3134c1a94d39ac",
+      "ru": "На 16:37 советуют \"break down your revision into small tasks and allocate them to specific days\"."
+    },
+    "q30": {
+      "sha": "46ecdfa9f7ce93e7",
+      "ru": "На 16:50 Jeannie говорит: \"as I revised each topic, I write a single paragraph about it\"."
+    },
+    "q31": {
+      "sha": "0551e139ebeed53c",
+      "ru": "На 20:32 современный стиль \"X-ray\" \"makes a feature of the internal skeleton\", то есть кости. Это вариант C."
+    },
+    "q32": {
+      "sha": "109648eb767b8c58",
+      "ru": "На 20:32 стиль yam \"featured much curvier figures\", похожие на сам овощ, то есть округлые. Это вариант B."
+    },
+    "q33": {
+      "sha": "84863462c152b47a",
+      "ru": "На 20:32 на современных рисунках европейцев изображают \"without any hands\", то есть без частей тела. Это вариант C."
+    },
+    "q34": {
+      "sha": "2ee5e3da2f3b5c4a",
+      "ru": "На 21:13 сказано: \"the dynamic figures are painted in miniature\", то есть меньше натуральной величины. Это вариант A."
+    },
+    "q35": {
+      "sha": "4a448683d5efc31d",
+      "ru": "На 21:13 сказано: \"fish didn't start to appear in paintings until the yam period\", то есть морские существа. Это вариант B."
+    },
+    "q36": {
+      "sha": "132a9ecc3f59c75c",
+      "ru": "На 21:49 в традиции yam аборигены начали \"including vegetables in their diet as these feature prominently\", то есть растения. Это вариант B."
+    },
+    "q37": {
+      "sha": "7c8da2ab023e245a",
+      "ru": "На 22:35 цель проекта: \"to locate the animal that the very first painters base their image on\"."
+    },
+    "q38": {
+      "sha": "da6843a1dd1946ab",
+      "ru": "На 22:35 с концом ледникового периода \"the sea levels rising and creeping steadily inland\"."
+    },
+    "q39": {
+      "sha": "26ec3f938c9471ba",
+      "ru": "На 23:00 это нарушило \"traditional patterns of life, hunting in particular\"."
+    },
+    "q40": {
+      "sha": "51706f9cab86a521",
+      "ru": "На 23:37 аборигены \"see the rainbow serpent as a symbol of creation\"."
+    }
+  }
+}

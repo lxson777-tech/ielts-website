@@ -1,0 +1,166 @@
+{
+  "id": "listening-full-017",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "a33edc8ca23cf35d",
+      "ru": "На 01:15 сотрудник говорит, что TFN это \"a unique number we issue to individuals and organizations to help administer tax collection and other government systems\", то есть не только для налогов. Это вариант C."
+    },
+    "q2": {
+      "sha": "aff7d8f34c2f578a",
+      "ru": "На 01:15 сотрудник предупреждает: без TFN \"you'll have more tax withheld from your wages or salary\", то есть удержат больше налога. Это вариант A."
+    },
+    "q3": {
+      "sha": "6656942a7cfcf3af",
+      "ru": "На 02:15 женщина говорит, что у неё теперь \"a permanent migrant visa\", то есть разрешение остаться навсегда. Это вариант A."
+    },
+    "q4": {
+      "sha": "a34c996e5d88c19f",
+      "ru": "На 02:15 сотрудник говорит: \"once you have a file number, you never need to reapply\", даже если обстоятельства изменятся. Это вариант B."
+    },
+    "q5": {
+      "sha": "36793daca6b5f43e",
+      "ru": "На 03:31 женщина диктует номер паспорта по буквам: \"J, G, W, double one, double zero, five, three, six\", то есть JGW1100536."
+    },
+    "q6": {
+      "sha": "f270eec7a4cbcd60",
+      "ru": "На 04:04 она называет адрес: \"one, three, three, nine, harbor drive, Hollywell\", отсюда и название улицы Harbor Drive."
+    },
+    "q7": {
+      "sha": "f45e45fc1fa7b564",
+      "ru": "На 04:33 сотрудник сначала предполагает, что фамилия хозяйки пишется \"P-I-E-R-C-E\", но женщина поправляет его: \"No, it's P-E-A-R-C-E.\" Отсюда и написание Pearce."
+    },
+    "q8": {
+      "sha": "63220239549b5c35",
+      "ru": "На 05:03 она подтверждает, что не замужем, и говорит: \"Put me down as Miss\"."
+    },
+    "q9": {
+      "sha": "81513c395c5cd81d",
+      "ru": "На 05:34 сотрудник спрашивает, используется ли Mary \"as a first name\", и она отвечает: \"Yes\". Значит, Mary записывают как имя."
+    },
+    "q10": {
+      "sha": "1ae29ebe8ba8adb1",
+      "ru": "На 05:34 она называет дату рождения в порядке день, месяц, год: \"the 15th of November, 1983\", то есть 15/11/1983."
+    },
+    "q11": {
+      "sha": "7fcf2bae16a84684",
+      "ru": "На 08:45 докладчик говорит, что программа Online Family Norris \"bars things like military and social websites\"."
+    },
+    "q12": {
+      "sha": "6a2b52db32822c87",
+      "ru": "На 09:16 докладчик говорит, что лучший способ защитить детей: \"to educate them and keep an eye on them\"."
+    },
+    "q13": {
+      "sha": "0635983f4fc7da27",
+      "ru": "На 09:41 докладчик говорит, что детям нужно \"never provide personal information, such as where they live or what their phone number is\"."
+    },
+    "q14": {
+      "sha": "1530bb92fa5db8f8",
+      "ru": "На 10:39 докладчик предупреждает подростков: \"whatever postings they put on the web will remain accessible forever\"."
+    },
+    "q15": {
+      "sha": "ce60369490715ec5",
+      "ru": "На 11:40 докладчик говорит: \"bullying on social sites is another thing to look out for\"."
+    },
+    "q16": {
+      "sha": "1e8142bb6e55fab7",
+      "ru": "На 12:07 докладчик говорит, что подростки \"mostly networking on social sites, or completing research\" для домашних заданий."
+    },
+    "q17": {
+      "sha": "472888840cf44f69",
+      "ru": "На 12:35 докладчик говорит, что на MathTutor.com дети \"practice mathematics... while they compete against other children from all over the world\"."
+    },
+    "q18": {
+      "sha": "00f4ad77c599d682",
+      "ru": "На 13:26 докладчик говорит, что на spellcity.com дети \"type them in and play games to learn\" слова по буквам."
+    },
+    "q19": {
+      "sha": "456332f1663c374f",
+      "ru": "На 13:55 докладчик говорит, что на этом сайте пользователи \"learn to touch type as they sing along with songs\"."
+    },
+    "q20": {
+      "sha": "6cd412adfa25c110",
+      "ru": "На 14:25 докладчик называет последний сайт \"coolresources.com\", где родители \"download worksheets to extend their children\"."
+    },
+    "q21": {
+      "sha": "668e50446c130216",
+      "ru": "На 16:53 Cleo говорит: \"exhibit our findings in the form of a poster.\" Это вариант A."
+    },
+    "q22": {
+      "sha": "7214498b0c2fce9a",
+      "ru": "На 17:48 Ted говорит: \"a random sample from foreign students on campus might give us a better range of answers.\" Это вариант C."
+    },
+    "q23": {
+      "sha": "7830f4b5ad6ca07d",
+      "ru": "На 18:16 Ted предлагает: \"asked each respondent to place them in order of importance\", то есть студенты будут ранжировать ответы. Это вариант B."
+    },
+    "q24": {
+      "sha": "2bb4aa2ac5a75208",
+      "ru": "На 18:42 они соглашаются, что вторая причина: \"study abroad gives you the chance to travel\"."
+    },
+    "q25": {
+      "sha": "db082a39070aa548",
+      "ru": "На 19:10 они формулируют следующую причину: \"study abroad will compel you to develop new skills\"."
+    },
+    "q26": {
+      "sha": "7ece69769a6993c7",
+      "ru": "На 20:03 они останавливаются на: \"study abroad provides the opportunity to learn about yourself\"."
+    },
+    "q27": {
+      "sha": "0b4bbeb66a93a035",
+      "ru": "Сразу после, на 20:03, они упрощают академическую причину до \"the opportunity to study different subjects\"."
+    },
+    "q28": {
+      "sha": "46c8cce1479b368b",
+      "ru": "На 20:55 Ted предлагает ещё одну причину: \"study abroad enhances employment opportunities\"."
+    },
+    "q29": {
+      "sha": "fb30481789cbd812",
+      "ru": "На 22:20 Cleo сообщает, что по опросу National Geographic \"was Sweden that came out on top\". Буквенные варианты A-H в источнике не сохранились, ответ определён по смыслу. Это вариант A."
+    },
+    "q30": {
+      "sha": "a98bbb7097cbcc3e",
+      "ru": "На 23:16 Ted отмечает, что США набрали \"only two points above Mexico, which was ranked last\". Буквенные варианты A-H в источнике не сохранились, ответ определён по смыслу. Это вариант D."
+    },
+    "q31": {
+      "sha": "76160f3445abc1a2",
+      "ru": "На 26:10 лектор говорит, что Peale \"painted this portrait in 1768\", это портрет Pitt в образе римского сенатора."
+    },
+    "q32": {
+      "sha": "e1d7299e1178b008",
+      "ru": "На 27:05 лектор говорит, что Peale \"painted the first ever portrait of George Washington\" в 1772 году."
+    },
+    "q33": {
+      "sha": "5786d9d84e7e0841",
+      "ru": "В том же фрагменте, на 27:05, лектор говорит, что семейный портрет Peale показывает \"the exuberance of the family and their warmth towards one another\"."
+    },
+    "q34": {
+      "sha": "3fcd44ebd3435936",
+      "ru": "На 28:06 лектор называет слайд 4: \"this painting, the staircase group, 1795\"."
+    },
+    "q35": {
+      "sha": "20b8eae2ad42ca6e",
+      "ru": "На 28:36 лектор говорит, что на картине Rachel Weeping его первая жена \"crying over the death of one of their children, their daughter Margaret\"."
+    },
+    "q36": {
+      "sha": "fd9b0d83a8c23187",
+      "ru": "На 29:03 лектор говорит, что портрет его брата James \"was painted much later than the others, in 1822\"."
+    },
+    "q37": {
+      "sha": "88ba0e7608646fd8",
+      "ru": "На 29:35 лектор говорит, что Peale \"was also an inventor, who gained patents for a fireplace\", среди прочего."
+    },
+    "q38": {
+      "sha": "acfe518debdc7297",
+      "ru": "На 30:07 лектор говорит, что стол Polygraph \"could make several copies of a manuscript at once\"."
+    },
+    "q39": {
+      "sha": "11a0d99ae520f12c",
+      "ru": "На 30:36 лектор описывает велосипед-предшественник: \"a precursor to the bicycle\"."
+    },
+    "q40": {
+      "sha": "c305defaab205033",
+      "ru": "На 31:07 лектор называет скелет мастодонта \"his most magnificent exhibit\"."
+    }
+  }
+}

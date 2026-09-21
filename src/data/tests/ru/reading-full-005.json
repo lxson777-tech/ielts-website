@@ -1,0 +1,166 @@
+{
+  "id": "reading-full-005",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "8e79e2b220031dc6",
+      "ru": "Во втором абзаце сказано, что она ‘became an art teacher and taught in elementary schools, high schools, and colleges’. Отсюда и слово для пропуска."
+    },
+    "q2": {
+      "sha": "58913c378427d7a6",
+      "ru": "В третьем абзаце сказано, что она начала ‘creating abstract compositions in charcoal’. Отсюда и слово для пропуска."
+    },
+    "q3": {
+      "sha": "6979392f407816c5",
+      "ru": "В пятом абзаце сказано, что она прославилась картинами про ‘the soaring skyscrapers of New York’. Отсюда и слово для пропуска."
+    },
+    "q4": {
+      "sha": "6f250dafd2af2af4",
+      "ru": "В пятом абзаце описаны её ‘magnified images depicting flowers’. Отсюда и слово для пропуска."
+    },
+    "q5": {
+      "sha": "117f262cbac9a70b",
+      "ru": "В седьмом абзаце сказано, что в Нью-Мексико она нашла ‘the numerous sun-bleached bones she came across’. Отсюда и слово для пропуска."
+    },
+    "q6": {
+      "sha": "bece293d4c0084c0",
+      "ru": "В восьмом абзаце сказано, что именно ‘the region’s spectacular landscape… that held the artist’s imagination for more than four decades’. Отсюда и слово для пропуска."
+    },
+    "q7": {
+      "sha": "49b0cfd7893b5ea5",
+      "ru": "В тексте сказано, что полёты вдохновили её на ‘aerial views of rivers and expansive paintings of the sky viewed from just above clouds’. Отсюда и слово для последнего пропуска."
+    },
+    "q8": {
+      "sha": "3e18de55b2cc3db5",
+      "ru": "В начале текста сказано, что она ‘remained independent from shifting art trends’. Это противоречит утверждению о том, что мода в искусстве сильно на неё влияла."
+    },
+    "q9": {
+      "sha": "ef6bae063476d102",
+      "ru": "Во втором абзаце сказано: ‘by the time she graduated from high school in 1905, she had determined to make her way as an artist’. Это подтверждает утверждение."
+    },
+    "q10": {
+      "sha": "bc0a03843e341876",
+      "ru": "В третьем абзаце сказано, что она ‘sent some of these drawings to a friend in New York, who showed them to’ Stieglitz. Значит, он увидел их через подругу, а не напрямую в своей галерее, и утверждение тексту противоречит."
+    },
+    "q11": {
+      "sha": "7418e4a6358f1763",
+      "ru": "В четвёртом абзаце упомянуты ‘Stieglitz’s celebrated black-and-white portraits of O’Keeffe, taken over the course of twenty years’. Это подтверждает утверждение."
+    },
+    "q12": {
+      "sha": "4cdca38de981e210",
+      "ru": "В тексте сказано, что внутренний дворик её дома в Abiquiu был для неё ‘particularly inspirational’, но о том, что эти картины были её любимыми, не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q13": {
+      "sha": "d0a884469e183b3e",
+      "ru": "В тексте сказано, что последние два десятилетия были ‘relatively unproductive’, но её продуктивность в 1950-1970-х годах с другими периодами нигде не сравнивают. Информации об этом в тексте нет."
+    },
+    "q14": {
+      "sha": "c24b646c63072b7f",
+      "ru": "В абзаце C объясняется, что мангровые заросли ‘help defend coastal areas by trapping sediment in their net-like root systems’. Это и есть описание того, как растение защищает побережье."
+    },
+    "q15": {
+      "sha": "a917e2f729ef92c8",
+      "ru": "В абзаце A есть прогноз: ‘global warming would continue for around 40 years’. Это и есть предположение о том, сколько времени понадобится, чтобы перестать замечать последствия изменения климата."
+    },
+    "q16": {
+      "sha": "39d5abaede99f185",
+      "ru": "В абзаце D сказано, что плавучие дома стоят ‘about a third of what it would cost to completely replace a building’s foundations’. Это и есть упоминание особенно выгодного решения."
+    },
+    "q17": {
+      "sha": "52bcb69be16f1808",
+      "ru": "В абзаце F сказано, что программу составили с помощью ‘Geographic Information System data mapping tool’. Это и есть технология для поиска мест, которым помощь нужна в первую очередь."
+    },
+    "q18": {
+      "sha": "7df7366525dd2ee0",
+      "ru": "В абзаце B сказано, что город ‘set up new pumps that can remove up to 75,000 litres of water per minute’. Отсюда и слово для пропуска."
+    },
+    "q19": {
+      "sha": "eb04a0d3404468c5",
+      "ru": "В абзаце C сказано, что Wetlands International начали с того, что стали ‘building semi-permeable dams, made from bamboo poles and brushwood’. Отсюда и слово для пропуска."
+    },
+    "q20": {
+      "sha": "4456e12ff01db55a",
+      "ru": "В абзаце D сказано, что дома во Вьетнаме ‘had been built to float’. Отсюда и слово для пропуска."
+    },
+    "q21": {
+      "sha": "55d3ac72ed9609a0",
+      "ru": "В абзаце E описано, как фермеры начали ‘cultivating naturally salt-tolerant crops’. Отсюда и слово для пропуска."
+    },
+    "q22": {
+      "sha": "39f63ec1d5dbfa73",
+      "ru": "В абзаце F сказано, что программа ‘include the planting of trees’. Отсюда и слово для последнего пропуска."
+    },
+    "q23": {
+      "sha": "c7c3bd7042a7e91a",
+      "ru": "Toi говорит, что подход должен ‘engage and benefit communities and local decision-makers’. Это и подходит к утверждению о вовлечении жителей."
+    },
+    "q24": {
+      "sha": "650fb484b0f28f0a",
+      "ru": "Spotts говорит: ‘urban cooling is literally a matter of life and death for our future in LA’. Это и подходит к утверждению о том, что борьба с жарой жизненно важна."
+    },
+    "q25": {
+      "sha": "1be6b3834786cc6a",
+      "ru": "Pineda говорит, что ‘we’ll need to go back in there and adjust to the changing environment’ через 20, 30, 40 лет. Это и подходит к утверждению о будущей работе."
+    },
+    "q26": {
+      "sha": "3722b058066f3364",
+      "ru": "English говорит: ‘this technology is becoming necessary in places that didn’t previously need it’. Это и подходит к утверждению о том, что число таких мест растёт."
+    },
+    "q27": {
+      "sha": "35fa92c5dcd046ce",
+      "ru": "В абзаце D сказано, что фермеры в Намибии стали ‘less likely to kill predators’ вроде гепардов после того, как завели собак-охранников. Это и есть пример того, как хищника защитили с помощью собак."
+    },
+    "q28": {
+      "sha": "24e1c13b88a99554",
+      "ru": "В абзаце G текст завершается надеждой на ‘a bright future for guard dogs in promoting harmonious coexistence between humans and wildlife’. Это и есть оптимистичное предположение."
+    },
+    "q29": {
+      "sha": "d9e3ec47c2e66901",
+      "ru": "В абзаце B описано, что собаки ‘place themselves between the livestock and any threat, barking loudly’ и отгоняют хищников. Это и есть описание того, как собаки не подпускают хищников."
+    },
+    "q30": {
+      "sha": "e2873fb4dde06921",
+      "ru": "В абзаце C приведены и португальское исследование Ribeiro, и австралийское исследование van Bommel и Johnson, которые хвалят эффективность собак. Это и есть заявления разных учёных об успехе такого метода."
+    },
+    "q31": {
+      "sha": "6e01a58b0da43d08",
+      "ru": "В абзаце B сказано, что собак ‘are raised from an early age with the animals they will be watching’. Это и есть упоминание о том, как они получают свои навыки."
+    },
+    "q32": {
+      "sha": "88e64365093012b6",
+      "ru": "Young говорит: ‘if ranchers don’t have a dead cow, they will not make a call to apply for a permit to kill a wolf’. Значит, собаки-охранники могут спасать и домашний скот, и диких хищников."
+    },
+    "q33": {
+      "sha": "54f81f7663ee8c07",
+      "ru": "Smith предупреждает: ‘such self-reported results must be taken with a pinch of salt’. Это и подходит к утверждению о том, что заявлениям об изменении поведения фермеров не стоит слепо доверять."
+    },
+    "q34": {
+      "sha": "a402bdbef810744d",
+      "ru": "Ribeiro предупреждает, что без повсеместного использования собак ‘we are transferring the wolf pressure to the neighbour’s herd and he can use poison and kill an entire pack of wolves’. Это и подходит к утверждению о вреде частичного применения метода."
+    },
+    "q35": {
+      "sha": "db4055199ac139ae",
+      "ru": "Van Bommel говорит: ‘if they are managed and used properly, livestock guard dogs are the most efficient control method that we have’. Это и подходит к утверждению."
+    },
+    "q36": {
+      "sha": "aac767360560f5ac",
+      "ru": "Macon предупреждает, что ‘too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog’. Это и подходит к утверждению о разных подходах к обучению."
+    },
+    "q37": {
+      "sha": "36916abe30ffd20a",
+      "ru": "В абзаце F сказано: ‘the number of jackals killed by dogs and people actually increased’. Отсюда и слово для пропуска."
+    },
+    "q38": {
+      "sha": "a42ab92a3ed9b384",
+      "ru": "В абзаце F сказано, что собаки ‘have been found to spread diseases to wild animals’. Отсюда и слово для пропуска."
+    },
+    "q39": {
+      "sha": "017fc042fb71be61",
+      "ru": "В абзаце F сказано, что собаки ‘may also compete with other carnivores for food’. Отсюда и слово для пропуска."
+    },
+    "q40": {
+      "sha": "f50c0e2c8a4249e7",
+      "ru": "В абзаце G сказано, что птицы, гнездящиеся на земле, выигрывают там, ‘where foxes would normally raid them’. Отсюда и слово для последнего пропуска."
+    }
+  }
+}

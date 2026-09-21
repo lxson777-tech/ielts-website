@@ -1,0 +1,166 @@
+{
+  "id": "listening-full-014",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "8ce751d7f8e7636c",
+      "ru": "На 01:38 звонящий называет свою фамилию: \"Michael Simmons\" (в расшифровке буквы по буквам звучат невнятно)."
+    },
+    "q2": {
+      "sha": "5310dc895a3cbafb",
+      "ru": "На 02:07 Michael называет прежний адрес: \"319 Ocean Drive\"."
+    },
+    "q3": {
+      "sha": "afd5c3bd5b057383",
+      "ru": "На 02:33 Michael говорит: \"it's unlimited\", после недавнего повышения тарифа."
+    },
+    "q4": {
+      "sha": "882088ef65dab562",
+      "ru": "На 02:57 Michael говорит: \"switched to the 24 month plan\", раньше был план на 12 месяцев."
+    },
+    "q5": {
+      "sha": "f7f295d2f3dcb9e4",
+      "ru": "На 03:20 Michael подтверждает: \"It's white. White as in the color? Yes.\" Это девичья фамилия его матери."
+    },
+    "q6": {
+      "sha": "04038ebbfcb33767",
+      "ru": "На 03:44 Michael говорит: \"It was actually a goldfish\"."
+    },
+    "q7": {
+      "sha": "80d7fd4e498a6717",
+      "ru": "На 03:44 Natasha уточняет дату: \"the date, 30th of June\", именно тогда отправили новый пароль."
+    },
+    "q8": {
+      "sha": "346b2ebe7c127338",
+      "ru": "На 04:47 Natasha подтверждает: \"You need a new cable\", и обещает его выслать."
+    },
+    "q9": {
+      "sha": "08f92aab8d86889d",
+      "ru": "На 05:10 Michael соглашается: \"cancel that Home Phone for you\"."
+    },
+    "q10": {
+      "sha": "3b81f6ba884ad825",
+      "ru": "На 05:42 Michael подключает пакет: \"It's called the security pack\", а не пакет родительского контроля."
+    },
+    "q11": {
+      "sha": "cf0ee863d665937c",
+      "ru": "На 07:50 Ron говорит: \"that is where the alarm is situated\", сигнализация у задней двери, рядом с выключателем. Это вариант D."
+    },
+    "q12": {
+      "sha": "d63fc86dcbbe4a09",
+      "ru": "На 08:05 Ron говорит, что запасные ключи, включая ключ от гаража, висят \"hanging on a hook inside the cupboard in the hallway\". Это вариант B."
+    },
+    "q13": {
+      "sha": "f81d0fd632329335",
+      "ru": "На 08:41 Ron говорит, что стиральный порошок хранится \"under the kitchen sink\". Это вариант H."
+    },
+    "q14": {
+      "sha": "df7b379788c23bdd",
+      "ru": "На 08:58 Ron говорит: \"a pile of beach towels in a basket on the washing machine\". Это вариант A."
+    },
+    "q15": {
+      "sha": "df417b2a604df321",
+      "ru": "На 09:11 Ron говорит, что новые банные полотенца лежат \"in the hot water cupboard on the shelf\". Это вариант C."
+    },
+    "q16": {
+      "sha": "95f9c49d14cfa95c",
+      "ru": "На 09:28 Ron говорит: \"spare light bulbs in a shoe box... in the bedroom.\" Это вариант G."
+    },
+    "q17": {
+      "sha": "775231c8aff1e54f",
+      "ru": "На 10:48 Ron говорит, что по выходным с парковкой сложно, потому что город \"swamped with tourists\"."
+    },
+    "q18": {
+      "sha": "8e10dd64bd96d594",
+      "ru": "На 11:02 Ron говорит: \"it's not open on Mondays\"."
+    },
+    "q19": {
+      "sha": "0cd439ec12b37b2b",
+      "ru": "На 11:26 Ron советует \"the Happy Dragon has excellent food\" для китайской кухни."
+    },
+    "q20": {
+      "sha": "8a787c85843b9230",
+      "ru": "На 11:40 Ron называет номер пиццерии: \"Phone 3231190 for pizza\"."
+    },
+    "q21": {
+      "sha": "88cde45c76362e4c",
+      "ru": "На 14:04 Joanne говорит, что компания \"widely recognised leader in the industry\", именно поэтому она приняла предложение. Это вариант B."
+    },
+    "q22": {
+      "sha": "16ede67a5b481af0",
+      "ru": "На 14:44 Joanne говорит: \"It just wasn't relevant to what I've been studying\", работа не была связана с её специализацией по экономике. Это вариант C."
+    },
+    "q23": {
+      "sha": "bbb9a1f5e99686b0",
+      "ru": "На 15:16 Joanne говорит, что больше всего ей понравилось \"get a real sense of how a company... runs.\" Это вариант A."
+    },
+    "q24": {
+      "sha": "d7b8761222ede400",
+      "ru": "На 15:51 Joanne говорит, что труднее всего было \"getting by on such a tight budget\", а не сами часы работы. Это вариант B."
+    },
+    "q25": {
+      "sha": "a6f6e41bec35db4a",
+      "ru": "На 16:19 Joanne говорит: \"reconsidering whether this industry is really for me.\" Это вариант A."
+    },
+    "q26": {
+      "sha": "11dc10c313d98cca",
+      "ru": "На 17:12 Joanne говорит: \"students need to get their documents sorted\", это первый шаг для тех, кто подаёт заявку."
+    },
+    "q27": {
+      "sha": "8eb327f62c02402c",
+      "ru": "На 17:47 она говорит, что нужно \"narrow their research down into a shortlist\"."
+    },
+    "q28": {
+      "sha": "50a5cf44b8719184",
+      "ru": "На 18:20 она говорит: \"alter their applications so that they refer to the individual needs\", то есть tailor (подгонять) каждую заявку под конкретную позицию."
+    },
+    "q29": {
+      "sha": "8e32e4a38efbe993",
+      "ru": "На 18:39 она говорит: \"It's best to call each company\", это работает лучше, чем письмо."
+    },
+    "q30": {
+      "sha": "220143bc2d4529e2",
+      "ru": "На 19:12 Joanne говорит: \"the most important thing is actually to ask questions\"."
+    },
+    "q31": {
+      "sha": "9859f163f279b01d",
+      "ru": "На 21:24 лектор говорит: \"how different sorts of actions can facilitate... these changes\"."
+    },
+    "q32": {
+      "sha": "39dc3d13e074eaa6",
+      "ru": "На 22:03 лектор говорит, что прикладной подход занимается \"looking at specific policies\"."
+    },
+    "q33": {
+      "sha": "252a22a00b2b4a0d",
+      "ru": "На 22:42 лектор говорит: \"the other is housing\", второй вопрос урбанизации после занятости."
+    },
+    "q34": {
+      "sha": "803e7ce67e124c35",
+      "ru": "На 23:25 лектор говорит про занятия: \"sessions on how to gather statistics\", наряду с текстовыми данными."
+    },
+    "q35": {
+      "sha": "13bdf497fa4fe8c4",
+      "ru": "На 23:40 лектор говорит, что нужно уметь \"critically evaluate your findings\"."
+    },
+    "q36": {
+      "sha": "0e273252f08e7488",
+      "ru": "На 23:59 лектор говорит: \"learn how to cooperate as a team\", в рамках исследовательского проекта."
+    },
+    "q37": {
+      "sha": "3fe52562d3936b21",
+      "ru": "На 24:18 лектор говорит, что в 1950-х \"economic concerns were at the forefront\" в исследованиях развития."
+    },
+    "q38": {
+      "sha": "720cbe6e09d39365",
+      "ru": "На 24:58 лектор говорит, что в 1970-х область \"grew increasingly critical of established practices\"."
+    },
+    "q39": {
+      "sha": "990bff03c81cb243",
+      "ru": "На 25:21 лектор называет \"problems with inequalities in terms of gender\" одной из новых тем 1970-х."
+    },
+    "q40": {
+      "sha": "0873d7b24f90a350",
+      "ru": "На 25:41 лектор говорит про недавнюю практику: \"making tiny loans... to help women\"."
+    }
+  }
+}

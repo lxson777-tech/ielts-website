@@ -1,0 +1,174 @@
+{
+  "id": "listening-full-019",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "2228e8625b0f882a",
+      "ru": "На 01:26 Selina говорит: \"I'm an accountant, but I'm between jobs at the moment\", это и записывают как её профессию."
+    },
+    "q2": {
+      "sha": "0ebbad24d815b267",
+      "ru": "На 01:43 Selina выбирает возрастную группу: \"Over 50. I think we can safely say.\""
+    },
+    "q3": {
+      "sha": "2bea58fac90fb4a4",
+      "ru": "На 01:54 Selina уточняет: \"No, it's a family membership\", а не одиночное членство."
+    },
+    "q4": {
+      "sha": "1f51b083fb99666b",
+      "ru": "На 02:20 интервьюер сначала предполагает восемь лет, но Selina поправляет себя: \"Oh, I remember now. It's nine, definitely.\""
+    },
+    "q5": {
+      "sha": "c11faf42306d8708",
+      "ru": "На 02:45 Selina говорит, что клуб ей посоветовал \"Actually, my doctor\", а не реклама и не подруга."
+    },
+    "q6": {
+      "sha": "899402d8b2f65f67",
+      "ru": "На 04:01 интервьюер спрашивает, \"the swimming pool is the facility you make most use of\", и Selina соглашается: \"fair to say that.\""
+    },
+    "q7": {
+      "sha": "d554670326107841",
+      "ru": "На 04:29 Selina говорит, что избегает кортов, потому что она \"not happy having to pay extra for that privilege\"."
+    },
+    "q8": {
+      "sha": "ed0f3475b1a9e314",
+      "ru": "На 04:38 Selina говорит, что хотела бы \"see more social events\", а не только игр и занятий."
+    },
+    "q9": {
+      "sha": "9e4cf25b2835c23e",
+      "ru": "На 05:08 интервьюер предлагает \"air conditioning\" для жаркого зала, и Selina подтверждает: \"that's exactly what I mean.\""
+    },
+    "q10": {
+      "sha": "15413e866f556754",
+      "ru": "На 05:34 Selina жалуется: \"it's a shame the restaurant isn't open in the evening\" по выходным, а на 05:46 предлагает \"open it later on those days\"."
+    },
+    "q11": {
+      "sha": "42631beb88966a9d",
+      "ru": "На 08:39 инструктор говорит: \"put a line of them along the top from one end of the pit to the other\", речь о палках, уложенных поверх ямы. Это вариант E."
+    },
+    "q12": {
+      "sha": "597368f855d71fe6",
+      "ru": "Сразу после, на 08:39, \"you take some large stones and arrange them on top\" палок. Это вариант F."
+    },
+    "q13": {
+      "sha": "c5e20fb8d6e9d3a7",
+      "ru": "На 09:01, когда огонь прогорит, инструктор говорит: \"brush away any pieces of hot ash from the stones\". Это вариант B."
+    },
+    "q14": {
+      "sha": "c690d1c18e29b289",
+      "ru": "Там же, на 09:01, \"you cover the whole pit with a thick layer of grass\". Это вариант D."
+    },
+    "q15": {
+      "sha": "4c37f9d52bc9c245",
+      "ru": "На 09:30, после того как положили свёртки с едой, инструктор говорит: \"cover the whole thing with earth\". Это вариант C."
+    },
+    "q16": {
+      "sha": "088f1fe3198ca0c9",
+      "ru": "Там же, на 09:30, после того как вынули палку, нужно \"pour a bit of water into the opening\". Это вариант G."
+    },
+    "q17": {
+      "sha": "999b8ff4685742db",
+      "ru": "На 10:55 инструктор описывает бамбук: верх \"with the top propped up by a forked stick\", а огонь разводят под нижней секцией. Это вариант B. На 11:30 пар \"cooks it\". Это вариант E."
+    },
+    "q18": {
+      "sha": "999b8ff4685742db",
+      "ru": "На 10:55 инструктор описывает бамбук: верх \"with the top propped up by a forked stick\", а огонь разводят под нижней секцией. Это вариант B. На 11:30 пар \"cooks it\". Это вариант E."
+    },
+    "group:q17": {
+      "sha": "7b69ae1c551375a1",
+      "ru": "<p>На 10:55 инструктор описывает бамбуковую печь: верх “propped up by a forked stick”, а огонь разводят под нижней секцией (B), и на 11:30 поднимающийся пар “cooks it” (E), то есть правильная пара это B и E.</p>"
+    },
+    "q19": {
+      "sha": "6a713d43aace27fb",
+      "ru": "На 11:59 инструктор предупреждает: \"any amount of cooking won't make poisonous varieties any safer to eat\" (A), а на 12:27 говорит, что некоторые ядовитые грибы \"very similar in appearance to certain edible varieties\" (D)."
+    },
+    "q20": {
+      "sha": "6a713d43aace27fb",
+      "ru": "На 11:59 инструктор предупреждает: \"any amount of cooking won't make poisonous varieties any safer to eat\" (A), а на 12:27 говорит, что некоторые ядовитые грибы \"very similar in appearance to certain edible varieties\" (D)."
+    },
+    "group:q19": {
+      "sha": "a9a49ffdec488137",
+      "ru": "<p>На 11:59 инструктор предупреждает: “any amount of cooking won't make poisonous varieties any safer to eat” (A), а на 12:27 говорит, что некоторые ядовитые грибы “very similar in appearance to certain edible varieties” (D), то есть правильная пара это A и D.</p>"
+    },
+    "q21": {
+      "sha": "fdf243f33a756f50",
+      "ru": "На 15:18 Phoebe говорит, что выбрала тему, потому что \"I came across a book written by experienced teachers on student attitudes\". Это вариант C."
+    },
+    "q22": {
+      "sha": "90445ebf487a5930",
+      "ru": "На 15:36 Phoebe говорит, что её вопрос был: \"whether very strict teachers made teenagers less motivated.\" Это вариант A."
+    },
+    "q23": {
+      "sha": "3a10e11217d66fb1",
+      "ru": "На 15:56 Phoebe говорит, что больше всего её удивили \"the significant gender differences\": \"girls were more impatient\", чем мальчики. Это вариант B."
+    },
+    "q24": {
+      "sha": "325cfff342130962",
+      "ru": "На 16:44 Phoebe заключает, что хорошо, если преподаватели \"allow lessons to go their own ways\", а не строго держатся плана. Это вариант A."
+    },
+    "q25": {
+      "sha": "f1f157fe9f4a413c",
+      "ru": "На 17:16 Tony хвалит Phoebe за то, что она \"already stepping back from the experience and thinking about what you've learned about research\". Это вариант B."
+    },
+    "q26": {
+      "sha": "8330cbccdb65aceb",
+      "ru": "На 18:20 Phoebe говорит: \"it was afterwards that the grueling work started\", когда пришлось разбирать записи наблюдений. Это вариант E."
+    },
+    "q27": {
+      "sha": "3982bdb6cf8be7de",
+      "ru": "На 18:36 Phoebe говорит, что для интервью \"wanted to make sure I used a high-quality recorder\" и \"had to wait until one became available\". Это вариант G."
+    },
+    "q28": {
+      "sha": "a2f8c2769cb08606",
+      "ru": "На 19:06 Phoebe говорит, что один учитель был \"worried about the ethics\" интервью с учениками, и \"it took a while for him to agree\". Это вариант A."
+    },
+    "q29": {
+      "sha": "87a862a9864b5043",
+      "ru": "На 19:20 Phoebe говорит, что делила работу над анкетами с другим студентом, но у них \"had such different agendas\". Это вариант D."
+    },
+    "q30": {
+      "sha": "eda3ba133613fd39",
+      "ru": "На 19:49 Phoebe говорит, что хотела, чтобы \"each snap to have a purpose\", и это оказалось непросто. Это вариант B."
+    },
+    "q31": {
+      "sha": "3df0deb9989b4afc",
+      "ru": "На 22:01 докладчик говорит, что можжевельник был \"amongst the first species of plants to establish itself in Britain in the period following the most recent ice age\"."
+    },
+    "q32": {
+      "sha": "9e4a3e64a2dd5c39",
+      "ru": "На 22:20 докладчик говорит, что дым можжевельника \"is all but invisible\" при горении, поэтому его использовали для тайных костров."
+    },
+    "q33": {
+      "sha": "d12d4ee6c813dd14",
+      "ru": "На 22:39 докладчик говорит, что масла распыляли в больничных палатах \"to try to prevent the spread of infection\"."
+    },
+    "q34": {
+      "sha": "3be481b6f835de26",
+      "ru": "На 22:56 докладчик говорит, что ягоды можжевельника \"used to flavour a variety of meat dishes and also drinks\"."
+    },
+    "q35": {
+      "sha": "ca6bb9643116d31e",
+      "ru": "На 23:13 докладчик говорит, что потеря кустов можжевельника \"radically affect many different insect and also fungus species\"."
+    },
+    "q36": {
+      "sha": "2bbb50ab4b00fd66",
+      "ru": "На 23:29 докладчик говорит, что по данным опроса \"ratios between the sexes are unbalanced\" в нынешних популяциях."
+    },
+    "q37": {
+      "sha": "bcd07326ea6a4f92",
+      "ru": "На 24:11 докладчик говорит, что кусты одного возраста, погибая вместе, ведут к \"swift extinction of whole populations\"."
+    },
+    "q38": {
+      "sha": "980ef9471e080eec",
+      "ru": "На 24:26 докладчик говорит, что новые методы Plantlife \"focusing on lowland regions of England\"."
+    },
+    "q39": {
+      "sha": "d75c3d50fcd37eb0",
+      "ru": "Там же, на 24:26, первая мера: \"provide shelters for the seedlings\" в уже существующих зарослях."
+    },
+    "q40": {
+      "sha": "25d7bb6f630b9a25",
+      "ru": "На 24:44 докладчик говорит, что численность пополняют \"by the planting of cuttings which have been taken from healthy bushes elsewhere\"."
+    }
+  }
+}

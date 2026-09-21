@@ -1,0 +1,170 @@
+{
+  "id": "listening-full-005",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "c274f5b74d6bb424",
+      "ru": "На 02:00 клиентка говорит: \"it'd be nice to be central\"."
+    },
+    "q2": {
+      "sha": "36af5efd73166b4d",
+      "ru": "На 02:14 говорят, что могут \"go up to six hundred pounds if we have to\"."
+    },
+    "q3": {
+      "sha": "537d2cb204bf144a",
+      "ru": "На 02:30 они \"at college here for two years\" и не хотят переезжать за это время."
+    },
+    "q4": {
+      "sha": "368065a36d0c71f4",
+      "ru": "На 02:49 у дома на Oakington Avenue \"doesn't have a garage\", хотя машину можно оставить на улице."
+    },
+    "q5": {
+      "sha": "4addf65686290462",
+      "ru": "На 03:11 про дом на Mead Street говорят: \"a big garden. I don't think we could cope with that.\""
+    },
+    "q6": {
+      "sha": "eef9040bc3dfcdb6",
+      "ru": "На 03:25 дом на Hamilton Road \"has a study\", а ещё гостиную, кухню и столовую."
+    },
+    "q7": {
+      "sha": "9e338049dda7ac99",
+      "ru": "На 03:48 клиентка переживает, что Hamilton Road \"will be very noisy\"."
+    },
+    "q8": {
+      "sha": "d7da0ddea4689502",
+      "ru": "На 04:01 Devon Close стоит \"five hundred and ninety-five a month\"."
+    },
+    "q9": {
+      "sha": "4ec2f5f10c79fe7c",
+      "ru": "На 05:25 упоминают \"a plan to replace the existing concert hall with a larger one\", то есть концертный зал уже существует. Это вариант B."
+    },
+    "q10": {
+      "sha": "ea1d372a7105d0c3",
+      "ru": "На 05:06 сказано: \"the swimming pool's already opened ahead of schedule\", то есть бассейн уже работает. Это вариант E."
+    },
+    "group:q9": {
+      "sha": "873ff153f58004ce",
+      "ru": "На 05:06 бассейн \"already opened ahead of schedule\" (E), а на 05:25 уже есть \"the existing concert hall\", который скоро заменят на больший (B). Музей, кинотеатр и спортивный центр пока ещё строятся или закрыты."
+    },
+    "q11": {
+      "sha": "92b31ec643005f8b",
+      "ru": "На 07:31 центр \"famous throughout the world as one of the major venues for classical music\"."
+    },
+    "q12": {
+      "sha": "27f255d9b6d967eb",
+      "ru": "На 07:49 среди удобств: \"three restaurants and a bookshop\"."
+    },
+    "q13": {
+      "sha": "63a997c94a453a42",
+      "ru": "На 08:10 центр \"was planned in the 60s, built in the 70s\"."
+    },
+    "q14": {
+      "sha": "d932fcb7b25001b1",
+      "ru": "На 08:34 он \"eventually opened to the public in 1983\"."
+    },
+    "q15": {
+      "sha": "fdf0f0e443bb3dc6",
+      "ru": "На 08:34 сказано: \"it's run by the city council\"."
+    },
+    "q16": {
+      "sha": "400c946a115dd5fd",
+      "ru": "На 08:55 сказано: \"the centre has opened 363 days of the year\"."
+    },
+    "q17": {
+      "sha": "01ad551697e34942",
+      "ru": "На 09:38 Magic Flute идёт \"in the garden hall\"."
+    },
+    "q18": {
+      "sha": "a14ca3a3e3210b3d",
+      "ru": "На 10:10 канадский фильм \"called Three Lives\"."
+    },
+    "q19": {
+      "sha": "66e02026b09f0179",
+      "ru": "На 10:10 билеты на фильм \"cost just £4.50\"."
+    },
+    "q20": {
+      "sha": "9c4ecaea57c1fbbf",
+      "ru": "На 10:31 выставка это \"a collection of Chinese art, called Faces of China\"."
+    },
+    "q21": {
+      "sha": "bc5e26b45172c66e",
+      "ru": "На 13:17 Paul говорит, что его главной идеей было \"to find out more about the way people lived there\". Это вариант C."
+    },
+    "q22": {
+      "sha": "14deb9e2fc9c501e",
+      "ru": "На 14:02 он выбрал \"tourism, taking tourists for walks around the volcanoes\". Это вариант C."
+    },
+    "q23": {
+      "sha": "c583d0220861ecdc",
+      "ru": "На 14:19 он говорит о проекте на ферме: \"I never really knew whether I'd be needed or not\", и ему хотелось \"more of a proper structure\". Это вариант A."
+    },
+    "q24": {
+      "sha": "58f0321f1e89b410",
+      "ru": "На 15:00 он говорит, что когда жители деревни стали \"less suspicious, we really connected with each other in a meaningful way\", то есть появилось доверие. Это вариант B."
+    },
+    "q25": {
+      "sha": "b59bacb11a94a15d",
+      "ru": "На 15:10 его руководитель \"gave me lots of advice and guidance\". Это вариант C."
+    },
+    "q26": {
+      "sha": "857c4700ede00256",
+      "ru": "На 15:48 он говорит: \"they gave me all the equipment I needed, even a laptop\", и это его удивило. Это вариант A."
+    },
+    "q27": {
+      "sha": "9a1ac07244bd90a2",
+      "ru": "На 16:58 он говорит, что взял бы гендерные исследования, только \"if it was to do with people in the villages\", а раз это не так, он откажется. Это вариант C."
+    },
+    "q28": {
+      "sha": "0c58a6ccd576b696",
+      "ru": "На 17:12 он говорит про изучение второго языка: \"I'll put that down as a definite then\". Это вариант A."
+    },
+    "q29": {
+      "sha": "132a6663f32aeda5",
+      "ru": "На 17:12 вопросы про жизнь женщин коренных народов \"changed my mind\", поэтому решение он примет \"later\". Это вариант B."
+    },
+    "q30": {
+      "sha": "ce8d0f42640fe973",
+      "ru": "На 17:42 про португальский он говорит: \"I'd much sooner do something else then\". Это вариант C."
+    },
+    "q31": {
+      "sha": "0643f843d3ae9a70",
+      "ru": "На 20:23 сказано, что повторение успеха \"is less glamorous... but it actually happens more often\", чем чистые инновации. Это вариант B."
+    },
+    "q32": {
+      "sha": "9ce40c2a26c75a21",
+      "ru": "На 20:57 исследования \"hasn't been confined to the United States\", и в целом сходятся на том, что большинство попыток проваливаются. Это вариант B."
+    },
+    "q33": {
+      "sha": "1e0faab3a9ab6098",
+      "ru": "На 21:48 сказано, что консультация с экспертом \"can be used if you want to gain a rough understanding of a particular system\". Это вариант B."
+    },
+    "q34": {
+      "sha": "41c035a6e60df1f5",
+      "ru": "На 22:39 некоторые детали \"may be difficult to describe, learned on the job... impossible to describe in a way that's helpful\". Это вариант A."
+    },
+    "q35": {
+      "sha": "cfdad02e0367ec87",
+      "ru": "На 23:33 одна из ошибок: \"trying to use the best parts of various different systems... creating the perfect combination\"."
+    },
+    "q36": {
+      "sha": "573d65d2a06c8b76",
+      "ru": "На 24:27 упущенный недостаток в том, что \"the modifications might compromise safety in some way\"."
+    },
+    "q37": {
+      "sha": "3db9d73f5e5f33e7",
+      "ru": "На 24:52 решение начинается с \"adjusting attitudes, first of all\"."
+    },
+    "q38": {
+      "sha": "c21a58581a2a167d",
+      "ru": "На 24:52 это также значит \"exerting strict controls on the organizational and operational systems\"."
+    },
+    "q39": {
+      "sha": "1594a433386f02c5",
+      "ru": "На 25:13 внимательно копируют \"the physical characteristics of the factory\"."
+    },
+    "q40": {
+      "sha": "6a7ff03e26415822",
+      "ru": "На 25:13 также копируют \"the skills that the original employees had\"."
+    }
+  }
+}

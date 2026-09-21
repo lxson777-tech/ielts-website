@@ -1,0 +1,170 @@
+{
+  "id": "listening-full-016",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "e4bcb474dcc6bcd0",
+      "ru": "На 02:22 Zara зачитывает часы работы Bailey Library: \"from half past eight in the morning until ten o'clock in the evening, Mondays to Fridays\", то есть библиотека закрывается в 10 вечера."
+    },
+    "q2": {
+      "sha": "84290454e0f58ec8",
+      "ru": "На 03:12 Tim говорит, что Brown Library рядом со Stratton Street, а Zara добавляет: она также недалеко от \"Royal Parade\". Это и есть второй нужный ориентир."
+    },
+    "q3": {
+      "sha": "955ef03ee8374255",
+      "ru": "На 03:44 Zara говорит, что Brown Library \"only open to biomedical students\", поэтому не подходит, несмотря на удобные часы работы."
+    },
+    "q4": {
+      "sha": "b788014316d0b497",
+      "ru": "На 04:17 Tim зачитывает адрес RMIT Library: \"level five, building eight, 360 Swan Street.\" Отсюда и берётся число 360."
+    },
+    "q5": {
+      "sha": "55dffad87dba8927",
+      "ru": "На 04:32 Zara говорит: \"closes at six o'clock on Saturdays and Sundays\", это время закрытия по выходным."
+    },
+    "q6": {
+      "sha": "8ba4bd5ff1533007",
+      "ru": "На 05:51 Tim говорит Zara, что сначала нужно \"to log on to book it\" на странице бронирования, то есть первый шаг: войти в Book It."
+    },
+    "q7": {
+      "sha": "32520d776a5369a8",
+      "ru": "Сразу после входа, на 06:01, сайт \"asking me for my student ID and my password\", то есть вторая деталь: пароль."
+    },
+    "q8": {
+      "sha": "1caaf658d636d7e3",
+      "ru": "На 06:25 Tim говорит, что после выбора типа ресурса PC: \"what you need to do is click on location\"."
+    },
+    "q9": {
+      "sha": "2b973f5f491b4656",
+      "ru": "На 06:59 бронь не подтверждается, пока Zara не говорят: \"it's got to go into view options\". Это и есть слово для четвёртого шага."
+    },
+    "q10": {
+      "sha": "f0a66a070db5b723",
+      "ru": "На 07:23 Zara подтверждает: \"there's my name on the booking schedule\", бронирование прошло успешно."
+    },
+    "q11": {
+      "sha": "845f3d9cf0cd8981",
+      "ru": "На 09:29 гид говорит, что Doors Open \"takes place every year in September\" (ежегодно, A), а вход \"absolutely no charge\" (бесплатно, C). Это не недельное мероприятие и проходит не весной. Это варианты A и C."
+    },
+    "q12": {
+      "sha": "c7f83337f94e3aed",
+      "ru": "На 09:09 гид говорит: \"here in Edinburgh\" (A), а на 09:48 добавляет, что обсерватория участвует в мероприятии \"for more than 20 years\", то есть делает это регулярно (C). Это варианты A и C."
+    },
+    "q13": {
+      "sha": "08c50ec992d2cf80",
+      "ru": "На 10:04 гид говорит, что показы в планетарии идут \"throughout the day\", а на 10:25 уточняет: \"run four times both today and tomorrow, Sunday.\" Это варианты C и D."
+    },
+    "q14": {
+      "sha": "925afbcdf7c93d02",
+      "ru": "На 10:25 утренние билеты \"available on a first come first served basis, here at the information point\" (C), а дневные, как сказано на 10:51, нужно бронировать заранее (A). Это варианты A и C."
+    },
+    "q15": {
+      "sha": "49d6798f2446a1f0",
+      "ru": "На 11:34 гид говорит, что во время экскурсии по куполу телескопа можно \"get onto the roof\"."
+    },
+    "q16": {
+      "sha": "44b65c5ce3b0a875",
+      "ru": "На 11:55 гид просит группу надеть \"most comfortable shoes\" перед подъёмом."
+    },
+    "q17": {
+      "sha": "4a9e48020c4c488c",
+      "ru": "На 12:10 гид объясняет, что коллекция Crawford \"is an astronomical library\"."
+    },
+    "q18": {
+      "sha": "dec4ae0e2e5729a4",
+      "ru": "На 12:32 гид говорит, что мастер-класс для детей проходит \"here in the visitor centre\"."
+    },
+    "q19": {
+      "sha": "4a6dbd4b1da4f3e1",
+      "ru": "На 12:51 гид говорит, что дети делают \"their very own model of a telescope\"."
+    },
+    "q20": {
+      "sha": "7089459e5e72f5e6",
+      "ru": "Сразу же, на 12:51, дети ещё и \"colour their very own planet\"."
+    },
+    "q21": {
+      "sha": "b5396e52fdb8ecd4",
+      "ru": "На 15:59 докладчик перечисляет \"dead satellites to loose metal screws\" и \"tiny particles of paint\", то есть спутники (F), металлические шурупы (D) и краска (E)."
+    },
+    "q22": {
+      "sha": "b5396e52fdb8ecd4",
+      "ru": "На 15:59 докладчик перечисляет \"dead satellites to loose metal screws\" и \"tiny particles of paint\", то есть спутники (F), металлические шурупы (D) и краска (E)."
+    },
+    "q23": {
+      "sha": "b5396e52fdb8ecd4",
+      "ru": "На 15:59 докладчик перечисляет \"dead satellites to loose metal screws\" и \"tiny particles of paint\", то есть спутники (F), металлические шурупы (D) и краска (E)."
+    },
+    "group:q21": {
+      "sha": "531bbd4636241e3a",
+      "ru": "<p>На 15:59 докладчик перечисляет “dead satellites to loose metal screws” и “tiny particles of paint”, то есть три примера это спутники (F), металлические шурупы (D) и краска (E).</p>"
+    },
+    "q24": {
+      "sha": "ea6dc20185f0ea99",
+      "ru": "На 16:56 Ruth говорит: \"28 per cent is from China.\" Это вариант A."
+    },
+    "q25": {
+      "sha": "0662f2b4e408eec1",
+      "ru": "На 16:56 Ruth говорит: \"just under actually 29 per cent is from America.\" Это вариант E (США)."
+    },
+    "q26": {
+      "sha": "efe8712f09d9c5a7",
+      "ru": "На 16:43 Ruth говорит: \"over a third, 37 per cent to be exact, comes from Russia.\" Это вариант D."
+    },
+    "q27": {
+      "sha": "0510716880d16290",
+      "ru": "На 19:17 Ruth говорит, что UARS \"weighed 5,700 kilos\", и добавляет: \"about the same as a double-decker bus\". Это вариант B."
+    },
+    "q28": {
+      "sha": "7944021a37114359",
+      "ru": "На 19:53 Ruth говорит, что Skylab \"fell into the Indian Ocean and the deserts of Western Australia\", то есть упал в пустыне. Это вариант C."
+    },
+    "q29": {
+      "sha": "ece915e7d0c46e38",
+      "ru": "Там же, на 19:53, Ruth добавляет: \"that particular space junk weighed 100 tons\". Это вариант G."
+    },
+    "q30": {
+      "sha": "31f8ab163c4419b6",
+      "ru": "На 20:14 Ruth говорит, что Mir \"fell to Earth in 2001\" и \"plunged straight into the South Pacific\". Это вариант H."
+    },
+    "q31": {
+      "sha": "2a243717aee92c0b",
+      "ru": "На 23:01 лектор говорит, что эта зона называется \"the decompression zone or the dead zone\"."
+    },
+    "q32": {
+      "sha": "eb53bd185feceb60",
+      "ru": "На 23:42 лектор говорит, что зона \"pretty much clear of stock altogether\"."
+    },
+    "q33": {
+      "sha": "f0a3cd625602932b",
+      "ru": "На 23:23 лектор объясняет, что здесь покупатели приходят в себя после улицы, добавляя: \"this is where they adjust\"."
+    },
+    "q34": {
+      "sha": "71dffde1cc196355",
+      "ru": "На 24:42 лектор называет зону у входа: \"what we call the dwell zone\"."
+    },
+    "q35": {
+      "sha": "eaa8834024750086",
+      "ru": "На 25:06 лектор говорит, что в этом проходе \"the strongest offers are displayed\"."
+    },
+    "q36": {
+      "sha": "1c78ca79e1625d5f",
+      "ru": "На 26:33 лектор говорит, что цветы (вместе с газетами) \"known as distress goods\", их покупают импульсивно. Это вариант D."
+    },
+    "q37": {
+      "sha": "7e10f0cc15015a99",
+      "ru": "На 25:49 лектор говорит, что фрукты и овощи \"are always located towards the front\", чтобы создать образ здорового магазина. Это вариант A."
+    },
+    "q38": {
+      "sha": "e46d7a1cd6181247",
+      "ru": "На 26:49 лектор говорит, что повседневные товары вроде \"bread or milk or cereals\" \"always placed right at the back\", позже названы целевыми товарами. Это вариант B."
+    },
+    "q39": {
+      "sha": "e0f690b9ced6914a",
+      "ru": "На 28:03 лектор говорит, что дешёвые товары вроде консервов \"normally placed very low on the shelves\". Это вариант C."
+    },
+    "q40": {
+      "sha": "0a990954843a171e",
+      "ru": "На 28:44 лектор приводит пример с солнечными очками: \"the checkout is an ideal place to display sunglasses\". Это вариант E."
+    }
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "id": "reading-full-004",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "c16c29dfb5fb2d3b",
+      "ru": "В тексте сказано, что дед сколотил состояние ‘in the shipping and mining industries’. Отсюда и слово для пропуска."
+    },
+    "q2": {
+      "sha": "b0f6bcbffb1c2f64",
+      "ru": "В третьем абзаце сказано: ‘the sisters’ education was rigorously geared toward such pursuits’. Это и подходит к пропуску."
+    },
+    "q3": {
+      "sha": "a168033611b41cbc",
+      "ru": "В третьем абзаце сказано, что они занимались тем, что ‘making extensive notes on the collections there’. Отсюда и слово для пропуска."
+    },
+    "q4": {
+      "sha": "aadee8da4924761b",
+      "ru": "В пятом абзаце сказано: ‘the sisters’ journals reveal their preference for Old Master paintings’. Отсюда и слово для пропуска."
+    },
+    "q5": {
+      "sha": "d452a414de8b439a",
+      "ru": "В шестом абзаце сказано, что их первые покупки импрессионистов ‘were scenes of Venice by the French artist Claude Monet’. Отсюда и слово для пропуска."
+    },
+    "q6": {
+      "sha": "8ef3f8419c5bcbd7",
+      "ru": "В седьмом абзаце сказано, что обе сестры ‘decided to volunteer at a canteen for troops at Troyes’. Отсюда и слово для пропуска."
+    },
+    "q7": {
+      "sha": "9b3b7f1b72e7a268",
+      "ru": "В девятом абзаце отмечено, что они ‘didn’t make friends with artists or gallery owners’. Отсюда и слово для последнего пропуска."
+    },
+    "q8": {
+      "sha": "97bbd290d9ed5d5d",
+      "ru": "Во втором абзаце сказано, что их религиозное воспитание ‘gave them a deep sense of social responsibility and they chose to use their inheritance for cultural and philanthropic purposes’. Это подтверждает утверждение."
+    },
+    "q9": {
+      "sha": "464ce8dc93863046",
+      "ru": "В тексте упомянуты их ранние покупки картин Corot, но о том, где именно их купили, не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q10": {
+      "sha": "d39c67fa31bdb897",
+      "ru": "В шестом абзаце сказано, что Hugh Blaker, ‘as a champion of contemporary French art had a hand in the decision’ о покупке картин импрессионистов. Значит, он поддерживал это решение, а не был против, и утверждение тексту противоречит."
+    },
+    "q11": {
+      "sha": "eb8d623d678e97de",
+      "ru": "В тексте сказано, что картины Cezanne ‘became the first works by Cezanne to go on display in a public gallery in Britain’, но о том, насколько выставка понравилась публике, не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q12": {
+      "sha": "d240bffb193504a9",
+      "ru": "В десятом абзаце сказано, что Gwendoline ‘felt increasingly uncomfortable buying art works when faced with the poverty and social upheaval created by the First World War’. Это подтверждает утверждение."
+    },
+    "q13": {
+      "sha": "f5cdc57316d72bb6",
+      "ru": "В последнем абзаце сказано, что сёстры собирали картины импрессионистов ‘at a time when such art was routinely ignored by individuals and institutions alike’. Это подтверждает утверждение."
+    },
+    "q14": {
+      "sha": "98adaf77e321f59f",
+      "ru": "В абзаце C описаны меры Лондона против шума: автобусы, покрытие дорог и ограничения для самолётов, а также похожие меры в других городах. Это и есть нужный абзац о способах снизить уровень шума."
+    },
+    "q15": {
+      "sha": "4877055ac72a1648",
+      "ru": "В абзаце B названа цифра: ‘at least 1 in 5 people’ в Европе ‘consistently exposed to levels considered harmful to health’. Это и есть данные о масштабе проблемы."
+    },
+    "q16": {
+      "sha": "f899d2a514ab5c1b",
+      "ru": "В абзаце A описано, как в ответ на шум ‘blood pressure goes up, muscles tense and glands release hormones’. Это и есть описание физиологических изменений при резком звуке."
+    },
+    "q17": {
+      "sha": "71ff1168449a4f25",
+      "ru": "В абзаце G участники сообщили о ‘more relaxation and less boredom’ в тихом саду по сравнению с ‘a completely silent room’. Это и есть доказательство того, что относительная тишина может быть лучше полной."
+    },
+    "q18": {
+      "sha": "5090f58ac94bee2f",
+      "ru": "В абзаце D сказано: ‘it is the ability to focus on the breath that helps people reach a relaxed or meditative state’. Отсюда и слово для пропуска."
+    },
+    "q19": {
+      "sha": "c535f3475eae0bda",
+      "ru": "В абзаце E сказано, что участников просили ‘answer a questionnaire prior to and following a flotation session’. Отсюда и слово для пропуска."
+    },
+    "q20": {
+      "sha": "9e6d6ff3928bc258",
+      "ru": "В абзаце E отмечен ‘an increase in feelings of relaxation and overall wellbeing’. Отсюда и слово для пропуска."
+    },
+    "q21": {
+      "sha": "029af96c1902b2c2",
+      "ru": "В тексте сказано, что сеансы в капсуле снижали активность в ‘a collection of brain regions commonly linked with depression’. Отсюда и слово для последнего пропуска."
+    },
+    "q22": {
+      "sha": "932e1b9ce74ad69f",
+      "ru": "Ben-Soussan говорит: ‘when people do not want silence, it can be very distressing’. Это и подходит к утверждению о навязанной тишине."
+    },
+    "q23": {
+      "sha": "62dc72853fc64a8a",
+      "ru": "Antonio говорит о тихих городах: ‘I expect we will see much more of this in the future’. Это и подходит к утверждению о растущей тенденции."
+    },
+    "q24": {
+      "sha": "4845d9339b5196fd",
+      "ru": "Feinstein объясняет, что без внешних сигналов ‘the brain tries to fill the void to make sense of this dark and silent world’. Это и подходит к утверждению о том, что мозг сам создаёт образы."
+    },
+    "q25": {
+      "sha": "d036f16cfd30e873",
+      "ru": "Pfeifer говорит: ‘it is likely better to have more frequency of silence for a few minutes at a time’. Это и подходит к утверждению о пользе даже короткой тишины."
+    },
+    "q26": {
+      "sha": "835a508a667c41e7",
+      "ru": "Ben-Soussan говорит, что тишина ‘allows us to be more aware of what is happening around us and what the situation may require from us’. Это и подходит к утверждению."
+    },
+    "q27": {
+      "sha": "4387488a3526a626",
+      "ru": "В первом абзаце сказано, что свекольный сахар был ‘massively subsidised and sold at artificially low prices on world markets’. Это вариант B: так он стал более конкурентоспособным на мировом рынке."
+    },
+    "q28": {
+      "sha": "a1633fc2eb75b137",
+      "ru": "Во втором абзаце показано, как менялись источники сахара для Британии: сначала тростник из колоний, потом с Кубы и из Бразилии, затем европейский и, наконец, свой свекольный. Это вариант A: рецензент прослеживает, как менялись источники со временем."
+    },
+    "q29": {
+      "sha": "3262f9a2cf3cd8a1",
+      "ru": "Третий абзац начинается со слов: ‘contrary to popular belief, cane sugar production was never just restricted to large… plantations’. Это вариант C: рецензент разбирает распространённое заблуждение."
+    },
+    "q30": {
+      "sha": "ac4f2df27910087b",
+      "ru": "В последнем абзаце сказано, что Bosma показывает: ‘we could always have done without sugar’. Это вариант A: сахар показан как вредный и не обязательный продукт."
+    },
+    "q31": {
+      "sha": "7a7ab22381d11cd2",
+      "ru": "В тексте сказано: ‘German beet fields employed Polish workers; Mexicans and many others… were vital to US sugar production’. Это вариант H, ‘migrant workers’."
+    },
+    "q32": {
+      "sha": "7b1698b8f38b2f54",
+      "ru": "В тексте сказано про ‘traditional methods on small farms… dominated in South Asia and Latin America’. Это вариант E, ‘small scale cultivation’."
+    },
+    "q33": {
+      "sha": "c8a6ed2e1a33879b",
+      "ru": "В тексте сказано: ‘a powerful sugar bourgeoisie played a major role in politics’. Это вариант I, ‘powerful individuals and businesses’."
+    },
+    "q34": {
+      "sha": "e79d60f2ab0f1698",
+      "ru": "В тексте сказано, что их интересы ‘were consequently protected by trade barriers and subsidies’, а значит, за этим стояли решения властей. Это вариант A, ‘national governments’."
+    },
+    "q35": {
+      "sha": "7e1ed18754cbaf71",
+      "ru": "То же предложение про ‘trade barriers and subsidies’ описывает именно финансовую защиту производителей. Это вариант G, ‘financial controls’."
+    },
+    "q36": {
+      "sha": "513ed997536ab228",
+      "ru": "В тексте сказано: ‘it was inevitably the poor countries which came off worse’. Это вариант C, ‘less wealthy nations’."
+    },
+    "q37": {
+      "sha": "e56c302938757e91",
+      "ru": "В седьмом абзаце сказано: ‘new techniques, varieties, fertilisers, irrigation systems and much more have turned… sugar into a ubiquitous chemical’. Это подтверждает утверждение."
+    },
+    "q38": {
+      "sha": "a66c71a093fb676f",
+      "ru": "В тексте сказано, что сахар ‘once regarded as a luxury’, прежде чем его стали продвигать как источник энергии, но о том, что именно рекламщики изначально преподносили его как предмет роскоши, не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q39": {
+      "sha": "a701fffa0e969901",
+      "ru": "В тексте сказано, что кукурузный сироп с высоким содержанием фруктозы ‘is regarded as a leading cause of obesity’. Это противоречит утверждению о том, что его изобретение было благом."
+    },
+    "q40": {
+      "sha": "69328e491233c6c8",
+      "ru": "В тексте сказано, что этот сироп ‘adopted in the making of soft drinks and a large number of processed foods’. Это подтверждает утверждение."
+    }
+  }
+}

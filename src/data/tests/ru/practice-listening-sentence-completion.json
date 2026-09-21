@@ -1,0 +1,86 @@
+{
+  "id": "practice-listening-sentence-completion",
+  "locale": "ru",
+  "entries": {
+    "u0-q0": {
+      "sha": "bd47021f73beadae",
+      "ru": "На 16:06 Caroline подтверждает, что её тема: \"the fishing industry\"."
+    },
+    "u0-q1": {
+      "sha": "99b7912c8b87ee3d",
+      "ru": "На 16:06 Caroline говорит: \"coping well with statistics and I'm never bored by it\"."
+    },
+    "u0-q2": {
+      "sha": "c1ba831cf6a5b3bc",
+      "ru": "На 16:35 Caroline признаёт: \"very weak at note taking\"."
+    },
+    "u0-q3": {
+      "sha": "6d5b620ffc7c8b47",
+      "ru": "На 17:50 преподаватель говорит, что обсуждение в группе \"really helps build confidence\"."
+    },
+    "u0-q4": {
+      "sha": "3774c3d14bfda77e",
+      "ru": "На 18:10 преподаватель предупреждает, что в группах все \"seems to share the same ideas\", и потом эти идеи повторяются в дипломных работах."
+    },
+    "u0-q5": {
+      "sha": "aa84d9c1fb2faeb0",
+      "ru": "На 18:10 преподаватель предлагает \"a service called Student Support\" со структурированной программой."
+    },
+    "u0-q6": {
+      "sha": "cfa807304b02a358",
+      "ru": "На 18:10 преподаватель предупреждает, что в Student Support \"there are only a few places\"."
+    },
+    "u0-q7": {
+      "sha": "aac588625b8dbda2",
+      "ru": "На 18:35 преподаватель говорит, что книги по учебным навыкам \"are sometimes too general\"."
+    },
+    "u0-q8": {
+      "sha": "9db98ba5d25e1bbc",
+      "ru": "На 18:58 преподаватель советует \"read everything three times\", чтобы конспект запомнился."
+    },
+    "u0-q9": {
+      "sha": "35645322f0201c97",
+      "ru": "На 20:00 они договариваются о дате: \"We'll go for the 25th then.\""
+    },
+    "u1-q0": {
+      "sha": "b6b180005c02046f",
+      "ru": "На 01:56 студентка произносит фамилию по буквам: \"A-N-U-B-H-A-T\". В записи звучит одна T, хотя в ключе ответов дано \"Bhatt\"."
+    },
+    "u1-q1": {
+      "sha": "c6e502b4767fd173",
+      "ru": "На 01:56 она называет дату рождения: \"31st of March, 1972\"."
+    },
+    "u1-q2": {
+      "sha": "cf37a73f9745843c",
+      "ru": "На 01:56 она говорит: \"I'm doing a course in nursing.\""
+    },
+    "u1-q3": {
+      "sha": "4fd226e7e34f8dd0",
+      "ru": "На 01:56 она говорит, что курс длится три года, но \"I'd only like to stay in Hall for two.\""
+    },
+    "u1-q4": {
+      "sha": "fe6bb58550cd07ff",
+      "ru": "На 02:56 она говорит: \"I don't take red meat. No red meat.\""
+    },
+    "u1-q5": {
+      "sha": "500b63931487eb74",
+      "ru": "На 03:57 она решает: \"the bed sit sounds the best option.\""
+    },
+    "u1-q6": {
+      "sha": "3cbf4a9b8a44132b",
+      "ru": "На 04:37 она говорит: \"I love the theatre\", а ещё называет бадминтон."
+    },
+    "u1-q7": {
+      "sha": "acb2965d92767d3b",
+      "ru": "На 04:49 она говорит, что предпочла бы \"a hall where there are other mature students\"."
+    },
+    "u1-q8": {
+      "sha": "a32caabb3373b422",
+      "ru": "На 04:49 она добавляет: \"I'd prefer to be out of town.\""
+    },
+    "u1-q9": {
+      "sha": "15eb0813a7ae4711",
+      "ru": "На 05:10 она хочет жить \"somewhere with a shared area, a TV room\"."
+    }
+  }
+}

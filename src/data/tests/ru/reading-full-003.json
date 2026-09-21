@@ -1,0 +1,170 @@
+{
+  "id": "reading-full-003",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "71023a67f716a18b",
+      "ru": "Во втором абзаце описано исследование на крысах: их мозговая активность во время бега по лабиринту совпадала с активностью во время быстрого сна. Поэтому в этой строке таблицы и стоит ‘Rats’."
+    },
+    "q2": {
+      "sha": "f4b4fd8b03ebb903",
+      "ru": "В третьем абзаце сказано, что активность быстрого сна была высокой в зонах, ‘processing visual information’. Это и есть слово, которое нужно вписать в пропуск про то, чем занимался мозг голубей."
+    },
+    "q3": {
+      "sha": "17773eaefd58c994",
+      "ru": "В четвёртом абзаце сказано, что киты и дельфины ‘do not shut down their entire brain… but only half of it, keeping the rest awake’. Отсюда и слово для пропуска."
+    },
+    "q4": {
+      "sha": "bdf5743ccf772b44",
+      "ru": "В четвёртом абзаце объясняется, что они избегают быстрого сна, потому что во время него ‘animals are more vulnerable to extremes of temperature’. Отсюда и слово для пропуска."
+    },
+    "q5": {
+      "sha": "c57ee9b71b7d17aa",
+      "ru": "В четвёртом абзаце сказано, что киты и дельфины ‘may only experience non-REM dreams, which are less vivid’. Отсюда и слово для последнего пропуска."
+    },
+    "q6": {
+      "sha": "970e8e18e8887fef",
+      "ru": "В пятом абзаце сказано: ‘when events are replayed in dreams, this helps to integrate memories into longer-term storage’. Это подтверждает утверждение."
+    },
+    "q7": {
+      "sha": "3957f691eb752bfc",
+      "ru": "В шестом абзаце признаются: ‘we don’t know if there is an internal experience… that comes along with’ подёргиваниями собаки во сне. Значит, определить, что именно ей снится, пока нельзя, и утверждение тексту противоречит."
+    },
+    "q8": {
+      "sha": "fd5a7e4a5c9e536f",
+      "ru": "В тексте описано, что произошло во время съёмок документального фильма Scheel, но о том, повлиял ли он на других исследователей осьминогов, не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q9": {
+      "sha": "24647791de41ff22",
+      "ru": "Costello вёл себя так, ‘as though he were being attacked by a predator’, а это защитная реакция, а не охотничья. Утверждение тексту противоречит."
+    },
+    "q10": {
+      "sha": "4aef5bdce8455a32",
+      "ru": "Scheel говорит, что снимки мозга ‘is needed to show that the octopuses are replaying sequences… in dreams’. Значит, он считает, что нужны дальнейшие исследования."
+    },
+    "q11": {
+      "sha": "b49e098c836b3bc5",
+      "ru": "В тексте сказано: ‘we will never be able to experience any animal’s dreams. That goes for other humans’ dreams too’. Это прямо противоречит утверждению о том, что скоро мы сможем разделять чужие сны."
+    },
+    "q12": {
+      "sha": "73e779252877dc2c",
+      "ru": "В тексте упомянуты обоняние у собак и вибрации у пауков как главные чувства, а о слухе в снах животных не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q13": {
+      "sha": "9a311c47ff421f95",
+      "ru": "В тексте нигде не обсуждается, выросло ли за последнее время внимание к вопросу о том, почему людям снятся сны. Информации об этом в тексте нет."
+    },
+    "q14": {
+      "sha": "5d104d64bfb1d9b6",
+      "ru": "В абзаце E о фигурках сказано: ‘their precise function is not known’. Это и есть упоминание о неясном назначении предметов."
+    },
+    "q15": {
+      "sha": "f4894b4fef11039f",
+      "ru": "В абзаце G сказано, что упадок мог быть ‘brought to a crisis point by a series of droughts’, то есть климатическим фактором. Это и есть нужный абзац."
+    },
+    "q16": {
+      "sha": "1718866a7ff540c4",
+      "ru": "В абзаце C сказано, что более просторные дома на окраинах ‘probably belonged to male relatives of the king’. Это и есть упоминание о месте, где, как считается, жили родственники короля."
+    },
+    "q17": {
+      "sha": "fb513ee48ce39131",
+      "ru": "В абзаце D упомянуты ‘merchants travelling from India by sea’. Это и есть люди, которые привозили товары по морю."
+    },
+    "q18": {
+      "sha": "bb2083e05382d8f2",
+      "ru": "В абзаце B названа цифра: ‘total population at its peak in the mid-13th century was around 5,000 people’. Это и есть оценка того, насколько выросла община."
+    },
+    "q19": {
+      "sha": "81ac53388eac556e",
+      "ru": "В абзаце A сказано, что земледелие ‘brought plenty of food and a surplus that could be traded for needed goods’. Это и есть упоминание об обмене сельскохозяйственной продукции на другие товары."
+    },
+    "q20": {
+      "sha": "57fd716f370cca57",
+      "ru": "В абзаце F сказано, что золотые предметы ‘were all found at the royal burial site’ (это вариант B), а техника отделки ‘found nowhere else except Great Zimbabwe’ (это вариант D). Значит, верные варианты B и D."
+    },
+    "q21": {
+      "sha": "57fd716f370cca57",
+      "ru": "В абзаце F сказано, что золотые предметы ‘were all found at the royal burial site’ (это вариант B), а техника отделки ‘found nowhere else except Great Zimbabwe’ (это вариант D). Значит, верные варианты B и D."
+    },
+    "group:q20": {
+      "sha": "cf9717723b4cafcf",
+      "ru": "<p>В абзаце F сказано, что золотые предметы ‘were all found at the royal burial site’ (вариант B), а техника отделки ‘found nowhere else except Great Zimbabwe’ (вариант D). Значит, верные варианты <strong>B</strong> и <strong>D</strong>.</p>"
+    },
+    "q22": {
+      "sha": "868f7caf347e71cf",
+      "ru": "В абзаце E сказано, что массовое производство керамики ‘is another indicator of the prosperity of Mapungubwe society’. Отсюда и слово для пропуска."
+    },
+    "q23": {
+      "sha": "e488928ea5e2d2f2",
+      "ru": "В абзаце E среди находок перечислены ‘ceramic discs, and whistles’. Отсюда и слово для пропуска."
+    },
+    "q24": {
+      "sha": "d1357de099ecb6a6",
+      "ru": "В абзаце E описаны фигуры людей ‘with elongated bodies and short limbs’. Отсюда и слово для пропуска."
+    },
+    "q25": {
+      "sha": "b83e1f1e95556d0c",
+      "ru": "В абзаце E сказано, что фигурки ‘may have been used in ceremonies as offerings to ancestors’. Отсюда и слово для пропуска."
+    },
+    "q26": {
+      "sha": "ff94d75f3901101a",
+      "ru": "В абзаце E упомянуты ‘small jewellery items made from locally sourced copper’. Отсюда и слово для последнего пропуска."
+    },
+    "q27": {
+      "sha": "126c8a9113e8e39a",
+      "ru": "В первом абзаце описана ‘hysteria about the future of artificial intelligence’ и заголовки в духе сенсации. Это вариант B."
+    },
+    "q28": {
+      "sha": "4f1fa7f21f6f922e",
+      "ru": "Во втором абзаце предупреждается, что такой настрой ‘jeopardises the value of machine intelligence by disregarding important AI safety principles’. Это вариант A: автор указывает на риск."
+    },
+    "q29": {
+      "sha": "85e41ea1c3fd797b",
+      "ru": "В четвёртом абзаце сказано, что многие политики ‘do not understand’, что добавление нейросети само по себе не решит проблему. Это вариант C: они не осознают трудностей внедрения."
+    },
+    "q30": {
+      "sha": "66ddbc1e2ada473e",
+      "ru": "В тексте сказано, что добавление нейросети в систему управления ‘does not mean it will be instantaneously more inclusive or fair’. В пересказе это передано словом ‘equality’, вариант F."
+    },
+    "q31": {
+      "sha": "d46a621867cf2bfc",
+      "ru": "В тексте сказано, что у госсектора ‘does not have the appropriate data infrastructure’. Это вариант G, ‘framework’."
+    },
+    "q32": {
+      "sha": "c13bbfcf631c3f8d",
+      "ru": "В тексте сказано, что для доступа к данным разных ведомств ‘each require special permissions to be accessed’. Это вариант I, ‘approval’."
+    },
+    "q33": {
+      "sha": "2dc3ce9810b59c5f",
+      "ru": "В тексте сказано, что госсектору ‘lacks the human talent with the right technological capabilities’. Это вариант C, ‘skills’."
+    },
+    "q34": {
+      "sha": "50bff9d49fc27e5d",
+      "ru": "В тексте сказано, что врачи ‘found it hard to trust the machine’. Это вариант A, ‘reliability’."
+    },
+    "q35": {
+      "sha": "9462a1fad699ba69",
+      "ru": "В тексте сказано, что алгоритм вынесения приговоров ‘was found to amplify structural racial discrimination’. Это вариант D, ‘prejudices’."
+    },
+    "q36": {
+      "sha": "f43c51a8aa5ea0c9",
+      "ru": "О Russell сказано, что он предлагал ‘a more sensible and realistic approach that focuses on simple everyday applications’, а это противоположность непрактичности. Утверждение тексту противоречит."
+    },
+    "q37": {
+      "sha": "efeb02f1ecf9b4b7",
+      "ru": "В тексте приведена точка зрения Brooks, но о несправедливой критике в его адрес не сказано ничего. Информации об этом в тексте нет."
+    },
+    "q38": {
+      "sha": "bd1ddc610c0596ce",
+      "ru": "В тексте сказано, что вопрос безопасности ИИ ‘remains an often overlooked topic when machine learning systems are installed’. Это противоречит утверждению о том, что защиту учитывают всегда."
+    },
+    "q39": {
+      "sha": "b05b23eb1e7412e9",
+      "ru": "В тексте сказано: ‘we need to have a discussion about AI ethics and the distrust that many people have towards machine learning’. Это подтверждает утверждение."
+    },
+    "q40": {
+      "sha": "6ced6205aa74ebbf",
+      "ru": "В последнем абзаце сказано: ‘there is no AI solution for everything’. Это вариант B: ИИ не решит все наши проблемы."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "practice-reading-mc",
+  "locale": "ru",
+  "entries": {
+    "u0-q0": {
+      "sha": "da9fb7b4c125307f",
+      "ru": "В разделе D стандартная техника описана так: 'a series of simple suggestions repeated continuously in the same tone of voice'. Это соответствует A."
+    },
+    "u0-q1": {
+      "sha": "556c6e7a2d935149",
+      "ru": "В разделе E в примерах публичных выступлений участников заставляют 'perform ridiculous or highly embarrassing actions', то есть делать то, на что они обычно не пошли бы сами. Это соответствует D."
+    },
+    "u0-q2": {
+      "sha": "bbe0ebabb43be883",
+      "ru": "В разделе F сказано, что гипноз позволяет пациентам 'feel calm while simultaneously thinking about distressing feelings or painful memories', то есть пересматривать их без страдания. Это соответствует B."
+    },
+    "u0-q3": {
+      "sha": "b6717113e3610f70",
+      "ru": "В случае с пересадкой кожи пациент неделями находился в неудобном положении, но 'at no time felt uncomfortable'. Это соответствует D."
+    },
+    "u0-q4": {
+      "sha": "4949019526369857",
+      "ru": "AMA сообщила, что воспоминания, восстановленные под гипнозом, 'may include inaccurate information, false memories, and confabulation'. Это соответствует C."
+    },
+    "u1-q0": {
+      "sha": "80063a9ba19974e6",
+      "ru": "В пятом абзаце Bellerby уже в конце работы обнаруживает, что бумага растянулась и полосы налезли друг на друга. Это неожиданная проблема с материалом, то есть вариант B."
+    },
+    "u1-q1": {
+      "sha": "c030c51a71992984",
+      "ru": "В шестом абзаце сказано, что Bellerby ‘found a kindred spirit’ в Behaim, и показано, что с Coronelli его роднит общее стремление. Значит, других мастеров с ним что-то объединяет. Это вариант C."
+    },
+    "u1-q2": {
+      "sha": "221433c525b0f5bb",
+      "ru": "В седьмом абзаце, который посвящён ‘fading away of centuries-old traditions’, сказано, что многие мастера ‘have now retired or passed away’. Это вариант D: Bellerby жалеет об утрате ремесла."
+    },
+    "u1-q3": {
+      "sha": "40faf2e72819c76d",
+      "ru": "В последнем абзаце сказано, что книга ‘is hardly a blueprint for commercial success’. Это вариант A: в ней не объясняют, как вести прибыльное дело."
+    }
+  }
+}

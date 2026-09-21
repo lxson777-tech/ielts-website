@@ -1,0 +1,78 @@
+{
+  "id": "practice-listening-form-completion",
+  "locale": "ru",
+  "entries": {
+    "u0-q0": {
+      "sha": "907399b91b9087f0",
+      "ru": "На 01:01 звонящий по буквам называет свою фамилию: \"It's Kramer, Harold Kramer... K-R-A-M-E-R.\""
+    },
+    "u0-q1": {
+      "sha": "e46ad3d9fb8c5f2b",
+      "ru": "На 01:19 он называет номер дома, 58, перед Fulton Avenue."
+    },
+    "u0-q2": {
+      "sha": "bc7eba24c66d9f92",
+      "ru": "На 01:33 Ms Jones уточняет: тип обслуживания residential, а не business."
+    },
+    "u0-q3": {
+      "sha": "57e4fc149fc97bea",
+      "ru": "На 01:48 Harold поправляет Ms Jones: он не doctor, а office manager."
+    },
+    "u0-q4": {
+      "sha": "bebb31d481f8056c",
+      "ru": "На 01:48 он называет рабочий телефон: 637-555-9014, цифры произносятся подряд."
+    },
+    "u0-q5": {
+      "sha": "1eae62312e072ed8",
+      "ru": "На 02:23 Harold сначала говорит eight years, а потом поправляется на nine years."
+    },
+    "u0-q6": {
+      "sha": "d47efe1b2733a2c1",
+      "ru": "На 02:51 Ms Jones записывает long distance service, после того как Harold соглашается на неё."
+    },
+    "u0-q7": {
+      "sha": "f59afb6e6cce34e0",
+      "ru": "На 03:33 Harold отказывается от voicemail, но просит добавить ещё и internet service, вместе с телефоном."
+    },
+    "u0-q8": {
+      "sha": "3a8a2384b3bb6ba1",
+      "ru": "На 03:33 сначала предлагают Tuesday и Wednesday, но Harold соглашается только на Friday, когда её предлагают."
+    },
+    "u0-q9": {
+      "sha": "0e45e0a85a195d01",
+      "ru": "На 04:01 Harold говорит, что для визита мастера лучше всего подходит morning."
+    },
+    "u1-q0": {
+      "sha": "81d5ff38bf74ed0c",
+      "ru": "На 02:37 George называет свой адрес: 48 North Avenue, Westsea."
+    },
+    "u1-q1": {
+      "sha": "3fe43033b71980dc",
+      "ru": "На 02:37 Nina произносит почтовый индекс по буквам: W-S-6-2-Y-H."
+    },
+    "u1-q2": {
+      "sha": "e17d2180dc8af94c",
+      "ru": "На 03:55 George называет номер телефона. Расшифровка обрывается на середине цифр, но по ключу ответов номер целиком звучит так: 01674553242."
+    },
+    "u1-q3": {
+      "sha": "8f5668ce82a6da6b",
+      "ru": "На 04:26 George читает, что в цену билета на выступление певца входят drinks in the garden."
+    },
+    "u1-q4": {
+      "sha": "6c9925070bc5ebd9",
+      "ru": "На 04:26 Nina спрашивает про pianist, который выступает 22 June, это и заполняет колонку с событием в таблице."
+    },
+    "u1-q5": {
+      "sha": "2e0a624e70aa1c12",
+      "ru": "На 04:53 Nina называет цену билета на Spanish dance and guitar concert: 10 pounds 50."
+    },
+    "u1-q6": {
+      "sha": "533bbb924d0376aa",
+      "ru": "На 04:53 они соглашаются забронировать four tickets на Spanish dance and guitar concert."
+    },
+    "u1-q7": {
+      "sha": "89ff8917d7ec2621",
+      "ru": "На 04:53 George отмечает, что children, students and senior citizens получают 50% discount on all tickets."
+    }
+  }
+}

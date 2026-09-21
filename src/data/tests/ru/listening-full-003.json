@@ -1,0 +1,170 @@
+{
+  "id": "listening-full-003",
+  "locale": "ru",
+  "entries": {
+    "q1": {
+      "sha": "4d2cc8337f86f4e0",
+      "ru": "На 01:51 позвонившая узнаёт, что работа \"is answering the phone\", а не мытьё посуды или обслуживание столов."
+    },
+    "q2": {
+      "sha": "e6fe46d8d0e951aa",
+      "ru": "На 02:44 адрес диктуют по буквам: \"H-I-L-S-D-U-N-E Road\". В записи произношение слегка отличается от написания \"Hillsdunne\" в ответе."
+    },
+    "q3": {
+      "sha": "81dd7d115b416495",
+      "ru": "На 02:44 ближайшая автобусная остановка находится \"just beside the library\"."
+    },
+    "q4": {
+      "sha": "441bef652a40e31d",
+      "ru": "На 03:17 подтверждают оплату: \"£4.45 an hour\"."
+    },
+    "q5": {
+      "sha": "6a332b9ef3ff0a71",
+      "ru": "На 04:21 упоминается \"extra pay for working on national holidays\"."
+    },
+    "q6": {
+      "sha": "6804acd6f6ab8094",
+      "ru": "На 04:21 говорят, что \"drive you home\", если \"you're working after 11 o'clock\"."
+    },
+    "q7": {
+      "sha": "b9a9ea275170189b",
+      "ru": "На 04:43 в ресторане говорят, что нужен человек с \"a clear voice, which you obviously do have\"."
+    },
+    "q8": {
+      "sha": "ee37b550e52b84dd",
+      "ru": "На 04:43 говорят, что кандидат \"must be able to think quickly\"."
+    },
+    "q9": {
+      "sha": "bbb67052bc33ab1b",
+      "ru": "На 05:09 договариваются: \"Thursday's OK. That'll be 22nd of October.\""
+    },
+    "q10": {
+      "sha": "ad7fbd58ef371592",
+      "ru": "На 05:36 она диктует фамилию по буквам: \"Samira Manuja... M-A-N-U-J-A.\""
+    },
+    "q11": {
+      "sha": "d47a913a1f064e4f",
+      "ru": "На 07:35 ведущий говорит, что Sports World это \"the branch of a Danish sports goods company\", который снова открывается."
+    },
+    "q12": {
+      "sha": "425945cda0f28854",
+      "ru": "На 07:35 новый филиал находится \"in the shopping centre to the west of Bradcaster\"."
+    },
+    "q13": {
+      "sha": "abf943c46fcae070",
+      "ru": "На 08:00 на первых трёх этажах представлен \"a huge range of sports clothing as well as equipment\"."
+    },
+    "q14": {
+      "sha": "dc24152d590d71d8",
+      "ru": "На 08:00 обещают \"promise to get it for you in 10 days\", если товара нет в наличии."
+    },
+    "q15": {
+      "sha": "d17148c8f88530b7",
+      "ru": "На 08:24 магазин \"particularly focus[es] on running\" и заявляет, что предлагает самый широкий выбор снаряжения."
+    },
+    "q16": {
+      "sha": "25a62228c3fd9e2b",
+      "ru": "На 08:24 говорят, что \"a whole section of the third floor is devoted to sports bags\"."
+    },
+    "q17": {
+      "sha": "c5b20facc95838e1",
+      "ru": "На 10:37 чемпион \"will be staying around until about midday\" после открытия в 9 утра, то есть только субботним утром. Это вариант A."
+    },
+    "q18": {
+      "sha": "15d3952b7e1d7948",
+      "ru": "На 11:05 говорят: \"the first person to get all the questions correct gets a years free membership of the... gym\". Это вариант A."
+    },
+    "q19": {
+      "sha": "df1809aec8e0d31c",
+      "ru": "На 11:05 тест на физподготовку \"available at half price for this month only\". Это вариант E."
+    },
+    "q20": {
+      "sha": "59c72ab57206b119",
+      "ru": "На 11:05 говорится, что \"there are only a limited number of places available\", поэтому нужно бронировать место. Это вариант A."
+    },
+    "group:q19": {
+      "sha": "e89769752b353ce3",
+      "ru": "На 11:05 говорящий сообщает, что тест на физподготовку \"available at half price for this month only\" (E), и что \"there are only a limited number of places available for this, so to make a booking phone 560341\" (A, место нужно бронировать)."
+    },
+    "q21": {
+      "sha": "375cbfae931361b8",
+      "ru": "На 14:06 Spiros говорит, что \"quite a good job because my overall style was quite professional\". Это вариант B."
+    },
+    "q22": {
+      "sha": "4f4f8c0864ff199c",
+      "ru": "На 14:32 Hiroko удивляется, что остальные \"didn't worry about their presentation style or keeping eye contact with their audience\". Это вариант C."
+    },
+    "q23": {
+      "sha": "34be769e24c5d90e",
+      "ru": "На 14:56 Hiroko говорит, что после выступления \"I didn't feel any real sense of satisfaction\". Это вариант B."
+    },
+    "q24": {
+      "sha": "42976538efd84645",
+      "ru": "На 14:56 Spiros говорит: \"I am not so pleased with my actual performance right now in tutorials\". Это вариант A."
+    },
+    "q25": {
+      "sha": "7384ed1cf3cfedb6",
+      "ru": "На 15:18 Spiros говорит, что другие студенты \"are very familiar with each other\", поэтому легко пускают друг друга в разговор. Это вариант C."
+    },
+    "q26": {
+      "sha": "231189ee020499c7",
+      "ru": "На 16:31 Hiroko говорит, что она \"been trying to speak up more and I just jump in\". Это вариант B."
+    },
+    "q27": {
+      "sha": "d1cc2d9bbe35ab70",
+      "ru": "На 16:56 Hiroko говорит, что ей пришлось \"to turn to the books and journals\", чтобы разобраться в лекциях. Это вариант A."
+    },
+    "q28": {
+      "sha": "e56e9659584a51ed",
+      "ru": "На 17:21 Spiros говорит: \"my reading speed is still quite slow\". Это вариант B."
+    },
+    "q29": {
+      "sha": "313f5ba67a1d3026",
+      "ru": "На 18:12 Hiroko говорит: \"we didn't read anything about engineering\", а это как раз её специальность. Это вариант C."
+    },
+    "q30": {
+      "sha": "bdb1535851c46e4c",
+      "ru": "На 19:01 Hiroko говорит, что ей было бы легче \"working on reading from my own field\". Это вариант B."
+    },
+    "q31": {
+      "sha": "ca251a04ae536cf1",
+      "ru": "На 21:28 лектор говорит: \"sometimes the tide goes out suddenly confusing the animals\"."
+    },
+    "q32": {
+      "sha": "2369d23472a08de2",
+      "ru": "На 21:54 морские животные \"rely heavily on their hearing to navigate\", а паразиты как раз поражают им уши."
+    },
+    "q33": {
+      "sha": "fbaf56302f1d48e2",
+      "ru": "На 22:18 токсины \"originate from plants or animals\", которых едят киты."
+    },
+    "q34": {
+      "sha": "d9b0ec189043272e",
+      "ru": "На 23:16 проверка желудков показала, что \"most had not been feeding\", когда киты выбросились на берег."
+    },
+    "q35": {
+      "sha": "1d90adf08928539c",
+      "ru": "На 23:40 с выбрасыванием на берег связывают \"noises such as those caused by military exercises\"."
+    },
+    "q36": {
+      "sha": "e13ead43aba3f0ea",
+      "ru": "На 24:03 в случае на Багамах \"all the stranded animals were healthy\"."
+    },
+    "q37": {
+      "sha": "f0f63a098f6243a9",
+      "ru": "На 24:29 животных нашли \"were spread out\" вдоль берега, а не \"in a group\"."
+    },
+    "q38": {
+      "sha": "cf85c39cbc574be7",
+      "ru": "На 24:55 лектор говорит: \"the toothed whales, are the group that strand the most frequently\", то есть самый social вид."
+    },
+    "q39": {
+      "sha": "795da0e08f40da0f",
+      "ru": "На 24:55 в случае 1994 года \"apart from the leader, all the others had been healthy\"."
+    },
+    "q40": {
+      "sha": "9f7849be175e01ae",
+      "ru": "На 25:21 лектор советует книгу про \"stranding networks\", созданные по всему миру."
+    }
+  }
+}
