@@ -202,6 +202,45 @@ export interface IndexRef {
     is shown, which is why this is on the activity and not a comment. */
 export type ContentProvenance = 'imported-paper' | 'publisher' | 'teacher-authored' | 'project-authored';
 
+/** Why an activity exists in the library but cannot be scheduled today.
+ *
+ *  Added by the catalogue assembly work package. The library has links that
+ *  lead nowhere (see QuestionTypeCoverage below), and the honest answer is
+ *  to keep the entry, say plainly what is missing, and let the planner skip
+ *  it, rather than to delete the entry or to point it at unrelated work. */
+export type UnavailableReasonCode =
+  /** Nothing real of this kind exists in the data at all. */
+  | 'no-material'
+  /** The material is planned but has not been written yet. */
+  | 'not-authored'
+  /** Written here, but no teacher has checked it, so lead decision Q1
+      allows it for guided practice only. */
+  | 'not-verified';
+
+export interface ActivityUnavailable {
+  code: UnavailableReasonCode;
+  /** One plain English sentence, which a student could be shown as it is.
+      No jargon, no dashes, and never a promise that it is coming. */
+  reason: string;
+}
+
+/** One subskill an activity teaches or exercises, and how well it fits.
+ *
+ *  Five lessons in the library deliberately teach a neighbouring question
+ *  type (multiple-answer, categorisation, table-completion on both papers,
+ *  diagram labelling on Listening). The link is real and worth keeping, but
+ *  it is not a lesson about that type, so the planner should prefer a
+ *  focused exercise once one exists. Recording the fit is how it can.
+ *
+ *  Practice activities use the same list for a different job: a drill built
+ *  from a real paper part usually holds two or three question types, and
+ *  "practice for this subskill" has to find it by any of them, not only by
+ *  whichever one happens to have the most questions. */
+export interface SubskillCoverage {
+  subskill: Subskill;
+  fit: 'direct' | 'borrowed';
+}
+
 export interface CatalogueActivity {
   /** Stable forever. Reuses the tutor catalogue's id shapes; see the header. */
   id: string;
@@ -215,6 +254,9 @@ export interface CatalogueActivity {
       Vocabulary and exam skills leave it undefined. */
   paper?: Paper;
   subskill: Subskill;
+  /** Every subskill this activity teaches or exercises, including
+      `subskill` itself, each with how well it fits. */
+  covers?: readonly SubskillCoverage[];
   /** The criterion a Writing or Speaking subskill rolls up to, for
       reporting. Never used to compute a band. */
   criterion?: WritingCriterion | SpeakingCriterion;
@@ -239,10 +281,26 @@ export interface CatalogueActivity {
       English regardless; this is about teaching prose only. */
   explanationLocales: readonly Locale[];
   provenance: ContentProvenance;
+  /** Whether a teacher has checked this material against the real exam.
+      Anything lifted from an imported paper or a publisher's prompt bank is
+      verified by its source. Anything this project wrote starts false, and
+      lead decision Q1 allows unverified authored material for guided
+      practice only: never for an independent check, never as assessment
+      evidence. A lesson is authored here and so reads false; that costs
+      nothing, because a lesson only ever produces a "studied" click. */
+  verified: boolean;
+  /** Set when the activity cannot be scheduled today, with a sentence
+      saying why. The planner skips it; the interface may still show it, but
+      must show the reason with it. */
+  unavailable?: ActivityUnavailable;
   /** True when this activity reuses items that also appear elsewhere (a
       drill lifted from a full paper, a lesson check quoting a real passage).
       Drives exposure tracking so a repeat cannot look like fresh evidence. */
   sharesItemsWith?: readonly string[];
+  /** The ids of the papers this activity's items were lifted from, as the
+      generated index records them. The planner needs this to reserve unseen
+      material: sitting a drill spends its source paper's questions too. */
+  sourcePaperIds?: readonly string[];
   /** Free tags for selection heuristics, e.g. 'diagnostic-safe',
       'unseen-reserved', 'needs-audio', 'needs-microphone'. */
   tags?: readonly string[];
@@ -255,6 +313,12 @@ export interface LearningCatalogueV1 {
       the index is stale and the build should fail (see the staleness test in
       the work packages). */
   indexVersion: string;
+  /** A hash of the catalogue's own contents: every id, what it points at,
+      what it teaches and whether it is available. Two runs over the same
+      data produce the same string, and any change to any activity produces
+      a different one, so cached AI output can be keyed by it and thrown
+      away the moment the library underneath it moves. */
+  catalogueVersion: string;
   activities: readonly CatalogueActivity[];
 }
 
@@ -452,3 +516,16 @@ export const LEARNING_INDEX_MAX_BYTES = 256 * 1024;
 /** Longest a focused exercise may be estimated at. Anything longer belongs
     in a drill or a graded task, not in the teach-and-check slot. */
 export const FOCUSED_EXERCISE_MAX_MINUTES = 10;
+
+/** Upper bound the catalogue test enforces on the assembled catalogue once
+    it is serialised, in bytes.
+ *
+ *  Read it as a budget on how much the catalogue GREW, not as the Worker's
+ *  bundle cost. The Worker ships the generated index (see
+ *  LEARNING_INDEX_MAX_BYTES) plus the assembly code, and builds these
+ *  objects at import; a serialised copy repeats every field name about
+ *  seven hundred times, so it reads far larger than it costs. The cap is
+ *  here because it is the one number that moves the moment somebody starts
+ *  putting content into the catalogue instead of pointers to content.
+ *  Provisional: raise it deliberately, never by accident. */
+export const LEARNING_CATALOGUE_MAX_BYTES = 576 * 1024;
