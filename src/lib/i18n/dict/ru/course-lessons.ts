@@ -123,8 +123,8 @@ export const strings: Record<string, string> = {
   'Click to test yourself on this vocabulary word': 'Нажмите, чтобы проверить себя по этому слову',
   'Quick check': 'Быстрая проверка',
   'Which definition is correct?': 'Какое определение верное?',
-  'Mark lesson as complete': 'Отметить урок как пройденный',
-  'Lesson completed, tap to undo': 'Урок пройден, нажмите, чтобы отменить',
+  'Mark this lesson as studied': 'Отметить урок как изученный',
+  'Studied, tap to undo': 'Изучено, нажмите, чтобы отменить',
   'Save lesson': 'Сохранить урок',
   'Saved, tap to remove': 'Сохранено, нажмите, чтобы убрать',
   'Back to course': 'Назад к курсу',
@@ -171,7 +171,9 @@ export const strings: Record<string, string> = {
   '{done} of {total} answered': '{done} из {total} отвечено',
   'Check answers': 'Проверить ответы',
   'Questions checked': 'Проверено вопросов',
-  'Flawless! You have mastered this question type. 🏆': 'Безупречно! Вы освоили этот тип вопросов. 🏆',
+  'All correct, first time through. 🏆': 'Всё верно, с первого раза. 🏆',
+  'All correct, on questions you had already seen. A fresh set is the real check. 🔁':
+    'Всё верно, но эти вопросы вы уже видели. Настоящая проверка будет на новых. 🔁',
   'Excellent work, almost perfect! 🌟': 'Отличная работа, почти идеально! 🌟',
   'Good job! Review the explanations you missed and go again. 💪':
     'Хорошая работа! Разберите то, что пропустили, и попробуйте снова. 💪',

@@ -108,14 +108,19 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
 
       <div class="mt-12 flex flex-col items-center gap-4 border-t border-border pt-8">
         <div class="flex flex-wrap items-center justify-center gap-3">
+          {/* "Studied", not "learned": pressing this says the page was
+              read, which is all it can say. What the student can actually
+              do is measured by the quick check below it and by the
+              practice that follows. */}
           <button
             type="button"
             id="lesson-complete-btn"
             data-slug={slug}
+            data-minutes={typeof minutes === 'number' ? String(minutes) : undefined}
             class="inline-flex items-center gap-2 rounded-button border border-border bg-surface px-6 py-2.5 font-display text-sm font-semibold transition-colors hover:border-success hover:text-success data-[done]:border-success data-[done]:bg-success-tint data-[done]:text-success"
           >
             <span data-icon>○</span>
-            <span data-label data-i18n>Mark lesson as complete</span>
+            <span data-label data-i18n>Mark this lesson as studied</span>
           </button>
           <button
             type="button"
@@ -159,6 +164,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   import { initReadingQuiz } from '../scripts/lesson-quiz';
   import type { VocabWord } from '../scripts/vocab-quiz';
   import { isLessonComplete, markLessonComplete, unmarkLessonComplete } from '../lib/progress';
+  import { recordLessonStudied } from '../lib/learning/store.browser';
   import { toggleBookmark, isBookmarked, setNote, getNote } from '../lib/notes';
   import { t, onLocaleChange } from '../lib/i18n';
   import { onLessonBodySwap } from '../lib/i18n/lesson-body';
@@ -191,8 +197,15 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   // are guarded against running twice on the same node, and the
   // subscription replays, so this is correct whichever order the swap and
   // astro:page-load happen to land in.
+  // Which lesson this page is. The completion button carries it, and it
+  // is the only thing on the page that does: an Astro <script> is
+  // compiled on its own and cannot read the frontmatter above.
+  function lessonSlug(): string | undefined {
+    return document.getElementById('lesson-complete-btn')?.dataset.slug;
+  }
+
   onLessonBodySwap(() => {
-    initReadingQuiz();
+    initReadingQuiz({ lessonKey: lessonSlug() });
     markCompletedLessonCards();
   });
 
@@ -211,7 +224,7 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
   // both (same pattern as VocabQuizInit.astro).
   document.addEventListener('astro:page-load', () => {
     offLocale?.();
-    initReadingQuiz();
+    initReadingQuiz({ lessonKey: lessonSlug() });
 
     // Floating vocabulary word that drifts across the hero panel — one
     // word per lap, swapped to a new random word (never repeating the
@@ -241,17 +254,35 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     const btn = document.getElementById('lesson-complete-btn');
     if (btn) {
       const slug = btn.dataset.slug!;
+      const minutes = Number(btn.dataset.minutes);
       const render = (done: boolean) => {
         btn.toggleAttribute('data-done', done);
         btn.querySelector('[data-icon]')!.textContent = done ? '✓' : '○';
         btn.querySelector('[data-label]')!.textContent = done
-          ? t('Lesson completed, tap to undo')
-          : t('Mark lesson as complete');
+          ? t('Studied, tap to undo')
+          : t('Mark this lesson as studied');
       };
       render(isLessonComplete(slug));
       btn.addEventListener('click', () => {
         const next = !isLessonComplete(slug);
         next ? markLessonComplete(slug) : unmarkLessonComplete(slug);
+        // The tick and the history keep working exactly as before, and
+        // the same press is now also written to the learner record as
+        // `studied`: they opened the page and said they were done with
+        // it, which is all a completion click can ever mean. The record
+        // is a log of what happened, so unticking removes the tick and
+        // leaves the log alone.
+        if (next) {
+          try {
+            recordLessonStudied({
+              lessonKey: slug,
+              estimatedMinutes: Number.isFinite(minutes) && minutes > 0 ? minutes : undefined,
+            });
+          } catch {
+            /* A blocked or full browser store costs the record, never the
+               tick the student just pressed. */
+          }
+        }
         render(next);
         // Replay the icon pop and the label fade on every press, not just
         // the first: removing the class and reading offsetWidth forces the
@@ -288,8 +319,8 @@ const minutes = meta ? lookupPartMinutes(slug) : (lesson as { minutes?: number }
     offLocale = onLocaleChange(() => {
       if (btn) {
         btn.querySelector('[data-label]')!.textContent = btn.hasAttribute('data-done')
-          ? t('Lesson completed, tap to undo')
-          : t('Mark lesson as complete');
+          ? t('Studied, tap to undo')
+          : t('Mark this lesson as studied');
       }
       if (saveBtn) {
         saveBtn.querySelector('[data-label]')!.textContent = saveBtn.hasAttribute('data-saved')

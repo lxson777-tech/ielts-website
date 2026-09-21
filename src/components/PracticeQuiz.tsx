@@ -1,8 +1,23 @@
-import { useState } from 'react';
-import type { PracticeQuestion, PracticeSet, PracticeUnit } from '../data/reading-practice';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { PRACTICE_ITEM_IDENTITY, type PracticeQuestion, type PracticeSet, type PracticeUnit } from '../data/reading-practice';
 import { useT } from '../lib/i18n/react';
 import { t } from '../lib/i18n/translate';
 import { practiceKey, useExplanations, type Explain } from '../lib/i18n/test-explanations';
+import type { Paper } from '../lib/learning/contracts/catalog';
+import {
+  AFTER_ANSWER_SHOWN,
+  LESSON_CHECK_CONTENT_VERSION,
+  completionOf,
+  lessonCheckActivityId,
+  lessonCheckDrafts,
+  lessonCheckItemKey,
+  lessonCheckProgressKey,
+  readLessonCheckProgress,
+  writeLessonCheckProgress,
+  type LessonCheckSubmission,
+  type RecordedAnswers,
+} from '../lib/learning/lesson-check';
+import { getLearnerStore, ownerNamespace, type BrowserStorage } from '../lib/learning/store.browser';
 
 /** Base-prefixed URL for images stored under /public. */
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
@@ -169,9 +184,22 @@ function answerLabel(q: PracticeQuestion): string {
 
 const PRAISE = ['Nice one!', 'Exactly right!', 'Well spotted!', 'Perfect!', 'Correct!'];
 
-function scoreMessage(correct: number, total: number): string {
+/** What to say about the score.
+ *
+ * `repeat` is true when these questions had been met before, either
+ * earlier on this page or in a paper the student has already sat. It
+ * changes what a full score is allowed to mean: getting every answer
+ * right on questions whose answers were already shown is not new proof of
+ * anything, and the old wording ("you have mastered this question type")
+ * claimed exactly that. Nothing here says mastery either way; a few
+ * questions never could. */
+function scoreMessage(correct: number, total: number, repeat: boolean): string {
   const p = correct / total;
-  if (p === 1) return t('Flawless! You have mastered this question type. 🏆');
+  if (p === 1) {
+    return repeat
+      ? t('All correct, on questions you had already seen. A fresh set is the real check. 🔁')
+      : t('All correct, first time through. 🏆');
+  }
   if (p >= 0.8) return t('Excellent work, almost perfect! 🌟');
   if (p >= 0.6) return t('Good job! Review the explanations you missed and go again. 💪');
   if (p >= 0.4) return t('Getting there. Reread the strategy above and try again. 📖');
@@ -181,10 +209,34 @@ function scoreMessage(correct: number, total: number): string {
 interface UnitState {
   drafts: string[];
   checked: boolean;
+  /** Which go this unit is on: 0 the first, 1 after "try this again". A
+      later go has had the correct answers in front of it, so it is
+      recorded as assisted rather than as a first answer. */
+  attempt: number;
 }
 
-function emptyUnitState(unit: PracticeUnit): UnitState {
-  return { drafts: unit.questions.map(() => ''), checked: false };
+function emptyUnitState(unit: PracticeUnit, attempt = 0): UnitState {
+  return { drafts: unit.questions.map(() => ''), checked: false, attempt };
+}
+
+/** This browser's store, or null when there is not one: a server render,
+    the Astro build, a browser with storage switched off. Never throws.
+    Same guard as deviceStorage() in src/lib/learning/store.browser.ts. */
+function deviceStorage(): BrowserStorage | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Which paper a set belongs to, from the id the lesson page passed. No
+    guessing: an id in neither shape records nothing at all. */
+function paperOfSet(setId: string | undefined): Paper | null {
+  if (setId?.startsWith('practice-reading-')) return 'reading';
+  if (setId?.startsWith('practice-listening-')) return 'listening';
+  return null;
 }
 
 function UnitBlock({
@@ -409,7 +461,10 @@ export default function PracticeQuiz({ set, setId }: Props) {
      pick an ending, so the noun is configurable and defaults to the original. */
   const selectNoun = set.selectNoun ?? 'paragraph';
 
-  const [units, setUnits] = useState<UnitState[]>(() => set.units.map(emptyUnitState));
+  const [units, setUnits] = useState<UnitState[]>(() => set.units.map((unit) => emptyUnitState(unit)));
+  /* True once these questions are known to have been met before: an
+     earlier go at this set, or a paper the student has already sat. */
+  const [repeat, setRepeat] = useState(false);
 
   const total = set.units.reduce((n, u) => n + u.questions.length, 0);
   const checkedQuestions = units.reduce((n, s, i) => (s.checked ? n + set.units[i]!.questions.length : n), 0);
@@ -427,22 +482,131 @@ export default function PracticeQuiz({ set, setId }: Props) {
   const anyChecked = units.some((s) => s.checked);
   const explain = useExplanations(setId ?? '', locale, anyChecked && !!setId);
 
+  /* ── The learner record ──────────────────────────────────────────────
+     Every answer below is evidence: the first one given, what had been
+     shown before it, whether it was right, and which real paper question
+     it was. The identities are stamped beside the questions themselves
+     (PRACTICE_ITEM_IDENTITY in ../data/reading-practice.ts) and match the
+     generated index item for item. Without a set id, or without an
+     identity for a question, nothing is recorded: a nameless answer is
+     worse than none. */
+  const paper = paperOfSet(setId);
+  const identityByKey = useMemo(
+    () => new Map((setId ? (PRACTICE_ITEM_IDENTITY[setId] ?? []) : []).map((item) => [item.key, item])),
+    [setId],
+  );
+  const storage = useMemo(deviceStorage, []);
+  /* What has already been written for this set, so pressing check again,
+     or coming back tomorrow, never records a second first answer. */
+  const recorded = useRef<RecordedAnswers>({});
+  const progressKey = useMemo(() => {
+    if (!setId) return null;
+    try {
+      return lessonCheckProgressKey(ownerNamespace(getLearnerStore().owner()), setId);
+    } catch {
+      return null;
+    }
+  }, [setId]);
+
+  /* Answers already given are not lost by leaving the page. Restored
+     after mount rather than while rendering, so the server rendered
+     markup and the first client render still agree. */
+  useEffect(() => {
+    if (!progressKey) return;
+    const held = readLessonCheckProgress(
+      storage,
+      progressKey,
+      set.units.map((unit) => unit.questions.length),
+      new Date().toISOString(),
+    );
+    if (!held) return;
+    setUnits(held.units.map((unit) => ({ drafts: [...unit.drafts], checked: unit.checked, attempt: unit.attempt })));
+    recorded.current = held.recorded;
+    if (held.units.some((unit) => unit.attempt > 0)) setRepeat(true);
+    // Restoring happens once, for the set this component was mounted with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressKey]);
+
+  function apply(next: UnitState[]) {
+    setUnits(next);
+    if (!progressKey || !setId) return;
+    writeLessonCheckProgress(storage, progressKey, {
+      version: 1,
+      setId,
+      updatedAt: new Date().toISOString(),
+      units: next.map((unit) => ({ drafts: unit.drafts, checked: unit.checked, attempt: unit.attempt })),
+      recorded: recorded.current,
+    });
+  }
+
+  /** Write one unit's answers to the learner record. Never throws into
+      the exercise: a blocked or full browser store costs the record, not
+      the student's practice. */
+  function record(unitIndex: number, state: UnitState) {
+    if (!setId || !paper || identityByKey.size === 0) return;
+    const unit = set.units[unitIndex]!;
+    const submissions: LessonCheckSubmission[] = [];
+    unit.questions.forEach((question, qi) => {
+      const identity = identityByKey.get(lessonCheckItemKey(unitIndex, qi));
+      if (!identity) return;
+      const given = state.drafts[qi] ?? '';
+      submissions.push({
+        identity,
+        given,
+        correct: given.trim() !== '' && isRight(question, given),
+        attempt: state.attempt,
+      });
+    });
+    if (submissions.length === 0) return;
+
+    try {
+      const write = lessonCheckDrafts(
+        {
+          activityId: lessonCheckActivityId(setId),
+          contentVersion: LESSON_CHECK_CONTENT_VERSION,
+          paper,
+          at: new Date().toISOString(),
+          locale,
+          completion: completionOf(submissions),
+          /* Checking a unit prints the correct answer and the
+             explanation, so everything after it is assisted. */
+          repeatAssistance: AFTER_ANSWER_SHOWN,
+          setId,
+        },
+        submissions,
+        recorded.current,
+      );
+      recorded.current = write.recorded;
+      const events = getLearnerStore().recordEvents(write.drafts);
+      if (events.some((event) => event.seenBefore)) setRepeat(true);
+    } catch {
+      /* Nothing recorded. The exercise itself carries on as before. */
+    }
+  }
+
   function setDraft(unitIndex: number, qi: number, value: string) {
-    setUnits((prev) =>
-      prev.map((s, i) => (i === unitIndex ? { ...s, drafts: s.drafts.map((d, j) => (j === qi ? value : d)) } : s)),
+    apply(
+      units.map((s, i) => (i === unitIndex ? { ...s, drafts: s.drafts.map((d, j) => (j === qi ? value : d)) } : s)),
     );
   }
 
   function checkUnit(unitIndex: number) {
-    setUnits((prev) => prev.map((s, i) => (i === unitIndex ? { ...s, checked: true } : s)));
+    const next = units.map((s, i) => (i === unitIndex ? { ...s, checked: true } : s));
+    /* Recorded from the answers as they stood when check was pressed,
+       which is before any explanation, correct answer or transcript
+       appears on screen. */
+    record(unitIndex, next[unitIndex]!);
+    apply(next);
   }
 
   function resetUnit(unitIndex: number) {
-    setUnits((prev) => prev.map((s, i) => (i === unitIndex ? emptyUnitState(set.units[i]!) : s)));
+    apply(units.map((s, i) => (i === unitIndex ? emptyUnitState(set.units[i]!, s.attempt + 1) : s)));
+    setRepeat(true);
   }
 
   function resetAll() {
-    setUnits(set.units.map(emptyUnitState));
+    apply(set.units.map((unit, i) => emptyUnitState(unit, (units[i]?.attempt ?? 0) + 1)));
+    setRepeat(true);
   }
 
   let startIndex = 0;
@@ -497,7 +661,7 @@ export default function PracticeQuiz({ set, setId }: Props) {
           <p className="font-display text-4xl font-extrabold">
             {correct} / {total}
           </p>
-          <p className="mt-1 text-sm text-white/90">{scoreMessage(correct, total)}</p>
+          <p className="mt-1 text-sm text-white/90">{scoreMessage(correct, total, repeat)}</p>
           <button
             type="button"
             onClick={resetAll}
