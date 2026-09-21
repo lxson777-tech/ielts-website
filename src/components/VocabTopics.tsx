@@ -6,7 +6,7 @@
    a topic, not the first thing you see.
 
    Three views, one component, no client-side router:
-     landing — the 14 topics as cards (word count + a three-word preview)
+     landing — every topic as a card (word count + a three-word preview)
      topic   — one topic's vocabulary, grouped into categories
      session — VocabReview.tsx's flashcard loop, filtered to that topic
 
