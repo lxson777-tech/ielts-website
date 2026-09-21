@@ -489,3 +489,27 @@ test('no key has two different Russian values across batch files', () => {
   }
   assert.deepEqual(conflicts, [], `Conflicting translations:\n  ${conflicts.join('\n  ')}`);
 });
+
+test('a device set to Russian or Kazakh opens in Russian, anything else in English', async () => {
+  const { detectLocale } = await import('../src/lib/i18n/locale.ts');
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  const withLanguages = (languages: string[]) =>
+    Object.defineProperty(globalThis, 'navigator', {
+      configurable: true,
+      value: { languages, language: languages[0] },
+    });
+  try {
+    withLanguages(['ru-RU', 'en-US']);
+    assert.equal(detectLocale(), 'ru');
+    withLanguages(['kk-KZ']);
+    assert.equal(detectLocale(), 'ru');
+    withLanguages(['en-GB', 'ru']);
+    assert.equal(detectLocale(), 'en', 'only the FIRST device language counts');
+    withLanguages(['de-DE']);
+    assert.equal(detectLocale(), 'en');
+    withLanguages([]);
+    assert.equal(detectLocale(), 'en');
+  } finally {
+    if (original) Object.defineProperty(globalThis, 'navigator', original);
+  }
+});

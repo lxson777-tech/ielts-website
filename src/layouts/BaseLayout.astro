@@ -12,7 +12,7 @@ import MrEzPanel from '../components/tutor/MrEzPanel';
 import VocabQuizInit from '../components/VocabQuizInit.astro';
 import { withBase } from '../lib/url';
 import { isAppRoute as routeIsApp, isWideRoute, toRoute } from '../lib/platform-nav';
-import { LOCALE_STORAGE_KEY, PENDING_CLASS, SUPPORTED_LOCALES, DEFAULT_LOCALE } from '../lib/i18n/locale';
+import { LOCALE_STORAGE_KEY, PENDING_CLASS, SUPPORTED_LOCALES, DEFAULT_LOCALE, RUSSIAN_DEVICE_LANGUAGES } from '../lib/i18n/locale';
 
 interface Props {
   title: string;
@@ -115,6 +115,7 @@ const jsonLd = {
         locales: [...SUPPORTED_LOCALES],
         fallback: DEFAULT_LOCALE,
         pending: PENDING_CLASS,
+        russianDevices: [...RUSSIAN_DEVICE_LANGUAGES],
       }}
     >
       (function () {
@@ -134,7 +135,14 @@ const jsonLd = {
             window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
           }
           var stored = window.localStorage.getItem(key);
-          var locale = locales.indexOf(stored) === -1 ? fallback : stored;
+          var locale = stored;
+          if (locales.indexOf(stored) === -1) {
+            // Nothing chosen yet: a device set to Russian opens in Russian.
+            // Same rule as detectLocale() in src/lib/i18n/locale.ts, from the
+            // same list, and like it this guess is never saved.
+            var first = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase().split('-')[0];
+            locale = russianDevices.indexOf(first) === -1 ? fallback : 'ru';
+          }
           el.lang = locale;
           el.setAttribute('data-locale', locale);
           if (locale !== fallback) {

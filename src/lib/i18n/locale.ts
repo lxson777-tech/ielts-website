@@ -6,7 +6,8 @@
    (`ielts.locale.v1`) sitting next to `ielts.progress.v1`; nothing about
    progress is touched by it.
 
-   English is the default and the fallback everywhere. A missing translation
+   English is the fallback everywhere, and the default unless the device
+   itself is set to Russian (see detectLocale). A missing translation
    can never produce a blank or a key name, because the English text IS the
    key (see translate.ts). */
 
@@ -32,6 +33,33 @@ export const LOCALE_STORAGE_KEY = 'ielts.locale.v1';
     failed load can never leave a blank page. See BaseLayout.astro. */
 export const PENDING_CLASS = 'i18n-pending';
 
+/** Device languages that open the site in Russian when the student has not
+    chosen a language yet. Decided by Alex on 2026-09-21: most students are in
+    Almaty with a phone set to Russian, and one who reads no English should
+    not have to find a switch first. Kazakh is here too: there is no Kazakh
+    version, and a Kazakh-set phone in Almaty is far more likely to be read in
+    Russian than in English. This is only ever a first guess. It is never
+    saved, so the EN / RU switch (which does save) always wins.
+
+    BaseLayout's blocking head script repeats this rule before first paint and
+    receives this very list through define:vars, so the two cannot disagree. */
+export const RUSSIAN_DEVICE_LANGUAGES: readonly string[] = ['ru', 'kk'];
+
+/** The language to use when nothing is stored: Russian for a device set to
+    one of RUSSIAN_DEVICE_LANGUAGES, English otherwise. Looks at the device's
+    FIRST language only, so an English-first student who merely lists Russian
+    further down keeps English. */
+export function detectLocale(): Locale {
+  if (typeof navigator === 'undefined') return DEFAULT_LOCALE;
+  try {
+    const first = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+    const base = first.toLowerCase().split('-')[0] ?? '';
+    return RUSSIAN_DEVICE_LANGUAGES.includes(base) ? 'ru' : DEFAULT_LOCALE;
+  } catch {
+    return DEFAULT_LOCALE;
+  }
+}
+
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }
@@ -54,9 +82,9 @@ export function getLocale(): Locale {
   if (typeof window === 'undefined') return DEFAULT_LOCALE;
   try {
     const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    current = isLocale(stored) ? stored : DEFAULT_LOCALE;
+    current = isLocale(stored) ? stored : detectLocale();
   } catch {
-    current = DEFAULT_LOCALE;
+    current = detectLocale();
   }
   return current;
 }
