@@ -1,0 +1,423 @@
+/* Intake (WP10): the goal/availability questions on Today (first-visit) and
+   on /plan-settings (the full editor). Both variants share this one file.
+
+   Reuses the tokens `src/styles/workspace-redesign.css` defines on
+   `.workspace-v2` (--color-surface, --color-ink, --color-ink-muted,
+   --color-border, --color-brand, --color-brand-tint, --shadow-card) and the
+   site's own --radius-card / --radius-button / --font-display-ui from
+   global.css, rather than any new hex value: the intake should look like it
+   was always part of this workspace, not a bolted-on form. Capsule shapes
+   (999px) match the existing tab/pill language (.ws-tab, .plan-start).
+
+   Reduced motion: every transition below is already covered by
+   workspace-redesign.css's blanket `.workspace-v2 * { transition-duration:
+   .01ms !important }` rule under prefers-reduced-motion, so nothing extra
+   is declared here. */
+
+.intake {
+  max-width: 640px;
+}
+.intake-settings {
+  max-width: 720px;
+}
+
+/* ── One question at a time (first-visit) ─────────────────────────────── */
+
+.intake-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.intake-progress span {
+  height: 4px;
+  flex: 1 1 0;
+  border-radius: 999px;
+  background: var(--color-border);
+  transition: background 200ms ease;
+}
+.intake-progress span.is-done,
+.intake-progress span.is-current {
+  background: var(--color-brand);
+}
+.intake-progress span.is-current {
+  opacity: 0.55;
+}
+
+.intake-step {
+  padding: 28px 26px 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card, 16px);
+  box-shadow: var(--shadow-card);
+  animation: intake-step-in 260ms ease;
+}
+@keyframes intake-step-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Questions and fields ─────────────────────────────────────────────── */
+
+.intake-field {
+  border: 0;
+  padding: 0;
+  margin: 0 0 22px;
+}
+.intake-field:last-child {
+  margin-bottom: 0;
+}
+.intake-question {
+  padding: 0;
+  font-family: var(--font-display-ui);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+.intake-question-small {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+.intake-helper {
+  margin: 8px 0 14px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-ink-muted);
+}
+
+/* ── Capsule radio group ───────────────────────────────────────────────── */
+
+.intake-capsule-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.intake-capsule {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 11px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+.intake-capsule:hover {
+  border-color: var(--color-brand);
+}
+.intake-capsule input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.intake-capsule:has(input:checked) {
+  border-color: var(--color-brand);
+  background: var(--color-brand-tint);
+}
+.intake-capsule:has(input:focus-visible) {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.intake-capsule-label {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--color-ink);
+}
+.intake-capsule:has(input:checked) .intake-capsule-label {
+  color: var(--color-brand-hover);
+}
+.intake-capsule-hint {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+}
+
+/* ── Native selects and date inputs, styled to match ──────────────────── */
+
+.intake-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.intake-grid-cell label,
+.intake-selfreport-row label,
+.intake-date-row label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+.intake select,
+.intake input[type='date'] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button, 10px);
+  background: var(--color-surface);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.intake select:focus-visible,
+.intake input[type='date']:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.intake-date-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.intake-date-row input[type='date'] {
+  width: auto;
+  min-width: 180px;
+}
+.intake-toggle-button {
+  padding: 9px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+.intake-toggle-button.is-active {
+  border-color: var(--color-brand);
+  background: var(--color-brand-tint);
+  color: var(--color-brand-hover);
+}
+.intake-toggle-button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ── Progressive disclosure (<details>) ───────────────────────────────── */
+
+.intake-details {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+.intake-details summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-brand);
+  list-style: none;
+}
+.intake-details summary::-webkit-details-marker {
+  display: none;
+}
+.intake-details summary::before {
+  content: '+ ';
+}
+.intake-details[open] summary::before {
+  content: '\2212 '; /* minus sign */
+}
+.intake-details[open] summary {
+  margin-bottom: 4px;
+}
+
+/* ── Availability confirmation ─────────────────────────────────────────── */
+
+.intake-confirm {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1px dashed var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface-alt);
+}
+.intake-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+
+.intake-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+.intake-button {
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+.intake-button-primary {
+  border: 1px solid var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
+.intake-button-primary:hover {
+  background: #172b24;
+}
+.intake-button-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.intake-button-secondary {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+.intake-button-secondary.is-active,
+.intake-button-secondary:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-tint);
+  color: var(--color-brand-hover);
+}
+.intake-button-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.intake-button-ghost {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-ink-muted);
+}
+.intake-button-ghost:hover {
+  color: var(--color-ink);
+}
+.intake-button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.intake-link-defer {
+  display: block;
+  margin: 18px auto 0;
+  padding: 4px;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.intake-link-defer:hover {
+  color: var(--color-ink);
+}
+.intake-link-defer:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ── Outcome panel (honest budget/deadline feedback) ──────────────────── */
+
+.intake-outcome {
+  margin-bottom: 22px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+}
+.intake-outcome.is-caution {
+  border-color: #e7c7a8;
+  background: var(--color-warning-tint, #fffbeb);
+}
+.intake-outcome.is-good {
+  border-color: #b7dcc3;
+  background: var(--color-success-tint, #ecfdf3);
+}
+.intake-outcome-headline {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--color-ink);
+  line-height: 1.6;
+}
+.intake-outcome-note {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-ink-muted);
+}
+.intake-outcome-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-ink-muted);
+  list-style: disc;
+}
+.intake-status {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-brand-hover);
+}
+
+/* ── Self-reported score ───────────────────────────────────────────────── */
+
+.intake-selfreport-list {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--color-ink-muted);
+  list-style: disc;
+}
+.intake-selfreport-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+.intake-selfreport-row > div {
+  min-width: 130px;
+  flex: 1 1 130px;
+}
+.intake-selfreport-row .intake-button {
+  flex: 0 0 auto;
+}
+
+/* ── Settings variant: everything stacked ─────────────────────────────── */
+
+.intake-form .intake-field,
+.intake-form .intake-details {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 719px) {
+  .intake-step {
+    padding: 22px 18px 20px;
+  }
+  .intake-question {
+    font-size: 19px;
+  }
+  .intake-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .intake-selfreport-row > div {
+    flex-basis: 100%;
+  }
+  .intake-actions {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 400px) {
+  .intake-grid {
+    grid-template-columns: 1fr;
+  }
+}

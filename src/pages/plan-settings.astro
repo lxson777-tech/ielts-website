@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import Course from '../components/Course';
+import Intake from '../components/plan/Intake';
 import MrEzMemory from '../components/tutor/MrEzMemory';
 ---
 <BaseLayout title="Plan settings · IELTS Portal" description="Change your target band, exam date and study schedule.">
   <div class="platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <SectionHeading title="Your study plan" subtitle="Set your target, exam date and study time. Your completed lessons stay saved." />
-    <Course settingsOnly client:load />
+    <Intake variant="settings" client:load />
     <div class="mt-10"><MrEzMemory client:load /></div>
   </div>
 </BaseLayout>
