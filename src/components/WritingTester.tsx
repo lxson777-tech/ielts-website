@@ -493,13 +493,15 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           />
         )}
 
-        {/* The teaching hand-off (WP17). It appears only when this very
-            report gives a reason: the examiner said something about the
-            overview, or a plain check of the essay found no summarising
-            sentence. It never touches the band above, and pressing it
-            reconciles into the ONE plan rather than offering a competing
-            next step. */}
-        {attemptAt && prompt.task === 'task1' && (
+        {/* The teaching hand-off (WP17, generalised to every Writing
+            objective by WP20). It appears only when this very report gives
+            a reason: the examiner said something about one objective, or a
+            plain check of the essay found something checkable. It never
+            touches the band above, and pressing it reconciles into the ONE
+            plan rather than offering a competing next step. Task 1 and
+            Task 2 both pass through; WorkOnOverview decides internally
+            whether either has something to say. */}
+        {attemptAt && (
           <WorkOnOverview
             attempt={{
               at: attemptAt,

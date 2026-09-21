@@ -1,0 +1,170 @@
+/* Spoken focused practice: record, listen back, check yourself.
+
+   Built on learning-focus.css exactly the way learning-writing-focus.css is:
+   the header, the primary action and the certainty lines are the same
+   classes doing the same job. What is new here is a recording surface and
+   a self-check list, which neither pattern has an equivalent of.
+
+   Calm, one primary action per screen, motion small and always behind
+   prefers-reduced-motion. */
+
+.spoken-task { max-width: 640px; }
+
+.spoken-self-check-note,
+.spoken-pronunciation-note {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  background: #eef1e8;
+  color: #3c533d;
+}
+.spoken-pronunciation-note { background: #f6e9c8; color: #6b5312; }
+
+.spoken-work { display: flex; flex-direction: column; gap: 16px; }
+.spoken-question {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border, #dddfd6);
+  background: var(--color-surface, #fffefa);
+  font-size: 15.5px;
+  font-weight: 550;
+  line-height: 1.55;
+  color: var(--color-ink, #263c35);
+}
+
+.spoken-mic-problem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f6e9c8;
+  color: #6b5312;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.spoken-mic-problem-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.spoken-mic-toggle {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink, #263c35);
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+.spoken-mic-toggle:hover { background: var(--color-surface-alt, #f1f2ea); }
+
+.spoken-mic-off {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px dashed var(--color-border, #dddfd6);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-ink-muted, #616c64);
+}
+
+.spoken-recording {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-ink, #263c35);
+}
+.spoken-recording-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c0392b;
+  animation: spoken-pulse 1.4s ease-in-out infinite;
+}
+@keyframes spoken-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.spoken-review { display: flex; flex-direction: column; gap: 14px; }
+.spoken-audio { width: 100%; }
+
+.spoken-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border, #dddfd6);
+  background: var(--color-surface, #fffefa);
+}
+.spoken-checklist-title {
+  margin: 0 0 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted, #616c64);
+}
+.spoken-checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-ink, #263c35);
+  cursor: pointer;
+}
+.spoken-checklist-item input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--color-brand, #b94b36); }
+.spoken-checklist-count { margin: 4px 0 0; font-size: 12px; color: var(--color-ink-muted, #616c64); }
+
+.spoken-send-note { margin: 0; font-size: 13px; line-height: 1.6; color: var(--color-ink-muted, #616c64); }
+.spoken-send-note a { color: var(--color-brand, #b94b36); font-weight: 600; }
+
+/* ── The hand-off card from a graded speaking result ─────────────────────── */
+
+.speaking-handoff {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px;
+  border-radius: 20px;
+  background: #22342a;
+  color: #f4f7ef;
+}
+.speaking-handoff-kicker { margin: 0; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #cddac0; }
+.speaking-handoff-body { margin: 0; font-size: 14px; line-height: 1.6; }
+.speaking-handoff-quote { margin: 0; padding-left: 14px; border-left: 3px solid #e0ebbc; font-size: 14px; line-height: 1.65; font-style: italic; }
+.speaking-handoff-source { margin: 0; font-size: 12px; color: #c6cfc0; }
+.speaking-handoff-action,
+.speaking-handoff-link {
+  align-self: flex-start;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--color-brand, #b94b36);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+.speaking-handoff-action:hover,
+.speaking-handoff-link:hover { transform: translateY(-1px); }
+.speaking-handoff-added { margin: 0; font-size: 13px; color: #cddac0; }
+.speaking-handoff-note { margin: 0; font-size: 12px; color: #a9b6a1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spoken-recording-dot { animation: none; }
+  .speaking-handoff-action:hover,
+  .speaking-handoff-link:hover { transform: none; }
+}

@@ -81,6 +81,16 @@ export interface WrittenTaskView {
   blockId: string;
   blockHeading: string;
   blockText: string;
+  /* ── WP20 additions, sentence correction only. Absent on every other
+     task, which renders exactly as it did before. ── */
+  /** The broken sentence the student is shown and corrects. */
+  correctionSentence?: string;
+  /** What was wrong with it, shown after the attempt alongside it, never as
+      a rewritten "correct" version (see writing-sentence-correction.ts). */
+  correctionNote?: string;
+  /** What to ask for once the correction is submitted, to check the pattern
+      on a sentence the student writes themselves. */
+  transferPrompt?: string;
 }
 
 /* ── Reading the band 8 model ────────────────────────────────────────────── */
@@ -115,6 +125,18 @@ export function modelOverviewOf(paragraphs: readonly string[]): string | null {
   const signalled = paragraphs.find((paragraph) => SUMMARISING_OPENERS.test(paragraph));
   if (signalled) return signalled.trim();
   return paragraphs[1]?.trim() ?? null;
+}
+
+/** "One way to write it" for any of the WP20 objectives: the model
+    paragraph at a fixed position (every band 8 model in the library runs
+    introduction, overview, first detail or body paragraph, second detail
+    paragraph or conclusion, in that order and always four long, verified by
+    tests/writing-speaking-objectives.test.ts against every real model in
+    the library). `index` is `WrittenFocusedTask.modelParagraphIndex`;
+    undefined keeps Pilot B's own overview extraction exactly as it was. */
+export function modelParagraphFor(paragraphs: readonly string[], index: number | undefined): string | null {
+  if (index === undefined) return modelOverviewOf(paragraphs);
+  return paragraphs[index]?.trim() ?? null;
 }
 
 /* ── The automatic checks ────────────────────────────────────────────────── */
@@ -175,7 +197,104 @@ export const CHECK_LABELS: Readonly<Record<WrittenCheckId, string>> = {
   'two-main-features': 'Does it make more than one point?',
   'no-figures': 'Is it free of figures?',
   'length-in-range': 'Is it about the right length?',
+  'has-figures': 'Does it give at least one figure?',
+  'has-comparison-language': 'Does it compare rather than list?',
+  'has-trend-language': 'Does it use a trend verb?',
+  'has-sequencing-language': 'Does it mark the sequence?',
+  'has-change-language': 'Does it use location or change language?',
+  'has-position-statement': 'Does it state a position?',
+  'has-example-signal': 'Does it give a signalled example?',
+  'has-enough-sentences': 'Is there a topic sentence, development and a link?',
+  'no-mechanical-linker-opening': 'Does it avoid opening with a mechanical linker?',
+  'has-conclusion-signal': 'Does it signal that this is the conclusion?',
+  'sentence-was-changed': 'Did you actually change the sentence?',
 };
+
+/* ── WP20: one automatic check per new Writing objective ─────────────────── */
+
+/** Words that carry a comparison between two things, rather than one figure
+    sitting next to another with no link. */
+const COMPARISON_WORDS =
+  /\b(than|whereas|while|compared (?:with|to)|in comparison (?:with|to)|respectively|unlike|by contrast|in contrast (?:with|to))\b/i;
+
+/** An accurate trend verb, whichever direction it names. */
+const TREND_WORDS =
+  /\b(ros[ei]|rising|fell|falling|fall|grew|growing|grow|grows|declin(?:e|ed|ing)|drop(?:ped|ping)?|increas(?:e|ed|ing)|decreas(?:e|ed|ing)|fluctuat(?:e|ed|ing)|peak(?:ed|ing)?|plummet(?:ed|ing)?|surg(?:e|ed|ing)|remain(?:ed|ing)? (?:stable|steady|constant|unchanged)|doubled|halved|stayed (?:the same|stable|steady|constant))\b/i;
+
+/** A word that marks a stage's place in a sequence. */
+const SEQUENCING_WORDS =
+  /\b(first(?:ly)?|second(?:ly)?|third(?:ly)?|then|next|after (?:that|this)|following (?:this|that)|once|before|finally|subsequently|at (?:this|the (?:next|final|last)) stage|at the (?:beginning|start|end))\b/i;
+
+/** Location or change vocabulary a map description needs. */
+const CHANGE_WORDS =
+  /\b(replaced by|was built|were built|was demolished|were demolished|changed into|converted into|became|disappeared|was added|were added|located|situated|to the (?:north|south|east|west|north-?east|north-?west|south-?east|south-?west)|new .*(?:was|were) (?:built|constructed|added))\b/i;
+
+/** A first-person stance, the sentence that turns a paraphrase of the
+    question into a position. */
+const POSITION_WORDS =
+  /\b(i (?:believe|think|agree|disagree|would argue|feel)|in my (?:opinion|view)|this essay will (?:argue|discuss|examine)|my (?:view|position) is)\b/i;
+
+/** A signalled example, rather than a second general statement. */
+const EXAMPLE_WORDS = /\b(for example|for instance|such as|a good example (?:of this )?is|to illustrate)\b/i;
+
+/** A mechanical linker at the very start of a sentence: the shape a
+    "firstly, secondly, moreover" paragraph takes. */
+const MECHANICAL_OPENER = /^(firstly|secondly|thirdly|moreover|furthermore|additionally|in addition|also)\b/i;
+
+/** A conclusion signal. */
+const CONCLUSION_WORDS = /\b(in conclusion|to conclude|overall|in summary|to summarise|to sum up)\b/i;
+
+export function hasComparisonLanguage(text: string): boolean {
+  return COMPARISON_WORDS.test(text);
+}
+
+export function hasTrendLanguage(text: string): boolean {
+  return TREND_WORDS.test(text);
+}
+
+export function hasSequencingLanguage(text: string): boolean {
+  return SEQUENCING_WORDS.test(text);
+}
+
+export function hasChangeLanguage(text: string): boolean {
+  return CHANGE_WORDS.test(text);
+}
+
+export function hasPositionStatement(text: string): boolean {
+  return POSITION_WORDS.test(text);
+}
+
+export function hasExampleSignal(text: string): boolean {
+  return EXAMPLE_WORDS.test(text);
+}
+
+export function hasConclusionSignal(text: string): boolean {
+  return CONCLUSION_WORDS.test(text);
+}
+
+/** A topic sentence, its development and a link back to the question is at
+    least three sentences; this counts what can honestly be counted, which
+    is sentences, not whether any one of the three jobs was really done. */
+export function hasEnoughSentences(text: string): boolean {
+  return sentencesOf(text).length >= 3;
+}
+
+/** The paragraph does not open with a connector that only announces a list
+    (Firstly, Moreover, In addition), whatever it does further in. */
+export function opensWithoutMechanicalLinker(text: string): boolean {
+  const first = sentencesOf(text)[0];
+  return !first || !MECHANICAL_OPENER.test(first);
+}
+
+/** The one check sentence correction can honestly run: the student typed
+    something different from the sentence they were shown. It says nothing
+    about whether the change is right, which is what the marker's own note,
+    read after the attempt, is for. */
+export function sentenceWasChanged(text: string, original: string | undefined): boolean {
+  const normalise = (value: string) => value.trim().replace(/\s+/g, ' ').toLowerCase();
+  if (!original) return text.trim().length > 0;
+  return normalise(text) !== normalise(original) && text.trim().length > 0;
+}
 
 /** The minimum number of main points a passing overview makes. Two,
     because "the main trends" is plural in the descriptor itself. */
@@ -184,11 +303,16 @@ export const MIN_MAIN_FEATURES = 2;
 export function runAutomaticChecks(
   text: string,
   rules: { minWords: number; maxWords: number; checks: readonly WrittenCheckId[] },
+  /** Sentence correction only: the sentence the student was shown, so
+      'sentence-was-changed' can tell a real edit from the original typed
+      back unchanged. Every other check ignores this. */
+  context?: { original?: string },
 ): WrittenCheckResult[] {
   const words = wordsIn(text);
   const figures = figuresIn(text);
   const features = mainFeatureCount(text);
   const signal = hasSummarisingSignal(text);
+  const changed = sentenceWasChanged(text, context?.original);
 
   const results: Record<WrittenCheckId, WrittenCheckResult> = {
     'summarising-signal': {
@@ -228,6 +352,97 @@ export function runAutomaticChecks(
           ? '{words} words, inside the {min} to {max} this task asks for.'
           : '{words} words, against the {min} to {max} this task asks for.',
       resultVars: { words, min: rules.minWords, max: rules.maxWords },
+    },
+    'has-figures': {
+      id: 'has-figures',
+      passed: figures.length > 0,
+      labelKey: CHECK_LABELS['has-figures'],
+      resultKey:
+        figures.length > 0
+          ? 'It gives {count} figure or figures, starting with "{first}".'
+          : 'No figures at all. A detail paragraph is where the numbers belong.',
+      resultVars: { count: figures.length, first: figures[0] ?? '' },
+    },
+    'has-comparison-language': {
+      id: 'has-comparison-language',
+      passed: hasComparisonLanguage(text),
+      labelKey: CHECK_LABELS['has-comparison-language'],
+      resultKey: hasComparisonLanguage(text)
+        ? 'It uses a comparing word, so the relationship between the two is stated rather than left for the reader to find.'
+        : 'No comparing word (than, compared with, whereas). Check whether this reads as two things listed rather than compared.',
+    },
+    'has-trend-language': {
+      id: 'has-trend-language',
+      passed: hasTrendLanguage(text),
+      labelKey: CHECK_LABELS['has-trend-language'],
+      resultKey: hasTrendLanguage(text)
+        ? 'It uses a trend verb, so the direction of the movement is stated.'
+        : 'No trend verb found (rose, fell, grew, fluctuated...). A figure with no verb does not say what happened.',
+    },
+    'has-sequencing-language': {
+      id: 'has-sequencing-language',
+      passed: hasSequencingLanguage(text),
+      labelKey: CHECK_LABELS['has-sequencing-language'],
+      resultKey: hasSequencingLanguage(text)
+        ? 'It marks the stages with a sequencing word, so the order is stated.'
+        : 'No sequencing word found (first, then, after that, finally). The order is left to the reader to work out.',
+    },
+    'has-change-language': {
+      id: 'has-change-language',
+      passed: hasChangeLanguage(text),
+      labelKey: CHECK_LABELS['has-change-language'],
+      resultKey: hasChangeLanguage(text)
+        ? 'It uses location or change language, so the change and where it happened are both stated.'
+        : 'No location or change language found (was replaced by, to the north, was built). Check the change is actually named.',
+    },
+    'has-position-statement': {
+      id: 'has-position-statement',
+      passed: hasPositionStatement(text),
+      labelKey: CHECK_LABELS['has-position-statement'],
+      resultKey: hasPositionStatement(text)
+        ? 'It states a position in the first person, so a reader knows where you stand.'
+        : 'No first-person position statement found (I believe, in my opinion). A paraphrase of the question is not the same as a position on it.',
+    },
+    'has-example-signal': {
+      id: 'has-example-signal',
+      passed: hasExampleSignal(text),
+      labelKey: CHECK_LABELS['has-example-signal'],
+      resultKey: hasExampleSignal(text)
+        ? 'It signals a specific example, so the claim is not left to stand on its own.'
+        : 'No example signal found (for example, for instance, such as). Check the claim is actually followed by one.',
+    },
+    'has-enough-sentences': {
+      id: 'has-enough-sentences',
+      passed: hasEnoughSentences(text),
+      labelKey: CHECK_LABELS['has-enough-sentences'],
+      resultKey: hasEnoughSentences(text)
+        ? 'It runs to {count} sentences, enough room for a topic sentence, its development and a link.'
+        : 'Only {count} sentence or sentences. A topic sentence, its development and a link back to the question need at least three.',
+      resultVars: { count: sentencesOf(text).length },
+    },
+    'no-mechanical-linker-opening': {
+      id: 'no-mechanical-linker-opening',
+      passed: opensWithoutMechanicalLinker(text),
+      labelKey: CHECK_LABELS['no-mechanical-linker-opening'],
+      resultKey: opensWithoutMechanicalLinker(text)
+        ? 'It does not open with a mechanical linker, so whatever connects it has to be the sense, not the word.'
+        : 'It opens with a mechanical linker (Firstly, Moreover, In addition). That connects two SENTENCES, not necessarily two IDEAS.',
+    },
+    'has-conclusion-signal': {
+      id: 'has-conclusion-signal',
+      passed: hasConclusionSignal(text),
+      labelKey: CHECK_LABELS['has-conclusion-signal'],
+      resultKey: hasConclusionSignal(text)
+        ? 'It signals that this is the conclusion, so a reader knows the essay is closing.'
+        : 'No conclusion signal found (in conclusion, overall, to conclude). Check it reads as a close rather than another point.',
+    },
+    'sentence-was-changed': {
+      id: 'sentence-was-changed',
+      passed: changed,
+      labelKey: CHECK_LABELS['sentence-was-changed'],
+      resultKey: changed
+        ? 'This is different from the sentence you were shown, which is what a correction has to be.'
+        : 'This looks the same as the sentence you were shown. A correction has to actually change something.',
     },
   };
 
@@ -524,6 +739,10 @@ export type OverviewGapBasis = 'marker' | 'automatic-check' | 'nothing-found' | 
 export type MarkerSource =
   | 'task-achievement-comment'
   | 'task-achievement-tip'
+  /** WP20: the same two sources, worded for any criterion rather than only
+      Task Achievement, used by findWritingGap's generalised rules. */
+  | 'criterion-comment'
+  | 'criterion-tip'
   | 'next-band-advice'
   | 'quoted-moment'
   | 'improvement';
@@ -558,28 +777,6 @@ const OVERVIEW_WORD = '(?:overview|overall statement|summary (?:paragraph|statem
  *  than a clause between them. */
 const NEAR = '[^.!?]{0,40}';
 
-/** The overview is not there. */
-const MISSING = new RegExp(
-  `\\b(?:no|not|never|without|lacks?|lacking|missing|absent|omits?|omitted)\\b${NEAR}\\b${OVERVIEW_WORD}\\b` +
-    `|\\b${OVERVIEW_WORD}\\b${NEAR}\\b(?:missing|absent|lacking|nowhere|not (?:there|present|clear|stated))\\b`,
-  'i',
-);
-
-/** The overview is there but is not doing its job. */
-const WEAK = new RegExp(
-  `\\b${OVERVIEW_WORD}\\b${NEAR}\\b(?:weak|weaker|unclear|vague|generic|buried|thin|underdeveloped|limited|too general|merged|hard to find)\\b` +
-    `|\\b(?:weak|weaker|unclear|vague|generic|buried|thin|underdeveloped|merged)\\b${NEAR}\\b${OVERVIEW_WORD}\\b`,
-  'i',
-);
-
-/** Something is being asked for. A marker's tip is written as an
-    instruction, and an instruction about the overview is a gap. */
-const ASKED_FOR = new RegExp(
-  `\\b(?:should|needs? to|must|would benefit|try to|add|include|write|move|separate out|start(?:ing)? with|give)\\b${NEAR}\\b${OVERVIEW_WORD}\\b` +
-    `|\\b${OVERVIEW_WORD}\\b${NEAR}\\b(?:should|needs? to|must|would benefit)\\b`,
-  'i',
-);
-
 /** One sentence of the marker's own words that says the overview was
  *  missing, weak, or needs to change.
  *
@@ -589,9 +786,35 @@ const ASKED_FOR = new RegExp(
  *  adjacency rule above is for: the cost of a false positive is telling a
  *  student an examiner asked for work the examiner never asked for. */
 export function overviewComplaintIn(text: string | undefined): string | null {
+  return markerComplaintIn(text, OVERVIEW_WORD);
+}
+
+/** The same rule as overviewComplaintIn, generalised to any objective
+ *  (WP20): a marker's sentence counts only when the objective's own keyword
+ *  sits close enough to a word that says something is missing, weak, or
+ *  being asked for. `keyword` is a regex alternation fragment, e.g.
+ *  `key features|main features`; it is inserted inside `\b(?:...)\b` so it
+ *  must already be escaped where it needs to be (every keyword in
+ *  WRITING_OBJECTIVE_RULES below is plain words, so none of them do). */
+export function markerComplaintIn(text: string | undefined, keyword: string): string | null {
   if (!text) return null;
+  const missing = new RegExp(
+    `\\b(?:no|not|never|without|lacks?|lacking|missing|absent|omits?|omitted)\\b${NEAR}\\b(?:${keyword})\\b` +
+      `|\\b(?:${keyword})\\b${NEAR}\\b(?:missing|absent|lacking|nowhere|not (?:there|present|clear|stated))\\b`,
+    'i',
+  );
+  const weak = new RegExp(
+    `\\b(?:${keyword})\\b${NEAR}\\b(?:weak|weaker|unclear|vague|generic|buried|thin|underdeveloped|limited|too general|merged|hard to find)\\b` +
+      `|\\b(?:weak|weaker|unclear|vague|generic|buried|thin|underdeveloped|merged)\\b${NEAR}\\b(?:${keyword})\\b`,
+    'i',
+  );
+  const askedFor = new RegExp(
+    `\\b(?:should|needs? to|must|would benefit|try to|add|include|write|move|separate out|start(?:ing)? with|give)\\b${NEAR}\\b(?:${keyword})\\b` +
+      `|\\b(?:${keyword})\\b${NEAR}\\b(?:should|needs? to|must|would benefit)\\b`,
+    'i',
+  );
   for (const sentence of sentencesOf(text)) {
-    if (MISSING.test(sentence) || WEAK.test(sentence) || ASKED_FOR.test(sentence)) return sentence;
+    if (missing.test(sentence) || weak.test(sentence) || askedFor.test(sentence)) return sentence;
   }
   return null;
 }
@@ -601,6 +824,22 @@ export function latestTask1(attempts: readonly GradedWritingAttempt[]): GradedWr
   return [...attempts]
     .filter((attempt) => attempt.task === 'task1')
     .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))[0];
+}
+
+/** The most recent Task 2 attempt, or undefined when there is none. Same
+    rule as latestTask1, kept as its own function so Task 1 and Task 2
+    evidence never merge into one lookup by accident. */
+export function latestTask2(attempts: readonly GradedWritingAttempt[]): GradedWritingAttempt | undefined {
+  return [...attempts]
+    .filter((attempt) => attempt.task === 'task2')
+    .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))[0];
+}
+
+/** The single most recent Writing attempt of either task, for the one rule
+    that genuinely applies to both (sentence correction: a grammar slip is a
+    grammar slip whichever task it was written in). */
+export function latestEither(attempts: readonly GradedWritingAttempt[]): GradedWritingAttempt | undefined {
+  return [...attempts].sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))[0];
 }
 
 /** Is there a reason to work on this student's overview?
@@ -670,6 +909,237 @@ export function failedOverviewChecksIn(essay: string): WrittenCheckId[] {
   const overview = sentencesOf(essay).find((sentence) => SUMMARISING_OPENERS.test(sentence));
   if (!overview) return ['summarising-signal'];
   return figuresIn(overview).length > 0 ? ['no-figures'] : [];
+}
+
+/* ── WP20: the same finding, generalised to every new Writing objective ──── */
+
+/** One objective's rule for finding a gap: which criterion a marker's
+ *  comment about it would sit under, the keyword that says the comment is
+ *  ABOUT this objective (see markerComplaintIn), and the one honest,
+ *  whole-essay automatic check to fall back on when there is a live report
+ *  but nothing in it names this objective by keyword. Four objectives
+ *  (paragraph organisation, cohesion, the conclusion, sentence correction)
+ *  have no `essayLooksFine`: there is no whole-essay pattern that honestly
+ *  stands in for "is this paragraph organised", so those four are marker
+ *  evidence only, and say so by finding nothing rather than guessing. */
+export interface WritingObjectiveRule {
+  subskill: string;
+  task: 'task1' | 'task2' | 'either';
+  /** A regex alternation fragment; see markerComplaintIn. */
+  keyword: string;
+  criterionKey: 'taskResponse' | 'taskAchievement' | 'coherenceCohesion' | 'lexicalResource' | 'grammaticalRange';
+  essayLooksFine?: (essay: string) => boolean;
+  /** The guided WrittenFocusedTask id the hand-off points at. */
+  handoffTaskId: string;
+  /** The card's headline, in the student's own terms. */
+  headlineKey: string;
+}
+
+/** Every WP20 objective except the overview, which keeps findOverviewGap
+    exactly as it was (see findWritingGap). Priority order: Task 1 objectives
+    first (nearest to the overview pilot this extends), then Task 2, then
+    the one rule that reads either task (sentence correction). */
+export const WRITING_OBJECTIVE_RULES: readonly WritingObjectiveRule[] = [
+  {
+    subskill: 'task1-select-key-features',
+    task: 'task1',
+    keyword: 'key features|main features|which features (?:to|you) (?:select|choose|report)',
+    criterionKey: 'taskResponse',
+    essayLooksFine: (essay) => figuresIn(essay).length > 0,
+    handoffTaskId: 'writing-task1-select-key-features-guided',
+    headlineKey: 'Work on selecting key features',
+  },
+  {
+    subskill: 'task1-compare-and-group',
+    task: 'task1',
+    keyword: 'compar(?:e|ed|ing|ison)|listing (?:the )?(?:figures|categories)',
+    criterionKey: 'taskResponse',
+    essayLooksFine: hasComparisonLanguage,
+    handoffTaskId: 'writing-task1-compare-and-group-guided',
+    headlineKey: 'Work on comparing rather than listing',
+  },
+  {
+    subskill: 'task1-data-language',
+    task: 'task1',
+    keyword: 'data language|trend language|accuracy of (?:the )?figures',
+    criterionKey: 'taskResponse',
+    essayLooksFine: hasTrendLanguage,
+    handoffTaskId: 'writing-task1-data-language-guided',
+    headlineKey: 'Work on describing the trend accurately',
+  },
+  {
+    subskill: 'task1-process-sequence',
+    task: 'task1',
+    keyword: 'sequenc(?:e|ing)|order of (?:the )?stages',
+    criterionKey: 'taskResponse',
+    essayLooksFine: hasSequencingLanguage,
+    handoffTaskId: 'writing-task1-process-sequence-guided',
+    headlineKey: 'Work on the order of the process',
+  },
+  {
+    subskill: 'task1-map-change',
+    task: 'task1',
+    keyword: 'location language|change language|describing the change',
+    criterionKey: 'taskResponse',
+    essayLooksFine: hasChangeLanguage,
+    handoffTaskId: 'writing-task1-map-change-guided',
+    headlineKey: 'Work on describing the change',
+  },
+  {
+    subskill: 'task2-position-and-thesis',
+    task: 'task2',
+    keyword: '(?:clear )?position|thesis|introduction',
+    criterionKey: 'taskResponse',
+    essayLooksFine: hasPositionStatement,
+    handoffTaskId: 'writing-task2-position-and-thesis-guided',
+    headlineKey: 'Work on your introduction',
+  },
+  {
+    subskill: 'task2-support-a-claim',
+    task: 'task2',
+    keyword: 'example|explanation|unsupported|support(?:s|ed|ing)? (?:the|your|this) (?:claim|argument|point)',
+    criterionKey: 'taskResponse',
+    essayLooksFine: hasExampleSignal,
+    handoffTaskId: 'writing-task2-support-a-claim-guided',
+    headlineKey: 'Work on supporting your claims',
+  },
+  {
+    subskill: 'paragraph-organisation',
+    task: 'task2',
+    keyword: 'topic sentences?|paragraph structure|body paragraphs?',
+    criterionKey: 'coherenceCohesion',
+    handoffTaskId: 'writing-task2-paragraph-organisation-guided',
+    headlineKey: 'Work on organising a body paragraph',
+  },
+  {
+    subskill: 'cohesion-and-linking',
+    task: 'task2',
+    keyword: 'cohesion|linking words?|linkers?|mechanical',
+    criterionKey: 'coherenceCohesion',
+    handoffTaskId: 'writing-task2-cohesion-and-linking-guided',
+    headlineKey: 'Work on cohesion',
+  },
+  {
+    subskill: 'task2-conclusion',
+    task: 'task2',
+    keyword: 'conclusion',
+    criterionKey: 'taskResponse',
+    handoffTaskId: 'writing-task2-conclusion-guided',
+    headlineKey: 'Work on your conclusion',
+  },
+  {
+    subskill: 'sentence-correction',
+    task: 'either',
+    keyword: 'grammar|sentence structure|tense|subject.verb agreement|articles?',
+    criterionKey: 'grammaticalRange',
+    handoffTaskId: 'writing-sentence-correction-number-of',
+    headlineKey: 'Work on this grammar pattern',
+  },
+];
+
+/** One rule's finding for one set of attempts, or null when this rule has
+    nothing to say (no attempt of the task it reads, no marker complaint,
+    and either no automatic check or the essay passes it). Never a definite
+    "nothing-found" answer the way findOverviewGap gives one for ITS single
+    objective: with eleven rules to try, "this one has nothing" just means
+    try the next one. */
+function findRuleGap(rule: WritingObjectiveRule, attempts: readonly GradedWritingAttempt[]): OverviewGapFinding | null {
+  const attempt =
+    rule.task === 'either' ? latestEither(attempts) : rule.task === 'task1' ? latestTask1(attempts) : latestTask2(attempts);
+  if (!attempt) return null;
+
+  const about = { promptId: attempt.promptId, promptTitle: attempt.promptTitle, at: attempt.at };
+  const report = attempt.report;
+  const live = attempt.live === true || report?.grader?.live === true;
+
+  if (report && live) {
+    const criterion = report.criteria?.[rule.criterionKey];
+    const sources: { where: MarkerSource; text: string | undefined }[] = [
+      { where: 'criterion-comment', text: criterion?.comment },
+      { where: 'criterion-tip', text: criterion?.tip },
+      { where: 'next-band-advice', text: criterion?.nextBand?.gap },
+      ...(criterion?.nextBand?.actions ?? []).map((action) => ({ where: 'next-band-advice' as const, text: action.do })),
+      ...(report.moments ?? []).map((moment) => ({ where: 'quoted-moment' as const, text: moment.note })),
+      ...(report.improvements ?? []).map((line) => ({ where: 'improvement' as const, text: line })),
+    ];
+    for (const source of sources) {
+      const quote = markerComplaintIn(source.text, rule.keyword);
+      if (quote) return { basis: 'marker', found: true, quote, where: source.where, ...about };
+    }
+  }
+
+  const essay = attempt.essay ?? '';
+  if (essay.trim() && rule.essayLooksFine && !rule.essayLooksFine(essay)) {
+    return { basis: 'automatic-check', found: true, ...about };
+  }
+
+  return null;
+}
+
+/** One objective's finding, plus which one it is and where to hand off to. */
+export interface WritingGapFinding extends OverviewGapFinding {
+  subskill: string;
+  handoffTaskId: string;
+  headlineKey: string;
+}
+
+/** The gap-finding rule generalised across every WP20 objective, and the
+ *  ONE calm hand-off it is allowed to offer.
+ *
+ *  The overview keeps first refusal: findOverviewGap is Pilot B's own
+ *  function, unchanged, and its own tests hold it to the exact wording it
+ *  always had. Everything else tries in the fixed priority order of
+ *  WRITING_OBJECTIVE_RULES and stops at the first rule with something real
+ *  to say. That is "at most one hand-off per report": the loop returns on
+ *  the first finding, never collects more than one. */
+export function findWritingGap(attempts: readonly GradedWritingAttempt[]): WritingGapFinding | null {
+  const overview = findOverviewGap(attempts);
+  if (overview.found) {
+    return {
+      ...overview,
+      subskill: 'task1-overview',
+      handoffTaskId: 'writing-task1-overview-guided',
+      headlineKey: 'Work on your overview',
+    };
+  }
+  for (const rule of WRITING_OBJECTIVE_RULES) {
+    const finding = findRuleGap(rule, attempts);
+    if (finding) {
+      return { ...finding, subskill: rule.subskill, handoffTaskId: rule.handoffTaskId, headlineKey: rule.headlineKey };
+    }
+  }
+  return null;
+}
+
+const GENERIC_MARKER_SOURCE_LABEL: Readonly<Record<MarkerSource, string>> = {
+  'task-achievement-comment': 'From your Task Achievement comment.',
+  'task-achievement-tip': "From the marker's tip on Task Achievement.",
+  'criterion-comment': "From the marker's comment.",
+  'criterion-tip': "From the marker's tip.",
+  'next-band-advice': "From the marker's advice on reaching the next band.",
+  'quoted-moment': 'From a moment the marker quoted from your report.',
+  improvement: "From the marker's list of what to improve.",
+};
+
+/** Same job as overviewHandoffText, generalised: builds the hand-off card
+    from a WritingGapFinding for ANY objective rather than only the
+    overview. overviewHandoffText itself is unchanged and still used by
+    WorkOnOverview's own tests. */
+export function writingHandoffText(finding: WritingGapFinding): OverviewHandoffText | null {
+  if (!finding.found) return null;
+  if (finding.basis === 'marker') {
+    return {
+      headlineKey: finding.headlineKey,
+      bodyKey: 'The examiner who marked this report said something relevant here.',
+      quote: finding.quote,
+      sourceKey: finding.where ? GENERIC_MARKER_SOURCE_LABEL[finding.where] : undefined,
+    };
+  }
+  return {
+    headlineKey: finding.headlineKey,
+    bodyKey:
+      'An automatic check of your own report found something worth a closer look here. That is a check of the words you typed, not a judgement of your writing.',
+  };
 }
 
 /* ── Keeping the student's words ─────────────────────────────────────────── */
@@ -829,6 +1299,13 @@ export interface OverviewHandoffText {
 const MARKER_SOURCE_LABEL: Readonly<Record<MarkerSource, string>> = {
   'task-achievement-comment': 'From your Task Achievement comment.',
   'task-achievement-tip': "From the marker's tip on Task Achievement.",
+  /* Never actually produced by findOverviewGap, which only ever names the
+     two sources above for itself; carried here only so this record stays
+     exhaustive over MarkerSource now that WP20's generalised rules added
+     two more values to that type (see GENERIC_MARKER_SOURCE_LABEL, which is
+     what findWritingGap's own entries actually use). */
+  'criterion-comment': "From the marker's comment.",
+  'criterion-tip': "From the marker's tip.",
   'next-band-advice': "From the marker's advice on reaching the next band.",
   'quoted-moment': 'From a moment the marker quoted from your report.',
   improvement: "From the marker's list of what to improve.",

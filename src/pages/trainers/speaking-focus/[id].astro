@@ -1,0 +1,88 @@
+---
+/* One spoken focused task, resolved against the real prompt bank at build
+ * time. Its own small route, deliberately separate from
+ * ../focused/[id].astro (see SpokenFocusedTask's header comment in
+ * src/data/focused-exercises.ts for why): a Part 1 topic or a cue card is a
+ * different shape from a passage or a written prompt, and this page's job
+ * is only to turn a real prompt id into the one question the student
+ * answers, never to invent one.
+ *
+ * If a named prompt is not there, the build FAILS here rather than
+ * shipping an empty page, the same rule every focused route holds to.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SpokenFocusedTask from '../../../components/learning/SpokenFocusedTask';
+import { SPOKEN_FOCUSED_TASKS, type SpokenFocusedTask as SpokenFocusedTaskData } from '../../../data/focused-exercises';
+import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../../../data/speaking-prompts';
+import { focusedActivityId } from '../../../lib/learning/catalog';
+import { segmentLessonBody } from '../../../lib/learning/lesson-blocks';
+import type { SpokenTaskView } from '../../../components/learning/spoken-focused-task';
+
+const LESSON_BODIES = import.meta.glob<string>('../../../content/lesson-bodies/*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+export function getStaticPaths() {
+  return SPOKEN_FOCUSED_TASKS.map((task) => ({ params: { id: task.id }, props: { task } }));
+}
+
+const { task } = Astro.props as { task: SpokenFocusedTaskData };
+
+/** The one question the student answers, resolved from the real prompt: a
+    Part 1 topic's first question, or a cue card's own "you should say"
+    wording, exactly the shape SpeakingTester builds for the same cue card
+    (see src/components/SpeakingTester.tsx's startMode). */
+function questionTextFor(promptId: string, part: 1 | 2 | 3): string {
+  if (part === 1) {
+    const topic = SPEAKING_PART1_TOPICS.find((entry) => entry.id === promptId);
+    if (!topic) throw new Error(`Spoken task ${task.id} names a Part 1 topic that does not exist: ${promptId}`);
+    const question = topic.questions[0];
+    if (!question) throw new Error(`Spoken task ${task.id}: ${promptId} has no questions.`);
+    return question.text;
+  }
+  const card = SPEAKING_CUE_CARDS.find((entry) => entry.id === promptId);
+  if (!card) throw new Error(`Spoken task ${task.id} names a cue card that does not exist: ${promptId}`);
+  if (part === 2) return `${card.topic} You should say: ${card.bullets.join('; ')}.`;
+  const first = card.part3Questions[0];
+  if (!first) throw new Error(`Spoken task ${task.id}: ${promptId} has no Part 3 follow-ups.`);
+  return first.text;
+}
+
+const lessonHtml = task.lesson ? LESSON_BODIES[`../../../content/lesson-bodies/${task.lesson.key}.html`] : undefined;
+const blocks = lessonHtml ? segmentLessonBody(lessonHtml) : [];
+const block = blocks.find((candidate) => candidate.heading === task.lesson?.blockHeading) ?? blocks[blocks.length - 1];
+const segments = task.lesson?.key.split('-') ?? [];
+const lessonHref =
+  task.lesson && block ? `/lessons/${segments[0]}/${segments.slice(1).join('-')}#${block.id}` : undefined;
+
+const view: SpokenTaskView = {
+  exerciseId: task.id,
+  activityId: focusedActivityId(task.id),
+  contentVersion: 1,
+  subskill: task.subskill,
+  part: task.part,
+  title: task.title,
+  objective: task.objective,
+  instruction: task.instruction,
+  expectedMinutes: task.expectedMinutes,
+  promptId: task.promptId,
+  questionText: questionTextFor(task.promptId, task.part),
+  checklist: task.checklist,
+  lessonHref,
+  lessonKey: task.lesson?.key,
+  blockId: block?.id ?? '',
+  blockHeading: block?.heading ?? '',
+  blockText: block?.text ?? '',
+  ...(task.pronunciationNote ? { pronunciationNote: task.pronunciationNote } : {}),
+};
+---
+
+<BaseLayout
+  wide
+  title={`${task.title} · IELTS Portal`}
+  description="A short self-check speaking task on one objective, built from a real Speaking prompt."
+>
+  <SpokenFocusedTask client:load view={view} />
+</BaseLayout>

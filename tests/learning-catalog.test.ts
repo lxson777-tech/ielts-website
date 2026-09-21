@@ -60,6 +60,7 @@ import { buildCourse } from '../src/lib/course.ts';
 import { englishSlugs, russianSlugs } from '../tools/lesson-ru-lib.mjs';
 import { parseSpeakingDeepLink } from '../src/components/attempt-recording.ts';
 import { SPEAKING_CUE_CARDS, SPEAKING_PART1_TOPICS } from '../src/data/speaking-prompts.ts';
+import { SPOKEN_FOCUSED_TASKS } from '../src/data/focused-exercises.ts';
 
 const catalogue = learningCatalogue();
 const activities = catalogue.activities;
@@ -95,7 +96,12 @@ test('all 76 lessons are present, discoverable and linked to their own page', ()
 test('every drill, paper, prompt, topic and check in the index became an activity', () => {
   const counts = {
     'lesson-check': LEARNING_INDEX.lessonChecks.length,
-    'focused-exercise': LEARNING_INDEX.focusedExercises.length,
+    /* WP20 (2026-09-22): the three self-check speaking objectives are
+       hand-built catalogue activities, not index-backed (see the header
+       comment on SpokenFocusedTask in src/data/focused-exercises.ts), so
+       they are added on top of the index's own count here rather than
+       expected to appear inside LEARNING_INDEX.focusedExercises. */
+    'focused-exercise': LEARNING_INDEX.focusedExercises.length + SPOKEN_FOCUSED_TASKS.length,
     'vocab-review': LEARNING_INDEX.vocabTopics.length + 1, // + the all-due review
   };
   for (const [kind, expected] of Object.entries(counts)) {
@@ -576,20 +582,27 @@ test('a criterion turns into objectives a student can actually work on', () => {
   }
 
   /* The honest gap, stated rather than hidden. There is no short-form
-     Writing practice in the library at all today: the smallest unit is a
-     full essay, so the objectives behind Lexical Resource and Grammatical
-     Range have nothing yet. A later work package authors them, and this
-     assertion is what will notice when it does. */
+     Writing practice for Lexical Precision or Complex Sentence Range yet,
+     and this assertion is what will notice when a later package authors
+     them. Sentence correction moved out of this list on 2026-09-22 (WP20):
+     it now has a guided, project-authored practice set for a recurring
+     grammar pattern (lead decision Q1: unverified authored material for
+     guided practice only, never an independent check), which is why
+     Grammatical Range's own missing list is now shorter than Lexical
+     Resource's. */
   assert.deepEqual([...writingCriterionMaterial('lexicalResource').missingObjectives], ['lexical-precision']);
   assert.deepEqual(
     [...writingCriterionMaterial('grammaticalRange').missingObjectives],
-    ['sentence-correction', 'complex-sentence-range'],
+    ['complex-sentence-range'],
   );
-  for (const subskill of ['lexical-precision', 'sentence-correction', 'complex-sentence-range'] as const) {
+  for (const subskill of ['lexical-precision', 'complex-sentence-range'] as const) {
     const material = subskillMaterial(subskill);
     assert.equal(material.practise.length, 0);
     assert.ok((material.unavailable ?? '').length > 20, `${subskill} says plainly that there is nothing yet`);
   }
+  const sentenceCorrection = subskillMaterial('sentence-correction');
+  assert.ok(sentenceCorrection.practise.length > 0, 'sentence correction now has guided practice (WP20)');
+  assert.equal(sentenceCorrection.checks.length, 0, 'but it is never an independent check: it is unverified, authored material');
 
   for (const criterion of Object.keys(SPEAKING_CRITERION_OBJECTIVES) as (keyof typeof SPEAKING_CRITERION_OBJECTIVES)[]) {
     const material = speakingCriterionMaterial(criterion);
@@ -792,8 +805,12 @@ test('the whole catalogue is the size the report says it is', () => {
          more, of the other kind: one real exam prompt each, answered in the
          student's own words and judged against one objective rather than
          marked, with three of the four prompts held back for transfer
-         checks. */
-      ['focused-exercise', 7],
+         checks. The remaining Reading and Listening types (WP18/WP19),
+         sentence endings (LEAD-DECISIONS Q1), the ten further Writing
+         objectives and sentence correction, and the three self-check
+         Speaking objectives (all WP20, 2026-09-22) brought it to 96; see
+         each package's own report for its own count. */
+      ['focused-exercise', 96],
       ['full-test', 73],
       ['graded-task', 189],
       ['lesson', 76],
@@ -804,10 +821,20 @@ test('the whole catalogue is the size the report says it is', () => {
     ],
     'the counts in the work package report, asserted so they cannot drift silently',
   );
-  assert.equal(activities.length, 676);
-  assert.equal(
-    byKind('focused-exercise').every((activity) => activity.verified),
-    true,
-    'every one of them is publisher material, verified by its source',
-  );
+  assert.equal(activities.length, 765);
+  /* Almost all of them are publisher material, verified by its source.
+     Five are not, every one for a reason lead decision Q1 already allows
+     for unverified authored material: sentence endings (no real paper
+     contains one), the sentence-correction pattern (a project-authored
+     grammar example, not a student's own quoted sentence, see the WP20
+     report), and the three self-check Speaking objectives (self-checked
+     against a checklist, never scored, so "verified by a publisher" was
+     never the right claim for them). Every one of the five is guided
+     practice only and none is ever offered as an independent check
+     (see checksForSubskill's own verified filter). */
+  const unverifiedFocused = byKind('focused-exercise').filter((activity) => !activity.verified);
+  assert.equal(unverifiedFocused.length, 5);
+  for (const activity of unverifiedFocused) {
+    assert.equal(activity.provenance, 'project-authored', `${activity.id} is unverified because it is authored here`);
+  }
 });

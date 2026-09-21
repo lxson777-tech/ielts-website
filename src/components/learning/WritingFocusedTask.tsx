@@ -104,6 +104,11 @@ export default function WritingFocusedTask({ view }: Props) {
   const [planChange, setPlanChange] = useState<string | null>(null);
   const [storageProblem, setStorageProblem] = useState(false);
   const [revising, setRevising] = useState(false);
+  /* Sentence correction only (WP20): the round after the correction, where
+     the student writes their OWN sentence with the same pattern rather than
+     correcting the one they were shown again. Reuses the same "revise" box
+     and evidence path; the difference is only what is shown above it. */
+  const [transferring, setTransferring] = useState(false);
   const owner = useRef('anon');
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -161,8 +166,13 @@ export default function WritingFocusedTask({ view }: Props) {
 
   const words = useMemo(() => wordsIn(text), [text]);
   const checks = useMemo(
-    () => runAutomaticChecks(text, { minWords: view.minWords, maxWords: view.maxWords, checks: view.checks }),
-    [text, view.minWords, view.maxWords, view.checks],
+    () =>
+      runAutomaticChecks(
+        text,
+        { minWords: view.minWords, maxWords: view.maxWords, checks: view.checks },
+        { original: view.correctionSentence },
+      ),
+    [text, view.minWords, view.maxWords, view.checks, view.correctionSentence],
   );
 
   function onType(value: string) {
@@ -310,6 +320,20 @@ export default function WritingFocusedTask({ view }: Props) {
 
         <section className="written-work" aria-label={t('Your overview')}>
           <p className="written-instruction">{t(view.instruction)}</p>
+
+          {/* Sentence correction only (WP20): the broken sentence itself,
+              always visible, never behind a reveal, because correcting it
+              IS the task. Hidden once the student has moved on to writing
+              their OWN transfer sentence, which is a different task. */}
+          {view.correctionSentence && !transferring && (
+            <div className="written-correction-sentence">
+              <p className="written-correction-sentence-label">{t('Correct this sentence')}</p>
+              <blockquote className="written-correction-sentence-text">{view.correctionSentence}</blockquote>
+            </div>
+          )}
+          {view.transferPrompt && transferring && (
+            <p className="written-instruction">{t(view.transferPrompt)}</p>
+          )}
 
           {!isCheck && view.guidingQuestions.length > 0 && (
             <div className="written-guide">
@@ -463,6 +487,33 @@ export default function WritingFocusedTask({ view }: Props) {
             </div>
           )}
 
+          {/* Sentence correction only (WP20): what was wrong with the
+              original, in the marker's own kind of language, never a
+              rewritten "correct" version (see writing-sentence-correction.ts
+              for why there is not one to show). Same click-to-reveal
+              pattern as the model above, so the answer is still earned by
+              an attempt first. */}
+          {view.correctionNote && mayShowModel(held.attempts) && (
+            <div className="written-model">
+              {!help.modelShown ? (
+                <button type="button" className="written-model-open" onClick={() => noteHelp({ modelShown: true })}>
+                  {t('Show what was wrong with it')}
+                </button>
+              ) : (
+                <div className="written-model-panel">
+                  <p className="written-model-title">{t('What was wrong with it')}</p>
+                  <p className="written-correction-note">{t(view.correctionNote ?? '')}</p>
+                  <p className="written-model-notice-title">{t('The pattern')}</p>
+                  <ul className="written-model-notice">
+                    {view.noticeInTheModel.map((line, index) => (
+                      <li key={index}>{t(line)}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
           {hasRevision && original && latest && (
             <div className="written-before-after">
               <div>
@@ -476,7 +527,22 @@ export default function WritingFocusedTask({ view }: Props) {
             </div>
           )}
 
-          {!isCheck && !revising && (
+          {!isCheck && !revising && view.transferPrompt && !transferring && (
+            <button
+              type="button"
+              className="written-revise"
+              onClick={() => {
+                setTransferring(true);
+                setRevising(true);
+                setText('');
+                setPhase('working');
+              }}
+            >
+              {t('Try it on a sentence of your own')}
+            </button>
+          )}
+
+          {!isCheck && !revising && !view.transferPrompt && (
             <button
               type="button"
               className="written-revise"

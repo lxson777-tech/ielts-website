@@ -44,6 +44,7 @@ import { lessonPath, practisePath, questionTypeLabel } from '../tests/question-t
 import type { QuestionType } from '../tests/schema';
 import type { Locale } from '../i18n/locale';
 import committedIndex from '../../data/generated/learning-index.json' with { type: 'json' };
+import { SPOKEN_FOCUSED_TASKS, spokenFocusedTaskHref, type SpokenFocusedTask } from '../../data/focused-exercises';
 
 import type {
   ActivityTarget,
@@ -774,6 +775,7 @@ function buildLessonActivities(index: GeneratedIndexV1): CatalogueActivity[] {
 
 function buildCheckActivities(index: GeneratedIndexV1): CatalogueActivity[] {
   const noRussian = new Set(LESSONS_WITHOUT_RUSSIAN);
+  const reserved = reservedCheckPapers(index);
   return index.lessonChecks.map((set: LessonCheckIndexEntry) => {
     const byType: Record<string, number> = {};
     for (const item of set.items) byType[item.type as string] = (byType[item.type as string] ?? 0) + 1;
@@ -803,6 +805,13 @@ function buildCheckActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       verified: isVerified(provenance),
       sharesItemsWith: papers.map(paperActivityId),
       sourcePaperIds: papers,
+      /* A lesson check quoting a paper reserved for an independent check
+         (WP18b/WP19, 2026-09-22, extending the same rule buildDrillActivities
+         already applies to drills) would otherwise let ordinary "study the
+         lesson" traffic spend the very questions a later check needs to stay
+         unseen. Found for real: practice-listening-short-answer quotes
+         listening-full-008, one of the three papers WP18b/WP19 reserves. */
+      ...(papers.some((paperId) => reserved.has(paperId)) ? { tags: [CHECK_ONLY_TAG] } : {}),
     };
   });
 }
@@ -1057,12 +1066,18 @@ function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
       explanationLocales: BILINGUAL,
       provenance: exercise.provenance,
       verified,
-      unavailable: verified
+      /* Lead decision Q1: unverified authored material (sentence endings,
+         WP18a) may be used for guided practice, never for an independent
+         check. So it is `unavailable` only when it IS a check: a guided
+         set stays fully schedulable while unverified, which is the whole
+         point of authoring it. (No unverified check-role exercise exists
+         today; nothing here creates one, this is what stops a future one
+         from quietly becoming schedulable as a check by omission.) */
+      unavailable: verified || !isCheck
         ? undefined
         : {
             code: 'not-verified' as const,
-            reason:
-              'This set was written here and no teacher has checked it yet, so it can be used for guided practice but not as a check on its own.',
+            reason: 'This set was written here and no teacher has checked it yet, so it cannot be used as an independent check.',
           },
       ...(exercise.sharesItemsWith ? { sharesItemsWith: [...exercise.sharesItemsWith].sort() } : {}),
       ...(exercise.sourcePaperIds ? { sourcePaperIds: exercise.sourcePaperIds } : {}),
@@ -1078,10 +1093,20 @@ function buildFocusedActivities(index: GeneratedIndexV1): CatalogueActivity[] {
         'unseen-reserved',
         isCheck ? CHECK_ONLY_TAG : GUIDED_ONLY_TAG,
         ...(exercise.kind === 'written-response' ? [WRITTEN_RESPONSE_TAG] : []),
+        /* A Listening focused exercise plays a segment of a real recording
+           rather than showing a passage (WP18b/WP19, 2026-09-22): the
+           trainer needs an audio player, not text, to run this one. */
+        ...(exercise.paper === 'listening' ? [NEEDS_AUDIO_TAG] : []),
       ],
     };
   });
 }
+
+/** A Listening focused exercise plays a segment of the paper's own
+    recording rather than showing a passage. Named here rather than assumed
+    from `paper === 'listening'` at every call site, the same reason
+    CHECK_ONLY_TAG and GUIDED_ONLY_TAG are named constants below. */
+const NEEDS_AUDIO_TAG = 'needs-audio';
 
 /** Where a focused exercise is opened. Must stay in step with
     focusedExerciseHref in src/data/focused-exercises.ts and with the route
@@ -1136,6 +1161,42 @@ function reservedCheckPrompts(index: GeneratedIndexV1): ReadonlySet<string> {
     for (const promptId of exercise.sourcePromptIds ?? []) out.add(promptId);
   }
   return out;
+}
+
+/* ── Spoken focused practice (WP20, 2026-09-22) ──────────────────────────── */
+
+/** Self-check speaking objectives, built by hand from
+ *  src/data/focused/speaking-*.ts rather than from the generated index: see
+ *  the header comment on SpokenFocusedTask in
+ *  src/data/focused-exercises.ts for why. There are three of them today,
+ *  which is why this is a short hand-written list in the same style as
+ *  buildFixedActivities() rather than a generated section.
+ *
+ *  `completionEvidence` is 'self-marked', not 'objective-judged': nothing
+ *  here judges anything, the student checks their own recording against a
+ *  checklist (spoken-focused-task.ts), so it is exactly the same honesty as
+ *  a lesson's own completion click. Sending the same idea to the real
+ *  grader afterwards is a SEPARATE activity (the existing `speak:<id>`
+ *  graded-task entries above), never this one. */
+function buildSpokenFocusedActivities(): CatalogueActivity[] {
+  return SPOKEN_FOCUSED_TASKS.map((task: SpokenFocusedTask) => ({
+    id: focusedActivityId(task.id),
+    contentVersion: 1,
+    kind: 'focused-exercise',
+    domain: 'speaking',
+    paper: 'speaking',
+    subskill: task.subskill,
+    objective: task.objective,
+    prerequisites: task.lesson ? [lessonActivityId(task.lesson.key)] : [],
+    expectedMinutes: task.expectedMinutes,
+    indivisible: false,
+    target: route(spokenFocusedTaskHref(task.id)),
+    completionEvidence: 'self-marked',
+    explanationLocales: BILINGUAL,
+    provenance: task.provenance,
+    verified: isVerified(task.provenance),
+    tags: ['needs-microphone', GUIDED_ONLY_TAG],
+  }));
 }
 
 /* ── Vocabulary ──────────────────────────────────────────────────────────── */
@@ -1488,6 +1549,7 @@ export function buildLearningCatalogue(index: GeneratedIndexV1 = LEARNING_INDEX)
     ...buildPaperActivities(index),
     ...buildWritingActivities(index),
     ...buildSpeakingActivities(index),
+    ...buildSpokenFocusedActivities(),
     ...buildVocabularyActivities(index),
     ...buildPractiseActivities(index),
     ...buildFixedActivities(),

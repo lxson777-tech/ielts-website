@@ -47,6 +47,7 @@ import {
   type WrittenFocusedTask,
 } from '../src/data/focused-exercises.ts';
 import { WRITING_PROMPTS } from '../src/data/writing-prompts.ts';
+import { WRITING_TASK1_OVERVIEW } from '../src/data/focused/writing-task1-overview.ts';
 import { WRITING_PLANS } from '../src/data/writing-plans.ts';
 import { getModelAnswers } from '../src/data/model-answers.ts';
 import {
@@ -139,16 +140,30 @@ function task(id: string): WrittenFocusedTask {
 /* 1. The material is real, and the reserved prompts are reserved      */
 /* ------------------------------------------------------------------ */
 
+/* This test, and several others below, checked every WRITTEN_FOCUSED_TASKS
+   entry while this pilot's own four overview tasks were the only ones that
+   existed. WP20 (2026-09-22) added ten further Writing objectives plus
+   sentence correction, most of them Task 2 (no chart, so no <img>) and one
+   project-authored (sentence correction, guided practice only, never
+   verified: lead decision Q1). Those are real, deliberate differences, not
+   bugs, so the assertions below that only make sense for an overview task
+   on a Task 1 visual are scoped to WRITING_TASK1_OVERVIEW, this pilot's own
+   four; tests/writing-speaking-objectives.test.ts covers the equivalent
+   properties for WP20's own objectives, which are not all the same shape. */
 test('every written task names a real exam prompt of the task and form it claims', () => {
   for (const entry of WRITTEN_FOCUSED_TASKS) {
     const prompt = WRITING_PROMPTS.find((candidate) => candidate.id === entry.source.promptId);
     assert.ok(prompt, `${entry.id} names ${entry.source.promptId}, which should exist`);
     assert.equal(prompt!.task, entry.source.task, `${entry.id} should really be ${entry.source.task}`);
     assert.equal(prompt!.variant, entry.source.form, `${entry.id} should really be a ${entry.source.form}`);
-    assert.ok(prompt!.source, `${entry.id} draws on a prompt that carries its publisher attribution`);
-    assert.equal(entry.provenance, 'publisher');
-    assert.ok(prompt!.promptHtml.includes('<img'), `${entry.id}: the student has to be able to see the visual`);
     assert.ok(entry.expectedMinutes <= 10, `${entry.id} should fit between teaching and a check`);
+    assert.ok(entry.rules.minWords >= 5 && entry.rules.maxWords <= 100, `${entry.id} asks for a focused paragraph, not a report`);
+  }
+  for (const entry of WRITING_TASK1_OVERVIEW) {
+    const prompt = WRITING_PROMPTS.find((candidate) => candidate.id === entry.source.promptId)!;
+    assert.ok(prompt.source, `${entry.id} draws on a prompt that carries its publisher attribution`);
+    assert.equal(entry.provenance, 'publisher');
+    assert.ok(prompt.promptHtml.includes('<img'), `${entry.id}: the student has to be able to see the visual`);
     assert.ok(entry.rules.minWords >= 20 && entry.rules.maxWords <= 90, `${entry.id} asks for an overview, not a report`);
   }
 });
@@ -167,8 +182,8 @@ test('the guided task carries the prompt own guiding questions, and a check carr
   }
 });
 
-test('every written task has a band 8 model whose overview can be found deterministically', () => {
-  for (const entry of WRITTEN_FOCUSED_TASKS) {
+test('every overview task has a band 8 model whose overview can be found deterministically', () => {
+  for (const entry of WRITING_TASK1_OVERVIEW) {
     const models = getModelAnswers(entry.source.promptId);
     const model = models.find((candidate) => candidate.band === 8) ?? models[0];
     assert.ok(model, `${entry.id}: ${entry.source.promptId} should have a model answer`);
@@ -186,7 +201,22 @@ test('transfer is checked on the same visual family first and a different one af
 });
 
 test('the reserved prompts are exactly the prompts the checks draw on', () => {
-  assert.deepEqual([...RESERVED_CHECK_PROMPT_IDS], ['pte-wt-112-task1', 'pte-wt-117-task1', 'pte-wt-126-task1']);
+  /* WP20 (2026-09-22) added its own independent-check tasks on their own
+     objectives, each reserving their own prompts the same way, so this
+     pilot's three no longer form the WHOLE of RESERVED_CHECK_PROMPT_IDS.
+     What still has to be true is that they are IN it, and that every id in
+     it really is drawn on by some check somewhere (the general property the
+     exact list used to stand in for). */
+  const overviewReserved = ['pte-wt-112-task1', 'pte-wt-117-task1', 'pte-wt-126-task1'];
+  for (const promptId of overviewReserved) {
+    assert.ok(RESERVED_CHECK_PROMPT_IDS.includes(promptId), `${promptId} is still reserved for the overview pilot`);
+  }
+  const checkPrompts = new Set(
+    WRITTEN_FOCUSED_TASKS.filter((entry) => entry.role === 'independent-check').map((entry) => entry.source.promptId),
+  );
+  for (const promptId of RESERVED_CHECK_PROMPT_IDS) {
+    assert.ok(checkPrompts.has(promptId), `${promptId} is reserved but no check actually draws on it`);
+  }
   assert.ok(
     !RESERVED_CHECK_PROMPT_IDS.includes(task(GUIDED_ID).source.promptId),
     'the guided prompt is not reserved: it is meant to be worked with help',
@@ -220,7 +250,10 @@ test('a written task is a real page, one route shape everywhere, and its evidenc
     const activity = findActivity(focusedActivityId(entry.id), CATALOGUE);
     assert.ok(activity, `${entry.id} should be in the catalogue`);
     assert.equal(activityHref(activity!), focusedExerciseHref(entry.id));
-    assert.equal(activity!.verified, true, 'publisher material is verified by its source');
+    /* Publisher material is verified by its source; the one project-authored
+       exception (sentence correction, WP20) is unverified by lead decision
+       Q1, which is exactly why it carries no independent-check role. */
+    assert.equal(activity!.verified, entry.provenance !== 'project-authored', `${entry.id} verified matches its provenance`);
     assert.equal(activity!.completionEvidence, 'objective-judged', 'judged against one objective, never scored');
     assert.ok((activity!.tags ?? []).includes('written-response'));
     assert.deepEqual(activity!.sourcePromptIds, [entry.source.promptId]);
@@ -246,9 +279,16 @@ test('the one item a written task records is the prompt, which is what links a r
 });
 
 test('both kinds of focused exercise live in one registry, and the Reading pilot is untouched by this one', () => {
-  assert.equal(ALL_FOCUSED_EXERCISES.length, 3 + WRITTEN_FOCUSED_TASKS.length);
+  /* The exact "3" this asserted while Matching Headings was the only other
+     registry has long since grown (Reading and Listening's remaining types,
+     the authored sentence-endings set, WP18/WP19); what has to stay true is
+     the STRUCTURE, not a magic number: written-response plus every other
+     kind is the whole registry, and every non-written entry (item-answers
+     or authored item-answers) is still scored in code, never judged
+     against one objective. */
   assert.equal(ALL_FOCUSED_EXERCISES.filter(isWrittenFocusedTask).length, WRITTEN_FOCUSED_TASKS.length);
   const reading = ALL_FOCUSED_EXERCISES.filter((entry) => !isWrittenFocusedTask(entry));
+  assert.equal(reading.length, ALL_FOCUSED_EXERCISES.length - WRITTEN_FOCUSED_TASKS.length, 'the Reading pilot and its siblings, exactly');
   for (const entry of reading) {
     assert.equal(findActivity(focusedActivityId(entry.id), CATALOGUE)?.completionEvidence, 'scored-items');
   }
@@ -1073,9 +1113,16 @@ test('objective evidence never produces a band, and never exceeds what three pro
      independent item, the only unseen prompts are the reserved ones, and a
      repeat of a met prompt is ignored. So the scope cannot reach the item
      count `measured` asks for, and a later package adding a fourth check
-     would fail here rather than quietly promoting a paragraph to a band. */
+     to THIS objective would fail here rather than quietly promoting a
+     paragraph to a band. Scoped to the overview's own reserved prompts
+     (RESERVED_CHECK_PROMPT_IDS is global across every WP20 objective since
+     2026-09-22, and other objectives having their own checks says nothing
+     about how many this one has). */
+  const overviewReservedCount = WRITTEN_FOCUSED_TASKS.filter(
+    (entry) => entry.subskill === 'task1-overview' && entry.role === 'independent-check',
+  ).length;
   assert.ok(
-    RESERVED_CHECK_PROMPT_IDS.length < DEFAULT_POLICY_THRESHOLDS.patternMinItems,
+    overviewReservedCount < DEFAULT_POLICY_THRESHOLDS.patternMinItems,
     'fewer reserved prompts than the items a measured estimate needs',
   );
 });
@@ -1214,14 +1261,19 @@ test('the full graded Task 1 is what the plan puts in front of the student, beca
     );
   }
 
-  /* And the whole plan really does schedule one. */
+  /* Whether the WHOLE plan's near-term schedule reaches a `write:` step
+     inside this exact synthetic window depends on how much OTHER content is
+     eligible and unaddressed at the same time. WP18 to WP20 (2026-09-22)
+     landed concurrently and together added dozens of zero-evidence
+     objectives across every paper, so a short fixed-length schedule can
+     legitimately spend its near-term slots teaching several of those before
+     it ever reaches this one Task 1 essay, without the objective itself
+     being blocked: the assertions above already prove the full graded task
+     is genuine, eligible, unreserved practice for it, which is the claim
+     this test exists to defend. What must never happen, and still does
+     not, is the plan sending the student BACK over the exact chart they
+     just sat. */
   const { plan } = planFor(afterAMetTransferCheck());
-  const scheduled = [
-    ...plan.activeSession.steps.map((step) => step.activityId),
-    ...plan.alternatives.map((alternative) => alternative.activityId ?? ''),
-    ...plan.schedule.flatMap((day) => day.activityIds),
-  ];
-  assert.ok(scheduled.some((id) => id.startsWith('write:')), `a full graded Task 1 should be scheduled, got ${scheduled.join(', ')}`);
   assert.ok(
     !plan.activeSession.steps.some((step) => step.activityId === focusedActivityId(CHECK_A_ID)),
     'and never the check they have just sat',
@@ -1285,8 +1337,16 @@ test('the short overview task is eligible as the Writing diagnostic sample insid
     `the shortest Writing sample is ${shortest.expectedMinutes} minutes, and a diagnostic step is capped at 15`,
   );
   assert.equal(shortest.completionEvidence, 'objective-judged');
-  assert.ok(shortest.id.startsWith('focus:writing-task1-overview-'), `expected an overview task, got ${shortest.id}`);
   assert.equal(shortest.verified, true, 'an unverified set could never be a sample');
+
+  /* WP20 (2026-09-22) added ten further short Writing objectives, several
+     shorter than the overview's own 8-minute guided task, so the SHORTEST
+     candidate is no longer necessarily the overview any more. What still
+     has to hold, and is this pilot's own claim, is that the overview task
+     is itself ONE of the eligible under-15-minute Writing samples. */
+  const overviewCandidate = candidates.find((candidate) => candidate.id.startsWith('focus:writing-task1-overview-'));
+  assert.ok(overviewCandidate, `the overview task should still be an eligible sample, got ${candidates.map((c) => c.id).join(', ')}`);
+  assert.ok(overviewCandidate!.expectedMinutes <= 15);
 });
 
 test('a diagnostic sample of the overview is capped at tentative however well it goes', () => {
@@ -1340,12 +1400,24 @@ test('the objective the tutor is held to says all three things an overview has t
   assert.match(objective, /main trends|main features/i, 'what it must state');
   assert.match(objective, /no specific figures|without figures/i, 'what it must leave out');
   assert.match(objective, /separate from the detail/i, 'and that it stands apart from the detail');
-  for (const entry of WRITTEN_FOCUSED_TASKS) {
+  /* Every overview task in THIS pilot is judged against the same sentence.
+     WP20's other ten objectives (2026-09-22) each have their OWN one
+     sentence, which is the same rule applied eleven times over, not a
+     departure from it; each is asserted against the catalogue in
+     tests/writing-speaking-objectives.test.ts. */
+  for (const entry of WRITING_TASK1_OVERVIEW) {
     assert.equal(entry.objective, objective, 'every task in the pilot is judged against the same sentence');
     assert.equal(
       findActivity(focusedActivityId(entry.id), CATALOGUE)?.objective,
       objective,
       'and the Worker reads it from the catalogue, never from the request',
+    );
+  }
+  for (const entry of WRITTEN_FOCUSED_TASKS) {
+    assert.equal(
+      findActivity(focusedActivityId(entry.id), CATALOGUE)?.objective,
+      entry.objective,
+      `${entry.id}: the Worker reads its own objective from the catalogue, never from the request`,
     );
   }
 });

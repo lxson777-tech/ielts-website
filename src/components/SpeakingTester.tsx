@@ -27,6 +27,8 @@ import ExplainResult from './tutor/ExplainResult';
 import { getLearnerStore } from '../lib/learning/store.browser';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
+import SessionContinueBar from './learning/SessionContinueBar';
+import SpeakingObjectiveHandoff from './learning/SpeakingObjectiveHandoff';
 
 type Mode = 'part1' | 'part2' | 'part3';
 type Phase = 'menu' | 'asking' | 'prepping' | 'listening' | 'grading' | 'report' | 'error';
@@ -466,6 +468,29 @@ export default function SpeakingTester() {
             summary={`Estimated band ${result.overallBand.toFixed(1)}`}
           />
         )}
+
+        {/* The teaching hand-off (WP20), on the same rule Writing's has:
+            it appears only when the examiner who marked THIS recording
+            said something that names one of the objectives this package
+            built material for, and pressing it reconciles into the ONE
+            plan rather than offering a competing next step. */}
+        {mode && (
+          <SpeakingObjectiveHandoff result={result} mode={mode} />
+        )}
+
+        {/* The one control at the end of a piece of work, reading the same
+            session every other surface reads (WP20; mirrors WritingTester's
+            own mounting of this bar). */}
+        <SessionContinueBar
+          activityId={
+            promptIdRef.current
+              ? mode === 'part3'
+                ? speakingPart3ActivityId(promptIdRef.current)
+                : speakingActivityId(promptIdRef.current)
+              : null
+          }
+          compact
+        />
 
         <div className="flex flex-wrap justify-center gap-3">
           <button

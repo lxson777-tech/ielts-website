@@ -56,6 +56,11 @@ import * as learningToday from '../src/lib/i18n/dict/ru/learning-today.ts';
 import * as learningAccount from '../src/lib/i18n/dict/ru/learning-account.ts';
 import * as learningFocus from '../src/lib/i18n/dict/ru/learning-focus.ts';
 import * as learningWritingFocus from '../src/lib/i18n/dict/ru/learning-writing-focus.ts';
+import * as learningLibraries from '../src/lib/i18n/dict/ru/learning-libraries.ts';
+import * as learningVocab from '../src/lib/i18n/dict/ru/learning-vocab.ts';
+import * as learningFocusListening from '../src/lib/i18n/dict/ru/learning-focus-listening.ts';
+import * as learningFocusReading from '../src/lib/i18n/dict/ru/learning-focus-reading.ts';
+import * as learningObjectives from '../src/lib/i18n/dict/ru/learning-objectives.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -79,6 +84,11 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/learning-account.ts', mod: learningAccount },
   { file: 'dict/ru/learning-focus.ts', mod: learningFocus },
   { file: 'dict/ru/learning-writing-focus.ts', mod: learningWritingFocus },
+  { file: 'dict/ru/learning-libraries.ts', mod: learningLibraries },
+  { file: 'dict/ru/learning-vocab.ts', mod: learningVocab },
+  { file: 'dict/ru/learning-focus-listening.ts', mod: learningFocusListening },
+  { file: 'dict/ru/learning-focus-reading.ts', mod: learningFocusReading },
+  { file: 'dict/ru/learning-objectives.ts', mod: learningObjectives },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching

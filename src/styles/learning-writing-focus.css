@@ -225,6 +225,33 @@
 .written-model-notice li { font-size: 13.5px; line-height: 1.6; color: #e3e9dd; }
 .written-model-warning { margin: 12px 0 0; font-size: 12px; line-height: 1.55; color: #c6cfc0; }
 
+/* ── Sentence correction (WP20) ───────────────────────────────────────────── */
+
+.written-correction-sentence {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border, #dddfd6);
+  background: var(--color-surface, #fffefa);
+  margin-bottom: 4px;
+}
+.written-correction-sentence-label {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted, #616c64);
+}
+.written-correction-sentence-text {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--color-brand, #4f7a5c);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--color-ink, #263c35);
+}
+.written-correction-note { margin: 0; font-size: 14px; line-height: 1.7; }
+
 /* ── Before and after ─────────────────────────────────────────────────────── */
 
 .written-before-after { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 4px; }

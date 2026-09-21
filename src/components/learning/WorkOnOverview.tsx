@@ -1,14 +1,25 @@
-/* "Work on your overview": the calm hand-off from a marked Task 1 report.
+/* "Work on your overview": the calm hand-off from a marked Writing report.
+ *
+ * WP20 (2026-09-22) generalised this from Task 1 overviews alone to every
+ * Writing objective this package and Pilot B taught: the export name, the
+ * file name and the props shape are unchanged, because WritingTester.tsx
+ * imports it by both, and nothing about this component's job changed, only
+ * how many objectives it can recognise.
  *
  * This is the FIND A GAP end of the teaching cycle, and the two things it
  * must not do are the reason it exists as its own component.
  *
- * IT NEVER GUESSES. The card only appears when there is real evidence: the
- * examiner who marked this very report said something about the overview,
- * in which case the student reads the marker's own sentence word for word,
- * or a plain check of their own essay found no summarising sentence in it,
- * in which case it says so and calls itself a check. If the marker liked
- * the overview and the check found nothing, nothing appears.
+ * IT NEVER GUESSES. The card only appears when there is real evidence:
+ * the examiner who marked this very report said something about ONE
+ * objective (findWritingGap in written-focused-task.ts, which tries the
+ * overview first and then every other WP20 objective in a fixed order), in
+ * which case the student reads the marker's own sentence word for word, or
+ * a plain check of the essay found something checkable, in which case it
+ * says so and calls itself a check. Nothing found means nothing appears.
+ *
+ * IT OFFERS AT MOST ONE HAND-OFF. findWritingGap returns the first
+ * objective with something real to say and stops there; this component
+ * never shows more than the one card that follows from it.
  *
  * IT NEVER CREATES A SECOND NEXT STEP. A suggestion is not a plan. It is
  * reconciled against the shared session exactly the way
@@ -26,18 +37,11 @@ import { focusedActivityId, learningCatalogue } from '../../lib/learning/catalog
 import { focusedExerciseHref } from '../../data/focused-exercises';
 import { reconcileProposal } from '../tutor/proposalReconcile';
 import {
-  findOverviewGap,
-  overviewHandoffText,
+  findWritingGap,
+  writingHandoffText,
   type GradedWritingAttempt,
 } from './written-focused-task';
 import '../../styles/learning-writing-focus.css';
-
-/** The guided task this hand-off points at. Named here rather than searched
-    for, because it is the one piece of the pilot that teaches the objective
-    with the prompt's own guiding questions available; if the student has
-    already worked it, `chooseObjective` still carries the OBJECTIVE and the
-    planner picks the right material for it. */
-const GUIDED_TASK_ID = 'writing-task1-overview-guided';
 
 export interface WorkOnOverviewProps {
   /** The report that was just marked, in exactly the shape
@@ -49,11 +53,15 @@ export default function WorkOnOverview({ attempt }: WorkOnOverviewProps) {
   const { t } = useT();
   const [added, setAdded] = useState<{ isNow: boolean } | null>(null);
 
-  const finding = findOverviewGap([attempt]);
-  const text = overviewHandoffText(finding);
-  if (!text) return null;
+  const finding = findWritingGap([attempt]);
+  const text = finding ? writingHandoffText(finding) : null;
+  if (!finding || !text) return null;
 
-  const activityId = focusedActivityId(GUIDED_TASK_ID);
+  /* The guided task this objective's hand-off points at. `chooseObjective`
+     carries the OBJECTIVE (the scope key below), not just this one
+     activity id, so even a student who has already worked this exact task
+     still gets the planner's own pick for the objective. */
+  const activityId = focusedActivityId(finding.handoffTaskId);
   const session = currentSharedSession();
   const reconciliation = reconcileProposal(
     activityId,
@@ -97,13 +105,13 @@ export default function WorkOnOverview({ attempt }: WorkOnOverviewProps) {
       ) : (
         /* Not schedulable for this student right now. A real link, and
            nothing offered to add, so it is never mistaken for the plan. */
-        <a className="overview-handoff-link" href={withBase(focusedExerciseHref(GUIDED_TASK_ID))}>
-          {t('Try a short overview task')}
+        <a className="overview-handoff-link" href={withBase(focusedExerciseHref(finding.handoffTaskId))}>
+          {t('Try a short focused task')}
         </a>
       )}
 
       <p className="overview-handoff-note">
-        {t('Eight minutes on the overview alone. It never changes the band above, which stays what the examiner gave this report.')}
+        {t('A few minutes on this one thing. It never changes the band above, which stays what the examiner gave this report.')}
       </p>
     </div>
   );

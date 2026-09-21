@@ -18,10 +18,12 @@ import {
   ALL_FOCUSED_EXERCISES,
   MISTAKE_REASONS,
   isWrittenFocusedTask,
+  isAuthoredFocusedExercise,
   writtenItemId,
   type AnyFocusedExercise,
   type FocusedExercise as FocusedExerciseData,
   type WrittenFocusedTask as WrittenFocusedTaskData,
+  type AuthoredFocusedExercise as AuthoredFocusedExerciseData,
 } from '../../../data/focused-exercises';
 import { ALL_TESTS } from '../../../data/tests';
 import { WRITING_PROMPTS } from '../../../data/writing-prompts';
@@ -31,9 +33,10 @@ import { focusedActivityId } from '../../../lib/learning/catalog';
 import { blockPlainText, segmentLessonBody } from '../../../lib/learning/lesson-blocks';
 import {
   guidingQuestionsFor,
-  modelOverviewOf,
+  modelParagraphFor,
   type WrittenTaskView,
 } from '../../../components/learning/written-focused-task';
+import { groupAudioWindow } from '../../../components/learning/focused-exercise';
 import type { FocusedExerciseView, FocusedItemView } from '../../../components/learning/focused-exercise';
 
 /* Every English lesson body, read at build time only, so an exercise can
@@ -91,21 +94,32 @@ if (isWrittenFocusedTask(exercise)) {
   }
 
   /* The prompt's own guiding questions, written by an IELTS teacher to lead
-     the student to their own answer. A check gets none: that is what makes
-     it a check. */
+     the student to their own answer, OR (WP20) the task's own guiding
+     questions when it carries its own rather than the prompt's shared
+     "Build your overview" ones. A check gets none either way: that is what
+     makes it a check. */
   const plan = WRITING_PLANS[prompt.id];
-  const guiding = guidingQuestionsFor(task.role, plan?.overviewHints);
+  const guiding = guidingQuestionsFor(task.role, task.guidingQuestions ?? plan?.overviewHints);
   if (task.role !== 'independent-check' && guiding.length === 0) {
-    throw new Error(`Written task ${task.id} has no guiding questions: ${prompt.id} needs overviewHints.`);
+    throw new Error(`Written task ${task.id} has no guiding questions: give it its own, or ${prompt.id} needs overviewHints.`);
   }
 
-  /* The band 8 model's own overview paragraph. Carried to the browser but
-     never rendered before the student's own attempt, which the component
-     enforces and tests/pilot-task1-overview.test.ts pins down. */
+  /* "One way to write it": the band 8 model's overview paragraph by
+     default (Pilot B, unchanged), or the paragraph WP20's task names by
+     position (modelParagraphIndex). Carried to the browser but never
+     rendered before the student's own attempt, which the component
+     enforces and tests/pilot-task1-overview.test.ts pins down for the
+     overview. Sentence correction sets neither a model paragraph nor a
+     WRITING_PROMPTS model to show: there is nothing to reveal about the
+     band 8 essay for a grammar pattern, so it is skipped rather than
+     forced, and the component's model panel simply does not render when
+     modelOverview is null (see WritingFocusedTask.tsx). */
   const models = getModelAnswers(prompt.id);
   const model = models.find((entry) => entry.band === 8) ?? models[0];
-  const modelOverview = model ? modelOverviewOf(model.text) : null;
-  if (!modelOverview) throw new Error(`Written task ${task.id}: ${prompt.id} has no band 8 model overview to show afterwards.`);
+  const modelOverview = task.correctionSentence ? null : model ? modelParagraphFor(model.text, task.modelParagraphIndex) : null;
+  if (!task.correctionSentence && !modelOverview) {
+    throw new Error(`Written task ${task.id}: ${prompt.id} has no band 8 model paragraph at index ${task.modelParagraphIndex ?? '(overview)'} to show afterwards.`);
+  }
 
   writtenView = {
     exerciseId: task.id,
@@ -130,7 +144,51 @@ if (isWrittenFocusedTask(exercise)) {
     guidingQuestions: guiding,
     modelOverview,
     noticeInTheModel: task.noticeInTheModel,
+    ...(task.correctionSentence ? { correctionSentence: task.correctionSentence } : {}),
+    ...(task.correctionNote ? { correctionNote: task.correctionNote } : {}),
+    ...(task.transferPrompt ? { transferPrompt: task.transferPrompt } : {}),
     ...teachingBlock(task),
+  };
+} else if (isAuthoredFocusedExercise(exercise)) {
+  /* ── Authored practice: no real paper, so nothing to look up ─────────
+     Sentence endings has no real Reading material at all (LEAD-DECISIONS
+     Q1). Its passage, questions and options are written directly into the
+     data file rather than resolved from ALL_TESTS, but the VIEW shape
+     handed to FocusedExercise is exactly the item-answers one, so the
+     component needs no branch of its own: the same select-from-a-shared-
+     list rendering that matching headings already uses is correct here
+     too. `verified: false` on the catalogue activity (see catalog.ts) is
+     what actually keeps this out of an independent check; this page does
+     not enforce that again. */
+  const entry = exercise as AuthoredFocusedExerciseData;
+  const items: FocusedItemView[] = entry.items.map((item) => ({
+    itemId: item.id,
+    questionId: item.questionId,
+    number: item.number,
+    label: item.label,
+    answer: item.answer,
+    explanation: item.explanation,
+  }));
+  itemView = {
+    exerciseId: entry.id,
+    activityId: focusedActivityId(entry.id),
+    contentVersion: 1,
+    role: entry.role,
+    paper: entry.paper,
+    subskill: entry.subskill,
+    title: entry.title,
+    objective: entry.objective,
+    expectedMinutes: entry.expectedMinutes,
+    testId: `authored:${entry.id}`,
+    attribution: entry.attribution,
+    authored: true,
+    instructionText: blockPlainText(entry.instructionHtml),
+    passage: entry.passage,
+    instructionHtml: entry.instructionHtml,
+    options: entry.options,
+    items,
+    reasons: MISTAKE_REASONS[entry.reasons] ?? MISTAKE_REASONS.generic,
+    ...teachingBlock(entry),
   };
 } else {
   /* ── Item answers: one question group out of one real paper ─────────── */
@@ -144,8 +202,8 @@ if (isWrittenFocusedTask(exercise)) {
   if (group.type !== entry.subskill) {
     throw new Error(`Focused exercise ${entry.id} says ${entry.subskill} but ${test.id} group ${entry.source.groupIndex} is ${group.type}.`);
   }
-  if (part.stimulus.kind !== 'passage') {
-    throw new Error(`Focused exercise ${entry.id} points at a part with no passage, which this page cannot render.`);
+  if (part.stimulus.kind !== 'passage' && part.stimulus.kind !== 'audio') {
+    throw new Error(`Focused exercise ${entry.id} points at a part with no passage and no recording, which this page cannot render.`);
   }
 
   /* The numbered slot a student would see on the real paper, so a question
@@ -162,20 +220,108 @@ if (isWrittenFocusedTask(exercise)) {
     }
   }
 
+  /* The fixed value list for the two types whose choices are the same on
+     every paper and so are never printed as the group's own `options`
+     (TestPlayer.tsx makes exactly this same exception for the same reason).
+     Free text (no list at all: sentence completion, and table completion's
+     blanks) is signalled to the component by `before`/`after` on the item
+     instead, never by an empty options list here. */
+  const FIXED_GROUP_OPTIONS: Partial<Record<string, readonly string[]>> = {
+    tfng: ['True', 'False', 'Not Given'],
+    'yes-no-notgiven': ['Yes', 'No', 'Not Given'],
+  };
+  const isFreeText = group.type === 'sentence-completion' || group.type === 'table-completion';
+  const groupOptions = FIXED_GROUP_OPTIONS[group.type] ?? group.options ?? [];
+
   const items: FocusedItemView[] = entry.items.map((item) => {
     const question = group.questions.find((candidate) => candidate.id === item.questionId);
     if (!question) throw new Error(`Focused exercise ${entry.id} names ${item.questionId}, which is not in that group.`);
-    const answer = Array.isArray(question.answer) ? (question.answer[0] as string) : question.answer;
+    /* Multiple answer's real material always shares one accepted PAIR
+       across two numbered questions (schema.ts's answerPairId), printed on
+       both as the same array. Keeping it as an array, rather than the
+       [0] every other type collapses to, is what lets isCorrect() accept
+       either slot naming either value, which is what "either distinct
+       correct selection earns one mark, regardless of which slot contains
+       it" (the schema's own words for this) means in practice. */
+    const answer =
+      group.type === 'multiple-answer' && Array.isArray(question.answer)
+        ? question.answer
+        : Array.isArray(question.answer)
+          ? (question.answer[0] as string)
+          : question.answer;
+    /* Multiple choice: each question carries its OWN four options, not the
+       group. Multiple answer: every question in the pair offers the same
+       shared pool (group.choices), letter and label together. Neither is
+       the shared per-group list every other select-from-a-list type uses,
+       so both ride on the item instead of on `groupOptions` above. */
+    const perItemOptions =
+      group.type === 'multiple-choice' && question.options
+        ? question.options.map((text, index) => ({
+            value: ['A', 'B', 'C', 'D', 'E', 'F'][index] ?? String(index + 1),
+            label: `${['A', 'B', 'C', 'D', 'E', 'F'][index] ?? String(index + 1)}. ${text}`,
+          }))
+        : group.type === 'multiple-answer' && group.choices
+          ? group.choices.map((choice) => ({ value: choice.value, label: `${choice.value}. ${choice.label}` }))
+          : undefined;
+    const label = isFreeText ? blockPlainText(question.textHtml ?? '') : blockPlainText(question.textHtml ?? question.id);
     return {
       itemId: item.id,
       questionId: question.id,
       number: numberById.get(question.id) ?? 0,
-      label: blockPlainText(question.textHtml ?? question.id),
+      label,
       answer,
       explanation: question.explanation,
       evidence: question.evidence,
+      ...(perItemOptions ? { options: perItemOptions } : {}),
+      ...(isFreeText ? { before: question.before ?? '', after: question.after ?? '' } : {}),
     };
   });
+
+  /* Reading shows the passage it was written against; Listening plays the
+     recording segment it was heard in (WP18b/WP19, 2026-09-22). Exactly one
+     of the two is set, decided by the part's own stimulus, never guessed
+     from the paper's skill: a future Listening part with a passage-shaped
+     stimulus (there is none today) would still render correctly. */
+  let stimulusView: Pick<FocusedExerciseView, 'passage' | 'audio'>;
+  if (part.stimulus.kind === 'passage') {
+    stimulusView = {
+      passage: {
+        label: part.stimulus.label,
+        title: part.stimulus.title,
+        paragraphs: part.stimulus.paragraphs,
+      },
+    };
+  } else {
+    const audioStimulus = part.stimulus;
+    const recordingSrc = test.audioSrc ?? audioStimulus.src;
+    if (!recordingSrc) {
+      throw new Error(`Focused exercise ${entry.id}: ${test.id} part ${entry.source.partIndex} has no recording to play.`);
+    }
+    if (audioStimulus.startSeconds == null || audioStimulus.endSeconds == null) {
+      throw new Error(
+        `Focused exercise ${entry.id}: ${test.id} part ${entry.source.partIndex} has no startSeconds/endSeconds, so its segment of the shared recording cannot be bounded.`,
+      );
+    }
+    const partWindow = { startSeconds: audioStimulus.startSeconds, endSeconds: audioStimulus.endSeconds };
+    const { segment, narrowed, itemWindows } = groupAudioWindow(
+      audioStimulus.transcriptHtml ?? '',
+      items.map((item) => ({ itemId: item.itemId, evidence: item.evidence })),
+      partWindow,
+    );
+    for (const item of items) {
+      const window = itemWindows.get(item.itemId);
+      if (window) item.audioReplay = window;
+    }
+    stimulusView = {
+      audio: {
+        recordingSrc,
+        partLabel: audioStimulus.label,
+        part: partWindow,
+        segment,
+        narrowed,
+      },
+    };
+  }
 
   itemView = {
     exerciseId: entry.id,
@@ -190,23 +336,22 @@ if (isWrittenFocusedTask(exercise)) {
     testId: test.id,
     attribution: entry.source.attribution,
     instructionText: blockPlainText(group.instructionHtml ?? ''),
-    passage: {
-      label: part.stimulus.label,
-      title: part.stimulus.title,
-      paragraphs: part.stimulus.paragraphs,
-    },
+    ...stimulusView,
     instructionHtml: group.instructionHtml ?? '',
     legendHtml: group.legendHtml,
-    options: group.options ?? [],
+    options: groupOptions,
     items,
     reasons: MISTAKE_REASONS[entry.reasons] ?? MISTAKE_REASONS.generic,
+    ...(group.wordLimit != null ? { wordLimit: group.wordLimit } : {}),
     ...teachingBlock(entry),
   };
 }
 
 const description = writtenView
   ? 'A short focused writing task on one objective, built from a real exam prompt.'
-  : 'A short focused exercise on one question type, built from real exam material.';
+  : isAuthoredFocusedExercise(exercise)
+    ? 'A short focused practice set written for this site, not a real exam question.'
+    : 'A short focused exercise on one question type, built from real exam material.';
 ---
 
 <BaseLayout wide title={`${exercise.title} · IELTS Portal`} description={description}>
