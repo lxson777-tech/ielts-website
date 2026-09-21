@@ -233,8 +233,8 @@ export default function MrEzPanel() {
         aria-controls="mrez-panel"
         onClick={() => setOpen((v) => !v)}
       >
-        <MrEzAvatar mood={open ? 'explaining' : mood} size={30} />
-        <span className="mrez-launcher-label">{open ? 'Close' : 'Ask Mr EZ'}</span>
+        <MrEzAvatar mood={open ? 'explaining' : mood} size={42} />
+        <span className="mrez-launcher-label">{open ? 'Close Mr EZ' : 'Ask Mr EZ'}<small>Your AI tutor</small></span>
       </button>
 
       <div
@@ -246,7 +246,7 @@ export default function MrEzPanel() {
         hidden={!open}
       >
         <header className="mrez-head">
-          <MrEzAvatar mood={mood} size={38} />
+          <MrEzAvatar mood={mood} size={52} />
           <div className="mrez-head-text">
             <strong>Mr EZ</strong>
             <span>
@@ -254,7 +254,7 @@ export default function MrEzPanel() {
                 ? 'Invigilating: no answers until the timer stops'
                 : model === 'simulated'
                   ? 'Simulated tutor (no AI is being called)'
-                  : 'Your IELTS tutor'}
+                  : 'Your personal AI tutor'}
             </span>
           </div>
           <button type="button" className="mrez-close" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}>
@@ -264,6 +264,13 @@ export default function MrEzPanel() {
         </header>
 
         <div className="mrez-log" ref={logRef} role="log" aria-live="polite" aria-relevant="additions text">
+          {state.turns.length === 0 && (
+            <div className="mrez-intro">
+              <span className="mrez-intro-eyebrow">A little guidance. A lot of progress.</span>
+              <h2>Let’s figure it out together.</h2>
+              <p>Understand a tricky question, learn from your results, or find your next step.</p>
+            </div>
+          )}
           {!configured && (
             <p className="mrez-note">{unavailableReason} Your next step on the dashboard still works, it just comes with a plain explanation instead of his.</p>
           )}
@@ -277,7 +284,7 @@ export default function MrEzPanel() {
 
           {state.turns.length === 0 && configured && signedIn !== false && (
             <div className="mrez-empty">
-              <p>Ask me anything about IELTS, this lesson, or what to do next. I will not hand you answers during practice, but I will show you how to get them.</p>
+              <p>Where shall we start? During practice, I guide you without giving away the answer.</p>
               <ul className="mrez-suggestions">
                 {suggestions.map((s) => (
                   <li key={s}>
