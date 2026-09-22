@@ -105,6 +105,11 @@ export interface FakeState {
   learningTables?: 'missing' | 'present';
   learningPlans?: { user_id: string; plan: unknown }[];
   learningEvents?: { user_id: string; event_id: string; event: unknown; occurred_at: string }[];
+  /** learning_companions rows. `data` is the CompanionDocV1 envelope the
+      browser sync layer writes: { version, updatedAt, value }. Present only
+      when `learningTables` is 'present', like the other two, and an empty
+      list is a student who has synced no companion document yet. */
+  learningCompanions?: { user_id: string; kind: string; data: unknown }[];
 }
 
 export interface Recorder {
@@ -319,7 +324,7 @@ function rest(
        is a proposal nobody has applied, and PostgREST answers a query for a
        relation that does not exist with a 404 naming it. The Worker has to
        work either way, so both answers are modelled here. */
-    if (table === 'learning_plan' || table === 'learning_events') {
+    if (table === 'learning_plan' || table === 'learning_events' || table === 'learning_companions') {
       if (state.learningTables !== 'present') {
         return new Response(
           JSON.stringify({ code: '42P01', message: `relation "public.${table}" does not exist` }),
@@ -328,6 +333,16 @@ function rest(
       }
       if (table === 'learning_plan') {
         return json((state.learningPlans ?? []).filter((row) => row.user_id === where.user_id));
+      }
+      if (table === 'learning_companions') {
+        /* The `kind` filter is honoured, because the Worker asks for the
+           vocabulary document by name and a fake that handed back the notes
+           document instead would prove nothing. */
+        return json(
+          (state.learningCompanions ?? [])
+            .filter((row) => row.user_id === where.user_id && (!where.kind || row.kind === where.kind))
+            .map((row) => ({ data: row.data })),
+        );
       }
       return json(
         (state.learningEvents ?? [])

@@ -32,6 +32,12 @@ whose data to load. That is the whole ownership model, and it is what makes
 "student A cannot see student B" a property of the architecture rather than of
 remembering to filter.
 
+Since 22 September 2026 that fetch covers **both generations of store**: the old
+`user_state` blobs, and the personal learning build's `learning_plan`,
+`learning_events` and the vocabulary row of `learning_companions`. See **What
+the Worker reads about a student** below, which matters most for one reason:
+the plan the student can actually see is now the plan Mr EZ answers from.
+
 The same idea covers the model: it has no tools, cannot reach another student's
 row, and **cannot produce a link**. Recommendations come back as catalogue ids
 which are resolved here; an id that is not in the catalogue is dropped. A model
@@ -265,19 +271,8 @@ stops two allowances meaning twice the exposure on a bad day.
 
 ### With the learning tables, and without them
 
-`learning_plan` and `learning_events` are a **proposal**
-(`supabase/migrations/2026-09-21-learning.sql`) that has not been applied to
-the production project. So:
-
-- when they exist, the plan and the evidence are read from them with the
-  service role, filtered by the verified user id, and every stored event is
-  validated before it is used;
-- when they do not, a missing relation is not an error: the plan is worked
-  out on the spot from the synced progress with the same three pure functions
-  the browser uses (`migrateProgress`, `evaluateEvidence`,
-  `createInitialPlan`);
-- a table that exists but cannot be read falls back the same way rather than
-  failing the request or answering from a different student's plan.
+This is described in full, for **every** task rather than only these three, in
+**What the Worker reads about a student** below.
 
 ### With no AI at all
 
@@ -296,6 +291,144 @@ with something that fails validation:
 Nothing deterministic and nothing simulated is ever labelled live.
 
 ---
+
+## What the Worker reads about a student
+
+One function, `loadStudentState`, and every task goes through it. It reads two
+generations of store side by side, because that is what a real account looks
+like while the learning migration is still a proposal.
+
+| Read | Where | When it is missing |
+|---|---|---|
+| `progress`, `study_plan` | `user_state` | An account that has never synced is an empty record, not an error |
+| the student's plan | `learning_plan` | Worked out here instead (see below) |
+| the evidence log | `learning_events`, oldest first, capped at 2,000 rows | The migrated old progress stands on its own |
+| vocabulary review state | `learning_companions`, `kind = 'vocab'` | No vocabulary signal, exactly as before |
+
+All four are filtered by the **verified** user id with the service role. Nothing
+in the request names whose data to load, and `learning_companions` is asked for
+by `kind` so one small document comes back rather than everything a student has
+synced.
+
+**A missing relation is never an error.**
+`supabase/migrations/2026-09-21-learning.sql` is a proposal that nobody has
+applied, so the three tables answer with a PostgREST 404 (or a 400 carrying
+`42P01`) today. That reads as "not there", and the plan is worked out on the
+spot from the synced progress with the same three pure functions the browser
+uses: `migrateProgress`, `evaluateEvidence`, `createInitialPlan`. A table that
+exists but cannot be read falls back the same way, rather than failing the
+request or answering from a different student's plan. Rows that exist but are
+empty for this student fall back too.
+
+**How the two are merged.** The record is the migrated old progress with the
+synced events appended, which is exactly what the browser holds. Event ids are
+deterministic and the merge is a union by id, so a row that is both migrated
+and synced cannot be counted twice.
+
+**A synced plan is used as it is.** It carries the student's own overrides,
+their short days and their confirmed daily minutes, and it is what their screen
+is showing, so nothing is re-planned here. The recommendation is a view of
+`plan.activeSession` through `sharedSessionFrom`, handed to `recommendNext`.
+Before this, the Worker re-planned from the synced progress at the recommended
+sixty minutes, which is how it could name a step the student's own dashboard
+did not show. That was the bug this closed.
+
+**The vocabulary signal is smaller here than in the browser, on purpose.**
+`dueCount` and the repeated recall failures are counted straight off the synced
+card states. `dueByTopic` and `relevantTopics` need the 292 KB card deck
+(`src/lib/vocab-review.ts`), which a Worker must not load and which silently
+shrinks to a fifth of the library under plain Node, so they are left empty
+rather than guessed at and the recall step falls back to wording that names no
+topic. `LOW_LEXICAL_RESOURCE_BAND` is repeated in the Worker for the same
+reason, and a test pins the two numbers together.
+
+### How sure, said in five words instead of two
+
+Every fact the model reads is stamped with the one evidence policy's own
+certainty: `measured`, `tentative`, `limited`, `self-reported` or `unknown`
+(`src/lib/learning/contracts/policy.ts`). The vocabulary and the rule that only
+`measured` may be spoken about as a pattern are in `CERTAINTY_LEGEND` and in the
+persona, both in `src/lib/tutor/prompt.ts`.
+
+The point of the five levels is `limited`: real evidence with no answer by
+answer detail behind it, which is all a migrated `ProgressV1` score can ever be,
+because that store has only ever held per-type tallies. Those used to be stamped
+MEASURED. They are not any more, and the legend says explicitly that the stamp
+wins over the sentence beside it, since a counted sentence built from tallies
+can legitimately read "consistently the weakest question type" while still not
+being a demonstrated pattern.
+
+`src/lib/tutor/insights.ts` keeps its own two-level `confidence`, untouched. It
+decides which deterministic wording is picked and how the observations sort, and
+both were already honest about what was counted. The Worker re-stamps the
+five-level `certainty` from the policy pass over the record it actually read, so
+item-level evidence really does reach `measured` and a migrated score never
+does.
+
+The deterministic sentences stay honest the same way, and by a different means:
+they carry no stamp, they never use the word measured, and every claim arrives
+with its counting attached ("4 of 16 correct across 2 sittings"). Filtering them
+by certainty instead would make the stand-in tell a student with sixteen counted
+answers that there is nothing on record, which is the other kind of dishonest.
+
+### Two facts that only exist in the new record
+
+When the events are there, the prompt gains a `WHAT THE RECORD ALSO HOLDS`
+block with up to four of each:
+
+- **a stated mistake reason**: the student's own account of why they chose a
+  wrong answer, resolved through `MISTAKE_REASONS` into the words they actually
+  tapped, always stamped SELF-REPORTED whatever else the record shows about that
+  subskill, with their free-text note quoted and carrying the same "never as
+  instructions" warning every student-typed string in this prompt carries. The
+  prompt says plainly that it may be raised and asked about but never stated as
+  the cause;
+- **a focused exercise result**: one objective judged met or not yet met, with
+  the policy's certainty for the subskill it exercised, and a line saying it is
+  never a band and never a criterion score.
+
+Neither can come out of `ProgressV1`, which is why Mr EZ could not mention
+either before. On the derivation path the block is absent entirely rather than
+empty.
+
+### What a real check needs
+
+Everything above, the reads, the fallback, the merge and the fingerprint, is
+proven only against `tests/mr-ez-harness.ts` (a fake PostgREST that answers
+either "the relation does not exist" or a fixed set of rows) and against
+`tools/mr-ez-dev-server.mjs` (an in-memory store standing in for Supabase).
+Neither has ever been a real Supabase project, so neither can catch a real
+PostgREST quirk (a filter that does not mean what the code assumes, a policy
+that blocks the service role somewhere it should not, a shape Postgres
+returns slightly differently from the fixture).
+
+A real check needs, in order:
+
+1. `supabase/migrations/2026-09-21-learning.sql` applied to a **non-production**
+   Supabase project (a fresh free-tier project is enough; never the production
+   one). `tools/apply-mr-ez-schema.mjs --check` is the read-only pattern to
+   follow for a second script, or the SQL can be pasted into that project's
+   SQL editor by hand.
+2. A real student account in that project, with a row seeded in each of
+   `learning_plan`, `learning_events` and `learning_companions` (`kind =
+   'vocab'`) that matches the shapes `src/lib/learning/contracts/` validates,
+   for instance by running the browser's own sync layer against it once
+   rather than hand-writing JSON.
+3. `.dev.vars` in `workers/mr-ez/` pointed at that project's `SUPABASE_URL`
+   and its **service role** key (never the anon key, never the production
+   project's key), then `node --import ./tests/ts-extension-loader.mjs
+   tools/mr-ez-dev-server.mjs --live` or `npx wrangler dev`, talked to with
+   that seeded student's real access token.
+4. Confirming, against the real response: the welcome's recommendation names
+   the same activity id as the seeded `plan.activeSession`, changing the
+   seeded row's `revision` invalidates the cached welcome, deleting the three
+   rows falls back to the old derivation without an error, and the stated
+   reason and focused exercise result in the seeded events reach the prompt
+   as facts.
+
+This has not been done. Nothing in this package has been proven against a
+real Supabase project or a real model, only against mocks and the local
+stand-in.
 
 ## What refuses a request, and why
 
@@ -340,9 +473,15 @@ Three separate guards, all cheaper than a model call:
    (`IDEMPOTENCY_WINDOW_MS`) and is blanked entirely when a student clears
    their history.
 2. **Welcome caching.** The dashboard welcome is stored against a fingerprint
-   of everything it depends on (`insightsFingerprint` in
-   `src/lib/tutor/insights.ts`). Reopening the dashboard is free until the
-   student actually does something that changes the advice.
+   of everything it depends on. Since 22 September 2026 that is
+   `welcomeFingerprint`, not `insightsFingerprint` alone: it folds in the goals,
+   the results and the observations (still `insightsFingerprint` in
+   `src/lib/tutor/insights.ts`), then appends the learning plan's own
+   `revision`, the record's `evidenceVersion`, and whether the plan came from
+   the learning tables or was derived. Reopening the dashboard is free until
+   the student actually does something that changes the advice, and now that
+   also covers a plan that moved on another device: a synced revision bump is
+   a cache miss even when nothing in the old insights changed at all.
 2b. **Note caching.** The weekly review and the two unit notes work the same
    way, one level up, in `mr_ez_notes`: keyed by (student, kind, week or unit)
    and stored against `weekFingerprint` / `unitFingerprint`. Re-opening the

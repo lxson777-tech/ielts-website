@@ -92,9 +92,18 @@ import {
   TUTOR_OUTPUT_SCHEMA,
   buildInstructions,
   renderContext,
+  type FocusedResultFact,
+  type RecordFacts,
   type ReviewContext,
+  type StatedReasonFact,
 } from '../../../src/lib/tutor/prompt';
-import { observationEvidence, observationText, readInsights, insightsFingerprint } from '../../../src/lib/tutor/insights';
+import {
+  observationEvidence,
+  observationText,
+  readInsights,
+  insightsFingerprint,
+  type StudentInsights,
+} from '../../../src/lib/tutor/insights';
 import { buildCatalog, findActivity, lessonForType, activityBlurb, activityLabel } from '../../../src/lib/tutor/catalog';
 import { recommendNext, recommendationReason, shortlist } from '../../../src/lib/tutor/recommend';
 import { summariseAttempt, activityForAssessment } from '../../../src/lib/tutor/assessment';
@@ -148,11 +157,24 @@ import { appendAllEvidence, emptyLearnerRecord, firstAnswerFor, validateEvidence
 import { migrateProgress } from '../../../src/lib/learning/migrate';
 import { createInitialPlan, proposalShortlist, validatePlanProposal } from '../../../src/lib/learning/planner';
 import { evaluateEvidence } from '../../../src/lib/learning/policy';
-import { constraintsFrom, goalsFrom, lessonMapsFor, planSettingsFromSavedPlan, type LegacyPlanSettings } from '../../../src/lib/learning/adapters';
+import {
+  constraintsFrom,
+  goalsFrom,
+  lessonMapsFor,
+  planSettingsFromSavedPlan,
+  sharedSessionFrom,
+  type LegacyPlanSettings,
+  type SharedSessionView,
+} from '../../../src/lib/learning/adapters';
+/* The mistake reasons a student can pick from, so a stated reason reaches
+   the tutor as the words the student actually tapped rather than as a bare
+   id. Free: src/lib/learning/catalog.ts already imports this module for the
+   spoken tasks, so nothing new lands in the bundle. */
+import { MAX_REASON_NOTE_CHARS, MISTAKE_REASONS } from '../../../src/data/focused-exercises';
 import type { LearnerRecordV1, EvidenceEvent } from '../../../src/lib/learning/contracts/evidence';
-import type { PersonalPlanV1 } from '../../../src/lib/learning/contracts/plan';
-import type { PolicyOutputV1 } from '../../../src/lib/learning/contracts/policy';
-import type { CatalogueActivity } from '../../../src/lib/learning/contracts/catalog';
+import type { PersonalPlanV1, VocabularyProblemSignal, VocabularySignalV1 } from '../../../src/lib/learning/contracts/plan';
+import type { Certainty, PolicyOutputV1, PolicyScopeKey } from '../../../src/lib/learning/contracts/policy';
+import type { CatalogueActivity, LearningCatalogueV1 } from '../../../src/lib/learning/contracts/catalog';
 
 export interface Env {
   OPENAI_API_KEY?: string; // wrangler secret
@@ -457,20 +479,51 @@ const EMPTY_PROGRESS: ProgressV1 = {
   activity: {},
 };
 
-/** The student's own synced state. Scoped to the verified id by the filter —
-    there is no argument here a caller could influence. A student who has
-    never synced simply has no row, which is an empty record, not an error. */
+/** Everything about one student this Worker answers from.
+ *
+ *  Two generations of store side by side, which is exactly what production
+ *  looks like while the learning migration is still a proposal:
+ *
+ *  - `progress` and `savedPlan` are the OLD synced blobs in `user_state`.
+ *    They are still where the goals, the weekly review and the unit notes
+ *    read a target band and an exam date from.
+ *  - `learning` is the plan and the evidence of the personal learning
+ *    build: read from `learning_plan` and `learning_events` when those
+ *    relations exist, and worked out on the spot from `progress` when they
+ *    do not.
+ */
+interface StudentState {
+  progress: ProgressV1;
+  savedPlan: SavedPlan | null;
+  learning: LearningState;
+}
+
+/** The student's own synced state. Scoped to the verified id by the filter,
+    so there is no argument here a caller could influence. A student who has
+    never synced simply has no row, which is an empty record, not an error.
+
+    Both generations are read in one call because every caller needs both,
+    and because the plan the student is actually looking at (their synced
+    `learning_plan`, overrides and all) is what the Worker's answer has to
+    agree with. Before 22 September 2026 this returned only the old blobs
+    and every recommendation was re-planned here from them, which is how the
+    Worker could name a different next step from the student's own screen. */
 async function loadStudentState(
   deps: Deps,
   env: Env,
   userId: string,
-): Promise<{ progress: ProgressV1; plan: SavedPlan | null }> {
+  now: string,
+  today: string,
+): Promise<StudentState> {
   const rows = await restGet(deps, env, `user_state?user_id=eq.${userId}&select=progress,study_plan`);
   const row = rows[0];
-  if (!isRecord(row)) return { progress: structuredClone(EMPTY_PROGRESS), plan: null };
-  const progress = isRecord(row.progress) ? ({ ...EMPTY_PROGRESS, ...row.progress } as ProgressV1) : structuredClone(EMPTY_PROGRESS);
-  const plan = isRecord(row.study_plan) ? (row.study_plan as unknown as SavedPlan) : null;
-  return { progress, plan };
+  const progress =
+    isRecord(row) && isRecord(row.progress)
+      ? ({ ...EMPTY_PROGRESS, ...row.progress } as ProgressV1)
+      : structuredClone(EMPTY_PROGRESS);
+  const savedPlan = isRecord(row) && isRecord(row.study_plan) ? (row.study_plan as unknown as SavedPlan) : null;
+  const learning = await loadLearningState(deps, env, userId, progress, savedPlan, now, today);
+  return { progress, savedPlan, learning };
 }
 
 /* ── Conversation ──────────────────────────────────────────────────────── */
@@ -687,6 +740,11 @@ interface LearningState {
       rather than being worked out here from the old synced stores. Recorded
       so a reply can never quietly claim more provenance than it has. */
   stored: boolean;
+  /** What the synced vocabulary companion said, when there was one. Null
+      when the companion table is absent, empty or unreadable, which is the
+      same answer the Worker always gave before it read the companion at
+      all. */
+  vocabulary: VocabularySignalV1 | null;
 }
 
 /** How many evidence rows are read for one turn. The policy layer needs
@@ -732,6 +790,7 @@ async function loadLearningState(
 
   let storedPlan: PersonalPlanV1 | null = null;
   let storedEvents: EvidenceEvent[] | null = null;
+  let storedVocab: unknown = null;
 
   try {
     const planRows = await restGetOptional(deps, env, `learning_plan?user_id=eq.${userId}&select=plan`);
@@ -753,6 +812,19 @@ async function loadLearningState(
         if (validateEvidenceEvent(event).length === 0) storedEvents.push(event as unknown as EvidenceEvent);
       }
     }
+    /* The vocabulary companion, when it is there. One small document, so
+       the Worker's recall step is built from the same review state the
+       browser plans with instead of from nothing. See
+       vocabularySignalFrom for what can honestly be read out of it here. */
+    const vocabRows = await restGetOptional(
+      deps,
+      env,
+      `learning_companions?user_id=eq.${userId}&kind=eq.vocab&select=data`,
+    );
+    if (vocabRows) {
+      const row = vocabRows[0];
+      if (isRecord(row)) storedVocab = row.data;
+    }
   } catch (err) {
     /* A learning table that exists but could not be read is not a reason to
        answer with a different student's plan or with none: fall back to the
@@ -760,17 +832,28 @@ async function loadLearningState(
     console.error('mr-ez: learning tables unreadable, deriving instead', err instanceof Error ? err.message : 'unknown');
     storedPlan = null;
     storedEvents = null;
+    storedVocab = null;
   }
 
-  const record =
-    storedEvents && storedEvents.length > 0
-      ? appendAllEvidence(emptyLearnerRecord(), storedEvents)
-      : migrateProgress(progress, savedPlan, maps.lessonMinutes, { now, lessonSubskills: maps.lessonSubskills });
+  /* The record the browser would hold: migrated old progress, then the
+     synced events appended. The ids are deterministic and the merge is a
+     union by id (contracts/evidence.ts, "APPEND ONLY, MERGE BY ID"), so a
+     migrated row that has also been synced cannot be counted twice. */
+  const migrated = migrateProgress(progress, savedPlan, maps.lessonMinutes, {
+    now,
+    lessonSubskills: maps.lessonSubskills,
+  });
+  const record = storedEvents && storedEvents.length > 0 ? appendAllEvidence(migrated, storedEvents) : migrated;
 
   const policy = evaluateEvidence({ record, goals: storedPlan?.goals ?? goals, now });
+  const vocabulary = vocabularySignalFrom(storedVocab, policy, today);
 
+  /* A CONFIRMED plan is not re-planned here. It is what the student's own
+     screen is showing, overrides, short days and all, so the Worker reads
+     it as it is and every answer built on it agrees with what they can
+     see. */
   if (storedPlan && typeof storedPlan.revision === 'number' && isRecord(storedPlan.activeSession)) {
-    return { plan: storedPlan, record, policy, stored: true };
+    return { plan: storedPlan, record, policy, stored: true, vocabulary };
   }
 
   const { plan } = createInitialPlan({
@@ -781,8 +864,271 @@ async function loadLearningState(
     today,
     goals,
     constraints: constraintsFrom(settings),
+    vocabulary,
   });
-  return { plan, record, policy, stored: false };
+  return { plan, record, policy, stored: false, vocabulary };
+}
+
+/* ── Vocabulary, as much of it as a Worker can honestly see ────────────── */
+
+/** A recent Lexical Resource average under this counts as an observed
+    vocabulary problem. The same number as `LOW_LEXICAL_RESOURCE_BAND` in
+    src/lib/vocab-review.ts, repeated here because that module builds the
+    whole 292 KB card deck at load time and a Worker must not import it.
+    tests/mr-ez-worker.test.ts pins the two together so they cannot drift. */
+export const LOW_LEXICAL_RESOURCE_BAND = 5.5;
+
+/** Failed recalls before a word counts as a repeated recall failure. Same
+    rule and the same number as `observedVocabProblems`. */
+const VOCAB_LAPSE_LIMIT = 2;
+
+/** How many problem words are handed to the planner. The browser passes all
+    of them; a Worker reading a synced document keeps its input bounded. */
+const VOCAB_PROBLEM_LIMIT = 20;
+
+/** What the Worker can honestly say about this student's vocabulary from
+ *  the synced companion document alone.
+ *
+ *  The browser gathers the full signal through src/lib/vocab-review.ts,
+ *  which knows every word's topic. A Worker cannot: that deck is built from
+ *  292 KB of lesson bodies through a Vite-only feature, and under plain
+ *  Node it silently shrinks to a fifth of the library (architecture risk
+ *  6). So the two fields that need the deck, `dueByTopic` and
+ *  `relevantTopics`, are left EMPTY rather than guessed at, and the recall
+ *  step falls back to wording that names no topic.
+ *
+ *  The counts need no deck. A card state exists only for a word the browser
+ *  introduced, and "due for recall today" is `reps > 0` and `due <= today`:
+ *  `wordsDueForRecall` also drops the recognise mode, and
+ *  `chooseReviewMode` never returns recognise once `reps > 0`, so the two
+ *  filters are the same one.
+ *
+ *  Null is a perfectly good answer and is what an absent, empty or
+ *  unreadable companion produces. */
+export function vocabularySignalFrom(stored: unknown, policy: PolicyOutputV1, today: string): VocabularySignalV1 | null {
+  const cards = vocabCardsFrom(stored);
+  if (!cards) return null;
+
+  let dueCount = 0;
+  const failures: { word: string; lapses: number }[] = [];
+  for (const [word, state] of Object.entries(cards)) {
+    if (!isRecord(state)) continue;
+    const reps = typeof state.reps === 'number' ? state.reps : 0;
+    const due = typeof state.due === 'string' ? state.due : '';
+    const lapses = typeof state.lapses === 'number' ? state.lapses : 0;
+    if (reps > 0 && due && due <= today) dueCount += 1;
+    if (lapses >= VOCAB_LAPSE_LIMIT) failures.push({ word, lapses });
+  }
+
+  const problems: VocabularyProblemSignal[] = failures
+    .sort((a, b) => b.lapses - a.lapses)
+    .slice(0, VOCAB_PROBLEM_LIMIT)
+    /* No `topic`: that needs the card deck. A problem without one is still
+       a real problem, and the planner treats it as such. */
+    .map(({ word, lapses }) => ({ reason: 'repeated-recall-failure' as const, word, lapses }));
+
+  const bands = lexicalResourceBands(policy);
+  if (bands.length > 0) {
+    const average = bands.reduce((a, b) => a + b, 0) / bands.length;
+    if (average < LOW_LEXICAL_RESOURCE_BAND) problems.push({ reason: 'low-lexical-resource' });
+  }
+
+  return { dueCount, dueByTopic: {}, relevantTopics: [], problems };
+}
+
+/** The card map inside a synced companion row. Accepts the envelope the
+    sync layer writes (`{ version, updatedAt, value }`) and a bare store,
+    because a row written by an older client is still the student's. */
+function vocabCardsFrom(stored: unknown): Record<string, unknown> | null {
+  if (!isRecord(stored)) return null;
+  const inner = isRecord(stored.value) ? stored.value : stored;
+  const cards = isRecord(inner) ? inner.cards : undefined;
+  if (!isRecord(cards) || Object.keys(cards).length === 0) return null;
+  return cards as Record<string, unknown>;
+}
+
+/** Lexical Resource bands the graders really returned, read off the policy
+    rather than out of the record a second time. The same two scopes
+    src/lib/learning/index.ts reads in the browser. */
+function lexicalResourceBands(policy: PolicyOutputV1): number[] {
+  const bands: number[] = [];
+  for (const paper of ['writing', 'speaking'] as const) {
+    const band = policy.estimates.find((e) => e.scopeKey === `criterion:${paper}:lexicalResource`)?.band;
+    if (typeof band === 'number') bands.push(band);
+  }
+  return bands;
+}
+
+/* ── Mr EZ's facts, stamped from the record actually read ──────────────── */
+
+/** The policy scope one observation is about, or null when it is about no
+    single scope (a study habit). The three shapes are the ones
+    readObservations produces, and the keys are the ones readFacts already
+    looks up, so this cannot drift from either. */
+function scopeKeyForObservation(id: string): PolicyScopeKey | null {
+  if (id.startsWith('weak:') || id.startsWith('strong:')) return `subskill:${id.slice(id.indexOf(':') + 1)}`;
+  if (id.startsWith('criterion:')) return id;
+  if (id.startsWith('gap:')) return `paper:${id.slice('gap:'.length)}`;
+  return null;
+}
+
+/** Re-stamp the insights with the certainty of the record the Worker really
+ *  read.
+ *
+ *  src/lib/tutor/insights.ts already attaches the one evidence policy's
+ *  five-level certainty, but it computes it on the spot from the OLD synced
+ *  progress, which is capped at `limited` because `ProgressV1` has only
+ *  ever held per-type tallies and never one answer at a time. Now that the
+ *  learning tables are read, the honest stamp is the one from THAT pass:
+ *  `measured` where there is genuinely independent, item-level evidence,
+ *  and no higher than `limited` where the only evidence is a migrated
+ *  score.
+ *
+ *  The two-level `confidence` is deliberately left exactly as it was. It
+ *  decides which wording src/lib/tutor/recommend.ts picks and how the
+ *  observations sort, both of which were already honest about what was
+ *  counted; the five-level `certainty` is what the prompt renders and what
+ *  the deterministic chat fallback filters on.
+ */
+function withPolicyCertainty(insights: StudentInsights, policy: PolicyOutputV1): StudentInsights {
+  const certaintyOf = (scopeKey: PolicyScopeKey | null): Certainty | undefined =>
+    scopeKey ? policy.estimates.find((estimate) => estimate.scopeKey === scopeKey)?.certainty : undefined;
+
+  const facts = insights.facts;
+  return {
+    ...insights,
+    facts: {
+      ...facts,
+      results: facts.results.map((r) => ({ ...r, certainty: certaintyOf(`paper:${r.skill}`) ?? r.certainty })),
+      typeAccuracy: facts.typeAccuracy.map((t) => ({
+        ...t,
+        certainty: certaintyOf(`subskill:${t.skill}:${t.type}`) ?? t.certainty,
+      })),
+      criterionTrends: facts.criterionTrends.map((c) => ({
+        ...c,
+        certainty: certaintyOf(`criterion:${c.skill}:${c.key}`) ?? c.certainty,
+      })),
+    },
+    observations: insights.observations.map((o) => ({
+      ...o,
+      certainty: certaintyOf(scopeKeyForObservation(o.id)) ?? o.certainty,
+    })),
+  };
+}
+
+/** How many stated reasons and focused results the tutor is told about.
+    Enough to be specific, short enough that a long record cannot inflate
+    one turn's prompt. */
+const RECORD_FACT_LIMIT = 4;
+
+/** How much of a focused judgement's own feedback is quoted into the
+    prompt. It is already capped at MAX_OBJECTIVE_FEEDBACK_CHARS when it is
+    written; this is the tighter cap for repeating four of them in one
+    turn. */
+const FOCUSED_FEEDBACK_CHARS = 300;
+
+/** The two things only the item-level record holds: what the student said
+ *  about their own mistake, and how a focused exercise was judged.
+ *
+ *  Neither can come out of `ProgressV1`, which is why Mr EZ could not
+ *  mention either until the Worker started reading the learner record. Both
+ *  are rendered with a certainty and neither is ever a band: a stated
+ *  reason is always self-reported, and a focused exercise is one objective
+ *  judged met or not yet met. */
+function readRecordFacts(record: LearnerRecordV1, policy: PolicyOutputV1, catalogue: LearningCatalogueV1): RecordFacts {
+  const statedReasons: StatedReasonFact[] = [];
+  const focusedResults: FocusedResultFact[] = [];
+  const newestFirst = [...record.events].sort((a, b) => (a.at < b.at ? 1 : -1));
+
+  for (const event of newestFirst) {
+    const outcome = event.outcome;
+    if (focusedResults.length < RECORD_FACT_LIMIT && outcome.kind === 'objective') {
+      const activity = catalogue.activities.find((entry) => entry.id === event.activityId);
+      focusedResults.push({
+        at: event.at,
+        activityLabel: activity ? activity.objective : event.activityId,
+        subskillLabel: outcome.subskill.replace(/-/g, ' '),
+        met: outcome.met,
+        /* The evidence policy's own level for what this exercised. A
+           judgement with no estimate behind it is one occasion, which is
+           `tentative` and nothing more. */
+        certainty:
+          policy.estimates.find((estimate) => estimate.scopeKey === `subskill:${event.paper}:${outcome.subskill}`)
+            ?.certainty ?? 'tentative',
+        byModel: outcome.byModel,
+        ...(outcome.feedback ? { feedback: sanitiseText(outcome.feedback, FOCUSED_FEEDBACK_CHARS) } : {}),
+      });
+    }
+
+    if (statedReasons.length < RECORD_FACT_LIMIT && event.paper && event.items) {
+      for (const item of event.items) {
+        if (!item.statedReason) continue;
+        const subskill = item.subskill ?? event.subskill;
+        const label = mistakeReasonLabel(subskill, item.statedReason.reasonId);
+        if (!label) continue;
+        statedReasons.push({
+          at: event.at,
+          paper: event.paper,
+          subskillLabel: subskill.replace(/-/g, ' '),
+          reasonLabel: label,
+          ...(item.statedReason.note ? { note: sanitiseText(item.statedReason.note, MAX_REASON_NOTE_CHARS) } : {}),
+        });
+        if (statedReasons.length >= RECORD_FACT_LIMIT) break;
+      }
+    }
+
+    if (statedReasons.length >= RECORD_FACT_LIMIT && focusedResults.length >= RECORD_FACT_LIMIT) break;
+  }
+
+  return { statedReasons, focusedResults };
+}
+
+/** The words the student actually tapped, for a stored reason id.
+ *
+ *  The id is stored without the list it came from, and two lists can use
+ *  the same id with slightly different wording ('repeated-words' is in both
+ *  the Matching Headings list and the generic one). The subskill's own list
+ *  is tried first, then the generic one, then any: an id that resolves
+ *  nowhere is dropped rather than shown as a bare id. */
+function mistakeReasonLabel(subskill: string, reasonId: string): string | null {
+  const lists = MISTAKE_REASONS as Readonly<Record<string, readonly { id: string; label: string }[]>>;
+  const find = (list: readonly { id: string; label: string }[] | undefined) =>
+    list?.find((reason) => reason.id === reasonId);
+  const found =
+    find(lists[subskill]) ??
+    find(lists.generic) ??
+    Object.values(lists)
+      .flat()
+      .find((reason) => reason.id === reasonId);
+  return found?.label ?? null;
+}
+
+/** The student's one current session, as every surface sees it, or null
+    when the plan cannot be read as one. Null is not a failure: the caller
+    falls back to working a session out on the spot, which is what this
+    Worker did for every turn before it read the learning tables. */
+function sessionView(learning: LearningState, catalogue: LearningCatalogueV1): SharedSessionView | null {
+  try {
+    return sharedSessionFrom({ plan: learning.plan, catalogue, derived: !learning.stored });
+  } catch {
+    return null;
+  }
+}
+
+/** The cache key for the dashboard welcome.
+ *
+ *  `insightsFingerprint` covers the goals, the results and the observations
+ *  in one language. Two more things now decide what the welcome says, and
+ *  both live outside the insights: the REVISION of the plan the advice is a
+ *  view of, and the EVIDENCE VERSION of the record behind it. Without them
+ *  a student who changed their plan on their phone, or whose work synced
+ *  from another device, would be handed a cached paragraph about the plan
+ *  they no longer have. `stored` is in it too, so the first turn after the
+ *  learning tables start answering is not served from the derived era. */
+function welcomeFingerprint(insights: StudentInsights, locale: Locale, learning: LearningState): string {
+  return `${insightsFingerprint(insights, locale)}-p${learning.plan.revision}-e${learning.record.evidenceVersion}-${
+    learning.stored ? 'synced' : 'derived'
+  }`;
 }
 
 /** What to do about a set of wrong answers, decided in code from the counts.
@@ -1229,6 +1575,15 @@ export function simulateReply(request: TutorRequest, context: SimulationContext)
     };
   }
 
+  /* Selected on what was actually COUNTED, which is what `confidence`
+     means, and deliberately not on the five-level `certainty` the prompt
+     stamps each line with. A student whose only evidence is migrated
+     per-type tallies is `limited` under the policy, and filtering those out
+     here would make this stand-in say the record holds nothing to go on
+     while it holds fifteen counted answers. The honest handling of that
+     student is the stamp the model reads (see CERTAINTY_LEGEND in
+     src/lib/tutor/prompt.ts), not silence: the sentence below never uses
+     the word measured, and it prints the counting beside every claim. */
   const measured = insights.observations.filter((o) => o.confidence === 'measured');
   const evidence = measured.length
     ? tutorText(locale, 'What the record actually shows: {evidence}', {
@@ -1450,16 +1805,30 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     }
   }
 
-  // 2. The student's own record, fetched here, never accepted from the wire.
-  const { progress, plan } = await loadStudentState(deps, env, userId);
+  /* 2. The student's own record, fetched here, never accepted from the wire.
+        Both generations of it: the old synced blobs, and the plan and
+        evidence of the personal learning build when those tables exist.
+        The five-level certainty every fact below is stamped with comes from
+        the record that was ACTUALLY read, so item-level evidence can reach
+        'measured' and a migrated score never does. */
+  const nowDate = deps.now();
+  const nowIso = nowDate.toISOString();
+  const today = nowIso.slice(0, 10);
+  const { progress, savedPlan, learning } = await loadStudentState(deps, env, userId, nowIso, today);
   const modules = buildCourse();
-  const insights = readInsights(progress, plan, courseLessonCount(modules), deps.now());
+  const catalogue = learningCatalogue();
+  const insights = withPolicyCertainty(
+    readInsights(progress, savedPlan, courseLessonCount(modules), nowDate),
+    learning.policy,
+  );
 
-  // 3. The welcome is cached against a fingerprint of everything it depends
-  //    on, INCLUDING the language it was written in. Reopening the dashboard
-  //    must not cost anything; switching language must not hand back a
-  //    paragraph in the language the student just left.
-  const fingerprint = insightsFingerprint(insights, locale);
+  /* 3. The welcome is cached against a fingerprint of everything it depends
+        on, INCLUDING the language it was written in and the plan the advice
+        is a view of. Reopening the dashboard must not cost anything;
+        switching language must not hand back a paragraph in the language
+        the student just left; and a plan that moved on another device must
+        not be described by yesterday's welcome. */
+  const fingerprint = welcomeFingerprint(insights, locale, learning);
   if (req.task === 'welcome' && !req.message) {
     const rows = await restGet(
       deps,
@@ -1490,11 +1859,11 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
        asked for something it should never have asked for. Saying that
        plainly beats silently writing a review of half a week. */
     const offsetMinutes = req.tzOffsetMinutes ?? 0;
-    const target = reviewTarget(progress, plan, deps.now(), offsetMinutes);
+    const target = reviewTarget(progress, savedPlan, nowDate, offsetMinutes);
     if (target.mode !== 'last-week') {
       throw new TutorRequestError('bad-request', 'There is no completed week to review yet.');
     }
-    const facts = readWeek(progress, plan, target.window, deps.now(), offsetMinutes);
+    const facts = readWeek(progress, savedPlan, target.window, nowDate, offsetMinutes);
     if (facts.empty) {
       throw new TutorRequestError('bad-request', 'Nothing was recorded last week, so there is nothing to review.');
     }
@@ -1507,7 +1876,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     // and a guarantee that is only true in another file is not one worth
     // relying on inside the part that spends money.
     if (!req.unit) throw new TutorRequestError('bad-request', 'A unit note needs which unit it is about.');
-    const facts = readUnit(req.unit.unitId, progress, plan, insights);
+    const facts = readUnit(req.unit.unitId, progress, savedPlan, insights);
     if (!facts) throw new TutorRequestError('bad-request', 'That unit is not part of the course.');
 
     /* Three refusals, all of them "there is nothing honest to say here", and
@@ -1565,8 +1934,23 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     review = { testId: siteTest.id, testTitle: siteTest.title, skill: siteTest.skill, items };
   }
 
-  // 5. What to recommend, decided in code.
-  const recommendation = recommendNext(insights, progress);
+  /* 5. What to recommend, decided in code and as a VIEW of the student's
+        one current session.
+        The session is handed in rather than worked out inside
+        recommendNext, because the plan loaded above is the one the student
+        is looking at: their overrides, their short day, their confirmed
+        daily minutes. Before this the Worker re-planned from the synced
+        progress with the recommended sixty minutes, which is how it could
+        name a step the student's own screen did not show. A session that
+        cannot be built is null, and recommendNext then falls back to
+        deriving one exactly as it did before. */
+  const recommendation = recommendNext(insights, progress, {
+    session: sessionView(learning, catalogue),
+    savedPlan,
+    now: nowIso,
+    today,
+    catalogue,
+  });
   let chosenActivityId: string | null = recommendation.activity.id;
   let fallbackReason = recommendationReason(recommendation, locale);
 
@@ -1633,6 +2017,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
       : undefined;
 
   const activities = shortlist(insights, progress, recommendation.activity);
+  const recordFacts = readRecordFacts(learning.record, learning.policy, catalogue);
   /* The persona and the task rules, plus the language rules when the
      student is not reading English. The DATA below stays English whatever
      the language: the model reads English facts and writes Russian prose.
@@ -1661,6 +2046,11 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
        thing allowed to say what comes next. */
     sessionObjective: recommendation.session?.objective,
     review,
+    /* What only the item-level record holds: a reason the student gave for
+       one of their own wrong answers, and how a focused exercise was
+       judged. Empty on the derivation path, because ProgressV1 has never
+       held either. */
+    record: recordFacts,
     history,
     summary: conversation?.summary ?? null,
     message: req.message,
@@ -2196,10 +2586,9 @@ async function runProposeNext(
 ): Promise<ProposeNextWireReply> {
   const limits = await checkLimits(deps, env, userId, 'conversation');
 
-  const { progress, plan: savedPlan } = await loadStudentState(deps, env, userId);
   const now = deps.now().toISOString();
   const today = now.slice(0, 10);
-  const state = await loadLearningState(deps, env, userId, progress, savedPlan, now, today);
+  const { learning: state } = await loadStudentState(deps, env, userId, now, today);
   const catalogue = learningCatalogue();
 
   /* The shortlist is built HERE, from the student's own plan. What the
