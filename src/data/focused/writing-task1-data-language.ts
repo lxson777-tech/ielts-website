@@ -45,6 +45,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-120-task1', task: 'task1', form: 'chart', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   guidingQuestions: [
     'Did this line or bar rise, fall, fluctuate, or stay roughly level? Which single verb says that accurately?',
@@ -68,6 +69,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-109-task1', task: 'task1', form: 'chart', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   noticeInTheModel: NOTICE,
 };

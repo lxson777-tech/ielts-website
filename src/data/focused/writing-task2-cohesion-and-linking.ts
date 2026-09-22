@@ -46,6 +46,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-128-task2', task: 'task2', form: 'two-part', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'answer',
   modelParagraphIndex: 1,
   guidingQuestions: [
     'What does your first sentence claim? What word in your second sentence could refer back to it, such as "this" or "that reason"?',
@@ -69,6 +70,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-126-task2', task: 'task2', form: 'two-part', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'answer',
   modelParagraphIndex: 1,
   noticeInTheModel: NOTICE,
 };

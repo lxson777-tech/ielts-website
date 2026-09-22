@@ -27,9 +27,10 @@
  */
 
 import { countWords } from '../../lib/writing/mechanics';
-import type { WrittenCheckId } from '../../data/focused-exercises';
+import type { WrittenCheckId, WrittenPiece } from '../../data/focused-exercises';
 import type { Paper, Subskill } from '../../lib/learning/contracts/catalog';
 import type { AssistanceLevel, CompletionState, EvidenceMode } from '../../lib/learning/contracts/evidence';
+import { ASSISTANCE_ORDER } from '../../lib/learning/contracts/evidence';
 import type { EvidenceDraft, ItemOutcomeDraft } from '../../lib/learning/evidence';
 import { promptExposureKey } from '../../lib/learning/evidence';
 import { raise } from './focused-exercise';
@@ -44,6 +45,18 @@ export interface WrittenTaskView {
   role: 'guided-practice' | 'independent-check';
   paper: Paper;
   subskill: Subskill;
+  /** Task 1 or Task 2, copied from the exercise registry's own
+      `source.task` by the page that builds this view (and checked there
+      against the prompt itself, which fails the build when the two
+      disagree). Every event this task writes is scoped by it, so it is
+      never a literal in the component and never read off a title: that is
+      exactly how Task 2 work came to be filed as Task 1 evidence. */
+  task: 'task1' | 'task2';
+  /** The one noun the screen calls this piece of writing: an overview, a
+      paragraph, an introduction, a conclusion, a sentence, an answer. Data,
+      from the registry, so "Check my overview" can never appear on a Task 2
+      conclusion. */
+  piece: WrittenPiece;
   title: string;
   /** THE sentence the work is judged against, and the only one. Shown to
       the student, because they are owed the standard they are held to, and
@@ -847,6 +860,58 @@ export function withWrittenHelp(
   return { ...next, assistance: level };
 }
 
+/** WHEN each piece of help counts, which is a different question from what
+ *  counts as help.
+ *
+ *  These two functions are the whole of finding 2 in the 22 September 2026
+ *  review, and they are here rather than inside the component so the ORDER
+ *  is a rule with a test on it instead of two lines that can be swapped by
+ *  accident. An answer is recorded with the help the student actually had
+ *  WHEN THEY WROTE IT. The feedback that answer is about to receive is not
+ *  help used to produce it, and treating it as such disqualified every
+ *  successfully judged independent check the moment it succeeded.
+ *
+ *  `helpToRecord` is deliberately a function and deliberately returns the
+ *  state untouched: the submitted answer is recorded against the state as
+ *  it stood BEFORE submission, and naming that makes it a decision rather
+ *  than an omission. Snapshot it before the evaluation is awaited. */
+export function helpToRecord(helpBeforeSubmission: WrittenHelpState): WrittenHelpState {
+  return helpBeforeSubmission;
+}
+
+/** What the NEXT answer starts from.
+ *
+ *  A judged evaluation is help for everything that comes after it: a
+ *  revision written once the student has read the feedback is assisted, and
+ *  the learner store links it to the original by their shared item id. An
+ *  evaluation that never happened (the tutor is off, over its cap or
+ *  unreachable) changes nothing, because nothing was explained. */
+export function helpAfterEvaluation(
+  helpBeforeSubmission: WrittenHelpState,
+  evaluation: WrittenEvaluation,
+): WrittenHelpState {
+  return evaluation.judged ? withWrittenHelp(helpBeforeSubmission, { tutorJudged: true }) : helpBeforeSubmission;
+}
+
+/** The help state as a stored draft gives it back.
+ *
+ *  Anything missing or malformed reads as nothing shown, and the flags are
+ *  put back through withWrittenHelp so a stored level can never be LOWER
+ *  than the flags beside it imply. That is what stops a refresh turning an
+ *  attempt that had a hint into unaided work. */
+export function writtenHelpFrom(value: unknown): WrittenHelpState {
+  const raw = (value ?? {}) as Partial<WrittenHelpState>;
+  const stored = ASSISTANCE_ORDER.includes(raw.assistance as AssistanceLevel)
+    ? (raw.assistance as AssistanceLevel)
+    : 'none';
+  return withWrittenHelp(NO_WRITTEN_HELP, {
+    guidingQuestionsOpened: raw.guidingQuestionsOpened === true,
+    modelShown: raw.modelShown === true,
+    tutorJudged: raw.tutorJudged === true,
+    assistance: stored,
+  });
+}
+
 /** Practice with help available, a check with none, or a short sample taken
  *  to find out where the student is.
  *
@@ -929,8 +994,11 @@ export function writtenItemDraft(input: {
  *    never recorded as one, so an unjudged attempt carries met false and
  *    byModel false and the policy reads it as work done rather than as a
  *    demonstration.
- *  - `taskScope` is always the task the prompt really is, which is what
- *    keeps Task 1 evidence out of the Task 2 scope.
+ *  - `taskScope` is always the task the prompt really is, taken from the
+ *    view (which the page fills from the exercise registry's own
+ *    `source.task`), which is what keeps Task 1 evidence out of the Task 2
+ *    scope. It is never passed in beside the view: a caller that can name
+ *    the task separately is a caller that can name it wrongly, and one did.
  *  - `assistance` comes from the help state, which only ever rises.
  *  - `sourceMaterial` names the prompt, so writing about this chart marks
  *    it met and a later check built on it is correctly not unseen.
@@ -943,12 +1011,19 @@ export function writtenEvidenceDraft(input: {
   help: WrittenHelpState;
   evaluation: WrittenEvaluation;
   at: string;
-  task: 'task1' | 'task2';
   stepRole?: string | null;
   sessionId?: string;
   locale?: string;
 }): EvidenceDraft {
   const met = input.evaluation.judged && input.evaluation.verdict === 'met';
+  const task = input.view.task;
+  if (task !== 'task1' && task !== 'task2') {
+    /* Unreachable from the site: the page fills this from the registry and
+       the type makes it required. Loud rather than silent all the same,
+       because the one thing worse than no evidence is evidence filed under
+       the wrong task. */
+    throw new Error(`Written task ${input.view.exerciseId} has no task in its view, so nothing can be scoped.`);
+  }
   return {
     activityId: input.view.activityId,
     contentVersion: input.view.contentVersion,
@@ -958,7 +1033,7 @@ export function writtenEvidenceDraft(input: {
     mode: modeForWritten(input.view.role, input.stepRole),
     completion: completionOfWritten(input.text),
     assistance: input.help.assistance,
-    taskScope: { kind: 'writing-task', task: input.task },
+    taskScope: { kind: 'writing-task', task },
     outcome: {
       kind: 'objective',
       met,
@@ -1488,12 +1563,19 @@ export interface WrittenAttemptRecord {
 export interface WrittenTaskDraft {
   /** What is in the box right now, sent or not. */
   draft: string;
+  /** What had been shown to the student when this was last written.
+   *
+   *  Help is a fact about the attempt, not about the tab it was typed in.
+   *  Keeping it here is what stops a refresh (or coming back tomorrow to a
+   *  resumed draft) turning an answer written after the guiding questions,
+   *  after the model, or after Mr EZ's feedback into unaided work. */
+  help: WrittenHelpState;
   /** Everything submitted so far, oldest first, so the original and the
       revision can be read side by side. */
   attempts: readonly WrittenAttemptRecord[];
 }
 
-export const EMPTY_WRITTEN_DRAFT: WrittenTaskDraft = { draft: '', attempts: [] };
+export const EMPTY_WRITTEN_DRAFT: WrittenTaskDraft = { draft: '', help: NO_WRITTEN_HELP, attempts: [] };
 
 /** Per viewer and per exercise, scoped by the same owner namespace the
  *  learner record uses, so one student's unfinished overview can never
@@ -1519,6 +1601,9 @@ export function readWrittenDraft(
     const parsed = JSON.parse(raw) as Partial<WrittenTaskDraft>;
     return {
       draft: typeof parsed.draft === 'string' ? parsed.draft : '',
+      /* A draft written before this field existed reads as nothing shown,
+         which is the only honest answer: there is no record either way. */
+      help: writtenHelpFrom(parsed.help),
       attempts: Array.isArray(parsed.attempts)
         ? parsed.attempts.filter((entry): entry is WrittenAttemptRecord => typeof entry?.text === 'string')
         : [],
@@ -1549,9 +1634,144 @@ export function writeWrittenDraft(
 
 /** Add one submitted attempt, keeping everything before it. The draft box
     is left holding the same words, so a student who submitted and is about
-    to revise does not find an empty box. */
-export function withAttempt(held: WrittenTaskDraft, attempt: WrittenAttemptRecord): WrittenTaskDraft {
-  return { draft: attempt.text, attempts: [...held.attempts, attempt] };
+    to revise does not find an empty box.
+ *
+ *  `help` is what the NEXT answer starts from (helpAfterEvaluation above),
+ *  not what this attempt was recorded with: the attempt's own level has
+ *  already gone to the learner record and is not rewritten here. Left out,
+ *  the state that was already held is kept, never lowered. */
+export function withAttempt(
+  held: WrittenTaskDraft,
+  attempt: WrittenAttemptRecord,
+  help?: WrittenHelpState,
+): WrittenTaskDraft {
+  return {
+    draft: attempt.text,
+    help: help ? withWrittenHelp(held.help, help) : held.help,
+    attempts: [...held.attempts, attempt],
+  };
+}
+
+/* ── Calling the piece of writing what it is ─────────────────────────────── */
+
+/** Everything on the screen that names the piece of writing, as keys the
+ *  component puts through t() so Russian gets the same structure.
+ *
+ *  Whole sentences rather than a noun dropped into a template: Russian
+ *  nouns carry gender, and "Проверить мой" against "Проверить моё" is not
+ *  something a variable can decide. */
+export interface WrittenPieceWording {
+  /** The primary button. */
+  checkKey: string;
+  /** The primary button while the evaluation is out. */
+  checkingKey: string;
+  /** The label above the box, and the name of the region it is in. */
+  yourWorkKey: string;
+  placeholderKey: string;
+  /** Opening the guiding questions, and the title of the panel they open. */
+  showQuestionsKey: string;
+  questionsTitleKey: string;
+  metKey: string;
+  partlyKey: string;
+  notYetKey: string;
+  /** The closing line of guided practice. */
+  neverMasteryKey: string;
+}
+
+/* The wording every piece that is not an overview shares. The overview
+   keeps its own approved sentences (Pilot B, 19 September 2026); the rest
+   differ only where the noun differs, and a shared placeholder, guiding
+   question opener and closing line stop five near-identical sentences from
+   having to be translated five times over. */
+const WRITE_IT_HERE = 'Write it here.';
+const SHOW_QUESTIONS = 'Show the questions that lead you to it';
+const QUESTIONS_TITLE = 'Questions to work through';
+const NEVER_MASTERY = 'Nothing here is a band, and one short piece of writing is never mastery.';
+
+const PIECE_WORDING: Readonly<Record<WrittenPiece, WrittenPieceWording>> = {
+  overview: {
+    checkKey: 'Check my overview',
+    checkingKey: 'Looking at your overview...',
+    yourWorkKey: 'Your overview',
+    placeholderKey: 'Two sentences on the main trends, with no figures.',
+    showQuestionsKey: 'Show the questions that build an overview',
+    questionsTitleKey: 'Build your overview',
+    metKey: 'Met: this does what an overview has to do.',
+    partlyKey: 'Partly: some of what an overview has to do is here.',
+    notYetKey: 'Not yet: this does not do what an overview has to do.',
+    neverMasteryKey: 'Nothing here is a band, and one overview is never mastery.',
+  },
+  paragraph: {
+    checkKey: 'Check my paragraph',
+    checkingKey: 'Looking at your paragraph...',
+    yourWorkKey: 'Your paragraph',
+    placeholderKey: WRITE_IT_HERE,
+    showQuestionsKey: SHOW_QUESTIONS,
+    questionsTitleKey: QUESTIONS_TITLE,
+    metKey: 'Met: this does what the paragraph has to do.',
+    partlyKey: 'Partly: some of what the paragraph has to do is here.',
+    notYetKey: 'Not yet: this does not do what the paragraph has to do.',
+    neverMasteryKey: NEVER_MASTERY,
+  },
+  introduction: {
+    checkKey: 'Check my introduction',
+    checkingKey: 'Looking at your introduction...',
+    yourWorkKey: 'Your introduction',
+    placeholderKey: WRITE_IT_HERE,
+    showQuestionsKey: SHOW_QUESTIONS,
+    questionsTitleKey: QUESTIONS_TITLE,
+    metKey: 'Met: this does what the introduction has to do.',
+    partlyKey: 'Partly: some of what the introduction has to do is here.',
+    notYetKey: 'Not yet: this does not do what the introduction has to do.',
+    neverMasteryKey: NEVER_MASTERY,
+  },
+  conclusion: {
+    checkKey: 'Check my conclusion',
+    checkingKey: 'Looking at your conclusion...',
+    yourWorkKey: 'Your conclusion',
+    placeholderKey: WRITE_IT_HERE,
+    showQuestionsKey: SHOW_QUESTIONS,
+    questionsTitleKey: QUESTIONS_TITLE,
+    metKey: 'Met: this does what the conclusion has to do.',
+    partlyKey: 'Partly: some of what the conclusion has to do is here.',
+    notYetKey: 'Not yet: this does not do what the conclusion has to do.',
+    neverMasteryKey: NEVER_MASTERY,
+  },
+  sentence: {
+    checkKey: 'Check my sentence',
+    checkingKey: 'Looking at your sentence...',
+    yourWorkKey: 'Your sentence',
+    placeholderKey: WRITE_IT_HERE,
+    showQuestionsKey: SHOW_QUESTIONS,
+    questionsTitleKey: QUESTIONS_TITLE,
+    metKey: 'Met: this does what the sentence has to do.',
+    partlyKey: 'Partly: some of what the sentence has to do is here.',
+    notYetKey: 'Not yet: this does not do what the sentence has to do.',
+    neverMasteryKey: NEVER_MASTERY,
+  },
+  answer: {
+    checkKey: 'Check my answer',
+    checkingKey: 'Looking at your answer...',
+    yourWorkKey: 'Your answer',
+    placeholderKey: WRITE_IT_HERE,
+    showQuestionsKey: SHOW_QUESTIONS,
+    questionsTitleKey: QUESTIONS_TITLE,
+    metKey: 'Met: this does what the answer has to do.',
+    partlyKey: 'Partly: some of what the answer has to do is here.',
+    notYetKey: 'Not yet: this does not do what the answer has to do.',
+    neverMasteryKey: NEVER_MASTERY,
+  },
+};
+
+/** What to call this piece of writing, everywhere on the screen. */
+export function writtenPieceWording(piece: WrittenPiece): WrittenPieceWording {
+  return PIECE_WORDING[piece] ?? PIECE_WORDING.answer;
+}
+
+/** "Writing Task 1" or "Writing Task 2", above the prompt. Exam wording, so
+    it stays English in both languages, exactly as the paper prints it. */
+export function writtenTaskLabel(task: 'task1' | 'task2'): string {
+  return task === 'task2' ? 'Writing Task 2' : 'Writing Task 1';
 }
 
 /* ── What the student is told afterwards ─────────────────────────────────── */
@@ -1570,7 +1790,15 @@ export function writtenFeedbackFor(input: {
   role: WrittenTaskView['role'];
   evaluation: WrittenEvaluation;
   assisted: boolean;
+  /** What this piece of writing is called, so the closing panel does not
+      say "overview" on a conclusion. */
+  piece: WrittenPiece;
+  /** Task 1 or Task 2, so the panel does not promise a chart to a student
+      who was answering an essay question. */
+  task: 'task1' | 'task2';
 }): WrittenFeedbackText {
+  const wording = writtenPieceWording(input.piece);
+  const isTask2 = input.task === 'task2';
   if (!input.evaluation.judged) {
     return {
       demonstratedKey:
@@ -1582,21 +1810,24 @@ export function writtenFeedbackFor(input: {
   }
   if (input.role === 'independent-check') {
     return {
-      demonstratedKey:
-        'On a visual you had not seen, with no guiding questions and no help, Mr EZ judged this against the one objective above.',
+      demonstratedKey: isTask2
+        ? 'On a question you had not seen, with no guiding questions and no help, Mr EZ judged this against the one objective above.'
+        : 'On a visual you had not seen, with no guiding questions and no help, Mr EZ judged this against the one objective above.',
       certaintyKey:
         'That is one short sample judged against one objective. It is enough to move what your plan works on next, and it is not a band and not a score for a whole report.',
-      uncertainKey:
-        'What two sentences cannot show is whether the rest of the report holds up under twenty minutes. A full Task 1 marked by the examiner is what shows that.',
+      uncertainKey: isTask2
+        ? 'What one short piece cannot show is whether a whole essay holds up under forty minutes. A full Task 2 marked by the examiner is what shows that.'
+        : 'What two sentences cannot show is whether the rest of the report holds up under twenty minutes. A full Task 1 marked by the examiner is what shows that.',
     };
   }
   return {
     demonstratedKey: input.assisted
       ? 'You wrote this with the guiding questions available, so it shows guided work rather than what you can do on your own.'
       : 'You wrote this without opening the guiding questions.',
-    certaintyKey:
-      'This was practice. The check that follows, on a chart you have not seen, is what shows whether the method travels.',
-    uncertainKey: 'Nothing here is a band, and one overview is never mastery.',
+    certaintyKey: isTask2
+      ? 'This was practice. The check that follows, on a question you have not seen, is what shows whether the method travels.'
+      : 'This was practice. The check that follows, on a chart you have not seen, is what shows whether the method travels.',
+    uncertainKey: wording.neverMasteryKey,
   };
 }
 

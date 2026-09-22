@@ -666,19 +666,28 @@ test('the counting rules are the ones the screen says they are', () => {
 });
 
 test('nothing the closing panel says is a band, and nothing claims mastery', () => {
-  const panels = [
-    writtenFeedbackFor({ role: 'guided-practice', evaluation: unjudgedEvaluation(), assisted: true }),
-    writtenFeedbackFor({
-      role: 'independent-check',
-      evaluation: { verdict: 'met', observations: ['a', 'b'], nextMove: 'c', judged: true, source: 'live' },
-      assisted: false,
-    }),
-    writtenFeedbackFor({
-      role: 'guided-practice',
-      evaluation: { verdict: 'partly', observations: ['a', 'b'], nextMove: 'c', judged: true, source: 'live' },
-      assisted: true,
-    }),
-  ];
+  /* Every combination the screen can actually reach: both roles, both
+     tasks, every noun a written task can carry, judged and unjudged. WP20b
+     added the nouns; the rule they all have to keep is this one. */
+  const panels = [];
+  for (const piece of ['overview', 'paragraph', 'introduction', 'conclusion', 'sentence', 'answer'] as const) {
+    for (const task of ['task1', 'task2'] as const) {
+      for (const role of ['guided-practice', 'independent-check'] as const) {
+        for (const assisted of [true, false]) {
+          panels.push(writtenFeedbackFor({ role, evaluation: unjudgedEvaluation(), assisted, piece, task }));
+          panels.push(
+            writtenFeedbackFor({
+              role,
+              evaluation: { verdict: 'met', observations: ['a', 'b'], nextMove: 'c', judged: true, source: 'live' },
+              assisted,
+              piece,
+              task,
+            }),
+          );
+        }
+      }
+    }
+  }
   for (const panel of panels) {
     for (const text of [panel.demonstratedKey, panel.certaintyKey, panel.uncertainKey]) {
       /* A band may only ever be MENTIONED to deny one, the same rule the
@@ -692,9 +701,25 @@ test('nothing the closing panel says is a band, and nothing claims mastery', () 
       assert.ok(!/\b\d(\.\d)?\s*(band|балл)/i.test(text), 'and never a number that reads as one');
     }
   }
-  assert.match(panels[0]!.demonstratedKey, /Nothing looked at your writing/);
-  assert.match(panels[0]!.certaintyKey, /not judged/);
-  assert.match(panels[1]!.certaintyKey, /not a band/);
+  /* And the two panels Pilot B's own wording is pinned to, by name rather
+     than by their place in the list above. */
+  const unjudged = writtenFeedbackFor({
+    role: 'guided-practice',
+    evaluation: unjudgedEvaluation(),
+    assisted: true,
+    piece: 'overview',
+    task: 'task1',
+  });
+  assert.match(unjudged.demonstratedKey, /Nothing looked at your writing/);
+  assert.match(unjudged.certaintyKey, /not judged/);
+  const checked = writtenFeedbackFor({
+    role: 'independent-check',
+    evaluation: { verdict: 'met', observations: ['a', 'b'], nextMove: 'c', judged: true, source: 'live' },
+    assisted: false,
+    piece: 'overview',
+    task: 'task1',
+  });
+  assert.match(checked.certaintyKey, /not a band/);
 });
 
 /* ------------------------------------------------------------------ */
@@ -713,6 +738,11 @@ function viewFor(id: string): WrittenTaskView {
     role: entry.role,
     paper: entry.paper,
     subskill: entry.subskill,
+    /* From the registry, exactly as src/pages/trainers/focused/[id].astro
+       fills it: the scope and the noun are data, never a literal written
+       into a component or a test. */
+    task: entry.source.task,
+    piece: entry.piece,
     title: entry.title,
     objective: entry.objective,
     instruction: entry.instruction,
@@ -753,7 +783,6 @@ test('an unjudged attempt is recorded as written but never as met', () => {
     help: NO_WRITTEN_HELP,
     evaluation: unjudgedEvaluation('unreachable'),
     at: NOW,
-    task: 'task1',
   });
   assert.equal(draft.outcome.kind, 'objective');
   assert.equal((draft.outcome as { met: boolean }).met, false, 'an unreachable tutor is not a failing grade');
@@ -770,7 +799,6 @@ test('a blank attempt is blank, not a bad result', () => {
     help: NO_WRITTEN_HELP,
     evaluation: unjudgedEvaluation(),
     at: NOW,
-    task: 'task1',
   });
   assert.equal(draft.completion, 'blank');
 });
@@ -783,7 +811,6 @@ test('writing about a chart marks that prompt met, so a check built on it is no 
     help: NO_WRITTEN_HELP,
     evaluation: JUDGED_MET,
     at: NOW,
-    task: 'task1',
   });
   assert.deepEqual(draft.sourceMaterial, [promptExposureKey(view.promptId)]);
 });
@@ -806,7 +833,6 @@ test('a revision links to the original and the original is preserved', () => {
       help: NO_WRITTEN_HELP,
       evaluation: JUDGED_NOT_YET,
       at: '2026-09-22T09:00:00.000Z',
-      task: 'task1',
     }),
   );
   assert.ok(first);
@@ -819,7 +845,6 @@ test('a revision links to the original and the original is preserved', () => {
       help: helped,
       evaluation: JUDGED_MET,
       at: '2026-09-22T09:12:00.000Z',
-      task: 'task1',
     }),
   );
   assert.ok(second);
@@ -990,7 +1015,6 @@ function afterAMetTransferCheck(): LearnerRecordV1 {
           help: NO_WRITTEN_HELP,
           evaluation: JUDGED_MET,
           at: '2026-09-22T09:30:00.000Z',
-          task: 'task1',
         }),
         localDate: TODAY,
       },
@@ -1092,7 +1116,6 @@ test('objective evidence never produces a band, and never exceeds what three pro
           help: NO_WRITTEN_HELP,
           evaluation: JUDGED_MET,
           at: '2026-09-22T09:30:00.000Z',
-          task: 'task1',
         }),
         localDate: TODAY,
       },
@@ -1137,7 +1160,6 @@ test('Task 1 evidence never appears in the Task 2 scope', () => {
           help: NO_WRITTEN_HELP,
           evaluation: JUDGED_MET,
           at: '2026-09-22T09:30:00.000Z',
-          task: 'task1',
         }),
         localDate: TODAY,
       },
@@ -1290,7 +1312,6 @@ test('a not-yet transfer check keeps the objective and never repeats the chart t
           help: NO_WRITTEN_HELP,
           evaluation: JUDGED_NOT_YET,
           at: '2026-09-22T09:30:00.000Z',
-          task: 'task1',
         }),
         localDate: TODAY,
       },
@@ -1358,7 +1379,6 @@ test('a diagnostic sample of the overview is capped at tentative however well it
         help: NO_WRITTEN_HELP,
         evaluation: JUDGED_MET,
         at: '2026-09-22T09:30:00.000Z',
-        task: 'task1',
         stepRole: 'assess',
       }),
       localDate: TODAY,

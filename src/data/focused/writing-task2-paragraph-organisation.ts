@@ -45,6 +45,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-121-task2', task: 'task2', form: 'discussion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   guidingQuestions: [
     'Which of the two views is this paragraph about? Say it in your first sentence, as a topic sentence.',
@@ -68,6 +69,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-118-task2', task: 'task2', form: 'discussion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   noticeInTheModel: NOTICE,
 };

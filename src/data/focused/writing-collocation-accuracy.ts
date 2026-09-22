@@ -56,6 +56,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-129-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 1,
   correctionSentence: 'Many students do a mistake when they make their homework at the last minute, instead of planning their time properly.',
   correctionNote:

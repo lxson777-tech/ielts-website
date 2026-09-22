@@ -64,6 +64,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-119-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 1,
   correctionSentence:
     'The number of students who chooses to study abroad have risen sharply over the last decade, while a number of universities has struggled to keep pace.',

@@ -44,6 +44,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-117-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 0,
   guidingQuestions: [
     'What is the question\'s own key noun, and what is another way to say it?',
@@ -67,6 +68,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-104-task2', task: 'task2', form: 'two-part', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 0,
   noticeInTheModel: NOTICE,
 };

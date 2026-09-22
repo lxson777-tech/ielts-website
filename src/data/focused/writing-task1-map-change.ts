@@ -42,6 +42,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-130-task1', task: 'task1', form: 'map', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   guidingQuestions: [
     'Pick one change: something added, something removed, or something that changed from one use to another.',
@@ -65,6 +66,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-122-task1', task: 'task1', form: 'map', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   noticeInTheModel: NOTICE,
 };

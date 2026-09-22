@@ -48,6 +48,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-125-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'introduction',
   modelParagraphIndex: 0,
   guidingQuestions: [
     'In one clause, what is the question actually asking, in your own words rather than copied?',
@@ -71,6 +72,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-124-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'introduction',
   modelParagraphIndex: 0,
   noticeInTheModel: NOTICE,
 };

@@ -80,6 +80,20 @@ const WP20B_SPOKEN_SUBSKILLS = [
   'part3-speculate-and-compare',
 ] as const;
 
+/* Finding 4 (Codex's independent review, 2026-09-22): the three pilot round
+   (WP20) Speaking objectives used to be guided self-check plus a
+   same-prompt retry only, with no independent check on a different real
+   prompt. They now carry the same guided/check pair shape WP20B_SPOKEN_
+   SUBSKILLS already has, so the "different prompt, same part" test below
+   covers all nine Speaking objectives, not only the coverage round's six. */
+const WP20_PILOT_SPOKEN_SUBSKILLS = [
+  'part1-extend-an-answer',
+  'part2-plan-in-one-minute',
+  'fluency-repair',
+] as const;
+
+const ALL_SPOKEN_SUBSKILLS_WITH_CHECKS = [...WP20B_SPOKEN_SUBSKILLS, ...WP20_PILOT_SPOKEN_SUBSKILLS] as const;
+
 function writtenTasksFor(subskill: string): WrittenFocusedTask[] {
   return WRITTEN_FOCUSED_TASKS.filter((entry) => entry.subskill === subskill);
 }
@@ -213,8 +227,8 @@ test('every WP20b written check is reserved, and its guided sibling is not', () 
   }
 });
 
-test('every WP20b spoken check sits on a different real prompt from its guided sibling, same part', () => {
-  for (const subskill of WP20B_SPOKEN_SUBSKILLS) {
+test('every Speaking check sits on a different real prompt from its guided sibling, same part (all nine objectives, pilot round and coverage round)', () => {
+  for (const subskill of ALL_SPOKEN_SUBSKILLS_WITH_CHECKS) {
     const tasks = spokenTasksFor(subskill);
     const guided = tasks.filter((t) => t.role === 'guided-practice');
     const checks = tasks.filter((t) => t.role === 'independent-check');

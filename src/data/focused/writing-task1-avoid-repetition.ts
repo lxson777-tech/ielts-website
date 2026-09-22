@@ -46,6 +46,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-116-task1', task: 'task1', form: 'chart', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   guidingQuestions: [
     'Which three or four figures are you reporting in this paragraph?',
@@ -69,6 +70,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-115-task1', task: 'task1', form: 'chart', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   noticeInTheModel: NOTICE,
 };

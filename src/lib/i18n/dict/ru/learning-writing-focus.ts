@@ -31,6 +31,7 @@ export const strings: Record<string, string> = {
   'This browser is not saving your work right now, so this attempt cannot be added to your record.':
     'Этот браузер сейчас не сохраняет вашу работу, поэтому эту попытку не получится добавить в ваш профиль.',
   'Writing Task 1': 'Writing Task 1',
+  'Writing Task 2': 'Writing Task 2',
   'Your overview': 'Ваш overview',
   'Two sentences on the main trends, with no figures.':
     'Два предложения об основных тенденциях, без цифр.',
@@ -39,8 +40,31 @@ export const strings: Record<string, string> = {
   'Check my overview': 'Проверить мой overview',
   'Check my revision': 'Проверить исправленный вариант',
 
+  /* WritingFocusedTask.tsx: the same workspace, for the other five things a
+     written task can ask for (written-focused-task.ts's PIECE_WORDING).
+     Whole sentences rather than a noun in a slot: "мой" and "моё" depend on
+     the gender of the noun, which a variable cannot decide. */
+  'Your paragraph': 'Ваш абзац',
+  'Looking at your paragraph...': 'Смотрим ваш абзац...',
+  'Check my paragraph': 'Проверить мой абзац',
+  'Your introduction': 'Ваше вступление',
+  'Looking at your introduction...': 'Смотрим ваше вступление...',
+  'Check my introduction': 'Проверить моё вступление',
+  'Your conclusion': 'Ваше заключение',
+  'Looking at your conclusion...': 'Смотрим ваше заключение...',
+  'Check my conclusion': 'Проверить моё заключение',
+  'Your sentence': 'Ваше предложение',
+  'Looking at your sentence...': 'Смотрим ваше предложение...',
+  'Check my sentence': 'Проверить моё предложение',
+  'Your answer': 'Ваш ответ',
+  'Looking at your answer...': 'Смотрим ваш ответ...',
+  'Check my answer': 'Проверить мой ответ',
+  'Write it here.': 'Напишите здесь.',
+
   /* WritingFocusedTask.tsx: the guiding questions */
   'Show the questions that build an overview': 'Показать вопросы, которые помогают собрать overview',
+  'Show the questions that lead you to it': 'Показать вопросы, которые к этому ведут',
+  'Questions to work through': 'Вопросы, которые стоит пройти',
   'These lead you to your own sentence. Opening them is recorded as help, which is honest rather than a penalty.':
     'Они ведут вас к вашему собственному предложению. То, что вы их открыли, записывается как помощь: это честность, а не наказание.',
 
@@ -50,6 +74,36 @@ export const strings: Record<string, string> = {
     'Частично: часть того, что должен делать overview, здесь есть.',
   'Not yet: this does not do what an overview has to do.':
     'Пока нет: здесь нет того, что должен делать overview.',
+  'Met: this does what the paragraph has to do.':
+    'Выполнено: здесь есть то, что должен делать абзац.',
+  'Partly: some of what the paragraph has to do is here.':
+    'Частично: часть того, что должен делать абзац, здесь есть.',
+  'Not yet: this does not do what the paragraph has to do.':
+    'Пока нет: здесь нет того, что должен делать абзац.',
+  'Met: this does what the introduction has to do.':
+    'Выполнено: здесь есть то, что должно делать вступление.',
+  'Partly: some of what the introduction has to do is here.':
+    'Частично: часть того, что должно делать вступление, здесь есть.',
+  'Not yet: this does not do what the introduction has to do.':
+    'Пока нет: здесь нет того, что должно делать вступление.',
+  'Met: this does what the conclusion has to do.':
+    'Выполнено: здесь есть то, что должно делать заключение.',
+  'Partly: some of what the conclusion has to do is here.':
+    'Частично: часть того, что должно делать заключение, здесь есть.',
+  'Not yet: this does not do what the conclusion has to do.':
+    'Пока нет: здесь нет того, что должно делать заключение.',
+  'Met: this does what the sentence has to do.':
+    'Выполнено: здесь есть то, что должно делать предложение.',
+  'Partly: some of what the sentence has to do is here.':
+    'Частично: часть того, что должно делать предложение, здесь есть.',
+  'Not yet: this does not do what the sentence has to do.':
+    'Пока нет: здесь нет того, что должно делать предложение.',
+  'Met: this does what the answer has to do.':
+    'Выполнено: здесь есть то, что должен делать ответ.',
+  'Partly: some of what the answer has to do is here.':
+    'Частично: часть того, что должен делать ответ, здесь есть.',
+  'Not yet: this does not do what the answer has to do.':
+    'Пока нет: здесь нет того, что должен делать ответ.',
   'The one thing to change:': 'Одна вещь, которую стоит изменить:',
   'This is one objective, judged on two sentences. It is not a band and it does not change your Writing score.':
     'Это одна конкретная цель, оценённая по двум предложениям. Это не балл, и это не меняет вашу оценку за Writing.',
@@ -103,6 +157,14 @@ export const strings: Record<string, string> = {
     'Это один короткий фрагмент, оценённый по одной цели. Этого достаточно, чтобы изменить то, чем план займётся дальше, но это не балл и не оценка за весь отчёт.',
   'What two sentences cannot show is whether the rest of the report holds up under twenty minutes. A full Task 1 marked by the examiner is what shows that.':
     'Два предложения не показывают, выдержит ли остальной отчёт двадцать минут. Это показывает полный Task 1, проверенный экзаменатором.',
+  /* The same three sentences, for a Task 2 task: a question rather than a
+     visual, and a whole essay rather than a report. */
+  'On a question you had not seen, with no guiding questions and no help, Mr EZ judged this against the one objective above.':
+    'На незнакомом вам вопросе, без наводящих вопросов и без помощи, Mr EZ оценил это по одной цели, указанной выше.',
+  'What one short piece cannot show is whether a whole essay holds up under forty minutes. A full Task 2 marked by the examiner is what shows that.':
+    'Один короткий фрагмент не показывает, выдержит ли целое эссе сорок минут. Это показывает полный Task 2, проверенный экзаменатором.',
+  'This was practice. The check that follows, on a question you have not seen, is what shows whether the method travels.':
+    'Это была практика. Проверка после неё, на незнакомом вам вопросе, покажет, работает ли метод и там.',
   'You wrote this with the guiding questions available, so it shows guided work rather than what you can do on your own.':
     'Вы писали это с доступными наводящими вопросами, поэтому здесь видна работа с подсказками, а не то, что вы можете сами.',
   'You wrote this without opening the guiding questions.': 'Вы написали это, не открывая наводящие вопросы.',
@@ -110,6 +172,10 @@ export const strings: Record<string, string> = {
     'Это была практика. Проверка после неё, на незнакомом вам графике, покажет, работает ли метод и там.',
   'Nothing here is a band, and one overview is never mastery.':
     'Ничего из этого не является баллом, и один overview никогда не означает освоенный навык.',
+  'Nothing here is a band, and one short piece of writing is never mastery.':
+    'Ничего из этого не является баллом, и один короткий текст никогда не означает освоенный навык.',
+  'Read your own sentence against the model below and mark the words that meet the objective.':
+    'Прочитайте своё предложение рядом с образцом ниже и отметьте слова, которые соответствуют цели.',
 
   /* WorkOnOverview.tsx: the hand-off from a marked report */
   'Work on your overview': 'Поработайте над своим overview',

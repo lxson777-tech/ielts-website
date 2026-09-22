@@ -128,6 +128,12 @@ if (isWrittenFocusedTask(exercise)) {
     role: task.role,
     paper: task.paper,
     subskill: task.subskill,
+    /* The trusted scope and the trusted noun, both straight off the
+       registry entry. `source.task` has already been checked against the
+       prompt itself above, so a Task 2 exercise can neither be built on a
+       Task 1 prompt nor record Task 1 evidence. */
+    task: task.source.task,
+    piece: task.piece,
     title: task.title,
     objective: task.objective,
     instruction: task.instruction,

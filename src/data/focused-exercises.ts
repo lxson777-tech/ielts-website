@@ -290,6 +290,29 @@ export interface WrittenResponseRules {
   checks: readonly WrittenCheckId[];
 }
 
+/** The one noun the screen calls this piece of writing.
+ *
+ *  Display only, and data rather than a guess: the shared component asked
+ *  every student to "Check my overview", including the ones writing a Task
+ *  2 conclusion (the 22 September 2026 review, finding 3). A title is not a
+ *  safe place to read this from, so each task says what it is. The wording
+ *  itself, in English and Russian, is in
+ *  src/components/learning/written-focused-task.ts. */
+export type WrittenPiece =
+  /** The summary paragraph of a Task 1 report. */
+  | 'overview'
+  /** One body or detail paragraph. */
+  | 'paragraph'
+  /** The opening paragraph of a Task 2 essay. */
+  | 'introduction'
+  /** The closing paragraph of a Task 2 essay. */
+  | 'conclusion'
+  /** One sentence: a correction, a paraphrase, a combination of two. */
+  | 'sentence'
+  /** Anything else short the task asks for, such as two connected
+      sentences. */
+  | 'answer';
+
 /** One short piece of the student's own writing, on one real prompt,
  *  judged against ONE objective.
  *
@@ -319,6 +342,10 @@ export interface WrittenFocusedTask {
       item-answers exercise does. */
   lesson?: { key: string; blockHeading: string };
   rules: WrittenResponseRules;
+  /** What the student is writing, as the screen should name it. Required,
+      so a new written task cannot ship calling itself somebody else's
+      noun. */
+  piece: WrittenPiece;
   /** What to notice in the band 8 model, shown only AFTER an attempt. Never
       a sentence to copy: the model is "one way to write it". */
   noticeInTheModel: readonly string[];
@@ -1195,6 +1222,12 @@ export function focusedExerciseHref(id: string): string {
 /** Every self-check speaking objective (WP20). Its own registry, on
     purpose: see the header comment above SpokenFocusedTask. */
 export const SPOKEN_FOCUSED_TASKS: readonly SpokenFocusedTask[] = [
+  /* Finding 4 (Codex's independent review, 2026-09-22): these three pilot
+     round (WP20) objectives used to be guided self-check plus a same-prompt
+     retry only. Each now also carries an independent-check entry on a
+     different real prompt of the same part, the same guided/check pair
+     shape as every WP20b objective below, so all nine Speaking objectives
+     complete the same loop. See each file's own header comment. */
   ...SPEAKING_PART1_EXTEND_AN_ANSWER,
   ...SPEAKING_PART2_PLAN_IN_ONE_MINUTE,
   ...SPEAKING_FLUENCY_REPAIR,

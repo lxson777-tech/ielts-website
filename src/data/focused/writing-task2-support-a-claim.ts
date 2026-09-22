@@ -43,6 +43,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-127-task2', task: 'task2', form: 'advantages-disadvantages', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   guidingQuestions: [
     'What is the ONE claim this paragraph is going to make? Say it in your first sentence.',
@@ -66,6 +67,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-120-task2', task: 'task2', form: 'advantages-disadvantages', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   noticeInTheModel: NOTICE,
 };

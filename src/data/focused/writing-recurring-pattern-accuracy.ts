@@ -52,6 +52,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-130-task2', task: 'task2', form: 'discussion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 1,
   correctionSentence: 'The public transport should be improved because it reduces a traffic and helps environment in the city.',
   correctionNote:

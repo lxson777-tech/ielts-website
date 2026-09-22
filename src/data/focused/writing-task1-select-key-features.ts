@@ -52,6 +52,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-125-task1', task: 'task1', form: 'table', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   guidingQuestions: [
     'Which two or three numbers in this table are the most striking, either because they are the highest, the lowest, or the ones that changed the most?',
@@ -76,6 +77,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-124-task1', task: 'task1', form: 'chart', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   noticeInTheModel: NOTICE,
 };

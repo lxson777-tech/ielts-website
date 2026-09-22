@@ -201,9 +201,11 @@ test('every Speaking criterion has at least one objective with material, includi
 });
 
 test('every spoken objective is a real catalogue activity, self-marked, never scored', () => {
-  /* 3 from the pilot round (WP20) plus 12 from the coverage round (WP20b,
-     2026-09-22): six new objectives, each a guided/check pair. */
-  assert.equal(SPOKEN_FOCUSED_TASKS.length, 15);
+  /* 6 from the pilot round (WP20, each now a guided/check pair after
+     finding 4 of Codex's independent review, 2026-09-22, tests/speaking-
+     pilot-checks.test.ts) plus 12 from the coverage round (WP20b,
+     2026-09-22): nine objectives total, every one a guided/check pair. */
+  assert.equal(SPOKEN_FOCUSED_TASKS.length, 18);
   for (const task of SPOKEN_FOCUSED_TASKS) {
     const activity = findActivity(focusedActivityId(task.id), CATALOGUE);
     assert.ok(activity, `${task.id} is in the catalogue`);
@@ -460,6 +462,9 @@ test('the first correction attempt is written to the record before anything is r
     role: entry.role,
     paper: entry.paper,
     subskill: entry.subskill,
+    /* The registry's own scope and noun, the way the page fills them. */
+    task: entry.source.task,
+    piece: entry.piece,
     title: entry.title,
     objective: entry.objective,
     instruction: entry.instruction,
@@ -490,7 +495,6 @@ test('the first correction attempt is written to the record before anything is r
     help: NO_WRITTEN_HELP,
     evaluation: unjudgedEvaluation(),
     at: NOW,
-    task: 'task2',
   });
   assert.equal(draft.completion, 'completed', 'the first attempt is recorded as real work');
   assert.equal((draft.outcome as { met: boolean }).met, false, 'unjudged is never met');

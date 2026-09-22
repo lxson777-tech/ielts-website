@@ -48,6 +48,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-116-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   guidingQuestions: [
     'Where could a relative clause (which, who, that) add extra detail to a noun without starting a new sentence?',
@@ -71,6 +72,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-103-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   noticeInTheModel: NOTICE,
 };

@@ -43,6 +43,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-123-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'conclusion',
   modelParagraphIndex: 3,
   guidingQuestions: [
     'What word or phrase will signal that this is the conclusion?',
@@ -66,6 +67,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-122-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'conclusion',
   modelParagraphIndex: 3,
   noticeInTheModel: NOTICE,
 };

@@ -47,6 +47,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-132-task1', task: 'task1', form: 'combination', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   guidingQuestions: [
     'What is the one thing these two visuals have in common that makes them worth comparing?',
@@ -71,6 +72,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-121-task1', task: 'task1', form: 'chart', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   noticeInTheModel: NOTICE,
 };

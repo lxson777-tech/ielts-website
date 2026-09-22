@@ -42,6 +42,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-131-task1', task: 'task1', form: 'process', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   guidingQuestions: [
     'Which stage genuinely comes first on the diagram? Start there, not with whichever stage looks easiest to describe.',
@@ -65,6 +66,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-128-task1', task: 'task1', form: 'process', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 2,
   noticeInTheModel: NOTICE,
 };

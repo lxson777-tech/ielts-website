@@ -48,6 +48,8 @@ import {
   EMPTY_WRITTEN_DRAFT,
   NO_WRITTEN_HELP,
   acceptEvaluation,
+  helpAfterEvaluation,
+  helpToRecord,
   mayShowModel,
   readWrittenDraft,
   runAutomaticChecks,
@@ -57,6 +59,8 @@ import {
   writeWrittenDraft,
   writtenEvidenceDraft,
   writtenFeedbackFor,
+  writtenPieceWording,
+  writtenTaskLabel,
   wordsIn,
   type WrittenEvaluation,
   type WrittenHelpState,
@@ -94,9 +98,17 @@ export default function WritingFocusedTask({ view }: Props) {
   const locale = getLocale();
   const isCheck = view.role === 'independent-check';
 
+  const wording = writtenPieceWording(view.piece);
+
   const [text, setText] = useState('');
   const [held, setHeld] = useState<WrittenTaskDraft>(EMPTY_WRITTEN_DRAFT);
+  /* What has been shown to the student so far, which is what the NEXT
+     answer carries. `submittedHelp` is a different thing: the level the
+     answer on the screen was actually recorded with, kept so the closing
+     panel describes the attempt that was made and not the feedback it has
+     just been given (the 22 September 2026 review, finding 2). */
   const [help, setHelp] = useState<WrittenHelpState>(NO_WRITTEN_HELP);
+  const [submittedHelp, setSubmittedHelp] = useState<WrittenHelpState>(NO_WRITTEN_HELP);
   const [phase, setPhase] = useState<Phase>('working');
   const [evaluation, setEvaluation] = useState<WrittenEvaluation | null>(null);
   const [session, setSession] = useState<SharedSessionView | null>(null);
@@ -111,6 +123,10 @@ export default function WritingFocusedTask({ view }: Props) {
   const [transferring, setTransferring] = useState(false);
   const owner = useRef('anon');
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* The same help state as `help`, readable synchronously. An evaluation is
+     awaited, and a help reply can land from a promise of its own, so the
+     ordering rule cannot depend on which render a closure was made in. */
+  const helpNow = useRef<WrittenHelpState>(NO_WRITTEN_HELP);
 
   /* The session is read once, on mount: this screen must never decide what
      comes next for itself. The step's ROLE is kept because a short sample
@@ -122,7 +138,13 @@ export default function WritingFocusedTask({ view }: Props) {
     } catch {
       /* No store on this device: the draft simply is not kept. */
     }
-    setHeld(readWrittenDraft(storage(), owner.current, view.exerciseId));
+    /* The draft carries the help state, so an attempt that had a hint, the
+       model or Mr EZ's feedback cannot come back from a refresh looking
+       like unaided work. */
+    const resumed = readWrittenDraft(storage(), owner.current, view.exerciseId);
+    setHeld(resumed);
+    helpNow.current = resumed.help;
+    setHelp(resumed.help);
     try {
       const current = getCurrentSession();
       setSession(current);
@@ -192,8 +214,19 @@ export default function WritingFocusedTask({ view }: Props) {
     }, 500);
   }
 
+  /** Something was shown to the student. It is written to the draft store
+   *  at once, not at the end: a student who opens the guiding questions and
+   *  then refreshes has still seen them, and the record has to know that
+   *  before the next answer is written rather than after it. */
   function noteHelp(change: Parameters<typeof withWrittenHelp>[1]) {
-    setHelp((current) => withWrittenHelp(current, change));
+    const next = withWrittenHelp(helpNow.current, change);
+    helpNow.current = next;
+    setHelp(next);
+    setHeld((current) => {
+      const updated = { ...current, help: next };
+      if (!writeWrittenDraft(storage(), owner.current, view.exerciseId, updated)) setStorageProblem(true);
+      return updated;
+    });
   }
 
   /** Write one attempt to the learner record.
@@ -201,8 +234,19 @@ export default function WritingFocusedTask({ view }: Props) {
    *  Never throws into the task: a blocked or full browser store costs the
    *  record, not the work. The revision is not named here; the learner
    *  store links it to the original by their shared item id, which is what
-   *  makes the link impossible for a surface to get wrong. */
-  function record(evaluated: WrittenEvaluation, written: string, level: WrittenHelpState) {
+   *  makes the link impossible for a surface to get wrong.
+   *
+   *  `recorded` is the help the student had WHEN THEY WROTE IT; `carried`
+   *  is what the next answer starts from. The two are different the moment
+   *  an evaluation succeeds, and keeping them apart is the whole of the
+   *  fix. The task scope comes from the view, which the page fills from
+   *  the exercise registry. */
+  function record(
+    evaluated: WrittenEvaluation,
+    written: string,
+    recorded: WrittenHelpState,
+    carried: WrittenHelpState,
+  ) {
     const historyBefore = readPersonalPlan()?.history.length ?? 0;
     const at = new Date().toISOString();
     let eventId: string | undefined;
@@ -211,10 +255,9 @@ export default function WritingFocusedTask({ view }: Props) {
         writtenEvidenceDraft({
           view,
           text: written,
-          help: level,
+          help: recorded,
           evaluation: evaluated,
           at,
-          task: 'task1',
           stepRole,
           ...(session?.sessionId ? { sessionId: session.sessionId } : {}),
           locale,
@@ -226,12 +269,16 @@ export default function WritingFocusedTask({ view }: Props) {
     }
 
     setHeld((current) => {
-      const next = withAttempt(current, {
-        at,
-        text: written,
-        ...(eventId ? { evidenceId: eventId } : {}),
-        ...(current.attempts.length > 0 ? { revisionOf: current.attempts[current.attempts.length - 1]!.at } : {}),
-      });
+      const next = withAttempt(
+        current,
+        {
+          at,
+          text: written,
+          ...(eventId ? { evidenceId: eventId } : {}),
+          ...(current.attempts.length > 0 ? { revisionOf: current.attempts[current.attempts.length - 1]!.at } : {}),
+        },
+        carried,
+      );
       writeWrittenDraft(storage(), owner.current, view.exerciseId, next);
       return next;
     });
@@ -250,6 +297,11 @@ export default function WritingFocusedTask({ view }: Props) {
     if (!written.trim()) return;
     setPhase('asking');
 
+    /* Taken BEFORE the evaluation is asked for, and this is the line the
+       whole of finding 2 turns on: what the student had when they wrote
+       this answer, not what they will have once they have read the reply
+       to it. */
+    const helpBeforeSubmission = helpNow.current;
     const previous = held.attempts[held.attempts.length - 1];
     let result: WrittenEvaluation = unjudgedEvaluation();
 
@@ -275,16 +327,30 @@ export default function WritingFocusedTask({ view }: Props) {
       }
     }
 
-    const level = withWrittenHelp(help, result.judged ? { tutorJudged: true } : {});
-    setHelp(level);
+    /* The answer is recorded as it was written; the feedback it has just
+       received applies to whatever is written next. */
+    const recorded = helpToRecord(helpBeforeSubmission);
+    const carried = helpAfterEvaluation(helpBeforeSubmission, result);
+    helpNow.current = carried;
+    setHelp(carried);
+    setSubmittedHelp(recorded);
     setEvaluation(result);
-    record(result, written, level);
+    record(result, written, recorded, carried);
     setRevising(false);
     setPhase('answered');
   }
 
   const feedback = evaluation
-    ? writtenFeedbackFor({ role: view.role, evaluation, assisted: help.assistance !== 'none' })
+    ? writtenFeedbackFor({
+        role: view.role,
+        evaluation,
+        /* The attempt on the screen, not the state the next one starts
+           from: an unaided first answer is described as unaided even once
+           Mr EZ has replied to it. */
+        assisted: submittedHelp.assistance !== 'none',
+        piece: view.piece,
+        task: view.task,
+      })
     : null;
   const original = held.attempts[0];
   const latest = held.attempts[held.attempts.length - 1];
@@ -317,11 +383,11 @@ export default function WritingFocusedTask({ view }: Props) {
 
       <div className="written-body">
         <section className="written-prompt" aria-label={t('The task')}>
-          <p className="written-prompt-label">{t('Writing Task 1')} · {view.promptTitle}</p>
+          <p className="written-prompt-label">{t(writtenTaskLabel(view.task))} · {view.promptTitle}</p>
           <Html as="div" className="written-prompt-text" html={view.promptHtml} />
         </section>
 
-        <section className="written-work" aria-label={t('Your overview')}>
+        <section className="written-work" aria-label={t(wording.yourWorkKey)}>
           <p className="written-instruction">{t(view.instruction)}</p>
 
           {/* Sentence correction only (WP20): the broken sentence itself,
@@ -346,11 +412,11 @@ export default function WritingFocusedTask({ view }: Props) {
                   className="written-guide-open"
                   onClick={() => noteHelp({ guidingQuestionsOpened: true })}
                 >
-                  {t('Show the questions that build an overview')}
+                  {t(wording.showQuestionsKey)}
                 </button>
               ) : (
                 <div className="written-guide-open-panel">
-                  <p className="written-guide-title">{t('Build your overview')}</p>
+                  <p className="written-guide-title">{t(wording.questionsTitleKey)}</p>
                   <ol className="written-guide-list">
                     {view.guidingQuestions.map((question, index) => (
                       <li key={index}>{question}</li>
@@ -365,7 +431,7 @@ export default function WritingFocusedTask({ view }: Props) {
           )}
 
           <label className="written-label" htmlFor="written-answer">
-            {t('Your overview')}
+            {t(wording.yourWorkKey)}
           </label>
           <textarea
             id="written-answer"
@@ -373,7 +439,7 @@ export default function WritingFocusedTask({ view }: Props) {
             value={text}
             rows={6}
             disabled={phase === 'asking'}
-            placeholder={t('Two sentences on the main trends, with no figures.')}
+            placeholder={t(wording.placeholderKey)}
             onChange={(event) => onType(event.target.value)}
           />
           <p className={`written-count${words > view.maxWords ? ' is-over' : ''}`} aria-live="polite">
@@ -407,10 +473,10 @@ export default function WritingFocusedTask({ view }: Props) {
                 onClick={() => void evaluate()}
               >
                 {phase === 'asking'
-                  ? t('Looking at your overview...')
+                  ? t(wording.checkingKey)
                   : held.attempts.length > 0
                     ? t('Check my revision')
-                    : t('Check my overview')}
+                    : t(wording.checkKey)}
               </button>
             </div>
           )}
@@ -423,10 +489,10 @@ export default function WritingFocusedTask({ view }: Props) {
             <>
               <p className={`written-verdict is-${evaluation.verdict}`}>
                 {evaluation.verdict === 'met'
-                  ? t('Met: this does what an overview has to do.')
+                  ? t(wording.metKey)
                   : evaluation.verdict === 'partly'
-                    ? t('Partly: some of what an overview has to do is here.')
-                    : t('Not yet: this does not do what an overview has to do.')}
+                    ? t(wording.partlyKey)
+                    : t(wording.notYetKey)}
               </p>
               {evaluation.source === 'simulated' && (
                 <p className="written-simulated">{t('Simulated, not a real Mr EZ reply.')}</p>

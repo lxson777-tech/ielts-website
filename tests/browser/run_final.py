@@ -38,6 +38,7 @@ import f14_coverage
 import f15_language_and_access
 import f16_progress
 import f17_audit_findings
+import f18_writing_evidence
 
 SCENARIOS = [
     f01_new_student,
@@ -57,6 +58,7 @@ SCENARIOS = [
     f15_language_and_access,
     f16_progress,
     f17_audit_findings,
+    f18_writing_evidence,
 ]
 
 

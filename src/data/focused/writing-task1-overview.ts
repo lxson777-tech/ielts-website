@@ -97,6 +97,7 @@ const GUIDED: WrittenFocusedTask = {
   },
   lesson: LESSON,
   rules: RULES,
+  piece: 'overview',
   noticeInTheModel: NOTICE,
 };
 
@@ -122,6 +123,7 @@ const CHECK_A: WrittenFocusedTask = {
   },
   lesson: LESSON,
   rules: RULES,
+  piece: 'overview',
   noticeInTheModel: NOTICE,
 };
 
@@ -148,6 +150,7 @@ const CHECK_B: WrittenFocusedTask = {
   },
   lesson: LESSON,
   rules: RULES,
+  piece: 'overview',
   noticeInTheModel: NOTICE,
 };
 
@@ -173,6 +176,7 @@ const CHECK_C: WrittenFocusedTask = {
   },
   lesson: LESSON,
   rules: RULES,
+  piece: 'overview',
   noticeInTheModel: NOTICE,
 };
 

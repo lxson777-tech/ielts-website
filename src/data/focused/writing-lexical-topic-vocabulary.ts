@@ -49,6 +49,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-112-task2', task: 'task2', form: 'advantages-disadvantages', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   guidingQuestions: [
     'What is the specific technology at issue here (automation, artificial intelligence, data collection), rather than "technology" in general?',
@@ -73,6 +74,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-106-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'paragraph',
   modelParagraphIndex: 1,
   noticeInTheModel: NOTICE,
 };

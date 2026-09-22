@@ -49,6 +49,7 @@ const GUIDED: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-113-task2', task: 'task2', form: 'advantages-disadvantages', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 1,
   guidingQuestions: [
     'What is the logical relationship between the two ideas: a contrast, a reason, a condition, a time sequence?',
@@ -73,6 +74,7 @@ const CHECK: WrittenFocusedTask = {
   source: { promptId: 'pte-wt-108-task2', task: 'task2', form: 'advantages-disadvantages', attribution: ATTRIBUTION },
   lesson: LESSON,
   rules: RULES,
+  piece: 'sentence',
   modelParagraphIndex: 1,
   noticeInTheModel: NOTICE,
 };
