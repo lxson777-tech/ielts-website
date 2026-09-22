@@ -72,16 +72,18 @@ import {
   vocabReviewActivityId,
 } from './catalog';
 import { canonicalJson, hashContent, paperExposureKey, promptExposureKey, seenKeys } from './evidence';
+import type { Locale } from '../i18n/locale';
+import { learningText } from './ru';
 
 /* ── Every sentence this file can write ──────────────────────────────────── */
 
-/** All the English this module produces, in one place.
- *
- *  They are plain literals for now. A later package routes them through the
- *  existing English and Russian system (architecture section 1.6); keeping
- *  them together is what makes that one edit rather than a search. Each one
- *  says what the student will do, claims nothing about a band, and says so
- *  when something is uncertain. */
+/** All the English this module produces, in one place, and the lookup key
+ *  for its Russian (architecture section 1.6, following src/lib/tutor/ru.ts's
+ *  precedent exactly, since this module is imported by the Mr EZ Worker and
+ *  cannot read the site's own lazy dictionary). Every access below goes
+ *  through `S()`, the shorthand `assembleSession` builds once it has a
+ *  `locale`. Each one says what the student will do, claims nothing about a
+ *  band, and says so when something is uncertain. */
 export const SESSION_SENTENCES = {
   recall: 'Bring back what you already did on this before anything new.',
   /* Vocabulary in the recall slot. Support for the paper being worked on,
@@ -437,6 +439,11 @@ export interface SessionRequest {
   /** Sample this paper with one short `assess` step, capped at
       DIAGNOSTIC_MAX_MINUTES_PER_SESSION. */
   diagnosticPaper?: Paper;
+  /** The student's explanation language (PlanConstraints.explanationLocale).
+      Every sentence this call produces, directly or through a helper that
+      receives `request`, is baked in this language. Defaults to English so
+      an existing caller that has not been updated keeps working. */
+  locale?: Locale;
   chosenByStudent?: boolean;
   /** An indivisible activity the student explicitly agreed to give more time
       to. It becomes the whole session and the budget rises to hold it. */
@@ -482,10 +489,17 @@ const ROLE_ORDER: readonly SessionStepRole[] = [
   'recap',
 ];
 
+/** One SESSION_SENTENCES entry, translated, in one call. The shorthand every
+    purpose: below uses once `locale` is in scope. */
+function S(locale: Locale, template: string): string {
+  return learningText(locale, template);
+}
+
 export function assembleSession(request: SessionRequest): AssembledSession {
   const thresholds = request.thresholds ?? DEFAULT_POLICY_THRESHOLDS;
   const surfaces = request.unavailableSurfaces ?? [];
   const { objective, facts, policy, catalogue } = request;
+  const locale = request.locale ?? 'en';
 
   const longerCommitments: PlanAlternative[] = [];
   const steps: StepPlan[] = [];
@@ -514,7 +528,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       role: acceptedActivity.kind === 'full-test' ? 'assess' : 'practise',
       activity: acceptedActivity,
       minutes: acceptedActivity.expectedMinutes,
-      purpose: acceptedActivity.kind === 'full-test' ? SESSION_SENTENCES.practiseTimed : SESSION_SENTENCES.practise,
+      purpose: acceptedActivity.kind === 'full-test' ? S(locale, SESSION_SENTENCES.practiseTimed) : S(locale, SESSION_SENTENCES.practise),
     });
     return {
       session: finish(request, steps, budget, accepted),
@@ -535,7 +549,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
         role: 'review',
         activity: planning,
         minutes: Math.min(planning.expectedMinutes, budget),
-        purpose: SESSION_SENTENCES.plan,
+        purpose: S(locale, SESSION_SENTENCES.plan),
       });
     }
     return {
@@ -557,7 +571,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
         role: 'assess',
         activity: checkpoint,
         minutes: checkpoint.expectedMinutes,
-        purpose: SESSION_SENTENCES.checkpoint,
+        purpose: S(locale, SESSION_SENTENCES.checkpoint),
       });
       return {
         session: finish(request, steps, budget),
@@ -568,7 +582,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       };
     }
     const tooBig = checkpointPaper(objective.paper, context(Number.POSITIVE_INFINITY, { requireUnseen: true }));
-    if (tooBig) longerCommitments.push(longerCommitmentFor(tooBig, objective));
+    if (tooBig) longerCommitments.push(longerCommitmentFor(tooBig, objective, locale));
   }
 
   /* Reserve the recap up front so the useful work is sized against what is
@@ -587,12 +601,12 @@ export function assembleSession(request: SessionRequest): AssembledSession {
     const sample = candidates.find((activity) => activity.expectedMinutes <= cap);
     if (sample) {
       const minutes = Math.min(sample.expectedMinutes, cap);
-      steps.push({ role: 'assess', activity: sample, minutes, purpose: SESSION_SENTENCES.assess });
+      steps.push({ role: 'assess', activity: sample, minutes, purpose: S(locale, SESSION_SENTENCES.assess) });
       free -= minutes;
       diagnosticPaper = request.diagnosticPaper;
     } else {
       diagnosticUnavailable = true;
-      if (candidates[0]) longerCommitments.push(longerCommitmentFor(candidates[0], objective));
+      if (candidates[0]) longerCommitments.push(longerCommitmentFor(candidates[0], objective, locale));
     }
   }
 
@@ -610,14 +624,14 @@ export function assembleSession(request: SessionRequest): AssembledSession {
     if (activity && isEligible(activity, context(free, { chosenActivityIds: [activity.id] }))) {
       const minutes = Math.min(activity.expectedMinutes, RECALL_MAX_MINUTES, free);
       if (minutes >= MIN_STEP_MINUTES) {
-        steps.push({ role: 'recall', activity, minutes, purpose: SESSION_SENTENCES.recall });
+        steps.push({ role: 'recall', activity, minutes, purpose: S(locale, SESSION_SENTENCES.recall) });
         free -= minutes;
         recallFilled = true;
       }
     }
   }
   if (!recallFilled && free >= MIN_STEP_MINUTES) {
-    const vocab = vocabularyRecallStep(objective, request.vocabulary ?? null, catalogue, free);
+    const vocab = vocabularyRecallStep(objective, request.vocabulary ?? null, catalogue, free, locale);
     if (vocab) {
       steps.push(vocab);
       free -= vocab.minutes;
@@ -641,8 +655,8 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       const minutes = Math.min(activity.expectedMinutes, teachCap);
       if (minutes < MIN_STEP_MINUTES) break;
       const purpose = facts.completedActivityIds.has(activity.id)
-        ? SESSION_SENTENCES.teach
-        : SESSION_SENTENCES.teachFirst;
+        ? S(locale, SESSION_SENTENCES.teach)
+        : S(locale, SESSION_SENTENCES.teachFirst);
       /* Open the lesson AT the part that teaches today's objective, when
          the library says which part that is. A lesson page is long, and
          sending a student to the top of it to find one section themselves
@@ -715,7 +729,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
         role: 'practise',
         activity: practise,
         minutes,
-        purpose: SESSION_SENTENCES.practise,
+        purpose: S(locale, SESSION_SENTENCES.practise),
       });
       free -= minutes;
     }
@@ -735,7 +749,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
        in front of it is what the plan is teaching in the meantime. Anything
        else that makes an activity unschedulable still does. */
     if (blocked !== null && blocked !== 'prerequisite-unmet') continue;
-    longerCommitments.push(longerCommitmentFor(candidate, objective));
+    longerCommitments.push(longerCommitmentFor(candidate, objective, locale));
     if (longerCommitments.length >= 2) break;
   }
 
@@ -770,7 +784,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
         role: 'independent-check',
         activity: check.activity,
         minutes,
-        purpose: SESSION_SENTENCES.independentCheck,
+        purpose: S(locale, SESSION_SENTENCES.independentCheck),
       });
       free -= minutes;
     }
@@ -785,7 +799,7 @@ export function assembleSession(request: SessionRequest): AssembledSession {
       role: 'recap',
       activity: recapTarget.activity,
       minutes: recapMinutes,
-      purpose: SESSION_SENTENCES.recap,
+      purpose: S(locale, SESSION_SENTENCES.recap),
     });
   }
 
@@ -823,6 +837,7 @@ function vocabularyRecallStep(
   signal: VocabularySignalV1 | null,
   catalogue: LearningCatalogueV1,
   free: number,
+  locale: Locale,
 ): StepPlan | null {
   if (!signal) return null;
 
@@ -839,7 +854,12 @@ function vocabularyRecallStep(
   const minutes = Math.min(activity.expectedMinutes, RECALL_MAX_MINUTES, free);
   if (minutes < MIN_STEP_MINUTES) return null;
 
-  return { role: 'recall', activity, minutes, purpose: vocabularyRecallPurpose(objective, signal, slug !== null) };
+  return {
+    role: 'recall',
+    activity,
+    minutes,
+    purpose: vocabularyRecallPurpose(objective, signal, slug !== null, locale),
+  };
 }
 
 /** Which topic, in order of how much the student would get from it: a topic
@@ -881,10 +901,11 @@ function vocabularyRecallPurpose(
   objective: PlannedObjective,
   signal: VocabularySignalV1,
   named: boolean,
+  locale: Locale,
 ): string {
-  if (supportsLexicalResource(objective, signal)) return SESSION_SENTENCES.recallVocabForCriterion;
-  if (signal.dueCount > 0) return SESSION_SENTENCES.recallVocabDue;
-  return named ? SESSION_SENTENCES.recallVocabTopic : SESSION_SENTENCES.recallVocabDue;
+  if (supportsLexicalResource(objective, signal)) return S(locale, SESSION_SENTENCES.recallVocabForCriterion);
+  if (signal.dueCount > 0) return S(locale, SESSION_SENTENCES.recallVocabDue);
+  return S(locale, named ? SESSION_SENTENCES.recallVocabTopic : SESSION_SENTENCES.recallVocabDue);
 }
 
 /** A whole timed paper needs its own later session to go through the
@@ -894,10 +915,13 @@ function reviewOwedFor(activity: CatalogueActivity): { activityId: string; minut
   return { activityId: activity.id, minutes: Math.min(30, Math.round(activity.expectedMinutes / 2)) };
 }
 
-function longerCommitmentFor(activity: CatalogueActivity, objective: PlannedObjective): PlanAlternative {
+function longerCommitmentFor(activity: CatalogueActivity, objective: PlannedObjective, locale: Locale): PlanAlternative {
+  /* activity.objective is the catalogue's own English (one shared,
+     locale-independent object), translated here at the point of use, the
+     same rule planner.ts's objectiveFor follows for the same field. */
   return {
     kind: 'longer-commitment',
-    label: `${activity.objective} ${SESSION_SENTENCES.longerCommitment}`,
+    label: `${learningText(locale, activity.objective)} ${S(locale, SESSION_SENTENCES.longerCommitment)}`,
     sessionSketch: {
       objective: objective.objective,
       activityIds: [activity.id],

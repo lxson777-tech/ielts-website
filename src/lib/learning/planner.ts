@@ -77,6 +77,8 @@ import { MAX_PROPOSAL_CANDIDATES } from './contracts/ai';
 import { LEARNING_INDEX, coverageFit, findActivity, learningCatalogue, prerequisiteClosure } from './catalog';
 import { canonicalJson, hashContent } from './evidence';
 import { scopeKeyOf } from './policy';
+import type { Locale } from '../i18n/locale';
+import { learningText } from './ru';
 import type { EligibilityContext, LearnerFacts, PlannedObjective } from './session';
 import {
   assembleSession,
@@ -96,11 +98,13 @@ import {
 
 /** All the English this module produces, in one place.
  *
- *  Plain literals for now; a later package routes them through the existing
- *  English and Russian system (architecture section 1.6), and keeping them
- *  together is what makes that one edit rather than a search. `{name}` is
- *  filled after lookup, the same convention as t() in
- *  src/lib/i18n/translate.ts, so another language may reorder them.
+ *  Plain English literals, which are ALSO the lookup keys for Russian
+ *  (architecture section 1.6): every access below goes through
+ *  `sentence()`/`learningText()` from `./ru`, following the exact pattern
+ *  `src/lib/tutor/ru.ts` uses, because this module is imported by the Mr EZ
+ *  Worker and cannot read the site's own lazy dictionary. `{name}` is filled
+ *  after lookup, the same convention as t() in src/lib/i18n/translate.ts, so
+ *  Russian may reorder them.
  *
  *  Every one of them is written to the same rule: state what was counted,
  *  say when it is uncertain, promise no band and claim no mastery. */
@@ -194,6 +198,29 @@ export const PLANNER_SENTENCES = {
   rejectOverBudget: 'That activity needs {minutes} minutes and today has {budget}.',
   rejectOverride: 'You asked to skip that one.',
   rejectUnderAssessment: 'A timed paper is running, so nothing may be suggested until it is finished.',
+
+  /* The synthetic "set a new goal" objective (planningObjective), previously
+     a bare string literal outside this table. */
+  objectiveNewGoal: 'Set a new exam date, or change the goal you are working towards.',
+
+  /* buildSchedule's week, previously bare string literals outside this
+     table. scheduleReviewFocus's {objective} is already-translated text (see
+     objectiveFor in scoreObjectives) when it comes from a PlannedObjective,
+     and is translated at the same call site when it comes straight off the
+     catalogue (the day after a whole paper, reviewOwed). */
+  scheduleExamDay: 'Exam day.',
+  scheduleRestDay: 'Rest day.',
+  scheduleKeepMoving: 'Keep the four papers moving.',
+  scheduleReviewFocus: 'Go back over {objective}',
+  scheduleReviewFallback: 'the paper you sat',
+
+  /* shortDeadlineNote's list fallbacks, previously bare string literals. */
+  scopeOneThing: 'the one thing that fits',
+  scopeEverythingElse: 'Everything else',
+
+  /* validatePlanProposal's one inline reason, previously a bare string
+     literal passed straight as the {reason} value. */
+  rejectUnavailableSurface: 'it needs something you said you cannot use right now.',
 } as const;
 
 /** Fill `{name}` placeholders after lookup, the same way t() does, so a
@@ -202,6 +229,12 @@ export function fill(template: string, vars: Record<string, string | number> = {
   return template.replace(/\{(\w+)\}/g, (whole, name: string) =>
     name in vars ? String(vars[name]) : whole,
   );
+}
+
+/** One PLANNER_SENTENCES entry, translated then filled, in one call. The
+    shorthand every function below uses once it has a `locale` in scope. */
+function sentence(locale: Locale, template: string, vars?: Record<string, string | number>): string {
+  return fill(learningText(locale, template), vars);
 }
 
 const PAPER_LABEL: Readonly<Record<Paper, string>> = {
@@ -347,6 +380,12 @@ export function replan(input: PlannerInput): ReplanResult {
   const goals = input.goals ?? previous?.goals ?? emptyPlanGoals();
   const constraints = input.constraints ?? previous?.constraints ?? defaultPlanConstraints();
   const overrides = liveOverrides([...(previous?.overrides ?? []), ...(input.newOverrides ?? [])], today);
+  /* The one place this is read from. Every sentence produced below, directly
+     or through a helper that receives `constraints`, is baked in this
+     language: architecture section 1.6, following src/lib/tutor/ru.ts's
+     precedent of translating in code rather than at render time, because the
+     Worker never sees the site's own dictionary. */
+  const locale = constraints.explanationLocale;
 
   const facts = learnerFacts(record, policy, thresholds);
   const notes: string[] = [];
@@ -414,7 +453,7 @@ export function replan(input: PlannerInput): ReplanResult {
       }
     }
   }
-  if (!assembled) assembled = buildFor(planningObjective(status));
+  if (!assembled) assembled = buildFor(planningObjective(status, locale));
 
   function buildFor(candidate: ScoredObjective) {
     return assembleSession({
@@ -428,6 +467,7 @@ export function replan(input: PlannerInput): ReplanResult {
       overrides,
       unavailableSurfaces: constraints.unavailable ?? [],
       thresholds,
+      locale,
       vocabulary: input.vocabulary ?? null,
       diagnosticPaper: status === 'date-passed' ? undefined : diagnosticPaper ?? undefined,
       chosenByStudent: candidate.objective.chosenActivityId !== undefined || chosenByOverride(overrides, candidate, today),
@@ -441,7 +481,7 @@ export function replan(input: PlannerInput): ReplanResult {
   const session = assembled.session;
 
   if (assembled.diagnosticUnavailable && diagnosticPaper) {
-    notes.push(fill(PLANNER_SENTENCES.scopeNoShortSample, { paper: PAPER_LABEL[diagnosticPaper] }));
+    notes.push(sentence(locale, PLANNER_SENTENCES.scopeNoShortSample, { paper: PAPER_LABEL[diagnosticPaper] }));
   }
 
   /* The week around it. Every day is asserted against its own budget, which
@@ -480,6 +520,7 @@ export function replan(input: PlannerInput): ReplanResult {
     longerCommitments: assembled.longerCommitments,
     diagnosticPaper: assembled.diagnosticPaper,
     budgetMinutes,
+    locale,
     build: (candidate, minutes) =>
       assembleSession({
         catalogue,
@@ -492,22 +533,23 @@ export function replan(input: PlannerInput): ReplanResult {
         overrides,
         unavailableSurfaces: constraints.unavailable ?? [],
         thresholds,
+        locale,
         vocabulary: input.vocabulary ?? null,
       }).session,
   });
 
   /* Honest scope, in plain words. */
-  if (status === 'date-passed') notes.push(PLANNER_SENTENCES.scopeDatePassed);
-  if (status === 'provisional-no-date') notes.push(PLANNER_SENTENCES.scopeNoDate);
+  if (status === 'date-passed') notes.push(learningText(locale, PLANNER_SENTENCES.scopeDatePassed));
+  if (status === 'provisional-no-date') notes.push(learningText(locale, PLANNER_SENTENCES.scopeNoDate));
   if (status === 'recovering') {
-    notes.push(fill(PLANNER_SENTENCES.scopeRecovering, { days: missedDays }));
+    notes.push(sentence(locale, PLANNER_SENTENCES.scopeRecovering, { days: missedDays }));
   }
   if (daysToExam !== null && daysToExam >= 0 && daysToExam <= SHORT_DEADLINE_DAYS) {
     notes.push(shortDeadlineNote({ scored, chosenKey: session.objectiveScope, daysToExam, budgetMinutes, constraints, overrides, today }));
   }
   for (const stuck of policy.needsTeacherInput) {
     notes.push(
-      fill(PLANNER_SENTENCES.changeTeacherInput, {
+      sentence(locale, PLANNER_SENTENCES.changeTeacherInput, {
         objective: humanScope(stuck.scopeKey),
         attempts: stuck.consecutiveUnimprovedAttempts,
       }),
@@ -673,8 +715,9 @@ interface ScoringInput {
  *  exist. */
 export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[] {
   const { catalogue, facts, policy, goals, today, weights } = input;
+  const locale = input.constraints.explanationLocale;
 
-  if (input.status === 'date-passed') return [scoreOne(planningObjective('date-passed').objective, input, {})];
+  if (input.status === 'date-passed') return [scoreOne(planningObjective('date-passed', locale).objective, input, {})];
 
   const gapByScope = new Map(policy.gaps.map((gap) => [gap.scopeKey, gap]));
   const chosenSkill = input.overrides.find((o) => o.kind === 'chose-other-skill' && o.date === today);
@@ -702,7 +745,7 @@ export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[]
     if (!objective) continue;
     if (chosenObjective?.kind === 'chose-objective' && chosenObjective.scopeKey === objective.scopeKey) {
       objective.chosenActivityId = chosenObjective.activityId;
-      objective.reason = PLANNER_SENTENCES.reasonStudentChose;
+      objective.reason = learningText(locale, PLANNER_SENTENCES.reasonStudentChose);
     }
     out.push(scoreOne(objective, input, { gapByScope, stuck: stuckScopes.has(objective.scopeKey) }));
   }
@@ -727,8 +770,8 @@ export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[]
           paper,
           subskill: checkpoint.subskill,
           objective: checkpoint.objective,
-          reason: reasonFor({ kind: 'coverage', paper, days: freshness?.daysSinceLatest ?? 0 }),
-          evidenceRefs: evidenceRefsFor(estimate, gapByScope.get(`paper:${paper}`), null, goals, paper),
+          reason: reasonFor({ kind: 'coverage', paper, days: freshness?.daysSinceLatest ?? 0, locale }),
+          evidenceRefs: evidenceRefsFor(estimate, gapByScope.get(`paper:${paper}`), null, goals, paper, locale),
           intent: 'assess',
         },
         input,
@@ -822,13 +865,23 @@ function objectiveFor(
   const strong =
     input.facts.strongSubskills.has(subskillKey(paper, subskill)) || input.facts.strongPapers.has(paper);
   const intent: PlannedObjective['intent'] = strong ? 'demonstrate' : due ? 'review' : 'learn';
+  const locale = input.constraints.explanationLocale;
 
   return {
     scope,
     scopeKey,
     paper,
     subskill,
-    objective: anchor.objective,
+    /* The catalogue is one shared, locale-independent object (imported once,
+       serving every student and both languages), so its English objective
+       sentence is translated HERE, once, where it is copied onto this
+       student's plan. Everything downstream (milestones, alternatives,
+       the session's own objective, change history) reads this same already
+       translated field rather than the catalogue again, which is also what
+       closes the bug the integration builder reported: a Russian tutor
+       recommendation interpolating the catalogue's still English objective
+       into an otherwise Russian sentence. */
+    objective: learningText(locale, anchor.objective),
     reason: reasonFor({
       kind: reasonKindFor({ estimate, paperEstimate, gap, due, strong, hasAnyEvidence: input.facts.activeDates.length > 0 }),
       paper,
@@ -840,20 +893,21 @@ function objectiveFor(
       today: input.today,
       daysToExam: input.daysToExam,
       goals: input.goals,
+      locale,
     }),
-    evidenceRefs: evidenceRefsFor(estimate ?? paperEstimate, gap, due, input.goals, paper),
+    evidenceRefs: evidenceRefsFor(estimate ?? paperEstimate, gap, due, input.goals, paper, locale),
     intent,
   };
 }
 
-function planningObjective(status: PlanStatus): ScoredObjective {
+function planningObjective(status: PlanStatus, locale: Locale): ScoredObjective {
   const objective: PlannedObjective = {
     scope: { kind: 'vocabulary' },
     scopeKey: 'plan',
     subskill: 'exam-format',
-    objective: 'Set a new exam date, or change the goal you are working towards.',
-    reason: status === 'date-passed' ? PLANNER_SENTENCES.reasonPlanning : PLANNER_SENTENCES.reasonStartHere,
-    evidenceRefs: [{ kind: 'no-evidence', ref: 'plan', evidence: PLANNER_SENTENCES.evidenceNone }],
+    objective: learningText(locale, PLANNER_SENTENCES.objectiveNewGoal),
+    reason: learningText(locale, status === 'date-passed' ? PLANNER_SENTENCES.reasonPlanning : PLANNER_SENTENCES.reasonStartHere),
+    evidenceRefs: [{ kind: 'no-evidence', ref: 'plan', evidence: learningText(locale, PLANNER_SENTENCES.evidenceNone) }],
     intent: 'plan',
   };
   return {
@@ -1220,8 +1274,10 @@ function reasonFor(input: {
   today?: string;
   daysToExam?: number | null;
   goals?: PlanGoals;
+  locale: Locale;
 }): string {
   const paper = PAPER_LABEL[input.paper];
+  const { locale } = input;
   switch (input.kind) {
     case 'measured-gap': {
       /* Prefer the counted items for this exact objective. When the paper is
@@ -1230,7 +1286,7 @@ function reasonFor(input: {
          than saying plainly what the band gap is. */
       const evidence = input.estimate?.evidence;
       if (evidence && evidence.independentItems > 0) {
-        return fill(PLANNER_SENTENCES.reasonMeasuredGap, {
+        return sentence(locale, PLANNER_SENTENCES.reasonMeasuredGap, {
           correct: evidence.independentCorrect,
           items: evidence.independentItems,
           occasions: evidence.independentOccasions,
@@ -1240,26 +1296,26 @@ function reasonFor(input: {
       const band = input.paperEstimate?.band;
       const required = input.gap?.requiredBand;
       if (band != null && required != null) {
-        return fill(PLANNER_SENTENCES.reasonMeasuredBandGap, { paper, band, required });
+        return sentence(locale, PLANNER_SENTENCES.reasonMeasuredBandGap, { paper, band, required });
       }
-      return PLANNER_SENTENCES.reasonThinGap;
+      return learningText(locale, PLANNER_SENTENCES.reasonThinGap);
     }
     case 'thin-gap':
-      return PLANNER_SENTENCES.reasonThinGap;
+      return learningText(locale, PLANNER_SENTENCES.reasonThinGap);
     case 'unknown':
-      return fill(PLANNER_SENTENCES.reasonUnknownPaper, { paper });
+      return sentence(locale, PLANNER_SENTENCES.reasonUnknownPaper, { paper });
     case 'due-review':
-      return fill(PLANNER_SENTENCES.reasonDueReview, { days: input.due?.daysSinceDemonstrated ?? 0 });
+      return sentence(locale, PLANNER_SENTENCES.reasonDueReview, { days: input.due?.daysSinceDemonstrated ?? 0 });
     case 'coverage':
-      return fill(PLANNER_SENTENCES.reasonCoverage, { paper, days: input.days ?? input.estimate?.evidence.daysSinceLatest ?? 0 });
+      return sentence(locale, PLANNER_SENTENCES.reasonCoverage, { paper, days: input.days ?? input.estimate?.evidence.daysSinceLatest ?? 0 });
     case 'deadline':
-      return fill(PLANNER_SENTENCES.reasonDeadline, { days: input.daysToExam ?? 0 });
+      return sentence(locale, PLANNER_SENTENCES.reasonDeadline, { days: input.daysToExam ?? 0 });
     case 'self-reported':
-      return fill(PLANNER_SENTENCES.reasonSelfReported, { paper });
+      return sentence(locale, PLANNER_SENTENCES.reasonSelfReported, { paper });
     case 'keep-sharp':
-      return PLANNER_SENTENCES.reasonKeepSharp;
+      return learningText(locale, PLANNER_SENTENCES.reasonKeepSharp);
     case 'start-here':
-      return PLANNER_SENTENCES.reasonStartHere;
+      return learningText(locale, PLANNER_SENTENCES.reasonStartHere);
   }
 }
 
@@ -1271,13 +1327,14 @@ function evidenceRefsFor(
   due: { scopeKey: string; dueOn: string } | null,
   goals: PlanGoals,
   paper: Paper,
+  locale: Locale,
 ): readonly SessionEvidenceRef[] {
   const refs: SessionEvidenceRef[] = [];
   if (estimate && estimate.evidence.independentOccasions > 0) {
     refs.push({
       kind: 'estimate',
       ref: estimate.scopeKey,
-      evidence: fill(PLANNER_SENTENCES.evidenceCounted, {
+      evidence: sentence(locale, PLANNER_SENTENCES.evidenceCounted, {
         correct: estimate.evidence.independentCorrect,
         items: estimate.evidence.independentItems,
         occasions: estimate.evidence.independentOccasions,
@@ -1289,22 +1346,26 @@ function evidenceRefsFor(
     refs.push({
       kind: 'goal',
       ref: gap.scopeKey,
-      evidence: fill(PLANNER_SENTENCES.evidenceGoal, { band: gap.requiredBand, paper: PAPER_LABEL[paper] }),
+      evidence: sentence(locale, PLANNER_SENTENCES.evidenceGoal, { band: gap.requiredBand, paper: PAPER_LABEL[paper] }),
     });
   }
   if (due) {
-    refs.push({ kind: 'due-review', ref: due.scopeKey, evidence: fill(PLANNER_SENTENCES.evidenceDue, { date: due.dueOn }) });
+    refs.push({
+      kind: 'due-review',
+      ref: due.scopeKey,
+      evidence: sentence(locale, PLANNER_SENTENCES.evidenceDue, { date: due.dueOn }),
+    });
   }
   const reported = goals.selfReported.find((score) => score.paper === paper);
   if (reported) {
     refs.push({
       kind: 'estimate',
       ref: `self-reported:${paper}`,
-      evidence: fill(PLANNER_SENTENCES.evidenceSelfReported, { band: reported.band, date: reported.takenOn }),
+      evidence: sentence(locale, PLANNER_SENTENCES.evidenceSelfReported, { band: reported.band, date: reported.takenOn }),
     });
   }
   if (refs.length === 0) {
-    refs.push({ kind: 'no-evidence', ref: `paper:${paper}`, evidence: PLANNER_SENTENCES.evidenceNone });
+    refs.push({ kind: 'no-evidence', ref: `paper:${paper}`, evidence: learningText(locale, PLANNER_SENTENCES.evidenceNone) });
   }
   return refs;
 }
@@ -1342,15 +1403,29 @@ function buildSchedule(input: {
     (step) => findInCatalogue(step.activityId, input.catalogue)?.kind === 'full-test',
   );
 
+  const locale = input.constraints.explanationLocale;
+
   for (let offset = 0; offset < SCHEDULE_HORIZON_DAYS; offset += 1) {
     const date = addLocalDays(input.today, offset);
 
     if (input.goals.examDate?.date === date) {
-      days.push({ date, budgetMinutes: 0, focus: 'Exam day.', activityIds: [], kind: 'exam-day' });
+      days.push({
+        date,
+        budgetMinutes: 0,
+        focus: learningText(locale, PLANNER_SENTENCES.scheduleExamDay),
+        activityIds: [],
+        kind: 'exam-day',
+      });
       continue;
     }
     if (!isStudyDay(date, input.constraints, input.overrides)) {
-      days.push({ date, budgetMinutes: 0, focus: 'Rest day.', activityIds: [], kind: 'rest' });
+      days.push({
+        date,
+        budgetMinutes: 0,
+        focus: learningText(locale, PLANNER_SENTENCES.scheduleRestDay),
+        activityIds: [],
+        kind: 'rest',
+      });
       continue;
     }
 
@@ -1371,10 +1446,13 @@ function buildSchedule(input: {
        is its own session, never a tail on the paper itself. */
     if (reviewOwed && reviewOwed.minutes <= budget) {
       const activity = findActivity(reviewOwed.activityId, input.catalogue);
+      const reviewObjective = activity
+        ? learningText(locale, activity.objective)
+        : learningText(locale, PLANNER_SENTENCES.scheduleReviewFallback);
       days.push({
         date,
         budgetMinutes: budget,
-        focus: `Go back over ${activity?.objective ?? 'the paper you sat'}`,
+        focus: sentence(locale, PLANNER_SENTENCES.scheduleReviewFocus, { objective: reviewObjective }),
         activityIds: [reviewOwed.activityId],
         kind: 'light-review',
       });
@@ -1385,7 +1463,7 @@ function buildSchedule(input: {
 
     const activityIds: string[] = [];
     let minutes = 0;
-    let focus = 'Keep the four papers moving.';
+    let focus = learningText(locale, PLANNER_SENTENCES.scheduleKeepMoving);
     let kind: ScheduledDay['kind'] = previousWasAssessment ? 'light-review' : 'study';
     previousWasAssessment = false;
 
@@ -1463,12 +1541,13 @@ function buildMilestones(input: {
 }): readonly Milestone[] {
   const out: Milestone[] = [];
   const horizon = input.daysToExam;
+  const locale = input.constraints.explanationLocale;
 
   input.diagnosticsOutstanding.forEach((paper, index) => {
     if (input.deferred.has(paper)) return;
     out.push({
       id: `milestone:diagnostic:${paper}`,
-      label: fill(PLANNER_SENTENCES.milestoneDiagnostic, { paper: PAPER_LABEL[paper] }),
+      label: sentence(locale, PLANNER_SENTENCES.milestoneDiagnostic, { paper: PAPER_LABEL[paper] }),
       targetDate: horizon === null ? null : addLocalDays(input.today, Math.min(index + 1, Math.max(horizon, 0))),
       scopeKey: `paper:${paper}`,
       state: 'planned',
@@ -1479,7 +1558,10 @@ function buildMilestones(input: {
   for (const entry of input.scored) {
     if (out.length >= 5) break;
     if (entry.objective.intent === 'plan') continue;
-    const label = fill(PLANNER_SENTENCES.milestoneObjective, {
+    /* entry.objective.objective is already translated (see objectiveFor):
+       this only wraps the "shown on questions you have not seen" frame
+       around it. */
+    const label = sentence(locale, PLANNER_SENTENCES.milestoneObjective, {
       objective: entry.objective.objective.replace(/\.$/, ''),
     });
     if (labelled.has(label)) continue;
@@ -1492,7 +1574,7 @@ function buildMilestones(input: {
       targetDate: horizon === null ? null : addLocalDays(input.today, Math.min(days, Math.max(horizon, 0))),
       scopeKey: entry.objective.scopeKey,
       state: fits ? 'planned' : 'dropped',
-      droppedReason: fits ? undefined : PLANNER_SENTENCES.milestoneDroppedNoTime,
+      droppedReason: fits ? undefined : learningText(locale, PLANNER_SENTENCES.milestoneDroppedNoTime),
     });
   }
 
@@ -1513,11 +1595,11 @@ function buildMilestones(input: {
       const fits = checkpoint.expectedMinutes <= input.constraints.regularDailyMinutes;
       out.push({
         id: `milestone:checkpoint:${paper}`,
-        label: fill(PLANNER_SENTENCES.milestoneCheckpoint, { paper: PAPER_LABEL[paper] }),
+        label: sentence(locale, PLANNER_SENTENCES.milestoneCheckpoint, { paper: PAPER_LABEL[paper] }),
         targetDate: addLocalDays(input.today, Math.max(0, horizon - 3)),
         scopeKey: `paper:${paper}`,
         state: fits ? 'planned' : 'dropped',
-        droppedReason: fits ? undefined : PLANNER_SENTENCES.milestoneDroppedNoTime,
+        droppedReason: fits ? undefined : learningText(locale, PLANNER_SENTENCES.milestoneDroppedNoTime),
       });
       break;
     }
@@ -1534,9 +1616,11 @@ function buildAlternatives(input: {
   longerCommitments: readonly PlanAlternative[];
   diagnosticPaper: Paper | null;
   budgetMinutes: number;
+  locale: Locale;
   build: (candidate: ScoredObjective, minutes: number) => PlanSession;
 }): readonly PlanAlternative[] {
   const out: PlanAlternative[] = [];
+  const { locale } = input;
   const winner = input.scored.find((entry) => entry.objective.scopeKey === input.session.objectiveScope);
   /* A planning session is one question. "I have less time today" and
      "choose another skill" have nothing to offer against it. */
@@ -1550,7 +1634,7 @@ function buildAlternatives(input: {
     if (sketch.steps.length > 0) {
       out.push({
         kind: 'shorter',
-        label: fill(PLANNER_SENTENCES.altShorter, { minutes: shorter }),
+        label: sentence(locale, PLANNER_SENTENCES.altShorter, { minutes: shorter }),
         sessionSketch: {
           objective: sketch.objective,
           activityIds: [...new Set(sketch.steps.map((step) => step.activityId))],
@@ -1569,7 +1653,7 @@ function buildAlternatives(input: {
     if (sketch.steps.length > 0) {
       out.push({
         kind: 'other-skill',
-        label: fill(PLANNER_SENTENCES.altOtherSkill, { paper: PAPER_LABEL[other.objective.paper] }),
+        label: sentence(locale, PLANNER_SENTENCES.altOtherSkill, { paper: PAPER_LABEL[other.objective.paper] }),
         sessionSketch: {
           objective: sketch.objective,
           activityIds: [...new Set(sketch.steps.map((step) => step.activityId))],
@@ -1591,7 +1675,7 @@ function buildAlternatives(input: {
   if (input.diagnosticPaper) {
     out.push({
       kind: 'defer-diagnostic',
-      label: fill(PLANNER_SENTENCES.altDeferDiagnostic, { paper: PAPER_LABEL[input.diagnosticPaper] }),
+      label: sentence(locale, PLANNER_SENTENCES.altDeferDiagnostic, { paper: PAPER_LABEL[input.diagnosticPaper] }),
       sessionSketch: {
         objective: input.session.objective,
         activityIds: [
@@ -1618,6 +1702,7 @@ function shortDeadlineNote(input: {
   overrides: readonly PlanOverride[];
   today: string;
 }): string {
+  const locale = input.constraints.explanationLocale;
   let studyDays = 0;
   for (let offset = 0; offset < input.daysToExam; offset += 1) {
     if (isStudyDay(addLocalDays(input.today, offset), input.constraints, input.overrides)) studyDays += 1;
@@ -1625,7 +1710,8 @@ function shortDeadlineNote(input: {
   const total = studyDays * input.constraints.regularDailyMinutes;
 
   /* How much of the ranking those minutes really reach. Everything past it
-     is named as not covered rather than quietly left on a list. */
+     is named as not covered rather than quietly left on a list. entry
+     .objective.objective is already translated (see objectiveFor). */
   const covered: string[] = [];
   const missed: string[] = [];
   let spent = 0;
@@ -1640,12 +1726,12 @@ function shortDeadlineNote(input: {
     }
   }
 
-  return fill(PLANNER_SENTENCES.scopeShortDeadline, {
+  return sentence(locale, PLANNER_SENTENCES.scopeShortDeadline, {
     days: studyDays,
     minutes: input.constraints.regularDailyMinutes,
     total,
-    covered: joinList(covered) || 'the one thing that fits',
-    missed: joinList(missed) || 'Everything else',
+    covered: joinList(covered) || learningText(locale, PLANNER_SENTENCES.scopeOneThing),
+    missed: joinList(missed) || learningText(locale, PLANNER_SENTENCES.scopeEverythingElse),
   });
 }
 
@@ -1700,6 +1786,7 @@ function describeChanges(input: {
   constraints: PlanConstraints;
 }): readonly PlanChange[] {
   const { previous, candidate, trigger } = input;
+  const locale = input.constraints.explanationLocale;
   const at = candidate.updatedAt;
   const fromRevision = previous?.revision ?? 0;
   const toRevision = candidate.revision;
@@ -1709,7 +1796,7 @@ function describeChanges(input: {
     changes.push({ at, trigger, summary, detail, fromRevision, toRevision });
 
   if (!previous) {
-    add(fill(PLANNER_SENTENCES.changeInitial, { objective: candidate.activeSession.objective }), {
+    add(sentence(locale, PLANNER_SENTENCES.changeInitial, { objective: candidate.activeSession.objective }), {
       addedActivityIds: candidate.activeSession.steps.map((step) => step.activityId),
       scopeKeys: [candidate.activeSession.objectiveScope],
     });
@@ -1719,17 +1806,17 @@ function describeChanges(input: {
   for (const override of input.overrides) {
     if (override.kind === 'less-time-today') {
       add(
-        fill(PLANNER_SENTENCES.changeOverrideShorter, {
+        sentence(locale, PLANNER_SENTENCES.changeOverrideShorter, {
           minutes: override.minutes,
           regular: input.constraints.regularDailyMinutes,
         }),
       );
     }
     if (override.kind === 'chose-other-skill') {
-      add(fill(PLANNER_SENTENCES.changeOverrideSkill, { paper: PAPER_LABEL[override.paper] }));
+      add(sentence(locale, PLANNER_SENTENCES.changeOverrideSkill, { paper: PAPER_LABEL[override.paper] }));
     }
     if (override.kind === 'accepted-longer-commitment') {
-      add(fill(PLANNER_SENTENCES.changeOverrideCommitment, { label: override.activityId }));
+      add(sentence(locale, PLANNER_SENTENCES.changeOverrideCommitment, { label: override.activityId }));
     }
   }
 
@@ -1737,19 +1824,19 @@ function describeChanges(input: {
     if (candidate.status === 'recovering') {
       const dropped = candidate.milestones.filter((milestone) => milestone.state === 'dropped').length;
       add(
-        fill(PLANNER_SENTENCES.changeRecovery, {
+        sentence(locale, PLANNER_SENTENCES.changeRecovery, {
           days: input.missedDays,
           dropped:
             dropped > 0
-              ? fill(PLANNER_SENTENCES.changeDropped, { count: dropped })
-              : PLANNER_SENTENCES.changeNothingDropped,
+              ? sentence(locale, PLANNER_SENTENCES.changeDropped, { count: dropped })
+              : learningText(locale, PLANNER_SENTENCES.changeNothingDropped),
         }),
         { scopeKeys: [candidate.activeSession.objectiveScope] },
       );
     } else {
       add(
-        fill(PLANNER_SENTENCES.changeStatus, {
-          status: STATUS_LABEL[candidate.status],
+        sentence(locale, PLANNER_SENTENCES.changeStatus, {
+          status: learningText(locale, STATUS_LABEL[candidate.status]),
           why: candidate.scopeNote ?? '',
         }).trim(),
       );
@@ -1758,7 +1845,7 @@ function describeChanges(input: {
 
   if (previous.activeSession.objectiveScope !== candidate.activeSession.objectiveScope) {
     add(
-      fill(PLANNER_SENTENCES.changeObjective, {
+      sentence(locale, PLANNER_SENTENCES.changeObjective, {
         from: previous.activeSession.objective,
         to: candidate.activeSession.objective,
         why: candidate.activeSession.reason,
@@ -1775,7 +1862,7 @@ function describeChanges(input: {
     const already = previous.history.some((entry) => entry.summary.includes(humanScope(stuck.scopeKey)));
     if (already) continue;
     add(
-      fill(PLANNER_SENTENCES.changeTeacherInput, {
+      sentence(locale, PLANNER_SENTENCES.changeTeacherInput, {
         objective: humanScope(stuck.scopeKey),
         attempts: stuck.consecutiveUnimprovedAttempts,
       }),
@@ -1784,11 +1871,11 @@ function describeChanges(input: {
   }
 
   if (changes.length === 0 && trigger === 'settings-changed') {
-    add(PLANNER_SENTENCES.changeGoal);
+    add(learningText(locale, PLANNER_SENTENCES.changeGoal));
   }
   if (changes.length === 0) {
     add(
-      fill(PLANNER_SENTENCES.changeObjective, {
+      sentence(locale, PLANNER_SENTENCES.changeObjective, {
         from: previous.activeSession.objective,
         to: candidate.activeSession.objective,
         why: candidate.activeSession.reason,
@@ -1915,6 +2002,7 @@ export type ProposalVerdict =
  *  so the disagreements are the reviewable material. */
 export function validatePlanProposal(input: ProposalCheck): ProposalVerdict {
   const catalogue = input.catalogue ?? learningCatalogue();
+  const locale = input.plan.constraints.explanationLocale;
   const deterministicChoiceId =
     input.plan.activeSession.steps.find((step) => step.role === 'practise')?.activityId ??
     input.plan.activeSession.steps[0]?.activityId ??
@@ -1935,25 +2023,31 @@ export function validatePlanProposal(input: ProposalCheck): ProposalVerdict {
     },
   });
 
-  if (input.underAssessment) return refuse('blocked-under-assessment', PLANNER_SENTENCES.rejectUnderAssessment);
+  if (input.underAssessment) return refuse('blocked-under-assessment', learningText(locale, PLANNER_SENTENCES.rejectUnderAssessment));
   if (input.versions.planRevision !== input.plan.revision) {
-    return refuse('stale-plan-revision', PLANNER_SENTENCES.rejectStalePlan);
+    return refuse('stale-plan-revision', learningText(locale, PLANNER_SENTENCES.rejectStalePlan));
   }
   if (input.versions.evidenceVersion !== input.policy.evidenceVersion) {
-    return refuse('stale-evidence-version', PLANNER_SENTENCES.rejectStaleEvidence);
+    return refuse('stale-evidence-version', learningText(locale, PLANNER_SENTENCES.rejectStaleEvidence));
   }
   if (input.versions.indexVersion !== catalogue.indexVersion) {
-    return refuse('stale-index-version', PLANNER_SENTENCES.rejectStaleIndex);
+    return refuse('stale-index-version', learningText(locale, PLANNER_SENTENCES.rejectStaleIndex));
   }
-  if (!input.proposedActivityId) return refuse('malformed-response', PLANNER_SENTENCES.rejectMalformed);
+  if (!input.proposedActivityId) return refuse('malformed-response', learningText(locale, PLANNER_SENTENCES.rejectMalformed));
 
   const activity = findActivity(input.proposedActivityId, catalogue);
-  if (!activity) return refuse('unknown-activity', PLANNER_SENTENCES.rejectUnknown);
+  if (!activity) return refuse('unknown-activity', learningText(locale, PLANNER_SENTENCES.rejectUnknown));
   if (activity.unavailable) {
-    return refuse('unavailable', fill(PLANNER_SENTENCES.rejectUnavailable, { reason: activity.unavailable.reason }));
+    /* activity.unavailable.reason is catalogue English, translated here at
+       the point of use, the same rule objectiveFor follows for
+       activity.objective (see the comment there). */
+    return refuse(
+      'unavailable',
+      sentence(locale, PLANNER_SENTENCES.rejectUnavailable, { reason: learningText(locale, activity.unavailable.reason) }),
+    );
   }
   if (!input.shortlist.includes(activity.id)) {
-    return refuse('not-in-shortlist', PLANNER_SENTENCES.rejectNotInShortlist);
+    return refuse('not-in-shortlist', learningText(locale, PLANNER_SENTENCES.rejectNotInShortlist));
   }
 
   const thresholds = input.thresholds ?? DEFAULT_POLICY_THRESHOLDS;
@@ -1980,16 +2074,21 @@ export function validatePlanProposal(input: ProposalCheck): ProposalVerdict {
   };
 
   const reason = ineligibleReason(activity, context);
-  if (reason === 'prerequisite-unmet') return refuse('prerequisite-unmet', PLANNER_SENTENCES.rejectPrerequisite);
-  if (reason === 'skipped-by-student') return refuse('blocked-by-override', PLANNER_SENTENCES.rejectOverride);
+  if (reason === 'prerequisite-unmet') return refuse('prerequisite-unmet', learningText(locale, PLANNER_SENTENCES.rejectPrerequisite));
+  if (reason === 'skipped-by-student') return refuse('blocked-by-override', learningText(locale, PLANNER_SENTENCES.rejectOverride));
   if (reason === 'over-budget' || reason === 'indivisible-over-budget') {
     return refuse(
       'over-budget',
-      fill(PLANNER_SENTENCES.rejectOverBudget, { minutes: activity.expectedMinutes, budget }),
+      sentence(locale, PLANNER_SENTENCES.rejectOverBudget, { minutes: activity.expectedMinutes, budget }),
     );
   }
   if (reason === 'unavailable' || reason === 'surface-unavailable') {
-    return refuse('unavailable', fill(PLANNER_SENTENCES.rejectUnavailable, { reason: 'it needs something you said you cannot use right now.' }));
+    return refuse(
+      'unavailable',
+      sentence(locale, PLANNER_SENTENCES.rejectUnavailable, {
+        reason: learningText(locale, PLANNER_SENTENCES.rejectUnavailableSurface),
+      }),
+    );
   }
 
   const disagreed = activity.id !== deterministicChoiceId;

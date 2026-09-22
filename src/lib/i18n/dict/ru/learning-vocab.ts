@@ -41,7 +41,10 @@ export const strings: Record<string, string> = {
   'Your sentence:': 'Ваше предложение:',
   'The lesson’s own example:': 'Пример из урока:',
   'Did you use it well?': 'Вы использовали его правильно?',
-  'Yes, I used it well': 'Да, я использовал его правильно',
+  /* "Yes, I used it well" avoids a gendered past-tense first-person verb
+     (использовал / использовала) on purpose: the speaker's gender is not
+     known here. */
+  'Yes, I used it well': 'Да, слово использовано верно',
   'Not quite, I’ll review it': 'Не совсем, повторю это слово',
 
   /* VocabReview.tsx: the finished screen's "what comes back when" line. */

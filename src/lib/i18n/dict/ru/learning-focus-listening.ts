@@ -128,17 +128,17 @@ export const strings: Record<string, string> = {
     'Говорящий сам себя поправил, а я оставил первое, что услышал',
   'writing down the first detail before the speaker changed or corrected it':
     'запись первой детали до того, как говорящий её изменил или поправил',
-  'I did not catch how it was spelled': 'Я не расслышал, как это было продиктовано по буквам',
+  'I did not catch how it was spelled': 'Не удалось расслышать, как это было продиктовано по буквам',
   'losing the letters while a word or name was being spelled out':
     'потеря букв, пока слово или имя диктовали по буквам',
-  'I wrote more words than the limit allowed': 'Я написал больше слов, чем разрешал лимит',
+  'I wrote more words than the limit allowed': 'Написано больше слов, чем разрешал лимит',
   'not checking the stated word limit before answering': 'ответ без проверки указанного лимита слов',
-  'I lost my place and missed the next answer': 'Я потерял место и пропустил следующий ответ',
+  'I lost my place and missed the next answer': 'Потеряно место, и пропущен следующий ответ',
   'losing track of where the recording was among the gaps': 'потеря места в записи среди пропусков',
   'It was too fast for me to write it down': 'Это было слишком быстро, чтобы я успел записать',
 
   /* listening-multiple-choice */
-  'I heard an option mentioned and picked it straight away': 'Я услышал упоминание варианта и сразу его выбрал',
+  'I heard an option mentioned and picked it straight away': 'Услышано упоминание варианта, и он сразу выбран',
   'choosing the first option mentioned rather than waiting to hear what was actually confirmed':
     'выбор первого упомянутого варианта вместо того, чтобы дождаться, что подтвердится на самом деле',
   'The speaker changed their mind and I kept the first thing they said':
@@ -146,10 +146,10 @@ export const strings: Record<string, string> = {
   'trusting an early statement instead of the correction that followed it':
     'доверие раннему высказыванию вместо последовавшей за ним поправки',
   'I chose it because I heard the exact words from the option':
-    'Я выбрал это, потому что услышал точные слова из варианта',
+    'Это выбрано из-за точного совпадения слов с вариантом',
   'matching the wording of an option rather than what it actually meant':
     'совпадение формулировки варианта, а не того, что он на самом деле означал',
-  'I lost track of which question the recording had reached': 'Я потерял, до какого вопроса дошла запись',
+  'I lost track of which question the recording had reached': 'Потеряно, до какого вопроса дошла запись',
   'losing track of where the recording was among the questions': 'потеря места в записи среди вопросов',
   'It was too fast to follow the options and the recording at once':
     'Было слишком быстро следить одновременно за вариантами и записью',
@@ -157,41 +157,41 @@ export const strings: Record<string, string> = {
   /* listening-table-completion */
   'The speaker corrected a detail and I kept the first version': 'Говорящий поправил деталь, а я оставил первый вариант',
   'writing down a detail before the speaker corrected it': 'запись детали до того, как говорящий её поправил',
-  'I lost letters while a name or address was being spelled': 'Я потерял буквы, пока диктовали по буквам имя или адрес',
+  'I lost letters while a name or address was being spelled': 'Потеряны буквы, пока диктовали по буквам имя или адрес',
   'losing letters while something was being spelled out': 'потеря букв, пока что-то диктовали по буквам',
   'not checking the stated word or figure limit': 'ответ без проверки указанного лимита слов или цифр',
-  'I lost track of which row or box I was filling in': 'Я потерял, какую строку или ячейку заполняю',
+  'I lost track of which row or box I was filling in': 'Потеряно, какая строка или ячейка заполняется',
   'losing track of position inside the table or form while listening':
     'потеря позиции внутри таблицы или бланка во время прослушивания',
-  'I mixed up two similar sounding numbers': 'Я перепутал два похожих по звучанию числа',
+  'I mixed up two similar sounding numbers': 'Перепутаны два похожих по звучанию числа',
   'confusing two similar sounding numbers, such as thirteen and thirty':
     'путаница между двумя похожими по звучанию числами, например тринадцать и тридцать',
 
   /* listening-matching-features */
-  'I matched it by the name, not by what was said about it': 'Я сопоставил по названию, а не по тому, что о нём сказали',
+  'I matched it by the name, not by what was said about it': 'Сопоставление сделано по названию, а не по тому, что о нём сказали',
   "matching by an option's name rather than the description actually given":
     'сопоставление по названию варианта, а не по данному описанию',
   'I chose the first option mentioned instead of waiting to hear it confirmed':
-    'Я выбрал первый упомянутый вариант, не дождавшись подтверждения',
+    'Выбран первый упомянутый вариант, без ожидания подтверждения',
   'relying on the first mention rather than what the speaker settled on':
     'опора на первое упоминание, а не на то, на чём остановился говорящий',
-  'I assumed each option could only be used once': 'Я решил, что каждый вариант можно использовать только один раз',
+  'I assumed each option could only be used once': 'Показалось, что каждый вариант можно использовать только один раз',
   'assuming an option could only be used once when the instructions did not say that':
     'предположение, что вариант можно использовать только один раз, хотя в инструкции это не было сказано',
-  'I lost my place in the list while listening': 'Я потерял место в списке во время прослушивания',
+  'I lost my place in the list while listening': 'Потеряно место в списке во время прослушивания',
   'losing track of which item the recording had reached': 'потеря того, до какого пункта дошла запись',
   'It was too fast to match everything in time': 'Было слишком быстро, чтобы успеть всё сопоставить',
 
   /* listening-multiple-answer */
-  'I selected an option as soon as it was mentioned': 'Я выбрал вариант, как только его упомянули',
+  'I selected an option as soon as it was mentioned': 'Вариант выбран, как только он был упомянут',
   'selecting an option as soon as it was mentioned, before hearing whether it was accepted or rejected':
     'выбор варианта сразу после упоминания, до того как стало ясно, принят он или отклонён',
-  'I chose too few or too many options': 'Я выбрал слишком мало или слишком много вариантов',
+  'I chose too few or too many options': 'Выбрано слишком мало или слишком много вариантов',
   'not keeping to the number of options the question asked for': 'несоблюдение количества вариантов, которое требовал вопрос',
   'The speaker rejected an option and I kept it anyway': 'Говорящий отклонил вариант, а я всё равно его оставил',
   'keeping an option after the speaker had actually ruled it out':
     'сохранение варианта после того, как говорящий на самом деле его исключил',
-  'I stopped tracking once the topic seemed to move on': 'Я перестал следить, как только тема, казалось, сменилась',
+  'I stopped tracking once the topic seemed to move on': 'Отслеживание прекращено, как только тема, казалось, сменилась',
   'stopping tracking an option before the discussion of it was really finished':
     'прекращение отслеживания варианта до того, как его обсуждение действительно закончилось',
   'It was too fast to track every option': 'Было слишком быстро, чтобы следить за каждым вариантом',
@@ -202,18 +202,18 @@ export const strings: Record<string, string> = {
   'keeping the first category mentioned instead of the final placement':
     'сохранение первой упомянутой категории вместо окончательного распределения',
   'I placed it by a word I recognised rather than the reason given':
-    'Я разместил это по узнанному слову, а не по данной причине',
+    'Это размещено по узнанному слову, а не по данной причине',
   'placing an item by a recognised word rather than the reason actually given for it':
     'распределение пункта по узнанному слову, а не по действительно данной причине',
   'I assumed the categories should end up with an even number of items':
-    'Я решил, что в категориях должно получиться поровну пунктов',
+    'Показалось, что в категориях должно получиться поровну пунктов',
   'forcing an even split between categories rather than following what was actually said':
     'искусственное равное распределение по категориям вместо того, чтобы следовать сказанному',
-  'I lost track of which item was being discussed': 'Я потерял, какой пункт обсуждается',
+  'I lost track of which item was being discussed': 'Потеряно, какой пункт обсуждается',
   'It was too fast to sort everything in time': 'Было слишком быстро, чтобы успеть всё распределить',
 
   /* listening-diagram-labelling */
-  'I confused left and right, or another direction word': 'Я перепутал лево и право или другое слово направления',
+  'I confused left and right, or another direction word': 'Перепутаны лево и право или другое слово направления',
   'confusing a direction word such as left, right or opposite':
     'путаница в слове направления, например лево, право или напротив',
   'The speaker changed direction or corrected a position and I kept the first one':
@@ -221,13 +221,13 @@ export const strings: Record<string, string> = {
   'keeping the first position mentioned instead of the corrected one':
     'сохранение первого упомянутого положения вместо исправленного',
   'I placed the label by the object named, without listening to the direction word':
-    'Я разместил подпись по названному предмету, не прислушавшись к слову направления',
+    'Подпись размещена по названному предмету, без внимания к слову направления',
   "placing a label by the object named rather than the direction word that fixed its position":
     'размещение подписи по названному предмету, а не по слову направления, которое определяло его место',
-  'I lost my place on the diagram partway through': 'Я потерял место на схеме на середине',
+  'I lost my place on the diagram partway through': 'Потеряно место на схеме на середине',
   'losing track of position on the diagram after a direction change':
     'потеря позиции на схеме после смены направления',
-  'I lost the letters while a label was being spelled out': 'Я потерял буквы, пока подпись диктовали по буквам',
+  'I lost the letters while a label was being spelled out': 'Потеряны буквы, пока подпись диктовали по буквам',
   'losing letters while a name was spelled out': 'потеря букв, пока имя диктовали по буквам',
 };
 

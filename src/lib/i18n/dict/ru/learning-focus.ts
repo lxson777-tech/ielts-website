@@ -109,7 +109,7 @@ export const strings: Record<string, string> = {
   'It fits one detail in the paragraph': 'Он подходит к одной детали в абзаце',
   'Two headings looked the same to me': 'Два заголовка показались мне одинаковыми',
   'I ran out of time': 'У меня закончилось время',
-  'I guessed': 'Я угадывал',
+  'I guessed': 'Пришлось угадывать',
   'It repeats words from the text': 'В нём повторяются слова из текста',
   'I misread the question': 'Я неправильно прочитал вопрос',
   'choosing a heading because its words appear in the paragraph, rather than because it says what the paragraph is about':
