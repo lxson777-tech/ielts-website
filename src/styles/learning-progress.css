@@ -69,10 +69,33 @@
 
 /* ── Skill trend panels (progress report) ────────────────────────────────── */
 
+/* One column below 391px: below that width a two-column card is not wide
+   enough for even ONE of the longest certainty badges on its own line
+   (see the flex-wrap on .skill-trend-head below, which already moves the
+   badge to its own line under the paper name before this breakpoint is
+   reached), so two columns there would still push the card, and the
+   whole document, past the viewport (the defect this responds to:
+   docs/audits/claude-personal-learning-review-2026-09-22.md finding 5).
+   Measured against the real built Inter Variable font at the weight and
+   size this badge actually renders at: the longest of the five
+   certainty words is "Self-reported", which as the Russian pill "Со
+   слов студента" renders 131.9px wide (the longest English pill,
+   "Limited evidence", is 119.4px). A two-column card's content width is
+   143.5px at the first width this breakpoint applies (391px) and only
+   grows from there, an 11.6px margin over the worst case, so 391px and
+   every ordinary phone above it keep two columns; only the narrower band
+   below it, where that margin turns negative, drops to one. (A single,
+   rare combination, the longest Russian paper name "Аудирование" next
+   to this same longest badge, still slightly overflows its own card,
+   not the document, in the narrow ~640px band where the grid steps up
+   to four columns; see this fix's report for why that was left alone.) */
 .skill-trend-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 391px) {
+  .skill-trend-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 640px) {
   .skill-trend-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -85,8 +108,16 @@
   background: var(--color-surface);
   border-top: 3px solid var(--skill, var(--color-border));
 }
+/* flex-wrap: the certainty badge is a single-line pill (white-space:
+   nowrap below), never broken mid-word, but the ROW is allowed to break:
+   when the paper name and the badge cannot both fit on one line, the
+   badge drops to its own line under the title instead of forcing the
+   card (and the document) wider. `gap` sets both the horizontal spacing
+   on one line and the vertical spacing between the title and a dropped
+   badge, so no extra rule is needed for the stacked case. */
 .skill-trend-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
