@@ -157,7 +157,7 @@ def run(base_url: str = BASE_URL):
         )
         write_row(
             "The prompt is labelled Writing Task 2",
-            "Task 2" in prompt_label,
+            "task 2" in prompt_label.lower(),
             f'the label above the prompt reads: "{prompt_label}"',
         )
         dual_shot(page, "s18-01-task2-paragraph-saved", path_for(TASK2_CHECK))

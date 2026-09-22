@@ -152,10 +152,24 @@ def run(base_url: str = BASE_URL):
         context.close()
 
         # ── render one page from every family and watch the console ──────
+        # The three Speaking objectives the 2026-09-22 audit flagged as
+        # incomplete (finding 4) now each have an independent check on a
+        # different prompt. Named explicitly here rather than relying on
+        # speaking_ids[:4]: sorted alphabetically that slice lands on
+        # speaking-fluency-repair(-check) and speaking-part1-extend-an-
+        # answer(-check) but NOT speaking-part2-plan-in-one-minute-check,
+        # so the third check page would silently go unrendered otherwise.
+        NEW_SPEAKING_CHECKS = [
+            "speaking-part1-extend-an-answer-check",
+            "speaking-part2-plan-in-one-minute-check",
+            "speaking-fluency-repair-check",
+        ]
         sample = ([f"/{h.lstrip('/')}" for h in HUBS]
                   + [f"/trainers/focused/{i}" for i in focused_ids[:6]]
                   + [f"/trainers/focused/{i}" for i in focused_ids[-6:]]
                   + [f"/trainers/speaking-focus/{i}" for i in speaking_ids[:4]]
+                  + [f"/trainers/speaking-focus/{i}" for i in NEW_SPEAKING_CHECKS
+                     if i in speaking_ids]
                   + [f"/tests/{test_ids[0]}", f"/tests/{test_ids[-1]}"]
                   + ["/trainers/reading/reading-full-006-drill-p2",
                      "/lessons/reading/headings", "/lessons/writing/opinion",

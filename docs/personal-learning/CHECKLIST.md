@@ -28,7 +28,7 @@ a row. Every row keeps its original id; none were deleted.
 
 ## Summary (2026-09-22)
 
-**170 rows total.** 166 done, 1 done/untested, 2 partial, 0 not done,
+**170 rows total.** 168 done, 1 done/untested, 0 partial, 0 not done,
 1 external.
 
 Rows that are not plain "done":
@@ -37,20 +37,10 @@ Rows that are not plain "done":
   reference and the planner only threads `explanationLocale` into wording,
   but there is no dedicated test asserting language never changes a level or
   a band.
-- **R7.20-speaking-objective-loop** (partial): the three pilot-round Speaking
-  objectives (`part1-extend-an-answer`, `part2-plan-in-one-minute`,
-  `fluency-repair`) offer a same-prompt retry only; the six WP20b
-  coverage-round objectives check on a different question as the
-  requirement asks.
 - **R11.20-demo-accounts** (external): real two-account and two-device
   behaviour needs a live Supabase project and a real sign-in, which is
   prohibited/unavailable in this build; only local owner-namespacing was
   proven.
-- **R11.23-demo-language-and-access** (partial): the rerun found three
-  residual English strings while the interface was set to Russian (report
-  paper headings, a Course-route milestone sentence, the plan-settings
-  language label). The paper headings are fixed and verified in code
-  (commit `29a0b1d`); the other two were fixed earlier the same day (commit `0c74929`, pinned by tests) but that fix has not been reconfirmed with a fresh browser run, so the row stays partial.
 
 ---
 
@@ -210,7 +200,7 @@ found was fixed in the Today polish round (intake stays mounted until
 
 | Id | Brief | Requirement | WP | Status | Evidence |
 |---|---|---|---|---|---|
-| R7.20-speaking-objective-loop | 7 | Speaking feedback chooses a specific practice objective, offers a retry, then checks on a different question. | WP20 | partial | Spot-checked `src/lib/learning/catalog.ts`: the three pilot-round objectives (`part1-extend-an-answer`, `part2-plan-in-one-minute`, `fluency-repair`, WP20 commit `f7db2e9`) offer a same-prompt retry only; the six WP20b coverage-round objectives (commit `7d7bce4`) check on a different question as the requirement asks. Test: `tests/writing-speaking-coverage.test.ts` covers the six; no test yet closes the gap on the original three. |
+| R7.20-speaking-objective-loop | 7 | Speaking feedback chooses a specific practice objective, offers a retry, then checks on a different question. | WP20 | done | Spot-checked `src/lib/learning/catalog.ts`: the three pilot-round objectives (`part1-extend-an-answer`, `part2-plan-in-one-minute`, `fluency-repair`, WP20 commit `f7db2e9`) offer a same-prompt retry only; the six WP20b coverage-round objectives (commit `7d7bce4`) check on a different question as the requirement asks. Test: `tests/writing-speaking-coverage.test.ts` covers the six; no test yet closes the gap on the original three.  Codex review finding 4 fixed in commit `ec56ab1`: the three pilot objectives (extend a Part 1 answer, plan a Part 2 talk, repair long pauses) now end with an independent check on a reserved unexposed prompt (p1-transport, p2-skill, p1-music); `tests/speaking-pilot-checks.test.ts` and the extended coverage test cover all nine. |
 | R7.21-preserve-teaching-evidence | 7 | The selected teaching evidence needed to explain the recommendation is preserved. | WP12, WP20 | done | `evidence.ts`; WP20 commits. |
 | R7.22-pronunciation-from-audio | 7 | Pronunciation feedback uses actual audio, never a text-only guess. | WP12, WP20 | done | `grade-speaking` Worker uses `gpt-audio-1.5` on the audio itself (per project CLAUDE.md); unchanged by this build (R3.3). |
 | R7.23-recording-failure-recovery | 7 | Clear recording and grading failure recovery is provided. | WP12 | done | WP12 commit `dd4c9e0` (test, drill and grader recorders). |
@@ -300,7 +290,7 @@ found was fixed in the Today polish round (intake stays mounted until
 | R11.20-demo-accounts | 11.12 | Independent users cannot see or inherit each other's records; two devices reconcile without duplicates or stale overwrites; local simulations are distinguished from real-account checks. | WP25 | external | `results-rerun.md` line 643, verbatim: "Real two-account and two-device behaviour was verified \| FAIL \| NOT TESTED AND NOT CLAIMED. There is no Supabase on this frozen snapshot and signing in to a real account is prohibited for this run... The local owner-namespacing above is the only part of scenario 12 this run can show." Needs a live Supabase project and real sign-in, both outside this build's control. |
 | R11.21-demo-assessment-boundary | 11.13 | Tutor help stays blocked during timed exams including direct requests, and review help becomes available afterwards. | WP25 | done | f13 PASS in both `results.md` and `results-rerun.md`; review help returns after finishing, confirmed by the lead's hand check of the check exercise. |
 | R11.22-demo-coverage | 11.14 | Every lesson family and practice type has valid catalogue links and appropriate completion evidence, with no orphaned routes or dropped content. | WP25 | done | Not settled by the lead's notes; verified directly against `results-rerun.md` Scenario 14 ("Coverage and orphans"): all 531 crawled routes answer 200, no broken interface links, 44 rendered pages produced no console error, all PASS. |
-| R11.23-demo-language-and-access | 11.15 | Desktop and 390 px phone, English and Russian, keyboard controls, readable focus states and reduced motion all work, and English exam content is unchanged. | WP25 | partial | `results-rerun.md` Scenario 15: 3 of the language/access checks FAIL ("Check what you took from this lesson on a few real questions." leaked on the Course route; "English" leaked on plan settings; "Reading"/"Listening"/"Writing"/"Speaking" headings leaked on the report). The report-heading leak is fixed and test-covered in commit `29a0b1d` (spot-checked). The other two were fixed at the root in commit `0c74929` and are pinned by deterministic tests (a scanner now fails any component that translates a catalogue objective through the wrong system); the browser rerun predates that commit, so this row stays partial until a browser run confirms it. |
+| R11.23-demo-language-and-access | 11.15 | Desktop and 390 px phone, English and Russian, keyboard controls, readable focus states and reduced motion all work, and English exam content is unchanged. | WP25 | done | `results-rerun.md` Scenario 15: 3 of the language/access checks FAIL ("Check what you took from this lesson on a few real questions." leaked on the Course route; "English" leaked on plan settings; "Reading"/"Listening"/"Writing"/"Speaking" headings leaked on the report). The report-heading leak is fixed and test-covered in commit `29a0b1d` (spot-checked). The other two were fixed at the root in commit `0c74929` and are pinned by deterministic tests (a scanner now fails any component that translates a catalogue objective through the wrong system); the browser rerun predates that commit, so this row stays partial until a browser run confirms it.  Confirmed in the browser after the fixes: `results-after-codex.md` scenario 15 is 28 of 28 PASS in English and Russian at 390px (0 English lines left on Today, Course, intake, focused exercise and report), scenario 19 is 32 of 32 PASS for report widths at 320, 390 and 1440. |
 | R11.24-demo-progress | 11.16 | Distinct skill trends, uncertainty, evidence freshness and explained plan changes agree with the stored records. | WP25 | done | Browser scenario f16, PASS. |
 | R11.25-deterministic-and-browser | 11 | Deterministic tests cover scheduling and evidence logic; browser tests cover the actual flows. | WP25 | done | `tests/learning-planner.test.ts`, `tests/learning-policy.test.ts` (deterministic); `results.md`/`results-rerun.md` (browser). |
 | R11.26-labelled-simulated-ai | 11 | Clearly labelled simulated AI is used for free integration tests. | WP25 | done | `tools/mr-ez-dev-server.mjs` labels every simulated reply (see R8.8). |

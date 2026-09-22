@@ -353,3 +353,45 @@ A local preview of the final build is served by the lead and the link is given
 in the handoff message. The branch is ready for Codex's independent audit
 against the brief, this document and `docs/personal-learning/CHECKLIST.md`.
 Alex confirms every externally visible action listed in section 9.
+
+## 11. Codex's review of commit 8ca6014, and the fixes
+
+Codex reviewed the handoff commit independently on 22 September 2026
+(`docs/audits/claude-personal-learning-review-2026-09-22.md`, proof scripts and
+logs beside it). Verdict: substantial progress, not ready for release. Five
+findings, all confirmed by the lead with Codex's own scripts before any fix, all
+fixed on this branch at the root cause:
+
+| Finding | Root cause | Fix | Commit |
+|---|---|---|---|
+| 1 (P1) Signing in could upload another student's older essays and goal | The four older stores (progress, plan, vocabulary, notes) had device-wide keys, and the old sign-in sync merged and pushed them before any owner was set | One shared current-owner source (`src/lib/store-owner.ts`) that every older store resolves its key from; the owner is set first in `startSyncForUser`; old device-wide keys are copied once to the owner the device stamp names and never to a different signed-in user; late pulls are dropped and pushes are refused if the owner changed; work done signed out is offered once after sign-in with plain counts (`AnonymousWorkClaim.tsx`) and moved only on an explicit yes. `tests/account-isolation.test.ts` drives the real `startSyncForUser` and `stopSync` through the A, sign-out, B, A-again journey with delayed responses, pending pushes and claim accept and decline. Codex's `account-repro.mjs` now prints `{"uploadedTo":"SYNTHETIC-B"}` with no essay and no goal. | `0899045` |
+| 2 (P1) A successful writing evaluation marked the answer it judged as assisted | The evaluation's help flag was applied before the answer was saved | `helpToRecord` and `helpAfterEvaluation`: an answer is recorded with the help it had when written; the evaluation raises the level only for what follows; the per-owner draft carries the help state across reloads; a source-order test fails if the old order returns. Codex's scenario on the real registry path now records assistance none, independent, and carries tutor-explained to the next answer only. | `040b86f` |
+| 3 (P2) Task 2 focused exercises saved Task 1 scope | A literal `task: 'task1'` in the shared component | The task comes from the exercise registry through `WrittenTaskView.task`; `writtenEvidenceDraft` refuses a view without one; a required `piece` field gives honest wording (overview, paragraph, introduction, conclusion, sentence, answer) in English and Russian. | `040b86f` |
+| 4 (P2) Three Speaking objectives lacked a check on a different question | Pilot-round data predated the check pattern | Each gains an independent check on a reserved unexposed prompt of the same part; a self-check tick is stored as the student's own claim and never as criterion evidence. All nine objectives now complete the loop. | `ec56ab1` |
+| 5 (P2) The Russian progress report overflowed a phone | `white-space: nowrap` certainty badges in a two-column grid | The card header wraps, the grid is one column below 391px; measured worst case 132px badge against a 144px card. | `e921934` |
+
+Also: the f15 browser check now allows the word "English" as a language name
+on a Russian page, the narrow allowance Codex asked for (`0f13ecb`).
+
+Gates after the fixes, on the complete tree: `npm test` 1727 tests, 1727 pass,
+0 fail (1697 before the round); `npx astro check` 0 errors, 0 warnings;
+`npm run build` 661 pages. The activity index was regenerated and is
+unchanged.
+
+Deliberate behaviour change for existing students, worth a look by Alex: a
+browser used before this build has no owner written on its history, so the
+first sign-in now asks whether that work is theirs instead of absorbing it.
+Nothing is lost either way, and signing out shows it again.
+
+Still device-wide and not uploadable, left for a follow-up: a half-finished
+timed paper (`ielts.testsession.v1`), the mock exam state, the name on the
+printout and the homepage band pick. A second student on one browser could
+resume the first one's unfinished test; nothing of it can reach another
+account.
+
+Browser evidence for the repaired journeys is recorded in
+`docs/personal-learning/evidence/final/results-after-codex.md` (the full
+scenario set plus Codex's own browser reproductions against the rebuilt
+frozen snapshot) and `results-account-journey.md` (the sign-in journey clicked
+against the local accounts stand-in). Real accounts, two devices and live AI
+remain external, as in section 7.
