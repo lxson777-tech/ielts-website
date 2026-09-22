@@ -20,6 +20,14 @@
  *      never crosses into overallTarget;
  *   6. per-paper minimums round-trip, including clearing one;
  *   plus: src/lib/plan/summary.ts's existing getPlanSummary keeps working.
+ *
+ * Added after the 22 September 2026 review of the running site: the outcome
+ * headline must never call a tight plan's time "enough". A tester set a
+ * 7-day exam date and 15 minutes a day and read "15 minutes a day is enough
+ * to make steady, honest progress toward your goal." with "There are not
+ * enough study days left before the exam to reach this." directly beneath
+ * it. The last four tests in this file pin both halves of the fix: tight
+ * plans lose the word, ordinary on-track plans keep it.
  */
 
 import test from 'node:test';
@@ -338,4 +346,89 @@ test('planOutcome never predicts a band', () => {
     const outcome = planOutcome(makePlan({ status }));
     assert.doesNotMatch(outcome.headline, /\bband \d/i);
   }
+});
+
+/* ── The contradiction the tester found: "enough" over "not enough" ────── */
+
+/** Synthetic goals with one exam date, counted from the day makePlan's
+    session is for ('2026-09-22'). SHORT_DEADLINE_DAYS is 10, so 7 days is
+    inside the planner's own short-deadline window and 90 days is not. */
+function goalsWithExamDate(date: string): PlanGoals {
+  return { ...emptyPlanGoals(), examDate: { date, status: 'confirmed' } };
+}
+
+/** The exact milestone the planner produces when something no longer fits
+    (PLANNER_SENTENCES.milestoneDroppedNoTime, planner.ts buildMilestones). */
+const DROPPED_FOR_NO_TIME: Milestone = {
+  id: 'milestone:objective:reading:matching-headings',
+  label: 'Matching headings shown on questions you have not seen',
+  targetDate: '2026-09-29',
+  scopeKey: 'reading:matching-headings',
+  state: 'dropped',
+  droppedReason: 'There are not enough study days left before the exam to reach this.',
+};
+
+test('planOutcome never calls a short-deadline plan with dropped work "enough"', () => {
+  // The tester's exact case: target 7.0, exam in 7 days, 15 minutes a day.
+  const plan = makePlan({
+    status: 'on-track',
+    goals: goalsWithExamDate('2026-09-29'),
+    constraints: defaultPlanConstraints({ regularDailyMinutes: 15, regularDailyMinutesStatus: 'confirmed' }),
+    milestones: [DROPPED_FOR_NO_TIME],
+  });
+  const outcome = planOutcome(plan);
+
+  assert.equal(outcome.scopeTight, true, 'dropped work plus a 7-day deadline is a tight scope');
+  assert.doesNotMatch(
+    outcome.headline,
+    /enough/i,
+    `the headline must not say "enough" above "not enough": ${outcome.headline}`,
+  );
+  // It says what the time can and cannot do, with the real numbers.
+  assert.match(outcome.headline, /7 days/);
+  assert.match(outcome.headline, /15 minutes a day/);
+  assert.match(outcome.headline, /cannot cover everything/i);
+  assert.doesNotMatch(outcome.headline, /\bband \d/i);
+  // And the reason is still available verbatim for the collapsed list.
+  assert.deepEqual(outcome.droppedMilestones, [DROPPED_FOR_NO_TIME.droppedReason]);
+});
+
+test('a short deadline alone is enough to drop the word, with nothing yet dropped', () => {
+  const plan = makePlan({
+    status: 'on-track',
+    goals: goalsWithExamDate('2026-09-29'), // 7 days, inside SHORT_DEADLINE_DAYS
+    milestones: [],
+  });
+  const outcome = planOutcome(plan);
+  assert.equal(outcome.scopeTight, true);
+  assert.doesNotMatch(outcome.headline, /enough/i);
+});
+
+test('an ordinary on-track plan with a distant exam still says the time is enough', () => {
+  const plan = makePlan({
+    status: 'on-track',
+    goals: goalsWithExamDate('2026-12-21'), // 90 days away
+    constraints: defaultPlanConstraints({ regularDailyMinutes: 60, regularDailyMinutesStatus: 'confirmed' }),
+    milestones: [
+      { id: 'm1', label: 'Sit a full Reading paper under exam timing', targetDate: '2026-12-18', scopeKey: 'reading', state: 'planned' },
+    ],
+  });
+  const outcome = planOutcome(plan);
+  assert.equal(outcome.scopeTight, false);
+  assert.match(outcome.headline, /enough/i);
+  assert.match(outcome.headline, /60/);
+  assert.doesNotMatch(outcome.headline, /\bband \d/i);
+});
+
+test('work dropped with no usable exam date still avoids "enough", without inventing a day count', () => {
+  // Defensive: the planner only drops for lack of days when there IS a
+  // horizon, so this pair should not occur. If it ever does, the headline
+  // must still not promise more than the time can do, and must not print a
+  // day count it does not have.
+  const plan = makePlan({ status: 'on-track', goals: emptyPlanGoals(), milestones: [DROPPED_FOR_NO_TIME] });
+  const outcome = planOutcome(plan);
+  assert.equal(outcome.scopeTight, true);
+  assert.doesNotMatch(outcome.headline, /enough/i);
+  assert.doesNotMatch(outcome.headline, /until the exam/i);
+  assert.match(outcome.headline, /25 minutes a day/);
 });

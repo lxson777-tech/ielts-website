@@ -17,9 +17,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  addsSomethingBeside,
   dailyMinutesGoal,
   daysUntil,
   focusAreas,
+  FOCUS_CERTAINTY_LABEL,
   isSessionFinished,
   mainAction,
   mapStoredCourseView,
@@ -31,8 +33,12 @@ import {
   stepPurposeAddsSomething,
   stepStatus,
   stepTitleFor,
+  whyThisView,
   type TodayScreenInput,
 } from '../src/components/learning/today/todayViewModel.ts';
+import { selectTutorMood, tutorReachable } from '../src/components/tutor/mrez-mood.ts';
+import { CERTAINTY_LABEL } from '../src/components/reportTrends.ts';
+import { CERTAINTY_ORDER } from '../src/lib/learning/contracts/policy.ts';
 import { isDeferralActive, INTAKE_DEFER_DAYS } from '../src/components/learning/today/intakeDeferral.ts';
 import { learningCatalogue } from '../src/lib/learning/catalog.ts';
 import { evaluateEvidence } from '../src/lib/learning/policy.ts';
@@ -263,17 +269,55 @@ test('daysUntil: whole days ahead, positive when the date has not arrived yet', 
   assert.equal(daysUntil('2026-09-15', '2026-09-22'), -7);
 });
 
-test('focusAreas: outstanding papers read as not certain, everything else as certain, never a number', () => {
+test('focusAreas: with no policy figures, an outstanding paper is unknown and a touched one is limited, never a number', () => {
+  // The plan alone supports exactly these two words: diagnosticsOutstanding
+  // IS "no usable evidence of any kind", and every other paper has been
+  // touched by something real but the plan cannot say how much.
   const areas = focusAreas(['reading', 'listening', 'writing', 'speaking'], ['writing', 'speaking']);
-  assert.deepEqual(
-    areas,
-    [
-      { paper: 'reading', certain: true },
-      { paper: 'listening', certain: true },
-      { paper: 'writing', certain: false },
-      { paper: 'speaking', certain: false },
-    ],
-  );
+  assert.deepEqual(areas, [
+    { paper: 'reading', certainty: 'limited' },
+    { paper: 'listening', certainty: 'limited' },
+    { paper: 'writing', certainty: 'unknown' },
+    { paper: 'speaking', certainty: 'unknown' },
+  ]);
+});
+
+test('focusAreas: the real certainty wins when the caller has it, all five words come through', () => {
+  const areas = focusAreas(['reading', 'listening', 'writing', 'speaking'], ['speaking'], {
+    reading: 'measured',
+    listening: 'tentative',
+    writing: 'limited',
+    speaking: 'self-reported',
+  });
+  assert.deepEqual(areas.map((a) => a.certainty), ['measured', 'tentative', 'limited', 'self-reported']);
+  // A self-reported claim is real evidence the student gave us, so it is
+  // not "unknown", but it is never measured work either, and the word the
+  // panel shows for it says exactly that.
+  assert.equal(FOCUS_CERTAINTY_LABEL['self-reported'], 'Self-reported');
+});
+
+test('focusAreas: unknown reads as unknown, never as a zero and never as a number', () => {
+  const [area] = focusAreas(['reading'], ['reading']);
+  assert.equal(area!.certainty, 'unknown');
+  const word = FOCUS_CERTAINTY_LABEL[area!.certainty];
+  assert.equal(word, 'Unknown');
+  assert.ok(!/\d/.test(word), 'a certainty word must never contain a digit');
+  assert.ok(!/%/.test(word), 'a certainty word must never be a percentage');
+});
+
+test('focusAreas: every certainty word this panel can show is free of digits and percentages', () => {
+  for (const certainty of CERTAINTY_ORDER) {
+    const word = FOCUS_CERTAINTY_LABEL[certainty];
+    assert.ok(word, `${certainty} has no word`);
+    assert.ok(!/[\d%]/.test(word), `${certainty} reads as a number: ${word}`);
+  }
+});
+
+test('FOCUS_CERTAINTY_LABEL is the progress report\'s own vocabulary, so /report and the focus panel agree', () => {
+  // Re-exported, not copied. If this ever fails, the two pages have started
+  // saying different things about the same paper, which is the whole reason
+  // the one evidence policy exists.
+  assert.equal(FOCUS_CERTAINTY_LABEL, CERTAINTY_LABEL);
 });
 
 /* ------------------------------------------------------------------ */
@@ -450,4 +494,167 @@ test('isDeferralActive: false once the window has passed', () => {
 test('isDeferralActive: a record that looks like it is from the future never counts as active', () => {
   // Costs a re-ask at worst, never a reason to ask less.
   assert.equal(isDeferralActive('2026-09-25', '2026-09-22'), false);
+});
+
+/* ------------------------------------------------------------------ */
+/* whyThisView: the evidence, never the headline again (item 11d)       */
+/* ------------------------------------------------------------------ */
+
+test('addsSomethingBeside: an exact repeat adds nothing, and neither does a sentence the shown text already contains', () => {
+  assert.equal(addsSomethingBeside('Due for review since 2026-09-01.', 'Due for review since 2026-09-01'), false);
+  assert.equal(addsSomethingBeside('  DUE for   review since 2026-09-01!  ', 'Due for review since 2026-09-01.'), false);
+  assert.equal(
+    addsSomethingBeside('You need at least band 7 in Reading.', 'You need at least band 7 in Reading, so this comes first.'),
+    false,
+  );
+  assert.equal(addsSomethingBeside('You need at least band 7 in Reading.', 'Nothing has been measured yet.'), true);
+  assert.equal(addsSomethingBeside('   ', 'Anything.'), false);
+});
+
+test('whyThisView: the exact reported bug, the reason sentence from the top of the card is never repeated', () => {
+  // On a build with no AI configured, MrEzWelcome speaks session.reason
+  // verbatim at the top of the card. "Why this" used to print the same
+  // string underneath it.
+  const reason = 'Nothing has been recorded yet, so this starts with how the paper works rather than with a level nobody has measured.';
+  const view = whyThisView(
+    [
+      { kind: 'no-evidence', evidence: reason },
+      { kind: 'estimate', evidence: '12 of 20 answered on your own across 2 sittings, most recently 4 days ago.' },
+    ],
+    [reason, 'Read a short passage for detail.'],
+  );
+  assert.deepEqual(view.evidence, ['12 of 20 answered on your own across 2 sittings, most recently 4 days ago.']);
+});
+
+test('whyThisView: keeps the planner\'s own evidence sentences, in order, and says them once', () => {
+  const view = whyThisView(
+    [
+      { kind: 'estimate', evidence: '8 of 20 answered on your own across 2 sittings, most recently 3 days ago.' },
+      { kind: 'goal', evidence: 'You need at least band 7 in Reading.' },
+      { kind: 'goal', evidence: 'You need at least band 7 in Reading.' },
+      { kind: 'due-review', evidence: 'Due for review since 2026-09-14.' },
+    ],
+    ['Practise matching headings under timing.'],
+  );
+  assert.deepEqual(view.evidence, [
+    '8 of 20 answered on your own across 2 sittings, most recently 3 days ago.',
+    'You need at least band 7 in Reading.',
+    'Due for review since 2026-09-14.',
+  ]);
+  assert.equal(view.restsOnNothingRecorded, false);
+});
+
+test('whyThisView: a plan resting on nothing recorded says so, and never claims a finding', () => {
+  const view = whyThisView(
+    [{ kind: 'no-evidence', evidence: 'Nothing independent recorded for this yet.' }],
+    ['Start with how the Reading paper works.'],
+  );
+  assert.equal(view.restsOnNothingRecorded, true);
+  assert.deepEqual(view.evidence, ['Nothing independent recorded for this yet.']);
+});
+
+test('whyThisView: no refs at all, or refs that only repeat the card, leave the evidence half empty', () => {
+  assert.deepEqual(whyThisView([], ['Anything.']), { evidence: [], restsOnNothingRecorded: false });
+  assert.deepEqual(whyThisView(null, ['Anything.']), { evidence: [], restsOnNothingRecorded: false });
+  assert.deepEqual(whyThisView(undefined, ['Anything.']), { evidence: [], restsOnNothingRecorded: false });
+  const same = 'You need at least band 7 in Reading.';
+  assert.deepEqual(whyThisView([{ kind: 'goal', evidence: same }], [same]).evidence, []);
+});
+
+test('whyThisView against the REAL planner: a brand-new student sees evidence, not the reason line again', () => {
+  const { plan, session } = sessionFor(syntheticNew());
+  const view = whyThisView(plan.activeSession.evidenceRefs, [session.reason, session.objective]);
+  // The planner always attaches at least one ref (evidenceRefsFor falls
+  // back to the no-evidence sentence), and it is never the reason itself.
+  assert.ok(plan.activeSession.evidenceRefs.length > 0, 'the planner attached no evidence at all');
+  for (const line of view.evidence) {
+    assert.notEqual(line.trim().toLowerCase(), session.reason.trim().toLowerCase());
+    assert.notEqual(line.trim().toLowerCase(), session.objective.trim().toLowerCase());
+  }
+});
+
+test('whyThisView against the REAL planner: a student with evidence on record gets counted sentences', () => {
+  const { plan, session } = sessionFor(syntheticMatchingHeadings());
+  const view = whyThisView(plan.activeSession.evidenceRefs, [session.reason, session.objective]);
+  assert.ok(view.evidence.length > 0, 'a student with real evidence saw no evidence sentence');
+  for (const line of view.evidence) {
+    assert.notEqual(line.trim().toLowerCase(), session.reason.trim().toLowerCase());
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/* Mr EZ's face: mood follows reachability, not the drawer (item 9)     */
+/* ------------------------------------------------------------------ */
+/* These live in this file because it is this work package's own test
+   file; the function under test is src/components/tutor/mrez-mood.ts. */
+
+function faceInput(over: Partial<Parameters<typeof selectTutorMood>[0]> = {}) {
+  return {
+    configured: true,
+    signedIn: true,
+    busy: false,
+    failed: false,
+    blocked: false,
+    lastReplyMood: null,
+    ...over,
+  };
+}
+
+test('selectTutorMood: the exact reported bug, an unconfigured build stays unavailable however the panel is used', () => {
+  // Before item 9 the launcher read `open ? 'explaining' : mood`, so
+  // pressing it flipped the avatar to "explaining" on a build with no
+  // tutor at all. Nothing about opening a drawer is an input here now.
+  const noTutor = faceInput({ configured: false });
+  assert.equal(selectTutorMood(noTutor), 'unavailable');
+  assert.equal(tutorReachable(noTutor), false);
+});
+
+test('selectTutorMood: signed out is unavailable too, he cannot answer without knowing whose record to read', () => {
+  assert.equal(selectTutorMood(faceInput({ signedIn: false })), 'unavailable');
+  // Not resolved yet is not the same as signed out.
+  assert.equal(selectTutorMood(faceInput({ signedIn: null })), 'idle');
+});
+
+test('selectTutorMood: a failed attempt is unavailable, not thinking and not explaining', () => {
+  assert.equal(selectTutorMood(faceInput({ failed: true })), 'unavailable');
+  assert.equal(selectTutorMood(faceInput({ failed: true, lastReplyMood: 'explaining' })), 'unavailable');
+});
+
+test('selectTutorMood: unreachable beats a reply that arrived earlier', () => {
+  // A conversation restored from storage on a build with no tutor must not
+  // leave his face mid-explanation.
+  assert.equal(selectTutorMood(faceInput({ configured: false, lastReplyMood: 'celebrating' })), 'unavailable');
+});
+
+test('selectTutorMood: thinking only while a request is genuinely in flight, on a reachable tutor', () => {
+  assert.equal(selectTutorMood(faceInput({ busy: true })), 'thinking');
+  assert.equal(selectTutorMood(faceInput({ busy: true, configured: false })), 'unavailable');
+});
+
+test('selectTutorMood: under exam conditions he rests rather than explains', () => {
+  assert.equal(selectTutorMood(faceInput({ blocked: true, lastReplyMood: 'explaining' })), 'idle');
+});
+
+test('selectTutorMood: a real reply\'s own mood is what shows once one has arrived', () => {
+  assert.equal(selectTutorMood(faceInput({ lastReplyMood: 'explaining' })), 'explaining');
+  assert.equal(selectTutorMood(faceInput({ lastReplyMood: 'encouraging' })), 'encouraging');
+  assert.equal(selectTutorMood(faceInput()), 'idle');
+});
+
+test('selectTutorMood: with no live tutor the face is only ever idle or unavailable', () => {
+  // The rule stated as a rule: nothing that is not reachable may show a
+  // face that suggests he is about to say something.
+  for (const lastReplyMood of [null, 'idle', 'thinking', 'explaining', 'encouraging', 'celebrating', 'unavailable'] as const) {
+    for (const busy of [false, true]) {
+      for (const blocked of [false, true]) {
+        for (const unreachable of [{ configured: false }, { signedIn: false as const }, { failed: true }]) {
+          const mood = selectTutorMood(faceInput({ lastReplyMood, busy, blocked, ...unreachable }));
+          assert.ok(
+            mood === 'idle' || mood === 'unavailable',
+            `unreachable tutor showed "${mood}" for ${JSON.stringify({ lastReplyMood, busy, blocked, ...unreachable })}`,
+          );
+        }
+      }
+    }
+  }
 });

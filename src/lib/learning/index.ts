@@ -27,8 +27,10 @@
  */
 
 import { getProgress, onProgressChange, type ProgressV1 } from '../progress';
+import { getLocale, onLocaleChange, type Locale } from '../i18n/locale';
 import type { SavedPlan } from '../study-plan';
 import {
+  certaintyByPaperFrom,
   constraintsFrom,
   goalsFrom,
   setSharedSessionProvider,
@@ -277,6 +279,7 @@ export function ensurePlan(): PersonalPlanV1 {
      at load time would freeze them before configureLearning() has been
      called. Idempotent, so this costs one boolean after the first call. */
   watchEvidence();
+  watchLocale();
   const store = getPlanStore();
   const stored = store.read();
   const now = clock();
@@ -285,7 +288,14 @@ export function ensurePlan(): PersonalPlanV1 {
   if (!stored) {
     const settings = store.legacySettings();
     const goals = goalsFrom(settings);
-    const constraints = constraintsFrom(settings);
+    /* The first plan is written in the language the student is reading the
+       site in, unless the old store already recorded one. Without this a
+       Russian student's very first plan was built in English and stayed
+       English until something else happened to rebuild it (see
+       syncExplanationLocale). Their own recorded preference always wins. */
+    const constraints = constraintsFrom(settings, {
+      explanationLocale: settings?.explanationLocale ?? getLocale(),
+    });
     const record = getLearnerStore().read();
     const policy = evaluateEvidence({ record, goals, now });
     const { plan } = createInitialPlan({
@@ -343,6 +353,77 @@ function runReplan(trigger: ReplanTrigger, options: ReplanOptions): PersonalPlan
       : getPlanStore().save(plan);
   }
   return getPlanStore().save(plan);
+}
+
+/** Keep the plan's explanation language in step with the interface's.
+ *
+ *  WHY THE PLAN HAS A LANGUAGE AT ALL
+ *  Every sentence the shared layer writes is baked in the language
+ *  `constraints.explanationLocale` names, at the moment the plan is built
+ *  (architecture section 1.6). It has to be: the Mr EZ Worker imports the
+ *  planner and has no access to the site's lazy dictionary chunk, so the
+ *  layer translates in code rather than at render time.
+ *
+ *  THE COST, AND WHY THIS FUNCTION EXISTS
+ *  A plan built in English stays English until it is built again, which is
+ *  what a Russian student saw: an English objective, English step purposes
+ *  and English milestone labels inside an otherwise Russian page. Several of
+ *  those sentences arrive with their placeholders already filled (a
+ *  milestone label carries a whole catalogue objective inside it), so no
+ *  render-time lookup can rescue them. The plan has to be written again.
+ *
+ *  Switching language IS a settings change, so it goes through the one
+ *  trigger for one. Idempotent, and it costs a string compare when the two
+ *  already agree. Null when there is no plan yet: the first one built will
+ *  pick the language up from the constraints anyway. */
+export function syncExplanationLocale(locale: Locale): PersonalPlanV1 | null {
+  const stored = getPlanStore().read();
+  if (!stored) return null;
+  if (stored.constraints.explanationLocale === locale) return stored;
+  return runReplan('settings-changed', {
+    previous: stored,
+    now: clock(),
+    today: localToday(),
+    constraints: { ...stored.constraints, explanationLocale: locale },
+  });
+}
+
+let unsubscribeLocale: (() => void) | null = null;
+
+/** Follow the interface language, so pressing RU rewrites the plan's own
+ *  sentences without every screen having to remember to ask. Idempotent, and
+ *  deliberately a SUBSCRIPTION rather than a check inside `ensurePlan`:
+ *  reading a plan must never be able to write one, and the language only
+ *  changes when the student changes it. */
+export function watchLocale(): () => void {
+  if (unsubscribeLocale) return unsubscribeLocale;
+  const sync = () => {
+    try {
+      syncExplanationLocale(getLocale());
+    } catch {
+      /* See below. */
+    }
+  };
+  /* Once, now, as well as on every change: the Russian dictionary chunk
+     finishes loading early in a page's life (BaseLayout does it), and its
+     notification can easily land before the first island asks for a plan,
+     so a plan stored in the other language would otherwise wait for the
+     next switch that never comes. */
+  sync();
+  const off = onLocaleChange(() => {
+    try {
+      syncExplanationLocale(getLocale());
+    } catch {
+      /* A plan that cannot be rebuilt must not break the language switch.
+         The interface is already Russian; the plan's own sentences catch up
+         the next time it is rebuilt. */
+    }
+  });
+  unsubscribeLocale = () => {
+    off();
+    unsubscribeLocale = null;
+  };
+  return unsubscribeLocale;
 }
 
 /** Goals or constraints the student edited. The one trigger that may change
@@ -602,7 +683,18 @@ export function getCurrentSession(): SharedSessionView {
   const view = sharedSessionFrom({
     plan,
     catalogue: catalogue(),
-    missedStudyDays: missedStudyDays(plan, facts, plan.constraints, plan.overrides, today),
+    /* The number the plan was actually rebuilt around, which is the only
+       honest answer once the rebuild has happened: from that moment the
+       active session is dated today and the run of missed days is behind
+       it, so recomputing gives zero. The pure function is the fallback for
+       a plan stored before the field existed. See
+       PersonalPlanV1.missedStudyDays. */
+    missedStudyDays:
+      plan.missedStudyDays ?? missedStudyDays(plan, facts, plan.constraints, plan.overrides, today),
+    /* One policy pass, already computed above, so the focus panel can name
+       each paper's certainty in the same words /report uses instead of
+       repeating "has evidence recorded" four times. */
+    certaintyByPaper: certaintyByPaperFrom(policy.estimates),
   });
   sessionCache = { key, view };
   return view;
@@ -663,6 +755,7 @@ export function resetLearningForTest(): void {
   vocabularyReader = null;
   vocabularyLoading = false;
   if (unsubscribeEvidence) unsubscribeEvidence();
+  if (unsubscribeLocale) unsubscribeLocale();
   resetLearningStoresForTest();
   configureLearning();
   setSharedSessionProvider(sessionProvider);

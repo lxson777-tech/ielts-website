@@ -193,6 +193,7 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
   import { isLessonComplete, markLessonComplete, onProgressChange, unmarkLessonComplete } from '../lib/progress';
   import { recordLessonStudied } from '../lib/learning/store.browser';
   import { ensureLearningWired, getCurrentSession, markStepDone } from '../lib/learning';
+  import { continueFor } from '../components/learning/session-continue';
   import { toggleBookmark, isBookmarked, setNote, getNote } from '../lib/notes';
   import { t, onLocaleChange } from '../lib/i18n';
   import { onLessonBodySwap } from '../lib/i18n/lesson-body';
@@ -263,9 +264,13 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
   // The shared "next" control: if this lesson is a step of today's session
   // (src/lib/learning), continue to the session's next step, marking this
   // one done first when the student has pressed "studied". Otherwise offer
-  // "Back to today's session" — never a positional guess through the
+  // a quiet way back to today, and never a positional guess through the
   // library, which is what this control used to do and the one thing WP8
   // exists to stop it doing for a student who opened the lesson directly.
+  // Which of the three it is, and what it says, is decided by continueFor
+  // (src/components/learning/session-continue.ts), the same function every
+  // result screen on the site uses, so a lesson and a drill never offer the
+  // same move in two different sets of words.
   function refreshNextControl() {
     const link = document.getElementById('lesson-next-control') as HTMLAnchorElement | null;
     const label = document.getElementById('lesson-next-label');
@@ -303,15 +308,21 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
       }
     }
 
-    const index = session.steps.findIndex((s) => s.stepId === step.stepId);
-    const next = session.steps[index + 1];
-    if (next && next.href) {
-      link.href = withBase(next.href);
-      label.textContent = t('Next step: {title}', { title: t(next.objective) });
-      link.hidden = false;
-      return;
-    }
-    backToToday();
+    // One rule for "where does next go", shared with every result screen
+    // (src/components/learning/session-continue.ts): continue to the next
+    // step that is actually still waiting, in the session's own words, and
+    // fall back to the dashboard only when nothing is. The old code here
+    // took session.steps[index + 1] positionally, which could point at a
+    // step already finished, and labelled it "Next step: ..." while the
+    // rest of the site says "Continue today's session" for the same move.
+    // It also went quiet altogether for a lesson that was a step, which is
+    // what the lead saw: the finished teach step used to vanish from the
+    // rebuilt session, so this lesson stopped being a step of it and the
+    // control dropped back to "Back to today's session".
+    const target = continueFor(session, step.activityId);
+    link.href = withBase(target.href);
+    label.textContent = t(target.labelKey);
+    link.hidden = false;
   }
 
   onLessonBodySwap(() => {

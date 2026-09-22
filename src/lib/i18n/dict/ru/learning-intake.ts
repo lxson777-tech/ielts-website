@@ -70,6 +70,24 @@ export const strings: Record<string, string> = {
   'Measured evidence shows you meeting your confirmed goal.': 'Измеренные результаты показывают, что вы достигли своей подтверждённой цели.',
   '{minutes} minutes a day is enough to make steady, honest progress toward your goal.':
     '{minutes} минут в день достаточно для стабильного и честного продвижения к вашей цели.',
+
+  /* The tight-scope pair: said instead of the "is enough" sentence above
+     whenever the planner itself had to leave real work out. Neither one may
+     use the word "enough" in any language, and neither promises a band. */
+  'With {pace} until the exam, {minutes} minutes a day can cover a few priorities properly. It cannot cover everything your goal needs, and it cannot promise a band.':
+    'До экзамена осталось {pace}, и за {minutes} минут в день можно как следует разобрать лишь несколько главных тем. Всё, что нужно для вашей цели, в это время не уместится, и никакой план не может обещать балл.',
+  '{minutes} minutes a day can cover a few priorities properly. It cannot cover everything your goal needs, and it cannot promise a band.':
+    'За {minutes} минут в день можно как следует разобрать лишь несколько главных тем. Всё, что нужно для вашей цели, в это время не уместится, и никакой план не может обещать балл.',
 };
 
-export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};
+export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
+  /* Keyed by the English "other" form exactly as written at the call site
+     (docs/I18N-GUIDE.md), not the singular. The collapsed disclosure over
+     the milestones the planner dropped, in src/components/learning/intake/ui.tsx. */
+  'What will not fit before the exam ({n} things)': {
+    one: 'Что не уместится до экзамена ({n} пункт)',
+    few: 'Что не уместится до экзамена ({n} пункта)',
+    many: 'Что не уместится до экзамена ({n} пунктов)',
+    other: 'Что не уместится до экзамена ({n} пункта)',
+  },
+};

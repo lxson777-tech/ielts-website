@@ -51,7 +51,8 @@ import type {
   Paper,
   Subskill,
 } from './contracts/catalog';
-import type { PolicyScopeKey } from './contracts/policy';
+import { PAPERS } from './contracts/catalog';
+import type { Certainty, PolicyScopeKey } from './contracts/policy';
 import type {
   Confirmation,
   DailyMinutes,
@@ -151,6 +152,18 @@ export interface SharedSessionView {
   /** Study days with nothing recorded on them, counted by whoever built this
       view and had the record to count from. Zero when nobody counted. */
   missedStudyDays: number;
+  /** How well each paper is actually known, in the policy's own words.
+   *
+   *  Added so the dashboard's focus panel can say "limited", "tentative",
+   *  "measured" or "unknown" per paper instead of repeating "has evidence
+   *  recorded" four times, which is what it had to do while the plan carried
+   *  only `diagnosticsOutstanding` (a boolean by another name). Filled by
+   *  whoever built this view and had the policy to read it from; absent on a
+   *  view built without one, and a missing paper means the reader has
+   *  nothing honest to show for it and must fall back rather than guess. A
+   *  WORD, never a number: a percentage here would be exactly the unearned
+   *  precision the brief forbids. */
+  certaintyByPaper?: Readonly<Partial<Record<Paper, Certainty>>>;
   /** True when this session was worked out on the spot rather than read from
       the student's stored plan, which is what the Mr EZ Worker does until it
       is given the synced plan. The choice is the same; only its permanence
@@ -266,7 +279,22 @@ export interface SharedSessionInput {
   catalogue: LearningCatalogueV1;
   /** Counted by the caller, which is the one that holds the record. */
   missedStudyDays?: number;
+  /** Read off the policy by the caller, which is the one that has it. */
+  certaintyByPaper?: Readonly<Partial<Record<Paper, Certainty>>>;
   derived?: boolean;
+}
+
+/** Each paper's certainty, straight off a policy pass. The one place this is
+    derived, so /report and the dashboard's focus panel cannot disagree. */
+export function certaintyByPaperFrom(
+  estimates: readonly { scopeKey: PolicyScopeKey; certainty: Certainty }[],
+): Partial<Record<Paper, Certainty>> {
+  const out: Partial<Record<Paper, Certainty>> = {};
+  for (const paper of PAPERS) {
+    const estimate = estimates.find((entry) => entry.scopeKey === `paper:${paper}`);
+    if (estimate) out[paper] = estimate.certainty;
+  }
+  return out;
 }
 
 export function sharedSessionFrom(input: SharedSessionInput): SharedSessionView {
@@ -297,8 +325,26 @@ export function sharedSessionFrom(input: SharedSessionInput): SharedSessionView 
     regularDailyMinutesStatus: plan.constraints.regularDailyMinutesStatus,
     scopeNote: plan.scopeNote ?? null,
     missedStudyDays: input.missedStudyDays ?? 0,
+    ...(input.certaintyByPaper ? { certaintyByPaper: input.certaintyByPaper } : {}),
     derived: input.derived ?? false,
   };
+}
+
+/** Minutes today's session has already accounted for: the sum of the steps
+ *  the student has finished or deliberately skipped.
+ *
+ *  These are the minutes the PLAN allotted those steps, never a measured
+ *  stopwatch reading, which is the same thing every "estimatedMinutes" on a
+ *  lesson means. The dashboard's "{minutes} / {goal} min today" chip uses it
+ *  as a floor under the old activity log, because that log is written by
+ *  each recorder separately and knows nothing about the plan: a step that
+ *  finished without one of those recorders running left the chip reading
+ *  "0 / 60 min today" over work the plan itself had already ticked off. */
+export function sessionMinutesSettled(session: Pick<SharedSessionView, 'steps'> | null | undefined): number {
+  if (!session) return 0;
+  return session.steps
+    .filter((step) => step.state === 'done' || step.state === 'skipped')
+    .reduce((total, step) => total + step.minutes, 0);
 }
 
 /* ── The provider ────────────────────────────────────────────────────────── */

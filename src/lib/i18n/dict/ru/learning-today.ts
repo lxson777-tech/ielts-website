@@ -76,7 +76,20 @@ export const strings: Record<string, string> = {
     'Ваши обычные {n} мин. в день не меняются. Это сокращает только сегодня.',
   'Not yet assessed: {papers}.': 'Пока не оценено: {papers}.',
 
-  /* LearningDashboard.tsx: quiet sidebar context */
+  /* TodaySession.tsx: the two labelled halves of "Why this" (item 11d).
+     It used to repeat the reason sentence from the top of the same card;
+     it now shows the evidence behind the choice and what is still
+     unknown. The evidence sentences themselves come from the planner and
+     are already translated through its own Russian path. */
+  'What this rests on': 'На чём это основано',
+  'No evidence behind this yet': 'Пока нет данных для этого',
+  'What is still unknown': 'Что пока неизвестно',
+
+  /* LearningDashboard.tsx: quiet sidebar context. The four certainty words
+     the focus panel now shows instead of one repeated sentence (item 11e)
+     are the progress report's own, and their Russian already lives in
+     learning-account.ts ('Unknown', 'Self-reported', 'Limited evidence',
+     'Tentative', 'Measured'); the merged dictionary finds them there. */
   'Focus areas': 'На что обратить внимание',
   'Has evidence recorded': 'Есть накопленные данные',
   'Not yet assessed': 'Пока не оценено',
@@ -106,9 +119,13 @@ export const strings: Record<string, string> = {
   'This plan is saved on this device. Sign in to keep it synced across your devices too.':
     'Этот план сохранён на этом устройстве. Войдите в аккаунт, чтобы он синхронизировался и на других устройствах.',
 
-  /* LessonLayout.astro: the shared "next" control */
+  /* LessonLayout.astro: the shared "next" control. Its three labels now
+     come from continueFor (src/components/learning/session-continue.ts) and
+     have their Russian beside that file's other strings in
+     ./learning-focus.ts, so a lesson and a drill offer the same move in the
+     same words. This key is kept because the lesson footer's default markup
+     still carries it before the script runs. */
   "Back to today's session": 'Вернуться к сегодняшнему занятию',
-  'Next step: {title}': 'Следующий шаг: {title}',
 
   /* TodaySession.tsx: the scope note, short sentence plus collapsed list
      (Today polish round, item 7) */

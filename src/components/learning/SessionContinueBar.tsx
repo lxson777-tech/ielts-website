@@ -43,9 +43,14 @@ interface Props {
   /** Smaller, for a screen that already has a lot on it (the score modal
       inside the test player). */
   compact?: boolean;
+  /** True when this screen is also showing what changed in the plan. The
+      quiet note then says the plan was worked out again rather than
+      claiming nothing changed, which is the same screen contradicting
+      itself two lines apart. */
+  planChanged?: boolean;
 }
 
-export default function SessionContinueBar({ activityId, onContinue, compact }: Props) {
+export default function SessionContinueBar({ activityId, onContinue, compact, planChanged }: Props) {
   const { t } = useT();
   const [session, setSession] = useState<SharedSessionView | null>(null);
 
@@ -68,7 +73,7 @@ export default function SessionContinueBar({ activityId, onContinue, compact }: 
     };
   }, [activityId]);
 
-  const target = continueFor(session, activityId);
+  const target = continueFor(session, activityId, planChanged);
 
   /* A voluntary visit gets nothing at all until a plan exists: there is no
      session to go back to, so a link saying there is would be a lie. */

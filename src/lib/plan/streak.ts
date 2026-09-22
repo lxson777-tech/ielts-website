@@ -108,8 +108,22 @@ export interface TodayGoalProgress {
  *  budget on a temporary short day, with `regularDailyMinutes` itself
  *  untouched either way. Passing `null` here shows no target, only the
  *  minutes actually studied. */
-export function getTodayGoalProgress(goal: number | null, today: Date = new Date()): TodayGoalProgress {
-  const minutes = getActivity()[toLocalDateKey(today)]?.minutes ?? 0;
+export function getTodayGoalProgress(
+  goal: number | null,
+  today: Date = new Date(),
+  /** Minutes today's session has already accounted for, from the steps the
+   *  student has finished (see sessionMinutesSettled). The activity log is
+   *  written by each recorder separately and does not know about the plan,
+   *  so a step that finished without one of those recorders running left
+   *  the chip reading "0 / 60 min today" over work the plan itself had
+   *  ticked off, which is what the lead saw after marking a lesson studied.
+   *  The larger of the two is used: both are real records of the same day,
+   *  and a step's minutes are the estimate the plan allotted it, never a
+   *  measured stopwatch reading. */
+  settledSessionMinutes = 0,
+): TodayGoalProgress {
+  const logged = getActivity()[toLocalDateKey(today)]?.minutes ?? 0;
+  const minutes = Math.max(logged, settledSessionMinutes);
   if (goal === null) return { minutes, goal: null, percent: null };
   return { minutes, goal, percent: Math.min(100, Math.round((minutes / goal) * 100)) };
 }

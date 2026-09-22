@@ -9,10 +9,12 @@
    was always part of this workspace, not a bolted-on form. Capsule shapes
    (999px) match the existing tab/pill language (.ws-tab, .plan-start).
 
-   Reduced motion: every transition below is already covered by
-   workspace-redesign.css's blanket `.workspace-v2 * { transition-duration:
-   .01ms !important }` rule under prefers-reduced-motion, so nothing extra
-   is declared here. */
+   Reduced motion: workspace-redesign.css's blanket `.workspace-v2 * {
+   transition-duration: .01ms !important }` rule covers the first-visit
+   variant, which renders inside the workspace. The settings variant does
+   NOT: /plan-settings is an ordinary platform page, outside `.workspace-v2`,
+   so the same motion is stopped again for `.intake` itself at the foot of
+   this file. */
 
 .intake {
   max-width: 640px;
@@ -108,7 +110,8 @@
   transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
 .intake-capsule:hover {
-  border-color: var(--color-brand);
+  border-color: var(--color-ink);
+  background: var(--color-surface-alt);
 }
 .intake-capsule input {
   position: absolute;
@@ -117,10 +120,22 @@
   opacity: 0;
   cursor: pointer;
 }
+/* Chosen is a FILLED FOREST INK capsule with warm white text: the approved
+   selected state for this design (DESIGN.md, "Active tabs use forest ink
+   with warm white text"), already used by .ws-tab.is-active, .today-active
+   and .intake-button-primary just below.
+
+   It used to be the brand tint (--color-brand-tint, a pale salmon, with
+   rust --color-brand-hover text). A tester on 22 September 2026 read the
+   selected capsules on plan settings as an error state, which is exactly
+   what a red-family fill says. The brand stays the brand; it is just not
+   what "you picked this" looks like. */
 .intake-capsule:has(input:checked) {
-  border-color: var(--color-brand);
-  background: var(--color-brand-tint);
+  border-color: var(--color-ink);
+  background: var(--color-ink);
 }
+/* The focus ring stays the brand colour, as it is on every other control in
+   this file and across the site. A ring is not a selected state. */
 .intake-capsule:has(input:focus-visible) {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
@@ -129,14 +144,24 @@
   font-size: 14px;
   font-weight: 650;
   color: var(--color-ink);
+  /* The label flips to warm white when the capsule fills, so it eases with
+     the fill rather than snapping a beat ahead of it. */
+  transition: color 160ms ease;
 }
 .intake-capsule:has(input:checked) .intake-capsule-label {
-  color: var(--color-brand-hover);
+  color: var(--color-surface);
 }
 .intake-capsule-hint {
   font-size: 11px;
   font-weight: 500;
   color: var(--color-ink-muted);
+  transition: color 160ms ease;
+}
+/* The hint on a filled capsule ("Your teacher's recommendation"): warm white
+   pulled back towards the ink rather than a new grey. About 8:1 on the ink
+   fill, well above AA for small text. */
+.intake-capsule:has(input:checked) .intake-capsule-hint {
+  color: color-mix(in srgb, var(--color-surface) 78%, var(--color-ink));
 }
 
 /* ── Native selects and date inputs, styled to match ──────────────────── */
@@ -195,10 +220,13 @@
   cursor: pointer;
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
 }
+/* "I do not have a date yet" is a capsule and a selected state too, on the
+   same screen, so it gets the same filled ink treatment rather than the old
+   salmon tint. */
 .intake-toggle-button.is-active {
-  border-color: var(--color-brand);
-  background: var(--color-brand-tint);
-  color: var(--color-brand-hover);
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-surface);
 }
 .intake-toggle-button:focus-visible {
   outline: 2px solid var(--color-brand);
@@ -280,11 +308,17 @@
   background: var(--color-surface);
   color: var(--color-ink);
 }
-.intake-button-secondary.is-active,
 .intake-button-secondary:hover {
-  border-color: var(--color-brand);
-  background: var(--color-brand-tint);
-  color: var(--color-brand-hover);
+  border-color: var(--color-ink);
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+}
+/* Declared after :hover on purpose: both are two classes deep, so source
+   order is what keeps a chosen button looking chosen while hovered. */
+.intake-button-secondary.is-active {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-surface);
 }
 .intake-button-secondary:disabled {
   opacity: 0.45;
@@ -353,6 +387,64 @@
   line-height: 1.7;
   color: var(--color-ink-muted);
 }
+/* The shared ScopeNote component (src/components/learning/ScopeNote.tsx)
+   renders its "and n more" control with the same today-* class names
+   wherever it is used, and Today's stylesheet is not loaded on the plan
+   settings page. Same quiet underlined control, stated here so the three
+   surfaces that show one scope note also show it the same way. */
+.intake-outcome .today-scope-toggle {
+  margin-left: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.intake-outcome .today-scope-toggle:hover {
+  opacity: 1;
+}
+.intake-outcome .today-scope-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.intake-outcome .today-scope-more {
+  display: block;
+  margin-top: 6px;
+}
+
+/* What had to be dropped: real, but secondary, so it is one closed line
+   until the student asks for it. Same disclosure language as
+   .intake-details above, kept local to the panel. */
+.intake-outcome-dropped {
+  margin-top: 12px;
+}
+.intake-outcome-dropped > summary {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-ink);
+  list-style: none;
+  cursor: pointer;
+}
+.intake-outcome-dropped > summary::-webkit-details-marker {
+  display: none;
+}
+.intake-outcome-dropped > summary::before {
+  content: '+ ';
+}
+.intake-outcome-dropped[open] > summary::before {
+  content: '\2212 '; /* minus sign */
+}
+.intake-outcome-dropped > summary:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
 .intake-outcome-list {
   margin: 10px 0 0;
   padding-left: 18px;
@@ -360,6 +452,9 @@
   line-height: 1.7;
   color: var(--color-ink-muted);
   list-style: disc;
+}
+.intake-outcome-dropped .intake-outcome-list {
+  margin-top: 8px;
 }
 .intake-status {
   margin: 0 0 14px;
@@ -419,5 +514,21 @@
 @media (max-width: 400px) {
   .intake-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────── */
+
+/* The intake on /plan-settings sits outside `.workspace-v2`, so the
+   workspace's blanket rule never reaches it. Same effect, stated locally:
+   the step card stops sliding in and every hover or selection change lands
+   at once instead of easing. */
+@media (prefers-reduced-motion: reduce) {
+  .intake-step {
+    animation: none;
+  }
+  .intake *,
+  .intake {
+    transition-duration: 0.01ms !important;
   }
 }

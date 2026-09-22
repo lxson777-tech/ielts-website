@@ -300,8 +300,30 @@ test('reading results alone do not stop the plan finding out about the other pap
     readingAttempt('2026-09-10T10:00:00.000Z', { tfng: { correct: 1, total: 5 } }),
     readingAttempt('2026-09-11T10:00:00.000Z', { tfng: { correct: 1, total: 5 } }),
   ];
-  const rec = recommendNext(readInsights(progress, plan(), LESSON_TOTAL), progress);
-  assert.equal(rec.rule, 'missing-paper', 'a paper with nothing recorded is named as unknown, not guessed at');
+  const insights = readInsights(progress, plan(), LESSON_TOTAL);
+  /* The three papers with nothing on them are still named as unknown rather
+     than guessed at, which is what this test has always been about. */
+  const unnamed = insights.observations.filter((o) => o.kind === 'gap').map((o) => o.id);
+  assert.deepEqual(
+    unnamed.sort(),
+    ['gap:listening', 'gap:speaking', 'gap:writing'],
+    'a paper with nothing recorded must be named as unknown, not guessed at',
+  );
+
+  const rec = recommendNext(insights, progress);
+  /* CHANGED 2026-09-22 (fix round, item 2). This used to assert
+     rule === 'missing-paper'. Two of ten True / False / Not Given answers,
+     with Reading a band short of a confirmed target, is a substantive
+     weakness, and an unsampled paper no longer outranks one (see
+     UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS in contracts/plan.ts): every
+     student migrated from the old site looks like this on the day they
+     return, and sending all of them to an unknown paper's overview instead
+     of to the thing they keep getting wrong is the defect that rule change
+     closes. The unknown papers are still sampled, by the staged first-look
+     step the session carries for exactly that (pinned in
+     tests/learning-plan-continuity.test.ts), so nothing about them is
+     guessed at either way. */
+  assert.equal(rec.rule, 'weakness-teach', 'the counted weakness is what the session turns to');
   assert.ok(rec.because, 'the reason is a counted claim, not a description');
   assert.notEqual(rec.activity.kind, 'test', 'and it is not a sixty-minute timed paper');
 });

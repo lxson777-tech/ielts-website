@@ -570,7 +570,7 @@ export default function WritingFocusedTask({ view }: Props) {
             </p>
           )}
 
-          <SessionContinueBar activityId={view.activityId} />
+          <SessionContinueBar activityId={view.activityId} planChanged={Boolean(planChange)} />
         </section>
       )}
     </div>

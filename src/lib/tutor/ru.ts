@@ -98,21 +98,40 @@ export function tutorCount(locale: Locale, n: number, forms: CountForms, vars?: 
   return fill(chosen, withCount);
 }
 
-/** A date a student reads, written the way their language writes one. The
-    input is an ISO instant or an ISO date key; only the calendar date is
-    ever shown. Falls back to the plain yyyy-mm-dd if Intl refuses it, which
-    is readable rather than empty. */
+/* Which regional form of each language writes a date here.
+
+   WHY NOT A BARE 'en'. Intl resolves a bare 'en' to United States ordering,
+   so this used to write "August 15, 2026" while every other date on the
+   site writes the day first: the progress report, the score history, the
+   saved items and both marking histories all ask for 'en-GB'. One site, one
+   order, so the English here is British too. Nothing about the Russian
+   changes with this. */
+const DATE_LOCALE: Record<Locale, string> = {
+  en: 'en-GB',
+  ru: 'ru-RU',
+};
+
+/** Russian writes a year as "2026 г.". Correct, and noise in a list of
+    dates, so the year marker is trimmed rather than shown. */
+const RU_YEAR_MARKER = /\s*г\.?$/;
+
+/** A date a student reads, written the way their language writes one:
+    "19 September 2026" and "19 сентября 2026". The input is an ISO instant
+    or an ISO date key; only the calendar date is ever shown. Falls back to
+    the plain yyyy-mm-dd if Intl refuses it, which is readable rather than
+    empty. */
 export function formatDate(iso: string, locale: Locale): string {
   const dateKey = iso.slice(0, 10);
   const parsed = new Date(`${dateKey}T00:00:00Z`);
   if (Number.isNaN(parsed.getTime())) return dateKey;
   try {
-    return new Intl.DateTimeFormat(locale, {
+    const written = new Intl.DateTimeFormat(DATE_LOCALE[locale], {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
       timeZone: 'UTC',
     }).format(parsed);
+    return locale === 'ru' ? written.replace(RU_YEAR_MARKER, '') : written;
   } catch {
     return dateKey;
   }

@@ -30,7 +30,14 @@ import {
   readPersonalPlan,
   type SharedSessionView,
 } from '../lib/learning';
-import { PAPER_LABEL, dailyMinutesGoal, focusAreas, type FocusAreaCertainty } from './learning/today/todayViewModel';
+import { sessionMinutesSettled } from '../lib/learning/adapters';
+import {
+  FOCUS_CERTAINTY_LABEL,
+  PAPER_LABEL,
+  dailyMinutesGoal,
+  focusAreas,
+  type FocusAreaCertainty,
+} from './learning/today/todayViewModel';
 import PlanToday from './plan/PlanToday';
 import { useT } from '../lib/i18n/react';
 import '../styles/learning-today.css';
@@ -113,9 +120,18 @@ export default function LearningDashboard() {
         // here also ensures the plan exists before readPersonalPlan below.
         const session: SharedSessionView | null = getCurrentSession();
         const target = dailyMinutesGoal(session?.regularDailyMinutesStatus, session?.budgetMinutes ?? 0);
-        setGoal(getTodayGoalProgress(target));
+        /* The steps of today's session that are already finished are a real
+           record of the day, and the old activity log does not know about
+           them: a lesson marked studied used to leave this chip on
+           "0 / 60 min today" over work the plan had ticked off. See
+           sessionMinutesSettled. */
+        setGoal(getTodayGoalProgress(target, new Date(), sessionMinutesSettled(session)));
         const personalPlan = readPersonalPlan();
-        setFocus(focusAreas(ALL_PAPERS, personalPlan?.diagnosticsOutstanding ?? []));
+        /* The shared session carries each paper's real certainty (one policy
+           pass, done once in src/lib/learning); `diagnosticsOutstanding` is
+           the fallback for a session built without one, and it can only
+           ever tell unknown from known. */
+        setFocus(focusAreas(ALL_PAPERS, personalPlan?.diagnosticsOutstanding ?? [], session?.certaintyByPaper));
       } catch {
         setGoal(getTodayGoalProgress(null));
         setFocus([]);
@@ -182,7 +198,16 @@ export default function LearningDashboard() {
           {focus.map((area) => (
             <li key={area.paper} className="dash-focus-item">
               <span className="dash-focus-paper">{t(PAPER_LABEL[area.paper])}</span>
-              <span className="dash-focus-certainty">{area.certain ? t('Has evidence recorded') : t('Not yet assessed')}</span>
+              {/* The paper's real certainty, as one WORD, in the same
+                  vocabulary /report uses (FOCUS_CERTAINTY_LABEL is the
+                  report's own map, re-exported, so the two pages cannot
+                  drift). It used to read "Has evidence recorded" for every
+                  paper that was not outstanding, which is four identical
+                  lines saying nothing. Never a number or a percentage, and
+                  unknown reads as unknown rather than as a zero. */}
+              <span className={`dash-focus-certainty is-${area.certainty}`}>
+                {t(FOCUS_CERTAINTY_LABEL[area.certainty])}
+              </span>
             </li>
           ))}
         </ul>

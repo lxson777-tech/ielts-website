@@ -59,18 +59,23 @@ import type {
   ReplanTrigger,
   ScheduledDay,
   SessionEvidenceRef,
+  SessionStep,
   VocabularySignalV1,
 } from './contracts/plan';
 import {
   DAILY_MINUTE_CHOICES,
   DEFAULT_PLANNER_WEIGHTS,
   DIAGNOSTIC_MAX_SESSIONS,
+  LIMITED_WEAKNESS_WEIGHT,
   PLAN_HISTORY_MAX,
   RECOMMENDED_DAILY_MINUTES,
   RECOVERY_MAX_BUDGET_MULTIPLE,
   RECOVERY_TRIGGER_MISSED_DAYS,
   SCHEDULE_HORIZON_DAYS,
   SHORT_DEADLINE_DAYS,
+  SUBSTANTIVE_BAND_SHORTFALL,
+  SUBSTANTIVE_WEAKNESS_PERCENT,
+  UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS,
 } from './contracts/plan';
 import type { LearningAiVersions, ProposalDisagreement, ProposalRejectionCode } from './contracts/ai';
 import { MAX_PROPOSAL_CANDIDATES } from './contracts/ai';
@@ -82,6 +87,7 @@ import { learningText } from './ru';
 import type { EligibilityContext, LearnerFacts, PlannedObjective } from './session';
 import {
   assembleSession,
+  assertWithinBudget,
   calendarDaysBetween,
   checkpointPaper,
   ineligibleReason,
@@ -114,8 +120,15 @@ export const PLANNER_SENTENCES = {
     'You answered {correct} of {items} of these on your own across {occasions} sittings. That is below what {paper} needs for your target, so it is the most useful hour you have.',
   reasonMeasuredBandGap:
     'Your measured {paper} is around band {band} and you need at least {required}. Closing that is the most useful hour you have, and the estimate can still move either way.',
+  /* Both thin-gap sentences name the paper. The first version said only
+     "One result puts this below what you need", which two opposite students
+     received word for word: one about Writing, one about Reading, and
+     neither sentence said which. A reason that could belong to anybody
+     explains nothing. */
   reasonThinGap:
-    'One result puts this below what you need. It is a single occasion rather than a settled picture, so this is a second look rather than a conclusion.',
+    'One result puts {paper} below what you need. It is a single occasion rather than a settled picture, so this is a second look rather than a conclusion.',
+  reasonThinGapBand:
+    'One result puts {paper} around band {band}, against the {required} your goal asks for. It is a single occasion rather than a settled picture, so this is a second look rather than a conclusion.',
   reasonUnknownPaper:
     'Nothing has been measured for {paper} yet, so the plan cannot say where you are. A short sample changes that.',
   reasonDueReview:
@@ -129,7 +142,7 @@ export const PLANNER_SENTENCES = {
   reasonStartHere:
     'Nothing has been recorded yet, so this starts with how the paper works rather than with a level nobody has measured.',
   reasonKeepSharp:
-    'Everything measured here is already at or above what you need, so this keeps it sharp rather than fixing a problem.',
+    'Everything measured in {paper} is already at or above what you need, so this keeps it sharp rather than fixing a problem.',
   reasonStudentChose: 'You chose this, so the plan follows it and keeps the evidence it produces.',
   reasonPlanning:
     'The exam date on this plan has passed. Nothing here is finished; the plan needs a new date or a new goal before it can pace anything.',
@@ -145,6 +158,12 @@ export const PLANNER_SENTENCES = {
   /* Change history. */
   changeInitial: 'Your plan is set up. Today is {objective}.',
   changeObjective: 'Today moves from {from} to {to}. {why}',
+  /* When the objective did NOT move. "Today moves from X to X" was a real
+     reported line: the steps had been re-planned around new evidence while
+     the objective stayed exactly the same, and the only template left said
+     it had moved. A student cannot perceive a step list being recomputed as
+     a move, so this says what did happen instead. */
+  changeStepsAdjusted: "Today's steps were adjusted around your latest result. The objective is the same: {objective}.",
   changeStatus: 'The plan is now {status}. {why}',
   changeRecovery:
     'You missed {days} study days, so the week was rebuilt from where you actually are rather than piling the old days on top. {dropped}',
@@ -511,7 +530,9 @@ export function replan(input: PlannerInput): ReplanResult {
     });
   }
 
-  const session = assembled.session;
+  /* The day's session, with anything the student has already finished today
+     left exactly where it was. See carryForwardSession. */
+  const session = carryForwardSession({ previous, rebuilt: assembled.session, today });
 
   if (assembled.diagnosticUnavailable && diagnosticPaper) {
     notes.push(sentence(locale, PLANNER_SENTENCES.scopeNoShortSample, { paper: PAPER_LABEL[diagnosticPaper] }));
@@ -607,6 +628,9 @@ export function replan(input: PlannerInput): ReplanResult {
     history: previous?.history ?? [],
     diagnosticsOutstanding,
     scopeNote: notes.length > 0 ? notes.join(' ') : undefined,
+    /* The real count, stored because it cannot be recomputed once this plan
+       has been rebuilt around it. See PersonalPlanV1.missedStudyDays. */
+    missedStudyDays: missedDays,
   };
 
   /* Stability. A replan that changes nothing returns the plan it was given:
@@ -703,8 +727,26 @@ export function goalMet(goals: PlanGoals, policy: PolicyOutputV1): boolean {
   return true;
 }
 
-/** Study days between the last recorded work and today with nothing on
-    them. Rest days and non-study days do not count as missed. */
+/** Study days this plan asked for and did not get: every study day from the
+ *  day the active session was set for, up to but not including today, with
+ *  nothing recorded on it. Rest days and non-study days never count.
+ *
+ *  WHY IT COUNTS FROM THE SESSION AND NOT FROM THE LAST RESULT
+ *  It used to start the day after `facts.activeDates[0]`, the last day with
+ *  any recorded work at all. That answers a different question, and it
+ *  under-counted every time a student worked and then stopped: the lead's
+ *  reproduction aged a plan by exactly five calendar days with daily study
+ *  and nothing done in between, and the plan told the student they had
+ *  missed two days, because the last recorded result happened to be three
+ *  days before the session was set. The day the session itself was set for
+ *  is the first day the plan asked for and did not get, so it is counted
+ *  too, which is what makes "aged by five days" read as five.
+ *
+ *  A day with any recorded work on it is never missed, however little.
+ *  A count is not a cap: the recovery rule separately limits how much WORK
+ *  is carried forward (RECOVERY_MAX_BUDGET_MULTIPLE), and that limit must
+ *  never quietly become the number the student is told. The 400-day guard
+ *  below is only there so a corrupted date cannot spin. */
 export function missedStudyDays(
   previous: PersonalPlanV1,
   facts: LearnerFacts,
@@ -712,11 +754,13 @@ export function missedStudyDays(
   overrides: readonly PlanOverride[],
   today: string,
 ): number {
-  const lastActive = facts.activeDates[0] ?? previous.createdAt.slice(0, 10);
+  const from = previous.activeSession.date || previous.createdAt.slice(0, 10);
+  const active = new Set(facts.activeDates);
   let missed = 0;
-  for (let day = addLocalDays(lastActive, 1); day < today; day = addLocalDays(day, 1)) {
-    if (isStudyDay(day, constraints, overrides)) missed += 1;
-    if (missed > 60) break;
+  let scanned = 0;
+  for (let day = from; day < today; day = addLocalDays(day, 1)) {
+    if (isStudyDay(day, constraints, overrides) && !active.has(day)) missed += 1;
+    if ((scanned += 1) > 400) break;
   }
   return missed;
 }
@@ -761,6 +805,11 @@ export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[]
      something going nowhere is not offered (lead decision Q2). */
   const stuckScopes = new Set(policy.needsTeacherInput.map((entry) => entry.scopeKey));
 
+  /* Does this student have a weakness bad enough that a never-sampled paper
+     can wait a day? Computed once for the whole pass, because the answer is
+     about the student and not about the objective being scored. */
+  const knownWeakness = hasSubstantiveWeakness(policy, facts);
+
   const pairs = new Map<string, { paper: Paper; subskill: Subskill }>();
   for (const activity of catalogue.activities) {
     if (!activity.paper || activity.unavailable) continue;
@@ -780,7 +829,9 @@ export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[]
       objective.chosenActivityId = chosenObjective.activityId;
       objective.reason = learningText(locale, PLANNER_SENTENCES.reasonStudentChose);
     }
-    out.push(scoreOne(objective, input, { gapByScope, stuck: stuckScopes.has(objective.scopeKey) }));
+    out.push(
+      scoreOne(objective, input, { gapByScope, stuck: stuckScopes.has(objective.scopeKey), knownWeakness }),
+    );
   }
 
   /* Checkpoint objectives: a whole paper under timing, when there is unseen
@@ -808,7 +859,7 @@ export function scoreObjectives(input: ScoringInput): readonly ScoredObjective[]
           intent: 'assess',
         },
         input,
-        { gapByScope },
+        { gapByScope, knownWeakness },
       ),
     );
   }
@@ -916,7 +967,15 @@ function objectiveFor(
        into an otherwise Russian sentence. */
     objective: learningText(locale, anchor.objective),
     reason: reasonFor({
-      kind: reasonKindFor({ estimate, paperEstimate, gap, due, strong, hasAnyEvidence: input.facts.activeDates.length > 0 }),
+      kind: reasonKindFor({
+        estimate,
+        paperEstimate,
+        gap,
+        due,
+        strong,
+        hasAnyEvidence: input.facts.activeDates.length > 0,
+        weakPercent: input.thresholds.weakPercent,
+      }),
       paper,
       estimate,
       paperEstimate,
@@ -967,10 +1026,92 @@ function planningObjective(status: PlanStatus, locale: Locale): ScoredObjective 
 
 /* ── The terms ───────────────────────────────────────────────────────────── */
 
+/** Is there a weakness on this student's record bad enough that sampling a
+ *  paper nobody has touched can wait until tomorrow?
+ *
+ *  Two shapes count, because the four papers are not measured the same way.
+ *
+ *  A WEAK QUESTION TYPE. A scope with a real accuracy from real items, at
+ *  `limited` certainty or better (an `unknown` or purely self-reported scope
+ *  is a guess, and a guess is never a weakness), at or below
+ *  SUBSTANTIVE_WEAKNESS_PERCENT, in a paper that still has a real gap to the
+ *  band it has to reach. Reading and Listening live here.
+ *
+ *  A PAPER MEASURED WELL SHORT. A paper whose own estimate is `measured` or
+ *  `tentative` and at least SUBSTANTIVE_BAND_SHORTFALL below its required
+ *  band. Writing and Speaking live here: they are marked in bands, carry no
+ *  accuracy at all, and would otherwise be invisible to this whole rule.
+ *
+ *  Either way the paper must not already be a demonstrated strength, and its
+ *  requirement must not already be met: a weak question type inside a paper
+ *  that meets its own minimum is not a reason to postpone finding out about
+ *  a paper nobody has ever sampled.
+ *
+ *  A brand-new student has no estimate with a percent and no measured band,
+ *  so this is false for them and unknown pressure keeps its full weight,
+ *  which is how a first session is still "find out where you are".
+ *
+ *  Why it exists: see UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS. Without it, the
+ *  audit's returning student (2 of 16 Matching Headings, Reading a band
+ *  short of a confirmed target) was sent to a Listening overview, because
+ *  three never-sampled papers each carried more unknown pressure than one
+ *  known, migrated, detail-free weakness carried weakness pressure. Every
+ *  student who has ever used the old site looks exactly like that on the day
+ *  they come back, so it was not an edge case. And two opposite profiles
+ *  with two papers unassessed were handed the identical session, because the
+ *  thing they differed on was the thing being outranked. */
+export function hasSubstantiveWeakness(policy: PolicyOutputV1, facts: LearnerFacts): boolean {
+  const gapByScope = new Map(policy.gaps.map((gap) => [gap.scopeKey, gap]));
+
+  const paperIsOpen = (paper: Paper | undefined): GapAssessment | null => {
+    if (!paper) return null;
+    if (facts.strongPapers.has(paper)) return null;
+    const gap = gapByScope.get(`paper:${paper}`);
+    if (!gap || gap.meetsRequirement) return null;
+    return gap;
+  };
+
+  return policy.estimates.some((estimate) => {
+    const paper = paperOfEstimate(estimate);
+    const gap = paperIsOpen(paper);
+    if (!gap) return false;
+
+    if (
+      estimate.percent !== null &&
+      estimate.percent <= SUBSTANTIVE_WEAKNESS_PERCENT &&
+      estimate.certainty !== 'unknown' &&
+      estimate.certainty !== 'self-reported'
+    ) {
+      return gap.shortfall === null || gap.shortfall > 0;
+    }
+
+    return (
+      estimate.scope.kind === 'paper' &&
+      (estimate.certainty === 'measured' || estimate.certainty === 'tentative') &&
+      gap.shortfall !== null &&
+      gap.shortfall >= SUBSTANTIVE_BAND_SHORTFALL
+    );
+  });
+}
+
+/** The paper an estimate is about, or undefined for one that is not about a
+    paper at all (vocabulary, and the plan's own synthetic scope). */
+function paperOfEstimate(estimate: AbilityEstimate): Paper | undefined {
+  const scope = estimate.scope;
+  return 'paper' in scope ? scope.paper : undefined;
+}
+
 function scoreOne(
   objective: PlannedObjective,
   input: ScoringInput,
-  extra: { gapByScope?: ReadonlyMap<PolicyScopeKey, GapAssessment>; stuck?: boolean },
+  extra: {
+    gapByScope?: ReadonlyMap<PolicyScopeKey, GapAssessment>;
+    stuck?: boolean;
+    /** Whether this student has a substantive weakness somewhere with a
+        real gap left. Damps unknown pressure; see
+        UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS. */
+    knownWeakness?: boolean;
+  },
 ): ScoredObjective {
   const { facts, policy, goals, weights, thresholds, today } = input;
   const paper = objective.paper;
@@ -1006,25 +1147,46 @@ function scoreOne(
   /* weakness. The paper gap says which paper; this says which part of it.
      Without it every question type in a short paper scores the same and the
      plan picks alphabetically instead of picking the thing the student keeps
-     getting wrong. Only measured or tentative accuracy counts: a guess about
-     a type nobody has sampled is not a weakness. */
+     getting wrong.
+
+     An `unknown` or purely self-reported accuracy is still worth nothing
+     here: a guess about a type nobody has sampled is not a weakness. A
+     `limited` one is NOT a guess, though. It is a real count from the old
+     store's per-question-type tallies with no per-question detail behind it
+     (LEGACY_MAX_CERTAINTY), which is what every migrated student's whole
+     history is. Ignoring it, which this term used to do, left every
+     returning student looking like a blank slate on the day they came back
+     and handed the session to whichever paper happened to be unsampled. It
+     counts at LIMITED_WEAKNESS_WEIGHT, below evidence with the questions
+     behind it. */
   let weaknessTerm = 0;
   if (
     estimate &&
     estimate.percent !== null &&
-    (estimate.certainty === 'measured' || estimate.certainty === 'tentative') &&
-    estimate.percent < thresholds.weakPercent
+    estimate.percent < thresholds.weakPercent &&
+    (estimate.certainty === 'measured' || estimate.certainty === 'tentative' || estimate.certainty === 'limited')
   ) {
-    weaknessTerm = clamp01((thresholds.weakPercent - estimate.percent) / thresholds.weakPercent);
+    const depth = clamp01((thresholds.weakPercent - estimate.percent) / thresholds.weakPercent);
+    weaknessTerm = estimate.certainty === 'limited' ? depth * LIMITED_WEAKNESS_WEIGHT : depth;
   }
 
   /* unknownPressure. A paper nobody has ever touched is the strongest case
      for finding out; an unknown question type inside a paper that IS known
      is a much weaker one, because the staged diagnostic already samples the
-     paper alongside whatever today's objective is. */
+     paper alongside whatever today's objective is.
+
+     And once this student HAS a substantive weakness with a real gap left,
+     an unsampled paper is damped right down (see
+     UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS): the session's own staged `assess`
+     step is what samples that paper, so sampling does not also have to win
+     the objective. A student with no evidence anywhere keeps the full 1,
+     which is how a first session is still about finding out. */
+  const neverSampled = paper !== undefined && policy.diagnosticsOutstanding.includes(paper);
+  const damped = neverSampled && facts.activeDates.length > 0 && extra.knownWeakness === true;
   let unknownTerm = 0;
-  if (paper && policy.diagnosticsOutstanding.includes(paper)) {
-    unknownTerm = facts.activeDates.length === 0 ? 1 : 0.45;
+  if (neverSampled) {
+    unknownTerm =
+      facts.activeDates.length === 0 ? 1 : damped ? UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS : 0.45;
   } else if (estimate?.certainty === 'unknown') {
     unknownTerm = 0.2;
   }
@@ -1033,8 +1195,22 @@ function scoreOne(
   const dueTerm = due ? clamp01(0.5 + calendarDaysBetween(due.dueOn, today) / 28) : 0;
 
   const freshness = paper ? policy.freshness.find((entry) => entry.paper === paper) : undefined;
-  const coverageTerm =
-    freshness?.state === 'stale' ? 1 : freshness?.state === 'none' ? 0.8 : freshness?.state === 'ageing' ? 0.5 : 0;
+  /* Never sampled is ONE pressure, not two. `coveragePressure` exists to stop
+     a paper the plan has actually measured from going cold; adding its
+     "nothing recorded at all" rung on top of unknown pressure for a paper
+     that was never measured counts the same fact twice, and two of those
+     doubled terms were what kept outranking a real measured gap. Only zeroed
+     where the unknown term has been damped, so a student with nothing known
+     anywhere still gets the full push toward finding out. */
+  const coverageTerm = damped
+    ? 0
+    : freshness?.state === 'stale'
+      ? 1
+      : freshness?.state === 'none'
+        ? 0.8
+        : freshness?.state === 'ageing'
+          ? 0.5
+          : 0;
 
   /* deadlinePressure. Inside SHORT_DEADLINE_DAYS it flips sign for anything
      that would need a new teaching chain: with a week left, consolidating
@@ -1232,6 +1408,117 @@ export function pickObjective(
   return { ...incumbent, score: withBonus, terms: { ...incumbent.terms, incumbent: weights.incumbent } };
 }
 
+/** The other half of the stability rule: a step the student has already
+ *  finished today stays finished.
+ *
+ *  THE BUG THIS CLOSES (lead's reproduction, 22 September 2026)
+ *  `pickObjective` above keeps the OBJECTIVE steady, and it worked. What
+ *  moved underneath the student was the session: press Start, read the
+ *  lesson, press "Mark this lesson as studied", come back to Today, and the
+ *  finished teach step had vanished. Assembly is a pure function of the
+ *  record, and a completed lesson drops out of `teachingPath` by design
+ *  (nobody is taught what they have just read), so the rebuilt session was
+ *  the same objective with one fewer step, a new content hash, a new id and
+ *  every step back at 'pending'. The student saw "Start" again over work
+ *  they had just done, and nothing counted toward the day's minutes.
+ *
+ *  THE RULE (architecture section 5.2)
+ *  A replan while the day's session is under way keeps the incumbent
+ *  session's identity (its id, its date, the objective sentence the student
+ *  is reading) and every step they have already settled, and may only
+ *  PRUNE what is left, inside the minutes that are left. The freshly
+ *  computed reason and evidence come through, because they are about the
+ *  same objective and neither is part of what makes a session stable.
+ *
+ *  A session under way never GROWS. Re-planning the remainder from the
+ *  rebuild looks right until you watch it: finishing the Reading overview
+ *  takes that lesson out of the teaching path, which promotes the next
+ *  prerequisite lesson into it, so pressing "studied" on step one added a
+ *  step two nobody had asked for. Nothing new is bolted onto an hour already
+ *  in progress; work the plan has newly decided it wants is tomorrow's
+ *  session. A pending step the rebuild no longer wants at all (it is
+ *  demonstrated, it is no longer eligible, or a shorter day cannot hold it)
+ *  does drop out, which is the pruning the rule allows.
+ *
+ *  The payoff is that a studied-only event now normally leaves the session
+ *  byte-identical, so `materiallyDifferent` is false, the plan comes back
+ *  untouched and no history line is written. That is the architecture's
+ *  "a replan that changes nothing writes nothing", finally true for the one
+ *  case that mattered most.
+ *
+ *  It does nothing at all when the objective really did change (the student
+ *  chose another skill, or new evidence moved the plan somewhere else), when
+ *  the incumbent session belongs to another day, when nothing has been
+ *  touched yet, or when the rebuild is a longer commitment the student
+ *  explicitly accepted, which is a deliberate decision to give the day over
+ *  to one thing. */
+export function carryForwardSession(input: {
+  previous: PersonalPlanV1 | null;
+  rebuilt: PlanSession;
+  today: string;
+}): PlanSession {
+  const incumbent = input.previous?.activeSession;
+  if (!incumbent) return input.rebuilt;
+  if (incumbent.date !== input.today) return input.rebuilt;
+  if (incumbent.objectiveScope !== input.rebuilt.objectiveScope) return input.rebuilt;
+  if (input.rebuilt.extendedCommitment) return input.rebuilt;
+
+  /* Settled: anything past 'pending'. A step in progress is the one the
+     student is on, so it counts as much as a finished one. */
+  const settledMinutes = incumbent.steps
+    .filter((step) => step.state !== 'pending')
+    .reduce((total, step) => total + step.minutes, 0);
+  if (settledMinutes === 0 && incumbent.steps.every((step) => step.state === 'pending')) return input.rebuilt;
+
+  /* A short day chosen after some work is already done cannot un-spend that
+     work, so the budget never drops below what the day has already used. */
+  const budgetMinutes = Math.max(input.rebuilt.budgetMinutes, settledMinutes);
+  const stillWanted = new Set(input.rebuilt.steps.map((step) => step.activityId));
+
+  /* Each kept step keeps its identity and its state, and takes the rebuild's
+     own WORDS. The two are separate things: what the student has done is
+     theirs, but the sentence describing a step is written in the language
+     `constraints.explanationLocale` names at the moment the plan is built,
+     so a student who switches the interface to Russian mid-session must get
+     the Russian sentence on a step they have already finished too. */
+  const freshPurpose = new Map(input.rebuilt.steps.map((step) => [`${step.role}|${step.activityId}`, step.purpose]));
+
+  const steps: SessionStep[] = [];
+  let free = budgetMinutes;
+  for (const step of incumbent.steps) {
+    const purpose = freshPurpose.get(`${step.role}|${step.activityId}`) ?? step.purpose;
+    const reworded = purpose === step.purpose ? step : { ...step, purpose };
+    if (step.state !== 'pending') {
+      steps.push(reworded);
+      free -= step.minutes;
+      continue;
+    }
+    if (!stillWanted.has(step.activityId)) continue;
+    if (step.minutes > free) continue;
+    steps.push(reworded);
+    free -= step.minutes;
+  }
+
+  const finished = steps.every((step) => step.state === 'done' || step.state === 'skipped');
+  const session: PlanSession = {
+    ...incumbent,
+    budgetMinutes,
+    /* The objective SCOPE is identical by the guard above, so these three
+       describe exactly the same piece of work the student is already on.
+       Taking the rebuild's version of them is what lets a language switch,
+       and a freshly counted reason, reach a session already under way.
+       None of the three is part of `comparable()`, so refreshing them can
+       never on its own make a replan look material. */
+    objective: input.rebuilt.objective,
+    reason: input.rebuilt.reason,
+    evidenceRefs: input.rebuilt.evidenceRefs,
+    steps,
+    state: finished ? 'completed' : 'active',
+  };
+  assertWithinBudget(session);
+  return session;
+}
+
 /* ── Staged diagnostics ──────────────────────────────────────────────────── */
 
 /** Which paper today's short sample is for, or null.
@@ -1282,12 +1569,30 @@ function reasonKindFor(input: {
   due: { dueOn: string; daysSinceDemonstrated: number } | null;
   strong: boolean;
   hasAnyEvidence: boolean;
+  weakPercent: number;
 }): ReasonKind {
   if (!input.hasAnyEvidence) return 'start-here';
   if (input.due) return 'due-review';
   if (input.strong) return 'keep-sharp';
   const estimate = input.estimate;
   if (estimate && estimate.certainty === 'measured' && estimate.percent !== null) return 'measured-gap';
+  /* Real counted items for this exact objective, below where they should be,
+     are the most specific true thing there is to say, whatever certainty the
+     policy allows them. A migrated student's whole history is capped at
+     `limited` (LEGACY_MAX_CERTAINTY), and the old branch sent all of it to
+     the vague "one result puts this below what you need" instead of quoting
+     the count that is actually on the record. `reasonMeasuredGap` states
+     the count and claims no band, so it is honest at any certainty above a
+     guess. */
+  if (
+    estimate &&
+    estimate.percent !== null &&
+    estimate.percent < input.weakPercent &&
+    estimate.evidence.independentItems > 0 &&
+    (estimate.certainty === 'limited' || estimate.certainty === 'tentative')
+  ) {
+    return 'measured-gap';
+  }
   if (input.gap && !input.gap.meetsRequirement && (input.gap.shortfall ?? 0) > 0) {
     return input.paperEstimate?.certainty === 'measured' ? 'measured-gap' : 'thin-gap';
   }
@@ -1331,10 +1636,10 @@ function reasonFor(input: {
       if (band != null && required != null) {
         return sentence(locale, PLANNER_SENTENCES.reasonMeasuredBandGap, { paper, band, required });
       }
-      return learningText(locale, PLANNER_SENTENCES.reasonThinGap);
+      return thinGap(locale, paper, input.paperEstimate?.band, input.gap?.requiredBand);
     }
     case 'thin-gap':
-      return learningText(locale, PLANNER_SENTENCES.reasonThinGap);
+      return thinGap(locale, paper, input.paperEstimate?.band, input.gap?.requiredBand);
     case 'unknown':
       return sentence(locale, PLANNER_SENTENCES.reasonUnknownPaper, { paper });
     case 'due-review':
@@ -1346,10 +1651,19 @@ function reasonFor(input: {
     case 'self-reported':
       return sentence(locale, PLANNER_SENTENCES.reasonSelfReported, { paper });
     case 'keep-sharp':
-      return learningText(locale, PLANNER_SENTENCES.reasonKeepSharp);
+      return sentence(locale, PLANNER_SENTENCES.reasonKeepSharp, { paper });
     case 'start-here':
       return learningText(locale, PLANNER_SENTENCES.reasonStartHere);
   }
+}
+
+/** A single thin result, with the paper always named and the actual shortfall
+    stated whenever both ends of it are known. */
+function thinGap(locale: Locale, paper: string, band: number | null | undefined, required: number | null | undefined): string {
+  if (band != null && required != null) {
+    return sentence(locale, PLANNER_SENTENCES.reasonThinGapBand, { paper, band, required });
+  }
+  return sentence(locale, PLANNER_SENTENCES.reasonThinGap, { paper });
 }
 
 /** Exactly the evidence standing behind a choice, so the explanation is
@@ -1876,7 +2190,15 @@ function describeChanges(input: {
     }
   }
 
-  if (previous.activeSession.objectiveScope !== candidate.activeSession.objectiveScope) {
+  /* The objective really moved: name both ends of it. Guarded on the
+     SENTENCES as well as on the scope keys, because two different scopes can
+     share one objective sentence (the same question type on two papers has
+     one description), and "moves from X to X" is a contradiction whichever
+     way the plan arrived at it. */
+  const objectiveMoved =
+    previous.activeSession.objectiveScope !== candidate.activeSession.objectiveScope &&
+    asClause(previous.activeSession.objective) !== asClause(candidate.activeSession.objective);
+  if (objectiveMoved) {
     add(
       sentence(locale, PLANNER_SENTENCES.changeObjective, {
         from: asClause(previous.activeSession.objective),
@@ -1903,18 +2225,44 @@ function describeChanges(input: {
     );
   }
 
-  if (changes.length === 0 && trigger === 'settings-changed') {
+  /* Switching the interface language is a settings change, and it rewrites
+     every sentence on the plan, but it is not a change to the student's
+     goal or to their commitment: telling them "your priorities were worked
+     out again" because they pressed RU would be untrue. Nothing else about
+     the constraints moved, so nothing is written. */
+  const languageOnly =
+    previous.constraints.explanationLocale !== candidate.constraints.explanationLocale &&
+    canonicalJson({ ...previous.constraints, explanationLocale: '' }) ===
+      canonicalJson({ ...candidate.constraints, explanationLocale: '' });
+
+  if (changes.length === 0 && trigger === 'settings-changed' && !languageOnly) {
     add(learningText(locale, PLANNER_SENTENCES.changeGoal));
   }
+  if (languageOnly) return changes;
+
+  /* Nothing named itself yet, and the plan still came back different, so the
+     difference is in the steps. Recorded ONLY when the student could see it:
+     a different set of activities to work through. A re-ordering, a minute
+     moved between two steps, or a step ticked off is not a plan change and
+     writes nothing at all, which is what keeps the weekly review readable
+     and stops the history growing a line per click. */
   if (changes.length === 0) {
-    add(
-      sentence(locale, PLANNER_SENTENCES.changeObjective, {
-        from: asClause(previous.activeSession.objective),
-        to: asClause(candidate.activeSession.objective),
-        why: candidate.activeSession.reason,
-      }),
-      { scopeKeys: [candidate.activeSession.objectiveScope] },
-    );
+    const before = new Set(previous.activeSession.steps.map((step) => step.activityId));
+    const after = new Set(candidate.activeSession.steps.map((step) => step.activityId));
+    const added = [...after].filter((id) => !before.has(id));
+    const removed = [...before].filter((id) => !after.has(id));
+    if (added.length > 0 || removed.length > 0) {
+      add(
+        sentence(locale, PLANNER_SENTENCES.changeStepsAdjusted, {
+          objective: asClause(candidate.activeSession.objective),
+        }),
+        {
+          addedActivityIds: added,
+          removedActivityIds: removed,
+          scopeKeys: [candidate.activeSession.objectiveScope],
+        },
+      );
+    }
   }
   return changes;
 }

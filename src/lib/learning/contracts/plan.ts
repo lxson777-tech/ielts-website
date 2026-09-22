@@ -306,6 +306,24 @@ export interface PersonalPlanV1 {
       enough to sample. Never a promise about a band. Absent when there is
       nothing to warn about. */
   scopeNote?: string;
+  /** Study days this plan asked for and did not get, counted when it was
+   *  last rebuilt (see missedStudyDays in planner.ts).
+   *
+   *  It is stored because it cannot be recomputed afterwards: the moment the
+   *  plan is rebuilt, its active session is dated today and the run of
+   *  missed days is behind it, so a surface asking the pure function again
+   *  correctly gets zero. Today's "n planned study days were missed
+   *  recently" needs the number the rebuild actually happened around, and
+   *  the recovery history line quotes the same figure.
+   *
+   *  A count, never a cap: RECOVERY_MAX_BUDGET_MULTIPLE limits how much WORK
+   *  is carried forward and must never become the number the student is
+   *  told. Optional, so a plan written before this field existed still
+   *  loads; absent means the reader falls back to the pure function.
+   *  Deliberately NOT part of `comparable()`: it is derived from the same
+   *  dates the session already carries, so it must not be able to make a
+   *  replan look material on its own. */
+  missedStudyDays?: number;
 }
 
 /* ── Vocabulary, as the planner is told about it ─────────────────────────── */
@@ -391,6 +409,58 @@ export const DIAGNOSTIC_MAX_MINUTES_PER_SESSION = 15;
 /** Days before the exam below which the planner stops introducing new
     teaching and prioritises consolidation and timing. */
 export const SHORT_DEADLINE_DAYS = 10;
+
+/* ── A weakness worth a whole session, against an unknown paper ──────────── */
+
+/** At or below this share of its own counted items, a scope is a
+ *  SUBSTANTIVE weakness rather than a soft one.
+ *
+ *  All three of these are provisional teaching judgements, named here so a
+ *  teacher review can move them, and nothing in the interface presents them
+ *  as validated IELTS science.
+ *
+ *  WHY THERE IS A SECOND THRESHOLD AT ALL
+ *  `PolicyThresholds.weakPercent` (65) answers "is this below where it
+ *  should be". This answers the different question "is this bad enough that
+ *  finding out about a paper nobody has sampled can wait a day". The audit's
+ *  returning student is 2 of 16 on Matching Headings, which is 12.5%: bad by
+ *  any threshold, and yet three never-sampled papers were outranking it and
+ *  sending them to a Listening overview instead. */
+export const SUBSTANTIVE_WEAKNESS_PERCENT = 40;
+
+/** The other shape a substantive weakness comes in: a whole paper measured
+ *  this far below the band it has to reach.
+ *
+ *  Writing and Speaking are marked in bands and carry no accuracy at all, so
+ *  SUBSTANTIVE_WEAKNESS_PERCENT above can never see them. Without this, a
+ *  student measured a full band under their own Writing minimum was still
+ *  sent to an unsampled paper's overview, and two opposite profiles with two
+ *  papers unassessed got the identical session. Half a band is the smallest
+ *  step IELTS reports, so anything at or above it is a real gap rather than
+ *  rounding. */
+export const SUBSTANTIVE_BAND_SHORTFALL = 0.5;
+
+/** How much a real weakness at `limited` certainty counts for, against the
+ *  same weakness measured with per-question detail.
+ *
+ *  Every student migrated from the old stores is capped at `limited` for
+ *  good (LEGACY_MAX_CERTAINTY): the old store kept per-question-TYPE
+ *  tallies and never the questions themselves, so 2 of 16 is a real count
+ *  with no detail behind it. Ignoring it entirely, which is what the weakness
+ *  term used to do, meant every existing student looked like a blank slate
+ *  on the day they returned. Counting it a little lower than measured
+ *  evidence is the honest middle. */
+export const LIMITED_WEAKNESS_WEIGHT = 0.75;
+
+/** What `unknownPressure` falls to for a never-sampled paper once the
+ *  student has a substantive weakness somewhere with a real gap left.
+ *
+ *  It is damped rather than removed because finding out still matters: every
+ *  session already carries one staged `assess` step for an unknown paper
+ *  (see nextDiagnosticPaper and DIAGNOSTIC_MAX_SESSIONS), which is how
+ *  unknown papers get sampled. Sampling is that step's job, so it does not
+ *  also have to be the whole session's objective. */
+export const UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS = 0.15;
 
 /* ── Session shape ───────────────────────────────────────────────────────── */
 

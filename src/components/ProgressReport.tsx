@@ -43,9 +43,14 @@ import {
   paperNarratives,
   recentIndependentEvidence,
   statedMistakeReasons,
+  selfReportedScores,
   IGNORED_REASONS,
   type NarrativeLine,
+  type SelfReportedItem,
 } from './reportTrends';
+// The site's one locale-aware date helper: a Russian page must not be
+// handed an English date. Shared with the Worker, dependency-free.
+import { formatDate } from '../lib/tutor/ru';
 import SkillTrendGrid from './SkillTrendGrid';
 import '../styles/learning-progress.css';
 
@@ -68,22 +73,40 @@ function saveName(name: string): void {
   }
 }
 
-// Reading/Listening/Writing/Speaking are the protected paper names (never
-// translated, per docs/I18N-GUIDE.md), so only the 'vocabulary' entry is
-// marked for translation.
+/* A paper's own name, as a HEADING or a row label rather than as a word
+   inside a sentence. Those two cases part company here, and the split is
+   deliberate.
+
+   Inside a Russian sentence the four paper names stay English, because the
+   student has to recognise them on the real paper (docs/I18N-GUIDE.md).
+   That rule still holds: every sentence on this page that names a paper
+   takes it as a `{paper}` hole filled from reportTrends.ts's own PAPER_WORD,
+   which is English and stays English.
+
+   A bare heading is not a sentence, and a Russian student reading a column
+   of English headings on an otherwise Russian page is the defect a tester
+   found here. So a bare label goes through `t()`, which is exactly what
+   `t(PAPER_LABEL[paper])` already does on Today (TodaySession.tsx), the
+   dashboard (LearningDashboard.tsx) and the intake (Intake.tsx). The Russian
+   for the four words already lives in the dictionary; `nt()` is what makes
+   the coverage scanner find them here, since the lookup below is by
+   variable and it cannot follow that. */
 const SKILL_LABEL: Record<Skill, string> = {
-  reading: 'Reading',
-  listening: 'Listening',
-  writing: 'Writing',
-  speaking: 'Speaking',
+  reading: nt('Reading'),
+  listening: nt('Listening'),
+  writing: nt('Writing'),
+  speaking: nt('Speaking'),
   vocabulary: nt('Vocabulary'),
 };
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+/* Every date on this page goes through `formatDate` (src/lib/tutor/ru.ts),
+   the site's one locale-aware date helper, which is imported above. There
+   used to be a second, hand-rolled `fmtDate` here that hardcoded 'en-GB',
+   so a Russian student read "19 Sept 2026" on a Russian page. A page does
+   not get its own date format. */
 
 export default function ProgressReport() {
-  const { t, tn } = useT();
+  const { t, tn, locale } = useT();
   const [mounted, setMounted] = useState(false);
   const [name, setName] = useState('');
 
@@ -119,17 +142,20 @@ export default function ProgressReport() {
   const writingBest = getBestWritingBand();
   const speakingBest = getBestSpeakingBand();
 
+  /* `key` is both the React key and the paper this row is about, so the row
+     no longer carries a second, pre-written English copy of the paper's
+     name: the label is read off SKILL_LABEL at the render site and
+     translated there. */
   const testRows: {
-    skill: string;
     key: PlanSkill;
     best: number | null;
     latest: number | null;
     count: number;
   }[] = [
-    { skill: 'Reading', key: 'reading', best: readingBest?.band ?? null, latest: readingAttempts.at(-1)?.attempt.band ?? null, count: readingAttempts.length },
-    { skill: 'Listening', key: 'listening', best: listeningBest?.band ?? null, latest: listeningAttempts.at(-1)?.attempt.band ?? null, count: listeningAttempts.length },
-    { skill: 'Writing', key: 'writing', best: writingBest, latest: writingAttempts.at(-1)?.attempt.overallBand ?? null, count: writingAttempts.length },
-    { skill: 'Speaking', key: 'speaking', best: speakingBest, latest: speakingAttempts.at(-1)?.overallBand ?? null, count: speakingAttempts.length },
+    { key: 'reading', best: readingBest?.band ?? null, latest: readingAttempts.at(-1)?.attempt.band ?? null, count: readingAttempts.length },
+    { key: 'listening', best: listeningBest?.band ?? null, latest: listeningAttempts.at(-1)?.attempt.band ?? null, count: listeningAttempts.length },
+    { key: 'writing', best: writingBest, latest: writingAttempts.at(-1)?.attempt.overallBand ?? null, count: writingAttempts.length },
+    { key: 'speaking', best: speakingBest, latest: speakingAttempts.at(-1)?.overallBand ?? null, count: speakingAttempts.length },
   ];
 
   // Four separate skill estimates from the one evidence policy, never
@@ -156,6 +182,11 @@ export default function ProgressReport() {
   // separate export mechanism is needed.
   const recentEvidence = recentIndependentEvidence(learnerRecord, 10);
   const mistakes = statedMistakeReasons(learnerRecord, 6);
+  // Scores the student told us about themselves, read from the policy's
+  // merged list rather than from the plan's goals: the real "Add a recent
+  // score" control writes to the learner record, so the goals alone showed
+  // nothing. See selfReportedScores in reportTrends.ts.
+  const reportedScores = selfReportedScores(policy);
   const recentPlanChanges = [...learningPlan.history].slice(-5).reverse();
 
   return (
@@ -189,7 +220,7 @@ export default function ProgressReport() {
       {/* ── Print header: only visible on the printed page, see the @media print rule ── */}
       <div className="report-print-only hidden">
         <h1 className="font-display text-2xl font-extrabold">{name ? t("{name}'s progress report", { name }) : t('Progress report')}</h1>
-        <p className="mt-1 text-sm text-ink-muted">{t('Generated {date} · IELTS is EZ', { date: fmtDate(new Date().toISOString()) })}</p>
+        <p className="mt-1 text-sm text-ink-muted">{t('Generated {date} · IELTS is EZ', { date: formatDate(new Date().toISOString(), locale) })}</p>
       </div>
 
       <WeeklyReview />
@@ -260,7 +291,7 @@ export default function ProgressReport() {
             <tbody>
               {lessonsBySkill.map((row) => (
                 <tr key={row.skill} className="border-t border-border">
-                  <td className="px-4 py-2.5 font-medium">{row.skill === 'vocabulary' ? t(SKILL_LABEL[row.skill]) : SKILL_LABEL[row.skill]}</td>
+                  <td className="px-4 py-2.5 font-medium">{t(SKILL_LABEL[row.skill])}</td>
                   <td className="px-4 py-2.5">
                     {t('{done} / {total}', { done: row.done, total: row.total })}
                   </td>
@@ -304,8 +335,8 @@ export default function ProgressReport() {
                 const targetBand = target ? Number(target) : null;
                 const short = targetBand !== null && row.best !== null ? Math.round((targetBand - row.best) * 10) / 10 : null;
                 return (
-                  <tr key={row.skill} className="border-t border-border">
-                    <td className="px-4 py-2.5 font-medium">{row.skill}</td>
+                  <tr key={row.key} className="border-t border-border">
+                    <td className="px-4 py-2.5 font-medium">{t(SKILL_LABEL[row.key])}</td>
                     <td className="px-4 py-2.5">{row.count}</td>
                     <td className="px-4 py-2.5">{row.best?.toFixed(1) ?? <span className="text-ink-muted">{t('not yet')}</span>}</td>
                     <td className="px-4 py-2.5">{row.latest?.toFixed(1) ?? <span className="text-ink-muted">{t('not yet')}</span>}</td>
@@ -365,10 +396,12 @@ export default function ProgressReport() {
       <TeacherReviewSummary
         t={t}
         tn={tn}
+        locale={locale}
         goals={learningPlan.goals}
         policy={policy}
         recentEvidence={recentEvidence}
         mistakes={mistakes}
+        reportedScores={reportedScores}
         planChanges={recentPlanChanges}
       />
     </div>
@@ -385,7 +418,7 @@ function PaperDetail({ narrative, t }: { narrative: ReturnType<typeof paperNarra
   return (
     <details className="report-detail rounded-card border border-border bg-surface p-4" open>
       <summary className="report-detail-summary font-display text-sm font-bold">
-        {SKILL_LABEL[narrative.paper]}
+        {t(SKILL_LABEL[narrative.paper])}
       </summary>
       <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
@@ -474,17 +507,75 @@ function IgnoredReasonLine({ reason, count, tn }: { reason: IgnoredReason; count
   }
 }
 
+/** The student's own account of a score from somewhere else, kept in its
+ *  own quiet block so it can never be read as a result measured here.
+ *
+ *  Three things this has to get right, and each one is a real defect it
+ *  fixes. The list comes from the policy's merged `selfReported` (see
+ *  selfReportedScores in reportTrends.ts), so a score saved through the
+ *  real plan-settings control actually appears. Every row carries the date
+ *  the student gave, through the site's locale-aware `formatDate`, so a
+ *  Russian page gets a Russian date. And the block says in one plain
+ *  sentence that this is their own account, not a measurement, so no number
+ *  here is mistaken for one. */
+function SelfReportedScores({
+  t,
+  locale,
+  scores,
+}: {
+  t: Translator['t'];
+  locale: Translator['locale'];
+  scores: readonly SelfReportedItem[];
+}) {
+  if (scores.length === 0) return null;
+  return (
+    <div className="report-self-reported mt-6">
+      <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('Self-reported scores')}</h3>
+      <p className="mt-1 text-xs text-ink-muted">
+        {t(
+          'These are self-reported: your own account of a score from somewhere else, on the date you gave, kept apart from everything measured here and never counted toward a target.',
+        )}
+      </p>
+      <ul className="report-detail-list mt-2">
+        {scores.map((score) => (
+          <li key={`${score.paper ?? 'overall'}|${score.takenOn}|${score.reportedAt}`}>
+            {score.paper
+              ? t('{paper}: band {band}, taken {date}', {
+                  paper: t(SKILL_LABEL[score.paper]),
+                  band: score.band,
+                  date: formatDate(score.takenOn, locale),
+                })
+              : t('Overall: band {band}, taken {date}', { band: score.band, date: formatDate(score.takenOn, locale) })}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 interface TeacherReviewSummaryProps {
   t: Translator['t'];
   tn: Translator['tn'];
+  locale: Translator['locale'];
   goals: ReturnType<typeof ensurePlan>['goals'];
   policy: ReturnType<typeof evaluateEvidence>;
   recentEvidence: ReturnType<typeof recentIndependentEvidence>;
   mistakes: ReturnType<typeof statedMistakeReasons>;
+  reportedScores: ReturnType<typeof selfReportedScores>;
   planChanges: ReturnType<typeof ensurePlan>['history'];
 }
 
-function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, planChanges }: TeacherReviewSummaryProps) {
+function TeacherReviewSummary({
+  t,
+  tn,
+  locale,
+  goals,
+  policy,
+  recentEvidence,
+  mistakes,
+  reportedScores,
+  planChanges,
+}: TeacherReviewSummaryProps) {
   const ignoredByReason = new Map(policy.ignored.map((entry) => [entry.reason, entry.count]));
 
   return (
@@ -508,7 +599,7 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
                 <GoalLine
                   key={paper}
                   t={t}
-                  paper={SKILL_LABEL[paper]}
+                  paper={t(SKILL_LABEL[paper])}
                   band={minimum.band}
                   status={minimum.status === 'confirmed' ? nt('confirmed') : nt('provisional')}
                 />
@@ -518,20 +609,11 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
               <li className="text-ink-muted">{t('No goal set yet.')}</li>
             )}
           </ul>
-          {goals.selfReported.length > 0 && (
-            <>
-              <h4 className="mt-3 text-xs font-bold uppercase tracking-wide text-ink-muted">{t('Self-reported scores')}</h4>
-              <ul className="report-detail-list mt-1">
-                {goals.selfReported.map((score, i) => (
-                  <li key={i}>
-                    {score.paper
-                      ? t('{paper}: band {band}, taken {date}', { paper: SKILL_LABEL[score.paper], band: score.band, date: fmtDate(score.takenOn) })
-                      : t('Overall: band {band}, taken {date}', { band: score.band, date: fmtDate(score.takenOn) })}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
+          {/* Self-reported scores used to be listed here, off
+              `goals.selfReported`. They are neither a goal nor a
+              measurement, and that list is never what the real "Add a
+              recent score" control writes to, so they now have their own
+              block below (SelfReportedScores). */}
         </div>
 
         <div>
@@ -570,8 +652,8 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
           <ul className="report-detail-list mt-2">
             {recentEvidence.map((item, i) => (
               <li key={i}>
-                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]}
-                {item.subskillLabel ? ` · ${item.subskillLabel}` : ''} · {t(item.summary.template, item.summary.vars)}
+                {formatDate(item.at, locale)} · {t(SKILL_LABEL[item.paper])}
+                {item.subskillLabel ? ` · ${t(item.subskillLabel)}` : ''} · {t(item.summary.template, item.summary.vars)}
               </li>
             ))}
           </ul>
@@ -580,6 +662,12 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
         )}
       </div>
 
+      {/* Placed directly after the measured evidence, and before the
+          student's own account of their mistakes, so the two "this came
+          from the student" blocks sit together and neither can be read as
+          a continuation of the measured list above. */}
+      <SelfReportedScores t={t} locale={locale} scores={reportedScores} />
+
       {mistakes.length > 0 && (
         <div className="mt-6">
           <h3 className="text-sm font-bold uppercase tracking-wide text-ink-muted">{t('The student\'s own account of mistakes')}</h3>
@@ -587,8 +675,8 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
           <ul className="report-detail-list mt-2">
             {mistakes.map((item, i) => (
               <li key={i}>
-                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]}
-                {item.subskillLabel ? ` · ${item.subskillLabel}` : ''} · {item.reasonId}
+                {formatDate(item.at, locale)} · {t(SKILL_LABEL[item.paper])}
+                {item.subskillLabel ? ` · ${t(item.subskillLabel)}` : ''} · {item.reasonId}
                 {item.note ? `: "${item.note}"` : ''}
               </li>
             ))}
@@ -602,7 +690,7 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
           <ul className="report-detail-list mt-2">
             {planChanges.map((change, i) => (
               <li key={i}>
-                {fmtDate(change.at)} · &ldquo;{change.summary}&rdquo;
+                {formatDate(change.at, locale)} · &ldquo;{change.summary}&rdquo;
               </li>
             ))}
           </ul>

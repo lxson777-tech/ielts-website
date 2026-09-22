@@ -16,6 +16,7 @@ import { daysUntilTest, type SavedPlan } from '../study-plan';
 import { resolvePlanParams } from './schedule';
 import { daysBetween } from './date';
 import { t, tn } from '../i18n/translate';
+import { SHORT_DEADLINE_DAYS } from '../learning/contracts/plan';
 import type { Milestone, PersonalPlanV1, PlanStatus } from '../learning/contracts/plan';
 
 export interface PlanSummary {
@@ -62,6 +63,11 @@ export interface PlanOutcomeSummary {
   /** Milestones the planner had to drop to stay honest about the time
       available, each with the reason it gives (architecture section 5.7). */
   droppedMilestones: readonly string[];
+  /** True when the planner's own output says the time is tight: it dropped
+      real work for lack of days, or the exam sits inside its
+      SHORT_DEADLINE_DAYS window. The headline then states what the time can
+      and cannot cover, and the panel drops its neutral tone. */
+  scopeTight: boolean;
 }
 
 function droppedMilestoneReasons(milestones: readonly Milestone[]): readonly string[] {
@@ -72,14 +78,71 @@ function droppedMilestoneReasons(milestones: readonly Milestone[]): readonly str
     .map((milestone) => milestone.droppedReason);
 }
 
+/** Days from the day this plan was built for to the exam, or null with no
+    date. `activeSession.date` is the local day the planner ran for
+    (contracts/plan.ts), which is the same "today" the planner measured
+    `daysToExam` against, so this stays pure: no clock, no storage, and the
+    same answer every time for the same plan. */
+function daysToExam(plan: PersonalPlanV1): number | null {
+  const exam = plan.goals.examDate?.date;
+  if (!exam) return null;
+  return daysBetween(plan.activeSession.date, exam);
+}
+
+/** Is the planner itself saying the time is tight?
+
+    Two signals, both already on the plan, so nothing is added to
+    `PersonalPlanV1` for this: a milestone it had to drop for lack of days
+    (`state: 'dropped'` with a `droppedReason`, planner.ts buildMilestones),
+    or an exam inside SHORT_DEADLINE_DAYS, the same window that makes it
+    write its short-deadline scope note in the first place.
+
+    `scopeNote` on its own is deliberately NOT one of them: the planner also
+    writes that note for a missing date, a passed date and a paper with no
+    short sample, none of which means the daily time is too small. */
+function scopeIsTight(plan: PersonalPlanV1, droppedMilestones: readonly string[]): boolean {
+  if (droppedMilestones.length > 0) return true;
+  const days = daysToExam(plan);
+  return days !== null && days >= 0 && days <= SHORT_DEADLINE_DAYS;
+}
+
+/** What the chosen time CAN cover and what it cannot, for a plan the planner
+    itself reports as tight.
+
+    Never the word "enough". A tester on 22 September 2026 set 7 days and 15
+    minutes a day and read "15 minutes a day is enough to make steady, honest
+    progress toward your goal." with "There are not enough study days left
+    before the exam to reach this." directly beneath it: the plan
+    contradicting itself in two adjacent lines. Nothing here promises a band
+    either (architecture section 5.7). */
+function tightScopeHeadline(plan: PersonalPlanV1, minutes: number): string {
+  const days = daysToExam(plan);
+  if (days === null || days < 0) {
+    return t(
+      '{minutes} minutes a day can cover a few priorities properly. It cannot cover everything your goal needs, and it cannot promise a band.',
+      { minutes },
+    );
+  }
+  return t(
+    'With {pace} until the exam, {minutes} minutes a day can cover a few priorities properly. It cannot cover everything your goal needs, and it cannot promise a band.',
+    { pace: tn(days, { one: '{n} day', other: '{n} days' }), minutes },
+  );
+}
+
 /** Read straight off the planner's own output, exactly as WP10 was asked to:
     `status`, `scopeNote`, `schedule` (via `constraints.regularDailyMinutes`,
     which is what actually paced it) and `milestones`. Nothing here recomputes
     a schedule or guesses at a band; it only puts the plan's own honest words
-    in front of the student after a save. */
+    in front of the student after a save.
+
+    The headline depends on `status` AND on the scope the planner reported
+    (see `scopeIsTight`), because the two can disagree: a plan can be
+    perfectly "on-track" and still have had to drop work for lack of days,
+    and the student must not be told both at once. */
 export function planOutcome(plan: PersonalPlanV1): PlanOutcomeSummary {
   const minutes = plan.constraints.regularDailyMinutes;
   const droppedMilestones = droppedMilestoneReasons(plan.milestones);
+  const scopeTight = scopeIsTight(plan, droppedMilestones);
 
   const headline = (() => {
     switch (plan.status) {
@@ -101,9 +164,13 @@ export function planOutcome(plan: PersonalPlanV1): PlanOutcomeSummary {
       case 'goal-met':
         return t('Measured evidence shows you meeting your confirmed goal.');
       default:
-        return t('{minutes} minutes a day is enough to make steady, honest progress toward your goal.', { minutes });
+        /* A running plan. It may say the time is workable only when the
+           planner did not have to leave real work out. */
+        return scopeTight
+          ? tightScopeHeadline(plan, minutes)
+          : t('{minutes} minutes a day is enough to make steady, honest progress toward your goal.', { minutes });
     }
   })();
 
-  return { status: plan.status, headline, scopeNote: plan.scopeNote ?? null, droppedMilestones };
+  return { status: plan.status, headline, scopeNote: plan.scopeNote ?? null, droppedMilestones, scopeTight };
 }

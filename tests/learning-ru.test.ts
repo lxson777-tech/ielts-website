@@ -250,6 +250,86 @@ test('the schedule around Today is Russian too: exam day, rest day, and the week
   }
 });
 
+test('a milestone label and everything on the Course route is Russian, placeholders and all', () => {
+  const { plan } = ruPlan(syntheticStrongReadingWeakWriting());
+  assert.ok(plan.milestones.length > 0, 'the fixture should produce milestones to check');
+  for (const milestone of plan.milestones) {
+    assert.match(milestone.label, CYRILLIC, `milestone label was not translated: "${milestone.label}"`);
+    assert.doesNotMatch(milestone.label, DASHES);
+    if (milestone.droppedReason) {
+      assert.match(milestone.droppedReason, CYRILLIC, `dropped reason was not translated: "${milestone.droppedReason}"`);
+    }
+  }
+  for (const alternative of plan.alternatives) {
+    assert.match(alternative.label, CYRILLIC, `alternative was not translated: "${alternative.label}"`);
+    assert.match(alternative.sessionSketch.objective, CYRILLIC);
+  }
+});
+
+/** Switching the interface language has to reach a plan that is already
+ *  stored, including a session the student is part way through. Every
+ *  sentence on the plan is baked at build time (architecture section 1.6)
+ *  and several arrive with their placeholders already filled, so there is no
+ *  render-time lookup that could rescue them: the plan is written again. This
+ *  is the mechanism syncExplanationLocale drives, tested on the pure planner
+ *  so it needs no browser. */
+test('switching language rewrites a session already under way, and keeps what the student has done', () => {
+  const profile = syntheticStrongReadingWeakWriting();
+  const policy = evaluateEvidence({ record: profile.record, goals: profile.goals, now: profile.now });
+  const english = createInitialPlan({
+    catalogue: CATALOGUE,
+    record: profile.record,
+    policy,
+    now: profile.now,
+    today: profile.today,
+    goals: profile.goals,
+    constraints: { ...profile.constraints, explanationLocale: 'en' },
+  }).plan;
+
+  const first = english.activeSession.steps[0]!;
+  const started = {
+    ...english,
+    activeSession: {
+      ...english.activeSession,
+      steps: english.activeSession.steps.map((step, index) =>
+        index === 0 ? { ...step, state: 'done' as const } : step,
+      ),
+    },
+  };
+
+  const switched = replan({
+    catalogue: CATALOGUE,
+    record: profile.record,
+    policy,
+    previous: started,
+    trigger: 'settings-changed',
+    now: profile.now,
+    today: profile.today,
+    constraints: { ...profile.constraints, explanationLocale: 'ru' },
+  });
+
+  assert.equal(switched.plan.activeSession.id, english.activeSession.id, 'the session was replaced by a language switch');
+  assert.equal(switched.plan.activeSession.steps[0]?.state, 'done', 'finished work was lost by a language switch');
+  assert.match(switched.plan.activeSession.objective, CYRILLIC, 'the objective stayed English');
+  assert.match(switched.plan.activeSession.reason, CYRILLIC, 'the reason stayed English');
+  for (const step of switched.plan.activeSession.steps) {
+    assert.match(step.purpose, CYRILLIC, `step purpose (${step.role}) stayed English: "${step.purpose}"`);
+  }
+  assert.equal(switched.plan.activeSession.steps[0]?.activityId, first.activityId);
+  for (const milestone of switched.plan.milestones) {
+    assert.match(milestone.label, CYRILLIC, `milestone label stayed English: "${milestone.label}"`);
+  }
+  /* And it is not reported as a change to their goal, because it is not
+     one. */
+  for (const change of switched.changes) {
+    assert.doesNotMatch(
+      change.summary,
+      /goal or your settings|цель или настройки/i,
+      `a language switch was announced as a settings change: "${change.summary}"`,
+    );
+  }
+});
+
 test('English is completely unaffected: the default locale renders byte identical text', () => {
   const enPlan = createInitialPlan({
     catalogue: CATALOGUE,

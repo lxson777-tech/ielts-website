@@ -13,8 +13,14 @@
  * pieces) as an argument and only decides how to PRESENT it.
  */
 
-import type { Confirmation, PlanStatus, SessionStepRole } from '../../../lib/learning/contracts/plan';
+import type {
+  Confirmation,
+  PlanStatus,
+  SessionEvidenceRef,
+  SessionStepRole,
+} from '../../../lib/learning/contracts/plan';
 import type { Paper, Subskill } from '../../../lib/learning/contracts/catalog';
+import type { Certainty } from '../../../lib/learning/contracts/policy';
 import type { SharedSessionView, SharedStepView } from '../../../lib/learning';
 import { describeSubskill } from '../../../lib/learning/evidence';
 
@@ -102,7 +108,7 @@ export function stepStatus(step: Pick<SharedStepView, 'stepId' | 'state'>, curre
 export type MainAction = 'start' | 'continue';
 
 /** "Start" until the first step has been touched, "Continue" once any step
-    has moved past 'pending' — a refresh or a return mid-session must never
+    has moved past 'pending'. A refresh or a return mid-session must never
     show "Start" again over work already begun. */
 export function mainAction(steps: readonly Pick<SharedStepView, 'state'>[]): MainAction {
   return steps.some((step) => step.state !== 'pending') ? 'continue' : 'start';
@@ -168,14 +174,23 @@ export const SHORT_DAY_MINUTES: readonly (15 | 25)[] = [15, 25] as const;
 
 /* ── Focus areas, honestly ───────────────────────────────────────────────── */
 
+/* The words themselves come straight from the progress report's own map
+   (src/components/reportTrends.ts, CERTAINTY_LABEL), re-exported rather
+   than copied so /report and this panel can never drift apart and say two
+   different things about the same paper. Five words, no numbers: 'Unknown',
+   'Self-reported', 'Limited evidence', 'Tentative', 'Measured'. All five
+   already have Russian (src/lib/i18n/dict/ru/learning-account.ts). */
+export { CERTAINTY_LABEL as FOCUS_CERTAINTY_LABEL } from '../../reportTrends';
+
 export interface FocusAreaCertainty {
   paper: Paper;
-  /** False while the paper is still in `diagnosticsOutstanding`, shown as
-      "not yet assessed", in words, never as a number. Nothing on this side
-      of the component tree has a real band to show without reaching into
-      the policy layer, and inventing one here would be exactly the
-      unearned-mastery mistake the brief warns against. */
-  certain: boolean;
+  /** How sure the platform actually is about this paper, in the one evidence
+      policy's own five-value vocabulary, so this panel and /report agree.
+      Rendered as a WORD through FOCUS_CERTAINTY_LABEL, never as a number or
+      a percentage, and 'unknown' reads as unknown rather than as a zero.
+      Before 2026-09-22 this was a bare boolean, which made the panel print
+      "Has evidence recorded" four times over and say nothing at all. */
+  certainty: Certainty;
 }
 
 /** Whole days from `today` to `dateKey`, both 'yyyy-mm-dd'. Positive when
@@ -187,12 +202,32 @@ export function daysUntil(dateKey: string, today: string): number {
   return Math.round((to - from) / 86_400_000);
 }
 
-/** One entry per paper for the quiet "focus areas" panel: honest about what
-    is still unknown, silent about anything this view has no real number
-    for. */
-export function focusAreas(papers: readonly Paper[], diagnosticsOutstanding: readonly Paper[]): FocusAreaCertainty[] {
+/** One entry per paper for the quiet "focus areas" panel: a certainty WORD
+ *  each, honest about what is still unknown, and never a number.
+ *
+ *  `certaintyByPaper` is the real answer from the one evidence policy, when
+ *  the caller has it. It wins outright: it is computed from the whole
+ *  record, so it can say 'self-reported' or 'measured' where the plan alone
+ *  could only guess.
+ *
+ *  With no map, the plan alone still supports two honest words and no more.
+ *  `diagnosticsOutstanding` is exactly the papers with no usable evidence of
+ *  any kind (policy.ts builds it as the papers nothing has touched), so
+ *  those are genuinely 'unknown'. Every other paper has been touched by
+ *  something real, which is 'limited' (the lowest level that means "there is
+ *  evidence"), and the plan carries nothing that would let this function
+ *  claim more than that. Claiming more would be the unearned-mastery
+ *  mistake the brief warns against. */
+export function focusAreas(
+  papers: readonly Paper[],
+  diagnosticsOutstanding: readonly Paper[],
+  certaintyByPaper?: Readonly<Partial<Record<Paper, Certainty>>>,
+): FocusAreaCertainty[] {
   const outstanding = new Set(diagnosticsOutstanding);
-  return papers.map((paper) => ({ paper, certain: !outstanding.has(paper) }));
+  return papers.map((paper) => {
+    const certainty: Certainty = certaintyByPaper?.[paper] ?? (outstanding.has(paper) ? 'unknown' : 'limited');
+    return { paper, certainty };
+  });
 }
 
 /* ── The kicker: which paper, which question type ────────────────────────── */
@@ -240,6 +275,76 @@ export function stepPurposeAddsSomething(title: string, purpose: string): boolea
   const trimmedPurpose = purpose.trim();
   if (!trimmedPurpose) return false;
   return trimmedPurpose.toLowerCase() !== title.trim().toLowerCase();
+}
+
+/** One sentence, reduced to the form two sentences can be compared in:
+    trimmed, single-spaced, without its final punctuation, lower case. */
+function normaliseSentence(text: string): string {
+  return text.trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, '').toLowerCase();
+}
+
+/** Whether `candidate` is worth showing beside something already on screen.
+    The same idea as `stepPurposeAddsSomething` above, widened by one rule:
+    as well as an exact repeat, a sentence the shown text already contains
+    word for word adds nothing either. The "Why this" panel needs that
+    second rule because what is already on screen there is a longer
+    composed sentence which can swallow a shorter one whole. */
+export function addsSomethingBeside(candidate: string, shown: string): boolean {
+  const wanted = normaliseSentence(candidate);
+  if (!wanted) return false;
+  const already = normaliseSentence(shown);
+  if (!already) return true;
+  return wanted !== already && !already.includes(wanted);
+}
+
+/* ── "Why this": the evidence, not the headline again (item 11d) ─────────── */
+
+export interface WhyThisView {
+  /** One plain sentence per piece of evidence that genuinely stands behind
+      today's choice, in the planner's own words and its own order (see
+      evidenceRefsFor in planner.ts: counted items, the student's own
+      required band, a review that fell due, a self-reported score). Empty
+      when every reference only repeated what the card already says, in
+      which case the panel shows what is still unknown and nothing else. */
+  evidence: readonly string[];
+  /** True when the plan itself says nothing independent is on record for
+      this yet, so the panel can be headed honestly as "no evidence behind
+      this yet" instead of "what this rests on". */
+  restsOnNothingRecorded: boolean;
+}
+
+/** What the "Why this" disclosure should actually show.
+ *
+ *  THE BUG THIS CLOSES. It used to print `session.reason`, which is the
+ *  very sentence Mr EZ speaks at the top of the same card (MrEzWelcome.tsx
+ *  falls back to exactly that text whenever the tutor is unreachable, which
+ *  is every build with no AI configured). A student opened "Why this" and
+ *  read the sentence they had just read. "Why this" is for the evidence
+ *  behind the choice and for what is still unknown, so that is what it now
+ *  carries, and anything already on screen is dropped rather than repeated.
+ *
+ *  `alreadyOnScreen` is whatever the card has said above the disclosure:
+ *  the objective headline and the reason line. Pure, so the whole rule is
+ *  testable without a browser. */
+export function whyThisView(
+  refs: readonly Pick<SessionEvidenceRef, 'kind' | 'evidence'>[] | null | undefined,
+  alreadyOnScreen: readonly string[],
+): WhyThisView {
+  const all = refs ?? [];
+  const evidence: string[] = [];
+  for (const ref of all) {
+    const sentence = ref.evidence.trim();
+    if (!sentence) continue;
+    if (alreadyOnScreen.some((shown) => !addsSomethingBeside(sentence, shown))) continue;
+    // Two references can word the same fact identically (a paper estimate
+    // and a self-reported score for the same paper, say). Say it once.
+    if (evidence.some((kept) => !addsSomethingBeside(sentence, kept))) continue;
+    evidence.push(sentence);
+  }
+  return {
+    evidence,
+    restsOnNothingRecorded: all.length > 0 && all.every((ref) => ref.kind === 'no-evidence'),
+  };
 }
 
 /** The paper to call out on a step, or null when it needs no callout. Only

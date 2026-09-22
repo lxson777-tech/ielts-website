@@ -37,6 +37,17 @@ export const strings: Record<string, string> = {
   'How am I doing against my target band?': 'Как у меня дела относительно целевого балла?',
   'What does Task Response actually mean?': 'Что на самом деле значит Task Response?',
 
+  /* The panel's opening lines (MrEzPanel.tsx), shown before the first
+     message. All three were raw English in the markup until 2026-09-22, so
+     a Russian student read them in English. The wordmark "IELTS is EZ"
+     stays English and is not a key here. Note the typographic apostrophe in
+     "Let’s": the English literal IS the lookup key, so that exact character
+     has to match the source byte for byte or the lookup misses silently. */
+  'A little guidance. A lot of progress.': 'Немного подсказок. Много прогресса.',
+  'Let’s figure it out together.': 'Давайте разберёмся вместе.',
+  'Understand a tricky question, learn from your results, or find your next step.':
+    'Разобрать сложный вопрос, понять свои результаты или найти следующий шаг.',
+
   /* Panel chrome (MrEzPanel.tsx). */
   Close: 'Закрыть',
   'Ask Mr EZ': 'Спросить Mr EZ',

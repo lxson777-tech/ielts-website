@@ -50,12 +50,22 @@ export const TODAY_HREF = '/dashboard';
 export function continueFor(
   session: SharedSessionView | null,
   activityId: string | null | undefined,
+  /** True when the plan really did record a change around this piece of
+   *  work, which the caller knows because it watched the history grow.
+   *
+   *  Without it these screens contradicted themselves: one box said what had
+   *  changed in the plan and the box directly beneath it said the work had
+   *  not changed today. Both sentences are about the same thing, so only one
+   *  of them can be on the screen. */
+  planChanged = false,
 ): ContinueTarget {
   const voluntary: ContinueTarget = {
     kind: 'voluntary',
     href: TODAY_HREF,
     labelKey: "Back to today's session",
-    noteKey: 'This was extra practice. It has been recorded, and it has not changed today.',
+    noteKey: planChanged
+      ? 'This was extra practice. It has been recorded, and the plan has been worked out again around it.'
+      : 'This was extra practice. It has been recorded, and it has not changed today.',
   };
   if (!session || !activityId) return voluntary;
 

@@ -34,6 +34,7 @@ import { recommendNext, recommendationReason } from '../src/lib/tutor/recommend.
 import { activityBlurb, activityLabel, buildCatalog, practiseActivity } from '../src/lib/tutor/catalog.ts';
 import { tutorErrorMessage } from '../src/lib/tutor/errors.ts';
 import { loadDictionary } from '../src/lib/i18n/dict/index.ts';
+import { t } from '../src/lib/i18n/translate.ts';
 import { COURSE_UNITS, buildCourse, courseLessonCount } from '../src/lib/course.ts';
 import { createHandler } from '../workers/mr-ez/src/index.ts';
 
@@ -227,6 +228,86 @@ test('a date is written the way each language writes one', () => {
   assert.match(russian, /сентябр/);
   // Nonsense in, something readable out, never an exception or a blank.
   assert.equal(formatDate('not-a-date', 'ru'), 'not-a-date');
+});
+
+test('the English date is day first, because this helper is shared with a site whose every other date is', () => {
+  /* Changed 2026-09-22. This asked Intl for a bare 'en', which resolves to
+     United States ordering, so Mr EZ said "Your Reading result from
+     August 15, 2026" while /tests, /report and the marking histories all
+     wrote "15 Aug 2026". The helper is shared, so this one line is visible
+     in two places: every date on /report, and the Worker's own
+     "Your {kind} result from {date}" sentence. */
+  assert.equal(formatDate('2026-08-15', 'en'), '15 August 2026');
+  assert.equal(formatDate('2026-09-19', 'en'), '19 September 2026');
+  assert.doesNotMatch(formatDate('2026-08-15', 'en'), /^August/);
+
+  // And the Russian is ordinary Russian, without the "г." year marker,
+  // which is correct in Russian but noise in a row of dates.
+  assert.equal(formatDate('2026-09-19', 'ru'), '19 сентября 2026');
+  assert.doesNotMatch(formatDate('2026-09-19', 'ru'), /\sг\.?$/);
+});
+
+/* ================================================================== */
+/* The panel's own chrome                                              */
+/* ================================================================== */
+
+/* The three lines the panel opens with were raw JSX text with no
+   translation call at all, so a Russian student opened Mr EZ and read
+   English. There is no DOM here, so the words are checked against the real
+   dictionary and the wiring against the component's own source. */
+
+const PANEL_SOURCE = fs.readFileSync(path.join(REPO_ROOT, 'src/components/tutor/MrEzPanel.tsx'), 'utf8');
+
+/** Exactly as they are written in MrEzPanel.tsx. "Let’s" carries a
+    typographic apostrophe (U+2019), and the English literal IS the lookup
+    key, so the character matters: a straight quote here would look right
+    and miss silently. */
+const PANEL_INTRO = [
+  'A little guidance. A lot of progress.',
+  'Let’s figure it out together.',
+  'Understand a tricky question, learn from your results, or find your next step.',
+];
+
+test("the panel's opening lines are translated, and the apostrophe in the key matches the source exactly", async () => {
+  await loadDictionary('ru');
+  for (const line of PANEL_INTRO) {
+    const russian = t(line, undefined, undefined, 'ru');
+    assert.notEqual(russian, line, `the panel still opens with English: "${line}"`);
+    assert.match(russian, /[Ѐ-ӿ]/, `"${line}" translates to "${russian}", which is not Russian`);
+    assert.doesNotMatch(russian, DASHES, `"${line}"`);
+    assert.equal(t(line, undefined, undefined, 'en'), line, 'English is untouched');
+  }
+  assert.ok(
+    PANEL_INTRO[1]!.includes('’'),
+    'fixture assumption: the source uses a typographic apostrophe, so the dictionary key must too',
+  );
+});
+
+test("the panel's opening lines are routed through t(), not rendered as raw JSX text", () => {
+  for (const line of PANEL_INTRO) {
+    const escaped = line.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(
+      PANEL_SOURCE,
+      new RegExp(`\\{t\\('${escaped}'\\)\\}`),
+      `MrEzPanel.tsx does not wrap "${line}" in t()`,
+    );
+    assert.doesNotMatch(
+      PANEL_SOURCE,
+      new RegExp(`>\\s*${escaped}\\s*<`),
+      `MrEzPanel.tsx still renders "${line}" as raw text`,
+    );
+  }
+});
+
+test('the wordmark stays English in the panel: it is a brand, and IELTS is exam vocabulary', async () => {
+  await loadDictionary('ru');
+  // "Mr EZ" is rendered as a literal, never through the dictionary.
+  assert.match(PANEL_SOURCE, /<strong>Mr EZ<\/strong>/, 'the name in the panel header is the wordmark, unwrapped');
+  for (const line of PANEL_INTRO) {
+    assert.ok(!line.includes('IELTS is EZ'), `the wordmark must not be inside a translatable line: "${line}"`);
+  }
+  // Where IELTS does appear in a translated panel string, it survives.
+  assert.ok(t('Mr EZ, your IELTS tutor', undefined, undefined, 'ru').includes('IELTS'));
 });
 
 /* ================================================================== */
@@ -540,15 +621,23 @@ test('the reason on a recommendation card is Russian, and the activity is unchan
   assert.equal(english, rec.fallbackReason);
   assert.notEqual(russian, english);
   assert.match(russian, /[Ѐ-ӿ]/);
-  /* CHANGED 2026-09-22, personal learning work package 7. This used to look
-     for the question type name, because rule 2 always fired on this fixture
-     and named True / False / Not Given. The recommendation is now a view of
-     the student's one session, and for a learner with nothing recorded in
-     three of the four papers that session goes and finds out about one of
-     them. The rule being tested is the same one either way: an exam word
-     inside a Russian sentence stays English, so the student recognises it
-     on the real paper. */
-  assert.ok(russian.includes('Listening'), 'the paper name stays English');
+  /* CHANGED TWICE, and the rule under test never moved: an exam word inside
+     a Russian sentence stays English, so the student recognises it on the
+     real paper. Which exam word is in the sentence has moved, because the
+     session this card is a view of has moved.
+     - Originally the question type name, because the old rule 2 always
+       fired on this fixture and named True / False / Not Given.
+     - 2026-09-22 (work package 7): the card became a view of the student's
+       one session, and with three of the four papers never sampled that
+       session went and found out about one of them, so the word was
+       Listening.
+     - 2026-09-22 (fix round): 4 of 16 True / False / Not Given with Reading
+       a band short of a confirmed target is a substantive weakness, and
+       unknown pressure no longer outranks one (see
+       UNKNOWN_PRESSURE_WITH_KNOWN_WEAKNESS), so the session is Reading and
+       the paper name in the sentence is Reading. The fixture is unchanged;
+       only the planner's judgement about it is. */
+  assert.ok(russian.includes('Reading'), 'the paper name stays English');
   assert.doesNotMatch(russian, DASHES);
 });
 

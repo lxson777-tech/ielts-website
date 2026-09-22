@@ -55,25 +55,33 @@
 .focused-storage { background: #f6e9c8; color: #6b5312; }
 
 .focused-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
-@media (min-width: 900px) {
-  .focused-body { grid-template-columns: minmax(0, 1fr) minmax(0, 420px); align-items: start; }
-  .focused-questions { position: sticky; top: 24px; }
-}
 
 /* ── The passage ──────────────────────────────────────────────────────────── */
 
 .focused-passage {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--color-border, #dddfd6);
   border-radius: 20px;
   background: var(--color-surface, #fffefa);
   overflow: hidden;
 }
-.focused-passage-head { padding: 18px 22px 12px; border-bottom: 1px solid var(--color-border, #dddfd6); }
+.focused-passage-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex: 0 0 auto;
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid var(--color-border, #dddfd6);
+}
+.focused-passage-heading { min-width: 0; }
 .focused-passage-label { margin: 0; font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-ink-muted, #616c64); }
 .focused-passage-title { margin: 4px 0 0; font-family: var(--font-display-ui, inherit); font-size: 18px; font-weight: 600; color: var(--color-ink, #263c35); }
 .focused-passage-text {
   max-height: 58vh;
   overflow-y: auto;
+  overflow-wrap: break-word;
   padding: 18px 22px 22px;
   font-size: 14.5px;
   line-height: 1.75;
@@ -81,6 +89,67 @@
 }
 .focused-passage-text p { margin: 0 0 14px; }
 .focused-passage-text strong { font-weight: 700; }
+
+/* Folding the passage away is a phone affordance only: above the
+   two-column breakpoint the passage is its own sticky column and there is
+   nothing to fold it out of the way of, so the control is not rendered to
+   a sighted or an assistive user there. The panel's own state is kept
+   either way, so a phone rotated to landscape and back is where it was. */
+.focused-passage-toggle { display: none; }
+
+/* The layout TestPlayer uses for a long passage, in a page that scrolls.
+   TestPlayer owns the whole viewport (h-dvh) and gives each pane its own
+   scroll, so the passage is on screen however far down the answer sheet
+   the student is, and on a phone it swaps the two behind a tab. This
+   exercise lives inside the ordinary workspace page, which scrolls as one,
+   so the same thing here is a sticky passage column whose text scrolls
+   inside it. The outcome is identical and it is the point: the passage is
+   still readable at the last question. It was not before. A matching
+   headings group runs to twenty questions, the list ran about 1000px past
+   the end of the passage, and from around question 15 the student was
+   matching headings to a passage that had scrolled away (reproduced
+   against a production build, 22 September 2026). What used to be sticky
+   here was the QUESTIONS column, which does nothing at all: sticky only
+   moves an element shorter than the viewport, and that column is the tall
+   one.
+   `top` clears the sticky workspace header (108px in .workspace-v2) with a
+   small gap, and the height leaves the same gap at the bottom. Nothing
+   animates, and the student's own scrolling is the only motion. */
+@media (min-width: 900px) {
+  .focused-body { grid-template-columns: minmax(0, 1fr) minmax(0, 420px); align-items: start; }
+  .focused-passage { position: sticky; top: 124px; max-height: calc(100vh - 148px); }
+  /* Fill whatever the sticky box leaves after the heading, rather than the
+     fixed share of the viewport the unpinned panel used. */
+  .focused-passage-text { flex: 1 1 auto; min-height: 0; max-height: none; }
+}
+
+/* Stacked: the passage is above the questions, and one press folds it away
+   so the questions are reachable without scrolling past the whole text.
+   A plain quiet capsule, in the same family as the audio replay control,
+   and the fold is instant rather than animated: an animated height on a
+   panel this tall janks on a phone, and there is nothing here that a
+   transition would explain. */
+@media (max-width: 899px) {
+  .focused-passage-toggle {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 6px 14px;
+    border: 1px solid var(--color-border, #dddfd6);
+    border-radius: 999px;
+    background: var(--color-surface, #fffefa);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-ink-muted, #616c64);
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+  }
+  .focused-passage-toggle:hover { background: var(--color-surface-alt, #f5f5f0); border-color: var(--color-ink-muted, #616c64); color: var(--color-ink, #263c35); }
+  .focused-passage.is-collapsed .focused-passage-head { border-bottom: 0; padding-bottom: 18px; }
+  .focused-passage.is-collapsed .focused-passage-text { display: none; }
+}
 
 /* ── The recording (Listening, WP18b/WP19) ───────────────────────────────── */
 
@@ -117,8 +186,16 @@
 }
 .focused-audio-scrubber:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* THE SECONDARY CAPSULE of this design system: an outlined capsule on the
+   surface colour, ink text, no fill. Written here for the audio controls,
+   and shared by name with anything else that needs a quiet action rather
+   than a new colour. `.focused-retry.is-secondary` ("Try this one again")
+   is the other member; it carries more specificity than `.focused-retry`
+   below, so the filled brand style loses to this wherever the class is
+   set. */
 .focused-audio-replay,
-.focused-audio-start {
+.focused-audio-start,
+.focused-retry.is-secondary {
   flex: 0 0 auto;
   min-height: 40px;
   padding: 0 18px;
@@ -133,9 +210,11 @@
   transition: background 180ms ease, border-color 180ms ease;
 }
 .focused-audio-replay:hover:not(:disabled),
-.focused-audio-start:hover:not(:disabled) { background: var(--color-surface-alt, #f5f5f0); border-color: var(--color-brand, #b94b36); }
+.focused-audio-start:hover:not(:disabled),
+.focused-retry.is-secondary:hover:not(:disabled) { background: var(--color-surface-alt, #f5f5f0); border-color: var(--color-brand, #b94b36); }
 .focused-audio-replay:disabled,
-.focused-audio-start:disabled { opacity: 0.45; cursor: not-allowed; }
+.focused-audio-start:disabled,
+.focused-retry.is-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .focused-audio-start {
   align-self: flex-start;
@@ -186,6 +265,10 @@
   background: var(--color-surface-alt, #f5f5f0);
   font-size: 12.5px;
   line-height: 1.75;
+  /* Table completion's legend is the publisher's own printed table. It can
+     be wider than a phone; it scrolls inside its own panel rather than
+     taking the page sideways with it. */
+  overflow-x: auto;
 }
 .focused-legend p { margin: 0 0 8px; }
 .focused-legend p:last-child { margin: 0; }
@@ -209,8 +292,13 @@
 .focused-item.is-right .focused-item-number { background: #dfeadb; color: #2f5d3a; }
 .focused-item.is-wrong .focused-item-number { background: #f7e2dd; color: #8e3a26; }
 .focused-item-label { flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 600; color: var(--color-ink, #263c35); }
+/* max-width matters more than it looks: a matching-headings select's own
+   intrinsic width is its widest option, and the options are whole
+   sentences, so without this the control pushes past the questions column
+   and the page scrolls sideways. */
 .focused-answer {
   flex: 0 0 auto;
+  max-width: 100%;
   min-height: 40px;
   padding: 0 12px;
   border: 1px solid var(--color-border, #dddfd6);
@@ -235,6 +323,7 @@
 }
 .focused-answer-input {
   width: 160px;
+  max-width: 100%;
   min-height: 36px;
   padding: 0 10px;
   border: 1px solid var(--color-border, #dddfd6);
@@ -312,6 +401,15 @@
 .focused-retry:hover:not(:disabled) { background: var(--color-brand-hover, #9b3c29); }
 .focused-retry:disabled { opacity: 0.45; cursor: not-allowed; }
 .focused-retry-result { margin: 0; font-size: 13px; color: var(--color-ink, #263c35); }
+
+/* "Try this one again" is an invitation to have another go, and in the
+   filled brand colour it read as brick red, which on any other screen
+   means stop or delete. It takes the secondary capsule defined above
+   instead; the only thing it still needs from this section is to sit at
+   the start of the column rather than stretch across it. "Check this one
+   again", the submit of that second go, keeps the filled style, so the
+   screen still has exactly one primary action at a time. */
+.focused-retry.is-secondary { align-self: flex-start; }
 
 .focused-explanation {
   margin: 10px 0 0 36px;
@@ -449,6 +547,7 @@
 
 .focused-check:focus-visible,
 .focused-retry:focus-visible,
+.focused-passage-toggle:focus-visible,
 .focused-reason-option:focus-visible,
 .focused-answer:focus-visible,
 .focused-reason-note input:focus-visible,
@@ -471,17 +570,25 @@
   .help-reply { animation: none; }
   .focused-check:hover:not(:disabled),
   .session-continue-action:hover { transform: none; gap: 12px; }
+  .focused-passage-toggle { transition: none; }
 }
 
 @media (max-width: 480px) {
   .focused-questions { padding: 16px; }
+  .focused-passage-head { padding: 16px 16px 12px; gap: 10px; }
   .focused-passage-text { max-height: 42vh; padding: 14px 16px 18px; }
+  .focused-passage.is-collapsed .focused-passage-head { padding-bottom: 16px; }
   .focused-summary { padding: 20px; }
   .focused-wrong,
   .focused-explanation,
   .focused-controls-inline { margin-left: 0; }
   .help-controls.is-inline { margin-left: 0; }
   .focused-item-label { flex: 1 1 100%; }
+  /* A whole sentence in a dropdown has nowhere to go at 390px but its own
+     line, at the width of the panel. Anything narrower than the panel
+     truncates the heading; anything wider scrolls the page sideways. */
+  .focused-answer { flex: 1 1 100%; width: 100%; min-width: 0; }
+  .focused-answer-input { width: 100%; }
   .focused-audio { padding: 14px 16px 18px; }
   .focused-audio-note { margin: 0 16px 18px; }
   .focused-evidence-replay { display: block; margin: 6px 0 0; width: fit-content; }

@@ -52,6 +52,7 @@ import {
   stepPurposeAddsSomething,
   stepStatus,
   stepTitleFor,
+  whyThisView,
 } from './todayViewModel';
 import ScopeNote from '../ScopeNote';
 import { clearIntakeDeferral, isDeferralActive, readIntakeDeferral, writeIntakeDeferral } from './intakeDeferral';
@@ -295,6 +296,12 @@ function ActiveSessionCard({
   const outstanding = plan?.diagnosticsOutstanding ?? [];
   const daysToExam = session.examDate ? daysUntil(session.examDate, session.date) : null;
   const kicker = sessionKicker(session.paper, session.subskill);
+  /* What "Why this" shows: the evidence standing behind the choice, with
+     anything the card has already said above it dropped. The objective
+     headline and the reason line are passed in as "already on screen"
+     because the reason line IS what Mr EZ speaks at the top of this card
+     whenever the tutor is unreachable (item 11d). */
+  const why = whyThisView(plan?.activeSession.evidenceRefs, [session.reason, session.objective]);
 
   function startClick() {
     if (current) markStepStarted(current.stepId);
@@ -424,9 +431,25 @@ function ActiveSessionCard({
         </button>
       </div>
 
+      {/* Never the reason line again: that sentence is already the first
+          thing in this card. This disclosure is the evidence behind the
+          choice, then what is still unknown. Both halves are the planner's
+          and the policy's own words, never a claim composed here. */}
       {showWhy && (
         <div className="today-why">
-          <p>{session.reason}</p>
+          {why.evidence.length > 0 && (
+            <>
+              <p className="today-why-label">
+                {why.restsOnNothingRecorded ? t('No evidence behind this yet') : t('What this rests on')}
+              </p>
+              <ul className="today-why-evidence">
+                {why.evidence.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          <p className="today-why-label">{t('What is still unknown')}</p>
           <p className="today-why-uncertain">
             {outstanding.length > 0
               ? t('Not yet assessed: {papers}.', { papers: outstanding.map((p) => t(PAPER_LABEL[p])).join(', ') })
@@ -536,7 +559,12 @@ function StepRow({
             <polyline points="4,12.6 9.6,18.2 20,6.4" pathLength={1} />
           </svg>
         ) : status === 'skipped' ? (
-          '—'
+          /* A drawn line rather than a dash character: the house rule bans
+             the em and en dashes this used to use, and an SVG scales with
+             the marker instead of depending on a font. */
+          <svg className="skip-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="6.5" y1="12" x2="17.5" y2="12" />
+          </svg>
         ) : (
           ''
         )}

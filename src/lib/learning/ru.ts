@@ -110,8 +110,10 @@ const PLANNER_RU: Record<string, string> = {
     'Вы самостоятельно ответили верно на {correct} из {items} таких вопросов, попытки: {occasions}. Это ниже того, что нужно по разделу {paper} для вашей цели, поэтому сейчас это самый полезный час, который у вас есть.',
   'Your measured {paper} is around band {band} and you need at least {required}. Closing that is the most useful hour you have, and the estimate can still move either way.':
     'Ваш измеренный балл по разделу {paper} примерно {band}, а нужно как минимум {required}. Сократить этот разрыв сейчас самое полезное, чем можно заняться, и оценка ещё может измениться в любую сторону.',
-  'One result puts this below what you need. It is a single occasion rather than a settled picture, so this is a second look rather than a conclusion.':
-    'Один результат показал уровень ниже нужного. Это единичный случай, а не устоявшаяся картина, поэтому сейчас это скорее повторная проверка, чем вывод.',
+  'One result puts {paper} below what you need. It is a single occasion rather than a settled picture, so this is a second look rather than a conclusion.':
+    'Один результат показал по разделу {paper} уровень ниже нужного. Это единичный случай, а не устоявшаяся картина, поэтому сейчас это скорее повторная проверка, чем вывод.',
+  'One result puts {paper} around band {band}, against the {required} your goal asks for. It is a single occasion rather than a settled picture, so this is a second look rather than a conclusion.':
+    'Один результат показал по разделу {paper} примерно балл {band}, а ваша цель требует {required}. Это единичный случай, а не устоявшаяся картина, поэтому сейчас это скорее повторная проверка, чем вывод.',
   'Nothing has been measured for {paper} yet, so the plan cannot say where you are. A short sample changes that.':
     'По разделу {paper} пока ничего не измерено, поэтому план не может сказать, на каком вы уровне. Короткая проверка это изменит.',
   'You last showed this {days} days ago. Spacing says it is time to prove it again rather than let it fade.':
@@ -124,8 +126,8 @@ const PLANNER_RU: Record<string, string> = {
     'Вы сказали, что раздел {paper} даётся тяжелее всего. Это ваша собственная оценка, а не измерение, поэтому она только задаёт порядок в начале, и первый же реальный результат её поправит.',
   'Nothing has been recorded yet, so this starts with how the paper works rather than with a level nobody has measured.':
     'Пока ничего не записано, поэтому начнём с того, как устроен этот раздел, а не с уровня, который никто ещё не измерял.',
-  'Everything measured here is already at or above what you need, so this keeps it sharp rather than fixing a problem.':
-    'Всё, что здесь измерено, уже на нужном уровне или выше, поэтому сейчас это скорее поддержка формы, чем исправление проблемы.',
+  'Everything measured in {paper} is already at or above what you need, so this keeps it sharp rather than fixing a problem.':
+    'Всё измеренное по разделу {paper} уже на нужном уровне или выше, поэтому сейчас это скорее поддержка формы, чем исправление проблемы.',
   'You chose this, so the plan follows it and keeps the evidence it produces.':
     'Вы выбрали это сами, поэтому план следует вашему выбору и сохраняет результаты, которые он даёт.',
   'The exam date on this plan has passed. Nothing here is finished; the plan needs a new date or a new goal before it can pace anything.':
@@ -143,6 +145,8 @@ const PLANNER_RU: Record<string, string> = {
   /* Change history. */
   'Your plan is set up. Today is {objective}.': 'Ваш план готов. Сегодня: {objective}.',
   'Today moves from {from} to {to}. {why}': 'Сегодняшнее занятие меняется с "{from}" на "{to}". {why}',
+  "Today's steps were adjusted around your latest result. The objective is the same: {objective}.":
+    'Шаги на сегодня подстроены под ваш последний результат. Цель та же: {objective}.',
   'The plan is now {status}. {why}': 'Теперь план {status}. {why}',
   'You missed {days} study days, so the week was rebuilt from where you actually are rather than piling the old days on top. {dropped}':
     'Вы пропустили {days} дн. занятий, поэтому неделя была перестроена с учётом того, где вы сейчас, а не с добавлением пропущенных дней сверху. {dropped}',

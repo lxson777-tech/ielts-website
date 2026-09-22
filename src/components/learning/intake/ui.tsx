@@ -4,7 +4,9 @@
    here reads storage or the plan API — Intake.tsx hands in everything. */
 
 import type { ReactNode } from 'react';
+import { useT } from '../../../lib/i18n/react';
 import type { PlanStatus } from '../../../lib/learning/contracts/plan';
+import ScopeNote from '../ScopeNote';
 
 export interface CapsuleOption<T extends string> {
   value: T;
@@ -97,27 +99,62 @@ const STATUS_TONE: Record<PlanStatus, 'neutral' | 'caution' | 'good'> = {
   'goal-met': 'good',
 };
 
+/** The honest statement of what the saved plan can and cannot do.
+ *
+ * Three things here are deliberate, all from the 22 September 2026 review of
+ * the running site:
+ *
+ * - The scope note goes through the SHARED `ScopeNote` component, the same
+ *   one Today and the Course page use, so one plan reads the same way on all
+ *   three surfaces: first sentence plainly, the rest behind "and n more".
+ *   It keeps this panel's own paragraph class, so the style is unchanged.
+ *   Before this, the planner's 548-character note was dumped here in full.
+ * - What had to be dropped is secondary detail, so it sits behind a closed
+ *   `<details>` whose summary says what it is and how many items, the same
+ *   way the rest of the intake collapses anything optional.
+ * - `role="status"` is on the headline only, not the whole panel. The
+ *   headline is the sentence that has to be announced when a plan is saved;
+ *   making the disclosure part of a live region would re-announce the note
+ *   and the whole list every time the student opened or closed it.
+ */
 export function OutcomePanel({
   headline,
   scopeNote,
   droppedMilestones,
   status,
+  scopeTight = false,
 }: {
   headline: string;
   scopeNote: string | null;
   droppedMilestones: readonly string[];
   status: PlanStatus;
+  /** From `planOutcome`: the planner had to leave real work out, or the exam
+      is inside its short-deadline window. A plan like that is not a neutral
+      one even while its status is 'on-track'. */
+  scopeTight?: boolean;
 }) {
+  const { tn } = useT();
+  const tone = STATUS_TONE[status] === 'neutral' && scopeTight ? 'caution' : STATUS_TONE[status];
   return (
-    <div className={`intake-outcome is-${STATUS_TONE[status]}`} role="status">
-      <p className="intake-outcome-headline">{headline}</p>
-      {scopeNote && <p className="intake-outcome-note">{scopeNote}</p>}
+    <div className={`intake-outcome is-${tone}`}>
+      <p className="intake-outcome-headline" role="status">
+        {headline}
+      </p>
+      <ScopeNote note={scopeNote} className="intake-outcome-note" />
       {droppedMilestones.length > 0 && (
-        <ul className="intake-outcome-list">
-          {droppedMilestones.map((reason, index) => (
-            <li key={index}>{reason}</li>
-          ))}
-        </ul>
+        <details className="intake-outcome-dropped">
+          <summary>
+            {tn(droppedMilestones.length, {
+              one: 'What will not fit before the exam ({n} thing)',
+              other: 'What will not fit before the exam ({n} things)',
+            })}
+          </summary>
+          <ul className="intake-outcome-list">
+            {droppedMilestones.map((reason, index) => (
+              <li key={index}>{reason}</li>
+            ))}
+          </ul>
+        </details>
       )}
     </div>
   );

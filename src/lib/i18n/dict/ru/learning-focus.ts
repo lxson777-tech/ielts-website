@@ -32,6 +32,9 @@ export const strings: Record<string, string> = {
      "Questions" are already in the tests batch and are not repeated. */
   'Heading for {label}': 'Заголовок для {label}',
   'Choose a heading': 'Выберите заголовок',
+  /* Phone only: the passage sits above the questions and folds away. */
+  'Hide the passage': 'Скрыть текст',
+  'Show the passage': 'Показать текст',
 
   /* FocusedExercise.tsx: after a wrong answer */
   'You chose {given}. That is not the one.': 'Вы выбрали {given}. Это не тот вариант.',
@@ -87,6 +90,8 @@ export const strings: Record<string, string> = {
   "That was the last step of today's session.": 'Это был последний шаг сегодняшнего занятия.',
   'This was extra practice. It has been recorded, and it has not changed today.':
     'Это была дополнительная практика. Она записана и не изменила сегодняшний план.',
+  'This was extra practice. It has been recorded, and the plan has been worked out again around it.':
+    'Это была дополнительная практика. Она записана, и план был пересчитан с её учётом.',
 
   /* src/data/focused/reading-matching-headings.ts: titles and objectives.
      "Matching Headings" is the exam's own name for the task and stays in

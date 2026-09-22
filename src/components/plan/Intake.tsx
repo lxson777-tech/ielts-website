@@ -456,6 +456,7 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
           headline={outcome.headline}
           scopeNote={outcome.scopeNote}
           droppedMilestones={outcome.droppedMilestones}
+          scopeTight={outcome.scopeTight}
         />
         <div className="intake-actions">
           <button type="button" className="intake-button intake-button-primary" onClick={() => onDone?.()}>
@@ -480,6 +481,7 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
           headline={outcome.headline}
           scopeNote={outcome.scopeNote}
           droppedMilestones={outcome.droppedMilestones}
+          scopeTight={outcome.scopeTight}
         />
         <form
           className="intake-form"

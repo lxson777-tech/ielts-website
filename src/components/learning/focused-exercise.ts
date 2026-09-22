@@ -8,7 +8,7 @@
  * glue, and everything that decides what a student's work MEANS lives here
  * where it can be tested with no browser.
  *
- * THE THREE RULES THIS FILE EXISTS TO KEEP
+ * THE FOUR RULES THIS FILE EXISTS TO KEEP
  * 1. The first answer is the first answer. What is recorded for an item is
  *    what the student had when they pressed check, before a single
  *    explanation, evidence line or tick appeared.
@@ -18,6 +18,11 @@
  * 3. A cause is never observed. What is observed is a wrong answer; why it
  *    happened is what the student tells us, and every sentence built from
  *    it says so.
+ * 4. Half finished work is not lost. The in-progress store at the bottom of
+ *    this file keeps the answers a student has given, per owner and per
+ *    exercise, so a reload in the middle of a set brings them back with the
+ *    help each one had already had. It is cleared the moment the set is
+ *    checked and recorded.
  */
 
 import type { MistakeReason } from '../../data/focused-exercises';
@@ -590,4 +595,239 @@ export function assistedCount(
   help: Readonly<Record<string, ItemHelpState>>,
 ): number {
   return items.filter((item) => (help[item.itemId] ?? NO_HELP).assistance !== 'none').length;
+}
+
+/* ── Pausing and coming back ─────────────────────────────────────────────── */
+
+/* A student answered three of six matching-headings questions, reloaded the
+   page, and found "0 of 6 answered" with all three gone (reproduced against
+   a production build, 22 September 2026). Nothing had reached the learner
+   record either, because a focused exercise records one event when check is
+   pressed and check had not been pressed.
+   The written focused task never had this problem: it keeps a draft per
+   owner and per exercise (written-focused-task.ts's WRITTEN_DRAFT_PREFIX),
+   and the lesson quick check keeps an unfinished run the same way
+   (src/lib/learning/lesson-check.ts's LESSON_CHECK_PROGRESS_KEY). What
+   follows is that same store for this surface, with the same three
+   guarantees, and the decisions are here rather than in the component so a
+   test can hold them with no browser:
+
+     PER OWNER, ALWAYS. The key carries the owner namespace the learner
+     record itself uses, so one student's half answered exercise can never
+     be restored for the next one signed in on this browser (architecture
+     finding R7.4-account-isolation). This is an isolation guarantee, not a
+     convenience: a read for owner B never returns a single answer written
+     by owner A, because it never looks at owner A's key.
+
+     THE HELP COMES BACK WITH THE ANSWER. Restoring the answers on their own
+     would make a reload a way to launder an assisted answer into an
+     independent one: the answer given after a hint would survive and the
+     hint would not. So the assistance level each item had reached is kept
+     beside its answer and restored with it. Rule 2 of this file holds
+     across a reload. The hint PROSE is deliberately not kept (it is tutor
+     wording, not evidence); the only cost is that the next hint may repeat
+     an earlier one.
+
+     NOTHING SURVIVES COMPLETION. Once check has been pressed the run is in
+     the learner record, and a copy left behind would restore a finished
+     exercise over a fresh visit. focusedProgressAction returns 'clear' for
+     a settled set, so the component cannot get this out of step.
+
+   Convenience storage, never evidence: every read and every write is
+   wrapped, and a browser with storage blocked or full loses the resumption
+   and nothing else. */
+
+/** localStorage key for an exercise that was started and not finished.
+    Follows the naming the two stores above already use, and is a NEW key:
+    nothing existing is renamed or reset. */
+export const FOCUSED_PROGRESS_KEY = 'ielts.learning.focus.v1';
+
+/** Unfinished exercises older than this are dropped rather than restored. A
+    month later the page is a fresh start, not a resumption. The same window
+    LESSON_CHECK_PROGRESS_DAYS uses, deliberately. */
+export const FOCUSED_PROGRESS_DAYS = 30;
+
+/** The three methods of a Storage object, and nothing else. Taken as an
+    interface so a test can hand in a few lines of memory, exactly the way
+    written-focused-task.ts and store.browser.ts do. */
+export interface FocusedProgressStorage {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+}
+
+export interface FocusedProgressV1 {
+  version: 1;
+  /** The exercise this belongs to. Checked on the way back in, so a key
+      that somehow holds another exercise's run restores nothing. */
+  exerciseId: string;
+  updatedAt: string;
+  /** What is in each box, by item id. Only boxes with something in them. */
+  answers: Readonly<Record<string, string>>;
+  /** The assistance each item had reached when it was written, so a
+      restored answer is never read as unaided work. */
+  assistance: Readonly<Record<string, AssistanceLevel>>;
+}
+
+/** What a restored exercise hands back to the screen. Empty records, never
+    null, so the caller has nothing to branch on. */
+export interface RestoredFocusedProgress {
+  answers: Record<string, string>;
+  assistance: Record<string, AssistanceLevel>;
+}
+
+export const NOTHING_RESTORED: RestoredFocusedProgress = { answers: {}, assistance: {} };
+
+export function focusedProgressKey(ownerNamespace: string, exerciseId: string): string {
+  return `${FOCUSED_PROGRESS_KEY}::${ownerNamespace}::${exerciseId}`;
+}
+
+/** What is worth keeping from the boxes as they stand.
+ *
+ *  Only the boxes with something in them: a blank is not an answer, and
+ *  keeping one would restore an empty selection over a fresh page for no
+ *  gain. An item's assistance rides along only when help really was used,
+ *  so the stored row stays small and 'none' is never written out.
+ *  Returns null when there is nothing to keep, which is what tells the
+ *  caller to hold no copy at all rather than an empty one. */
+export function focusedProgressToStore(
+  exerciseId: string,
+  answers: Readonly<Record<string, string>>,
+  help: Readonly<Record<string, ItemHelpState>>,
+  now: string,
+): FocusedProgressV1 | null {
+  const kept: Record<string, string> = {};
+  const levels: Record<string, AssistanceLevel> = {};
+  for (const [itemId, value] of Object.entries(answers)) {
+    if (typeof value !== 'string' || value.trim() === '') continue;
+    kept[itemId] = value;
+    const level = help[itemId]?.assistance;
+    if (level && level !== 'none') levels[itemId] = level;
+  }
+  if (Object.keys(kept).length === 0) return null;
+  return { version: 1, exerciseId, updatedAt: now, answers: kept, assistance: levels };
+}
+
+/** Keep the boxes as they stand, or drop the copy entirely.
+ *
+ *  One function, so "what is held while working, and that nothing is held
+ *  once it is over" is a single decision with a single test instead of two
+ *  calls a component could get out of step. 'clear' for a set that has been
+ *  checked (it is in the learner record by then) and for a set with nothing
+ *  in it (an exercise opened and left alone leaves no row behind). */
+export type FocusedProgressAction =
+  | { kind: 'keep'; progress: FocusedProgressV1 }
+  | { kind: 'clear' };
+
+export function focusedProgressAction(input: {
+  exerciseId: string;
+  answers: Readonly<Record<string, string>>;
+  help: Readonly<Record<string, ItemHelpState>>;
+  /** True once check has been pressed and the run recorded. */
+  settled: boolean;
+  now: string;
+}): FocusedProgressAction {
+  if (input.settled) return { kind: 'clear' };
+  const progress = focusedProgressToStore(input.exerciseId, input.answers, input.help, input.now);
+  return progress ? { kind: 'keep', progress } : { kind: 'clear' };
+}
+
+/** Read a half finished exercise back, or nothing when there is nothing
+ *  usable.
+ *
+ *  Usable means: this owner's key, this exercise, this shape, this version,
+ *  and recent. Anything else, including a value another program left at the
+ *  key and a half written one, is ignored rather than trusted: every field
+ *  is checked on the way in, unknown item ids are dropped (a question that
+ *  is no longer in the exercise has nowhere to go), and an assistance level
+ *  that is not one of the five in the contract is dropped too. Never
+ *  throws, so a blocked or full store costs the student the resumption and
+ *  nothing else. */
+export function readFocusedProgress(
+  storage: FocusedProgressStorage | null,
+  ownerNamespace: string,
+  view: { exerciseId: string; items: readonly { itemId: string }[] },
+  now: string,
+): RestoredFocusedProgress {
+  if (!storage) return { answers: {}, assistance: {} };
+  let raw: string | null = null;
+  try {
+    raw = storage.getItem(focusedProgressKey(ownerNamespace, view.exerciseId));
+  } catch {
+    return { answers: {}, assistance: {} };
+  }
+  if (!raw) return { answers: {}, assistance: {} };
+  let parsed: Partial<FocusedProgressV1>;
+  try {
+    parsed = JSON.parse(raw) as Partial<FocusedProgressV1>;
+  } catch {
+    return { answers: {}, assistance: {} };
+  }
+  if (!parsed || parsed.version !== 1) return { answers: {}, assistance: {} };
+  if (parsed.exerciseId !== view.exerciseId) return { answers: {}, assistance: {} };
+  const updatedAt = typeof parsed.updatedAt === 'string' ? parsed.updatedAt : '';
+  if (!withinDays(updatedAt, now, FOCUSED_PROGRESS_DAYS)) return { answers: {}, assistance: {} };
+
+  const held = parsed.answers;
+  if (!held || typeof held !== 'object' || Array.isArray(held)) return { answers: {}, assistance: {} };
+  const heldLevels =
+    parsed.assistance && typeof parsed.assistance === 'object' && !Array.isArray(parsed.assistance)
+      ? (parsed.assistance as Record<string, unknown>)
+      : {};
+
+  const wanted = new Set(view.items.map((item) => item.itemId));
+  const answers: Record<string, string> = {};
+  const assistance: Record<string, AssistanceLevel> = {};
+  for (const [itemId, value] of Object.entries(held as Record<string, unknown>)) {
+    if (!wanted.has(itemId)) continue;
+    if (typeof value !== 'string' || value.trim() === '') continue;
+    answers[itemId] = value;
+    const level = heldLevels[itemId];
+    if (typeof level === 'string' && ASSISTANCE_ORDER.includes(level as AssistanceLevel)) {
+      assistance[itemId] = level as AssistanceLevel;
+    }
+  }
+  return { answers, assistance };
+}
+
+/** Put the decision into the browser store.
+ *
+ *  Returns false only when a write was wanted and the browser refused it,
+ *  which is what the screen says plainly rather than pretending the work is
+ *  safe. A clear that will not go away is inert: the key is namespaced and
+ *  every field is checked on the way back in. */
+export function applyFocusedProgress(
+  storage: FocusedProgressStorage | null,
+  ownerNamespace: string,
+  exerciseId: string,
+  action: FocusedProgressAction,
+): boolean {
+  if (!storage) return false;
+  const key = focusedProgressKey(ownerNamespace, exerciseId);
+  if (action.kind === 'clear') {
+    try {
+      storage.removeItem(key);
+    } catch {
+      /* Nothing to do and nothing at risk. */
+    }
+    return true;
+  }
+  try {
+    storage.setItem(key, JSON.stringify(action.progress));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Whether `from` is no more than `days` before `to`. The same rule
+    src/lib/learning/lesson-check.ts applies to an unfinished quick check,
+    copied rather than imported: that module's own withinDays is private to
+    it, and this file is deliberately importable with no learning-store
+    dependencies at all. An unreadable date is never "recent". */
+function withinDays(from: string, to: string, days: number): boolean {
+  const start = new Date(from).getTime();
+  const end = new Date(to).getTime();
+  if (Number.isNaN(start) || Number.isNaN(end)) return false;
+  return end - start <= days * 24 * 60 * 60 * 1000;
 }

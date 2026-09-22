@@ -23,6 +23,14 @@
  * their shared item ids, so nothing here has to name a retry. Every item
  * carries the help it had, so a right answer after a hint is assisted for
  * good.
+ *
+ * AND BEFORE IT IS RECORDED
+ * Nothing reaches the learner record until check is pressed, so until then
+ * the answers live in this tab alone, and a reload used to lose them. They
+ * are now kept in a per owner, per exercise in-progress store (see
+ * ./focused-exercise.ts, "Pausing and coming back"), restored on mount and
+ * cleared the moment the run is recorded. Every decision about it is in
+ * that file; the three calls below are glue.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -38,7 +46,7 @@ import {
   readPersonalPlan,
   type SharedSessionView,
 } from '../../lib/learning';
-import { recordSubmission } from '../../lib/learning/store.browser';
+import { getLearnerStore, ownerNamespace, recordSubmission } from '../../lib/learning/store.browser';
 import type { ItemOutcomeDraft } from '../../lib/learning/evidence';
 import SessionContinueBar from './SessionContinueBar';
 import LessonHelpControls from './LessonHelpControls';
@@ -47,19 +55,23 @@ import {
   NO_DIAGNOSIS_SENTENCE,
   NO_HELP,
   TENTATIVE_DIAGNOSIS_SENTENCE,
+  applyFocusedProgress,
   assistedCount,
   bySubskillOf,
   completionOf,
   countCorrect,
   feedbackFor,
+  focusedProgressAction,
   isCorrect,
   itemDrafts,
   itemsAffectedBySeek,
   modeFor,
+  readFocusedProgress,
   tentativeDiagnosis,
   withHelp,
   type FocusedExerciseView,
   type FocusedItemView,
+  type FocusedProgressStorage,
   type ItemHelpState,
   type StatedReason,
 } from './focused-exercise';
@@ -72,6 +84,19 @@ interface Props {
 }
 
 type Phase = 'working' | 'checked';
+
+/** The browser's own store, or nothing when it is unavailable. Reading the
+    property itself throws when storage is blocked by policy, which is why
+    this is wrapped rather than tested. Same guard as deviceStorage() in
+    src/lib/learning/store.browser.ts. */
+function deviceStorage(): FocusedProgressStorage | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export default function FocusedExercise({ view }: Props) {
   const { t } = useT();
@@ -88,7 +113,25 @@ export default function FocusedExercise({ view }: Props) {
   const [session, setSession] = useState<SharedSessionView | null>(null);
   const [planChange, setPlanChange] = useState<string | null>(null);
   const [storageProblem, setStorageProblem] = useState(false);
+  /* Phone only (the toggle is hidden above the stacked breakpoint, where
+     the passage is its own sticky column): the passage sits above the
+     questions and can be folded away to reach them. Open by default, and
+     it has to stay that way: a student cannot answer a Reading question
+     without the passage, so hiding it unasked would be hiding the
+     material, and the Russian run of the language check reads the passage
+     text on a 390px screen to prove the exam content is still English. */
+  const [passageOpen, setPassageOpen] = useState(true);
+  /* True once the in-progress store has been consulted. Nothing is written
+     back before it has been: on the first commit the boxes are still empty,
+     and a write then would clear the very row about to be restored. */
+  const [restored, setRestored] = useState(false);
   const recorded = useRef(false);
+  const storage = useMemo(deviceStorage, []);
+  /* The owner namespace the learner record itself uses. Null when it cannot
+     be resolved, and then nothing is kept at all: an unnamespaced key could
+     hand one student's answers to another, and losing a resumption is the
+     cheaper of the two failures by a wide margin. */
+  const owner = useRef<string | null>(null);
   /* Items whose stated reason has already reached the record, so saying
      how you chose and then also correcting the answer does not file the
      same sentence twice. */
@@ -115,6 +158,55 @@ export default function FocusedExercise({ view }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.activityId]);
+
+  /* Answers already given are not lost by reloading the page. Restored
+     after mount rather than while rendering, so the server rendered markup
+     and the first client render still agree, and with the help each answer
+     had, so a reload can never turn assisted work into independent work.
+     All three state changes are batched into one commit, which is what lets
+     the keeping effect below see the restored answers on its first run
+     instead of the empty ones. */
+  useEffect(() => {
+    try {
+      owner.current = ownerNamespace(getLearnerStore().owner());
+    } catch {
+      /* No learner store on this device: nothing is kept, and the exercise
+         works exactly as it did. */
+      owner.current = null;
+    }
+    if (owner.current) {
+      const held = readFocusedProgress(storage, owner.current, view, new Date().toISOString());
+      if (Object.keys(held.answers).length > 0) {
+        setAnswers(held.answers);
+        setHelp((current) => {
+          const next = { ...current };
+          for (const [itemId, assistance] of Object.entries(held.assistance)) {
+            next[itemId] = withHelp(next[itemId] ?? NO_HELP, { assistance });
+          }
+          return next;
+        });
+      }
+    }
+    setRestored(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view.exerciseId]);
+
+  /* Keep the boxes as they stand, and drop the copy the moment the run is
+     recorded. What to do is decided in ./focused-exercise.ts, so this stays
+     one call: every path that changes an answer or adds help goes through
+     here, including check(), which is what clears it. */
+  useEffect(() => {
+    if (!restored || !owner.current) return;
+    const action = focusedProgressAction({
+      exerciseId: view.exerciseId,
+      answers,
+      help,
+      settled: phase === 'checked',
+      now: new Date().toISOString(),
+    });
+    if (!applyFocusedProgress(storage, owner.current, view.exerciseId, action)) setStorageProblem(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restored, answers, help, phase]);
 
   /* A check is a timed assessment as far as the tutor panel is concerned:
      the same flag TestPlayer and MockExam set, so a direct chat message is
@@ -286,12 +378,30 @@ export default function FocusedExercise({ view }: Props) {
 
       <div className="focused-body">
         {view.passage && (
-          <section className="focused-passage" aria-label={t('Passage')}>
+          /* On a wide screen this is its own sticky column, so the passage
+             is still there at question 15 (it used to end about 1000px
+             above the last question). Stacked above the questions on a
+             phone, where it folds away instead. */
+          <section
+            className={`focused-passage${passageOpen ? '' : ' is-collapsed'}`}
+            aria-label={t('Passage')}
+          >
             <div className="focused-passage-head">
-              <p className="focused-passage-label">{view.passage.label}</p>
-              <h2 className="focused-passage-title">{view.passage.title}</h2>
+              <div className="focused-passage-heading">
+                <p className="focused-passage-label">{view.passage.label}</p>
+                <h2 className="focused-passage-title">{view.passage.title}</h2>
+              </div>
+              <button
+                type="button"
+                className="focused-passage-toggle"
+                aria-expanded={passageOpen}
+                aria-controls="focused-passage-text"
+                onClick={() => setPassageOpen((open) => !open)}
+              >
+                {passageOpen ? t('Hide the passage') : t('Show the passage')}
+              </button>
             </div>
-            <div className="focused-passage-text">
+            <div className="focused-passage-text" id="focused-passage-text">
               {view.passage.paragraphs.map((paragraph, index) => (
                 <div key={index} dangerouslySetInnerHTML={{ __html: paragraph.html }} />
               ))}
@@ -302,12 +412,14 @@ export default function FocusedExercise({ view }: Props) {
         {view.audio && (
           <section className="focused-passage focused-audio-panel" aria-label={t('Recording')}>
             <div className="focused-passage-head">
-              <p className="focused-passage-label">{view.audio.partLabel}</p>
-              <h2 className="focused-passage-title">
-                {view.audio.narrowed
-                  ? t('The section covering these questions')
-                  : t('The whole part this exercise is from')}
-              </h2>
+              <div className="focused-passage-heading">
+                <p className="focused-passage-label">{view.audio.partLabel}</p>
+                <h2 className="focused-passage-title">
+                  {view.audio.narrowed
+                    ? t('The section covering these questions')
+                    : t('The whole part this exercise is from')}
+                </h2>
+              </div>
             </div>
             <AudioSegmentPlayer
               ref={audioPlayerRef}
@@ -510,7 +622,17 @@ export default function FocusedExercise({ view }: Props) {
                             </p>
                           )}
                           {!retrying[item.itemId] && !itemHelp.explanationShown && (
-                            <button type="button" className="focused-retry" onClick={() => openRetry(item)}>
+                            /* An encouraging second go, so it wears the
+                               quiet outlined capsule rather than the filled
+                               brand one, which on this canvas reads brick
+                               red and so reads as a warning. The submit of
+                               that second go, below, keeps the filled
+                               style: that one is the action. */
+                            <button
+                              type="button"
+                              className="focused-retry is-secondary"
+                              onClick={() => openRetry(item)}
+                            >
                               {t('Try this one again')}
                             </button>
                           )}
@@ -587,7 +709,7 @@ export default function FocusedExercise({ view }: Props) {
               <a href={withBase(view.lessonHref)}>{t('Read the method again')}</a>
             </p>
           )}
-          <SessionContinueBar activityId={view.activityId} />
+          <SessionContinueBar activityId={view.activityId} planChanged={Boolean(planChange)} />
         </section>
       )}
     </div>

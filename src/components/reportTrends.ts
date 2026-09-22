@@ -199,9 +199,16 @@ function scopesFor(policy: PolicyOutputV1, paper: Paper) {
 }
 
 /** The bit of a scope key worth naming in a sentence, e.g. 'matching
-    headings' from 'subskill:reading:matching-headings'. Not translated: a
-    subskill name is exam vocabulary, the same rule that keeps question-type
-    names English everywhere else on this site. */
+    headings' from 'subskill:reading:matching-headings'. Not translated, for
+    two reasons that both still hold: a subskill name here is usually a
+    question type or a criterion, which is exam vocabulary and stays English
+    so the student recognises it on the real paper; and this one lands in a
+    `{scope}` hole inside a translated SENTENCE, where the site's rule keeps
+    the exam word English anyway.
+
+    That is not the same job as the label on an evidence ROW (see
+    EvidenceListItem.subskillLabel below), which can also be one of three
+    plain interface words and is translated at the render site. */
 function subskillLabel(scopeKey: string): string {
   const parts = scopeKey.split(':');
   return (parts[2] ?? scopeKey).replace(/-/g, ' ');
@@ -235,12 +242,21 @@ function uncertainFor(policy: PolicyOutputV1, paper: Paper): NarrativeLine[] {
   const paperEstimate = policy.estimates.find((e) => e.scopeKey === `paper:${paper}`);
   const vars = { paper: PAPER_WORD[paper] };
 
-  if (policy.diagnosticsOutstanding.includes(paper)) {
+  /* Self-reported comes FIRST, ahead of "never sampled".
+   *
+   * A paper the student has only told us about has no events at all, so it
+   * is always in `diagnosticsOutstanding` too. While that branch was tested
+   * first, the self-reported sentence below could never be reached in the
+   * one case it was written for, and a student who had just entered their
+   * Speaking 6.5 was told that nothing about Speaking was known. It is the
+   * more specific and the more honest of the two sentences, and it already
+   * says that nothing was measured here, so it wins. */
+  if (paperEstimate?.certainty === 'self-reported') {
+    out.push(line(nt('{paper} rests on a self-reported score only, not on anything measured here.'), vars));
+  } else if (policy.diagnosticsOutstanding.includes(paper)) {
     out.push(line(nt('{paper} has never been sampled, so nothing about it is known yet.'), vars));
   } else if (paperEstimate?.certainty === 'unknown') {
     out.push(line(nt('{paper} has no usable evidence yet.'), vars));
-  } else if (paperEstimate?.certainty === 'self-reported') {
-    out.push(line(nt('{paper} rests on a self-reported score only, not on anything measured here.'), vars));
   } else if (paperEstimate?.certainty === 'limited') {
     out.push(
       line(
@@ -325,10 +341,16 @@ export function paperNarratives(
 export interface EvidenceListItem {
   at: string;
   paper: Paper;
-  /** Null for a whole activity with no single question type to name (a
-      full paper, an essay, a whole Speaking part): see describeSubskill's
-      doc comment. The caller omits the subskill for that item rather than
-      show the evidence layer's internal placeholder. */
+  /** The question type or objective this row is about, or, for a whole
+      activity with no single one to name, what kind of activity it was:
+      'full paper', 'essay' or 'speaking part' (see describeSubskill). Null
+      only when neither is known. The evidence layer's internal
+      whole-activity placeholder is never shown.
+
+      The caller translates this with `t()`. A question type or criterion has
+      no dictionary entry and so falls back to its own English, which is the
+      wording the student must recognise on the real paper; the three plain
+      activity words above do have Russian (learning-account.ts). */
   subskillLabel: string | null;
   summary: NarrativeLine;
 }
@@ -397,6 +419,59 @@ export function statedMistakeReasons(record: LearnerRecordV1, limit = 6): readon
     }
   }
   return out;
+}
+
+/* Scores the student says they got somewhere else. */
+
+/** One score the student told us about themselves, with the day they say
+    they sat it. Never a measurement, and deliberately not shaped like an
+    `AbilityEstimate`: no certainty, no range, no trend, nothing a reader
+    could fold into a measured number. */
+export interface SelfReportedItem {
+  /** Null when the student gave an overall score rather than one paper's. */
+  paper: Paper | null;
+  band: number;
+  /** The day they say they took it, exactly as they gave it (YYYY-MM-DD).
+      Left as the raw date on purpose: this module has no locale and no
+      translator, so the render site formats it with the site's own
+      locale-aware date helper (formatDate in src/lib/tutor/ru.ts). */
+  takenOn: string;
+  /** The instant they told us. */
+  reportedAt: string;
+}
+
+/** Every score the student reported themselves, most recent sitting first,
+ *  each one still carrying its date.
+ *
+ * WHY THIS READS THE POLICY AND NOT THE PLAN'S GOALS. The real "Add a
+ * recent score, if you have one" control in plan settings saves through
+ * `recordSelfReported` (src/lib/learning/store.browser.ts), which appends
+ * to the LEARNER RECORD's own `selfReported` list. `PlanGoals.selfReported`
+ * is a second, older place the same kind of claim can sit, and the intake's
+ * `buildGoals` passes it straight through without ever adding to it.
+ * `evaluateEvidence` is the one function that merges both lists
+ * (`mergeSelfReported` in policy.ts) and publishes the union as
+ * `PolicyOutputV1.selfReported`, so the union is what a report has to read.
+ * Reading the plan's goals alone was the bug this function replaces: a
+ * score saved through the real control never reached /report at all, so the
+ * page showed neither the words "self-reported" nor the student's own date.
+ *
+ * Nothing here is averaged, ranked, compared with a target or turned into a
+ * band. It is a list of what the student said and when, and the caller must
+ * label it as their own account. The policy already refuses to let a claim
+ * settle a requirement (`gapsFrom` in policy.ts drops the band before
+ * deciding `meetsRequirement`), and nothing in this module reverses that. */
+export function selfReportedScores(policy: PolicyOutputV1): readonly SelfReportedItem[] {
+  return [...policy.selfReported]
+    .map((score) => ({
+      paper: score.paper ?? null,
+      band: score.band,
+      takenOn: score.takenOn,
+      reportedAt: score.reportedAt,
+    }))
+    .sort((a, b) =>
+      a.takenOn === b.takenOn ? (a.reportedAt === b.reportedAt ? 0 : a.reportedAt < b.reportedAt ? 1 : -1) : a.takenOn < b.takenOn ? 1 : -1,
+    );
 }
 
 /** Which of the policy's ignored reasons applies to one entry, as a

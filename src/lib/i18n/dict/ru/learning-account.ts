@@ -33,6 +33,48 @@ export const strings: Record<string, string> = {
   'Estimated study time': 'Примерное время занятий',
   'Skill trends': 'Динамика по навыкам',
 
+  /* report.astro: the page's own subtitle. The sentence carries a link to
+     the account page in the middle, so it is marked in three pieces (see
+     the comment in report.astro). Read in order they make one Russian
+     sentence: "Всё с вашей страницы аккаунта собрано для печати или
+     сохранения в PDF." */
+  'Everything from your': 'Всё с вашей',
+  'account page': 'страницы аккаунта',
+  'laid out for printing or saving as a PDF.': 'собрано для печати или сохранения в PDF.',
+
+  /* The four paper names, as a bare HEADING or row label on /report, not as
+     a word inside a sentence.
+
+     Inside a Russian sentence they stay English, because a student has to
+     recognise them on the real paper (docs/I18N-GUIDE.md), and every
+     sentence on /report that names a paper still gets the English word
+     through reportTrends.ts's PAPER_WORD. A bare heading is not a sentence,
+     and the same four words are already translated for exactly this use by
+     Today (learning-today.ts, todayViewModel's PAPER_LABEL) and the intake
+     (learning-intake.ts). They are repeated here, with the identical
+     Russian, so /report does not depend on another batch keeping them:
+     three batch files already carry "Vocabulary" the same way, and the
+     conflict test in tests/i18n.test.ts only fails when two files DISAGREE,
+     which is what keeps these four honest. */
+  Reading: 'Чтение',
+  Listening: 'Аудирование',
+  Writing: 'Письмо',
+  Speaking: 'Говорение',
+
+  /* ProgressReport.tsx: the subskill shown on an evidence row.
+
+     Only these three. A row's subskill label comes from describeSubskill
+     (src/lib/learning/evidence.ts) and is usually a real question type
+     ("matching headings", "table completion") or a criterion, which stays
+     English because that is the wording on the real paper. These three are
+     not exam vocabulary at all: they are what the label says when the
+     activity was a WHOLE one with no single subskill to name. Anything with
+     no entry here falls back to its own English, which is precisely the
+     behaviour the exam words need. */
+  'full paper': 'полный тест',
+  essay: 'эссе',
+  'speaking part': 'часть Speaking',
+
   /* SkillTrendGrid.tsx: one card per paper (Reading, Listening, Writing,
      Speaking, left untranslated as protected exam names). */
   band: 'балл',
@@ -101,6 +143,8 @@ export const strings: Record<string, string> = {
   Goals: 'Цели',
   'No goal set yet.': 'Цель пока не задана.',
   'Self-reported scores': 'Баллы, указанные самостоятельно',
+  'These are self-reported: your own account of a score from somewhere else, on the date you gave, kept apart from everything measured here and never counted toward a target.':
+    'Это баллы с ваших слов: ваш собственный рассказ о результате, полученном в другом месте, с указанной вами датой. Они хранятся отдельно от всего, что измерено здесь, и никогда не идут в зачёт цели.',
   '{paper}: band {band}, taken {date}': '{paper}: балл {band}, сдан {date}',
   'Overall: band {band}, taken {date}': 'Общий: балл {band}, сдан {date}',
   'Flagged for a teacher': 'Отмечено для учителя',

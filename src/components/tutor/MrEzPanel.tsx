@@ -42,6 +42,7 @@ import {
 import { MAX_MESSAGE_CHARS, type TutorMood, type TutorPlace } from '../../lib/tutor/schema';
 import { onAuthChange } from '../../lib/auth/session';
 import { BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER, chatBlocked } from './mrez-boundary';
+import { selectTutorMood } from './mrez-mood';
 
 /** Where the student is, read off the DOM the layout already labelled. */
 function readPlace(): TutorPlace {
@@ -165,12 +166,27 @@ export default function MrEzPanel() {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [state.turns.length, busy]);
 
+  /** True while a timed paper, the mock or an independent check is running.
+      Read before the mood below, because a tutor who is deliberately saying
+      nothing must not wear a face that says he is explaining something. */
+  const blocked = chatBlocked(place);
+
+  /* One mood for the launcher AND the panel header, decided from facts
+     about the tutor only (see mrez-mood.ts). It deliberately knows nothing
+     about `open`: opening the drawer used to flip the launcher to
+     "explaining" even on a build with no tutor at all, which is item 9 of
+     the 2026-09-22 audit. */
   const mood: TutorMood = useMemo(() => {
-    if (busy) return 'thinking';
-    if (error || !configured) return 'unavailable';
     const last = [...state.turns].reverse().find((t) => t.role === 'tutor');
-    return last?.mood ?? 'idle';
-  }, [busy, error, configured, state.turns]);
+    return selectTutorMood({
+      configured,
+      signedIn,
+      busy,
+      failed: Boolean(error),
+      blocked,
+      lastReplyMood: last?.mood ?? null,
+    });
+  }, [busy, error, configured, signedIn, blocked, state.turns]);
 
   const send = useCallback(
     async (text: string, idempotencyKey?: string) => {
@@ -247,7 +263,6 @@ export default function MrEzPanel() {
     void send(pending.text, pending.key);
   }, [send]);
 
-  const blocked = chatBlocked(place);
   const suggestions = blocked ? [] : suggestionsFor(place, t);
   const remaining = MAX_MESSAGE_CHARS - draft.length;
 
@@ -261,7 +276,8 @@ export default function MrEzPanel() {
         aria-controls="mrez-panel"
         onClick={() => setOpen((v) => !v)}
       >
-        <MrEzAvatar mood={open ? 'explaining' : mood} size={42} />
+        {/* The same mood whether the drawer is open or shut: see mrez-mood.ts. */}
+        <MrEzAvatar mood={mood} size={42} />
         <span className="mrez-launcher-label">{open ? t('Close Mr EZ') : t('Ask Mr EZ')}<small>{t('Your AI tutor')}</small></span>
       </button>
 
@@ -277,12 +293,19 @@ export default function MrEzPanel() {
           <MrEzAvatar mood={mood} size={52} />
           <div className="mrez-head-text">
             <strong>Mr EZ</strong>
+            {/* Never "Your personal AI tutor" on a build that has none: the
+                header used to say it even with no Worker wired up, beside an
+                avatar that (item 9) had just flipped to "explaining". The
+                existing short string is reused rather than a new one added;
+                the fuller reason is already in the log below. */}
             <span>
               {blocked
                 ? t('Invigilating: no answers until the timer stops')
-                : model === 'simulated'
-                  ? t('Simulated tutor (no AI is being called)')
-                  : t('Your personal AI tutor')}
+                : !configured
+                  ? t('Mr EZ is not available on this build')
+                  : model === 'simulated'
+                    ? t('Simulated tutor (no AI is being called)')
+                    : t('Your personal AI tutor')}
             </span>
           </div>
           <button type="button" className="mrez-close" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}>
@@ -293,10 +316,15 @@ export default function MrEzPanel() {
 
         <div className="mrez-log" ref={logRef} role="log" aria-live="polite" aria-relevant="additions text">
           {state.turns.length === 0 && !blocked && (
+            /* The panel's own opening. All three lines were raw JSX text
+               with no translation call around them, so a Russian student
+               opened Mr EZ and read three English lines. The wordmark
+               "IELTS is EZ" is deliberately not among them: it stays
+               English wherever it appears, and so does IELTS. */
             <div className="mrez-intro">
-              <span className="mrez-intro-eyebrow">A little guidance. A lot of progress.</span>
-              <h2>Let’s figure it out together.</h2>
-              <p>Understand a tricky question, learn from your results, or find your next step.</p>
+              <span className="mrez-intro-eyebrow">{t('A little guidance. A lot of progress.')}</span>
+              <h2>{t('Let’s figure it out together.')}</h2>
+              <p>{t('Understand a tricky question, learn from your results, or find your next step.')}</p>
             </div>
           )}
           {/* The boundary notice: shown above everything else while a timed
