@@ -1026,7 +1026,14 @@ test('the existing user_state sync is extended, not replaced', async () => {
     'replaceProgress(mergedProgress)',
     'onProgressChange(onChange)',
     'onStudyPlanChange(onChange)',
-    'setTimeout(() => void push(userId), 1500)',
+    /* The debounce used to be one line, `setTimeout(() => void push(userId),
+       1500)`. It is two statements now, for the account-isolation fix of
+       22 September 2026: the handle is cleared and the push is made through
+       a body that can carry the comment explaining that push() itself
+       refuses to send once the owner has changed. The 1500 ms and the call
+       are unchanged, which is what this test is actually about. */
+    'void push(userId);',
+    '}, 1500);',
   ]) {
     assert.ok(source.includes(fragment), `the old sync still does: ${fragment}`);
   }

@@ -20,6 +20,7 @@
 
 import { WORDS } from '../data/words';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
+import { VOCAB_STORE_KEY, scopedKey } from './store-owner';
 
 export interface VocabCard {
   word: string;
@@ -436,7 +437,13 @@ export function buildVocabTopicData(raw: string, slug: string, title: string): V
 /* Store (localStorage, versioned, guarded)                               */
 /* ---------------------------------------------------------------------- */
 
-const KEY = 'ielts.vocab.v1';
+/* WHOSE REVIEW STATE (22 September 2026): the key now carries its owner, the
+   same one the learner record uses, so a second student signing in on this
+   browser does not inherit the first student's spaced-review schedule. See
+   src/lib/store-owner.ts. The base key and the stored shape are unchanged. */
+export const VOCAB_KEY = VOCAB_STORE_KEY;
+
+const KEY = VOCAB_STORE_KEY;
 
 function emptyStore(): VocabStoreV1 {
   return { version: 1, settings: { newPerDay: 10 }, cards: {} };
@@ -445,7 +452,7 @@ function emptyStore(): VocabStoreV1 {
 function loadStore(): VocabStoreV1 {
   if (typeof window === 'undefined') return emptyStore();
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(scopedKey(KEY));
     if (!raw) return emptyStore();
     const parsed = JSON.parse(raw);
     if (parsed?.version !== 1) return emptyStore();
@@ -462,7 +469,7 @@ function loadStore(): VocabStoreV1 {
 
 function saveStore(store: VocabStoreV1): void {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(store));
+    window.localStorage.setItem(scopedKey(KEY), JSON.stringify(store));
   } catch {
     /* storage full/blocked — review progress is a nice-to-have, never fatal */
   }

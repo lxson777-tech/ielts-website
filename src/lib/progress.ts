@@ -1,10 +1,43 @@
 /* localStorage-backed progress store. Versioned so a future account-sync
    can migrate v1 data. All storage access is guarded: SSR, disabled
-   storage (private mode), and corrupt JSON all degrade to empty state. */
+   storage (private mode), and corrupt JSON all degrade to empty state.
+
+   WHOSE PROGRESS (22 September 2026)
+   This store used to be one shared pile under `ielts.progress.v1`, with
+   nobody's name on it, so signing in as a second student on the same browser
+   merged the first student's attempts and essays into the second account and
+   uploaded them under the second account's id. Every read and write below now
+   resolves its key through src/lib/store-owner.ts, which answers with the
+   signed-in student or this browser's anonymous device owner. Nothing about
+   the shape, the merge rules or the quota fallbacks changed, and every caller
+   (getProgress, saveProgress, the history screens) keeps working unchanged.
+
+   The old device-wide key is still there and is never emptied: store-owner.ts
+   copies it, once, into the key of whichever owner the device says it belongs
+   to (see the rules in that file's header). */
 
 import type { CriterionKey, CriterionScore, MechanicsReport, Moment } from './writing/schema';
+import type { CacheOwner } from './learning/contracts/sync';
+import {
+  PROGRESS_STORE_KEY,
+  currentOwner,
+  deviceStorage,
+  onOwnerChange,
+  registerLegacyStoreMerge,
+  scopedKey,
+  scopedKeyIn,
+} from './store-owner';
 
-const KEY = 'ielts.progress.v1';
+/** The store's base key, unchanged. What actually reaches localStorage is
+    this plus the owner, for example 'ielts.progress.v1::u:9f0c'. */
+export const PROGRESS_KEY = PROGRESS_STORE_KEY;
+
+const KEY = PROGRESS_STORE_KEY;
+
+/** Where this device keeps `owner`'s progress. */
+function keyFor(owner: CacheOwner): string {
+  return scopedKeyIn(deviceStorage(), KEY, owner);
+}
 
 /* The 2026-09 IELTS question-type restructure renamed a handful of lesson
    slugs (see src/data/reading.ts and src/data/listening.ts): the store
@@ -184,10 +217,13 @@ export function getDayActivity(date: string): DayActivity {
   return getActivity()[date] ?? { minutes: 0, lessons: 0, attempts: 0 };
 }
 
-export function getProgress(): ProgressV1 {
+/** One named owner's progress. Used by the sign-in path and by the
+    anonymous-work claim, which both have to read a copy that is deliberately
+    not the current one. Every other caller wants getProgress() below. */
+export function getProgressFor(owner: CacheOwner): ProgressV1 {
   if (typeof window === 'undefined') return structuredClone(EMPTY);
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(keyFor(owner));
     if (!raw) return structuredClone(EMPTY);
     const parsed = JSON.parse(raw);
     if (parsed?.version !== 1) return structuredClone(EMPTY);
@@ -196,6 +232,13 @@ export function getProgress(): ProgressV1 {
   } catch {
     return structuredClone(EMPTY);
   }
+}
+
+/** The progress of whoever is using this browser right now: the signed-in
+    student, or this device's anonymous owner. */
+export function getProgress(): ProgressV1 {
+  if (typeof window === 'undefined') return structuredClone(EMPTY);
+  return getProgressFor(currentOwner());
 }
 
 const listeners = new Set<() => void>();
@@ -209,7 +252,7 @@ export function onProgressChange(cb: () => void): () => void {
 
 function save(p: ProgressV1): void {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(p));
+    window.localStorage.setItem(scopedKey(KEY), JSON.stringify(p));
   } catch {
     /* storage full/blocked — progress is a nice-to-have, never fatal */
   }
@@ -369,9 +412,12 @@ export function getBestBand(
   return all.reduce((best, cur) => (cur.attempt.band > best.band ? cur.attempt : best), all[0]!.attempt);
 }
 
+/** Clears the CURRENT owner's progress only. Another student's copy on this
+    browser is under their own key and is not touched, and neither is the old
+    device-wide key. */
 export function resetProgress(): void {
   try {
-    window.localStorage.removeItem(KEY);
+    window.localStorage.removeItem(scopedKey(KEY));
   } catch {
     /* ignore */
   }
@@ -448,3 +494,34 @@ export function mergeProgress(a: ProgressV1, b: ProgressV1): ProgressV1 {
   pruneWritingReports(merged);
   return merged;
 }
+
+/* The rule for joining two copies of this store on one device, for the
+   explicit "the work I did before signing in" claim. It is the SAME
+   union-merge two devices already use, registered rather than reimplemented,
+   so there is never a second version of it to drift. Raw JSON in, raw JSON
+   out, and null for anything that does not parse as a v1 store, which leaves
+   both copies exactly where they are. */
+registerLegacyStoreMerge(KEY, (mine, theirs) => {
+  try {
+    const a = JSON.parse(mine) as ProgressV1;
+    const b = JSON.parse(theirs) as ProgressV1;
+    if (a?.version !== 1 || b?.version !== 1) return null;
+    return JSON.stringify(mergeProgress(a, b));
+  } catch {
+    return null;
+  }
+});
+
+/* A change of owner changes what every reader should be showing, so the same
+   listeners that fire on a write fire on a sign-in, a sign-out and an account
+   switch too. Without this a screen that had already read the previous
+   owner's progress would keep showing it until the next write. */
+onOwnerChange(() => {
+  for (const l of listeners) {
+    try {
+      l();
+    } catch {
+      /* a listener throwing must not break a sign-in */
+    }
+  }
+});

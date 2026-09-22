@@ -239,6 +239,54 @@ export interface OwnershipClaimResult {
   newEvents: number;
 }
 
+/** What the four OLDER stores on this device hold for one owner, counted so
+    the claim screen can state it in plain words before the student agrees.
+ *
+ * Added 22 September 2026 with the account-isolation fix: those stores are
+ * now owned like everything else, so the explicit claim has to cover them
+ * too, and a student deciding about "the work I did before signing in" is
+ * owed a real list rather than a number of events. */
+export interface LegacyWorkCounts {
+  /** Reading and listening papers and drills sat. */
+  testAttempts: number;
+  /** Essays submitted for marking. */
+  essays: number;
+  /** Of those essays, how many still have their full marked report. */
+  savedReports: number;
+  speakingResults: number;
+  /** A target band and exam date saved on this device. */
+  hasPlan: boolean;
+  /** Vocabulary words with review history. */
+  vocabularyWords: number;
+  savedLessons: number;
+  notes: number;
+}
+
+export function emptyLegacyWorkCounts(): LegacyWorkCounts {
+  return {
+    testAttempts: 0,
+    essays: 0,
+    savedReports: 0,
+    speakingResults: 0,
+    hasPlan: false,
+    vocabularyWords: 0,
+    savedLessons: 0,
+    notes: 0,
+  };
+}
+
+export function hasLegacyWork(counts: LegacyWorkCounts): boolean {
+  return (
+    counts.testAttempts > 0 ||
+    counts.essays > 0 ||
+    counts.speakingResults > 0 ||
+    counts.hasPlan ||
+    counts.vocabularyWords > 0 ||
+    counts.savedLessons > 0 ||
+    counts.notes > 0
+  );
+}
+
 /** The explicit step by which work done signed out becomes part of an
     account. Never automatic: the student is shown what would be claimed and
     says yes. */
@@ -251,6 +299,10 @@ export interface OwnershipClaim {
     lessonsStudied: number;
     attempts: number;
     hasPlan: boolean;
+    /** The older stores, when this device has any of them for that owner.
+        Optional so a caller written before this existed still type-checks
+        and still reads the four fields above unchanged. */
+    legacy?: LegacyWorkCounts;
   };
   /** What happens to the account's existing work. Events always union; the
       plan is the only thing that can collide. */
@@ -279,6 +331,19 @@ export const DEVICE_ID_KEY = 'ielts.device.v1';
     on the same browser does not inherit them. The old stores themselves are
     never modified or removed. */
 export const LEGACY_MIGRATION_OWNER_KEY = 'ielts.learning.legacy.v1';
+
+/** Which owners have already taken their copy of the old device-wide stores
+    (`ielts.progress.v1`, `ielts.studyplan.v1`, `ielts.vocab.v1`,
+    `ielts.notes.v1`) into their own namespaced key.
+ *
+ * Added 22 September 2026, with the fix for finding 1 of that day's review:
+ * those four stores are now scoped by owner like everything else, and the
+ * old device-wide value is copied into the rightful owner's key ONCE.
+ * LEGACY_MIGRATION_OWNER_KEY above says WHOSE that value is; this says
+ * whether it has already been taken, so a student who later clears their own
+ * scoped copy does not silently get the old pile back. The device-wide keys
+ * themselves are never modified and never removed. */
+export const LEGACY_ADOPTION_KEY = 'ielts.learning.legacy.adopted.v1';
 
 /** What was decided about the anonymous record on this device, per owner:
     claimed, or declined. Once any account has decided, no other account is

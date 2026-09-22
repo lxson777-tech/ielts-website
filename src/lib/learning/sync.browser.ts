@@ -75,8 +75,14 @@ import {
   type LearnerStore,
   type PlanStore,
 } from './store.browser';
-import { readNotesSyncSnapshot, writeNotesSyncSnapshot, type Bookmark, type NotesStore } from '../notes';
+import { mergeNotesStores, readNotesSyncSnapshot, writeNotesSyncSnapshot, type NotesStore } from '../notes';
 import { getLocale, isLocale, setLocale, LOCALE_STORAGE_KEY } from '../i18n/locale';
+import {
+  VOCAB_STORE_KEY,
+  registerLegacyStoreMerge,
+  sameOwner,
+  setCurrentOwner,
+} from '../store-owner';
 
 /* ── Talking to the account ──────────────────────────────────────────────── */
 
@@ -427,6 +433,25 @@ export function mergeVocabValue(
   return { version: 1, settings: { ...newer.settings }, cards };
 }
 
+/* The same per-word rule, offered to the anonymous-work claim, which joins
+   two owners' copies on ONE device rather than two devices' copies of one
+   owner. Registered from here because this is where the rule is written, and
+   a second copy of it beside the vocabulary store would eventually disagree
+   with this one. The two sides are dated equally, so `settings.newPerDay`
+   stays whatever the ACCOUNT had rather than being replaced by a signed-out
+   session's choice; every word's own history still merges in full. */
+registerLegacyStoreMerge(VOCAB_STORE_KEY, (mine, theirs) => {
+  try {
+    const a = JSON.parse(mine) as VocabStoreLike | null;
+    const b = JSON.parse(theirs) as VocabStoreLike | null;
+    if (a?.version !== 1 || b?.version !== 1) return null;
+    const at = '0000-01-01T00:00:00.000Z';
+    return JSON.stringify(mergeVocabValue(a, b, at, at));
+  } catch {
+    return null;
+  }
+});
+
 /** THE NOTES AND SAVED LESSONS RULE:
  *
  *   - a bookmark is identified by (kind, id); the later `savedAt` wins;
@@ -438,31 +463,10 @@ export function mergeVocabValue(
  *     rather than a bug to hide. Tombstones are the fix if it ever matters,
  *     and they would be a change to the notes store, not to this file. */
 export function mergeNotesValue(local: NotesStore, remote: NotesStore): NotesStore {
-  const bookmarks = new Map<string, Bookmark>();
-  for (const bookmark of [...(local.bookmarks ?? []), ...(remote.bookmarks ?? [])]) {
-    const key = `${bookmark.kind}:${bookmark.id}`;
-    const held = bookmarks.get(key);
-    if (!held || bookmark.savedAt > held.savedAt) bookmarks.set(key, bookmark);
-  }
-  const notes: NotesStore['notes'] = {};
-  for (const id of new Set([...Object.keys(local.notes ?? {}), ...Object.keys(remote.notes ?? {})])) {
-    const mine = local.notes?.[id];
-    const theirs = remote.notes?.[id];
-    if (!mine) {
-      if (theirs) notes[id] = theirs;
-      continue;
-    }
-    if (!theirs) {
-      notes[id] = mine;
-      continue;
-    }
-    notes[id] = mine.updatedAt >= theirs.updatedAt ? mine : theirs;
-  }
-  return {
-    version: 1,
-    bookmarks: [...bookmarks.values()].sort((a, b) => (a.savedAt < b.savedAt ? 1 : a.savedAt > b.savedAt ? -1 : 0)),
-    notes,
-  };
+  /* The rule itself lives in src/lib/notes.ts, beside the shape it is about,
+     because the anonymous-work claim needs the same rule on one device and
+     two copies of it would eventually disagree. */
+  return mergeNotesStores(local, remote);
 }
 
 interface PreferencesLike {
@@ -738,6 +742,22 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
   let publishing = false;
   const listeners = new Set<(status: SyncStatus) => void>();
 
+  /** Whether a request created for `userId` may still be sent, or a reply to
+      one may still be applied.
+   *
+   * Every outgoing write below carries the owner it was created for, and is
+   * checked against the owner this layer is serving at the moment it goes
+   * out. A sign-out or an account switch in between makes this false, so the
+   * request is dropped rather than sent under the next student's token, and
+   * a reply that arrives late is dropped rather than written into the next
+   * student's store. Nothing is lost by dropping it: the queue stays on the
+   * device under the first student's own namespaced key. */
+  function stillOurs(userId: string, run?: number): boolean {
+    if (currentUserId !== userId) return false;
+    if (!sameOwner(owner, userOwner(userId))) return false;
+    return run === undefined || run === generation;
+  }
+
   function statusStorage(): BrowserStorage | null {
     /* `undefined` means "whatever the record uses". Explicit null means "do
        not keep a queue at all", which is what a server render wants. */
@@ -866,6 +886,10 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
     }
     const response = await transport.get(path);
     if (!ok(response)) return { ok: false, serverIds: null, response };
+    /* A pull that comes back after the student changed is NOT applied. The
+       rows belong to whoever asked for them, and the record they would be
+       merged into now belongs to somebody else. */
+    if (!stillOurs(userId)) return { ok: false, serverIds: null, response: null };
     const rows = Array.isArray(response.body) ? (response.body as LearningEventRow[]) : [];
 
     const events: EvidenceEvent[] = [];
@@ -925,6 +949,9 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
     if (waiting.length === 0) return true;
 
     for (let from = 0; from < waiting.length; from += EVIDENCE_BATCH_MAX) {
+      /* Checked again before EVERY batch, not once before the loop: a
+         sign-out between two batches must stop the rest going out. */
+      if (!stillOurs(userId)) return false;
       const batch = waiting.slice(from, from + EVIDENCE_BATCH_MAX);
       const response = await transport.post(
         'learning_events?on_conflict=user_id,event_id',
@@ -935,7 +962,7 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
         if (looksLikeMissingTable(response)) degrade();
         return false;
       }
-      if (currentUserId !== userId) return false;
+      if (!stillOurs(userId)) return false;
       /* The reply holds only the rows the account stored for the FIRST time,
          so anything sent and missing from it was already there. Both count
          as acknowledged: a duplicate is not an error, it is the idempotency
@@ -948,6 +975,7 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
   async function pushPlan(userId: string, plan: PersonalPlanV1): Promise<boolean> {
     const transport = options.transport;
     if (!transport) return false;
+    if (!stillOurs(userId)) return false;
     const response = await transport.post(
       'learning_plan?on_conflict=user_id',
       {
@@ -963,7 +991,7 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
       if (looksLikeMissingTable(response)) degrade();
       return false;
     }
-    if (currentUserId !== userId) return false;
+    if (!stillOurs(userId)) return false;
     const rows = Array.isArray(response.body) ? (response.body as LearningPlanRow[]) : [];
     const winner = rows[0];
     if (!winner) return true;
@@ -1007,8 +1035,9 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
   async function syncCompanion(userId: string, adapter: CompanionAdapter<any>): Promise<boolean> {
     const transport = options.transport;
     if (!transport) return false;
+    if (!stillOurs(userId)) return false;
     const local = await adapter.read();
-    if (currentUserId !== userId) return false;
+    if (!stillOurs(userId)) return false;
 
     const held = state?.companions[adapter.kind] ?? null;
     const digest = hashContent(canonicalJson(local));
@@ -1024,7 +1053,7 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
 
     const pulled = await pullCompanion(userId, adapter.kind);
     if (!pulled.ok) return false;
-    if (currentUserId !== userId) return false;
+    if (!stillOurs(userId)) return false;
 
     const remoteDoc = pulled.row && isCompanionDoc(pulled.row.data) ? pulled.row.data : null;
     const merged = remoteDoc
@@ -1034,14 +1063,18 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
     const mergedAt = remoteDoc && remoteDoc.updatedAt > localAt ? remoteDoc.updatedAt : localAt;
 
     if (mergedDigest !== digest) {
+      /* The write goes into whichever owner's store is loaded RIGHT NOW, so
+         it is checked immediately before as well as after. */
+      if (!stillOurs(userId)) return false;
       await adapter.write(merged);
-      if (currentUserId !== userId) return false;
+      if (!stillOurs(userId)) return false;
     }
 
     /* Push only when the account's copy is not already the merged one. */
     const remoteDigest = remoteDoc ? hashContent(canonicalJson(remoteDoc.value)) : null;
     let revision = pulled.row?.revision ?? 0;
     if (remoteDigest !== mergedDigest) {
+      if (!stillOurs(userId)) return false;
       revision = Math.max(revision, held?.revision ?? 0) + 1;
       const response = await transport.post(
         'learning_companions?on_conflict=user_id,kind',
@@ -1057,7 +1090,7 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
         if (looksLikeMissingTable(response)) degrade();
         return false;
       }
-      if (currentUserId !== userId) return false;
+      if (!stillOurs(userId)) return false;
     }
     if (state) {
       state.companions[adapter.kind] = { revision, updatedAt: mergedAt, digest: mergedDigest };
@@ -1240,10 +1273,16 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
        the account holds is true of student B. */
     acknowledged = new Set();
 
-    /* Both stores move to this student BEFORE anything is pulled. Work done
+    /* EVERY store moves to this student BEFORE anything is pulled. Work done
        signed out lives under `anon:<deviceId>`, a different key, so it is
-       simply not in the record from here on: it reaches an account only
-       through the store's explicit claim flow. */
+       simply not in the records from here on: it reaches an account only
+       through the store's explicit claim flow.
+       setCurrentOwner covers the four older stores (progress, study plan,
+       vocabulary, notes and saved lessons) in one call, so no read, merge,
+       one-time move or upload below can see the previous student's copy.
+       src/lib/auth/sync.ts sets it at the top of sign-in as well; doing it
+       twice is free, and this layer must be correct on its own. */
+    setCurrentOwner(owner);
     if (options.setOwner) options.setOwner(owner);
     else {
       learnerStore.setOwner(owner);
@@ -1312,7 +1351,11 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
     if (hadUser) {
       /* Sign-out drops the in-memory copy whatever else happens: the next
          person at this browser must not be able to see the last one's work
-         on screen. */
+         on screen. The owner goes back to this device's anonymous one, which
+         moves the four older stores with it: the student who just left keeps
+         their copies on this machine under their own id, unreadable to
+         anybody else, exactly as the learner record does. */
+      setCurrentOwner(null);
       if (options.setOwner) options.setOwner(null);
       else {
         learnerStore.setOwner(null);

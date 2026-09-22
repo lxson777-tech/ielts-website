@@ -242,6 +242,19 @@ export const strings: Record<string, string> = {
   'This week, by paper': 'На этой неделе по разделам',
   'No practice this week': 'На этой неделе практики не было',
   '{n} band short of your goal': 'До цели не хватает {n} балла',
+
+  /* AnonymousWorkClaim.tsx: the one explicit question by which work done on
+     this device before signing in becomes part of an account. Added
+     22 September 2026 with the account-isolation fix. Deliberately calm and
+     plain: it states what is on the device, and either answer is fine. */
+  'Work saved on this device': 'Работа, сохранённая на этом устройстве',
+  'You were signed out when you did this. Add it to your account, or leave it here on this device.':
+    'Вы были не в аккаунте, когда это делали. Добавьте это в свой аккаунт или оставьте здесь, на устройстве.',
+  'Your target band and exam date': 'Ваш целевой балл и дата экзамена',
+  'Add to my account': 'Добавить в мой аккаунт',
+  'Leave it here': 'Оставить здесь',
+  'Added to your account.': 'Добавлено в ваш аккаунт.',
+  'Left on this device.': 'Оставлено на этом устройстве.',
 };
 
 /* Keyed by the English `other` form, exactly like every other batch file
@@ -356,5 +369,51 @@ export const plurals: Record<string, { one: string; few: string; many: string; o
     few: '{n} попытки на этой неделе',
     many: '{n} попыток на этой неделе',
     other: '{n} попытки на этой неделе',
+  },
+
+  /* AnonymousWorkClaim.tsx: what the work done on this device before signing
+     in actually holds, one counted line per kind. Only non-zero lines are
+     shown, so these are always a real count of a real thing. */
+  '{n} lessons studied': {
+    one: 'изучен {n} урок',
+    few: 'изучено {n} урока',
+    many: 'изучено {n} уроков',
+    other: 'изучено {n} урока',
+  },
+  '{n} practice attempts': {
+    one: '{n} тренировочная попытка',
+    few: '{n} тренировочные попытки',
+    many: '{n} тренировочных попыток',
+    other: '{n} тренировочные попытки',
+  },
+  '{n} test attempts': {
+    one: '{n} попытка теста',
+    few: '{n} попытки теста',
+    many: '{n} попыток теста',
+    other: '{n} попытки теста',
+  },
+  '{n} marked essays': {
+    one: '{n} проверенное эссе',
+    few: '{n} проверенных эссе',
+    many: '{n} проверенных эссе',
+    other: '{n} проверенных эссе',
+  },
+  '{n} speaking results': {
+    one: '{n} результат по Speaking',
+    few: '{n} результата по Speaking',
+    many: '{n} результатов по Speaking',
+    other: '{n} результата по Speaking',
+  },
+  '{n} vocabulary words': {
+    one: '{n} слово в словаре',
+    few: '{n} слова в словаре',
+    many: '{n} слов в словаре',
+    other: '{n} слова в словаре',
+  },
+  '{n} saved lessons and notes': {
+    one: '{n} сохранённый урок или заметка',
+    few: '{n} сохранённых урока и заметки',
+    many: '{n} сохранённых уроков и заметок',
+    other: '{n} сохранённых урока и заметки',
   },
 };

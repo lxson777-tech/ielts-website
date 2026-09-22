@@ -2,11 +2,31 @@
    can read/write it too (the component is no longer the sole owner). Same
    localStorage-first contract as progress.ts: SSR, blocked storage and corrupt
    JSON all degrade to null. A change listener lets sync push on edit and lets
-   an open StudyPlan refresh when a cloud pull updates the plan. */
+   an open StudyPlan refresh when a cloud pull updates the plan.
+
+   WHOSE PLAN (22 September 2026)
+   Like progress.ts, this store used to be one shared pile with nobody's name
+   on it, so signing in as a second student on this browser handed them the
+   first student's target band and exam date, and uploaded it under their id.
+   Every read and write below resolves its key through src/lib/store-owner.ts
+   instead, which answers with the signed-in student or this browser's
+   anonymous device owner. Nothing else about the plan changed. */
 
 import { nt } from './i18n/translate';
+import type { CacheOwner } from './learning/contracts/sync';
+import {
+  STUDY_PLAN_STORE_KEY,
+  currentOwner,
+  deviceStorage,
+  onOwnerChange,
+  registerLegacyStoreMerge,
+  scopedKey,
+  scopedKeyIn,
+} from './store-owner';
 
-export const STUDY_PLAN_KEY = 'ielts.studyplan.v1';
+/** The store's base key, unchanged. What reaches localStorage is this plus
+    the owner, for example 'ielts.studyplan.v1::u:9f0c'. */
+export const STUDY_PLAN_KEY = STUDY_PLAN_STORE_KEY;
 
 export interface SavedPlan {
   targetBand: string;
@@ -152,10 +172,13 @@ function notify(): void {
   }
 }
 
-export function loadStudyPlan(): SavedPlan | null {
+/** One named owner's plan. Used by the sign-in path and by the
+    anonymous-work claim, which both have to read a copy that is deliberately
+    not the current one. Every other caller wants loadStudyPlan() below. */
+export function loadStudyPlanFor(owner: CacheOwner): SavedPlan | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = window.localStorage.getItem(STUDY_PLAN_KEY);
+    const raw = window.localStorage.getItem(scopedKeyIn(deviceStorage(), STUDY_PLAN_KEY, owner));
     if (!raw) return null;
     const p = JSON.parse(raw);
     if (typeof p?.targetBand !== 'string') return null;
@@ -169,18 +192,32 @@ export function loadStudyPlan(): SavedPlan | null {
   }
 }
 
-export function saveStudyPlan(p: SavedPlan): void {
+/** The plan of whoever is using this browser right now. */
+export function loadStudyPlan(): SavedPlan | null {
+  if (typeof window === 'undefined') return null;
+  return loadStudyPlanFor(currentOwner());
+}
+
+/** Save one named owner's plan. Used by the plan store, which is told whose
+    plan it is holding rather than assuming it is the current one. */
+export function saveStudyPlanFor(owner: CacheOwner, p: SavedPlan): void {
   try {
-    window.localStorage.setItem(STUDY_PLAN_KEY, JSON.stringify(p));
+    window.localStorage.setItem(scopedKeyIn(deviceStorage(), STUDY_PLAN_KEY, owner), JSON.stringify(p));
   } catch {
     /* storage blocked — the plan just won't persist, never fatal */
   }
   notify();
 }
 
+export function saveStudyPlan(p: SavedPlan): void {
+  saveStudyPlanFor(currentOwner(), p);
+}
+
+/** Clears the CURRENT owner's plan only. Another student's copy on this
+    browser is under their own key and is not touched. */
 export function clearStudyPlan(): void {
   try {
-    window.localStorage.removeItem(STUDY_PLAN_KEY);
+    window.localStorage.removeItem(scopedKey(STUDY_PLAN_KEY));
   } catch {
     /* ignore */
   }
@@ -203,6 +240,23 @@ export function mergeStudyPlans(a: SavedPlan | null, b: SavedPlan | null): Saved
   }
   return a.createdAt >= b.createdAt ? a : b;
 }
+
+/* The rule for joining two copies of this store on one device, for the
+   explicit "the work I did before signing in" claim. The SAME rule two
+   devices already use, registered rather than reimplemented. Raw JSON in,
+   raw JSON out, and null for anything that does not parse as a plan, which
+   leaves both copies exactly where they are. */
+registerLegacyStoreMerge(STUDY_PLAN_KEY, (mine, theirs) => {
+  try {
+    const a = JSON.parse(mine) as SavedPlan | null;
+    const b = JSON.parse(theirs) as SavedPlan | null;
+    if (typeof a?.targetBand !== 'string' || typeof b?.targetBand !== 'string') return null;
+    const merged = mergeStudyPlans(a, b);
+    return merged ? JSON.stringify(merged) : null;
+  } catch {
+    return null;
+  }
+});
 
 /* ── Plan generation ────────────────────────────────────────────────────────
    Pulled in from StudyPlan.tsx so the account dashboard can compute "X% of
@@ -234,3 +288,8 @@ export function planTierFor(days: number | null): PlanTier {
   if (days <= 90) return 'season';
   return 'foundation';
 }
+
+/* Same as progress.ts: a sign-in, a sign-out or an account switch changes
+   whose plan the screens should be showing, so it notifies exactly as a save
+   does. */
+onOwnerChange(notify);

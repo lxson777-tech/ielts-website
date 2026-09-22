@@ -6,6 +6,18 @@
 
    Everything no-ops when accounts are unconfigured (getSupabase() → null).
 
+   WHOSE PROGRESS IS BEING MERGED AND PUSHED (fixed 22 September 2026)
+   The union merge above used to read `ielts.progress.v1` and
+   `ielts.studyplan.v1`, which were device-wide, so signing in as a second
+   student on one browser merged the FIRST student's essays and goal into the
+   second account and uploaded them under the second account's id. That was
+   finding 1 of that day's review. Those four older stores are now owned like
+   everything else (src/lib/store-owner.ts), and THE OWNER IS SET FIRST, at
+   the top of startSyncForUser, before a single read, merge, one-time move or
+   upload happens. Everything below therefore reads and writes only the
+   incoming student's own copy, and every upload is checked against the
+   current owner at the moment it goes out.
+
    SINCE THE PERSONAL LEARNING BUILD, THIS FILE DOES TWO JOBS
    The first is everything above, unchanged: `user_state.progress` and
    `user_state.study_plan` are still pulled, merged and pushed exactly as they
@@ -23,6 +35,7 @@ import { getSupabase } from './supabase';
 import { getProgress, replaceProgress, mergeProgress, onProgressChange, type ProgressV1 } from '../progress';
 import { loadStudyPlan, saveStudyPlan, mergeStudyPlans, onStudyPlanChange, type SavedPlan } from '../study-plan';
 import type { CacheOwner } from '../learning/contracts/sync';
+import { currentOwner, sameOwner, setCurrentOwner, userOwner } from '../store-owner';
 import {
   createRestTransport,
   startLearningSync,
@@ -37,6 +50,10 @@ interface Row {
 
 let unsub: (() => void)[] = [];
 let currentUserId: string | null = null;
+/* Bumped by every start and stop. A slow pull checks it before it applies
+   anything, so a reply meant for the student who just signed out can never
+   be written into the next student's stores. */
+let generation = 0;
 // True while we write cloud state into localStorage, so those writes don't echo
 // straight back up as a "local change".
 let applyingRemote = false;
@@ -57,9 +74,23 @@ async function pull(userId: string): Promise<Row | null> {
   };
 }
 
+/** True while `userId` is still the student this device is signed in as.
+ *
+ * Checked immediately before every upload, because `getProgress()` and
+ * `loadStudyPlan()` answer for whoever is current: a push prepared for
+ * student A and sent after a sign-out would otherwise carry one student's
+ * rows under the other's id. Nothing is lost by dropping it, because the
+ * work is already saved on this device under its own owner's key and the
+ * next sign-in pushes it. */
+function stillSignedInAs(userId: string): boolean {
+  if (currentUserId !== userId) return false;
+  return sameOwner(currentOwner(), userOwner(userId));
+}
+
 async function push(userId: string): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
+  if (!stillSignedInAs(userId)) return;
   await sb.from('user_state').upsert(
     {
       user_id: userId,
@@ -75,7 +106,12 @@ function schedulePush(userId: string): void {
   if (pushTimer) clearTimeout(pushTimer);
   // Debounce: a burst of edits (ticking off plan steps, finishing a test) sends
   // one write, not one per keystroke.
-  pushTimer = setTimeout(() => void push(userId), 1500);
+  pushTimer = setTimeout(() => {
+    pushTimer = null;
+    /* The owner may have changed while this was waiting. push() checks, and
+       drops the write rather than sending it under the next student. */
+    void push(userId);
+  }, 1500);
 }
 
 /* ── The learning layer's own sync ───────────────────────────────────────── */
@@ -100,15 +136,30 @@ async function learning(): Promise<LearningModule | null> {
   }
 }
 
-/** Sets the owner on the learner record, the plan and the shared session
-    cache together. Falls back to doing nothing when the module is absent, in
-    which case the sync layer moves the two stores itself. */
+/** Sets the owner on EVERY store: the four older ones through the shared
+    owner (src/lib/store-owner.ts), and the learner record, the plan and the
+    shared session cache through the learning module when it is loaded.
+ *
+ * The shared owner is set first and unconditionally, with a plain
+ * synchronous call that cannot fail. The learning module is a convenience on
+ * top: if it has not loaded, or throws, the older stores have still moved,
+ * which is the half that decides what gets uploaded. */
 function setLearningOwner(owner: CacheOwner | null): void {
+  setCurrentOwner(owner);
   try {
     learningModule?.setLearningOwner(owner);
   } catch {
     /* A store refusing to move is not a reason to fail a sign-out. */
   }
+}
+
+/** The same, but waiting for the learning module to load first, so a sign-in
+    has genuinely moved every store before it reads one. Used at the top of
+    startSyncForUser and nowhere else: a sign-out must not wait for a module. */
+async function setLearningOwnerNow(owner: CacheOwner | null): Promise<void> {
+  setCurrentOwner(owner);
+  await learning();
+  setLearningOwner(owner);
 }
 
 /** How the learning tables are reached, or null when accounts are not
@@ -153,8 +204,21 @@ export async function startSyncForUser(user: User): Promise<void> {
   if (currentUserId === user.id && unsub.length) return;
   stopSync();
   currentUserId = user.id;
+  const run = ++generation;
+
+  /* THE OWNER COMES FIRST, before any legacy read, merge, migration or
+     upload. From this line on, getProgress() and loadStudyPlan() answer with
+     THIS student's own copy on this device, and the previous student's
+     copies stay under their own id where nobody else can read them. */
+  await setLearningOwnerNow(userOwner(user.id));
+  if (run !== generation) return;
 
   const remote = await pull(user.id);
+  /* A pull that comes back after a sign-out or an account switch is thrown
+     away rather than merged: the stores it would be written into no longer
+     belong to the student who asked for it. */
+  if (run !== generation || !stillSignedInAs(user.id)) return;
+
   const mergedProgress = remote ? mergeProgress(getProgress(), remote.progress) : getProgress();
   const mergedPlan = remote ? mergeStudyPlans(loadStudyPlan(), remote.study_plan) : loadStudyPlan();
 
@@ -169,6 +233,7 @@ export async function startSyncForUser(user: User): Promise<void> {
 
   // Push the reconciled result up (first-login migration + reconciliation).
   await push(user.id);
+  if (run !== generation) return;
 
   // From here, local activity syncs to the cloud.
   const onChange = () => {
@@ -178,19 +243,23 @@ export async function startSyncForUser(user: User): Promise<void> {
   unsub.push(onStudyPlanChange(onChange));
 
   // The learner record, the personal plan and the companion stores, on their
-  // own tables, beside everything above.
+  // own tables, beside everything above. The owner they use was already set
+  // at the top of this function; this is what starts the sync itself.
   await startLearningFor(user.id);
 }
 
 /** Stop syncing (sign-out, or switching to another account).
  *
- * THE OLD STORES ARE STILL LEFT ALONE. `ielts.progress.v1` and
- * `ielts.studyplan.v1` have nobody's name on them and are read by the writing,
- * speaking and score history screens; emptying them on sign-out would delete a
- * student's history from their own machine. The learner record's one-time
- * migration already stamps which owner claimed them, which is what stops a
- * second student on this browser inheriting them (see
- * LEGACY_MIGRATION_OWNER_KEY in src/lib/learning/contracts/sync.ts).
+ * NOTHING A STUDENT SAVED IS DELETED. `ielts.progress.v1` and
+ * `ielts.studyplan.v1` are read by the writing, speaking and score history
+ * screens; emptying them on sign-out would delete a student's history from
+ * their own machine. Since 22 September 2026 they are owned like everything
+ * else: the owner goes back to this device's anonymous one here, so the next
+ * person at this browser sees their own (empty) copy, while the student who
+ * just left keeps theirs on this machine under their own id, where no other
+ * session can read it. That is exactly what the newer stores already did
+ * (see LEGACY_MIGRATION_OWNER_KEY and LEGACY_ADOPTION_KEY in
+ * src/lib/learning/contracts/sync.ts, and src/lib/store-owner.ts).
  *
  * WHAT IS FIXED HERE is the half the architecture calls out in section 1.4:
  * this function used to leave the signed-in student loaded in memory, so the
@@ -200,6 +269,7 @@ export async function startSyncForUser(user: User): Promise<void> {
  * waiting to be sent, because losing a student's work is the worse mistake,
  * and that copy is namespaced by user id so no other session can read it). */
 export function stopSync(): void {
+  generation += 1;
   for (const u of unsub) u();
   unsub = [];
   if (pushTimer) {

@@ -2,13 +2,20 @@
  * that names its owner.
  *
  * WHY THE KEY CARRIES AN OWNER
- * Every existing store on this site (ielts.progress.v1 and the rest) is one
- * shared pile with nobody's name on it, so signing in as a second student on
- * the same browser folds the first student's work into the second account
- * (architecture section 1.4, finding R7.4-account-isolation). Nothing here
- * can read a record that does not belong to the owner it was opened for:
- * the owner is part of the key, and changing owner throws the loaded copy
- * away rather than carrying it across.
+ * The older stores on this site (ielts.progress.v1 and the rest) used to be
+ * one shared pile with nobody's name on it, so signing in as a second
+ * student on the same browser folded the first student's work into the
+ * second account (architecture section 1.4, finding R7.4-account-isolation).
+ * Nothing here can read a record that does not belong to the owner it was
+ * opened for: the owner is part of the key, and changing owner throws the
+ * loaded copy away rather than carrying it across.
+ *
+ * SINCE 22 SEPTEMBER 2026 THE OLDER STORES WORK THE SAME WAY. The rule moved
+ * into src/lib/store-owner.ts, which this file now shares with progress.ts,
+ * study-plan.ts, vocab-review.ts and notes.ts: one current owner, one set of
+ * scoped keys, one one-time move of the old device-wide values into the
+ * owner the device says they belong to. That is why the anonymous-work claim
+ * below now carries those stores too.
  *
  * WHAT THIS FILE IS ALLOWED TO DO
  * Storage, and the bookkeeping that needs storage. Every judgement about
@@ -35,8 +42,25 @@
  */
 
 import type { Locale } from '../i18n/locale';
-import { getProgress, type ProgressV1 } from '../progress';
-import { loadStudyPlan, saveStudyPlan, type SavedPlan } from '../study-plan';
+import { getProgressFor, type ProgressV1 } from '../progress';
+import { loadStudyPlanFor, saveStudyPlanFor, type SavedPlan } from '../study-plan';
+import {
+  NOTES_STORE_KEY,
+  VOCAB_STORE_KEY,
+  announceStoresChanged,
+  anonymousOwner,
+  claimLegacyStores,
+  currentOwner,
+  deviceIdFrom,
+  deviceStorage,
+  ownerNamespace,
+  readScopedRaw,
+  resetStoreOwnerForTest,
+  safeGet,
+  safeRemove,
+  setCurrentOwner,
+  type BrowserStorage,
+} from '../store-owner';
 import {
   derivedSavedPlan,
   lessonMapsFor,
@@ -75,12 +99,12 @@ import type {
   SyncStatus,
 } from './contracts/sync';
 import {
-  ANONYMOUS_NAMESPACE_PREFIX,
   CACHE_NAMESPACE_SEPARATOR,
-  DEVICE_ID_KEY,
   LEGACY_MIGRATION_OWNER_KEY,
   OWNERSHIP_DECISION_KEY,
-  USER_NAMESPACE_PREFIX,
+  emptyLegacyWorkCounts,
+  hasLegacyWork,
+  type LegacyWorkCounts,
 } from './contracts/sync';
 import {
   appendAllEvidence,
@@ -100,42 +124,19 @@ import { DEFAULT_LESSON_MINUTES, migrateInto, needsMigration } from './migrate';
 
 /* ── The little bit of the browser this file needs ───────────────────────── */
 
-/** The three methods of a Storage object, and nothing else. Taking it as an
-    interface is what lets a test hand in a few lines of memory instead of
-    reaching for a global. */
-export interface BrowserStorage {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
-  removeItem(key: string): void;
-}
-
-/** This device's own store, or null when there is not one: a server render,
-    the Astro build, a browser with storage switched off. Never throws. */
-function deviceStorage(): BrowserStorage | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    return window.localStorage ?? null;
-  } catch {
-    /* Reading the property itself throws when storage is blocked by policy. */
-    return null;
-  }
-}
-
-function safeGet(storage: BrowserStorage, key: string): string | null {
-  try {
-    return storage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function safeRemove(storage: BrowserStorage, key: string): void {
-  try {
-    storage.removeItem(key);
-  } catch {
-    /* Nothing to do: the key stays, and it is namespaced, so it is inert. */
-  }
-}
+/* Storage access and the owner helpers live in src/lib/store-owner.ts, which
+   the four older stores share with this one: there is exactly one answer to
+   "whose work is this" on a device, and one place that knows how to reach
+   storage safely. They are re-exported here because this module's own
+   callers have always imported them from it. */
+export type { BrowserStorage };
+export {
+  FALLBACK_DEVICE_ID,
+  anonymousOwner,
+  deviceIdFrom,
+  ownerNamespace,
+  userOwner,
+} from '../store-owner';
 
 /** 'quota' when the browser is simply full, 'blocked' when it refused. The
     two read differently to a student, so they are told apart here rather
@@ -145,55 +146,12 @@ function writeProblemOf(error: unknown): LocalWriteProblem {
   return /quota|exceeded|full/i.test(name) ? 'quota' : 'blocked';
 }
 
-/* ── Owners and keys ─────────────────────────────────────────────────────── */
-
-/** The id an anonymous record falls back to when there is nowhere to keep a
-    generated one. It is stable, so a session with no storage still has a
-    consistent owner in memory, and it never reaches storage. */
-export const FALLBACK_DEVICE_ID = 'this-device';
-
-export function userOwner(userId: string): CacheOwner {
-  return { kind: 'user', userId };
-}
-
-export function anonymousOwner(deviceId: string): CacheOwner {
-  return { kind: 'anonymous', deviceId };
-}
-
-/** 'u:<userId>' or 'anon:<deviceId>'. One string per owner, used as the key
-    suffix and as the owner's name in the two device-level stamps. */
-export function ownerNamespace(owner: CacheOwner): string {
-  return owner.kind === 'user'
-    ? `${USER_NAMESPACE_PREFIX}${owner.userId}`
-    : `${ANONYMOUS_NAMESPACE_PREFIX}${owner.deviceId}`;
-}
+/* ── Keys ────────────────────────────────────────────────────────────────── */
 
 /** 'ielts.learning.record.v1::u:<userId>'. Nothing reads a record without
     naming an owner, so one student's key can never produce another's rows. */
 export function learnerRecordKey(owner: CacheOwner): string {
   return `${LEARNER_RECORD_KEY}${CACHE_NAMESPACE_SEPARATOR}${ownerNamespace(owner)}`;
-}
-
-function freshDeviceId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-/** This browser's anonymous id, made once and kept. It identifies a device,
-    never a person: it is only ever used to find the record of work done
-    signed out on this machine. */
-export function deviceIdFrom(storage: BrowserStorage | null): string {
-  if (!storage) return FALLBACK_DEVICE_ID;
-  const held = safeGet(storage, DEVICE_ID_KEY);
-  if (held && held.length > 0) return held;
-  const fresh = freshDeviceId();
-  try {
-    storage.setItem(DEVICE_ID_KEY, fresh);
-  } catch {
-    /* No room for it: this session is anonymous under a fallback id. */
-    return FALLBACK_DEVICE_ID;
-  }
-  return fresh;
 }
 
 /* ── Reading a stored record back ────────────────────────────────────────── */
@@ -424,9 +382,14 @@ export interface LearnerStoreOptions {
   lessonSubskills?: Provided<Readonly<Record<string, Subskill>>>;
   /** Lesson key to its estimated minutes, same source, same reason. */
   lessonMinutes?: Provided<Readonly<Record<string, number>>>;
-  /** The old stores, read as plain objects. Defaults to the real
-      ielts.progress.v1 and ielts.studyplan.v1, which are only ever READ. */
-  legacy?: () => { progress: ProgressV1 | null; plan: SavedPlan | null };
+  /** The old stores, read as plain objects, for ONE named owner. Defaults to
+      the real ielts.progress.v1 and ielts.studyplan.v1 as that owner holds
+      them, which are only ever READ.
+   *
+   * It takes the owner because two different owners are read: the store's
+   * own, for the one-time migration, and the anonymous device owner's, when
+   * describing what a claim would carry. A test may ignore the argument. */
+  legacy?: (owner: CacheOwner) => { progress: ProgressV1 | null; plan: SavedPlan | null };
   /** Events kept in full in the browser before the oldest fold into
       tallies. */
   softCap?: number;
@@ -502,7 +465,8 @@ const CONSOLE_PREFIX = 'learner record:';
 export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerStore {
   const now = options.now ?? (() => new Date().toISOString());
   const softCap = options.softCap ?? LOCAL_EVENT_SOFT_CAP;
-  const readLegacy = options.legacy ?? (() => ({ progress: getProgress(), plan: loadStudyPlan() }));
+  const readLegacy =
+    options.legacy ?? ((of: CacheOwner) => ({ progress: getProgressFor(of), plan: loadStudyPlanFor(of) }));
   const onRefused =
     options.onRefused ??
     ((draft: EvidenceDraft, problem: string) => {
@@ -635,7 +599,7 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
     }
     legacyHeldByAnotherOwner = false;
 
-    const { progress, plan } = readLegacy();
+    const { progress, plan } = readLegacy(owner);
     const migrated = migrateInto(record, progress, plan, provided(options.lessonMinutes, {}), {
       now: now(),
       lessonSubskills: provided(options.lessonSubskills, {}),
@@ -1013,18 +977,79 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
     }
   }
 
-  function anonymousRecord(): { deviceId: string; record: LearnerRecordV1 } | null {
+  /** What the four OLDER stores hold for one owner: attempts, essays and
+      their marked reports, speaking results, the plan, vocabulary, saved
+      lessons and notes.
+   *
+   * Read as raw JSON straight from that owner's scoped keys rather than
+   * through the store modules, for one reason: src/lib/vocab-review.ts
+   * builds the whole flashcard deck at import time, and this file is loaded
+   * by every page that records anything. The progress and plan shapes are
+   * the real imported types; the other two are read defensively field by
+   * field, the same compromise sync.browser.ts already makes for the same
+   * module (see VocabStoreLike there). Nothing here writes. */
+  function legacyCountsFor(of: CacheOwner): LegacyWorkCounts {
+    const counts = emptyLegacyWorkCounts();
+    if (!storage) return counts;
+
+    const progress = readLegacy(of).progress;
+    if (progress) {
+      for (const attempts of Object.values(progress.tests ?? {})) counts.testAttempts += attempts.length;
+      for (const attempts of Object.values(progress.writing ?? {})) {
+        counts.essays += attempts.length;
+        counts.savedReports += attempts.filter((attempt) => attempt.report).length;
+      }
+      counts.speakingResults = (progress.speaking ?? []).length;
+    }
+    counts.hasPlan = readLegacy(of).plan !== null;
+
+    try {
+      const raw = readScopedRaw(storage, VOCAB_STORE_KEY, of);
+      const parsed = raw ? (JSON.parse(raw) as { cards?: Record<string, unknown> }) : null;
+      counts.vocabularyWords = Object.keys(parsed?.cards ?? {}).length;
+    } catch {
+      /* A corrupt store counts as nothing to claim, never as a crash. */
+    }
+    try {
+      const raw = readScopedRaw(storage, NOTES_STORE_KEY, of);
+      const parsed = raw ? (JSON.parse(raw) as { bookmarks?: unknown[]; notes?: Record<string, unknown> }) : null;
+      counts.savedLessons = Array.isArray(parsed?.bookmarks) ? parsed.bookmarks.length : 0;
+      counts.notes = Object.keys(parsed?.notes ?? {}).length;
+    } catch {
+      /* Same. */
+    }
+    return counts;
+  }
+
+  /** The anonymous owner on this device, and everything it holds: the
+      learner record if there is one, and the older stores either way.
+   *
+   * A browser that was used before this build has no anonymous learner
+   * record at all, only `ielts.progress.v1` and friends. That work is still
+   * somebody's, so it is still offered. */
+  function anonymousWork(): {
+    deviceId: string;
+    owner: CacheOwner;
+    record: LearnerRecordV1 | null;
+    legacy: LegacyWorkCounts;
+  } | null {
     if (!storage || owner.kind !== 'user') return null;
     const deviceId = deviceIdFrom(storage);
-    const held = parseRecord(safeGet(storage, learnerRecordKey(anonymousOwner(deviceId))));
-    return held ? { deviceId, record: held } : null;
+    const anonymous = anonymousOwner(deviceId);
+    return {
+      deviceId,
+      owner: anonymous,
+      record: parseRecord(safeGet(storage, learnerRecordKey(anonymous))),
+      legacy: legacyCountsFor(anonymous),
+    };
   }
 
   function describeAnonymousWork(options_?: { includeDeclined?: boolean }): AnonymousWorkOffer | null {
-    const anonymous = anonymousRecord();
+    const anonymous = anonymousWork();
     if (!anonymous) return null;
-    const { deviceId, record: held } = anonymous;
-    if (held.events.length === 0 && held.selfReported.length === 0) return null;
+    const { deviceId, legacy } = anonymous;
+    const held = anonymous.record ?? emptyLearnerRecord();
+    if (held.events.length === 0 && held.selfReported.length === 0 && !hasLegacyWork(legacy)) return null;
 
     /* Once ANY account has decided about this device's anonymous work, no
        other account is ever offered it. That is what stops a second student
@@ -1055,7 +1080,11 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
            date, minutes a day); the personal plan is rebuilt from the record
            and the settings once the work is claimed, so it is not something
            to offer separately. */
-        hasPlan: readLegacy().plan !== null,
+        hasPlan: legacy.hasPlan,
+        /* The older stores, so the screen can say what is actually there in
+           plain counts rather than asking the student to take a number of
+           events on trust. */
+        legacy,
       },
       lastAt: last ? last.at : null,
     };
@@ -1066,25 +1095,39 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
   }): OwnershipClaimResult {
     if (owner.kind !== 'user') return { outcome: 'not-signed-in', claim: null, newEvents: 0 };
     const offer = describeAnonymousWork({ includeDeclined: true });
-    const anonymous = anonymousRecord();
+    const anonymous = anonymousWork();
     if (!offer || !anonymous) return { outcome: 'nothing-to-claim', claim: null, newEvents: 0 };
 
     const before = read();
-    record = mergeLearnerRecords(before, anonymous.record);
-    save();
+    if (anonymous.record) {
+      record = mergeLearnerRecords(before, anonymous.record);
+      save();
+    }
 
-    /* The anonymous copy is GONE from this device once it has been claimed,
-       and the note about it goes with it: it now lives in the account, and
-       leaving a second copy behind is exactly how the next student on this
-       browser would end up being offered someone else's work. Nothing is
-       lost, because the claim is a union and it has already happened. */
+    /* ONE DECISION COVERS EVERY STORE. The learner record and the four older
+       ones move together, because to a student this is one thing: "the work
+       I did on this device before I signed in". The move is a union or the
+       store's own merge rule, so claiming twice adds nothing and can never
+       overwrite what the account already had. */
     if (storage) {
-      safeRemove(storage, learnerRecordKey(anonymousOwner(anonymous.deviceId)));
+      const legacyMove = claimLegacyStores(storage, anonymous.owner, owner);
+      /* The older stores have new contents now, so their own readers are told
+         the same way a write tells them. That is also what makes the account
+         sync schedule a push for the claimed work instead of leaving it on
+         this device until the student's next edit. */
+      if (legacyMove.moved.length > 0 || legacyMove.merged.length > 0) announceStoresChanged();
+      /* The anonymous copy is GONE from this device once it has been
+         claimed, and the note about it goes with it: it now lives in the
+         account, and leaving a second copy behind is exactly how the next
+         student on this browser would end up being offered someone else's
+         work. Nothing is lost, because the claim is a union and it has
+         already happened. */
+      safeRemove(storage, learnerRecordKey(anonymous.owner));
       safeRemove(storage, OWNERSHIP_DECISION_KEY);
     }
-    /* The old ProgressV1 stores travelled with it, so they belong to this
+    /* The old device-wide stores travelled with it, so they belong to this
        owner now too. */
-    if (legacyStampOwner() === ownerNamespace(anonymousOwner(anonymous.deviceId))) {
+    if (legacyStampOwner() === null || legacyStampOwner() === ownerNamespace(anonymous.owner)) {
       writeLegacyStamp(ownerNamespace(owner));
       legacyHeldByAnotherOwner = false;
     }
@@ -1101,8 +1144,11 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
     };
   }
 
+  /** Leave it. Nothing is moved and nothing is removed: the work stays under
+      the anonymous owner, where the student can still come back to it, and
+      no other account is ever offered it. */
   function declineAnonymousWork(): void {
-    const anonymous = anonymousRecord();
+    const anonymous = anonymousWork();
     if (!anonymous) return;
     writeDecision(anonymous.deviceId, 'declined');
   }
@@ -1231,6 +1277,9 @@ export function lessonMapsFrom(catalogue: LearningCatalogueV1): {
 
 export function getLearnerStore(): LearnerStore {
   defaultStore ??= createLearnerStore({
+    /* The owner every other store on this device is using right now, unless
+       the application named one. One answer, one place (store-owner.ts). */
+    owner: currentOwner(),
     ...defaultOptions,
     lessonSubskills: () => provided(defaultOptions.lessonSubskills, {}),
     lessonMinutes: () => provided(defaultOptions.lessonMinutes, {}),
@@ -1410,9 +1459,15 @@ export function createPlanStore(options: PlanStoreOptions = {}): PlanStore {
      planner, which takes `now` as an argument so two devices produce the
      same plan from the same evidence. */
   const storage: BrowserStorage | null = options.storage === undefined ? deviceStorage() : options.storage;
-  const legacyPlan = options.legacyPlan ?? { read: loadStudyPlan, write: saveStudyPlan };
 
   let owner: CacheOwner = options.owner ?? anonymousOwner(deviceIdFrom(storage));
+  /* The old study plan is read and written for THIS store's owner, not for
+     whoever happens to be current: a store told it is holding one student's
+     plan must not leave its derived copy in another student's key. */
+  const legacyPlan = options.legacyPlan ?? {
+    read: () => loadStudyPlanFor(owner),
+    write: (next: SavedPlan) => saveStudyPlanFor(owner, next),
+  };
   let plan: PersonalPlanV1 | null = null;
   let loaded = false;
   let persistence: LocalPersistence = storage ? 'saved-locally' : 'memory-only';
@@ -1568,7 +1623,7 @@ export function configurePlanStore(options: PlanStoreOptions): void {
 }
 
 export function getPlanStore(): PlanStore {
-  defaultPlanStore ??= createPlanStore(defaultPlanOptions);
+  defaultPlanStore ??= createPlanStore({ owner: currentOwner(), ...defaultPlanOptions });
   return defaultPlanStore;
 }
 
@@ -1590,6 +1645,10 @@ export function onPersonalPlanChange(listener: () => void): () => void {
     with setLearnerOwner: one student's record and one student's plan belong
     to the same owner or neither does. */
 export function setLearningOwner(owner: CacheOwner | null): void {
+  /* The shared owner FIRST, so that the four older stores (progress, study
+     plan, vocabulary, notes and saved lessons) have already moved by the
+     time either store below reads them for its one-time migration. */
+  setCurrentOwner(owner);
   setLearnerOwner(owner);
   getPlanStore().setOwner(owner);
 }
@@ -1602,4 +1661,5 @@ export function resetLearningStoresForTest(): void {
   defaultPlanStore = null;
   defaultOptions = {};
   defaultPlanOptions = {};
+  resetStoreOwnerForTest();
 }

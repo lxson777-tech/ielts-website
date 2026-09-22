@@ -20,6 +20,7 @@ import { ensureLearningWired } from '../lib/learning';
 import type { SharedSessionView } from '../lib/learning/adapters';
 import { useT } from '../lib/i18n/react';
 import AuthModal from './AuthModal';
+import AnonymousWorkClaim from './learning/AnonymousWorkClaim';
 
 const MODULES = buildCourse();
 
@@ -47,6 +48,11 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
      currentSharedSession(), see src/lib/course.ts). `percent` is library
      progress (lessons opened), shown as that and never as readiness. */
   const [course, setCourse] = useState<{ started: boolean; session: SharedSessionView | null; percent: number } | null>(null);
+  /* Bumped once sign-in has finished, which is the first moment every store
+     has moved to this student and the device can honestly be asked what work
+     was done here before they signed in. Zero means nobody is signed in, and
+     nothing is offered. */
+  const [claimToken, setClaimToken] = useState(0);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -75,8 +81,14 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
     const unsub = onAuthChange((u) => {
       setUser(u);
       setReady(true);
-      if (u) void startSyncForUser(u);
-      else stopSync();
+      if (u) {
+        /* The claim is offered only AFTER sign-in has finished, because
+           until it has, the device still answers for the previous owner. */
+        void startSyncForUser(u).then(() => setClaimToken((n) => n + 1));
+      } else {
+        stopSync();
+        setClaimToken(0);
+      }
     });
     return unsub;
   }, []);
@@ -188,6 +200,12 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             </button>
           </div>
         )}
+        {/* Asked once, after sign-in, and only when this device really does
+            hold work done signed out. Renders nothing otherwise. Nav.astro
+            mounts this island twice (the bar and the mobile menu) and the
+            panel is fixed to the viewport, so only the full one offers it:
+            two copies of the same question is not asking once. */}
+        {!compact && <AnonymousWorkClaim token={claimToken} />}
       </div>
     );
   }
