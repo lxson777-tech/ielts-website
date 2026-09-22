@@ -653,6 +653,33 @@ A third of a cent. Proposed guard inside the script: **$0.05**, twelve times
 the estimate, so a runaway prompt stops rather than spends. Scenarios 5, 6,
 7, 10 and 12 are the ones that must never regress.
 
+#### Turned into a script, not yet run
+
+This proposal is now a real script, `tools/mr-ez-learning-live-check.mjs`,
+built the same way `tools/mr-ez-live-check.mjs` already runs the other
+twenty-one scenarios: the real handler, the real model, Supabase stubbed
+in-process, the lesson blocks and the test JSON served from this process
+rather than over the network, built from the real lesson body and the real
+test bank. **It has not been run.** Full detail, including the exact command,
+the real (not estimated) prompt-size cost computed through the shared prompt
+code without calling a model, and what a good result looks like against
+`docs/personal-learning/TEACHER-REVIEW-mr-ez-teaching.md`, is in
+`docs/personal-learning/LIVE-AI-CHECK.md`.
+
+```bash
+# Dry run: prints the scenario list and the cost estimate. No call, no spend.
+node --import ./tests/ts-extension-loader.mjs tools/mr-ez-learning-live-check.mjs
+
+# The real run, once Alex approves it. Needs OPENAI_API_KEY configured the
+# same way tools/mr-ez-live-check.mjs already reads it.
+node --import ./tests/ts-extension-loader.mjs tools/mr-ez-learning-live-check.mjs --i-approve-spend
+```
+
+`tests/learning-live-check.test.ts` covers the script's pure parts (the
+twelve scenarios, the cost estimate, the refuse-to-spend-without-both-the-
+flag-and-a-key logic) against a stubbed `fetch`, so a change that
+accidentally let it spend without approval fails a test rather than a bill.
+
 To talk to the real Mr EZ through the actual interface:
 
 ```bash
