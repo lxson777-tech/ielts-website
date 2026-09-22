@@ -1,0 +1,11 @@
+{
+  "assistanceBeforeSubmission": "none",
+  "assistanceRecorded": "tutor-explained",
+  "evidenceUse": "assisted",
+  "reason": "assistance-used",
+  "actualPrompt": "pte-wt-106-task2",
+  "recordedTaskScope": {
+    "kind": "writing-task",
+    "task": "task1"
+  }
+}

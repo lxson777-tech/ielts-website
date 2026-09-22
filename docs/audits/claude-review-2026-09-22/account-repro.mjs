@@ -1,0 +1,16 @@
+import { registerHooks } from 'node:module';
+import { pathToFileURL } from 'node:url';
+const root=process.cwd();
+const mem=new Map();
+globalThis.window={localStorage:{getItem:k=>mem.get(k)??null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)},addEventListener(){},removeEventListener(){}};
+globalThis.localStorage=window.localStorage;
+const captured=[];
+globalThis.__reviewSupabase={from(){return {select(){return {eq(){return {maybeSingle:async()=>({data:{progress:{version:1,lessons:{},tests:{},writing:{},speaking:[]},study_plan:null},error:null})}}}},upsert:async(row)=>{captured.push(row);return {error:null}}}}};
+registerHooks({load(url,context,next){if(url.endsWith('/src/lib/auth/supabase.ts'))return {format:'module',shortCircuit:true,source:'export const getSupabase=()=>globalThis.__reviewSupabase; export const isAuthConfigured=()=>true;'};return next(url,context)}});
+const progress={version:1,lessons:{},tests:{},writing:{'SYNTHETIC-A-ESSAY':[{at:'2026-09-21T09:00:00Z',overallBand:5,criteria:{},wordCount:10,live:true,essay:'SYNTHETIC private essay belonging to student A'}]},speaking:[]};
+window.localStorage.setItem('ielts.progress.v1',JSON.stringify(progress));
+window.localStorage.setItem('ielts.studyplan.v1',JSON.stringify({targetBand:'8.0',testDate:'2026-12-01',createdAt:'2026-09-21T09:00:00Z',done:[],dailyMinutes:60}));
+const {startSyncForUser,stopSync}=await import(pathToFileURL(root+'/src/lib/auth/sync.ts'));
+await startSyncForUser({id:'SYNTHETIC-B'});
+stopSync();
+console.log(JSON.stringify({uploadedTo:captured[0]?.user_id,uploadedEssay:captured[0]?.progress?.writing?.['SYNTHETIC-A-ESSAY']?.[0]?.essay,uploadedGoal:captured[0]?.study_plan?.targetBand}));
