@@ -23,6 +23,7 @@ import { learningCatalogue, findActivity } from '../src/lib/learning/catalog.ts'
 import { evaluateEvidence } from '../src/lib/learning/policy.ts';
 import {
   addLocalDays,
+  asClause,
   createInitialPlan,
   defaultPlanConstraints,
   emptyPlanGoals,
@@ -39,7 +40,7 @@ import {
   PLANNER_SENTENCES,
   type PlannerInput,
 } from '../src/lib/learning/planner.ts';
-import { learnerFacts, sessionMinutes } from '../src/lib/learning/session.ts';
+import { learnerFacts, sessionMinutes, SESSION_SENTENCES } from '../src/lib/learning/session.ts';
 import {
   DAILY_MINUTE_CHOICES,
   DEFAULT_PLANNER_WEIGHTS,
@@ -838,6 +839,59 @@ test('every sentence the planner can write avoids dashes and promises no band', 
   }
   assert.equal(fill('{a} and {b}', { a: 'one', b: 'two' }), 'one and two');
   assert.equal(fill('{missing}'), '{missing}');
+});
+
+/* ── No rendered sentence ever doubles a full stop ────────────────────────
+   A real catalogue or session objective is always a complete sentence and
+   already ends in its own '.'. A reported bug: "Your plan is set up. Today
+   is Complete a sentence with the exact words you hear, inside the word
+   limit.." because that objective was spliced straight into a template
+   that appends its own final period. asClause() strips the objective's own
+   trailing stop at the call sites that know they are handing over a whole
+   sentence, and fill() itself now collapses any run of terminal
+   punctuation left over as a backstop (see both their doc comments). */
+
+test('asClause strips exactly one trailing stop, and leaves everything else alone', () => {
+  assert.equal(asClause('Sit a full paper under timing.'), 'Sit a full paper under timing');
+  assert.equal(asClause('Is this the right level?'), 'Is this the right level');
+  assert.equal(asClause('Do it now!'), 'Do it now');
+  assert.equal(asClause('No terminal mark here'), 'No terminal mark here');
+  assert.equal(asClause(''), '');
+});
+
+test('fill collapses a doubled terminal mark left over from a substituted sentence, but never touches ordinary punctuation', () => {
+  assert.equal(fill('Today is {objective}.', { objective: 'Finish the drill.' }), 'Today is Finish the drill.');
+  assert.equal(fill('Today is {objective}.', { objective: asClause('Finish the drill.') }), 'Today is Finish the drill.');
+  assert.equal(fill('One. Two.', {}), 'One. Two.', 'two separate, correctly single-stopped sentences are untouched');
+});
+
+test('no PLANNER_SENTENCES template ends in a doubled full stop once a real catalogue objective fills every placeholder', () => {
+  const realObjective = CATALOGUE.activities.find((activity) => activity.objective.trim().endsWith('.'))?.objective;
+  assert.ok(realObjective, 'the catalogue has at least one real objective sentence to test with');
+
+  for (const [key, template] of Object.entries(PLANNER_SENTENCES)) {
+    const names = [...template.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!);
+    if (names.length === 0) continue;
+    const vars = Object.fromEntries(names.map((name) => [name, realObjective!]));
+    const rendered = fill(template, vars);
+    assert.doesNotMatch(rendered, /[.!?]{2,}(\s|$)/, `${key}: "${template}" rendered "${rendered}"`);
+  }
+});
+
+test('no SESSION_SENTENCES entry ends in a doubled full stop, and none carries a placeholder to double one from', () => {
+  for (const [key, text] of Object.entries(SESSION_SENTENCES)) {
+    assert.doesNotMatch(text, /\{(\w+)\}/, `${key}: SESSION_SENTENCES entries are never templates, see session.ts's own doc comment`);
+    assert.doesNotMatch(text, /[.!?]{2,}(\s|$)/, `${key}: "${text}"`);
+  }
+});
+
+test('regression: the plan-is-set-up history line never doubles the full stop, for every profile\'s own first objective', () => {
+  for (const [name, make] of Object.entries(LEARNING_PROFILES)) {
+    const { plan } = planFor(make());
+    const initial = plan.history.find((entry) => entry.summary.startsWith('Your plan is set up'));
+    if (!initial) continue;
+    assert.doesNotMatch(initial.summary, /[.!?]{2,}(\s|$)/, `${name}: "${initial.summary}"`);
+  }
 });
 
 test('the reason and the evidence behind it are filled in for every profile', () => {

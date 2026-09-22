@@ -16,6 +16,7 @@
 import type { Confirmation, PlanStatus, SessionStepRole } from '../../../lib/learning/contracts/plan';
 import type { Paper, Subskill } from '../../../lib/learning/contracts/catalog';
 import type { SharedSessionView, SharedStepView } from '../../../lib/learning';
+import { describeSubskill } from '../../../lib/learning/evidence';
 
 /* ── Which screen Today shows ────────────────────────────────────────────── */
 
@@ -131,9 +132,18 @@ export const PAPER_LABEL: Readonly<Record<Paper, string>> = {
     uses for a plain-language scope name (see humanScope in planner.ts),
     written out again here because that function is not exported: the
     catalogue's subskill strings are already plain English words joined by
-    hyphens, so undoing the hyphen is the whole job. */
-export function humaniseSubskill(subskill: string): string {
-  return subskill.replace(/-/g, ' ');
+    hyphens, so undoing the hyphen is the whole job.
+
+    Routed through describeSubskill (src/lib/learning/evidence.ts) so the
+    evidence layer's WHOLE_ACTIVITY_SUBSKILL placeholder can never surface
+    here as if it were a taught skill, the same guard every other
+    subskill-to-text conversion on the site now goes through. In practice a
+    session or step subskill is a catalogue value, never the placeholder
+    (only a recorded evidence EVENT carries that), so `paper` is optional
+    and a missing one falls back to the plain hyphen-undoing this function
+    always did. */
+export function humaniseSubskill(subskill: string, paper?: Paper | null): string {
+  return describeSubskill(subskill as Subskill, paper ?? null) ?? subskill.replace(/-/g, ' ');
 }
 
 /* ── The old "Course view" preference, carried forward ───────────────────── */
@@ -205,7 +215,7 @@ export interface SessionKicker {
     nothing honest and specific to say. */
 export function sessionKicker(paper: Paper | undefined, subskill: Subskill): SessionKicker | null {
   if (!paper) return null;
-  return { paper, type: humaniseSubskill(subskill) };
+  return { paper, type: humaniseSubskill(subskill, paper) };
 }
 
 /* ── A step's main line and whether its purpose adds anything ────────────── */

@@ -311,16 +311,22 @@ export function recommendNext(
     );
   }
 
-  // 3. Nothing marked anywhere yet, and the plan starts with teaching. The
-  //    course order is the honest reason: there is no evidence to point at,
-  //    and naming a missing result four times over would only tell a brand
-  //    new student that everything about them is unknown.
+  // 3. Nothing marked anywhere yet, and the plan starts with teaching. There
+  //    is no evidence to point at, so naming a missing result four times
+  //    over would only tell a brand new student that everything about them
+  //    is unknown. FIXED 2026-09-22: this used to say "the course is
+  //    ordered so each lesson builds on the last", the retired fixed-course
+  //    engine's own wording, which could name a different activity than the
+  //    session's real current step shown elsewhere on the same page (the
+  //    bug is described in the personal learning fix round). The honest
+  //    reason is what today's session itself is building towards, worded
+  //    the same way rule 6 below words every other step in the session.
   if (!insights.hasAnyResults && step.kind === 'lesson') {
     return reason(
       activity,
-      'course-start',
-      'The course is ordered so each lesson builds on the last, and this is where you are up to.',
-      {},
+      'session-start',
+      "Nothing is on record yet, so this is where today's session starts: {objective}",
+      { objective: session.objective },
       undefined,
       from,
     );
@@ -335,19 +341,7 @@ export function recommendNext(
     return reason(activity, 'missing-paper', '{claim} One attempt gives you a starting point to work from.', {}, gap, from);
   }
 
-  // 5. A lesson, with other work already on record behind it.
-  if (step.kind === 'lesson') {
-    return reason(
-      activity,
-      'course-continue',
-      'Next in the course, which is ordered so each lesson builds on the one before.',
-      {},
-      undefined,
-      from,
-    );
-  }
-
-  // 6. A whole paper under timing, with the library behind them.
+  // 5. A whole paper under timing, with the library behind them.
   if (step.kind === 'full-test' && nextCourseLesson(progress) === null) {
     return reason(
       activity,
@@ -359,9 +353,14 @@ export function recommendNext(
     );
   }
 
-  // 7. Anything else in the session: practice, a check, a recap. The plan
-  //    already has a counted reason for it; this names the objective it
-  //    belongs to so the card is not a bare link.
+  // 6. Anything else in the session: a lesson with other work already on
+  //    record behind it, practice, a check, a recap. The plan already has a
+  //    counted reason for it; this names the objective it belongs to so the
+  //    card is not a bare link and never disagrees with the shared session
+  //    named everywhere else on the page. A lesson step used to get its own
+  //    "next in the course" wording here (rule was 'course-continue');
+  //    removed 2026-09-22 for the same reason as rule 3 above, since it is
+  //    exactly this generic wording with nothing lesson-specific about it.
   return reason(
     activity,
     'session-step',

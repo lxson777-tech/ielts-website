@@ -224,17 +224,50 @@ export const PLANNER_SENTENCES = {
 } as const;
 
 /** Fill `{name}` placeholders after lookup, the same way t() does, so a
-    translation may reorder them. */
+    translation may reorder them.
+
+    A substituted value can itself be a complete sentence (a catalogue or
+    session objective always ends in its own '.'), and it can land right
+    next to the template's own terminal punctuation: "Today is {objective}."
+    rendered "...within the word limit.." for a real student, a reported
+    bug. Every call site that KNOWS it is handing over a whole sentence
+    should still strip its own trailing stop first (see asClause below,
+    used for exactly that), because that also fixes the different problem
+    of a full stop immediately followed by lower-case template words
+    ("from {from} to ..."). This is the backstop for whatever that misses:
+    a run of two or more terminal marks left anywhere in the filled string
+    collapses to the last one. Nothing this site ever writes uses a real
+    ellipsis or an intentional "?!" , so collapsing is always safe. */
 export function fill(template: string, vars: Record<string, string | number> = {}): string {
-  return template.replace(/\{(\w+)\}/g, (whole, name: string) =>
+  const filled = template.replace(/\{(\w+)\}/g, (whole, name: string) =>
     name in vars ? String(vars[name]) : whole,
   );
+  return filled.replace(/[.!?]{2,}/g, (run) => run[run.length - 1]!);
 }
 
 /** One PLANNER_SENTENCES entry, translated then filled, in one call. The
     shorthand every function below uses once it has a `locale` in scope. */
 function sentence(locale: Locale, template: string, vars?: Record<string, string | number>): string {
   return fill(learningText(locale, template), vars);
+}
+
+/** Strips a single trailing '.', '!' or '?' from a complete sentence, so it
+    can be spliced into a bigger one without doubling the stop when the
+    surrounding template supplies its own terminal punctuation ("Today is
+    {objective}." with an objective that is already a whole sentence used
+    to render "...within the word limit..", a real reported bug), and
+    without reading as a run-on when the template's own words continue
+    straight after it instead ("Today moves from {from} to ..."). A
+    catalogue or session objective is always a complete sentence on its
+    own; every template below that folds one into a bigger sentence takes
+    it through this first rather than trust its own ending.
+
+    Previously a one-off `entry.objective.objective.replace(/\.$/, '')` at
+    buildMilestones' own call site; pulled out here, fixed to catch '!' and
+    '?' too, and reused everywhere else with the same problem (personal
+    learning fix round, 2026-09-22). */
+export function asClause(text: string): string {
+  return text.replace(/[.!?]+$/, '');
 }
 
 const PAPER_LABEL: Readonly<Record<Paper, string>> = {
@@ -1562,7 +1595,7 @@ function buildMilestones(input: {
        this only wraps the "shown on questions you have not seen" frame
        around it. */
     const label = sentence(locale, PLANNER_SENTENCES.milestoneObjective, {
-      objective: entry.objective.objective.replace(/\.$/, ''),
+      objective: asClause(entry.objective.objective),
     });
     if (labelled.has(label)) continue;
     labelled.add(label);
@@ -1796,7 +1829,7 @@ function describeChanges(input: {
     changes.push({ at, trigger, summary, detail, fromRevision, toRevision });
 
   if (!previous) {
-    add(sentence(locale, PLANNER_SENTENCES.changeInitial, { objective: candidate.activeSession.objective }), {
+    add(sentence(locale, PLANNER_SENTENCES.changeInitial, { objective: asClause(candidate.activeSession.objective) }), {
       addedActivityIds: candidate.activeSession.steps.map((step) => step.activityId),
       scopeKeys: [candidate.activeSession.objectiveScope],
     });
@@ -1846,8 +1879,8 @@ function describeChanges(input: {
   if (previous.activeSession.objectiveScope !== candidate.activeSession.objectiveScope) {
     add(
       sentence(locale, PLANNER_SENTENCES.changeObjective, {
-        from: previous.activeSession.objective,
-        to: candidate.activeSession.objective,
+        from: asClause(previous.activeSession.objective),
+        to: asClause(candidate.activeSession.objective),
         why: candidate.activeSession.reason,
       }),
       {
@@ -1876,8 +1909,8 @@ function describeChanges(input: {
   if (changes.length === 0) {
     add(
       sentence(locale, PLANNER_SENTENCES.changeObjective, {
-        from: previous.activeSession.objective,
-        to: candidate.activeSession.objective,
+        from: asClause(previous.activeSession.objective),
+        to: asClause(candidate.activeSession.objective),
         why: candidate.activeSession.reason,
       }),
       { scopeKeys: [candidate.activeSession.objectiveScope] },

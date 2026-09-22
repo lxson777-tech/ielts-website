@@ -318,6 +318,22 @@ export function syntheticNew(over: ProfileOverride = {}): LearnerProfile {
   );
 }
 
+/** No goal and no exam date, but two old Reading papers already on record.
+    The personal learning fix round's reproduction for the retired
+    fixed-course wording on the progress report: with nothing to set a
+    target from, the shared session may still start with a teaching step,
+    and every surface naming it must agree, worded from that one session. */
+export function syntheticNoGoalReadingHistory(over: ProfileOverride = {}): LearnerProfile {
+  return profile(
+    'SYNTHETIC-no-goal-reading-history',
+    'No goal and no exam date, but two Reading papers already sat.',
+    [readingPaper(daysBefore(11), 6, {}, 0), readingPaper(daysBefore(3), 6.5, {}, 1)],
+    baseGoals(),
+    baseConstraints({ regularDailyMinutesStatus: 'provisional' }),
+    over,
+  );
+}
+
 /** Reading demonstrated well over three papers, Writing weak over two live
     graded essays. Target 7.0 overall with a Writing minimum of 6.5. */
 export function syntheticStrongReadingWeakWriting(over: ProfileOverride = {}): LearnerProfile {
@@ -657,6 +673,7 @@ export function syntheticLegacyDefaulted(): { name: string; description: string;
     later package can pick one by the name used in the architecture. */
 export const LEARNING_PROFILES: Readonly<Record<string, (over?: ProfileOverride) => LearnerProfile>> = {
   'SYNTHETIC-new': syntheticNew,
+  'SYNTHETIC-no-goal-reading-history': syntheticNoGoalReadingHistory,
   'SYNTHETIC-strong-reading-weak-writing': syntheticStrongReadingWeakWriting,
   'SYNTHETIC-weak-reading-strong-writing': syntheticWeakReadingStrongWriting,
   'SYNTHETIC-lowest-but-met': syntheticLowestButMet,

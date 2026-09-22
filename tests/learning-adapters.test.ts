@@ -63,6 +63,7 @@ import {
   syntheticExpired,
   syntheticMatchingHeadings,
   syntheticNew,
+  syntheticNoGoalReadingHistory,
   type LearnerProfile,
 } from './fixtures/learning-profiles.ts';
 
@@ -226,6 +227,33 @@ test('the session teaches before it drills, and stops teaching once it has', () 
   const rec = recommendNext(readInsights(emptyProgress(), null, LESSON_TOTAL, new Date(NOW)), emptyProgress());
   assert.equal(rec.plannedActivityId, session.steps[practiseAt]!.activityId);
   assert.equal(rec.activity.href, '/trainers/reading?type=matching-headings', 'and it is a real, filtered drill page');
+});
+
+test('regression: with no goal set, the weekly card names the same activity as the shared session, never the retired course wording', () => {
+  // The fix round's reproduction: fresh storage (no goal, no exam date) plus
+  // two old Reading attempts was enough to make Mr EZ's recommendation card
+  // on /report name a lesson ("Listening Overview, 8 min") with the retired
+  // fixed-course engine's own reason ("the course is ordered so each lesson
+  // builds..."), while the SAME page's "today's focus" line, built from the
+  // same shared session, named a different activity entirely.
+  const profile = syntheticNoGoalReadingHistory();
+  const { saved } = seed(profile);
+
+  const session = getCurrentSession();
+  const insights = readInsights(emptyProgress(), saved, LESSON_TOTAL, new Date(NOW));
+  const rec = recommendNext(insights, emptyProgress());
+
+  assert.equal(rec.plannedActivityId, session.activityId, 'Mr EZ names the same activity as the shared session');
+  assert.doesNotMatch(
+    rec.fallbackReason,
+    /ordered so each lesson|course is ordered|next in the course/i,
+    'never the retired fixed-course wording',
+  );
+  assert.match(
+    rec.fallbackReason,
+    /today's session/,
+    "worded as the session's next step, the same phrasing the report's own next-step line uses",
+  );
 });
 
 /* ------------------------------------------------------------------ */

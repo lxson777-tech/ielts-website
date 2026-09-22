@@ -75,6 +75,15 @@
 .today-voice-text { margin: 0; font-size: 14.5px; line-height: 1.65; color: #eef1e8; }
 .today-voice-note { margin: 8px 0 0; font-size: 12px; color: #b7c2b0; }
 
+/* A quiet, optional alternative from Mr EZ (NextStepProposal.tsx), shown
+   only when he genuinely disagrees with the session above. Reuses
+   ProposalCard's own light "chip" styling (src/styles/learning-progress.css)
+   unchanged, the same way WeeklyReview and the debrief screens do; this
+   only adds the spacing that places it under the session's own reason
+   rather than crowding it. */
+.today-mrez-alternative { margin-top: 14px; }
+.today-mrez-alternative .mrez-rec { margin-top: 0; }
+
 .today-scope-note {
   margin: 16px 0 0;
   padding: 12px 14px;

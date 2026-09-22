@@ -154,12 +154,10 @@ export const RU_STRINGS: Record<string, string> = {
     'Целевой балл (и дата экзамена, если она есть) делает все остальные советы здесь конкретными, а не общими.',
   '{claim} Another marked attempt is the fastest way to move it ({evidence}).':
     '{claim} Ещё одна проверенная работа сдвинет это быстрее всего ({evidence}).',
-  'The course is ordered so each lesson builds on the last, and this is where you are up to.':
-    'Курс выстроен так, что каждый урок опирается на предыдущий, и вот на чём вы остановились.',
+  "Nothing is on record yet, so this is where today's session starts: {objective}":
+    'Пока ничего не записано, поэтому сегодняшнее занятие начинается с этого: {objective}',
   '{claim} One attempt gives you a starting point to work from.':
     '{claim} Одна попытка даст точку отсчёта, от которой можно работать.',
-  'Next in the course, which is ordered so each lesson builds on the one before.':
-    'Следующий урок курса, который выстроен так, что каждый урок опирается на предыдущий.',
   'Every lesson is done, so the useful work now is full papers under exam timing.':
     'Все уроки пройдены, поэтому дальше полезнее всего полные работы в режиме экзамена.',
   /* {objective} is the activity's own objective sentence and arrives in

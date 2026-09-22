@@ -25,7 +25,7 @@ import { PAPERS } from '../lib/learning/contracts/catalog';
 import type { Certainty, EvidenceFreshness, IgnoredReason, PolicyOutputV1 } from '../lib/learning/contracts/policy';
 import { paperOfScope, scopeFromKey } from '../lib/learning/policy';
 import type { LearnerRecordV1, EvidenceEvent } from '../lib/learning/contracts/evidence';
-import { classifyAll } from '../lib/learning/evidence';
+import { classifyAll, describeSubskill } from '../lib/learning/evidence';
 import type { PersonalPlanV1 } from '../lib/learning/contracts/plan';
 import type { SharedSessionView } from '../lib/learning/adapters';
 import { nt } from '../lib/i18n/translate';
@@ -325,7 +325,11 @@ export function paperNarratives(
 export interface EvidenceListItem {
   at: string;
   paper: Paper;
-  subskillLabel: string;
+  /** Null for a whole activity with no single question type to name (a
+      full paper, an essay, a whole Speaking part): see describeSubskill's
+      doc comment. The caller omits the subskill for that item rather than
+      show the evidence layer's internal placeholder. */
+  subskillLabel: string | null;
   summary: NarrativeLine;
 }
 
@@ -355,7 +359,7 @@ export function recentIndependentEvidence(record: LearnerRecordV1, limit = 8): r
     .map((event) => ({
       at: event.at,
       paper: event.paper as Paper,
-      subskillLabel: event.subskill.replace(/-/g, ' '),
+      subskillLabel: describeSubskill(event.subskill, event.paper),
       summary: outcomeSummary(event),
     }));
 }
@@ -365,7 +369,9 @@ export function recentIndependentEvidence(record: LearnerRecordV1, limit = 8): r
 export interface StatedMistakeItem {
   at: string;
   paper: Paper;
-  subskillLabel: string;
+  /** Null when neither the item nor its event names a real subskill (see
+      EvidenceListItem.subskillLabel and describeSubskill's doc comment). */
+  subskillLabel: string | null;
   reasonId: string;
   note?: string;
 }
@@ -383,7 +389,7 @@ export function statedMistakeReasons(record: LearnerRecordV1, limit = 6): readon
       out.push({
         at: event.at,
         paper: event.paper,
-        subskillLabel: (item.subskill ?? event.subskill).replace(/-/g, ' '),
+        subskillLabel: describeSubskill(item.subskill ?? event.subskill, event.paper),
         reasonId: item.statedReason.reasonId,
         note: item.statedReason.note,
       });

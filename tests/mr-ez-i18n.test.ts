@@ -430,7 +430,7 @@ test('the coverage scanner finds what it is supposed to find', () => {
     'a template chosen by a ternary is still found',
   );
   assert.ok(
-    keys.has('Next in the course, which is ordered so each lesson builds on the one before.'),
+    keys.has("Nothing is on record yet, so this is where today's session starts: {objective}"),
     'reason() templates in recommend.ts',
   );
   // Since 2026-09-22 the eight fixed units are a library, not the

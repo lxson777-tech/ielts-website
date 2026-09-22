@@ -231,6 +231,33 @@ test('recentIndependentEvidence and statedMistakeReasons are pure functions of t
   assert.notDeepEqual(readingA.summary, readingB.summary, "profile A's strong Reading result must differ from profile B's weak one");
 });
 
+test('recentIndependentEvidence never renders the evidence layer\'s whole-activity placeholder as a subskill', () => {
+  // A confirmed Reading paper, a graded Writing essay, a Listening paper and
+  // a graded Speaking answer are all WHOLE activities: the evidence layer
+  // files each one under WHOLE_ACTIVITY_SUBSKILL ('timing-strategy') because
+  // a forty-question paper does not have one subskill. The fix round's bug:
+  // that internal placeholder used to reach the progress report verbatim,
+  // reading as "Reading, timing strategy, 24 of 40" as if it were a taught
+  // skill. It must now read as the kind of activity it was instead.
+  const profile = syntheticStrongReadingWeakWriting();
+  const evidence = recentIndependentEvidence(profile.record, 20);
+  assert.ok(evidence.length >= 4, 'the fixture has whole-activity evidence across every paper to check');
+
+  for (const item of evidence) {
+    assert.notEqual(item.subskillLabel, 'timing-strategy', `${item.paper} at ${item.at}: the raw placeholder leaked`);
+    assert.notEqual(item.subskillLabel, 'timing strategy', `${item.paper} at ${item.at}: the hyphen-undone placeholder leaked`);
+  }
+
+  const reading = evidence.find((item) => item.paper === 'reading');
+  assert.equal(reading?.subskillLabel, 'full paper', 'a whole Reading paper reads as a full paper');
+  const listening = evidence.find((item) => item.paper === 'listening');
+  assert.equal(listening?.subskillLabel, 'full paper', 'a whole Listening paper reads as a full paper');
+  const writing = evidence.find((item) => item.paper === 'writing');
+  assert.equal(writing?.subskillLabel, 'essay', 'a whole graded essay reads as an essay');
+  const speaking = evidence.find((item) => item.paper === 'speaking');
+  assert.equal(speaking?.subskillLabel, 'speaking part', 'a whole graded Speaking answer reads as a speaking part');
+});
+
 /* ── insights.ts really is a thin view over evaluateEvidence ─────────────── */
 
 test('readFacts attaches the same certainty evaluateEvidence would compute over the same migrated record', () => {

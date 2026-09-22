@@ -570,7 +570,8 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
           <ul className="report-detail-list mt-2">
             {recentEvidence.map((item, i) => (
               <li key={i}>
-                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]} · {item.subskillLabel} · {t(item.summary.template, item.summary.vars)}
+                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]}
+                {item.subskillLabel ? ` · ${item.subskillLabel}` : ''} · {t(item.summary.template, item.summary.vars)}
               </li>
             ))}
           </ul>
@@ -586,7 +587,8 @@ function TeacherReviewSummary({ t, tn, goals, policy, recentEvidence, mistakes, 
           <ul className="report-detail-list mt-2">
             {mistakes.map((item, i) => (
               <li key={i}>
-                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]} · {item.subskillLabel} · {item.reasonId}
+                {fmtDate(item.at)} · {SKILL_LABEL[item.paper]}
+                {item.subskillLabel ? ` · ${item.subskillLabel}` : ''} · {item.reasonId}
                 {item.note ? `: "${item.note}"` : ''}
               </li>
             ))}

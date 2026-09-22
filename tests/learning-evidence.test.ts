@@ -24,6 +24,7 @@ import {
   classifyEvidence,
   createEvidenceEvent,
   deriveExposure,
+  describeSubskill,
   emptyLearnerRecord,
   evidenceEventId,
   firstAnswerFor,
@@ -52,6 +53,7 @@ import {
   LOCAL_EVENT_SOFT_CAP,
   MAX_FIRST_ANSWER_CHARS,
   MAX_WRITTEN_RESPONSE_CHARS,
+  WHOLE_ACTIVITY_SUBSKILL,
 } from '../src/lib/learning/contracts/evidence.ts';
 
 /* ── Synthetic fixtures ──────────────────────────────────────────────────── */
@@ -636,6 +638,33 @@ test('the cap leaves a record that is under it exactly as it was', () => {
   const record = recordOf(drillDraft(), studiedDraft());
   assert.deepEqual(applySoftCap(record, LOCAL_EVENT_SOFT_CAP), record);
   assert.deepEqual(talliesFor(record, 'matching-headings'), []);
+});
+
+/* ── describeSubskill: the placeholder must never read like a taught skill ── */
+
+test('describeSubskill turns a real subskill into plain words, unchanged', () => {
+  assert.equal(describeSubskill('matching-headings', 'reading'), 'matching headings');
+  assert.equal(describeSubskill('sentence-completion', 'listening'), 'sentence completion');
+  // A real subskill never depends on the paper passed alongside it.
+  assert.equal(describeSubskill('matching-headings', null), 'matching headings');
+});
+
+test('describeSubskill resolves the whole-activity placeholder to the activity kind, per paper', () => {
+  assert.equal(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, 'reading'), 'full paper');
+  assert.equal(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, 'listening'), 'full paper');
+  assert.equal(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, 'writing'), 'essay');
+  assert.equal(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, 'speaking'), 'speaking part');
+});
+
+test('describeSubskill omits the placeholder rather than guess when the paper is not known', () => {
+  assert.equal(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, null), null);
+  assert.equal(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, undefined), null);
+  // And the raw placeholder value itself never comes back as if it were a
+  // real subskill, whatever is passed for paper.
+  for (const paper of ['reading', 'listening', 'writing', 'speaking', null, undefined] as const) {
+    assert.notEqual(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, paper), WHOLE_ACTIVITY_SUBSKILL);
+    assert.notEqual(describeSubskill(WHOLE_ACTIVITY_SUBSKILL, paper), 'timing strategy');
+  }
 });
 
 test('exposure survives compaction, so old material is still known to be seen', () => {

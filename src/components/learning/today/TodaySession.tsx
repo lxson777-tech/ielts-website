@@ -37,6 +37,7 @@ import type { PersonalPlanV1 } from '../../../lib/learning/contracts/plan';
 import type { Paper } from '../../../lib/learning/contracts/catalog';
 import Intake from '../../plan/Intake';
 import MrEzVoice from '../../tutor/MrEzWelcome';
+import NextStepProposal from '../../tutor/NextStepProposal';
 import {
   PAPER_LABEL,
   SHORT_DAY_MINUTES,
@@ -355,6 +356,8 @@ function ActiveSessionCard({
 
       <MrEzVoice session={session} signedIn={signedIn} />
 
+      <NextStepProposal session={session} signedIn={signedIn} />
+
       <ScopeNote note={session.scopeNote} />
 
       <p className="today-budget">
@@ -476,7 +479,7 @@ function ActiveSessionCard({
     question type's own name stays English. */
 function fallbackStepTitle(t: ReturnType<typeof useT>['t'], step: SharedStepView): string {
   const paperLabel = step.paper ? t(PAPER_LABEL[step.paper]) : '';
-  const type = humaniseSubskill(step.subskill);
+  const type = humaniseSubskill(step.subskill, step.paper);
   switch (step.kind) {
     case 'drill':
       return paperLabel ? t('{paper} timed drill, {type}', { paper: paperLabel, type }) : t('Timed drill, {type}', { type });

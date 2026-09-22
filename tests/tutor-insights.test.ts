@@ -286,7 +286,10 @@ test('no target band still produces real work, not a settings form', () => {
      work package 10), so the card names the first teaching step and the
      plan stays visibly unconfirmed underneath it. */
   const rec = recommendNext(readInsights(emptyProgress(), null, LESSON_TOTAL), emptyProgress());
-  assert.equal(rec.rule, 'course-start');
+  // Renamed from 'course-start' in the personal learning fix round
+  // (2026-09-22, item 1): the rule's own wording no longer claims a fixed
+  // course order, so its name says what it now is, a view of the session.
+  assert.equal(rec.rule, 'session-start');
   assert.equal(rec.activity.kind, 'lesson', 'a student with no goal is given something to learn, not a form');
   assert.ok(rec.plannedActivityId, 'and it names the same session step every other surface names');
 });
@@ -306,7 +309,8 @@ test('reading results alone do not stop the plan finding out about the other pap
 test('a student with a goal but no results starts the course, not a timed exam', () => {
   const progress = emptyProgress();
   const rec = recommendNext(readInsights(progress, plan(), LESSON_TOTAL), progress);
-  assert.equal(rec.rule, 'course-start');
+  // Renamed from 'course-start', see the comment on the test above.
+  assert.equal(rec.rule, 'session-start');
   assert.equal(rec.activity.kind, 'lesson', 'a brand-new student is not thrown at a full paper');
 });
 
