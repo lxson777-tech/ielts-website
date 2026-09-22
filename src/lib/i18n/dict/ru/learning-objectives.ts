@@ -336,6 +336,21 @@ export const strings: Record<string, string> = {
   'Compare this recording with your last one on the same kind of question: are the gaps shorter?':
     'Сравните эту запись с предыдущей на такой же вопрос: паузы стали короче?',
 
+  /* ── Finding 4 (Codex's independent review, 2026-09-22): the independent-
+     check entry added to each of the three pilot round Speaking objectives
+     above. Only the new title and instruction strings are new; the
+     objective and checklist text are shared with the guided task and are
+     already translated above. ─────────────────────────────────────────── */
+  'Part 1: extend your answer, a different topic': 'Part 1: разверните свой ответ, другая тема',
+  'A different topic, transport. Give your straight answer, then a reason, then a real example, on your own.':
+    'Другая тема, транспорт. Дайте прямой ответ, затем причину, затем реальный пример, самостоятельно.',
+  'Part 2: plan it in one minute, a different cue card': 'Part 2: спланируйте за одну минуту, другая карточка',
+  'A different cue card. Take one minute to plan it, then record your two-minute answer, on your own.':
+    'Другая карточка. Возьмите одну минуту на план, затем запишите свой двухминутный ответ самостоятельно.',
+  'Reducing long pauses, a different topic': 'Сокращение долгих пауз, другая тема',
+  'A different topic, music. If you feel yourself about to go silent, use a filler phrase and keep going, on your own.':
+    'Другая тема, музыка. Если чувствуете, что вот-вот замолчите, используйте слово-заполнитель и продолжайте самостоятельно.',
+
   /* ── SpokenFocusedTask.tsx ──────────────────────────────────────────────── */
   'Speaking, Part {part}': 'Speaking, Part {part}',
   'This is self-check practice: nothing here grades you. Record yourself, listen back, and check your own answer against the list below.':

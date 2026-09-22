@@ -53,16 +53,21 @@ the same rule the site already applies to the sentence endings lesson.
 
 ### Speaking
 
-| Criterion | Part | Objective sentence | Real prompt used |
-|---|---|---|---|
-| Fluency and Coherence | Part 1 | Extend a Part 1 answer into two or three sentences using Answer, Reason, Example, instead of stopping after one short answer. | Part 1 topic "Work" (id p1-work) |
-| Fluency and Coherence | Part 2 | Turn one minute of preparation into a real plan for the two-minute talk, covering every bullet point in a clear order. | Cue card "Describe a memorable journey or trip you have taken" (id p2-journey) |
-| Fluency and Coherence | Part 1 (applies to any part) | Catch yourself before a silence runs long, and keep talking with a filler phrase instead of stopping, rather than pausing until the next idea arrives. | Part 1 topic "Hometown" (id p1-hometown) |
+| Criterion | Part | Objective sentence | Guided task (real prompt id) | Reserved check prompt |
+|---|---|---|---|---|
+| Fluency and Coherence | Part 1 | Extend a Part 1 answer into two or three sentences using Answer, Reason, Example, instead of stopping after one short answer. | Part 1 topic "Work" (id p1-work) | Part 1 topic "Transport" (id p1-transport) |
+| Fluency and Coherence | Part 2 | Turn one minute of preparation into a real plan for the two-minute talk, covering every bullet point in a clear order. | Cue card "Describe a memorable journey or trip you have taken" (id p2-journey) | Cue card "Describe a skill you have learned that you consider useful" (id p2-skill) |
+| Fluency and Coherence | Part 1 (applies to any part) | Catch yourself before a silence runs long, and keep talking with a filler phrase instead of stopping, rather than pausing until the next idea arrives. | Part 1 topic "Hometown" (id p1-hometown) | Part 1 topic "Music" (id p1-music) |
 
-These three are self-check only. There is no reserved transfer prompt because
-there is no automatic grading step to protect from repeat exposure: the
-student records, listens back, and checks themselves. Sending the same kind
-of answer to the real Speaking trainer afterwards is a separate, explicit,
+Updated 2026-09-22 (finding 4 of Codex's independent review): these three
+were self-check only, guided practice plus a same-prompt retry, with no
+independent check on a different question, which the review correctly named
+as an incomplete loop. Each now also has an independent-check entry on a
+different real prompt of the same part, the same shape as the six pairs in
+"Added in the coverage round" below: a retry stays on the guided prompt
+(recordAgain in SpokenFocusedTask.tsx, unchanged), and the check is a second
+catalogue entry, self-check only, never scored. Sending the same kind of
+answer to the real Speaking trainer afterwards remains a separate, explicit,
 paid step the student chooses, using the trainer's own existing rotation of
 prompts, not a prompt reserved by this package.
 

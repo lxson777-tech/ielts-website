@@ -845,7 +845,11 @@ test('the whole catalogue is the size the report says it is', () => {
          part3-complex-sentences, part3-abstract-opinion, part3-speculate-
          and-compare). See docs/personal-learning/TEACHER-REVIEW-writing-
          speaking.md, "Added in the coverage round". */
-      ['focused-exercise', 120],
+      /* Finding 4 of Codex's independent review (2026-09-22) added 3 more:
+         an independent-check entry for each of the three pilot round (WP20)
+         Speaking objectives, which used to have guided self-check and a
+         same-prompt retry only. See tests/speaking-pilot-checks.test.ts. */
+      ['focused-exercise', 123],
       ['full-test', 73],
       ['graded-task', 189],
       ['lesson', 76],
@@ -856,22 +860,29 @@ test('the whole catalogue is the size the report says it is', () => {
     ],
     'the counts in the work package report, asserted so they cannot drift silently',
   );
-  assert.equal(activities.length, 789);
+  assert.equal(activities.length, 792);
   /* Almost all of them are publisher material, verified by its source.
-     Nineteen are not (five from before WP20b, fourteen added by it), every
-     one for a reason lead decision Q1 already allows for unverified
+     Twenty two are not (eight from before WP20b, fourteen added by it),
+     every one for a reason lead decision Q1 already allows for unverified
      authored material: sentence endings (no real paper contains one), the
      two project-authored grammar/collocation patterns (sentence-correction
      from WP20, collocation-accuracy and recurring-pattern-accuracy from
      WP20b, none a student's own quoted sentence, see each package's own
-     report), and all fifteen self-check Speaking objectives (three from
-     WP20, twelve from WP20b, self-checked against a checklist, never
-     scored, so "verified by a publisher" was never the right claim for
-     them). Every one of the nineteen is guided practice only and none is
-     ever offered as an independent check (see checksForSubskill's own
-     verified filter). */
+     report), and all eighteen self-check Speaking objectives (six from
+     WP20, three guided/check pairs since finding 4 of Codex's independent
+     review, 2026-09-22, plus twelve from WP20b, self-checked against a
+     checklist, never scored, so "verified by a publisher" was never the
+     right claim for them; six of the eighteen now also carry their own
+     `role: 'independent-check'` at the data level, naming which prompt is
+     the reserved, different question, but that field never changes how the
+     CATALOGUE schedules them, since nothing about a self-check is ever
+     scored: see SpokenFocusedTask's own header comment in
+     src/data/focused-exercises.ts). Every one of the twenty two is tagged
+     guided-only in the catalogue and none is ever offered as an
+     independent check in the sense checksForSubskill's verified filter
+     means for Reading, Listening or Writing (see GUIDED_ONLY_TAG). */
   const unverifiedFocused = byKind('focused-exercise').filter((activity) => !activity.verified);
-  assert.equal(unverifiedFocused.length, 19);
+  assert.equal(unverifiedFocused.length, 22);
   for (const activity of unverifiedFocused) {
     assert.equal(activity.provenance, 'project-authored', `${activity.id} is unverified because it is authored here`);
   }
