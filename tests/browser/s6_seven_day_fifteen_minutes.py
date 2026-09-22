@@ -63,7 +63,10 @@ def run(base_url: str = BASE_URL):
         dropped = page.locator(".intake-outcome-list li")
         headline_text = headline.inner_text() if headline.count() else "(missing)"
         note_text = note.inner_text() if note.count() else "(none)"
-        dropped_texts = [dropped.nth(i).inner_text() for i in range(dropped.count())]
+        # text_content(), not inner_text(): the dropped list lives inside a
+        # closed <details>, and inner_text() only returns rendered/visible
+        # text, so it reads back "" per item while the panel is collapsed.
+        dropped_texts = [(dropped.nth(i).text_content() or "") for i in range(dropped.count())]
         write_row(
             "An honest outcome statement is shown after saving a 7-day/15-min plan",
             headline.count() > 0,

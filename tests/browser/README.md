@@ -1,4 +1,28 @@
-# Stage 2 personal-learning browser scripts
+# Personal-learning browser scripts
+
+Two suites live here.
+
+- **`f01_*.py` to `f17_*.py` plus `run_final.py` and `final_helpers.py`** are the
+  FINAL verification suite: the sixteen scenarios in
+  `docs/CLAUDE-PERSONAL-LEARNING-BUILD.md` section 11, plus the audit's five
+  reproduced findings as `f17`. They run against the **frozen production
+  snapshot**, by default `http://127.0.0.1:4340/ielts-website` (override with
+  the `IELTS_BASE_URL` environment variable, no trailing slash). Nothing on
+  that server can hot reload, so unlike the stage-2 suite below there is no
+  dev-server dependency-optimizer to blame a failure on. Run them with
+  `python run_final.py`; evidence lands in
+  `docs/personal-learning/evidence/final/` (`results.md` plus full-page
+  screenshots at 1440x900 and 390x844).
+  Every scenario asserts the URL path AND a landmark heading before it names a
+  screenshot, so a screenshot cannot be mislabelled, and every claim about what
+  was recorded is read back out of `localStorage` rather than inferred from the
+  screen.
+- **`s1_*.py` to `s9_*.py` plus `run_all.py` and `helpers.py`** are the older
+  stage-2 suite, described below. `final_helpers.py` reuses `helpers.py` and
+  only redirects the evidence folder and the base URL, so the stage-2 evidence
+  is left exactly as it was.
+
+## Stage 2 personal-learning browser scripts
 
 Python Playwright scripts that drive the real running site (no mocking) to verify
 stage 2 of the personal-learning build: one shared next step, intake, one hour,
