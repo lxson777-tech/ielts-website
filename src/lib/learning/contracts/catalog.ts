@@ -81,7 +81,17 @@ export type WritingSubskill =
   | 'lexical-precision'
   | 'sentence-correction'
   | 'complex-sentence-range'
-  | 'task-length-and-timing';
+  | 'task-length-and-timing'
+  /* ── WP20b additions (2026-09-22): the Lexical Resource and Grammatical
+     Range gaps the coverage round closes (docs/personal-learning/
+     TEACHER-REVIEW-writing-speaking.md, "Added in the coverage round").
+     Task 1 and Task 2 evidence stay apart, the same rule every other
+     objective here already follows. */
+  | 'task2-paraphrase-the-question'
+  | 'task1-avoid-repetition'
+  | 'collocation-accuracy'
+  | 'complex-sentences-with-purpose'
+  | 'recurring-pattern-accuracy';
 
 /** Speaking objectives, kept separate per part because the same criterion
     behaves differently in a two-minute monologue and a follow-up answer. */
@@ -96,7 +106,16 @@ export type SpeakingSubskill =
   | 'fluency-repair'
   | 'topic-vocabulary-in-speech'
   | 'pronunciation-stress-and-rhythm'
-  | 'pronunciation-individual-sounds';
+  | 'pronunciation-individual-sounds'
+  /* ── WP20b additions (2026-09-22): Lexical Resource and Grammatical Range
+     had one objective each; Part 3 reasoning and the pronunciation re-check
+     route used ids the contracts already reserved (part3-abstract-opinion,
+     part3-speculate-and-compare, pronunciation-stress-and-rhythm,
+     pronunciation-individual-sounds), so only the genuinely new shapes are
+     added here. */
+  | 'part3-paraphrase-the-question'
+  | 'part2-tense-range'
+  | 'part3-complex-sentences';
 
 export type VocabularySubskill =
   | 'recognise-meaning'
@@ -598,4 +617,11 @@ export const FOCUSED_EXERCISE_MAX_MINUTES = 10;
  *  here because it is the one number that moves the moment somebody starts
  *  putting content into the catalogue instead of pointers to content.
  *  Provisional: raise it deliberately, never by accident. */
-export const LEARNING_CATALOGUE_MAX_BYTES = 576 * 1024;
+/* Raised from 576 KiB to 608 KiB on 2026-09-22 (WP20b, the coverage round):
+   24 new focused-exercise activities (twelve written objectives, twelve
+   spoken objectives, see docs/personal-learning/TEACHER-REVIEW-writing-
+   speaking.md) pushed the serialised catalogue to about 579 KiB. Raised
+   deliberately, with headroom rather than to the exact new size, and
+   recorded here rather than silently: this is real content growth, not the
+   accident the comment above warns about. */
+export const LEARNING_CATALOGUE_MAX_BYTES = 608 * 1024;

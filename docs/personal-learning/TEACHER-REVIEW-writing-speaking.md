@@ -316,3 +316,293 @@ statement about pronunciation.
   deliberate decision for the lead to make (raise the cap on purpose, or ask
   one of the concurrent packages to compress its own shape first), not
   something any one package should quietly change on its own.
+
+## 6. Added in the coverage round
+
+Written 2026-09-22, by the builder who closed the gaps this file's section 5
+named as unfinished: Lexical Resource had only one objective and no material
+behind it, the rest of Grammatical Range had no material either, Speaking
+had only three objectives, and the Speaking hand-off read only Fluency and
+Coherence. Everything below is in plain language, no em dashes or en dashes,
+same as the rest of this file.
+
+By the time this round started, the index byte cap issue named above had
+already resolved itself (the committed index measured 182,942 bytes, well
+under the 262,144 byte cap, before this round touched anything): whichever
+of the concurrent packages compressed its own shape, or the lead's own pass,
+it was no longer live. This round's own additions bring the index to
+188,612 bytes, still comfortably under the cap. The one cap this round DID
+have to raise is the separate, smaller `LEARNING_CATALOGUE_MAX_BYTES` (the
+serialised catalogue itself, not the index it is built from): twenty four
+new focused-exercise activities pushed it from about 566 KB to about 579 KB
+against a 576 KB cap, so it is now 608 KB, deliberately, with headroom,
+recorded in a comment at the constant itself.
+
+### 6.1 Writing, Lexical Resource
+
+| Objective sentence | Task | Guided task (real prompt id) | Reserved transfer prompt |
+|---|---|---|---|
+| Write a Task 2 body paragraph using precise topic vocabulary for the subject, rather than generic words that could belong to any essay. | Task 2 | pte-wt-112-task2 (advantages and disadvantages, driverless vehicles) | pte-wt-106-task2 (opinion, reading online) |
+| Paraphrase the question in your introduction, in your own words, without copying its own wording. | Task 2 | pte-wt-117-task2 (opinion) | pte-wt-104-task2 (two-part) |
+| Report several figures without repeating the same trend or quantity word: vary rose, fell, a large number of and similar with real synonyms. | Task 1 | pte-wt-116-task1 (chart) | pte-wt-115-task1 (chart) |
+| Correct a sentence with two do/make collocation slips, then write your own sentence using one of the same collocations correctly. | either (project-authored, guided practice only) | writing-collocation-accuracy-guided, shown beside pte-wt-129-task2 for context | None, same reasoning as sentence-correction below: the transfer step is the second half of the same guided task. |
+
+**Precise topic vocabulary.** Linked to the real "Technology & Society"
+vocabulary topic (`src/data/vocabulary.ts` slug `technology`,
+`src/data/words.ts`'s own ten curated words for it), not the whole topic
+file: the automatic check (`hasEnoughTopicVocabulary` in
+`written-focused-task.ts`) carries a small hand-picked subset of that real
+word list (automation, innovation, artificial intelligence, cybersecurity,
+data privacy, surveillance, digital divide, misinformation), because a
+written-focused-task data file cannot import the site's big vocabulary data
+(the same "small file, big data stays in the Astro route" rule every
+focused-exercise file already follows, see the header comment on
+`src/data/focused-exercises.ts`). Both real prompts (driverless vehicles,
+reading online instead of buying books) are genuinely technology topics, so
+the same curated list applies honestly to both.
+
+**Paraphrasing the question.** The automatic check
+(`isParaphrasedNotCopied`) counts how many of the real prompt's own
+significant words (four letters or more, minus a stopword list that also
+strips the exam's own boilerplate: "give reasons for your answer", "write at
+least 250 words", and similar, so that boilerplate never counts as copying)
+reappear verbatim in the student's sentence. A count, not a judgement of
+paraphrase quality: it cannot tell good paraphrasing from lucky wording, only
+that the question was not simply copied out.
+
+**Avoiding repetition through synonyms.** The automatic check
+(`noRepeatedTrendWord`) finds the single most-repeated trend or quantity
+word or phrase in the paragraph (matched exactly, case-insensitively) and
+flags it once it appears more than twice. It says which word repeated and
+how many times, never which synonym to use instead: that choice stays the
+student's.
+
+**Collocation accuracy.** Same shape and same reasoning as sentence
+correction below, a different pattern: the do/make confusion ("make a
+mistake" never "do a mistake", "do your homework" never "make your
+homework"), one of the commonest real Lexical Resource slips, with no
+underlying logic to derive, only a pairing to memorise.
+
+### 6.2 Writing, Grammatical Range
+
+| Objective sentence | Task | Guided task (real prompt id) | Reserved transfer prompt |
+|---|---|---|---|
+| Combine two simple sentences into one accurate complex sentence, using a subordinate clause (because, although, since, while, when, if). | Task 2 | pte-wt-113-task2 (advantages and disadvantages, taking risks) | pte-wt-108-task2 (advantages and disadvantages, children and achievement) |
+| Write a paragraph that uses more than one kind of sentence structure (a relative clause, a subordinate clause, a passive, a conditional), not the same simple shape repeated. | Task 2 | pte-wt-116-task2 (opinion, alternative medicine) | pte-wt-103-task2 (opinion, music) |
+| Correct a sentence with three article slips, then write your own sentence using "the environment" correctly. | either (project-authored, guided practice only) | writing-recurring-pattern-accuracy-guided, shown beside pte-wt-130-task2 for context | None, same reasoning as sentence-correction: the transfer step is the second half of the same guided task. |
+
+**Complex sentences with a purpose.** Deliberately narrower than "write a
+complex sentence": the student is handed a given pair of two simple
+sentences on the guided or check prompt's own subject (never an unrelated
+grammar-book pair) and asked to combine them with a subordinate clause. The
+automatic check (`hasSubordinateClause`) looks for a subordinating word
+(because, although, though, since, while, whereas, if, unless, when,
+whenever, even though, given that, so that); it cannot tell whether the
+logic of the combination is right, which is exactly why the guiding
+questions ask the student to name the logical relationship first.
+
+**A range of structures.** The automatic check
+(`hasRangeOfStructures`/`structureSignalsIn`) looks for four independent
+signals: a relative clause (which, who, whom, whose, that), a subordinate
+clause (the same list as above), a passive verb (a form of be followed by
+something that looks like a past participle), and a conditional (if
+paired with would, could, might or will within the same clause). It counts
+how many of the four are present, at least two to pass, and says plainly
+that this is a count of variety, never a judgement of whether any one
+structure is used correctly.
+
+**Accuracy of a recurring pattern: articles.** Sentence correction (the
+existing package) already covers subject-verb agreement ("the number of"
+against "a number of"). This is the second recurring pattern the brief asks
+for, chosen because article errors (an unneeded article on an uncountable
+or general noun, a missing one on a unique and specific noun) are one of
+the most frequent real slips in Task 2 writing. Same shape as sentence
+correction in every other way: project-authored, checked by an IELTS
+teacher before it is anything more than guided practice (lead decision Q1),
+guided practice only, never an independent check.
+
+### 6.3 Speaking
+
+| Criterion | Part | Objective sentence | Real prompt used (guided / check) |
+|---|---|---|---|
+| Lexical Resource | Part 1 | Answer a familiar Part 1 topic using a wider range of vocabulary, reaching past the first word that comes to mind for a more specific one. | p1-home / p1-food |
+| Lexical Resource | Part 3 | Paraphrase a Part 3 question in your own words before you answer it, rather than launching straight into your answer. | cc-2026-04 / cc-2026-05 |
+| Grammatical Range | Part 2 | Tell a Part 2 story using more than one tense: the past for what happened, and the present for how things are now or how you feel about it looking back. | cc-2026-06 / cc-2026-07 |
+| Grammatical Range | Part 3 | Give a reason for your opinion using a complex sentence with a subordinate clause, instead of two short separate sentences. | cc-2026-08 / cc-2026-09 |
+| Part 3 reasoning | Part 3 | Give an opinion on a Part 3 question, justify it with a reason, and support the reason with a specific example, using the OREO structure. | cc-2026-10 / cc-2026-11 |
+| Part 3 reasoning | Part 3 | Compare two sides of a Part 3 question explicitly, using comparing language, rather than only answering one side. | cc-2026-12 / cc-2026-13 |
+
+All six are self-check, exactly like the pilot round's three, and all six
+now include what the pilot round's honestly named as missing (its section 5,
+item 4): a real, different, reserved second prompt for the check step, not
+only a retry of the same question. `SpokenFocusedTask` gained one new,
+optional field for this, `role`, carrying `'guided-practice'` or
+`'independent-check'` exactly like a written task's own role; a retry stays
+on the guided prompt (`Record again`, unchanged in `SpokenFocusedTask.tsx`),
+and a check is a second catalogue entry on a different real prompt of the
+same part. Nothing about the self-check screen itself changed: no grading,
+no judgement, a plain checklist, fully usable with the microphone off.
+
+The two "Part 3 reasoning" objectives use the ids the contracts file had
+already reserved for exactly this (`part3-abstract-opinion`,
+`part3-speculate-and-compare`), which is why they needed no contract change:
+they were already listed under `SPEAKING_CRITERION_OBJECTIVES.fluencyCoherence`
+in `src/lib/learning/catalog.ts`, because IELTS Fluency and Coherence is
+what actually measures whether a Part 3 answer develops fully, and giving a
+reason with an example or weighing two sides is what that development looks
+like. Lexical Resource, Part 1's objective reuses the existing
+`topic-vocabulary-in-speech` id the same way. Three ids are genuinely new:
+`part3-paraphrase-the-question`, `part2-tense-range`, `part3-complex-
+sentences`, chosen instead of the similarly-named `part1-natural-tense-range`
+(left unauthored, out of this round's brief, which asked for Part 2 and
+Part 3 specifically) and `part2-narrative-structure` (already reserved for
+a different, Fluency and Coherence objective).
+
+**Pronunciation, the re-check path (lead decision Q6).** No self-check task
+exists for pronunciation and none ever will: `SPEAKING_OBJECTIVE_RULES` in
+`speaking-gap.ts` carries a rule for it with an empty `handoffTaskId`, and
+`SpeakingObjectiveHandoff.tsx` reads `criterion === 'pronunciation'` itself
+and renders a different, simpler card: the marker's own quoted words, a
+plain sentence saying pronunciation can only be checked from a real
+recording, and a link straight to the Speaking trainer for a fresh one.
+Pronunciation's catalogue material is the real graded Speaking activities
+themselves (`buildSpeakingActivities`'s `covers` in
+`src/lib/learning/catalog.ts`, extended to name both pronunciation
+subskills): pronunciation is judged from the actual recording on every one
+of them already, which is the one honest place its material can live. The
+hand-off maps to it only when `result.grader.live` is true, which in this
+codebase is exactly "audio-graded": the calibrated pipeline always judges
+Pronunciation from the recording itself on a live grade, and there is no
+code path today where a live Speaking result exists without that.
+
+### 6.4 The Speaking hand-off, generalised to four criteria
+
+`findSpeakingGap` in `speaking-gap.ts` used to read only the Fluency and
+Coherence criterion. It now works in two steps, in plain words:
+
+1. **Which criterion is worth working on.** Look at all four bands.
+   Whichever one is both the LOWEST of the four and sits below the
+   student's own required Speaking band (their per-paper minimum if they
+   set one, otherwise their overall target, computed by the real evidence
+   policy's own `requiredBandFor` in `src/lib/learning/policy.ts`, exactly
+   the same rule a `GapAssessment.requiredBand` would give). A criterion
+   already at or above what the student needs is never chosen, even if it
+   is numerically the lowest of the four. Two criteria tied at the same
+   band are broken by a fixed order: Fluency and Coherence, Lexical
+   Resource, Grammatical Range, Pronunciation. No target known at all, for
+   any paper, means there is nothing honest to call "below the requirement",
+   so nothing is offered.
+2. **Which objective, inside that one criterion.** Exactly the marker-quote
+   rule every hand-off in this codebase already uses: the objective's own
+   keyword has to sit close to a word that says something is missing, weak
+   or being asked for, in that ONE chosen criterion's own comment, tip,
+   next-band advice, a quoted moment, or the improvements list. If nothing
+   matches, nothing is offered. This step never falls back to a different
+   criterion, even when a DIFFERENT criterion's own feedback happens to name
+   something clearly: only the chosen criterion's words are ever read.
+
+`SpeakingObjectiveHandoff.tsx` computes the required band itself, from the
+student's own saved plan (`loadStudyPlan` in `src/lib/study-plan.ts`,
+turned into `PlanGoals` by `goalsFrom`/`planSettingsFromSavedPlan` in
+`src/lib/learning/adapters.ts`, the same functions the real planner uses),
+never from the full evidence-based policy: `requiredBandFor` only needs the
+student's goals, not their measured ability, so this stays a plain,
+synchronous read with no new export needed from `src/lib/learning/index.ts`.
+
+New marker-quote mapping rules, in the same style as section 2 above:
+
+**Speaking, a wider range of vocabulary (Part 1).** Keyword: range of
+vocabulary, vocabulary range, repeated the same words, limited vocabulary,
+basic vocabulary, or generic words. Would trigger: "Vocabulary range stayed
+limited throughout, with the same basic words repeated often." Would not
+trigger: "A good range of vocabulary was used throughout."
+
+**Speaking, paraphrasing the question (Part 3).** Keyword: paraphrase,
+paraphrasing, or repeats the question. Would trigger: "Answers often simply
+repeat the question rather than paraphrasing it first." Would not trigger:
+"Questions were paraphrased naturally before each answer."
+
+**Speaking, varying tenses (Part 2).** Keyword: tenses, past tense, verb
+forms, or stuck in the present. Would trigger: "Try to vary your tenses
+more; this story stayed in the present tense throughout." Would not
+trigger: "A good range of tenses was used to tell this story."
+
+**Speaking, complex sentences for reasons (Part 3).** Keyword: complex
+sentences, subordinate clauses, or short, simple sentences. Would trigger:
+"Reasons were given in short, simple sentences with no subordinate clause
+to join them." Would not trigger: "Reasons were expressed in well-formed
+complex sentences throughout."
+
+**Speaking, developing a Part 3 answer with a reason and an example.**
+Keyword: developed answers, short answers, no reason, no example, or
+undeveloped, and only from a Part 3 result. Would trigger: "Part 3 answers
+stayed short and undeveloped, with no reason or example given." Would not
+trigger: "Part 3 answers were fully developed with reasons and examples."
+
+**Speaking, comparing two sides (Part 3).** Keyword: compare, comparing,
+comparison, only one side, the other side, or both sides. Would trigger:
+"Only one side of the question was ever addressed; try comparing both
+sides." Would not trigger: "Both sides of the question were compared
+clearly."
+
+**Speaking, pronunciation.** Keyword: pronunciation, stress, rhythm,
+intonation, individual sounds, or hard to understand. Would trigger:
+"Individual sounds were frequently unclear, especially vowel sounds, which
+needs work." Would not trigger: "Pronunciation was clear and easy to
+understand throughout." Only reachable when Pronunciation is the chosen
+criterion, which itself only happens on a live, audio-graded result (see
+6.3 above).
+
+### 6.5 Unfinished, honestly
+
+1. **`part1-natural-tense-range` and `part2-narrative-structure` stay
+   unauthored.** Both were left unused by the pilot round and this round's
+   brief only asked for Part 2 and Part 3 Grammatical Range objectives, so
+   neither was touched. A future package could author Part 1 tense range on
+   the same pattern this round used.
+2. **The Speaking hand-off's "required band" is Speaking-only.** It reads
+   `requiredBandFor({kind:'paper', paper:'speaking'}, goals)`, which is the
+   same value regardless of which of the four criteria is being checked
+   against it (a criterion-level `GapAssessment` would read identically,
+   because `requiredBandFor` only ever looks at the scope's paper). This is
+   the correct behaviour, not a shortcut, but it is worth the next reader
+   knowing why the code never builds a criterion-scoped `PolicyScope`.
+3. **`WritingFocusedTask.tsx`, one line, the same kind of exception WP20's
+   own report named for `WritingTester.tsx`:** the new
+   `is-paraphrased-not-copied` check needs the real prompt's own HTML, which
+   only the component already holds (`view.promptHtml`), so one line was
+   added passing it into `runAutomaticChecks`'s context alongside the
+   existing `original` field. No other change to that file.
+4. **`tests/learning-catalog.test.ts` and
+   `tests/writing-speaking-objectives.test.ts`, updated, not owned by this
+   package.** Both hold exact-count assertions this round's material
+   genuinely changed (the criteria that used to report missing objectives,
+   `SPOKEN_FOCUSED_TASKS.length`, the catalogue's activity-kind counts, the
+   catalogue's own byte count), and `findSpeakingGap`'s call sites needed a
+   third argument once its signature changed. Every change is the direct,
+   documented consequence of closing the gap that test was written to
+   notice, not a loosening of what it checks.
+5. **Collocation accuracy and the articles pattern are single patterns,
+   same as sentence correction.** A teacher who wants more do/make pairs or
+   more article cases can follow either file as a template; each new
+   pattern needs its own broken sentence, its own note, and its own
+   transfer prompt.
+6. **I could not verify this by clicking through the real site** (`npm run
+   build` was not permitted this round either), only by `npm test` (1533
+   passing, 27 of them new) and `npx astro check` (0 errors). The new
+   `/trainers/focused/<id>` pages for the seven new written objectives and
+   the `/trainers/speaking-focus/<id>` pages for the six new spoken
+   objectives have not had a real click-through yet.
+
+**Assumptions made, stated plainly:**
+- The technology vocabulary list embedded in `written-focused-task.ts` is a
+  hand-picked subset of `src/data/words.ts`'s real "Technology & Society"
+  words, not the whole topic. If the real topic's word list is later
+  revised, this subset does not update itself; a future editor has to keep
+  the two in sync by hand, the same limitation the file's own comment names.
+- The given sentence pairs for "complex sentences with a purpose" are
+  written directly into each task's `instruction` string rather than a new
+  data field, since only two tasks ever need one and a new field for two
+  call sites seemed like more contract than the need justified. A third
+  objective needing the same shape should probably get a real field instead
+  of a third hand-written instruction string.

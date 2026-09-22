@@ -170,9 +170,12 @@ export default function WritingFocusedTask({ view }: Props) {
       runAutomaticChecks(
         text,
         { minWords: view.minWords, maxWords: view.maxWords, checks: view.checks },
-        { original: view.correctionSentence },
+        /* promptHtml (WP20b): only 'is-paraphrased-not-copied' reads this;
+           every other check ignores it, exactly as every check already
+           ignores `original` when it is not sentence correction. */
+        { original: view.correctionSentence, promptHtml: view.promptHtml },
       ),
-    [text, view.minWords, view.maxWords, view.checks, view.correctionSentence],
+    [text, view.minWords, view.maxWords, view.checks, view.correctionSentence, view.promptHtml],
   );
 
   function onType(value: string) {

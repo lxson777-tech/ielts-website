@@ -207,6 +207,12 @@ export const CHECK_LABELS: Readonly<Record<WrittenCheckId, string>> = {
   'has-enough-sentences': 'Is there a topic sentence, development and a link?',
   'no-mechanical-linker-opening': 'Does it avoid opening with a mechanical linker?',
   'has-conclusion-signal': 'Does it signal that this is the conclusion?',
+  'has-topic-vocabulary': 'Does it use precise topic vocabulary?',
+  'no-informal-words': 'Is it free of informal words?',
+  'is-paraphrased-not-copied': 'Is it paraphrased rather than copied?',
+  'no-repeated-trend-word': 'Does it avoid repeating the same trend or quantity word?',
+  'has-subordinate-clause': 'Does it use a subordinate clause?',
+  'has-range-of-structures': 'Does it use more than one kind of structure?',
   'sentence-was-changed': 'Did you actually change the sentence?',
 };
 
@@ -243,6 +249,187 @@ const MECHANICAL_OPENER = /^(firstly|secondly|thirdly|moreover|furthermore|addit
 
 /** A conclusion signal. */
 const CONCLUSION_WORDS = /\b(in conclusion|to conclude|overall|in summary|to summarise|to sum up)\b/i;
+
+/* ── WP20b: checks for the coverage round's Lexical Resource and
+   Grammatical Range objectives (docs/personal-learning/TEACHER-REVIEW-
+   writing-speaking.md, "Added in the coverage round"). Same rule as every
+   check above: a plain, visible pattern over the words the student typed,
+   shown as a check and never as a judgement. */
+
+/** The technology topic's own curated words (src/data/words.ts, the
+    "Technology & Society" vocabulary topic, src/data/vocabulary.ts slug
+    'technology'), copied here rather than imported: this file is read by
+    the browser and by tests with no Vite, and the real word bank is built
+    at Astro's import.meta.glob time (see src/lib/vocab-review.ts's own
+    header on exactly this constraint). Used only by
+    writing-lexical-topic-vocabulary.ts's two real prompts, both about a
+    piece of technology. */
+const LEXICAL_PRECISION_TOPIC_WORDS = [
+  'artificial intelligence',
+  'automation',
+  'digital divide',
+  'surveillance',
+  'data privacy',
+  'innovation',
+  'algorithm',
+  'misinformation',
+  'cybersecurity',
+  'remote working',
+] as const;
+
+export const MIN_TOPIC_VOCABULARY_WORDS = 3;
+
+export function topicVocabularyWordsFound(text: string): string[] {
+  const lower = text.toLowerCase();
+  return LEXICAL_PRECISION_TOPIC_WORDS.filter((word) => lower.includes(word));
+}
+
+export function hasEnoughTopicVocabulary(text: string): boolean {
+  return topicVocabularyWordsFound(text).length >= MIN_TOPIC_VOCABULARY_WORDS;
+}
+
+/** A short, explicit list of informal words and phrases that do not belong
+    in a Task 2 paragraph. Deliberately small: this is a check on register,
+    not a style guide, and a long list would start catching words that are
+    fine in context. */
+const INFORMAL_WORDS = ['kids', 'stuff', 'guys', 'gonna', 'wanna', 'okay', 'cool', 'awesome', 'a lot', 'things'] as const;
+
+export function informalWordsFound(text: string): string[] {
+  const lower = text.toLowerCase();
+  return INFORMAL_WORDS.filter((word) => new RegExp(`\\b${word}\\b`, 'i').test(lower));
+}
+
+export function hasNoInformalWords(text: string): boolean {
+  return informalWordsFound(text).length === 0;
+}
+
+/** Ordinary function and instruction words, plus the exam's own boilerplate
+    ("give reasons for your answer", "write at least 250 words"), which
+    appears on every prompt and would otherwise count as "copied" on every
+    single attempt regardless of how well the question itself was
+    paraphrased. Not exhaustive: a check on overlap, not a full parser. */
+const PARAPHRASE_STOPWORDS = new Set([
+  'that', 'this', 'with', 'from', 'have', 'has', 'will', 'would', 'should', 'could', 'your', 'their',
+  'give', 'giving', 'gave', 'reasons', 'reason', 'answer', 'answers', 'include', 'including', 'relevant',
+  'examples', 'example', 'own', 'knowledge', 'experience', 'extent', 'agree', 'disagree', 'opinion',
+  'statement', 'views', 'view', 'both', 'discuss', 'least', 'write', 'words', 'strong', 'some', 'people',
+  'think', 'believe', 'because', 'many', 'more', 'most', 'other', 'others', 'these', 'those', 'what',
+  'which', 'when', 'where', 'while', 'about', 'they', 'them', 'than', 'then', 'also', 'such', 'each',
+]);
+
+function plainTextOf(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function significantWords(text: string): Set<string> {
+  const words = (text.toLowerCase().match(/[a-z']{4,}/g) ?? []).filter((word) => !PARAPHRASE_STOPWORDS.has(word));
+  return new Set(words);
+}
+
+export const MAX_COPIED_PROMPT_WORDS = 3;
+
+/** How many of the prompt's own significant words the student's text
+    reuses verbatim. A count, not a judgement of paraphrase quality: a low
+    number cannot tell good paraphrasing from lucky wording, only that the
+    student did not simply lift the question. */
+export function copiedPromptWordCount(studentText: string, promptHtml: string): number {
+  const promptWords = significantWords(plainTextOf(promptHtml));
+  const studentWords = significantWords(studentText);
+  let shared = 0;
+  for (const word of promptWords) if (studentWords.has(word)) shared += 1;
+  return shared;
+}
+
+export function isParaphrasedNotCopied(studentText: string, promptHtml: string): boolean {
+  return copiedPromptWordCount(studentText, promptHtml) <= MAX_COPIED_PROMPT_WORDS;
+}
+
+/** Quantity phrases, counted alongside trend words: "avoiding repetition
+    ... through synonyms for trends and quantities" names both. */
+const QUANTITY_WORDS =
+  /\b(a lot of|many|several|numerous|a (?:large|small|significant) (?:number|proportion|percentage) of|the majority of|a majority of|a minority of|most)\b/gi;
+
+/** Global counterparts of TREND_WORDS and QUANTITY_WORDS, for counting
+    repeats rather than a single presence test. */
+const TREND_WORDS_GLOBAL = new RegExp(TREND_WORDS.source, 'gi');
+
+export const MAX_TREND_WORD_REPEATS = 2;
+
+/** The most-repeated trend or quantity word in the text, whichever one word
+    or phrase (matched exactly, case-insensitively) appears most often. Null
+    when nothing in either list was used at all. */
+export function mostRepeatedTrendOrQuantityWord(text: string): { word: string; count: number } | null {
+  const counts = new Map<string, number>();
+  for (const pattern of [TREND_WORDS_GLOBAL, QUANTITY_WORDS]) {
+    pattern.lastIndex = 0;
+    for (const match of text.toLowerCase().matchAll(pattern)) {
+      const key = match[0];
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+  let top: { word: string; count: number } | null = null;
+  for (const [word, count] of counts) {
+    if (!top || count > top.count) top = { word, count };
+  }
+  return top;
+}
+
+export function noRepeatedTrendWord(text: string): boolean {
+  const top = mostRepeatedTrendOrQuantityWord(text);
+  return !top || top.count <= MAX_TREND_WORD_REPEATS;
+}
+
+/** A subordinating conjunction joining two ideas into one sentence. */
+const SUBORDINATE_WORDS =
+  /\b(because|although|though|since|while|whereas|if|unless|when|whenever|even though|given that|so that)\b/i;
+
+export function hasSubordinateClause(text: string): boolean {
+  return SUBORDINATE_WORDS.test(text);
+}
+
+/** A relative clause introduced by a relative pronoun. */
+const RELATIVE_CLAUSE_WORDS = /\b(which|who|whom|whose|that)\b/i;
+
+/** A passive verb: a form of be followed by a past participle. Crude (it
+    will miss irregular participles that do not end in ed/en, and it can
+    over-match "is interested" as a passive when it is really an adjective),
+    which is exactly why this is shown as a count of a SIGNAL, never as a
+    judgement of whether the passive is used correctly. */
+const PASSIVE_VOICE_WORDS = /\b(?:is|are|was|were|been|being|be)\s+\w+(?:ed|en)\b/i;
+
+/** A conditional: "if" paired with a modal that marks the result as
+    hypothetical rather than a plain future fact. */
+const CONDITIONAL_WORDS = /\bif\b[^.!?]{0,60}\b(would|could|might|will)\b/i;
+
+export interface StructureSignal {
+  id: 'relative-clause' | 'subordinate-clause' | 'passive-voice' | 'conditional';
+  present: boolean;
+}
+
+/** Which of four structure kinds appear in the text, each checked once,
+    independently of the others. A count of distinct kinds, never a count of
+    total sentences or a judgement of correctness: "how many DIFFERENT
+    structures did you reach for", which is what a range actually means. */
+export function structureSignalsIn(text: string): StructureSignal[] {
+  return [
+    { id: 'relative-clause', present: RELATIVE_CLAUSE_WORDS.test(text) },
+    { id: 'subordinate-clause', present: SUBORDINATE_WORDS.test(text) },
+    { id: 'passive-voice', present: PASSIVE_VOICE_WORDS.test(text) },
+    { id: 'conditional', present: CONDITIONAL_WORDS.test(text) },
+  ];
+}
+
+export function distinctStructureCount(text: string): number {
+  return structureSignalsIn(text).filter((signal) => signal.present).length;
+}
+
+/** At least this many distinct structure kinds is what "a range" means
+    here: one kind, however well used, is not a range. */
+export const MIN_STRUCTURE_RANGE = 2;
+
+export function hasRangeOfStructures(text: string): boolean {
+  return distinctStructureCount(text) >= MIN_STRUCTURE_RANGE;
+}
 
 export function hasComparisonLanguage(text: string): boolean {
   return COMPARISON_WORDS.test(text);
@@ -305,14 +492,22 @@ export function runAutomaticChecks(
   rules: { minWords: number; maxWords: number; checks: readonly WrittenCheckId[] },
   /** Sentence correction only: the sentence the student was shown, so
       'sentence-was-changed' can tell a real edit from the original typed
-      back unchanged. Every other check ignores this. */
-  context?: { original?: string },
+      back unchanged. `promptHtml` (WP20b) is task2-paraphrase-the-question
+      only: the real prompt's own markup, so 'is-paraphrased-not-copied' can
+      compare the student's words against it. Every other check ignores
+      whichever of these it does not need. */
+  context?: { original?: string; promptHtml?: string },
 ): WrittenCheckResult[] {
   const words = wordsIn(text);
   const figures = figuresIn(text);
   const features = mainFeatureCount(text);
   const signal = hasSummarisingSignal(text);
   const changed = sentenceWasChanged(text, context?.original);
+  const topicWords = topicVocabularyWordsFound(text);
+  const informal = informalWordsFound(text);
+  const copiedCount = context?.promptHtml ? copiedPromptWordCount(text, context.promptHtml) : 0;
+  const repeatedTrend = mostRepeatedTrendOrQuantityWord(text);
+  const structureCount = distinctStructureCount(text);
 
   const results: Record<WrittenCheckId, WrittenCheckResult> = {
     'summarising-signal': {
@@ -435,6 +630,67 @@ export function runAutomaticChecks(
       resultKey: hasConclusionSignal(text)
         ? 'It signals that this is the conclusion, so a reader knows the essay is closing.'
         : 'No conclusion signal found (in conclusion, overall, to conclude). Check it reads as a close rather than another point.',
+    },
+    'has-topic-vocabulary': {
+      id: 'has-topic-vocabulary',
+      passed: topicWords.length >= MIN_TOPIC_VOCABULARY_WORDS,
+      labelKey: CHECK_LABELS['has-topic-vocabulary'],
+      resultKey:
+        topicWords.length >= MIN_TOPIC_VOCABULARY_WORDS
+          ? 'It uses {count} topic word or words for this subject, starting with "{first}".'
+          : 'It uses {count} topic word or words for this subject, against the {min} this task asks for.',
+      resultVars: { count: topicWords.length, first: topicWords[0] ?? '', min: MIN_TOPIC_VOCABULARY_WORDS },
+    },
+    'no-informal-words': {
+      id: 'no-informal-words',
+      passed: informal.length === 0,
+      labelKey: CHECK_LABELS['no-informal-words'],
+      resultKey:
+        informal.length === 0
+          ? 'No informal words found from the short list this check looks for.'
+          : 'It uses {count} informal word or words, starting with "{first}". A Task 2 paragraph keeps a more formal register.',
+      resultVars: { count: informal.length, first: informal[0] ?? '' },
+    },
+    'is-paraphrased-not-copied': {
+      id: 'is-paraphrased-not-copied',
+      passed: copiedCount <= MAX_COPIED_PROMPT_WORDS,
+      labelKey: CHECK_LABELS['is-paraphrased-not-copied'],
+      resultKey:
+        copiedCount <= MAX_COPIED_PROMPT_WORDS
+          ? 'It shares {count} word or words with the question\'s own wording, inside the {max} this check allows.'
+          : 'It shares {count} word or words with the question\'s own wording, against the {max} this check allows. Try replacing a few with your own.',
+      resultVars: { count: copiedCount, max: MAX_COPIED_PROMPT_WORDS },
+    },
+    'no-repeated-trend-word': {
+      id: 'no-repeated-trend-word',
+      passed: !repeatedTrend || repeatedTrend.count <= MAX_TREND_WORD_REPEATS,
+      labelKey: CHECK_LABELS['no-repeated-trend-word'],
+      resultKey: !repeatedTrend
+        ? 'No trend or quantity word repeats, so there is nothing for this check to flag.'
+        : repeatedTrend.count <= MAX_TREND_WORD_REPEATS
+          ? '"{word}" appears {count} time or times, inside the {max} this check allows.'
+          : '"{word}" appears {count} time or times, against the {max} this check allows. Try a synonym for one of them.',
+      resultVars: repeatedTrend
+        ? { word: repeatedTrend.word, count: repeatedTrend.count, max: MAX_TREND_WORD_REPEATS }
+        : { word: '', count: 0, max: MAX_TREND_WORD_REPEATS },
+    },
+    'has-subordinate-clause': {
+      id: 'has-subordinate-clause',
+      passed: hasSubordinateClause(text),
+      labelKey: CHECK_LABELS['has-subordinate-clause'],
+      resultKey: hasSubordinateClause(text)
+        ? 'It uses a subordinating word (because, although, since...), so the two ideas are joined into one sentence.'
+        : 'No subordinating word found (because, although, since, while, when, if). The two ideas are not yet joined into one sentence.',
+    },
+    'has-range-of-structures': {
+      id: 'has-range-of-structures',
+      passed: structureCount >= MIN_STRUCTURE_RANGE,
+      labelKey: CHECK_LABELS['has-range-of-structures'],
+      resultKey:
+        structureCount >= MIN_STRUCTURE_RANGE
+          ? 'It uses {count} different kind or kinds of structure (a relative clause, a subordinate clause, a passive, a conditional).'
+          : 'It uses {count} different kind or kinds of structure, against the {min} this check asks for. This counts variety, not whether each one is correct.',
+      resultVars: { count: structureCount, min: MIN_STRUCTURE_RANGE },
     },
     'sentence-was-changed': {
       id: 'sentence-was-changed',
@@ -1031,12 +1287,74 @@ export const WRITING_OBJECTIVE_RULES: readonly WritingObjectiveRule[] = [
     handoffTaskId: 'writing-task2-conclusion-guided',
     headlineKey: 'Work on your conclusion',
   },
+  /* ── WP20b additions (2026-09-22): the coverage round's Lexical Resource
+     and Grammatical Range objectives. Placed before sentence-correction so
+     their more specific keywords are tried first; sentence-correction's own
+     broad "grammar" catch-all stays exactly as it was, as the fallback for
+     anything none of these five name specifically. */
+  {
+    subskill: 'lexical-precision',
+    task: 'task2',
+    keyword: 'precise vocabulary|topic vocabulary|vocabulary (?:range|precision)|word choice|generic (?:word|vocabulary)',
+    criterionKey: 'lexicalResource',
+    essayLooksFine: hasEnoughTopicVocabulary,
+    handoffTaskId: 'writing-lexical-topic-vocabulary-guided',
+    headlineKey: 'Work on precise topic vocabulary',
+  },
+  {
+    subskill: 'task2-paraphrase-the-question',
+    task: 'task2',
+    keyword: 'paraphrase|paraphrasing|own words|copying the question|copied the question|lifted (?:the |from the )?question',
+    criterionKey: 'lexicalResource',
+    handoffTaskId: 'writing-task2-paraphrase-the-question-guided',
+    headlineKey: 'Work on paraphrasing the question',
+  },
+  {
+    subskill: 'task1-avoid-repetition',
+    task: 'task1',
+    keyword: 'repetition|repeated (?:word|words|vocabulary)|repeats (?:the )?same|synonyms?',
+    criterionKey: 'lexicalResource',
+    handoffTaskId: 'writing-task1-avoid-repetition-guided',
+    headlineKey: 'Work on varying your trend and quantity words',
+  },
+  {
+    subskill: 'collocation-accuracy',
+    task: 'either',
+    keyword: 'collocations?',
+    criterionKey: 'lexicalResource',
+    handoffTaskId: 'writing-collocation-accuracy-guided',
+    headlineKey: 'Work on collocation accuracy',
+  },
+  {
+    subskill: 'complex-sentences-with-purpose',
+    task: 'task2',
+    keyword: 'complex sentences?|subordinate clauses?|combine (?:two )?(?:simple )?sentences?',
+    criterionKey: 'grammaticalRange',
+    handoffTaskId: 'writing-task2-complex-sentences-guided',
+    headlineKey: 'Work on combining sentences',
+  },
+  {
+    subskill: 'complex-sentence-range',
+    task: 'task2',
+    keyword: 'range of structures?|variety of (?:structures?|sentences?)|sentence variety|same (?:sentence )?structure',
+    criterionKey: 'grammaticalRange',
+    handoffTaskId: 'writing-task2-structure-range-guided',
+    headlineKey: 'Work on a range of structures',
+  },
   {
     subskill: 'sentence-correction',
     task: 'either',
     keyword: 'grammar|sentence structure|tense|subject.verb agreement|articles?',
     criterionKey: 'grammaticalRange',
     handoffTaskId: 'writing-sentence-correction-number-of',
+    headlineKey: 'Work on this grammar pattern',
+  },
+  {
+    subskill: 'recurring-pattern-accuracy',
+    task: 'either',
+    keyword: 'articles?|tense consistency|inconsistent tenses?',
+    criterionKey: 'grammaticalRange',
+    handoffTaskId: 'writing-recurring-pattern-accuracy-guided',
     headlineKey: 'Work on this grammar pattern',
   },
 ];

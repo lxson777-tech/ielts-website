@@ -524,8 +524,15 @@ export const WRITING_CRITERION_OBJECTIVES: Record<WritingCriterion, readonly Wri
     'task-length-and-timing',
   ],
   coherenceCohesion: ['paragraph-organisation', 'cohesion-and-linking', 'task2-topic-sentences'],
-  lexicalResource: ['lexical-precision'],
-  grammaticalRange: ['sentence-correction', 'complex-sentence-range'],
+  /* WP20b (2026-09-22): lexical-precision was the only entry here (no
+     material behind it yet); the coverage round adds three more real
+     objectives and authors material for all four, see writing-lexical-*.ts. */
+  lexicalResource: ['lexical-precision', 'task2-paraphrase-the-question', 'task1-avoid-repetition', 'collocation-accuracy'],
+  /* WP20b: complex-sentence-range was listed but unauthored (see the
+     coverage round's teacher-review note); it now has material, plus one
+     new objective (complex-sentences-with-purpose) and a second recurring
+     grammar pattern alongside sentence-correction. */
+  grammaticalRange: ['sentence-correction', 'complex-sentence-range', 'complex-sentences-with-purpose', 'recurring-pattern-accuracy'],
 };
 
 /** The same for Speaking (ARCHITECTURE.md section 6.4). Pronunciation is
@@ -541,8 +548,13 @@ export const SPEAKING_CRITERION_OBJECTIVES: Record<SpeakingCriterion, readonly S
     'part3-speculate-and-compare',
     'fluency-repair',
   ],
-  lexicalResource: ['topic-vocabulary-in-speech'],
-  grammaticalRange: ['part1-natural-tense-range'],
+  /* WP20b: topic-vocabulary-in-speech was the only entry (unauthored); the
+     coverage round authors it and adds the Part 3 paraphrase objective. */
+  lexicalResource: ['topic-vocabulary-in-speech', 'part3-paraphrase-the-question'],
+  /* WP20b: part1-natural-tense-range stays listed and stays unauthored (out
+     of this package's suggested objectives, which are Part 2 and Part 3
+     scoped); the two new ids are what the coverage round actually builds. */
+  grammaticalRange: ['part1-natural-tense-range', 'part2-tense-range', 'part3-complex-sentences'],
   pronunciation: ['pronunciation-stress-and-rhythm', 'pronunciation-individual-sounds'],
 };
 
@@ -994,6 +1006,13 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
           { subskill: 'part1-extend-an-answer', fit: 'direct' },
           { subskill: 'part1-natural-tense-range', fit: 'direct' },
           { subskill: 'topic-vocabulary-in-speech', fit: 'direct' },
+          /* WP20b (2026-09-22): pronunciation is judged from the recording
+             itself on every real graded Speaking attempt, so this is the
+             one real, honest place a pronunciation objective's material can
+             live (lead decision Q6: set and re-checked only from real audio,
+             never from a self-check screen). */
+          { subskill: 'pronunciation-stress-and-rhythm', fit: 'direct' },
+          { subskill: 'pronunciation-individual-sounds', fit: 'direct' },
         ]),
         objective: 'Answer a Part 1 topic out loud and get a band on the four criteria.',
         prerequisites: [lessonActivityId('speaking-part1')],
@@ -1014,7 +1033,11 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
         { subskill: 'part2-hold-the-two-minutes', fit: 'direct' },
         { subskill: 'part2-plan-in-one-minute', fit: 'direct' },
         { subskill: 'part2-narrative-structure', fit: 'direct' },
+        { subskill: 'part2-tense-range', fit: 'direct' },
         { subskill: 'fluency-repair', fit: 'direct' },
+        /* WP20b: same reasoning as the Part 1 activity above. */
+        { subskill: 'pronunciation-stress-and-rhythm', fit: 'direct' },
+        { subskill: 'pronunciation-individual-sounds', fit: 'direct' },
       ]),
       objective: 'Plan and deliver a two-minute Part 2 talk and get a band on the four criteria.',
       prerequisites: [lessonActivityId('speaking-part2')],
@@ -1029,6 +1052,11 @@ function buildSpeakingActivities(index: GeneratedIndexV1): CatalogueActivity[] {
         covers: mergeCoverage([
           { subskill: 'part3-abstract-opinion', fit: 'direct' },
           { subskill: 'part3-speculate-and-compare', fit: 'direct' },
+          { subskill: 'part3-paraphrase-the-question', fit: 'direct' },
+          { subskill: 'part3-complex-sentences', fit: 'direct' },
+          /* WP20b: same reasoning as the Part 1 activity above. */
+          { subskill: 'pronunciation-stress-and-rhythm', fit: 'direct' },
+          { subskill: 'pronunciation-individual-sounds', fit: 'direct' },
         ]),
         objective: 'Discuss the Part 3 follow-up questions and get a band on the four criteria.',
         prerequisites: [lessonActivityId('speaking-part3')],

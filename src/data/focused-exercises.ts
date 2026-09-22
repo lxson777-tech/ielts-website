@@ -77,9 +77,22 @@ import { WRITING_TASK2_PARAGRAPH_ORGANISATION } from './focused/writing-task2-pa
 import { WRITING_TASK2_COHESION_AND_LINKING } from './focused/writing-task2-cohesion-and-linking';
 import { WRITING_TASK2_CONCLUSION } from './focused/writing-task2-conclusion';
 import { WRITING_SENTENCE_CORRECTION } from './focused/writing-sentence-correction';
+import { WRITING_LEXICAL_TOPIC_VOCABULARY } from './focused/writing-lexical-topic-vocabulary';
+import { WRITING_TASK2_PARAPHRASE_THE_QUESTION } from './focused/writing-task2-paraphrase-the-question';
+import { WRITING_TASK1_AVOID_REPETITION } from './focused/writing-task1-avoid-repetition';
+import { WRITING_COLLOCATION_ACCURACY } from './focused/writing-collocation-accuracy';
+import { WRITING_TASK2_COMPLEX_SENTENCES } from './focused/writing-task2-complex-sentences';
+import { WRITING_TASK2_STRUCTURE_RANGE } from './focused/writing-task2-structure-range';
+import { WRITING_RECURRING_PATTERN_ACCURACY } from './focused/writing-recurring-pattern-accuracy';
 import { SPEAKING_PART1_EXTEND_AN_ANSWER } from './focused/speaking-part1-extend-an-answer';
 import { SPEAKING_PART2_PLAN_IN_ONE_MINUTE } from './focused/speaking-part2-plan-in-one-minute';
 import { SPEAKING_FLUENCY_REPAIR } from './focused/speaking-fluency-repair';
+import { SPEAKING_TOPIC_VOCABULARY } from './focused/speaking-topic-vocabulary';
+import { SPEAKING_PART3_PARAPHRASE_THE_QUESTION } from './focused/speaking-part3-paraphrase-the-question';
+import { SPEAKING_PART2_TENSE_RANGE } from './focused/speaking-part2-tense-range';
+import { SPEAKING_PART3_COMPLEX_SENTENCES } from './focused/speaking-part3-complex-sentences';
+import { SPEAKING_PART3_ABSTRACT_OPINION } from './focused/speaking-part3-abstract-opinion';
+import { SPEAKING_PART3_SPECULATE_AND_COMPARE } from './focused/speaking-part3-speculate-and-compare';
 import { LISTENING_SENTENCE_COMPLETION } from './focused/listening-sentence-completion';
 import { LISTENING_MULTIPLE_CHOICE } from './focused/listening-multiple-choice';
 import { LISTENING_TABLE_COMPLETION } from './focused/listening-table-completion';
@@ -240,7 +253,35 @@ export type WrittenCheckId =
   | 'has-conclusion-signal'
   /** The correction is not simply the original sentence typed back
       unchanged. */
-  | 'sentence-was-changed';
+  | 'sentence-was-changed'
+  /* ── WP20b additions (2026-09-22): the coverage round's Lexical Resource
+     and Grammatical Range checks, the same "plain, visible rule" pattern as
+     every check above (docs/personal-learning/TEACHER-REVIEW-writing-
+     speaking.md, "Added in the coverage round"). */
+  /** At least MIN_TOPIC_WORDS of this task's own curated topic words
+      (drawn from, and checked against, src/data/words.ts's real vocabulary
+      list for the linked topic; see written-focused-task.ts). */
+  | 'has-topic-vocabulary'
+  /** None of a short, explicit list of informal words or phrases. */
+  | 'no-informal-words'
+  /** The paragraph does not lean on the prompt's own distinctive words: at
+      most MAX_COPIED_PROMPT_WORDS of them appear in the student's text. A
+      check of word overlap, never a judgement of whether the paraphrase is
+      any good. */
+  | 'is-paraphrased-not-copied'
+  /** No single trend or quantity word (rose, many, a lot of...) repeats more
+      than MAX_TREND_WORD_REPEATS times; the descriptor wants synonyms for
+      recurring ideas, not the same word carrying every sentence. */
+  | 'no-repeated-trend-word'
+  /** A subordinating conjunction (because, although, while, since...) joins
+      two ideas into one sentence, rather than leaving them as two simple
+      ones. */
+  | 'has-subordinate-clause'
+  /** At least MIN_STRUCTURE_RANGE distinct structure signals (a relative
+      clause, a subordinate clause, a passive verb, a conditional) appear in
+      the paragraph, counted and shown as a check, never as a judgement of
+      whether the structures are used correctly. */
+  | 'has-range-of-structures';
 
 /** How long a written response may be, and which checks apply to it. */
 export interface WrittenResponseRules {
@@ -452,6 +493,19 @@ export interface SpokenFocusedTask {
   subskill: Subskill;
   paper: 'speaking';
   part: 1 | 2 | 3;
+  /** WP20b addition (2026-09-22): the pilot's three self-check objectives
+      never needed this, because a repeat always meant "record the same
+      question again" (see the teacher review's honest gap, item 4). The
+      coverage round's objectives add a real transfer step: a retry stays on
+      the SAME real prompt (recordAgain in SpokenFocusedTask.tsx, unchanged),
+      and a check is a SECOND catalogue entry with the same subskill and a
+      DIFFERENT real prompt of the same part, named here so the two are never
+      confused for one another. Absent (every task written before this) reads
+      as 'guided-practice', exactly what it always was. Never gates anything
+      in code today: nothing here is scored, so there is nothing to reserve
+      the check prompt FROM, unlike FocusedExerciseRole's written and
+      item-answers siblings. It is documentation a test can hold. */
+  role?: FocusedExerciseRole;
   title: string;
   /** One sentence, in the student's own terms. Never judged by a model here:
       this screen is self-check only (see the header). */
@@ -1063,6 +1117,16 @@ export const WRITTEN_FOCUSED_TASKS: readonly WrittenFocusedTask[] = [
   ...WRITING_TASK2_COHESION_AND_LINKING,
   ...WRITING_TASK2_CONCLUSION,
   ...WRITING_SENTENCE_CORRECTION,
+  /* WP20b (2026-09-22): the coverage round's Lexical Resource and
+     Grammatical Range objectives, see docs/personal-learning/TEACHER-
+     REVIEW-writing-speaking.md's "Added in the coverage round". */
+  ...WRITING_LEXICAL_TOPIC_VOCABULARY,
+  ...WRITING_TASK2_PARAPHRASE_THE_QUESTION,
+  ...WRITING_TASK1_AVOID_REPETITION,
+  ...WRITING_COLLOCATION_ACCURACY,
+  ...WRITING_TASK2_COMPLEX_SENTENCES,
+  ...WRITING_TASK2_STRUCTURE_RANGE,
+  ...WRITING_RECURRING_PATTERN_ACCURACY,
 ];
 
 /** Every authored-practice set: no real paper, guided practice only. Its
@@ -1134,6 +1198,16 @@ export const SPOKEN_FOCUSED_TASKS: readonly SpokenFocusedTask[] = [
   ...SPEAKING_PART1_EXTEND_AN_ANSWER,
   ...SPEAKING_PART2_PLAN_IN_ONE_MINUTE,
   ...SPEAKING_FLUENCY_REPAIR,
+  /* WP20b (2026-09-22): the coverage round's Speaking objectives, see
+     docs/personal-learning/TEACHER-REVIEW-writing-speaking.md's "Added in
+     the coverage round". Each is a guided/check pair: a retry stays on the
+     guided prompt, the check is a different real prompt of the same part. */
+  ...SPEAKING_TOPIC_VOCABULARY,
+  ...SPEAKING_PART3_PARAPHRASE_THE_QUESTION,
+  ...SPEAKING_PART2_TENSE_RANGE,
+  ...SPEAKING_PART3_COMPLEX_SENTENCES,
+  ...SPEAKING_PART3_ABSTRACT_OPINION,
+  ...SPEAKING_PART3_SPECULATE_AND_COMPARE,
 ];
 
 export function findSpokenFocusedTask(id: string): SpokenFocusedTask | undefined {

@@ -602,28 +602,32 @@ test('a criterion turns into objectives a student can actually work on', () => {
     assert.ok(!ta.has(objective), `${objective} is claimed by both Writing tasks`);
   }
 
-  /* The honest gap, stated rather than hidden. There is no short-form
-     Writing practice for Lexical Precision or Complex Sentence Range yet,
-     and this assertion is what will notice when a later package authors
-     them. Sentence correction moved out of this list on 2026-09-22 (WP20):
-     it now has a guided, project-authored practice set for a recurring
-     grammar pattern (lead decision Q1: unverified authored material for
-     guided practice only, never an independent check), which is why
-     Grammatical Range's own missing list is now shorter than Lexical
-     Resource's. */
-  assert.deepEqual([...writingCriterionMaterial('lexicalResource').missingObjectives], ['lexical-precision']);
-  assert.deepEqual(
-    [...writingCriterionMaterial('grammaticalRange').missingObjectives],
-    ['complex-sentence-range'],
-  );
+  /* The honest gap this assertion used to name (Lexical Precision and
+     Complex Sentence Range had no short-form Writing practice) is closed by
+     the coverage round (WP20b, 2026-09-22, docs/personal-learning/TEACHER-
+     REVIEW-writing-speaking.md): every objective now listed under either
+     criterion has real material, so both missing lists are empty. Sentence
+     correction moved out of this list earlier (WP20, unchanged): it has a
+     guided, project-authored practice set for a recurring grammar pattern
+     (lead decision Q1: unverified authored material for guided practice
+     only, never an independent check), the same shape WP20b's own two new
+     project-authored patterns (collocation-accuracy, recurring-pattern-
+     accuracy) follow. */
+  assert.deepEqual([...writingCriterionMaterial('lexicalResource').missingObjectives], []);
+  assert.deepEqual([...writingCriterionMaterial('grammaticalRange').missingObjectives], []);
   for (const subskill of ['lexical-precision', 'complex-sentence-range'] as const) {
     const material = subskillMaterial(subskill);
-    assert.equal(material.practise.length, 0);
-    assert.ok((material.unavailable ?? '').length > 20, `${subskill} says plainly that there is nothing yet`);
+    assert.ok(material.practise.length > 0, `${subskill} now has guided practice (WP20b)`);
+    assert.ok(material.checks.length > 0, `${subskill} now has an independent check (WP20b)`);
   }
   const sentenceCorrection = subskillMaterial('sentence-correction');
   assert.ok(sentenceCorrection.practise.length > 0, 'sentence correction now has guided practice (WP20)');
   assert.equal(sentenceCorrection.checks.length, 0, 'but it is never an independent check: it is unverified, authored material');
+  for (const subskill of ['collocation-accuracy', 'recurring-pattern-accuracy'] as const) {
+    const material = subskillMaterial(subskill);
+    assert.ok(material.practise.length > 0, `${subskill} has guided practice (WP20b)`);
+    assert.equal(material.checks.length, 0, `${subskill} is unverified, authored material: never an independent check`);
+  }
 
   for (const criterion of Object.keys(SPEAKING_CRITERION_OBJECTIVES) as (keyof typeof SPEAKING_CRITERION_OBJECTIVES)[]) {
     const material = speakingCriterionMaterial(criterion);
@@ -631,14 +635,14 @@ test('a criterion turns into objectives a student can actually work on', () => {
   }
   assert.ok(speakingCriterionMaterial('fluencyCoherence').activities.length > 100, 'every prompt works on fluency');
 
-  /* Pronunciation is the one that can only be judged from audio, and no
-     text-only activity pretends otherwise. */
+  /* Pronunciation is the one that can only be judged from audio. WP20b
+     (2026-09-22) gives both its objectives real material, but only ever the
+     REAL graded Speaking activities themselves (buildSpeakingActivities'
+     `covers`): pronunciation is judged from the recording on every one of
+     them, so this is the one honest place its material can live, never a
+     text-only or self-check activity (lead decision Q6). */
   const pronunciation = speakingCriterionMaterial('pronunciation');
-  assert.deepEqual(
-    [...pronunciation.missingObjectives],
-    ['pronunciation-stress-and-rhythm', 'pronunciation-individual-sounds'],
-    'pronunciation is re-checked on a new recording only, so it has no activity of its own yet',
-  );
+  assert.deepEqual([...pronunciation.missingObjectives], []);
   for (const activity of pronunciation.activities) {
     assert.ok(
       (activity.tags ?? []).includes('needs-microphone'),
@@ -831,7 +835,17 @@ test('the whole catalogue is the size the report says it is', () => {
          objectives and sentence correction, and the three self-check
          Speaking objectives (all WP20, 2026-09-22) brought it to 96; see
          each package's own report for its own count. */
-      ['focused-exercise', 96],
+      /* WP20b (2026-09-22, the coverage round) added 24: twelve written
+         tasks (six guided/check pairs: lexical-precision, task2-paraphrase-
+         the-question, task1-avoid-repetition, complex-sentences-with-
+         purpose, complex-sentence-range, each a pair, plus collocation-
+         accuracy and recurring-pattern-accuracy, each a single guided task)
+         and twelve spoken tasks (six guided/check pairs: topic-vocabulary-
+         in-speech, part3-paraphrase-the-question, part2-tense-range,
+         part3-complex-sentences, part3-abstract-opinion, part3-speculate-
+         and-compare). See docs/personal-learning/TEACHER-REVIEW-writing-
+         speaking.md, "Added in the coverage round". */
+      ['focused-exercise', 120],
       ['full-test', 73],
       ['graded-task', 189],
       ['lesson', 76],
@@ -842,19 +856,22 @@ test('the whole catalogue is the size the report says it is', () => {
     ],
     'the counts in the work package report, asserted so they cannot drift silently',
   );
-  assert.equal(activities.length, 765);
+  assert.equal(activities.length, 789);
   /* Almost all of them are publisher material, verified by its source.
-     Five are not, every one for a reason lead decision Q1 already allows
-     for unverified authored material: sentence endings (no real paper
-     contains one), the sentence-correction pattern (a project-authored
-     grammar example, not a student's own quoted sentence, see the WP20
-     report), and the three self-check Speaking objectives (self-checked
-     against a checklist, never scored, so "verified by a publisher" was
-     never the right claim for them). Every one of the five is guided
-     practice only and none is ever offered as an independent check
-     (see checksForSubskill's own verified filter). */
+     Nineteen are not (five from before WP20b, fourteen added by it), every
+     one for a reason lead decision Q1 already allows for unverified
+     authored material: sentence endings (no real paper contains one), the
+     two project-authored grammar/collocation patterns (sentence-correction
+     from WP20, collocation-accuracy and recurring-pattern-accuracy from
+     WP20b, none a student's own quoted sentence, see each package's own
+     report), and all fifteen self-check Speaking objectives (three from
+     WP20, twelve from WP20b, self-checked against a checklist, never
+     scored, so "verified by a publisher" was never the right claim for
+     them). Every one of the nineteen is guided practice only and none is
+     ever offered as an independent check (see checksForSubskill's own
+     verified filter). */
   const unverifiedFocused = byKind('focused-exercise').filter((activity) => !activity.verified);
-  assert.equal(unverifiedFocused.length, 5);
+  assert.equal(unverifiedFocused.length, 19);
   for (const activity of unverifiedFocused) {
     assert.equal(activity.provenance, 'project-authored', `${activity.id} is unverified because it is authored here`);
   }

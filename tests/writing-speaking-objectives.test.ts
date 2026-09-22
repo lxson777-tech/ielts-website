@@ -153,18 +153,18 @@ test('reserved prompts for the new independent checks are marked check-only, and
 /* 2. Every criterion maps to at least one objective WITH material     */
 /* ------------------------------------------------------------------ */
 
-/* Two criteria are justified, named exceptions to "at least one objective
-   with material", both carried over unchanged from before this package and
-   left alone on purpose:
-     - Writing lexicalResource: its ONE objective, lexical-precision, has
-       no focused exercise anywhere in the library yet. Not in this
-       package's brief; a later package authors it.
-     - Speaking pronunciation: lead decision Q6 forbids a pronunciation
-       objective from being set or checked from anything but a real
-       audio-graded result, so it can never be a catalogue focused-exercise
-       activity the way the others are. There is deliberately nothing here
-       to build. */
-const JUSTIFIED_EXCEPTIONS: ReadonlySet<WritingCriterion | SpeakingCriterion> = new Set(['lexicalResource', 'pronunciation']);
+/* WP20b (2026-09-22, the coverage round) closes both of the gaps this set
+   used to name: Writing lexicalResource and grammaticalRange now have real
+   material behind every one of their objectives (writing-lexical-topic-
+   vocabulary.ts and friends), and Speaking pronunciation now has material
+   too, but only ever the real graded Speaking activities themselves
+   (buildSpeakingActivities' `covers` in src/lib/learning/catalog.ts):
+   pronunciation is judged from the recording on every one of them, which is
+   the one honest place its material can live (lead decision Q6 still holds:
+   no self-check or text-only activity is ever added for it). The set stays,
+   now empty, so a later regression that silently drops one of these covers
+   entries is caught here rather than by a report page going quiet. */
+const JUSTIFIED_EXCEPTIONS: ReadonlySet<WritingCriterion | SpeakingCriterion> = new Set([]);
 
 test("every Writing criterion has at least one objective with material, except the justified exceptions", () => {
   const missingByCriterion = new Map<WritingCriterion, readonly string[]>();
@@ -177,15 +177,12 @@ test("every Writing criterion has at least one objective with material, except t
       `${criterion}: every objective is missing, which fails "at least one objective with material"`,
     );
   }
-  /* The honest gaps this package leaves, on purpose, and why (see the
-     builder report's "for teacher review" / unfinished section): Lexical
-     Precision has no focused exercise anywhere yet, and Complex Sentence
-     Range likewise. Both stay for a later package. */
-  assert.deepEqual([...(missingByCriterion.get('lexicalResource') ?? [])], ['lexical-precision']);
-  assert.deepEqual([...(missingByCriterion.get('grammaticalRange') ?? [])], ['complex-sentence-range']);
+  /* WP20b closed both of these. See the comment on JUSTIFIED_EXCEPTIONS. */
+  assert.deepEqual([...(missingByCriterion.get('lexicalResource') ?? [])], []);
+  assert.deepEqual([...(missingByCriterion.get('grammaticalRange') ?? [])], []);
 });
 
-test('every Speaking criterion has at least one objective with material, except pronunciation', () => {
+test('every Speaking criterion has at least one objective with material, including pronunciation (WP20b)', () => {
   for (const criterion of Object.keys(SPEAKING_CRITERION_OBJECTIVES) as SpeakingCriterion[]) {
     const material = speakingCriterionMaterial(criterion);
     if (JUSTIFIED_EXCEPTIONS.has(criterion)) continue;
@@ -194,20 +191,19 @@ test('every Speaking criterion has at least one objective with material, except 
       `${criterion}: every objective is missing`,
     );
   }
-  /* Pronunciation is deliberately left alone by this package (lead decision
-     Q6: a pronunciation objective is set and re-checked only from a real
-     audio-graded result, never from a catalogue focused-exercise activity),
-     so it is named here as a known, justified gap rather than silently
-     passing. */
+  /* Pronunciation's material is the real graded Speaking activities, never a
+     self-check screen: see the comment on JUSTIFIED_EXCEPTIONS above. */
   const pronunciation = speakingCriterionMaterial('pronunciation');
-  assert.deepEqual(
-    [...pronunciation.missingObjectives],
-    ['pronunciation-stress-and-rhythm', 'pronunciation-individual-sounds'],
-  );
+  assert.deepEqual([...pronunciation.missingObjectives], []);
+  for (const activity of pronunciation.activities) {
+    assert.equal(activity.kind, 'graded-task', `${activity.id}: pronunciation material must be the real trainer, never a self-check`);
+  }
 });
 
-test('the three new spoken objectives are real catalogue activities, self-marked, never scored', () => {
-  assert.equal(SPOKEN_FOCUSED_TASKS.length, 3);
+test('every spoken objective is a real catalogue activity, self-marked, never scored', () => {
+  /* 3 from the pilot round (WP20) plus 12 from the coverage round (WP20b,
+     2026-09-22): six new objectives, each a guided/check pair. */
+  assert.equal(SPOKEN_FOCUSED_TASKS.length, 15);
   for (const task of SPOKEN_FOCUSED_TASKS) {
     const activity = findActivity(focusedActivityId(task.id), CATALOGUE);
     assert.ok(activity, `${task.id} is in the catalogue`);
@@ -533,6 +529,16 @@ test('nothing this package writes to a student ever contains a band number', () 
 /* 7. Speaking: marker-quote mapping, pronunciation stays audio-only    */
 /* ------------------------------------------------------------------ */
 
+/* WP20b (2026-09-22): findSpeakingGap now reads all four criteria and picks
+   the lowest-banded one below `requiredBand` before mapping by keyword (see
+   speaking-gap.ts's header). syntheticSpeakingResult below gives every
+   criterion the same band 6, so a requiredBand of 7 puts all four equally
+   below it and the fixed CRITERION_ORDER tie-break picks fluencyCoherence
+   first, exactly the criterion every fixture in this section was already
+   written to exercise. This constant makes that choice visible rather than
+   a bare literal repeated five times. */
+const REQUIRED_BAND_ABOVE_ALL_FOUR = 7;
+
 function syntheticSpeakingResult(comment: string): SpeakingGradeResult {
   return {
     overallBand: 6,
@@ -552,7 +558,7 @@ function syntheticSpeakingResult(comment: string): SpeakingGradeResult {
 
 test('Speaking marker-quote mapping finds the right objective per mode, and refuses a mode mismatch', () => {
   const extendComment = 'Answers stayed very short throughout; try to extend your answers with a reason and an example.';
-  const found = findSpeakingGap(syntheticSpeakingResult(extendComment), 'part1');
+  const found = findSpeakingGap(syntheticSpeakingResult(extendComment), 'part1', REQUIRED_BAND_ABOVE_ALL_FOUR);
   assert.equal(found.found, true);
   assert.equal(found.handoffTaskId, 'speaking-part1-extend-an-answer');
   assert.ok(found.quote && extendComment.includes(found.quote));
@@ -561,31 +567,31 @@ test('Speaking marker-quote mapping finds the right objective per mode, and refu
      1-only rule: SPEAKING_OBJECTIVE_RULES scopes each rule to its own
      mode, exactly as a Part 1 objective should never be recommended from
      a Part 2 recording. */
-  const mismatched = findSpeakingGap(syntheticSpeakingResult(extendComment), 'part2');
+  const mismatched = findSpeakingGap(syntheticSpeakingResult(extendComment), 'part2', REQUIRED_BAND_ABOVE_ALL_FOUR);
   assert.notEqual(mismatched.handoffTaskId, 'speaking-part1-extend-an-answer');
 
   const pauseComment = 'There were several long pauses that should be reduced, and hesitation was frequent throughout.';
-  const pauseFound = findSpeakingGap(syntheticSpeakingResult(pauseComment), 'part3');
+  const pauseFound = findSpeakingGap(syntheticSpeakingResult(pauseComment), 'part3', REQUIRED_BAND_ABOVE_ALL_FOUR);
   assert.equal(pauseFound.handoffTaskId, 'speaking-fluency-repair', 'fluency repair applies to any part');
 });
 
-test('Speaking marker-quote mapping never proposes pronunciation, whatever the pronunciation comment says', () => {
+test('Speaking marker-quote mapping never proposes pronunciation from a self-check task id, whatever the pronunciation comment says', () => {
   const result = syntheticSpeakingResult('The answer was reasonably fluent with only minor hesitation.');
   result.criteria.pronunciation.comment = 'Individual sounds were frequently unclear, especially vowel sounds, which needs work.';
-  const found = findSpeakingGap(result, 'part1');
+  const found = findSpeakingGap(result, 'part1', REQUIRED_BAND_ABOVE_ALL_FOUR);
   assert.ok(
     !found.handoffTaskId || !found.handoffTaskId.includes('pronunciation'),
-    'no rule in SPEAKING_OBJECTIVE_RULES may ever be a pronunciation objective',
+    'no rule in SPEAKING_OBJECTIVE_RULES may ever point at a self-check pronunciation task',
   );
   for (const rule of SPEAKING_OBJECTIVE_RULES) {
-    assert.ok(!rule.handoffTaskId.includes('pronunciation'), `${rule.handoffTaskId} must not be a pronunciation objective`);
+    assert.ok(!rule.handoffTaskId.includes('pronunciation'), `${rule.handoffTaskId} must not be a pronunciation self-check task`);
   }
 });
 
 test('a stub Speaking grade is never quoted as though an examiner wrote it', () => {
   const result = syntheticSpeakingResult('Answers stayed very short; try to extend your answers with a reason and an example.');
   result.grader = { name: 'Sample grader', live: false };
-  const found = findSpeakingGap(result, 'part1');
+  const found = findSpeakingGap(result, 'part1', REQUIRED_BAND_ABOVE_ALL_FOUR);
   assert.equal(found.found, false, 'an offline stub is never treated as a marker');
 });
 
