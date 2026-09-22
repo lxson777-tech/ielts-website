@@ -37,9 +37,17 @@ export interface AnonymousWorkClaimProps {
       have moved to the new student. Looking before that would read the
       previous owner's view of the device. */
   token: number;
+  /** 'toast' (default): fixed to the bottom of the viewport, the shape this
+      had when it was only reachable from Nav.astro's AccountMenu. 'card':
+      an ordinary block that sits wherever it is rendered, for the
+      workspace's Today area, where a fixed panel would sit on top of the
+      Mr EZ panel's own floating position (src/components/tutor/MrEzPanel.tsx)
+      instead of reading as part of the page. Same offer, same handlers, same
+      strings either way. */
+  variant?: 'toast' | 'card';
 }
 
-export default function AnonymousWorkClaim({ token }: AnonymousWorkClaimProps) {
+export default function AnonymousWorkClaim({ token, variant = 'toast' }: AnonymousWorkClaimProps) {
   const { t, tn } = useT();
   const [offer, setOffer] = useState<AnonymousWorkOffer | null>(null);
   const [answer, setAnswer] = useState<Answer>('asking');
@@ -109,9 +117,18 @@ export default function AnonymousWorkClaim({ token }: AnonymousWorkClaimProps) {
 
   const close = () => setOffer(null);
 
+  const wrapClass =
+    variant === 'card'
+      ? 'w-full'
+      : 'fixed inset-x-0 bottom-0 z-[60] flex justify-center px-4 pb-4 sm:justify-end sm:px-6';
+  const panelClass =
+    variant === 'card'
+      ? 'w-full overflow-hidden rounded-2xl border border-border bg-surface shadow-card transition-all duration-200'
+      : 'w-full max-w-sm overflow-hidden rounded-2xl border border-border bg-surface shadow-card-hover transition-all duration-200';
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[60] flex justify-center px-4 pb-4 sm:justify-end sm:px-6">
-      <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-border bg-surface shadow-card-hover transition-all duration-200">
+    <div className={wrapClass}>
+      <div className={panelClass}>
         {answer === 'asking' ? (
           <div className="px-5 py-4">
             <p className="font-display text-sm font-bold">{t('Work saved on this device')}</p>

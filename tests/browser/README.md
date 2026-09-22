@@ -17,6 +17,23 @@ Two suites live here.
   screenshot, so a screenshot cannot be mislabelled, and every claim about what
   was recorded is read back out of `localStorage` rather than inferred from the
   screen.
+- **`f20_account_journey.py`** is a one-off, self-contained script, not part of
+  either suite above: it starts its OWN dev server and its OWN free local
+  accounts stand-in (`node tools/mr-ez-dev-server.mjs`), then drives a real
+  sign-in / sign-out / sign-in journey with two synthetic students to verify,
+  in a real browser, the account-isolation fix in `src/lib/store-owner.ts` and
+  `src/lib/auth/sync.ts` (see `tests/account-isolation.test.ts` for the
+  deterministic half of that proof). Run it with `python
+  f20_account_journey.py` once both servers are up; it reuses
+  `final_helpers.py` only for its seed builders, screenshot and results-row
+  helpers, pointed at its own base URL and its own results file
+  (`docs/personal-learning/evidence/final/results-account-journey.md`,
+  screenshots prefixed `account-`) via `IELTS_BASE_URL` / `IELTS_RESULTS_SUFFIX`
+  / `IELTS_SHOT_PREFIX`, never touching `results.md` or the `s01-*`/`s09-*`
+  screenshots the frozen-snapshot suite owns. It found that the "Work saved on
+  this device" claim offer (`AnonymousWorkClaim.tsx`) is unreachable from any
+  page in this build - see that file's own header comment for the full
+  reproduction.
 - **`s1_*.py` to `s9_*.py` plus `run_all.py` and `helpers.py`** are the older
   stage-2 suite, described below. `final_helpers.py` reuses `helpers.py` and
   only redirects the evidence folder and the base URL, so the stage-2 evidence

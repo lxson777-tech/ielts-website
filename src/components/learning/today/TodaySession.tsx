@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from 'react';
 import { withBase } from '../../../lib/url';
 import { useT } from '../../../lib/i18n/react';
 import { onAuthChange } from '../../../lib/auth/session';
+import AnonymousWorkClaim from '../AnonymousWorkClaim';
 import {
   acceptLongerCommitment,
   chooseLessTimeToday,
@@ -80,6 +81,23 @@ export default function TodaySession() {
       before its own "plan saved" screen can paint. */
   const [intakeInProgress, setIntakeInProgress] = useState(false);
   const [storageProblem, setStorageProblem] = useState<string | null>(null);
+  /** Bumped once the learner store's owner has actually become this signed-in
+      student (see the owner check inside refresh() below), the one moment
+      the device can honestly be asked what work was done here before they
+      signed in (same contract as AccountMenu.tsx's own claimToken, which
+      still serves any page that renders Nav.astro). Today is the one surface
+      every signed-in student reaches within one page load of signing in, on
+      every app route, so mounting the offer here (rather than only in the
+      workspace menu) is what makes it reachable at all: see
+      src/components/AnonymousWorkClaim's header and the 22 September 2026
+      finding that the old mount (AccountMenu, under Nav.astro) is dead code
+      once every route uses the workspace shell instead. Zero means nobody is
+      signed in, and nothing is offered. */
+  const [claimToken, setClaimToken] = useState(0);
+  /** Whether the last `refresh()` saw the learner store's owner as a signed-in
+      user, so the bump above only fires on a real anonymous-to-user
+      transition rather than once per refresh while already signed in. */
+  const claimEligibleRef = useRef(false);
   /** Read by `refresh()`, which is defined once and called from several
       effects and handlers; a ref avoids every one of those needing to
       depend on `userId` (same pattern as MrEzWelcome.tsx's sessionRef). */
@@ -108,6 +126,24 @@ export default function TodaySession() {
     }
     const planStatus = planStoreStatus();
     const learnerStatus = learnerStoreStatus();
+    // The claim is safe to ask about once the learner store's OWN owner has
+    // actually become this signed-in student, not merely once sign-in has
+    // started. That switch is driven by src/lib/auth/sync.ts's
+    // startSyncForUser, called once, by WorkspaceMenu.tsx (or AccountMenu.tsx
+    // on a page that still renders Nav.astro); a second, independent call
+    // from here would race it (two concurrent pull/merge/push cycles for the
+    // same student). onLearnerRecordChange below already fires the moment
+    // that switch happens (learner store's setOwner() always notifies), so
+    // reacting to the owner read here, rather than starting sync a second
+    // time, gets the same guarantee for free.
+    const signedInOwner = learnerStatus.owner.kind === 'user';
+    if (signedInOwner && !claimEligibleRef.current) {
+      claimEligibleRef.current = true;
+      setClaimToken((n) => n + 1);
+    } else if (!signedInOwner && claimEligibleRef.current) {
+      claimEligibleRef.current = false;
+      setClaimToken(0);
+    }
     const problem = planStatus.problem ?? learnerStatus.problem ?? null;
     setStorageProblem(
       problem === 'quota'
@@ -128,7 +164,9 @@ export default function TodaySession() {
     const offAuth = onAuthChange((user) => {
       setSignedIn(Boolean(user));
       userIdRef.current = user?.id ?? null;
-      refresh(); // the deferral record is per owner; re-read it once auth resolves
+      refresh(); // the deferral record is per owner; re-read it once auth resolves,
+      // and it is refresh() above (via learnerStoreStatus().owner) that decides
+      // whether the claim is eligible, not this callback firing.
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
@@ -194,6 +232,14 @@ export default function TodaySession() {
           {storageProblem}
         </p>
       )}
+
+      {/* A quiet card, never a page the student has to go find: the one
+          explicit question of whether work done signed out on this device
+          should join this account (see AnonymousWorkClaim's own header for
+          the guarantees). Renders nothing signed out, nothing once this
+          device has already been decided about, and nothing for a previous
+          account's work. */}
+      <AnonymousWorkClaim token={claimToken} variant="card" />
 
       {screen === 'intake' && (
         <section className="today-card today-intake" aria-labelledby="today-heading">
