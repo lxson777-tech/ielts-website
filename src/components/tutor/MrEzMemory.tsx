@@ -31,6 +31,7 @@
 import { useEffect, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
+import { LOCALE_LABEL } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { clearTutorMemory, loadConversation } from '../../lib/tutor/conversation';
 import { isTutorConfigured } from '../../lib/tutor/client';
@@ -247,7 +248,7 @@ export default function MrEzMemory() {
             </div>
             <div>
               <dt>{t('Explanation language')}</dt>
-              <dd>{plan.constraints.explanationLocale === 'ru' ? t('Russian') : t('English')}</dd>
+              <dd>{LOCALE_LABEL[plan.constraints.explanationLocale]}</dd>
             </div>
             {plan.goals.selfReported.length > 0 && (
               <div>

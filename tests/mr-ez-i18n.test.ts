@@ -35,6 +35,7 @@ import { activityBlurb, activityLabel, buildCatalog, practiseActivity } from '..
 import { tutorErrorMessage } from '../src/lib/tutor/errors.ts';
 import { loadDictionary } from '../src/lib/i18n/dict/index.ts';
 import { t } from '../src/lib/i18n/translate.ts';
+import { LOCALE_LABEL } from '../src/lib/i18n/locale.ts';
 import { COURSE_UNITS, buildCourse, courseLessonCount } from '../src/lib/course.ts';
 import { createHandler } from '../workers/mr-ez/src/index.ts';
 
@@ -308,6 +309,74 @@ test('the wordmark stays English in the panel: it is a brand, and IELTS is exam 
   }
   // Where IELTS does appear in a translated panel string, it survives.
   assert.ok(t('Mr EZ, your IELTS tutor', undefined, undefined, 'ru').includes('IELTS'));
+});
+
+/* ================================================================== */
+/* The plan knowledge card's language names                            */
+/* ================================================================== */
+
+/* "What your plan knows about you" (src/components/tutor/MrEzMemory.tsx)
+   named the explanation language with
+   `plan.constraints.explanationLocale === 'ru' ? t('Russian') : t('English')`,
+   asking the SITE dictionary (src/lib/i18n/dict/ru/*) to translate the bare
+   words "Russian" and "English" as ordinary prose. src/lib/i18n/dict/ru/
+   learning-account.ts does define both, but as the adjective ("in Russian" /
+   "in English"): 'Russian' -> 'Русский' (harmless here only because it
+   happens to be the same string a language-name lookup would give) and
+   'English' -> 'Английский' (wrong: a Russian reader configured for English
+   explanations saw "Английский" instead of "English"). Either way this is
+   the general translator answering a question it was never designed for,
+   and it happens to be right or wrong depending on unrelated dictionary
+   content rather than on the one rule that actually governs a language's
+   own name.
+
+   src/lib/i18n/locale.ts states that rule once, for the EN / RU switch:
+   "Each language named in its own language, never translated." LOCALE_LABEL
+   is that rule as data (`{ en: 'English', ru: 'Русский' }`), and it is what
+   the switch (src/components/WorkspaceMenu.tsx) and the intake's language
+   step (src/components/plan/Intake.tsx) already read from. The fix makes
+   MrEzMemory read the exact same table, so this is one rule enforced in one
+   place instead of a second, independent (and in one direction, wrong)
+   guess living inside the site dictionary. */
+
+const MEMORY_SOURCE = fs.readFileSync(path.join(REPO_ROOT, 'src/components/tutor/MrEzMemory.tsx'), 'utf8');
+
+test('the general t() cannot be trusted to name a language the way LOCALE_LABEL does: it mistranslates "English"', () => {
+  /* The one deterministic, dictionary-content-independent proof that the old
+     code was wrong: asking t() for the word "English" in Russian answers
+     with the adjective "Английский", not the language's own name "English",
+     which is what a reader should see whichever settings this student
+     chose (the reason the EN / RU switch never translates it either). */
+  const viaGeneralDictionary = t('English', undefined, undefined, 'ru');
+  assert.notEqual(
+    viaGeneralDictionary,
+    LOCALE_LABEL.en,
+    `t('English') should have named the language "English" the way LOCALE_LABEL does, not translated it to "${viaGeneralDictionary}"`,
+  );
+});
+
+test('MrEzMemory renders the explanation language through LOCALE_LABEL, not through t()', () => {
+  assert.match(
+    MEMORY_SOURCE,
+    /import\s*\{\s*LOCALE_LABEL\s*\}\s*from\s*'\.\.\/\.\.\/lib\/i18n\/locale'/,
+    'MrEzMemory.tsx should import LOCALE_LABEL from the same module the EN / RU switch and the intake language step use',
+  );
+  assert.match(
+    MEMORY_SOURCE,
+    /LOCALE_LABEL\[\s*plan\.constraints\.explanationLocale\s*\]/,
+    'the explanation language line should read LOCALE_LABEL[plan.constraints.explanationLocale]',
+  );
+  assert.doesNotMatch(
+    MEMORY_SOURCE,
+    /explanationLocale\s*===\s*'ru'\s*\?\s*t\('Russian'\)\s*:\s*t\('English'\)/,
+    'must not go back to asking the general t() to translate the bare words "Russian" / "English"',
+  );
+});
+
+test('LOCALE_LABEL names each language correctly for both settings a plan can carry', () => {
+  const explanationLocale: Record<'en' | 'ru', string> = { en: LOCALE_LABEL.en, ru: LOCALE_LABEL.ru };
+  assert.equal(explanationLocale.en, 'English');
+  assert.equal(explanationLocale.ru, 'Русский', 'a Russian reader should see the Russian name for Russian, not the English word');
 });
 
 /* ================================================================== */

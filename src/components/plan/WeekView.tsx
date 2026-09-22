@@ -16,6 +16,7 @@
 import { useEffect, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { findActivity } from '../../lib/learning/catalog';
+import { learningText } from '../../lib/learning/ru';
 import { ensureLearningWired, getCurrentSession, onLearnerRecordChange, onPersonalPlanChange, readPersonalPlan, type SharedSessionView } from '../../lib/learning';
 import type { PersonalPlanV1, ScheduledDay } from '../../lib/learning/contracts/plan';
 import { useT } from '../../lib/i18n/react';
@@ -90,7 +91,7 @@ export default function WeekView() {
 }
 
 function WeekDay({ day, isToday, session }: { day: ScheduledDay; isToday: boolean; session: SharedSessionView | null }) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const label = DAY_LABEL[new Date(`${day.date}T00:00:00`).getDay()]!;
   const kindLabel = KIND_LABEL[day.kind];
 
@@ -117,10 +118,19 @@ function WeekDay({ day, isToday, session }: { day: ScheduledDay; isToday: boolea
         day.activityIds.map((id) => {
           const activity = findActivity(id);
           if (!activity) return null;
+          /* The catalogue is one shared, locale-independent object (see
+             planner.ts objectiveFor), so its English objective sentence goes
+             through learningText(), the same lookup the planner and session
+             use, and never through t(), which only knows the site's own
+             dictionary and would silently leave a catalogue-only sentence in
+             English. This is what closed the Course route leak: a lesson
+             check's objective has Russian in src/lib/learning/ru.ts but was
+             never added to the site dictionary, so t() could not find it. */
+          const objective = learningText(locale, activity.objective);
           return (
-            <span key={id} className="plan-week-item" title={activity.objective}>
+            <span key={id} className="plan-week-item" title={objective}>
               <span className="plan-week-item-tick" aria-hidden="true" />
-              <span className="plan-week-item-label">{t(activity.objective)}</span>
+              <span className="plan-week-item-label">{objective}</span>
             </span>
           );
         })

@@ -168,6 +168,79 @@ test('planner.ts and session.ts never read a sentence table without translating 
   }
 });
 
+/* A second, different way to go around the lookup: a COMPONENT reading a raw
+   catalogue activity itself (via findActivity, the same shared, locale
+   independent object planner.ts's objectiveFor and session.ts's
+   longerCommitmentFor read) and piping activity.objective (or
+   activity.unavailable.reason) through the site's general t(), instead of
+   through learningText(). t() only knows the site dictionary
+   (src/lib/i18n/dict/ru/*), which has never held a single one of the
+   catalogue's ~150 objective sentences (see src/lib/learning/ru.ts's own
+   header for why they live apart), so this always silently renders English,
+   whatever the interface language is.
+
+   This is the exact bug the final browser run found: the Course route's week
+   ahead card (src/components/plan/WeekView.tsx) showed a lesson check's
+   objective, "Check what you took from this lesson on a few real
+   questions.", in English inside the Russian view, even though that exact
+   sentence already has Russian in src/lib/learning/ru.ts (test 2 above
+   passes on it for that reason) and even though the ru() build of a whole
+   plan (test 4 below) is entirely Russian. Neither test could have caught
+   it: test 2 only checks the RU_STRINGS map has an entry, it does not check
+   what a component does with the field, and the ruPlan() checks read
+   ScheduledDay.focus, a plan field no component actually renders. WeekView
+   instead resolves each future day's activityIds straight from the
+   catalogue and displayed activity.objective through t(), which is a
+   different bug in a different file three good tests still missed. */
+test('a component reading findActivity() translates its objective and unavailable reason with learningText, never the site\'s general t()', () => {
+  const componentsDir = path.join(REPO_ROOT, 'src/components');
+  const problems: string[] = [];
+
+  function walk(dir: string): string[] {
+    const out: string[] = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) out.push(...walk(full));
+      else if (entry.name.endsWith('.tsx')) out.push(full);
+    }
+    return out;
+  }
+
+  for (const file of walk(componentsDir)) {
+    const source = fs.readFileSync(file, 'utf8');
+    const rel = path.relative(REPO_ROOT, file).replace(/\\/g, '/');
+    // Only a component that actually reads a raw catalogue activity is in
+    // scope: everything else has nothing to translate this way.
+    if (!/\bfindActivity\s*\(/.test(source)) continue;
+
+    if (/\bt\(\s*[\w.]*\.objective\b/.test(source)) {
+      problems.push(`${rel}: pipes a catalogue activity's objective through t() instead of learningText()`);
+    }
+    if (/\bt\(\s*[\w.]*\.unavailable\??\.reason\b/.test(source)) {
+      problems.push(`${rel}: pipes a catalogue activity's unavailable reason through t() instead of learningText()`);
+    }
+    if (!/\blearningText\s*\(/.test(source)) {
+      problems.push(`${rel}: reads findActivity() but never imports learningText to translate what it reads`);
+    }
+  }
+
+  assert.deepEqual(problems, [], `Components bypassing the learning Russian map:\n  ${problems.join('\n  ')}`);
+});
+
+test('WeekView keeps the exact fix: activity.objective goes through learningText(locale, ...) for the days it resolves from the catalogue', () => {
+  const source = fs.readFileSync(path.join(REPO_ROOT, 'src/components/plan/WeekView.tsx'), 'utf8');
+  assert.match(
+    source,
+    /learningText\(\s*locale\s*,\s*activity\.objective\s*\)/,
+    'WeekView.tsx should translate a future day\'s activity objective with learningText(locale, activity.objective)',
+  );
+  assert.doesNotMatch(
+    source,
+    /\{t\(activity\.objective\)\}/,
+    'WeekView.tsx must not go back to rendering activity.objective through the general t()',
+  );
+});
+
 /* ================================================================== */
 /* 4. What a Russian student actually sees                             */
 /* ================================================================== */
