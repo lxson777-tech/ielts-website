@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ev:47f6d882d5fed010e59f153fb569585d",
+    "activityId": "focus:writing-lexical-topic-vocabulary-check",
+    "contentVersion": 1,
+    "at": "2026-09-22T17:22:45.524Z",
+    "localDate": "2026-09-22",
+    "paper": "writing",
+    "subskill": "lexical-precision",
+    "mode": "assessment",
+    "completion": "completed",
+    "assistance": "none",
+    "seenBefore": false,
+    "outcome": {
+      "kind": "objective",
+      "met": false,
+      "subskill": "lexical-precision",
+      "byModel": false
+    },
+    "items": [
+      {
+        "itemId": "prompt:pte-wt-106-task2",
+        "firstAnswer": "Investment in public education can improve literacy and create a more skilled workforce. When governments fund accessible vocational training, young people can gain practical qualifications and contribute to economic development.",
+        "written": true,
+        "correct": false,
+        "assistance": "none",
+        "subskill": "lexical-precision",
+        "seenBefore": false
+      }
+    ],
+    "taskScope": {
+      "kind": "writing-task",
+      "task": "task2"
+    },
+    "sourceMaterial": [
+      "prompt:pte-wt-106-task2"
+    ],
+    "provenance": "recorded",
+    "sessionId": "sess:0ea963a41b03db5c86cc797b5249c5a0",
+    "locale": "en"
+  }
+]
+Traceback (most recent call last):
+  File "C:\Users\Alex\Desktop\Projects\IELTS website\.claude\worktrees\todays-tab-ai-tutor-rework-8af4cd\tests\browser\codex_task2.py", line 21, in <module>
+    assert events[-1]['taskScope']['task']=='task1'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
