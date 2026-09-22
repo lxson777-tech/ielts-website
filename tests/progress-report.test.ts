@@ -30,13 +30,17 @@ import {
   statedMistakeReasons,
   selfReportedScores,
   IGNORED_REASONS,
+  mistakeReasonLabel,
+  UNKNOWN_MISTAKE_REASON_LABEL,
 } from '../src/components/reportTrends.ts';
 import { readFacts, confidenceFromCertainty } from '../src/lib/tutor/insights.ts';
-import { recordSelfReportedScore } from '../src/lib/learning/evidence.ts';
+import { recordSelfReportedScore, createEvidenceEvent, emptyLearnerRecord, appendEvidence } from '../src/lib/learning/evidence.ts';
 import { formatDate } from '../src/lib/tutor/ru.ts';
 import { t } from '../src/lib/i18n/translate.ts';
 import { loadDictionary } from '../src/lib/i18n/dict/index.ts';
 import { QUESTION_TYPE_LABEL } from '../src/lib/tests/question-types.ts';
+import { MISTAKE_REASONS, type MistakeReasonListId } from '../src/data/focused-exercises.ts';
+import type { Paper } from '../src/lib/learning/contracts/catalog.ts';
 
 import {
   syntheticNew,
@@ -261,6 +265,19 @@ const REPORT_PAGE_SOURCE = fs.readFileSync(
   fileURLToPath(new URL('../src/pages/report.astro', import.meta.url)),
   'utf8',
 );
+// The two other /report components with their own paper-name lookup table:
+// the skill-trend cards and Mr EZ's weekly review. Read alongside
+// ProgressReport.tsx's own source so one test can hold every surface that
+// can leak a raw English paper heading into the Russian view to the same
+// rule.
+const SKILL_TREND_GRID_SOURCE = fs.readFileSync(
+  fileURLToPath(new URL('../src/components/SkillTrendGrid.tsx', import.meta.url)),
+  'utf8',
+);
+const WEEKLY_REVIEW_SOURCE = fs.readFileSync(
+  fileURLToPath(new URL('../src/components/tutor/WeeklyReview.tsx', import.meta.url)),
+  'utf8',
+);
 
 /** Everything the tester recorded as still-English interface text on
     /report, with the surface it appears on. */
@@ -329,29 +346,55 @@ test("the exam's own names for its question types and criteria are still English
   assert.deepEqual(translated, [], `Exam wording was translated:\n  ${translated.join('\n  ')}`);
 });
 
-test('every paper name and subskill label on the report is routed through t(), not rendered raw', () => {
-  /* The words above are useless if the component never asks for them. Every
-     SKILL_LABEL read and every subskillLabel read has to be wrapped, and
-     the old "translate vocabulary only, leave the four papers raw" branch
-     must be gone. */
-  const rawLabelReads = [...REPORT_SOURCE.matchAll(/(.{0,8})SKILL_LABEL\[/g)].filter(
+/** A paper-name lookup table read by variable (`PAPER_LABEL[paper]` or
+    `SKILL_LABEL[skill]`) is useless in Russian unless two things both hold:
+    every read of it is wrapped in `t(...)`, and every literal value the
+    table can hold is marked with `nt()` so the i18n coverage scanner finds
+    it here (the lookup itself is by variable, which the scanner cannot
+    follow). Shared by ProgressReport.tsx, SkillTrendGrid.tsx and
+    WeeklyReview.tsx so a bare paper heading answers to the same rule
+    wherever it is rendered. */
+function assertPaperLookupIsTranslated(source: string, tableName: string, file: string): void {
+  const rawLabelReads = [...source.matchAll(new RegExp(`(.{0,8})${tableName}\\[`, 'g'))].filter(
     (m) => !/t\($/.test(m[1]!) && !/^const |^: Record/.test(m[1]!.trimStart()),
   );
   assert.deepEqual(
     rawLabelReads.map((m) => m[0]),
     [],
-    'a SKILL_LABEL lookup is rendered without t() around it',
+    `${file}: a ${tableName} lookup is rendered without t() around it`,
   );
+  for (const paper of ['Reading', 'Listening', 'Writing', 'Speaking']) {
+    assert.match(source, new RegExp(`nt\\('${paper}'\\)`), `${file}: ${tableName} must mark ${paper} with nt()`);
+  }
+}
+
+test('every paper name and subskill label on the report is routed through t(), not rendered raw', () => {
+  /* The words above are useless if the component never asks for them. Every
+     SKILL_LABEL read and every subskillLabel read has to be wrapped, and
+     the old "translate vocabulary only, leave the four papers raw" branch
+     must be gone. */
+  assertPaperLookupIsTranslated(REPORT_SOURCE, 'SKILL_LABEL', 'ProgressReport.tsx');
+  // SKILL_LABEL also covers Vocabulary, which PAPER_LABEL never does.
+  assert.match(REPORT_SOURCE, /nt\('Vocabulary'\)/, "ProgressReport.tsx: SKILL_LABEL must mark Vocabulary with nt()");
 
   for (const match of REPORT_SOURCE.matchAll(/item\.subskillLabel \?(.{0,60})/g)) {
     assert.match(match[1]!, /t\(item\.subskillLabel\)/, 'an evidence row renders its subskill label without t()');
   }
 
-  // The four paper names are marked with nt() so the i18n coverage scanner
-  // can find them here, since the lookup itself is by variable.
-  for (const paper of ['Reading', 'Listening', 'Writing', 'Speaking', 'Vocabulary']) {
-    assert.match(REPORT_SOURCE, new RegExp(`nt\\('${paper}'\\)`), `SKILL_LABEL must mark ${paper} with nt()`);
-  }
+  // A stated mistake's reasonLabel must also be routed through t(), not
+  // rendered as the raw reasonId (assumed-even-split, false-vs-notgiven,
+  // first-option-heard, the internal ids a tester found on /report).
+  assert.match(REPORT_SOURCE, /\{t\(item\.reasonLabel\)\}/, 'the stated-mistake row must render t(item.reasonLabel)');
+  assert.doesNotMatch(REPORT_SOURCE, /\{item\.reasonId\}/, 'the raw reasonId must never be rendered directly');
+});
+
+test('the skill-trend cards and the weekly review also route their paper headings through t(), not the raw English word', () => {
+  // The same defect the tester found on ProgressReport.tsx's own SKILL_LABEL
+  // (WP23) existed in these two components too: PAPER_LABEL[paper] rendered
+  // with no t() around it, so these two surfaces showed English paper
+  // headings inside an otherwise Russian /report.
+  assertPaperLookupIsTranslated(SKILL_TREND_GRID_SOURCE, 'PAPER_LABEL', 'SkillTrendGrid.tsx');
+  assertPaperLookupIsTranslated(WEEKLY_REVIEW_SOURCE, 'PAPER_LABEL', 'WeeklyReview.tsx');
 });
 
 test("the report page's subtitle is marked for translation in pieces that keep the English word order", () => {
@@ -437,6 +480,108 @@ test('every date the report can actually render is right in both languages, for 
     assert.ok(english.startsWith(String(Number(day))), `${iso}: English "${english}" is not day first`);
     assert.ok(russian.startsWith(String(Number(day))), `${iso}: Russian "${russian}" is not day first`);
   }
+});
+
+/* ── Mistake reason ids resolve to real, translated labels ───────────────── */
+
+/** For a MISTAKE_REASONS key, the (paper, subskill) pair that
+    mistakeReasonListId (reportTrends.ts) rebuilds it from: Reading keeps the
+    bare subskill name, Listening prefixes it with 'listening-'. Mirrors
+    src/data/focused-exercises.ts's own WP18a comment and every matching
+    `reasons:` field in src/data/focused/*.ts. 'generic' has no subskill of
+    its own, so any subskill absent from every other list reaches it, the
+    same fallback the focused-exercise route itself relies on. */
+function paperAndSubskillFor(listId: MistakeReasonListId): { paper: Paper; subskill: string } {
+  if (listId === 'generic') return { paper: 'reading', subskill: 'paraphrase' }; // a real subskill, but no list of its own
+  if (listId.startsWith('listening-')) return { paper: 'listening', subskill: listId.slice('listening-'.length) };
+  return { paper: 'reading', subskill: listId };
+}
+
+test('mistakeReasonLabel resolves every reason id in every MISTAKE_REASONS list to a non-empty label, translated in Russian', async () => {
+  await loadDictionary('ru');
+  let checked = 0;
+  for (const [listId, reasons] of Object.entries(MISTAKE_REASONS) as [MistakeReasonListId, readonly { id: string; label: string }[]][]) {
+    const { paper, subskill } = paperAndSubskillFor(listId);
+    for (const reason of reasons) {
+      const label = mistakeReasonLabel(paper, subskill as never, reason.id);
+      assert.ok(label.length > 0, `${listId}:${reason.id} resolved to an empty label`);
+      assert.equal(label, reason.label, `${listId}:${reason.id} did not resolve to its own list's own label`);
+
+      assert.equal(t(label, undefined, undefined, 'en'), label, `${listId}:${reason.id}: English must be unchanged`);
+      const russian = t(label, undefined, undefined, 'ru');
+      assert.notEqual(russian, label, `${listId}:${reason.id} ("${label}") has no Russian in the dictionary`);
+      assert.match(russian, /[Ѐ-ӿ]/, `${listId}:${reason.id} ("${label}") did not translate to real Russian`);
+      checked += 1;
+    }
+  }
+  assert.ok(checked > 100, `expected well over 100 reasons across every list, checked ${checked}`);
+});
+
+test('two lists that happen to share an id are never mixed up: table-completion\'s "wrong-row" means something different for Reading and for Listening', () => {
+  const reading = mistakeReasonLabel('reading', 'table-completion' as never, 'wrong-row');
+  const listening = mistakeReasonLabel('listening', 'table-completion' as never, 'wrong-row');
+  assert.equal(reading, MISTAKE_REASONS['table-completion'].find((r) => r.id === 'wrong-row')!.label);
+  assert.equal(listening, MISTAKE_REASONS['listening-table-completion'].find((r) => r.id === 'wrong-row')!.label);
+  assert.notEqual(reading, listening, 'the same stored id must not resolve to the same sentence for two different mistakes');
+});
+
+test('an unknown reasonId falls back to a neutral, honest label rather than showing the raw internal id, in both languages', async () => {
+  await loadDictionary('ru');
+  const label = mistakeReasonLabel('reading', 'matching-headings' as never, 'some-id-that-was-renamed-away');
+  assert.equal(label, UNKNOWN_MISTAKE_REASON_LABEL);
+  assert.notEqual(label, 'some-id-that-was-renamed-away', 'a raw internal id must never be shown as the fallback');
+
+  assert.notEqual(t(label, undefined, undefined, 'en'), '', 'the English fallback must not be blank');
+  const russian = t(label, undefined, undefined, 'ru');
+  assert.notEqual(russian, '', 'the Russian fallback must not be blank');
+  assert.match(russian, /[Ѐ-ӿ]/, 'the fallback must have real Russian, not just the English left untranslated');
+});
+
+test('statedMistakeReasons attaches a resolved reasonLabel to every row, never blank, alongside the raw reasonId', () => {
+  const profile = syntheticStrongReadingWeakWriting();
+  const items = statedMistakeReasons(profile.record, 20);
+  for (const item of items) {
+    assert.ok(item.reasonLabel.length > 0, `${item.paper} at ${item.at}: reasonLabel must not be blank`);
+    assert.ok(item.reasonId.length > 0, 'reasonId must still be kept on the row');
+  }
+});
+
+test('a real stated mistake (a wrong Matching Headings answer, "it repeats words from the paragraph") reaches statedMistakeReasons with its real label attached, not just an id', () => {
+  const record = appendEvidence(
+    emptyLearnerRecord(),
+    createEvidenceEvent({
+      activityId: 'focus:reading-matching-headings-guided',
+      contentVersion: 1,
+      at: '2026-09-10T09:00:00.000Z',
+      localDate: '2026-09-10',
+      paper: 'reading',
+      subskill: 'matching-headings',
+      mode: 'practice',
+      completion: 'completed',
+      assistance: 'none',
+      seenBefore: false,
+      outcome: { kind: 'scored', raw: 3, total: 5, bySubskill: { 'matching-headings': { correct: 3, total: 5 } } },
+      items: [
+        {
+          itemId: 'q1',
+          firstAnswer: 'B',
+          correct: false,
+          assistance: 'none',
+          seenBefore: false,
+          statedReason: { reasonId: 'repeated-words' },
+        },
+      ],
+    }),
+  );
+
+  const items = statedMistakeReasons(record, 20);
+  assert.equal(items.length, 1);
+  assert.equal(items[0]!.reasonId, 'repeated-words', 'the raw id is still kept on the row');
+  assert.equal(
+    items[0]!.reasonLabel,
+    MISTAKE_REASONS['matching-headings'].find((r) => r.id === 'repeated-words')!.label,
+    'the row must carry Matching Headings\' own label, not a generic or a different list\'s wording',
+  );
 });
 
 /* ── Ignored evidence is reported with reasons ────────────────────────────── */

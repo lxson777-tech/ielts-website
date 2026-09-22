@@ -24,6 +24,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { useT, type Translator } from '../../lib/i18n/react';
+import { nt } from '../../lib/i18n/translate';
 import type { Locale } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
@@ -332,11 +333,18 @@ function WeeklyChip({ value, label, previous }: { value: string; label: string; 
   );
 }
 
+/* nt() marks these as needing a Russian entry without translating them here
+   (the same pattern Intake.tsx's own PAPER_LABEL follows, and its comment
+   explains why): PaperEffortRow below looks the word up dynamically
+   (`t(PAPER_LABEL[paper])`), which the coverage extractor cannot follow, so
+   the literal has to be captured once, here, where it still is one. Raw
+   before this fix, the weekly review card showed these four as English
+   headings inside an otherwise Russian /report. */
 const PAPER_LABEL: Record<Paper, string> = {
-  reading: 'Reading',
-  listening: 'Listening',
-  writing: 'Writing',
-  speaking: 'Speaking',
+  reading: nt('Reading'),
+  listening: nt('Listening'),
+  writing: nt('Writing'),
+  speaking: nt('Speaking'),
 };
 
 /** All four papers, every week, even the ones this week never touched
@@ -362,7 +370,7 @@ function PaperEffortRow({ facts, gaps }: { facts: WeekFacts; gaps: readonly GapA
           const gap = gapByPaper.get(paper);
           return (
             <div key={paper} className="mrez-weekly-paper">
-              <span className="mrez-weekly-paper-name">{PAPER_LABEL[paper]}</span>
+              <span className="mrez-weekly-paper-name">{t(PAPER_LABEL[paper])}</span>
               <span className="mrez-weekly-paper-effort">
                 {attempts > 0
                   ? tn(attempts, { one: '{n} attempt this week', other: '{n} attempts this week' })

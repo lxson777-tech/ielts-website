@@ -12,15 +12,23 @@
    evidence renders its unknown state, never a zero. */
 
 import { useT, type Translator } from '../lib/i18n/react';
+import { nt } from '../lib/i18n/translate';
 import type { SkillTrendPanel } from './reportTrends';
 import { CERTAINTY_LABEL, FRESHNESS_NONE_TEXT, freshnessMessage, trendDirectionKey } from './reportTrends';
 import '../styles/learning-progress.css';
 
+/* nt() marks these as needing a Russian entry without translating them here
+   (the same pattern Intake.tsx's own PAPER_LABEL follows, and its comment
+   explains why): the render site below looks the word up dynamically
+   (`t(PAPER_LABEL[panel.paper])`), which the coverage extractor cannot
+   follow, so the literal has to be captured once, here, where it still is
+   one. Raw before this fix, a Russian view of /report showed these four as
+   English headings while the rest of the card was Russian. */
 const PAPER_LABEL: Record<SkillTrendPanel['paper'], string> = {
-  reading: 'Reading',
-  listening: 'Listening',
-  writing: 'Writing',
-  speaking: 'Speaking',
+  reading: nt('Reading'),
+  listening: nt('Listening'),
+  writing: nt('Writing'),
+  speaking: nt('Speaking'),
 };
 
 /** The freshness line. Three separate, literal `tn()` calls rather than one
@@ -43,10 +51,12 @@ function SkillTrendCard({ panel }: { panel: SkillTrendPanel }) {
   return (
     <div className={`skill-trend-card skill-${panel.paper}`}>
       <div className="skill-trend-head">
-        {/* Reading/Listening/Writing/Speaking are protected paper names and
-            are never translated (docs/I18N-GUIDE.md), matching SKILL_LABEL
-            just above in this file's parent. */}
-        <span className="skill-trend-paper">{PAPER_LABEL[panel.paper]}</span>
+        {/* Reading/Listening/Writing/Speaking ARE translated here: this is a
+            bare heading, not a sentence naming the paper (the same split
+            ProgressReport.tsx's own SKILL_LABEL comment explains). Only
+            inside a Russian SENTENCE do the four stay English, so a student
+            still recognises them on the real paper (docs/I18N-GUIDE.md). */}
+        <span className="skill-trend-paper">{t(PAPER_LABEL[panel.paper])}</span>
         <span className={`skill-trend-certainty is-${panel.certainty}`}>{t(CERTAINTY_LABEL[panel.certainty])}</span>
       </div>
 

@@ -676,7 +676,7 @@ function TeacherReviewSummary({
             {mistakes.map((item, i) => (
               <li key={i}>
                 {formatDate(item.at, locale)} · {t(SKILL_LABEL[item.paper])}
-                {item.subskillLabel ? ` · ${t(item.subskillLabel)}` : ''} · {item.reasonId}
+                {item.subskillLabel ? ` · ${t(item.subskillLabel)}` : ''} · {t(item.reasonLabel)}
                 {item.note ? `: "${item.note}"` : ''}
               </li>
             ))}

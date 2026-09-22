@@ -126,6 +126,11 @@ export const strings: Record<string, string> = {
     'пока не получается развести два близких заголовка по единственному слову, которым они отличаются',
   'matching words rather than meaning': 'подбор по совпадению слов, а не по смыслу',
   'reading the question too quickly': 'слишком быстрое чтение вопроса',
+
+  /* reportTrends.ts: the fallback shown on /report when a stored mistake
+     reasonId no longer matches anything in the list it came from (content
+     renamed or removed after the id was recorded). */
+  'Another reason': 'Другая причина',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

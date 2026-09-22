@@ -20,7 +20,7 @@
  * fix.
  */
 
-import type { Paper } from '../lib/learning/contracts/catalog';
+import type { Paper, Subskill } from '../lib/learning/contracts/catalog';
 import { PAPERS } from '../lib/learning/contracts/catalog';
 import type { Certainty, EvidenceFreshness, IgnoredReason, PolicyOutputV1 } from '../lib/learning/contracts/policy';
 import { paperOfScope, scopeFromKey } from '../lib/learning/policy';
@@ -29,6 +29,13 @@ import { classifyAll, describeSubskill } from '../lib/learning/evidence';
 import type { PersonalPlanV1 } from '../lib/learning/contracts/plan';
 import type { SharedSessionView } from '../lib/learning/adapters';
 import { nt } from '../lib/i18n/translate';
+// The mistake-reason option lists: real data (src/data/focused-exercises.ts),
+// not a browser-only module, so importing it here does not cross the Worker
+// boundary. Nothing under src/lib/learning/ imports this file; that is what
+// keeps insights.ts (the Worker's own view of the same evidence) free of it,
+// checked by the "no browser or catalogue" test in
+// tests/progress-report.test.ts.
+import { MISTAKE_REASONS, type MistakeReasonListId } from '../data/focused-exercises';
 
 /** One paper's current picture, and nothing about any other paper. */
 export interface SkillTrendPanel {
@@ -388,13 +395,54 @@ export function recentIndependentEvidence(record: LearnerRecordV1, limit = 8): r
 
 /* The student's own stated reasons, kept apart from any finding. */
 
+/** Which MISTAKE_REASONS list one stated reason came from, from the same
+    paper-plus-subskill pair every focused exercise's own `reasons` field is
+    already set from (src/data/focused-exercises.ts's WP18a comment, and
+    every src/data/focused/*.ts entry: Reading keeps the bare subskill name,
+    Listening prefixes it with 'listening-'). Whatever does not match a real
+    list falls back to `generic`, the same fallback
+    src/pages/trainers/focused/[id].astro uses at the point the reason was
+    first offered, so a mistake never fails to resolve just because its
+    subskill has no list of its own. */
+function mistakeReasonListId(paper: Paper, subskill: Subskill): MistakeReasonListId {
+  const key = paper === 'listening' ? `listening-${subskill}` : subskill;
+  return key in MISTAKE_REASONS ? (key as MistakeReasonListId) : 'generic';
+}
+
+/** Shown when a stored `reasonId` no longer matches anything in the list it
+    came from: the content that offered it was renamed or removed after the
+    id was recorded. Deliberately vague rather than invented, since nobody
+    here knows any more what the id used to mean, but never the raw id
+    itself ('assumed-even-split', 'false-vs-notgiven', 'first-option-heard',
+    the tester's own findings on /report). */
+export const UNKNOWN_MISTAKE_REASON_LABEL: string = nt('Another reason');
+
+/** The student-facing label for one stored mistake `reasonId`, resolved
+    against the SAME list the exercise itself offered it from (paper plus
+    subskill). Ids are not unique across lists (Reading's table-completion
+    'wrong-row' and Listening's mean two different things), so this never
+    guesses from a merged, id-only lookup: it rebuilds the exact list first.
+    An English template, the same convention as every NarrativeLine here:
+    the caller renders it with `t()`. */
+export function mistakeReasonLabel(paper: Paper, subskill: Subskill, reasonId: string): string {
+  const list = MISTAKE_REASONS[mistakeReasonListId(paper, subskill)];
+  return list.find((reason) => reason.id === reasonId)?.label ?? UNKNOWN_MISTAKE_REASON_LABEL;
+}
+
 export interface StatedMistakeItem {
   at: string;
   paper: Paper;
   /** Null when neither the item nor its event names a real subskill (see
       EvidenceListItem.subskillLabel and describeSubskill's doc comment). */
   subskillLabel: string | null;
+  /** Stored with the evidence, so it is kept for anyone who needs the raw
+      id (a teacher-review export, a future bug report). Never rendered on
+      its own: see `reasonLabel`. */
   reasonId: string;
+  /** `reasonId` resolved to a real, student-facing sentence (mistakeReasonLabel
+      above). Render this with `t()`, not `reasonId`: a raw internal id must
+      never reach the page. */
+  reasonLabel: string;
   note?: string;
 }
 
@@ -408,11 +456,13 @@ export function statedMistakeReasons(record: LearnerRecordV1, limit = 6): readon
     if (!event.paper || !event.items) continue;
     for (const item of event.items) {
       if (!item.statedReason) continue;
+      const subskill = item.subskill ?? event.subskill;
       out.push({
         at: event.at,
         paper: event.paper,
-        subskillLabel: describeSubskill(item.subskill ?? event.subskill, event.paper),
+        subskillLabel: describeSubskill(subskill, event.paper),
         reasonId: item.statedReason.reasonId,
+        reasonLabel: mistakeReasonLabel(event.paper, subskill, item.statedReason.reasonId),
         note: item.statedReason.note,
       });
       if (out.length >= limit) return out;
