@@ -48,6 +48,13 @@ GUIDED = "/trainers/focused/reading-matching-headings-guided"
 # permanent site policy, not a translation gap.
 BRAND = {"IELTS", "EZ", "MR EZ", "EN", "RU", "PDF", "AI",
          "IELTS IS", "IELTS IS EZ", "MATCHING HEADINGS"}
+
+# A language is always named in its own language (src/lib/i18n/locale.ts
+# LOCALE_LABEL: the EN / RU switch, the intake language step and the plan
+# settings all show "English" and "Русский"). "English" on a Russian page is
+# therefore correct, not a leak. Codex's review of 2026-09-22 asked for exactly
+# this narrow allowance rather than translating every Latin word.
+NAMED_IN_OWN_LANGUAGE = {"ENGLISH"}
 # The exam material itself is English by design and must stay English.
 # .focused-source cites the real exam paper/passage/question numbers this
 # exercise is drawn from (FocusedExercise.tsx's view.attribution, e.g.
@@ -146,7 +153,8 @@ def run(base_url: str = BASE_URL):
                       "documentElement.scrollWidth <= clientWidth: "
                       f"{no_horizontal_scroll(page)}")
             leaks = [l for l in english_lines(page, exclude)
-                     if l.upper() not in BRAND and not re.fullmatch(r"[A-Za-z]{1,2}", l)]
+                     if l.upper() not in BRAND and l.upper() not in NAMED_IN_OWN_LANGUAGE
+                     and not re.fullmatch(r"[A-Za-z]{1,2}", l)]
             all_leaks[label] = leaks
             write_row(
                 f"[RU 390px] {label}: no English interface string is left on screen",
