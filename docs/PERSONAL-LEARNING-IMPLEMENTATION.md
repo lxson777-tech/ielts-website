@@ -395,3 +395,31 @@ scenario set plus Codex's own browser reproductions against the rebuilt
 frozen snapshot) and `results-account-journey.md` (the sign-in journey clicked
 against the local accounts stand-in). Real accounts, two devices and live AI
 remain external, as in section 7.
+
+### 11.1 Found by our own click-through, after Codex's review
+
+Clicking the sign-in journey against the local accounts stand-in
+(`tests/browser/f20_account_journey.py`) confirmed isolation on every step and
+found one more defect of our own: the "Work saved on this device" offer was
+mounted only on a navigation component no live page renders, so a student who
+worked signed out was never asked whether to add that work to their account
+(kept safely, never offered). Fixed in `e92d7cf`: the offer is a quiet card
+above Today's session for a signed-in student with an unclaimed offer, driven
+by the learner store's own owner, and a source-scan test fails if the offer
+ever becomes unreachable from the dashboard again. Second click-through
+(`results-account-journey-2.md`): 32 of 33 checks pass, every claim row
+passes (offer with real counts, accept merges under the right student only,
+a second student is never offered it, decline leaves it on the device).
+
+The remaining check exposed a duplicated legacy drill event after claim,
+sign-out and sign-in (never across accounts). Root cause: the only note that
+old work had already been carried into the record lived inside the record,
+which sign-out deliberately drops once the account holds it, so the next
+sign-in carried the old stores across again. The note now lives on the device
+per owner and moves with a claim. Third click-through
+(`results-account-journey-3.md`): 33 of 33 checks pass, and a student ends
+with exactly the rows they left. `tests/account-isolation.test.ts` now runs the
+full journey against the stand-in started in-process.
+
+Gates after the whole round: `npm test` 1737 pass, 0 fail; `npx astro check`
+0 errors, 0 warnings; `npm run build` complete.

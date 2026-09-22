@@ -78,6 +78,11 @@ interface Upload {
 const account = new Map<string, { progress: unknown; study_plan: unknown }>();
 const uploads: Upload[] = [];
 
+/** The access token the stand-in handed back for whoever is signed in, or
+    null when nobody is. Only section 5 sets it: everything above runs with
+    the learning tables unreachable, exactly as it did before. */
+let standInToken: string | null = null;
+
 /** Set to hold the next pull for one user, so a reply can be made to arrive
     after the student has already changed. */
 let heldPull: { userId: string; started: () => void; gate: Promise<void> } | null = null;
@@ -111,6 +116,14 @@ const syntheticSupabase = {
       },
     };
   },
+  /* The learning layer's transport reads a fresh token on every request, the
+     same way the browser does. Null means nobody is signed in and the
+     transport simply stops, which is what every test above relies on. */
+  auth: {
+    async getSession() {
+      return { data: { session: standInToken ? { access_token: standInToken } : null } };
+    },
+  },
 };
 
 (globalThis as Record<string, unknown>).__syntheticSupabase = syntheticSupabase;
@@ -128,7 +141,27 @@ registerHooks({
           'export const isAuthConfigured = () => true;\n',
       };
     }
-    return next(url, context);
+    const loaded = next(url, context);
+    /* src/lib/auth/sync.ts decides whether the learning tables are reachable
+       by reading `import.meta.env`, which Astro fills in at build time and
+       which node leaves undefined. One line in front of the real file gives
+       it a property that answers from `globalThis`, so a test can switch the
+       learning tables on for one journey and leave every other test in this
+       file reading no environment at all, exactly as before. The file itself
+       is the shipping one: it still builds its own transport, with its own
+       token refresh, and nothing about sign-in is stubbed. */
+    if (url.endsWith('/src/lib/auth/sync.ts')) {
+      const source =
+        typeof loaded.source === 'string'
+          ? loaded.source
+          : Buffer.from(loaded.source as ArrayBuffer).toString('utf8');
+      return {
+        ...loaded,
+        source:
+          'Object.defineProperty(import.meta, "env", { get: () => globalThis.__syntheticEnv });\n' + source,
+      };
+    }
+    return loaded;
   },
 });
 
@@ -145,6 +178,35 @@ const storeOwner = await import('../src/lib/store-owner.ts');
 const learnerStore = await import('../src/lib/learning/store.browser.ts');
 const learning = await import('../src/lib/learning/index.ts');
 const learningSync = await import('../src/lib/learning/sync.browser.ts');
+
+/* ------------------------------------------------------------------ */
+/* The free local stand-in, in this process, on a port the OS picks    */
+/* ------------------------------------------------------------------ */
+
+/* Section 5 needs an account that really stores the learner record, because
+   the defect it guards against only shows up when a student's cached record
+   is removed on sign-out and rebuilt from the account on the next sign-in.
+   tools/mr-ez-dev-server.mjs is that account: in memory, on this machine,
+   reached over real HTTP by the real transport. It is NOT a Supabase
+   project, and nothing here is evidence about one. */
+process.env.MR_EZ_DEV_PORT = '0';
+const dev = await import('../tools/mr-ez-dev-server.mjs');
+if (!dev.server.listening) {
+  await new Promise<void>((resolve, reject) => {
+    dev.server.once('listening', () => resolve());
+    dev.server.once('error', reject);
+  });
+}
+const devAddress = dev.server.address();
+if (devAddress === null || typeof devAddress === 'string') {
+  throw new Error('the local stand-in did not report a bound port');
+}
+const standIn = `http://127.0.0.1:${devAddress.port}`;
+const STAND_IN_KEY = 'local-anon-key';
+
+test.after(() => {
+  dev.server.close();
+});
 
 /* ------------------------------------------------------------------ */
 /* SYNTHETIC work, and how to recognise it                             */
@@ -685,4 +747,221 @@ test('nothing in a sign-in, a sign-out or an account switch deletes a student"s 
   assert.ok(storage.data.get(`ielts.studyplan.v1::u:${A.id}`), "student A's plan was deleted");
   assert.ok(storage.data.get(`ielts.notes.v1::u:${A.id}`), "student A's saved lessons and notes were deleted");
   assert.ok(storage.data.get(`ielts.vocab.v1::u:${A.id}`), "student A's vocabulary state was deleted");
+});
+
+/* ------------------------------------------------------------------ */
+/* 5. Signed out, claimed, worked, left, came back                     */
+/* ------------------------------------------------------------------ */
+
+/* THE JOURNEY A BROWSER RUN FOUND A DUPLICATE IN (22 September 2026)
+ *
+ * A student works signed out, signs in, accepts "Add to my account", does
+ * more work, signs out and signs in again, and their record comes back with
+ * one MORE event than it had: the lesson they marked while signed in is in
+ * there twice, once as the click that was recorded and once as a `legacy:`
+ * row minted by a second run of the one-time migration of the old stores.
+ *
+ * Everything below is the shipping path: the real sign-in, the real claim,
+ * the real stores, the real migration, the real sync. Only the account is a
+ * stand-in, and every student, lesson and answer is SYNTHETIC. */
+
+interface StandInSession {
+  token: string;
+  userId: string;
+}
+
+let journeyEmails = 0;
+
+async function signUpOnStandIn(label: string): Promise<StandInSession> {
+  journeyEmails += 1;
+  const response = await fetch(`${standIn}/auth/v1/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: `${label}-${journeyEmails}@example.test`,
+      password: 'synthetic-test-password-1',
+    }),
+  });
+  assert.equal(response.status, 200, `the stand-in refused to open an account for ${label}`);
+  const body = (await response.json()) as { access_token: string; user: { id: string } };
+  return { token: body.access_token, userId: body.user.id };
+}
+
+/** Switch the learning tables on, hand the transport this student's token,
+    and then sign in through the ordinary exported sign-in. */
+async function signInWithAnAccount(session: StandInSession): Promise<void> {
+  standInToken = session.token;
+  (globalThis as Record<string, unknown>).__syntheticEnv = {
+    PUBLIC_SUPABASE_URL: standIn,
+    PUBLIC_SUPABASE_ANON_KEY: STAND_IN_KEY,
+  };
+  await startSyncForUser({ id: session.userId } as never);
+}
+
+/** Send what is waiting, then sign out the ordinary way. The flush is what a
+    real session gets from its debounce; without it the queue would still be
+    full and sign-out would keep the cached record on the device, which is
+    not the case this journey is about. */
+async function signOutWithAnAccount(): Promise<void> {
+  await learningSync.activeLearningSync()?.flush();
+  stopSync();
+  await new Promise((resolve) => setImmediate(resolve));
+  standInToken = null;
+}
+
+const JOURNEY_LESSON_SIGNED_OUT = 'reading-matching-headings';
+const JOURNEY_LESSON_SIGNED_IN = 'reading-tfng';
+const JOURNEY_DRILL = 'SYNTHETIC-reading-drill-journey';
+
+/** A completion click, in the order src/layouts/LessonLayout.astro does it:
+    the tick and the old history first, the learner record second. */
+function markLessonTheWayTheSiteDoes(slug: string): void {
+  progressStore.markLessonComplete(slug);
+  learnerStore.recordLessonStudied({ lessonKey: slug });
+}
+
+/** A short SYNTHETIC drill, sat the way TestPlayer records one: the attempt
+    into the old store, the answers into the learner record. */
+function sitTheDrillTheWayTheSiteDoes(): void {
+  const at = new Date().toISOString();
+  progressStore.recordTestAttempt(JOURNEY_DRILL, {
+    at,
+    raw: 1,
+    total: 3,
+    band: 0,
+    bandLabel: 'below 2.5',
+    secondsUsed: 90,
+    kind: 'drill',
+    skill: 'reading',
+  });
+  learnerStore.recordSubmission({
+    activityId: `drill:${JOURNEY_DRILL}`,
+    contentVersion: 1,
+    at,
+    paper: 'reading',
+    mode: 'practice',
+    sourceTestId: JOURNEY_DRILL,
+    items: [
+      {
+        itemId: `${JOURNEY_DRILL}:q1`,
+        firstAnswer: 'SYNTHETIC-answer-1',
+        correct: true,
+        assistance: 'none',
+        subskill: 'sentence-completion',
+      },
+      {
+        itemId: `${JOURNEY_DRILL}:q2`,
+        firstAnswer: 'SYNTHETIC-answer-2',
+        correct: false,
+        assistance: 'none',
+        subskill: 'sentence-completion',
+      },
+      {
+        itemId: `${JOURNEY_DRILL}:q3`,
+        firstAnswer: '',
+        correct: false,
+        assistance: 'none',
+        subskill: 'sentence-completion',
+      },
+    ],
+  });
+}
+
+/** Every event id in the record on this device, in one stable order. */
+function eventIdsOnThisDevice(): string[] {
+  return [...learnerStore.readLearnerRecord().events.map((event) => event.id)].sort();
+}
+
+/** Every event id the account holds for this student, read straight back out
+    of the stand-in rather than from anything the browser remembers. */
+async function eventIdsInTheAccount(session: StandInSession): Promise<string[]> {
+  const response = await fetch(
+    `${standIn}/rest/v1/learning_events?user_id=eq.${encodeURIComponent(session.userId)}&select=event_id`,
+    { headers: { apikey: STAND_IN_KEY, Authorization: `Bearer ${session.token}` } },
+  );
+  assert.equal(response.status, 200, 'the stand-in refused to hand back the account rows');
+  const rows = (await response.json()) as { event_id: string }[];
+  return rows.map((row) => row.event_id).sort();
+}
+
+function howManyEventsAbout(activityId: string): number {
+  return learnerStore.readLearnerRecord().events.filter((event) => event.activityId === activityId).length;
+}
+
+test('a student who claims their signed-out work, works, leaves and comes back finds exactly what they left', async () => {
+  freshDevice();
+
+  /* Step 1: a fresh device, nobody signed in. A lesson and a short drill. */
+  markLessonTheWayTheSiteDoes(JOURNEY_LESSON_SIGNED_OUT);
+  sitTheDrillTheWayTheSiteDoes();
+  const signedOutIds = eventIdsOnThisDevice();
+  assert.ok(signedOutIds.length > 0, 'the signed-out work was not recorded at all');
+
+  const a = await signUpOnStandIn('synthetic-student-a-journey');
+  const b = await signUpOnStandIn('synthetic-student-b-journey');
+
+  try {
+    /* Step 2: A signs in and accepts "Add to my account". */
+    await signInWithAnAccount(a);
+    assert.ok(
+      learnerStore.describeAnonymousWork(),
+      'the signed-out work was not offered to the student who signed in',
+    );
+    assert.equal(learnerStore.claimAnonymousWork().outcome, 'claimed');
+    assert.deepEqual(
+      eventIdsOnThisDevice(),
+      signedOutIds,
+      'the claim changed the identity of the work it moved, so one attempt is now two rows',
+    );
+
+    /* Step 3: real work, done while signed in. One click is one event. */
+    markLessonTheWayTheSiteDoes(JOURNEY_LESSON_SIGNED_IN);
+    const afterSignedInWork = eventIdsOnThisDevice();
+    assert.equal(
+      afterSignedInWork.length,
+      signedOutIds.length + 1,
+      'one lesson marked while signed in produced more than one event',
+    );
+    assert.equal(howManyEventsAbout(`lesson:${JOURNEY_LESSON_SIGNED_IN}`), 1);
+
+    await signOutWithAnAccount();
+    assert.deepEqual(
+      await eventIdsInTheAccount(a),
+      afterSignedInWork,
+      "the account does not hold what the student's own device holds",
+    );
+
+    /* Step 4: a different student uses the same browser, then leaves. */
+    await signInWithAnAccount(b);
+    assert.equal(learnerStore.describeAnonymousWork(), null, "student B was offered student A's claimed work");
+    await signOutWithAnAccount();
+    assert.deepEqual(await eventIdsInTheAccount(b), [], "something of student A's reached student B's account");
+
+    /* Step 5: A comes back. Not one row more, not one row less. */
+    await signInWithAnAccount(a);
+    assert.deepEqual(
+      eventIdsOnThisDevice(),
+      afterSignedInWork,
+      'student A came back to a different set of events than the one they left',
+    );
+    assert.equal(
+      howManyEventsAbout(`lesson:${JOURNEY_LESSON_SIGNED_IN}`),
+      1,
+      'the lesson marked while signed in was carried into the record a second time by the migration',
+    );
+    assert.ok(
+      !eventIdsOnThisDevice().includes(`legacy:lesson:${JOURNEY_LESSON_SIGNED_IN}`),
+      'work done while signed in was migrated as though it predated the record',
+    );
+
+    await learningSync.activeLearningSync()?.flush();
+    assert.deepEqual(
+      await eventIdsInTheAccount(a),
+      afterSignedInWork,
+      'the second sign-in pushed a row the account did not have before',
+    );
+  } finally {
+    await signOutWithAnAccount();
+    delete (globalThis as Record<string, unknown>).__syntheticEnv;
+  }
 });

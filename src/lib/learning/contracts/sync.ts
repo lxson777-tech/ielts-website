@@ -329,7 +329,16 @@ export const DEVICE_ID_KEY = 'ielts.device.v1';
     those stores are one shared pile with no owner written on them, so the
     first record to migrate them claims them and a second student signing in
     on the same browser does not inherit them. The old stores themselves are
-    never modified or removed. */
+    never modified or removed.
+ *
+ * Since 23 September 2026 the same file ALSO carries, under `migrated`, the
+ * owners whose record has already had those stores carried into it and the
+ * stamp of the run that did it. That fact cannot live only in the record,
+ * because sign-out deliberately removes the record from the device once the
+ * account has everything, and a second migration on the next sign-in writes
+ * a `legacy:` copy of work the recorders have since written themselves. Both
+ * fields are optional and read defensively; see the LegacyDeviceStamp note in
+ * src/lib/learning/store.browser.ts, which owns the shape. */
 export const LEGACY_MIGRATION_OWNER_KEY = 'ielts.learning.legacy.v1';
 
 /** Which owners have already taken their copy of the old device-wide stores

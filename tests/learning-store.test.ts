@@ -554,7 +554,24 @@ test('a device with nothing in its old stores is left without a record file', ()
   const store = migratingStore(storage);
   assert.equal(store.read().events.length, 0);
   assert.deepEqual([...storage.data.keys()].filter((key) => key.startsWith(LEARNER_RECORD_KEY)), []);
-  assert.equal(storage.getItem(LEGACY_MIGRATION_OWNER_KEY), null);
+  /* The old device-wide keys are NOT claimed by an owner who found nothing
+     in them: `ownerKey` is what src/lib/store-owner.ts reads to decide the
+     one-time move, and writing it here would take a shared pile away from
+     the anonymous owner it belongs to. */
+  const stamp = JSON.parse(storage.getItem(LEGACY_MIGRATION_OWNER_KEY) ?? '{}') as { ownerKey?: string };
+  assert.equal(stamp.ownerKey, undefined);
+  /* The device DOES remember that this owner has read them, empty or not.
+     Changed 23 September 2026: without that memory, an owner whose cached
+     record is dropped on sign-out migrates the old stores all over again on
+     the next sign-in, and by then those stores hold work the recorders have
+     already written as its own event, so one lesson becomes two rows. See
+     the LegacyDeviceStamp note in src/lib/learning/store.browser.ts. */
+  assert.equal(
+    (JSON.parse(storage.getItem(LEGACY_MIGRATION_OWNER_KEY)!) as { migrated: Record<string, unknown> }).migrated[
+      'u:student-a'
+    ] !== undefined,
+    true,
+  );
 });
 
 /* ------------------------------------------------------------------ */

@@ -84,6 +84,7 @@ import type {
 import {
   LEARNER_RECORD_KEY,
   LOCAL_EVENT_SOFT_CAP,
+  MIGRATION_VERSION,
   QUOTA_RETRY_EVENT_CAP,
   UNCLASSIFIED_LESSON_SUBSKILL,
   WHOLE_ACTIVITY_SUBSKILL,
@@ -555,26 +556,112 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
     migrateLegacyStores();
   }
 
-  function legacyStampOwner(): string | null {
-    if (!storage) return null;
+  /* ── What this DEVICE remembers about the old stores ── */
+
+  /* LEGACY_MIGRATION_OWNER_KEY holds two facts. Both are about this machine,
+   * and neither belongs to any one record:
+   *
+   *   ownerKey   whose the old device-wide keys are. src/lib/store-owner.ts
+   *              reads this, and only this, to decide the one-time move.
+   *   migrated   which owners have already had those stores carried into
+   *              their learner record, and the stamp of the run that did it.
+   *
+   * `migrated` is kept HERE, and not only inside the record, because the
+   * record is deliberately removed from this device on sign-out once the
+   * account has everything (sync.browser.ts, `stop({ forget: true })`).
+   * While the only stamp was the one inside the record, the next sign-in
+   * loaded an empty record, concluded the old stores had never been carried
+   * across, and migrated them a SECOND time. By then those stores also held
+   * the work the student had done while signed in, which the ordinary
+   * recorders had already written as its own event, so one lesson became two
+   * rows: the click, and a `legacy:` copy of the same click. That is the
+   * duplicate the 22 September 2026 account journey found. */
+  interface LegacyDeviceStamp {
+    version: 1;
+    ownerKey?: string;
+    at?: string;
+    migrated?: Record<string, MigrationStamp>;
+  }
+
+  function migratedMap(value: unknown): Record<string, MigrationStamp> | undefined {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const out: Record<string, MigrationStamp> = {};
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+      const stamp = entry as Partial<MigrationStamp> | null;
+      if (stamp && typeof stamp === 'object' && typeof stamp.migrationVersion === 'number') {
+        out[key] = stamp as MigrationStamp;
+      }
+    }
+    return Object.keys(out).length > 0 ? out : undefined;
+  }
+
+  function readLegacyDeviceStamp(): LegacyDeviceStamp {
+    const empty: LegacyDeviceStamp = { version: 1 };
+    if (!storage) return empty;
     const raw = safeGet(storage, LEGACY_MIGRATION_OWNER_KEY);
-    if (!raw) return null;
+    if (!raw) return empty;
     try {
-      const parsed = JSON.parse(raw) as { ownerKey?: unknown };
-      return typeof parsed?.ownerKey === 'string' ? parsed.ownerKey : null;
+      const parsed = JSON.parse(raw) as Partial<LegacyDeviceStamp>;
+      return {
+        version: 1,
+        ownerKey: typeof parsed?.ownerKey === 'string' ? parsed.ownerKey : undefined,
+        at: typeof parsed?.at === 'string' ? parsed.at : undefined,
+        migrated: migratedMap(parsed?.migrated),
+      };
     } catch {
-      return null;
+      /* A corrupt stamp reads as no stamp. The migration then runs again,
+         which is idempotent by construction: every legacy id is derived from
+         the old row, so a second run adds nothing the record already holds. */
+      return empty;
     }
   }
 
-  function writeLegacyStamp(ownerKey: string): void {
+  function writeLegacyDeviceStamp(next: LegacyDeviceStamp): void {
     if (!storage) return;
     try {
-      storage.setItem(LEGACY_MIGRATION_OWNER_KEY, JSON.stringify({ version: 1, ownerKey, at: now() }));
+      storage.setItem(LEGACY_MIGRATION_OWNER_KEY, JSON.stringify(next));
     } catch {
-      /* The stamp is a guard, not data. Without it the migration simply runs
-         again, which is idempotent by construction. */
+      /* The stamp is a guard, not data. Without it the migration runs again;
+         see the note on a corrupt one above. */
     }
+  }
+
+  function legacyStampOwner(): string | null {
+    return readLegacyDeviceStamp().ownerKey ?? null;
+  }
+
+  function writeLegacyStamp(ownerKey: string): void {
+    writeLegacyDeviceStamp({ ...readLegacyDeviceStamp(), version: 1, ownerKey, at: now() });
+  }
+
+  /** The run that already carried the old stores into this owner's record on
+      this device, or null when there has not been one. */
+  function legacyMigrationFor(ownerKey: string): MigrationStamp | null {
+    return readLegacyDeviceStamp().migrated?.[ownerKey] ?? null;
+  }
+
+  /** Remember that this owner has taken everything the old stores held.
+      Written even when they held nothing, because from that moment on every
+      new row in them is put there by a recorder that is ALREADY writing the
+      matching event; migrating those rows later would double them. */
+  function rememberLegacyMigration(ownerKey: string, stamp: MigrationStamp): void {
+    const held = readLegacyDeviceStamp();
+    const already = held.migrated?.[ownerKey];
+    if (already && already.migrationVersion >= stamp.migrationVersion) return;
+    writeLegacyDeviceStamp({ ...held, version: 1, migrated: { ...held.migrated, [ownerKey]: stamp } });
+  }
+
+  /** The anonymous-work claim moves the old stores to the account, so what
+      the device knows about them moves with them. Without this the account
+      would look unmigrated the moment its cached record was dropped, and the
+      claimed rows would be migrated a second time under the account. */
+  function carryLegacyMigration(fromKey: string, toKey: string): void {
+    const held = readLegacyDeviceStamp();
+    const source = held.migrated?.[fromKey];
+    if (!source) return;
+    const target = held.migrated?.[toKey];
+    if (target && target.migrationVersion >= source.migrationVersion) return;
+    writeLegacyDeviceStamp({ ...held, version: 1, migrated: { ...held.migrated, [toKey]: source } });
   }
 
   /** Carry ielts.progress.v1 and the plan's ticked extras into this record,
@@ -592,6 +679,23 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
   function migrateLegacyStores(): void {
     if (!needsMigration(record)) return;
     const mine = ownerNamespace(owner);
+
+    /* ONCE PER OWNER, PER DEVICE, whatever became of the record since. The
+       device remembers this (see LegacyDeviceStamp above), so a record that
+       was dropped on sign-out and rebuilt from the account does not migrate
+       the old stores all over again on top of work the recorders have since
+       written into both. Raising MIGRATION_VERSION still lets it run again,
+       which is what that number is for. */
+    const already = legacyMigrationFor(mine);
+    if (already && already.migrationVersion >= MIGRATION_VERSION) {
+      /* Put the remembered stamp back, so the record says honestly that it
+         has been migrated. Nothing is written: an empty record is not worth
+         a key of its own, and this is read from the device again next time. */
+      record = { ...record, migration: already };
+      legacyHeldByAnotherOwner = false;
+      return;
+    }
+
     const stamped = legacyStampOwner();
     if (stamped !== null && stamped !== mine) {
       legacyHeldByAnotherOwner = true;
@@ -604,8 +708,9 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
       now: now(),
       lessonSubskills: provided(options.lessonSubskills, {}),
     });
+    if (migrated.migration) rememberLegacyMigration(mine, migrated.migration);
     /* A student with nothing in the old stores has nothing to claim and
-       nothing worth a key of their own yet. Leave storage untouched: the
+       nothing worth a key of their own yet. Leave the record untouched: the
        migration is deterministic, so running it again on the next visit
        produces exactly the same nothing. */
     if (migrated.events.length === 0 && migrated.selfReported.length === 0) return;
@@ -1126,7 +1231,11 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
       safeRemove(storage, OWNERSHIP_DECISION_KEY);
     }
     /* The old device-wide stores travelled with it, so they belong to this
-       owner now too. */
+       owner now too, and so does what the device knows about having already
+       carried them into a record: the rows that moved have been migrated
+       once, and migrating them again under this owner would write a second
+       `legacy:` copy of work that is already in the account. */
+    carryLegacyMigration(ownerNamespace(anonymous.owner), ownerNamespace(owner));
     if (legacyStampOwner() === null || legacyStampOwner() === ownerNamespace(anonymous.owner)) {
       writeLegacyStamp(ownerNamespace(owner));
       legacyHeldByAnotherOwner = false;
