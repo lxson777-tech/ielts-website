@@ -389,6 +389,17 @@ export class OpenAiLiveSession {
   }
 }
 
+/** The live examiner refused a trial session (a code from
+    src/lib/trial/gate.ts, e.g. 'trial-sessions-used'). Nothing was paid for. */
+export class LiveTrialRefusal extends Error {
+  readonly code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+    this.name = 'LiveTrialRefusal';
+  }
+}
+
 export interface WebRtcConnectOptions {
   endpoint: string;
   stream: MediaStream;
@@ -397,6 +408,10 @@ export interface WebRtcConnectOptions {
       provider doesn't require sign-in. Sent as `Authorization: Bearer
       <token>` so the Worker can verify the student and enforce limits. */
   accessToken: string | null;
+  /** A trial build only: the id the student's Speaking test was begun under,
+      which the Worker checks (and counts) before it pays for a session. Not
+      sent at all on the open site. */
+  trialSitting?: string;
   onRemoteStream(stream: MediaStream): void;
   iceTimeoutMs?: number;
   /** Asked before anything is made, immediately before the request that
@@ -553,10 +568,14 @@ export async function connectWebRtc(
       const resp = await fetch(opts.endpoint, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ sdp, plan: opts.plan }),
+        body: JSON.stringify(opts.trialSitting ? { sdp, plan: opts.plan, trialSitting: opts.trialSitting } : { sdp, plan: opts.plan }),
       });
       if (!resp.ok) {
-        const body = (await resp.json().catch(() => null)) as { error?: string } | null;
+        const body = (await resp.json().catch(() => null)) as { error?: string; code?: string } | null;
+        /* The trial's refusals carry a code the screen words itself. */
+        if (resp.status === 403 && typeof body?.code === 'string' && body.code.startsWith('trial-')) {
+          throw new LiveTrialRefusal(body.code, body.error ?? 'Your trial does not include this session.');
+        }
         // A 400 here means the Worker rejected the plan, which in practice only
         // happens when the site ships a question bank the deployed Worker does
         // not have yet (see "Deploying after a question-bank change" in the

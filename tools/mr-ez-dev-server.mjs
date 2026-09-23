@@ -1267,11 +1267,72 @@ async function initLive() {
    assessment. */
 
 let essayHandler = null;
+/** The live examiner and the speaking grader, both real Workers with
+    ACCESS_MODE=trial, only with --trial. Keyed by the path below /live. */
+let liveExaminerHandler = null;
+let speakingHandler = null;
+/** The live examiner's session rows (live_examiner_sessions in Supabase). */
+const liveSessions = [];
 /** The content gate (workers/content-gate), serving gated-content/ from
     disk, only with --trial. */
 let contentHandler = null;
 const CONTENT_SERVICE_KEY = 'local-content-service-key';
 const gateBase = () => `http://127.0.0.1:${server.address()?.port ?? PORT}/content`;
+
+/** The speaking grader's three model calls, answered here. Every text the
+    student sees says SIMULATED. */
+function simulatedSpeakingModel(url) {
+  const note = 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.';
+  const criterion = { evidence: note, band: 6, comment: note, tip: note };
+  if (url === 'https://api.openai.com/v1/audio/transcriptions') {
+    const text = 'SIMULATED transcript of the local stand-in interview.';
+    return { text, duration: 40, words: [], segments: [{ type: 'speech', text, speaker: 'A', start: 0, end: 40, id: 'seg_0' }] };
+  }
+  if (url === 'https://api.openai.com/v1/responses') {
+    const assessment = {
+      fluencyCoherence: criterion,
+      lexicalResource: criterion,
+      grammaticalRange: criterion,
+      moments: [{ quote: 'SIMULATED', note }],
+      strengths: [note],
+      improvements: [note],
+    };
+    return { output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(assessment) }] }] };
+  }
+  if (url === 'https://api.openai.com/v1/chat/completions') {
+    return { choices: [{ message: { tool_calls: [{ function: { name: 'submit_pronunciation', arguments: JSON.stringify(criterion) } }] } }] };
+  }
+  return null;
+}
+
+/** The live examiner's own table, the way the Worker reads and writes it
+    through PostgREST. Only what the Worker asks: eq / is.null / gte / lt. */
+function liveSessionsRest(url, init) {
+  const u = new URL(url);
+  const method = init?.method ?? 'GET';
+  if (method === 'POST') {
+    const row = { id: randomUUID(), created_at: new Date().toISOString(), ended_at: null, provider_session_id: null, ...JSON.parse(String(init.body)) };
+    liveSessions.push(row);
+    return new Response(JSON.stringify([row]), { status: 201, headers: { 'Content-Type': 'application/json' } });
+  }
+  const matches = (row, key, raw) => {
+    const value = row[key];
+    if (raw === 'is.null') return value === null || value === undefined;
+    if (raw === 'not.is.null') return value !== null && value !== undefined;
+    const [op, ...rest] = raw.split('.');
+    const want = decodeURIComponent(rest.join('.'));
+    if (op === 'eq') return String(value) === want;
+    if (op === 'gte') return String(value) >= want;
+    if (op === 'lt') return String(value) < want;
+    return true;
+  };
+  const rows = liveSessions.filter((row) => [...u.searchParams.entries()].every(([k, v]) => k === 'select' || matches(row, k, v)));
+  if (method === 'PATCH') {
+    for (const row of rows) Object.assign(row, JSON.parse(String(init.body)));
+    return new Response(null, { status: 204 });
+  }
+  return new Response(JSON.stringify(rows), { headers: { 'Content-Type': 'application/json' } });
+}
 
 function simulatedAssessment() {
   const note = 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.';
@@ -1401,6 +1462,72 @@ async function initTrial() {
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
   };
+  /* The live examiner: the REAL Worker. Creating a voice session is
+     answered here with a SIMULATED session and a placeholder answer, so no
+     voice call is ever made or paid for. A browser cannot connect to that
+     placeholder: the automated journey (tests/browser/t01_trial_journey.py)
+     supplies its own in-page stand-in peer for the conversation itself. */
+  const { createHandler: createLiveHandler } = await import('../workers/live-examiner/src/index.ts');
+  const { createHandler: createSpeakingHandler } = await import('../workers/grade-speaking/src/index.ts');
+  const liveBridge = bridgeFetch({
+    onModel: async (input) => {
+      const url = typeof input === 'string' ? input : input.url;
+      if (url === 'https://api.openai.com/v1/live/sessions') {
+        // /__force {fail:'live'}: the voice service refuses, once.
+        if (db.forcedFailure === 'live') {
+          db.forcedFailure = null;
+          return new Response('{}', { status: 500 });
+        }
+        const id = `simulated_live_${randomUUID().slice(0, 8)}`;
+        return new Response(
+          JSON.stringify({ session: { id }, transport: { type: 'webrtc', sdp: 'v=0\r\ns=SIMULATED placeholder answer\r\n' }, model: 'simulated' }),
+          { status: 201, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+      throw new Error('trial stand-in: unexpected model call ' + url);
+    },
+  });
+  const liveExaminer = createLiveHandler({
+    fetch: async (input, init) => {
+      const url = typeof input === 'string' ? input : input.url;
+      if (url.startsWith(`${STUB_SUPABASE}/rest/v1/live_examiner_sessions`)) return liveSessionsRest(url, init);
+      return liveBridge(input, init);
+    },
+    now: () => new Date(),
+    sideband: async () => ({ ok: true }),
+  });
+  const localOrigins = 'http://localhost:4331,http://127.0.0.1:4331,http://localhost:4321,http://127.0.0.1:4321';
+  const liveEnv = {
+    ALLOWED_ORIGINS: localOrigins,
+    OPENAI_API_KEY: 'sk-trial-stand-in-never-used',
+    SUPABASE_URL: STUB_SUPABASE,
+    SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+    LIVE_MODEL: 'unused',
+    ACCESS_MODE: 'trial',
+  };
+  liveExaminerHandler = (request) => liveExaminer.fetch(request, liveEnv);
+
+  const speaking = createSpeakingHandler({
+    fetch: bridgeFetch({
+      onModel: async (input) => {
+        const url = typeof input === 'string' ? input : input.url;
+        if (db.forcedFailure === 'grader') return new Response('{}', { status: 500 });
+        const body = simulatedSpeakingModel(url);
+        if (!body) throw new Error('trial stand-in: unexpected model call ' + url);
+        return new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      },
+    }),
+  });
+  const speakingEnv = {
+    ALLOWED_ORIGINS: localOrigins,
+    OPENAI_API_KEY: 'sk-trial-stand-in-never-used',
+    GRADING_SAMPLES: '1',
+    ACCESS_MODE: 'trial',
+    SUPABASE_URL: STUB_SUPABASE,
+    SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+  };
+  speakingHandler = (request) => speaking.fetch(request, speakingEnv);
+
   essayHandler = (bodyText, authHeader) =>
     essay.fetch(
       new Request('http://localhost:4321/grade-essay', {
@@ -1439,6 +1566,26 @@ const server = createServer(async (req, res) => {
       const text = await resp.text();
       return send(res, resp.status, text ? JSON.parse(text) : null);
     }
+    if (url.pathname === '/live' || url.pathname.startsWith('/live/') || url.pathname === '/grade-speaking') {
+      const handler = url.pathname === '/grade-speaking' ? speakingHandler : liveExaminerHandler;
+      if (!handler) return send(res, 404, { message: 'the speaking stand-ins run only with --trial' });
+      const chunks = [];
+      if (req.method === 'POST') for await (const chunk of req) chunks.push(chunk);
+      const path = url.pathname === '/grade-speaking' ? '/' : url.pathname.slice('/live'.length) || '/';
+      const headers = { 'Content-Type': 'application/json' };
+      if (req.headers.authorization) headers.Authorization = req.headers.authorization;
+      if (req.headers.origin) headers.Origin = req.headers.origin;
+      const resp = await handler(
+        new Request(`http://localhost${path}`, {
+          method: req.method,
+          headers,
+          body: req.method === 'POST' ? Buffer.concat(chunks).toString('utf8') : undefined,
+        }),
+      );
+      const text = await resp.text();
+      res.writeHead(resp.status, Object.fromEntries(resp.headers));
+      return res.end(text);
+    }
     if (url.pathname === '/__trial/rewind' && req.method === 'POST') {
       // Local only: age one student's trial, to see the ended state.
       if (!trialDb) return send(res, 404, { message: 'start with --trial' });
@@ -1453,7 +1600,7 @@ const server = createServer(async (req, res) => {
       const emailOf = (id) => [...db.users.values()].find((u) => u.id === id)?.email ?? id;
       const accounts = await trialDb.select('select user_id, started_at, ends_at, questionnaire from public.trial_accounts', [], { role: 'service_role' });
       const usage = await trialDb.select(
-        'select user_id, kind, section, request_id, activity_id, status, reserved_at, settled_at from public.trial_usage order by reserved_at',
+        'select user_id, kind, section, request_id, activity_id, status, sessions, reserved_at, settled_at from public.trial_usage order by reserved_at',
         [],
         { role: 'service_role' },
       );
@@ -1521,6 +1668,8 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log('  Tutor             : /tutor  (real Worker, ACCESS_MODE=trial, simulated replies)');
     console.log('  Essay grader      : /grade-essay  (real Worker, ACCESS_MODE=trial, SIMULATED assessment)');
     console.log('  Content gate      : /content/*  (real Worker, private copy in gated-content/)');
+    console.log('  Live examiner     : /live  (real Worker, ACCESS_MODE=trial, SIMULATED session, no voice call)');
+    console.log('  Speaking grader   : /grade-speaking  (real Worker, ACCESS_MODE=trial, SIMULATED assessment)');
   } else if (LIVE) {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');

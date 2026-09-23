@@ -1,9 +1,9 @@
 # Trial journey (t01), local stand-in
 
-Run 1790178985. Site http://localhost:4331/ielts-website, backend http://127.0.0.1:8795 (--trial: real migration in PGlite, real Workers,
+Run 1790181163. Site http://localhost:4331/ielts-website, backend http://127.0.0.1:8795 (--trial: real migration in PGlite, real Workers,
 simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. Nothing billed.
 
-**70 of 70 checks passed.**
+**81 of 81 checks passed.**
 
 | Result | Check | Detail |
 |---|---|---|
@@ -14,7 +14,7 @@ simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. N
 | PASS | join: questionnaire carried through the sign-in round trip |  |
 | PASS | join: no trial exists before the student presses start |  |
 | PASS | no trial yet: lesson covered with a start invitation |  |
-| PASS | start: server recorded the trial with the questionnaire | {"user_id": "30c551b1-4e96-462c-85ce-25521415d2c9", "started_at": "2026-09-23T15:56:50.619Z", "ends_at": "2026-09-26T15:56:50.619Z", "questionnaire": {"band": " |
+| PASS | start: server recorded the trial with the questionnaire | {"user_id": "dea70ec8-cf41-4d9e-baf4-554bc3eebf8f", "started_at": "2026-09-23T16:33:06.442Z", "ends_at": "2026-09-26T16:33:06.442Z", "questionnaire": {"band": " |
 | PASS | dashboard: time left from the server clock |  |
 | PASS | dashboard: suggested section tab (Writing) opens first |  |
 | PASS | keyboard: ArrowRight moves to Speaking and focuses it |  |
@@ -54,13 +54,24 @@ simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. N
 | PASS | trial test: result shown after submitting |  |
 | PASS | trial test: submission settled the Reading test on the server |  |
 | PASS | trial test: reopening says the section's test is used |  |
-| PASS | two tabs: one Listening sitting between them | [{"user_id": "30c551b1-4e96-462c-85ce-25521415d2c9", "kind": "test", "section": "listening", "request_id": "sit-cbd0d739-3ff3-47ec-88dd-67b732b54c49", "activity |
+| PASS | two tabs: one Listening sitting between them | [{"user_id": "dea70ec8-cf41-4d9e-baf4-554bc3eebf8f", "kind": "test", "section": "listening", "request_id": "sit-095a70c5-2641-4937-8da8-2114461db8de", "activity |
 | PASS | writing: checker says it is the one Writing test |  |
 | PASS | writing: begun on the server when the task started |  |
 | PASS | writing: a failed grade leaves the test available and says so |  |
 | PASS | writing: a successful grade uses the test on the server |  |
 | PASS | writing: the stand-in's assessment is visibly SIMULATED |  |
-| PASS | speaking: examiner page unavailable with a plain reason |  |
+| PASS | speaking: the part-by-part Speaking trainer is not in the trial |  |
+| PASS | speaking: the examiner page opens as the trial's Part 1 test |  |
+| PASS | speaking: the cue-card bank (not in the trial) is not offered |  |
+| PASS | speaking: nothing reserved before Start |  |
+| PASS | speaking: Start begins the test on the server; a voice session that failed to open is given back | [{"user_id": "dea70ec8-cf41-4d9e-baf4-554bc3eebf8f", "kind": "test", "section": "speaking", "request_id": "sit-ca657e5f-4471-45da-9c37-a32d8e69a965", "activity_ |
+| PASS | speaking: the interview runs as Part 1 |  |
+| PASS | speaking: the session request carries the begun test and a Part 1 plan | {"plan": {"mode": "part1", "part1TopicIds": ["p1-2026-29"]}, "trialSitting": "sit-ca657e5f-4471-45da-9c37-a32d8e69a965", "status": 201} |
+| PASS | speaking: a grade that fails on our side keeps the test (one interview counted) | [{"user_id": "dea70ec8-cf41-4d9e-baf4-554bc3eebf8f", "kind": "test", "section": "speaking", "request_id": "sit-ca657e5f-4471-45da-9c37-a32d8e69a965", "activity_ |
+| PASS | speaking: after the failure the test can be started again |  |
+| PASS | speaking: a graded interview uses the test on the server (two interviews in all) | [{"user_id": "dea70ec8-cf41-4d9e-baf4-554bc3eebf8f", "kind": "test", "section": "speaking", "request_id": "sit-ca657e5f-4471-45da-9c37-a32d8e69a965", "activity_ |
+| PASS | speaking: the stand-in's report is visibly SIMULATED |  |
+| PASS | speaking: back on the page, the Speaking test is used | Live AI Examiner /  / Speaking /  / Part 1 of the Speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what |
 | PASS | plans: approved prices shown, payment plainly unavailable |  |
 | PASS | second device: the same trial, not a new one |  |
 | PASS | second device: Reading shows its used test and no messages left |  |

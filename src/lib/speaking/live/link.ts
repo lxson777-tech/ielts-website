@@ -166,6 +166,9 @@ export interface OpenExaminerLinkOptions {
   mode: LiveMode;
   /** Supabase access token; required for openai, ignored for gemini. */
   accessToken: string | null;
+  /** A trial build only: the student's begun Speaking test (see
+      WebRtcConnectOptions.trialSitting). */
+  trialSitting?: string;
   cb: ExaminerLinkCallbacks;
   /** The caller's "may I continue" check, asked inside the setup right
       before the paid session request and right before the Gemini socket
@@ -398,6 +401,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       stream: opts.stream,
       plan: opts.plan,
       accessToken,
+      trialSitting: opts.trialSitting,
       onRemoteStream: (stream) => {
         /* R2E-01: the examiner's audio arrives while the setup is still
            under way. A start that was let go plays none of it. */

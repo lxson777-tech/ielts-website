@@ -4,15 +4,23 @@ A one-off, self-contained journey in the style of f20_account_journey.py. It
 needs two servers that it does NOT start itself:
 
   the free local backend, in trial mode (the real trial migration in PGlite,
-  the real Mr EZ Worker with simulated replies, the real essay grader with a
-  labelled SIMULATED assessment; nothing is billed):
+  the real Mr EZ Worker with simulated replies, the real essay and speaking
+  graders with a labelled SIMULATED assessment, the real live examiner
+  Worker with a SIMULATED voice session; nothing is billed):
     MR_EZ_DEV_PORT=8795 MR_EZ_SITE_ORIGIN=http://localhost:4331 \
       node --import ./tests/ts-extension-loader.mjs tools/mr-ez-dev-server.mjs --trial
 
   the site, as a trial build pointed at it:
     PUBLIC_ACCESS_MODE=trial PUBLIC_SUPABASE_URL=http://127.0.0.1:8795 \
     PUBLIC_SUPABASE_ANON_KEY=local-anon-key PUBLIC_MR_EZ_URL=http://127.0.0.1:8795/tutor \
-    PUBLIC_GRADER_URL=http://127.0.0.1:8795/grade-essay npx astro dev --port 4331
+    PUBLIC_GRADER_URL=http://127.0.0.1:8795/grade-essay \
+    PUBLIC_CONTENT_URL=http://127.0.0.1:8795/content \
+    PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8795/live \
+    PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8795/grade-speaking npx astro dev --port 4331
+
+The Speaking test's conversation itself is played by tests/browser/live_standin.js,
+a WebRTC peer inside the test page standing in for OpenAI's voice service (the
+browser's microphone is Chromium's fake device).
 
 Then: python tests/browser/t01_trial_journey.py
 
@@ -238,8 +246,14 @@ def run():
     b_email = f"trial-b-{RUN}@example.test"
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch()
-        ctx = browser.new_context(viewport={"width": 1440, "height": 900})
+        browser = pw.chromium.launch(args=[
+            "--use-fake-device-for-media-stream",
+            "--use-fake-ui-for-media-stream",
+            # Both ends of the stand-in voice connection are in one page:
+            # plain local addresses, not mDNS names, so they can reach each other.
+            "--disable-features=WebRtcHideLocalIpsWithMdns",
+        ])
+        ctx = browser.new_context(viewport={"width": 1440, "height": 900}, permissions=["microphone"])
         english(ctx)
         page = ctx.new_page()
 
@@ -515,11 +529,68 @@ def run():
         check("writing: the stand-in's assessment is visibly SIMULATED", page.get_by_text("SIMULATED").count() > 0)
         shot(page, "t10-writing-graded-simulated", full=False)
 
-        # ── 8. Speaking waits for its decision; plans are honest ──
+        # ── 8. Speaking: Part 1, about five minutes (Alex's decision) ──
+        goto(page, "/trainers/speaking")
+        wait_text(page, "Available with full access")
+        check("speaking: the part-by-part Speaking trainer is not in the trial",
+              page.get_by_text("Available with full access").count() > 0 and not protected_visible(page))
+        page.add_init_script(path=str(Path(__file__).with_name("live_standin.js")))
         goto(page, "/speaking/examiner")
-        wait_text(page, "The Speaking test is not open yet")
-        check("speaking: examiner page unavailable with a plain reason",
-              page.get_by_text("The Speaking test is not open yet").count() > 0 and not protected_visible(page))
+        wait_text(page, "Your trial Speaking test")
+        check("speaking: the examiner page opens as the trial's Part 1 test",
+              protected_visible(page) and page.get_by_text("Part 1 of the real test, about five minutes").count() > 0
+              and page.get_by_text("This is your one Speaking test for the trial").count() > 0)
+        check("speaking: the cue-card bank (not in the trial) is not offered",
+              page.locator("a[href*='/speaking/cue-cards']").count() == 0)
+        check("speaking: nothing reserved before Start", len(usage(a_email, "test", "speaking")) == 0)
+        shot(page, "t15-speaking-trial-start", full=False)
+
+        standin("/__force", {"fail": "live"})
+        page.locator("[data-trial-speaking-start]").click()
+        wait_text(page, "could not start just now", timeout=20000)
+        rows = usage(a_email, "test", "speaking")
+        check("speaking: Start begins the test on the server; a voice session that failed to open is given back",
+              len(rows) == 1 and rows[0]["status"] == "reserved" and rows[0]["sessions"] == 0
+              and page.get_by_text("Nothing was used: press Start again").count() > 0, json.dumps(rows))
+        sitting = rows[0]["request_id"] if rows else None
+
+        standin("/__force", {"fail": "grader"})
+        page.locator("[data-trial-speaking-start]").click()
+        in_interview = wait_text(page, "Part 1 · Interview", timeout=30000)
+        check("speaking: the interview runs as Part 1", in_interview)
+        shot(page, "t16-speaking-interview", full=False)
+        creates = page.evaluate("window.__liveStandin.creates")
+        last = creates[-1] if creates else {}
+        check("speaking: the session request carries the begun test and a Part 1 plan",
+              last.get("trialSitting") == sitting and (last.get("plan") or {}).get("mode") == "part1"
+              and last.get("status") == 201, json.dumps(last)[:300])
+        back = page.get_by_role("button", name="Back")
+        try:
+            back.wait_for(timeout=150000)
+        except Exception:
+            pass
+        rows = usage(a_email, "test", "speaking")
+        check("speaking: a grade that fails on our side keeps the test (one interview counted)",
+              back.count() > 0 and len(rows) == 1 and rows[0]["status"] == "reserved" and rows[0]["sessions"] == 1,
+              json.dumps(rows))
+        standin("/__force", {"fail": None})
+        back.click()
+        wait_text(page, "You have started your trial Speaking test")
+        check("speaking: after the failure the test can be started again",
+              page.get_by_text("You have started your trial Speaking test").count() > 0)
+        page.locator("[data-trial-speaking-start]").click()
+        graded = wait_text(page, "SIMULATED", timeout=150000)
+        rows = usage(a_email, "test", "speaking")
+        check("speaking: a graded interview uses the test on the server (two interviews in all)",
+              graded and len(rows) == 1 and rows[0]["status"] == "settled" and rows[0]["sessions"] == 2, json.dumps(rows))
+        check("speaking: the stand-in's report is visibly SIMULATED", page.get_by_text("SIMULATED").count() > 0)
+        shot(page, "t17-speaking-graded-simulated", full=False)
+        page.get_by_role("button", name="Done").click()
+        wait_text(page, "You have used this section’s trial test")
+        check("speaking: back on the page, the Speaking test is used",
+              page.get_by_text("You have used this section’s trial test").count() > 0,
+              " | ".join(page.locator("main").inner_text()[:200].splitlines()))
+        shot(page, "t18-speaking-used", full=False)
         goto(page, "/plans")
         wait_text(page, "Payment not connected yet")
         check("plans: approved prices shown, payment plainly unavailable",

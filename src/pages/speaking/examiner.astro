@@ -3,6 +3,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import LiveExaminer from '../../components/LiveExaminer';
 import { withBase } from '../../lib/url';
+import { isTrialBuild } from '../../lib/trial/mode';
+
+/* A trial build: this page is the trial's Speaking test, Part 1 only, and
+   the cue-card bank is not part of the trial. */
+const trial = isTrialBuild();
 ---
 
 <BaseLayout
@@ -14,14 +19,18 @@ import { withBase } from '../../lib/url';
     <SectionHeading
       eyebrow="Speaking"
       title="Live AI Examiner"
-      subtitle="A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say."
+      subtitle={trial
+        ? 'Part 1 of the Speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.'
+        : 'A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.'}
     />
     <LiveExaminer client:load />
 
-    <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
-      <span class="skill-resource-card-title" data-i18n>Cue-card bank (for study, not a test)</span>
-      <span class="skill-resource-card-desc" data-i18n>Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>
-    </a>
+    {!trial && (
+      <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
+        <span class="skill-resource-card-title" data-i18n>Cue-card bank (for study, not a test)</span>
+        <span class="skill-resource-card-desc" data-i18n>Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>
+      </a>
+    )}
   </div>
 </BaseLayout>
 

@@ -184,6 +184,27 @@ export const strings: Record<string, string> = {
   'Payment not connected yet': 'Оплата пока не подключена',
   'Buying is not open yet. Paid Mr EZ allowances and purchase terms are still being confirmed, so this page cannot take a payment and will not ask for one.':
     'Покупка пока недоступна. Платные лимиты Mr EZ и условия покупки ещё уточняются, поэтому эта страница не принимает оплату и не будет её просить.',
+
+  /* The trial's Speaking test on the live examiner (LiveExaminer.tsx). */
+  'Your trial Speaking test': 'Ваш пробный тест по Speaking',
+  'Part 1 of the real test, about five minutes. {name} asks you short questions about yourself and everyday topics, out loud, listens, and follows up on what you say. You get a band report at the end.':
+    'Part 1 настоящего экзамена, около пяти минут. {name} вслух задаёт короткие вопросы о вас и о повседневных темах, слушает ответы и уточняет то, что вы сказали. В конце вы получите отчёт с оценкой.',
+  'This is your one Speaking test for the trial. It is used when your interview is graded; if something fails on our side, you can start again.':
+    'Это ваш единственный тест по Speaking в пробном периоде. Он засчитывается, когда интервью оценено; если что-то сломается на нашей стороне, можно начать заново.',
+  'You have started your trial Speaking test. You can begin the interview again.':
+    'Вы уже начали пробный тест по Speaking. Интервью можно начать снова.',
+  'Start the Speaking test': 'Начать тест по Speaking',
+  'The Speaking test could not start just now. Nothing was used: press Start again.':
+    'Сейчас не удалось начать тест по Speaking. Ничего не засчитано: нажмите «Начать» ещё раз.',
+  'Both interviews for your trial Speaking test have been started, so a new one cannot open. Your test has not been used.':
+    'Оба интервью для пробного теста по Speaking уже были начаты, поэтому новое открыть нельзя. Ваш тест не засчитан.',
+  'Your trial could not open the Speaking test just now. Nothing was used: please try again.':
+    'Сейчас не удалось открыть пробный тест по Speaking. Ничего не засчитано: попробуйте ещё раз.',
+  'Your trial Speaking test has already been graded.': 'Ваш пробный тест по Speaking уже оценён.',
+  'Sign in again to have your Speaking test graded. Your test has not been used.':
+    'Войдите снова, чтобы получить оценку за тест по Speaking. Ваш тест не засчитан.',
+  'Your trial could not accept this interview for grading. Your test has not been used.':
+    'Пробный период не смог принять это интервью на оценку. Ваш тест не засчитан.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {

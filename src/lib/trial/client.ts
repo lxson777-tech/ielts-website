@@ -68,6 +68,12 @@ const listeners = new Set<(view: TrialView) => void>();
 let started = false;
 /** Bumped on every account change; a reply for an older one is dropped. */
 let generation = 0;
+/** Every question to the server is numbered when it is sent. Replies can
+    arrive out of order (a status check sent before a grade settled the test
+    can land after the check sent once it had), so a reply to an older
+    question never replaces the answer to a newer one. */
+let asked = 0;
+let appliedAsk = 0;
 
 function publish(next: TrialView): void {
   view = next;
@@ -110,13 +116,17 @@ async function callRpc(fn: string, args: Record<string, unknown> = {}): Promise<
 
 /** Takes a reply meant for account `userId` at generation `gen`, and
     publishes it only if that is still who is signed in. */
-function accept(userId: string, gen: number, raw: unknown, sentAt: number): TrialStatus | null {
+function accept(userId: string, gen: number, raw: unknown, sentAt: number, ask: number): TrialStatus | null {
   if (gen !== generation || view.userId !== userId) return null;
   const status = parseTrialStatus(raw);
   if (!status) {
     publish({ ...view, phase: 'error', failure: 'server' });
     return null;
   }
+  /* Older than what is on screen: still this student's answer to hand back
+     to its caller, but not news. */
+  if (ask < appliedAsk) return status;
+  appliedAsk = ask;
   const receivedAt = Date.now();
   // Half the round trip is the best estimate of when the server answered.
   const offset = clockOffsetMs(status, sentAt + (receivedAt - sentAt) / 2);
@@ -131,13 +141,14 @@ export async function refreshTrial(): Promise<TrialStatus | null> {
   const gen = generation;
   if (view.phase !== 'ready') publish({ ...view, phase: 'checking', failure: null });
   const sentAt = Date.now();
+  const ask = ++asked;
   const { data, error } = await callRpc('trial_status');
   if (gen !== generation || view.userId !== userId) return null;
   if (error) {
     publish({ ...view, phase: 'error', failure: failureKind() });
     return null;
   }
-  return accept(userId, gen, data, sentAt);
+  return accept(userId, gen, data, sentAt, ask);
 }
 
 function onAccount(user: User | null, known: boolean, configured: boolean): void {
@@ -208,9 +219,10 @@ export async function startTrial(questionnaire: TrialQuestionnaire | null): Prom
   const userId = view.userId;
   const gen = generation;
   const sentAt = Date.now();
+  const ask = ++asked;
   const { data, error } = await callRpc('trial_start', { p_questionnaire: cleanQuestionnaire(questionnaire) });
   if (error) return { ok: false, reason: failureKind() };
-  const status = accept(userId, gen, data, sentAt);
+  const status = accept(userId, gen, data, sentAt, ask);
   return status ? { ok: true, status } : { ok: false, reason: 'changed-account' };
 }
 
@@ -229,6 +241,7 @@ export async function beginTrialTest(section: TrialSection, activityId: string):
   const userId = view.userId;
   const gen = generation;
   const sentAt = Date.now();
+  const ask = ++asked;
   const { data, error } = await callRpc('trial_test_begin', {
     p_section: section,
     p_activity: activityId,
@@ -236,7 +249,7 @@ export async function beginTrialTest(section: TrialSection, activityId: string):
   });
   if (error) return { ok: false, reason: failureKind() };
   const result = (data ?? {}) as { ok?: unknown; reason?: unknown; requestId?: unknown; resumed?: unknown; status?: unknown };
-  const status = accept(userId, gen, result.status, sentAt);
+  const status = accept(userId, gen, result.status, sentAt, ask);
   if (!status) return { ok: false, reason: 'changed-account' };
   if (result.ok !== true || typeof result.requestId !== 'string') {
     return { ok: false, reason: typeof result.reason === 'string' ? result.reason : 'server' };
@@ -253,10 +266,11 @@ export async function finishTrialTest(section: 'reading' | 'listening', requestI
     const userId = view.userId;
     const gen = generation;
     const sentAt = Date.now();
+    const ask = ++asked;
     const { data, error } = await callRpc('trial_test_finish', { p_section: section, p_request: requestId });
     if (!error) {
       const status = (data as { status?: unknown } | null)?.status;
-      accept(userId, gen, status, sentAt);
+      accept(userId, gen, status, sentAt, ask);
       return true;
     }
     await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));

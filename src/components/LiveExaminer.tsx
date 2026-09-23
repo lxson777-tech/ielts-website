@@ -85,7 +85,20 @@
    playing. Each start now also hands the setup its handle (session.handle,
    pulled whenever the start number moves on, so by every teardown above),
    and a setup still under way closes its connection, stops its audio and
-   ends a paid session it had created the moment the screen lets go. */
+   ends a paid session it had created the moment the screen lets go.
+
+   THE TRIAL'S SPEAKING TEST (a trial build only, PUBLIC_ACCESS_MODE=trial).
+   On /speaking/examiner the trial student gets Part 1 only, about five
+   minutes (Alex's decision, 23 September 2026). Start first binds the
+   section's one test on the server (useTrialTest), then opens a Part 1
+   session carrying that sitting id, which the live examiner Worker checks
+   and counts (at most two sessions per test) before it pays for anything.
+   The questions conclude at 4.5 minutes and the interview is finished at
+   five whatever happens (the Worker also hangs up at five). The grade goes
+   to the speaking grader with the student's sign-in and the same sitting
+   id; a grade uses the test, a failure keeps it. The owner guards above
+   are untouched: the sitting id rides alongside them. On the open site
+   none of this runs. */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -94,6 +107,12 @@ import type { CueCard, SpeakingGradeResult, TopicVocab } from '../lib/speaking/s
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
 import { openExaminerLink, fetchLiveConfig, isLiveStartCancelled, type ExaminerLink, type LiveConfig } from '../lib/speaking/live/link';
+import { LiveTrialRefusal } from '../lib/speaking/live/openai-session';
+import { GraderRefusal } from '../lib/writing/grader';
+import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES } from '../lib/trial/offer';
+import { refreshTrial } from '../lib/trial/client';
+import { useTrialTest } from './trial/useTrialTest';
+import TrialBlock from './trial/TrialBlock';
 import type { TranscriptTurn } from '../lib/speaking/live/session';
 import type { DirectorCue } from '../lib/speaking/live/cues';
 import {
@@ -151,6 +170,8 @@ const FORCE_END_GRACE_MS = 12_000; // after asking the examiner to conclude
 const DRILL_MAX_MS = 4.5 * 60_000; // part1/part3 question time before conclude
 const DRILL_HARD_STOP_MS = 8 * 60_000;
 const PART2_WRAPUP_FALLBACK_MS = 75_000; // rounding-off Q&A + closing line budget
+/** The trial's Speaking test: finished at five minutes whatever happens. */
+const TRIAL_HARD_STOP_MS = TRIAL_SPEAKING_MINUTES * 60_000;
 
 /** Minimum candidate-speech length a serious attempt has, per session shape. */
 const DRILL_EXPECTED_MIN_MS: Record<DrillMode, number> = {
@@ -209,6 +230,9 @@ export default function LiveExaminer({
   onSuspend?: () => void;
 }) {
   const { t, tn } = useT();
+  /* The trial's Speaking test (a trial build, the standalone examiner only;
+     inert everywhere else). */
+  const trialTest = useTrialTest(TRIAL_OFFER.speaking.testId, variant !== 'full' || mock);
   const [phase, setPhase] = useState<Phase>('menu');
   const [stage, setStage] = useState<Stage>('part1');
   const [error, setError] = useState<string | null>(null);
@@ -399,6 +423,9 @@ export default function LiveExaminer({
     if (!TOKEN_URL) return;
     if (needsSignIn || authUnavailable) return;
     if (startingRef.current || !(phase === 'menu' || phase === 'report' || phase === 'error')) return;
+    /* The trial runs Part 1 only, and only once its test is begun. */
+    const trialSitting = trialTest.active ? trialTest.sittingId() : null;
+    if (trialTest.active && (m !== 'part1' || !trialSitting)) return;
     startingRef.current = true;
     modeRef.current = m;
     sessionBindingRef.current?.cancel();
@@ -539,6 +566,7 @@ export default function LiveExaminer({
           instruction,
           mode: m,
           accessToken,
+          trialSitting: trialSitting ?? undefined,
           /* Asked inside the setup too (R2D-01): a switch or an unmount while
              the connection prepares itself sends no request that would
              create a paid voice session, and opens no Gemini socket. */
@@ -592,7 +620,16 @@ export default function LiveExaminer({
       cleanupAudio();
       startingRef.current = false;
       setPhase(mock ? 'error' : 'menu');
-      setError(e instanceof Error ? e.message : t('Could not start the examiner session.'));
+      setError(
+        e instanceof LiveTrialRefusal
+          ? trialLiveRefusal(e.code)
+          : trialSitting
+            ? t('The Speaking test could not start just now. Nothing was used: press Start again.')
+            : e instanceof Error
+              ? e.message
+              : t('Could not start the examiner session.'),
+      );
+      if (trialTest.active) void refreshTrial();
       return;
     }
 
@@ -619,7 +656,8 @@ export default function LiveExaminer({
       setStageBoth('part1');
       void linkRef.current?.direct({ type: 'begin' });
       later(() => endEarly('time'), DRILL_MAX_MS);
-      later(() => endEarly('time'), DRILL_HARD_STOP_MS);
+      if (trialSitting) later(() => void finishTest(), TRIAL_HARD_STOP_MS);
+      else later(() => endEarly('time'), DRILL_HARD_STOP_MS);
     } else if (m === 'part2') {
       // Straight to the cue card: same prep → talk flow as the full test.
       void startPart2Flow({ type: 'begin' });
@@ -858,17 +896,27 @@ export default function LiveExaminer({
     sessionBindingRef.current = binding;
     const topic = titleRef.current;
     const promptId = promptIdRef.current;
+    /* A trial build: the begun Speaking test this interview is graded
+       against, read now with the rest. */
+    const trialSitting = trialTest.active ? trialTest.sittingId() : null;
     try {
       await runOwnedGrade(
         binding,
-        () =>
-          gradeInterview(
+        async () => {
+          /* The grader checks the student's sign-in against the sitting. */
+          const trialToken = trialSitting ? await getAccessToken() : null;
+          return gradeInterview(
             transcript,
             recording,
             m === 'full'
               ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS }
-              : { expectedMinMs: DRILL_EXPECTED_MIN_MS[m], scope: DRILL_GRADE_SCOPE[m] },
-          ),
+              : {
+                  expectedMinMs: DRILL_EXPECTED_MIN_MS[m],
+                  scope: DRILL_GRADE_SCOPE[m],
+                  trial: trialSitting && trialToken ? { token: trialToken, sitting: trialSitting } : undefined,
+                },
+          );
+        },
         {
           /* Kept under `owner`: the student who took the interview, who is
              not necessarily the one using the page by the time the grade
@@ -961,8 +1009,30 @@ export default function LiveExaminer({
          student's to see; the owner check ends the session instead. */
       if (attempt && !attempt.gradingFailed()) return;
       setPhase('error');
-      setError(e instanceof Error ? e.message : t('Grading failed.'));
+      setError(e instanceof GraderRefusal ? trialGradeRefusal(e.code) : e instanceof Error ? e.message : t('Grading failed.'));
+    } finally {
+      /* Graded (the test is used) or not (it is kept): the trial's own
+         screens should say what is now true. */
+      if (trialSitting) void refreshTrial();
     }
+  }
+
+  /** The live examiner's trial refusals, in the student's words. Nothing
+      was paid for and the test was not used. */
+  function trialLiveRefusal(code: string): string {
+    if (code === 'trial-sessions-used') {
+      return t('Both interviews for your trial Speaking test have been started, so a new one cannot open. Your test has not been used.');
+    }
+    if (code === 'trial-ended') return t('Your trial has ended.');
+    return t('Your trial could not open the Speaking test just now. Nothing was used: please try again.');
+  }
+
+  /** The speaking grader's trial refusals. The interview is kept on this
+      page only while it is on screen. */
+  function trialGradeRefusal(code: string): string {
+    if (code === 'trial-test-used') return t('Your trial Speaking test has already been graded.');
+    if (code === 'sign-in-required') return t('Sign in again to have your Speaking test graded. Your test has not been used.');
+    return t('Your trial could not accept this interview for grading. Your test has not been used.');
   }
 
   function cleanupAudio() {
@@ -1288,6 +1358,54 @@ export default function LiveExaminer({
             </button>
           </div>
         )}
+      </div>
+    );
+  } else if (phase === 'menu' && trialTest.active && trialTest.block) {
+    /* The trial: its Speaking test is used, ended, or not this student's. */
+    content = <TrialBlock reason={trialTest.block} title="Live AI Examiner" section="Speaking" />;
+  } else if (phase === 'menu' && trialTest.active) {
+    content = (
+      <div className="relative overflow-hidden rounded-card border border-border bg-surface p-8 text-center shadow-card sm:p-10">
+        <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
+        <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking · {t('Live')}</p>
+        <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">{t('Your trial Speaking test')}</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
+          {t(
+            'Part 1 of the real test, about five minutes. {name} asks you short questions about yourself and everyday topics, out loud, listens, and follows up on what you say. You get a band report at the end.',
+            { name: EXAMINER_NAME },
+          )}
+        </p>
+        <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
+          <li>· {t('Use headphones if you can, in a quiet room')}</li>
+          <li>· {t('Speak naturally, the examiner waits while you think')}</li>
+        </ul>
+        <p className="mx-auto mt-4 max-w-md rounded-lg bg-surface-alt px-3 py-2 text-xs text-ink-muted" data-trial-speaking-note>
+          {trialTest.startUsesTest
+            ? t('This is your one Speaking test for the trial. It is used when your interview is graded; if something fails on our side, you can start again.')
+            : t('You have started your trial Speaking test. You can begin the interview again.')}
+        </p>
+        {trialTest.error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{trialTest.error}</p>}
+        {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
+        {!TOKEN_URL && (
+          <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
+            {t('The live examiner is not configured on this site yet ({envVar}).', { envVar: 'PUBLIC_LIVE_EXAMINER_URL' })}
+          </p>
+        )}
+        <button
+          type="button"
+          data-trial-speaking-start
+          onClick={() => {
+            /* Bind the section's test on the server first; nothing is used
+               if that fails. */
+            void trialTest.begin().then((ok) => {
+              if (ok) void startTest('part1');
+            });
+          }}
+          disabled={!TOKEN_URL || trialTest.busy}
+          className="mt-7 rounded-button bg-brand px-8 py-3 font-display text-base font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {t('Start the Speaking test')}
+        </button>
       </div>
     );
   } else if (phase === 'menu') {

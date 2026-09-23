@@ -16,7 +16,8 @@
 
 import { useEffect } from 'react';
 import { useTrial } from '../../lib/trial/react';
-import { lessonAccess } from '../../lib/trial/status';
+import { lessonAccess, testAccess } from '../../lib/trial/status';
+import { TRIAL_OFFER } from '../../lib/trial/offer';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import TrialBlock, { accountBlock, type TrialBlockReason } from './TrialBlock';
 
@@ -26,8 +27,9 @@ export type TrialGateSpec =
   /** A page the trial does not include at all (trainers, drills, the mock
       exam, focused exercises, supporting libraries). */
   | { kind: 'locked'; title: string }
-  /** A Speaking test page, unavailable while its length and parts are
-      being decided. */
+  /** The trial's Speaking test page (the live examiner). Open to a student
+      whose trial includes it; the examiner itself says when the test is
+      used or has ended, so its report stays on screen after grading. */
   | { kind: 'speaking'; title: string };
 
 function setGate(state: 'pending' | 'open' | 'locked'): void {
@@ -42,7 +44,10 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
   else {
     const account = accountBlock(trial);
     if (account) reason = account;
-    else if (spec.kind === 'speaking') reason = 'speaking-unavailable';
+    else if (spec.kind === 'speaking') {
+      const access = testAccess(trial.status!, 'speaking', TRIAL_OFFER.speaking.testId, trial.now);
+      reason = access === 'unavailable' ? 'speaking-unavailable' : access === 'no-trial' ? 'no-trial' : access === 'locked' ? 'locked' : 'open';
+    }
     else if (spec.kind === 'locked') reason = 'locked';
     else {
       const access = lessonAccess(trial.status!, spec.lessonKey, trial.now);

@@ -81,7 +81,7 @@ Today page, lessons and tests with no gate, `/trial` says there is nothing to st
   band guide, vocabulary review, speaking pages) stays covered until the server has
   answered for the signed-in student, then opens or shows a calm reason with the title
   kept. Signed out, session expired, no trial, offline, server failure (with Try again),
-  locked, ended and Speaking-not-open each have their own wording (the browser run
+  locked, ended and Speaking-not-open (only if the Speaking test is switched off) each have their own wording (the browser run
   exercised a server failure; the offline wording is covered by code, not a real
   network cut). Direct links obey
   the same checks.
@@ -108,18 +108,36 @@ Speaking length and content protection`):
   it is used when submitted (Reading, Listening) or graded (Writing, Speaking); a failure
   on our side uses nothing; an abandoned test stays the student's; a test begun before
   the end can be finished after it; nothing new starts after the end.
-- **Speaking test: Part 1 only, about five minutes.** Built on the server (below); the
-  examiner screen follows once the platform branch's examiner work and main are merged
-  in (agreed with that session), so until then the Speaking test page still says "not
-  open yet" while Today already shows it as available.
+- **Speaking test: Part 1 only, about five minutes.** Built end to end (below): the
+  examiner screen, the live examiner and the speaking grader.
 - **Protect the content itself, built locally first.** Built (below), not deployed.
 
 Two safeguards Claude added and flags as adjustable, not decided by Alex: a trial
 Speaking interview is hung up by the server after five minutes (a once-a-minute check,
 so at most about six), and at most two interviews may start under the one Speaking test
-(the first, and one retry after a dropped connection).
+(the first, and one retry after a dropped connection). A session counts once OpenAI has
+created it, even if the student's browser then fails to connect to it; only a session
+OpenAI never created is given back. After two such failures the student cannot start a
+third interview, although the test itself is not used. Worth a decision before go-live.
 
-## The Speaking test (server side, built)
+## The Speaking test (built)
+
+- The screen (`LiveExaminer.tsx`, trial build, `/speaking/examiner` only): a trial
+  student sees "Your trial Speaking test", Part 1 of the real test, about five minutes,
+  and whether Start uses the one test. Start binds the test on the server first
+  (`useTrialTest`, nothing used if that fails), then opens a Part 1 session carrying
+  that sitting id (`trialSitting`, added beside the owner guards the platform session
+  built, never around them). The questions conclude at 4.5 minutes and the interview is
+  finished at five whatever happens. The grade goes to the speaking grader with the
+  student's sign-in and the same sitting id. A voice session that fails to open, or a
+  grade that fails, says "Nothing was used" / "Your test has not been used" and Start
+  works again; a graded interview uses the test and the page then says so. The trial's
+  refusals are worded in English and Russian. On the open site none of this runs: the
+  session and grade requests are byte-for-byte what they were.
+- The page gate opens `/speaking/examiner` to any student whose trial includes the
+  test; the examiner itself says when it is used or ended, so the band report stays on
+  screen after grading. The part-by-part Speaking trainer (`/trainers/speaking`) and the
+  cue-card bank are not in the trial and are locked like other trainers.
 
 - Live examiner, trial mode: opens a paid voice session only for the student's own begun
   Speaking test, only in Part 1, counts it (at most two), and gives the count back if the
@@ -173,9 +191,9 @@ needs the same pattern, and signed short-lived links for audio.
 | `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 12 of 12 |
 | `tests/trial-content.test.ts`: the real content gate against the real migration | 8 of 8 |
 | `tests/trial-status.test.ts`: what the screens may say | 9 of 9 |
-| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 70 of 70 (`docs/trial/evidence/results-t01.md`) |
+| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 81 of 81, twice in a row (`docs/trial/evidence/results-t01.md`) |
 | `tools/trial-content-audit.mjs` on the trial build | no leaks (see above) |
-| `npx astro check` | 0 errors, 0 warnings, 19 hints (same hints as before) |
+| `npx astro check` | 0 errors, 0 warnings, 20 hints (none from the trial) |
 | `npm run build`, open and trial | 663 pages each |
 
 The browser journey covers: signed-out offer; sign-up then explicit start; questionnaire
@@ -190,12 +208,31 @@ database functions; other sections keep their own five; a test outside the trial
 drill of the trial paper are locked; the trial Reading test begins on the server,
 survives a refresh, is used on submit and cannot be reopened; two tabs starting
 Listening together get one sitting; a failed essay grade keeps the Writing test and a
-successful one uses it; plans page; a second device sees the same trial and counts;
+successful one uses it; the Speaking test: the trainer and cue cards locked, the
+examiner page opens as Part 1, Start begins the test on the server, a voice session
+that fails to open is given back, the session request carries the begun test and a Part
+1 plan, a failed grade keeps the test, a retry is graded and uses it (two interviews
+counted), the report says SIMULATED, and the page then says the test is used; plans page; a second device sees the same trial and counts;
 sign-out covers the lesson again without restarting; a second student on the same
 device inherits nothing; a server failure keeps content covered with Try again; expiry
 from the stored start (dashboard, lesson, Mr EZ, a test not begun); a Russian phone
-screen with no sideways scroll; reduced motion. Screenshots `t01` to `t14` are in
+screen with no sideways scroll; reduced motion. Screenshots `t01` to `t18` are in
 `docs/trial/evidence/`.
+
+How the Speaking test runs locally with no voice call: the local backend runs the REAL
+live examiner Worker and the REAL speaking grader (trial mode), with OpenAI's answers
+replaced by a SIMULATED session and a SIMULATED assessment. A browser cannot connect to
+a simulated session, so the journey installs `tests/browser/live_standin.js`, a WebRTC
+peer inside the test page that plays OpenAI's side (session start, a short transcribed
+Part 1 exchange, the closing line) while Chromium's fake microphone speaks. It is test
+code only and never part of the site. Clicking Start by hand on the local site therefore
+reaches the real checks and counts one of the two interviews, then stops at "could not start" (the test itself is not used).
+
+Found and fixed while proving this: two trial status checks in flight at once could
+answer out of order, and the older answer then replaced the newer one on screen (a used
+test briefly shown as available). Every question to the server is now numbered when
+sent, and a reply to an older question never replaces a newer answer
+(`src/lib/trial/client.ts`).
 
 The ownership audit (`docs/audits/claude-personal-learning-review-2026-09-23.md`) was
 rechecked on this base, because the trial must not sit on cross-account behaviour:
@@ -223,7 +260,7 @@ MR_EZ_DEV_PORT=8795 MR_EZ_SITE_ORIGIN=http://localhost:4331 node --import ./test
 ```
 
 ```bash
-PUBLIC_ACCESS_MODE=trial PUBLIC_SUPABASE_URL=http://127.0.0.1:8795 PUBLIC_SUPABASE_ANON_KEY=local-anon-key PUBLIC_MR_EZ_URL=http://127.0.0.1:8795/tutor PUBLIC_GRADER_URL=http://127.0.0.1:8795/grade-essay PUBLIC_CONTENT_URL=http://127.0.0.1:8795/content npx astro dev --port 4331
+PUBLIC_ACCESS_MODE=trial PUBLIC_SUPABASE_URL=http://127.0.0.1:8795 PUBLIC_SUPABASE_ANON_KEY=local-anon-key PUBLIC_MR_EZ_URL=http://127.0.0.1:8795/tutor PUBLIC_GRADER_URL=http://127.0.0.1:8795/grade-essay PUBLIC_CONTENT_URL=http://127.0.0.1:8795/content PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8795/live PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8795/grade-speaking npx astro dev --port 4331
 ```
 
 Then open `http://localhost:4331/ielts-website/trial`. Sign-up on the local backend
@@ -305,11 +342,12 @@ the locked door: `workers/content-gate/*`, `src/lib/trial/{content,tests-light}.
 `src/components/trial/{GatedTestPlayer,GatedPracticeQuiz}.tsx`,
 `tools/{build-gated-content.mjs,trial-content-audit.mjs,trial-content-allowed.json}`;
 `tests/{trial-sql,trial-worker,trial-graders,trial-status,trial-content}.test.ts`;
-`tests/browser/t01_trial_journey.py`; `docs/TRIAL-IMPLEMENTATION.md`; `docs/trial/evidence/*`.
+`tests/browser/{t01_trial_journey.py,live_standin.js}`; `docs/TRIAL-IMPLEMENTATION.md`; `docs/trial/evidence/*`.
 
 Changed: `workers/{mr-ez,grade-essay,grade-speaking,live-examiner}/src/index.ts` and
 their `wrangler.jsonc` (`ACCESS_MODE: "open"`); `src/lib/tutor/{schema,errors}.ts`;
-`src/lib/writing/grader.ts`; `src/components/{TestPlayer,WritingTester}.tsx`;
+`src/lib/writing/grader.ts`; `src/components/{TestPlayer,WritingTester,LiveExaminer}.tsx`;
+`src/lib/speaking/live/{link,openai-session,grade}.ts` (the sitting id, only when given);
 `src/components/tutor/MrEzPanel.tsx`; `src/layouts/{BaseLayout,LessonLayout}.astro`;
 `src/pages/{dashboard,start,learn,review}.astro` and the gated trainer, speaking, writing,
 mock and band pages; `src/lib/platform-nav.ts`; `src/lib/i18n/dict/ru/index.ts`;

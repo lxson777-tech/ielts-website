@@ -18,6 +18,7 @@ import { overallSpeakingBand } from '../schema';
 import { analyzeAudio } from '../mechanics';
 import { blobToMp3Base64 } from '../encode';
 import type { TranscriptTurn } from './session';
+import { GraderRefusal, type TrialGrading } from '../../writing/grader';
 
 const GRADER_URL: string | undefined = import.meta.env?.PUBLIC_SPEAKING_GRADER_URL;
 
@@ -35,6 +36,11 @@ export interface InterviewGradeOptions {
       "a Part 2 practice drill (cue-card talk only)". Omit for the full test.
       Older Workers ignore this field, so it degrades cleanly. */
   scope?: string;
+  /** A trial build only: the student's sign-in and the id their Speaking
+      test was begun under, which the grader checks before it grades and
+      uses the test on a grade. Absent on the open site, which sends exactly
+      what it always sent. */
+  trial?: TrialGrading;
 }
 
 export async function gradeInterview(
@@ -47,11 +53,14 @@ export async function gradeInterview(
   const mechanics: AudioMechanicsReport = await analyzeAudio(recording.blob, opts.expectedMinMs);
   const mp3 = await blobToMp3Base64(recording.blob);
 
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (opts.trial) headers.Authorization = `Bearer ${opts.trial.token}`;
   const resp = await fetch(GRADER_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({
       kind: 'interview',
+      ...(opts.trial ? { trialSitting: opts.trial.sitting } : {}),
       interview: {
         transcript: transcript.map((t) => ({ role: t.role, text: t.text.trim() })).filter((t) => t.text),
         scope: opts.scope,
@@ -73,7 +82,9 @@ export async function gradeInterview(
   });
 
   if (!resp.ok) {
-    const err = (await resp.json().catch(() => null)) as { error?: string } | null;
+    const err = (await resp.json().catch(() => null)) as { error?: string; code?: string } | null;
+    const code = err?.code ?? '';
+    if (code === 'sign-in-required' || code.startsWith('trial-')) throw new GraderRefusal(code, err?.error ?? '');
     throw new Error(err?.error ?? `Grader error (${resp.status})`);
   }
 
