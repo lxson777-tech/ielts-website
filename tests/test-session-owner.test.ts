@@ -50,6 +50,16 @@
  *      that passed while the student was away, or while the tab slept, is
  *      never handed back, and a deadline that passed meanwhile is the same
  *      expired sitting a fresh load finds. Driven with a fake clock.
+ *  10. A paper opened on its own has its own sitting identity (Codex round
+ *      5, R2D-02): a paper left open in one tab can neither overwrite nor
+ *      clear a newer paper the same student started in another, it knows it
+ *      was replaced (or that its sitting is gone), and handing it in is
+ *      refused BEFORE anything is recorded.
+ *  11. A mock whose record disappeared is over in the tab still showing it
+ *      (Codex round 5, R2D-03): it reads as gone, not replaced; the results
+ *      step records only after it finalised that very sitting; and the mock
+ *      history takes one record per sitting id, so two tabs finishing the
+ *      same sitting record it once.
  *
  * There is no DOM here and no real browser. `window.localStorage` is a Map,
  * which is what every module under test reaches for, and the two screen-level
@@ -1074,11 +1084,11 @@ test("a standalone paper started mid-mock never touches the mock's papers, and r
      hands it in: the standalone slot is used, and only it. */
   const before = JSON.stringify(mock.loadActiveMock()!.legSittings);
   const drill = session.standaloneSitting(DRILL);
-  drill.start();
-  assert.equal(drill.save(A_ANSWER, NS_A), true);
+  const drillSitting = session.sittingRefOf(drill.start());
+  assert.equal(drill.save(A_ANSWER, NS_A, drillSitting), true);
   assert.equal(session.activeSession()?.testId, DRILL.id);
   assert.equal(JSON.stringify(mock.loadActiveMock()!.legSittings), before, "the drill changed the mock's papers");
-  drill.finish(NS_A, READING_LEG);
+  assert.equal(drill.finish(NS_A, READING_LEG, drillSitting), 'finished');
   assert.equal(session.activeSession(), null);
   assert.equal(JSON.stringify(mock.loadActiveMock()!.legSittings), before, "submitting the drill changed the mock's papers");
 
@@ -1111,8 +1121,8 @@ test('a new mock never restores an older sitting, even on the same papers and th
   old.save(A_LISTENING_ANSWERS, NS_A);
   /* The same paper also left running on its own in the standalone slot. */
   const standalone = session.standaloneSitting(LISTENING_PAPER as unknown as typeof DRILL);
-  standalone.start();
-  standalone.save({ q1: 'SYNTHETIC-standalone' }, NS_A);
+  const standaloneRef = session.sittingRefOf(standalone.start());
+  assert.equal(standalone.save({ q1: 'SYNTHETIC-standalone' }, NS_A, standaloneRef), true);
 
   /* A starts a fresh mock the same day. Nothing was recorded in between, so
      the mock id counts to the same number; the sitting id does not. */
@@ -1703,14 +1713,14 @@ test('R2C-03: A away 10 minutes on a paper with 15 left comes back to 5 left, no
 
     /* Five minutes in: 15 left, and A has answered. */
     clock.advance(5 * MINUTE);
-    assert.equal(store.save(A_ANSWER, NS_A), true);
+    assert.equal(store.save(A_ANSWER, NS_A, session.sittingRefOf(held)), true);
     const atSignOut = session.paperClockAt(held.endsAt);
     assert.deepEqual(atSignOut, { secondsLeft: 15 * 60, timeUp: false });
 
     /* A signs out in another tab and is away for ten minutes. Nothing is
        saved for A meanwhile, and the deadline itself does not move. */
     setCurrentOwner(null);
-    assert.equal(store.save({ q14: 'SYNTHETIC-typed-while-away' }, NS_A), false);
+    assert.equal(store.save({ q14: 'SYNTHETIC-typed-while-away' }, NS_A, session.sittingRefOf(held)), false);
     clock.advance(10 * MINUTE);
 
     /* A is back on the same open page. */
@@ -1737,7 +1747,7 @@ test('R2C-03: A away past the deadline comes back to time up, handled as a fresh
     const store = session.standaloneSitting(DRILL); // 20 minutes
     const held = store.start();
     clock.advance(5 * MINUTE);
-    store.save(A_ANSWER, NS_A);
+    assert.equal(store.save(A_ANSWER, NS_A, session.sittingRefOf(held)), true);
 
     setCurrentOwner(B);
     clock.advance(25 * MINUTE); // ten minutes past the deadline
@@ -1834,7 +1844,9 @@ test('R2C-03: the player\'s timer, its owner listener and its submit all read th
   const player = await componentCode('TestPlayer.tsx');
   const timer = effectContaining(player, 'submitRef.current()');
   assert.match(timer, /paperClockAt\(deadline\)/, 'the timer does not read the deadline');
-  assert.match(timer, /\[started, submitted, ownerChange\]/);
+  /* Stopped while the owner is changed, and for good once the sitting is
+     lost (R2D-02). */
+  assert.match(timer, /\[started, submitted, ownerChange, lost\]/);
   assert.doesNotMatch(player, /t - 1/, 'a count-down is back');
   assert.doesNotMatch(timer, /handleSubmit\(\)/, 'the timer calls the submit of the render it was set up in');
   /* The student coming back to the open page reads the deadline again. */
@@ -1856,23 +1868,451 @@ test('R2C-02: the mock screen begins a sitting only on Start, saves and clears o
   assert.match(screen.slice(screen.indexOf('function beginMock()')), /^[\s\S]*?beginActiveMock\(\{/);
   /* The snapshot effect is an ordinary save, and a refusal is checked. */
   const snapshotEffect = effectContaining(screen, 'saveActiveMock(snapshot())');
-  assert.match(snapshotEffect, /if \(replacedRef\.current\) return;/);
-  assert.match(snapshotEffect, /if \(saveActiveMock\(snapshot\(\)\)\) return;\s*if \(mockSittingReplaced\(\{ owner: mockOwnerRef\.current, sittingId \}\)\) stopAsReplaced\(\);/);
-  /* The tidy-up names the sitting, after checking it was not replaced. */
+  assert.match(snapshotEffect, /if \(endedRef\.current\) return;/);
+  /* A refused save is looked into: replaced (R2C-02) or gone (R2D-03). */
+  assert.match(snapshotEffect, /if \(saveActiveMock\(snapshot\(\)\)\) \{\s*recordHeldRef\.current = true;\s*return;\s*\}\s*const loss = sittingLossNow\(\);\s*if \(loss\) stopAs\(loss\);/);
+  /* The tidy-up names the sitting, and a refused one is looked into. */
   const recording = effectContaining(screen, 'clearActiveMock(');
-  assert.match(recording, /replacedRef\.current\) return;/);
-  assert.match(recording, /if \(mockSittingReplaced\(sitting\)\) \{\s*stopAsReplaced\(\);\s*return;\s*\}\s*savedRef\.current = true;/);
-  assert.match(recording, /clearActiveMock\(sitting\);/);
+  assert.match(recording, /endedRef\.current\) return;/);
+  assert.match(recording, /if \(!clearActiveMock\(sitting\)\) \{\s*const loss = sittingLossNow\(\);\s*if \(loss\) \{\s*stopAs\(loss\);\s*return;\s*\}\s*\}\s*savedRef\.current = true;/);
   assert.doesNotMatch(screen, /clearActiveMock\(mockOwnerRef\.current\)/);
   /* The other tab's write is listened for. */
   const listener = effectContaining(screen, "addEventListener('storage'");
   assert.match(listener, /isActiveMockStorageKey\(event\.key\)/);
-  assert.match(listener, /mockSittingReplaced\(\{ owner: mockOwnerRef\.current, sittingId \}\)\) stopAsReplaced\(\);/);
+  assert.match(listener, /const loss = sittingLossNow\(\);\s*if \(loss\) stopAs\(loss\);/);
+  /* The loss is read from the sitting's status, and the replaced case is
+     still "replaced". */
+  assert.match(screen, /mockSittingStatus\(\{ owner: mockOwnerRef\.current, sittingId \}\)/);
   /* The stopped screen comes first and says what happened. */
-  const replacedScreen = screen.indexOf('if (replaced) {');
+  const replacedScreen = screen.indexOf('if (ended) {');
   assert.ok(
     replacedScreen > 0 && replacedScreen < screen.indexOf("const otherStudent = ownerChange === 'other-student';"),
     'the replaced screen is not checked before the account-change screen',
   );
   assert.match(screen, /t\('A newer mock exam was started in another tab, so this one is no longer being saved\.'\)/);
+});
+
+/* ------------------------------------------------------------------ */
+/* 14. Which sitting, not only whose (Codex R2D-02)                     */
+/* ------------------------------------------------------------------ */
+
+/* The fifth Codex inspection found the standalone slot's saves and its
+   clear checked only the student. One student with paper P open in one tab
+   and paper Q started in another: a keystroke in P wrote P's answers over
+   Q's, handing P in cleared Q, and P's result was recorded before that clear
+   anyway. Two tabs are two players holding two sitting identities over one
+   storage, which is exactly what these drive: the store each player makes
+   (standaloneSitting) and the functions it rests on. */
+
+const Q_ANSWERS = { q1: 'SYNTHETIC-Q-answer-1', q2: 'SYNTHETIC-Q-answer-2' };
+const P_OUTCOME = { raw: 1, total: 13, band: 3, bandLabel: '3', secondsUsed: 60 };
+const Q_OUTCOME = { raw: 2, total: 13, band: 3.5, bandLabel: '3.5', secondsUsed: 90 };
+
+/** Tab 1 holds paper P with A's answer; tab 2 then starts paper Q and
+    answers it. Returns both players, their sittings, and the slot exactly
+    as tab 2 left it. */
+function twoPapersSameStudent() {
+  const tab1 = session.standaloneSitting(DRILL);
+  const p = session.sittingRefOf(tab1.start());
+  assert.equal(tab1.save(A_ANSWER, NS_A, p), true);
+  /* Tab 2: "Start test" on a different paper, the one write that may take
+     the slot. */
+  const tab2 = session.standaloneSitting(OTHER_DRILL);
+  const q = session.sittingRefOf(tab2.start());
+  assert.equal(tab2.save(Q_ANSWERS, NS_A, q), true);
+  return { tab1, tab2, p, q, afterQ: storage.data.get(sessionKey(NS_A))! };
+}
+
+test('R2D-02: every sitting has its own identity, and the same paper started again is a different sitting', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const first = session.startSession(DRILL);
+  const again = session.startSession(DRILL);
+  assert.match(first.sittingId ?? '', /^sitting-/);
+  assert.notEqual(first.sittingId, again.sittingId, 'two starts of one paper share an identity');
+  /* The stored sitting is the second one: the first can no longer save. */
+  assert.equal(session.saveAnswers(A_ANSWER, NS_A, session.sittingRefOf(first)), false);
+  assert.equal(session.saveAnswers(A_ANSWER, NS_A, session.sittingRefOf(again)), true);
+  /* A sitting written before sitting ids existed is named by its paper and
+     start, which every tab reads the same way. */
+  assert.deepEqual(session.sittingRefOf({ testId: DRILL.id, startedAt: 1_790_000_000_000 }), {
+    testId: DRILL.id,
+    sittingId: `${DRILL.id}@1790000000000`,
+  });
+  /* The claim keeps the identity: only the owner changes. */
+  const moved = JSON.parse(session.restampSession(JSON.stringify(again), NS_A, NS_B)!);
+  assert.equal(moved.sittingId, again.sittingId);
+});
+
+test('R2D-02: a paper left open in one tab writes nothing over a newer paper started in another, and knows it was replaced', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const { tab1, tab2, p, afterQ } = twoPapersSameStudent();
+
+  /* Tab 1 types again. It used to write P's answers into Q's sitting. */
+  assert.equal(tab1.save({ ...A_ANSWER, q15: 'SYNTHETIC-late' }, NS_A, p), false, "P's keystroke was saved over Q");
+  assert.equal(storage.data.get(sessionKey(NS_A)), afterQ, 'the slot changed');
+  assert.deepEqual(session.loadSession(OTHER_DRILL.id)?.answers, Q_ANSWERS);
+  assert.equal(session.loadSession(DRILL.id), null);
+
+  /* Tab 1 can tell why, and so stops; tab 2 is not told to. */
+  assert.equal(tab1.lost(NS_A, p), 'replaced');
+  assert.equal(tab2.lost(NS_A, session.sittingRefOf(session.activeSession()!)), null);
+  assert.equal(session.standaloneSittingStatus(NS_A, p), 'replaced');
+});
+
+test('R2D-02: handing in the stale paper is refused before anything is recorded and clears nothing; the newer paper finishes normally', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const { tab1, tab2, p, q, afterQ } = twoPapersSameStudent();
+
+  /* Tab 1's Submit (or its clock running out). It used to clear Q. */
+  assert.equal(tab1.finish(NS_A, P_OUTCOME, p), 'replaced', "the stale paper's hand-in was accepted");
+  assert.equal(storage.data.get(sessionKey(NS_A)), afterQ, "the stale hand-in cleared Q's sitting");
+  /* The low-level clear, named, refuses too. */
+  assert.equal(session.clearSession(NS_A, p), false);
+  assert.equal(storage.data.get(sessionKey(NS_A)), afterQ);
+
+  /* Q's own hand-in is accepted and clears Q. */
+  assert.equal(tab2.finish(NS_A, Q_OUTCOME, q), 'finished');
+  assert.equal(storage.data.has(sessionKey(NS_A)), false);
+  /* Once the slot is empty, P, which was written down before, reads as gone
+     and is still refused. */
+  assert.equal(tab1.finish(NS_A, P_OUTCOME, p), 'gone');
+  assert.equal(tab1.save(A_ANSWER, NS_A, p), false);
+  assert.equal(storage.data.has(sessionKey(NS_A)), false, 'a refused save wrote something');
+});
+
+test('R2D-02: reloading the newer tab still resumes its paper, with its answers and deadline', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const { q } = twoPapersSameStudent();
+  const endsAt = session.activeSession()!.endsAt;
+  /* A fresh player on Q's page, as a reload makes. */
+  const reloaded = session.standaloneSitting(OTHER_DRILL);
+  const held = reloaded.load();
+  assert.ok(held, 'Q was not resumed');
+  assert.deepEqual(session.sittingRefOf(held!), q);
+  assert.deepEqual(held!.answers, Q_ANSWERS);
+  assert.equal(held!.endsAt, endsAt, "Q's deadline moved");
+  /* And it carries on saving into Q. */
+  assert.equal(reloaded.save({ ...Q_ANSWERS, q3: 'SYNTHETIC-Q-3' }, NS_A, q), true);
+  assert.equal(reloaded.lost(NS_A, q), null);
+});
+
+test('R2D-02: the same sitting open in two tabs still saves from both, and once one hands it in the other finds it gone', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const tab1 = session.standaloneSitting(DRILL);
+  const s = session.sittingRefOf(tab1.start());
+  /* Tab 2 opens the SAME paper and picks up the SAME sitting. */
+  const tab2 = session.standaloneSitting(DRILL);
+  assert.deepEqual(session.sittingRefOf(tab2.load()!), s);
+  /* Both save into it, the last keystroke wins, exactly as before. */
+  assert.equal(tab1.save(A_ANSWER, NS_A, s), true);
+  assert.equal(tab2.save({ q14: 'SYNTHETIC-tab-2' }, NS_A, s), true);
+  assert.equal(tab1.lost(NS_A, s), null);
+  assert.equal(tab2.lost(NS_A, s), null);
+
+  /* Tab 2 hands it in. Tab 1 then cannot hand it in a second time. */
+  assert.equal(tab2.finish(NS_A, P_OUTCOME, s), 'finished');
+  assert.equal(tab1.lost(NS_A, s), 'gone');
+  assert.equal(tab1.finish(NS_A, P_OUTCOME, s), 'gone', 'the same sitting was handed in twice');
+  assert.equal(tab1.save(A_ANSWER, NS_A, s), false);
+  assert.equal(storage.data.has(sessionKey(NS_A)), false);
+});
+
+test('R2D-02: a browser that never managed to write the sitting down is never stopped by mistake, and its paper is still handed in', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  /* A full storage: every write to the sitting slot fails. */
+  const realSet = storage.setItem;
+  storage.setItem = (key, value) => {
+    if (key.startsWith(`${session.TEST_SESSION_KEY}::`)) throw new Error('SYNTHETIC QuotaExceededError');
+    realSet(key, value);
+  };
+  const player = session.standaloneSitting(DRILL);
+  const s = session.sittingRefOf(player.start());
+  assert.equal(storage.data.has(sessionKey(NS_A)), false);
+  assert.equal(player.save(A_ANSWER, NS_A, s), false);
+  /* Absent, but never written: not a loss. */
+  assert.equal(session.standaloneSittingStatus(NS_A, s), 'absent');
+  assert.equal(player.lost(NS_A, s), null, 'a full storage stopped the paper');
+  assert.equal(player.finish(NS_A, P_OUTCOME, s), 'unsaved', 'the paper could not be handed in');
+  assert.equal(session.sittingLossFrom('absent', false), null);
+  assert.equal(session.sittingLossFrom('absent', true), 'gone');
+  assert.equal(session.sittingLossFrom('replaced', false), 'replaced');
+  assert.equal(session.sittingLossFrom('held', true), null);
+  assert.equal(session.sittingLossFrom('owner-changed', true), null);
+});
+
+test('R2D-02: an account change is not a loss, and the sitting is still there for its student', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const tab1 = session.standaloneSitting(DRILL);
+  const p = session.sittingRefOf(tab1.start());
+  assert.equal(tab1.save(A_ANSWER, NS_A, p), true);
+
+  /* B signs in and starts a paper of their own. */
+  setCurrentOwner(B);
+  session.startSession(OTHER_DRILL);
+  assert.equal(tab1.lost(NS_A, p), null, 'an account change read as a loss');
+  assert.equal(tab1.finish(NS_A, P_OUTCOME, p), 'owner-changed');
+  assert.equal(session.standaloneSittingStatus(NS_A, p), 'owner-changed');
+
+  /* A is back: A's sitting is still the stored one, and saves. */
+  setCurrentOwner(A);
+  assert.equal(tab1.lost(NS_A, p), null);
+  assert.equal(tab1.save({ ...A_ANSWER, q15: 'SYNTHETIC-back' }, NS_A, p), true);
+});
+
+test("R2D-02: only the standalone slot's own keys are worth a look on a storage event", () => {
+  assert.equal(session.isTestSessionStorageKey(sessionKey(NS_A)), true);
+  assert.equal(session.isTestSessionStorageKey(sessionKey(NS_ANON)), true);
+  assert.equal(session.isTestSessionStorageKey(session.TEST_SESSION_KEY), true);
+  assert.equal(session.isTestSessionStorageKey(null), true);
+  assert.equal(session.isTestSessionStorageKey(`${mock.ACTIVE_MOCK_KEY}::${NS_A}`), false);
+  assert.equal(session.isTestSessionStorageKey(session.UNOWNED_ADOPTION_KEY), false);
+});
+
+test('R2D-02: the player finalises before it records anything, names its sitting in every save, listens for the other tab, and stops for good', async () => {
+  const player = await componentCode('TestPlayer.tsx');
+  const submit = player.slice(player.indexOf('function handleSubmit()'), player.indexOf('const unansweredCount'));
+  /* Finalised first, then recorded: a stale tab's hand-in records nothing. */
+  const finishAt = submit.indexOf('sittingStore.finish(');
+  assert.ok(finishAt > 0, 'the hand-in does not finish the sitting');
+  assert.ok(finishAt < submit.indexOf('recordTestAttempt('), 'the attempt is recorded before the sitting is finalised');
+  assert.ok(finishAt < submit.indexOf('recordSubmission('), 'the evidence is recorded before the sitting is finalised');
+  assert.ok(finishAt < submit.indexOf('submittedRef.current = true;'));
+  assert.match(
+    submit,
+    /const finished = sittingStore\.finish\(sittingOwnerRef\.current, outcome, sittingRef\.current\);\s*if \(finished === 'replaced' \|\| finished === 'gone'\) \{\s*stopAsLost\(finished\);\s*return;\s*\}/,
+  );
+  assert.equal((player.match(/sittingStore\.finish\(/g) ?? []).length, 1, 'the sitting is finished in more than one place');
+  /* Every save names the sitting. */
+  assert.match(player, /sittingStore\.save\(next, sittingOwnerRef\.current, sittingRef\.current\)/);
+  assert.equal((player.match(/sittingRef\.current = sittingRefOf\(s\);/g) ?? []).length, 2);
+  /* The other tab's write is listened for, on the standalone slot only. */
+  const listener = effectContaining(player, "addEventListener('storage'");
+  assert.match(listener, /if \(mockSittingId \|\| !started \|\| submitted \|\| lost\) return;/);
+  assert.match(listener, /isTestSessionStorageKey\(event\.key\)/);
+  assert.match(listener, /noticeLost\(\);/);
+  /* A refused save is looked into once the render has happened. */
+  assert.match(effectContaining(player, 'saveRefusedRef.current = false;'), /noticeLost\(\);/);
+  /* The stopped screen comes before the account-change screen, with its own
+     sentences, and the lost sitting stays lost across an account change. */
+  const lostScreen = player.indexOf('if (lost) {');
+  assert.ok(lostScreen > 0 && lostScreen < player.indexOf('if (ownerChange) {'), 'the lost screen is not checked first');
+  assert.match(player, /t\('A newer test was started in another tab, so this one is no longer being saved\.'\)/);
+  assert.match(player, /t\('This test was submitted or closed in another tab, so this one is no longer being saved\.'\)/);
+  assert.match(player, /if \(lostRef\.current\) return;\s*if \(!startedRef\.current\) \{/);
+  /* A mock paper tells its screen. */
+  assert.match(player, /onSittingLost\?\.\(loss\);/);
+});
+
+/* ------------------------------------------------------------------ */
+/* 15. When the mock record is gone (Codex R2D-03)                      */
+/* ------------------------------------------------------------------ */
+
+/* The fifth Codex inspection found that a mock whose record DISAPPEARED
+   was not treated as over: two tabs that had both picked up the same
+   sitting, one finished it (recording and clearing it), and the other went
+   on unsaved and recorded the same mock a second time at its own results.
+   `finishLikeTheScreen` below is the results step of MockExam.tsx, step for
+   step (the source check at the end of this section pins that shape), so
+   the functions it calls are proved in the order the screen calls them. */
+
+/** What MockExam's results step does for the sitting `ref`, from a tab
+    that `everHeld` its record: finalise first, stop on a loss, record once. */
+function finishLikeTheScreen(
+  ref: { owner: string; sittingId: string },
+  everHeld: boolean,
+  attempt: Parameters<typeof mock.saveMockAttempt>[0],
+): { stopped: 'replaced' | 'gone' | null; recorded: boolean } {
+  if (!mock.clearActiveMock(ref)) {
+    const loss = session.sittingLossFrom(mock.mockSittingStatus(ref), everHeld);
+    if (loss) return { stopped: loss, recorded: false };
+  }
+  return { stopped: null, recorded: mock.saveMockAttempt({ ...attempt, sittingId: ref.sittingId }, ref.owner) };
+}
+
+test('R2D-03: a mock finished in another tab reads as gone, not replaced, and the tab still showing it can neither save nor clear', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const snapshot = activeMock(NS_A, { stage: 'writing', reading: READING_LEG, writingEndsAt: WRITING_DEADLINE });
+  assert.equal(mock.beginActiveMock(snapshot), true);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  assert.equal(mock.mockSittingStatus(ref), 'held');
+
+  /* Tab 2 picked up the same sitting and finished it: recorded, cleared. */
+  assert.equal(mock.clearActiveMock(ref), true);
+  assert.equal(mock.mockSittingStatus(ref), 'absent');
+  assert.equal(mock.mockSittingReplaced(ref), false, 'a finished sitting read as replaced');
+  assert.equal(session.sittingLossFrom(mock.mockSittingStatus(ref), true), 'gone');
+
+  /* Tab 1's keystroke, and its tidy-up, write nothing at all. */
+  assert.equal(mock.saveActiveMock({ ...snapshot, essay1: 'SYNTHETIC late draft' }), false);
+  assert.equal(mock.clearActiveMock(ref), false);
+  assert.equal(storage.data.has(activeKey(NS_A)), false, 'the stale tab wrote the finished sitting back');
+});
+
+test('R2D-03: two tabs finishing the same sitting record it once; the second finds it gone and records nothing', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  const attempt = mockAttempt('mock-2026-09-23-1', 'SYNTHETIC essay from tab 2');
+
+  const tab2 = finishLikeTheScreen(ref, true, attempt);
+  assert.deepEqual(tab2, { stopped: null, recorded: true });
+  const tab1 = finishLikeTheScreen(ref, true, { ...attempt, essays: [] });
+  assert.deepEqual(tab1, { stopped: 'gone', recorded: false }, 'the second tab recorded the same mock again');
+
+  const history = mock.listMockAttempts();
+  assert.equal(history.length, 1, 'the mock was recorded twice');
+  assert.equal(history[0]!.sittingId, SITTING_1);
+  assert.equal(history[0]!.essays[0]?.text, 'SYNTHETIC essay from tab 2');
+  assert.equal(progress.getAttempts('mock-2026-09-23-1').length, 1, 'the progress marker was written twice');
+});
+
+test('R2D-03: the mock history takes one record per sitting: a second record of it neither duplicates nor replaces the first, and older rows are left alone', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  /* Two older rows with no sitting id, one of them with the same mock id. */
+  const older = [mockAttempt('mock-2026-09-22-1', 'SYNTHETIC older one'), mockAttempt('mock-2026-09-23-1', 'SYNTHETIC older two')];
+  storage.data.set(mockKey(NS_A), JSON.stringify(older));
+
+  const first = { ...mockAttempt('mock-2026-09-23-2', 'SYNTHETIC first'), sittingId: SITTING_1 };
+  assert.equal(mock.saveMockAttempt(first, NS_A), true);
+  const second = { ...mockAttempt('mock-2026-09-23-2', 'SYNTHETIC second'), sittingId: SITTING_1 };
+  assert.equal(mock.saveMockAttempt(second, NS_A), false, 'a second record of one sitting was accepted');
+
+  const history = JSON.parse(storage.data.get(mockKey(NS_A))!) as Array<{ id: string; sittingId?: string; essays: { text: string }[] }>;
+  assert.equal(history.length, 3);
+  assert.deepEqual(history.slice(0, 2), older, 'the older rows were changed');
+  assert.equal(history[2]!.essays[0]!.text, 'SYNTHETIC first', 'the first record was replaced');
+  assert.equal(progress.getAttempts('mock-2026-09-23-2').length, 1);
+
+  /* A different sitting is a different record, even on the same mock id. */
+  assert.equal(mock.saveMockAttempt({ ...second, sittingId: 'SYNTHETIC-sitting-2' }, NS_A), true);
+  /* And a record with no sitting id is never matched: it is added as ever. */
+  assert.equal(mock.saveMockAttempt(mockAttempt('mock-2026-09-23-1', 'SYNTHETIC no id'), NS_A), true);
+  assert.equal(mock.listMockAttempts().length, 5);
+});
+
+test('R2D-03: a record that was never written down is not gone: a full storage never stops a mock, and its results are still recorded once', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const realSet = storage.setItem;
+  storage.setItem = (key, value) => {
+    if (key.startsWith(`${mock.ACTIVE_MOCK_KEY}::`)) throw new Error('SYNTHETIC QuotaExceededError');
+    realSet(key, value);
+  };
+  const fresh = activeMock(NS_A, { stage: 'listening', listening: null });
+  const everHeld = mock.beginActiveMock(fresh);
+  assert.equal(everHeld, false);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  assert.equal(mock.mockSittingStatus(ref), 'absent');
+  assert.equal(session.sittingLossFrom(mock.mockSittingStatus(ref), everHeld), null, 'a full storage stopped the mock');
+  assert.deepEqual(finishLikeTheScreen(ref, everHeld, mockAttempt('mock-2026-09-23-1', 'SYNTHETIC')), {
+    stopped: null,
+    recorded: true,
+  });
+  assert.equal(mock.listMockAttempts().length, 1);
+});
+
+test("R2D-03: a mock added to an account in another tab is gone for the device's tab once the device is its own again", () => {
+  freshBrowser();
+  setCurrentOwner(null);
+  beginSitting(NS_ANON, SITTING_1);
+  const deviceRef = { owner: NS_ANON, sittingId: SITTING_1 };
+  assert.equal(mock.mockSittingStatus(deviceRef), 'held');
+
+  /* A signs in in another tab and adds the device's work to the account. */
+  setCurrentOwner(A);
+  storeOwner.claimLegacyStores(storage, ANON, A);
+  assert.equal(mock.loadActiveMock()?.sittingId, SITTING_1);
+  /* While A is signed in, the device's tab is stopped for the account change,
+     never as a loss. */
+  assert.equal(mock.mockSittingStatus(deviceRef), 'owner-changed');
+  assert.equal(session.sittingLossFrom(mock.mockSittingStatus(deviceRef), true), null);
+
+  /* A signs out: the device's tab is its own student's again, and the
+     sitting is not there any more. It is over in that tab, and it can
+     record nothing. */
+  setCurrentOwner(null);
+  assert.equal(mock.mockSittingStatus(deviceRef), 'absent');
+  assert.deepEqual(finishLikeTheScreen(deviceRef, true, mockAttempt('mock-2026-09-23-1', 'SYNTHETIC')), {
+    stopped: 'gone',
+    recorded: false,
+  });
+  assert.deepEqual(mock.listMockAttempts(), []);
+  /* A still has it, whole. */
+  setCurrentOwner(A);
+  assert.equal(mock.loadActiveMock()?.sittingId, SITTING_1);
+});
+
+test("R2D-03: a paper of a mock reports its sitting's loss, and its hand-in is refused before anything is recorded", () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  const leg = mock.mockLegSitting(ref, LISTENING_PAPER);
+  const paper = session.sittingRefOf(leg.start());
+  assert.equal(leg.save(A_LISTENING_ANSWERS, NS_A, paper), true);
+  assert.equal(leg.lost(NS_A, paper), null);
+
+  /* Replaced: a newer sitting began in another tab. */
+  beginSitting(NS_A, 'SYNTHETIC-sitting-2');
+  const newer = storage.data.get(activeKey(NS_A));
+  assert.equal(leg.lost(NS_A, paper), 'replaced');
+  assert.equal(leg.finish(NS_A, LISTENING_LEG, paper), 'replaced');
+  assert.equal(storage.data.get(activeKey(NS_A)), newer, 'the stale paper wrote into the newer sitting');
+
+  /* Gone: the newer one finished there too, and nothing is written down. */
+  assert.equal(mock.clearActiveMock({ owner: NS_A, sittingId: 'SYNTHETIC-sitting-2' }), true);
+  assert.equal(leg.lost(NS_A, paper), 'gone');
+  assert.equal(leg.finish(NS_A, LISTENING_LEG, paper), 'gone');
+  assert.equal(storage.data.has(activeKey(NS_A)), false);
+
+  /* A paper whose sitting was never written down (a full storage) is not
+     lost, and hands in as before. */
+  const unwritten = mock.mockLegSitting({ owner: NS_A, sittingId: 'SYNTHETIC-never-written' }, LISTENING_PAPER);
+  const u = session.sittingRefOf(unwritten.start());
+  assert.equal(unwritten.lost(NS_A, u), null);
+  assert.equal(unwritten.finish(NS_A, LISTENING_LEG, u), 'unsaved');
+  /* And a live one finishes inside its sitting. */
+  beginSitting(NS_A, 'SYNTHETIC-sitting-3');
+  const live = mock.mockLegSitting({ owner: NS_A, sittingId: 'SYNTHETIC-sitting-3' }, LISTENING_PAPER);
+  const l = session.sittingRefOf(live.start());
+  assert.equal(live.finish(NS_A, LISTENING_LEG, l), 'finished');
+  assert.deepEqual(mock.mockLegResult({ owner: NS_A, sittingId: 'SYNTHETIC-sitting-3' }, LISTENING_PAPER.id), LISTENING_LEG);
+});
+
+test('R2D-03: the mock screen stops on a gone record as well as a replaced one, finalises before it records, and records once', async () => {
+  const screen = await componentCode('MockExam.tsx');
+  const recording = effectContaining(screen, 'clearActiveMock(');
+  /* Finalised first, and only then recorded, once. */
+  const clearAt = recording.indexOf('if (!clearActiveMock(sitting))');
+  assert.ok(clearAt > 0 && clearAt < recording.indexOf('saveMockAttempt('), 'the mock is recorded before its sitting is finalised');
+  assert.match(recording, /const recorded = saveMockAttempt\(/);
+  assert.match(recording, /sittingId: sittingId \|\| undefined,/);
+  const guard = recording.indexOf('if (!recorded) return;');
+  assert.ok(guard > 0 && guard < recording.indexOf('recordSubmission('), 'the evidence is written even when the history refused the record');
+  /* The loss is read with the tab's own "ever held" knowledge. */
+  assert.match(screen, /return sittingLossFrom\(status, recordHeldRef\.current\);/);
+  assert.equal((screen.match(/recordHeldRef\.current = beginActiveMock\(/g) ?? []).length, 2);
+  assert.match(screen, /recordHeldRef\.current = true;\s*resume\(held\);/);
+  /* The owner coming back looks for a loss before putting the sitting back. */
+  const back = effectContaining(screen, 'wasStoppedRef.current = false;');
+  assert.ok(back.indexOf('sittingLossNow()') > 0 && back.indexOf('sittingLossNow()') < back.indexOf('resume('));
+  /* Both papers report their loss to the screen. */
+  const players = [...screen.matchAll(/<TestPlayer\b[\s\S]*?\/>/g)].map((match) => match[0]);
+  assert.equal(players.length, 2);
+  for (const player of players) assert.match(player, /onSittingLost=\{stopAs\}/);
+  /* One true sentence per case. */
+  assert.match(
+    screen,
+    /ended === 'replaced'\s*\? t\('A newer mock exam was started in another tab, so this one is no longer being saved\.'\)\s*: t\('This mock exam was finished or closed in another tab, so this one is no longer being saved\.'\)/,
+  );
 });

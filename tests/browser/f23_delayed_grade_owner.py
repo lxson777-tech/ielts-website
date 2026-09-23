@@ -68,6 +68,28 @@ AND THE TWO FINDINGS OF THE THIRD CODEX INSPECTION (of 7c5264a)
   proven only in tests/delayed-grade-owner.test.ts (the same attempt, and a
   source scan of how the examiner uses it), and the results file says so.
 
+AND THE FINDING OF THE FOURTH CODEX INSPECTION (of 1701b97)
+  7. R2D-01: the live examiner's START asked nothing after its waits. In the
+     mock exam, an account change while the microphone permission was still
+     being asked for took the examiner off screen, and when the permission
+     came back the examiner still kept the microphone, started recording,
+     fetched a token and opened a paid voice session behind the stopped
+     screen. The examiner is started here as far as it can go without a
+     voice service: its address is INTERCEPTED in the browser (SYNTHETIC
+     settings; every request that would create a voice session refused with
+     a SYNTHETIC failure, or held and then refused), and a wrapper installed
+     before the page loads HOLDS the page's microphone request and counts
+     every track, recorder, peer connection and socket the page makes. Three
+     races, with every account change made from a second tab: (a) the mock's
+     examiner with the microphone request held, answered after the switch;
+     (b) the mock's examiner with the voice session request held, refused
+     after the switch; (c) the standalone examiner page, as (a).
+     Section 7 needs the site started WITH the examiner address, which turns
+     /trainers/speaking into the live drills and so breaks sections 2 and 6
+     (they drive the recorded speaking trainer). It is therefore run on its
+     own, against a second start of the dev server, and appended to the same
+     results file (F23_SECTIONS and F23_APPEND below).
+
 HOW THE GRADERS ARE STOOD IN FOR
 Nothing is graded by any model. The site is started with its grader
 addresses pointed at the local stand-in's own port, on paths the stand-in
@@ -84,7 +106,9 @@ WHAT THIS IS NOT
     on 8815 and the site on 4368; the R2B-01 run (results-delayed-grade-2.md,
     screenshots prefixed "delayed2-", sections 1 to 4) used 8819 and 4372;
     the R2C run (results-delayed-grade-3.md, screenshots prefixed "delayed3-",
-    all six sections) uses 8831 and 4384, which are now the defaults.
+    all six sections) used 8831 and 4384; the R2D run (results-delayed-grade-4.md,
+    screenshots prefixed "delayed4-", sections 1 to 7) uses them again, and
+    they are the defaults.
   - No real account, no real key, no paid API call, no deployment.
 
 Run with, both already running:
@@ -111,6 +135,17 @@ Run with, both already running:
      say) is passed as a relative path to it.
   then:
        IELTS_STANDIN_URL=http://127.0.0.1:8831 python tests/browser/f23_delayed_grade_owner.py
+  which runs sections 1 to 6 and starts a fresh results file. For section 7,
+  stop the site and start it again with ONE more variable,
+       PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8831/SYNTHETIC-intercepted-live-examiner
+  (a path the stand-in does not serve; the script intercepts it in the
+  browser), then:
+       F23_SECTIONS=7 F23_APPEND=1 F23_EXAMINER_CONFIGURED=1 \\
+       IELTS_STANDIN_URL=http://127.0.0.1:8831 python tests/browser/f23_delayed_grade_owner.py
+  F23_SECTIONS picks the sections (default 1,2,3,4,5,6), F23_APPEND=1 adds
+  to the results file instead of starting it again, and
+  F23_EXAMINER_CONFIGURED=1 says the site was started with the examiner
+  address (without it section 7 reports itself as not run).
 
 Every email, password, essay and band below is SYNTHETIC, made up for this run.
 """
@@ -123,12 +158,12 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(__file__))
 
 # Read at IMPORT time by final_helpers and f20, so these come first.
-# The R2C run: its own results file and screenshot prefix, so the earlier
-# runs' results-delayed-grade.md and -2.md, and their "delayed-" and
-# "delayed2-" screenshots, stay exactly as they were.
+# The R2D run: its own results file and screenshot prefix, so the earlier
+# runs' results-delayed-grade.md, -2.md and -3.md, and their "delayed-",
+# "delayed2-" and "delayed3-" screenshots, stay exactly as they were.
 os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4384/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-3")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed3-")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-4")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed4-")
 os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8831")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
@@ -303,24 +338,34 @@ accounts stand-in (`node tools/mr-ez-dev-server.mjs`) at {STANDIN_URL}. Both wer
 this run and stopped afterwards. This is NOT the frozen production snapshot the `results.md`
 suite uses, and it is NOT a real Supabase project: nothing below is evidence about one.
 
-It is the browser half of four fixes. Sections 1 and 2: finding R2-02 of the second Codex
+It is the browser half of five fixes. Sections 1 and 2: finding R2-02 of the second Codex
 inspection, a grade that came back after the owner changed was written under whoever was signed in
 by then. Sections 3 and 4: finding R2B-01 of the second fresh Codex inspection, the essay editor
 itself was nobody's, so a student who took over the page could submit the previous student's text,
 and a switch inside the 600 ms draft autosave saved it under the newcomer. Section 5: finding R2C-01
 of the third Codex inspection, a late grade deleted the draft its student had revised since
 submitting. Section 6: finding R2C-04 of the same inspection, a speaking attempt went on after the
-page changed hands, so a second student could answer the first student's remaining questions. The
+page changed hands, so a second student could answer the first student's remaining questions.
+Section 7: finding R2D-01 of the Codex inspection of 1701b97, the live examiner's START asked
+nothing after its waits, so an account change while the microphone permission was up left the
+microphone, a recording and a paid voice session running behind the mock's stopped screen. The
 deterministic half of all of them is `tests/delayed-grade-owner.test.ts`.
 
-**What this run does not cover, and where it is covered instead.** The standalone live examiner
-(`/speaking/examiner`, and the live drills) now ends its voice session the moment the page changes
-hands (R2C-04), but it cannot be started here: it needs a paid voice session, and the stand-in has
-none. Its suspension is proven only by `tests/delayed-grade-owner.test.ts`, section 7: the same
-attempt object the speaking trainer uses (asked before every stage, suspended at the switch, its
-clocks cleared, nothing graded) and a source scan of how the examiner uses it (the voice session
-closed, the recorder stopped and emptied, the microphone released, every clock cleared, and the mock
-exam's own embedded path left as it was).
+**Two starts of the dev server.** Sections 1 to 6 drive the recorded speaking trainer on
+`/trainers/speaking`, which the site shows only while no live examiner address is configured.
+Section 7 needs one, so it ran against a second start of the same dev server with
+`PUBLIC_LIVE_EXAMINER_URL` pointed at a path on the stand-in that the stand-in does not serve, and was
+appended below.
+
+**What this run does not cover, and where it is covered instead.** No live interview runs here: the
+examiner needs a paid voice session, and the stand-in has none. Section 7 starts the examiner as far
+as it can go without one (its settings and every voice session request are intercepted in the browser
+and answered by the run itself) and races the account change against the microphone request and the
+voice session request. What happens once a voice session is up (the suspension mid-interview, the
+grading guard after the session is shut down, a grade already requested being kept for its student)
+is proven only by `tests/delayed-grade-owner.test.ts`, sections 7 and 8: the same attempt and start
+guard the examiner uses, driven with promises resolved by hand, and a source scan of how the examiner
+uses them.
 
 **No grader and no model was called.** The essay and speaking grader addresses point at paths the
 local stand-in does not serve, and this script intercepts those requests in the browser, holds
@@ -1404,18 +1449,650 @@ def speaking_switch_scenario(browser) -> None:
     ctx.close()
 
 
+# ── Section 7 (R2D-01): the live examiner's start, raced by an account change ──
+#
+# The live examiner is started here as far as it can go without a voice
+# service, and no further. Its address points at a path on the local stand-in
+# that the stand-in does not serve, and every request to it is INTERCEPTED in
+# the browser before it leaves: the settings request is answered with
+# SYNTHETIC settings (the paid provider, sign-in required), so the examiner
+# goes on to ask for the microphone; the request that would create a paid
+# voice session is never sent anywhere, it is counted and refused (or held,
+# then refused) with a SYNTHETIC failure. No token that could reach a real
+# service exists in this run.
+#
+# The microphone is the browser's FAKE one (a test tone). A small wrapper
+# installed before the page loads can HOLD the page's microphone request, so
+# the account can change while the permission is "still being asked for",
+# exactly the window finding R2D-01 describes, and it records every track,
+# recorder, peer connection and socket the page makes, so what is left
+# running is measured, not inferred from the screen.
+
+EMAIL_J = f"synthetic-student-j-f23-{RUN}@example.test"
+EMAIL_K = f"synthetic-student-k-f23-{RUN}@example.test"
+EMAIL_L = f"synthetic-student-l-f23-{RUN}@example.test"
+EMAIL_M = f"synthetic-student-m-f23-{RUN}@example.test"
+
+EXAMINER_PATH = "SYNTHETIC-intercepted-live-examiner"
+EXAMINER_SETTINGS = {
+    "provider": "openai",
+    "model": "SYNTHETIC-no-model",
+    "backendModel": None,
+    "requiresSignIn": True,
+}
+EXAMINER_CORS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "content-type, authorization",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+}
+MOCK_PATH = "/tests/mock"
+MOCK_STOPPED = "Mock exam stopped"
+MOCK_RESUME = "Continue where you left off"
+SPEAKING_START = "Start speaking test"
+SPEAKING_INTERRUPTED = "Your speaking test was interrupted before it finished"
+EXAMINER_CONNECTING = "Connecting you to"
+EXAMINER_START = "Start the interview"
+
+EXAMINER_PROBE = """
+(() => {
+  const probe = {
+    hold: false,
+    held: [],
+    micRequests: 0,
+    tracks: [],
+    recorders: [],
+    recorderStops: 0,
+    peers: [],
+    sockets: [],
+  };
+  window.__f23Examiner = probe;
+  const md = navigator.mediaDevices;
+  if (md && md.getUserMedia) {
+    const original = md.getUserMedia.bind(md);
+    md.getUserMedia = (constraints) => {
+      probe.micRequests += 1;
+      const answer = () =>
+        original(constraints).then((stream) => {
+          stream.getTracks().forEach((track) => probe.tracks.push(track));
+          return stream;
+        });
+      if (!probe.hold) return answer();
+      return new Promise((resolve, reject) => {
+        probe.held.push(() => answer().then(resolve, reject));
+      });
+    };
+  }
+  window.__f23ReleaseMicrophone = () => {
+    probe.hold = false;
+    const waiting = probe.held.splice(0);
+    waiting.forEach((run) => run());
+    return waiting.length;
+  };
+  const Recorder = window.MediaRecorder;
+  if (Recorder) {
+    const start = Recorder.prototype.start;
+    const stop = Recorder.prototype.stop;
+    Recorder.prototype.start = function (...args) { probe.recorders.push(this); return start.apply(this, args); };
+    Recorder.prototype.stop = function (...args) { probe.recorderStops += 1; return stop.apply(this, args); };
+  }
+  const Peer = window.RTCPeerConnection;
+  if (Peer) {
+    window.RTCPeerConnection = new Proxy(Peer, {
+      construct(target, args) {
+        const peer = new target(...args);
+        probe.peers.push(peer);
+        return peer;
+      },
+    });
+  }
+  const Socket = window.WebSocket;
+  if (Socket) {
+    window.WebSocket = new Proxy(Socket, {
+      construct(target, args) {
+        probe.sockets.push(String(args[0]));
+        return new target(...args);
+      },
+    });
+  }
+})();
+"""
+
+
+class InterceptedExaminer:
+    """Stands in for the live examiner's address, for every page of one
+    browser context. Nothing it answers can reach a voice service."""
+
+    def __init__(self, ctx, hold_connections: bool = False):
+        self.hold_connections = hold_connections
+        self.settings_requests = 0
+        self.connection_requests = 0
+        # The sign-in token each voice session request carried, so the run
+        # can ask the local stand-in whose it was.
+        self.bearers = []
+        self.held = []
+        self.other_requests = []
+        ctx.route(f"**/{EXAMINER_PATH}**", self._handle)
+
+    def _handle(self, route):
+        request = route.request
+        if request.method == "OPTIONS":
+            route.fulfill(status=204, headers=EXAMINER_CORS, body="")
+            return
+        path = request.url.split("?")[0].rstrip("/")
+        if path.endswith(EXAMINER_PATH) and request.method == "GET":
+            self.settings_requests += 1
+            route.fulfill(
+                status=200, content_type="application/json", headers=EXAMINER_CORS, body=json.dumps(EXAMINER_SETTINGS)
+            )
+            return
+        if path.endswith(EXAMINER_PATH) and request.method == "POST":
+            # The request that would create a paid voice session.
+            self.connection_requests += 1
+            auth = request.headers.get("authorization") or ""
+            self.bearers.append(auth[7:].strip() if auth.lower().startswith("bearer ") else "")
+            if self.hold_connections:
+                self.held.append(route)
+                return
+            self._refuse(route)
+            return
+        self.other_requests.append(f"{request.method} {path.rsplit('/', 1)[-1]}")
+        route.fulfill(status=204, headers=EXAMINER_CORS, body="")
+
+    @staticmethod
+    def _refuse(route) -> None:
+        route.fulfill(
+            status=503,
+            content_type="application/json",
+            headers=EXAMINER_CORS,
+            body=json.dumps({"error": "SYNTHETIC: there is no voice service in this run (f23)."}),
+        )
+
+    def wait_until_held(self, page, timeout_ms: int = 30000) -> bool:
+        waited = 0
+        while not self.held and waited < timeout_ms:
+            page.wait_for_timeout(250)
+            waited += 250
+        return bool(self.held)
+
+    def refuse_held(self) -> int:
+        refused = 0
+        while self.held:
+            self._refuse(self.held.pop(0))
+            refused += 1
+        return refused
+
+
+def token_owner(bearer: str) -> str | None:
+    """Whose sign-in token this is, asked of the LOCAL stand-in (the only
+    place these tokens mean anything)."""
+    if not bearer:
+        return None
+    import urllib.request
+
+    request = urllib.request.Request(
+        f"{STANDIN_URL}/auth/v1/user",
+        headers={"Authorization": f"Bearer {bearer}", "apikey": "local-anon-key"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=5) as response:
+            return json.loads(response.read().decode("utf-8")).get("id")
+    except Exception:
+        return None
+
+
+def carried_by(examiner, names: dict) -> str:
+    owners = [token_owner(b) for b in examiner.bearers]
+    if not owners:
+        return "none"
+    return ", ".join(names.get(o, o or "no token") for o in owners)
+
+
+def examiner_state(page) -> dict:
+    try:
+        return page.evaluate(
+            """() => {
+                const p = window.__f23Examiner;
+                if (!p) return { probe: false };
+                return {
+                    probe: true,
+                    micRequests: p.micRequests,
+                    heldMicrophone: p.held.length,
+                    tracks: p.tracks.length,
+                    liveTracks: p.tracks.filter((t) => t.readyState === 'live').length,
+                    recorders: p.recorders.length,
+                    activeRecorders: p.recorders.filter((r) => r.state !== 'inactive').length,
+                    peers: p.peers.length,
+                    openPeers: p.peers.filter((pc) => pc.signalingState !== 'closed').length,
+                    // The dev server's own live-reload socket (to this page's
+                    // host) is not the examiner's, so it is counted apart.
+                    sockets: p.sockets.filter((url) => !url.includes(location.host)).length,
+                    devServerSockets: p.sockets.filter((url) => url.includes(location.host)).length,
+                };
+            }"""
+        )
+    except Exception:
+        return {}
+
+
+def wait_for_state(page, predicate, timeout_ms: int = 20000) -> dict:
+    waited = 0
+    state = examiner_state(page)
+    while not predicate(state) and waited < timeout_ms:
+        page.wait_for_timeout(250)
+        waited += 250
+        state = examiner_state(page)
+    return state
+
+
+def state_text(state: dict) -> str:
+    return (
+        f"microphone requests {state.get('micRequests')}, held {state.get('heldMicrophone')}; tracks handed back "
+        f"{state.get('tracks')}, still live {state.get('liveTracks')}; recorders started {state.get('recorders')}, "
+        f"still recording {state.get('activeRecorders')}; peer connections made {state.get('peers')}, still open "
+        f"{state.get('openPeers')}; sockets other than the dev server's own live-reload one {state.get('sockets')}"
+    )
+
+
+def shows(body: str, text: str) -> bool:
+    """Screen text as the student reads it: some labels are upper-cased by
+    the page's styling, so the comparison ignores case."""
+    return text.lower() in body.lower()
+
+
+def wait_for_text(page, text: str, timeout_ms: int = 15000) -> bool:
+    waited = 0
+    while not shows(body_text(page), text) and waited < timeout_ms:
+        page.wait_for_timeout(250)
+        waited += 250
+    return shows(body_text(page), text)
+
+
+def seed_speaking_brief(page, user_id: str) -> str:
+    """The precondition, written straight into this student's own store: a
+    SYNTHETIC mock sitting that has reached the Speaking brief (Listening,
+    Reading and Writing already done). Driving three whole papers first
+    would prove nothing more about the examiner; f22 does that journey."""
+    now_ms = int(time.time() * 1000)
+    key = f"ielts.mock.active.v1::u:{user_id}"
+    leg = {"raw": 30, "total": 40, "band": 7, "bandLabel": "7", "secondsUsed": 1800}
+    sitting = {
+        "version": 1,
+        "owner": f"u:{user_id}",
+        "sittingId": f"sitting-SYNTHETIC-f23-{RUN}-{user_id[:8]}",
+        "mockId": f"mock-SYNTHETIC-f23-{RUN}",
+        "startedAt": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime(now_ms / 1000 - 3 * 3600)),
+        "stage": "speaking-brief",
+        "listeningTestId": "",
+        "readingTestId": "",
+        "task1PromptId": None,
+        "task2PromptId": None,
+        "listening": leg,
+        "reading": leg,
+        "essay1": "SYNTHETIC Task 1 answer written for the f23 run.",
+        "essay2": "SYNTHETIC Task 2 answer written for the f23 run.",
+        "writingEndsAt": now_ms - 60_000,
+        "speakingBand": None,
+        "speakingCriteria": None,
+        "speakingSkipped": False,
+        "legSittings": {},
+        "savedAt": now_ms,
+    }
+    page.evaluate("([k, v]) => localStorage.setItem(k, v)", [key, json.dumps(sitting)])
+    return key
+
+
+def button_enabled(page, name: str) -> bool:
+    try:
+        button = page.get_by_role("button", name=name)
+        return button.count() > 0 and button.first.is_enabled()
+    except Exception:
+        return False
+
+
+def wait_until_enabled(page, name: str, timeout_ms: int = 20000) -> bool:
+    waited = 0
+    while not button_enabled(page, name) and waited < timeout_ms:
+        page.wait_for_timeout(250)
+        waited += 250
+    return button_enabled(page, name)
+
+
+def open_speaking_brief(page) -> bool:
+    goto(page, MOCK_PATH)
+    try:
+        page.wait_for_selector('astro-island[component-url*="MockExam"]:not([ssr])', state="attached", timeout=20000)
+    except Exception:
+        pass
+    page.wait_for_timeout(1200)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name=MOCK_RESUME),
+        lambda: page.get_by_role("button", name=SPEAKING_START).count() > 0,
+    )
+    return wait_until_enabled(page, SPEAKING_START)
+
+
+def sign_out_in_second_tab(page_b) -> None:
+    goto(page_b, "/dashboard")
+    journey.wait_for_dashboard(page_b)
+    journey.open_workspace_menu(page_b)
+    sign_out = page_b.get_by_role("menuitem", name="Sign out").first
+    try:
+        sign_out.wait_for(timeout=8000)
+        sign_out.click(timeout=4000)
+    except Exception:
+        pass
+
+
+def examiner_scenario(browser) -> None:
+    write_section(
+        "7. The live examiner's start asks after every wait (Codex R2D-01)",
+        "Starting the examiner waits for its settings, for the microphone permission, for a sign-in token "
+        "and for the voice connection. Before the fix the mock exam's embedded examiner asked nothing "
+        "after those waits: if the account changed while the permission was still being asked for, the "
+        "mock took the examiner off screen, and when the permission came back the examiner still kept the "
+        "microphone, started recording, fetched a token and opened a paid voice session behind the stopped "
+        "screen. Student J's SYNTHETIC mock sitting is put on its Speaking brief (written straight into J's "
+        "own store; driving three whole papers first proves nothing more here), the examiner is started "
+        "against an INTERCEPTED address with no voice service behind it, and the account is changed from a "
+        "second tab at the two waits that matter: (a) the microphone request held unanswered while J signs "
+        "out and student K signs up, then answered, with any voice session request that follows HELD so it "
+        "would stay visible (before the fix that request carried K's token); (b) the voice session request "
+        "held, then refused with a SYNTHETIC failure after J signs out. (c) repeats (a) on the standalone "
+        "examiner page with students L and M.",
+    )
+    if not os.environ.get("F23_EXAMINER_CONFIGURED"):
+        write_note(
+            "**Section 7 not run:** it needs the site started with PUBLIC_LIVE_EXAMINER_URL pointed at the "
+            f"intercepted path `{EXAMINER_PATH}` and F23_EXAMINER_CONFIGURED=1 (see the header)."
+        )
+        write_row("The examiner could be started against the intercepted address", False, "not configured for this run")
+        return
+
+    ctx = new_context(browser, permissions=["microphone"])
+    ctx.add_init_script(EXAMINER_PROBE)
+    examiner = InterceptedExaminer(ctx)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_j = journey.ws_sign_up(page_a, EMAIL_J, PASSWORD)
+    write_row("Student J signed up on the local stand-in", bool(user_j), f"user id {user_j}")
+    if not user_j:
+        report_diagnostics("Examiner, first tab", errors, failed)
+        ctx.close()
+        return
+    seed_speaking_brief(page_a, user_j)
+    ready = open_speaking_brief(page_a)
+    write_row(
+        "J's sitting is on the Speaking brief and Start is enabled (the settings answered by the intercept)",
+        ready and examiner.settings_requests >= 1,
+        f"Start enabled: {ready}; settings requests answered: {examiner.settings_requests}",
+    )
+
+    # ── (a) the microphone request held, the switch, then the answer ──
+    # Any voice session request is HELD from here on (none should come): a
+    # start that went on would then still have its microphone and its
+    # recording running while the request waits, where the run can see them.
+    examiner.hold_connections = True
+    page_a.evaluate("() => { window.__f23Examiner.hold = true; }")
+    mark_page(page_a)
+    journey.try_click(page_a.get_by_role("button", name=SPEAKING_START))
+    pending = wait_for_state(page_a, lambda s: (s.get("heldMicrophone") or 0) >= 1)
+    connecting = wait_for_text(page_a, EXAMINER_CONNECTING)
+    pending = examiner_state(page_a)
+    write_row(
+        "(a) J presses Start: the examiner asks for the microphone, and the page's request is held unanswered",
+        pending.get("heldMicrophone") == 1
+        and pending.get("tracks") == 0
+        and pending.get("recorders") == 0
+        and connecting,
+        f"{state_text(pending)}; connecting screen: {connecting}",
+    )
+    shot(page_a, "21-examiner-mock-microphone-pending", MOCK_PATH)
+
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    sign_out_in_second_tab(page_b)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    stopped = examiner_state(page_a)
+    write_row(
+        "(a) J signs out in the second tab: the mock stops and takes the examiner off screen while the "
+        "microphone request is still unanswered",
+        shows(body, MOCK_STOPPED)
+        and not shows(body, EXAMINER_CONNECTING)
+        and stopped.get("heldMicrophone") == 1
+        and stopped.get("tracks") == 0
+        and same_page(page_a),
+        f"stopped screen: {shows(body, MOCK_STOPPED)}; examiner still on screen: {shows(body, EXAMINER_CONNECTING)}; "
+        f"{state_text(stopped)}; same page (no reload): {same_page(page_a)}",
+    )
+    shot(page_a, "22-examiner-mock-stopped-microphone-pending", MOCK_PATH)
+
+    # A different student is signed in on the browser before the microphone
+    # answers: whoever's token a start that went on would use.
+    user_k = journey.ws_sign_up(page_b, EMAIL_K, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(1500)
+    write_row(
+        "(a) Student K signs up in the second tab while J's microphone request is still unanswered",
+        bool(user_k) and examiner_state(page_a).get("heldMicrophone") == 1,
+        f"user id {user_k}; held microphone requests: {examiner_state(page_a).get('heldMicrophone')}",
+    )
+
+    released = page_a.evaluate("() => window.__f23ReleaseMicrophone()")
+    # A start that went on would request its voice session only after the
+    # connection has prepared itself (up to 10 s), so watch for 12 s.
+    waited = 0
+    while examiner.connection_requests == 0 and waited < 12000:
+        page_a.wait_for_timeout(500)
+        waited += 500
+    late = examiner_state(page_a)
+    write_row(
+        "(a) The microphone answers after the switch: the stream it hands back is stopped at once",
+        released == 1 and (late.get("tracks") or 0) >= 1 and late.get("liveTracks") == 0,
+        f"held requests answered now: {released}; {state_text(late)}",
+    )
+    write_row(
+        "(a) Nothing follows the late microphone: no recording, no voice session requested (with K's token "
+        "or anybody's), nothing opened",
+        late.get("recorders") == 0
+        and examiner.connection_requests == 0
+        and late.get("peers") == 0
+        and late.get("sockets") == 0
+        and same_page(page_a),
+        f"recorders started: {late.get('recorders')}; voice session requests: {examiner.connection_requests} "
+        f"(whose token: {carried_by(examiner, {user_j: 'J', user_k: 'K'})}); peer connections: {late.get('peers')}; "
+        f"sockets: {late.get('sockets')}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "23-examiner-mock-after-late-microphone", MOCK_PATH)
+    examiner.refuse_held()
+    examiner.hold_connections = False
+
+    journey.ws_sign_out(page_b)
+    signed_in = journey.ws_sign_in(page_b, EMAIL_J, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    back = examiner_state(page_a)
+    write_row(
+        "(a) J signs back in: the first tab is back on the Speaking brief with the interview marked "
+        "interrupted (the mock's own suspension, unchanged), and nothing is recording",
+        bool(signed_in)
+        and page_a.get_by_role("button", name=SPEAKING_START).count() > 0
+        and shows(body, SPEAKING_INTERRUPTED)
+        and back.get("activeRecorders") == 0
+        and back.get("liveTracks") == 0
+        and same_page(page_a),
+        f"signed in as {signed_in}; brief shown: {page_a.get_by_role('button', name=SPEAKING_START).count() > 0}; "
+        f"interrupted note: {shows(body, SPEAKING_INTERRUPTED)}; {state_text(back)}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "24-examiner-mock-back-on-brief", MOCK_PATH)
+
+    # ── (b) the voice session request held, the switch, then a refusal ──
+    examiner.hold_connections = True
+    enabled = wait_until_enabled(page_a, SPEAKING_START)
+    journey.try_click(page_a.get_by_role("button", name=SPEAKING_START))
+    held = examiner.wait_until_held(page_a)
+    before = examiner_state(page_a)
+    write_row(
+        "(b) J starts again: the microphone is granted, the recording starts, and the voice session request "
+        "is held in the browser",
+        enabled
+        and held
+        and examiner.connection_requests == 1
+        and before.get("activeRecorders") == 1
+        and (before.get("liveTracks") or 0) >= 1,
+        f"Start enabled: {enabled}; request held: {held}; voice session requests: {examiner.connection_requests}; "
+        f"{state_text(before)}",
+    )
+    shot(page_a, "25-examiner-mock-session-request-held", MOCK_PATH)
+
+    sign_out_in_second_tab(page_b)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    mid = examiner_state(page_a)
+    write_row(
+        "(b) J signs out in the second tab while the request is held: the mock stops, the recording stops "
+        "and the microphone is released at once",
+        shows(body, MOCK_STOPPED) and mid.get("activeRecorders") == 0 and mid.get("liveTracks") == 0 and same_page(page_a),
+        f"stopped screen: {shows(body, MOCK_STOPPED)}; {state_text(mid)}; same page: {same_page(page_a)}",
+    )
+    refused = examiner.refuse_held()
+    page_a.wait_for_timeout(4000)
+    after = examiner_state(page_a)
+    write_row(
+        "(b) The held request is then refused with a SYNTHETIC failure: nothing more starts (no second "
+        "request, no socket, the peer connection closed, no new recording, no new microphone request)",
+        refused == 1
+        and examiner.connection_requests == 1
+        and after.get("sockets") == 0
+        and after.get("openPeers") == 0
+        and after.get("recorders") == before.get("recorders")
+        and after.get("micRequests") == before.get("micRequests")
+        and after.get("activeRecorders") == 0
+        and after.get("liveTracks") == 0
+        and same_page(page_a),
+        f"refused: {refused}; voice session requests in all: {examiner.connection_requests}; {state_text(after)}; "
+        f"same page: {same_page(page_a)}",
+    )
+    shot(page_a, "26-examiner-mock-after-refused-request", MOCK_PATH)
+    journey.ws_sign_in(page_b, EMAIL_J, PASSWORD)
+    report_diagnostics("Examiner (mock), first tab", errors, failed)
+    report_diagnostics("Examiner (mock), second tab", errors_b, failed_b)
+    ctx.close()
+
+    # ── (c) the standalone examiner page, the microphone request held ──
+    ctx = new_context(browser, permissions=["microphone"])
+    ctx.add_init_script(EXAMINER_PROBE)
+    standalone = InterceptedExaminer(ctx)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_l = journey.ws_sign_up(page_a, EMAIL_L, PASSWORD)
+    goto(page_a, "/speaking/examiner")
+    # The start button is already drawn, enabled, by the server; a press
+    # before the page has come alive does nothing. So wait for the examiner
+    # to be live on the page and to have its (intercepted) settings.
+    try:
+        page_a.wait_for_selector('astro-island[component-url*="LiveExaminer"]:not([ssr])', state="attached", timeout=20000)
+    except Exception:
+        pass
+    waited = 0
+    while standalone.settings_requests < 1 and waited < 15000:
+        page_a.wait_for_timeout(250)
+        waited += 250
+    page_a.wait_for_timeout(1500)
+    ready = wait_until_enabled(page_a, EXAMINER_START)
+    write_row(
+        "(c) Student L opens the standalone examiner, signed in; Start is enabled (the settings answered by "
+        "the intercept)",
+        bool(user_l) and ready and standalone.settings_requests >= 1,
+        f"user id {user_l}; Start enabled: {ready}; settings requests answered: {standalone.settings_requests}",
+    )
+    page_a.evaluate("() => { window.__f23Examiner.hold = true; }")
+    mark_page(page_a)
+    journey.try_click(page_a.get_by_role("button", name=EXAMINER_START))
+    pending = wait_for_state(page_a, lambda s: (s.get("heldMicrophone") or 0) >= 1)
+    write_row(
+        "(c) L presses Start: the microphone request is held unanswered",
+        pending.get("heldMicrophone") == 1 and pending.get("tracks") == 0,
+        state_text(pending),
+    )
+    standalone.hold_connections = True
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    sign_out_in_second_tab(page_b)
+    user_m = journey.ws_sign_up(page_b, EMAIL_M, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    released = page_a.evaluate("() => window.__f23ReleaseMicrophone()")
+    page_a.wait_for_timeout(4000)
+    body = body_text(page_a)
+    late = examiner_state(page_a)
+    write_row(
+        "(c) L signs out and student M signs up in the second tab, then the microphone answers: the stream "
+        "is stopped at once, nothing records, no voice session is requested, and the page says the session "
+        "was closed",
+        bool(user_m)
+        and released == 1
+        and (late.get("tracks") or 0) >= 1
+        and late.get("liveTracks") == 0
+        and late.get("recorders") == 0
+        and standalone.connection_requests == 0
+        and late.get("peers") == 0
+        and late.get("sockets") == 0
+        and shows(body, SESSION_CLOSED)
+        and same_page(page_a),
+        f"held requests answered after the switch: {released}; {state_text(late)}; voice session requests: "
+        f"{standalone.connection_requests}; notice shown: {shows(body, SESSION_CLOSED)}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "27-examiner-standalone-after-late-microphone", "/speaking/examiner")
+    standalone.refuse_held()
+    report_diagnostics("Examiner (standalone), first tab", errors, failed)
+    report_diagnostics("Examiner (standalone), second tab", errors_b, failed_b)
+    write_note(
+        "Every request to the examiner address in this section was answered inside the browser by the run "
+        "itself: settings with SYNTHETIC values, and every voice session request refused with a SYNTHETIC "
+        "503 (at once, or after being held). The 503 lines in the diagnostics above are those refusals. No "
+        "voice service, model or token service was reached."
+    )
+    ctx.close()
+
+
 def run():
-    reset_results()
+    sections = selected_sections()
+    if os.environ.get("F23_APPEND") == "1" and RESULTS_PATH.exists():
+        write_note(
+            f"**A second run of this script, appended:** sections {', '.join(sorted(sections))}, against a "
+            f"fresh start of the dev server at {BASE_URL}"
+            + (" with the live examiner address set to the intercepted path." if os.environ.get("F23_EXAMINER_CONFIGURED") else ".")
+        )
+    else:
+        reset_results()
     with sync_playwright() as p:
         browser = p.chromium.launch(
             args=["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
         )
         try:
-            writing_scenario(browser)
-            speaking_scenario(browser)
-            editor_scenario(browser)
-            revision_scenario(browser)
-            speaking_switch_scenario(browser)
+            if "1" in sections:
+                writing_scenario(browser)
+            if "2" in sections:
+                speaking_scenario(browser)
+            if sections & {"3", "4"}:
+                # Sections 3 and 4 share one journey (the editor, then the debounce).
+                editor_scenario(browser)
+            if "5" in sections:
+                revision_scenario(browser)
+            if "6" in sections:
+                speaking_switch_scenario(browser)
+            if "7" in sections:
+                examiner_scenario(browser)
         finally:
             browser.close()
     text = RESULTS_PATH.read_text(encoding="utf-8")
@@ -1423,6 +2100,12 @@ def run():
     write_note(f"**Totals:** {passes} PASS, {fails} FAIL.")
     print(f"done: {passes} PASS, {fails} FAIL -> {RESULTS_PATH}")
     return 1 if fails else 0
+
+
+def selected_sections() -> set:
+    """F23_SECTIONS, for example "7" or "1,2,3,4,5,6" (the default)."""
+    raw = os.environ.get("F23_SECTIONS", "1,2,3,4,5,6")
+    return {part.strip() for part in raw.split(",") if part.strip()}
 
 
 if __name__ == "__main__":

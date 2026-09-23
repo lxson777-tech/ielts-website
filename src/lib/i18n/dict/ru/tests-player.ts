@@ -176,6 +176,13 @@ export const strings: Record<string, string> = {
   'You are signed out now, so this test was not submitted. The answers are saved for the account that started it, and you can carry on from here when you sign back in.':
     'Сейчас вы не в аккаунте, поэтому тест не был отправлен. Ответы сохранены для того аккаунта, в котором вы его начали, и вы сможете продолжить с этого места, когда снова войдёте.',
   'Start this test fresh': 'Начать этот тест заново',
+  /* The sitting on screen is over in this tab for good (R2D-02): a newer
+     one was started in another tab, or this one was handed in (or added to
+     an account) there. SittingStoppedScreen in src/components/TestPlayer.tsx. */
+  'A newer test was started in another tab, so this one is no longer being saved.':
+    'В другой вкладке начат более новый тест, поэтому этот больше не сохраняется.',
+  'This test was submitted or closed in another tab, so this one is no longer being saved.':
+    'Этот тест был отправлен или закрыт в другой вкладке, поэтому здесь он больше не сохраняется.',
 
   /* ---------------------------------------------------------------- */
   /* Mock Exam Day: the start screen                                   */
@@ -215,6 +222,10 @@ export const strings: Record<string, string> = {
      this one for good (MockExam.tsx, R2C-02). */
   'A newer mock exam was started in another tab, so this one is no longer being saved.':
     'В другой вкладке начат более новый пробный экзамен, поэтому этот больше не сохраняется.',
+  /* The written-down sitting disappeared after this tab had seen it: it was
+     finished, or added to an account, in another tab (MockExam.tsx, R2D-03). */
+  'This mock exam was finished or closed in another tab, so this one is no longer being saved.':
+    'Этот пробный экзамен был завершён или закрыт в другой вкладке, поэтому здесь он больше не сохраняется.',
 
   /* The student's own unfinished mock, offered back on the start screen
      (ResumeOffer in MockExam.tsx). {papers} and {paper} are paper names,

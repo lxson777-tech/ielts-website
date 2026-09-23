@@ -30,8 +30,11 @@ import {
 import {
   currentSessionOwner,
   ownerStillCurrent,
+  sittingLossFrom,
   unownedScopedKey,
+  type PaperFinish,
   type PaperSittingStore,
+  type SittingStatus,
   type TestSession,
 } from '../test-session';
 
@@ -108,6 +111,11 @@ export interface MockAttempt {
       sittings simply had no Speaking stage to skip. */
   speakingSkipped?: boolean;
   secondsUsed: number;
+  /** The identity of the sitting this record was made from (ActiveMock
+      .sittingId), so the same sitting can never be recorded twice (R2D-03).
+      Absent on every record written before this build; those are left
+      exactly as they are and never matched. */
+  sittingId?: string;
 }
 
 /* The store's base key, unchanged. What actually reaches localStorage is
@@ -221,7 +229,17 @@ export function overallMockBand(bands: number[]): number {
 
     Returns false, writing nothing at all, when `sittingOwner` (the owner the
     sitting began under, see currentMockOwner) is no longer the owner of this
-    browser. */
+    browser.
+ *
+ * ONE RECORD PER SITTING (fifth Codex round, 23 September 2026, R2D-03).
+ * Also false, writing nothing at all (neither the record nor the marker),
+ * when the history already holds a record of the same sitting
+ * (`attempt.sittingId`): a second completion of one sitting, from a second
+ * tab that picked it up, neither duplicates the first record nor replaces
+ * it. The caller records the sitting's learner evidence only on true, so
+ * that is written once as well. A record with no sitting id (every record
+ * written before this build, and any attempt passed without one) is never
+ * matched, and older records are left exactly as they are. */
 export function saveMockAttempt(attempt: MockAttempt, sittingOwner?: string): boolean {
   /* Finding 1 of the 23 September 2026 review, the mock's half of it: a mock
      day that outlived the student who sat it (they signed out, or somebody
@@ -231,6 +249,7 @@ export function saveMockAttempt(attempt: MockAttempt, sittingOwner?: string): bo
   if (!ownerStillCurrent(sittingOwner)) return false;
 
   const list = readStore();
+  if (attempt.sittingId && list.some((held) => held?.sittingId === attempt.sittingId)) return false;
   list.push(attempt);
   writeStore(list);
 
@@ -551,7 +570,28 @@ export function loadActiveMock(): ActiveMock | null {
        nothing at all otherwise, exactly as the papers' own writes do.
    A screen whose sitting has been replaced finds out through
    mockSittingReplaced (after a refused write, and on the storage event
-   another tab's write raises) and stops for good. */
+   another tab's write raises) and stops for good.
+
+   WHEN THE RECORD IS GONE (fifth Codex round, 23 September 2026, R2D-03)
+   The rule above only knew "replaced". A record that simply DISAPPEARED was
+   treated as nothing to worry about: two tabs that had both picked up the
+   same sitting, one finished it (recording it and clearing the record), and
+   the other carried on unsaved and, at its own results, recorded the same
+   mock a second time. Now:
+     - mockSittingStatus tells the four cases apart ('held', 'replaced',
+       'absent', 'owner-changed'), and a screen that has seen its record
+       written down reads 'absent' as 'gone' (sittingLossFrom in
+       src/lib/test-session.ts): it stops for good, with its own sentence,
+       and never writes again. A record the browser never managed to write
+       (a full or blocked storage) is not "gone", so that sitting is never
+       stopped by mistake.
+     - The results step FINALISES before it records: clearActiveMock must
+       remove this very sitting (identity-checked) first, and the mock is
+       recorded only then (or when this browser never wrote the sitting down
+       at all, which no other tab can then have picked up).
+     - saveMockAttempt is idempotent by sitting id: a second record of the
+       same sitting writes nothing, so even two tabs finishing in the same
+       instant cannot record it twice. */
 
 /** Write down a sitting that is starting now: a fresh identity, and the
     papers the snapshot names (none, for a fresh mock). It takes the place of
@@ -620,13 +660,31 @@ export function clearActiveMock(ref: MockSittingRef): boolean {
  * False in every other case, on purpose: while the sitting is still the
  * stored one; when the account on this browser changed (that has its own
  * stopped screen, and the sitting is still there for its student); and when
- * nothing is written down at all. */
+ * nothing is written down at all (that is 'absent', which a screen that saw
+ * its record reads as gone, R2D-03; see mockSittingStatus). */
 export function mockSittingReplaced(ref: MockSittingRef): boolean {
-  if (!ref.owner || !ref.sittingId || !ownerStillCurrent(ref.owner)) return false;
+  return mockSittingStatus(ref) === 'replaced';
+}
+
+/** Where the sitting `ref` names stands right now (R2D-03).
+ * - 'held': it is the written-down sitting of the student using this
+ *   browser, in progress.
+ * - 'replaced': that student's written-down sitting is a NEWER one.
+ * - 'absent': nothing in progress is written down for that student: the
+ *   sitting was finished (recorded and cleared) or added to an account in
+ *   another tab, or it was never written at all. Only the screen knows which
+ *   (sittingLossFrom in src/lib/test-session.ts).
+ * - 'owner-changed': somebody else is using this browser (its own stopped
+ *   screen; the sitting is still there for its student), or `ref` names
+ *   nobody.
+ * - 'no-storage': this browser keeps nothing at all. */
+export function mockSittingStatus(ref: MockSittingRef): SittingStatus {
+  if (!ref.owner || !ref.sittingId || !ownerStillCurrent(ref.owner)) return 'owner-changed';
   const storage = deviceStorage();
-  if (!storage) return false;
+  if (!storage) return 'no-storage';
   const held = parseActive(safeGet(storage, activeKeyNow()));
-  return !!held && inProgress(held.stage) && held.owner === ref.owner && held.sittingId !== ref.sittingId;
+  if (!held || !inProgress(held.stage) || held.owner !== ref.owner) return 'absent';
+  return held.sittingId === ref.sittingId ? 'held' : 'replaced';
 }
 
 /** Whether a storage event another tab raised (its `key`, null when the
@@ -785,14 +843,25 @@ export function mockLegResult(ref: MockSittingRef, testId: string): MockLegResul
 /** One paper of the sitting `ref`, in the shape the test player uses for
     every paper (src/lib/test-session.ts, PaperSittingStore). The sitting it
     reads and writes is named by `ref` and nothing else, so it never touches
-    the standalone slot and never finds an older sitting's answers. */
+    the standalone slot and never finds an older sitting's answers.
+ *
+ * A paper of a mock is lost when its MOCK SITTING is (R2D-03): replaced by a
+ * newer sitting, or gone after it was written down (finished, or added to an
+ * account, in another tab). Handing the paper in then writes nothing and
+ * reports why, before the player records anything, and the mock screen is
+ * told so it stops as a whole. */
 export function mockLegSitting(
   ref: MockSittingRef,
   test: Pick<PracticeTest, 'id' | 'durationMinutes'>,
 ): PaperSittingStore {
+  /* Whether this paper was ever found written down inside its sitting:
+     picked up, started with a write that landed, or saved. */
+  let everHeld = false;
   const asSession = (leg: MockLegSitting): TestSession => ({
     version: 1,
     testId: leg.testId,
+    /* A paper of a mock is named by the mock sitting it belongs to. */
+    sittingId: ref.sittingId,
     startedAt: leg.startedAt,
     endsAt: leg.endsAt,
     answers: leg.answers,
@@ -801,13 +870,16 @@ export function mockLegSitting(
   return {
     load: () => {
       const leg = loadMockLeg(ref, test.id);
+      if (leg) everHeld = true;
       return leg ? asSession(leg) : null;
     },
     start: () => {
       const now = Date.now();
       /* Should the write fail (no room, or the sitting already gone), the
          paper still gets its clock on screen; it simply is not kept. */
-      const leg = startMockLeg(ref, test, now) ?? {
+      const written = startMockLeg(ref, test, now);
+      everHeld = written !== null;
+      const leg = written ?? {
         testId: test.id,
         startedAt: now,
         endsAt: now + test.durationMinutes * 60_000,
@@ -816,13 +888,23 @@ export function mockLegSitting(
       };
       return asSession(leg);
     },
-    save: (answers, sittingOwner) => {
+    save: (answers, sittingOwner, sitting) => {
       if (sittingOwner && sittingOwner !== ref.owner) return false;
-      return saveMockLegAnswers(ref, test.id, answers);
+      if (sitting && sitting.testId !== test.id) return false;
+      const saved = saveMockLegAnswers(ref, test.id, answers);
+      if (saved) everHeld = true;
+      return saved;
     },
-    finish: (sittingOwner, outcome) => {
-      if (sittingOwner && sittingOwner !== ref.owner) return;
-      finishMockLeg(ref, test.id, outcome);
+    lost: (sittingOwner) => {
+      if (sittingOwner && sittingOwner !== ref.owner) return null;
+      return sittingLossFrom(mockSittingStatus(ref), everHeld);
+    },
+    finish: (sittingOwner, outcome): PaperFinish => {
+      if (sittingOwner && sittingOwner !== ref.owner) return 'owner-changed';
+      const status = mockSittingStatus(ref);
+      if (status === 'owner-changed') return 'owner-changed';
+      if (status === 'held') return finishMockLeg(ref, test.id, outcome) ? 'finished' : 'unsaved';
+      return sittingLossFrom(status, everHeld) ?? 'unsaved';
     },
   };
 }

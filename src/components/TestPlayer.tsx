@@ -16,10 +16,14 @@ import { recordTestAttempt } from '../lib/progress';
 import {
   activeSession,
   currentSessionOwner,
+  isTestSessionStorageKey,
   ownerStillCurrent,
   paperClockAt,
   secondsLeft,
+  sittingRefOf,
   standaloneSitting,
+  type PaperSittingRef,
+  type SittingLoss,
   type TestSession,
 } from '../lib/test-session';
 import { mockLegSitting, type MockSittingRef } from '../lib/tests/mock';
@@ -72,6 +76,11 @@ interface Props {
       (src/lib/tests/mock.ts, mockLegSitting) and restored only from it, never
       from the one standalone slot a paper opened on its own uses (R2B-03). */
   mockSitting?: MockSittingRef;
+  /** Present only with `mockSitting`: told once, when this paper finds its
+      mock sitting replaced or gone (a refused save, or its hand-in refused
+      before anything was recorded), so the mock screen stops the whole
+      sitting with its own sentence (R2D-03). */
+  onSittingLost?: (loss: SittingLoss) => void;
 }
 
 /** Base-prefixed URL for images stored under /public. */
@@ -261,7 +270,7 @@ function recordStaleSessionAbandonment(stale: TestSession): void {
   });
 }
 
-export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish, mockSitting }: Props) {
+export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish, mockSitting, onSittingLost }: Props) {
   /* Interface language. Declared first so every hook below keeps a stable
      order, and read as `t`/`tn` only for text: nothing in the timer, the
      session or the scoring reads it. */
@@ -307,6 +316,47 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      when nobody is signed in now, 'other-student' when somebody else is.
      Either way the sitting stops where it is and nothing is submitted. */
   const [ownerChange, setOwnerChange] = useState<'signed-out' | 'other-student' | null>(null);
+
+  /* WHICH SITTING THIS IS (fifth Codex round, R2D-02). The identity of the
+     sitting on screen (its paper and its own sitting id), taken when it is
+     picked up or started and never read off storage again. Every save and
+     the hand-in name it, and the store writes only into that very sitting,
+     so a paper left open in one tab can never overwrite, or clear, a newer
+     sitting the same student started in another tab. Null before the paper
+     starts. */
+  const sittingRef = useRef<PaperSittingRef | null>(
+    typeof window === 'undefined' || !resumed ? null : sittingRefOf(resumed),
+  );
+  /* THIS SITTING IS OVER IN THIS TAB, FOR GOOD (R2D-02, R2D-03): replaced by
+     a newer sitting started in another tab, or gone after it was written
+     down (handed in, or added to an account, in another tab). Noticed on the
+     storage event another tab's write raises (a paper on its own; a mock
+     paper's is the mock screen's to hear), on a refused save, and when the
+     paper is handed in. From then on nothing is saved, cleared or recorded,
+     and the screen says why. Kept as a ref as well for the listeners that
+     must read it the moment it is set. */
+  const [lost, setLost] = useState<SittingLoss | null>(null);
+  const lostRef = useRef<SittingLoss | null>(null);
+  /* Set inside the answers updater when the save of that keystroke was
+     refused, and looked into by an effect once the render has happened (a
+     state update from inside an updater is not allowed). */
+  const saveRefusedRef = useRef(false);
+  function stopAsLost(loss: SittingLoss) {
+    if (lostRef.current) return;
+    lostRef.current = loss;
+    setLost(loss);
+    onSittingLost?.(loss);
+  }
+  /** Whether the sitting on screen is lost, checking the store now. True
+      once it is (and it then stays so). */
+  function noticeLost(): boolean {
+    if (lostRef.current) return true;
+    if (submittedRef.current) return false;
+    const loss = sittingStore.lost(sittingOwnerRef.current, sittingRef.current);
+    if (!loss) return false;
+    stopAsLost(loss);
+    return true;
+  }
 
   /* THE PAPER'S DEADLINE, THE CLOCK'S ONLY AUTHORITY (R2C-03). The saved
      `endsAt` of the sitting on screen, taken from the store when the sitting
@@ -429,6 +479,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     /* A mock leg always belongs to the student who started the mock. */
     sittingOwnerRef.current = mockOwner || currentSessionOwner();
     const s = sittingStore.start();
+    sittingRef.current = sittingRefOf(s);
     deadlineRef.current = s.endsAt;
     setTimeLeft(secondsLeft(s));
     setStarted(true);
@@ -450,9 +501,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     setByTypeStats(null);
     setActivePart(0);
     setOwnerChange(null);
-    /* The previous student's deadline goes with their sitting; the paper
-       gets its own when it is started for whoever is here now. */
+    /* The previous student's deadline and sitting go with their sitting; the
+       paper gets its own when it is started for whoever is here now. */
     deadlineRef.current = null;
+    sittingRef.current = null;
     if (isRetake) {
       start();
       return;
@@ -470,6 +522,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     if (isRetake && !resumed) {
       sittingOwnerRef.current = mockOwner || currentSessionOwner();
       const s = sittingStore.start();
+      sittingRef.current = sittingRefOf(s);
       deadlineRef.current = s.endsAt;
       setTimeLeft(secondsLeft(s));
     }
@@ -517,6 +570,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   useEffect(() => {
     return onOwnerChange(() => {
       if (submittedRef.current) return;
+      /* A sitting that is over in this tab stays over (R2D-02). */
+      if (lostRef.current) return;
       if (!startedRef.current) {
         /* Still on the instructions gate: there is no sitting yet, so the
            new student simply gets the paper, with no interruption at all. */
@@ -535,12 +590,35 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         const deadline = deadlineRef.current;
         if (deadline !== null) setTimeLeft(paperClockAt(deadline).secondsLeft);
         setOwnerChange(null);
+        /* While they were away the sitting may have been replaced, or taken
+           away (added to an account in another tab): then this tab stops
+           for good rather than carrying on unsaved (R2D-02). */
+        noticeLost();
         return;
       }
       setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /* ANOTHER TAB WROTE, OR REMOVED, THIS STUDENT'S SITTING (R2D-02). A paper
+     opened on its own listens for the storage event another tab's write
+     raises on the one standalone slot: a newer sitting started there
+     replaces this one, and this one handed in there (or added to an
+     account) is gone. Either stops this tab for good. A write of this same
+     sitting (the same paper carrying on in another tab) stops nothing. A
+     mock's paper does not listen here: its sitting is the mock screen's to
+     watch, and that screen stops the whole mock. */
+  useEffect(() => {
+    if (mockSittingId || !started || submitted || lost) return;
+    const onStorage = (event: StorageEvent) => {
+      if (!isTestSessionStorageKey(event.key)) return;
+      noticeLost();
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [started, submitted, lost, mockSittingId]);
 
   /* `started` as a ref, so the owner-change listener above (subscribed once,
      on mount) reads today's value rather than the one it closed over. */
@@ -600,7 +678,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   const correctCount = scoredIds.size;
 
   function setAnswer(qid: string, value: string) {
-    if (submittedRef.current) return;
+    if (submittedRef.current || lostRef.current) return;
     setAnswers((prev) => {
       const next = { ...prev };
       // Store exactly what was typed — trimming here eats the space the
@@ -610,14 +688,28 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       else delete next[qid];
       /* Bound to the student who started this sitting: once somebody else is
          signed in on this browser, the save writes nothing at all rather
-         than dropping this keystroke into their key. */
-      sittingStore.save(next, sittingOwnerRef.current);
+         than dropping this keystroke into their key. And bound to THIS
+         sitting (R2D-02): once another tab's sitting has taken the slot, or
+         this one is gone, it writes nothing either, and the effect below
+         finds out why. */
+      if (!sittingStore.save(next, sittingOwnerRef.current, sittingRef.current)) saveRefusedRef.current = true;
       return next;
     });
   }
 
+  /* A keystroke's save was refused: if that is because the sitting was
+     replaced or is gone (a storage event this tab missed), stop here for
+     good (R2D-02). Any other refusal (the account changed, which has its own
+     listener; no room left on the device) changes nothing on screen. */
+  useEffect(() => {
+    if (!saveRefusedRef.current) return;
+    saveRefusedRef.current = false;
+    noticeLost();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers]);
+
   function handleSubmit() {
-    if (submittedRef.current) return;
+    if (submittedRef.current || lostRef.current) return;
     /* The one rule that closes finding 1 of the 23 September 2026 review: a
        result is recorded under the student who SAT the paper, and only while
        that student is still the one using this browser. A sitting that
@@ -628,14 +720,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
       return;
     }
-    submittedRef.current = true;
-    setSubmitted(true);
-    setShowScore(true);
     /* The time used is read from the deadline at the moment of handing in,
        never from the number on screen, which can be behind it (R2C-03). */
     const deadline = deadlineRef.current;
     const left = deadline !== null ? paperClockAt(deadline).secondsLeft : timeLeft;
-    setTimeLeft(left);
     const raw = scoredIds.size;
     const byType: Record<string, { correct: number; total: number }> = {};
     for (const { question, group } of numbered) {
@@ -652,6 +740,32 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       bandLabel: bandEstimate(raw, SCORED_TOTAL, test.skill),
       secondsUsed: test.durationMinutes * 60 - left,
     };
+
+    /* FINALISED BEFORE ANYTHING IS RECORDED (fifth Codex round, R2D-02). The
+       store first checks that the sitting on screen is still this tab's own,
+       live one (the same student, the same paper, the same sitting) and only
+       then finishes it: the standalone slot is cleared, or a mock paper's
+       result is kept inside its own mock sitting (R2B-03). A sitting that a
+       newer one replaced in another tab, or that is gone (handed in, or
+       added to an account, in another tab), is refused here, and NOTHING is
+       recorded anywhere: not in the progress history, not in the learner
+       evidence, and nothing is cleared. The tab stops for good and says why.
+       A paper this browser never managed to write down ('unsaved') has
+       nothing to finalise and no other tab can have it, so it is recorded
+       as before. */
+    const finished = sittingStore.finish(sittingOwnerRef.current, outcome, sittingRef.current);
+    if (finished === 'replaced' || finished === 'gone') {
+      stopAsLost(finished);
+      return;
+    }
+    if (finished === 'owner-changed') {
+      setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
+      return;
+    }
+    submittedRef.current = true;
+    setSubmitted(true);
+    setShowScore(true);
+    setTimeLeft(left);
     recordTestAttempt(test.id, {
       at,
       ...outcome,
@@ -691,15 +805,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       secondsUsed: test.durationMinutes * 60 - left,
       sourceTestId: baseId,
     });
-
-    // in-progress state done; permanent attempt kept in progress history. The
-    // owner is passed so this clears only the sitting that was just
-    // submitted, never a different student's sitting. A mock leg also keeps
-    // its result inside its own mock sitting here, which is what picking
-    // that sitting up later counts as done (R2B-03).
-    sittingStore.finish(sittingOwnerRef.current, outcome);
-    // onFinish itself is wired to the score modal's "Back to results" button,
-    // not called here — the retake still shows its own score/review first.
+    // The in-progress sitting was already finished above, before anything
+    // was recorded. onFinish itself is wired to the score modal's "Back to
+    // results" button, not called here: the retake still shows its own
+    // score and review first.
   }
 
   const unansweredCount = numbered.filter(
@@ -738,9 +847,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      moment the timer (re)starts. Stopped while the owner is changed: a clock
      that ran on would hand the previous student's paper in under whoever is
      signed in now. Nothing is lost by stopping it, since the deadline itself
-     never stops. */
+     never stops. Stopped for good once the sitting is lost (R2D-02): there
+     is nothing left in this tab to hand in. */
   useEffect(() => {
-    if (!started || submitted || ownerChange) return;
+    if (!started || submitted || ownerChange || lost) return;
     const tick = () => {
       const deadline = deadlineRef.current;
       if (deadline === null) return;
@@ -754,7 +864,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     const id = window.setInterval(tick, 1000);
     tick();
     return () => window.clearInterval(id);
-  }, [started, submitted, ownerChange]);
+  }, [started, submitted, ownerChange, lost]);
 
   /* Flag a running paper on <body> so the Mr EZ tutor panel switches to
      invigilator mode (see readPlace() in src/components/tutor/MrEzPanel.tsx).
@@ -764,23 +874,24 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      the workspace chrome. Cleared on unmount so it cannot stick on. */
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    if (started && !submitted) document.body.dataset.examRunning = 'true';
+    if (started && !submitted && !lost) document.body.dataset.examRunning = 'true';
     else delete document.body.dataset.examRunning;
     return () => {
       delete document.body.dataset.examRunning;
     };
-  }, [started, submitted]);
+  }, [started, submitted, lost]);
 
-  /* Warn before leaving an in-progress test (can't pause). */
+  /* Warn before leaving an in-progress test (can't pause). A sitting that is
+     over in this tab has nothing left to lose. */
   useEffect(() => {
-    if (!started || submitted) return;
+    if (!started || submitted || lost) return;
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
-  }, [started, submitted]);
+  }, [started, submitted, lost]);
 
   /* Reset the keyboard-nav cursor whenever the visible set of questions
      changes (switching part/passage). */
@@ -950,11 +1061,30 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           )
       : null;
 
+  /* ── The sitting on screen is over in this tab, for good (R2D-02) ──
+     Checked before the account change below because it cannot be undone:
+     the sitting is no longer written down as this tab's, so neither "carry
+     on when you sign back in" nor "start fresh" (which would replace the
+     other tab's newer sitting) would be true here. */
+  if (lost) {
+    return (
+      <SittingStoppedScreen
+        reason={lost}
+        inMock={!!mockSittingId}
+        paperTitle={practiceTestTitle(test, t)}
+        hubUrl={hubUrl}
+        onStartFresh={startFreshUnderCurrentOwner}
+      />
+    );
+  }
+
   /* ── The sitting on screen belongs to somebody else now ── */
   if (ownerChange) {
     return (
-      <SittingOwnerChangedScreen
+      <SittingStoppedScreen
         reason={ownerChange}
+        inMock={!!mockSittingId}
+        paperTitle={practiceTestTitle(test, t)}
         hubUrl={hubUrl}
         onStartFresh={startFreshUnderCurrentOwner}
       />
@@ -2706,17 +2836,55 @@ function PerQuestionMultiAnswer({
    exactly where it is, under their own key, ready for them to resume. It is
    not an error and nothing was lost, so it reads calmly and offers the two
    things that are actually useful: start this paper fresh as whoever is
-   signed in now, or go back to the hub. */
-function SittingOwnerChangedScreen({
+   signed in now, or go back to the hub.
+
+   The same card, with one true sentence of its own, when the sitting is
+   over in this tab for good (R2D-02, R2D-03): 'replaced' (a newer sitting
+   was started in another tab) or 'gone' (handed in, finished, or added to
+   an account, in another tab). The paper's own title heads it, since
+   "paused" would not be true, and the only way on is Back: starting this
+   paper fresh here would replace the other tab's newer sitting. A paper of
+   a mock says it of the mock exam, in the mock screen's own words; the mock
+   screen normally takes over at once anyway. */
+function SittingStoppedScreen({
   reason,
+  inMock,
+  paperTitle,
   hubUrl,
   onStartFresh,
 }: {
-  reason: 'signed-out' | 'other-student';
+  reason: 'signed-out' | 'other-student' | SittingLoss;
+  inMock: boolean;
+  paperTitle: string;
   hubUrl: string;
   onStartFresh: () => void;
 }) {
   const { t } = useT();
+  if (reason === 'replaced' || reason === 'gone') {
+    const sentence = inMock
+      ? reason === 'replaced'
+        ? t('A newer mock exam was started in another tab, so this one is no longer being saved.')
+        : t('This mock exam was finished or closed in another tab, so this one is no longer being saved.')
+      : reason === 'replaced'
+        ? t('A newer test was started in another tab, so this one is no longer being saved.')
+        : t('This test was submitted or closed in another tab, so this one is no longer being saved.');
+    return (
+      <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
+        <div
+          className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover"
+          role="status"
+        >
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">{paperTitle}</p>
+          <h1 className="mt-1 font-display text-xl font-extrabold leading-snug">{sentence}</h1>
+          <div className="mt-8 flex items-center justify-between gap-3">
+            <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+              {t('Back')}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div

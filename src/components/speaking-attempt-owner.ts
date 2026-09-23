@@ -245,3 +245,185 @@ export function openSpeakingAttempt(options: SpeakingAttemptOptions): OwnedSpeak
   stopListening = onOwnerChange(check);
   return attempt;
 }
+
+/* ── The live examiner's session start, guarded (finding R2D-01 of the
+ *    fourth Codex inspection) ──────────────────────────────────────────
+ *
+ * WHY
+ * Starting a live examiner session waits several times: for the examiner's
+ * settings, for the microphone permission, for the student's sign-in token,
+ * and for the voice connection to come up. The attempt above stops the
+ * STANDALONE interview when the page changes hands, but the mock exam's
+ * embedded examiner has no attempt: MockExam takes the examiner off the
+ * screen instead, and its unmount could run while the microphone permission
+ * was still being asked for. The start went on regardless. When the
+ * permission came back it kept the microphone, started recording, fetched
+ * the token of whoever was signed in by then and opened a paid voice
+ * session behind the mock's stopped screen, and a connection that came up
+ * after the unmount was kept too. Letting go of the grade's binding stopped
+ * only the eventual grade from being shown.
+ *
+ * WHAT REPLACES IT
+ * Every start is numbered (a generation) and bound to the student on the
+ * page, and every wait in it goes through the start, which asks when the
+ * wait is over:
+ *   - is this still the screen's latest start (nothing has let go of it or
+ *     begun again since), and is the screen still there;
+ *   - is the student who started it still the one on the page;
+ *   - standalone only, is its attempt still open (asking runs the attempt's
+ *     owner check, so a switch found here ends the session through the
+ *     attempt's own teardown).
+ * A no means the start touches nothing the screen holds now. What the wait
+ * has just handed it is its own to let go of: a microphone stream has every
+ * track stopped, a connection is closed at once, and nothing after that
+ * wait happens (no token fetched, no recording started, no connection
+ * opened). A step that failed after the start was let go is swallowed, since
+ * nobody is there to be told. The screen's teardowns (the unmount, the
+ * switch, the student's own Back, a new start) move the number on, so
+ * nothing begun before them can carry on after.
+ *
+ * The same question is asked once more after the session has been shut
+ * down and before grading is asked for, so a switch or an unmount during
+ * that shutdown starts no paid grading call. A grade that had already been
+ * asked for is untouched: runOwnedGrade still keeps it for the student who
+ * spoke.
+ *
+ * Pure, like the attempt: tests/delayed-grade-owner.test.ts drives it with
+ * promises it resolves by hand, a stream and a connection of its own, and no
+ * browser, microphone or voice service.
+ */
+
+/** The start numbers of one screen. */
+export interface SessionGenerations {
+  /** The number handed out last. */
+  current(): number;
+  /** A new start, or a teardown: every number handed out before is stale
+      from now on. Returns the new number. */
+  next(): number;
+  /** Is `generation` the latest number, and is the screen still there? */
+  isCurrent(generation: number): boolean;
+  /** The screen is gone for good: every number is stale from now on,
+      including any handed out afterwards. */
+  unmount(): void;
+}
+
+export function sessionGenerations(): SessionGenerations {
+  let generation = 0;
+  let mounted = true;
+  return {
+    current: () => generation,
+    next: () => {
+      generation += 1;
+      return generation;
+    },
+    isCurrent: (candidate) => mounted && candidate === generation,
+    unmount: () => {
+      mounted = false;
+      generation += 1;
+    },
+  };
+}
+
+/** What a microphone request hands back, as far as letting go of it goes:
+    a MediaStream, or a test's own stand-in. */
+export interface StoppableStream {
+  getTracks(): ReadonlyArray<{ stop(): void }>;
+}
+
+/** What a connection request hands back, as far as letting go of it goes:
+    an examiner link, or a test's own stand-in. */
+export interface ClosableConnection {
+  close(): unknown;
+}
+
+/** Stop every track of a stream this start was handed and may not keep. */
+export function stopStream(stream: StoppableStream): void {
+  for (const track of stream.getTracks()) {
+    try {
+      track.stop();
+    } catch {
+      /* already stopped */
+    }
+  }
+}
+
+/** Close a connection this start was handed and may not keep. Never
+    throws, and a close that fails later is swallowed: there is nobody to
+    tell. */
+export function closeConnection(connection: ClosableConnection): void {
+  try {
+    const closing = connection.close() as { catch?: (handler: () => void) => unknown } | undefined;
+    if (closing && typeof closing.catch === 'function') closing.catch(() => {});
+  } catch {
+    /* already closed */
+  }
+}
+
+export interface GuardedSessionStart {
+  /** This start's number. */
+  readonly generation: number;
+  /** The student it was started for; the grade is settled through it. */
+  readonly binding: OwnerBinding;
+  /** Is this still the screen's latest start, with the screen still there?
+      Runs no owner check. A no means another teardown or start owns the
+      screen now, and this start must touch none of it. */
+  current(): boolean;
+  /** May this start, or the session it became, go on? Current, its student
+      still the one on the page, and (standalone) its attempt still open. */
+  live(): boolean;
+  /** Wait for one step of the start. Its result comes back (wrapped, so a
+      step that legitimately answers null is not mistaken for a no) only
+      while the start may go on. Otherwise what the step handed back is let
+      go of at once through `release` and null comes back; so does a step
+      that FAILED after the start was let go. A failure while the start is
+      still live is thrown on, to the screen's own error handling. */
+  step<T>(pending: Promise<T>, release?: (value: T) => void): Promise<{ value: T } | null>;
+}
+
+export interface SessionStartOptions {
+  generations: SessionGenerations;
+  /** The binding the grade will be settled through: the attempt's own in
+      the standalone examiner, a plain one in the mock embed. */
+  binding: OwnerBinding;
+  /** Standalone only. */
+  attempt?: OwnedSpeakingAttempt | null;
+}
+
+/** Number a start that is beginning now, and bind it. Every earlier start
+    of the same screen is stale from this moment. */
+export function guardSessionStart(options: SessionStartOptions): GuardedSessionStart {
+  const { generations, binding } = options;
+  const attempt = options.attempt ?? null;
+  const generation = generations.next();
+
+  const current = (): boolean => generations.isCurrent(generation);
+  const live = (): boolean => {
+    /* The attempt is asked FIRST and always: its owner check is what ends a
+       standalone session at a switch that reached no listener. */
+    if (attempt && !attempt.mayStartTurn()) return false;
+    return current() && binding.state() === 'current';
+  };
+
+  return {
+    generation,
+    binding,
+    current,
+    live,
+    async step<T>(pending: Promise<T>, release?: (value: T) => void) {
+      let value: T;
+      try {
+        value = await pending;
+      } catch (error) {
+        if (!live()) return null;
+        throw error;
+      }
+      if (live()) return { value };
+      try {
+        release?.(value);
+      } catch {
+        /* letting go must never turn a no into a failure */
+      }
+      return null;
+    },
+  };
+}
