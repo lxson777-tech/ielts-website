@@ -28,6 +28,31 @@
    store on whoever the current owner is now rather than on the one it was
    created for. That was finding 2 of the 23 September 2026 review.
 
+   AND WHY A SIGN-IN NEVER RESETS AN OWNER IT IS ABOUT TO SET AGAIN (fixed 23
+   September 2026)
+   Every screen that holds a student's work listens for owner changes and
+   hands over when it hears one: the outgoing student's work is kept for
+   them, the screen clears, and one calm line says why. A sign-in used to
+   begin with the whole of a sign-out, owner back to this device's anonymous
+   one, and only then set the incoming student. On a signed-in page load the
+   incoming student is ALREADY the owner (store-owner.ts reads the session
+   this browser holds before anything mounts), and the account then answers
+   twice for the same student (the immediate answer and the session event),
+   so a screen that had mounted first heard the owner go away and come back,
+   and showed the calm line although the account never changed.
+   The rule now, in startSyncForUser:
+     - the incoming student already the current owner (a signed-in page load,
+       or a repeated session event for the same student): the sign-in is
+       restarted exactly as before, generation and cancellation included,
+       but the owner is not touched, so nobody hears anything;
+     - a genuine change (anonymous to a student, student A to student B): the
+       previous sign-in is stopped and the owner moves inside moveOwnerOnce
+       (src/lib/store-owner.ts), so every store still moves before anything
+       reads one, and the screens hear exactly ONE change, to the incoming
+       student, instead of two;
+     - a sign-out (stopSync): one change, to this device's anonymous owner,
+       announced once every store has moved.
+
    SINCE THE PERSONAL LEARNING BUILD, THIS FILE DOES TWO JOBS
    The first is everything above, unchanged: `user_state.progress` and
    `user_state.study_plan` are still pulled, merged and pushed exactly as they
@@ -45,7 +70,7 @@ import { getSupabase } from './supabase';
 import { getProgress, replaceProgress, mergeProgress, onProgressChange, type ProgressV1 } from '../progress';
 import { loadStudyPlan, saveStudyPlan, mergeStudyPlans, onStudyPlanChange, type SavedPlan } from '../study-plan';
 import type { CacheOwner } from '../learning/contracts/sync';
-import { currentOwner, sameOwner, setCurrentOwner, userOwner } from '../store-owner';
+import { currentOwner, moveOwnerOnce, sameOwner, setCurrentOwner, userOwner } from '../store-owner';
 import {
   createRestTransport,
   startLearningSync,
@@ -297,18 +322,31 @@ export async function startSyncForUser(user: User): Promise<void> {
   // Idempotent across multiple mounted account widgets: if we're already syncing
   // this user, don't tear down and re-pull.
   if (currentUserId === user.id && unsub.length) return;
-  stopSync();
-  currentUserId = user.id;
-  const signIn = beginSignIn();
-
+  const incoming = userOwner(user.id);
+  let signIn!: SignIn;
   /* THE OWNER COMES FIRST, before any legacy read, merge, migration or
-     upload. From this line on, getProgress() and loadStudyPlan() answer with
-     THIS student's own copy on this device, and the previous student's
-     copies stay under their own id where nobody else can read them.
-     A false answer means this sign-in was abandoned while the learning
-     module was loading: every store has been left with the owner that
-     replaced it, and there is nothing further to do. */
-  if (!(await setLearningOwnerNow(userOwner(user.id), signIn))) return;
+     upload, and it moves ONCE (see the header). Whatever was running is
+     stopped and cancelled either way; the owner is reset only when it is
+     somebody other than the incoming student, and then the reset and the
+     move to the incoming student are announced as the one change they are.
+     From the end of this block on, getProgress() and loadStudyPlan() answer
+     with THIS student's own copy on this device, and the previous student's
+     copies stay under their own id where nobody else can read them. */
+  moveOwnerOnce(() => {
+    const alreadyTheirs = sameOwner(currentOwner(), incoming);
+    endSync(alreadyTheirs ? 'keep-owner' : 'reset-owner');
+    currentUserId = user.id;
+    signIn = beginSignIn();
+    setCurrentOwner(incoming);
+  });
+
+  /* The same owner again, for the learner record and the plan once the
+     learning module has loaded (the shared owner above is already there, so
+     this moves nothing and announces nothing). A false answer means this
+     sign-in was abandoned while the learning module was loading: every
+     store has been left with the owner that replaced it, and there is
+     nothing further to do. */
+  if (!(await setLearningOwnerNow(incoming, signIn))) return;
 
   const remote = await pull(user.id);
   /* A pull that comes back after a sign-out or an account switch is thrown
@@ -376,6 +414,27 @@ export async function startSyncForUser(user: User): Promise<void> {
  * waiting to be sent, because losing a student's work is the worse mistake,
  * and that copy is namespaced by user id so no other session can read it). */
 export function stopSync(): void {
+  /* One change, to this device's anonymous owner, announced once every
+     store has moved (the learning layer's teardown moves the owner itself,
+     and endSync moves it again for when the layer never started). */
+  moveOwnerOnce(() => endSync('reset-owner'));
+}
+
+/** What stopSync does, and what a sign-in does first.
+ *
+ * 'reset-owner' is a sign-out, or the first half of a sign-in for somebody
+ * other than the current owner: every store goes back to this device's
+ * anonymous owner, and the learning layer forgets the student who left.
+ * 'keep-owner' is a sign-in for the student who is ALREADY the owner (a
+ * signed-in page load, or the account answering twice for the same student):
+ * everything running is stopped and cancelled exactly as for a reset, and
+ * the owner, with the learning module's stores, is left where it is,
+ * because the sign-in that follows would only set it back. Nothing is
+ * forgotten either: the student is not leaving.
+ *
+ * Synchronous throughout, so the caller's moveOwnerOnce covers every owner
+ * move in it. */
+function endSync(owner: 'reset-owner' | 'keep-owner'): void {
   /* Cancels whatever sign-in is in flight, wherever it happens to be
      waiting. Every step of it asks `signIn.current()` before it moves an
      owner, writes a store, sends a request or adds a subscription, so this
@@ -391,10 +450,18 @@ export function stopSync(): void {
 
   /* The layer's teardown pushes nothing and awaits nothing, so its whole
      body runs before this line returns: there is no window in which a screen
-     could still read the student who just signed out. */
-  void stopLearningSync({ forget: true }).catch(() => {
+     could still read the student who just signed out.
+     With 'keep-owner' there is normally no layer serving anybody: a layer
+     serving this student means their sign-in finished, and a finished
+     sign-in returns at the top of startSyncForUser. It is stopped anyway,
+     so a layer tied to a cancelled sign-in is never reused; should it reset
+     the owner on its way out, that happens inside the caller's
+     moveOwnerOnce and the sign-in's own owner set straight after undoes it,
+     so nothing is announced. */
+  void stopLearningSync({ forget: owner === 'reset-owner' }).catch(() => {
     /* The owner reset below is the part that matters and happens anyway. */
   });
+  if (owner === 'keep-owner') return;
   /* Belt and braces, and the only path when the layer was never started
      (accounts unconfigured, or the learning module failed to load). */
   setLearningOwner(null);

@@ -61,6 +61,17 @@ import { englishSlugs, russianSlugs } from '../tools/lesson-ru-lib.mjs';
 import { parseSpeakingDeepLink } from '../src/components/attempt-recording.ts';
 import { SPEAKING_CUE_CARDS, SPEAKING_PART1_TOPICS } from '../src/data/speaking-prompts.ts';
 import { SPOKEN_FOCUSED_TASKS } from '../src/data/focused-exercises.ts';
+import { evaluateEvidence } from '../src/lib/learning/policy.ts';
+import { createInitialPlan, scoreObjectives } from '../src/lib/learning/planner.ts';
+import { learnerFacts } from '../src/lib/learning/session.ts';
+import { DEFAULT_PLANNER_WEIGHTS } from '../src/lib/learning/contracts/plan.ts';
+import { DEFAULT_POLICY_THRESHOLDS } from '../src/lib/learning/contracts/policy.ts';
+import {
+  syntheticMatchingHeadings,
+  syntheticNew,
+  syntheticStrongReadingWeakWriting,
+  syntheticWeakReadingStrongWriting,
+} from './fixtures/learning-profiles.ts';
 
 const catalogue = learningCatalogue();
 const activities = catalogue.activities;
@@ -538,6 +549,104 @@ test('the borrowed lesson mappings are recorded as borrowed, not passed off as d
   const tfng = findActivity('lesson:reading-tfng') as CatalogueActivity;
   assert.equal(coverageFit(tfng, 'tfng'), 'direct');
   assert.equal(coverageFit(tfng, 'matching-headings'), null, 'and a lesson never claims what it does not teach');
+});
+
+/* The vocabulary practice promises what its screen delivers. The published
+   main (merged 23 September 2026) replaced the self-graded flashcards with
+   marked questions built from example sentences (src/components/
+   VocabReview.tsx): the student picks the missing word from four. That is
+   recognition, recorded with direction 'recognise', and Mr EZ writes his
+   recommendations from these objectives, so none of them may promise
+   recall. Recall stays reachable as a borrowed fit, which is what lets a
+   real recall activity take the direct slot the day one is written. */
+test('the vocabulary practice claims recognition, and recall only as borrowed', () => {
+  const vocab = byKind('vocab-review');
+  assert.equal(vocab.length, LEARNING_INDEX.vocabTopics.length + 1, 'every topic, plus the /review page itself');
+  for (const activity of vocab) {
+    assert.equal(activity.subskill, 'recognise-meaning', `${activity.id} is recognition practice`);
+    assert.equal(coverageFit(activity, 'recognise-meaning'), 'direct', activity.id);
+    assert.equal(
+      coverageFit(activity, 'recall-from-meaning'),
+      'borrowed',
+      `${activity.id} helps recall but does not practise it`,
+    );
+    assert.doesNotMatch(activity.objective, /recall|from memory/i, `${activity.id} promises recall`);
+    assert.match(activity.objective, /missing word|missing one/, `${activity.id} names what the student does`);
+    assert.match(activity.objective, /example sentence/, `${activity.id} names where the word is picked from`);
+    /* The value names the per-word RecallResult event the screen really
+       writes, each word carrying direction 'recognise'. 'scored-items'
+       would promise a ScoredResult it never writes. */
+    assert.equal(activity.completionEvidence, 'recall-outcome', activity.id);
+    assert.equal(activity.paper, undefined, `${activity.id} belongs to no paper`);
+  }
+  for (const activity of vocab) {
+    if (activity.id === 'review:vocabulary') continue;
+    assert.equal(coverageFit(activity, 'topic-breadth'), 'direct', `${activity.id} works through one whole topic`);
+  }
+
+  /* Nothing practises recall directly any more, and the lookups say so
+     rather than going quiet: the vocabulary rounds are still offered, as
+     the nearest thing the library has, and none of them passes as direct. */
+  const recall = practiceForSubskill('recall-from-meaning', 60);
+  assert.equal(recall.length, vocab.length);
+  for (const activity of recall) assert.equal(coverageFit(activity, 'recall-from-meaning'), 'borrowed', activity.id);
+  assert.equal(subskillMaterial('recall-from-meaning').unavailable, null);
+});
+
+/* Why recall losing its direct practice leaves no objective unserved: the
+   planner proposes objectives only from activities that belong to a paper,
+   and vocabulary belongs to none. Vocabulary reaches a session only through
+   the recall slot (session.ts, vocabularyRecallStep), which chooses by
+   topic and due words, never by subskill. If that ever changes, a
+   vocabulary subskill with no direct practice becomes a real gap, and this
+   is the test that says so. */
+test('no vocabulary subskill is ever proposed as a plan objective', () => {
+  const vocabularySubskills = new Set([
+    'recognise-meaning',
+    'recall-from-meaning',
+    'use-in-a-sentence',
+    'collocation',
+    'topic-breadth',
+  ]);
+  for (const profile of [
+    syntheticNew(),
+    syntheticMatchingHeadings(),
+    syntheticStrongReadingWeakWriting(),
+    syntheticWeakReadingStrongWriting(),
+  ]) {
+    const policy = evaluateEvidence({ record: profile.record, goals: profile.goals, now: profile.now });
+    const { plan } = createInitialPlan({
+      catalogue,
+      record: profile.record,
+      policy,
+      now: profile.now,
+      today: profile.today,
+      goals: profile.goals,
+      constraints: profile.constraints,
+    });
+    const scored = scoreObjectives({
+      catalogue,
+      facts: learnerFacts(profile.record, policy),
+      policy,
+      goals: profile.goals,
+      constraints: profile.constraints,
+      overrides: [],
+      today: profile.today,
+      daysToExam: 40,
+      budgetMinutes: 60,
+      thresholds: DEFAULT_POLICY_THRESHOLDS,
+      weights: DEFAULT_PLANNER_WEIGHTS,
+      previous: null,
+      status: plan.status,
+    });
+    assert.ok(scored.length > 0, `${profile.name} was scored at all`);
+    for (const entry of scored) {
+      assert.ok(
+        !vocabularySubskills.has(entry.objective.subskill),
+        `${profile.name} was offered the vocabulary objective ${entry.objective.subskill}`,
+      );
+    }
+  }
 });
 
 /* ------------------------------------------------------------------ */

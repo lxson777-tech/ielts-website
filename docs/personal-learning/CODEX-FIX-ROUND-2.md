@@ -635,3 +635,294 @@ same-paper two-tab case the previous section named as not covered.
   first accepted completion.
 
 A sixth fresh inspection follows the fixes.
+
+## Fixes after inspection round 5 (for inspection round 6)
+
+Base for the round-6 inspection diff is still `48b1d17`. The three findings
+and four holes of the same class reported by the builders themselves are all
+in `fd9bdf8`, each with deterministic tests and a browser journey against the
+local stand-in (no grader, model or voice service called):
+
+- **R2E-01** (`src/lib/speaking/live/start-check.ts`, `openai-session.ts`,
+  `link.ts`, `session.ts`; `LiveExaminer.tsx`; `speaking-attempt-owner.ts`
+  additions): every start now carries a cancel handle (`startHandle`,
+  `watchStart`) that the screen pulls the moment the start number moves on
+  (unmount, account switch, the student's own Back, a newer start). A pull
+  releases everything on the spot wherever the setup is waiting: it closes
+  the peer connection and its data channel or the Gemini socket, stops the
+  examiner's audio and the microphone level meter (and again once a
+  still-running audio start finishes), ends at the Worker a paid session
+  that already exists, and rejects the pending start at once instead of
+  after twenty seconds. The owner check (`mayContinue`) stays and every step
+  asks both. Nothing starts after a let-go: the check runs immediately
+  before the remote answer is applied and inside every callback that could
+  start something (a late track is stopped rather than played, a late
+  "session started" message is refused, the Gemini open callback sends no
+  setup, message callbacks do nothing). Every failure after a paid session
+  exists ends it at the Worker, at most once per session: a let-go, the
+  twenty-second timeout, a service error, the connection closing. A let-go
+  while the session request is still out does not abort the request (that
+  could leave a session whose id nobody knows); the session is ended the
+  moment the request answers. The Gemini setup wait times out after twenty
+  seconds and closes the socket. Nineteen new cases in
+  `tests/live-start-cancel.test.ts` (each with a ten-second limit; each of
+  seventeen removals of a part of the fix, tried in a scratch copy, fails at
+  least one case by name, and all nineteen fail against the pre-fix code);
+  `f23` section 9 in the browser answers the intercepted session request
+  with a real answer from a second peer connection inside the same page,
+  so the page's connection genuinely reaches connected with a data channel
+  open and audio playing, then switches the account: with the answer held
+  and released late, on the standalone page mid-playback, and inside the
+  mock, in every case the connection is closed within 2.5 seconds, nothing
+  plays, no track is live and the session is ended at the Worker exactly
+  once, 90 of 90 overall (`results-delayed-grade-6.md`); the pre-fix code,
+  served by a second dev server, fails all six verdict rows. Nothing new to
+  translate; the Gemini timeout reuses the paid path's existing English
+  message, which was already untranslated on both paths and is shown as is.
+- **R2E-02** (`TestPlayer.tsx`, `MockExam.tsx`,
+  `src/components/tutor/AskWhyWrong.tsx`, `TestDebrief.tsx`,
+  `src/lib/tutor/client.ts`, `src/lib/tutor/review-owner.ts` new): a handed-in
+  paper's review belongs to the student who sat it. When the account changes,
+  in this tab or another, the answers, the score, the per-question review and
+  every Mr EZ control leave the screen together and the owner-changed stopped
+  screen takes their place (the paper's title, one sentence for the
+  signed-out case and one for the other-account case, Back or Start fresh);
+  the review returns only if that same student is using the browser again.
+  Both review requests to Mr EZ ("why was my answer wrong", "go through my
+  mistakes") carry the student who sat the paper and are checked three
+  times: before any token is fetched (refused if that student is no longer
+  current), after the token is read (refused if the session belongs to
+  anyone else, which closes the window where another tab's sign-in has
+  replaced the stored token before this tab was told), and before the one
+  automatic retry; a refusal sends nothing and takes the review off the
+  screen. The tutor's cached answers, previously keyed by paper, question and
+  answer only, now include the student. The mock's results screen, which
+  already hid itself on an account change, now says where the results are
+  kept once the sitting is recorded. A retake's review goes through the same
+  code. Cases 6 to 9 in `tests/test-session-owner.test.ts`; `f22` step 17 in
+  the browser (A's own question goes out once with A's token; after the
+  switch the first tab holds nothing of A and sends zero tutor requests; B's
+  own review of the same drill with the same answer shows none of A's reply;
+  a tab that missed the other tabs' news still sends zero requests and then
+  drops the review).
+- **R2E-03** (`src/lib/tests/mock.ts`, `src/lib/test-session.ts`,
+  `TestPlayer.tsx`): a mock paper's first hand-in is final. Finishing a leg
+  that already holds a result is refused with a new explicit outcome
+  ("handed-in"), writes nothing, and the first result stays byte for byte. A
+  paper counts as lost when the paper itself has already been handed in, even
+  while the mock sitting is still this student's, and the player also listens
+  for the mock's saved sitting changing in another tab, so a second tab stops
+  as soon as the first hands in, on its next keystroke that fails to save, or
+  at once if it opens a paper already handed in. The player records a paper
+  only for the first accepted hand-in. A paper opened on its own still reads
+  as gone when handed in elsewhere. Cases 1 to 5 in
+  `tests/test-session-owner.test.ts` (each fix removed in turn fails at least
+  one named case; three existing cases updated to the new shapes); `f22` step
+  18 in the browser (three tabs on the same Listening paper: tab 1 accepted,
+  tab 3 stopped with the new sentence, the tab that missed the news refused,
+  the result tab 1's, one progress attempt and one learning submission
+  carrying only tab 1's answers), 151 of 151 overall
+  (`results-unfinished-test-6.md`). Seven new sentences, each with Russian.
+
+Two holes of the same class, reported by the builders themselves rather than
+by the inspection, are closed in the same commit so that the next inspection
+does not have to raise them:
+
+- **Every Mr EZ request is bound to its student** (`src/lib/tutor/client.ts`,
+  `src/lib/tutor/review-owner.ts` generalised, `src/lib/tutor/conversation.ts`,
+  `MrEzPanel.tsx`, `ExplainResult.tsx`, `AskWhyWrong.tsx`, `TestDebrief.tsx`).
+  The binding lives in the tutor client, so every caller gets it with no
+  change of its own (the panel, the welcome, the weekly review, the unit note,
+  the explanation, "propose next", lesson help and practice evaluation; the
+  two review components still name their own student). A request is refused
+  before sending if the stored session belongs to anyone other than the
+  student it was made for, including a signed-out page with somebody's
+  session sitting in storage; the automatic retry checks again; a reply or a
+  failure returning after a switch (or a switch away and back) is dropped
+  with a quiet "owner changed" error that is never shown. The panel's
+  conversation, which was kept per browser tab with nobody's name on it (so
+  the next student saw the previous one's whole conversation, and a reload
+  served it back), is now stored under each student's own key, switches with
+  the account, is restored from the account only for its own student, and the
+  old nameless copy is no longer read and is removed when Mr EZ's memory is
+  cleared. Eleven cases in `tests/tutor-request-owner.test.ts` (switching the
+  binding off fails eight; the old nameless store fails three); four
+  assertions in `tests/test-session-owner.test.ts` section 17 that described
+  the replaced code were updated, one of them from "goes with any session's
+  token" to a refusal, since that was the hole. `f22` step 19 in the browser:
+  A's panel message held, B signs in in a second tab, the message released
+  with a reply labelled simulated: A's reply never appears, one chat request
+  in all, B's saved conversation holds nothing of A, B's own message goes out
+  with B's token; against the old code five of six checks fail (A's question
+  and the late reply were shown to B and saved under the nameless key). 158
+  of 158 overall (`results-unfinished-test-7.md`). No new strings.
+- **In-lesson practice evaluation and lesson help are bound to their
+  student** (`src/components/learning/WritingFocusedTask.tsx`,
+  `lesson-help.ts`, `LessonHelpControls.tsx`, `lesson-block-help.ts`;
+  `recordEventFor` added to `src/lib/learning/store.browser.ts`). When a
+  student presses Check on the written focused task, the answer is tied to
+  them before anything is sent; whatever comes back is written into their
+  own record whoever is on the page by then, and shown only if they stayed
+  on the page the whole time. If the account changes mid-request the task is
+  handed over at once (the incoming student sees their own draft or an
+  empty one with one calm line), the late verdict is shown to nobody, and
+  the outgoing student's answer is kept in their own record as an attempt
+  nothing judged (the existing "not judged" shape, never a miss) and in
+  their own draft; nothing is written under the new student. The same
+  hand-over happens on a switch with nothing in flight, including typing
+  still waiting on the autosave; a press on a screen that missed the switch
+  sends nothing and hands over. Lesson help is tied to the student at each
+  press, shown and passed to the host screen only while they stayed; on a
+  switch the help buttons clear the previous student's replies and never
+  pass them on as hints already given; help that lands after the switch in
+  the written task is kept in the outgoing student's own draft as help
+  received (erring on the safe side: their next answer counts as helped even
+  though they never saw the hint). Eleven cases in
+  `tests/lesson-evidence-owner.test.ts` (five deliberate breakages each fail
+  named cases); `f22` step 20 in the browser (the evaluation request held, B
+  signs in in a second tab, the request released with a synthetic reply: A's
+  record holds the answer, B's holds nothing, nothing of A on B's screen),
+  167 of 167 overall (`results-unfinished-test-8.md`). One new sentence with
+  Russian.
+- **The focused Reading and Listening exercise and the lesson quick check
+  belong to their student** (`src/components/learning/exercise-owner.ts` new,
+  `FocusedExercise.tsx`, `src/components/PracticeQuiz.tsx`; `recordEventsFor`
+  and `recordSubmissionFor` added to `src/lib/learning/store.browser.ts`; a
+  stored-session check added to `src/lib/store-owner.ts`). Each screen is
+  tied to the student on the page when it opens or is restored and never
+  looks the owner up again. On an account change the outgoing student's
+  answers stay in their own saved progress together with the help each had
+  (a hint arriving late for them goes there too and is shown to nobody), the
+  screen shows the incoming student's own progress or an empty exercise with
+  one calm line, and the recording player starts fresh (an independent check
+  plays once, and that once belonged to the previous student). Check, "how
+  did you choose it" and the second go are each claimed at the press: if the
+  student has gone, nothing is recorded and the screen hands over; otherwise
+  everything is written under that student through the owner-named writers.
+  A tab that missed the switch also reads the account session this browser
+  has stored at the press: if it names a different student, nothing is
+  recorded and the answers leave the screen until the tab catches up (the
+  local version of the check the tutor client makes on its token). A tab
+  that missed a plain sign-out still records under the previous student,
+  into their own record, so browsers that keep the login only in memory are
+  not blocked. Sixteen cases in `tests/exercise-owner.test.ts`; `f22` step 21
+  in the browser (A answers part of each, B signs in from a second tab, A's
+  tabs show the calm line and nothing of A, B's visits show nothing of A, A
+  returns to their answers, a check from a tab that missed the switch records
+  nothing), 185 of 185 overall (`results-unfinished-test-9.md`). One new
+  sentence with Russian. Known and stated: a hint on a not-yet-answered item
+  is forgotten on reload or switch (pre-existing); a student who answers
+  signed out and signs in mid-exercise sees the answers leave the screen and
+  stay with the device's signed-out owner, as the essay editor does, and the
+  claim offer does not carry in-progress exercise copies.
+
+Gates at `fd9bdf8`: `npm test` 1958 of 1958, `npx astro check` 0 errors and 0
+warnings, `npm run build` 661 pages, the learning index byte-identical,
+Codex's `signout-race.mjs` printing anonymous both times.
+
+## After round 5: the merge of the published main, and the last screens (for inspection round 6)
+
+Base for the round-6 inspection diff is still `48b1d17`. Two things happened
+after `fd9bdf8` that the inspector will see in the diff.
+
+**The published main is merged in at `c5cf425`** (origin/main `9b775df`:
+the new vocabulary practice with marked questions from example sentences,
+two reading-practice content commits, and a study-screen polish). Four
+conflicts were resolved so that both intentions survive: `src/lib/vocab-review.ts`
+(main's word-loading fix inside our `buildCardSet`, main's removed helpers
+gone, our `rate()` return and owner-scoped saving kept), `src/components/VocabReview.tsx`
+(main's component as the base with our evidence recording, activity ids and
+continue bar added), `src/components/LearningDashboard.tsx` (our card with
+main's wording) and `src/pages/plan-settings.astro` (our Intake settings
+screen with main's wrapper class and heading level). The learning-index
+generator was taught main's per-question practice sources (a source may
+name one question or a range, units are read run by run, three more loud
+checks) and the compact index format went from 2 to 3 so a unit that is not
+one unbroken run lists its question numbers; the question-identity table in
+`reading-practice.ts` was refreshed from the generator. The vocabulary
+practice itself, its wording, styles and tests are main's, not this round's;
+what this round adds to it is ownership (below) and a truthful catalogue
+entry: both vocabulary activities now declare recognition (`recognise-meaning`
+direct, `topic-breadth` direct, `recall-from-meaning` borrowed until a real
+recall activity exists), their objectives describe picking the missing word
+in an example sentence, with Russian, and two new cases in
+`tests/learning-catalog.test.ts` pin that and that the planner never proposes
+a vocabulary subskill as a goal (`docs/personal-learning/ARCHITECTURE.md`
+section 6.5 corrected).
+
+**The last screens of the same class** (`34b7583`), reported by the builders
+rather than by the inspection:
+
+- **The inline lesson quiz** (`src/scripts/lesson-quiz.ts`): bound to the
+  student on the page when it is set up; on a switch, A's answers are saved
+  into A's own unfinished copy (only if they differ from what is kept), the
+  answers, marking and score leave the screen with the calm line, and the
+  quiz brings back the incoming student's own copy; a check for a student
+  who has left is refused and records nothing; a check from a tab that
+  missed the switch keeps A's answers for A, clears and disables the quiz;
+  recording is always under the student who pressed. No lesson body carries
+  an inline quiz today, so the browser step writes the scraper's quiz markup
+  into a real lesson page before its script runs.
+- **The vocabulary round** (`src/components/vocab-round-owner.ts` new,
+  `VocabReview.tsx`, `rateFor` in `vocab-review.ts`,
+  `recordVocabularyReviewFor` in the learning store): a round belongs to the
+  student on the page when it starts; every answer is checked at the click
+  and written under that student in both the review schedule and the
+  learning record; on a switch the incoming student gets a fresh round from
+  their own schedule with the calm line; a click from a tab that missed the
+  switch writes nothing and takes the round off the screen. Main's wording
+  and marking are unchanged.
+- **The spoken focused task** (`src/components/learning/spoken-task-owner.ts`
+  new, `SpokenFocusedTask.tsx`): start, stop, "Done for now" and the
+  microphone setting are checked at the press; on a switch a recording in
+  progress is stopped and dropped and the microphone released; a permission
+  or a finished recording arriving after the switch is dropped; nothing from
+  it is recorded for anybody; "Done for now" saves at the press under that
+  student.
+- **The written task's race** (`WritingFocusedTask.tsx`): anything pressed
+  on the screen as it looked just before a hand-over (a keystroke, Check, a
+  help button) is ignored, so the outgoing student's words can no longer be
+  saved or sent under the incoming one.
+
+Twenty-four cases in `tests/last-screens-owner.test.ts` (six against the
+real quiz script; removing each fix fails named cases); `f22` step 22 in
+the browser, 207 of 207 overall (`results-unfinished-test-10.md`), with the
+spoken task measured on the fake microphone (recorder stopped and
+microphone released at the switch).
+
+**Known and stated, not fixed in this round.** Five places save a "studied"
+mark or the intake scores through the shared store at the press
+(`BandLadder`, `CueCardBank`, `ModelAnswers`, `SavedItems`, `Intake`, and
+the lesson layout's "Mark this lesson as studied"): none carries another
+student's answers, but a tab that missed a switch would record that mark
+under the student it thinks is there. The written task still loses the last
+half-second of typing if the page is closed mid-word (pre-existing). The
+vocabulary calm line uses the existing hint style and sits close to the
+progress bar. A hint on a not-yet-answered focused-exercise item is
+forgotten on reload or switch (pre-existing).
+
+**The sign-in path no longer announces a false change** (`src/lib/auth/sync.ts`,
+`store-owner.ts`). A sign-in used to begin by resetting the owner to
+anonymous and announce each step, so on a signed-in page load every screen
+of this kind heard two "account changes" and could show its calm line for no
+reason; a switch from A to B was heard twice. Now a sign-in for the student
+who is already the owner (a page load, or the account answering twice for
+one student) restarts and cancels exactly as before but never touches the
+owner or the learner record and announces nothing; a real change (anonymous
+to a student, A to B, a sign-out) is announced exactly once, at the end,
+once every store has moved. Every sign-in generation check and cancellation
+rule is unchanged (`tests/account-isolation.test.ts`, seven new cases; the
+old code fails five of them, and Codex's race script still prints anonymous
+twice). Two tidy-ups with it: the spoken task has its own true sentence
+(the recording was stopped and not kept) with Russian, and the written
+task's Check and its two revise buttons make the stored-session check the
+focused exercise makes. Stated: a repeated sign-in for the same student
+still fetches and uploads the account data a second time; a screen hidden
+by a stale-tab refusal stays hidden until reload if the other tab signs back
+in as the same student before this tab hears anything; the lifecycle reports
+a sign-in as finished after the first, cancelled one on a signed-in page
+load, which the claim offer waits for.
+
+Gates at `34b7583`: `npm test` 2004 of 2004, `npx astro check` 0 errors and 0
+warnings, `npm run build` 661 pages, the learning index byte-identical,
+Codex's `signout-race.mjs` printing anonymous both times.

@@ -1722,3 +1722,213 @@ test('every page that hides the site chrome still gets the app-wide account life
     );
   }
 });
+
+/* ------------------------------------------------------------------ */
+/* 8. One account change, one announcement                             */
+/* ------------------------------------------------------------------ */
+
+/* Every screen that holds a student's work (the essay editor, the trainers,
+ * the test player, the focused exercises, the spoken and written tasks, the
+ * tutor panel) listens for owner changes and, on hearing one, hands over:
+ * keeps the outgoing student's work for them, clears itself and shows one
+ * calm line. A sign-in used to reset the owner to this device's anonymous
+ * one and then set the incoming student, announcing both. On a signed-in
+ * page load the incoming student is ALREADY the owner, so a screen that had
+ * mounted first heard the owner leave and come back and showed the calm line
+ * although the account never changed; a switch from A to B was heard as two
+ * changes. The rule since 23 September 2026 (src/lib/auth/sync.ts, and
+ * moveOwnerOnce in src/lib/store-owner.ts): a genuine change is announced
+ * exactly once, and the same student again is announced not at all. */
+
+/** What a screen hears from now on: for every owner-change notice, the
+    owner it finds when it looks. */
+function listenLikeAScreen(): { heard: string[]; stop(): void } {
+  const heard: string[] = [];
+  const stop = storeOwner.onOwnerChange(() => {
+    heard.push(storeOwner.ownerNamespace(storeOwner.currentOwner()));
+  });
+  return { heard, stop };
+}
+
+const NS_A = `u:${A.id}`;
+const NS_B = `u:${B.id}`;
+
+/** Load the learning module into the account sync once, the way any earlier
+    sign-in on the page would have. Without it the learner record is only
+    moved after a module load, and the "never shown anonymous" checks below
+    would pass for the wrong reason. */
+async function learningModuleLoaded(): Promise<void> {
+  freshDevice();
+  await startSyncForUser(B);
+  stopSync();
+}
+
+async function ticks(until: () => boolean, what: string): Promise<void> {
+  for (let tick = 0; tick < 200 && !until(); tick += 1) {
+    await new Promise((resolve) => setImmediate(resolve));
+  }
+  assert.ok(until(), `never happened: ${what}`);
+}
+
+test('a signed-in page load for the student who is already the owner announces no owner change, and the sign-in still finishes for them', { timeout: 10_000 }, async () => {
+  coldDevice();
+  holdSessionFor(A.id);
+  /* The page has mounted: a screen has resolved its owner and is listening. */
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+  const screen = listenLikeAScreen();
+  try {
+    await startSyncForUser(A);
+  } finally {
+    screen.stop();
+  }
+  assert.deepEqual(screen.heard, [], 'a screen heard an account change on a page load where the account never changed');
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+  assert.deepEqual(learnerStore.learnerStoreStatus().owner, { kind: 'user', userId: A.id });
+  assert.ok(uploads.some((row) => row.user_id === A.id), 'the sign-in never finished for the student');
+});
+
+test('the same page load through the real lifecycle, where the account answers twice for the same student, announces no owner change', { timeout: 10_000 }, async () => {
+  coldDevice();
+  holdSessionFor(A.id);
+  const session = { access_token: 'SYNTHETIC-access-token', user: { id: A.id } };
+  /* The account client answers once straight away (getSession) and once with
+     its initial session event, both for the same student, which is exactly
+     what the real client does on a signed-in page load. */
+  const realAuth = syntheticSupabase.auth;
+  syntheticSupabase.auth = {
+    ...realAuth,
+    async getSession() {
+      return { data: { session: session as never } };
+    },
+    onAuthStateChange(callback: (event: string, value: unknown) => void) {
+      queueMicrotask(() => callback('INITIAL_SESSION', session));
+      return { data: { subscription: { unsubscribe() {} } } };
+    },
+  } as typeof realAuth;
+
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+  const screen = listenLikeAScreen();
+  try {
+    lifecycle.startAccountLifecycle();
+    await ticks(
+      () => lifecycle.accountState().settled > 0 && uploads.some((row) => row.user_id === A.id),
+      'the sign-in finished',
+    );
+    /* Let every late continuation of the first, superseded answer run. */
+    for (let tick = 0; tick < 20; tick += 1) await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(screen.heard, [], 'a screen heard an account change on a signed-in page load');
+    assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+    assert.deepEqual(learnerStore.learnerStoreStatus().owner, { kind: 'user', userId: A.id });
+  } finally {
+    screen.stop();
+    lifecycle.resetAccountLifecycleForTest();
+    syntheticSupabase.auth = realAuth;
+  }
+});
+
+test('a duplicate session event for the same student, while their sign-in is still running, announces nothing and never shows the anonymous record', { timeout: 10_000 }, async () => {
+  await learningModuleLoaded();
+  coldDevice();
+  holdSessionFor(A.id);
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+
+  const screen = listenLikeAScreen();
+  /* What a screen reading the learner record would have been shown. */
+  const recordShown: string[] = [];
+  const stopRecord = learnerStore.onLearnerRecordChange(() => {
+    recordShown.push(storeOwner.ownerNamespace(learnerStore.learnerStoreStatus().owner));
+  });
+  try {
+    const first = startSyncForUser(A);
+    const second = startSyncForUser(A);
+    await Promise.all([first, second]);
+  } finally {
+    screen.stop();
+    stopRecord();
+  }
+  assert.deepEqual(screen.heard, [], 'a repeated answer for the same student was heard as an account change');
+  assert.deepEqual(
+    recordShown.filter((namespace) => namespace !== NS_A),
+    [],
+    'the learner record was moved off the student and back while nothing changed',
+  );
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+  assert.deepEqual(learnerStore.learnerStoreStatus().owner, { kind: 'user', userId: A.id });
+  assert.ok(uploads.length > 0 && uploads.every((row) => row.user_id === A.id), 'the surviving sign-in did not finish for A alone');
+});
+
+test('a repeated session event after the sign-in finished announces nothing', { timeout: 10_000 }, async () => {
+  freshDevice();
+  await startSyncForUser(A);
+  const screen = listenLikeAScreen();
+  try {
+    await startSyncForUser(A);
+  } finally {
+    screen.stop();
+  }
+  assert.deepEqual(screen.heard, []);
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+});
+
+test('a sign-in from anonymous announces exactly one owner change, to the student, even when the account answers twice', { timeout: 10_000 }, async () => {
+  freshDevice();
+  assert.equal(storeOwner.currentOwner().kind, 'anonymous');
+  const once = listenLikeAScreen();
+  try {
+    await startSyncForUser(A);
+  } finally {
+    once.stop();
+  }
+  assert.deepEqual(once.heard, [NS_A]);
+
+  freshDevice();
+  assert.equal(storeOwner.currentOwner().kind, 'anonymous');
+  const twice = listenLikeAScreen();
+  try {
+    await Promise.all([startSyncForUser(A), startSyncForUser(A)]);
+  } finally {
+    twice.stop();
+  }
+  assert.deepEqual(twice.heard, [NS_A], 'the second answer for the same student was heard as another change');
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+});
+
+test('a switch from student A to student B announces exactly one owner change, to B', { timeout: 10_000 }, async () => {
+  freshDevice();
+  await startSyncForUser(A);
+  doStudentAsWork();
+  const screen = listenLikeAScreen();
+  try {
+    /* No sign-out in between: the account reports B straight away, the way
+       signing in as somebody else on top of a live session does. */
+    await startSyncForUser(B);
+  } finally {
+    screen.stop();
+  }
+  assert.deepEqual(screen.heard, [NS_B], 'a switch was heard as more than one change, or as a change to somebody else');
+  assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: B.id });
+  assert.deepEqual(learnerStore.learnerStoreStatus().owner, { kind: 'user', userId: B.id });
+  assert.deepEqual(whatTheStudentSees(), EMPTY_STUDENT, "student B was shown student A's work");
+  for (const row of uploads.filter((entry) => entry.user_id === B.id)) carriesNothingOf(row, A_FINGERPRINTS);
+});
+
+test('a sign-out announces exactly one owner change, to this device, once every store has moved', { timeout: 10_000 }, async () => {
+  freshDevice();
+  await startSyncForUser(A);
+  const heardWith: string[] = [];
+  const stop = storeOwner.onOwnerChange(() => {
+    heardWith.push(
+      `${storeOwner.currentOwner().kind} / record ${learnerStore.learnerStoreStatus().owner.kind}`,
+    );
+  });
+  try {
+    stopSync();
+  } finally {
+    stop();
+  }
+  assert.deepEqual(
+    heardWith,
+    ['anonymous / record anonymous'],
+    'a sign-out was heard more than once, or before the learner record had moved',
+  );
+});

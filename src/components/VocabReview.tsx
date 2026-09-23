@@ -30,56 +30,32 @@
    vocab-review.ts needs unassisted recall on two different days). A second
    go at a missed word comes after the answer was shown, so it is recorded
    as assisted. The spaced-review state is saved first; the evidence write
-   can never interrupt the round. */
+   can never interrupt the round.
+
+   WHOSE ROUND IT IS (the follow-up to R2B-01, 23 September 2026). A round
+   belongs to the student on the page when it started (./vocab-round-owner.ts):
+   every answer is claimed at the click and written under that student
+   through writers that take the owner, and when the page changes hands the
+   screen hands over to a fresh round from the incoming student's own
+   schedule, with one calm line saying why. */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getPracticeRound, getTopicCards, rate, vocabAssistanceLevel, type VocabCard } from '../lib/vocab-review';
-import { buildQuestion, type PracticeQuestion } from '../lib/vocab-practice';
-import { VOCABULARY_PARTS } from '../data/vocabulary';
-import { getLearnerStore } from '../lib/learning/store.browser';
+import type { VocabCard } from '../lib/vocab-review';
+import { getTopicCards } from '../lib/vocab-review';
+import { buildQuestion } from '../lib/vocab-practice';
+import { onOwnerChange } from '../lib/store-owner';
 import SessionContinueBar from './learning/SessionContinueBar';
+import {
+  EXERCISE_OWNER_CHANGED_NOTE,
+  claimExerciseCheck,
+  exerciseIsCurrent,
+  type ExerciseSession,
+} from './learning/exercise-owner';
+import { openVocabRound, recordVocabAnswer, vocabActivityId, type Queued } from './vocab-round-owner';
 import { useT } from '../lib/i18n/react';
 import '../styles/learning-vocab.css';
 
 type Phase = 'loading' | 'active' | 'finished';
-
-/** A question in the round's queue. `retry` marks the second showing of a
-    word missed earlier in the same round. */
-type Queued = PracticeQuestion & { retry: boolean };
-
-const ROUND_SIZE = 10;
-
-function newRound(topic: string): Queued[] {
-  const pool = getTopicCards(topic);
-  return getPracticeRound(topic, ROUND_SIZE).map((card) => ({ ...buildQuestion(card, pool), retry: false }));
-}
-
-/** The catalogue's own vocabReviewActivityId() (src/lib/learning/catalog.ts)
-    produces exactly this string from a topic slug. Duplicated as a literal
-    format here, rather than imported, because catalog.ts is a different
-    work package's file and pulls in the generated learning index; if that
-    format ever changes, this line and catalog.ts's must change together. */
-function vocabActivityId(topicTitle: string): string {
-  const slug = VOCABULARY_PARTS.find((p) => p.title === topicTitle)?.slug;
-  return slug ? `review:vocabulary:${slug}` : 'review:vocabulary';
-}
-
-/** Writes one answered question to the shared learner record. Never lets a
-    storage or sync hiccup interrupt the round: the local spaced-review
-    state (rate()) is the one thing that must not be lost, and it is saved
-    separately, before this is ever called. */
-function recordEvidence(topicTitle: string, word: string, correct: boolean, assisted: boolean): void {
-  try {
-    getLearnerStore().recordVocabularyReview({
-      activityId: vocabActivityId(topicTitle),
-      subskill: 'recognise-meaning',
-      words: [{ word, correct, direction: 'recognise' }],
-      assistance: vocabAssistanceLevel(assisted),
-    });
-  } catch {
-    /* Evidence is additional to the round, never load-bearing for it. */
-  }
-}
 
 export default function VocabReview({ topic, onExit }: { topic: string; onExit: () => void }) {
   const { t } = useT();
@@ -92,9 +68,27 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
   const [missed, setMissed] = useState<VocabCard[]>([]);
   const nextRef = useRef<HTMLButtonElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  /* Whose round this screen holds (./vocab-round-owner.ts): bound when the
+     round starts, and moved to the incoming student only by handOver below.
+     State, so every render's questions and the student they are answered
+     for belong together; the ref is for the owner-change listener. */
+  const [session, setSession] = useState<ExerciseSession | null>(null);
+  const sessionRef = useRef<ExerciseSession | null>(null);
+  /* The one calm line after the page changed hands. */
+  const [ownerNote, setOwnerNote] = useState<string | null>(null);
+  /* True when this tab missed an account change and refused a click: the
+     round leaves the screen until the tab hears who is here. */
+  const [withheld, setWithheld] = useState(false);
 
-  const start = useCallback(() => {
-    const round = newRound(topic);
+  /** A round for the owner on the page right now, from their own
+      schedule. Touches only refs and setters, so the owner-change listener
+      can call it from any render. */
+  const begin = useCallback(() => {
+    const opened = openVocabRound(topic);
+    const round = opened.questions;
+    sessionRef.current = opened.session;
+    setSession(opened.session);
+    setWithheld(false);
     setQuestions(round);
     setRoundSize(round.length);
     setIndex(0);
@@ -104,11 +98,54 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
     setPhase(round.length ? 'active' : 'finished');
   }, [topic]);
 
+  const start = useCallback(() => {
+    begin();
+    setOwnerNote(null);
+  }, [begin]);
+
+  /* The page changed hands, here or in another tab. Every answer of the
+     outgoing student's round was written at its own click, under them, so
+     nothing of theirs is lost; none of it stays on screen. The incoming
+     student gets a fresh round from their own schedule, and one calm line
+     saying why. */
+  const handOver = useCallback(() => {
+    begin();
+    setOwnerNote(EXERCISE_OWNER_CHANGED_NOTE);
+  }, [begin]);
+
+  /* This tab missed the account change: it still names the previous
+     student, but this device's account session is somebody else's
+     (claimExerciseCheck said 'device-changed'). Nothing is written, and the
+     round leaves the screen until this tab hears who is here, when the
+     listener below hands over. */
+  const withhold = useCallback(() => {
+    setWithheld(true);
+    setOwnerNote(EXERCISE_OWNER_CHANGED_NOTE);
+  }, []);
+
   // Deferred to the client so the round (scheduled against localStorage)
   // matches the student's saved progress from the first render.
   useEffect(() => {
     start();
   }, [start]);
+
+  /* A sign-out, sign-in or account switch, from this tab or another. The
+     same owner being told its stores changed (the anonymous-work claim)
+     replaces nothing. */
+  useEffect(() => {
+    const stop = onOwnerChange(() => {
+      if (sessionRef.current === null || exerciseIsCurrent(sessionRef.current)) return;
+      handOver();
+    });
+    return () => {
+      stop();
+    };
+  }, [handOver]);
+
+  /** True while this render's round is the one on screen. A handler from a
+      render made before a hand-over (the gap between the hand-over and the
+      next render) must not answer one student's question for the next. */
+  const live = session !== null && session === sessionRef.current && !withheld;
 
   const current = questions[index];
   const answered = chosen !== null;
@@ -130,38 +167,49 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
 
   const choose = useCallback(
     (option: string) => {
-      if (!current || chosen !== null) return;
-      const correct = option === current.card.word;
-      setChosen(option);
-      if (isRetry) {
-        if (correct) rate(current.card.word, 'hard');
-        // The answer was shown the first time round, so this go is assisted.
-        recordEvidence(current.card.topic, current.card.word, correct, true);
+      if (!current || chosen !== null || !live) return;
+      /* Accepted only for the student whose round this is, bound to them at
+         the click. A refusal writes nothing and hands over, or takes the
+         round off the screen. */
+      const claim = claimExerciseCheck(session);
+      if ('refused' in claim) {
+        if (claim.refused === 'owner-changed') handOver();
+        else withhold();
         return;
       }
-      rate(current.card.word, correct ? 'good' : 'again');
-      recordEvidence(current.card.topic, current.card.word, correct, false);
-      if (correct) {
-        setRightFirstTime((n) => n + 1);
-      } else {
-        setMissed((m) => [...m, current.card]);
-        // Once more at the end of the round, with the options reshuffled so
-        // the right answer is not simply remembered by its position.
-        const pool = getTopicCards(topic);
-        setQuestions((q) => [...q, { ...buildQuestion(current.card, pool), retry: true }]);
+      try {
+        const correct = option === current.card.word;
+        setChosen(option);
+        setOwnerNote(null);
+        /* Written under the student the round was started for (the claim
+           refuses anybody else), through writers that take that owner. */
+        recordVocabAnswer(claim.binding.owner, current.card, correct, isRetry);
+        if (isRetry) return;
+        if (correct) {
+          setRightFirstTime((n) => n + 1);
+        } else {
+          setMissed((m) => [...m, current.card]);
+          // Once more at the end of the round, with the options reshuffled so
+          // the right answer is not simply remembered by its position.
+          const pool = getTopicCards(topic);
+          setQuestions((q) => [...q, { ...buildQuestion(current.card, pool), retry: true }]);
+        }
+      } finally {
+        claim.binding.cancel();
       }
     },
-    [current, chosen, isRetry, topic],
+    [current, chosen, isRetry, topic, live, session, handOver, withhold],
   );
 
   const next = useCallback(() => {
+    if (!live) return;
     if (index + 1 >= questions.length) {
       setPhase('finished');
       return;
     }
     setIndex((i) => i + 1);
     setChosen(null);
-  }, [index, questions.length]);
+  }, [index, questions.length, live]);
 
   useEffect(() => {
     if (phase !== 'active' || !current) return;
@@ -196,9 +244,15 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
         <h1>{t('Practice')}</h1>
       </div>
 
+      {ownerNote && (
+        <p className="vocab-hint" role="status">
+          {t(ownerNote)}
+        </p>
+      )}
+
       {phase === 'loading' && <p className="vocab-hint">{t('Getting your words ready…')}</p>}
 
-      {phase === 'active' && current && (
+      {!withheld && phase === 'active' && current && (
         <>
           <div className="vocab-round-progress" aria-hidden="true">
             <span style={{ width: `${((index + (answered ? 1 : 0)) / questions.length) * 100}%` }} />
@@ -274,7 +328,7 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
         </>
       )}
 
-      {phase === 'finished' && (
+      {!withheld && phase === 'finished' && (
         <div className="vocab-finished">
           <h2>{t('Round complete')}</h2>
           {roundSize > 0 && (

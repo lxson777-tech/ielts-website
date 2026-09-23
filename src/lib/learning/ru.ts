@@ -381,11 +381,11 @@ const CATALOG_RU: Record<string, string> = {
   'Work one real Listening section under time and see every answer explained.':
     'Пройти одну настоящую часть Listening на время и увидеть разбор каждого ответа.',
 
-  /* Vocabulary review */
-  "Recall this topic's words from memory, not only recognise them.":
-    'Вспоминать слова этой темы по памяти, а не только узнавать их.',
-  'Review every word due today by recall, not only by recognition.':
-    'Повторить все слова, которые нужно вспомнить сегодня, именно вспоминая их, а не только узнавая.',
+  /* Vocabulary practice (marked questions from example sentences) */
+  "Recognise this topic's words by picking the missing one in each example sentence.":
+    'Узнавать слова этой темы, выбирая пропущенное слово в каждом примере употребления.',
+  'Choose a topic and pick the missing word in each example sentence, starting with the words due today.':
+    'Выбрать тему и найти пропущенное слово в каждом примере употребления, начиная со слов, которые пора повторить сегодня.',
 
   /* Full papers, mock, hubs */
   'Sit a complete Reading paper under exam timing and get a band estimate.':

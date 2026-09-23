@@ -304,6 +304,11 @@ export function storedSessionAgrees(
 
 let current: CacheOwner | null = null;
 const ownerListeners = new Set<() => void>();
+/* How many moveOwnerOnce calls are running (see "One account change, one
+   announcement" below), and whose work this device held when the outermost
+   one began. Zero and null everywhere else, which is ordinary behaviour. */
+let movingOnce = 0;
+let movingFrom: CacheOwner | null = null;
 
 /** Whose work this browser is showing and saving right now: the signed-in
     student, or this device's anonymous owner. Resolved lazily so importing
@@ -326,6 +331,9 @@ export function setCurrentOwner(owner: CacheOwner | null): void {
   const resolved = owner ?? anonymousOwner(deviceIdFrom(deviceStorage()));
   if (current && sameOwner(current, resolved)) return;
   current = resolved;
+  /* Inside moveOwnerOnce the owner has moved all the same; only the
+     announcement waits, and is made once, when that call ends. */
+  if (movingOnce > 0) return;
   announceStoresChanged();
 }
 
@@ -349,6 +357,47 @@ export function announceStoresChanged(): void {
 export function onOwnerChange(listener: () => void): () => void {
   ownerListeners.add(listener);
   return () => ownerListeners.delete(listener);
+}
+
+/* ── One account change, one announcement ───────────────────────────────── */
+
+/* WHY (the calm line that appeared for no reason, 23 September 2026)
+ *
+ * Every screen that holds a student's work listens here, and hands over when
+ * it hears a different owner: it keeps the outgoing student's work for them,
+ * clears itself and shows one calm line. The account sync used to move the
+ * owner in two steps, back to this device's anonymous owner and then on to
+ * the incoming student, and each step was announced. So a screen heard two
+ * account changes for one sign-in, and on a signed-in page load, where the
+ * incoming student was ALREADY the owner, it heard two changes although the
+ * account never changed at all, and showed the calm line to a student who
+ * had done nothing.
+ *
+ * The account sync now makes its moves inside moveOwnerOnce. Every owner set
+ * inside it lands at once, exactly as before, so every store has moved
+ * before anything reads one; only the announcement waits for the end, and it
+ * is made ONCE, and only when the owner at the end is not the owner at the
+ * start. Anonymous to a student, a student to anonymous, student A to
+ * student B: one announcement each. The same student before and after: none.
+ *
+ * `run` must be synchronous: an owner set after an await in it would be
+ * outside it. Calls may nest; only the outermost one announces. The
+ * anonymous-work claim's own announcement (announceStoresChanged, the same
+ * owner with new contents) is never held back by this. */
+export function moveOwnerOnce(run: () => void): void {
+  const outermost = movingOnce === 0;
+  if (outermost) movingFrom = currentOwner();
+  movingOnce += 1;
+  try {
+    run();
+  } finally {
+    movingOnce -= 1;
+    if (outermost) {
+      const from = movingFrom;
+      movingFrom = null;
+      if (from && !sameOwner(from, currentOwner())) announceStoresChanged();
+    }
+  }
 }
 
 /* ── Work that finishes after the page has moved on ─────────────────────── */

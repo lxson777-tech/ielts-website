@@ -1484,6 +1484,16 @@ export function recordSubmissionFor(owner: CacheOwner, input: SubmissionInput): 
   return learnerStoreFor(owner).recordSubmission(input);
 }
 
+/** recordVocabularyReview, into one named owner's record. See learnerStoreFor.
+ *
+ * Added for the vocabulary practice round (src/components/VocabReview.tsx):
+ * every answer of a round is written under the student the round was
+ * started for, never under whoever the shared store holds by the time of
+ * the click. With no account change this is exactly recordVocabularyReview. */
+export function recordVocabularyReviewFor(owner: CacheOwner, input: VocabularyReviewInput): EvidenceEvent | null {
+  return learnerStoreFor(owner).recordVocabularyReview(input);
+}
+
 export function readLearnerRecord(): LearnerRecordV1 {
   return getLearnerStore().read();
 }
