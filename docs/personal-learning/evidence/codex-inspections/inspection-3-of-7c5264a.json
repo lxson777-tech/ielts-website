@@ -1,0 +1,1522 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-3\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "6527cc29de9e94f457724d6ac7e2e8a143e6db87324f3d8b639322d021343616",
+  "base": "48b1d17",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0cd48-c2ba-7602-9747-3ff9ae14ca28",
+  "usage": {
+    "input_tokens": 1183047,
+    "cached_input_tokens": 971904,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 3117,
+    "reasoning_output_tokens": 1224
+  },
+  "elapsed_seconds": 170.33,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence"
+  ],
+  "inspected_commit": "7c5264a",
+  "snapshot_sha256": null,
+  "response": {
+    "verdict": "REVISE",
+    "summary": "The original ownership fixes are substantially implemented, but four concrete edge cases remain: newer drafts can be deleted, stale mock screens can overwrite replacement sittings, resumed papers gain extra time, and speaking recordings can span different students.",
+    "findings": [
+      {
+        "id": "R2C-01",
+        "severity": "medium",
+        "path": "src/components/WritingTester.tsx:351",
+        "evidence": "The delayed grade's keep callback unconditionally clears the submitter's draft for that prompt. A can submit, sign out, sign back in before grading finishes, and revise the restored essay. Once the revised draft has autosaved, the older grade deletes it. The cancelled binding suppresses the report but does not suppress keep. Reloading then loses the revision, while history contains only the original submission.",
+        "fix": "Associate draft deletion with the submitted draft revision. Clear it only if the stored revision still matches the submitted revision; preserve any newer editing session's work. Cover returning to A and editing the same prompt before the earlier grade resolves."
+      },
+      {
+        "id": "R2C-02",
+        "severity": "medium",
+        "path": "src/lib/tests/mock.ts:542",
+        "evidence": "Leg writes check sittingId, but parent snapshot writes and cleanup do not. saveActiveMock treats any different sittingId as an authorized replacement, and clearActiveMock checks only the owner. If A leaves mock M1 open during Writing and starts M2 in another tab, typing in M1 invokes MockExam's snapshot effect and replaces M2, including its saved legs. Finishing M1 can instead delete M2 through clearActiveMock. The new identity protection therefore does not cover all writers of the active mock record.",
+        "fix": "Separate explicit creation/replacement from updates. Require ordinary saves and clears to match both owner and sittingId, and stop a mounted mock when its stored sitting has been replaced. Cover two mounted mock tabs and an older tab finishing after a replacement."
+      },
+      {
+        "id": "R2C-03",
+        "severity": "medium",
+        "path": "src/components/TestPlayer.tsx:509",
+        "evidence": "When the original owner returns, the listener only clears ownerChange. The timer effect at lines 693 onward then resumes decrementing the frozen timeLeft instead of recalculating from the saved endsAt. A paper with five minutes remaining can be signed out for ten minutes and still offer five minutes after A signs back in on the same mounted page. Refreshing that identical sitting instead finds it expired, so resume behavior depends on whether the page stayed open.",
+        "fix": "Keep the deadline as the timer's authority, including after owner changes. Recompute remaining time when A returns and before accepting submission, and handle an expired sitting under A without granting additional time."
+      },
+      {
+        "id": "R2C-04",
+        "severity": "high",
+        "path": "src/components/SpeakingTester.tsx:180",
+        "evidence": "The binding records an owner change, but the component does not suspend the recording or question sequence when that happens. A can begin Part 1, switch to B through another tab, and B can continue answering the remaining questions on the still-mounted trainer. beginTurn, beginRecording, stopAnswering and runGrading have no current-owner guard. runOwnedGrade still invokes the grader and its unconditional keep callback, so the combined recording, including B's answers, becomes A's speaking evidence. Hiding the eventual report does not prevent this misattribution.",
+        "fix": "Suspend the speaking attempt immediately on an owner change, stop microphone capture and pending turn continuations, and prevent subsequent answers from joining the old attempt. Distinguish an already-submitted grade, which should still be retained for A, from an unfinished recording. Apply the same check to the standalone LiveExaminer path."
+      }
+    ],
+    "coverage": [
+      "Verified the on-disk plan SHA256 matches the supplied hash.",
+      "Read the supplied changes for every manifest entry, including regression tests, browser scripts, translations, configuration and review documentation.",
+      "Inspected repository implementations for account session notifications, lifecycle startup, sign-in cancellation, learning sync teardown, explicit-owner grade writers, draft ownership, test sessions and mock persistence.",
+      "Traced mock snapshot and leg writers, session callers, anonymous claiming, and the speaking recording-to-grading path beyond the plan's file list."
+    ],
+    "limitations": [
+      "Static review only. No files were edited, tests executed, browser journeys run or work delegated.",
+      "Reported test and browser pass counts are host-provided evidence, not independently verified results.",
+      "Production Supabase policies, cross-device reconciliation and live grading behavior were not verified."
+    ]
+  },
+  "repo": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-3",
+  "snapshot": {
+    "base": "48b1d17ee7d7d1675d56049b71947bcc79db928e",
+    "files": [
+      {
+        "path": "astro.config.f21.mjs",
+        "kind": "file",
+        "sha256": "bf1cb4554eeca7b7c0597b55ecdd02e8d6282f8a8c617b62dd6b5c0e0285f8b3"
+      },
+      {
+        "path": "astro.config.f22.mjs",
+        "kind": "file",
+        "sha256": "bee8861644345b052065695cf8d9b5408bfc98b6f3f2b3e2c9fe103ea4656e6e"
+      },
+      {
+        "path": "docs/PERSONAL-LEARNING-IMPLEMENTATION.md",
+        "kind": "file",
+        "sha256": "0f4734e81e198807553e87dff9de6f783ddf2012e3ff88ceb151dc78e21725c2"
+      },
+      {
+        "path": "docs/audits/claude-personal-learning-review-2026-09-23.md",
+        "kind": "file",
+        "sha256": "ee180af28d0ea4ccff65997558e9e88d962f2c3cb1a3a0afcc3b52de4cde7820"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/accounts-results.md",
+        "kind": "file",
+        "sha256": "60f9d4cbc0eed87f4aeced1c4b7ec33b94c297939d155ffc1452ac45291566d2"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/accounts.log",
+        "kind": "file",
+        "sha256": "9cdc100a78f670219482201cd7ef5fe8ed6d7f57cf29805be8e3d004d9568101"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/astro-check.log",
+        "kind": "file",
+        "sha256": "b6dbac5f412ee9592e5a663fd45a75c3cb9e95a41c6a3e94bf269367eee32da1"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/b-resumes-a-test.png",
+        "kind": "file",
+        "sha256": "8e6744b26cff245880b209c9d3fdd777d3281e430946bb8cfe5bff4362284fe5"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/browser-results.md",
+        "kind": "file",
+        "sha256": "591e868b0e3576881643ee09311159cb8d380e816efa1343523bc749a51ae6ae"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/browser.log",
+        "kind": "file",
+        "sha256": "add02aea49f9be409999950c06ea2e5bdfbfe3c3ba180e283c44d2016b84b8b5"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/build.log",
+        "kind": "file",
+        "sha256": "edff8b99eeda206347bd068c20c0938d68d525deb5ccf71acaa2a06229b3def0"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/direct-exam-owner.json",
+        "kind": "file",
+        "sha256": "7d5ada1f62b8cb826ce68b75063a437c1ac6ba652f3f96f29f2b39082d7c5da3"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/direct-exam-owner.log",
+        "kind": "file",
+        "sha256": "59f96afdf42475fce65a55d88612b70595cb99418913b5d62c1acc3ca44afa9c"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/direct-exam-owner.py",
+        "kind": "file",
+        "sha256": "22da8ffed189414f8053808195dd3433d433d8afb503444a7afd47e820013f06"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/f19-populated-ru-390.png",
+        "kind": "file",
+        "sha256": "15ba9380300f2ed61138bc91509467b1a280287978a42099976651b7a84ba781"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/independent-browser.log",
+        "kind": "file",
+        "sha256": "8183f67a41b187a252cfc3022f6f9f26bbfb3484b85f722b0904664f8f4ef430"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/independent-browser.py",
+        "kind": "file",
+        "sha256": "0d9b1fa382887e658841e661f84dddb71d5e43034aede241aa49e5f9c84011b8"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/run_accounts.py",
+        "kind": "file",
+        "sha256": "d7e2a750e9966ecc75e4a4f220b0906c59b3246ce1428b346aa8c34b7376be34"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/run_browser.py",
+        "kind": "file",
+        "sha256": "c1f56e66cdf651ecde1c153d0fd365eddcf044a193cc29799bb2fbe0db3347e4"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/signout-race.json",
+        "kind": "file",
+        "sha256": "7ebeade20fa40011f1ed3e659684dad717c33d1227f380512bb7bb55c6478e0a"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/signout-race.mjs",
+        "kind": "file",
+        "sha256": "bdfe500d625fcc68273ba76d1d5e168223a52b02a03bcbb0db938566264c03f1"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/tests.log",
+        "kind": "file",
+        "sha256": "6c169ab91945afee7c752e3ebf57972fd105339f4c4023ad63fc08d4daf73b00"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/unfinished-test-proof.json",
+        "kind": "file",
+        "sha256": "99ebb53a76478c13df4d5fbb97a46cb7775565eee325d0bbbced0eda48a69db9"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/writing-browser-storage.json",
+        "kind": "file",
+        "sha256": "809e2e0ee31c5bc8f6b9fd9a3dcf54dd8f816956d6962a24ca42dd3d5d067b93"
+      },
+      {
+        "path": "docs/audits/claude-review-2026-09-23/writing-judged.png",
+        "kind": "file",
+        "sha256": "724b24b729af2f2f5aef661d84fb4c839af4ddccefdee5dabbb987a268929421"
+      },
+      {
+        "path": "docs/personal-learning/CHECKLIST.md",
+        "kind": "file",
+        "sha256": "1fc349681cd7671b8e61e7a4dcbe5e1df34074a7e2da990a65a700537d0f441b"
+      },
+      {
+        "path": "docs/personal-learning/CODEX-FIX-ROUND-2.md",
+        "kind": "file",
+        "sha256": "6527cc29de9e94f457724d6ac7e2e8a143e6db87324f3d8b639322d021343616"
+      },
+      {
+        "path": "docs/personal-learning/evidence/codex-inspections/inspection-1-of-2eabb37.json",
+        "kind": "file",
+        "sha256": "8d9662ff462605fdcae6dd5a8ccab199ea0bfa497106cc2b8f2547d61cf45920"
+      },
+      {
+        "path": "docs/personal-learning/evidence/codex-inspections/inspection-2-of-3fec8f4.json",
+        "kind": "file",
+        "sha256": "d845c260375f35f8cf2b271519f2b7b7d53e1a6a543a908e4c32b89e6e9922ef"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-01-essay-grading-held-for-a.png",
+        "kind": "file",
+        "sha256": "eafebb07e3a76db8ea076e90bcc3a1c3e6d43fcf47aebef8aac3b15e17ff7db1"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-02-essay-b-signed-in-while-grading.png",
+        "kind": "file",
+        "sha256": "86b1ccb695fa5cd51185c56362e3d37938487ccba130c72a18e81691ce330c91"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-03-essay-grade-arrived-b-sees-notice.png",
+        "kind": "file",
+        "sha256": "78b89faf1a86308bea4a07b85aa22fa7336baa57056dfb2294e6b7d0699586ef"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-04-essay-a-back-finds-it.png",
+        "kind": "file",
+        "sha256": "05801dab1ede81aefd048620490a62e341ed485196cf1891dc6b163944bf9caa"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-05-speaking-grading-held-for-c.png",
+        "kind": "file",
+        "sha256": "46d4f709eaaa58b5a3ec413735c1450cf43b048fb3ee335801cda6c2e542e219"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-06-speaking-grade-arrived-d-sees-notice.png",
+        "kind": "file",
+        "sha256": "e63825b8559ee35683a72c135b4f245b0ad3e0e273179d5800e64e7d8ce5a65a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed-07-speaking-c-back-account.png",
+        "kind": "file",
+        "sha256": "be3464b7a217aa1bd0d52061c2aecfe2d89f214cb37733be30105d07993036b5"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-01-essay-grading-held-for-a.png",
+        "kind": "file",
+        "sha256": "3f3c46d6cc9242298a0d62357aa7cd21efca687f95e1336a1380f462c9cecac5"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-02-essay-b-signed-in-while-grading.png",
+        "kind": "file",
+        "sha256": "71aa48fb5bee692bd738754a5136bff64bba9e915c6179a825933e7948209031"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-03-essay-grade-arrived-b-sees-notice.png",
+        "kind": "file",
+        "sha256": "317b37f287baadea57bba1b5eb715c71123fddf368d4bfdbd2cf2c701ea7f92c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-04-essay-a-back-finds-it.png",
+        "kind": "file",
+        "sha256": "e82a9ee3664e2ab3024b358985e2cb09e6b3f597f48803972c69a5b51483b0d6"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-05-speaking-grading-held-for-c.png",
+        "kind": "file",
+        "sha256": "5ac13d0561675064f668831f828e756290a9de7e5bbc37070b43c77f68f6e7c8"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-06-speaking-grade-arrived-d-sees-notice.png",
+        "kind": "file",
+        "sha256": "e63825b8559ee35683a72c135b4f245b0ad3e0e273179d5800e64e7d8ce5a65a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-07-speaking-c-back-account.png",
+        "kind": "file",
+        "sha256": "935dde93b6191506f4d4e7568dfdbddf6dbbc14e319f74ec84eaca98feef08aa"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-08-editor-e-typing.png",
+        "kind": "file",
+        "sha256": "05ce53df4f36e2db2910f771e49a58cf5eec99cb3bcc52308647a2b4c970dd26"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-09-editor-f-empty-after-switch.png",
+        "kind": "file",
+        "sha256": "f60a9151fa8f2e2816ffe396a0cbb97169e94070821ba9680ca1c3539cd1fbfb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-10-editor-e-back-finds-draft.png",
+        "kind": "file",
+        "sha256": "01bef745ef59b286a8ba5a936fa1ac3ce9c92535993e1ba46dde1541713fd86f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-11-editor-e-report.png",
+        "kind": "file",
+        "sha256": "2f1e5767528d77801bf37bf66cdf5289d4e1a5e329468b642f4a5d2e137632d2"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-12-debounce-switched-mid-wait.png",
+        "kind": "file",
+        "sha256": "2de16dbf78c230df404a23323b3c68c7d9528f51cb5330fc48f14decb54dd986"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/delayed2-13-debounce-e-back-latest-text.png",
+        "kind": "file",
+        "sha256": "56d613f0d6bfe133652935a0b9bd4bc1fd0c1c957c84b0deb0aa73227d0e8cb8"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-01-drill-entered-directly-signed-in.png",
+        "kind": "file",
+        "sha256": "80efe3ca516d106324f6844cf37751411bc9752025da753ce00c9bf57359663c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-02-drill-submitted-signed-in.png",
+        "kind": "file",
+        "sha256": "a401519b0a1c1201ade4f8e15694695180ce4f4408198b1e1dc4d6624019c670"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-03-mid-drill-before-refresh.png",
+        "kind": "file",
+        "sha256": "e16364a142f23f2c510eb4454e54dfd0302de2d4552c4cb85b463fdcc9beb79d"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-04-mid-drill-after-refresh.png",
+        "kind": "file",
+        "sha256": "28fb5ad647cda43ef59667b2d6f32ea7bac2e53639991e47ff46904b12698177"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-05-drill-submitted-signed-out.png",
+        "kind": "file",
+        "sha256": "60ec86534ea1b2083784f089f7320cd7ffd7e245c78af8f304aababc1a4b6b99"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-06-menu-signed-in.png",
+        "kind": "file",
+        "sha256": "7101ddbba976a128c6feadaaeb6085612e60504eb146c4296848a2888731e6d2"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/direct-07-menu-signed-out.png",
+        "kind": "file",
+        "sha256": "eb3aeda4901344ec95b8dcb9f9c58b9d28b9ed2d8fceb314ee7768a8ad1ad2a7"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-delayed-grade-2.md",
+        "kind": "file",
+        "sha256": "73363a80018b9e8799089fe9ac2aaa65c0c380606a0fa85bfc203b2cd9768c57"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-delayed-grade.md",
+        "kind": "file",
+        "sha256": "94621d6e3b454c514dc80d92ccea31625304fc0b43e78a386b62237784da31de"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-direct-entry.md",
+        "kind": "file",
+        "sha256": "91a081aeb383a5a08f013c29f529832b3d05c9884a53077cedad795c0fed0e4c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-round2.md",
+        "kind": "file",
+        "sha256": "fff131dec3d04c1e56752545fa418b1573f12876345926a7676b4e5463b08278"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-unfinished-test-2.md",
+        "kind": "file",
+        "sha256": "9801287c2d3459c5d5ee46ce632e65db8c5df7985a1e20c4e317b4c1b0ef66e7"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-unfinished-test-3.md",
+        "kind": "file",
+        "sha256": "3822976f12185a0fb1d8cd95743384a39d87f2e5a9a92d2e45f32b12107cf397"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/results-unfinished-test.md",
+        "kind": "file",
+        "sha256": "08ea13d5334e9e9449b41d1f9407e1bc7283392051035cab215950ce9ccda74d"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding1-one-direction-desktop.png",
+        "kind": "file",
+        "sha256": "ea20b994e74a660debec9e4ac2c98d97dbd6eb733aa81c511535590a92dc304a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding1-one-direction-phone.png",
+        "kind": "file",
+        "sha256": "779f872d681566c40ff995c3f208eb8a5463f286a9d7514c4cb5ea35db98c03f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding2-high-target-desktop.png",
+        "kind": "file",
+        "sha256": "96675f041fdbd8bd476f17401e7a5bc6dff2a4471433bc2e91a5d91e4ed6be79"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding2-low-target-desktop.png",
+        "kind": "file",
+        "sha256": "f6d19bccefda82ecf80966b148d6dd65b5074e7ee8e2bf7836871785d63a754a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding3-no-overloaded-day-desktop.png",
+        "kind": "file",
+        "sha256": "830d78773dbf4995a88120c45d7684d45f4f0937c601fd961f1f9084922af9e8"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding4-completion-is-studied-not-measured-desktop.png",
+        "kind": "file",
+        "sha256": "1127c8d7ee6368c3e2ff0e2efc2581fea33ca461d67d05ac59a0533f679335c7"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding4-completion-is-studied-not-measured-phone.png",
+        "kind": "file",
+        "sha256": "a9a65e09db456aae7a567bf2829ae52c3ec2ed1298c215e5b80c34b9ba691d22"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding5-expired-is-not-complete-desktop.png",
+        "kind": "file",
+        "sha256": "1485acd0553b766dcdadc0a9b12b2547c8ad04d9581bcf2d6abdb47475b6ad0e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-a1-finding5-expired-is-not-complete-phone.png",
+        "kind": "file",
+        "sha256": "70eeb45f270e57d2c8a2866d05c74964b9c653c1658020fdc8f1ac67ddf9a154"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-empty-en-1440.png",
+        "kind": "file",
+        "sha256": "3b1526e3217f59645343da5bc4da2b7ba15d36a689f6d342a5328d5dbb3102f3"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-empty-en-320.png",
+        "kind": "file",
+        "sha256": "be4cf25daa8dde2db7964c3cd8cbeabce15cd208ba48b4342d6a0c3aa51dcd04"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-empty-en-390.png",
+        "kind": "file",
+        "sha256": "91560c9c992d6c25938872b71dd6153a6cf46750a8b7c7cfe0bbed40562c3710"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-empty-ru-1440.png",
+        "kind": "file",
+        "sha256": "a53796a8e9ec8088636528f4be0b5857c0894f68555130f3330a678f0c9696d5"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-empty-ru-320.png",
+        "kind": "file",
+        "sha256": "a1b1e061870d568301d7a0f7ebe4f17d5643375884afbd78f160ac94b465b8be"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-empty-ru-390.png",
+        "kind": "file",
+        "sha256": "0564a5c90c082eb233824a9084cdcd2b62c5f2663923ce09503b155a50ce8e1e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-populated-en-1440.png",
+        "kind": "file",
+        "sha256": "6574e825e6d631b482a2393669c25fd402236554ad1b5e5323cd56994e458383"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-populated-en-320.png",
+        "kind": "file",
+        "sha256": "29431cfe40fab9028288da046ec0252ae9e0bf7ea1c630953ef8e4c83b4236fb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-populated-en-390.png",
+        "kind": "file",
+        "sha256": "dffd98eceffab3e499d36645ea88c438c5c0bc3eceb0a21eed8e361fa07d88f4"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-populated-ru-1440.png",
+        "kind": "file",
+        "sha256": "15888db521b58cc338afab8ef56048605bde403c298997b3910715cffafa6823"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-populated-ru-320.png",
+        "kind": "file",
+        "sha256": "5041b44748134edd7321ac403ba55cd74b6f4803c0326a3e7c86eeb5363cb951"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-f19-populated-ru-390.png",
+        "kind": "file",
+        "sha256": "7fd5a6dd7c5900cfb4412f5befa96f029c75e580596903d0417c63b847eee003"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-01-new-student-today-desktop.png",
+        "kind": "file",
+        "sha256": "5c224705e3f9b85fad532e3da4795d94c7b5218a6f824ccf658d8011a062ceec"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-01-new-student-today-phone.png",
+        "kind": "file",
+        "sha256": "271e75c802696cce61a38fd9a4df809f2a73427c76e1d35bcae88c6ad6428e34"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-02-answer-later-provisional-session-desktop.png",
+        "kind": "file",
+        "sha256": "9ab324bf3450ef6f9f9c9567b33284e119a0579dc1d54dd44a03b35bfc1b5ecf"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-02-answer-later-provisional-session-phone.png",
+        "kind": "file",
+        "sha256": "2afe50f3d13fffe1daf6701050542f6b9dae91fe7b7ce9abc1e4ced2b5bd9ad4"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-03-after-reload-following-answer-later-desktop.png",
+        "kind": "file",
+        "sha256": "3fcd6a915907b461fe9cf5f1d123aa0510e2281f55ec6e779e96439e56709409"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-04-intake-band-desktop.png",
+        "kind": "file",
+        "sha256": "861141d7aeceeb52347907c0086ffaed4d732f2b33375bcd798edeb179487e85"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-05-intake-sixty-minutes-desktop.png",
+        "kind": "file",
+        "sha256": "ce1298693443c79bb20ca7b413db4e5bf105689cffb1df49bde1f48e8e911a91"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-06-intake-last-step-desktop.png",
+        "kind": "file",
+        "sha256": "bfcf891791c9a24a54a0ebc4f69fe94d254703f918aad25a878aa3a0b061ec42"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-07-intake-saved-outcome-desktop.png",
+        "kind": "file",
+        "sha256": "62e0b391c634bf00ba589f4182377dd3766069f827568346f468358c3d02045e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-07-intake-saved-outcome-phone.png",
+        "kind": "file",
+        "sha256": "d8bf933364bd34c34806ce6bcbe880d1bb7fe0dbff0a83b4e1f042535c0109ba"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-08-today-after-intake-desktop.png",
+        "kind": "file",
+        "sha256": "f4107fbf4003afeeeaede7713737930ed6ea50075a1508ecddad2f9543dcf88e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s01-08-today-after-intake-phone.png",
+        "kind": "file",
+        "sha256": "10b0019abc91f0b1a5fb1c264bb698ad48db65c8c82614a4eb0d515b1dde632c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-all-measured-strong-reading-course-route-desktop.png",
+        "kind": "file",
+        "sha256": "9c63d519ef486d235839209115440079e86e8f7361bfe755d9a27a46e00d3da7"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-all-measured-strong-reading-today-desktop.png",
+        "kind": "file",
+        "sha256": "ed270cfca76c5494ae8f7003d6f59d374b648f1ffa1eb548efaf5010fad0be73"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-all-measured-strong-reading-today-phone.png",
+        "kind": "file",
+        "sha256": "7b1cd95a8cbcb33c246aab827d47442faab8f51cd456c420b9f24e4452c4cd7b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-all-measured-weak-reading-course-route-desktop.png",
+        "kind": "file",
+        "sha256": "adec3b7d6ad18ff9e0d5c0302d3224510bc490cf4f6db6ade7b36499ad8b397f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-all-measured-weak-reading-today-desktop.png",
+        "kind": "file",
+        "sha256": "fa49886339c96e5c8cebe170066e8cd82201ce2126397a48012285e60054b005"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-all-measured-weak-reading-today-phone.png",
+        "kind": "file",
+        "sha256": "7c52c828117eaf23960785556fab0db512e540c71e1c1af55423825e7158c798"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-strong-reading-weak-writing-course-route-desktop.png",
+        "kind": "file",
+        "sha256": "714ea4bc68aaccce04978875151b1e678b70ff387429372333ebe3292d95eeef"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-strong-reading-weak-writing-today-desktop.png",
+        "kind": "file",
+        "sha256": "ed176ba00045a1bf738d40117a761f6631fb1cae008b1e43afb487ef42365f27"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-strong-reading-weak-writing-today-phone.png",
+        "kind": "file",
+        "sha256": "af0dacf2ca5f5f6241c2c4599118c242167f174b271a4f908d5671e85feb3d0a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-weak-reading-strong-writing-course-route-desktop.png",
+        "kind": "file",
+        "sha256": "8d2336118b27e3cde470a724c0fb2d1cdb2bfe34602e438bd39b285bf6075fe6"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-weak-reading-strong-writing-today-desktop.png",
+        "kind": "file",
+        "sha256": "15013e896fce4209b0a2bee463dc4064f3e57e59e296d71de42561bac156b17b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s02-weak-reading-strong-writing-today-phone.png",
+        "kind": "file",
+        "sha256": "2c0baad54870a1e34224e73bb73423a0228177e99617eac95bfd7b5417cef991"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s03-01-plan-settings-writing-minimum-desktop.png",
+        "kind": "file",
+        "sha256": "34676271bc946616b75648ecd17faaac63cbfde322082f03014cb3ee80b92d34"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s03-02-plan-settings-saved-desktop.png",
+        "kind": "file",
+        "sha256": "8180012171842e72ebc7b34302d3169854bd10195cd82b641a4698d9fc43f492"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s03-03-today-writing-not-the-gap-desktop.png",
+        "kind": "file",
+        "sha256": "ac4130162fd7f1886610f7958e4a1b812e38731d71c421ba20c9077393e8d402"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s03-03-today-writing-not-the-gap-phone.png",
+        "kind": "file",
+        "sha256": "61a4074b1281bb3258733aa328e8a43bd29f1b6fb65f07fd026b01cd7484e179"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s03-04-report-per-paper-reasons-desktop.png",
+        "kind": "file",
+        "sha256": "09550db283e26ca9ee4ca2d755ce5c73145055d52abc91976a192b15a2b164af"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s04-01-today-sixty-desktop.png",
+        "kind": "file",
+        "sha256": "000909294c357bc77f8effd3e0b456e42b1c33fac0b550158af624d36b7635fc"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s04-02-course-route-sixty-desktop.png",
+        "kind": "file",
+        "sha256": "9d8dd833932a2487d2fe32544b3e4e44d0d21fad3446a12ba4a34e7189fa3359"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s04-03-plan-settings-sixty-desktop.png",
+        "kind": "file",
+        "sha256": "43b51475234784e90644922176a9c05c24e8508f110085852c9bbce1df063d66"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s04-04-today-explicit-twentyfive-desktop.png",
+        "kind": "file",
+        "sha256": "e630bc439074f81f3c4e34550115b2e7f5d2e65976445476f78c5c4c683cf0fe"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s04-05-plan-settings-twentyfive-kept-desktop.png",
+        "kind": "file",
+        "sha256": "66cb10628d360b65d62d99a068593e7ea42708d8d9766f4e0558edfadf145e7a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s05-fifteen-plan-settings-still-sixty-desktop.png",
+        "kind": "file",
+        "sha256": "af4441e1821779d13689574f2641eef736eee7f1fbc92a3ebe37008ef52dacb4"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s05-fifteen-short-day-desktop.png",
+        "kind": "file",
+        "sha256": "b46f285a46aefb04df618086d0e1ce8e0ecdcf1315cf79f7a9d7354bb6b4b404"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s05-fifteen-short-day-phone.png",
+        "kind": "file",
+        "sha256": "88f2f80af91c161af46bfff477b77aa62516ede7c1aa93e5d201debf31108fd2"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s05-twentyfive-plan-settings-still-sixty-desktop.png",
+        "kind": "file",
+        "sha256": "67cc608a1237298825def932224f23f81fdeae9c9957c85aebf13f80e87df1c0"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s05-twentyfive-short-day-desktop.png",
+        "kind": "file",
+        "sha256": "5a66a286339b6c749d55ad70fb1a89901f13b634d9c425a697fab04e158b2e3b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s05-twentyfive-short-day-phone.png",
+        "kind": "file",
+        "sha256": "01edceb5d44848a7f3def32e418c3377bfba662dd47c1c399afc0858deb7f416"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-01-plan-settings-seven-days-desktop.png",
+        "kind": "file",
+        "sha256": "a7bafbf45dd44ebdbb4e041cbd8ea231bb5aca8a39440e1b3cb591fedc47abf0"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-02-plan-settings-outcome-desktop.png",
+        "kind": "file",
+        "sha256": "9699032908085f32d3dfbd0eba9f35fb51430441066ad4e9ed5b48373d77a1e3"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-03-today-seven-days-fifteen-minutes-desktop.png",
+        "kind": "file",
+        "sha256": "20515e7cb7f755193131bf1ea351614b3f9ffdacbbea8af52aecbb053fe7984f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-03-today-seven-days-fifteen-minutes-phone.png",
+        "kind": "file",
+        "sha256": "a0f2a4b59f34c485d2661626a773ff8f08756eda7ccfb1654e88efeb74b29b97"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-04-course-rolling-schedule-seven-days-desktop.png",
+        "kind": "file",
+        "sha256": "c2ddae1cf246940cdc51d2b75919c592e5ef7c075af962fec2090c2364053ff4"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-05-today-after-five-missed-days-desktop.png",
+        "kind": "file",
+        "sha256": "ebcd7b5c189ccd7d47d8d1332a8a8266b400af98cba2db8fefd3acd6bd75843a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-05-today-after-five-missed-days-phone.png",
+        "kind": "file",
+        "sha256": "1e90e2cec6b44ea11d893075af755b4b58aea44b946f336c877f26b69ef24985"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s06-06-course-plan-changes-after-missed-days-desktop.png",
+        "kind": "file",
+        "sha256": "85b07a2ab458bfba4f4d18a43bc7fcc029a977edcb2dbbde2bc7d8323e23cf3e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-01-today-before-desktop.png",
+        "kind": "file",
+        "sha256": "378915b6e2883e7e197d546d6d702552a2a97b14fe7e5ba812436ae153110194"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-02-course-before-desktop.png",
+        "kind": "file",
+        "sha256": "9d8b08c020cf2b9ac04e1bde6ea6587390f23341cdeb66dc534ad1bf10ddf732"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-03-report-before-desktop.png",
+        "kind": "file",
+        "sha256": "020131a1057ed163c9c98fb314c301406cf3a73e029f0f8aaee0e26a7f841db6"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-04-tests-hub-before-desktop.png",
+        "kind": "file",
+        "sha256": "3355d7a9d9bb4916e18f72c24d03bf10848b31e44a75fa74a08aafc3f08a588a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-05-unrelated-lesson-footer-desktop.png",
+        "kind": "file",
+        "sha256": "9eb7770be5e48f4eaa5d4d7e5502c3bb714e8f7edbaa222db1b14457f7b7ef56"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-06-first-step-completed-desktop.png",
+        "kind": "file",
+        "sha256": "815249ef5332d87c61bd11b3d838a454254c96a4562c7eb589e5b89ac8e40e0a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s07-07-today-after-desktop.png",
+        "kind": "file",
+        "sha256": "a5a3d4a6884a7d283ff2888a12522d12551eefe4e2783aef04a9769c4fd9a437"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-01-guided-before-answering-desktop.png",
+        "kind": "file",
+        "sha256": "8bd58167788484680d7f0accd75a8c78dacde9942563ef84688c7b2862393bec"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-02-guided-wrong-answer-asks-how-you-chose-desktop.png",
+        "kind": "file",
+        "sha256": "9d2c3521a04c06651fbf4db5994d70773c93b541deb736698e3337dea8edf398"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-02-guided-wrong-answer-asks-how-you-chose-phone.png",
+        "kind": "file",
+        "sha256": "907209d440f7af7144675d6f6218d25553e51ee2f9920b72a935437e5128ebe8"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-03-guided-diagnosis-and-explanation-desktop.png",
+        "kind": "file",
+        "sha256": "006aaca08c1a8a7d5f0733cf86d10f3e0fd4f49c3d40b3941ee2f22d6115340d"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-03-guided-diagnosis-and-explanation-phone.png",
+        "kind": "file",
+        "sha256": "0c49ceb3243ba206b6a03d601212ad6cb7d1fd45468665145308f13d86200fbe"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-04-guided-after-retry-desktop.png",
+        "kind": "file",
+        "sha256": "64be1bfd0b12aeffc08e0da158d75d3976d4793cb639d46be92865abf9f7e0f6"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-05-lesson-hint-before-answering-desktop.png",
+        "kind": "file",
+        "sha256": "a9a54b5a71375a95c7e8d68e498b60f3346bd9bb05f368e414c62f47c33459fc"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-06-lesson-quick-check-answered-desktop.png",
+        "kind": "file",
+        "sha256": "a9952191256d4960239c89f585c0ba2a323abe62bea3bc30756e421471f64487"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-07-independent-check-no-help-desktop.png",
+        "kind": "file",
+        "sha256": "7e1c396f80db0d53c3b6e2f6b68a1232378c7e8872a3e138ba5ba64ad35bd3eb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-08-independent-check-result-desktop.png",
+        "kind": "file",
+        "sha256": "3e254686a0ce5bb700e0e2b85bbaba2ab743f965bf19313155a9382258c480bd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-09-report-no-mastery-claim-desktop.png",
+        "kind": "file",
+        "sha256": "9889fd3a695a4aeae7dbb98b74d5167050167d5bb05e2f7eb6e8d6be3e1ab7a3"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s08-09-report-no-mastery-claim-phone.png",
+        "kind": "file",
+        "sha256": "3749cc22e6a8198575a23f841a2b53002453fe0bbd08e79b1737c7055057a728"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s09-01-drill-opened-desktop.png",
+        "kind": "file",
+        "sha256": "4a2786e5c54cfcd56d15a0f22c0467acc22a732fbb10cc6023b1e7a25c670f09"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s09-02-drill-submitted-desktop.png",
+        "kind": "file",
+        "sha256": "3e981b35fc7fb0b822a9e05771abbd0ecade8deaeb4dc5d2040569c40fb3e03d"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s09-03-lesson-check-same-paper-desktop.png",
+        "kind": "file",
+        "sha256": "687b677bc0add059e8bcbd577bdde70e7197d21dc09fa2e2f2a8e333624dd9cb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s09-04-reserved-check-source-desktop.png",
+        "kind": "file",
+        "sha256": "7e1c396f80db0d53c3b6e2f6b68a1232378c7e8872a3e138ba5ba64ad35bd3eb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s09-05-blank-drill-submitted-desktop.png",
+        "kind": "file",
+        "sha256": "b224a055a91c26f7b68abe5b47a597faca8b34259545e07c586f90fbc6adeb10"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s09-06-report-after-blank-desktop.png",
+        "kind": "file",
+        "sha256": "133f61fbe98bd118d87ac2bae2902a987630e0f9261f833b07188256cf74ab2b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-01-today-before-override-desktop.png",
+        "kind": "file",
+        "sha256": "7e844368da1492ac80bf1ff266b4978b117acecd59deb5d33cc2d36d5649125a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-02-choose-another-skill-panel-desktop.png",
+        "kind": "file",
+        "sha256": "3013d5e75fc30a753f55293e46a75750a10a203c400e6bfb67ecaaaafc7b5148"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-02-choose-another-skill-panel-phone.png",
+        "kind": "file",
+        "sha256": "446777c8e65637787ad2770f7fe6c9d0b24c3b57529a145e66dcd4fefef0b46c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-03-today-after-override-desktop.png",
+        "kind": "file",
+        "sha256": "eeddfccb3a4d29cba0e1cd4bffd9d4b2752fb5679b337679d07355f422b38a37"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-03-today-after-override-phone.png",
+        "kind": "file",
+        "sha256": "029a39398f52d6756e934b2a63f97c580cc67fc0d281cf38eeb70559af4a7f05"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-04-course-after-override-desktop.png",
+        "kind": "file",
+        "sha256": "1d89fe824da206b512b8e49eba411a681269852321111ec41fda53254579820a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-05-library-desktop.png",
+        "kind": "file",
+        "sha256": "c9832506b25c1dbb4859259a3018d5f19ec31ff169ab6e433b360db040542d47"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-06-unrelated-lesson-footer-desktop.png",
+        "kind": "file",
+        "sha256": "4a26a21f50f253bd98ed684e63c80ac93399e3180b173eb1483a719ea931267e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-07-today-after-voluntary-lesson-desktop.png",
+        "kind": "file",
+        "sha256": "a62ac9eff6bd39d6de61ca9b9149f2d082a57cb976f1262a72c98e58f65cf8e4"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s10-07-today-after-voluntary-lesson-phone.png",
+        "kind": "file",
+        "sha256": "d128ad9fcf3ff50f089426fadbacaf93ebf308d756d8d0769866395b038a01dd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-01-exercise-part-answered-desktop.png",
+        "kind": "file",
+        "sha256": "574f0dfdead215570b85c23598997e1aaeae8862e58e49e6afd584be079f72a7"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-02-exercise-after-reload-desktop.png",
+        "kind": "file",
+        "sha256": "28074889fed3b1ba7cba8fa69fe33122acfa652208a26b22fdbc24934fff487c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-03-tutor-unavailable-desktop.png",
+        "kind": "file",
+        "sha256": "28cec6f939cc2dee44e47512d922112b11a570e6ae5ee6afbf572cd7edb4bf91"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-03-tutor-unavailable-phone.png",
+        "kind": "file",
+        "sha256": "afeb91a391c48fee88f14587edd4d17a8ba1796424e472e0170df7b3f4b17a79"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-04-writing-task-draft-desktop.png",
+        "kind": "file",
+        "sha256": "0c18bbc17773036abc0bea59f081d2d934af5dae39335f1dfe87a31b3589ed60"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-05-writing-task-automatic-checks-desktop.png",
+        "kind": "file",
+        "sha256": "786b879791ee45d1f740ec71029ca78a7c51f01467f60cc7f394f08ce28975e1"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-05-writing-task-automatic-checks-phone.png",
+        "kind": "file",
+        "sha256": "99fd2a16ebe3a0c40de9c93922f258333093ebb580297c9c47e4d050151ea485"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s11-06-writing-draft-after-reload-desktop.png",
+        "kind": "file",
+        "sha256": "97138b0ee5d9bd5b6ebac17c8fea8378e4d9822e0f93437484bc17d1d5dffe84"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s12-01-today-owner-isolated-desktop.png",
+        "kind": "file",
+        "sha256": "a4055b66e0961d55c40f762e202187e23afb7b48bd4028dab45a2975ba1c40f9"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s12-02-report-owner-isolated-desktop.png",
+        "kind": "file",
+        "sha256": "d439d9f832759877477396a60e7af2c7e08e1085e2fbf278fc5c0848bc7bbe8f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s13-01-tutor-blocked-during-timed-paper-desktop.png",
+        "kind": "file",
+        "sha256": "b063f99355ec15dd959e916e91ad850c330c6eef8b6b143e5b685beaef54e947"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s13-01-tutor-blocked-during-timed-paper-phone.png",
+        "kind": "file",
+        "sha256": "bc705b6a5f35c53820da2f9420299aff65b08e76801320911b8a326e10be8054"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s13-02-tutor-on-independent-check-desktop.png",
+        "kind": "file",
+        "sha256": "60539eeba4fbe67ff27508f57be0897a6a3438a05cb713d58d94f9385057b1bd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s13-03-review-after-check-tutor-available-desktop.png",
+        "kind": "file",
+        "sha256": "5cb1f16446efe62c0dd15cdf405e755d94b3c3855630dbebe4ed44345b29851b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s13-03-review-after-check-tutor-available-phone.png",
+        "kind": "file",
+        "sha256": "61c2b491e9efef80ad37a146cdde412767fc04de6062fa098cb307af72488f70"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-01-today-ru-phone.png",
+        "kind": "file",
+        "sha256": "762f0d97e9ee33951e6e6cfaea84e8d8a70fac91947b29bb3455ed6cb8cfa563"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-02-course-ru-phone.png",
+        "kind": "file",
+        "sha256": "cd7ddc64ae35dcaf0e96dc51b85837dbeab6459e6a8caa1a806652dffeb780d2"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-03-plan-settings-ru-phone.png",
+        "kind": "file",
+        "sha256": "f69352f8e17b966abce801c5e3ace97b784a855835225027cf0bed82af02a24f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-04-focused-exercise-ru-phone.png",
+        "kind": "file",
+        "sha256": "1b08925ddc7baa2a4e663182fd56c9ee975037cf4e88c262893d763d00fbbf23"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-05-report-ru-phone.png",
+        "kind": "file",
+        "sha256": "d07a04300369316f4115f5bf5661ca5773d2aeae2136e570b5b150e81a5a258f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-06-exam-content-stays-english-phone.png",
+        "kind": "file",
+        "sha256": "1b08925ddc7baa2a4e663182fd56c9ee975037cf4e88c262893d763d00fbbf23"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-07-keyboard-focus-today-desktop.png",
+        "kind": "file",
+        "sha256": "335c7a4a4d6abf5c7a5906e5b132650535e7685d1e258b915a651ecef69b2bce"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-08-keyboard-activated-panels-desktop.png",
+        "kind": "file",
+        "sha256": "3d3f8fe57527ad6d9467e705f24cf4b35ae4c0f57f12568a971df145305c138b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-09-keyboard-focus-exercise-desktop.png",
+        "kind": "file",
+        "sha256": "b1b2c177ae7a86d62dd09609eff239b0f2d533e0137ccc7dbd51965d7ef504eb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s15-10-reduced-motion-today-desktop.png",
+        "kind": "file",
+        "sha256": "ebf716ba5596c6abd7fc44497492bb00f0356ba5819d22f562bebded30cb9a1c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s16-01-self-reported-score-saved-desktop.png",
+        "kind": "file",
+        "sha256": "6c8576c40dda03e7c2e027ee02e5de32d126b6a6705166e5a4644a08b8369c14"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s16-02-report-four-skill-panels-desktop.png",
+        "kind": "file",
+        "sha256": "1a9715ae57d059116f92ee1e37337b4c49b4c71ba56c6cd18366bb6f9c466693"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s16-02-report-four-skill-panels-phone.png",
+        "kind": "file",
+        "sha256": "9ece148ac95af59743db7ab1acf77331b57febd0d10a2d1431e7ddd15e8c9878"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s16-03-report-per-paper-detail-desktop.png",
+        "kind": "file",
+        "sha256": "1a9715ae57d059116f92ee1e37337b4c49b4c71ba56c6cd18366bb6f9c466693"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s18-01-task2-paragraph-saved-desktop.png",
+        "kind": "file",
+        "sha256": "4fcf4e76813817096c549bda39ffec3b452f9962a1df087819336e872aea3e02"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s18-01-task2-paragraph-saved-phone.png",
+        "kind": "file",
+        "sha256": "f4fe1c62f94db6414b96ec4bf4c244f7dc4f2fb89c3756af1be0851255f33ef8"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s18-02-task1-overview-saved-desktop.png",
+        "kind": "file",
+        "sha256": "f6d4e609cc908edeb2e89f9845a013163b5f1523d86856c174db327040a02d9e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s18-03-guiding-questions-opened-desktop.png",
+        "kind": "file",
+        "sha256": "14088e188e51a8f0a6b277b3dcecc059dc6b7ae28024d51b4ea5a8a3f7a931d3"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s18-04-assisted-after-reload-desktop.png",
+        "kind": "file",
+        "sha256": "a5655ddc5919a5b02fba8dc60b505ea221b8efa04d69f40106e3d11af0aafa08"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/round2-s18-04-assisted-after-reload-phone.png",
+        "kind": "file",
+        "sha256": "b534e785b634427b005135902a6ab515e3e8d05abcadce21aec832d3ff8ff55a"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished-01-a-answers-q14.png",
+        "kind": "file",
+        "sha256": "afa60f0a220a75c9e4b334b76f50209c62e4b825d9606aafdbd1eabc9d784451"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished-02-b-sees-a-blank-drill.png",
+        "kind": "file",
+        "sha256": "4a2786e5c54cfcd56d15a0f22c0467acc22a732fbb10cc6023b1e7a25c670f09"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished-03-b-submitted.png",
+        "kind": "file",
+        "sha256": "22ef86ee0e288ec65a36b3fda7f9ed9ebf1167aa25263a9630651f4a3911737b"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished-04-a-resumes-own-answer.png",
+        "kind": "file",
+        "sha256": "13e4ce7edcc129b6ed5859d7e211943f3969df66edc99f36d65a2753eb78d107"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished-05-player-stopped-after-signout.png",
+        "kind": "file",
+        "sha256": "8e9df2fe73058731e958053bc5c9d1eeb27aaa9572ed068fe22eea12013c5401"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-01-a-answers-q14.png",
+        "kind": "file",
+        "sha256": "e42bc17d945a421f403e29397abbb68a2a5ae761216032fd163cf23749e4e94f"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-02-b-sees-a-blank-drill.png",
+        "kind": "file",
+        "sha256": "4a2786e5c54cfcd56d15a0f22c0467acc22a732fbb10cc6023b1e7a25c670f09"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-03-b-submitted.png",
+        "kind": "file",
+        "sha256": "ec1db6effbd04a753cfdc094a7593c3150183aa43468c1e08286051a95878a02"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-04-a-resumes-own-answer.png",
+        "kind": "file",
+        "sha256": "fd649464c290f3f5b28b1a54ec45fceca4a49e9e24a6076a155e080900280855"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-05-player-stopped-after-signout.png",
+        "kind": "file",
+        "sha256": "8e9df2fe73058731e958053bc5c9d1eeb27aaa9572ed068fe22eea12013c5401"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-06-a-signed-in-sees-none-of-b.png",
+        "kind": "file",
+        "sha256": "dce42ffdb39903c0f8472494703c9abd49b27bd67bf54339cf6b0aea2f018209"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-07-signed-out-device-keeps-old-sitting.png",
+        "kind": "file",
+        "sha256": "0d4502e1becd714856c7c301d76882b4735ea37789ee915bfc9bb2f568b32771"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-08-a-listening-done.png",
+        "kind": "file",
+        "sha256": "46cd5f79d28207884fb52508f4866e88f2c943230e3571356c0aa71b85243378"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-09-a-mock-stopped-after-signout.png",
+        "kind": "file",
+        "sha256": "7da77ec7b0ee73849e85d6533fa63608a03c847726a9e5227b66931946549d9e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-10-b-start-screen-no-offer.png",
+        "kind": "file",
+        "sha256": "cb44657ac6476dab97a6e98efd9df57dd1cbf216a8157669dde24f27b2d0c4a1"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-11-b-fresh-mock-listening.png",
+        "kind": "file",
+        "sha256": "80da34a59b520283287e1b66ebe1883c5a0aa8373ddbe6908c15c76d4887e9bd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-12-a-back-in-the-open-tab.png",
+        "kind": "file",
+        "sha256": "305c682bce71bb14f292f3d6933ea6ece5c183808dc033e9a8d3301ba62387f0"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-13-a-offered-own-mock-back.png",
+        "kind": "file",
+        "sha256": "615e57cea43f691af48dda4006d428bedf6c7e34a37996da71f9d4ff134427d5"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-14-a-resumed-own-mock.png",
+        "kind": "file",
+        "sha256": "46cd5f79d28207884fb52508f4866e88f2c943230e3571356c0aa71b85243378"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-15-a-reload-offer-with-writing-time.png",
+        "kind": "file",
+        "sha256": "087e0d74fc54200e594b43fa395174870859544afd2c1b9056c47fea22b9bfdb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished2-16-a-writing-resumed-same-deadline.png",
+        "kind": "file",
+        "sha256": "3315fb2c710d2b18f5f1a74d424e73437d753105b9089752ee860564cd40e20d"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-01-a-answers-q14.png",
+        "kind": "file",
+        "sha256": "e31931a17620091075d6c6320b7474882fc03ff42b6c047df19ed4febd21ba4c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-02-b-sees-a-blank-drill.png",
+        "kind": "file",
+        "sha256": "4a2786e5c54cfcd56d15a0f22c0467acc22a732fbb10cc6023b1e7a25c670f09"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-03-b-submitted.png",
+        "kind": "file",
+        "sha256": "0deaef63c8c961d233790c8304562902e93a266b36960ee62743e76eb002a347"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-04-a-resumes-own-answer.png",
+        "kind": "file",
+        "sha256": "f18d5315f8b1609615bff6f00fe0c90f065bb6a0973137cc3cbdf1fb7233edef"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-05-player-stopped-after-signout.png",
+        "kind": "file",
+        "sha256": "8e9df2fe73058731e958053bc5c9d1eeb27aaa9572ed068fe22eea12013c5401"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-06-a-signed-in-sees-none-of-b.png",
+        "kind": "file",
+        "sha256": "4a2786e5c54cfcd56d15a0f22c0467acc22a732fbb10cc6023b1e7a25c670f09"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-07-signed-out-device-keeps-old-sitting.png",
+        "kind": "file",
+        "sha256": "cba98e50c64da6f6704a05f064de4e916bfbfa80695a82b6e27e11c153ea541d"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-08-a-listening-done.png",
+        "kind": "file",
+        "sha256": "4e25a2378d80a6b7d68c7319a2d8c9b25c86853aba9b16a2315a892e48042c0c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-09-a-mock-stopped-after-signout.png",
+        "kind": "file",
+        "sha256": "7da77ec7b0ee73849e85d6533fa63608a03c847726a9e5227b66931946549d9e"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-10-b-start-screen-no-offer.png",
+        "kind": "file",
+        "sha256": "cb44657ac6476dab97a6e98efd9df57dd1cbf216a8157669dde24f27b2d0c4a1"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-11-b-fresh-mock-listening.png",
+        "kind": "file",
+        "sha256": "80da34a59b520283287e1b66ebe1883c5a0aa8373ddbe6908c15c76d4887e9bd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-12-a-back-in-the-open-tab.png",
+        "kind": "file",
+        "sha256": "a1631309e2919b918eed706ecd131a3f2b99fbff26fa359a8c92f055c13e6db3"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-13-a-offered-own-mock-back.png",
+        "kind": "file",
+        "sha256": "bf77396704272524bb77585b270e11636f39d88edf160a3343caf02e8853e425"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-14-a-resumed-own-mock.png",
+        "kind": "file",
+        "sha256": "4e25a2378d80a6b7d68c7319a2d8c9b25c86853aba9b16a2315a892e48042c0c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-15-a-reload-offer-with-writing-time.png",
+        "kind": "file",
+        "sha256": "629329e012bf26f2f50e2e8c9bfcaa01c61945f5a91f2da4d24aa02e3fc297fb"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-16-a-writing-resumed-same-deadline.png",
+        "kind": "file",
+        "sha256": "a6a7404b2d9c5d574b79fe268edbe18421d048682846ab618fdd8a6065dfc6fa"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-17-a-speaking-brief.png",
+        "kind": "file",
+        "sha256": "a32416b3dd078ab07cc25904e3d0fa44ad4fae5ec47dfa6a92e5bc1a3edb96bd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-18-a-back-on-the-brief.png",
+        "kind": "file",
+        "sha256": "a32416b3dd078ab07cc25904e3d0fa44ad4fae5ec47dfa6a92e5bc1a3edb96bd"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-19-a-examiner-open-no-service.png",
+        "kind": "file",
+        "sha256": "a84fe9521d27317fab8c6713bd8ef3773f3f2b965e2145047a75451384b96ece"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-20-a-stopped-with-examiner-open.png",
+        "kind": "file",
+        "sha256": "0c92c5c4f785cfc6cc48b7b61ec692270f88e45f7b323a185fda3c295ca5be21"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-21-a-back-on-brief-after-examiner.png",
+        "kind": "file",
+        "sha256": "49b9cc8afa4345786f1c9ba72114b94153417c596028bd35e3b03250420148d6"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-22-a-reload-resumes-at-speaking-brief.png",
+        "kind": "file",
+        "sha256": "49b9cc8afa4345786f1c9ba72114b94153417c596028bd35e3b03250420148d6"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-23-a-deliberate-back-skips-speaking.png",
+        "kind": "file",
+        "sha256": "662c2aff897c60b03d8e900f6e8be1f2f2d60ac5ae429c32db3155efad8b9aa7"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-24-a-mock-listening-answered.png",
+        "kind": "file",
+        "sha256": "f648dbb5c69b2b0ccba0ecc3a3963b4d7d79e22702fdfa519762b363f4b29a71"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-25-a-standalone-drill-mid-mock.png",
+        "kind": "file",
+        "sha256": "e31931a17620091075d6c6320b7474882fc03ff42b6c047df19ed4febd21ba4c"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-26-a-mock-listening-resumed.png",
+        "kind": "file",
+        "sha256": "85818b7239606c457cc279130b2313d31fe1cbf80fef0cada66a9009416c0df3"
+      },
+      {
+        "path": "docs/personal-learning/evidence/final/unfinished3-27-a-fresh-mock-empty-listening.png",
+        "kind": "file",
+        "sha256": "cefd804d661dadfcfc7919e54463753723067317df853598e806c1281d6fdee8"
+      },
+      {
+        "path": "src/components/AccountLifecycle.astro",
+        "kind": "file",
+        "sha256": "be1d532001d71a4d16a2e73e3047bec63a67f10408abc38f9d4a09563ef803e1"
+      },
+      {
+        "path": "src/components/AccountMenu.tsx",
+        "kind": "file",
+        "sha256": "96df38ba591ccabe04f447f0ed716d1e950e17eae04ed6b85b220211cda6577a"
+      },
+      {
+        "path": "src/components/LiveExaminer.tsx",
+        "kind": "file",
+        "sha256": "7294175cd8eabbc59b6476510893cc1f2697d0c063a263871a2d165130e375b3"
+      },
+      {
+        "path": "src/components/MockExam.tsx",
+        "kind": "file",
+        "sha256": "dcd50e51200fd6cedb0c3a9d300e8b088fa9b1437b2c8b16f4ed7c25ecb120e2"
+      },
+      {
+        "path": "src/components/SpeakingTester.tsx",
+        "kind": "file",
+        "sha256": "7f126f5afae95a7b8b63f137fa1fa7e796d6a921943148b070aa586706a8d9ec"
+      },
+      {
+        "path": "src/components/TestPlayer.tsx",
+        "kind": "file",
+        "sha256": "58ca0e53412066e0a3c0ae5b946787739c919a91793d9e4401bc1b8b9c54b260"
+      },
+      {
+        "path": "src/components/WorkspaceMenu.tsx",
+        "kind": "file",
+        "sha256": "eefb2786fbd82f8b921713ba21fe1cd30635934599b4e0db86d79f88e0f31f44"
+      },
+      {
+        "path": "src/components/WritingTester.tsx",
+        "kind": "file",
+        "sha256": "44198b8f6f25cd41497b06782f396cd753dec7e0cc1984b57634debea6f65189"
+      },
+      {
+        "path": "src/components/learning/AnonymousWorkClaim.tsx",
+        "kind": "file",
+        "sha256": "ebebd49aa42fe2942d0ad060a2fc29dcd951c3e85e7625a5ee5fdec04e046d31"
+      },
+      {
+        "path": "src/components/writing-editor-owner.ts",
+        "kind": "file",
+        "sha256": "7013e5392d62a7efd43128790263c3c07d3e97abc2e46d762d92ab57ba9dfa21"
+      },
+      {
+        "path": "src/layouts/BaseLayout.astro",
+        "kind": "file",
+        "sha256": "fbbcef268684471d280a356ca352d9cfc4d21e4394061e2e321b993cc79fb1e7"
+      },
+      {
+        "path": "src/lib/auth/lifecycle.ts",
+        "kind": "file",
+        "sha256": "09f7a5072c2cf871d74a38a3d78ce03bfe7565f2cb2d74d747b108d1096c240d"
+      },
+      {
+        "path": "src/lib/auth/supabase.ts",
+        "kind": "file",
+        "sha256": "1bff4aba90188d3b0df233d750d31ba57eda487465a9858cb55016a48d03ad75"
+      },
+      {
+        "path": "src/lib/auth/sync.ts",
+        "kind": "file",
+        "sha256": "3ae68ff60ea1574854ece372519243dfee8f3464604b20f4b5adb6e4e7894771"
+      },
+      {
+        "path": "src/lib/i18n/dict/ru/learning-account.ts",
+        "kind": "file",
+        "sha256": "581edd6c80d2694addd66d29138c7d871ef9cd32af40b5b415610c1ba34c759b"
+      },
+      {
+        "path": "src/lib/i18n/dict/ru/tests-player.ts",
+        "kind": "file",
+        "sha256": "31c3824290de42c84c554d1fad6b88c8293b5880ddb57f11011c88acf043327e"
+      },
+      {
+        "path": "src/lib/i18n/dict/ru/trainers-writing-speaking.ts",
+        "kind": "file",
+        "sha256": "e18d772b00a582b71f120269d16fe56e4c36ffce0454534d59d954258259d94f"
+      },
+      {
+        "path": "src/lib/learning/contracts/sync.ts",
+        "kind": "file",
+        "sha256": "b937497d8bc5df0f2d2fa65d1ac591e6b92403f69af0c32437b2cb8389df0017"
+      },
+      {
+        "path": "src/lib/learning/store.browser.ts",
+        "kind": "file",
+        "sha256": "9125f9bdbc69046f0cd61f148f5a7da58b66c5ebd2fd2ff705a507c560a0ae0a"
+      },
+      {
+        "path": "src/lib/learning/sync.browser.ts",
+        "kind": "file",
+        "sha256": "65c64affb9a5ea809863c7e469184efa555b8d1026e3bc3647a8dcc98f95343e"
+      },
+      {
+        "path": "src/lib/progress.ts",
+        "kind": "file",
+        "sha256": "f5bd0161b9bb32fdccf4318448963a03a4f6a4447a2ee047b3849f4db06efadd"
+      },
+      {
+        "path": "src/lib/store-owner.ts",
+        "kind": "file",
+        "sha256": "45bd668353b6b785f9b76f91b1523b2311d3f2845102f2a88ec1f858d33c0672"
+      },
+      {
+        "path": "src/lib/test-session.ts",
+        "kind": "file",
+        "sha256": "f3243d123b8855b36a91f01f189ddb90b344cb0879139b04bfb09298e00e2735"
+      },
+      {
+        "path": "src/lib/tests/mock.ts",
+        "kind": "file",
+        "sha256": "887a39f43665dde916569fac326d46dfd49f9f8e728f24c54cd1da0443e10338"
+      },
+      {
+        "path": "src/lib/tutor/schema.ts",
+        "kind": "file",
+        "sha256": "fd3d3ad809d27f15c5b1c4941b8a9744b4349efe61392dd525a19e505693c5a3"
+      },
+      {
+        "path": "tests/account-isolation.test.ts",
+        "kind": "file",
+        "sha256": "9d38b7970f9e823ebdbf78bde64b1a5c760b5215d4de9f03bea7c00b310d5d8d"
+      },
+      {
+        "path": "tests/browser/README.md",
+        "kind": "file",
+        "sha256": "b6e3c245435c8d7c83de4fc8ce9722122826bb99b771f6e46d7f253aea7bfce4"
+      },
+      {
+        "path": "tests/browser/f06_seven_days_and_missed.py",
+        "kind": "file",
+        "sha256": "a0b5c46453da76f102ccf523f1a45901c192a2ac879b6ec6c7f9035ed69594a1"
+      },
+      {
+        "path": "tests/browser/f20_account_journey.py",
+        "kind": "file",
+        "sha256": "6aa366dbb07783c4c769aeddc09a3e19ed97ca2287e179416502d62459da0a10"
+      },
+      {
+        "path": "tests/browser/f21_direct_entry_owner.py",
+        "kind": "file",
+        "sha256": "ff942bd9b7ee130ae4dd1c6c45199c79e71e1b155208eb4e37058f0da9da95a4"
+      },
+      {
+        "path": "tests/browser/f22_unfinished_test_owner.py",
+        "kind": "file",
+        "sha256": "91354c0456784f5058cbe9d1b76ae0e784466b92563176bfb2721e3ac9f56f5a"
+      },
+      {
+        "path": "tests/browser/f23_delayed_grade_owner.py",
+        "kind": "file",
+        "sha256": "8918b5b6d81fae4e7aa3e25aa6a5dd8e36b47465c73003c7baa93cc8c5e337dd"
+      },
+      {
+        "path": "tests/browser/final_helpers.py",
+        "kind": "file",
+        "sha256": "6e764567bc74f4a7dcb2f409da78dbc0ad1d5630780e9a9a40f2f92dc3e1ba29"
+      },
+      {
+        "path": "tests/delayed-grade-owner.test.ts",
+        "kind": "file",
+        "sha256": "a9d2155bf4cb567a9ce0ecfbaa438534add84a496ce718f9220a824a53892d77"
+      },
+      {
+        "path": "tests/test-session-owner.test.ts",
+        "kind": "file",
+        "sha256": "92b2d7ee856bf2b69572902a73081fde28e8ef6ad7d01d025460eb1f040e0ead"
+      }
+    ],
+    "diff_sha256": "bd7a7a3572e20d6360609f0e966c979982bd86934bec4a4d0186758cc4bc88bd",
+    "sha256": "37e886ab769ee521f156f33723d54a60cfb94b7bccf1762e147149efde02dd65"
+  },
+  "started_at": 1790150488.1636784,
+  "artifacts": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\codex-runs\\claudex-inspect-g2bs25np",
+  "exit_code": 0,
+  "observed_models": []
+}

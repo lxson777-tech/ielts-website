@@ -275,3 +275,48 @@ Proof commands are unchanged. Gates at `b10fc10`: `npm test` 1822 of 1822,
 `npx astro check` 0 errors and 0 warnings, `npm run build` 661 pages, the
 learning index byte-identical, Codex's `signout-race.mjs` printing anonymous
 both times.
+
+## Inspection round 3 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `7c5264a` against this specification, diff from `48b1d17`,
+same settings as rounds 1 and 2, 170 seconds, about 1.2 million input tokens
+of which 0.97 million cached. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-3-of-7c5264a.json`.
+
+Verdict: REVISE. Codex finds the round-2 fixes "substantially implemented"
+and names four remaining edge cases, all accepted by the host:
+
+- **R2C-01 (medium) accepted.** The late grade's keep step clears the
+  submitter's draft of that prompt unconditionally. A submits, signs out and
+  back in before the grade returns, revises the restored essay; when the
+  older grade arrives it deletes the revision, and a reload loses it. Fix:
+  draft deletion is tied to the submitted revision; a newer revision by a
+  later editing session (including one still waiting on the debounce) is
+  preserved.
+- **R2C-02 (medium) accepted.** Leg writes check the sitting id, but the
+  mock screen's own snapshot writes and its clear do not: a different sitting
+  id is treated as an authorised replacement, and the clear checks only the
+  owner. A with mock M1 open in Writing who starts M2 in another tab
+  replaces M2 (legs included) by typing in M1, and finishing M1 can delete
+  M2. Fix: explicit creation or replacement is separated from ordinary
+  updates; ordinary saves and clears must match both owner and sitting id;
+  a mounted mock whose stored sitting was replaced stops and never writes
+  again.
+- **R2C-03 (medium) accepted.** When the sitting's own student returns to a
+  still-mounted paper after an owner change, the timer resumes from the
+  frozen count instead of the saved deadline, so time away is granted back;
+  a refresh of the same sitting finds it expired. Fix: the saved deadline is
+  the timer's only authority, including after an owner change and before a
+  submission is accepted; an expired sitting is handled as on a fresh load
+  with no extra time.
+- **R2C-04 (high) accepted.** The speaking trainer binds its owner but does
+  not suspend the recording or the question sequence when the owner changes:
+  B can keep answering on the still-mounted trainer and the combined
+  recording becomes A's evidence. Fix: the attempt is suspended the moment
+  the owner changes (capture stopped, pending turns cancelled, no later
+  answer joins it); an unfinished recording is dropped and never graded; a
+  grade already requested is still kept for A; the standalone live examiner
+  ends its session the same way.
+
+At Alex's standing instruction to run this loop with Codex directly until it
+converges, a fourth fresh inspection follows these fixes.
