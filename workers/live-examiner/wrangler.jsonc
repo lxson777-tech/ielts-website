@@ -10,6 +10,10 @@
   "name": "ielts-live-examiner",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
+  // Every minute: hang up any trial Speaking interview older than five minutes
+  // (closeOverdueTrialSessions in src/index.ts). With ACCESS_MODE "open" the
+  // handler returns at once and calls nothing.
+  "triggers": { "crons": ["* * * * *"] },
   "vars": {
     // "trial" creates no session while the trial Speaking test is switched off
     // (src/lib/trial/offer.ts). Anything else is today's behaviour.

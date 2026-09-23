@@ -101,7 +101,7 @@ test('tests: available, in progress, used, another begun, locked, unavailable an
   const fresh = status();
   assert.equal(testAccess(fresh, 'reading', 'reading-full-001', NOW), 'available');
   assert.equal(testAccess(fresh, 'reading', 'reading-full-002', NOW), 'locked');
-  assert.equal(testAccess(fresh, 'speaking', 'speaking-test', NOW), 'unavailable');
+  assert.equal(testAccess(fresh, 'speaking', 'speaking-test', NOW), 'available');
   assert.equal(testAccess(fresh, 'reading', 'reading-full-001', NOW + 63 * H), 'ended');
 
   const claim = (s: 'reserved' | 'settled') => ({

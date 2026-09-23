@@ -30,7 +30,9 @@ export type TrialRefusalCode =
   /** No begun trial test matches what was submitted. */
   | 'trial-no-test'
   /** The same request or test is being answered right now. */
-  | 'trial-in-flight';
+  | 'trial-in-flight'
+  /** Both interviews allowed under the Speaking test have been started. */
+  | 'trial-sessions-used';
 
 export class TrialRefusal extends Error {
   readonly code: TrialRefusalCode;
@@ -58,6 +60,7 @@ export const TRIAL_REFUSAL_TEXT: Record<TrialRefusalCode, string> = {
   'trial-test-used': 'You have used this section’s trial test.',
   'trial-no-test': 'Start this section’s trial test before submitting it.',
   'trial-in-flight': 'This is already being answered. Give it a moment.',
+  'trial-sessions-used': 'Both interviews for your trial Speaking test have been started.',
 };
 
 export function refusal(code: TrialRefusalCode): TrialRefusal {
@@ -106,6 +109,7 @@ const REASON_TO_CODE: Record<string, TrialRefusalCode> = {
   'in-flight': 'trial-in-flight',
   'test-used': 'trial-test-used',
   'no-test': 'trial-no-test',
+  'sessions-used': 'trial-sessions-used',
 };
 
 function refuseFrom(result: Record<string, unknown>): never {
@@ -222,6 +226,21 @@ export function readSittingId(raw: unknown): string | null {
 export async function leaseTrialTest(rpc: TrialRpc, userId: string, section: TrialSection, sittingId: string): Promise<void> {
   const result = await rpc('trial_test_lease', { p_user: userId, p_section: section, p_request: sittingId });
   if (result.ok !== true) refuseFrom(result);
+}
+
+/* ── The Speaking test's live interview ───────────────────────────────── */
+
+/** Counts one live interview under the student's begun Speaking test, before
+    the voice session is opened (at most two per test). Throws TrialRefusal
+    or TrialServiceError. */
+export async function startSpeakingSession(rpc: TrialRpc, userId: string, sittingId: string): Promise<void> {
+  const result = await rpc('trial_speaking_session_start', { p_user: userId, p_request: sittingId });
+  if (result.ok !== true) refuseFrom(result);
+}
+
+/** Gives the count back when the voice session never opened. */
+export async function releaseSpeakingSession(rpc: TrialRpc, userId: string, sittingId: string): Promise<void> {
+  await rpc('trial_speaking_session_release', { p_user: userId, p_request: sittingId });
 }
 
 /** Verifies a Supabase access token and returns its user id, or null. The

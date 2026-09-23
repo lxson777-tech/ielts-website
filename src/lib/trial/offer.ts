@@ -15,10 +15,10 @@
    five successfully answered Mr EZ requests per section for the whole trial,
    twenty in all, no daily reset; failed requests do not count.
 
-   PROPOSED, awaiting confirmation: WHICH lesson and WHICH test each section
-   offers. The handoff says the final library ids need selecting and
-   confirming. The Speaking test is listed but switched off until its
-   session length and scope are decided. */
+   CONFIRMED by Alex on 23 September 2026: the lesson and test each section
+   offers (below), the rule for what uses a test (begun at Start, used when
+   submitted or graded, a service failure uses nothing), and the Speaking
+   test: Part 1 only, about five minutes. */
 
 export type TrialSection = 'reading' | 'listening' | 'writing' | 'speaking';
 
@@ -30,6 +30,14 @@ export const TRIAL_TUTOR_PER_SECTION = 5;
 /** A reserved Mr EZ message nobody settled or released within this long
     belonged to a request that died, and stops counting. */
 export const TRIAL_STALE_MINUTES = 5;
+
+/** The Speaking test's live interview: Part 1 only (Alex's decision), cut
+    off by the server after this many minutes, and at most this many
+    interviews started under the one test (the first, and one retry after a
+    dropped connection; a cost safeguard, adjustable). */
+export const TRIAL_SPEAKING_MODE = 'part1' as const;
+export const TRIAL_SPEAKING_MINUTES = 5;
+export const TRIAL_SPEAKING_SESSIONS = 2;
 
 /** Full-access prices as approved, for display only. Nothing here takes a
     payment: no provider or purchase terms have been approved. */
@@ -47,7 +55,7 @@ export interface TrialSectionOffer {
   testEnabled: boolean;
 }
 
-/** PROPOSED. Needs Alex's confirmation before the real offer is switched on. */
+/** Confirmed by Alex, 23 September 2026. */
 export const TRIAL_OFFER: Record<TrialSection, TrialSectionOffer> = {
   reading: {
     lessonKey: 'reading-paraphrase',
@@ -75,9 +83,8 @@ export const TRIAL_OFFER: Record<TrialSection, TrialSectionOffer> = {
     lessonHref: '/lessons/speaking/part1',
     testId: 'speaking-test',
     testHref: '/speaking/examiner',
-    /* Off until Alex decides the session's maximum length and whether the
-       one Speaking test covers all three parts (handoff, decisions list). */
-    testEnabled: false,
+    /* A Part 1 live interview of about five minutes (Alex, 23 September). */
+    testEnabled: true,
   },
 };
 

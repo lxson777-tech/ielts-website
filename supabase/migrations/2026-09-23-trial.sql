@@ -19,6 +19,8 @@
 --   - One test per section (Reading, Listening, Writing, Speaking) for the
 --     whole trial, bound at start to one activity, so the same test can be
 --     resumed but a different one cannot be started.
+--   - The Speaking test is a Part 1 interview of about five minutes (Alex,
+--     23 September 2026), with at most two interviews started under it.
 --   - Five successfully answered Mr EZ requests per section for the whole
 --     trial, no daily reset. A request reserves one message before any money
 --     is spent, and is either SETTLED (answered, counted) or RELEASED
@@ -35,16 +37,16 @@
 --   - `anon` can read the public list of what the trial includes and nothing
 --     else.
 --
--- The limits below (72 hours, 1 test, 5 messages, 5-minute stale window) are
+-- The limits below (72 hours, 1 test, 5 messages, 5-minute stale window,
+-- 2 Speaking interviews) are
 -- mirrored in src/lib/trial/offer.ts, and tests/trial-sql.test.ts fails if
 -- the two ever disagree.
 
 -- ── What the trial includes ─────────────────────────────────────────────
 -- One row per lesson or test a trial student may open. The rows seeded at
--- the bottom are the PROPOSED shape (one introductory lesson and one test per
--- section); the final ids need Alex's confirmation. `enabled = false` keeps
--- an item listed but unavailable, which is how the Speaking test waits for
--- its session-length decision.
+-- the bottom (one introductory lesson and one test per section) were
+-- confirmed by Alex on 23 September 2026. `enabled = false` keeps an item
+-- listed but unavailable.
 create table if not exists public.trial_offer_items (
   item_id    text primary key check (item_id ~ '^(lesson|test):[a-z0-9-]{2,80}$'),
   section    text not null check (section in ('reading', 'listening', 'writing', 'speaking')),
@@ -94,8 +96,15 @@ create table if not exists public.trial_usage (
   -- A grading Worker holds this while it is grading a Writing or Speaking
   -- test, so two submissions of the same test cannot both be paid for.
   lease_until timestamptz,
+  -- Speaking only: live interviews started under this test. Capped at two
+  -- (the first, and one retry after a dropped connection) so the one test
+  -- cannot become an open-ended series of paid voice sessions.
+  sessions    int not null default 0 check (sessions >= 0),
   primary key (user_id, kind, request_id)
 );
+
+-- For a database that ran an earlier draft of this file.
+alter table public.trial_usage add column if not exists sessions int not null default 0;
 
 -- At most one live test per section per account, enforced by the database
 -- itself, so two tabs racing to start different tests cannot both win.
@@ -454,6 +463,64 @@ begin
 end
 $$;
 
+-- ── The Speaking test's live interviews (service role only) ─────────────
+-- Alex, 23 September 2026: the trial Speaking test is Part 1 only, about five
+-- minutes. The live examiner Worker asks here before it opens a paid voice
+-- session: the student must have begun their Speaking test, it must not be
+-- graded yet, and at most two interviews may have started under it.
+--   ok      counted; open the session (release it again if opening fails)
+--   reason  trial-required | no-test | test-used | sessions-used
+create or replace function public.trial_speaking_session_start(p_user uuid, p_request text)
+returns jsonb
+language plpgsql
+volatile
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  claim public.trial_usage;
+begin
+  perform 1 from public.trial_accounts where user_id = p_user for update;
+  if not found then
+    return jsonb_build_object('ok', false, 'reason', 'trial-required');
+  end if;
+  select * into claim from public.trial_usage
+    where user_id = p_user and kind = 'test' and section = 'speaking' and request_id = p_request;
+  if not found or claim.status = 'released' then
+    return jsonb_build_object('ok', false, 'reason', 'no-test');
+  end if;
+  if claim.status = 'settled' then
+    return jsonb_build_object('ok', false, 'reason', 'test-used');
+  end if;
+  if claim.sessions >= 2 then
+    return jsonb_build_object('ok', false, 'reason', 'sessions-used');
+  end if;
+  update public.trial_usage set sessions = sessions + 1
+    where user_id = p_user and kind = 'test' and request_id = p_request;
+  return jsonb_build_object('ok', true, 'sessions', claim.sessions + 1, 'limit', 2);
+end
+$$;
+
+-- An interview that never opened (the voice service refused or failed) gives
+-- its count back.
+create or replace function public.trial_speaking_session_release(p_user uuid, p_request text)
+returns jsonb
+language plpgsql
+volatile
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  n int;
+begin
+  update public.trial_usage set sessions = greatest(sessions - 1, 0)
+    where user_id = p_user and kind = 'test' and section = 'speaking' and request_id = p_request
+      and status = 'reserved';
+  get diagnostics n = row_count;
+  return jsonb_build_object('ok', n = 1);
+end
+$$;
+
 -- ── Who may call what ───────────────────────────────────────────────────
 -- Supabase grants EXECUTE on new public functions to anon and authenticated
 -- by default, so every grant here is preceded by an explicit revoke.
@@ -478,9 +545,14 @@ grant execute on function public.trial_tutor_reserve(uuid, text, text, text) to 
 grant execute on function public.trial_test_lease(uuid, text, text) to service_role;
 grant execute on function public.trial_usage_settle(uuid, text, text) to service_role;
 grant execute on function public.trial_usage_release(uuid, text, text) to service_role;
+revoke all on function public.trial_speaking_session_start(uuid, text) from public, anon, authenticated;
+revoke all on function public.trial_speaking_session_release(uuid, text) from public, anon, authenticated;
+grant execute on function public.trial_speaking_session_start(uuid, text) to service_role;
+grant execute on function public.trial_speaking_session_release(uuid, text) to service_role;
 
--- ── The proposed trial content (needs Alex's confirmation) ──────────────
+-- ── The trial content (confirmed by Alex, 23 September 2026) ────────────
 -- Mirrors TRIAL_OFFER in src/lib/trial/offer.ts; a test fails if they drift.
+-- Re-running this file brings an earlier draft's rows up to date.
 insert into public.trial_offer_items (item_id, section, kind, enabled) values
   ('lesson:reading-paraphrase',    'reading',   'lesson', true),
   ('lesson:listening-part1',       'listening', 'lesson', true),
@@ -489,10 +561,13 @@ insert into public.trial_offer_items (item_id, section, kind, enabled) values
   ('test:reading-full-001',        'reading',   'test',   true),
   ('test:listening-full-001',      'listening', 'test',   true),
   ('test:writing-checker',         'writing',   'test',   true),
-  ('test:speaking-test',           'speaking',  'test',   false)
-on conflict (item_id) do nothing;
+  ('test:speaking-test',           'speaking',  'test',   true)
+on conflict (item_id) do update
+  set section = excluded.section, kind = excluded.kind, enabled = excluded.enabled;
 
 -- ── Rollback (run by hand, never by a script) ───────────────────────────
+-- drop function if exists public.trial_speaking_session_release(uuid, text);
+-- drop function if exists public.trial_speaking_session_start(uuid, text);
 -- drop function if exists public.trial_usage_release(uuid, text, text);
 -- drop function if exists public.trial_usage_settle(uuid, text, text);
 -- drop function if exists public.trial_test_lease(uuid, text, text);

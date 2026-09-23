@@ -20,6 +20,7 @@ import { createTrialDb, TRIAL_MIGRATION } from '../tools/trial-db.mjs';
 import {
   TRIAL_HOURS,
   TRIAL_OFFER,
+  TRIAL_SPEAKING_SESSIONS,
   TRIAL_STALE_MINUTES,
   TRIAL_TESTS_PER_SECTION,
   TRIAL_TUTOR_PER_SECTION,
@@ -72,6 +73,8 @@ test('the migration states the same limits and the same trial items as src/lib/t
   assert.equal(TRIAL_TUTOR_PER_SECTION, 5);
   assert.match(sql, /interval '5 minutes'/);
   assert.equal(TRIAL_STALE_MINUTES, 5);
+  assert.match(sql, /claim\.sessions >= 2/);
+  assert.equal(TRIAL_SPEAKING_SESSIONS, 2);
 });
 
 test('the seeded trial items are exactly TRIAL_OFFER', async () => {
@@ -86,7 +89,7 @@ test('the seeded trial items are exactly TRIAL_OFFER', async () => {
     .map((i) => ({ item_id: i.itemId, section: i.section, kind: i.kind, enabled: i.enabled }))
     .sort((x, y) => x.item_id.localeCompare(y.item_id));
   assert.deepEqual(rows, expected);
-  assert.equal(TRIAL_OFFER.speaking.testEnabled, false, 'the Speaking test waits for its decision');
+  assert.equal(TRIAL_OFFER.speaking.testEnabled, true, 'the Speaking test is a Part 1 interview (Alex, 23 September)');
   await db.close();
 });
 
@@ -321,11 +324,25 @@ test('two tabs starting the section test at once get one sitting between them', 
   await db.close();
 });
 
-test('the Speaking test stays unavailable until it is switched on', async () => {
+test('the Speaking test begins like the others, and allows two interviews at most', async () => {
   const db = await world();
   await db.rpc('trial_start', {}, asA);
-  const r = await db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-speak-1' }, asA);
-  assert.equal(r.reason, 'not-in-trial');
+  const start = (request = 'sit-speak-1') =>
+    db.rpc('trial_speaking_session_start', { p_user: A, p_request: request }, service);
+  assert.equal((await start()).reason, 'no-test', 'nothing begun yet');
+  const begun = await db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-speak-1' }, asA);
+  assert.equal(begun.ok, true);
+  assert.equal((await start()).ok, true);
+  // An interview that never opened is given back.
+  await db.rpc('trial_speaking_session_release', { p_user: A, p_request: 'sit-speak-1' }, service);
+  assert.equal((await start()).ok, true);
+  assert.equal((await start()).ok, true);
+  assert.equal((await start()).reason, 'sessions-used');
+  await assert.rejects(db.rpc('trial_speaking_session_start', { p_user: A, p_request: 'sit-speak-1' }, asA), (err: { status: number }) => err.status === 403, 'Workers only');
+  // Once graded, no further interview under it.
+  await db.rpc('trial_test_lease', { p_user: A, p_section: 'speaking', p_request: 'sit-speak-1' }, service);
+  await db.rpc('trial_usage_settle', { p_user: A, p_kind: 'test', p_request: 'sit-speak-1' }, service);
+  assert.equal((await start()).reason, 'test-used');
   await db.close();
 });
 

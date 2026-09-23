@@ -37,17 +37,32 @@
 
 import { SPEAKING_ANCHORS } from './anchors';
 import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
-import { TRIAL_REFUSAL_TEXT } from '../../../src/lib/trial/gate';
+import {
+  TRIAL_REFUSAL_TEXT,
+  TrialRefusal,
+  bearer,
+  leaseTrialTest,
+  readSittingId,
+  refusal,
+  releaseUse,
+  serviceRpc,
+  settleUse,
+  verifyAccessToken,
+  type TrialRpc,
+} from '../../../src/lib/trial/gate';
 
 export interface Env {
   /** vars: 'openai' (default) | 'gemini'. */
   GRADER_PROVIDER?: string;
-  /** 'trial' makes this grader part of the three-day trial. While the
-      trial's Speaking test is switched off (TRIAL_OFFER.speaking, waiting on
-      Alex's decision about its length and parts) every grading request is
-      refused before anything is paid for. Anything else, including unset,
-      is today's open grader. */
+  /** 'trial' makes this grader the three-day trial's Speaking test grader:
+      only the live interview (the trial's Part 1 test), only for a signed-in
+      student who has begun that test, which is used when a grade comes back
+      and kept when grading fails (src/lib/trial/gate.ts). Needs
+      SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY then. Anything else,
+      including unset, is today's open grader. */
   ACCESS_MODE?: string;
+  SUPABASE_URL?: string; // vars, trial mode only
+  SUPABASE_SERVICE_ROLE_KEY?: string; // wrangler secret, trial mode only
   OPENAI_API_KEY?: string; // wrangler secret (openai provider)
   /** vars: 'hybrid' (default) | 'audio'. See README "Hybrid pipeline". */
   OPENAI_SPEAKING_MODE?: string;
@@ -127,6 +142,8 @@ interface GradeSpeakingRequest {
     audio: WireClip;
   };
   mechanics?: { totalDurationMs?: number; underLength?: boolean; estSilenceRatio?: number };
+  /** Trial mode only: the id the student's Speaking test was begun under. */
+  trialSitting?: string;
 }
 
 const CRITERION_KEYS = ['fluencyCoherence', 'lexicalResource', 'grammaticalRange', 'pronunciation'] as const;
@@ -508,7 +525,8 @@ function corsHeaders(origin: string | null, env: Env): Record<string, string> {
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    // Authorization carries the student's sign-in in trial mode.
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
   };
 }
@@ -1796,7 +1814,8 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     if (request.method !== 'POST') return json({ error: 'POST only' }, 405, cors);
 
-    if (parseAccessMode(env.ACCESS_MODE) === 'trial' && !TRIAL_OFFER.speaking.testEnabled) {
+    const trialMode = parseAccessMode(env.ACCESS_MODE) === 'trial';
+    if (trialMode && !TRIAL_OFFER.speaking.testEnabled) {
       return json({ error: TRIAL_REFUSAL_TEXT['trial-not-included'], code: 'trial-not-included' }, 403, cors);
     }
 
@@ -1859,9 +1878,43 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     // ~15MB of base64 audio, comfortably under both providers' inline-audio limits.
     if (totalBase64Length(body) > 15 * 1024 * 1024) return json({ error: 'Recording too long' }, 413, cors);
 
+    /* The trial, before a single token is paid for: a signed-in student,
+       grading the live interview of the Speaking test they began, with
+       nobody else grading it right now. The recorded Part 1 / Part 2-3
+       practice is not the trial's test. */
+    let trial: { rpc: TrialRpc; userId: string; sitting: string } | null = null;
+    if (trialMode) {
+      if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+        return json({ error: 'The speaking grader is not configured' }, 503, cors);
+      }
+      try {
+        const token = bearer(request);
+        const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
+        if (!userId) return json({ error: 'Sign in to have your speaking graded.', code: 'sign-in-required' }, 401, cors);
+        if (body.kind !== 'interview') throw refusal('trial-not-included');
+        const sitting = readSittingId(body.trialSitting);
+        if (!sitting) throw refusal('trial-no-test');
+        const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+        await leaseTrialTest(rpc, userId, 'speaking', sitting);
+        trial = { rpc, userId, sitting };
+      } catch (err) {
+        if (err instanceof TrialRefusal) {
+          return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
+        }
+        return json({ error: 'Your trial could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
+      }
+    }
+    /* Nothing was graded: the Speaking test stays the student's to submit
+       again. A release that fails expires on its own in minutes. */
+    const keepTest = async () => {
+      if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
+    };
+
     const samples = resolveSamples(env, provider);
 
-    const runs: GradeRunResult[] =
+    let runs: GradeRunResult[];
+    try {
+    runs =
       provider === 'openai'
         ? await runOpenAiGrading(deps, env, body, samples)
         : await Promise.all(
@@ -1882,14 +1935,24 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
               }),
             ),
           );
+    } catch (err) {
+      await keepTest();
+      throw err;
+    }
 
     const good = runs.filter((r): r is { assessment: Record<string, unknown> } => 'assessment' in r);
 
     if (good.length === 0) {
       const firstFail = runs.find((r): r is { failStatus: number; failError: string } => 'failStatus' in r)!;
+      await keepTest();
       return json({ error: firstFail.failError }, firstFail.failStatus, cors);
     }
 
+    if (trial) {
+      /* Graded: the Speaking test is used, settled here on the server. */
+      await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
+      return json({ ...medianRun(good), trial: { section: 'speaking', test: 'used' } }, 200, cors);
+    }
     return json(medianRun(good), 200, cors);
   }
 

@@ -1,4 +1,4 @@
-/* The graders running the trial: the REAL grade-essay handler against
+/* The graders and the live examiner running the trial: the REAL grade-essay handler against
  * the REAL trial database functions (PGlite, tools/trial-db.mjs) and a fake
  * OpenAI. No key, no model, no money.
  *
@@ -14,8 +14,8 @@ import { createHandler } from '../workers/grade-essay/src/index.ts';
 import { createTrialDb } from '../tools/trial-db.mjs';
 import { parseTrialStatus } from '../src/lib/trial/status.ts';
 import { createHandler as createSpeakingHandler } from '../workers/grade-speaking/src/index.ts';
-import { createHandler as createLiveHandler } from '../workers/live-examiner/src/index.ts';
-import { TRIAL_OFFER } from '../src/lib/trial/offer.ts';
+import { createHandler as createLiveHandler, closeOverdueTrialSessions } from '../workers/live-examiner/src/index.ts';
+import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES, TRIAL_SPEAKING_MODE, TRIAL_SPEAKING_SESSIONS } from '../src/lib/trial/offer.ts';
 
 const ORIGIN = 'https://lxson777-tech.github.io';
 const SUPABASE_URL = 'https://proj.supabase.co';
@@ -176,46 +176,246 @@ test('an unreachable trial database fails closed', async () => {
   await w.db.close();
 });
 
-/* ── Speaking, while its trial test is switched off ────────────────────
-   The Speaking test waits for Alex's decision on session length and parts,
-   so in trial mode both paid Speaking services refuse before anything is
-   paid for. Their open behaviour is covered by their own test files. */
+/* ── Speaking: a Part 1 interview of about five minutes ────────────────
+   Alex's decision of 23 September 2026. The live examiner opens a paid voice
+   session only for a student's own begun Speaking test, only for Part 1, at
+   most twice; a scheduled check hangs up any session older than five
+   minutes; the speaking grader uses the test on a grade and keeps it on a
+   failure. The open behaviour of both Workers is covered by their own test
+   files. */
 
+const OFFER_SDP = 'v=0\r\no=- 1 1 IN IP4 0.0.0.0\r\n';
 
-const noNetwork = (async (input: unknown) => {
-  throw new Error(`no network call expected, got ${String(input)}`);
-}) as typeof fetch;
+async function speakingWorld() {
+  const db = await createTrialDb();
+  await db.addUser(A);
+  await db.addUser(B);
+  await db.rpc('trial_start', {}, { userId: A });
+  await db.rpc('trial_start', {}, { userId: B });
+  const sessions: Record<string, unknown>[] = [];
+  const calls = { openAiLive: 0, openAiGrade: 0, closes: [] as string[] };
+  const model = { liveStatus: 201 };
+  let now = new Date();
+  let rowId = 0;
+  const matches = (row: Record<string, unknown>, key: string, raw: string) => {
+    const value = row[key];
+    if (raw === 'is.null') return value === null || value === undefined;
+    if (raw === 'not.is.null') return value !== null && value !== undefined;
+    const [op, ...rest] = raw.split('.');
+    const want = decodeURIComponent(rest.join('.'));
+    if (op === 'eq') return String(value) === want;
+    if (op === 'gte') return String(value) >= want;
+    if (op === 'lt') return String(value) < want;
+    return true;
+  };
+  const fetchFn = (async (input: unknown, init?: RequestInit) => {
+    const url = String(input);
+    const headers = (init?.headers ?? {}) as Record<string, string>;
+    if (url === `${SUPABASE_URL}/auth/v1/user`) {
+      const id = TOKENS[(headers.Authorization ?? '').replace('Bearer ', '')];
+      return id ? new Response(JSON.stringify({ id })) : new Response('{}', { status: 401 });
+    }
+    if (url.startsWith(`${SUPABASE_URL}/rest/v1/rpc/`)) {
+      const fn = url.slice(`${SUPABASE_URL}/rest/v1/rpc/`.length);
+      try {
+        const role = headers.apikey === SERVICE_KEY ? 'service_role' : 'anon';
+        return new Response(JSON.stringify(await db.rpc(fn, JSON.parse(String(init?.body)), { role })));
+      } catch (err) {
+        return new Response('{}', { status: (err as { status?: number }).status ?? 400 });
+      }
+    }
+    if (url.startsWith(`${SUPABASE_URL}/rest/v1/live_examiner_sessions`)) {
+      const u = new URL(url);
+      const method = init?.method ?? 'GET';
+      if (method === 'POST') {
+        const row = {
+          id: `row_${++rowId}`,
+          created_at: now.toISOString(),
+          ended_at: null,
+          provider_session_id: null,
+          ...JSON.parse(String(init?.body)),
+        };
+        sessions.push(row);
+        return new Response(JSON.stringify([row]), { status: 201 });
+      }
+      const rows = sessions.filter((row) => [...u.searchParams.entries()].every(([k, v]) => k === 'select' || matches(row, k, v)));
+      if (method === 'PATCH') {
+        for (const row of rows) Object.assign(row, JSON.parse(String(init?.body)));
+        return new Response(null, { status: 204 });
+      }
+      return new Response(JSON.stringify(rows));
+    }
+    if (url === 'https://api.openai.com/v1/live/sessions') {
+      calls.openAiLive += 1;
+      if (model.liveStatus !== 201) return new Response('{}', { status: model.liveStatus });
+      return new Response(
+        JSON.stringify({ session: { id: `live_${calls.openAiLive}` }, transport: { type: 'webrtc', sdp: 'v=0 answer' } }),
+        { status: 201 },
+      );
+    }
+    throw new Error(`unexpected fetch ${url}`);
+  }) as typeof fetch;
+  const deps = {
+    fetch: fetchFn,
+    now: () => now,
+    sideband: async (_env: unknown, sessionId: string, event: Record<string, unknown>) => {
+      if (event.type === 'session.close') calls.closes.push(sessionId);
+      return { ok: false, error: 'socket closed' };
+    },
+  };
+  const live = createLiveHandler(deps as never);
+  const env = {
+    ALLOWED_ORIGINS: ORIGIN,
+    OPENAI_API_KEY: 'sk-test-dummy',
+    SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
+    ACCESS_MODE: 'trial',
+  } as never;
+  const openInterview = async (token: string, sitting: string | undefined, mode = 'part1') => {
+    const plan =
+      mode === 'part1'
+        ? { mode, part1TopicIds: ['p1-work'] }
+        : { mode, part1TopicIds: ['p1-work', 'p1-work'], cueCardId: 'unknown' };
+    const response = await live.fetch(
+      new Request('https://live.test/', {
+        method: 'POST',
+        headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ sdp: OFFER_SDP, plan, ...(sitting ? { trialSitting: sitting } : {}) }),
+      }),
+      env,
+    );
+    return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+  };
+  const sessionsOf = async (sitting: string) =>
+    (
+      (await db.select('select sessions from public.trial_usage where request_id = $1', [sitting], {
+        role: 'service_role',
+      })) as { sessions: number }[]
+    )[0]?.sessions ?? null;
+  return {
+    db,
+    calls,
+    model,
+    sessions,
+    openInterview,
+    sessionsOf,
+    advance: (minutes: number) => {
+      now = new Date(now.getTime() + minutes * 60_000);
+    },
+    close: () => closeOverdueTrialSessions(deps as never, env),
+  };
+}
 
-test('in trial mode the speaking grader refuses before any spend while the Speaking test is off', async () => {
-  assert.equal(TRIAL_OFFER.speaking.testEnabled, false);
-  const handler = createSpeakingHandler({ fetch: noNetwork });
-  const response = await handler.fetch(
-    new Request('https://speaking.test/', {
-      method: 'POST',
-      headers: { Origin: ORIGIN, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: 'part1', part1: { topic: 'x', answers: [] } }),
-    }),
-    { ALLOWED_ORIGINS: ORIGIN, OPENAI_API_KEY: 'sk-test-dummy', ACCESS_MODE: 'trial' } as never,
-  );
-  assert.equal(response.status, 403);
-  assert.equal(((await response.json()) as { code: string }).code, 'trial-not-included');
+test('the Speaking test is on, as a Part 1 interview of five minutes, two tries at most', () => {
+  assert.equal(TRIAL_OFFER.speaking.testEnabled, true);
+  assert.equal(TRIAL_SPEAKING_MODE, 'part1');
+  assert.equal(TRIAL_SPEAKING_MINUTES, 5);
+  assert.equal(TRIAL_SPEAKING_SESSIONS, 2);
 });
 
-test('in trial mode the live examiner creates no session while the Speaking test is off', async () => {
-  const handler = createLiveHandler({
-    fetch: noNetwork,
-    sideband: async () => ({ ok: false }),
-    now: () => new Date(),
-  } as never);
-  for (const path of ['/', '/direct']) {
-    const response = await handler.fetch(
-      new Request(`https://live.test${path}`, {
-        method: 'POST',
-        headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: 'Bearer token-a' },
-        body: '{}',
-      }),
-      { ALLOWED_ORIGINS: ORIGIN, OPENAI_API_KEY: 'sk-test-dummy', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY, ACCESS_MODE: 'trial' } as never,
+test('live examiner: no begun Speaking test, or a mode other than Part 1, means no paid session', async () => {
+  const w = await speakingWorld();
+  assert.equal((await w.openInterview('token-a', undefined)).body.code, 'trial-no-test');
+  assert.equal((await w.openInterview('token-a', 'sit-s-00001')).body.code, 'trial-no-test', 'not begun');
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00001' }, { userId: A });
+  const full = await w.openInterview('token-a', 'sit-s-00001', 'full');
+  assert.ok(full.status === 400 || full.body.code === 'trial-not-included', 'the full test is not the trial test');
+  const part2 = await w.openInterview('token-a', 'sit-s-00001', 'part2');
+  assert.ok(part2.status === 400 || part2.body.code === 'trial-not-included');
+  assert.equal((await w.openInterview('token-b', 'sit-s-00001')).body.code, 'trial-no-test', "another student cannot use A's test");
+  assert.equal(w.calls.openAiLive, 0);
+  await w.db.close();
+});
+
+test('live examiner: two interviews per Speaking test, and a session that never opened is given back', async () => {
+  const w = await speakingWorld();
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00002' }, { userId: A });
+  w.model.liveStatus = 500;
+  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).status, 502);
+  assert.equal(await w.sessionsOf('sit-s-00002'), 0, 'the failed open used nothing');
+  w.model.liveStatus = 201;
+  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).status, 201);
+  // The first interview ends (the browser reports it), the student retries once.
+  for (const row of w.sessions) row.ended_at = new Date().toISOString();
+  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).status, 201);
+  for (const row of w.sessions) row.ended_at = new Date().toISOString();
+  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).body.code, 'trial-sessions-used');
+  assert.equal(await w.sessionsOf('sit-s-00002'), 2);
+  assert.equal(w.calls.openAiLive, 3, 'one failed open and two real interviews, nothing more');
+  await w.db.close();
+});
+
+test('live examiner: the scheduled check hangs up interviews older than five minutes, and only those', async () => {
+  const w = await speakingWorld();
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00003' }, { userId: A });
+  await w.openInterview('token-a', 'sit-s-00003');
+  w.advance(4);
+  assert.deepEqual(await w.close(), { closed: 0, failed: 0 }, 'four minutes in: still talking');
+  w.advance(2);
+  assert.deepEqual(await w.close(), { closed: 1, failed: 0 });
+  assert.deepEqual(w.calls.closes, ['live_1']);
+  assert.ok(w.sessions[0].ended_at, 'marked ended');
+  assert.deepEqual(await w.close(), { closed: 0, failed: 0 }, 'closed once');
+  const open = await closeOverdueTrialSessions(
+    { fetch: async () => { throw new Error('the open site must not call anything'); } } as never,
+    { ACCESS_MODE: 'open' } as never,
+  );
+  assert.deepEqual(open, { closed: 0, failed: 0 }, 'on the open site the check does nothing');
+  await w.db.close();
+});
+
+test('speaking grader: only the begun interview is graded, and a failed grade keeps the Speaking test', async () => {
+  const w = await speakingWorld();
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00004' }, { userId: A });
+  let paid = 0;
+  const grader = createSpeakingHandler({
+    fetch: (async (input: unknown, init?: RequestInit) => {
+      const url = String(input);
+      const headers = (init?.headers ?? {}) as Record<string, string>;
+      if (url === `${SUPABASE_URL}/auth/v1/user`) {
+        const id = TOKENS[(headers.Authorization ?? '').replace('Bearer ', '')];
+        return id ? new Response(JSON.stringify({ id })) : new Response('{}', { status: 401 });
+      }
+      if (url.startsWith(`${SUPABASE_URL}/rest/v1/rpc/`)) {
+        const fn = url.slice(`${SUPABASE_URL}/rest/v1/rpc/`.length);
+        return new Response(JSON.stringify(await w.db.rpc(fn, JSON.parse(String(init?.body)), { role: 'service_role' })));
+      }
+      paid += 1;
+      return new Response('{}', { status: 500 });
+    }) as typeof fetch,
+    sleep: async () => undefined,
+  });
+  const submit = async (token: string | null, body: Record<string, unknown>) => {
+    const headers: Record<string, string> = { Origin: ORIGIN, 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await grader.fetch(
+      new Request('https://speaking.test/', { method: 'POST', headers, body: JSON.stringify(body) }),
+      {
+        ALLOWED_ORIGINS: ORIGIN,
+        OPENAI_API_KEY: 'sk-test-dummy',
+        ACCESS_MODE: 'trial',
+        SUPABASE_URL,
+        SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
+      } as never,
     );
-    assert.equal(response.status, 403, path);
-  }
+    return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+  };
+  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: 'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA', durationMs: 60000 };
+  const interview = {
+    kind: 'interview',
+    interview: { transcript: [{ role: 'examiner', text: 'Hello.' }, { role: 'candidate', text: 'Hi there.' }], audio: clip },
+  };
+  assert.equal((await submit(null, { ...interview, trialSitting: 'sit-s-00004' })).status, 401);
+  assert.equal(
+    (await submit('token-a', { kind: 'part1', part1: { topic: 'x', answers: [clip] }, trialSitting: 'sit-s-00004' })).body.code,
+    'trial-not-included',
+    'recorded practice is not the trial test',
+  );
+  assert.equal((await submit('token-a', interview)).body.code, 'trial-no-test');
+  assert.equal(paid, 0, 'nothing paid for any of those');
+  const failed = await submit('token-a', { ...interview, trialSitting: 'sit-s-00004' });
+  assert.ok(failed.status >= 500, `a failed grade (${failed.status})`);
+  const status = parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: A }))!;
+  assert.equal(status.sections.speaking.test?.status, 'reserved', 'the Speaking test is still theirs to submit');
+  await w.db.close();
 });

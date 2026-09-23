@@ -101,15 +101,26 @@ import {
   PlanRequestError,
 } from '../../../src/lib/speaking/live/instructions';
 import type { LiveMode, ResolvedPlan } from '../../../src/lib/speaking/live/instructions';
-import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
-import { TRIAL_REFUSAL_TEXT } from '../../../src/lib/trial/gate';
+import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES, TRIAL_SPEAKING_MODE, parseAccessMode } from '../../../src/lib/trial/offer';
+import {
+  TRIAL_REFUSAL_TEXT,
+  TrialRefusal,
+  readSittingId,
+  refusal,
+  releaseSpeakingSession,
+  serviceRpc,
+  startSpeakingSession,
+  type TrialRpc,
+} from '../../../src/lib/trial/gate';
 import { parseDirectorCue, nextStage, cueEvent, CueError } from '../../../src/lib/speaking/live/cues';
 import type { SessionStage } from '../../../src/lib/speaking/live/cues';
 
 export interface Env {
-  /** 'trial' makes live sessions part of the three-day trial. While the
-      trial's Speaking test is switched off (TRIAL_OFFER.speaking, waiting on
-      Alex's decision about session length and parts) no session is created.
+  /** 'trial' makes live sessions the three-day trial's Speaking test (Alex,
+      23 September 2026): only a student who has begun that test, only a
+      Part 1 interview, at most two interviews under the one test, each cut
+      off after five minutes by the scheduled check below
+      (`closeOverdueTrialSessions`, needs the cron trigger in wrangler.jsonc).
       Anything else, including unset, is today's behaviour. */
   ACCESS_MODE?: string;
   GEMINI_API_KEY?: string; // wrangler secret (gemini provider)
@@ -540,10 +551,32 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
   }
 
+  /* The trial's Speaking test: a Part 1 interview of the student's own
+     begun test, counted (at most two) before anything is paid for. Given
+     back below if the voice session never opens. */
+  let trial: { rpc: TrialRpc; sitting: string } | null = null;
+  if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
+    try {
+      if (plan.mode !== TRIAL_SPEAKING_MODE) throw refusal('trial-not-included');
+      const sitting = readSittingId(parsed.value.trialSitting);
+      if (!sitting) throw refusal('trial-no-test');
+      const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+      await startSpeakingSession(rpc, userId, sitting);
+      trial = { rpc, sitting };
+    } catch (err) {
+      if (err instanceof TrialRefusal) return json({ error: err.message, code: err.code }, 403, cors);
+      return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
+    }
+  }
+  const giveBack = async () => {
+    if (trial) await releaseSpeakingSession(trial.rpc, userId, trial.sitting).catch(() => undefined);
+  };
+
   let reservationId: string;
   try {
     reservationId = await reserveSession(deps, env, userId, plan.mode);
   } catch {
+    await giveBack();
     return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
   }
 
@@ -560,19 +593,23 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     });
   } catch {
     await failReservation(deps, env, reservationId);
+    await giveBack();
     return json({ error: 'Could not reach the OpenAI live session service' }, 502, cors);
   }
 
   if (upstream.status === 401 || upstream.status === 403) {
     await failReservation(deps, env, reservationId);
+    await giveBack();
     return json({ error: 'The OpenAI key was rejected or has no GPT-Live access' }, 502, cors);
   }
   if (upstream.status === 429) {
     await failReservation(deps, env, reservationId);
+    await giveBack();
     return json({ error: 'The live examiner is busy right now. Please try again in a minute.' }, 429, cors);
   }
   if (!upstream.ok) {
     await failReservation(deps, env, reservationId);
+    await giveBack();
     let detail = '';
     try {
       const err = (await upstream.json()) as { error?: { message?: string } };
@@ -588,6 +625,7 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     payload = await upstream.json();
   } catch {
     await failReservation(deps, env, reservationId);
+    await giveBack();
     return json({ error: 'Malformed session response' }, 502, cors);
   }
 
@@ -595,6 +633,7 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
   const answerSdp = isRecord(payload) && isRecord(payload.transport) ? payload.transport.sdp : undefined;
   if (typeof sessionId !== 'string' || typeof answerSdp !== 'string') {
     await failReservation(deps, env, reservationId);
+    await giveBack();
     return json({ error: 'Malformed session response' }, 502, cors);
   }
 
@@ -852,8 +891,15 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
       return handleGet(env, cors);
     }
 
-    /* Creating a session is the only spend; ending one must always work. */
-    if ((path === '/' || path === '/direct') && parseAccessMode(env.ACCESS_MODE) === 'trial' && !TRIAL_OFFER.speaking.testEnabled) {
+    /* Creating a session is the only spend; ending one must always work.
+       In the trial, sessions exist only for the Speaking test (switched on
+       in TRIAL_OFFER) and only on the signed-in OpenAI path: the Gemini
+       rollback has no sign-in, so it cannot be tied to a student's test. */
+    if (
+      (path === '/' || path === '/direct') &&
+      parseAccessMode(env.ACCESS_MODE) === 'trial' &&
+      (!TRIAL_OFFER.speaking.testEnabled || resolveProvider(env) !== 'openai')
+    ) {
       return json({ error: TRIAL_REFUSAL_TEXT['trial-not-included'], code: 'trial-not-included' }, 403, cors);
     }
 
@@ -872,4 +918,46 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
   return { fetch: handle };
 }
 
-export default { fetch: (request: Request, env: Env) => createHandler(defaultDeps).fetch(request, env) };
+/* ── The trial Speaking test's five-minute cut-off ──────────────────────
+   The Worker cannot keep a timer running for a session it only brokered, so
+   a cron trigger (every minute, see wrangler.jsonc) asks this: every session
+   still open after TRIAL_SPEAKING_MINUTES is sent `session.close` over the
+   trusted server channel and marked ended. With a one-minute schedule an
+   interview runs at most about six minutes whatever the browser does. On the
+   open site (ACCESS_MODE not 'trial') it does nothing at all. */
+export async function closeOverdueTrialSessions(deps: Deps, env: Env): Promise<{ closed: number; failed: number }> {
+  if (parseAccessMode(env.ACCESS_MODE) !== 'trial' || missingConfig(env).length) return { closed: 0, failed: 0 };
+  const cutoff = new Date(deps.now().getTime() - TRIAL_SPEAKING_MINUTES * 60_000).toISOString();
+  const rows = await fetchRows(
+    deps,
+    env,
+    `ended_at=is.null&provider_session_id=not.is.null&created_at=lt.${encodeURIComponent(cutoff)}&select=id,provider_session_id`,
+  );
+  let closed = 0;
+  let failed = 0;
+  for (const row of rows) {
+    if (!isRecord(row) || typeof row.id !== 'string' || typeof row.provider_session_id !== 'string') continue;
+    const result = await deps.sideband(env, row.provider_session_id, { type: 'session.close', event_id: `close_${crypto.randomUUID()}` });
+    // A closed socket is the expected answer to a close; anything else is a
+    // failure to report, and the row stays open so the next minute retries.
+    if (result.ok || result.error === 'socket closed') {
+      try {
+        await patchSession(deps, env, row.id, { ended_at: deps.now().toISOString(), stage: 'ended' });
+        closed += 1;
+      } catch {
+        failed += 1;
+      }
+    } else {
+      failed += 1;
+      console.error('live-examiner: could not close an overdue trial session', row.id);
+    }
+  }
+  return { closed, failed };
+}
+
+export default {
+  fetch: (request: Request, env: Env) => createHandler(defaultDeps).fetch(request, env),
+  scheduled: async (_controller: unknown, env: Env) => {
+    await closeOverdueTrialSessions(defaultDeps, env);
+  },
+};
