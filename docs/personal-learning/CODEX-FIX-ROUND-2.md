@@ -554,3 +554,38 @@ request and before the Gemini socket.
 Proof commands are unchanged. Gates at `222feb6`: `npm test` 1878 of 1878,
 `npx astro check` 0 errors and 0 warnings, Codex's `signout-race.mjs`
 printing anonymous both times; the build is rerun at the final commit.
+
+The window inside the live-session setup named above is closed in `b7b083a`
+(`src/lib/speaking/live/start-check.ts`, new; `openai-session.ts`,
+`session.ts`, `link.ts`; `LiveExaminer.tsx` only passes its existing check
+through). The functions that open a voice session take an optional
+`mayContinue` and ask it at the points where a session could be created: on
+the paid path before anything is made and again immediately before the
+request that creates the paid session (after the connection has prepared
+itself, up to ten seconds); on the Gemini rollback before the ephemeral key
+is requested and again immediately before the voice socket opens. A no lets
+go of whatever was built, sends nothing, and rejects with
+`LiveStartCancelled`, which the examiner treats as a start it had already let
+go: nothing starts, nothing is shown, the microphone is released. A function
+was chosen over an abort signal because the examiner's check re-compares the
+signed-in student every time it is asked, so a switch that reached no
+listener is still caught. One case is stated rather than hidden: a switch
+while the paid request is already out means the session exists when the
+answer comes back; the examiner then closes it at once, before any audio
+flows, and tells the Worker it ended, so the session's minimum charge is
+spent but nothing is recorded and nothing is heard. Fourteen new cases in
+`tests/live-start-cancel.test.ts` (each with a ten-second limit so a
+regression fails by name instead of hanging the runner; removing the check
+before the paid request fails six, before the Gemini socket four, the
+examiner not passing its check one); `f23` section 8 in the browser, holding
+the connection preparation after the token was read, switching the account
+from a second tab and letting go: the mock, the standalone page and the
+Gemini path each send no paid request and open no voice connection, 81 of 81
+overall (`results-delayed-grade-5.md`); against the pre-fix code the same
+three cases fail, with the request going out after the switch. The browser
+helper refuses any voice connection to another host, so a failed fix could
+not have reached a real service.
+
+Gates at `b7b083a`: `npm test` 1892 of 1892, `npx astro check` 0 errors and
+0 warnings, `npm run build` 661 pages, the learning index byte-identical,
+Codex's `signout-race.mjs` printing anonymous both times.
