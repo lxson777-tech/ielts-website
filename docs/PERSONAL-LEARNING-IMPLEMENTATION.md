@@ -518,6 +518,32 @@ instruction to run the loop with Codex directly:
 | R2C-03 (medium) | When the sitting's own student returned to a still-mounted paper after an account change, the timer resumed from the frozen count, granting the time away back | The saved deadline is the timer's only authority, including after an owner change and before a submission; an expired sitting is handled as on a fresh load |
 | R2C-04 (high) | The speaking trainer bound its owner but kept recording and stepping through questions after the account changed, so the next student's answers could become the first student's evidence | The attempt is suspended the moment the owner changes: capture stopped, pending turns cancelled, an unfinished recording dropped and never graded; a grade already requested is still kept for the first student; the standalone live examiner ends its session the same way |
 
+The fixes for those four landed in `b3a2689` (a late report spares a
+revision through `clearSubmittedEssayDraft`; a speaking attempt bound to its
+owner in `src/components/speaking-attempt-owner.ts`, used by the trainer and
+the standalone examiner; only Start Mock Exam creates or replaces a sitting,
+and a replaced tab stops; the player's clock reads the saved deadline through
+`paperClockAt`). Gates at that commit: 1848 tests, type check clean, 661
+pages, learning index unchanged, race script anonymous both times, f23 56 of
+56 with a fake microphone, f22 107 of 107.
+
+**A bug beyond the brief, found and fixed on the way, and present on the
+published site.** When a paper ran out of time, the player handed it in with
+the answers as they were when the timer started, usually none, so anything
+the student typed after that was lost. The published main branch carries the
+same timer (its time-up path calls the submit function captured when the
+timer started). The fix is part of `b3a2689`; the browser run proves it (with
+the old timer, a time-up recorded the paper as blank despite the student's
+answer). Publishing this branch fixes it on the live site; that is Alex's
+call, as everything published is.
+
+Two same-student two-tab gaps the mock builder found (a standalone paper
+opened in a second tab is overwritten by, and cleared from, the first tab; a
+mock whose record was finished or claimed in another tab keeps running and
+can be recorded twice) were not part of any finding. They are being closed
+in a follow-up commit before the loop ends, so that the inspection does not
+have to raise them.
+
 **Inspection 4** (a fresh session, after those fixes) is recorded below once
 run.
 
