@@ -926,3 +926,46 @@ load, which the claim offer waits for.
 Gates at `34b7583`: `npm test` 2004 of 2004, `npx astro check` 0 errors and 0
 warnings, `npm run build` 661 pages, the learning index byte-identical,
 Codex's `signout-race.mjs` printing anonymous both times.
+
+## Inspection round 6 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `defa6f1`. The diff from `48b1d17` had grown to 1.9 MB
+with the merge of the published main inside it and Codex refused it as too
+large (its limit is about one million characters), so this round's diff is
+taken from `c4a7793`, the commit Codex judged in round 5, with the browser
+scripts, the evidence, main's own data and style files, the generated index
+and the implementation report kept out of the prompt (0.73 MB); same
+settings otherwise, 553 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-6-of-defa6f1.json`.
+
+Verdict: REVISE. Two findings, both accepted by the host:
+
+- **R2F-01 (high) accepted.** On the spoken focused task, pressing Start
+  twice while the microphone permission is pending starts two recorders:
+  each press replaces the current take without marking startup as pending,
+  both returned streams pass the liveness check because it looks at the
+  exercise session rather than the take's own identity, and an account
+  switch or unmount stops only the last take, leaving the first capturing
+  behind the cleared screen; the recorder's ninety-second timeout stops
+  recording but does not release the microphone tracks. Fix: startup is
+  single-flight with a synchronous pending guard; after every await the
+  exact take is checked to be current and stale streams released; the
+  previous take is cancelled before it is replaced; the timeout releases
+  the tracks; a browser regression with two delayed starts followed by a
+  switch verifies every recorder stops and every track ends.
+- **R2F-02 (medium) accepted.** On the written focused task, a late
+  evaluation's keep step records the attempt through a helper that also
+  sets the editable draft to the submitted text, so a revision the student
+  wrote after returning to the page (or saved from another tab) is
+  overwritten and a reload loses it. Fix: appending the submitted attempt
+  is separated from updating the editable draft; a newer draft or editing
+  generation, including a pending autosave, is preserved while the
+  submitted text stays in the attempt history; a regression holds the
+  evaluation, switches away and back, autosaves a revision, releases the
+  evaluation and verifies the revision survives a reload.
+
+Both are fixed next. The host's stopping rule, set with Alex after round 5:
+the loop stops once a round returns nothing rated high and nothing that
+leaks between students; a seventh inspection confirms these two are closed
+and whatever it finds beyond that is recorded rather than fixed unless it
+meets that bar.

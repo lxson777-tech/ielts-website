@@ -622,6 +622,18 @@ or intake buttons still write at the press through the shared store (no
 other student's answers are involved; a tab that missed a switch would
 record that mark under the student it thinks is there).
 
-**Inspection 6** (a fresh session, after those fixes and the merge) is
-recorded below once run.
+**Inspection 6, of `defa6f1`: REVISE, two findings, both accepted.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-6-of-defa6f1.json`.
+(The diff for this round is taken from `c4a7793`, the commit Codex judged in
+round 5, because the full diff had grown past Codex's input limit once the
+merge of main was inside it; the spec records the exclusions.)
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2F-01 (high) | On the spoken focused task, two presses of Start while the microphone permission was pending started two recorders, and a switch stopped only the last, leaving a microphone capturing behind the cleared screen; the recorder's timeout did not release the tracks | Startup is single-flight; each take is checked to be current after every wait and stale streams released; the previous take is cancelled before replacement; the timeout releases the tracks |
+| R2F-02 (medium) | On the written focused task, a late evaluation's record step also reset the editable draft to the submitted text, overwriting a revision written after returning to the page | Appending the attempt is separated from updating the draft; a newer draft or a pending autosave is preserved |
+
+**Inspection 7** (a fresh session, after those two fixes; by the stopping
+rule agreed after round 5, the last unless it returns something rated high
+or a leak between students) is recorded below once run.
 
