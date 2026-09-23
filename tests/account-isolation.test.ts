@@ -715,7 +715,10 @@ const DEVICE_DRILL = { id: 'reading-full-006-drill-p2', durationMinutes: 20 } as
 >[0];
 const DEVICE_ANSWERS = { q14: 'SYNTHETIC answer given while signed out' };
 
-type PausedMock = Parameters<typeof mockStore.saveActiveMock>[0];
+/* Written down the one way a sitting may begin (beginActiveMock): since the
+   fourth Codex round (R2C-02) an ordinary save only updates the sitting
+   already stored and never creates one. */
+type PausedMock = Parameters<typeof mockStore.beginActiveMock>[0];
 
 /** A SYNTHETIC mock day for `owner`, paused on the beat before Reading with
     Listening done. */
@@ -723,6 +726,7 @@ function pausedMockFor(owner: string, overrides: Partial<PausedMock> = {}): Paus
   return {
     version: 1,
     owner,
+    sittingId: 'SYNTHETIC-paused-sitting',
     mockId: 'mock-2026-09-23-1',
     startedAt: '2026-09-23T09:00:00.000Z',
     stage: 'transition-reading',
@@ -750,7 +754,7 @@ function leaveUnfinishedWorkSignedOut(): { anon: string; sitting: string; paused
   const anon = storeOwner.ownerNamespace(storeOwner.currentOwner());
   testSession.startSession(DEVICE_DRILL);
   assert.equal(testSession.saveAnswers(DEVICE_ANSWERS, anon), true);
-  assert.equal(mockStore.saveActiveMock(pausedMockFor(anon)), true);
+  assert.equal(mockStore.beginActiveMock(pausedMockFor(anon)), true);
   return {
     anon,
     sitting: storage.data.get(`${testSession.TEST_SESSION_KEY}::${anon}`)!,
@@ -856,7 +860,7 @@ test("the account's own unfinished test and paused mock win: the device's are no
   const mine = `u:${A.id}`;
   testSession.startSession({ id: 'reading-full-007-drill-p1', durationMinutes: 20 } as unknown as typeof DEVICE_DRILL);
   assert.equal(testSession.saveAnswers({ q1: 'SYNTHETIC answer by A after signing in' }, mine), true);
-  assert.equal(mockStore.saveActiveMock(pausedMockFor(mine, { stage: 'writing', essay1: 'SYNTHETIC draft by A' })), true);
+  assert.equal(mockStore.beginActiveMock(pausedMockFor(mine, { stage: 'writing', essay1: 'SYNTHETIC draft by A' })), true);
   const aSitting = storage.data.get(`${testSession.TEST_SESSION_KEY}::${mine}`);
   const aPaused = storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${mine}`);
 

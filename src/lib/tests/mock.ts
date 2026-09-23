@@ -526,41 +526,113 @@ export function loadActiveMock(): ActiveMock | null {
   return held.owner === currentSessionOwner() ? held : null;
 }
 
-/** Write the sitting down, under the owner named on it, and only while that
-    is still the owner of this browser. Returns false and writes nothing at
-    all once somebody else has signed in: a mock day that outlived its
-    student is never copied into the next student's key. A stage with
-    nothing to pick up (the start screen, the results) is not written
-    either.
+/* WHO MAY WRITE THE RECORD, AND WHEN (fourth Codex round, 23 September 2026,
+   R2C-02)
+   The papers' own writes already had to name the sitting they belong to,
+   but the screen's own saves and its tidy-up did not: any save carrying a
+   different sitting id was taken as a replacement, and the tidy-up checked
+   only the student. So a mock left open in one tab (M1, say in Writing)
+   while the same student started a fresh one (M2) in another tab could
+   still write: one keystroke in M1 replaced M2, papers and all, and
+   finishing M1 deleted M2.
+
+   Writing is now split in two, and only the first may change which sitting
+   the record holds:
+     - beginActiveMock: the student starting a new mock (which the resume
+       offer tells them replaces an unfinished one). The one way a sitting
+       takes the place of another. The explicit "work saved on this device"
+       claim moves a record too, through restampActiveMock below, but only
+       into an account with no paused mock of its own, and it keeps the
+       sitting's identity and papers.
+     - saveActiveMock and clearActiveMock: everything else, the screen's
+       snapshot (the stage, the essays, the Writing deadline, the finished
+       legs) and the tidy-up once a sitting is recorded. Both must name the
+       SAME student and the SAME sitting as the stored record, and write
+       nothing at all otherwise, exactly as the papers' own writes do.
+   A screen whose sitting has been replaced finds out through
+   mockSittingReplaced (after a refused write, and on the storage event
+   another tab's write raises) and stops for good. */
+
+/** Write down a sitting that is starting now: a fresh identity, and the
+    papers the snapshot names (none, for a fresh mock). It takes the place of
+    whatever sitting this student had written down, which is what "Start
+    Mock Exam" means once a sitting is on offer. The only function here that
+    may do that.
  *
- * The two papers' own sittings are the test player's to write. For the
- * sitting already written down (same student, same sitting id) they are kept
- * exactly as stored, whatever the snapshot carries. A DIFFERENT sitting
- * replaces the stored one whole, so a fresh mock starts with fresh papers
- * (the ones the snapshot names, none if it names none) and can never pick up
- * an older sitting's answers. */
-export function saveActiveMock(state: ActiveMockSnapshot): boolean {
-  if (!inProgress(state.stage)) return false;
-  if (!ownerStillCurrent(state.owner)) return false;
+ * Returns false, writing nothing, when the owner named on it is not the one
+ * using this browser, it has no sitting id, or its stage has nothing to pick
+ * up (the start screen, the results). */
+export function beginActiveMock(state: ActiveMockSnapshot): boolean {
+  if (!state.sittingId || !inProgress(state.stage)) return false;
+  if (!state.owner || state.owner !== currentSessionOwner()) return false;
   const storage = deviceStorage();
   if (!storage) return false;
-  const key = activeKeyNow();
-  const stored = parseActive(safeGet(storage, key));
-  const legSittings = stored && sameSitting(stored, state) ? stored.legSittings : (state.legSittings ?? {});
-  return safeSet(storage, key, JSON.stringify({ ...state, legSittings, savedAt: Date.now() }));
+  return safeSet(
+    storage,
+    activeKeyNow(),
+    JSON.stringify({ ...state, legSittings: state.legSittings ?? {}, savedAt: Date.now() }),
+  );
 }
 
-/** Forget the CURRENT owner's in-progress sitting, once it has been
-    recorded or the student has chosen to start again. Another student's
-    unfinished mock on this browser is under their own key and is not
-    touched, and passing the owner the sitting started under makes this a
-    no-op after a sign-in, so a late tidy-up cannot wipe the new student's
-    own sitting. */
-export function clearActiveMock(sittingOwner?: string): void {
-  if (!ownerStillCurrent(sittingOwner)) return;
+/** Write down where the sitting stands now: the screen's snapshot of the
+    stage, the finished legs, the essays and the Writing deadline. An
+    ORDINARY save, so it only ever updates the record it came from: the
+    stored record must be this browser's current owner's, in progress, and
+    the SAME sitting (same student, same sitting id). Otherwise it returns
+    false and writes nothing at all: a mock day that outlived its student is
+    never copied into the next student's key, and a sitting that a newer one
+    replaced (another tab started a fresh mock) never overwrites it
+    (R2C-02). A stage with nothing to pick up is not written either.
+ *
+ * The two papers' own sittings are the test player's to write, so they are
+ * kept exactly as stored, whatever the snapshot carries. A field this build
+ * does not know about is carried across untouched. */
+export function saveActiveMock(state: ActiveMockSnapshot): boolean {
+  if (!inProgress(state.stage)) return false;
+  const sitting = heldSitting({ owner: state.owner, sittingId: state.sittingId });
+  if (!sitting) return false;
+  const { legSittings: _papersAreThePlayers, ...snapshot } = state;
+  return safeSet(
+    sitting.storage,
+    sitting.key,
+    JSON.stringify({ ...sitting.raw, ...snapshot, legSittings: sitting.held.legSittings, savedAt: Date.now() }),
+  );
+}
+
+/** Forget the sitting `ref` names, once it has been recorded. An ORDINARY
+    clear: only when the stored record is that very sitting, of the student
+    using this browser now. Another student's unfinished mock is under their
+    own key and is not touched; a late tidy-up after a sign-in removes
+    nothing; and a sitting that a newer one replaced can never remove the
+    newer one (R2C-02). Returns whether anything was removed. */
+export function clearActiveMock(ref: MockSittingRef): boolean {
+  const sitting = heldSitting(ref);
+  if (!sitting) return false;
+  safeRemove(sitting.storage, sitting.key);
+  return true;
+}
+
+/** True when the sitting `ref` names is no longer the one written down
+    because a NEWER sitting of the same student has taken its place (the
+    student started a fresh mock in another tab). A screen still showing
+    `ref` then stops for good and never writes again (R2C-02).
+ *
+ * False in every other case, on purpose: while the sitting is still the
+ * stored one; when the account on this browser changed (that has its own
+ * stopped screen, and the sitting is still there for its student); and when
+ * nothing is written down at all. */
+export function mockSittingReplaced(ref: MockSittingRef): boolean {
+  if (!ref.owner || !ref.sittingId || !ownerStillCurrent(ref.owner)) return false;
   const storage = deviceStorage();
-  if (!storage) return;
-  safeRemove(storage, activeKeyNow());
+  if (!storage) return false;
+  const held = parseActive(safeGet(storage, activeKeyNow()));
+  return !!held && inProgress(held.stage) && held.owner === ref.owner && held.sittingId !== ref.sittingId;
+}
+
+/** Whether a storage event another tab raised (its `key`, null when the
+    whole storage was cleared) can concern the in-progress mock record. */
+export function isActiveMockStorageKey(key: string | null): boolean {
+  return key === null || key === ACTIVE_MOCK_KEY || key.startsWith(`${ACTIVE_MOCK_KEY}::`);
 }
 
 /** A written-down mock day held by `from`, re-stamped so that `to` can pick
@@ -628,7 +700,9 @@ interface HeldSitting {
 /** The written-down sitting `ref` names, when it is the current owner's own,
     still has something to pick up, and is still the SAME sitting. Null
     otherwise, including once somebody else is using this browser: a paper
-    never reads or writes another student's sitting, or an older one. */
+    never reads or writes another student's sitting, or an older one. Every
+    ordinary write goes through this, the screen's own (saveActiveMock,
+    clearActiveMock) as well as the papers' (R2C-02). */
 function heldSitting(ref: MockSittingRef): HeldSitting | null {
   if (!ref.owner || !ref.sittingId || !ownerStillCurrent(ref.owner)) return null;
   const storage = deviceStorage();

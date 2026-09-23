@@ -25,7 +25,12 @@ import IdeaHints from './IdeaHints';
 import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
 import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
-import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import { runOwnedGrade } from '../lib/store-owner';
+import {
+  openSpeakingAttempt,
+  type OwnedSpeakingAttempt,
+  type SpeakingStageAtSwitch,
+} from './speaking-attempt-owner';
 import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
@@ -84,6 +89,15 @@ const OWNER_CHANGED_NOTICE = nt(
   'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.',
 );
 
+/** Shown when the page changes hands while an attempt is still being
+    answered, or while its report is on screen (R2C-04). The attempt stopped
+    at the switch; answers not yet sent for grading were dropped, so nothing
+    said after the switch can belong to the student who started it. The same
+    sentence the standalone live examiner uses. Names nobody. */
+const SESSION_CLOSED_NOTICE = nt(
+  'The account on this page changed, so the speaking session on screen was closed. Answers that had not yet been sent for grading were not kept.',
+);
+
 export default function SpeakingTester() {
   const { t, tn } = useT();
   const [mode, setMode] = useState<Mode | null>(null);
@@ -121,22 +135,36 @@ export default function SpeakingTester() {
   const promptIdRef = useRef<string | null>(null);
   // True once the deep-link effect below has run, so it never fires twice.
   const deepLinkHandledRef = useRef(false);
-  const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* The answer clock and the automatic move to the next question. Both run
+     through the attempt (R2C-04), so they stop the moment it does; each ref
+     holds the stop. */
+  const stopElapsedRef = useRef<(() => void) | null>(null);
+  const stopAutoAdvanceRef = useRef<(() => void) | null>(null);
   const prepResolveRef = useRef<(() => void) | null>(null);
   const readyResolveRef = useRef<(() => void) | null>(null);
-  /* The attempt on screen, bound to the student who started it (R2-02,
-     runOwnedGrade in src/lib/store-owner.ts). Made when a part starts, so the
-     answers belong to whoever began speaking them; cancelled when a new part
-     starts, on "Start over" and on unmount. A grade that comes back after
-     any of those is still kept for that student, and never touches the
-     screen or anybody else's history. */
-  const attemptBindingRef = useRef<OwnerBinding | null>(null);
+  /* The question being answered, read by stopAnswering. A ref rather than the
+     turnIndex state: the automatic move on runs a copy of stopAnswering made
+     a question or more earlier, whose turnIndex is stale: it used to label an
+     answer that ran out of time with the previous question, then ask the
+     same question again. */
+  const turnIndexRef = useRef(0);
+  /* The attempt on screen, bound to the student who started it
+     (./speaking-attempt-owner.ts). Every step asks it first: may the next
+     question start, may the microphone record, may this clip join, may this
+     be graded. It stops itself the moment the page changes hands (R2C-04),
+     and its binding is the one the grade is settled through (R2-02,
+     runOwnedGrade), so a grade that had already begun is still kept for
+     that student and never shown to anybody else. Closed when a new part
+     starts, on "Start over" and on unmount. */
+  const attemptRef = useRef<OwnedSpeakingAttempt | null>(null);
 
   useEffect(
     () => () => {
-      attemptBindingRef.current?.cancel();
+      attemptRef.current?.close();
+      attemptRef.current = null;
+      stopCapture();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -166,18 +194,30 @@ export default function SpeakingTester() {
   async function startMode(m: Mode, explicitId?: string) {
     if (!isSpeakingGraderConfigured()) return; // the start cards are disabled for this too; belt and braces
     setMicError(null);
+    /* A new part lets go of whatever attempt was on screen, and the new one
+       belongs to whoever is on the page right now. */
+    attemptRef.current?.close();
+    stopCapture();
+    const attempt = openSpeakingAttempt({ onOwnerLeft: leaveForOwnerChange });
+    attemptRef.current = attempt;
     let stream: MediaStream;
     try {
       stream = await requestMic();
     } catch {
+      if (attemptRef.current !== attempt) return;
+      attempt.close();
+      attemptRef.current = null;
       setMicError(t('Microphone access is required for the Speaking test. Please allow the permission and try again.'));
+      return;
+    }
+    /* The page may have changed hands while the permission prompt was up. */
+    if (!attempt.mayStartRecording()) {
+      releaseMic(stream);
       return;
     }
     streamRef.current = stream;
     clipsRef.current = [];
     modeRef.current = m;
-    attemptBindingRef.current?.cancel();
-    attemptBindingRef.current = bindToCurrentOwner();
     setMode(m);
     setResult(null);
 
@@ -221,26 +261,32 @@ export default function SpeakingTester() {
     }
     turnsRef.current = turns;
     setTurnCount(turns.length);
-    await beginTurn(0);
+    await beginTurn(attempt, 0);
   }
 
-  async function beginTurn(i: number) {
+  async function beginTurn(attempt: OwnedSpeakingAttempt, i: number) {
+    /* Every question asks first whether this is still the attempt of the
+       student on the page, and again after every wait (R2C-04). */
+    if (!attempt.mayStartTurn()) return;
     const turn = turnsRef.current[i];
     if (!turn) {
-      await finishAndGrade();
+      await finishAndGrade(attempt);
       return;
     }
+    turnIndexRef.current = i;
     setTurnIndex(i);
     setCurrentQuestion(turn.question);
     setElapsedMs(0);
     setPhase('asking');
     await waitUntilReady();
+    if (!attempt.mayStartTurn()) return;
     if (turn.prepMs) {
       setNotes('');
       setPhase('prepping');
-      await runPrepCountdown(turn.prepMs);
+      await runPrepCountdown(attempt, turn.prepMs);
+      if (!attempt.mayStartTurn()) return;
     }
-    beginRecording(turn.maxMs);
+    beginRecording(attempt, turn.maxMs);
   }
 
   function waitUntilReady(): Promise<void> {
@@ -254,61 +300,79 @@ export default function SpeakingTester() {
     readyResolveRef.current = null;
   }
 
-  function runPrepCountdown(prepMs: number): Promise<void> {
+  /* The preparation minute, counted by the attempt's own clock so that it
+     stops with the attempt. Resolves when the time is up, on "Start speaking
+     now", or when the attempt is let go (its next check then stops it). */
+  function runPrepCountdown(attempt: OwnedSpeakingAttempt, prepMs: number): Promise<void> {
     return new Promise((resolve) => {
-      prepResolveRef.current = resolve;
-      const totalSeconds = Math.round(prepMs / 1000);
-      setPrepSecondsLeft(totalSeconds);
-      const interval = setInterval(() => {
-        setPrepSecondsLeft((s) => {
-          if (s <= 1) {
-            clearInterval(interval);
-            prepResolveRef.current = null;
-            resolve();
-            return 0;
-          }
-          return s - 1;
-        });
-      }, 1000);
+      let left = Math.round(prepMs / 1000);
+      setPrepSecondsLeft(left);
+      let stop: () => void = () => {};
+      const finish = () => {
+        stop();
+        if (prepResolveRef.current === finish) prepResolveRef.current = null;
+        resolve();
+      };
+      prepResolveRef.current = finish;
+      stop = attempt.every(1000, () => {
+        left -= 1;
+        setPrepSecondsLeft(Math.max(0, left));
+        if (left <= 0) finish();
+      });
     });
   }
 
   function skipPrep() {
     prepResolveRef.current?.();
-    prepResolveRef.current = null;
   }
 
-  function beginRecording(maxMs: number) {
-    if (!streamRef.current) return;
+  function beginRecording(attempt: OwnedSpeakingAttempt, maxMs: number) {
+    if (!attempt.mayStartRecording() || !streamRef.current) return;
     setPhase('listening');
     recordingRef.current = recordSegment(streamRef.current, { maxMs });
     const startedAt = performance.now();
-    elapsedTimerRef.current = setInterval(() => setElapsedMs(performance.now() - startedAt), 200);
+    /* The answer clock checks the owner on every tick, so even a change of
+       owner that reached no listener stops the recording within 200 ms. */
+    stopElapsedRef.current = attempt.every(200, () => setElapsedMs(performance.now() - startedAt));
     // recordSegment() auto-stops itself at maxMs; this just makes sure the UI
     // advances even if the student never taps "Stop answering".
-    autoAdvanceTimerRef.current = setTimeout(() => void stopAnswering(), maxMs + 100);
+    stopAutoAdvanceRef.current = attempt.after(maxMs + 100, () => void stopAnswering());
   }
 
   async function stopAnswering() {
+    const attempt = attemptRef.current;
     const handle = recordingRef.current;
-    if (!handle) return;
+    if (!attempt || !handle) return;
     recordingRef.current = null;
-    if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
-    if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
+    stopElapsedRef.current?.();
+    stopElapsedRef.current = null;
+    stopAutoAdvanceRef.current?.();
+    stopAutoAdvanceRef.current = null;
 
     const seg = await handle.stop();
-    const turn = turnsRef.current[turnIndex]!;
+    /* The clip joins the attempt only while the student who started it is
+       still the one on the page. Otherwise it may hold words spoken after
+       the switch, and it is dropped with the rest of the attempt (R2C-04). */
+    if (!attempt.mayAcceptRecording()) return;
+    const i = turnIndexRef.current;
+    const turn = turnsRef.current[i]!;
     clipsRef.current.push({ question: turn.question, blob: seg.blob, mimeType: seg.mimeType, durationMs: seg.durationMs });
-    await beginTurn(turnIndex + 1);
+    await beginTurn(attempt, i + 1);
   }
 
-  async function finishAndGrade() {
+  async function finishAndGrade(attempt: OwnedSpeakingAttempt) {
+    /* May this be graded? Only while the student who gave every answer in it
+       is still the one on the page (R2C-04): grading is paid, and an attempt
+       whose student has gone is dropped rather than sent. A yes means
+       grading has begun, and from here a change of owner no longer stops
+       it: the grade is kept for that student and not shown to the next. */
+    if (!attempt.beginGrading()) return;
     const recordedMs = clipsRef.current.reduce((sum, c) => sum + c.durationMs, 0);
     setGradingAudioSeconds(recordedMs / 1000);
     setGradingStartedAt(Date.now());
     setPhase('grading');
     try {
-      await runGrading();
+      await runGrading(attempt);
     } catch {
       // Without this, any failure in the pipeline (audio decode, blob
       // conversion, grading) left the student stuck on "Grading…" forever.
@@ -318,6 +382,10 @@ export default function SpeakingTester() {
       // was recorded, with no re-answering, alongside a plain way to give
       // up and start over. Losing a student's spoken answers to a network
       // blip would be strictly worse than the failure itself.
+      // Offered only to the student whose answers these are: if the page
+      // changed hands meanwhile, the attempt has stopped itself and the
+      // page is already back at its menu (R2C-04).
+      if (!attempt.gradingFailed()) return;
       if (streamRef.current) {
         releaseMic(streamRef.current);
         streamRef.current = null;
@@ -330,11 +398,11 @@ export default function SpeakingTester() {
     }
   }
 
-  async function runGrading() {
+  async function runGrading(attempt: OwnedSpeakingAttempt) {
     /* Everything the grade is kept against is read NOW, before the wait: a
-       new part started after this screen let go must not relabel it. */
-    const binding = attemptBindingRef.current ?? bindToCurrentOwner();
-    attemptBindingRef.current = binding;
+       new part started after this screen let go must not relabel it. The
+       binding is the attempt's own, made when the part started. */
+    const binding = attempt.binding;
     const clips = clipsRef.current;
     const gradedMode = modeRef.current;
     const topic = promptTitleRef.current;
@@ -413,22 +481,20 @@ export default function SpeakingTester() {
           });
         },
         show: (graded) => {
+          attempt.graded();
           releaseStream();
           if (at) setAttemptAt(at);
           setResult(graded);
           setPhase('report');
         },
         hide: () => {
-          /* Somebody else is using the page now. The grade is kept for the
-             student who spoke; their recordings and their result leave the
-             screen, and the page goes back to the start. */
+          /* Somebody else is using the page now, and no notification told
+             the attempt so (a notified change has already let go of this
+             grade). Asking the attempt runs its owner check, which stops it
+             and sends the page back to the start with the notice. The grade
+             is kept for the student who spoke. */
           releaseStream();
-          clipsRef.current = [];
-          setMode(null);
-          setResult(null);
-          setAttemptAt(null);
-          setMicError(t(OWNER_CHANGED_NOTICE));
-          setPhase('menu');
+          attempt.ownerStillHere();
         },
       },
     );
@@ -437,18 +503,56 @@ export default function SpeakingTester() {
     if (outcome === 'cancelled') releaseStream();
   }
 
-  function backToMenu() {
-    /* A deliberate start-over lets go of the attempt: anything of it still
-       being graded is kept for its student but no longer shown here. */
-    attemptBindingRef.current?.cancel();
-    attemptBindingRef.current = null;
-    if (recordingRef.current) void recordingRef.current.stop();
-    if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
-    if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
+  /* Stop everything the attempt on screen holds: the recorder, the
+     microphone itself, the answer clock, the automatic move on, and any
+     question or countdown waiting on a click. What is waiting is released
+     rather than left hanging, and finds its attempt stopped at its next
+     check, so no later step runs for it. Touches only refs, so it is safe
+     from any render, from the owner-change listener and from unmount. */
+  function stopCapture() {
+    const handle = recordingRef.current;
+    recordingRef.current = null;
+    if (handle) void handle.stop();
+    stopElapsedRef.current?.();
+    stopElapsedRef.current = null;
+    stopAutoAdvanceRef.current?.();
+    stopAutoAdvanceRef.current = null;
     if (streamRef.current) {
       releaseMic(streamRef.current);
       streamRef.current = null;
     }
+    const ready = readyResolveRef.current;
+    readyResolveRef.current = null;
+    ready?.();
+    const prep = prepResolveRef.current;
+    prepResolveRef.current = null;
+    prep?.();
+  }
+
+  /* The page changed hands while this attempt was on screen (R2C-04). The
+     attempt has already stopped itself; this stops the microphone at once
+     and takes all of it off the screen. Answers not yet sent for grading
+     are dropped, so nothing is graded or recorded from them and nothing said
+     after the switch can join them. A grade that had already begun is kept
+     for the student who spoke (runOwnedGrade) and never shown here. */
+  function leaveForOwnerChange(stage: SpeakingStageAtSwitch, attempt: OwnedSpeakingAttempt) {
+    if (attemptRef.current !== attempt) return;
+    attemptRef.current = null;
+    stopCapture();
+    clipsRef.current = [];
+    setMode(null);
+    setResult(null);
+    setAttemptAt(null);
+    setMicError(t(stage === 'grading' ? OWNER_CHANGED_NOTICE : SESSION_CLOSED_NOTICE));
+    setPhase('menu');
+  }
+
+  function backToMenu() {
+    /* A deliberate start-over lets go of the attempt: anything of it still
+       being graded is kept for its student but no longer shown here. */
+    attemptRef.current?.close();
+    attemptRef.current = null;
+    stopCapture();
     // A deliberate "start over" (including from the grading-failure screen)
     // discards whatever was recorded. retryGrading() below is the only path
     // that reuses clipsRef, and it never goes through here first.
@@ -463,7 +567,8 @@ export default function SpeakingTester() {
       Offered only from the 'error' phase (see its screen below), where
       clipsRef.current still holds the failed attempt's audio. */
   function retryGrading() {
-    void finishAndGrade();
+    const attempt = attemptRef.current;
+    if (attempt) void finishAndGrade(attempt);
   }
 
   /* ── Grading failed: the recorded answers are still here ── */

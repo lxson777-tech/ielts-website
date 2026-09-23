@@ -40,8 +40,8 @@ import {
   claimSubmission,
   handOverEssayEditing,
   openEssayEditing,
-  writeEssayDraft,
-  clearEssayDraft,
+  restoreEssayDraft,
+  clearSubmittedEssayDraft,
   type EssayEditingSession,
   type OpenedEssay,
 } from './writing-editor-owner';
@@ -64,7 +64,9 @@ function pad(n: number): string {
  * unfinished essay can never surface for the next one signed in on the
  * same browser (architecture section 1.1's account-isolation finding).
  * Cleared the moment a real report comes back, since after that the essay
- * lives in ielts.progress.v1's writing history instead, which is durable.
+ * lives in ielts.progress.v1's writing history instead, which is durable,
+ * but only while the draft still holds the text that report graded: a later
+ * revision is never deleted by an earlier grade (R2C-01).
  *
  * The draft store, and the editing session that writes it, live in
  * ./writing-editor-owner.ts (R2B-01): the essay on screen and every draft
@@ -347,8 +349,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           // The report just landed, so the working draft this prompt was kept
           // under is no longer the only copy of the essay: it now lives in
           // ielts.progress.v1's writing history, which is durable. The
-          // submitter's draft, which is not necessarily the one on screen.
-          clearEssayDraft(submitted.prompt.id, owner);
+          // submitter's draft, which is not necessarily the one on screen,
+          // and only while it still holds exactly the text that was graded
+          // (R2C-01): if the student came back while this was on its way and
+          // went on revising, the draft is that revision, and it stays.
+          clearSubmittedEssayDraft(submitted.prompt.id, owner, submitted.essay);
         },
         show: (graded) => {
           setResult(graded);
@@ -367,8 +372,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       if (binding.state() === 'owner-changed') {
         /* The request failed after the page moved on to somebody else. The
            essay is the submitter's only copy, so it goes back into THEIR
-           draft, and it leaves this screen. */
-        writeEssayDraft(submitted.prompt.id, binding.owner, submitted.essay);
+           draft, unless they already have one there (the same essay, or a
+           later revision, which wins: R2C-01), and it leaves this screen. */
+        restoreEssayDraft(submitted.prompt.id, binding.owner, submitted.essay);
         leaveForCurrentOwner();
       } else {
         // The button is disabled whenever isGraderConfigured() is false, so any

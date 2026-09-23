@@ -126,6 +126,11 @@ export const strings: Record<string, string> = {
     'На этой странице сменился аккаунт. Начатое эссе сохранено для того студента, который его писал.',
   'This essay was started under a different account, so it was not sent for grading. It is kept for the student who wrote it.':
     'Это эссе было начато в другом аккаунте, поэтому оно не отправлено на проверку. Оно сохранено для того студента, который его написал.',
+  /* SpeakingTester.tsx and the standalone LiveExaminer.tsx: the page changed
+     hands while a speaking attempt was being answered, or while its report
+     was on screen, so the attempt was stopped at once (R2C-04). */
+  'The account on this page changed, so the speaking session on screen was closed. Answers that had not yet been sent for grading were not kept.':
+    'На этой странице сменился аккаунт, поэтому открытое занятие по Speaking закрыто. Ответы, которые ещё не были отправлены на проверку, не сохранены.',
   'Start over': 'Начать заново',
   'Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading.':
     'Без ИИ-экзаменатора реальный сигнал есть только по критерию Fluency & Coherence (по одному хронометражу). Для оценки Словарного запаса, Грамматики и Pronunciation нужна модель, которая слушает вашу запись. Ваш преподаватель может включить проверку ИИ.',

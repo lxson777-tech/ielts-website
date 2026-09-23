@@ -28,8 +28,11 @@ import {
   currentMockOwner,
   saveMockAttempt,
   overallMockBand,
+  beginActiveMock,
   clearActiveMock,
+  isActiveMockStorageKey,
   loadActiveMock,
+  mockSittingReplaced,
   reconcileActiveMock,
   saveActiveMock,
   writingSecondsLeftAt,
@@ -192,9 +195,9 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      A remaining count cannot survive being put down and picked up again
      without handing the student extra exam time, so Writing's hour is stored
      as the moment it runs out. The Listening and Reading legs keep their own
-     deadline in src/lib/test-session.ts, where they always did, under the
-     same owner. The short beat between two papers is not exam time and is
-     simply restarted. */
+     deadline inside this sitting's record (src/lib/tests/mock.ts,
+     mockLegSitting), and the test player reads its clock from it. The short
+     beat between two papers is not exam time and is simply restarted. */
   const [writingEndsAt, setWritingEndsAt] = useState<number | null>(null);
 
   /* A sitting of this student's own, written down earlier and not finished:
@@ -218,6 +221,23 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const stoppedReason = (): 'signed-out' | 'other-student' =>
     currentMockOwner().startsWith('u:') ? 'other-student' : 'signed-out';
 
+  /* A NEWER SITTING TOOK THIS ONE'S PLACE (fourth Codex round, R2C-02). The
+     same student started a fresh mock in another tab, which replaces the
+     written-down sitting, papers and all. This tab's sitting is then over:
+     it stops for good and never writes again, so it can neither overwrite
+     the newer sitting with a stale snapshot nor remove it by finishing.
+     Found two ways: on the storage event the other tab's write raises, and,
+     should that event be missed, the next time a write of this sitting is
+     refused (src/lib/tests/mock.ts, mockSittingReplaced). Kept as a ref as
+     well, for the effects and listeners that must read it the moment it is
+     set. Unlike an account change it is never undone in this tab. */
+  const [replaced, setReplaced] = useState(false);
+  const replacedRef = useRef(false);
+  function stopAsReplaced() {
+    replacedRef.current = true;
+    setReplaced(true);
+  }
+
   /* A mock sitting is a timed assessment from the first paper to the last, so
      flag it on <body> for the Mr EZ tutor panel (see readPlace() in
      src/components/tutor/MrEzPanel.tsx). The nested TestPlayer sets the same
@@ -227,13 +247,13 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      the second line of defence, not the only one. */
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    const running = stage !== 'start' && stage !== 'results';
+    const running = stage !== 'start' && stage !== 'results' && !replaced;
     if (running) document.body.dataset.examRunning = 'true';
     else delete document.body.dataset.examRunning;
     return () => {
       delete document.body.dataset.examRunning;
     };
-  }, [stage]);
+  }, [stage, replaced]);
 
   const listeningTest: PracticeTest | undefined = listeningTests.find((t) => t.id === listeningId) ?? listeningTests[0];
   const readingTest: PracticeTest | undefined = readingTests.find((t) => t.id === readingId) ?? readingTests[0];
@@ -259,21 +279,23 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       stage === 'writing' ||
       stage === 'speaking-brief' ||
       stage === 'speaking';
-    if (!midMock) return;
+    /* A sitting a newer one replaced has nothing left to lose here. */
+    if (!midMock || replaced) return;
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
-  }, [stage]);
+  }, [stage, replaced]);
 
   /* Writing's single 60-minute clock, running only while stage === 'writing'.
      It counts DOWN TO A MOMENT rather than counting a number down, so a
      refresh or a reopened sitting resumes with the time that is actually
      left. A deadline already in the past simply ends the leg. */
   useEffect(() => {
-    if (stage !== 'writing') return;
+    /* A replaced sitting's clock does not move it on to anything. */
+    if (stage !== 'writing' || replaced) return;
     if (writingEndsAt === null) {
       setWritingEndsAt(Date.now() + WRITING_SECONDS * 1000);
       return;
@@ -289,7 +311,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     const id = window.setInterval(tick, 1000);
     tick();
     return () => window.clearInterval(id);
-  }, [stage, writingEndsAt]);
+  }, [stage, writingEndsAt, replaced]);
 
   /* Record the combined mock attempt exactly once, as soon as both legs'
      results and the essays are available. `ownerChanged` is a dependency
@@ -297,18 +319,27 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      signed out (the Writing clock ran out behind the stopped screen) is
      recorded the moment that same student is back, rather than never. */
   useEffect(() => {
-    if (stage !== 'results' || savedRef.current) return;
+    if (stage !== 'results' || savedRef.current || replacedRef.current) return;
     if (!listeningResult || !readingResult || !listeningTest || !readingTest) return;
     /* Never record a sitting under somebody who did not sit it. */
     if (!ownerStillCurrent(mockOwnerRef.current)) {
       setOwnerChange(stoppedReason());
       return;
     }
+    /* Nor one the student has already replaced with a newer sitting in
+       another tab (R2C-02): finishing it must neither record it nor remove
+       the newer one. */
+    const sitting = { owner: mockOwnerRef.current, sittingId };
+    if (mockSittingReplaced(sitting)) {
+      stopAsReplaced();
+      return;
+    }
     savedRef.current = true;
     /* The sitting is over and recorded, so it is no longer "in progress":
-       the written-down copy goes, and only this student's copy of it. What
-       was recorded lives in the mock history from here on. */
-    clearActiveMock(mockOwnerRef.current);
+       the written-down copy goes, and only if it is still THIS sitting of
+       this student. What was recorded lives in the mock history from here
+       on. */
+    clearActiveMock(sitting);
     const essays: MockEssay[] = [];
     if (task1Prompt) essays.push({ promptId: task1Prompt.id, task: 'task1', text: essay1, wordCount: countWords(essay1) });
     if (task2Prompt) essays.push({ promptId: task2Prompt.id, task: 'task2', text: essay2, wordCount: countWords(essay2) });
@@ -365,6 +396,8 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     const freshMockId = nextMockId(now);
     mockOwnerRef.current = owner;
     setOwnerChange(null);
+    replacedRef.current = false;
+    setReplaced(false);
     /* A fresh sitting replaces only THIS student's written-down one. Another
        student's unfinished mock on this browser is under their own key and
        is left exactly where it is. */
@@ -386,8 +419,10 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
        identity and no papers: the player keeps its answers and deadline
        inside this record, so the record has to be there first, and a
        different identity means nothing of an older sitting (its answers, its
-       deadlines) can be picked up (R2B-03). */
-    saveActiveMock({
+       deadlines) can be picked up (R2B-03). This is the one place a sitting
+       takes the place of an older one (R2C-02); every later save of it is an
+       ordinary one that must match it. */
+    beginActiveMock({
       version: 1,
       owner,
       sittingId: freshId,
@@ -451,8 +486,14 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      student who started the sitting is no longer the one signed in). */
   useEffect(() => {
     if (stage === 'start' || stage === 'results' || !mockOwnerRef.current) return;
+    if (replacedRef.current) return;
     if (!ownerStillCurrent(mockOwnerRef.current)) return;
-    saveActiveMock(snapshot());
+    if (saveActiveMock(snapshot())) return;
+    /* Refused. If that is because a newer sitting took this one's place in
+       another tab (and its storage event was missed), this one stops here
+       and writes nothing more (R2C-02). Any other refusal (no room left on
+       the device, say) changes nothing on screen. */
+    if (mockSittingReplaced({ owner: mockOwnerRef.current, sittingId })) stopAsReplaced();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     stage,
@@ -539,6 +580,23 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     });
   }, []);
 
+  /* Another tab wrote the in-progress mock record. If that write put a
+     NEWER sitting of this same student in this one's place (a fresh mock
+     started there), this sitting stops here for good (R2C-02). A write of
+     this same sitting (the student carrying on with it in the other tab),
+     another student's record, or the record going away, stops nothing. The
+     start screen and the results have no sitting to stop. */
+  useEffect(() => {
+    if (stage === 'start' || stage === 'results' || !sittingId) return;
+    const onStorage = (event: StorageEvent) => {
+      if (replacedRef.current || !mockOwnerRef.current) return;
+      if (!isActiveMockStorageKey(event.key)) return;
+      if (mockSittingReplaced({ owner: mockOwnerRef.current, sittingId })) stopAsReplaced();
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [stage, sittingId]);
+
   /* The student who started the sitting is back, in this same open tab. The
      stopped screen had unmounted whatever paper was on screen, so the sitting
      is put back through the same path a reopened page uses: a paper handed
@@ -552,6 +610,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     }
     if (!wasStoppedRef.current) return;
     wasStoppedRef.current = false;
+    if (replacedRef.current) return;
     if (!mockOwnerRef.current || !ownerStillCurrent(mockOwnerRef.current)) return;
     if (stage === 'start' || stage === 'results') return;
     /* This screen's memory, plus the papers' own sittings as this same
@@ -575,15 +634,46 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     if (!import.meta.env.DEV) return;
     if (new URLSearchParams(window.location.search).get('stage') !== 'speaking') return;
     const now = new Date().toISOString();
-    mockOwnerRef.current = currentMockOwner();
-    setSittingId(newMockSittingId());
-    setMockId(nextMockId(now));
+    const owner = currentMockOwner();
+    const freshId = newMockSittingId();
+    const freshMockId = nextMockId(now);
+    const listening = { raw: 32, total: 40, band: 7, bandLabel: '7', secondsUsed: 28 * 60 };
+    const reading = { raw: 30, total: 40, band: 6.5, bandLabel: '6.5', secondsUsed: 58 * 60 };
+    const essayOne = '(dev shortcut: Task 1 left blank)';
+    const essayTwo = '(dev shortcut: Task 2 left blank)';
+    mockOwnerRef.current = owner;
+    setSittingId(freshId);
+    setMockId(freshMockId);
     setStartedAt(now);
-    setListeningResult({ raw: 32, total: 40, band: 7, bandLabel: '7', secondsUsed: 28 * 60 });
-    setReadingResult({ raw: 30, total: 40, band: 6.5, bandLabel: '6.5', secondsUsed: 58 * 60 });
-    setEssay1('(dev shortcut: Task 1 left blank)');
-    setEssay2('(dev shortcut: Task 2 left blank)');
+    setListeningResult(listening);
+    setReadingResult(reading);
+    setEssay1(essayOne);
+    setEssay2(essayTwo);
     setWritingSecondsLeft(0);
+    /* A sitting of its own, begun the one way a sitting may begin, so its
+       later saves are ordinary ones that match it (R2C-02). */
+    beginActiveMock({
+      version: 1,
+      owner,
+      sittingId: freshId,
+      mockId: freshMockId,
+      startedAt: now,
+      stage: 'speaking-brief',
+      listeningTestId: listeningTest?.id ?? listeningId,
+      readingTestId: readingTest?.id ?? readingId,
+      task1PromptId: task1Prompt?.id ?? null,
+      task2PromptId: task2Prompt?.id ?? null,
+      listening,
+      reading,
+      essay1: essayOne,
+      essay2: essayTwo,
+      writingEndsAt: null,
+      speakingBand: null,
+      speakingCriteria: null,
+      speakingSkipped: false,
+      legSittings: {},
+      savedAt: Date.now(),
+    });
     setStage('speaking-brief');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -626,6 +716,31 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     setSpeakingSkipped(next.speakingSkipped);
     setSpeakingInterrupted(next.stage === 'speaking-brief');
     setStage(next.stage);
+  }
+
+  /* A newer sitting of this same student took this one's place in another
+     tab (R2C-02). Checked before the account change below because it is for
+     good: the sitting is no longer written down anywhere, so the promise
+     that it picks up again when its student signs back in would not hold.
+     Nothing of it is written from here on. The one new sentence says what
+     happened and what it means; the way on is the newer mock in the other
+     tab, or the hub. */
+  if (replaced) {
+    return (
+      <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
+        <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover" role="status">
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Mock exam stopped')}</p>
+          <h1 className="mt-1 font-display text-xl font-extrabold leading-snug">
+            {t('A newer mock exam was started in another tab, so this one is no longer being saved.')}
+          </h1>
+          <div className="mt-8 flex items-center justify-between gap-3">
+            <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+              {t('Back')}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   /* The account changed part way through: the sitting stops here, nothing is

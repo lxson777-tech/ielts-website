@@ -211,6 +211,10 @@ export const strings: Record<string, string> = {
   'Start a fresh mock exam': 'Начать новый пробный экзамен',
   'The sitting itself is kept for the student who started it, and it picks up where it stopped when they sign back in on this browser.':
     'Сама попытка сохранена для студента, который её начал, и продолжится с того же места, когда он снова войдёт в аккаунт в этом браузере.',
+  /* The same student started a fresh mock in another tab, which replaces
+     this one for good (MockExam.tsx, R2C-02). */
+  'A newer mock exam was started in another tab, so this one is no longer being saved.':
+    'В другой вкладке начат более новый пробный экзамен, поэтому этот больше не сохраняется.',
 
   /* The student's own unfinished mock, offered back on the start screen
      (ResumeOffer in MockExam.tsx). {papers} and {paper} are paper names,

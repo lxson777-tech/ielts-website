@@ -17,6 +17,7 @@ import {
   activeSession,
   currentSessionOwner,
   ownerStillCurrent,
+  paperClockAt,
   secondsLeft,
   standaloneSitting,
   type TestSession,
@@ -307,6 +308,18 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      Either way the sitting stops where it is and nothing is submitted. */
   const [ownerChange, setOwnerChange] = useState<'signed-out' | 'other-student' | null>(null);
 
+  /* THE PAPER'S DEADLINE, THE CLOCK'S ONLY AUTHORITY (R2C-03). The saved
+     `endsAt` of the sitting on screen, taken from the store when the sitting
+     is picked up or started, and null before it starts. Every reading of the
+     clock (each tick, the sitting's own student coming back to this open
+     page, and handing the paper in) is worked out from it and the moment of
+     reading, never by counting down a number, so time that passed while the
+     student was away, or while this tab sat in the background, is never
+     handed back. See paperClockAt in src/lib/test-session.ts. */
+  const deadlineRef = useRef<number | null>(
+    typeof window === 'undefined' ? null : (resumed?.endsAt ?? null),
+  );
+
   // A retake is coaching, not a fresh exam start: it skips the instructions
   // gate and begins straight away, same as if "Start test" had been clicked.
   const [started, setStarted] = useState(() => !!resumed || isRetake);
@@ -416,6 +429,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     /* A mock leg always belongs to the student who started the mock. */
     sittingOwnerRef.current = mockOwner || currentSessionOwner();
     const s = sittingStore.start();
+    deadlineRef.current = s.endsAt;
     setTimeLeft(secondsLeft(s));
     setStarted(true);
   }
@@ -436,6 +450,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     setByTypeStats(null);
     setActivePart(0);
     setOwnerChange(null);
+    /* The previous student's deadline goes with their sitting; the paper
+       gets its own when it is started for whoever is here now. */
+    deadlineRef.current = null;
     if (isRetake) {
       start();
       return;
@@ -453,6 +470,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     if (isRetake && !resumed) {
       sittingOwnerRef.current = mockOwner || currentSessionOwner();
       const s = sittingStore.start();
+      deadlineRef.current = s.endsAt;
       setTimeLeft(secondsLeft(s));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -507,6 +525,15 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         return;
       }
       if (ownerStillCurrent(sittingOwnerRef.current)) {
+        /* The sitting's own student is back on this still-open page (R2C-03).
+           The deadline kept running while they were away, so the time left
+           is read again from it rather than picked up from the frozen
+           number. A deadline that passed meanwhile reads as time up, and the
+           timer below, which restarts as the stopped screen goes, hands the
+           paper in on its first reading, exactly as it does for an expired
+           sitting found on a fresh load. No time is given back. */
+        const deadline = deadlineRef.current;
+        if (deadline !== null) setTimeLeft(paperClockAt(deadline).secondsLeft);
         setOwnerChange(null);
         return;
       }
@@ -604,6 +631,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     submittedRef.current = true;
     setSubmitted(true);
     setShowScore(true);
+    /* The time used is read from the deadline at the moment of handing in,
+       never from the number on screen, which can be behind it (R2C-03). */
+    const deadline = deadlineRef.current;
+    const left = deadline !== null ? paperClockAt(deadline).secondsLeft : timeLeft;
+    setTimeLeft(left);
     const raw = scoredIds.size;
     const byType: Record<string, { correct: number; total: number }> = {};
     for (const { question, group } of numbered) {
@@ -618,7 +650,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       total: SCORED_TOTAL,
       band: bandMidpoint(raw, SCORED_TOTAL, test.skill),
       bandLabel: bandEstimate(raw, SCORED_TOTAL, test.skill),
-      secondsUsed: test.durationMinutes * 60 - timeLeft,
+      secondsUsed: test.durationMinutes * 60 - left,
     };
     recordTestAttempt(test.id, {
       at,
@@ -656,7 +688,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       raw,
       total: SCORED_TOTAL,
       bandEstimate: attemptKind === 'full' ? bandMidpoint(raw, SCORED_TOTAL, test.skill) : undefined,
-      secondsUsed: test.durationMinutes * 60 - timeLeft,
+      secondsUsed: test.durationMinutes * 60 - left,
       sourceTestId: baseId,
     });
 
@@ -688,23 +720,40 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     handleSubmit();
   }
 
-  /* Timer: runs only once started, auto-submits at zero. Frozen the moment
-     the owner changes: a clock that kept running would auto-submit the
-     previous student's paper into whoever is signed in now. */
+  /* The submit the timer calls when time is up: always this render's, so
+     the paper is handed in with the answers on screen at that moment. The
+     timer below is set up once per run and would otherwise keep the submit
+     (and the answers) of the render it was set up in, so a paper that ran
+     out of time was handed in without the answers typed after that. */
+  const submitRef = useRef(handleSubmit);
+  useEffect(() => {
+    submitRef.current = handleSubmit;
+  });
+
+  /* Timer: runs only once started, auto-submits when time is up. Every tick
+     reads the clock from the saved deadline (R2C-03), so a tab the browser
+     slowed down in the background, or a sitting whose student was away,
+     shows the time that is really left rather than a count that fell
+     behind; the first reading happens at once, so the clock is right the
+     moment the timer (re)starts. Stopped while the owner is changed: a clock
+     that ran on would hand the previous student's paper in under whoever is
+     signed in now. Nothing is lost by stopping it, since the deadline itself
+     never stops. */
   useEffect(() => {
     if (!started || submitted || ownerChange) return;
-    const id = window.setInterval(() => {
-      setTimeLeft((t) => {
-        if (t <= 1) {
-          window.clearInterval(id);
-          handleSubmit();
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
+    const tick = () => {
+      const deadline = deadlineRef.current;
+      if (deadline === null) return;
+      const clock = paperClockAt(deadline);
+      setTimeLeft(clock.secondsLeft);
+      if (clock.timeUp) {
+        window.clearInterval(id);
+        submitRef.current();
+      }
+    };
+    const id = window.setInterval(tick, 1000);
+    tick();
     return () => window.clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started, submitted, ownerChange]);
 
   /* Flag a running paper on <body> so the Mr EZ tutor panel switches to
