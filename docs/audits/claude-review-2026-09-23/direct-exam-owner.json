@@ -1,0 +1,22 @@
+{
+  "signedInStudent": "06067445-dd96-499f-9f90-bdff92c59770",
+  "afterDirectEntry": {
+    "auth": [
+      {
+        "key": "sb-127-auth-token",
+        "user": "06067445-dd96-499f-9f90-bdff92c59770"
+      }
+    ],
+    "records": [
+      {
+        "key": "ielts.learning.record.v1::anon:72e2b2f6-d032-4e5f-8511-ca5479847e4b",
+        "events": [
+          {
+            "activity": "drill:reading-full-006-drill-p2",
+            "answer": "i"
+          }
+        ]
+      }
+    ]
+  }
+}

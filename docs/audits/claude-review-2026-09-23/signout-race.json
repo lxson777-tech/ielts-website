@@ -1,0 +1,11 @@
+{
+  "immediatelyAfterSignout": {
+    "kind": "anonymous",
+    "deviceId": "69a1db99-53cb-4021-a7bd-2ac02bb0c360"
+  },
+  "afterCancelledSigninFinishes": {
+    "kind": "user",
+    "userId": "SYNTHETIC-A"
+  },
+  "essayVisibleAfterSignout": "SYNTHETIC private text from A"
+}

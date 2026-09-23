@@ -1,0 +1,16 @@
+import { registerHooks } from 'node:module';
+import { pathToFileURL } from 'node:url';
+const mem=new Map();
+globalThis.window={localStorage:{getItem:k=>mem.get(k)??null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)},addEventListener(){},removeEventListener(){}};
+globalThis.localStorage=window.localStorage;
+registerHooks({load(url,context,next){if(url.endsWith('/src/lib/auth/supabase.ts'))return {format:'module',shortCircuit:true,source:'export const getSupabase=()=>null; export const isAuthConfigured=()=>false;'};return next(url,context)}});
+const root=p=>pathToFileURL(process.cwd()+'/'+p).href;
+const {startSyncForUser,stopSync}=await import(root('src/lib/auth/sync.ts'));
+const {currentOwner}=await import(root('src/lib/store-owner.ts'));
+const {getProgress}=await import(root('src/lib/progress.ts'));
+mem.set('ielts.progress.v1::u:SYNTHETIC-A',JSON.stringify({version:1,lessons:{},tests:{},writing:{'SYNTHETIC-private-essay':[{at:'2026-09-23T00:00:00Z',essay:'SYNTHETIC private text from A',overallBand:5,criteria:{},wordCount:6,live:true}]},speaking:[],activity:{}}));
+const pending=startSyncForUser({id:'SYNTHETIC-A'});
+stopSync();
+const immediatelyAfterSignout=currentOwner();
+await pending;
+console.log(JSON.stringify({immediatelyAfterSignout,afterCancelledSigninFinishes:currentOwner(),essayVisibleAfterSignout:getProgress().writing['SYNTHETIC-private-essay']?.[0]?.essay},null,2));
