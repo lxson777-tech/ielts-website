@@ -3,16 +3,19 @@
    menu, so onboarding doesn't depend on this island). Signed out, the button
    opens the login window (AuthModal) directly; signed in, it becomes an avatar
    menu with progress and sign-out.
-   Mounting this island also drives sync: on auth change it starts/stops the
-   cloud reconciliation. Safe to mount more than once (startSyncForUser is
-   idempotent per user). */
+   Mounting this island used to be what drove sync. It no longer is: since
+   23 September 2026 the base layout starts src/lib/auth/lifecycle.ts on every
+   route, chrome or no chrome, and this island reads it. That is what gives a
+   full-screen drill or mock exam, which renders no nav at all, the same data
+   owner and the same sync as a page with a nav on it. Safe to mount more than
+   once; the lifecycle is idempotent. */
 
 import { useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
-import { onAuthChange, signOut } from '../lib/auth/session';
-import { startSyncForUser, stopSync } from '../lib/auth/sync';
+import { signOut } from '../lib/auth/session';
+import { onAccountChange, startAccountLifecycle } from '../lib/auth/lifecycle';
 import { getProgress, onProgressChange } from '../lib/progress';
 import { loadStudyPlan, onStudyPlanChange } from '../lib/study-plan';
 import { buildCourse, courseStatus } from '../lib/course';
@@ -74,23 +77,18 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
   }, [menuOpen]);
 
   useEffect(() => {
-    if (!isAuthConfigured()) {
-      setReady(true);
-      return;
-    }
-    const unsub = onAuthChange((u) => {
-      setUser(u);
-      setReady(true);
-      if (u) {
-        /* The claim is offered only AFTER sign-in has finished, because
-           until it has, the device still answers for the previous owner. */
-        void startSyncForUser(u).then(() => setClaimToken((n) => n + 1));
-      } else {
-        stopSync();
-        setClaimToken(0);
-      }
+    /* Started here as well as from the base layout, so an island that
+       hydrates before that script runs still gets it going. Idempotent. */
+    startAccountLifecycle();
+    return onAccountChange((account) => {
+      setUser(account.user);
+      setReady(account.known);
+      /* The claim is offered only AFTER sign-in has finished, because until
+         it has, the device still answers for the previous owner. `settled`
+         is the lifecycle's count of finished sign-ins, and it goes back to
+         zero on sign-out. */
+      setClaimToken(account.user ? account.settled : 0);
     });
-    return unsub;
   }, []);
 
   // Close the login window as soon as auth succeeds (sign-in inside the modal

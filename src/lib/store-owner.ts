@@ -156,6 +156,92 @@ export function deviceIdFrom(storage: BrowserStorage | null): string {
   return fresh;
 }
 
+/* ── Who this browser is already signed in as ────────────────────────────── */
+
+/* WHY THIS MODULE LOOKS AT THE ACCOUNT SESSION AT ALL
+ * (finding 3 of the 23 September 2026 review.)
+ *
+ * The owner used to start as the anonymous device owner and only became the
+ * signed-in student once a navigation component mounted and ran sign-in. The
+ * full-screen test player, the reading and listening drills and the mock exam
+ * mount neither of those components, so a hard load or a refresh of one of
+ * them had a perfectly valid account session and an anonymous data owner: a
+ * signed-in student's drill was written into the shared anonymous record.
+ *
+ * The owner is now answered from this device's own session on the FIRST read,
+ * so there is no page, and no mount order, in which a store can be reached
+ * before the answer exists.
+ *
+ * THIS IS A NAMESPACE, NOT AN AUTHORISATION. It decides which key on this
+ * machine a student's own work is read from and written to, and nothing else.
+ * Nothing is uploaded on the strength of it: every upload is made with a live
+ * access token and is checked against the current owner as it goes out
+ * (src/lib/auth/sync.ts). If the held session turns out to be finished, the
+ * account layer reports nobody signed in, the owner goes back to the
+ * anonymous device owner, and anything written in between stays under that
+ * student's own id, where their next sign-in finds it. Nothing is lost and
+ * nobody else can read it.
+ */
+
+/** The shape the account client persists its session under in this browser's
+    own storage: `sb-<project ref>-auth-token`. Matched rather than computed,
+    so this module keeps its promise of importing nothing: no client, no
+    environment, no account code. */
+const SESSION_KEY_PATTERN = /^sb-.+-auth-token$/;
+
+/** A real browser store can be walked; the three-method interface above
+    cannot. Anything that does not offer both is simply not walkable, which is
+    the server render, the build, and a test's few lines of memory. */
+interface ListableStorage {
+  length: number;
+  key(index: number): string | null;
+}
+
+function storedKeys(storage: BrowserStorage): string[] {
+  const listable = storage as unknown as Partial<ListableStorage>;
+  if (typeof listable.length !== 'number' || typeof listable.key !== 'function') return [];
+  const keys: string[] = [];
+  try {
+    for (let index = 0; index < listable.length; index += 1) {
+      const key = listable.key(index);
+      if (typeof key === 'string') keys.push(key);
+    }
+  } catch {
+    /* A store that throws while being walked is treated as empty, exactly
+       like one that is switched off. */
+    return [];
+  }
+  return keys;
+}
+
+/** The user id in the account session this browser is holding, or null when
+    it holds none, and on a server render, a build, or blocked storage. */
+export function storedSessionUserId(storage: BrowserStorage | null): string | null {
+  if (!storage) return null;
+  for (const key of storedKeys(storage)) {
+    if (!SESSION_KEY_PATTERN.test(key)) continue;
+    const raw = safeGet(storage, key);
+    if (!raw) continue;
+    try {
+      const parsed = JSON.parse(raw) as { user?: { id?: unknown } } | null;
+      const id = parsed?.user?.id;
+      if (typeof id === 'string' && id.length > 0) return id;
+    } catch {
+      /* Not a session this code understands. Keep looking. */
+    }
+  }
+  return null;
+}
+
+/** Whose work this device holds before anything has been told otherwise: the
+    student whose session is sitting in this browser, or, when there is none,
+    this device's own anonymous owner. */
+export function bootOwner(): CacheOwner {
+  const storage = deviceStorage();
+  const userId = storedSessionUserId(storage);
+  return userId ? userOwner(userId) : anonymousOwner(deviceIdFrom(storage));
+}
+
 /* ── The current owner ───────────────────────────────────────────────────── */
 
 let current: CacheOwner | null = null;
@@ -163,9 +249,11 @@ const ownerListeners = new Set<() => void>();
 
 /** Whose work this browser is showing and saving right now: the signed-in
     student, or this device's anonymous owner. Resolved lazily so importing
-    this module during a server render touches nothing. */
+    this module during a server render touches nothing, and resolved from the
+    session this browser is already holding (bootOwner above) so that a page
+    with no account component on it still answers with the right student. */
 export function currentOwner(): CacheOwner {
-  current ??= anonymousOwner(deviceIdFrom(deviceStorage()));
+  current ??= bootOwner();
   return current;
 }
 
@@ -224,6 +312,10 @@ export const LEGACY_STORE_KEYS: readonly string[] = [
   STUDY_PLAN_STORE_KEY,
   VOCAB_STORE_KEY,
   NOTES_STORE_KEY,
+  /* The mock exam history became owner-scoped in the second Codex round
+     (src/lib/tests/mock.ts). Listed here so the explicit "work saved on
+     this device" claim carries an anonymous mock sitting across too. */
+  'ielts.mock.v1',
 ] as const;
 
 /* ── Scoped keys, and the one-time move ──────────────────────────────────── */
@@ -303,7 +395,7 @@ function checkedSet(storage: BrowserStorage): Set<string> {
 function adoptOnce(storage: BrowserStorage, base: string, owner: CacheOwner, key: string): void {
   const mine = ownerNamespace(owner);
   const memo = checkedSet(storage);
-  const memoKey = `${mine} ${base}`;
+  const memoKey = `${mine}\x00${base}`;
   if (memo.has(memoKey)) return;
   memo.add(memoKey);
 

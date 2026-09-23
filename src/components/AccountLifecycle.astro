@@ -1,0 +1,25 @@
+---
+/* The app-wide account lifecycle, rendered by BaseLayout on EVERY page.
+ *
+ * It renders nothing. Its whole job is to run src/lib/auth/lifecycle.ts once
+ * per page, including on the full-screen pages that have no header, no footer
+ * and no account menu: the test player, the reading and listening drills and
+ * the mock exam. Before this existed, sign-in was wired up inside those menus,
+ * so opening a drill from a saved link (or refreshing one mid-paper) left a
+ * signed-in student's answers being written into this device's shared
+ * anonymous record. See finding 3 of the 23 September 2026 review, and the
+ * header comment of src/lib/auth/lifecycle.ts.
+ *
+ * It must stay OUTSIDE every `bare` branch in BaseLayout. tests/account-
+ * isolation.test.ts reads this file's name out of the layout's source and
+ * fails if it ever moves inside one.
+ */
+---
+
+<script>
+  import { startAccountLifecycle } from '../lib/auth/lifecycle';
+
+  /* Idempotent, and the module stays loaded across a client-side navigation,
+     so this is one call per visit rather than one per page. */
+  startAccountLifecycle();
+</script>

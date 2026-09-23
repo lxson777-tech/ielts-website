@@ -3,16 +3,19 @@
    one of the five daily tabs.
 
    Auth plumbing is the same as AccountMenu's (which still serves the
-   marketing nav): subscribe to onAuthChange, start or stop the cloud sync,
-   and open AuthModal to sign in. startSyncForUser is idempotent per user, so
-   both islands being mounted on the same page is harmless. */
+   marketing nav), and since 23 September 2026 neither of them OWNS it. Both
+   read src/lib/auth/lifecycle.ts, which the base layout starts on every
+   route, so a page with no header on it (the full-screen test player, the
+   drills, the mock exam) has the same data owner and the same sync as a page
+   with one. This island now only shows who is signed in and opens AuthModal;
+   starting and stopping the sync is the lifecycle's job. */
 
 import { useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
-import { onAuthChange, signOut } from '../lib/auth/session';
-import { startSyncForUser, stopSync } from '../lib/auth/sync';
+import { signOut } from '../lib/auth/session';
+import { onAccountChange, startAccountLifecycle } from '../lib/auth/lifecycle';
 import { WORKSPACE_MENU } from '../lib/platform-nav';
 import { LOCALE_LABEL, SUPPORTED_LOCALES, switchLocale } from '../lib/i18n';
 import { useT } from '../lib/i18n/react';
@@ -36,12 +39,11 @@ export default function WorkspaceMenu() {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!isAuthConfigured()) return;
-    return onAuthChange((u) => {
-      setUser(u);
-      if (u) void startSyncForUser(u);
-      else stopSync();
-    });
+    /* Started here as well as from the base layout, so an island that
+       hydrates before that script runs still gets it going. It is
+       idempotent, so the second call does nothing. */
+    startAccountLifecycle();
+    return onAccountChange((account) => setUser(account.user));
   }, []);
 
   useEffect(() => {

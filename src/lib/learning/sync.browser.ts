@@ -667,6 +667,17 @@ export interface LearningSyncOptions {
       move (src/lib/auth/sync.ts hands in the learning module's own setter,
       which also drops its cached session view). */
   setOwner?: (owner: CacheOwner | null) => void;
+  /** "Is the sign-in that asked for this still the current one?"
+   *
+   * start() moves every store to a student before it pulls anything, and it
+   * is reached through two awaits from the caller's own last check. A
+   * sign-out or an account switch in that gap would make that move a
+   * mutation on somebody else's browser, so the caller hands in its own
+   * generation rather than being trusted to have called at the right moment
+   * (finding 2 of the 23 September 2026 review; src/lib/auth/sync.ts).
+   * Omitted means "always current", which is what every test and every
+   * caller that has no generation of its own wants. */
+  stillCurrent?: () => boolean;
   companions?: readonly CompanionAdapter<any>[];
   debounceMs?: number;
   backoffBaseMs?: number;
@@ -753,9 +764,16 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
    * student's store. Nothing is lost by dropping it: the queue stays on the
    * device under the first student's own namespaced key. */
   function stillOurs(userId: string, run?: number): boolean {
+    if (cancelled()) return false;
     if (currentUserId !== userId) return false;
     if (!sameOwner(owner, userOwner(userId))) return false;
     return run === undefined || run === generation;
+  }
+
+  /** True once the sign-in that asked for this layer has been abandoned.
+      Always false when the caller handed in no generation of its own. */
+  function cancelled(): boolean {
+    return options.stillCurrent !== undefined && !options.stillCurrent();
   }
 
   function statusStorage(): BrowserStorage | null {
@@ -1260,7 +1278,12 @@ export function createLearningSync(options: LearningSyncOptions): LearningSync {
 
   async function start(userId: string): Promise<void> {
     if (currentUserId === userId && unsubscribes.length > 0) return;
+    /* Asked before the teardown as well as after it: a sign-in that was
+       abandoned must not tear down the layer the student who replaced it is
+       already using, and must not move an owner afterwards either. */
+    if (cancelled()) return;
     await stop({ forget: false });
+    if (cancelled()) return;
 
     generation += 1;
     currentUserId = userId;
@@ -1435,6 +1458,12 @@ export function activeLearningSync(): LearningSync | null {
 /** Start (or keep) syncing for this student. Safe to call repeatedly. */
 export async function startLearningSync(userId: string, options: LearningSyncOptions): Promise<LearningSync> {
   if (active && active.userId() === userId) return active;
+  /* An abandoned sign-in must not stop the layer the student who replaced it
+     is already using. The instance handed back in that case has never been
+     started; nothing but a test ever looks at this return value. */
+  if (options.stillCurrent !== undefined && !options.stillCurrent()) {
+    return active ?? createLearningSync(options);
+  }
   if (active) await active.stop({ forget: false });
   active = createLearningSync(options);
   await active.start(userId);

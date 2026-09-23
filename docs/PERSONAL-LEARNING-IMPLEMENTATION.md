@@ -383,11 +383,15 @@ browser used before this build has no owner written on its history, so the
 first sign-in now asks whether that work is theirs instead of absorbing it.
 Nothing is lost either way, and signing out shows it again.
 
-Still device-wide and not uploadable, left for a follow-up: a half-finished
-timed paper (`ielts.testsession.v1`), the mock exam state, the name on the
-printout and the homepage band pick. A second student on one browser could
-resume the first one's unfinished test; nothing of it can reach another
-account.
+CORRECTION (Codex review of 23 September, finding 1): the earlier version of
+this paragraph claimed that a half-finished timed paper, though device-wide,
+could not reach another account. That was wrong. Codex proved that a second
+student on the same browser could open the first student's unfinished drill,
+see their answers already selected, and submit them as their own evidence.
+The half-finished paper (`ielts.testsession.v1`) and the mock exam state are
+now owner-scoped and bound to the student who started them (commit
+`0f7a7c0`); see section 12. The name on the printout and the homepage band pick stay
+device-wide (neither is student work).
 
 Browser evidence for the repaired journeys is recorded in
 `docs/personal-learning/evidence/final/results-after-codex.md` (the full

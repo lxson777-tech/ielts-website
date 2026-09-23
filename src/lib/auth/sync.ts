@@ -18,6 +18,16 @@
    incoming student's own copy, and every upload is checked against the
    current owner at the moment it goes out.
 
+   AND WHAT HAPPENS WHEN A SIGN-IN IS ABANDONED (fixed 23 September 2026)
+   Setting the owner first is only half the answer. A sign-in waits: for the
+   learning module to load, for the account to answer, for the reconciled
+   state to go back up. If the student signs out, or a second account signs
+   in, during any of those waits, everything the first sign-in does AFTER the
+   wait is a mutation on somebody else's browser. The generation below is what
+   every one of those steps asks first, and a cancelled step leaves every
+   store on whoever the current owner is now rather than on the one it was
+   created for. That was finding 2 of the 23 September 2026 review.
+
    SINCE THE PERSONAL LEARNING BUILD, THIS FILE DOES TWO JOBS
    The first is everything above, unchanged: `user_state.progress` and
    `user_state.study_plan` are still pulled, merged and pushed exactly as they
@@ -50,10 +60,43 @@ interface Row {
 
 let unsub: (() => void)[] = [];
 let currentUserId: string | null = null;
-/* Bumped by every start and stop. A slow pull checks it before it applies
-   anything, so a reply meant for the student who just signed out can never
-   be written into the next student's stores. */
+
+/* ── The sign-in generation: ONE source, consulted by every step ─────────── */
+
+/* WHAT THIS FIXES (finding 2 of the 23 September 2026 review)
+ *
+ * The generation used to be checked by the caller only, after a helper had
+ * already returned. The helper set the owner, awaited the learning module,
+ * and set the owner AGAIN with no check in between. Signing out during that
+ * await correctly reset the owner to this device's anonymous one, and then
+ * the abandoned sign-in quietly set it back to the student who had just left:
+ * their private essay was readable again on a signed-out browser. Returning
+ * early in the caller could not undo a mutation that had already happened.
+ *
+ * So the generation is now a thing a step HOLDS, not a number a caller
+ * remembers. Every continuation after every await below asks `signIn.current()`
+ * BEFORE it moves an owner, writes a store, sends a request or adds a
+ * subscription, and a cancelled step's only remaining job is to leave every
+ * store on whoever the current owner is NOW (settleOnCurrentOwner): the
+ * anonymous device owner after a sign-out, student B after a switch to B.
+ * Never the student the cancelled step was created for.
+ */
+
+/** Bumped by every start and every stop. */
 let generation = 0;
+
+/** One sign-in attempt, and the one question every step of it asks. */
+interface SignIn {
+  /** False from the moment a sign-out, or a newer sign-in, takes over. */
+  current(): boolean;
+}
+
+/** Take over as the current sign-in. Anything still running for an earlier
+    one is cancelled by this, wherever it happens to be waiting. */
+function beginSignIn(): SignIn {
+  const mine = ++generation;
+  return { current: () => mine === generation };
+}
 // True while we write cloud state into localStorage, so those writes don't echo
 // straight back up as a "local change".
 let applyingRemote = false;
@@ -87,9 +130,14 @@ function stillSignedInAs(userId: string): boolean {
   return sameOwner(currentOwner(), userOwner(userId));
 }
 
-async function push(userId: string): Promise<void> {
+async function push(userId: string, signIn?: SignIn): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
+  /* Two questions, not one: "is this sign-in still the current one" and "is
+     this student still the one this device answers for". The first is what a
+     cancelled sign-in fails; the second is what a debounced push from an
+     earlier session fails. */
+  if (signIn && !signIn.current()) return;
   if (!stillSignedInAs(userId)) return;
   await sb.from('user_state').upsert(
     {
@@ -153,13 +201,44 @@ function setLearningOwner(owner: CacheOwner | null): void {
   }
 }
 
-/** The same, but waiting for the learning module to load first, so a sign-in
-    has genuinely moved every store before it reads one. Used at the top of
-    startSyncForUser and nowhere else: a sign-out must not wait for a module. */
-async function setLearningOwnerNow(owner: CacheOwner | null): Promise<void> {
+/** What a cancelled step does instead of what it was going to do: leave every
+    store on whoever the current owner is NOW.
+ *
+ * The four older stores are already there, because whatever cancelled this
+ * step set them (sign-out to the anonymous device owner, a switch to the new
+ * student). The learning module may not be: when it was still loading at the
+ * moment of the cancellation there was nothing to tell, so it is told here,
+ * as soon as it exists. Nothing is set to the owner the cancelled step was
+ * created for. */
+function settleOnCurrentOwner(): void {
+  try {
+    learningModule?.setLearningOwner(currentOwner());
+  } catch {
+    /* A store refusing to move is not a reason to fail anything. */
+  }
+}
+
+/** The same as setLearningOwner, but waiting for the learning module to load
+    first, so a sign-in has genuinely moved every store before it reads one.
+    Used at the top of startSyncForUser and nowhere else: a sign-out must not
+    wait for a module.
+ *
+ * Returns false when the sign-in was cancelled while the module was loading.
+ * That is the exact boundary finding 2 was reproduced at, and the second
+ * owner set below is the mutation it was reproduced on. */
+async function setLearningOwnerNow(owner: CacheOwner | null, signIn: SignIn): Promise<boolean> {
+  if (!signIn.current()) {
+    settleOnCurrentOwner();
+    return false;
+  }
   setCurrentOwner(owner);
   await learning();
+  if (!signIn.current()) {
+    settleOnCurrentOwner();
+    return false;
+  }
   setLearningOwner(owner);
+  return true;
 }
 
 /** How the learning tables are reached, or null when accounts are not
@@ -181,12 +260,28 @@ function learningTransport(): SyncTransport | null {
   });
 }
 
-async function startLearningFor(userId: string): Promise<void> {
+async function startLearningFor(userId: string, signIn: SignIn): Promise<void> {
   try {
     const module = await learning();
+    if (!signIn.current()) {
+      settleOnCurrentOwner();
+      return;
+    }
     await startLearningSync(userId, {
       transport: learningTransport(),
-      setOwner: module ? (owner) => setLearningOwner(owner) : undefined,
+      /* The layer moves owners of its own accord when it starts and stops,
+         so it is handed the same question every step here asks rather than
+         being trusted to be called at the right moment. */
+      stillCurrent: () => signIn.current(),
+      setOwner: module
+        ? (owner) => {
+            if (!signIn.current()) {
+              settleOnCurrentOwner();
+              return;
+            }
+            setLearningOwner(owner);
+          }
+        : undefined,
     });
   } catch {
     /* The learning sync is an addition. It fails quietly and the student
@@ -204,20 +299,25 @@ export async function startSyncForUser(user: User): Promise<void> {
   if (currentUserId === user.id && unsub.length) return;
   stopSync();
   currentUserId = user.id;
-  const run = ++generation;
+  const signIn = beginSignIn();
 
   /* THE OWNER COMES FIRST, before any legacy read, merge, migration or
      upload. From this line on, getProgress() and loadStudyPlan() answer with
      THIS student's own copy on this device, and the previous student's
-     copies stay under their own id where nobody else can read them. */
-  await setLearningOwnerNow(userOwner(user.id));
-  if (run !== generation) return;
+     copies stay under their own id where nobody else can read them.
+     A false answer means this sign-in was abandoned while the learning
+     module was loading: every store has been left with the owner that
+     replaced it, and there is nothing further to do. */
+  if (!(await setLearningOwnerNow(userOwner(user.id), signIn))) return;
 
   const remote = await pull(user.id);
   /* A pull that comes back after a sign-out or an account switch is thrown
      away rather than merged: the stores it would be written into no longer
      belong to the student who asked for it. */
-  if (run !== generation || !stillSignedInAs(user.id)) return;
+  if (!signIn.current() || !stillSignedInAs(user.id)) {
+    settleOnCurrentOwner();
+    return;
+  }
 
   const mergedProgress = remote ? mergeProgress(getProgress(), remote.progress) : getProgress();
   const mergedPlan = remote ? mergeStudyPlans(loadStudyPlan(), remote.study_plan) : loadStudyPlan();
@@ -232,8 +332,15 @@ export async function startSyncForUser(user: User): Promise<void> {
   }
 
   // Push the reconciled result up (first-login migration + reconciliation).
-  await push(user.id);
-  if (run !== generation) return;
+  await push(user.id, signIn);
+  /* Subscriptions are a mutation too. A cancelled sign-in that added them
+     would leave this device pushing for a student nobody is signed in as,
+     and the sign-out that cancelled it has already emptied the list it would
+     have been removed from. */
+  if (!signIn.current()) {
+    settleOnCurrentOwner();
+    return;
+  }
 
   // From here, local activity syncs to the cloud.
   const onChange = () => {
@@ -245,7 +352,7 @@ export async function startSyncForUser(user: User): Promise<void> {
   // The learner record, the personal plan and the companion stores, on their
   // own tables, beside everything above. The owner they use was already set
   // at the top of this function; this is what starts the sync itself.
-  await startLearningFor(user.id);
+  await startLearningFor(user.id, signIn);
 }
 
 /** Stop syncing (sign-out, or switching to another account).
@@ -269,6 +376,10 @@ export async function startSyncForUser(user: User): Promise<void> {
  * waiting to be sent, because losing a student's work is the worse mistake,
  * and that copy is namespaced by user id so no other session can read it). */
 export function stopSync(): void {
+  /* Cancels whatever sign-in is in flight, wherever it happens to be
+     waiting. Every step of it asks `signIn.current()` before it moves an
+     owner, writes a store, sends a request or adds a subscription, so this
+     one line is the whole of "stop" as far as those steps are concerned. */
   generation += 1;
   for (const u of unsub) u();
   unsub = [];

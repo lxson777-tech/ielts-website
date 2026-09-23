@@ -36,6 +36,13 @@ import { registerHooks } from 'node:module';
 
 interface MemoryStorage {
   data: Map<string, string>;
+  /** A real browser store can be walked, and since 23 September 2026 one
+      thing walks it: src/lib/store-owner.ts looks for the account session
+      this browser is holding, so that a page with no account component on it
+      still knows whose work it is (finding 3). These two members are what
+      make this memory look like the real thing to that code. */
+  length: number;
+  key(index: number): string | null;
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;
   removeItem(key: string): void;
@@ -45,6 +52,10 @@ function memoryStorage(): MemoryStorage {
   const data = new Map<string, string>();
   return {
     data,
+    get length() {
+      return data.size;
+    },
+    key: (index) => [...data.keys()][index] ?? null,
     getItem: (key) => data.get(key) ?? null,
     setItem: (key, value) => void data.set(key, value),
     removeItem: (key) => void data.delete(key),
@@ -123,6 +134,13 @@ const syntheticSupabase = {
     async getSession() {
       return { data: { session: standInToken ? { access_token: standInToken } : null } };
     },
+    /* The app-wide lifecycle (src/lib/auth/lifecycle.ts) subscribes the same
+       way the real islands do. The stand-in has no events of its own, so
+       this is a subscription that never fires: what the lifecycle gets is
+       the one immediate answer from getSession() above. */
+    onAuthStateChange() {
+      return { data: { subscription: { unsubscribe() {} } } };
+    },
   },
 };
 
@@ -178,6 +196,7 @@ const storeOwner = await import('../src/lib/store-owner.ts');
 const learnerStore = await import('../src/lib/learning/store.browser.ts');
 const learning = await import('../src/lib/learning/index.ts');
 const learningSync = await import('../src/lib/learning/sync.browser.ts');
+const lifecycle = await import('../src/lib/auth/lifecycle.ts');
 
 /* ------------------------------------------------------------------ */
 /* The free local stand-in, in this process, on a port the OS picks    */
@@ -319,6 +338,7 @@ function whatTheStudentSees() {
     fresh machine would. */
 function freshDevice(): void {
   stopSync();
+  lifecycle.resetAccountLifecycleForTest();
   learningSync.resetLearningSyncForTest();
   learning.resetLearningForTest();
   storeOwner.resetStoreOwnerForTest();
@@ -963,5 +983,356 @@ test('a student who claims their signed-out work, works, leaves and comes back f
   } finally {
     await signOutWithAnAccount();
     delete (globalThis as Record<string, unknown>).__syntheticEnv;
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/* 6. When the owner is decided, and by what                           */
+/* ------------------------------------------------------------------ */
+
+/* THE TWO PATHS THE 23 SEPTEMBER 2026 REVIEW REPRODUCED
+ *
+ * Finding 2: a sign-in that is abandoned mid-flight used to finish anyway
+ * and set the owner back to the student who had just left. Everything after
+ * an await in sign-in is now guarded by the sign-in generation, and a
+ * cancelled step leaves every store on whoever the current owner is NOW.
+ *
+ * Finding 3: the owner used to start as this device's anonymous one and only
+ * became the signed-in student when a navigation component mounted and ran
+ * sign-in. The full-screen test player, the drills and the mock exam mount no
+ * such component, so a hard load or a refresh of one of them wrote a
+ * signed-in student's answers into the shared anonymous record. The owner is
+ * now answered from the session this browser is holding, on the first read,
+ * and the base layout starts one app-wide lifecycle on every route.
+ */
+
+/** A device with nothing on it and no lifecycle ever started: a browser
+    opening a page for the first time. */
+function coldDevice(): void {
+  freshDevice();
+  lifecycle.resetAccountLifecycleForTest();
+}
+
+/** The session the account client persists in this browser's own storage,
+    written here exactly as it is written there. The token is SYNTHETIC and
+    reaches nothing: only the user id inside it is ever read. */
+function holdSessionFor(userId: string): void {
+  storage.data.set(
+    'sb-synthetic-local-auth-token',
+    JSON.stringify({
+      access_token: 'SYNTHETIC-access-token',
+      refresh_token: 'SYNTHETIC-refresh-token',
+      user: { id: userId, email: 'synthetic-student@example.test' },
+    }),
+  );
+}
+
+function recordKeyFor(namespace: string): string | undefined {
+  return storage.data.get(`ielts.learning.record.v1::${namespace}`);
+}
+
+function anonymousNamespace(): string {
+  return storeOwner.ownerNamespace(storeOwner.anonymousOwner(storeOwner.deviceIdFrom(storage)));
+}
+
+/** Every key on this device whose value carries a piece of student A's work. */
+function keysCarryingAsWork(): string[] {
+  const found: string[] = [];
+  for (const [key, value] of storage.data) {
+    if (A_FINGERPRINTS.some((mark) => value.includes(mark))) found.push(key);
+  }
+  return found;
+}
+
+const EMPTY_STUDENT = {
+  lessons: 0,
+  testAttempts: 0,
+  essays: 0,
+  speaking: 0,
+  targetBand: null,
+  vocabularyLearned: 0,
+  notes: 0,
+  savedLessons: 0,
+};
+
+test('a sign-out while the sign-in is still waiting leaves both stores anonymous, with none of A visible', async () => {
+  freshDevice();
+
+  /* Student A's own copies are already on this device, so a stale owner set
+     would genuinely put their private essay back on screen. That is exactly
+     what the review's reproduction saw. */
+  await startSyncForUser(A);
+  doStudentAsWork();
+  stopSync();
+  const uploadsBefore = uploads.length;
+
+  /* The boundary itself. startSyncForUser sets the owner, then waits for the
+     learning layer to load before setting it on the learner record and the
+     plan. The sign-out below happens inside that wait: the sign-in has not
+     reached its continuation yet, and every step after it is now guarded. */
+  const abandoned = startSyncForUser(A);
+  stopSync();
+  const rightAfterSignOut = storeOwner.currentOwner();
+  assert.equal(rightAfterSignOut.kind, 'anonymous', 'signing out did not reset the owner at all');
+
+  /* Release it: the abandoned sign-in finishes, and every continuation runs. */
+  await abandoned;
+
+  assert.equal(
+    storeOwner.currentOwner().kind,
+    'anonymous',
+    'an abandoned sign-in set the owner back to the student who had signed out',
+  );
+  assert.deepEqual(
+    storeOwner.currentOwner(),
+    rightAfterSignOut,
+    'the owner moved to a different anonymous device owner than the sign-out chose',
+  );
+
+  /* The OLD stores: progress, study plan, vocabulary, notes and saved lessons. */
+  assert.deepEqual(
+    whatTheStudentSees(),
+    EMPTY_STUDENT,
+    "the abandoned sign-in left student A's work readable on a signed-out browser",
+  );
+  /* And the NEW ones: the learner record and the personal plan. */
+  assert.equal(
+    learnerStore.learnerStoreStatus().owner.kind,
+    'anonymous',
+    'the learner record was left loaded with the student who had signed out',
+  );
+  assert.equal(learnerStore.readLearnerRecord().events.length, 0);
+  assert.equal(learnerStore.readPersonalPlan(), null);
+
+  /* Nothing went up for a sign-in nobody completed. */
+  assert.equal(uploads.length, uploadsBefore, 'an abandoned sign-in uploaded something');
+
+  /* Student A has lost nothing: it is all still on this device under their
+     own id, where their next sign-in finds it. */
+  await startSyncForUser(A);
+  assert.equal(progressStore.getWritingAttempts(A_PROMPT)[0]?.attempt.essay, A_ESSAY_TEXT);
+});
+
+test('a sign-in abandoned because a second student arrived leaves that second student intact', async () => {
+  freshDevice();
+
+  await startSyncForUser(A);
+  doStudentAsWork();
+  stopSync();
+
+  /* Student A's account holds their essay too, so the late reply below is
+     carrying real work rather than an empty row. */
+  account.set(A.id, {
+    progress: {
+      version: 1,
+      lessons: {},
+      tests: {},
+      writing: {
+        [A_PROMPT]: [
+          {
+            at: '2026-09-20T10:00:00.000Z',
+            overallBand: 6.5,
+            criteria: {},
+            wordCount: 268,
+            live: true,
+            essay: A_ESSAY_TEXT,
+          },
+        ],
+      },
+      speaking: [],
+    },
+    study_plan: { targetBand: A_TARGET, testDate: '', createdAt: '2026-09-20T08:00:00.000Z', done: [] },
+  });
+
+  /* Student A starts signing in and is left waiting on the account. Holding
+     it here is what puts EVERY remaining step of their sign-in (the merge,
+     the write into the older stores, the upload, the subscriptions and the
+     learning layer's own start, which moves owners itself) after student B
+     has finished arriving. */
+  let started!: () => void;
+  const startedPull = new Promise<void>((resolve) => {
+    started = resolve;
+  });
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  heldPull = { userId: A.id, started, gate };
+
+  const abandoned = startSyncForUser(A);
+  await startedPull;
+
+  /* Student B takes over, completely, while student A is still waiting. */
+  await startSyncForUser(B);
+
+  /* Now let student A's sign-in finish. Every late continuation runs here. */
+  release();
+  await abandoned;
+  await Promise.resolve();
+
+  assert.deepEqual(
+    storeOwner.currentOwner(),
+    { kind: 'user', userId: B.id },
+    "student A's abandoned sign-in took the browser back off student B",
+  );
+  assert.deepEqual(
+    learnerStore.learnerStoreStatus().owner,
+    { kind: 'user', userId: B.id },
+    'the learner record was left on student A while student B was signed in',
+  );
+  assert.deepEqual(
+    whatTheStudentSees(),
+    EMPTY_STUDENT,
+    "student B was shown student A's work by the abandoned sign-in",
+  );
+
+  /* Student B's own work still saves, still under student B, and the
+     subscriptions that carry it up are student B's: an abandoned sign-in
+     that had added its own would send this under student A's id too. */
+  const uploadsBeforeBsEdit = uploads.length;
+  const firePush = catchScheduledPush(() => {
+    progressStore.recordWritingAttempt(B_PROMPT, {
+      at: '2026-09-23T10:00:00.000Z',
+      overallBand: 5.5,
+      criteria: {},
+      wordCount: 210,
+      live: false,
+      essay: B_ESSAY_TEXT,
+    });
+  });
+  firePush();
+  await Promise.resolve();
+  await Promise.resolve();
+
+  const after = uploads.slice(uploadsBeforeBsEdit);
+  assert.ok(after.length > 0, "student B's own edit never reached their account");
+  for (const row of after) {
+    assert.equal(row.user_id, B.id, "student B's edit was uploaded under another account");
+    carriesNothingOf(row, A_FINGERPRINTS);
+  }
+  assert.ok(
+    !uploads.some((row) => row.user_id === B.id && JSON.stringify(row).includes(A_ESSAY_TEXT)),
+    "student A's essay went up under student B's id",
+  );
+
+  /* And student A still has everything, under their own key. */
+  stopSync();
+  await startSyncForUser(A);
+  assert.equal(progressStore.getWritingAttempts(A_PROMPT)[0]?.attempt.essay, A_ESSAY_TEXT);
+});
+
+test('a page with no account component on it records a signed-in student under their own record', async () => {
+  coldDevice();
+  /* The browser is holding student A's session, exactly as it would after
+     they signed in on the dashboard and then opened a drill by its own
+     address. Nothing else has run: no menu, no header, no nav. */
+  holdSessionFor(A.id);
+
+  try {
+    /* The full-screen page loads. All it does is start the lifecycle. */
+    lifecycle.startAccountLifecycle();
+
+    /* And the recorder writes, straight away, the way a submitted drill
+       does: no await in between, because a student can finish and submit
+       before any account round trip has come back. */
+    learnerStore.recordLessonStudied({ lessonKey: 'reading-matching-headings' });
+
+    assert.deepEqual(
+      storeOwner.currentOwner(),
+      { kind: 'user', userId: A.id },
+      'a page with no account component left the owner anonymous for a signed-in student',
+    );
+    assert.ok(recordKeyFor(`u:${A.id}`), "the signed-in student's own record was never written");
+    assert.equal(
+      recordKeyFor(anonymousNamespace()),
+      undefined,
+      "a signed-in student's work was written into this device's shared anonymous record",
+    );
+    assert.deepEqual(
+      keysCarryingAsWork().filter((key) => key.includes('anon:')),
+      [],
+      "something of the signed-in student's reached an anonymous key",
+    );
+
+    /* The account itself is the authority and answers a moment later. Here
+       the stand-in says nobody is signed in, so the owner goes back to the
+       anonymous device owner. The work stays where it was written, under
+       that student's own id, unreadable to anybody else. */
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.ok(recordKeyFor(`u:${A.id}`), 'the work was deleted when the account disagreed');
+  } finally {
+    lifecycle.resetAccountLifecycleForTest();
+  }
+});
+
+test('the same page, signed out, records under this device and nowhere else', async () => {
+  coldDevice();
+
+  try {
+    lifecycle.startAccountLifecycle();
+    learnerStore.recordLessonStudied({ lessonKey: 'reading-matching-headings' });
+
+    assert.equal(
+      storeOwner.currentOwner().kind,
+      'anonymous',
+      'signed-out use stopped being recorded on this device',
+    );
+    assert.ok(recordKeyFor(anonymousNamespace()), 'signed-out work was not recorded at all');
+    assert.deepEqual(
+      [...storage.data.keys()].filter((key) => key.startsWith('ielts.learning.record.v1::u:')),
+      [],
+      'signed-out work was filed under an account',
+    );
+  } finally {
+    lifecycle.resetAccountLifecycleForTest();
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/* 7. The lifecycle cannot be left off a page                          */
+/* ------------------------------------------------------------------ */
+
+test('every page that hides the site chrome still gets the app-wide account lifecycle', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const url = await import('node:url');
+
+  const root = path.resolve(url.fileURLToPath(new URL('.', import.meta.url)), '..');
+  const layout = fs.readFileSync(path.join(root, 'src/layouts/BaseLayout.astro'), 'utf8');
+
+  assert.ok(
+    layout.includes("import AccountLifecycle from '../components/AccountLifecycle.astro'"),
+    'BaseLayout no longer imports the account lifecycle',
+  );
+  const rendered = layout.split('\n').filter((line) => line.includes('<AccountLifecycle'));
+  assert.equal(rendered.length, 1, 'the account lifecycle is rendered by BaseLayout exactly once');
+  assert.ok(
+    !rendered[0]!.includes('bare'),
+    'the account lifecycle was put behind a bare condition, which is the one case it exists for',
+  );
+
+  /* Every page that asks for the chrome-free layout must be getting it from
+     BaseLayout, or it would not have the lifecycle on it at all. */
+  const bare: string[] = [];
+  const walk = (dir: string): void => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.astro')) {
+        const source = fs.readFileSync(full, 'utf8');
+        const asksForBare = /<BaseLayout[^>]*\sbare[\s>]/.test(source) || /^\s*bare,?\s*$/m.test(source);
+        if (asksForBare) bare.push(path.relative(root, full).replace(/\\/g, '/'));
+      }
+    }
+  };
+  walk(path.join(root, 'src/pages'));
+
+  assert.ok(bare.length > 0, 'no full-screen page was found at all, so this scan proves nothing');
+  for (const page of bare) {
+    const source = fs.readFileSync(path.join(root, page), 'utf8');
+    assert.ok(
+      /import\s+BaseLayout\s+from/.test(source),
+      `${page} hides the site chrome without going through BaseLayout, so it has no account lifecycle`,
+    );
   }
 });

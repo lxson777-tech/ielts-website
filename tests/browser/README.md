@@ -34,6 +34,20 @@ Two suites live here.
   this device" claim offer (`AnonymousWorkClaim.tsx`) is unreachable from any
   page in this build - see that file's own header comment for the full
   reproduction.
+- **`f21_direct_entry_owner.py`** is the same kind of one-off, for finding 3 of
+  the 23 September 2026 review: a signed-in student who opened a drill by its
+  own address (a saved link, or a refresh mid-paper) had their answers written
+  into this device's shared anonymous record, because sign-in was wired up
+  inside the two navigation components and the full-screen pages render
+  neither. It reuses `f20_account_journey.py`'s page actions, drives a real
+  sign-up, a direct navigation to a drill, a submission, a refresh mid-paper
+  and the same journey signed out, then reads both the browser's own storage
+  and the stand-in's store back. Evidence goes to
+  `docs/personal-learning/evidence/final/results-direct-entry.md`, screenshots
+  prefixed `direct-`. It uses its own ports (the stand-in on 8803, the site on
+  4356) and its own Vite dependency cache (`astro.config.f21.mjs`): two dev
+  servers sharing one cache invalidate each other's modules, which shows up as
+  "504 Outdated Optimize Dep" and a test player that never hydrates.
 - **`s1_*.py` to `s9_*.py` plus `run_all.py` and `helpers.py`** are the older
   stage-2 suite, described below. `final_helpers.py` reuses `helpers.py` and
   only redirects the evidence folder and the base URL, so the stage-2 evidence
