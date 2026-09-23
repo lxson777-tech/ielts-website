@@ -1,0 +1,78 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-5\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "801fb4aadda96fc045fee880be4204684416ad363c0a3655098c5f7593da9dbc",
+  "base": "48b1d17",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0ce10-6f63-7dd2-b12f-198efa1a0423",
+  "usage": {
+    "input_tokens": 4151857,
+    "cached_input_tokens": 3640192,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 7718,
+    "reasoning_output_tokens": 3659
+  },
+  "elapsed_seconds": 436.57,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence"
+  ],
+  "inspected_commit": "c4a7793",
+  "snapshot_sha256": "94b45f445c8c073e6e32e97ae255db541385711901924ec252b31ef7dfbf4e01",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "Ownership fixes are substantially implemented, but voice startup cancellation, completed-paper privacy, and duplicate mock-paper submissions remain unresolved.",
+    "findings": [
+      {
+        "id": "R2E-01",
+        "severity": "high",
+        "path": "src/lib/speaking/live/openai-session.ts:471; src/lib/speaking/live/link.ts:275; src/lib/speaking/live/session.ts:91",
+        "evidence": "Cancellation is checked too late after a successful voice-session response. connectWebRtc applies the remote SDP before returning to the cancellation check in link.ts; its track callback unconditionally starts playback. Once OpenAiLiveSession.start is pending, component cleanup cannot close the connection because linkRef is assigned only after startup resolves. A switch during this wait leaves the connection alive until startup completes or its 20-second timeout expires. The timeout/error cleanup also omits endAtWorker. On Gemini, cancellation after socket construction cannot prevent the later onopen callback from sending setup, and the setup wait has no timeout. The browser fixture returns synthetic failures rather than exercising successful delayed connections.",
+        "fix": "Make pending connection setup directly cancellable while retaining the owner checks. Check cancellation before applying remote SDP and inside socket/track callbacks. Release pending peers, sockets and playback immediately on cancellation, and end every created paid session on all failure paths. Add successful delayed-SDP and delayed-handshake cases, including cancellation while playback initialization is pending."
+      },
+      {
+        "id": "R2E-02",
+        "severity": "medium",
+        "path": "src/components/TestPlayer.tsx:572",
+        "evidence": "The owner-change listener returns immediately when submittedRef.current is true. A can submit a standalone paper, leave its review open, and sign out in another tab; B then signs in and still sees A's answers and score. Review controls remain active. AskWhyWrong receives A's answer from this screen and askTutor obtains the current token, allowing that answer to be sent using B's account. Namespace isolation does not protect this retained component state.",
+        "fix": "Apply owner checks to completed reviews as well as unfinished sittings. Hide or unmount the previous owner's answers, score and tutor controls when ownership changes. Bind review requests and cached replies to their owner. Cover switching accounts with a submitted review still mounted."
+      },
+      {
+        "id": "R2E-03",
+        "severity": "medium",
+        "path": "src/lib/tests/mock.ts:828",
+        "evidence": "finishMockLeg does not reject a leg that already has a result. Two tabs can resume the same mock's Listening paper. After one submits, the other still sees the parent sitting as 'held'; its rejected answer saves do not stop it because lost() checks only the parent sitting. Submitting the second tab overwrites the first leg result and TestPlayer records another progress attempt and learning submission. The combined mock's sitting-id protection does not deduplicate these paper records. The plan acknowledges this remaining case.",
+        "fix": "Make completion terminal for each mock leg. Reject an already-completed leg with an explicit terminal outcome, stop or reconcile stale players, and record paper evidence only for the first accepted completion. Test sequential submissions from two tabs with different answers."
+      }
+    ],
+    "coverage": [
+      "Verified the plan SHA256 and inspected repository head c4a779322cc16f237b9dfde0c6a583ec359ba73f against the supplied base and diff.",
+      "Reviewed account lifecycle, owner bindings, migration and claim logic, owner-specific grading writes, essay editing, standalone sittings and mock persistence.",
+      "Traced related authentication, tutor-request, speaking-grader, WebRTC, WebSocket and audio-playback callers beyond the manifest.",
+      "Inspected relevant regression assertions, browser fixtures, configuration changes and Russian translations."
+    ],
+    "limitations": [
+      "Static review only. No files edited, tests run, browser sessions started or work delegated.",
+      "Large regression and browser suites received targeted inspection, not exhaustive line-by-line validation; screenshots and historical execution logs were not independently verified.",
+      "Real Supabase policies, cross-device behavior and live voice or grading services were not exercised."
+    ]
+  }
+}

@@ -14,6 +14,10 @@
    See docs/I18N-GUIDE.md for the style rules and the glossary. */
 
 export const strings: Record<string, string> = {
+  'Reading': 'Чтение',
+  'Listening': 'Аудирование',
+  'Writing': 'Письмо',
+  'Speaking': 'Говорение',
   /* The five tabs (src/lib/platform-nav.ts). */
   Today: 'Сегодня',
   Course: 'Курс',

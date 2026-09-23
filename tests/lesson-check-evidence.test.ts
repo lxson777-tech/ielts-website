@@ -14,7 +14,7 @@
  *   - a perfect score on questions already seen raises nothing, checked
  *     against the real policy rather than a restatement of it;
  *   - a question is called the same thing here as in the generated index,
- *     for all 269 of them, and a question lifted from a real paper is
+ *     for all 270 of them, and a question lifted from a real paper is
  *     called what that paper calls it, so sitting the paper later knows it
  *     has been met;
  *   - a blocked browser store costs the record and not the exercise.
@@ -167,7 +167,7 @@ function ignoredCount(output: PolicyOutputV1, reason: string): number {
 
 /* ── Identity ────────────────────────────────────────────────────────────── */
 
-test('every one of the 269 questions is called the same thing here as in the index', () => {
+test('every one of the 270 questions is called the same thing here as in the index', () => {
   /* Recomputed from the generator, not read from the committed file, so a
      stale index cannot make this agree by accident. */
   const generated = buildLessonChecks() as {
@@ -200,7 +200,7 @@ test('every one of the 269 questions is called the same thing here as in the ind
 
   const total = Object.values(expected).reduce((n, items) => n + items.length, 0);
   assert.equal(Object.keys(expected).length, 22, 'twenty two lesson check sets');
-  assert.equal(total, 269, 'two hundred and sixty nine questions');
+  assert.equal(total, 270, 'two hundred and seventy questions');
 });
 
 test('the committed index agrees with the stamp, item for item', () => {
@@ -233,10 +233,10 @@ test('a question from a real paper is called what that paper calls it', () => {
   assert.equal(lessonCheckItemId(HEADINGS_SET, first), paperItemId(first.testId, first.questionId));
   assert.equal(lessonCheckItemId(HEADINGS_SET, first), 'reading-full-006:q14');
 
-  /* The hand written set has no paper, so it is named by its own set and
-     position instead. */
+  /* The paraphrase lesson's warm-up is hand written and has no paper, so
+     it is named by its own set and position instead. */
   const [authored] = identitiesOf(PARAPHRASE_SET);
-  assert.ok(authored && !authored.testId, 'the paraphrase drill is hand written');
+  assert.ok(authored && !authored.testId, 'the paraphrase warm-up is hand written');
   assert.equal(lessonCheckItemId(PARAPHRASE_SET, authored), 'check:practice-reading-paraphrase:u0-q0');
 });
 

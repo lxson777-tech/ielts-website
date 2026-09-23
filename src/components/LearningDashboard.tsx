@@ -235,7 +235,7 @@ export default function LearningDashboard() {
               {tn(vocab.learned, { one: '{n} reviewed so far', other: '{n} reviewed so far' })}
             </span>
           )}
-          {vocabDue > 0 && <span className="dash-card-due">{tn(vocabDue, { one: '{n} due for flashcard practice', other: '{n} due for flashcard practice' })}</span>}
+          {vocabDue > 0 && <span className="dash-card-due">{tn(vocabDue, { one: '{n} word ready to practise', other: '{n} words ready to practise' })}</span>}
           <span className="dash-card-meta">{t('Browse topics')}</span>
         </a>
       </div>

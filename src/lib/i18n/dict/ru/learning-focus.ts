@@ -27,6 +27,14 @@ export const strings: Record<string, string> = {
     'Никаких подсказок и объяснений, пока вы не закончите, и Mr EZ на это время закрыт. Именно поэтому результат что-то значит.',
   'This browser is not saving your work right now, so this run cannot be added to your record.':
     'Этот браузер сейчас не сохраняет вашу работу, поэтому эту попытку не получится добавить в ваш профиль.',
+  /* exercise-owner.ts, shown by FocusedExercise.tsx and by the lesson quick
+     check (PracticeQuiz.tsx, whose own strings are in course-lessons; the
+     dictionary is one merged object, so it finds this one here): the page
+     changed hands, so the screen now holds the next student's own answers,
+     or none (the follow-up to R2B-01). Worded like the written task's
+     sentence in learning-writing-focus. */
+  'The account on this page changed. Any answers in progress were kept for the student who was working on them.':
+    'На этой странице сменился аккаунт. Начатые ответы сохранены для того студента, который над ними работал.',
 
   /* FocusedExercise.tsx: the passage and the questions. "Passage" and
      "Questions" are already in the tests batch and are not repeated. */

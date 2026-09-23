@@ -15,10 +15,9 @@ import { withBase } from '../lib/url';
   title="My Account · IELTS Portal"
   description="Track your progress across Reading, Writing and Speaking in one place: lessons completed, band history, and your course progress."
 >
-  <div class="platform-hub mx-auto max-w-5xl px-4 py-12 sm:px-6">
+  <div class="account-page platform-hub mx-auto max-w-5xl px-4 py-12 sm:px-6">
     <header class="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-8">
       <div>
-        <p class="font-display text-xs font-extrabold uppercase tracking-[0.12em] text-brand" data-i18n>My account</p>
         <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>Account & progress</h1>
         <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>Every skill and every attempt in one place, so you can see what is improving and what to practise next.</p>
       </div>
@@ -32,6 +31,14 @@ import { withBase } from '../lib/url';
     </div>
 
     <AccountOverview client:load />
+
+    <nav class="account-section-links" aria-label="Account sections">
+      <a href="#saved" data-i18n>Saved lessons & questions</a>
+      <a href="#reading" data-i18n>Reading</a>
+      <a href="#listening" data-i18n>Listening</a>
+      <a href="#writing" data-i18n>Writing</a>
+      <a href="#speaking" data-i18n>Speaking</a>
+    </nav>
 
     <section id="saved" class="mt-16 scroll-mt-20">
       <SectionHeading eyebrow="Saved" title="Saved lessons & questions" subtitle="Everything you have bookmarked while studying, plus your lesson notes." />

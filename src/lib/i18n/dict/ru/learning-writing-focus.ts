@@ -30,6 +30,11 @@ export const strings: Record<string, string> = {
     'Здесь нет ни наводящих вопросов, ни образца ответа, ни Mr EZ. Именно поэтому результат что-то значит.',
   'This browser is not saving your work right now, so this attempt cannot be added to your record.':
     'Этот браузер сейчас не сохраняет вашу работу, поэтому эту попытку не получится добавить в ваш профиль.',
+  /* WritingFocusedTask.tsx: the page changed hands, so the screen now holds
+     the next student's own draft, or nothing (the follow-up to R2E-02).
+     Worded like the essay editor's sentence in trainers-writing-speaking. */
+  'The account on this page changed. Any answer in progress was kept for the student who was writing it.':
+    'На этой странице сменился аккаунт. Начатый ответ сохранён для того студента, который его писал.',
   'Writing Task 1': 'Writing Task 1',
   'Writing Task 2': 'Writing Task 2',
   'Your overview': 'Ваш overview',

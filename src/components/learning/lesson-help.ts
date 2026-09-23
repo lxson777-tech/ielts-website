@@ -22,6 +22,19 @@
  * closes the same door at the Worker, and this module refuses too. A hidden
  * button is not a boundary, so there are three.
  *
+ * WHOSE HELP IT IS (the follow-up to R2E-02, 23 September 2026)
+ * Help belongs to the student who pressed the button. The tutor client
+ * already drops a reply that comes back after the page changed hands, and
+ * this module then falls back to the lesson's own answer, so SOMETHING
+ * always comes back. Where it went was the screen's business, and the
+ * screens handed it to whoever was on the page by then: shown to them, and
+ * written into their help state. requestOwnedLessonHelp below is the one
+ * way a screen asks now. It binds the request to the owner on the page at
+ * the press, exactly as runOwnedGrade binds a grade (src/lib/store-owner.ts):
+ * the help is KEPT for that owner through the screen's own explicit-owner
+ * writer, SHOWN only while that owner has been on the page throughout, and
+ * otherwise let go of.
+ *
  * No JSX: this file is imported by tests and by a plain DOM script as well
  * as by React. See the header of ./focused-exercise.ts.
  */
@@ -37,6 +50,8 @@ import {
   type LessonHelpPromptInput,
 } from '../../lib/learning/ai-prompt';
 import type { Locale } from '../../lib/i18n/locale';
+import type { CacheOwner } from '../../lib/learning/contracts/sync';
+import { runOwnedGrade, type OwnerBinding, type OwnerBindingState } from '../../lib/store-owner';
 
 /* ── Asking ──────────────────────────────────────────────────────────────── */
 
@@ -175,4 +190,43 @@ export async function requestLessonHelp(input: HelpAskInput): Promise<HelpResult
     const reason = error instanceof TutorClientError ? error.message : undefined;
     return offlineHelp(input, reason);
   }
+}
+
+/* ── Whose help it is ────────────────────────────────────────────────────── */
+
+/** What a screen does with the help it asked for, in the three situations
+    it can arrive in. The runOwnedGrade contract, applied to help. */
+export interface OwnedHelpSteps {
+  /** Keep it for `owner`: the student on the page when the button was
+      pressed, whoever is here by now. Runs once for every reply, including
+      the lesson's own fallback. Write it through a writer that takes that
+      owner, never through one that asks who is on the page. Optional: a
+      surface that records no help leaves it out. */
+  keep?(result: HelpResult, owner: CacheOwner): void;
+  /** Show it: the student who asked has been the one on the page
+      throughout. The only place a reply may be painted, or handed to a
+      surface that records it against whoever is on the page. */
+  show(result: HelpResult): void;
+  /** The page changed hands while the help was on its way: show none of
+      it and let go of what was on screen for that student. */
+  hide?(result: HelpResult): void;
+}
+
+/** Ask for help for the student `binding` was made for (bindToCurrentOwner,
+ *  at the press), keep it for them, and only then decide what the screen
+ *  may do with it. Returns where the binding stood when the help arrived.
+ *
+ *  Never throws for a failed tutor: requestLessonHelp always answers, with
+ *  the lesson's own sentence at worst, so there is always something to
+ *  keep and nothing is ever silently dropped. */
+export function requestOwnedLessonHelp(
+  binding: OwnerBinding,
+  input: HelpAskInput,
+  steps: OwnedHelpSteps,
+): Promise<OwnerBindingState> {
+  return runOwnedGrade(binding, () => requestLessonHelp(input), {
+    keep: (result, owner) => steps.keep?.(result, owner),
+    show: (result) => steps.show(result),
+    hide: (result) => steps.hide?.(result),
+  });
 }

@@ -48,7 +48,7 @@ export { paperItemId };
  *
  *  Written into src/data/reading-practice.ts by the identity stamp
  *  (PRACTICE_ITEM_IDENTITY), which holds the same values the generated
- *  index does for all 269 items. tests/lesson-check-evidence.test.ts
+ *  index does for all 270 items. tests/lesson-check-evidence.test.ts
  *  recomputes both from tools/generate-learning-index.mjs and fails when
  *  they disagree, so the browser and the index cannot drift apart. */
 export interface LessonCheckItemIdentity {
@@ -66,7 +66,7 @@ export interface LessonCheckItemIdentity {
       deliberately teach a neighbouring type (architecture section 6.2). */
   type: Subskill;
   /** The paper it was lifted from, and that paper's own id for it. Absent
-      on the one hand written set (the reading paraphrase drill). */
+      on the one hand written unit (the reading paraphrase warm-up). */
   testId?: string;
   questionId?: string;
 }

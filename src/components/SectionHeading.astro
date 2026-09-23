@@ -1,16 +1,18 @@
 ---
 interface Props {
   title: string;
+  level?: 'h1' | 'h2';
   subtitle?: string;
   /** Optional small pill label above the title (colored by ambient --skill). */
   eyebrow?: string;
   id?: string;
 }
-const { title, subtitle, eyebrow, id } = Astro.props;
+const { title, subtitle, eyebrow, id, level = 'h2' } = Astro.props;
+const Heading = level;
 ---
 
 <div class="section-heading mb-8" id={id}>
-  <h2 class="text-3xl font-extrabold tracking-tight" data-i18n>{title}</h2>
+  <Heading class="text-3xl font-extrabold tracking-tight" data-i18n>{title}</Heading>
   {eyebrow && !title.toLowerCase().includes(eyebrow.toLowerCase()) && <p class="heading-context" data-i18n>{eyebrow}</p>}
   {subtitle && <p class="mt-2 max-w-xl text-ink-muted" data-i18n>{subtitle}</p>}
 </div>

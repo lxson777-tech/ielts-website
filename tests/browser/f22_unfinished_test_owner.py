@@ -81,6 +81,62 @@ FIFTH CODEX ROUND (23 September 2026), two more journeys:
     history. Stand-ins for a missed event: a keystroke, and finishing, in a
     tab whose record was removed are refused and stop it, recording nothing.
 
+SIXTH CODEX ROUND (23 September 2026), two more journeys:
+  - Step 17, R2E-02: A hands a drill in, asks Mr EZ about one wrong answer
+    (the stand-in's simulated reply, sent with A's own token), and leaves
+    the review open. A signs out in a second tab, then B signs in there. The
+    first tab's review leaves the screen each time (no score, no answers, no
+    Mr EZ), with a sentence true for each, and sends nothing more. B's own
+    page shows nothing of A; B starting the same drill fresh in that same
+    tab, with the same answer, sees none of the reply A bought. A third tab
+    that hears nothing from the others stands in for a tab that missed the
+    switch: A's review is still on its screen while the stored session is
+    B's, and its press sends NOTHING (the request is refused because the
+    session is not A's), and the review then leaves the screen.
+  - Step 18, R2E-03: A's mock is open on its Listening paper in three tabs
+    of the same sitting. Tab 1 hands it in with one set of answers; tab 3
+    stops on that hand-in with its own sentence; tab 2, which hears nothing
+    from the others, hands in different answers and is refused. The paper's
+    result stays tab 1's, and the paper is recorded once, in the progress
+    history and in the learner evidence.
+
+SEVENTH ROUND (23 September 2026, the follow-up to R2E-02 for every other
+tutor request), one more journey:
+  - Step 19: A sends a message from Mr EZ's panel. This script holds that
+    request on its way (it is routed to the test, not to the stand-in),
+    signs A out and B in in a second tab, and only then releases it with a
+    SYNTHETIC reply it writes itself (labelled simulated, no model, not even
+    the stand-in's). The first tab's panel is B's by then: the reply is not
+    shown, nothing is sent again, and B's saved conversation holds nothing
+    of A's. B's own message afterwards goes out with B's token and its
+    (equally synthetic) reply lands in B's conversation, so the panel still
+    works for whoever is here.
+
+EIGHTH ROUND (23 September 2026, the lesson surfaces that record what the
+tutor sends back), one more journey:
+  - Step 20: A writes an overview on the guided written task and presses
+    Check. This script holds the practice-evaluation request on its way (the
+    same routing as step 19), signs A out and B in in a second tab, and only
+    then releases it with a SYNTHETIC judged reply it writes itself (labelled
+    simulated, no model, not even the stand-in's). The first tab hands the
+    task over to B (an empty task and one calm line), the reply is shown to
+    nobody, A's answer is kept in A's own learner record (as an attempt
+    nothing judged, because the tutor client drops a reply that comes back
+    after the switch) and in A's own draft, and B's record, draft and
+    account rows hold nothing of A's.
+
+NINTH ROUND (23 September 2026, the follow-up to R2B-01 for the two other
+screens that host the lesson help buttons), one more journey:
+  - Step 21: A answers part of the guided focused Reading exercise in one
+    tab and part of a lesson quick check in another, and B signs in from a
+    third. Both of A's tabs hand over (one calm line, nothing of A's
+    answers), B's own visits show nothing of A's, and when A signs back in
+    both tabs, and a fresh visit, find A's answers where they were kept (A's
+    own in-progress copy of each). Last, two tabs that hear nothing from the
+    others (the DEAF_TAB_SCRIPT of step 17) still show A's answers while B
+    signs in elsewhere; a check pressed in each is refused, records nothing
+    for anybody, and takes the answers off that screen.
+
 WHAT THIS IS NOT
 - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for it,
   in memory, on this machine only. Every fact below is about that stand-in,
@@ -91,7 +147,7 @@ WHAT THIS IS NOT
 
 Requires, already running before this script starts (the second round used
 the stand-in on 8813 and the site on 4366, the third 8821 and 4374, the
-fourth and fifth 8833 and 4386; override with IELTS_STANDIN_URL and
+fourth, fifth and sixth 8833 and 4386; override with IELTS_STANDIN_URL and
 IELTS_BASE_URL):
   1. the stand-in:  MR_EZ_DEV_PORT=8833 node tools/mr-ez-dev-server.mjs
   2. the site, with its OWN Vite dependency cache (astro.config.f22.mjs;
@@ -124,12 +180,16 @@ sys.path.insert(0, os.path.dirname(__file__))
 # can collide with another tester's evidence. The first round wrote
 # results-unfinished-test.md with "unfinished-" screenshots, the second
 # results-unfinished-test-2.md with "unfinished2-", the third
-# results-unfinished-test-3.md with "unfinished3-" and the fourth
-# results-unfinished-test-4.md with "unfinished4-"; this round's defaults
-# write a fifth file beside them and leave all four as they were.
+# results-unfinished-test-3.md with "unfinished3-", the fourth
+# results-unfinished-test-4.md with "unfinished4-", the fifth
+# results-unfinished-test-5.md with "unfinished5-", the sixth
+# results-unfinished-test-6.md with "unfinished6-", the seventh
+# results-unfinished-test-7.md with "unfinished7-" and the eighth
+# results-unfinished-test-8.md with "unfinished8-"; this round's defaults
+# write a ninth file beside them and leave all eight as they were.
 os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4386/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-5")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished5-")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-9")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished9-")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -1321,8 +1381,13 @@ def run_replaced_mock_step(browser, a_id):
         "The newer sitting is written from the page itself, which raises no storage event in that page. "
         "The record is otherwise exactly what a fresh mock would write."
     )
+    # A dev-server reload part way through (another server on this checkout
+    # rewriting .astro/ does it, observed in the sixth round's first run)
+    # drops the page back to the mock's start screen; say so if it happens.
+    mark_page(tab2)
     in_writing2 = through_to_writing(tab2)
     tab2.wait_for_timeout(1200)
+    reloaded_since(tab2, "tab 2 (M2), while it was taken on into Writing")
     m2_now = active_mock_for(tab2, ns_a) or {}
     write_row(
         "Tab 2 takes M2 on into Writing (the setting for the next check)",
@@ -2151,6 +2216,1454 @@ def run_mock_gone_step(browser, a_id):
     ctx.close()
 
 
+# ── Sixth Codex round (R2E-02, R2E-03) ──────────────────────────────────────
+
+REVIEW_OTHER_HEADING = "This test belongs to another student"
+REVIEW_SIGNED_OUT_HEADING = "You signed out, so this result is hidden"
+WHY_BUTTON = "Why was my answer wrong?"
+DEBRIEF_BUTTON = "Go through my mistakes with Mr EZ"
+SIMULATED_BADGE = "Simulated, not a real AI reply"
+SIMULATED_REVIEW_TEXT = "Simulated answer review from the local dev server"
+HANDED_IN_SENTENCE = (
+    "This paper was already handed in from another tab, so it was not handed in again here. "
+    "The mock exam carries on from that tab."
+)
+PROGRESS_KEY = "ielts.progress.v1"
+TAB1_LEG_ANSWERS = ["synthetic library", "synthetic tuesday"]
+TAB2_LEG_ANSWERS = ["synthetic museum", "synthetic sunday"]
+
+# A tab that hears NOTHING from the other tabs of this browser: no storage
+# event, no auth broadcast, and no "this tab is visible again" signal (the
+# auth library re-reads the session when a tab comes back into view).
+# Installed before any page script runs, and
+# only in the tab it is named for. It stands in for a tab that missed the
+# other tab's news (a slow tab, a sleeping one, an event lost in the gap
+# between two page loads), which is the window both R2E findings live in:
+# the other tab's sign-in, or its hand-in, has changed what storage holds,
+# and this tab has not been told. Nothing in the site itself is changed.
+DEAF_TAB_SCRIPT = """
+(() => {
+  try {
+    Object.defineProperty(window, 'BroadcastChannel', { value: undefined, configurable: true, writable: true });
+  } catch (e) {}
+  const add = window.addEventListener;
+  window.addEventListener = function (type, listener, options) {
+    if (type === 'storage' || type === 'visibilitychange') return undefined;
+    return add.call(this, type, listener, options);
+  };
+})();
+"""
+
+
+def watch_tutor_posts(page):
+    """Every request this page sends to Mr EZ (the stand-in's /tutor), with
+    its task and the token it carried. The GET that only reads the tutor's
+    settings is not a request to Mr EZ and is left out."""
+    posts = []
+
+    def on_request(req):
+        try:
+            if req.method != "POST" or "/tutor" not in req.url:
+                return
+            try:
+                body = json.loads(req.post_data or "{}")
+            except ValueError:
+                body = {}
+            posts.append({
+                "task": body.get("task"),
+                "auth": req.headers.get("authorization", ""),
+                "items": ((body.get("review") or {}).get("items") or []),
+            })
+        except Exception:
+            pass
+
+    page.on("request", on_request)
+    return posts
+
+
+def review_posts(posts):
+    return [p for p in posts if p.get("task") in ("item", "debrief")]
+
+
+def auth_session(page):
+    """The session this browser holds right now, read the way the site reads
+    it: its token and the user it was issued to."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            """() => {
+                for (const k of Object.keys(localStorage)) {
+                    if (k.startsWith('sb-') && k.endsWith('-auth-token')) {
+                        try {
+                            const s = JSON.parse(localStorage.getItem(k));
+                            return { token: s.access_token, user: s.user ? s.user.id : null };
+                        } catch (e) { return null; }
+                    }
+                }
+                return null;
+            }"""
+        ),
+    )
+
+
+def review_leftovers(page):
+    """What is left on screen of a handed-in paper's review: the score, the
+    answers and every Mr EZ control or reply."""
+    return {
+        "score": text_count(page, "Your Score") + page.get_by_role("button", name="Review Answers").count(),
+        "answers": text_count(page, "Correct answer:") + answer_controls(page),
+        "tutor": page.get_by_role("button", name=WHY_BUTTON).count()
+        + text_count(page, DEBRIEF_BUTTON)
+        + text_count(page, SIMULATED_REVIEW_TEXT),
+    }
+
+
+def nothing_left(leftovers):
+    return all(value == 0 for value in leftovers.values())
+
+
+def hand_in_and_review(page):
+    """Hand the paper on screen in and open its review. Returns whether the
+    score appeared and whether the review is now on screen."""
+    journey.submit_and_confirm(page)
+    page.wait_for_timeout(1500)
+    scored = score_showing(page)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Review Answers"),
+        lambda: not score_showing(page),
+    )
+    page.wait_for_timeout(1500)
+    return scored, text_count(page, "Correct answer:") > 0
+
+
+def run_review_switch_step(browser, a_id, b_id):
+    """Step 17 (R2E-02), on a fresh browser for A, then B."""
+    write_section(
+        "Step 17 - A handed-in paper's review leaves the screen when the account changes, and Mr EZ is "
+        "never asked about it as anybody else (Codex R2E-02)",
+        "The test player's owner listener used to leave a SUBMITTED paper alone. A handed a drill in and "
+        "left its review open; A signed out and B signed in in another tab; the first tab still showed A's "
+        "answers and score to B, and \"Why was my answer wrong?\" sent A's answer to Mr EZ with B's token. "
+        "Now the review belongs to the student who sat the paper: an account change takes the answers, the "
+        "score and every tutor control off the screen, and every review request to Mr EZ carries that "
+        "student and is refused, sending nothing, when anybody else would be sending it. The tutor here is "
+        "the stand-in: every reply it gives is labelled simulated, and no model is called.",
+    )
+    ctx = new_context(browser)
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    tab1.on("dialog", lambda dialog: dialog.accept())
+    posts1 = watch_tutor_posts(tab1)
+    goto(tab1, "/dashboard")
+    tab1.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab1, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    # ── Tab 1: A sits the drill, hands it in, opens the review ──
+    open_paper(tab1, DRILL_PATH)
+    journey.start_drill_if_needed(tab1)
+    tab1.wait_for_timeout(700)
+    try:
+        tab1.locator("select").first.select_option(index=A_CHOICE_INDEX)
+    except Exception:
+        pass
+    tab1.wait_for_timeout(800)
+    a_given = first_select_value(tab1)
+    scored, reviewing = hand_in_and_review(tab1)
+    why_offered = tab1.get_by_role("button", name=WHY_BUTTON).count()
+    write_row(
+        "Tab 1: A hands the drill in and reads the review: the score came up, the answers are on screen, and "
+        "\"Why was my answer wrong?\" is offered",
+        scored and reviewing and why_offered > 0,
+        f"score shown: {scored}, review on screen: {reviewing}, \"{WHY_BUTTON}\" buttons: {why_offered}, "
+        f"A's answer to q14 = \"{a_given}\"",
+    )
+
+    # ── A asks once, as A ──
+    a_session = auth_session(tab1) or {}
+    journey.click_until(
+        tab1,
+        lambda: tab1.get_by_role("button", name=WHY_BUTTON),
+        lambda: text_count(tab1, SIMULATED_REVIEW_TEXT) > 0,
+    )
+    tab1.wait_for_timeout(800)
+    a_posts = review_posts(posts1)
+    write_row(
+        "A's own press goes out once, with A's own token, and the reply on screen is labelled simulated",
+        len(a_posts) == 1
+        and bool(a_session.get("token"))
+        and a_posts[0]["auth"] == f"Bearer {a_session.get('token')}"
+        and text_count(tab1, SIMULATED_BADGE) > 0,
+        f"review requests from tab 1: {len(a_posts)} ({', '.join(p['task'] for p in a_posts)}), sent with A's "
+        f"token: {bool(a_posts) and a_posts[0]['auth'] == 'Bearer ' + str(a_session.get('token'))}, simulated "
+        f"badge: {text_count(tab1, SIMULATED_BADGE)}",
+    )
+    shot(tab1, "48-a-review-with-a-simulated-reply", DRILL_PATH)
+    mark_page(tab1)
+    before_switch = len(review_posts(posts1))
+
+    # ── Tab 2: A signs out ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    tab2.on("dialog", lambda dialog: dialog.accept())
+    goto(tab2, "/dashboard")
+    tab2.wait_for_timeout(1500)
+    journey.ws_sign_out(tab2)
+    tab2.wait_for_timeout(1200)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2000)
+    left_out = review_leftovers(tab1)
+    write_row(
+        "A signs out in a second tab: the first tab's review leaves the screen for the signed-out sentence, "
+        "with no score, no answers and no Mr EZ",
+        text_count(tab1, REVIEW_SIGNED_OUT_HEADING) > 0 and nothing_left(left_out),
+        f"\"{REVIEW_SIGNED_OUT_HEADING}\": {text_count(tab1, REVIEW_SIGNED_OUT_HEADING)}; left on screen: "
+        f"{json.dumps(left_out)}",
+    )
+    shot(tab1, "49-review-hidden-after-sign-out", DRILL_PATH)
+
+    # ── Tab 2: B signs in ──
+    b_back = journey.ws_sign_in(tab2, EMAIL_B, PASSWORD_B)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2000)
+    reloaded_since(tab1, "tab 1 (A's review), after B signed in in tab 2")
+    left_b = review_leftovers(tab1)
+    write_row(
+        "B signs in there: the first tab says the test belongs to another student and still shows none of "
+        "A's review",
+        b_back == b_id and text_count(tab1, REVIEW_OTHER_HEADING) > 0 and nothing_left(left_b),
+        f"B = {b_back}; \"{REVIEW_OTHER_HEADING}\": {text_count(tab1, REVIEW_OTHER_HEADING)}; left on screen: "
+        f"{json.dumps(left_b)}",
+    )
+    write_row(
+        "Nothing was sent to Mr EZ from the first tab after the switch",
+        len(review_posts(posts1)) == before_switch,
+        f"review requests from tab 1 before the switch: {before_switch}, now: {len(review_posts(posts1))}",
+    )
+    shot(tab1, "50-review-hidden-b-signed-in", DRILL_PATH)
+
+    # ── B's own page ──
+    open_paper(tab2, DRILL_PATH)
+    left_b_page = review_leftovers(tab2)
+    write_row(
+        "B's own page for the same drill shows nothing of A: the instructions, no score, no answers, no Mr EZ "
+        "reply",
+        tab2.get_by_role("button", name="Start test").count() > 0 and nothing_left(left_b_page),
+        f"Start test: {tab2.get_by_role('button', name='Start test').count()}; left on screen: "
+        f"{json.dumps(left_b_page)}",
+    )
+    shot(tab2, "51-b-own-drill-page", DRILL_PATH)
+
+    # ── Tab 1: B starts the same drill fresh, answers it the same way ──
+    journey.click_until(
+        tab1,
+        lambda: tab1.get_by_role("button", name="Start this test fresh"),
+        lambda: tab1.get_by_role("button", name="Start test").count() > 0,
+    )
+    journey.start_drill_if_needed(tab1)
+    tab1.wait_for_timeout(700)
+    try:
+        tab1.locator("select").first.select_option(index=A_CHOICE_INDEX)
+    except Exception:
+        pass
+    tab1.wait_for_timeout(800)
+    b_given = first_select_value(tab1)
+    b_scored, b_reviewing = hand_in_and_review(tab1)
+    b_why = tab1.get_by_role("button", name=WHY_BUTTON).count()
+    write_row(
+        "In the same open tab, B's own review of the same drill with the same answer shows none of the reply "
+        "A bought: every \"Why was my answer wrong?\" is a fresh button (the cache is per student)",
+        b_scored and b_reviewing and b_given == a_given and b_why == why_offered
+        and text_count(tab1, SIMULATED_REVIEW_TEXT) == 0,
+        f"B's answer to q14 = \"{b_given}\" (A's was \"{a_given}\"); buttons: {b_why} (A had {why_offered}); "
+        f"simulated replies on screen: {text_count(tab1, SIMULATED_REVIEW_TEXT)}",
+    )
+    b_session = auth_session(tab1) or {}
+    journey.click_until(
+        tab1,
+        lambda: tab1.get_by_role("button", name=WHY_BUTTON),
+        lambda: text_count(tab1, SIMULATED_REVIEW_TEXT) > 0,
+    )
+    tab1.wait_for_timeout(800)
+    b_posts = review_posts(posts1)[before_switch:]
+    write_row(
+        "B's own press on B's own review goes out once, with B's token",
+        len(b_posts) == 1 and bool(b_session.get("token")) and b_posts[0]["auth"] == f"Bearer {b_session.get('token')}"
+        and b_session.get("user") == b_id,
+        f"review requests since the switch: {len(b_posts)}, B's session user = {b_session.get('user')}, sent with "
+        f"B's token: {bool(b_posts) and b_posts[0]['auth'] == 'Bearer ' + str(b_session.get('token'))}",
+    )
+    shot(tab1, "52-b-own-review-own-reply", DRILL_PATH)
+    report_diagnostics("Step 17 (tab 1)", errors1, failed1)
+    tab1.close()
+
+    # ── A tab that missed the switch ──
+    write_note(
+        "**The next checks stand in for a tab that MISSED the other tab's sign-in.** The third tab is opened "
+        "with a small script (installed by this test, before the site's own code) that stops it hearing "
+        "anything from the other tabs: no storage event and no auth broadcast. So when the account changes in "
+        "tab 2, this tab still believes A is signed in while the stored session is already B's, which is the "
+        "window in which the old code sent A's answer with B's token."
+    )
+    goto(tab2, "/dashboard")
+    tab2.wait_for_timeout(1200)
+    journey.ws_sign_out(tab2)
+    back_a = journey.ws_sign_in(tab2, EMAIL_A, PASSWORD_A)
+    tab3 = ctx.new_page()
+    errors3, failed3 = attach_diagnostics(tab3)
+    tab3.on("dialog", lambda dialog: dialog.accept())
+    tab3.add_init_script(DEAF_TAB_SCRIPT)
+    posts3 = watch_tutor_posts(tab3)
+    open_paper(tab3, DRILL_PATH)
+    journey.start_drill_if_needed(tab3)
+    tab3.wait_for_timeout(700)
+    try:
+        tab3.locator("select").first.select_option(index=A_CHOICE_INDEX)
+    except Exception:
+        pass
+    tab3.wait_for_timeout(800)
+    scored3, reviewing3 = hand_in_and_review(tab3)
+    why3 = tab3.get_by_role("button", name=WHY_BUTTON).count()
+    write_row(
+        "A is back (tab 2), and a third tab that hears nothing from the others hands the drill in as A and "
+        "shows A's review with \"Why was my answer wrong?\"",
+        back_a == a_id and scored3 and reviewing3 and why3 > 0,
+        f"A = {back_a}; score shown: {scored3}, review: {reviewing3}, buttons: {why3}",
+    )
+    tab2.bring_to_front()
+    journey.ws_sign_out(tab2)
+    journey.ws_sign_in(tab2, EMAIL_B, PASSWORD_B)
+    stored = auth_session(tab2) or {}
+    tab3.bring_to_front()
+    tab3.wait_for_timeout(2000)
+    still = review_leftovers(tab3)
+    write_row(
+        "B signs in in tab 2; the third tab was not told, so A's review is still on its screen (the window "
+        "the finding describes), while the session this browser holds is B's",
+        stored.get("user") == b_id and still["answers"] > 0 and still["tutor"] > 0,
+        f"stored session user = {stored.get('user')} (B = {b_id}); left on the third tab's screen: "
+        f"{json.dumps(still)}",
+    )
+    shot(tab3, "53-deaf-tab-still-shows-a-review", DRILL_PATH)
+    mark_page(tab3)
+    before3 = len(review_posts(posts3))
+    try:
+        tab3.get_by_role("button", name=WHY_BUTTON).first.click(timeout=6000)
+    except Exception:
+        pass
+    tab3.wait_for_timeout(2500)
+    reloaded_since(tab3, "the third tab, after its press")
+    after3 = review_leftovers(tab3)
+    write_row(
+        "Its press on A's review sends NOTHING (zero requests to Mr EZ, so nobody's token carried A's answer): "
+        "the session it would have used is B's, so the request is refused and the review leaves the screen",
+        len(review_posts(posts3)) == before3 and text_count(tab3, REVIEW_OTHER_HEADING) > 0 and nothing_left(after3),
+        f"review requests from the third tab: before the press {before3}, after {len(review_posts(posts3))}; "
+        f"\"{REVIEW_OTHER_HEADING}\": {text_count(tab3, REVIEW_OTHER_HEADING)}; left on screen: {json.dumps(after3)}",
+    )
+    shot(tab3, "54-deaf-tab-press-refused", DRILL_PATH)
+    report_diagnostics("Step 17 (tab 2)", errors2, failed2)
+    report_diagnostics("Step 17 (tab 3)", errors3, failed3)
+    ctx.close()
+
+
+def progress_attempts_since(page, namespace, test_id, since):
+    record = json_item(page, f"{PROGRESS_KEY}::{namespace}") or {}
+    return [a for a in ((record.get("tests") or {}).get(test_id) or []) if (a.get("at") or "") >= since]
+
+
+def fill_gaps(page, answers):
+    gaps = page.locator('input[type="text"]:visible')
+    for index, answer in enumerate(answers):
+        try:
+            gaps.nth(index).fill(answer)
+        except Exception:
+            pass
+    page.wait_for_timeout(1200)
+
+
+def resume_mock_in(page):
+    goto(page, MOCK_PATH)
+    wait_for_mock_ready(page)
+    try:
+        page.wait_for_selector(f"text={RESUME_HEADING}", timeout=8000)
+    except Exception:
+        pass
+    return journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Continue where you left off"),
+        lambda: page.locator('[role="timer"]').count() > 0,
+    )
+
+
+def run_mock_paper_twice_step(browser, a_id):
+    """Step 18 (R2E-03), on a fresh browser for A."""
+    ns_a = f"u:{a_id}"
+    key_a = f"{ACTIVE_MOCK_KEY}::{ns_a}"
+    write_section(
+        "Step 18 - The same mock paper handed in from two tabs: the first hand-in is final, and the paper is "
+        "recorded once (Codex R2E-03)",
+        "Two tabs that picked up the same mock sitting hold the same Listening paper, and the sitting reads as "
+        "theirs in both. Handing the paper in used to overwrite whatever result it already had, so the second "
+        "tab's hand-in replaced the first one's result and recorded the paper a second time, in the progress "
+        "history and in the learner evidence. Now the first hand-in is final: a tab still holding the paper "
+        "stops on the other tab's hand-in, and a hand-in that still arrives is refused and records nothing.",
+    )
+    ctx = new_context(browser)
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    tab1.on("dialog", lambda dialog: dialog.accept())
+    goto(tab1, "/dashboard")
+    tab1.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab1, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+    since = page_now(tab1)
+
+    # ── Tab 1 starts a mock; tabs 2 and 3 pick up the same sitting ──
+    goto(tab1, MOCK_PATH)
+    wait_for_mock_ready(tab1)
+    listening_id = tab1.locator("select").first.input_value()
+    started = journey.click_until(
+        tab1,
+        lambda: tab1.get_by_role("button", name="Start Mock Exam"),
+        lambda: tab1.locator('[role="timer"]').count() > 0,
+    )
+    tab1.wait_for_timeout(1000)
+    sitting_id = (active_mock_for(tab1, ns_a) or {}).get("sittingId")
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    tab2.on("dialog", lambda dialog: dialog.accept())
+    tab2.add_init_script(DEAF_TAB_SCRIPT)
+    resumed2 = resume_mock_in(tab2)
+    tab3 = ctx.new_page()
+    errors3, failed3 = attach_diagnostics(tab3)
+    tab3.on("dialog", lambda dialog: dialog.accept())
+    resumed3 = resume_mock_in(tab3)
+    tab2.wait_for_timeout(800)
+    write_row(
+        "Tab 1 starts a mock on its Listening paper; tab 2 (which hears nothing from the other tabs) and tab 3 "
+        "pick up the same sitting and the same paper",
+        started and resumed2 and resumed3 and bool(sitting_id)
+        and (active_mock_for(tab3, ns_a) or {}).get("sittingId") == sitting_id,
+        f"Listening paper {listening_id}, sitting {sitting_id}; tab 2 running: {resumed2}, tab 3 running: {resumed3}",
+    )
+    write_note(
+        "**Tab 2 stands in for a tab that MISSED the other tab's hand-in**, by the same small script as step "
+        "17 (no storage event reaches it). Tab 3 is an ordinary tab."
+    )
+
+    # ── Tab 2 answers one way, tab 1 another, and tab 1 hands in first ──
+    tab2.bring_to_front()
+    fill_gaps(tab2, TAB2_LEG_ANSWERS)
+    tab1.bring_to_front()
+    fill_gaps(tab1, TAB1_LEG_ANSWERS)
+    leg_before = ((active_mock_for(tab1, ns_a) or {}).get("legSittings") or {}).get(listening_id) or {}
+    journey.submit_and_confirm(tab1)
+    tab1.wait_for_timeout(2000)
+    leg_after_1 = ((active_mock_for(tab1, ns_a) or {}).get("legSittings") or {}).get(listening_id) or {}
+    result_1 = json.dumps(leg_after_1.get("result"), sort_keys=True)
+    write_row(
+        "Tab 1 answers differently from tab 2 and hands the paper in first: accepted, its score is showing, and "
+        "the paper's result is kept inside the sitting",
+        sorted((leg_before.get("answers") or {}).values()) == sorted(TAB1_LEG_ANSWERS)
+        and score_showing(tab1)
+        and bool(leg_after_1.get("result")),
+        f"answers before the hand-in (tab 1's, the last written): {json.dumps(leg_before.get('answers'))}; "
+        f"score showing: {score_showing(tab1)}; result = {result_1}",
+    )
+    shot(tab1, "55-mock-paper-handed-in-tab-1", MOCK_PATH)
+
+    # ── Tab 3: told by tab 1's hand-in ──
+    tab3.bring_to_front()
+    tab3.wait_for_timeout(2000)
+    write_row(
+        "Tab 3 stops on the stopped screen with the sentence for a paper handed in from another tab: no answer "
+        "boxes, no Submit",
+        text_count(tab3, HANDED_IN_SENTENCE) > 0
+        and answer_controls(tab3) == 0
+        and tab3.get_by_role("button", name="Submit").count() == 0,
+        f"sentence: {text_count(tab3, HANDED_IN_SENTENCE)}, answer controls: {answer_controls(tab3)}, "
+        f"Submit: {tab3.get_by_role('button', name='Submit').count()}",
+    )
+    shot(tab3, "56-mock-paper-tab-3-stopped", MOCK_PATH)
+
+    # ── Tab 2: never told; hands in its own, different answers ──
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(800)
+    running2 = tab2.locator('[role="timer"]').count() > 0 and text_count(tab2, HANDED_IN_SENTENCE) == 0
+    mark_page(tab2)
+    journey.submit_and_confirm(tab2)
+    tab2.wait_for_timeout(2000)
+    reloaded_since(tab2, "tab 2 (mock paper), after its hand-in")
+    write_row(
+        "Tab 2, never told, is still running with its own answers; its hand-in is refused and it stops with the "
+        "same sentence, never reaching a score",
+        running2 and text_count(tab2, HANDED_IN_SENTENCE) > 0 and not score_showing(tab2),
+        f"running before its hand-in: {running2}; sentence after: {text_count(tab2, HANDED_IN_SENTENCE)}; "
+        f"score showing: {score_showing(tab2)}",
+    )
+    shot(tab2, "57-mock-paper-tab-2-refused", MOCK_PATH)
+    held = active_mock_for(tab2, ns_a) or {}
+    leg_now = (held.get("legSittings") or {}).get(listening_id) or {}
+    write_row(
+        "The paper's result is still tab 1's, byte for byte, and the sitting is still written down",
+        json.dumps(leg_now.get("result"), sort_keys=True) == result_1 and held.get("sittingId") == sitting_id,
+        f"result now = {json.dumps(leg_now.get('result'), sort_keys=True)}; sitting {held.get('sittingId')}",
+    )
+    attempts = progress_attempts_since(tab2, ns_a, listening_id, since)
+    events = submitted_events(tab2, ns_a, f"test:{listening_id}", since)
+    event_answers = sorted(
+        (item.get("firstAnswer") or "") for event in events for item in (event.get("items") or []) if item.get("firstAnswer")
+    )
+    write_row(
+        "The paper was recorded once: one attempt in A's progress history and one submission in A's learner "
+        "evidence, carrying tab 1's answers and none of tab 2's",
+        len(attempts) == 1
+        and len(events) == 1
+        and all(answer in event_answers for answer in TAB1_LEG_ANSWERS)
+        and not any(answer in event_answers for answer in TAB2_LEG_ANSWERS),
+        f"attempts of {listening_id} since the step began: {len(attempts)}; submissions: {len(events)}; "
+        f"answers in the evidence: {json.dumps(event_answers)}",
+    )
+    raw_after = raw_item(tab2, key_a)
+    write_row(
+        "Nothing tab 2 did was written: the in-progress record holds no answer of tab 2's",
+        bool(raw_after) and not any(answer in raw_after for answer in TAB2_LEG_ANSWERS),
+        f"searched {key_a} for tab 2's two answers",
+    )
+    report_diagnostics("Step 18 (tab 1)", errors1, failed1)
+    report_diagnostics("Step 18 (tab 2)", errors2, failed2)
+    report_diagnostics("Step 18 (tab 3)", errors3, failed3)
+    ctx.close()
+
+
+# ── Seventh round: every tutor request belongs to its student ───────────────
+
+CONVERSATION_KEY = "ielts.mrez.conversation.v1"
+PANEL_MESSAGE_A = "SYNTHETIC question typed by student A in the Mr EZ panel"
+PANEL_REPLY_A = "SYNTHETIC reply for student A, written by this test and released late"
+PANEL_MESSAGE_B = "SYNTHETIC question typed by student B in the Mr EZ panel"
+PANEL_REPLY_B = "SYNTHETIC reply for student B, written by this test"
+PANEL_EMPTY = "Where shall we start?"
+
+
+def synthetic_panel_reply(text, conversation_id):
+    """A reply in the tutor's own shape, written HERE: labelled simulated
+    (live false), from no model and not from the stand-in either."""
+    return json.dumps({
+        "task": "chat",
+        "conversationId": conversation_id,
+        "text": text,
+        "mood": "explaining",
+        "live": False,
+        "model": "simulated",
+    })
+
+
+def hold_chat_requests(page):
+    """Hold every chat message this page sends to Mr EZ, unanswered, in a
+    list the test releases from. Nothing else is touched: the settings
+    probe, the welcome and every other request go through as usual."""
+    held = []
+
+    def on_route(route):
+        request = route.request
+        body = {}
+        if request.method == "POST":
+            try:
+                body = json.loads(request.post_data or "{}")
+            except ValueError:
+                body = {}
+        if request.method == "POST" and body.get("task") == "chat":
+            held.append({
+                "route": route,
+                "auth": request.headers.get("authorization", ""),
+                "message": body.get("message"),
+            })
+            return
+        route.continue_()
+
+    page.route("**/tutor**", on_route)
+    return held
+
+
+def release(held_request, text, conversation_id):
+    held_request["route"].fulfill(
+        status=200,
+        headers={"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+        body=synthetic_panel_reply(text, conversation_id),
+    )
+
+
+def conversations_in_tab(page):
+    """Every conversation this tab keeps in its own session storage, key by
+    key, exactly as stored."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            """(base) => Object.fromEntries(Object.keys(sessionStorage)
+                .filter((k) => k.startsWith(base))
+                .map((k) => [k, sessionStorage.getItem(k)]))""",
+            CONVERSATION_KEY,
+        ),
+    )
+
+
+def panel_text(page):
+    panel = page.locator("#mrez-panel")
+    try:
+        return panel.first.inner_text() if panel.count() else ""
+    except Exception:
+        return ""
+
+
+def wait_for_held(page, held, count, attempts=40):
+    for _ in range(attempts):
+        if len(held) >= count:
+            return True
+        page.wait_for_timeout(250)
+    return len(held) >= count
+
+
+def send_from_panel(page, message):
+    box = page.locator("#mrez-input")
+    try:
+        box.fill(message, timeout=8000)
+        box.press("Enter")
+        return True
+    except Exception:
+        return False
+
+
+def run_panel_switch_step(browser, a_id, b_id):
+    """Step 19 (every tutor request bound to its student), on a fresh browser
+    for A, then B."""
+    write_section(
+        "Step 19 - A message sent to Mr EZ is answered to its own student or to nobody (follow-up to Codex R2E-02)",
+        "R2E-02 bound the two review requests to the student who sat the paper. Every other request to Mr EZ "
+        "still went out with whatever token the browser held, and its reply went into whichever conversation "
+        "was on the page when it came back; the panel also kept one conversation for the whole browser tab. "
+        "Now every request is bound to the student on the page when it is made, and handed back only while that "
+        "student is still the one on the page; the panel's conversation is kept per student and changes with "
+        "the account. Here A's panel message is held on its way (routed to this test, which answers it), the "
+        "account changes to B in a second tab, and only then is it released with a SYNTHETIC reply this test "
+        "wrote, labelled simulated. No model is called, and the stand-in never sees either chat message.",
+    )
+    ctx = new_context(browser)
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    tab1.on("dialog", lambda dialog: dialog.accept())
+    held = hold_chat_requests(tab1)
+    posts1 = watch_tutor_posts(tab1)
+    goto(tab1, "/dashboard")
+    tab1.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab1, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    # ── Tab 1: A asks Mr EZ something, and the request is held on its way ──
+    journey.click_until(
+        tab1,
+        lambda: tab1.locator(".mrez-launcher"),
+        lambda: tab1.locator("#mrez-panel.is-open").count() > 0,
+    )
+    tab1.wait_for_timeout(600)
+    sent_a = send_from_panel(tab1, PANEL_MESSAGE_A)
+    got_a = wait_for_held(tab1, held, 1)
+    tab1.wait_for_timeout(600)
+    a_session = auth_session(tab1) or {}
+    a_key = f"{CONVERSATION_KEY}::u:{a_id}"
+    stored_a = conversations_in_tab(tab1)
+    write_row(
+        "A sends a message from the panel: it goes out once, with A's own token, and is held on its way with no "
+        "reply yet; A's question is on screen and saved under A's own key",
+        sent_a and got_a and len(held) == 1
+        and held[0]["auth"] == f"Bearer {a_session.get('token')}"
+        and held[0]["message"] == PANEL_MESSAGE_A
+        and PANEL_MESSAGE_A in panel_text(tab1)
+        and PANEL_MESSAGE_A in (stored_a.get(a_key) or ""),
+        f"chat requests held: {len(held)}, sent with A's token: "
+        f"{bool(held) and held[0]['auth'] == 'Bearer ' + str(a_session.get('token'))}, A's question on screen: "
+        f"{PANEL_MESSAGE_A in panel_text(tab1)}, conversation keys in the tab: {sorted(stored_a.keys())}",
+    )
+    shot(tab1, "55-a-message-held-on-its-way", "/dashboard")
+    mark_page(tab1)
+
+    # ── Tab 2: A signs out, B signs in ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    tab2.on("dialog", lambda dialog: dialog.accept())
+    goto(tab2, "/dashboard")
+    tab2.wait_for_timeout(1500)
+    journey.ws_sign_out(tab2)
+    b_back = journey.ws_sign_in(tab2, EMAIL_B, PASSWORD_B)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    reloaded_since(tab1, "tab 1 (A's panel), after B signed in in tab 2")
+    before_release = panel_text(tab1)
+    write_row(
+        "B signs in in a second tab: the first tab's panel is B's now, with none of A's question on it",
+        b_back == b_id and PANEL_MESSAGE_A not in before_release and text_count(tab1, PANEL_EMPTY) > 0,
+        f"B = {b_back}; A's question in the panel: {PANEL_MESSAGE_A in before_release}; B's empty panel "
+        f"(\"{PANEL_EMPTY}\"): {text_count(tab1, PANEL_EMPTY)}",
+    )
+    shot(tab1, "56-panel-is-b-before-release", "/dashboard")
+
+    # ── The held request comes back, late, with a reply for A ──
+    release(held[0], PANEL_REPLY_A, "SYNTHETIC-conversation-a-panel")
+    tab1.wait_for_timeout(2500)
+    after_release = panel_text(tab1)
+    stored = conversations_in_tab(tab1)
+    b_key = f"{CONVERSATION_KEY}::u:{b_id}"
+    anywhere = json.dumps(stored)
+    write_row(
+        "The late reply for A is not shown: it is nowhere on the first tab's page",
+        PANEL_REPLY_A not in after_release and text_count(tab1, PANEL_REPLY_A) == 0,
+        f"reply in the panel: {PANEL_REPLY_A in after_release}; anywhere on the page: "
+        f"{text_count(tab1, PANEL_REPLY_A)}",
+    )
+    chat_posts = [p for p in posts1 if p.get("task") == "chat"]
+    write_row(
+        "Nothing was sent again: one chat request in all, the held one",
+        len(held) == 1 and len(chat_posts) == 1,
+        f"chat requests held: {len(held)}; chat requests the page made: {len(chat_posts)}",
+    )
+    write_row(
+        "B's saved conversation holds nothing of A: no question, no reply, and the late reply is not saved "
+        "anywhere in the tab",
+        PANEL_MESSAGE_A not in (stored.get(b_key) or "")
+        and PANEL_REPLY_A not in anywhere
+        and CONVERSATION_KEY not in stored,
+        f"B's key present: {b_key in stored}, holds A's question: {PANEL_MESSAGE_A in (stored.get(b_key) or '')}; "
+        f"late reply saved anywhere: {PANEL_REPLY_A in anywhere}; old unowned key present: "
+        f"{CONVERSATION_KEY in stored}; keys: {sorted(stored.keys())}",
+    )
+    write_note(
+        "**What the tab keeps after the release:** A's own question stays under A's key only ("
+        f"`{a_key}`: {'present' if PANEL_MESSAGE_A in (stored.get(a_key) or '') else 'absent'}), where A's next "
+        "sign-in on this tab finds it; B's key has nothing of A's."
+    )
+    shot(tab1, "57-late-reply-dropped", "/dashboard")
+
+    # ── B's own message, in the same panel ──
+    b_session = auth_session(tab1) or {}
+    sent_b = send_from_panel(tab1, PANEL_MESSAGE_B)
+    got_b = wait_for_held(tab1, held, 2)
+    if got_b:
+        release(held[1], PANEL_REPLY_B, "SYNTHETIC-conversation-b-panel")
+    tab1.wait_for_timeout(2500)
+    stored_b = conversations_in_tab(tab1)
+    shown_b = panel_text(tab1)
+    write_row(
+        "B's own message goes out with B's token, and its reply (synthetic, labelled simulated) lands in B's panel "
+        "and B's saved conversation, with nothing of A's beside it",
+        sent_b and got_b
+        and held[1]["auth"] == f"Bearer {b_session.get('token')}"
+        and b_session.get("user") == b_id
+        and PANEL_REPLY_B in shown_b
+        and text_count(tab1, SIMULATED_BADGE) > 0
+        and PANEL_REPLY_B in (stored_b.get(b_key) or "")
+        and PANEL_MESSAGE_A not in shown_b
+        and PANEL_MESSAGE_A not in (stored_b.get(b_key) or ""),
+        f"sent with B's token: {got_b and held[1]['auth'] == 'Bearer ' + str(b_session.get('token'))}; reply in "
+        f"the panel: {PANEL_REPLY_B in shown_b}; simulated badge: {text_count(tab1, SIMULATED_BADGE)}; saved "
+        f"under B: {PANEL_REPLY_B in (stored_b.get(b_key) or '')}; A's question beside it: "
+        f"{PANEL_MESSAGE_A in shown_b or PANEL_MESSAGE_A in (stored_b.get(b_key) or '')}",
+    )
+    shot(tab1, "58-b-own-message-and-reply", "/dashboard")
+    report_diagnostics("Step 19 (tab 1)", errors1, failed1)
+    report_diagnostics("Step 19 (tab 2)", errors2, failed2)
+    ctx.close()
+
+
+# ── Eighth round: a lesson answer and its evaluation belong to their student ──
+
+EVAL_TASK_ID = "writing-task1-overview-guided"
+EVAL_PATH = f"/trainers/focused/{EVAL_TASK_ID}"
+EVAL_ACTIVITY = f"focus:{EVAL_TASK_ID}"
+EVAL_ANSWER_A = (
+    "SYNTHETIC overview by student A: coal use fell steadily over the period, "
+    "while renewable sources rose to overtake it."
+)
+EVAL_OBSERVATION_A = "SYNTHETIC observation for student A, written by this test and released late"
+EVAL_NOTE = "The account on this page changed. Any answer in progress was kept for the student who was writing it."
+WRITTEN_DRAFT_BASE = "ielts.learning.written.v1"
+LEARNER_RECORD_BASE = "ielts.learning.record.v1"
+
+
+def synthetic_evaluation_reply():
+    """A judged verdict in the tutor's own shape, written HERE: labelled
+    simulated (live false), from no model and not from the stand-in either."""
+    return json.dumps({
+        "task": "evaluate-practice",
+        "verdict": "met",
+        "met": True,
+        "judged": True,
+        "feedback": "SYNTHETIC feedback, from no model",
+        "observations": [EVAL_OBSERVATION_A, "SYNTHETIC second observation, from no model"],
+        "suggestions": ["SYNTHETIC next move, from no model"],
+        "isBand": False,
+        "live": False,
+        "model": "simulated",
+    })
+
+
+def hold_evaluation_requests(page):
+    """Hold every practice-evaluation request this page sends to Mr EZ,
+    unanswered, in a list the test releases from. Everything else goes
+    through as usual."""
+    held = []
+
+    def on_route(route):
+        request = route.request
+        body = {}
+        if request.method == "POST":
+            try:
+                body = json.loads(request.post_data or "{}")
+            except ValueError:
+                body = {}
+        if request.method == "POST" and body.get("task") == "evaluate-practice":
+            held.append({
+                "route": route,
+                "auth": request.headers.get("authorization", ""),
+                "submission": body.get("submission"),
+            })
+            return
+        route.continue_()
+
+    page.route("**/tutor**", on_route)
+    return held
+
+
+def stored_json(page, key):
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            "(key) => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } }",
+            key,
+        ),
+    )
+
+
+def written_draft_of(page, namespace):
+    return stored_json(page, f"{WRITTEN_DRAFT_BASE}::{namespace}::{EVAL_TASK_ID}")
+
+
+def evaluation_events_of(page, namespace):
+    record = stored_json(page, f"{LEARNER_RECORD_BASE}::{namespace}") or {}
+    return [event for event in (record.get("events") or []) if event.get("activityId") == EVAL_ACTIVITY]
+
+
+def keys_holding(page, text):
+    """Every localStorage key whose value contains `text`."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            "(text) => Object.keys(localStorage).filter((k) => (localStorage.getItem(k) || '').includes(text)).sort()",
+            text,
+        ),
+    )
+
+
+def answer_box_value(page):
+    box = page.locator("#written-answer")
+    try:
+        return box.first.input_value(timeout=3000) if box.count() else None
+    except Exception:
+        return None
+
+
+def run_lesson_evaluation_step(browser, a_id, b_id):
+    """Step 20 (a lesson answer and its evaluation belong to the student who
+    pressed Check), on a fresh browser for A, then B."""
+    write_section(
+        "Step 20 - A written answer sent for evaluation is kept for its own student and shown to nobody else "
+        "(the lesson surfaces, after R2E-02)",
+        "The follow-up to R2E-02 for the lesson surfaces that RECORD what the tutor sends back. The tutor client "
+        "already dropped a reply that came back after the page changed hands, but the written focused task then "
+        "recorded the student's answer, as not judged, into whichever student was on the page by then. Now the "
+        "answer is bound at the press to the student who wrote it, kept in THAT student's own record and draft "
+        "whatever happens next, and shown only while they are still the one on the page; when the page changes "
+        "hands the task is handed over, empty, to the next student. Here A's evaluation request is held on its "
+        "way (routed to this test, which answers it), the account changes to B in a second tab, and only then is "
+        "it released with a SYNTHETIC judged reply this test wrote, labelled simulated. No model is called, and "
+        "the stand-in never sees the evaluation request.",
+    )
+    ctx = new_context(browser)
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    tab1.on("dialog", lambda dialog: dialog.accept())
+    held = hold_evaluation_requests(tab1)
+    posts1 = watch_tutor_posts(tab1)
+    goto(tab1, "/dashboard")
+    tab1.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab1, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    # ── Tab 1: A writes an overview and presses Check; the request is held ──
+    goto(tab1, EVAL_PATH)
+    tab1.wait_for_timeout(1500)
+    box = tab1.locator("#written-answer")
+    typed = False
+    try:
+        box.first.click(timeout=8000)
+        box.first.fill(EVAL_ANSWER_A, timeout=8000)
+        typed = True
+    except Exception:
+        typed = False
+    tab1.wait_for_timeout(1200)
+    journey.click_until(
+        tab1,
+        lambda: tab1.locator("button.focused-check"),
+        lambda: len(held) > 0,
+    )
+    got = wait_for_held(tab1, held, 1)
+    tab1.wait_for_timeout(600)
+    a_session = auth_session(tab1) or {}
+    ns_a = f"u:{a_id}"
+    ns_b = f"u:{b_id}"
+    write_row(
+        "A presses Check on the guided overview task: the evaluation goes out once, with A's own token and A's "
+        "own words, and is held on its way with no reply yet",
+        typed and got and len(held) == 1
+        and held[0]["auth"] == f"Bearer {a_session.get('token')}"
+        and held[0]["submission"] == EVAL_ANSWER_A
+        and a_session.get("user") == a_id,
+        f"typed: {typed}; evaluation requests held: {len(held)}; sent with A's token: "
+        f"{bool(held) and held[0]['auth'] == 'Bearer ' + str(a_session.get('token'))}; carries A's words: "
+        f"{bool(held) and held[0]['submission'] == EVAL_ANSWER_A}",
+    )
+    shot(tab1, "59-a-evaluation-held-on-its-way", EVAL_PATH)
+    mark_page(tab1)
+
+    # ── Tab 2: A signs out, B signs in ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    tab2.on("dialog", lambda dialog: dialog.accept())
+    goto(tab2, "/dashboard")
+    tab2.wait_for_timeout(1500)
+    journey.ws_sign_out(tab2)
+    b_back = journey.ws_sign_in(tab2, EMAIL_B, PASSWORD_B)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    reloaded_since(tab1, "tab 1 (A's written task), after B signed in in tab 2")
+    box_now = answer_box_value(tab1)
+    write_row(
+        "B signs in in a second tab: the first tab's task is handed over to B, empty, with one calm line saying why",
+        b_back == b_id
+        and box_now == ""
+        and text_count(tab1, EVAL_ANSWER_A) == 0
+        and text_count(tab1, EVAL_NOTE) > 0,
+        f"B = {b_back}; answer box now holds: {json.dumps(box_now)}; A's words anywhere on the page: "
+        f"{text_count(tab1, EVAL_ANSWER_A)}; the notice (\"{EVAL_NOTE}\"): {text_count(tab1, EVAL_NOTE)}",
+    )
+    shot(tab1, "60-task-handed-to-b-before-release", EVAL_PATH)
+
+    # ── The held request comes back, late, with a verdict for A ──
+    if held:
+        held[0]["route"].fulfill(
+            status=200,
+            headers={"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            body=synthetic_evaluation_reply(),
+        )
+    tab1.wait_for_timeout(2500)
+    write_row(
+        "The late verdict for A is shown to nobody: neither the verdict nor A's words are anywhere on the first "
+        "tab's page",
+        text_count(tab1, EVAL_OBSERVATION_A) == 0
+        and text_count(tab1, EVAL_ANSWER_A) == 0
+        and answer_box_value(tab1) == "",
+        f"verdict on the page: {text_count(tab1, EVAL_OBSERVATION_A)}; A's words on the page: "
+        f"{text_count(tab1, EVAL_ANSWER_A)}; answer box: {json.dumps(answer_box_value(tab1))}",
+    )
+    evaluation_posts = [p for p in posts1 if p.get("task") == "evaluate-practice"]
+    write_row(
+        "Nothing was sent again: one evaluation request in all, the held one",
+        len(held) == 1 and len(evaluation_posts) == 1,
+        f"evaluation requests held: {len(held)}; evaluation requests the page made: {len(evaluation_posts)}",
+    )
+
+    a_events = evaluation_events_of(tab1, ns_a)
+    a_answers = [((event.get("items") or [{}])[0] or {}).get("firstAnswer") for event in a_events]
+    a_outcomes = [event.get("outcome") or {} for event in a_events]
+    write_note(
+        "**A's learner record, this task's events:** "
+        + json.dumps([{"firstAnswer": answer, "outcome": outcome} for answer, outcome in zip(a_answers, a_outcomes)])
+    )
+    write_row(
+        "A's answer is kept in A's own learner record, once, as an attempt nothing judged (the late verdict was "
+        "dropped, so no verdict is claimed either way)",
+        len(a_events) == 1
+        and a_answers[0] == EVAL_ANSWER_A
+        and a_outcomes[0].get("met") is False
+        and a_outcomes[0].get("byModel") is False,
+        f"{len(a_events)} event(s) for {EVAL_ACTIVITY} under {ns_a}; first answer matches A's words: "
+        f"{bool(a_answers) and a_answers[0] == EVAL_ANSWER_A}; outcome: {json.dumps(a_outcomes)}",
+    )
+    a_draft = written_draft_of(tab1, ns_a) or {}
+    a_attempts = [attempt.get("text") for attempt in (a_draft.get("attempts") or [])]
+    write_row(
+        "A's answer is kept in A's own draft of the task too, where A's next visit finds it",
+        a_attempts == [EVAL_ANSWER_A],
+        f"attempts in A's draft: {json.dumps(a_attempts)}",
+    )
+    b_events = evaluation_events_of(tab1, ns_b)
+    b_draft = written_draft_of(tab1, ns_b)
+    holding_a = keys_holding(tab1, EVAL_ANSWER_A)
+    holding_verdict = keys_holding(tab1, EVAL_OBSERVATION_A)
+    write_row(
+        "B's learner record and B's draft hold nothing of A's, and the late verdict is kept nowhere at all",
+        not b_events
+        and b_draft is None
+        and not [key for key in holding_a if ns_b in key]
+        and not holding_verdict,
+        f"events for this task under B: {len(b_events)}; B's draft: {json.dumps(b_draft)}; keys holding A's "
+        f"words: {holding_a}; keys holding the late verdict: {holding_verdict}",
+    )
+    shot(tab1, "61-late-verdict-dropped", EVAL_PATH)
+
+    tab1.wait_for_timeout(2500)
+    remote_b = journey.settled_store_snapshot(b_id)
+    remote_b_text = json.dumps(remote_b)
+    write_row(
+        "Nothing the stand-in holds for B carries A's words or the late verdict",
+        EVAL_ANSWER_A not in remote_b_text and EVAL_OBSERVATION_A not in remote_b_text,
+        f"searched every row the stand-in holds for B: A's words "
+        f"{'found' if EVAL_ANSWER_A in remote_b_text else 'not present'}; late verdict "
+        f"{'found' if EVAL_OBSERVATION_A in remote_b_text else 'not present'}",
+    )
+    report_diagnostics("Step 20 (tab 1)", errors1, failed1)
+    report_diagnostics("Step 20 (tab 2)", errors2, failed2)
+    ctx.close()
+
+
+# ── Ninth round: an exercise on screen belongs to the student it was opened for ──
+
+FOCUS_ID = "reading-matching-headings-guided"
+FOCUS_PATH = f"/trainers/focused/{FOCUS_ID}"
+FOCUS_ACTIVITY = f"focus:{FOCUS_ID}"
+QUIZ_PATH = "/lessons/reading/headings"
+QUIZ_SET = "practice-reading-headings"
+QUIZ_ACTIVITY = f"check:{QUIZ_SET}"
+FOCUS_COPY_BASE = "ielts.learning.focus.v1"
+QUIZ_RUN_BASE = "ielts.learning.check.v1"
+# A's answers to three of the six questions: real options of the exercise's
+# heading list, one of them wrong on purpose. Nothing here is checked for
+# being right, only for whose it is.
+A_FOCUS_ANSWERS = ["v", "vii", "ii"]
+EXERCISE_NOTE = (
+    "The account on this page changed. Any answers in progress were kept for the student who was working on them."
+)
+
+
+def focus_copy_of(page, namespace):
+    return stored_json(page, f"{FOCUS_COPY_BASE}::{namespace}::{FOCUS_ID}")
+
+
+def quiz_run_of(page, namespace):
+    return stored_json(page, f"{QUIZ_RUN_BASE}::{namespace}::{QUIZ_SET}")
+
+
+def activity_events_of(page, namespace, activity):
+    record = stored_json(page, f"{LEARNER_RECORD_BASE}::{namespace}") or {}
+    return [event for event in (record.get("events") or []) if event.get("activityId") == activity]
+
+
+def focus_values(page):
+    """The value in each of the focused exercise's answer controls, in order."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            "() => Array.from(document.querySelectorAll('select.focused-answer')).map((s) => s.value)"
+        ),
+    )
+
+
+def quiz_selects(page):
+    return page.locator("astro-island select").filter(has=page.locator("option", has_text="Choose heading"))
+
+
+def quiz_values(page):
+    """The value in each of the quick check's heading controls, in order."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            """() => Array.from(document.querySelectorAll('astro-island select'))
+                .filter((s) => Array.from(s.options).some((o) => (o.textContent || '').includes('Choose heading')))
+                .map((s) => s.value)"""
+        ),
+    )
+
+
+def run_exercise_switch_step(browser, a_id, b_id):
+    """Step 21 (the focused exercise and the lesson quick check belong to the
+    student they were opened for), on a fresh browser for A, then B."""
+    write_section(
+        "Step 21 - The focused exercise and the lesson quick check hand over when the account changes, and a "
+        "check is recorded only for the student whose answers they are (the follow-up to R2B-01)",
+        "The two other screens that host the lesson help buttons used to keep the previous student's answers on "
+        "screen after an account change, and a press of check recorded them into whoever was signed in by then. "
+        "Now each exercise is bound to the student it was opened for: when the page changes hands it hands over "
+        "(A's answers stay in A's own in-progress copy, the screen shows the next student's own or nothing, with "
+        "one calm line), and a check is refused, recording nothing, for a student who is no longer here. Two tabs "
+        "that hear nothing from the others stand in for tabs that missed the switch. No model is called at any "
+        "point: nothing here asks Mr EZ for anything.",
+    )
+    ns_a = f"u:{a_id}"
+    ns_b = f"u:{b_id}"
+    ctx = new_context(browser)
+
+    # ── Tab 3 is where the accounts change hands; A signs in there first ──
+    tab3 = ctx.new_page()
+    errors3, failed3 = attach_diagnostics(tab3)
+    tab3.on("dialog", lambda dialog: dialog.accept())
+    goto(tab3, "/dashboard")
+    tab3.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    # ── Tab 1: A answers three of six on the guided focused exercise ──
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    goto(tab1, FOCUS_PATH)
+    tab1.wait_for_timeout(2200)
+    selects = tab1.locator("select.focused-answer")
+    try:
+        for index, value in enumerate(A_FOCUS_ANSWERS):
+            selects.nth(index).select_option(value, timeout=8000)
+    except Exception as error:
+        write_note(f"**Diagnostic:** answering the focused exercise raised {type(error).__name__}.")
+    tab1.wait_for_timeout(900)
+    a_focus_on_screen = focus_values(tab1) or []
+    a_copy = focus_copy_of(tab1, ns_a) or {}
+    a_copy_answers = [value for value in (a_copy.get("answers") or {}).values()]
+    write_row(
+        "A answers three of the six questions on the guided focused exercise, and they are kept in A's own "
+        "in-progress copy",
+        a_focus_on_screen[:3] == A_FOCUS_ANSWERS and sorted(a_copy_answers) == sorted(A_FOCUS_ANSWERS),
+        f"on screen: {json.dumps(a_focus_on_screen)}; A's copy holds: {json.dumps(a_copy.get('answers'))}",
+    )
+    shot(tab1, "62-a-focused-exercise-part-answered", FOCUS_PATH)
+
+    # ── Tab 2: A answers three questions of the lesson quick check ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    goto(tab2, QUIZ_PATH)
+    tab2.wait_for_timeout(2400)
+    quiz = quiz_selects(tab2)
+    try:
+        for index in range(3):
+            quiz.nth(index).scroll_into_view_if_needed(timeout=8000)
+            quiz.nth(index).select_option(index=index + 1, timeout=8000)
+    except Exception as error:
+        write_note(f"**Diagnostic:** answering the quick check raised {type(error).__name__}.")
+    tab2.wait_for_timeout(900)
+    a_quiz_on_screen = (quiz_values(tab2) or [])[:3]
+    a_run = quiz_run_of(tab2, ns_a) or {}
+    a_run_drafts = (((a_run.get("units") or [{}])[0]) or {}).get("drafts") or []
+    write_row(
+        "A answers three questions of the lesson quick check, and they are kept in A's own unfinished run",
+        len(a_quiz_on_screen) == 3 and all(a_quiz_on_screen) and a_run_drafts[:3] == a_quiz_on_screen,
+        f"on screen: {json.dumps(a_quiz_on_screen)}; A's run, unit 1: {json.dumps(a_run_drafts)}",
+    )
+    shot(tab2, "63-a-quick-check-part-answered", QUIZ_PATH)
+    mark_page(tab1)
+    mark_page(tab2)
+
+    # ── Tab 3: A signs out and B signs in ──
+    tab3.bring_to_front()
+    journey.ws_sign_out(tab3)
+    b_back = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    reloaded_since(tab1, "tab 1 (A's focused exercise), after B signed in in tab 3")
+    focus_now = focus_values(tab1) or []
+    write_row(
+        "B signs in in another tab: A's focused exercise tab hands over, with one calm line and nothing of A's "
+        "answers",
+        b_back == b_id and not any(focus_now) and text_count(tab1, EXERCISE_NOTE) > 0,
+        f"B = {b_back}; answer controls now read: {json.dumps(focus_now)}; the notice (\"{EXERCISE_NOTE}\"): "
+        f"{text_count(tab1, EXERCISE_NOTE)}",
+    )
+    shot(tab1, "64-focused-exercise-handed-to-b", FOCUS_PATH)
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1500)
+    reloaded_since(tab2, "tab 2 (A's quick check), after B signed in in tab 3")
+    quiz_now = quiz_values(tab2) or []
+    write_row(
+        "A's quick check tab hands over too, with the same calm line and nothing of A's answers",
+        not any(quiz_now) and text_count(tab2, EXERCISE_NOTE) > 0,
+        f"heading controls now read: {json.dumps(quiz_now)}; the notice: {text_count(tab2, EXERCISE_NOTE)}",
+    )
+    shot(tab2, "65-quick-check-handed-to-b", QUIZ_PATH)
+
+    a_copy_after = focus_copy_of(tab1, ns_a) or {}
+    a_run_after = quiz_run_of(tab1, ns_a) or {}
+    a_run_after_drafts = (((a_run_after.get("units") or [{}])[0]) or {}).get("drafts") or []
+    write_row(
+        "A's answers are still kept for A, in A's own copy of each",
+        (a_copy_after.get("answers") or {}) == (a_copy.get("answers") or {})
+        and a_run_after_drafts[:3] == a_quiz_on_screen,
+        f"A's focused copy: {json.dumps(a_copy_after.get('answers'))}; A's quick check run, unit 1: "
+        f"{json.dumps(a_run_after_drafts)}",
+    )
+    write_row(
+        "Nothing of A's is kept under B: no focused copy and no quick check run for B, and no event for either "
+        "activity in B's record",
+        focus_copy_of(tab1, ns_b) is None
+        and quiz_run_of(tab1, ns_b) is None
+        and not activity_events_of(tab1, ns_b, FOCUS_ACTIVITY)
+        and not activity_events_of(tab1, ns_b, QUIZ_ACTIVITY),
+        f"B's focused copy: {json.dumps(focus_copy_of(tab1, ns_b))}; B's quick check run: "
+        f"{json.dumps(quiz_run_of(tab1, ns_b))}; B's events for them: "
+        f"{len(activity_events_of(tab1, ns_b, FOCUS_ACTIVITY)) + len(activity_events_of(tab1, ns_b, QUIZ_ACTIVITY))}",
+    )
+
+    # ── B's own visits show nothing of A's ──
+    tab3.bring_to_front()
+    goto(tab3, FOCUS_PATH)
+    tab3.wait_for_timeout(2200)
+    b_focus = focus_values(tab3) or []
+    shot(tab3, "66-b-own-focused-exercise-empty", FOCUS_PATH)
+    goto(tab3, QUIZ_PATH)
+    tab3.wait_for_timeout(2400)
+    b_quiz = quiz_values(tab3) or []
+    write_row(
+        "B opening the same exercise and the same quick check afresh finds nothing of A's",
+        len(b_focus) == 6 and not any(b_focus) and len(b_quiz) >= 3 and not any(b_quiz),
+        f"B's focused exercise controls: {json.dumps(b_focus)}; B's quick check controls: {json.dumps(b_quiz)}",
+    )
+    shot(tab3, "67-b-own-quick-check-empty", QUIZ_PATH)
+
+    # ── A signs back in: the open tabs, and a fresh visit, find A's answers ──
+    goto(tab3, "/dashboard")
+    tab3.wait_for_timeout(1200)
+    journey.ws_sign_out(tab3)
+    a_again = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    focus_back = focus_values(tab1) or []
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1500)
+    quiz_back = (quiz_values(tab2) or [])[:3]
+    write_row(
+        "A signs back in: the open focused exercise tab and the open quick check tab both show A's own answers "
+        "again",
+        a_again == a_id and focus_back[:3] == A_FOCUS_ANSWERS and quiz_back == a_quiz_on_screen,
+        f"A = {a_again}; focused controls: {json.dumps(focus_back)}; quick check controls, first three: "
+        f"{json.dumps(quiz_back)}",
+    )
+    shot(tab1, "68-a-back-focused-exercise-restored", FOCUS_PATH)
+    shot(tab2, "69-a-back-quick-check-restored", QUIZ_PATH)
+
+    # ── Two tabs that hear nothing, with A's answers on screen ──
+    tab4 = ctx.new_page()
+    errors4, failed4 = attach_diagnostics(tab4)
+    tab4.add_init_script(DEAF_TAB_SCRIPT)
+    goto(tab4, FOCUS_PATH)
+    tab4.wait_for_timeout(2200)
+    tab5 = ctx.new_page()
+    errors5, failed5 = attach_diagnostics(tab5)
+    tab5.add_init_script(DEAF_TAB_SCRIPT)
+    goto(tab5, QUIZ_PATH)
+    tab5.wait_for_timeout(2400)
+    deaf_focus = focus_values(tab4) or []
+    deaf_quiz = (quiz_values(tab5) or [])[:3]
+    write_row(
+        "Two tabs that hear nothing from the others open the same exercise and quick check for A, and show A's "
+        "answers",
+        deaf_focus[:3] == A_FOCUS_ANSWERS and deaf_quiz == a_quiz_on_screen,
+        f"deaf focused tab: {json.dumps(deaf_focus)}; deaf quick check tab, first three: {json.dumps(deaf_quiz)}",
+    )
+
+    tab3.bring_to_front()
+    journey.ws_sign_out(tab3)
+    b_again = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+    tab4.bring_to_front()
+    tab4.wait_for_timeout(2000)
+    session_now = auth_session(tab4) or {}
+    still_focus = focus_values(tab4) or []
+    write_row(
+        "B signs in again elsewhere; the deaf tabs miss it and still show A's answers, while the session this "
+        "browser holds is B's",
+        b_again == b_id
+        and session_now.get("user") == b_id
+        and still_focus[:3] == A_FOCUS_ANSWERS
+        and text_count(tab4, EXERCISE_NOTE) == 0,
+        f"B = {b_again}; stored session names {session_now.get('user')}; deaf focused tab still reads "
+        f"{json.dumps(still_focus)}; notice there: {text_count(tab4, EXERCISE_NOTE)}",
+    )
+    shot(tab4, "70-deaf-focused-tab-still-shows-a", FOCUS_PATH)
+    mark_page(tab4)
+    mark_page(tab5)
+
+    before = {
+        "a_focus": len(activity_events_of(tab4, ns_a, FOCUS_ACTIVITY)),
+        "b_focus": len(activity_events_of(tab4, ns_b, FOCUS_ACTIVITY)),
+        "a_quiz": len(activity_events_of(tab4, ns_a, QUIZ_ACTIVITY)),
+        "b_quiz": len(activity_events_of(tab4, ns_b, QUIZ_ACTIVITY)),
+    }
+    try:
+        tab4.locator("button.focused-check").first.click(timeout=8000)
+        pressed4 = True
+    except Exception:
+        pressed4 = False
+    tab4.wait_for_timeout(1800)
+    reloaded_since(tab4, "the deaf focused tab, after its press")
+    after_focus_controls = tab4.locator("select.focused-answer").count()
+    write_row(
+        "A check pressed in the deaf focused exercise tab is refused: nothing is recorded for A or for B, and "
+        "A's answers leave that screen with the calm line",
+        pressed4
+        and len(activity_events_of(tab4, ns_a, FOCUS_ACTIVITY)) == before["a_focus"] == 0
+        and len(activity_events_of(tab4, ns_b, FOCUS_ACTIVITY)) == before["b_focus"] == 0
+        and after_focus_controls == 0
+        and text_count(tab4, EXERCISE_NOTE) > 0,
+        f"pressed: {pressed4}; focused events under A {before['a_focus']} -> "
+        f"{len(activity_events_of(tab4, ns_a, FOCUS_ACTIVITY))}, under B {before['b_focus']} -> "
+        f"{len(activity_events_of(tab4, ns_b, FOCUS_ACTIVITY))}; answer controls left on screen: "
+        f"{after_focus_controls}; notice: {text_count(tab4, EXERCISE_NOTE)}",
+    )
+    shot(tab4, "71-deaf-focused-check-refused", FOCUS_PATH)
+
+    tab5.bring_to_front()
+    tab5.wait_for_timeout(800)
+    try:
+        button = tab5.get_by_role("button", name="Check answers").first
+        button.scroll_into_view_if_needed(timeout=8000)
+        button.click(timeout=8000)
+        pressed5 = True
+    except Exception:
+        pressed5 = False
+    tab5.wait_for_timeout(1800)
+    reloaded_since(tab5, "the deaf quick check tab, after its press")
+    after_quiz_controls = quiz_selects(tab5).count()
+    write_row(
+        "A check pressed in the deaf quick check tab is refused the same way: nothing recorded for anybody, and "
+        "A's answers leave that screen with the calm line",
+        pressed5
+        and len(activity_events_of(tab5, ns_a, QUIZ_ACTIVITY)) == before["a_quiz"] == 0
+        and len(activity_events_of(tab5, ns_b, QUIZ_ACTIVITY)) == before["b_quiz"] == 0
+        and after_quiz_controls == 0
+        and text_count(tab5, EXERCISE_NOTE) > 0,
+        f"pressed: {pressed5}; quick check events under A {before['a_quiz']} -> "
+        f"{len(activity_events_of(tab5, ns_a, QUIZ_ACTIVITY))}, under B {before['b_quiz']} -> "
+        f"{len(activity_events_of(tab5, ns_b, QUIZ_ACTIVITY))}; heading controls left on screen: "
+        f"{after_quiz_controls}; notice: {text_count(tab5, EXERCISE_NOTE)}",
+    )
+    shot(tab5, "72-deaf-quick-check-refused", QUIZ_PATH)
+
+    a_copy_end = focus_copy_of(tab5, ns_a) or {}
+    a_run_end = quiz_run_of(tab5, ns_a) or {}
+    a_run_end_unit = ((a_run_end.get("units") or [{}])[0]) or {}
+    write_row(
+        "After the refused presses A's answers are still in A's own copies, unchecked, ready for A's next visit",
+        (a_copy_end.get("answers") or {}) == (a_copy.get("answers") or {})
+        and (a_run_end_unit.get("drafts") or [])[:3] == a_quiz_on_screen
+        and a_run_end_unit.get("checked") is False,
+        f"A's focused copy: {json.dumps(a_copy_end.get('answers'))}; A's quick check run, unit 1: "
+        f"{json.dumps(a_run_end_unit)}",
+    )
+
+    tab3.wait_for_timeout(2500)
+    remote_a = journey.settled_store_snapshot(a_id)
+    remote_b = journey.settled_store_snapshot(b_id)
+    remote_rows = [
+        row.get("activity_id")
+        for snapshot in (remote_a, remote_b)
+        for row in snapshot.get("learning_events") or []
+        if row.get("activity_id") in (FOCUS_ACTIVITY, QUIZ_ACTIVITY)
+    ]
+    write_row(
+        "The stand-in holds no row for either activity, for A or for B: nothing was checked, so nothing was "
+        "recorded or sent",
+        not remote_rows,
+        f"rows for {FOCUS_ACTIVITY} or {QUIZ_ACTIVITY} across A's and B's accounts: {json.dumps(remote_rows)}",
+    )
+
+    # ── A back once more: on the tabs that followed every change, a check
+    #    records again, once, for A only, with the answers kept for A ──
+    tab3.bring_to_front()
+    journey.ws_sign_out(tab3)
+    a_last = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    ready_focus = focus_values(tab1) or []
+    try:
+        tab1.locator("button.focused-check").first.click(timeout=8000)
+        checked1 = True
+    except Exception:
+        checked1 = False
+    tab1.wait_for_timeout(1800)
+    a_focus_events = activity_events_of(tab1, ns_a, FOCUS_ACTIVITY)
+    a_focus_given = [
+        item.get("firstAnswer") for item in ((a_focus_events[0].get("items") or []) if a_focus_events else [])
+    ]
+    write_row(
+        "A signs back in; on the focused exercise tab that followed every change, A's check is recorded once, "
+        "under A, with the answers kept for A, and nothing under B",
+        a_last == a_id
+        and ready_focus[:3] == A_FOCUS_ANSWERS
+        and checked1
+        and len(a_focus_events) == 1
+        and [given for given in a_focus_given if given] == A_FOCUS_ANSWERS
+        and not activity_events_of(tab1, ns_b, FOCUS_ACTIVITY)
+        and focus_copy_of(tab1, ns_a) is None,
+        f"A = {a_last}; controls before the press: {json.dumps(ready_focus)}; events under A: "
+        f"{len(a_focus_events)}, first answers {json.dumps(a_focus_given)}; events under B: "
+        f"{len(activity_events_of(tab1, ns_b, FOCUS_ACTIVITY))}; A's copy after the check: "
+        f"{json.dumps(focus_copy_of(tab1, ns_a))}",
+    )
+    shot(tab1, "73-a-focused-check-recorded-for-a", FOCUS_PATH)
+
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1500)
+    ready_quiz = (quiz_values(tab2) or [])[:3]
+    try:
+        button2 = tab2.get_by_role("button", name="Check answers").first
+        button2.scroll_into_view_if_needed(timeout=8000)
+        button2.click(timeout=8000)
+        checked2 = True
+    except Exception:
+        checked2 = False
+    tab2.wait_for_timeout(1800)
+    a_quiz_events = activity_events_of(tab2, ns_a, QUIZ_ACTIVITY)
+    a_quiz_given = [
+        item.get("firstAnswer") for item in ((a_quiz_events[0].get("items") or []) if a_quiz_events else [])
+    ]
+    write_row(
+        "On the quick check tab that followed every change, A's check of unit 1 is recorded once, under A, with "
+        "the answers kept for A, and nothing under B",
+        ready_quiz == a_quiz_on_screen
+        and checked2
+        and len(a_quiz_events) == 1
+        and a_quiz_given[:3] == a_quiz_on_screen
+        and not activity_events_of(tab2, ns_b, QUIZ_ACTIVITY),
+        f"controls before the press: {json.dumps(ready_quiz)}; events under A: {len(a_quiz_events)}, first "
+        f"answers {json.dumps(a_quiz_given)}; events under B: {len(activity_events_of(tab2, ns_b, QUIZ_ACTIVITY))}",
+    )
+    shot(tab2, "74-a-quick-check-recorded-for-a", QUIZ_PATH)
+
+    tab3.wait_for_timeout(2500)
+    remote_b_end = journey.settled_store_snapshot(b_id)
+    remote_b_rows = [
+        row.get("activity_id")
+        for row in remote_b_end.get("learning_events") or []
+        if row.get("activity_id") in (FOCUS_ACTIVITY, QUIZ_ACTIVITY)
+    ]
+    write_row(
+        "The stand-in still holds no row for either activity on B's account",
+        not remote_b_rows,
+        f"rows for {FOCUS_ACTIVITY} or {QUIZ_ACTIVITY} on B's account: {json.dumps(remote_b_rows)}",
+    )
+    report_diagnostics("Step 21 (tab 1, focused exercise)", errors1, failed1)
+    report_diagnostics("Step 21 (tab 2, quick check)", errors2, failed2)
+    report_diagnostics("Step 21 (tab 3, accounts)", errors3, failed3)
+    report_diagnostics("Step 21 (tab 4, deaf focused exercise)", errors4, failed4)
+    report_diagnostics("Step 21 (tab 5, deaf quick check)", errors5, failed5)
+    ctx.close()
+
+
 def record_answers(record):
     """Every first answer in every item of every event in a learner record."""
     out = []
@@ -2191,7 +3704,18 @@ def run():
         "follows the saved deadline across a sign-out, with no time given back). "
         "Steps 15 and 16 are the fifth: R2D-02 (a paper left open in one tab never writes over, clears, "
         "or hands in over a newer paper started in another, and stops) and R2D-03 (a mock finished in "
-        "another tab stops the tab still showing it, and is recorded once)."
+        "another tab stops the tab still showing it, and is recorded once). "
+        "Steps 17 and 18 are the sixth: R2E-02 (a handed-in paper's review leaves the screen when the "
+        "account changes, and Mr EZ is never asked about it with anybody else's token) and R2E-03 (the same "
+        "mock paper handed in from two tabs keeps the first result and is recorded once). "
+        "Step 19 is the seventh round, the follow-up to R2E-02 for every other tutor request: a panel message "
+        "held on its way while the account changes is answered to nobody, and the panel is the new student's. "
+        "Step 20 is the eighth, for the lesson surfaces that record what the tutor sends back: a written answer "
+        "held on its way to be evaluated while the account changes is kept in its own student's record and "
+        "draft, shown to nobody, and the task is handed to the new student empty. "
+        "Step 21 is the ninth, the follow-up to R2B-01 for the focused Reading exercise and the lesson quick "
+        "check: both hand over when the account changes, keep the outgoing student's answers for that student, "
+        "and a check from a tab that missed the change records nothing."
     )
 
     with sync_playwright() as p:
@@ -2422,6 +3946,11 @@ def run():
         run_deadline_step(browser, a_id)
         run_standalone_tabs_step(browser, a_id)
         run_mock_gone_step(browser, a_id)
+        run_review_switch_step(browser, a_id, b_id)
+        run_mock_paper_twice_step(browser, a_id)
+        run_panel_switch_step(browser, a_id, b_id)
+        run_lesson_evaluation_step(browser, a_id, b_id)
+        run_exercise_switch_step(browser, a_id, b_id)
         browser.close()
 
     write_note(

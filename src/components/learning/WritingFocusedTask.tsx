@@ -25,11 +25,25 @@
  * 3. It never loses the words. Every keystroke goes to a per owner, per
  *    exercise draft, and a failed evaluation leaves the text exactly where
  *    it was.
+ *
+ * WHOSE WORK IS ON SCREEN (the follow-up to R2E-02, 23 September 2026)
+ * The answer and its evaluation, and the help asked for on the way, belong
+ * to the student who pressed. Each request is bound to that student at the
+ * press (runOwnedGrade in src/lib/store-owner.ts): what comes back is KEPT
+ * for them through writers that take an owner (recordEventFor, and their
+ * own draft key), and SHOWN only while they have been on the page
+ * throughout. When the page changes hands the screen hands over, the way
+ * the essay editor does: the outgoing student's words go to their own
+ * draft, an evaluation still on its way is kept for them (as an attempt
+ * nothing judged, because the tutor client drops a reply that comes back
+ * after the switch), and the incoming student sees their own draft of this
+ * task or an empty one, with one calm line saying why.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { getLocale } from '../../lib/i18n/locale';
+import { nt } from '../../lib/i18n/translate';
 import { withBase } from '../../lib/url';
 import Html from '../Html';
 import {
@@ -39,7 +53,17 @@ import {
   readPersonalPlan,
   type SharedSessionView,
 } from '../../lib/learning';
-import { getLearnerStore, ownerNamespace } from '../../lib/learning/store.browser';
+import { recordEventFor } from '../../lib/learning/store.browser';
+import type { AssistanceLevel } from '../../lib/learning/contracts/evidence';
+import type { CacheOwner } from '../../lib/learning/contracts/sync';
+import {
+  bindToCurrentOwner,
+  currentOwner,
+  onOwnerChange,
+  ownerNamespace,
+  runOwnedGrade,
+  type OwnerBinding,
+} from '../../lib/store-owner';
 import { askPracticeEvaluation, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
 import SessionContinueBar from './SessionContinueBar';
 import LessonHelpControls from './LessonHelpControls';
@@ -62,6 +86,7 @@ import {
   writtenPieceWording,
   writtenTaskLabel,
   wordsIn,
+  type WrittenAttemptRecord,
   type WrittenEvaluation,
   type WrittenHelpState,
   type WrittenTaskDraft,
@@ -83,6 +108,14 @@ type Phase = 'working' | 'asking' | 'answered';
     report one click away. */
 const NOT_A_BAND =
   'This is one objective, judged on two sentences. It is not a band and it does not change your Writing score.';
+
+/** Shown when the page changes hands (a sign-out, a sign-in or a switch,
+    here or in another tab). The screen now holds the incoming student's
+    own draft, or nothing. Names nobody and shows nothing of the previous
+    student's work. */
+const OWNER_CHANGED_NOTE = nt(
+  'The account on this page changed. Any answer in progress was kept for the student who was writing it.',
+);
 
 function storage(): Storage | null {
   if (typeof window === 'undefined') return null;
@@ -121,8 +154,18 @@ export default function WritingFocusedTask({ view }: Props) {
      correcting the one they were shown again. Reuses the same "revise" box
      and evidence path; the difference is only what is shown above it. */
   const [transferring, setTransferring] = useState(false);
+  const [ownerNote, setOwnerNote] = useState<string | null>(null);
+  /* Whose work this screen holds, as ownerNamespace spells an owner. Set
+     on mount, and moved to the incoming student only by handOver below. */
   const owner = useRef('anon');
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* The words still waiting on the autosave, so a hand-over can put them
+     in their own student's draft at once instead of dropping them. */
+  const pendingDraft = useRef<string | null>(null);
+  /* The evaluation on its way, bound to the student who pressed Check.
+     Cancelled when the screen lets go of it: a hand-over or an unmount. */
+  const evaluating = useRef<OwnerBinding | null>(null);
+  const mounted = useRef(true);
   /* The same help state as `help`, readable synchronously. An evaluation is
      awaited, and a help reply can land from a promise of its own, so the
      ordering rule cannot depend on which render a closure was made in. */
@@ -133,11 +176,10 @@ export default function WritingFocusedTask({ view }: Props) {
      the plan asked for is a diagnostic, and a diagnostic is capped at
      tentative by the policy however well it goes. */
   useEffect(() => {
-    try {
-      owner.current = ownerNamespace(getLearnerStore().owner());
-    } catch {
-      /* No store on this device: the draft simply is not kept. */
-    }
+    /* The owner every store on this device is using right now, from the
+       one place that decides it (src/lib/store-owner.ts). It never throws:
+       with no storage the draft functions below simply keep nothing. */
+    owner.current = ownerNamespace(currentOwner());
     /* The draft carries the help state, so an attempt that had a hint, the
        model or Mr EZ's feedback cannot come back from a refresh looking
        like unaided work. */
@@ -186,6 +228,25 @@ export default function WritingFocusedTask({ view }: Props) {
     };
   }, []);
 
+  /* A sign-out, sign-in or account switch, from this tab or another. The
+     same owner being told its stores changed (the anonymous-work claim)
+     replaces nothing. */
+  useEffect(() => {
+    mounted.current = true;
+    const stop = onOwnerChange(() => {
+      if (ownerNamespace(currentOwner()) === owner.current) return;
+      handOver();
+    });
+    return () => {
+      mounted.current = false;
+      stop();
+      /* An evaluation still on its way is still kept for its student when
+         it lands; this screen just never paints it. */
+      evaluating.current?.cancel();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const words = useMemo(() => wordsIn(text), [text]);
   const checks = useMemo(
     () =>
@@ -202,13 +263,19 @@ export default function WritingFocusedTask({ view }: Props) {
 
   function onType(value: string) {
     setText(value);
+    setOwnerNote(null);
     if (draftTimer.current) clearTimeout(draftTimer.current);
+    /* Whose words these are is fixed NOW, not when the timer fires. */
+    const whose = owner.current;
+    pendingDraft.current = value;
     draftTimer.current = setTimeout(() => {
+      draftTimer.current = null;
+      pendingDraft.current = null;
       /* Functional, so a debounced keystroke landing just after a submission
          cannot write back a copy that has lost the attempt list. */
       setHeld((current) => {
         const next = { ...current, draft: value };
-        if (!writeWrittenDraft(storage(), owner.current, view.exerciseId, next)) setStorageProblem(true);
+        if (!writeWrittenDraft(storage(), whose, view.exerciseId, next)) setStorageProblem(true);
         return next;
       });
     }, 500);
@@ -222,11 +289,71 @@ export default function WritingFocusedTask({ view }: Props) {
     const next = withWrittenHelp(helpNow.current, change);
     helpNow.current = next;
     setHelp(next);
+    const whose = owner.current;
     setHeld((current) => {
       const updated = { ...current, help: next };
-      if (!writeWrittenDraft(storage(), owner.current, view.exerciseId, updated)) setStorageProblem(true);
+      if (!writeWrittenDraft(storage(), whose, view.exerciseId, updated)) setStorageProblem(true);
       return updated;
     });
+  }
+
+  /** Help Mr EZ (or the lesson itself) gave in answer to a press, kept for
+   *  the student who pressed (`whose`), whoever is on the page by now.
+   *  While this screen still holds that student's work it is noted exactly
+   *  as before. Otherwise it goes straight into that student's own stored
+   *  draft of this task, so their next answer is recorded with it, and
+   *  nothing on this screen changes. Help only ever raises the level, so
+   *  keeping it can never make later work read as more independent than
+   *  it was. */
+  function keepHelp(assistance: AssistanceLevel, whose: CacheOwner) {
+    const ns = ownerNamespace(whose);
+    if (mounted.current && owner.current === ns) {
+      noteHelp({ assistance });
+      return;
+    }
+    const kept = readWrittenDraft(storage(), ns, view.exerciseId);
+    writeWrittenDraft(storage(), ns, view.exerciseId, { ...kept, help: withWrittenHelp(kept.help, { assistance }) });
+  }
+
+  /* The page changed hands, here or in another tab. Everything on screen
+     was the outgoing student's: their words still waiting on the autosave
+     go to their own draft now, and an evaluation still on its way is kept
+     for them by runOwnedGrade when it lands. None of it stays here. The
+     screen shows the incoming student's own draft of this task, or
+     nothing, with one calm line saying why. Touches only refs and setters,
+     so the listener above can call it from any render. */
+  function handOver() {
+    const outgoing = owner.current;
+    if (draftTimer.current) clearTimeout(draftTimer.current);
+    draftTimer.current = null;
+    const pending = pendingDraft.current;
+    pendingDraft.current = null;
+    if (pending !== null) {
+      const kept = readWrittenDraft(storage(), outgoing, view.exerciseId);
+      writeWrittenDraft(storage(), outgoing, view.exerciseId, { ...kept, draft: pending });
+    }
+    evaluating.current?.cancel();
+    evaluating.current = null;
+
+    const incoming = ownerNamespace(currentOwner());
+    owner.current = incoming;
+    const resumed = readWrittenDraft(storage(), incoming, view.exerciseId);
+    helpNow.current = resumed.help;
+    setHeld(resumed);
+    setHelp(resumed.help);
+    setSubmittedHelp(NO_WRITTEN_HELP);
+    setText(resumed.draft);
+    setEvaluation(null);
+    setRevising(false);
+    setTransferring(false);
+    setPlanChange(null);
+    /* The plan step this page was opened from belongs to the outgoing
+       student's plan. The incoming student's work here is their own,
+       outside it. */
+    setSession(null);
+    setStepRole(null);
+    setPhase('working');
+    setOwnerNote(OWNER_CHANGED_NOTE);
   }
 
   /** Write one attempt to the learner record.
@@ -240,61 +367,91 @@ export default function WritingFocusedTask({ view }: Props) {
    *  is what the next answer starts from. The two are different the moment
    *  an evaluation succeeds, and keeping them apart is the whole of the
    *  fix. The task scope comes from the view, which the page fills from
-   *  the exercise registry. */
+   *  the exercise registry.
+   *
+   *  `whose` is the student who pressed Check, and the attempt is written
+   *  into THEIR record through recordEventFor, whoever is on the page by
+   *  the time the evaluation is back. While this screen still holds their
+   *  work the attempt joins the draft on screen exactly as it always has;
+   *  otherwise it goes straight into their own stored draft, beside the
+   *  original, and nothing on this screen changes. `onPage` is true when
+   *  they have been on the page throughout; only then is the plan read for
+   *  what changed, which is returned for the screen to say. */
   function record(
     evaluated: WrittenEvaluation,
     written: string,
     recorded: WrittenHelpState,
     carried: WrittenHelpState,
-  ) {
-    const historyBefore = readPersonalPlan()?.history.length ?? 0;
+    whose: CacheOwner,
+    pressed: { stepRole: string | null; sessionId?: string },
+    onPage: boolean,
+  ): string | null {
+    const ns = ownerNamespace(whose);
+    const historyBefore = onPage ? (readPersonalPlan()?.history.length ?? 0) : 0;
     const at = new Date().toISOString();
     let eventId: string | undefined;
     try {
-      const event = getLearnerStore().recordEvent(
+      const event = recordEventFor(
+        whose,
         writtenEvidenceDraft({
           view,
           text: written,
           help: recorded,
           evaluation: evaluated,
           at,
-          stepRole,
-          ...(session?.sessionId ? { sessionId: session.sessionId } : {}),
+          stepRole: pressed.stepRole,
+          ...(pressed.sessionId ? { sessionId: pressed.sessionId } : {}),
           locale,
         }),
       );
       eventId = event?.id;
     } catch {
-      setStorageProblem(true);
+      if (onPage) setStorageProblem(true);
     }
 
-    setHeld((current) => {
-      const next = withAttempt(
-        current,
-        {
-          at,
-          text: written,
-          ...(eventId ? { evidenceId: eventId } : {}),
-          ...(current.attempts.length > 0 ? { revisionOf: current.attempts[current.attempts.length - 1]!.at } : {}),
-        },
-        carried,
-      );
-      writeWrittenDraft(storage(), owner.current, view.exerciseId, next);
-      return next;
+    const attemptAfter = (kept: WrittenTaskDraft): WrittenAttemptRecord => ({
+      at,
+      text: written,
+      ...(eventId ? { evidenceId: eventId } : {}),
+      ...(kept.attempts.length > 0 ? { revisionOf: kept.attempts[kept.attempts.length - 1]!.at } : {}),
     });
+    if (mounted.current && owner.current === ns) {
+      setHeld((current) => {
+        const next = withAttempt(current, attemptAfter(current), carried);
+        writeWrittenDraft(storage(), ns, view.exerciseId, next);
+        return next;
+      });
+    } else {
+      const kept = readWrittenDraft(storage(), ns, view.exerciseId);
+      writeWrittenDraft(storage(), ns, view.exerciseId, withAttempt(kept, attemptAfter(kept), carried));
+    }
 
     /* Recording can move the plan (src/lib/learning/index.ts decides
        whether it is meaningful). When it did, say so in the student's own
        words rather than letting the change happen silently. */
+    if (!onPage) return null;
     const plan = readPersonalPlan();
     const latest = plan?.history[plan.history.length - 1];
-    if (plan && latest && plan.history.length > historyBefore) setPlanChange(latest.summary);
+    return plan && latest && plan.history.length > historyBefore ? latest.summary : null;
   }
 
   async function evaluate() {
     if (phase === 'asking') return;
     const written = text;
     if (!written.trim()) return;
+    /* The answer goes out only for the student whose work this screen
+       holds. A screen that missed an account change hands over instead,
+       and nothing is sent, judged or recorded. */
+    if (ownerNamespace(currentOwner()) !== owner.current) {
+      handOver();
+      return;
+    }
+    /* Bound to that student NOW, before anything is sent: whatever comes
+       back is kept for them and shown only while they are still the one
+       here (runOwnedGrade in src/lib/store-owner.ts). */
+    const binding = bindToCurrentOwner();
+    evaluating.current?.cancel();
+    evaluating.current = binding;
     setPhase('asking');
 
     /* Taken BEFORE the evaluation is asked for, and this is the line the
@@ -303,41 +460,62 @@ export default function WritingFocusedTask({ view }: Props) {
        to it. */
     const helpBeforeSubmission = helpNow.current;
     const previous = held.attempts[held.attempts.length - 1];
-    let result: WrittenEvaluation = unjudgedEvaluation();
+    /* The plan step it was written in, fixed at the press as well. */
+    const pressed = { stepRole, ...(session?.sessionId ? { sessionId: session.sessionId } : {}) };
+    let planSummary: string | null = null;
 
-    if (isTutorConfigured()) {
-      const context = askContext();
-      try {
-        const reply = await askPracticeEvaluation({
-          activityId: view.activityId,
-          contentVersion: view.contentVersion,
-          subskill: view.subskill,
-          itemIds: [view.itemId],
-          submission: written,
-          ...(previous?.evidenceId ? { revisionOf: previous.evidenceId } : {}),
-          versions: context.versions,
-          ...(context.sessionId ? { sessionId: context.sessionId } : {}),
-        });
-        const checked = acceptEvaluation(reply as never);
-        result = 'refused' in checked ? unjudgedEvaluation(checked.refused) : checked;
-      } catch (error) {
-        /* Over the cap, unreachable, signed out: the automatic checks are
-           what the student gets, and the words are still on the page. */
-        result = unjudgedEvaluation(error instanceof TutorClientError ? error.code : 'unreachable');
-      }
-    }
-
-    /* The answer is recorded as it was written; the feedback it has just
-       received applies to whatever is written next. */
-    const recorded = helpToRecord(helpBeforeSubmission);
-    const carried = helpAfterEvaluation(helpBeforeSubmission, result);
-    helpNow.current = carried;
-    setHelp(carried);
-    setSubmittedHelp(recorded);
-    setEvaluation(result);
-    record(result, written, recorded, carried);
-    setRevising(false);
-    setPhase('answered');
+    await runOwnedGrade(
+      binding,
+      async (): Promise<WrittenEvaluation> => {
+        if (!isTutorConfigured()) return unjudgedEvaluation();
+        const context = askContext();
+        try {
+          const reply = await askPracticeEvaluation({
+            activityId: view.activityId,
+            contentVersion: view.contentVersion,
+            subskill: view.subskill,
+            itemIds: [view.itemId],
+            submission: written,
+            ...(previous?.evidenceId ? { revisionOf: previous.evidenceId } : {}),
+            versions: context.versions,
+            ...(context.sessionId ? { sessionId: context.sessionId } : {}),
+          });
+          const checked = acceptEvaluation(reply as never);
+          return 'refused' in checked ? unjudgedEvaluation(checked.refused) : checked;
+        } catch (error) {
+          /* Over the cap, unreachable, signed out: the automatic checks are
+             what the student gets, and the words are still on the page. A
+             reply that came back after the page changed hands is dropped by
+             the tutor client and lands here too, so the answer is still
+             kept, for its own student, as an attempt nothing judged. */
+          return unjudgedEvaluation(error instanceof TutorClientError ? error.code : 'unreachable');
+        }
+      },
+      {
+        keep: (result, whose) => {
+          /* The answer is recorded as it was written; the feedback it has
+             just received applies to whatever is written next. */
+          const recorded = helpToRecord(helpBeforeSubmission);
+          const carried = helpAfterEvaluation(helpBeforeSubmission, result);
+          planSummary = record(result, written, recorded, carried, whose, pressed, binding.current());
+        },
+        show: (result) => {
+          const carried = helpAfterEvaluation(helpBeforeSubmission, result);
+          helpNow.current = carried;
+          setHelp(carried);
+          setSubmittedHelp(helpToRecord(helpBeforeSubmission));
+          setEvaluation(result);
+          if (planSummary) setPlanChange(planSummary);
+          setRevising(false);
+          setPhase('answered');
+        },
+        /* The page changed hands with no notice reaching this screen: the
+           same hand-over the listener makes. */
+        hide: () => handOver(),
+      },
+    );
+    binding.cancel();
+    if (evaluating.current === binding) evaluating.current = null;
   }
 
   const feedback = evaluation
@@ -372,6 +550,12 @@ export default function WritingFocusedTask({ view }: Props) {
           {t(
             'No guiding questions, no model answer and no Mr EZ on this one. That is what makes the result mean something.',
           )}
+        </p>
+      )}
+
+      {ownerNote && (
+        <p className="focused-rule" role="status">
+          {t(ownerNote)}
         </p>
       )}
 
@@ -460,7 +644,7 @@ export default function WritingFocusedTask({ view }: Props) {
               attempted={held.attempts.length > 0}
               kinds={['hint', 'example']}
               assistance={help.assistance}
-              onHelp={(result) => noteHelp({ assistance: result.assistanceAfter })}
+              keepHelp={(result, whose) => keepHelp(result.assistanceAfter, whose)}
             />
           )}
 

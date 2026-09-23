@@ -1446,6 +1446,44 @@ export function recordSpeakingGradedFor(owner: CacheOwner, input: SpeakingGraded
   return learnerStoreFor(owner).recordSpeakingGraded(input);
 }
 
+/** recordEvent, into one named owner's record. See learnerStoreFor.
+ *
+ * Added for the written focused task (src/components/learning/
+ * WritingFocusedTask.tsx), whose answer is sent to Mr EZ to be judged and
+ * can come back after the page has changed hands. The attempt is written
+ * here, under the student who pressed Check, and never under whoever is on
+ * the page by then. Lesson help has no writer of its own in this file: the
+ * help a student had is not an event by itself, it rides on their next
+ * answer, and until then it is kept in that student's own draft of the
+ * task (see the component). */
+export function recordEventFor(owner: CacheOwner, draft: EvidenceDraft): EvidenceEvent | null {
+  return learnerStoreFor(owner).recordEvent(draft);
+}
+
+/** recordEvents, into one named owner's record. See learnerStoreFor.
+ *
+ * Added for the lesson quick check (src/components/PracticeQuiz.tsx), for
+ * the same reason as recordEventFor: the answers on screen belong to the
+ * student the check was opened for (src/components/learning/
+ * exercise-owner.ts), and a press is written under THAT student, bound at
+ * the press, never under whoever the shared store happens to hold. With no
+ * account change the named owner is the shared store's own, and this is
+ * exactly getLearnerStore().recordEvents. */
+export function recordEventsFor(owner: CacheOwner, drafts: readonly EvidenceDraft[]): EvidenceEvent[] {
+  return learnerStoreFor(owner).recordEvents(drafts);
+}
+
+/** recordSubmission, into one named owner's record. See learnerStoreFor.
+ *
+ * Added for the focused Reading and Listening exercise (src/components/
+ * learning/FocusedExercise.tsx): its run, and the stated reason and the
+ * second go that follow it, are written under the student the exercise was
+ * opened for, bound at the press. With no account change this is exactly
+ * recordSubmission. */
+export function recordSubmissionFor(owner: CacheOwner, input: SubmissionInput): EvidenceEvent | null {
+  return learnerStoreFor(owner).recordSubmission(input);
+}
+
 export function readLearnerRecord(): LearnerRecordV1 {
   return getLearnerStore().read();
 }

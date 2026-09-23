@@ -70,8 +70,12 @@ import type {
 } from './contracts/catalog';
 
 /** Bumped when the on-disk shape changes in a way an older reader could not
-    understand. `1` was the long form this file replaced. */
-export const LEARNING_INDEX_FORMAT = 2;
+    understand. `1` was the long form this file replaced. `2` could only
+    describe a lesson-check unit that takes one contiguous run of its
+    paper's questions; `3` adds `questions` for a unit that does not (see
+    CompactLessonCheckUnit), which a format 2 reader would have read as
+    items with a paper but no question. */
+export const LEARNING_INDEX_FORMAT = 3;
 
 /* ── The compact shape ───────────────────────────────────────────────────── */
 
@@ -101,11 +105,20 @@ export interface CompactDrillEntry {
 
 export interface CompactLessonCheckUnit {
   /** The paper this unit quotes, when it quotes one. Absent on the one
-      hand-written set, whose items have no source paper. */
+      hand-written unit (the paraphrase lesson's warm-up), whose items have
+      no source paper. */
   paper?: string;
   /** The paper's question number for this unit's first item; the rest run
-      on from it. Absent exactly when `paper` is. */
+      on from it. Present when the unit takes one contiguous run of its
+      paper's questions, the usual case. Absent when `paper` is, and when
+      `questions` is present instead. */
   firstQuestion?: number;
+  /** The paper's question number for every item, in order, written out
+      only when the unit does NOT take one contiguous run: the paraphrase
+      lesson's real passage quotes Test 20 questions 1 to 6, 12 and 13 and
+      leaves 7 to 11 out. Never present alongside `firstQuestion`, and never
+      without `paper`. */
+  questions?: readonly number[];
   /** One entry when every item in the unit is the same type (the usual
       case), otherwise one per item. */
   types: readonly Subskill[];
@@ -192,6 +205,12 @@ function runOf(ids: readonly string[], where: string): readonly [number, number]
     }
   }
   return [numbers[0]!, numbers[numbers.length - 1]!];
+}
+
+/** True when the numbers count up by one from the first, so a first
+    number alone describes them. */
+function isOneRun(numbers: readonly number[]): boolean {
+  return numbers.every((n, i) => n === numbers[0]! + i);
 }
 
 function idsFromRun([from, to]: readonly [number, number]): string[] {
@@ -307,8 +326,17 @@ function encodeLessonCheck(entry: LessonCheckIndexEntry): CompactLessonCheckEntr
       };
       const paper = items[0]!.sourceTestId;
       if (paper !== undefined) {
-        const run = runOf(items.map((item) => item.sourceQuestionId ?? ''), where);
-        return { paper, firstQuestion: run[0], types: unit.types, versions: unit.versions };
+        const numbers = items.map((item) => questionNumber(item.sourceQuestionId ?? ''));
+        /* The usual unit takes one contiguous run, so its first number says
+           it all. A unit that skips some of its passage's questions writes
+           every number out rather than claiming the ones it left out. */
+        if (isOneRun(numbers)) {
+          return { paper, firstQuestion: numbers[0], types: unit.types, versions: unit.versions };
+        }
+        if (new Set(numbers).size !== numbers.length) {
+          throw new Error(`${where} quotes the same paper question twice (${numbers.map(questionId).join(', ')}).`);
+        }
+        return { paper, questions: numbers, types: unit.types, versions: unit.versions };
       }
       return unit;
     }),
@@ -431,16 +459,27 @@ export function decodeLearningIndex(compact: CompactLearningIndexV1): GeneratedI
       id: entry.id,
       lessonKey: entry.lessonKey,
       skill: entry.skill,
-      items: entry.units.flatMap((unit, unitIndex) =>
-        unit.versions.map((itemVersion, itemIndex): LessonCheckItem => ({
+      items: entry.units.flatMap((unit, unitIndex) => {
+        if (unit.questions !== undefined && unit.questions.length !== unit.versions.length) {
+          throw new Error(
+            `${entry.id} unit ${unitIndex} names ${unit.questions.length} paper questions for ${unit.versions.length} items. ` +
+              'Run `npm run learning:index`.',
+          );
+        }
+        return unit.versions.map((itemVersion, itemIndex): LessonCheckItem => ({
           itemKey: practiceItemKey(unitIndex, itemIndex),
           itemVersion,
           type: (unit.types.length === 1 ? unit.types[0] : unit.types[itemIndex])!,
           fromImportedPaper: unit.paper !== undefined,
           sourceTestId: unit.paper,
-          sourceQuestionId: unit.firstQuestion === undefined ? undefined : questionId(unit.firstQuestion + itemIndex),
-        })),
-      ),
+          sourceQuestionId:
+            unit.questions !== undefined
+              ? questionId(unit.questions[itemIndex]!)
+              : unit.firstQuestion === undefined
+                ? undefined
+                : questionId(unit.firstQuestion + itemIndex),
+        }));
+      }),
     })),
     focusedExercises: compact.focusedExercises.map((entry) => decodeFocusedExercise(entry)),
     writingPrompts: compact.writingPrompts,

@@ -99,13 +99,29 @@ test('markItemsDone ticks a lesson once progress records it, and leaves others u
   assert.ok(others.every((i) => !i.done));
 });
 
-test('getTodayPlan on day one of a fresh plan returns 1-4 items and reports on track', () => {
+/* CHANGED 2026-09-23, merging the published main into the platform branch.
+   This test used to cap day one at four items, a bound inherited from the
+   old day-by-day schedule (buildSchedule still keeps it, see the test
+   above). Since WP7 getTodayPlan is a view of one session, and a session
+   is limited by its budget, not by a count of steps (see
+   src/lib/learning/session.ts). Main's refresh of the Reading practice
+   sets cut the sentence completion quick check from 16 questions to 9, so
+   it now costs 5 minutes instead of 10 and a fifth short step fits the
+   same 25 minute day. What is pinned is the guarantee the session makes:
+   something to do, and never more than the day holds. */
+test('getTodayPlan on day one of a fresh plan fits the day and reports on track', () => {
   const plan = makePlan();
   const progress = emptyProgress();
   const today = getTodayPlan(plan, progress, new Date(`${START}T12:00:00`));
   assert.ok(today);
   assert.equal(today!.dayNumber, 1);
-  assert.ok(today!.items.length >= 1 && today!.items.length <= 4);
+  assert.ok(today!.items.length >= 1, 'day one has something to do');
+  assert.ok(today!.session, 'day one is a view of a session');
+  const minutes = today!.items.reduce((total, item) => total + item.minutes, 0);
+  assert.ok(
+    minutes <= today!.session!.budgetMinutes,
+    `day one plans ${minutes} minutes against a ${today!.session!.budgetMinutes} minute day`,
+  );
   assert.equal(today!.onTrack, true);
   assert.equal(today!.daysBehind, 0);
 });

@@ -190,7 +190,7 @@ export default function ProgressReport() {
   const recentPlanChanges = [...learningPlan.history].slice(-5).reverse();
 
   return (
-    <div className="space-y-10">
+    <div className="progress-report-content space-y-10">
       <div className="report-print-hide flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-sm">
           <label htmlFor="report-name" className="text-xs font-bold uppercase tracking-wide text-ink-muted">

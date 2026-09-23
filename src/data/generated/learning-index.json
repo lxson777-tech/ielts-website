@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "format": 2,
-  "indexVersion": "247ee11a4f218185",
+  "format": 3,
+  "indexVersion": "16dcda03bf7e0001",
   "tests": [
     {
       "id": "listening-full-001",
@@ -2770,7 +2770,7 @@
           "paper": "reading-full-006",
           "firstQuestion": 27,
           "types": ["matching-features"],
-          "versions": ["bd51094e7bc95bf5", "32b446f331490ecd", "e394748a60a3476c", "2153fa5df8acb8a1", "dcd9bf24f465dba2", "36177cfe6eb3926d", "3a22f179ef3d0501"]
+          "versions": ["bd51094e7bc95bf5", "32b446f331490ecd", "e394748a60a3476c", "2153fa5df8acb8a1", "dcd9bf24f465dba2", "36177cfe6eb3926d", "c75d21c24346c340"]
         },
         {
           "paper": "reading-full-018",
@@ -2845,6 +2845,12 @@
         {
           "types": ["paraphrase"],
           "versions": ["9410b7188cedcabe", "f3ae3285d72e7927", "a4ff49fab22cc705", "64cc9989d23f2fc9", "ad8767e03412b2b5", "d9717278625faa89", "7c17d58672227b68", "3847216b33f30308"]
+        },
+        {
+          "paper": "reading-full-020",
+          "questions": [1, 2, 3, 4, 5, 6, 12, 13],
+          "types": ["multiple-choice", "yes-no-notgiven", "yes-no-notgiven", "yes-no-notgiven", "yes-no-notgiven", "yes-no-notgiven", "multiple-choice", "multiple-choice"],
+          "versions": ["17d417db09ac566f", "5f34ea15fbbc7bd9", "0cfce93d396f3985", "e51c0d92904dad46", "ec0423ea486d4d78", "21c0cd2f59f7bcb4", "a767e4de8741f38a", "e06668ce5221877f"]
         }
       ]
     },
@@ -2854,16 +2860,16 @@
       "skill": "reading",
       "units": [
         {
-          "paper": "reading-full-015",
-          "firstQuestion": 14,
+          "paper": "reading-full-024",
+          "firstQuestion": 18,
           "types": ["sentence-completion"],
-          "versions": ["ed8774fe3548b0c4", "68ac8baab1b6a496", "64d48169eb7e289a", "6b6476620978bd63", "d1f5c4a2aad7c71d", "75a05eccfc795ed1", "82a1edb7c3d3e08c", "7e80fa5a2bfbfcf0", "d04643abed81ae14", "1d7610e62a7f1003", "4049dbd670a38fc5"]
+          "versions": ["00c2ee0df4b84315", "93a93e8fa490a9c0", "148948c1fbd211a1", "29fff630142279f9", "6b74659149b74ce1"]
         },
         {
-          "paper": "reading-full-010",
-          "firstQuestion": 36,
+          "paper": "reading-full-034",
+          "firstQuestion": 7,
           "types": ["sentence-completion"],
-          "versions": ["83b5a281c703d3ef", "4ec0ee6b4a9ea495", "5595d04866acc33c", "61b9611638dd7d77", "e70279e54529c2a5"]
+          "versions": ["fb596bacfe23f60d", "5c55dd2eba0767b8", "d03f199b60ebd309", "9d98b901a535da26"]
         }
       ]
     },
@@ -2876,13 +2882,13 @@
           "paper": "reading-full-029",
           "firstQuestion": 22,
           "types": ["sentence-completion"],
-          "versions": ["f34f902bf66af722", "5f3da0a01b8e09da", "277daaeb13d7ce74", "95ea57231f680fea", "37c080df5b929f06"]
+          "versions": ["f34f902bf66af722", "5f3da0a01b8e09da", "40ac9d151d4848a8", "95ea57231f680fea", "37c080df5b929f06"]
         },
         {
           "paper": "reading-full-035",
           "firstQuestion": 28,
           "types": ["sentence-completion"],
-          "versions": ["c4c1be2eaeb09e61", "32171e883b1963aa", "74a0d58a57074c12", "cf239bd21e2fc8c3", "ceea3bf86f4f65d3"]
+          "versions": ["c4c1be2eaeb09e61", "32171e883b1963aa", "8d1158691fda7326", "f0631c09746afb7f", "ceea3bf86f4f65d3"]
         }
       ]
     },
@@ -2901,7 +2907,7 @@
           "paper": "reading-full-002",
           "firstQuestion": 19,
           "types": ["sentence-completion"],
-          "versions": ["b661814a365e8d8e", "511c2f2523c6bbec", "d8407d8615aadf8a", "67d04ba69909533b", "c42f21a5ff1020da", "e6e66e929fcf0284", "e47a754778e786a6", "923453f475ca734d"]
+          "versions": ["4a6e10f67ea7eea5", "afd077e37f6dfbcf", "27a21561c7026733", "ecdd7cd8afaebad5", "996554606d1682f4", "fef779e5ef3c60d6", "1835918d5943ec9b", "3c6320c0950cf3ee"]
         }
       ]
     },

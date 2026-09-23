@@ -142,7 +142,7 @@ const FIXED: Activity[] = [
   {
     id: 'review:vocabulary',
     kind: 'review',
-    label: 'Vocabulary flashcards',
+    label: 'Vocabulary practice',
     href: '/review',
     blurb: 'Spaced review of the words due today.',
     minutes: 10,

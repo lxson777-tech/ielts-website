@@ -19,16 +19,46 @@
  * Reading in Russian replaces the whole body with innerHTML, which drops
  * every listener. A control that survived that would look alive and do
  * nothing, so each pass removes what it made last time and builds it again.
+ *
+ * WHOSE REPLIES THEY ARE (the follow-up to R2E-02)
+ * A press is bound to the student on the page at that moment
+ * (requestOwnedLessonHelp in ./lesson-help.ts), and its reply is shown only
+ * while that student has been on the page throughout. When the page changes
+ * hands, every control lets go of the replies it is holding, and the next
+ * student's first press never sends them along as hints already given.
+ * Nothing here is recorded as evidence, so there is nothing to keep.
  */
 
 import { t } from '../../lib/i18n/translate';
 import { getLocale } from '../../lib/i18n/locale';
 import type { LessonHelpKind } from '../../lib/learning/contracts/ai';
+import { bindToCurrentOwner, currentOwner, onOwnerChange, ownerNamespace } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
-import { HELP_SOURCE_NOTE, requestLessonHelp, type HelpResult } from './lesson-help';
+import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, type HelpResult } from './lesson-help';
 
 /** Marks a control this module made, so the next pass can clear it. */
 const HELP_NODE_CLASS = 'lesson-block-help';
+
+/* The replies under a block belong to the student who asked for them. One
+   listener for the page, however many times the controls are rebuilt: when
+   the page changes hands, every control holding another student's replies
+   lets go of them. The same owner being told its stores changed clears
+   nothing. */
+let lettingGo = false;
+
+function letGoOnOwnerChange(): void {
+  if (lettingGo) return;
+  lettingGo = true;
+  onOwnerChange(() => {
+    const now = ownerNamespace(currentOwner());
+    document.querySelectorAll<HTMLElement>(`.${HELP_NODE_CLASS}`).forEach((control) => {
+      const held = control.dataset.helpOwner;
+      if (!held || held === now) return;
+      control.querySelector('.help-replies')?.replaceChildren();
+      delete control.dataset.helpOwner;
+    });
+  });
+}
 
 /** The heading elements one lesson body would stamp, in order.
  *
@@ -94,6 +124,7 @@ export interface LessonBlockHelpOptions {
 export function mountLessonBlockHelp(options: LessonBlockHelpOptions): void {
   const root = options.root ?? document.querySelector('[data-lesson-body]');
   if (!root || options.ids.length === 0) return;
+  letGoOnOwnerChange();
 
   /* A control left behind by an earlier pass has no listeners any more. */
   root.querySelectorAll(`.${HELP_NODE_CLASS}`).forEach((node) => node.remove());
@@ -219,40 +250,57 @@ function buildControl(input: {
   }
 
   async function ask(kind: LessonHelpKind, button: HTMLButtonElement): Promise<void> {
+    /* Bound to the student on the page NOW. Replies this control still holds
+       for anybody else go first, and are not sent along as their hints. */
+    const binding = bindToCurrentOwner();
+    const mine = ownerNamespace(binding.owner);
+    if (wrap.dataset.helpOwner !== mine) {
+      given.length = 0;
+      replies.replaceChildren();
+      wrap.dataset.helpOwner = mine;
+    }
     buttons.forEach((entry) => {
       entry.disabled = true;
     });
     const label = button.textContent;
     button.textContent = t('Asking Mr EZ...');
     const context = askContext();
-    let result: HelpResult;
     try {
-      result = await requestLessonHelp({
-        kind,
-        lessonKey: input.lessonKey,
-        blockId: input.blockId,
-        lessonTitle: input.lessonTitle,
-        blockHeading: input.heading.textContent ?? '',
-        blockText: blockTextOf(input.heading),
-        /* A lesson block is read, not answered, so there is no attempt and
-           no item: an explanation here is about the teaching, and the
-           Worker still refuses to hand over an answer that has not been
-           tried. */
-        attempted: true,
-        previousHints: [...given],
-        assistanceSoFar: 'none',
-        versions: context.versions,
-        sessionId: context.sessionId,
-        locale: getLocale(),
-      });
+      await requestOwnedLessonHelp(
+        binding,
+        {
+          kind,
+          lessonKey: input.lessonKey,
+          blockId: input.blockId,
+          lessonTitle: input.lessonTitle,
+          blockHeading: input.heading.textContent ?? '',
+          blockText: blockTextOf(input.heading),
+          /* A lesson block is read, not answered, so there is no attempt and
+             no item: an explanation here is about the teaching, and the
+             Worker still refuses to hand over an answer that has not been
+             tried. */
+          attempted: true,
+          previousHints: [...given],
+          assistanceSoFar: 'none',
+          versions: context.versions,
+          sessionId: context.sessionId,
+          locale: getLocale(),
+        },
+        {
+          /* Only while the student who pressed is still the one here. */
+          show: (result: HelpResult) => {
+            given.push(result.text);
+            replies.append(buildReply(result));
+          },
+        },
+      );
     } finally {
+      binding.cancel();
       buttons.forEach((entry) => {
         entry.disabled = false;
       });
       button.textContent = label;
     }
-    given.push(result.text);
-    replies.append(buildReply(result));
   }
 
   wrap.append(row, replies);

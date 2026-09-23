@@ -12,14 +12,22 @@ import {
   lessonCheckDrafts,
   lessonCheckItemKey,
   lessonCheckProgressKey,
-  readLessonCheckProgress,
   writeLessonCheckProgress,
   type LessonCheckSubmission,
   type RecordedAnswers,
 } from '../lib/learning/lesson-check';
-import { getLearnerStore, ownerNamespace, type BrowserStorage } from '../lib/learning/store.browser';
+import { recordEventsFor, type BrowserStorage } from '../lib/learning/store.browser';
 import type { AssistanceLevel } from '../lib/learning/contracts/evidence';
+import type { CacheOwner } from '../lib/learning/contracts/sync';
+import { onOwnerChange, type OwnerBinding } from '../lib/store-owner';
 import LessonHelpControls from './learning/LessonHelpControls';
+import {
+  EXERCISE_OWNER_CHANGED_NOTE,
+  claimExerciseCheck,
+  exerciseIsCurrent,
+  openLessonCheck,
+  type ExerciseSession,
+} from './learning/exercise-owner';
 import { currentLessonBlockContext, type LessonBlockContext } from './learning/lesson-block-help';
 
 /** Base-prefixed URL for images stored under /public. */
@@ -509,6 +517,17 @@ function UnitBlock({
   );
 }
 
+/* WHOSE CHECK IS ON SCREEN (the follow-up to R2B-01, 23 September 2026)
+   The quick check is a session bound to the student on the page when it is
+   opened or restored (./learning/exercise-owner.ts), never re-resolved: its
+   unfinished run is written under that student's key, and when the page
+   changes hands, here or in another tab, the screen hands over to the
+   incoming student's own unfinished run of this set, or an empty one, with
+   one calm line. The outgoing student's answers stay in their own run
+   (written on every change). A press of check is claimed at the press:
+   refused, recording nothing, when the session's student is no longer the
+   one here, and otherwise written through recordEventsFor under that
+   student. */
 export default function PracticeQuiz({ set, setId }: Props) {
   const { t, locale } = useT();
   /* 'select' questions were built for Matching Headings, where the dropdown
@@ -528,13 +547,21 @@ export default function PracticeQuiz({ set, setId }: Props) {
      during the server render. */
   const [help, setHelp] = useState<QuizHelp | null>(null);
 
+  /* The one calm line after the page changed hands. */
+  const [ownerNote, setOwnerNote] = useState<string | null>(null);
+  /* True when this tab missed an account change and refused a press (see
+     withhold below): the answers on screen then belong to somebody who is
+     not here, and nothing of them is shown, not even as a count, until the
+     tab hears who is here. */
+  const [withheld, setWithheld] = useState(false);
+  const shown = withheld ? set.units.map((unit) => emptyUnitState(unit)) : units;
   const total = set.units.reduce((n, u) => n + u.questions.length, 0);
-  const checkedQuestions = units.reduce((n, s, i) => (s.checked ? n + set.units[i]!.questions.length : n), 0);
-  const correct = units.reduce(
+  const checkedQuestions = shown.reduce((n, s, i) => (s.checked ? n + set.units[i]!.questions.length : n), 0);
+  const correct = shown.reduce(
     (n, s, i) => (s.checked ? n + set.units[i]!.questions.filter((q, qi) => isRight(q, s.drafts[qi]!)).length : n),
     0,
   );
-  const allDone = units.every((s) => s.checked);
+  const allDone = !withheld && units.every((s) => s.checked);
 
   /* The explanations in the student's language, fetched the moment the
      first unit is checked and not a moment before: nothing on this page
@@ -559,16 +586,20 @@ export default function PracticeQuiz({ set, setId }: Props) {
   );
   const storage = useMemo(deviceStorage, []);
   /* What has already been written for this set, so pressing check again,
-     or coming back tomorrow, never records a second first answer. */
+     or coming back tomorrow, never records a second first answer. The
+     session's own: replaced at a hand-over by the incoming student's. */
   const recorded = useRef<RecordedAnswers>({});
-  const progressKey = useMemo(() => {
-    if (!setId) return null;
-    try {
-      return lessonCheckProgressKey(ownerNamespace(getLearnerStore().owner()), setId);
-    } catch {
-      return null;
-    }
-  }, [setId]);
+  /* Whose answers this screen holds: bound on mount to the owner on the
+     page, and moved to the incoming student only by handOver below. State,
+     so every render's answers and the key they are kept under belong to
+     the same student; the ref is for the owner-change listener. */
+  const [exercise, setExercise] = useState<ExerciseSession | null>(null);
+  const exerciseRef = useRef<ExerciseSession | null>(null);
+  const progressKey = useMemo(
+    () => (exercise && setId ? lessonCheckProgressKey(exercise.namespace, setId) : null),
+    [exercise, setId],
+  );
+  const unitSizes = useMemo(() => set.units.map((unit) => unit.questions.length), [set]);
 
   /* The lesson block behind this check, once the page has stamped its ids.
      A check rendered anywhere but a lesson page finds nothing and simply
@@ -584,22 +615,91 @@ export default function PracticeQuiz({ set, setId }: Props) {
      after mount rather than while rendering, so the server rendered
      markup and the first client render still agree. */
   useEffect(() => {
-    if (!progressKey) return;
-    const held = readLessonCheckProgress(
-      storage,
-      progressKey,
-      set.units.map((unit) => unit.questions.length),
-      new Date().toISOString(),
-    );
+    /* The owner every store on this device is using right now, fixed for
+       this session (src/lib/store-owner.ts). */
+    const opened = openLessonCheck(storage, setId, unitSizes, new Date().toISOString());
+    exerciseRef.current = opened.session;
+    setExercise(opened.session);
+    const held = opened.held;
     if (!held) return;
     setUnits(held.units.map((unit) => ({ drafts: [...unit.drafts], checked: unit.checked, attempt: unit.attempt })));
     recorded.current = held.recorded;
     if (held.units.some((unit) => unit.attempt > 0)) setRepeat(true);
     // Restoring happens once, for the set this component was mounted with.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progressKey]);
+  }, [setId]);
+
+  /* A sign-out, sign-in or account switch, from this tab or another. The
+     same owner being told its stores changed (the anonymous-work claim)
+     replaces nothing. */
+  useEffect(() => {
+    const stop = onOwnerChange(() => {
+      if (exerciseRef.current === null || exerciseIsCurrent(exerciseRef.current)) return;
+      handOver();
+    });
+    return () => {
+      stop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* The page changed hands, here or in another tab. The answers on screen
+     were the outgoing student's and are already in their own unfinished
+     run (apply writes it on every change); their help replies are let go
+     of by the help buttons. None of it stays here: the screen shows the
+     incoming student's own unfinished run of this set, or an empty one,
+     with one calm line. Touches only refs, setters and props, so the
+     listener above can call it from any render. */
+  function handOver() {
+    const opened = openLessonCheck(storage, setId, unitSizes, new Date().toISOString());
+    exerciseRef.current = opened.session;
+    const held = opened.held;
+    recorded.current = held?.recorded ?? {};
+    setExercise(opened.session);
+    setUnits(
+      held
+        ? held.units.map((unit) => ({ drafts: [...unit.drafts], checked: unit.checked, attempt: unit.attempt }))
+        : set.units.map((unit) => emptyUnitState(unit)),
+    );
+    setRepeat(Boolean(held?.units.some((unit) => unit.attempt > 0)));
+    /* Help is never kept in the unfinished run, so the incoming student
+       starts with none, as they would after a reload. */
+    setAssistance({});
+    setWithheld(false);
+    setOwnerNote(EXERCISE_OWNER_CHANGED_NOTE);
+  }
+
+  /* This tab missed the account change: it still names the previous
+     student, but this device's account session is somebody else's. Nothing
+     is recorded and nothing is written; the answers are already in their
+     own student's unfinished run, and they leave the screen until this tab
+     hears who is here, when the listener above hands over. */
+  function withhold() {
+    setWithheld(true);
+    setOwnerNote(EXERCISE_OWNER_CHANGED_NOTE);
+  }
+
+  /** True while this render's session is the one on screen. A handler from
+      a render made before a hand-over must not put one student's answers on
+      the next student's screen or under their key. */
+  function live(): boolean {
+    return exercise !== null && exercise === exerciseRef.current && !withheld;
+  }
+
+  /** The binding a press of check is recorded under, bound NOW, or null
+   *  when it is refused: nothing is recorded, and the screen has handed
+   *  over or taken the answers off the screen. */
+  function claimPress(): OwnerBinding | null {
+    if (!live()) return null;
+    const claim = claimExerciseCheck(exercise);
+    if ('binding' in claim) return claim.binding;
+    if (claim.refused === 'owner-changed') handOver();
+    else withhold();
+    return null;
+  }
 
   function apply(next: UnitState[]) {
+    if (!live()) return;
     setUnits(next);
     if (!progressKey || !setId) return;
     writeLessonCheckProgress(storage, progressKey, {
@@ -613,8 +713,10 @@ export default function PracticeQuiz({ set, setId }: Props) {
 
   /** Write one unit's answers to the learner record. Never throws into
       the exercise: a blocked or full browser store costs the record, not
-      the student's practice. */
-  function record(unitIndex: number, state: UnitState) {
+      the student's practice. `whose` is the student the press was bound to
+      (claimPress): the answers, their score and the help each had are
+      written into THEIR record, never the one the page happens to hold. */
+  function record(unitIndex: number, state: UnitState, whose: CacheOwner) {
     if (!setId || !paper || identityByKey.size === 0) return;
     const unit = set.units[unitIndex]!;
     const submissions: LessonCheckSubmission[] = [];
@@ -654,7 +756,7 @@ export default function PracticeQuiz({ set, setId }: Props) {
         recorded.current,
       );
       recorded.current = write.recorded;
-      const events = getLearnerStore().recordEvents(write.drafts);
+      const events = recordEventsFor(whose, write.drafts);
       if (events.some((event) => event.seenBefore)) setRepeat(true);
     } catch {
       /* Nothing recorded. The exercise itself carries on as before. */
@@ -662,26 +764,38 @@ export default function PracticeQuiz({ set, setId }: Props) {
   }
 
   function setDraft(unitIndex: number, qi: number, value: string) {
+    if (!live()) return;
+    setOwnerNote(null);
     apply(
       units.map((s, i) => (i === unitIndex ? { ...s, drafts: s.drafts.map((d, j) => (j === qi ? value : d)) } : s)),
     );
   }
 
   function checkUnit(unitIndex: number) {
+    /* Accepted only for the student whose answers these are, and bound to
+       them before anything is recorded. */
+    const binding = claimPress();
+    if (!binding) return;
     const next = units.map((s, i) => (i === unitIndex ? { ...s, checked: true } : s));
-    /* Recorded from the answers as they stood when check was pressed,
-       which is before any explanation, correct answer or transcript
-       appears on screen. */
-    record(unitIndex, next[unitIndex]!);
+    try {
+      /* Recorded from the answers as they stood when check was pressed,
+         which is before any explanation, correct answer or transcript
+         appears on screen. */
+      record(unitIndex, next[unitIndex]!, binding.owner);
+    } finally {
+      binding.cancel();
+    }
     apply(next);
   }
 
   function resetUnit(unitIndex: number) {
+    if (!live()) return;
     apply(units.map((s, i) => (i === unitIndex ? emptyUnitState(set.units[i]!, s.attempt + 1) : s)));
     setRepeat(true);
   }
 
   function resetAll() {
+    if (!live()) return;
     apply(set.units.map((unit, i) => emptyUnitState(unit, (units[i]?.attempt ?? 0) + 1)));
     setRepeat(true);
   }
@@ -714,9 +828,16 @@ export default function PracticeQuiz({ set, setId }: Props) {
         </div>
       </div>
 
+      {ownerNote && (
+        <p role="status" className="border-b border-border bg-surface px-5 py-3 text-sm text-ink sm:px-6">
+          {t(ownerNote)}
+        </p>
+      )}
+
       {/* Units: each one real passage (or audio segment) immediately
-          followed by its own questions and its own Check answers. */}
-      {set.units.map((unit, unitIndex) => {
+          followed by its own questions and its own Check answers. None of
+          them while this tab is withholding a previous student's answers. */}
+      {!withheld && set.units.map((unit, unitIndex) => {
         const props = {
           unit,
           unitIndex,

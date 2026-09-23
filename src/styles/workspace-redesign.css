@@ -37,7 +37,7 @@
    the filled one. */
 .workspace-v2 .ws-account { gap: 10px; }
 .workspace-v2 .ws-lang { display: inline-flex; padding: 3px; border-radius: 999px; background: #eaece3; }
-.workspace-v2 .ws-lang-option { min-width: 36px; height: 32px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; color: #5d6b64; font-family: var(--font-display-ui, inherit); font-size: .74rem; font-weight: 700; letter-spacing: .04em; cursor: pointer; transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease; }
+.workspace-v2 .ws-lang-option { min-width: 36px; height: 40px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; color: #5d6b64; font-family: var(--font-display-ui, inherit); font-size: .74rem; font-weight: 700; letter-spacing: .04em; cursor: pointer; transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease; }
 .workspace-v2 .ws-lang-option:hover { color: #263c35; }
 .workspace-v2 .ws-lang-option[aria-pressed='true'] { background: #fffdf8; color: #263c35; box-shadow: 0 1px 2px rgba(38, 60, 53, .12); cursor: default; }
 .workspace-v2 .ws-lang-option:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
@@ -115,8 +115,8 @@
 .workspace-v2 .practice-tile h2 { font-size: 28px; font-weight: 600; margin-top: 20px; }
 .practice-tile > p { margin-top: 10px; font-size: 14px; line-height: 1.75; color: var(--color-ink-muted); max-width: 52ch; }
 .activity-start { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 24px; color: var(--skill); font-size: 14px; font-weight: 650; }
-.activity-start > span { display: grid; place-items: center; width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--color-border); font-size: 18px; transition: background 160ms ease; }
-.activity-start:hover > span { background: var(--skill-tint); }
+.activity-start > span[aria-hidden="true"] { display: grid; place-items: center; width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--color-border); font-size: 18px; transition: background 160ms ease; }
+.activity-start:hover > span[aria-hidden="true"] { background: var(--skill-tint); }
 .mode-help { margin: 25px 0; padding: 15px 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); font-size: 13px; color: var(--color-ink-muted); }
 .mode-help summary { cursor: pointer; padding: 7px 0; color: var(--color-ink); font-weight: 550; }
 .mode-help-content { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 20px 0 10px; }
@@ -130,7 +130,7 @@
 .workspace-v2 .tests-hub > .exam-grid > div > div:first-of-type { height: 64px; border: 0; background: var(--skill-tint); border-radius: 14px; padding: 12px; }
 .workspace-v2 .tests-hub > .exam-grid > div > div:first-of-type img { width: 100%; height: 100%; transform: none; }
 .workspace-v2 .tests-hub > .exam-grid > div > div:last-of-type { padding: 0; }
-.workspace-v2 .exam-grid h3 { margin-top: 0; font-size: 23px; font-weight: 600; }
+.workspace-v2 .exam-grid h2 { margin-top: 0; font-size: 23px; font-weight: 600; }
 .workspace-v2 .tests-hub > .exam-grid > div > div:last-of-type > .inline-flex,
 .workspace-v2 .tests-hub > .exam-grid > div > div:last-of-type > div:first-child:has(> .inline-flex) { display: none; }
 .workspace-v2 .exam-grid button[data-test-rotation], .workspace-v2 .exam-grid .mt-auto > a:first-child { border-radius: 999px; font-weight: 600; background: #263c35; }
@@ -242,7 +242,7 @@
   .workspace-v2 .exam-grid { grid-template-columns: 1fr; gap: 16px; }
   .workspace-v2 .exam-grid > div { grid-template-columns: 42px minmax(0, 1fr); padding: 20px; gap: 14px; }
   .workspace-v2 .tests-hub > .exam-grid > div > div:first-of-type { height: 42px; padding: 6px; border-radius: 10px; }
-  .workspace-v2 .exam-grid h3 { font-size: 22px; }
+  .workspace-v2 .exam-grid h2 { font-size: 22px; }
   .workspace-v2 .test-page-heading { margin-bottom: 24px; }
   .workspace-v2 .test-page-heading > p { font-size: 13px; }
   .workspace-v2 .mock-invite { padding: 22px; }
@@ -264,8 +264,30 @@
   background: var(--color-ink); color: #fffefa; text-decoration: none;
   transition: background 160ms ease, box-shadow 160ms ease;
 }
-.workspace-v2 .platform-hub .practice-tile a.activity-start > span {
+.workspace-v2 .platform-hub .practice-tile a.activity-start > span[aria-hidden="true"] {
   width: 24px; height: 24px; border: 0; background: transparent; color: inherit;
 }
 .workspace-v2 .platform-hub .practice-tile a.activity-start:hover { background: #172b24; box-shadow: 0 4px 12px #263c3526; }
 .workspace-v2 .platform-hub .practice-tile a.activity-start:focus-visible { outline: 3px solid var(--skill); outline-offset: 4px; }
+
+/* Visual polish: preserve labels at their natural size in either language. */
+.workspace-v2 .activity-start > span[data-i18n] {
+  min-width: 0; font-size: 14px; line-height: 1.45; font-weight: 650;
+}
+.workspace-v2 .platform-hub .practice-tile a.activity-start {
+  max-width: 100%; gap: 16px;
+}
+.workspace-v2 .activity-start > span[aria-hidden="true"] { flex-shrink: 0; }
+.workspace-v2 { --color-success: #237346; }
+.workspace-v2 .ws-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+/* Reserve the tutor's full floating footprint when reaching the end of work.
+   The bottom navigation allowance alone was shorter than the tutor launcher. */
+@media (max-width: 720px) {
+  .workspace-v2:has(.mrez-launcher) .ws-main {
+    padding-bottom: calc(172px + env(safe-area-inset-bottom, 0px));
+  }
+  .workspace-v2:has(.writing-trainer-page) .mrez-launcher {
+    height: 44px; padding: 5px 12px; gap: 8px;
+  }
+  .workspace-v2:has(.writing-trainer-page) .mrez-launcher-label small { display: none; }
+}

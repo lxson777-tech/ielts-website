@@ -227,62 +227,124 @@ export function buildDrills() {
    evidence.
 
    It also carries where the question came from. Every unit except the
-   hand-written paraphrase drill is lifted from a real paper and says so in
-   its own words ("Academic Reading Test 19, Questions 24 to 28", or for
-   listening "Listening Test 12, Part 4, Questions 31 to 34"). Resolving
-   that sentence back to the paper gives three things nothing else can: the
-   real question type, honest exposure (sitting this check spends those
-   paper questions), and proof that the check quotes material that exists.
-   The unit's questions are matched to the paper's in order, which is how
-   tools/build_reading_practice.py and build_listening_practice.py wrote
-   them; the count is checked, so a range that no longer lines up fails
-   loudly here rather than mislabelling a question. */
-const UNIT_SOURCE_RE = /Test (\d+),(?:\s*Part \d+,)?\s*Questions (\d+) to (\d+)/;
+   hand-written paraphrase warm-up is lifted from a real paper and says so
+   in its own words. Resolving that sentence back to the paper gives three
+   things nothing else can: the real question type, honest exposure
+   (sitting this check spends those paper questions), and proof that the
+   check quotes material that exists.
+
+   The sentence comes in two shapes, and both resolve the same way.
+
+   1. One source for the whole unit, the usual case: every question in the
+      unit carries the same contiguous range, "Academic Reading Test 19,
+      Questions 24 to 28", or for listening the audio segment carries
+      "Listening Test 12, Part 4, Questions 31 to 34".
+
+   2. A source per question, when a unit quotes one passage but leaves some
+      of its questions out. The paraphrase lesson's real passage takes Test
+      20 questions 1, 2 to 6 and 12 to 13 and skips 7 to 11, so each of its
+      questions names its own group: "Academic Reading Test 20, Questions 1"
+      (a single question), then "Questions 2 to 6", then "Questions 12 to
+      13". Consecutive questions sharing a sentence form a run.
+
+   The first shape is simply the second with one run. Each run is matched
+   to its range in order, which is how tools/build_reading_practice.py and
+   build_listening_practice.py wrote them, and each exercise question takes
+   the type of the paper question it maps to. The checks stay loud: a run
+   whose length is not its range's length, a run naming a different paper
+   from the rest of its unit, a paper question claimed twice, or a unit
+   where only some questions name a source all fail here rather than
+   mislabelling a question. */
+const UNIT_SOURCE_RE = /Test (\d+),(?:\s*Part \d+,)?\s*Questions (\d+)(?: to (\d+))?/;
 
 /** The lesson slug each practice set belongs to maps to one subskill, used
     only where a unit has no paper to resolve (the hand-written paraphrase
-    drill). Question types are never guessed from the lesson: they come from
-    the paper, because five lessons deliberately teach a neighbouring type
-    (see section 6.2 of the architecture). */
+    warm-up). Question types are never guessed from the lesson: they come
+    from the paper, because five lessons deliberately teach a neighbouring
+    type (see section 6.2 of the architecture). */
 const HAND_WRITTEN_SUBSKILL = { 'reading/paraphrase': 'paraphrase' };
 
 function paperIdFor(skill, number) {
   return `${skill}-full-${String(number).padStart(3, '0')}`;
 }
 
-/** The source sentence for one unit: listening carries it on the audio
-    segment, reading on each question. */
-function unitSourceText(skill, unit) {
-  if (skill === 'listening') return unit.segment?.source ?? null;
-  return unit.questions.find((question) => question.source)?.source ?? null;
+/** The source sentence behind each question of one unit, in order.
+    Listening carries one sentence on the audio segment for the whole unit;
+    reading carries one on each question. */
+function questionSourceTexts(skill, unit) {
+  if (skill === 'listening') {
+    const text = unit.segment?.source ?? null;
+    return unit.questions.map(() => text);
+  }
+  return unit.questions.map((question) => question.source ?? null);
 }
 
-function resolveUnitSource(skill, unit, testsById, label) {
-  const text = unitSourceText(skill, unit);
-  if (!text) return null;
-  const match = UNIT_SOURCE_RE.exec(text);
-  if (!match) throw new Error(`${label}: cannot read which paper "${text}" means.`);
-  const testId = paperIdFor(skill, Number(match[1]));
-  const test = testsById.get(testId);
-  if (!test) throw new Error(`${label}: "${text}" points at ${testId}, which does not exist.`);
-  const from = Number(match[2]);
-  const to = Number(match[3]);
-  if (to - from + 1 !== unit.questions.length) {
+/** Consecutive questions that carry the same sentence, as
+    { text, length } in order. */
+function sourceRuns(texts) {
+  const runs = [];
+  for (const text of texts) {
+    const last = runs[runs.length - 1];
+    if (last && last.text === text) last.length += 1;
+    else runs.push({ text, length: 1 });
+  }
+  return runs;
+}
+
+/** Which paper questions one unit quotes, in the unit's order, or null for
+    a hand-written unit. Exported so tests/learning-index.test.ts can put
+    both shapes and every loud failure to it on made-up units. */
+export function resolveUnitSource(skill, unit, testsById, label) {
+  const texts = questionSourceTexts(skill, unit);
+  if (texts.every((text) => !text)) return null;
+  if (texts.some((text) => !text)) {
     throw new Error(
-      `${label}: "${text}" covers ${to - from + 1} questions but the unit has ${unit.questions.length}. ` +
-        'The exercise and the paper have drifted apart; fix the source line or rebuild the set.',
+      `${label}: some questions name a source paper and some do not. ` +
+        'A unit is either hand-written or quoted from a paper; fix the source lines or rebuild the set.',
     );
   }
-  const typeByQuestionId = new Map();
-  for (const part of test.parts) for (const group of part.groups) for (const question of group.questions) {
-    typeByQuestionId.set(question.id, group.type);
-  }
+  const runs = sourceRuns(texts);
+
+  let testId;
+  let typeByQuestionId;
   const questions = [];
-  for (let n = from; n <= to; n += 1) {
-    const questionId = `q${n}`;
-    const type = typeByQuestionId.get(questionId);
-    if (!type) throw new Error(`${label}: ${testId} has no question ${questionId}.`);
-    questions.push({ questionId, type });
+  const claimed = new Set();
+  for (const run of runs) {
+    const { text } = run;
+    const match = UNIT_SOURCE_RE.exec(text);
+    if (!match) throw new Error(`${label}: cannot read which paper "${text}" means.`);
+    const runTestId = paperIdFor(skill, Number(match[1]));
+    if (testId === undefined) {
+      const test = testsById.get(runTestId);
+      if (!test) throw new Error(`${label}: "${text}" points at ${runTestId}, which does not exist.`);
+      testId = runTestId;
+      typeByQuestionId = new Map();
+      for (const part of test.parts) for (const group of part.groups) for (const question of group.questions) {
+        typeByQuestionId.set(question.id, group.type);
+      }
+    } else if (runTestId !== testId) {
+      throw new Error(
+        `${label}: "${text}" points at ${runTestId}, but the unit's earlier questions come from ${testId}. ` +
+          'A unit quotes one paper; fix the source line or rebuild the set.',
+      );
+    }
+    const from = Number(match[2]);
+    const to = match[3] === undefined ? from : Number(match[3]);
+    if (to - from + 1 !== run.length) {
+      const held = runs.length === 1 ? `the unit has ${unit.questions.length}` : `${run.length} consecutive questions carry it`;
+      throw new Error(
+        `${label}: "${text}" covers ${to - from + 1} questions but ${held}. ` +
+          'The exercise and the paper have drifted apart; fix the source line or rebuild the set.',
+      );
+    }
+    for (let n = from; n <= to; n += 1) {
+      const questionId = `q${n}`;
+      const type = typeByQuestionId.get(questionId);
+      if (!type) throw new Error(`${label}: ${testId} has no question ${questionId}.`);
+      if (claimed.has(questionId)) throw new Error(`${label}: ${testId} ${questionId} is claimed by two questions of the unit.`);
+      claimed.add(questionId);
+      questions.push({ questionId, type });
+    }
   }
   return { testId, questions };
 }

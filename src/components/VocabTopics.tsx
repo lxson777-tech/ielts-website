@@ -1,14 +1,14 @@
 /* /review ("Vocabulary"): a plain topic browser, replacing the flashcard-first
    landing page the owner found "weird and confusing". Pick a topic, see
    every word for it with its meaning and example, grouped the way the
-   lesson itself teaches it, no flipping required. Flashcards are still
-   there (VocabReview.tsx) but demoted to one quiet action at the bottom of
-   a topic, not the first thing you see.
+   lesson itself teaches it, no flipping required. Practice (VocabReview.tsx,
+   ten marked questions built from the example sentences) is one quiet
+   action at the bottom of a topic, not the first thing you see.
 
    Three views, one component, no client-side router:
      landing — every topic as a card (word count + a three-word preview)
      topic   — one topic's vocabulary, grouped into categories
-     session — VocabReview.tsx's flashcard loop, filtered to that topic
+     session — VocabReview.tsx's practice round, filtered to that topic
 
    The chosen topic lives in the `topic` query string param so a link like
    /review?topic=environment (the dashboard's plan item, or anywhere else)
@@ -97,6 +97,13 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           <h1>{active.title}</h1>
         </div>
 
+
+        <div className="vocab-topic-practise">
+          <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
+            {t('Practise these words')}
+          </button>
+        </div>
+
         {active.words.length > 0 && (
           <section className="vocab-topic-group">
             <h2>{t('Words and phrases')}</h2>
@@ -127,11 +134,6 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           </section>
         ))}
 
-        <div className="vocab-topic-practise">
-          <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
-            {t('Practise this topic with flashcards')}
-          </button>
-        </div>
       </div>
     );
   }

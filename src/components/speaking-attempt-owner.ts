@@ -58,6 +58,7 @@
 
 import type { CacheOwner } from '../lib/learning/contracts/sync';
 import { bindToCurrentOwner, onOwnerChange, type OwnerBinding } from '../lib/store-owner';
+import type { StartHandle } from '../lib/speaking/live/start-check';
 
 /** Where an attempt stands. */
 export type SpeakingAttemptStage =
@@ -291,6 +292,18 @@ export function openSpeakingAttempt(options: SpeakingAttemptOptions): OwnedSpeak
  * Pure, like the attempt: tests/delayed-grade-owner.test.ts drives it with
  * promises it resolves by hand, a stream and a connection of its own, and no
  * browser, microphone or voice service.
+ *
+ * AND A HANDLE THE SCREEN PULLS (finding R2E-01, Codex inspection of
+ * c4a7793). A start asks when a wait is over; the voice connection's own
+ * setup waits for up to twenty seconds, and until it has finished the
+ * screen has no connection to close. So every start also carries a handle
+ * (StartHandle, src/lib/speaking/live/start-check.ts) that is pulled the
+ * moment its number goes stale: every teardown above already moves the
+ * number on (the unmount, the switch, the student's own Back, a newer
+ * start), so every one of them reaches a setup still under way at once, and
+ * the setup releases its connection, its socket and its audio there and
+ * then. The questions above are unchanged and still asked: the handle is for
+ * a let-go that reached the screen, the question for one that did not.
  */
 
 /** The start numbers of one screen. */
@@ -305,21 +318,56 @@ export interface SessionGenerations {
   /** The screen is gone for good: every number is stale from now on,
       including any handed out afterwards. */
   unmount(): void;
+  /** Run `release` once, the moment `generation` goes stale (a newer start,
+      a teardown, the unmount); at once when it already is. Returns a
+      function that takes it back (R2E-01). */
+  whenStale(generation: number, release: () => void): () => void;
 }
 
 export function sessionGenerations(): SessionGenerations {
   let generation = 0;
   let mounted = true;
+  /* R2E-01: what to release when a number goes stale. */
+  const watchers = new Set<{ generation: number; release: () => void }>();
+  const isCurrent = (candidate: number): boolean => mounted && candidate === generation;
+  const releaseStale = (): void => {
+    for (const watcher of [...watchers]) {
+      if (isCurrent(watcher.generation)) continue;
+      watchers.delete(watcher);
+      try {
+        watcher.release();
+      } catch {
+        /* letting go must never break the teardown that pulled it */
+      }
+    }
+  };
   return {
     current: () => generation,
     next: () => {
       generation += 1;
+      releaseStale();
       return generation;
     },
-    isCurrent: (candidate) => mounted && candidate === generation,
+    isCurrent,
     unmount: () => {
       mounted = false;
       generation += 1;
+      releaseStale();
+    },
+    whenStale(stale, release) {
+      if (!isCurrent(stale)) {
+        try {
+          release();
+        } catch {
+          /* as above */
+        }
+        return () => {};
+      }
+      const watcher = { generation: stale, release };
+      watchers.add(watcher);
+      return () => {
+        watchers.delete(watcher);
+      };
     },
   };
 }
@@ -378,6 +426,10 @@ export interface GuardedSessionStart {
       that FAILED after the start was let go. A failure while the start is
       still live is thrown on, to the screen's own error handling. */
   step<T>(pending: Promise<T>, release?: (value: T) => void): Promise<{ value: T } | null>;
+  /** Handed to the voice connection's setup (R2E-01): pulled the moment
+      this start's number goes stale, so a setup still under way releases
+      what it has made at once instead of when it next looks. */
+  readonly handle: StartHandle;
 }
 
 export interface SessionStartOptions {
@@ -404,11 +456,17 @@ export function guardSessionStart(options: SessionStartOptions): GuardedSessionS
     return current() && binding.state() === 'current';
   };
 
+  const handle: StartHandle = {
+    letGo: () => !current(),
+    onLetGo: (release) => generations.whenStale(generation, release),
+  };
+
   return {
     generation,
     binding,
     current,
     live,
+    handle,
     async step<T>(pending: Promise<T>, release?: (value: T) => void) {
       let value: T;
       try {
