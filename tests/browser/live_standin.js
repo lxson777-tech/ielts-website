@@ -13,7 +13,10 @@
    the report) is the site's own code. Nothing here reaches OpenAI. */
 (() => {
   const realFetch = window.fetch.bind(window);
-  const state = { creates: [], peers: [] };
+  /* passThrough: hand the page the Worker's own (placeholder) answer, which
+     no browser can connect to: the student's connection failing after the
+     session was created. */
+  const state = { creates: [], peers: [], passThrough: false };
   window.__liveStandin = state;
 
   const isCreate = (url, method) => {
@@ -71,7 +74,7 @@
     state.creates.push(record);
     const resp = await realFetch(input, init); // the real Worker decides and counts
     record.status = resp.status;
-    if (!resp.ok) return resp;
+    if (!resp.ok || state.passThrough) return resp;
     const data = await resp.json();
 
     const peer = new RTCPeerConnection();

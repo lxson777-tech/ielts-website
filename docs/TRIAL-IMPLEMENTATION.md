@@ -117,10 +117,13 @@ Speaking length and content protection`):
 Two safeguards Claude added and flags as adjustable, not decided by Alex: a trial
 Speaking interview is hung up by the server after five minutes (a once-a-minute check,
 so at most about six), and at most two interviews may start under the one Speaking test
-(the first, and one retry after a dropped connection). A session counts once OpenAI has
-created it, even if the student's browser then fails to connect to it; only a session
-OpenAI never created is given back. After two such failures the student cannot start a
-third interview, although the test itself is not used. Worth a decision before go-live.
+(the first, and one retry after a dropped connection). Alex decided (23 September) that
+an interview whose connection failed before the examiner began is given back: the
+Worker's end route releases it when that call is what ended the session, the begin cue
+never arrived, and it came within 90 seconds of opening (`TRIAL_UNUSED_SESSION_SECONDS`).
+An interview the examiner began counts however it ends, and so does a quiet one reported
+late, so a session cannot be held open as free voice time. A browser that never reports
+the end (a closed tab) gives nothing back.
 
 ## The Speaking test (built)
 
@@ -274,19 +277,20 @@ build with the same variables (`npx astro build`), then
 
 ## Decisions still needed (nothing below was invented)
 
-1. **General Mr EZ chat**: refused in the trial (not a fifth bucket). On the trial's
-   Today page a question is charged to the section tab the student chose. The welcome,
-   weekly review, unit notes, plan proposals and focused-exercise marking are off during
-   the trial. Paid-plan allowances are not set.
+1. **General Mr EZ chat**: decided by Alex (23 September): refused in the trial, as
+   built. On the trial's Today page a question is charged to the section tab the student
+   chose. The welcome, weekly review, unit notes, plan proposals and focused-exercise
+   marking are off during the trial. Still open: paid-plan allowances.
 2. **Results after expiry**: nothing is deleted. Today the report and score history stay
    readable after the trial ends; confirm that is the policy.
 3. **Repeat trials**: built as one trial per account. A person with a new email gets a
    new trial, and deleting an account and signing up again with the same email would
    too (the trial row is deleted with the account). Blocking that means keeping some
    record of past emails, which is a privacy decision.
-4. **The word-of-the-day sampler**: public (the one named exception) or locked?
-5. **The rest of the content**: whether to put the supporting libraries and the
-   listening audio behind the door too (see "Not behind the door yet").
+4. **The word-of-the-day sampler**: decided by Alex (23 September): stays public, the
+   one named exception.
+5. **The rest of the content**: decided by Alex (23 September): lock all of it,
+   including the listening audio. Plan in progress (see "Not behind the door yet").
 6. **Existing students and full access**: switching the site to trial mode today would
    lock every current free student out of everything but the trial, including those
    with history. There is no "full access" state yet (no payment, no manual grant

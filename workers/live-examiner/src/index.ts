@@ -101,7 +101,13 @@ import {
   PlanRequestError,
 } from '../../../src/lib/speaking/live/instructions';
 import type { LiveMode, ResolvedPlan } from '../../../src/lib/speaking/live/instructions';
-import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES, TRIAL_SPEAKING_MODE, parseAccessMode } from '../../../src/lib/trial/offer';
+import {
+  TRIAL_OFFER,
+  TRIAL_SPEAKING_MINUTES,
+  TRIAL_SPEAKING_MODE,
+  TRIAL_UNUSED_SESSION_SECONDS,
+  parseAccessMode,
+} from '../../../src/lib/trial/offer';
 import {
   TRIAL_REFUSAL_TEXT,
   TrialRefusal,
@@ -400,21 +406,29 @@ interface SessionRow {
   stage: string;
   ended_at: string | null;
   mode: string;
+  created_at: string | null;
 }
 
 async function findSessionByProviderId(deps: Deps, env: Env, providerSessionId: string): Promise<SessionRow | null> {
   const rows = await fetchRows(
     deps,
     env,
-    `provider_session_id=eq.${encodeURIComponent(providerSessionId)}&select=id,user_id,stage,ended_at,mode`,
+    `provider_session_id=eq.${encodeURIComponent(providerSessionId)}&select=id,user_id,stage,ended_at,mode,created_at`,
   );
   const row = rows[0];
   if (!isRecord(row)) return null;
-  const { id, user_id, stage, ended_at, mode } = row;
+  const { id, user_id, stage, ended_at, mode, created_at } = row;
   if (typeof id !== 'string' || typeof user_id !== 'string' || typeof stage !== 'string' || typeof mode !== 'string') {
     throw new SupabaseError('malformed session row');
   }
-  return { id, user_id, stage, ended_at: typeof ended_at === 'string' ? ended_at : null, mode };
+  return {
+    id,
+    user_id,
+    stage,
+    ended_at: typeof ended_at === 'string' ? ended_at : null,
+    mode,
+    created_at: typeof created_at === 'string' ? created_at : null,
+  };
 }
 
 /** Closes a reservation row that will never become a real session (OpenAI
@@ -760,7 +774,24 @@ async function handleEnd(deps: Deps, request: Request, env: Env, cors: Record<st
     return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
   }
 
-  return json({ ok: true }, 200, cors);
+  /* The trial (Alex, 23 September 2026): an interview the examiner never
+     began, because the student's connection failed first, gives the
+     student's attempt back. Only when this call is what ended the session,
+     the begin cue never arrived (stage still 'created'), and it ended within
+     TRIAL_UNUSED_SESSION_SECONDS of opening. The sitting named in the body
+     can only be the caller's own reserved Speaking test: the database
+     function checks that against the verified user. */
+  let givenBack = false;
+  if (parseAccessMode(env.ACCESS_MODE) === 'trial' && row.ended_at === null && row.stage === 'created' && row.created_at) {
+    const ageMs = deps.now().getTime() - Date.parse(row.created_at);
+    const sitting = readSittingId(parsed.value.trialSitting);
+    if (sitting && ageMs >= 0 && ageMs <= TRIAL_UNUSED_SESSION_SECONDS * 1000) {
+      const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+      givenBack = await releaseSpeakingSession(rpc, userId, sitting).catch(() => false);
+    }
+  }
+
+  return json(givenBack ? { ok: true, trial: { interviewGivenBack: true } } : { ok: true }, 200, cors);
 }
 
 /** Real sideband delivery: attaches to a running OpenAI session over the

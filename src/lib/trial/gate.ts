@@ -239,8 +239,11 @@ export async function startSpeakingSession(rpc: TrialRpc, userId: string, sittin
 }
 
 /** Gives the count back when the voice session never opened. */
-export async function releaseSpeakingSession(rpc: TrialRpc, userId: string, sittingId: string): Promise<void> {
-  await rpc('trial_speaking_session_release', { p_user: userId, p_request: sittingId });
+/** True when an interview was actually given back (the sitting is this
+    student's reserved Speaking test and had one counted). */
+export async function releaseSpeakingSession(rpc: TrialRpc, userId: string, sittingId: string): Promise<boolean> {
+  const result = await rpc('trial_speaking_session_release', { p_user: userId, p_request: sittingId });
+  return result.ok === true;
 }
 
 /** Verifies a Supabase access token and returns its user id, or null. The

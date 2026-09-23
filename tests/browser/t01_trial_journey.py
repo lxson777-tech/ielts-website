@@ -255,6 +255,19 @@ def run():
         ])
         ctx = browser.new_context(viewport={"width": 1440, "height": 900}, permissions=["microphone"])
         english(ctx)
+
+        # Warm-up: a freshly started dev server prepares its files on the first
+        # visit to each page and then reloads that page once, which can close a
+        # panel mid-step. Visit the pages the journey uses before any check runs.
+        warm = ctx.new_page()
+        for path in ("/trial", "/dashboard", "/lessons/reading/paraphrase", "/tests/reading-full-001",
+                     "/writing/checker", "/speaking/examiner", "/plans"):
+            try:
+                warm.goto(BASE + path, wait_until="networkidle", timeout=60000)
+            except Exception:
+                pass
+        warm.close()
+
         page = ctx.new_page()
 
         # ── 1. The public offer, signed out, arriving from the questionnaire ──
@@ -553,6 +566,20 @@ def run():
               len(rows) == 1 and rows[0]["status"] == "reserved" and rows[0]["sessions"] == 0
               and page.get_by_text("Nothing was used: press Start again").count() > 0, json.dumps(rows))
         sitting = rows[0]["request_id"] if rows else None
+
+        # The session opens, but the student's own connection to it fails.
+        page.evaluate("window.__liveStandin.passThrough = true")
+        page.locator("[data-trial-speaking-start]").click()
+        page.wait_for_function("window.__liveStandin.creates.length >= 2", timeout=30000)
+        page.wait_for_function("!document.querySelector('[data-trial-speaking-start]')?.disabled", timeout=30000)
+        page.wait_for_timeout(2500)  # the end report is sent in the background
+        created = page.evaluate("window.__liveStandin.creates[1]")
+        rows = usage(a_email, "test", "speaking")
+        check("speaking: a session that opened but never connected gives the interview back",
+              (created or {}).get("status") == 201 and len(rows) == 1 and rows[0]["sessions"] == 0
+              and rows[0]["status"] == "reserved" and page.get_by_text("Nothing was used: press Start again").count() > 0,
+              json.dumps({"created": created, "rows": rows})[:400])
+        page.evaluate("window.__liveStandin.passThrough = false")
 
         standin("/__force", {"fail": "grader"})
         page.locator("[data-trial-speaking-start]").click()

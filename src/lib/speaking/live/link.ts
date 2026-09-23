@@ -362,7 +362,9 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
     fetch(liveEndpoint(base, 'end'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
-      body: JSON.stringify({ sessionId }),
+      /* A trial interview names its test, so an interview the examiner never
+         began can be given back (the Worker decides). */
+      body: JSON.stringify(opts.trialSitting ? { sessionId, trialSitting: opts.trialSitting } : { sessionId }),
     }).catch(() => {
       /* best effort */
     });

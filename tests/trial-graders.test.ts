@@ -259,8 +259,11 @@ async function speakingWorld() {
     fetch: fetchFn,
     now: () => now,
     sideband: async (_env: unknown, sessionId: string, event: Record<string, unknown>) => {
-      if (event.type === 'session.close') calls.closes.push(sessionId);
-      return { ok: false, error: 'socket closed' };
+      if (event.type === 'session.close') {
+        calls.closes.push(sessionId);
+        return { ok: false, error: 'socket closed' };
+      }
+      return { ok: true };
     },
   };
   const live = createLiveHandler(deps as never);
@@ -286,6 +289,18 @@ async function speakingWorld() {
     );
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
+  /** POST /direct or /end of the live examiner, as the browser sends them. */
+  const post = async (path: string, token: string, body: Record<string, unknown>) => {
+    const response = await live.fetch(
+      new Request(`https://live.test${path}`, {
+        method: 'POST',
+        headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      }),
+      env,
+    );
+    return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+  };
   const sessionsOf = async (sitting: string) =>
     (
       (await db.select('select sessions from public.trial_usage where request_id = $1', [sitting], {
@@ -298,6 +313,7 @@ async function speakingWorld() {
     model,
     sessions,
     openInterview,
+    post,
     sessionsOf,
     advance: (minutes: number) => {
       now = new Date(now.getTime() + minutes * 60_000);
@@ -342,6 +358,42 @@ test('live examiner: two interviews per Speaking test, and a session that never 
   assert.equal((await w.openInterview('token-a', 'sit-s-00002')).body.code, 'trial-sessions-used');
   assert.equal(await w.sessionsOf('sit-s-00002'), 2);
   assert.equal(w.calls.openAiLive, 3, 'one failed open and two real interviews, nothing more');
+  await w.db.close();
+});
+
+test('live examiner: an interview the examiner never began, ended within 90 seconds, gives the attempt back, and nothing else does', async () => {
+  const w = await speakingWorld();
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00004' }, { userId: A });
+
+  // The student's connection failed before the examiner began: given back.
+  assert.equal((await w.openInterview('token-a', 'sit-s-00004')).status, 201);
+  assert.equal(await w.sessionsOf('sit-s-00004'), 1);
+  const back = await w.post('/end', 'token-a', { sessionId: 'live_1', trialSitting: 'sit-s-00004' });
+  assert.equal(back.status, 200);
+  assert.deepEqual(back.body, { ok: true, trial: { interviewGivenBack: true } });
+  assert.equal(await w.sessionsOf('sit-s-00004'), 0, 'the unused interview is not counted');
+  // Reporting the same end again gives nothing more back.
+  await w.post('/end', 'token-a', { sessionId: 'live_1', trialSitting: 'sit-s-00004' });
+  assert.equal(await w.sessionsOf('sit-s-00004'), 0);
+
+  // The examiner began: the interview counts, however it ends.
+  assert.equal((await w.openInterview('token-a', 'sit-s-00004')).status, 201);
+  assert.equal((await w.post('/direct', 'token-a', { sessionId: 'live_2', cue: { type: 'begin' } })).status, 200);
+  assert.deepEqual((await w.post('/end', 'token-a', { sessionId: 'live_2', trialSitting: 'sit-s-00004' })).body, { ok: true });
+  assert.equal(await w.sessionsOf('sit-s-00004'), 1);
+
+  // Never began, but reported after 90 seconds: counts (no free quiet sessions).
+  assert.equal((await w.openInterview('token-a', 'sit-s-00004')).status, 201);
+  w.advance(2);
+  assert.deepEqual((await w.post('/end', 'token-a', { sessionId: 'live_3', trialSitting: 'sit-s-00004' })).body, { ok: true });
+  assert.equal(await w.sessionsOf('sit-s-00004'), 2);
+
+  // Another student cannot credit A's test with a session of their own.
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00005' }, { userId: B });
+  assert.equal((await w.openInterview('token-b', 'sit-s-00005')).status, 201);
+  assert.deepEqual((await w.post('/end', 'token-b', { sessionId: 'live_4', trialSitting: 'sit-s-00004' })).body, { ok: true });
+  assert.equal(await w.sessionsOf('sit-s-00004'), 2, "A's count untouched");
+  assert.equal(await w.sessionsOf('sit-s-00005'), 1, "and B's own interview still counts, since B named another test");
   await w.db.close();
 });
 

@@ -38,6 +38,11 @@ export const TRIAL_STALE_MINUTES = 5;
 export const TRIAL_SPEAKING_MODE = 'part1' as const;
 export const TRIAL_SPEAKING_MINUTES = 5;
 export const TRIAL_SPEAKING_SESSIONS = 2;
+/** A trial interview the examiner never began (the student's connection
+    failed first), reported ended within this many seconds of opening, is
+    given back (Alex, 23 September 2026). Short, so a quiet session cannot
+    be used as free voice time. */
+export const TRIAL_UNUSED_SESSION_SECONDS = 90;
 
 /** Full-access prices as approved, for display only. Nothing here takes a
     payment: no provider or purchase terms have been approved. */
