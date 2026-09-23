@@ -152,6 +152,26 @@ shared store), one more journey:
     stopped, microphone released, nothing recorded), and "Done for now" in a
     deaf tab is refused.
 
+ELEVENTH ROUND (23 September 2026, the sixth Codex inspection), one more
+journey in two parts:
+  - Step 23a, R2F-01: the spoken task on the fake microphone, with the
+    microphone request HELD by this script (an init script makes the
+    browser's getUserMedia wait until the test answers it, the way an open
+    permission prompt does). A presses Start twice while it is held: the
+    page asks for the microphone once. The prompt is answered and one
+    recorder runs; B signs in in another tab and every recorder the page
+    started is stopped and every track it was given has ended, counted in
+    the page. Then two more held starts, and the account changes before the
+    prompt is answered: the late microphone is released at once and no
+    recorder starts.
+  - Step 23b, R2F-02: the written task. A presses Check on X and the
+    evaluation request is held (routed to this script, as in step 20). A
+    signs out and B in, then B out and A back in, in a second tab; the first
+    tab is A's again with X in the box. A writes revision Y and it
+    autosaves. The held evaluation is released with a SYNTHETIC reply this
+    script wrote (labelled simulated, no model). A reload shows Y, and X is
+    in A's attempt history.
+
 WHAT THIS IS NOT
 - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for it,
   in memory, on this machine only. Every fact below is about that stand-in,
@@ -200,12 +220,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 # results-unfinished-test-5.md with "unfinished5-", the sixth
 # results-unfinished-test-6.md with "unfinished6-", the seventh
 # results-unfinished-test-7.md with "unfinished7-", the eighth
-# results-unfinished-test-8.md with "unfinished8-" and the ninth
-# results-unfinished-test-9.md with "unfinished9-"; this round's defaults
-# write a tenth file beside them and leave all nine as they were.
+# results-unfinished-test-8.md with "unfinished8-", the ninth
+# results-unfinished-test-9.md with "unfinished9-" and the tenth
+# results-unfinished-test-10.md with "unfinished10-"; this round's defaults
+# write an eleventh file beside them and leave all ten as they were.
 os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4386/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-10")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished10-")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-11")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished11-")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -3696,6 +3717,12 @@ VOCAB_STORE_BASE = "ielts.vocab.v1"
 SPOKEN_ID = "speaking-part1-extend-an-answer"
 SPOKEN_PATH = f"/trainers/speaking-focus/{SPOKEN_ID}"
 SPOKEN_ACTIVITY = f"focus:{SPOKEN_ID}"
+# The spoken task's OWN calm line (SPOKEN_TASK_OWNER_CHANGED_NOTE in
+# src/components/learning/spoken-task-owner.ts). It replaced the exercises'
+# "were kept" line on that screen, which was not true there: a recording in
+# progress is dropped, never kept. Checking for the exercises' line would
+# read zero on the real screen.
+SPOKEN_NOTE = "The account on this page changed. Any recording on this screen was stopped and not kept."
 
 # No lesson body on the site carries an inline quiz today (the reading
 # lessons' quick quizzes were taken out of the bodies earlier in the
@@ -3896,7 +3923,7 @@ def spoken_screen(page):
         "audio": page.locator("audio.spoken-audio").count(),
         "done": page.get_by_role("button", name="Done for now").count(),
         "saved": text_count(page, "Recorded as practice."),
-        "note": text_count(page, EXERCISE_NOTE),
+        "note": text_count(page, SPOKEN_NOTE),
     }
 
 
@@ -4429,6 +4456,422 @@ def run_spoken_switch_part(browser, a_id, b_id):
         fake.close()
 
 
+# ── Eleventh round: the sixth Codex inspection (R2F-01, R2F-02) ──────────────
+
+# Installed before any page script runs, in step 23a only. It counts every
+# microphone track the page is given and every recorder it starts (as the
+# step 22 probe does), and it HOLDS every microphone request: the browser's
+# own getUserMedia is not even called until the test answers, which is what
+# an open permission prompt looks like to the page. __f22ReleaseMic() answers
+# every request waiting. It changes nothing else the page does.
+HELD_MIC_PROBE = """
+(() => {
+  const probe = { tracks: [], recorders: [], calls: 0, waiting: [] };
+  window.__f22Media = probe;
+  const md = navigator.mediaDevices;
+  if (md && md.getUserMedia) {
+    const original = md.getUserMedia.bind(md);
+    md.getUserMedia = (constraints) => {
+      probe.calls += 1;
+      return new Promise((resolve, reject) => {
+        probe.waiting.push(() => original(constraints).then((stream) => {
+          stream.getTracks().forEach((track) => probe.tracks.push(track));
+          resolve(stream);
+        }, reject));
+      });
+    };
+  }
+  window.__f22ReleaseMic = () => {
+    const answering = probe.waiting.splice(0);
+    answering.forEach((answer) => answer());
+    return answering.length;
+  };
+  const Recorder = window.MediaRecorder;
+  if (Recorder) {
+    const start = Recorder.prototype.start;
+    Recorder.prototype.start = function (...args) { probe.recorders.push(this); return start.apply(this, args); };
+  }
+})();
+"""
+
+WRITTEN_X_23 = (
+    "SYNTHETIC overview by student A for step 23: coal use halved over the period, "
+    "while solar and wind rose to lead by the end."
+)
+WRITTEN_Y_23 = (
+    "SYNTHETIC revision by student A, written after coming back: coal use fell by half, "
+    "and renewables overtook it in the final year."
+)
+
+
+def held_mic(page):
+    """The microphone requests the page made, and how many still wait."""
+    try:
+        return page.evaluate(
+            "() => { const p = window.__f22Media || {}; return { calls: p.calls || 0, waiting: (p.waiting || []).length }; }"
+        )
+    except Exception:
+        return {}
+
+
+def release_mic(page):
+    try:
+        return page.evaluate("() => window.__f22ReleaseMic ? window.__f22ReleaseMic() : -1")
+    except Exception:
+        return -1
+
+
+def press_start_twice(page):
+    """Two real clicks on Start, a moment apart, while the prompt is held.
+    The button stays on screen while the page waits for the microphone, so
+    both clicks land on it."""
+    button = page.get_by_role("button", name="Start recording")
+    pressed = 0
+    for _ in range(2):
+        try:
+            button.first.click(timeout=8000)
+            pressed += 1
+        except Exception:
+            pass
+        page.wait_for_timeout(400)
+    return pressed
+
+
+def remote_activity_count(user_id, activity):
+    rows = journey.settled_store_snapshot(user_id).get("learning_events") or []
+    return [row.get("activity_id") for row in rows].count(activity)
+
+
+def wait_for_box(page, expected, attempts=16, delay=500):
+    for _ in range(attempts):
+        if answer_box_value(page) == expected:
+            return True
+        page.wait_for_timeout(delay)
+    return answer_box_value(page) == expected
+
+
+def run_sixth_inspection_step(browser, a_id, b_id):
+    """Step 23 (R2F-01 and R2F-02)."""
+    write_section(
+        "Step 23 - One microphone take at a time, and a late evaluation never replaces a newer draft "
+        "(the sixth Codex inspection, R2F-01 and R2F-02)",
+        "R2F-01: Start pressed twice while the microphone prompt was still open used to start two recordings, and "
+        "an account change stopped only the second, leaving the first capturing behind the emptied screen. Now a "
+        "press while the prompt is open does nothing, a microphone that arrives for a take no longer on screen is "
+        "released at once, and an account change stops every recorder and ends every track. Here the prompt is "
+        "held by this script (the browser's microphone request waits until the test answers it), on Chromium's "
+        "fake microphone (a test tone, no real voice). R2F-02: an evaluation that came back late used to put the "
+        "submitted words back in the draft over a revision written after the student came back, so a reload lost "
+        "the revision. Now it only adds the attempt to the history. Here the evaluation request is held on its "
+        "way (routed to this script) and released with a SYNTHETIC reply written here, labelled simulated. No "
+        "model is called, and the stand-in never sees the evaluation request.",
+    )
+    run_held_microphone_part(browser, a_id, b_id)
+    run_late_evaluation_part(browser, a_id, b_id)
+
+
+def run_held_microphone_part(browser, a_id, b_id):
+    """Step 23a, R2F-01."""
+    ns_a = f"u:{a_id}"
+    ns_b = f"u:{b_id}"
+    try:
+        fake = browser.browser_type.launch(
+            args=["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+        )
+    except Exception as error:
+        write_row(
+            "A browser with the fake microphone starts for step 23a",
+            False,
+            f"{type(error).__name__}: the held-microphone checks were not run",
+        )
+        return
+    try:
+        remote_a_before = remote_activity_count(a_id, SPOKEN_ACTIVITY)
+        remote_b_before = remote_activity_count(b_id, SPOKEN_ACTIVITY)
+        ctx = new_context(fake)
+        ctx.add_init_script(HELD_MIC_PROBE)
+        tab3 = ctx.new_page()
+        errors3, failed3 = attach_diagnostics(tab3)
+        tab3.on("dialog", lambda dialog: dialog.accept())
+        goto(tab3, "/dashboard")
+        tab3.wait_for_timeout(1200)
+        back = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+
+        tab1 = ctx.new_page()
+        errors1, failed1 = attach_diagnostics(tab1)
+        goto(tab1, SPOKEN_PATH)
+        tab1.wait_for_timeout(2200)
+        mark_page(tab1)
+
+        # ── Two presses while the prompt is held ──
+        pressed = press_start_twice(tab1)
+        tab1.wait_for_timeout(800)
+        asked = held_mic(tab1)
+        write_row(
+            "A presses Start twice while the microphone prompt is still open (held by this test): the page asks "
+            "for the microphone once, and nothing records yet",
+            back == a_id
+            and pressed == 2
+            and asked.get("calls") == 1
+            and asked.get("waiting") == 1
+            and spoken_media(tab1).get("recorders") == 0,
+            f"A = {back}; presses that landed: {pressed}; microphone requests: {json.dumps(asked)}; "
+            f"microphone and recorder: {json.dumps(spoken_media(tab1))}",
+        )
+        answered = release_mic(tab1)
+        tab1.wait_for_timeout(1800)
+        media_live = spoken_media(tab1)
+        write_row(
+            "The prompt is answered: one recorder runs, on one microphone",
+            answered == 1
+            and text_count(tab1, "Recording...") > 0
+            and media_live.get("tracks") == 1
+            and media_live.get("liveTracks") == 1
+            and media_live.get("recorders") == 1
+            and media_live.get("activeRecorders") == 1,
+            f"requests answered: {answered}; recording on screen: {text_count(tab1, 'Recording...') > 0}; "
+            f"microphone and recorder: {json.dumps(media_live)}",
+        )
+        shot(tab1, "90-one-take-after-two-presses", SPOKEN_PATH)
+
+        # ── The account changes in another tab ──
+        tab3.bring_to_front()
+        journey.ws_sign_out(tab3)
+        b_back = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+        tab1.bring_to_front()
+        tab1.wait_for_timeout(2500)
+        reloaded_since(tab1, "tab 1 (A's spoken task, two presses), after B signed in in tab 3")
+        media_after = spoken_media(tab1)
+        screen_after = spoken_screen(tab1)
+        write_row(
+            "B signs in in another tab: every recorder the page started is stopped and every microphone track it "
+            "was given has ended, and the task hands over empty with the spoken task's calm line",
+            b_back == b_id
+            and media_after.get("tracks", 0) >= 1
+            and media_after.get("liveTracks") == 0
+            and media_after.get("recorders", 0) >= 1
+            and media_after.get("activeRecorders") == 0
+            and screen_after["recording"] == 0
+            and screen_after["audio"] == 0
+            and screen_after["start"] == 1
+            and screen_after["note"] > 0,
+            f"B = {b_back}; microphone and recorder: {json.dumps(media_after)}; screen: {json.dumps(screen_after)}",
+        )
+        shot(tab1, "91-every-take-stopped-after-switch", SPOKEN_PATH)
+
+        # ── Two more held presses, and the account changes before the answer ──
+        before_second = held_mic(tab1)
+        recorders_before = spoken_media(tab1).get("recorders", 0)
+        pressed_again = press_start_twice(tab1)
+        tab1.wait_for_timeout(800)
+        asked_again = held_mic(tab1)
+        tab3.bring_to_front()
+        journey.ws_sign_out(tab3)
+        a_again = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+        tab1.bring_to_front()
+        tab1.wait_for_timeout(2500)
+        answered_late = release_mic(tab1)
+        tab1.wait_for_timeout(2000)
+        media_late = spoken_media(tab1)
+        screen_late = spoken_screen(tab1)
+        write_row(
+            "B presses Start twice while the prompt is held, and the account changes back to A before it is "
+            "answered: the page asked once, and when the prompt is answered the late microphone is released at "
+            "once and no recorder starts",
+            a_again == a_id
+            and pressed_again == 2
+            and asked_again.get("calls", 0) - before_second.get("calls", 0) == 1
+            and answered_late == 1
+            and media_late.get("tracks", 0) >= 2
+            and media_late.get("liveTracks") == 0
+            and media_late.get("recorders") == recorders_before
+            and media_late.get("activeRecorders") == 0
+            and screen_late["recording"] == 0
+            and screen_late["start"] == 1,
+            f"A = {a_again}; presses that landed: {pressed_again}; microphone requests before and after: "
+            f"{json.dumps(before_second)} then {json.dumps(asked_again)}; requests answered late: {answered_late}; "
+            f"microphone and recorder: {json.dumps(media_late)}; screen: {json.dumps(screen_late)}",
+        )
+        shot(tab1, "92-late-microphone-released", SPOKEN_PATH)
+
+        tab3.wait_for_timeout(2500)
+        remote_a_after = remote_activity_count(a_id, SPOKEN_ACTIVITY)
+        remote_b_after = remote_activity_count(b_id, SPOKEN_ACTIVITY)
+        write_row(
+            "Nothing of any of these takes is recorded for anybody: the stand-in's spoken practice rows for A and "
+            "B are what they were before this step, and neither local record gained one",
+            remote_a_after == remote_a_before
+            and remote_b_after == remote_b_before
+            and len(activity_events_of(tab1, ns_b, SPOKEN_ACTIVITY)) == 0,
+            f"A's rows for it before and after: {remote_a_before} then {remote_a_after}; B's: {remote_b_before} then "
+            f"{remote_b_after}; B's local events for it: {len(activity_events_of(tab1, ns_b, SPOKEN_ACTIVITY))}; "
+            f"A's local events for it (A's earlier practice from step 22 may be pulled in from the account): "
+            f"{len(activity_events_of(tab1, ns_a, SPOKEN_ACTIVITY))}",
+        )
+        report_diagnostics("Step 23a (spoken, tab 1)", errors1, failed1)
+        report_diagnostics("Step 23a (spoken, tab 3, accounts)", errors3, failed3)
+        ctx.close()
+    finally:
+        fake.close()
+
+
+def run_late_evaluation_part(browser, a_id, b_id):
+    """Step 23b, R2F-02."""
+    ns_a = f"u:{a_id}"
+    ns_b = f"u:{b_id}"
+    ctx = new_context(browser)
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    tab1.on("dialog", lambda dialog: dialog.accept())
+    held = hold_evaluation_requests(tab1)
+    goto(tab1, "/dashboard")
+    tab1.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab1, EMAIL_A, PASSWORD_A)
+
+    goto(tab1, EVAL_PATH)
+    tab1.wait_for_timeout(1500)
+    box = tab1.locator("#written-answer")
+    typed = False
+    try:
+        box.first.click(timeout=8000)
+        box.first.fill(WRITTEN_X_23, timeout=8000)
+        typed = True
+    except Exception:
+        typed = False
+    tab1.wait_for_timeout(1200)
+    journey.click_until(
+        tab1,
+        lambda: tab1.locator("button.focused-check"),
+        lambda: len(held) > 0,
+    )
+    got = wait_for_held(tab1, held, 1)
+    tab1.wait_for_timeout(600)
+    a_session = auth_session(tab1) or {}
+    write_row(
+        "A writes X on the guided written task and presses Check: the evaluation goes out once, with A's token "
+        "and A's words, and is held on its way",
+        back == a_id
+        and typed
+        and got
+        and len(held) == 1
+        and held[0]["auth"] == f"Bearer {a_session.get('token')}"
+        and held[0]["submission"] == WRITTEN_X_23,
+        f"A = {back}; typed: {typed}; evaluation requests held: {len(held)}; carries X: "
+        f"{bool(held) and held[0]['submission'] == WRITTEN_X_23}",
+    )
+    mark_page(tab1)
+
+    # ── Away to B and back to A, in a second tab ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    tab2.on("dialog", lambda dialog: dialog.accept())
+    goto(tab2, "/dashboard")
+    tab2.wait_for_timeout(1500)
+    journey.ws_sign_out(tab2)
+    b_back = journey.ws_sign_in(tab2, EMAIL_B, PASSWORD_B)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2000)
+    box_for_b = answer_box_value(tab1)
+    tab2.bring_to_front()
+    journey.ws_sign_out(tab2)
+    a_back = journey.ws_sign_in(tab2, EMAIL_A, PASSWORD_A)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2000)
+    reloaded_since(tab1, "tab 1 (A's written task), after B and then A signed in in tab 2")
+    x_back = wait_for_box(tab1, WRITTEN_X_23)
+    write_row(
+        "A signs out and B in, then B out and A back in, in a second tab, while X is still being evaluated: the "
+        "first tab showed B an empty task, and is A's again with X in the box and the calm line",
+        b_back == b_id
+        and a_back == a_id
+        and box_for_b == ""
+        and x_back
+        and text_count(tab1, EVAL_NOTE) > 0
+        and len(held) == 1,
+        f"B = {b_back}; box while B was here: {json.dumps(box_for_b)}; A = {a_back}; X back in the box: {x_back}; "
+        f"the notice: {text_count(tab1, EVAL_NOTE)}; evaluation requests held: {len(held)}",
+    )
+    shot(tab1, "93-a-back-with-x-while-evaluation-held", EVAL_PATH)
+
+    # ── A writes revision Y and it autosaves ──
+    revised = False
+    try:
+        box.first.click(timeout=8000)
+        box.first.fill(WRITTEN_Y_23, timeout=8000)
+        revised = True
+    except Exception:
+        revised = False
+    tab1.wait_for_timeout(1500)
+    draft_before = written_draft_of(tab1, ns_a) or {}
+    attempts_before = [attempt.get("text") for attempt in (draft_before.get("attempts") or [])]
+    write_row(
+        "A writes revision Y in the first tab and it autosaves: A's stored draft holds Y, and X is not yet in "
+        "the attempt history",
+        revised and draft_before.get("draft") == WRITTEN_Y_23 and WRITTEN_X_23 not in attempts_before,
+        f"typed: {revised}; stored draft: {json.dumps(draft_before.get('draft'))}; attempts: {json.dumps(attempts_before)}",
+    )
+
+    # ── The held evaluation comes back, late ──
+    events_before = [
+        ((event.get("items") or [{}])[0] or {}).get("firstAnswer") for event in evaluation_events_of(tab1, ns_a)
+    ]
+    if held:
+        held[0]["route"].fulfill(
+            status=200,
+            headers={"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            body=synthetic_evaluation_reply(),
+        )
+    tab1.wait_for_timeout(2500)
+    draft_after = written_draft_of(tab1, ns_a) or {}
+    attempts_after = [attempt.get("text") for attempt in (draft_after.get("attempts") or [])]
+    write_row(
+        "The held evaluation of X is released with a SYNTHETIC reply (labelled simulated): A's stored draft still "
+        "holds Y, and X is added to A's attempt history",
+        draft_after.get("draft") == WRITTEN_Y_23
+        and attempts_after[-1:] == [WRITTEN_X_23]
+        and answer_box_value(tab1) == WRITTEN_Y_23,
+        f"stored draft: {json.dumps(draft_after.get('draft'))}; attempts: {json.dumps(attempts_after)}; box on "
+        f"screen: {json.dumps(answer_box_value(tab1))}; the late verdict on the page: "
+        f"{text_count(tab1, EVAL_OBSERVATION_A)}",
+    )
+
+    # ── Reload ──
+    try:
+        tab1.reload()
+    except Exception:
+        pass
+    tab1.wait_for_timeout(2500)
+    y_on_screen = wait_for_box(tab1, WRITTEN_Y_23)
+    draft_reloaded = written_draft_of(tab1, ns_a) or {}
+    attempts_reloaded = [attempt.get("text") for attempt in (draft_reloaded.get("attempts") or [])]
+    write_row(
+        "After a reload the revision Y is what is on screen, and the submitted X is in A's attempt history",
+        y_on_screen and WRITTEN_X_23 in attempts_reloaded and draft_reloaded.get("draft") == WRITTEN_Y_23,
+        f"box after the reload: {json.dumps(answer_box_value(tab1))}; stored draft: "
+        f"{json.dumps(draft_reloaded.get('draft'))}; attempts: {json.dumps(attempts_reloaded)}",
+    )
+    shot(tab1, "94-revision-survives-reload", EVAL_PATH)
+
+    events_after = [
+        ((event.get("items") or [{}])[0] or {}).get("firstAnswer") for event in evaluation_events_of(tab1, ns_a)
+    ]
+    b_events = evaluation_events_of(tab1, ns_b)
+    holding_x = keys_holding(tab1, WRITTEN_X_23)
+    holding_y = keys_holding(tab1, WRITTEN_Y_23)
+    write_row(
+        "X is recorded once, in A's own learner record; nothing of X or Y is under B",
+        events_after.count(WRITTEN_X_23) - events_before.count(WRITTEN_X_23) == 1
+        and not [event for event in b_events if WRITTEN_X_23 in json.dumps(event)]
+        and not [key for key in holding_x + holding_y if ns_b in key],
+        f"A's events for this task carrying X, before and after: {events_before.count(WRITTEN_X_23)} then "
+        f"{events_after.count(WRITTEN_X_23)}; B's events for this task: {len(b_events)}; keys holding X: "
+        f"{holding_x}; keys holding Y: {holding_y}",
+    )
+    report_diagnostics("Step 23b (tab 1)", errors1, failed1)
+    report_diagnostics("Step 23b (tab 2)", errors2, failed2)
+    ctx.close()
+
+
 def record_answers(record):
     """Every first answer in every item of every event in a learner record."""
     out = []
@@ -4483,7 +4926,11 @@ def run():
         "and a check from a tab that missed the change records nothing. "
         "Step 22 is the tenth, for the last screens that recorded through the shared store: the inline lesson "
         "quiz, the vocabulary practice round and the spoken task hand over the same way, record only for the "
-        "student whose work they are, and a recording under way when the account changes is stopped and dropped."
+        "student whose work they are, and a recording under way when the account changes is stopped and dropped. "
+        "Step 23 is the eleventh, for the sixth Codex inspection: R2F-01 (Start pressed twice while the microphone "
+        "prompt is open asks once and starts one recording, and an account change stops every recorder and ends "
+        "every microphone track) and R2F-02 (an evaluation that comes back after the student left and returned "
+        "adds the submitted answer to their history and never replaces the revision they wrote since)."
     )
 
     with sync_playwright() as p:
@@ -4720,6 +5167,7 @@ def run():
         run_lesson_evaluation_step(browser, a_id, b_id)
         run_exercise_switch_step(browser, a_id, b_id)
         run_last_screens_step(browser, a_id, b_id)
+        run_sixth_inspection_step(browser, a_id, b_id)
         browser.close()
 
     write_note(

@@ -28,6 +28,15 @@
  * released, and the incoming student sees an empty task with one calm line
  * of this screen's own, which says the recording was not kept
  * (SPOKEN_TASK_OWNER_CHANGED_NOTE in ./spoken-task-owner.ts).
+ *
+ * ONE TAKE AT A TIME (finding R2F-01, 23 September 2026)
+ * Every take comes from one desk (openSpokenTakes in ./spoken-task-owner.ts).
+ * A press of Start while the microphone prompt is still open does nothing,
+ * a microphone or a recording that arrives for a take that is no longer
+ * THE take on screen is released at once, a new take drops the one before
+ * it, and a hand-over, a refused press or leaving the page drops every take
+ * the desk holds. The 90-second limit ends the microphone's tracks as well
+ * as the recording.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -52,11 +61,8 @@ import {
 } from './exercise-owner';
 import {
   SPOKEN_TASK_OWNER_CHANGED_NOTE,
-  dropTake,
-  openTake,
+  openSpokenTakes,
   recordSpokenPracticeFor,
-  takeIsLive,
-  type SpokenTake,
 } from './spoken-task-owner';
 import {
   checkedCount,
@@ -111,8 +117,10 @@ export default function SpokenFocusedTask({ view }: Props) {
   /* Bumped at every hand-over, so the incoming student's own plan is read
      for the microphone setting once the sign-in has finished moving it. */
   const [handOvers, setHandOvers] = useState(0);
-  /* The recording under way, or the last one made, bound to its session. */
-  const takeRef = useRef<SpokenTake<MediaStream, RecordingHandle> | null>(null);
+  /* Every take this screen makes: the recording under way, or the last one
+     made, bound to its session, and any start still waiting for the
+     microphone (R2F-01). One desk for the life of the screen. */
+  const [takes] = useState(() => openSpokenTakes<MediaStream, RecordingHandle>(releaseMic));
   /* The same address as `audioUrl`, readable from the listener. */
   const audioUrlRef = useRef<string | null>(null);
   const mounted = useRef(true);
@@ -134,7 +142,9 @@ export default function SpokenFocusedTask({ view }: Props) {
     }
     setMicUnavailable(microphoneTurnedOff());
     return () => {
-      if (takeRef.current) dropTake(takeRef.current, releaseMic);
+      /* Every take, not only the one on screen: nothing records on after
+         the page has gone. */
+      takes.dropAll();
       if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,11 +181,16 @@ export default function SpokenFocusedTask({ view }: Props) {
     return exercise !== null && exercise === exerciseRef.current && !withheld;
   }
 
-  /** Stop and drop the take on screen, if any, and let the microphone go. */
-  function dropCurrentTake() {
-    const take = takeRef.current;
-    takeRef.current = null;
-    if (take) dropTake(take, releaseMic);
+  /** The session a take finishing now may still belong to: the one on
+      screen, or none once the screen has gone. */
+  function onScreen(): ExerciseSession | null {
+    return mounted.current ? exerciseRef.current : null;
+  }
+
+  /** Stop and drop every take this screen holds, and let every microphone
+      go: the one on screen, and any start still waiting for its answer. */
+  function dropEveryTake() {
+    takes.dropAll();
   }
 
   /* The page changed hands, here or in another tab. Everything on screen
@@ -186,7 +201,7 @@ export default function SpokenFocusedTask({ view }: Props) {
      task, with one calm line. Touches only refs and setters, so the
      listener above can call it from any render. */
   function handOver() {
-    dropCurrentTake();
+    dropEveryTake();
     if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     audioUrlRef.current = null;
     const opened = openExerciseSession();
@@ -214,7 +229,7 @@ export default function SpokenFocusedTask({ view }: Props) {
      task leaves the screen until this tab hears who is here, when the
      listener above hands over. */
   function withhold() {
-    dropCurrentTake();
+    dropEveryTake();
     setWithheld(true);
     setOwnerNote(SPOKEN_TASK_OWNER_CHANGED_NOTE);
   }
@@ -232,48 +247,53 @@ export default function SpokenFocusedTask({ view }: Props) {
   }
 
   async function startRecording() {
+    /* One start at a time (R2F-01): while the browser is still asking for
+       the microphone, another press opens nothing and asks for nothing.
+       Checked before anything else, synchronously, so two presses in a row
+       can never both get past it. */
+    if (takes.starting()) return;
     /* A recording starts only for the student whose task this is. */
     const binding = claimPress();
     if (!binding) return;
     binding.cancel();
-    const take = openTake<MediaStream, RecordingHandle>(exercise!);
-    takeRef.current = take;
-    setMicProblem(null);
     if (typeof MediaRecorder === 'undefined' || typeof navigator === 'undefined' || !navigator.mediaDevices) {
       setMicProblem('unsupported');
       return;
     }
+    /* Opened, marked as waiting and put on screen before the first await;
+       the take before it, if any, is dropped first. */
+    const take = takes.begin(exercise!);
+    if (!take) return;
+    setMicProblem(null);
     let stream: MediaStream;
     try {
       stream = await requestMic();
     } catch (error) {
-      /* The screen moved on while the browser was asking: nobody here is
-         waiting for this answer. */
-      if (!mounted.current || !takeIsLive(take, exerciseRef.current)) return;
+      /* The screen moved on while the browser was asking, or this is no
+         longer the take on screen: nobody here is waiting for this answer. */
+      if (!takes.settle(take, null, onScreen())) return;
       const name = error instanceof Error ? error.name : '';
       setMicProblem(name === 'NotFoundError' || name === 'OverconstrainedError' ? 'unavailable' : 'permission-denied');
       return;
     }
-    /* The microphone arrived after the page changed hands, or after the
-       screen let go: it is released at once and nothing is recorded. */
-    if (!mounted.current || !takeIsLive(take, exerciseRef.current)) {
-      releaseMic(stream);
-      return;
-    }
-    take.stream = stream;
+    /* The microphone arrived after the page changed hands, after the
+       screen let go, or for a take that is no longer THE take on screen:
+       settle releases it at once (every track ended) and nothing is
+       recorded. */
+    if (!takes.settle(take, stream, onScreen())) return;
     setPhase('recording');
     try {
-      take.recording = recordSegment(stream, { maxMs: MAX_RECORDING_MS });
+      /* The 90-second limit ends the microphone's tracks too. */
+      take.recording = recordSegment(stream, { maxMs: MAX_RECORDING_MS, endTracksAtTimeout: true });
     } catch {
       setMicProblem('recording-failed');
-      releaseMic(stream);
-      take.stream = null;
+      takes.dropCurrent();
       setPhase('ready');
     }
   }
 
   async function stopRecording() {
-    const take = takeRef.current;
+    const take = takes.current();
     const handle = take?.recording;
     if (!take || !handle) return;
     /* A stop pressed for a student who is no longer here drops the take
@@ -284,10 +304,11 @@ export default function SpokenFocusedTask({ view }: Props) {
     take.recording = null;
     try {
       const segment = await handle.stop();
-      /* The page changed hands while the recording was being finished: it
-         is dropped (the hand-over has released the microphone), and none
-         of it reaches this screen. */
-      if (!mounted.current || !takeIsLive(take, exerciseRef.current)) return;
+      /* The page changed hands while the recording was being finished, or
+         this take was replaced: it is dropped (the hand-over or the new
+         take has released the microphone), and none of it reaches this
+         screen. */
+      if (!takes.isLive(take, onScreen())) return;
       if (take.stream) {
         releaseMic(take.stream);
         take.stream = null;
@@ -299,7 +320,10 @@ export default function SpokenFocusedTask({ view }: Props) {
       setRecorded(true);
       setPhase('reviewing');
     } catch {
-      if (!mounted.current || !takeIsLive(take, exerciseRef.current)) return;
+      if (!takes.isLive(take, onScreen())) return;
+      /* The recording failed: the microphone is let go of here rather than
+         left on until the next take or the end of the page. */
+      takes.dropCurrent();
       setMicProblem('recording-failed');
       setPhase('ready');
     }

@@ -1,6 +1,6 @@
 /* Microphone capture. One requestMic() per test session (one permission
    prompt), then a fresh MediaRecorder per question via recordSegment() so
-   each answer is its own discrete clip — the Worker pairs each clip with its
+   each answer is its own discrete clip: the Worker pairs each clip with its
    exact question text rather than guessing turn boundaries from one long
    recording. */
 
@@ -26,8 +26,20 @@ export interface RecordingHandle {
   stop(): Promise<RecordedSegment>;
 }
 
+export interface RecordSegmentOptions {
+  maxMs: number;
+  /** When the time limit stops the recording, also end every track of
+   *  `stream`, so the microphone goes off with it (finding R2F-01 of the
+   *  sixth Codex inspection: the spoken focused task's 90-second limit
+   *  stopped its recorder but left the microphone on). Off by default,
+   *  because the timed Speaking trainer asks for the microphone once per
+   *  session and records every question on that same stream: ending it at
+   *  one answer's limit would leave the next question with no microphone. */
+  endTracksAtTimeout?: boolean;
+}
+
 /** Starts recording immediately; auto-stops at maxMs if stop() isn't called first. */
-export function recordSegment(stream: MediaStream, opts: { maxMs: number }): RecordingHandle {
+export function recordSegment(stream: MediaStream, opts: RecordSegmentOptions): RecordingHandle {
   const mimeType = pickMimeType();
   const rec = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
   const chunks: BlobPart[] = [];
@@ -40,6 +52,9 @@ export function recordSegment(stream: MediaStream, opts: { maxMs: number }): Rec
 
   const maxTimer = setTimeout(() => {
     if (rec.state === 'recording') rec.stop();
+    /* After stop(): the recorder has stopped gathering, and the clip it has
+       gathered is still handed back by stop() below. */
+    if (opts.endTracksAtTimeout) releaseMic(stream);
   }, opts.maxMs);
 
   return {
@@ -56,7 +71,7 @@ export function recordSegment(stream: MediaStream, opts: { maxMs: number }): Rec
         if (rec.state === 'recording') rec.stop();
         else if (rec.state === 'inactive') {
           // Already stopped (maxMs timer fired and onstop hasn't been (re)wired
-          // yet) — resolve directly instead of waiting for an onstop that
+          // yet): resolve directly instead of waiting for an onstop that
           // already fired against the previous handler.
           resolve({
             blob: new Blob(chunks, { type: rec.mimeType || mimeType }),

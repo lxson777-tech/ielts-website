@@ -49,6 +49,19 @@
  * names somebody else, nothing is sent, judged or recorded, the words go to
  * their own student's draft, and the work leaves the screen with the calm
  * line until the tab hears who is here and hands over.
+ *
+ * A LATE EVALUATION NEVER REPLACES A NEWER DRAFT (finding R2F-02, 23
+ * September 2026)
+ * An evaluation that comes back adds the submitted answer to its student's
+ * attempts and leaves the draft box alone (appendAttempt in
+ * ./written-focused-task.ts). It used to put the submitted words back in
+ * the box too, so a student who came back to the page while their answer
+ * was still being evaluated, and wrote and saved a revision, lost the
+ * revision to the older answer the moment the evaluation landed; a
+ * revision saved from another tab was lost the same way. The submitted
+ * words are written as the draft at the press instead (saveSubmittedDraft
+ * in evaluate()), so with nothing typed since, the draft is exactly what it
+ * always was.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -84,13 +97,13 @@ import {
   EMPTY_WRITTEN_DRAFT,
   NO_WRITTEN_HELP,
   acceptEvaluation,
+  appendAttempt,
   helpAfterEvaluation,
   helpToRecord,
   mayShowModel,
   readWrittenDraft,
   runAutomaticChecks,
   unjudgedEvaluation,
-  withAttempt,
   withWrittenHelp,
   writeWrittenDraft,
   writtenEvidenceDraft,
@@ -442,6 +455,27 @@ export default function WritingFocusedTask({ view }: Props) {
     return sessionAgrees();
   }
 
+  /** The words being sent, written as this student's draft NOW, at the
+   *  press: the autosave still waiting is done at once instead of being
+   *  left to fire later. So while nothing is typed after the press, the
+   *  draft holds exactly the submitted text when its evaluation is kept,
+   *  and the evaluation only has to add the attempt (appendAttempt,
+   *  R2F-02). Nothing can be typed while the answer is being checked (the
+   *  box is disabled), so this is the newest text there is. */
+  function saveSubmittedDraft(written: string) {
+    if (draftTimer.current) clearTimeout(draftTimer.current);
+    draftTimer.current = null;
+    const waiting = pendingDraft.current;
+    pendingDraft.current = null;
+    if (waiting === null && held.draft === written) return;
+    const whose = owner.current;
+    setHeld((current) => {
+      const next = { ...current, draft: written };
+      if (!writeWrittenDraft(storage(), whose, view.exerciseId, next)) setStorageProblem(true);
+      return next;
+    });
+  }
+
   /** Write one attempt to the learner record.
    *
    *  Never throws into the task: a blocked or full browser store costs the
@@ -460,9 +494,14 @@ export default function WritingFocusedTask({ view }: Props) {
    *  the time the evaluation is back. While this screen still holds their
    *  work the attempt joins the draft on screen exactly as it always has;
    *  otherwise it goes straight into their own stored draft, beside the
-   *  original, and nothing on this screen changes. `onPage` is true when
-   *  they have been on the page throughout; only then is the plan read for
-   *  what changed, which is returned for the screen to say. */
+   *  original, and nothing on this screen changes. Either way only the
+   *  attempt is added (appendAttempt, R2F-02): the draft box keeps whatever
+   *  it holds by then, which is the submitted words when nothing was typed
+   *  since the press, and a later revision (typed here after coming back,
+   *  still waiting on the autosave, or saved from another tab) otherwise.
+   *  `onPage` is true when they have been on the page throughout; only
+   *  then is the plan read for what changed, which is returned for the
+   *  screen to say. */
   function record(
     evaluated: WrittenEvaluation,
     written: string,
@@ -503,13 +542,13 @@ export default function WritingFocusedTask({ view }: Props) {
     });
     if (mounted.current && owner.current === ns) {
       setHeld((current) => {
-        const next = withAttempt(current, attemptAfter(current), carried);
+        const next = appendAttempt(current, attemptAfter(current), carried);
         writeWrittenDraft(storage(), ns, view.exerciseId, next);
         return next;
       });
     } else {
       const kept = readWrittenDraft(storage(), ns, view.exerciseId);
-      writeWrittenDraft(storage(), ns, view.exerciseId, withAttempt(kept, attemptAfter(kept), carried));
+      writeWrittenDraft(storage(), ns, view.exerciseId, appendAttempt(kept, attemptAfter(kept), carried));
     }
 
     /* Recording can move the plan (src/lib/learning/index.ts decides
@@ -539,6 +578,9 @@ export default function WritingFocusedTask({ view }: Props) {
        this device's session is somebody else's: nothing is sent, judged or
        recorded, and the work leaves the screen. */
     if (!sessionAgrees()) return;
+    /* The submitted words are this student's draft from the press on, so a
+       late evaluation never has to write them back (R2F-02). */
+    saveSubmittedDraft(written);
     /* Bound to that student NOW, before anything is sent: whatever comes
        back is kept for them and shown only while they are still the one
        here (runOwnedGrade in src/lib/store-owner.ts). */

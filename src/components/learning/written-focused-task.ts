@@ -1645,8 +1645,37 @@ export function withAttempt(
   attempt: WrittenAttemptRecord,
   help?: WrittenHelpState,
 ): WrittenTaskDraft {
+  return { ...appendAttempt(held, attempt, help), draft: attempt.text };
+}
+
+/** Add one submitted attempt to the history and leave the draft box
+ *  exactly as it is (finding R2F-02 of the sixth Codex inspection).
+ *
+ *  This is what an evaluation that comes back keeps, on screen or off it.
+ *  withAttempt above also put the submitted words back in the box, and that
+ *  was wrong the moment the box held anything newer: student A could press
+ *  Check on X, the page could change hands and come back to A while X was
+ *  still being evaluated, and A could write and autosave a revision Y. The
+ *  late evaluation then put X back over Y, and a reload lost Y. The same
+ *  happened to a revision saved from another tab while this screen was
+ *  gone.
+ *
+ *  So the box is never touched here. It still holds the submitted words
+ *  whenever nothing newer has happened, because the screen writes them to
+ *  the draft at the press (WritingFocusedTask's evaluate()), which is why
+ *  the result is withAttempt's exactly when nothing changed: the rule the
+ *  essay editor follows (clearSubmittedEssayDraft in
+ *  src/components/writing-editor-owner.ts), that a draft saying anything
+ *  other than the submitted text is a later revision and stays. The
+ *  attempt itself, and the help the next answer starts from, are added
+ *  exactly as withAttempt adds them. */
+export function appendAttempt(
+  held: WrittenTaskDraft,
+  attempt: WrittenAttemptRecord,
+  help?: WrittenHelpState,
+): WrittenTaskDraft {
   return {
-    draft: attempt.text,
+    draft: held.draft,
     help: help ? withWrittenHelp(held.help, help) : held.help,
     attempts: [...held.attempts, attempt],
   };

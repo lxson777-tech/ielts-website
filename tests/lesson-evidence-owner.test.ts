@@ -200,6 +200,7 @@ const { bindToCurrentOwner, currentOwner, onOwnerChange, ownerNamespace, runOwne
 const { askPracticeEvaluation, TutorClientError } = client;
 const {
   acceptEvaluation,
+  appendAttempt,
   helpAfterEvaluation,
   helpToRecord,
   readWrittenDraft,
@@ -330,6 +331,9 @@ interface Screen {
   mounted: boolean;
   held: WrittenTaskDraft;
   text: string;
+  /** pendingDraft.current: words typed and still waiting on the autosave,
+      and the student they were typed for (the `whose` the timer keeps). */
+  pending: { value: string; whose: string } | null;
   shown: WrittenEvaluation | null;
   note: string | null;
   evaluating: OwnerBinding | null;
@@ -346,6 +350,7 @@ function openScreen(listen = true): Screen {
     mounted: true,
     held: written.EMPTY_WRITTEN_DRAFT,
     text: '',
+    pending: null,
     shown: null,
     note: null,
     evaluating: null,
@@ -367,6 +372,12 @@ function openScreen(listen = true): Screen {
 /** handOver(): let go of the evaluation, show the incoming owner's own
     draft or nothing, and say why. */
 function handOver(screen: Screen): void {
+  const pending = screen.pending;
+  screen.pending = null;
+  if (pending !== null) {
+    const kept = readWrittenDraft(local, screen.owner, VIEW.exerciseId);
+    writeWrittenDraft(local, screen.owner, VIEW.exerciseId, { ...kept, draft: pending.value });
+  }
   screen.evaluating?.cancel();
   screen.evaluating = null;
   screen.owner = ownerNamespace(currentOwner());
@@ -377,12 +388,39 @@ function handOver(screen: Screen): void {
   screen.note = 'The account on this page changed. Any answer in progress was kept for the student who was writing it.';
 }
 
+/** onType(): the words on screen, waiting on the autosave for the student
+    this screen holds now. */
+function typeInto(screen: Screen, value: string): void {
+  screen.text = value;
+  screen.pending = { value, whose: screen.owner };
+}
+
+/** The autosave timer firing: the functional setHeld, then the write. */
+function autosave(screen: Screen): void {
+  const pending = screen.pending;
+  if (!pending) return;
+  screen.pending = null;
+  screen.held = { ...screen.held, draft: pending.value };
+  writeWrittenDraft(local, pending.whose, VIEW.exerciseId, screen.held);
+}
+
+/** saveSubmittedDraft(): the words being sent are the draft from the press
+    on, and the autosave still waiting is done at once. */
+function saveSubmittedDraft(screen: Screen, text: string): void {
+  const waiting = screen.pending;
+  screen.pending = null;
+  if (waiting === null && screen.held.draft === text) return;
+  screen.held = { ...screen.held, draft: text };
+  writeWrittenDraft(local, screen.owner, VIEW.exerciseId, screen.held);
+}
+
 /** evaluate(), with record() folded into its keep step. */
 async function pressCheck(screen: Screen, text: string): Promise<OwnerBindingState | 'refused'> {
   if (ownerNamespace(currentOwner()) !== screen.owner) {
     handOver(screen);
     return 'refused';
   }
+  saveSubmittedDraft(screen, text);
   const binding = bindToCurrentOwner();
   screen.evaluating?.cancel();
   screen.evaluating = binding;
@@ -422,11 +460,11 @@ async function pressCheck(screen: Screen, text: string): Promise<OwnerBindingSta
           ...(kept.attempts.length > 0 ? { revisionOf: kept.attempts[kept.attempts.length - 1]!.at } : {}),
         });
         if (screen.mounted && screen.owner === ns) {
-          screen.held = withAttempt(screen.held, attemptAfter(screen.held), carried);
+          screen.held = appendAttempt(screen.held, attemptAfter(screen.held), carried);
           writeWrittenDraft(local, ns, VIEW.exerciseId, screen.held);
         } else {
           const kept = readWrittenDraft(local, ns, VIEW.exerciseId);
-          writeWrittenDraft(local, ns, VIEW.exerciseId, withAttempt(kept, attemptAfter(kept), carried));
+          writeWrittenDraft(local, ns, VIEW.exerciseId, appendAttempt(kept, attemptAfter(kept), carried));
         }
       },
       show: (result) => {
@@ -624,6 +662,136 @@ test('practice evaluation: an unmount with nobody else arriving still keeps the 
   assert.equal(draftOf(NS_A).attempts.length, 1, 'written straight to A’s draft, since no screen holds it');
 });
 
+/* ── R2F-02: a late evaluation never replaces a newer draft ─────────────
+   The sixth Codex inspection: A submits X, switches away and back while
+   X's evaluation is pending, writes and autosaves revision Y; the late
+   keep step put X back in the draft over Y, so a reload lost Y. The same
+   happened off screen to a revision saved from another tab. The keep step
+   now only adds the attempt (appendAttempt), and the screen writes the
+   submitted words as the draft at the press. */
+
+const A_REVISION = 'SYNTHETIC revision by student A, written after coming back: coal fell by half while renewables tripled.';
+const A_OTHER_TAB = 'SYNTHETIC revision by student A, saved from another tab while the first had gone.';
+
+test('practice evaluation (R2F-02): X is held on its way, A switches away and back, writes and autosaves revision Y, then X is evaluated: Y survives a reload and X is in A’s attempts', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  const gate = heldAnswer();
+  answer = () => gate.promise;
+  const screen = openScreen();
+  typeInto(screen, A_ANSWER);
+  autosave(screen);
+  const pressed = pressCheck(screen, A_ANSWER);
+  await until(() => sent.length === 1, 'the evaluation request went out');
+
+  /* Away to B and straight back to A, in another tab, while X is out. */
+  signInAs(B, B_SESSION);
+  assert.equal(screen.owner, NS_B);
+  signInAs(A, A_SESSION);
+  assert.equal(screen.owner, NS_A, 'the screen is A’s again');
+  assert.equal(screen.text, A_ANSWER, 'A finds the submitted words in the box');
+
+  typeInto(screen, A_REVISION);
+  autosave(screen);
+  assert.equal(draftOf(NS_A).draft, A_REVISION, 'the revision autosaved');
+
+  gate.release(reply(EVALUATION_REPLY));
+  await pressed;
+  screen.stop();
+
+  const kept = draftOf(NS_A);
+  assert.equal(kept.draft, A_REVISION, 'the late evaluation put the submitted words back over the revision');
+  assert.deepEqual(kept.attempts.map((attempt) => attempt.text), [A_ANSWER], 'the submitted answer is not in A’s attempts');
+  const reloaded = openScreen(false);
+  assert.equal(reloaded.text, A_REVISION, 'a reload lost the revision');
+  assert.equal(eventsOf(A).length, 1, 'the answer is recorded once, under A');
+  assert.equal(eventsOf(A)[0]!.items[0]!.firstAnswer, A_ANSWER);
+  assert.deepEqual(eventsOf(B), []);
+  assert.ok(!local.data.has(writtenDraftKey(NS_B, VIEW.exerciseId)), 'nothing of A’s under B');
+});
+
+test('practice evaluation (R2F-02): a revision still waiting on the autosave when the late evaluation lands survives, with the attempt kept beside it', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  const gate = heldAnswer();
+  answer = () => gate.promise;
+  const screen = openScreen();
+  typeInto(screen, A_ANSWER);
+  const pressed = pressCheck(screen, A_ANSWER);
+  await until(() => sent.length === 1, 'the evaluation request went out');
+  signInAs(B, B_SESSION);
+  signInAs(A, A_SESSION);
+  typeInto(screen, A_REVISION);
+
+  gate.release(reply(EVALUATION_REPLY));
+  await pressed;
+  assert.deepEqual(draftOf(NS_A).attempts.map((attempt) => attempt.text), [A_ANSWER]);
+  assert.equal(draftOf(NS_A).draft, A_ANSWER, 'the revision is still waiting on the autosave here');
+  autosave(screen);
+  screen.stop();
+
+  const kept = draftOf(NS_A);
+  assert.equal(kept.draft, A_REVISION, 'the revision waiting on the autosave was lost');
+  assert.deepEqual(kept.attempts.map((attempt) => attempt.text), [A_ANSWER], 'the autosave dropped the kept attempt');
+  assert.equal(openScreen(false).text, A_REVISION);
+});
+
+test('practice evaluation (R2F-02), no switch: the draft holds the submitted words and the attempt is added exactly as before, even with the last keystrokes still waiting on the autosave at the press', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  answer = async () => reply(EVALUATION_REPLY);
+  const screen = openScreen();
+  typeInto(screen, 'SYNTHETIC first half of A’s overview');
+  autosave(screen);
+  /* The rest typed less than the autosave's half second before Check. */
+  typeInto(screen, A_ANSWER);
+  const before = draftOf(NS_A);
+  assert.notEqual(before.draft, A_ANSWER, 'the last keystrokes are still waiting');
+  assert.equal(await pressCheck(screen, A_ANSWER), 'current');
+  screen.stop();
+
+  const kept = draftOf(NS_A);
+  assert.equal(kept.draft, A_ANSWER, 'the draft does not hold the submitted words after a Check with no switch');
+  assert.deepEqual(kept.attempts.map((attempt) => attempt.text), [A_ANSWER]);
+  assert.equal(kept.help.tutorJudged, true, 'the next answer starts from the feedback');
+  assert.equal(screen.pending, null, 'the autosave was left to fire after the press');
+
+  /* The helper: with the draft holding the submitted words, adding an
+     attempt is exactly what withAttempt always did. */
+  const held: WrittenTaskDraft = { draft: A_ANSWER, help: written.NO_WRITTEN_HELP, attempts: [] };
+  const attempt: WrittenAttemptRecord = { at: '2026-09-23T10:00:00.000Z', text: A_ANSWER };
+  const carried = { ...written.NO_WRITTEN_HELP, tutorJudged: true };
+  assert.deepEqual(appendAttempt(held, attempt, carried), withAttempt(held, attempt, carried));
+  const newer: WrittenTaskDraft = { ...held, draft: A_REVISION };
+  assert.equal(appendAttempt(newer, attempt, carried).draft, A_REVISION, 'appendAttempt touched a newer draft');
+  assert.deepEqual(appendAttempt(newer, attempt, carried).attempts, [attempt]);
+});
+
+test('practice evaluation (R2F-02), off screen: a revision A saved from another tab while this screen had gone is not overwritten when the evaluation lands', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  const gate = heldAnswer();
+  answer = () => gate.promise;
+  const screen = openScreen();
+  typeInto(screen, A_ANSWER);
+  const pressed = pressCheck(screen, A_ANSWER);
+  await until(() => sent.length === 1, 'the evaluation request went out');
+  /* The component's unmount: stop listening, let go of the evaluation. */
+  screen.mounted = false;
+  screen.stop();
+  screen.evaluating?.cancel();
+
+  /* A opens the task in another tab, finds the words, revises and saves. */
+  const other = openScreen();
+  assert.equal(other.text, A_ANSWER, 'the words were written as the draft at the press');
+  typeInto(other, A_OTHER_TAB);
+  autosave(other);
+  other.stop();
+
+  gate.release(reply(EVALUATION_REPLY));
+  assert.equal(await pressed, 'cancelled');
+  const kept = draftOf(NS_A);
+  assert.equal(kept.draft, A_OTHER_TAB, 'the late evaluation overwrote the revision saved from another tab');
+  assert.deepEqual(kept.attempts.map((attempt) => attempt.text), [A_ANSWER], 'the submitted answer is not in A’s attempts');
+  assert.equal(eventsOf(A).length, 1);
+});
+
 /* ------------------------------------------------------------------ */
 /* 2. Lesson help                                                       */
 /* ------------------------------------------------------------------ */
@@ -768,7 +936,7 @@ test('source scan: the written task binds its evaluation at the press and record
   const record = body(code, '  function record(', /\n  async function evaluate\(\)/);
   assert.match(record, /const event = recordEventFor\(\s*whose,/);
   assert.match(record, /if \(mounted\.current && owner\.current === ns\) \{/);
-  assert.match(record, /writeWrittenDraft\(storage\(\), ns, view\.exerciseId, withAttempt\(kept, attemptAfter\(kept\), carried\)\)/);
+  assert.match(record, /writeWrittenDraft\(storage\(\), ns, view\.exerciseId, appendAttempt\(kept, attemptAfter\(kept\), carried\)\)/);
   assert.doesNotMatch(code, /getLearnerStore\(/, 'the shared store is back in the written task');
   assert.doesNotMatch(code, /\.recordEvent\(/, 'an event is written without naming its owner');
 
@@ -785,6 +953,34 @@ test('source scan: the written task binds its evaluation at the press and record
   const keep = body(code, '  function keepHelp(', /\n  function handOver\(\)/);
   assert.match(keep, /if \(mounted\.current && owner\.current === ns\) \{\s*noteHelp\(\{ assistance \}\);\s*return;\s*\}/);
   assert.match(keep, /writeWrittenDraft\(storage\(\), ns, view\.exerciseId,/);
+});
+
+test('source scan (R2F-02): a kept evaluation only adds the attempt, on screen and off it, and the submitted words are the draft from the press', { timeout: 10_000 }, () => {
+  const code = source('components/learning/WritingFocusedTask.tsx');
+  assert.doesNotMatch(code, /\bwithAttempt\(/, 'the written task puts the submitted words back over the draft again');
+  const record = body(code, '  function record(', /\n  async function evaluate\(\)/);
+  assert.match(record, /setHeld\(\(current\) => \{\s*const next = appendAttempt\(current, attemptAfter\(current\), carried\);/);
+  assert.match(record, /writeWrittenDraft\(storage\(\), ns, view\.exerciseId, appendAttempt\(kept, attemptAfter\(kept\), carried\)\)/);
+
+  const evaluate = body(code, 'async function evaluate()', /\n  const feedback = /);
+  const agrees = evaluate.indexOf('if (!sessionAgrees()) return;');
+  const saved = evaluate.indexOf('saveSubmittedDraft(written);');
+  const bound = evaluate.indexOf('const binding = bindToCurrentOwner();');
+  assert.ok(saved > agrees && agrees > 0, 'the words are saved as a draft before the press is known to be this student’s');
+  assert.ok(saved < bound, 'the evaluation is bound before the submitted words are the draft');
+
+  const save = body(code, '  function saveSubmittedDraft(written: string) {', /\n  \}\n/);
+  assert.match(save, /if \(draftTimer\.current\) clearTimeout\(draftTimer\.current\);\s*draftTimer\.current = null;/, 'the autosave still waiting is left to fire later');
+  assert.match(save, /pendingDraft\.current = null;/);
+  assert.match(save, /const next = \{ \.\.\.current, draft: written \};\s*if \(!writeWrittenDraft\(storage\(\), whose, view\.exerciseId, next\)\) setStorageProblem\(true\);/);
+
+  const helper = source('components/learning/written-focused-task.ts');
+  assert.match(
+    body(helper, 'export function appendAttempt(', /\n\}\n/),
+    /return \{\s*draft: held\.draft,\s*help: help \? withWrittenHelp\(held\.help, help\) : held\.help,\s*attempts: \[\.\.\.held\.attempts, attempt\],\s*\};/,
+    'appendAttempt touches the draft',
+  );
+  assert.match(body(helper, 'export function withAttempt(', /\n\}\n/), /return \{ \.\.\.appendAttempt\(held, attempt, help\), draft: attempt\.text \};/);
 });
 
 test('source scan: every lesson help surface asks through requestOwnedLessonHelp, bound at the press, and shows only in its show step', { timeout: 10_000 }, () => {

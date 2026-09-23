@@ -302,7 +302,7 @@ const { DEVICE_ID_KEY } = await import('../src/lib/learning/contracts/sync.ts');
 import type { CacheOwner } from '../src/lib/learning/contracts/sync.ts';
 import type { ExerciseClaimDeps, ExerciseRefusal, ExerciseSession } from '../src/components/learning/exercise-owner.ts';
 import type { Queued } from '../src/components/vocab-round-owner.ts';
-import type { SpokenTake } from '../src/components/learning/spoken-task-owner.ts';
+import type { SpokenTakes } from '../src/components/learning/spoken-task-owner.ts';
 import type { SpokenTaskView } from '../src/components/learning/spoken-focused-task.ts';
 import type { VocabCard } from '../src/lib/vocab-review.ts';
 
@@ -921,34 +921,48 @@ function fakeRecording(): FakeRecording {
   };
   return recording;
 }
+/** One microphone request the browser has not answered yet (the
+    permission prompt is open). Each request gets its own. */
+interface HeldMic {
+  release(stream?: FakeStream): void;
+  refuse(name: string): void;
+}
 const mic = {
-  gate: null as null | { promise: Promise<FakeStream>; release: (stream: FakeStream) => void },
+  /** While true, every request waits in `waiting` until the test answers it. */
+  holding: false,
+  waiting: [] as HeldMic[],
+  /** How many times the screen asked for the microphone. */
+  calls: 0,
   streams: [] as FakeStream[],
   recordings: [] as FakeRecording[],
 };
 function resetMic(): void {
-  mic.gate = null;
+  mic.holding = false;
+  mic.waiting = [];
+  mic.calls = 0;
   mic.streams = [];
   mic.recordings = [];
 }
-function requestMicFake(): Promise<FakeStream> {
-  if (mic.gate) return mic.gate.promise;
+function newStream(): FakeStream {
   const stream = { id: `SYNTHETIC-mic-${mic.streams.length}`, released: 0 };
   mic.streams.push(stream);
-  return Promise.resolve(stream);
+  return stream;
+}
+function requestMicFake(): Promise<FakeStream> {
+  mic.calls += 1;
+  if (!mic.holding) return Promise.resolve(newStream());
+  return new Promise<FakeStream>((resolve, reject) => {
+    mic.waiting.push({
+      release: (stream) => {
+        if (stream) mic.streams.push(stream);
+        resolve(stream ?? newStream());
+      },
+      refuse: (name) => reject(Object.assign(new Error('SYNTHETIC refusal'), { name })),
+    });
+  });
 }
 function holdMic(): void {
-  let release!: (stream: FakeStream) => void;
-  const promise = new Promise<FakeStream>((r) => {
-    release = r;
-  });
-  mic.gate = {
-    promise,
-    release: (stream) => {
-      mic.streams.push(stream);
-      release(stream);
-    },
-  };
+  mic.holding = true;
 }
 const releaseFake = (stream: FakeStream) => {
   stream.released += 1;
@@ -961,7 +975,8 @@ function recordSegmentFake(): FakeRecording {
 
 interface SpokenScreen {
   exercise: ExerciseSession | null;
-  take: SpokenTake<FakeStream, FakeRecording> | null;
+  /** The REAL take desk the component holds (openSpokenTakes). */
+  takes: SpokenTakes<FakeStream, FakeRecording>;
   phase: 'ready' | 'recording' | 'reviewing';
   audio: string | null;
   recorded: boolean;
@@ -969,6 +984,7 @@ interface SpokenScreen {
   note: string | null;
   withheld: boolean;
   mounted: boolean;
+  micProblem: string | null;
   stop(): void;
 }
 
@@ -976,7 +992,7 @@ interface SpokenScreen {
 function openSpoken(listen = true): SpokenScreen {
   const screen: SpokenScreen = {
     exercise: openExerciseSession(),
-    take: null,
+    takes: spoken.openSpokenTakes<FakeStream, FakeRecording>(releaseFake),
     phase: 'ready',
     audio: null,
     recorded: false,
@@ -984,6 +1000,7 @@ function openSpoken(listen = true): SpokenScreen {
     note: null,
     withheld: false,
     mounted: true,
+    micProblem: null,
     stop: () => {},
   };
   if (listen) {
@@ -995,11 +1012,21 @@ function openSpoken(listen = true): SpokenScreen {
   return screen;
 }
 
-/** dropCurrentTake() */
+/** The two unmount cleanups: stop listening, and drop every take. */
+function unmountSpoken(screen: SpokenScreen): void {
+  screen.mounted = false;
+  screen.stop();
+  screen.takes.dropAll();
+}
+
+/** onScreen() */
+function onScreenOf(screen: SpokenScreen): ExerciseSession | null {
+  return screen.mounted ? screen.exercise : null;
+}
+
+/** dropEveryTake() */
 function dropScreenTake(screen: SpokenScreen): void {
-  const take = screen.take;
-  screen.take = null;
-  if (take) spoken.dropTake(take, releaseFake);
+  screen.takes.dropAll();
 }
 
 /** handOver() */
@@ -1029,18 +1056,23 @@ function claimSpoken(screen: SpokenScreen, deps?: ExerciseClaimDeps) {
 }
 
 /** startRecording() */
-async function startSpoken(screen: SpokenScreen): Promise<'refused' | 'dropped' | 'recording'> {
+async function startSpoken(screen: SpokenScreen): Promise<'busy' | 'refused' | 'dropped' | 'problem' | 'recording'> {
+  if (screen.takes.starting()) return 'busy';
   const binding = claimSpoken(screen);
   if (!binding) return 'refused';
   binding.cancel();
-  const take = spoken.openTake<FakeStream, FakeRecording>(screen.exercise!);
-  screen.take = take;
-  const stream = await requestMicFake();
-  if (!screen.mounted || !spoken.takeIsLive(take, screen.exercise)) {
-    releaseFake(stream);
-    return 'dropped';
+  const take = screen.takes.begin(screen.exercise!);
+  if (!take) return 'busy';
+  screen.micProblem = null;
+  let stream: FakeStream;
+  try {
+    stream = await requestMicFake();
+  } catch (error) {
+    if (!screen.takes.settle(take, null, onScreenOf(screen))) return 'dropped';
+    screen.micProblem = (error as Error).name === 'NotFoundError' ? 'unavailable' : 'permission-denied';
+    return 'problem';
   }
-  take.stream = stream;
+  if (!screen.takes.settle(take, stream, onScreenOf(screen))) return 'dropped';
   screen.phase = 'recording';
   take.recording = recordSegmentFake();
   return 'recording';
@@ -1048,7 +1080,7 @@ async function startSpoken(screen: SpokenScreen): Promise<'refused' | 'dropped' 
 
 /** stopRecording() */
 async function stopSpoken(screen: SpokenScreen): Promise<'nothing' | 'refused' | 'dropped' | 'shown'> {
-  const take = screen.take;
+  const take = screen.takes.current();
   const handle = take?.recording;
   if (!take || !handle) return 'nothing';
   const binding = claimSpoken(screen);
@@ -1056,7 +1088,7 @@ async function stopSpoken(screen: SpokenScreen): Promise<'nothing' | 'refused' |
   binding.cancel();
   take.recording = null;
   const segment = await handle.stop();
-  if (!screen.mounted || !spoken.takeIsLive(take, screen.exercise)) return 'dropped';
+  if (!screen.takes.isLive(take, onScreenOf(screen))) return 'dropped';
   if (take.stream) {
     releaseFake(take.stream);
     take.stream = null;
@@ -1065,6 +1097,12 @@ async function stopSpoken(screen: SpokenScreen): Promise<'nothing' | 'refused' |
   screen.recorded = true;
   screen.phase = 'reviewing';
   return 'shown';
+}
+
+/** recordAgain() */
+function recordAgainSpoken(screen: SpokenScreen): void {
+  screen.phase = 'ready';
+  screen.saved = false;
 }
 
 /** save() */
@@ -1116,7 +1154,7 @@ test('spoken task: the page changes hands during a recording; it is stopped and 
   signInAs(B, B_SESSION);
   assert.equal(recording.stopCalls, 1, 'the recorder was stopped at once');
   assert.equal(mic.streams[0]!.released, 1, 'and the microphone released');
-  assert.equal(screen.take, null);
+  assert.equal(screen.takes.current(), null);
   assert.equal(screen.phase, 'ready', 'B sees an empty task');
   assert.equal(screen.audio, null);
   assert.equal(screen.note, SPOKEN_TASK_OWNER_CHANGED_NOTE, 'with the spoken task’s own calm line, which says the recording was not kept');
@@ -1157,7 +1195,7 @@ test('spoken task: a microphone given after the switch (the permission prompt wa
   const starting = startSpoken(screen);
   signInAs(B, B_SESSION);
   const late = { id: 'SYNTHETIC-late-mic', released: 0 };
-  mic.gate!.release(late);
+  mic.waiting[0]!.release(late);
   assert.equal(await starting, 'dropped');
   screen.stop();
   assert.equal(late.released, 1, 'released at once');
@@ -1233,12 +1271,223 @@ test('dropTake is safe to repeat, and a take that finished on its own releases n
   const recording = fakeRecording();
   take.stream = stream;
   take.recording = recording;
-  assert.equal(spoken.takeIsLive(take, take.session), true);
+  assert.equal(spoken.takeIsLive(take, take, take.session), true);
   spoken.dropTake(take, releaseFake);
   spoken.dropTake(take, releaseFake);
   assert.equal(recording.stopCalls, 1);
   assert.equal(stream.released, 1);
-  assert.equal(spoken.takeIsLive(take, take.session), false, 'a dropped take never comes back');
+  assert.equal(spoken.takeIsLive(take, take, take.session), false, 'a dropped take never comes back');
+});
+
+/* ── R2F-01: one take at a time ─────────────────────────────────────────
+   The sixth Codex inspection: Start pressed twice while the microphone
+   prompt was open started two takes, both microphones passed the session
+   check after the wait, both recorders ran, and a hand-over stopped only
+   the last. Every case below goes through the REAL take desk
+   (openSpokenTakes), exactly as the component does. */
+
+/** Every microphone this run was given was released exactly once, and
+    every recorder was stopped exactly once or never started. */
+function everythingLetGo(label: string): void {
+  for (const stream of mic.streams) assert.equal(stream.released, 1, `${label}: ${stream.id} was released ${stream.released} time(s)`);
+  for (const [index, recording] of mic.recordings.entries()) {
+    assert.ok(recording.stopCalls >= 1, `${label}: recorder ${index} is still recording`);
+  }
+}
+
+test('spoken task (R2F-01): Start pressed twice while the microphone prompt is open asks for the microphone once and opens one take; the second press does nothing', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  resetMic();
+  holdMic();
+  const screen = openSpoken();
+  const first = startSpoken(screen);
+  assert.equal(screen.takes.starting(), true, 'the start is marked as waiting before anything is awaited');
+  const firstTake = screen.takes.current();
+  assert.equal(await startSpoken(screen), 'busy', 'the second press opened a second take');
+  assert.equal(mic.calls, 1, 'the microphone was asked for twice');
+  assert.equal(screen.takes.current(), firstTake, 'the second press replaced the take waiting for the microphone');
+
+  mic.waiting[0]!.release();
+  assert.equal(await first, 'recording');
+  assert.equal(mic.recordings.length, 1, 'more than one recorder started');
+  assert.equal(screen.takes.starting(), false, 'the take stopped waiting once the microphone answered');
+
+  /* The desk refuses on its own too, whoever asks. */
+  const desk = spoken.openSpokenTakes<FakeStream, FakeRecording>(releaseFake);
+  const session = openExerciseSession();
+  const waiting = desk.begin(session);
+  assert.ok(waiting);
+  assert.equal(desk.begin(session), null, 'begin() opened a second take while one waits for the microphone');
+  assert.equal(desk.current(), waiting);
+
+  unmountSpoken(screen);
+  everythingLetGo('after leaving the page');
+});
+
+test('spoken task (R2F-01): two delayed starts, the microphone given, then the page changes hands: every recorder is stopped and every track ended', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  resetMic();
+  holdMic();
+  const screen = openSpoken();
+  const first = startSpoken(screen);
+  const second = startSpoken(screen);
+  mic.waiting.forEach((held) => held.release());
+  assert.deepEqual([await first, await second].sort(), ['busy', 'recording']);
+  assert.equal(mic.streams.length, 1, 'two microphones were kept');
+  assert.equal(mic.recordings.length, 1, 'two recorders were started');
+
+  signInAs(B, B_SESSION);
+  assert.equal(screen.exercise?.namespace, NS_B, 'the task handed over');
+  everythingLetGo('after the switch');
+  assert.equal(screen.takes.current(), null);
+  mic.recordings.forEach((recording) => recording.finish());
+  await tick();
+  screen.stop();
+  assert.equal(screen.audio, null, 'nothing was played back');
+  assert.deepEqual(eventsOf(A), []);
+  assert.deepEqual(eventsOf(B), []);
+});
+
+test('spoken task (R2F-01): two delayed starts and the page changes hands while the prompt is still open: the late microphone is released at once and no recorder ever starts', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  resetMic();
+  holdMic();
+  const screen = openSpoken();
+  const first = startSpoken(screen);
+  const second = startSpoken(screen);
+  signInAs(B, B_SESSION);
+  assert.equal(screen.takes.starting(), false, 'the hand-over let go of the waiting start');
+  mic.waiting.forEach((held) => held.release());
+  assert.deepEqual([await first, await second].sort(), ['busy', 'dropped']);
+  screen.stop();
+  assert.equal(mic.recordings.length, 0, 'a recorder started for a student who had gone');
+  assert.ok(mic.streams.length >= 1);
+  everythingLetGo('after the late microphone');
+  assert.deepEqual(eventsOf(A), []);
+  assert.deepEqual(eventsOf(B), []);
+});
+
+test('spoken task (R2F-01): a microphone that arrives for a take that is no longer the one on screen is released at once, and the take on screen goes on', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  resetMic();
+  holdMic();
+  const screen = openSpoken();
+  const aStart = startSpoken(screen);
+  /* The page changes hands and B presses Start at once, while A's prompt
+     is still open: two requests are out, for two different takes. */
+  signInAs(B, B_SESSION);
+  const bStart = startSpoken(screen);
+  assert.equal(mic.calls, 2);
+  const aStream = { id: 'SYNTHETIC-late-mic-for-A', released: 0 };
+  mic.waiting[0]!.release(aStream);
+  assert.equal(await aStart, 'dropped');
+  assert.equal(aStream.released, 1, 'the stale microphone was kept');
+  assert.equal(screen.takes.starting(), true, 'B’s start is still waiting, untouched');
+  mic.waiting[1]!.release();
+  assert.equal(await bStart, 'recording', 'B’s own take records');
+  assert.equal(mic.recordings.length, 1);
+
+  /* The identity rule on its own: a take that is not the one on screen is
+     not live, even while nothing is dropped and its session is on screen. */
+  const session = openExerciseSession();
+  const older = spoken.openTake<FakeStream, FakeRecording>(session);
+  const newer = spoken.openTake<FakeStream, FakeRecording>(session);
+  assert.equal(spoken.takeIsLive(older, newer, session), false, 'a replaced take passes because its session is still on screen');
+  assert.equal(spoken.takeIsLive(newer, newer, session), true);
+
+  unmountSpoken(screen);
+  everythingLetGo('after leaving the page');
+});
+
+test('spoken task (R2F-01): opening a take stops and releases the one before it first, and leaving the page mid-start releases the late microphone', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  resetMic();
+  const screen = openSpoken();
+  assert.equal(await startSpoken(screen), 'recording');
+  const running = mic.recordings[0]!;
+  /* A new take while one records (the screen offers Start only when
+     nothing records, but the desk never relies on that). */
+  assert.equal(await startSpoken(screen), 'recording');
+  assert.equal(running.stopCalls, 1, 'the take before was left recording');
+  assert.equal(mic.streams[0]!.released, 1, 'the microphone before was left on');
+  assert.equal(mic.recordings.length, 2);
+
+  /* A finished take, replaced after "Record again", releases nothing twice. */
+  const stopping = stopSpoken(screen);
+  mic.recordings[1]!.finish();
+  assert.equal(await stopping, 'shown');
+  recordAgainSpoken(screen);
+  holdMic();
+  const pending = startSpoken(screen);
+  assert.equal(mic.streams[1]!.released, 1, 'released twice, or not at all');
+
+  /* The page goes while that start waits: its microphone, when it comes,
+     is released at once. */
+  unmountSpoken(screen);
+  mic.waiting[0]!.release();
+  assert.equal(await pending, 'dropped');
+  assert.equal(mic.recordings.length, 2, 'a recorder started after the page had gone');
+  everythingLetGo('after leaving the page');
+  assert.deepEqual(eventsOf(A), []);
+});
+
+test('the recorder (R2F-01): the spoken task’s time limit ends the microphone’s tracks with the recording, and the timed trainer’s leaves them on for its next question', { timeout: 10_000 }, async () => {
+  /* The REAL recordSegment, on a recorder and a microphone made of a few
+     lines each. Nothing records from any device. */
+  const recorder = await import('../src/lib/speaking/recorder.ts');
+  class FakeMediaRecorder {
+    static isTypeSupported(): boolean {
+      return false;
+    }
+    state: 'inactive' | 'recording' = 'inactive';
+    mimeType = '';
+    ondataavailable: ((event: { data: Blob }) => void) | null = null;
+    onstop: (() => void) | null = null;
+    start(): void {
+      this.state = 'recording';
+    }
+    stop(): void {
+      this.state = 'inactive';
+      queueMicrotask(() => {
+        this.ondataavailable?.({ data: new Blob(['SYNTHETIC clip']) });
+        this.onstop?.();
+      });
+    }
+  }
+  const fakeMicrophone = () => {
+    const tracks = [0, 1].map(() => ({
+      readyState: 'live' as 'live' | 'ended',
+      stop() {
+        this.readyState = 'ended';
+      },
+    }));
+    return { tracks, stream: { getTracks: () => tracks } as unknown as MediaStream };
+  };
+  const g = globalThis as Record<string, unknown>;
+  const before = g.MediaRecorder;
+  g.MediaRecorder = FakeMediaRecorder;
+  try {
+    const spokenMic = fakeMicrophone();
+    const spokenHandle = recorder.recordSegment(spokenMic.stream, { maxMs: 5, endTracksAtTimeout: true });
+    const trainerMic = fakeMicrophone();
+    const trainerHandle = recorder.recordSegment(trainerMic.stream, { maxMs: 5 });
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    assert.deepEqual(
+      spokenMic.tracks.map((track) => track.readyState),
+      ['ended', 'ended'],
+      'the time limit stopped the recording but left the microphone on',
+    );
+    assert.deepEqual(
+      trainerMic.tracks.map((track) => track.readyState),
+      ['live', 'live'],
+      'the timed trainer’s microphone was ended at one answer’s limit, leaving its next question without one',
+    );
+    const clip = await spokenHandle.stop();
+    assert.ok(clip.blob.size > 0, 'the clip made before the limit is still handed back');
+    await trainerHandle.stop();
+  } finally {
+    g.MediaRecorder = before;
+  }
 });
 
 test("spoken task: its calm line is its own and true (a recording on screen was not kept), never the exercises' \"were kept\" line, and it has Russian", { timeout: 10_000 }, async () => {
@@ -1432,7 +1681,7 @@ test('source scan: the spoken task binds at open, hands over on an owner change,
   );
   const handOver = body(code, '  function handOver() {', /\n  function withhold\(\)/);
   for (const step of [
-    'dropCurrentTake();',
+    'dropEveryTake();',
     'exerciseRef.current = opened;',
     'setExercise(opened);',
     'setAudioUrl(null);',
@@ -1442,17 +1691,16 @@ test('source scan: the spoken task binds at open, hands over on an owner change,
   ]) {
     assert.ok(handOver.includes(step), `handOver() no longer does ${step}`);
   }
-  assert.match(body(code, '  function withhold() {', /\n  \/\*\* The binding/), /dropCurrentTake\(\);/);
+  assert.match(body(code, '  function withhold() {', /\n  \/\*\* The binding/), /dropEveryTake\(\);/);
   const claim = body(code, '  function claimPress()', /\n  async function startRecording/);
   assert.match(claim, /const claim = claimExerciseCheck\(exercise\);/);
   assert.match(claim, /if \(claim\.refused === 'owner-changed'\) handOver\(\);\s*else withhold\(\);/);
 
   const start = body(code, '  async function startRecording() {', /\n  async function stopRecording/);
   assert.ok(start.indexOf('const binding = claimPress();') < start.indexOf('requestMic()'), 'the microphone is asked for before the press is claimed');
-  assert.match(start, /if \(!mounted\.current \|\| !takeIsLive\(take, exerciseRef\.current\)\) \{\s*releaseMic\(stream\);\s*return;\s*\}/);
   const stop = body(code, '  async function stopRecording() {', /\n  function recordAgain/);
   assert.ok(stop.indexOf('const binding = claimPress();') < stop.indexOf('await handle.stop()'));
-  assert.match(stop, /await handle\.stop\(\);[\s\S]*?if \(!mounted\.current \|\| !takeIsLive\(take, exerciseRef\.current\)\) return;\s*if \(take\.stream\)/);
+  assert.match(stop, /await handle\.stop\(\);[\s\S]*?if \(!takes\.isLive\(take, onScreen\(\)\)\) return;\s*if \(take\.stream\)/);
 
   const save = body(code, '  function save() {', /\n  function turnOffMicrophonePractice/);
   assertClaimedBefore(save, /const binding = claimPress\(\);/, /recordSpokenPracticeFor\(/, 'save()');
@@ -1463,6 +1711,48 @@ test('source scan: the spoken task binds at open, hands over on an owner change,
   }
   assert.match(code, /onChange=\{\(\) => toggleChecklist\(index\)\}/);
   assert.match(code, /\{withheld \? null : micUnavailable \? \(/, 'a withheld task is off the screen');
+});
+
+test('source scan (R2F-01): the spoken task starts one take at a time, checks the take itself after every await, drops every take at a hand-over and on leaving, and ends the tracks at the time limit', { timeout: 10_000 }, () => {
+  const code = source('components/learning/SpokenFocusedTask.tsx');
+  /* One desk for the life of the screen; no take of the screen's own. */
+  assert.match(code, /const \[takes\] = useState\(\(\) => openSpokenTakes<MediaStream, RecordingHandle>\(releaseMic\)\);/);
+  assert.doesNotMatch(code, /takeRef|\bopenTake\(|\btakeIsLive\(|\bdropTake\(/, 'the screen keeps or checks a take outside the desk again');
+  assert.match(code, /function onScreen\(\): ExerciseSession \| null \{\s*return mounted\.current \? exerciseRef\.current : null;\s*\}/);
+
+  const start = body(code, '  async function startRecording() {', /\n  async function stopRecording/);
+  /* Single flight: the very first thing, synchronous, before any await. */
+  assert.match(start, /^ {2}async function startRecording\(\) \{\s*if \(takes\.starting\(\)\) return;/, 'a second press while the prompt is open is not refused first');
+  const begin = start.search(/const take = takes\.begin\(exercise!\);\s*if \(!take\) return;/);
+  assert.ok(begin > 0, 'the take is not opened through the desk, or a refused open goes on');
+  assert.ok(begin < start.indexOf('await requestMic()'), 'the take is opened after the first await');
+  assert.equal(start.split('await ').length, 2, 'startRecording() awaits something new; check the take after it too');
+  /* After the one await, the take itself is checked, on both paths. */
+  assert.match(start, /catch \(error\) \{\s*if \(!takes\.settle\(take, null, onScreen\(\)\)\) return;/);
+  assert.match(start, /\n\s*if \(!takes\.settle\(take, stream, onScreen\(\)\)\) return;\s*setPhase\('recording'\);/);
+  assert.ok(start.indexOf('takes.settle(take, stream, onScreen())') < start.indexOf('recordSegment('), 'a recorder starts before the take is checked');
+  assert.match(start, /recordSegment\(stream, \{ maxMs: MAX_RECORDING_MS, endTracksAtTimeout: true \}\)/, 'the time limit leaves the microphone on');
+
+  const stop = body(code, '  async function stopRecording() {', /\n  function recordAgain/);
+  assert.match(stop, /const take = takes\.current\(\);/);
+  assert.equal(stop.split('takes.isLive(take, onScreen())').length, 3, 'both ends of the stop check the take itself');
+
+  /* A hand-over, a refused press and leaving the page drop every take. */
+  assert.match(body(code, '  function dropEveryTake() {', /\n  \}\n/), /takes\.dropAll\(\);/);
+  assert.match(code, /return \(\) => \{\s*takes\.dropAll\(\);\s*if \(audioUrlRef\.current\)/, 'leaving the page drops only some takes');
+
+  /* The desk itself. */
+  const desk = source('components/learning/spoken-task-owner.ts');
+  assert.match(desk, /return !take\.dropped && take === current && take\.session === onScreen && exerciseIsCurrent\(take\.session\);/);
+  assert.match(desk, /begin\(session\) \{\s*if \(desk\.starting\(\)\) return null;\s*if \(onDesk\) drop\(onDesk\);/);
+  assert.match(desk, /if \(!takeIsLive\(take, onDesk, onScreen\)\) \{\s*if \(stream\) release\(stream\);\s*drop\(take\);\s*return false;\s*\}/);
+  assert.match(desk, /dropAll\(\) \{\s*onDesk = null;\s*waiting = null;\s*for \(const take of \[\.\.\.open\]\) drop\(take\);/);
+
+  /* The recorder: the time limit ends the tracks only when asked, and the
+     timed trainer, which records every question on one stream, does not ask. */
+  const rec = source('lib/speaking/recorder.ts');
+  assert.match(rec, /if \(rec\.state === 'recording'\) rec\.stop\(\);\s*if \(opts\.endTracksAtTimeout\) releaseMic\(stream\);\s*\}, opts\.maxMs\);/);
+  assert.doesNotMatch(source('components/SpeakingTester.tsx'), /endTracksAtTimeout/, 'the timed trainer ends its session microphone at one answer’s limit');
 });
 
 test('source scan: the written task ignores a keystroke, a Check and a help press from a render made before a hand-over', { timeout: 10_000 }, () => {
