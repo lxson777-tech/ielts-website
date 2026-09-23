@@ -255,6 +255,10 @@ export const strings: Record<string, string> = {
   "The speaking test isn't configured on this site yet.": 'Тест Speaking пока не настроен на этом сайте.',
   'Start speaking test': 'Начать тест Speaking',
   'Skip speaking': 'Пропустить Speaking',
+  /* Back on the brief after the interview was stopped part way (the account
+     on the browser changed, or the page went away), R2B-02. */
+  'Your speaking test was interrupted before it finished, so it is not part of this mock yet. Start it again when you are ready, or skip it.':
+    'Тест Speaking прервался, не дойдя до конца, поэтому в этот пробный экзамен он пока не вошёл. Начните его заново, когда будете готовы, или пропустите.',
 
   /* ---------------------------------------------------------------- */
   /* Mock Exam Day: the results                                        */

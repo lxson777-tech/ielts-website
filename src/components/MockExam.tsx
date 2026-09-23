@@ -33,10 +33,16 @@ import {
   reconcileActiveMock,
   saveActiveMock,
   writingSecondsLeftAt,
+  newMockSittingId,
+  mockLegResult,
+  speakingExitFor,
+  afterSpeakingExit,
   type ActiveMock,
+  type ActiveMockSnapshot,
   type MockEssay,
   type MockLegResult,
   type MockStage,
+  type SpeakingExit,
 } from '../lib/tests/mock';
 import { ownerStillCurrent } from '../lib/test-session';
 import { onOwnerChange } from '../lib/store-owner';
@@ -170,7 +176,17 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const [writingSecondsLeft, setWritingSecondsLeft] = useState(WRITING_SECONDS);
   const [speakingResult, setSpeakingResult] = useState<SpeakingLegResult | null>(null);
   const [speakingSkipped, setSpeakingSkipped] = useState(false);
+  /* True when this sitting is back on its Speaking brief because the
+     interview was interrupted (the account changed, or the page went away
+     part way through), so the brief can say why Speaking is not done. */
+  const [speakingInterrupted, setSpeakingInterrupted] = useState(false);
   const savedRef = useRef(false);
+
+  /* THIS SITTING'S OWN IDENTITY (R2B-03). Made when a sitting begins and
+     handed to each paper's player, which keeps its answers and deadline
+     inside this sitting and nowhere else. The mock id is not unique enough
+     (see ActiveMock.sittingId in src/lib/tests/mock.ts). */
+  const [sittingId, setSittingId] = useState('');
 
   /* THE ONE CLOCK THIS SCREEN OWNS, AS A DEADLINE (R2-03, 23 September 2026).
      A remaining count cannot survive being put down and picked up again
@@ -344,23 +360,55 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
 
   function beginMock() {
     const now = new Date().toISOString();
-    mockOwnerRef.current = currentMockOwner();
+    const owner = currentMockOwner();
+    const freshId = newMockSittingId();
+    const freshMockId = nextMockId(now);
+    mockOwnerRef.current = owner;
     setOwnerChange(null);
     /* A fresh sitting replaces only THIS student's written-down one. Another
        student's unfinished mock on this browser is under their own key and
        is left exactly where it is. */
     setResumable(null);
     savedRef.current = false;
-    setMockId(nextMockId(now));
+    setSittingId(freshId);
+    setMockId(freshMockId);
     setStartedAt(now);
     setListeningResult(null);
     setReadingResult(null);
     setSpeakingResult(null);
     setSpeakingSkipped(false);
+    setSpeakingInterrupted(false);
     setEssay1('');
     setEssay2('');
     setWritingEndsAt(null);
     setWritingSecondsLeft(WRITING_SECONDS);
+    /* Written down NOW, before the Listening player mounts, with a new
+       identity and no papers: the player keeps its answers and deadline
+       inside this record, so the record has to be there first, and a
+       different identity means nothing of an older sitting (its answers, its
+       deadlines) can be picked up (R2B-03). */
+    saveActiveMock({
+      version: 1,
+      owner,
+      sittingId: freshId,
+      mockId: freshMockId,
+      startedAt: now,
+      stage: 'listening',
+      listeningTestId: listeningTest?.id ?? listeningId,
+      readingTestId: readingTest?.id ?? readingId,
+      task1PromptId: task1Prompt?.id ?? null,
+      task2PromptId: task2Prompt?.id ?? null,
+      listening: null,
+      reading: null,
+      essay1: '',
+      essay2: '',
+      writingEndsAt: null,
+      speakingBand: null,
+      speakingCriteria: null,
+      speakingSkipped: false,
+      legSittings: {},
+      savedAt: Date.now(),
+    });
     setStage('listening');
   }
 
@@ -370,15 +418,18 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      both essays and the Writing deadline. Saved under the student sitting
      it, so a refresh, a stray navigation or a sign-out and a sign-in later
      hands it back to that same student and to nobody else. */
-  function snapshot(): ActiveMock {
+  function snapshot(): ActiveMockSnapshot {
     return {
       version: 1,
       owner: mockOwnerRef.current,
+      sittingId,
       mockId,
       startedAt,
       stage,
-      listeningTestId: listeningId,
-      readingTestId: readingId,
+      /* The papers actually on screen, which is what each player keeps its
+         sitting under. */
+      listeningTestId: listeningTest?.id ?? listeningId,
+      readingTestId: readingTest?.id ?? readingId,
       task1PromptId: task1Prompt?.id ?? null,
       task2PromptId: task2Prompt?.id ?? null,
       listening: listeningResult,
@@ -405,6 +456,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     stage,
+    sittingId,
     mockId,
     startedAt,
     listeningId,
@@ -430,6 +482,15 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     savedRef.current = false;
     setOwnerChange(null);
     setResumable(null);
+    /* The sitting's own identity, so each paper's player restores that
+       sitting's answers and deadline, and no other sitting's (R2B-03). */
+    setSittingId(held.sittingId);
+    /* Picked up where the interview itself had been running: it was
+       interrupted, and the brief says so. Kept when this same sitting was
+       already showing that on its brief in this tab. */
+    setSpeakingInterrupted(
+      written.stage === 'speaking' || (written.sittingId === sittingId && speakingInterrupted),
+    );
     setMockId(held.mockId);
     setStartedAt(held.startedAt);
     setListeningId(held.listeningTestId || listeningId);
@@ -493,7 +554,15 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     wasStoppedRef.current = false;
     if (!mockOwnerRef.current || !ownerStillCurrent(mockOwnerRef.current)) return;
     if (stage === 'start' || stage === 'results') return;
-    resume(snapshot());
+    /* This screen's memory, plus the papers' own sittings as this same
+       sitting wrote them down (a paper handed in just before the sign-out
+       is only there). Another sitting's papers are never borrowed. */
+    const stored = loadActiveMock();
+    const current = snapshot();
+    resume({
+      ...current,
+      legSittings: stored && stored.sittingId === current.sittingId ? stored.legSittings : {},
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ownerChanged]);
 
@@ -507,6 +576,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     if (new URLSearchParams(window.location.search).get('stage') !== 'speaking') return;
     const now = new Date().toISOString();
     mockOwnerRef.current = currentMockOwner();
+    setSittingId(newMockSittingId());
     setMockId(nextMockId(now));
     setStartedAt(now);
     setListeningResult({ raw: 32, total: 40, band: 7, bandLabel: '7', secondsUsed: 28 * 60 });
@@ -518,24 +588,44 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** The result a paper was just handed in with: the one the player kept
+      inside THIS sitting (R2B-03). Only if that could not be written down
+      (no room left on the device) is the paper's latest history row read
+      instead, which right after the student's own Submit is the same paper. */
+  function legResultNow(test: PracticeTest): LegResult | null {
+    const kept = mockLegResult({ owner: mockOwnerRef.current, sittingId }, test.id);
+    if (kept) return kept;
+    const legAttempts = getAttempts(test.id);
+    const last = legAttempts[legAttempts.length - 1]?.attempt;
+    return last
+      ? { raw: last.raw, total: last.total, band: last.band, bandLabel: last.bandLabel, secondsUsed: last.secondsUsed }
+      : null;
+  }
+
   function handleListeningFinish() {
     if (!listeningTest) return;
-    const legAttempts = getAttempts(listeningTest.id);
-    const last = legAttempts[legAttempts.length - 1]?.attempt;
-    if (last) {
-      setListeningResult({ raw: last.raw, total: last.total, band: last.band, bandLabel: last.bandLabel, secondsUsed: last.secondsUsed });
-    }
+    const done = legResultNow(listeningTest);
+    if (done) setListeningResult(done);
     setStage('transition-reading');
   }
 
   function handleReadingFinish() {
     if (!readingTest) return;
-    const legAttempts = getAttempts(readingTest.id);
-    const last = legAttempts[legAttempts.length - 1]?.attempt;
-    if (last) {
-      setReadingResult({ raw: last.raw, total: last.total, band: last.band, bandLabel: last.bandLabel, secondsUsed: last.secondsUsed });
-    }
+    const done = legResultNow(readingTest);
+    if (done) setReadingResult(done);
     setStage('transition-writing');
+  }
+
+  /** The interview left the screen without a band (R2B-02). A deliberate
+      cancellation skips Speaking and goes to the results; a suspension (the
+      account on this browser changed) goes back to the Speaking brief with
+      nothing skipped and nothing recorded, and nothing is saved while the
+      sitting's student is away. */
+  function leaveSpeaking(reported: SpeakingExit) {
+    const next = afterSpeakingExit(speakingExitFor(reported, mockOwnerRef.current));
+    setSpeakingSkipped(next.speakingSkipped);
+    setSpeakingInterrupted(next.stage === 'speaking-brief');
+    setStage(next.stage);
   }
 
   /* The account changed part way through: the sitting stops here, nothing is
@@ -574,6 +664,8 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
                 mockOwnerRef.current = '';
                 setOwnerChange(null);
                 savedRef.current = false;
+                setSittingId('');
+                setSpeakingInterrupted(false);
                 setMockId('');
                 setStartedAt('');
                 setListeningResult(null);
@@ -632,8 +724,22 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     );
   }
 
+  /* Each paper is keyed by the sitting as well as the paper, so a different
+     sitting always mounts a fresh player, and each is told which sitting it
+     belongs to, so its answers and deadline are kept there (R2B-03). */
+  const legOf = { owner: mockOwnerRef.current, sittingId };
+
   if (stage === 'listening') {
-    return <TestPlayer key={listeningTest.id} test={listeningTest} hubUrl={hubUrl} attemptKind="full" onFinish={handleListeningFinish} />;
+    return (
+      <TestPlayer
+        key={`${sittingId}:${listeningTest.id}`}
+        test={listeningTest}
+        hubUrl={hubUrl}
+        attemptKind="full"
+        onFinish={handleListeningFinish}
+        mockSitting={legOf}
+      />
+    );
   }
 
   if (stage === 'transition-reading') {
@@ -650,7 +756,16 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   }
 
   if (stage === 'reading') {
-    return <TestPlayer key={readingTest.id} test={readingTest} hubUrl={hubUrl} attemptKind="full" onFinish={handleReadingFinish} />;
+    return (
+      <TestPlayer
+        key={`${sittingId}:${readingTest.id}`}
+        test={readingTest}
+        hubUrl={hubUrl}
+        attemptKind="full"
+        onFinish={handleReadingFinish}
+        mockSitting={legOf}
+      />
+    );
   }
 
   if (stage === 'transition-writing') {
@@ -681,7 +796,11 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   if (stage === 'speaking-brief') {
     return (
       <SpeakingBriefScreen
-        onStart={() => setStage('speaking')}
+        interrupted={speakingInterrupted}
+        onStart={() => {
+          setSpeakingInterrupted(false);
+          setStage('speaking');
+        }}
         onSkip={() => {
           setSpeakingSkipped(true);
           setStage('results');
@@ -701,10 +820,8 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
               setSpeakingResult(result);
               setStage('results');
             }}
-            onAbort={() => {
-              setSpeakingSkipped(true);
-              setStage('results');
-            }}
+            onAbort={() => leaveSpeaking('cancelled')}
+            onSuspend={() => leaveSpeaking('suspended')}
           />
         </div>
       </div>
@@ -1099,7 +1216,17 @@ function WritingTaskBlock({
     way "Skip speaking" stays available, so a student who'd rather not
     (no mic, no time, doesn't want to sign in) can still finish the sitting
     with three papers. */
-function SpeakingBriefScreen({ onStart, onSkip }: { onStart: () => void; onSkip: () => void }) {
+function SpeakingBriefScreen({
+  interrupted,
+  onStart,
+  onSkip,
+}: {
+  /** The interview was stopped part way (R2B-02), so this sitting is back
+      here with Speaking neither done nor skipped. */
+  interrupted: boolean;
+  onStart: () => void;
+  onSkip: () => void;
+}) {
   const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
@@ -1139,6 +1266,12 @@ function SpeakingBriefScreen({ onStart, onSkip }: { onStart: () => void; onSkip:
         <p className="mt-2 text-sm text-ink-muted">
           {t('About 14 minutes with the AI examiner: Part 1 interview, Part 2 long turn, Part 3 discussion. You need a microphone and to be signed in.')}
         </p>
+
+        {interrupted && (
+          <p className="mt-5 rounded-lg bg-surface-alt px-3 py-3 text-left text-xs text-ink-muted" role="status">
+            {t('Your speaking test was interrupted before it finished, so it is not part of this mock yet. Start it again when you are ready, or skip it.')}
+          </p>
+        )}
 
         {needsSignIn && (
           <div className="mt-5 rounded-lg bg-warning-tint px-3 py-3 text-left text-xs text-ink-muted">

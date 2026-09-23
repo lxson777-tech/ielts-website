@@ -28,6 +28,25 @@ runs through the same runOwnedGrade and the same writers, and
 tests/delayed-grade-owner.test.ts pins both that and the mock's completion
 callback deterministically.
 
+AND THE ESSAY BEFORE IT IS SUBMITTED (finding R2B-01, second fresh Codex
+inspection of 3fec8f4)
+The grade was bound; the editor was not. The writing trainer looked the owner
+up only when "Check my essay" was pressed, and its 600 ms draft autosave
+looked it up when the timer fired. So student A could type an essay, the page
+could change hands, and student B could submit A's text into B's history; a
+switch inside the 600 ms saved A's text under the new owner. The fix
+(src/components/writing-editor-owner.ts) binds the editing session to the
+owner who starts or restores the essay. Two more sections prove it, with
+every account change made from a SECOND tab of the same browser:
+
+  3. E types an essay; E signs out and F signs up in the second tab. The
+     first tab's editor must empty itself for F, F must not be able to send
+     E's text, E's text must stay in E's own draft, F's own typing must stay
+     F's, and E, signing back in, must find the draft and be able to submit it.
+  4. The same switch made INSIDE the 600 ms autosave wait, with the page
+     itself measuring the gap between the last keystroke and the hand-over:
+     E's latest text must land under E and nowhere else.
+
 HOW THE GRADERS ARE STOOD IN FOR
 Nothing is graded by any model. The site is started with its grader
 addresses pointed at the local stand-in's own port, on paths the stand-in
@@ -40,27 +59,32 @@ WHAT THIS IS NOT
   - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for
     it, in memory, on this machine only.
   - Not the frozen production snapshot other testers use. Its own ports: the
-    stand-in on 8815, the site on 4368.
+    first run (results-delayed-grade.md, sections 1 and 2) used the stand-in
+    on 8815 and the site on 4368; the R2B-01 run (results-delayed-grade-2.md,
+    screenshots prefixed "delayed2-", all four sections) uses 8819 and 4372,
+    which are now the defaults.
   - No real account, no real key, no paid API call, no deployment.
 
 Run with, both already running:
   1. the stand-in:
-       MR_EZ_DEV_PORT=8815 node tools/mr-ez-dev-server.mjs
+       MR_EZ_DEV_PORT=8819 node tools/mr-ez-dev-server.mjs
   2. the site, with its own Vite dependency cache (see astro.config.f21.mjs
      for why), graders pointed at the intercepted local paths:
-       PUBLIC_SUPABASE_URL=http://127.0.0.1:8815 \\
+       PUBLIC_SUPABASE_URL=http://127.0.0.1:8819 \\
        PUBLIC_SUPABASE_ANON_KEY=local-anon-key \\
-       PUBLIC_MR_EZ_URL=http://127.0.0.1:8815/tutor \\
-       PUBLIC_GRADER_URL=http://127.0.0.1:8815/SYNTHETIC-intercepted-grade-essay \\
-       PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8815/SYNTHETIC-intercepted-grade-speaking \\
-       npx astro dev --config <a config like astro.config.f21.mjs> --port 4368
+       PUBLIC_MR_EZ_URL=http://127.0.0.1:8819/tutor \\
+       PUBLIC_GRADER_URL=http://127.0.0.1:8819/SYNTHETIC-intercepted-grade-essay \\
+       PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8819/SYNTHETIC-intercepted-grade-speaking \\
+       npx astro dev --config <a config like astro.config.f21.mjs> --port 4372
      where that config ALSO sets vite.server.watch.ignored to docs/, tests/
      and .codex/. Without it, every evidence file written mid-run (by this
      script, or by another builder in the same checkout) reloads the page and
      abandons the held grading request; the "same page (no reload)" checks
-     below then fail, as they should.
+     below then fail, as they should. Astro resolves --config relative to the
+     project root, so a config kept outside the project (in a scratch folder,
+     say) is passed as a relative path to it.
   then:
-       IELTS_STANDIN_URL=http://127.0.0.1:8815 python tests/browser/f23_delayed_grade_owner.py
+       IELTS_STANDIN_URL=http://127.0.0.1:8819 python tests/browser/f23_delayed_grade_owner.py
 
 Every email, password, essay and band below is SYNTHETIC, made up for this run.
 """
@@ -73,10 +97,12 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(__file__))
 
 # Read at IMPORT time by final_helpers and f20, so these come first.
-os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4368/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed-")
-os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8815")
+# The R2B-01 run: its own results file and screenshot prefix, so the first
+# run's results-delayed-grade.md and "delayed-" screenshots stay as they were.
+os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4372/ielts-website")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-2")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed2-")
+os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8819")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -94,7 +120,7 @@ from final_helpers import (  # noqa: E402
     write_section,
 )
 
-STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8815")  # the local stand-in; override per run
+STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8819")  # the local stand-in; override per run
 
 RUN = time.strftime("%H%M%S")
 EMAIL_A = f"synthetic-student-a-f23-{RUN}@example.test"
@@ -116,6 +142,26 @@ ESSAY = (
         * 9
     )
 )
+
+# Sections 3 and 4 (R2B-01): two more students, their own essays, and the
+# pieces of text the debounce section types just before and inside the wait.
+EMAIL_E = f"synthetic-student-e-f23-{RUN}@example.test"
+EMAIL_F = f"synthetic-student-f-f23-{RUN}@example.test"
+E_MARK = f"SYNTHETIC-F23-ESSAY-OF-E-{RUN}"
+E_ESSAY = (
+    f"{E_MARK} This essay is synthetic and was typed by a test script for student E. "
+    "Formal lessons have their place, yet a school day built only around them leaves little room "
+    "for the curiosity that play and projects encourage in young children."
+)
+F_MARK = f"SYNTHETIC-F23-ESSAY-OF-F-{RUN}"
+F_ESSAY = f"{F_MARK} Student F's own synthetic essay, typed after F took over the page."
+EARLY_MARK = f"SYNTHETIC-F23-EARLY-{RUN}"
+EARLY_TEXT = f"{EARLY_MARK} E's synthetic opening paragraph, saved before the switch."
+LATE_MARK = f"SYNTHETIC-F23-LATE-{RUN}"
+LATE_TEXT = f"{EARLY_TEXT} {LATE_MARK} and the sentence E typed a moment before signing out."
+
+DRAFT_PREFIX = "ielts.writing.draft.v1"
+ACCOUNT_NOTE = "The account on this page changed. Any essay in progress was kept for the student who was writing it."
 
 CUE_CARD = "p2-journey"
 CUE_TOPIC = "Describe a memorable journey or trip you have taken."
@@ -168,16 +214,19 @@ def speaking_reply() -> dict:
 
 def reset_results() -> None:
     RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    header = f"""# A grade that arrives after the account changed: whose it is
+    header = f"""# When the account changes on an open page: whose grade, and whose essay
 
 Run on {date.today().isoformat()} against a DEV server at {BASE_URL}, with the free local
 accounts stand-in (`node tools/mr-ez-dev-server.mjs`) at {STANDIN_URL}. Both were started for
 this run and stopped afterwards. This is NOT the frozen production snapshot the `results.md`
 suite uses, and it is NOT a real Supabase project: nothing below is evidence about one.
 
-It is the browser half of the fix for finding R2-02 of the second Codex inspection: a grade that
-came back after the owner changed was written under whoever was signed in by then. The
-deterministic half is `tests/delayed-grade-owner.test.ts`.
+It is the browser half of two fixes. Sections 1 and 2: finding R2-02 of the second Codex
+inspection, a grade that came back after the owner changed was written under whoever was signed in
+by then. Sections 3 and 4: finding R2B-01 of the second fresh Codex inspection, the essay editor
+itself was nobody's, so a student who took over the page could submit the previous student's text,
+and a switch inside the 600 ms draft autosave saved it under the newcomer. The deterministic half of
+both is `tests/delayed-grade-owner.test.ts`.
 
 **No grader and no model was called.** The essay and speaking grader addresses point at paths the
 local stand-in does not serve, and this script intercepts those requests in the browser, holds
@@ -593,6 +642,335 @@ def speaking_scenario(browser) -> None:
     ctx.close()
 
 
+# ── 3 and 4. the editor itself (R2B-01) ───────────────────────────────────
+#
+# Found by the second fresh Codex inspection: the grade was bound to its
+# student, the editor was not. The owner was looked up only at submit, and
+# the 600 ms draft autosave looked it up when its timer fired. These two
+# sections drive the fix in a real browser: two tabs of ONE browser (so they
+# share this device's storage and its account session, exactly like a
+# student's own browser), the essay open in the first, every account change
+# made from the second.
+
+def draft_key(namespace: str, prompt_id: str = PROMPT_ID) -> str:
+    return f"{DRAFT_PREFIX}::{namespace}::{prompt_id}"
+
+
+def draft_keys(items: dict, prompt_id: str = PROMPT_ID) -> list:
+    return sorted(k for k in items if k.startswith(DRAFT_PREFIX) and k.endswith(f"::{prompt_id}"))
+
+
+def textarea_value(page) -> str:
+    try:
+        box = page.locator("textarea").first
+        return box.input_value(timeout=5000) if page.locator("textarea").count() else ""
+    except Exception:
+        return ""
+
+
+def check_button_disabled(page) -> bool:
+    try:
+        return page.get_by_role("button", name="Check my essay").first.is_disabled(timeout=5000)
+    except Exception:
+        return False
+
+
+def body_text(page) -> str:
+    try:
+        return page.locator("body").inner_text(timeout=5000)
+    except Exception:
+        return ""
+
+
+def open_writing_task(page) -> None:
+    goto(page, f"/trainers/writing?task={PROMPT_ID}")
+    page.locator("textarea").first.wait_for(timeout=20000)
+    journey.click_until(
+        page,
+        lambda: page.locator("textarea"),
+        lambda: page.locator("textarea").first.is_editable(),
+    )
+
+
+def editor_scenario(browser) -> None:
+    write_section(
+        "3. The essay editor belongs to the student who started it (Codex R2B-01)",
+        "Student E opens a Task 2 essay in the first tab and types. From a SECOND tab of the same "
+        "browser, E signs out and student F signs up. The first tab is never reloaded by the script. "
+        "F must get an empty editor and must not be able to send E's text; E's text must stay in E's "
+        "own draft; E, signing back in, must find it and be able to submit it.",
+    )
+    ctx = new_context(browser)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+    grader_a = HeldGrader(page_a, GRADER_ESSAY_PATH)
+
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_e = journey.ws_sign_up(page_a, EMAIL_E, PASSWORD)
+    write_row("Student E signed up on the local stand-in", bool(user_e), f"user id {user_e}")
+    e_ns, e_key = f"u:{user_e}", draft_key(f"u:{user_e}")
+
+    open_writing_task(page_a)
+    page_a.locator("textarea").first.fill(E_ESSAY)
+    page_a.wait_for_timeout(1500)
+    mark_page(page_a)
+    items = local_items(page_a)
+    write_row(
+        "E's essay is on screen and kept as E's own draft",
+        E_MARK in textarea_value(page_a) and E_MARK in (items.get(e_key) or ""),
+        f"{e_key} carries E's essay: {E_MARK in (items.get(e_key) or '')}",
+    )
+    shot(page_a, "08-editor-e-typing", "/trainers/writing")
+
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    grader_b = HeldGrader(page_b, GRADER_ESSAY_PATH)
+    goto(page_b, "/dashboard")
+    journey.wait_for_dashboard(page_b)
+    journey.ws_sign_out(page_b)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2000)
+    value = textarea_value(page_a)
+    body = body_text(page_a)
+    write_row(
+        "E signs out in the second tab: the first tab's editor empties itself and says the account changed",
+        E_MARK not in value and ACCOUNT_NOTE in body and same_page(page_a),
+        f"E's essay still in the text box: {E_MARK in value}; note shown: {ACCOUNT_NOTE in body}; "
+        f"same page (no reload): {same_page(page_a)}",
+    )
+
+    user_f = journey.ws_sign_up(page_b, EMAIL_F, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    value = textarea_value(page_a)
+    body = body_text(page_a)
+    disabled = check_button_disabled(page_a)
+    write_row(
+        "F signs up in the second tab: the first tab's editor is F's now, empty, with the note, never reloaded",
+        bool(user_f) and value == "" and ACCOUNT_NOTE in body and E_MARK not in body and same_page(page_a),
+        f"user id {user_f}; text box empty: {value == ''}; note shown: {ACCOUNT_NOTE in body}; "
+        f"E's essay anywhere on the page: {E_MARK in body}; same page: {same_page(page_a)}",
+    )
+    write_row(
+        "F cannot submit E's text: the text box is empty and 'Check my essay' is disabled",
+        value == "" and disabled,
+        f"text box empty: {value == ''}; button disabled: {disabled}",
+    )
+    shot(page_a, "09-editor-f-empty-after-switch", "/trainers/writing")
+
+    journey.try_click(page_a.get_by_role("button", name="Check my essay"), timeout=2000, force=True)
+    page_a.wait_for_timeout(1500)
+    sent = grader_a.bodies + grader_b.bodies
+    write_row(
+        "No grading request left either tab after the switch, even with the button pressed by force",
+        not sent,
+        f"grading requests seen: {len(sent)}",
+    )
+
+    open_writing_task(page_b)
+    page_b.wait_for_timeout(800)
+    value_b = textarea_value(page_b)
+    write_row(
+        "F opening the same task in the second tab also gets an empty editor",
+        value_b == "",
+        f"text box empty: {value_b == ''}",
+    )
+    items = local_items(page_a)
+    carrying = keys_carrying(items, E_MARK)
+    write_row(
+        "E's essay is still in E's own draft, and in no other key on this device",
+        carrying == [e_key],
+        f"keys carrying E's essay: {carrying}",
+    )
+
+    page_a.bring_to_front()
+    page_a.locator("textarea").first.fill(F_ESSAY)
+    page_a.wait_for_timeout(1500)
+    f_key = draft_key(f"u:{user_f}")
+    items = local_items(page_a)
+    write_row(
+        "F types an essay of their own in the first tab, and it is kept as F's own draft",
+        F_MARK in (items.get(f_key) or "") and E_MARK not in (items.get(f_key) or ""),
+        f"{f_key} carries F's essay: {F_MARK in (items.get(f_key) or '')}, E's: {E_MARK in (items.get(f_key) or '')}",
+    )
+
+    journey.ws_sign_out(page_b)
+    signed_in = journey.ws_sign_in(page_b, EMAIL_E, PASSWORD)
+    page_a.bring_to_front()
+    try:
+        page_a.wait_for_function(
+            "(mark) => { const t = document.querySelector('textarea'); return !!t && t.value.includes(mark); }",
+            arg=E_MARK,
+            timeout=15000,
+        )
+    except Exception:
+        pass
+    page_a.wait_for_timeout(800)
+    value = textarea_value(page_a)
+    write_row(
+        "E signs back in (second tab): the first tab's editor shows E's own draft again, never reloaded",
+        bool(signed_in) and E_MARK in value and F_MARK not in value and same_page(page_a),
+        f"signed in as {signed_in}; E's essay in the text box: {E_MARK in value}; F's: {F_MARK in value}; "
+        f"same page: {same_page(page_a)}",
+    )
+    items = local_items(page_a)
+    write_row(
+        "F's essay stays in F's own draft, untouched by E's return",
+        F_MARK in (items.get(f_key) or "") and keys_carrying(items, F_MARK) == [f_key],
+        f"keys carrying F's essay: {keys_carrying(items, F_MARK)}",
+    )
+    shot(page_a, "10-editor-e-back-finds-draft", "/trainers/writing")
+
+    journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name="Check my essay"),
+        lambda: bool(grader_a.held),
+        attempts=6,
+        delay=1500,
+    )
+    held = grader_a.wait_until_held(timeout_ms=20000)
+    body_sent = grader_a.bodies[-1] if grader_a.bodies else ""
+    write_row(
+        "E submits the restored essay: the request carries E's text and nothing of F's (held, reaches no grader)",
+        held and E_MARK in body_sent and F_MARK not in body_sent,
+        f"held: {held}; carries E's essay: {E_MARK in body_sent}; carries F's: {F_MARK in body_sent}",
+    )
+    if held:
+        grader_a.release(essay_reply())
+    try:
+        page_a.wait_for_selector("text=Mechanics check", timeout=20000)
+    except Exception:
+        pass
+    page_a.wait_for_timeout(1200)
+    body = body_text(page_a)
+    items = local_items(page_a)
+    rows_e = ((parsed(items, f"ielts.progress.v1::{e_ns}") or {}).get("writing") or {}).get(PROMPT_ID) or []
+    rows_f = ((parsed(items, f"ielts.progress.v1::u:{user_f}") or {}).get("writing") or {}).get(PROMPT_ID) or []
+    write_row(
+        "E's report shows (synthetic reply) and the attempt is kept in E's history only; E's draft is cleared",
+        SYNTHETIC_NOTE in body
+        and any(E_MARK in (r.get("essay") or "") for r in rows_e)
+        and not rows_f
+        and e_key not in items,
+        f"report on screen: {SYNTHETIC_NOTE in body}; E's rows: {len(rows_e)}; F's rows: {len(rows_f)}; "
+        f"E's draft still there: {e_key in items}",
+    )
+    shot(page_a, "11-editor-e-report", "/trainers/writing")
+
+    debounce_scenario(page_a, page_b, grader_a, user_e)
+
+    report_diagnostics("Editor, first tab", errors, failed)
+    report_diagnostics("Editor, second tab", errors_b, failed_b)
+    ctx.close()
+
+
+def debounce_scenario(page_a, page_b, grader_a, user_e) -> None:
+    write_section(
+        "4. A switch inside the 600 ms autosave wait (Codex R2B-01)",
+        "E types in the first tab and, within the 600 ms the autosave waits for typing to pause, "
+        "signs out from the second tab (its account menu already open, so the click is immediate). "
+        "The page itself records when the last keystroke landed and when the editor was handed "
+        "over, so the timing below is measured, not assumed. Before the fix, the autosave fired "
+        "after the switch and saved E's latest text under whoever had just taken over.",
+    )
+    e_key = draft_key(f"u:{user_e}")
+    timing = {}
+    for attempt in range(1, 4):
+        if attempt > 1:
+            journey.ws_sign_in(page_b, EMAIL_E, PASSWORD)
+            page_a.bring_to_front()
+            page_a.wait_for_timeout(2000)
+        open_writing_task(page_a)
+        page_a.locator("textarea").first.fill(EARLY_TEXT)
+        page_a.wait_for_timeout(1500)
+        page_a.evaluate(
+            """(mark) => {
+                const state = { lastInput: 0, sawLate: false, replacedAt: 0 };
+                window.__f23Timing = state;
+                document.addEventListener('input', () => { state.lastInput = performance.now(); }, true);
+                const tick = () => {
+                    const box = document.querySelector('textarea');
+                    const value = box ? box.value : '';
+                    if (value.includes(mark)) state.sawLate = true;
+                    else if (state.sawLate && !state.replacedAt) state.replacedAt = performance.now();
+                    if (!state.replacedAt) setTimeout(tick, 2);
+                };
+                tick();
+            }""",
+            LATE_MARK,
+        )
+        journey.open_workspace_menu(page_b)
+        sign_out = page_b.get_by_role("menuitem", name="Sign out").first
+        try:
+            sign_out.wait_for(timeout=8000)
+        except Exception:
+            pass
+        page_a.locator("textarea").first.fill(LATE_TEXT)
+        try:
+            sign_out.click(timeout=4000)
+        except Exception:
+            pass
+        page_a.wait_for_timeout(2500)
+        timing = page_a.evaluate("() => window.__f23Timing") or {}
+        gap = (timing.get("replacedAt") or 0) - (timing.get("lastInput") or 0)
+        timing["gap"] = gap
+        timing["attempt"] = attempt
+        if timing.get("replacedAt") and 0 < gap < 600:
+            break
+
+    gap = timing.get("gap") or 0
+    inside = bool(timing.get("replacedAt")) and 0 < gap < 600
+    write_row(
+        "The switch landed inside the 600 ms autosave wait (measured in the page)",
+        inside,
+        f"last keystroke to hand-over: {gap:.0f} ms, on attempt {timing.get('attempt')}",
+    )
+    page_a.wait_for_timeout(1500)
+    items = local_items(page_a)
+    value = textarea_value(page_a)
+    write_row(
+        "E's latest text, typed just before the switch, is saved under E",
+        LATE_MARK in (items.get(e_key) or ""),
+        f"{e_key} carries the latest text: {LATE_MARK in (items.get(e_key) or '')}",
+    )
+    carrying = sorted(set(keys_carrying(items, LATE_MARK) + keys_carrying(items, EARLY_MARK)))
+    write_row(
+        "Nothing of it is saved under the signed-out device owner or anybody else, even after the wait ran out",
+        carrying == [e_key],
+        f"keys carrying E's text: {carrying}; draft keys for this task: {draft_keys(items)}",
+    )
+    write_row(
+        "The first tab's editor emptied at the switch and says the account changed",
+        LATE_MARK not in value and ACCOUNT_NOTE in body_text(page_a),
+        f"E's text still in the text box: {LATE_MARK in value}; note shown: {ACCOUNT_NOTE in body_text(page_a)}",
+    )
+    shot(page_a, "12-debounce-switched-mid-wait", "/trainers/writing")
+
+    journey.ws_sign_in(page_b, EMAIL_E, PASSWORD)
+    page_a.bring_to_front()
+    try:
+        page_a.wait_for_function(
+            "(mark) => { const t = document.querySelector('textarea'); return !!t && t.value.includes(mark); }",
+            arg=LATE_MARK,
+            timeout=15000,
+        )
+    except Exception:
+        pass
+    value = textarea_value(page_a)
+    write_row(
+        "E signs back in and the first tab's editor shows the latest text E typed before the switch",
+        LATE_MARK in value,
+        f"latest text in the text box: {LATE_MARK in value}",
+    )
+    shot(page_a, "13-debounce-e-back-latest-text", "/trainers/writing")
+    write_row(
+        "No grading request went out during either switch",
+        len(grader_a.bodies) == 1,
+        f"grading requests seen in the first tab: {len(grader_a.bodies)} (the one E sent in section 3)",
+    )
+
+
 def run():
     reset_results()
     with sync_playwright() as p:
@@ -602,6 +980,7 @@ def run():
         try:
             writing_scenario(browser)
             speaking_scenario(browser)
+            editor_scenario(browser)
         finally:
             browser.close()
     text = RESULTS_PATH.read_text(encoding="utf-8")

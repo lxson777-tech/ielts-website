@@ -486,6 +486,17 @@ Host follow-up: the explicit "work saved on this device" claim now also
 carries an unfinished test and a paused mock into the account, re-stamped so
 they can be resumed.
 
-**Inspection 2** (a fresh session, after the fixes) is recorded below once
-run.
+**Inspection 2, of `3fec8f4`: REVISE, three findings, all accepted and fixed.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-2-of-3fec8f4.json`.
+Codex confirmed the delayed-grade paths were closed and found:
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2B-01 (high) | The essay editor bound its owner only at submit, so an essay typed by A could be submitted by B after a switch, and the draft autosave could save A's text under B | The editing session and every draft write are bound to the owner who starts or restores the essay; an owner change preserves that owner's draft, cancels pending timers and replaces the editor with the new owner's state; a stale submission is refused |
+| R2B-02 (medium) | An account change during the mock's speaking leg was handled as a deliberate cancellation, so the mock advanced to results and its own student could not resume | Suspension is distinguished from cancellation; the mock never advances on suspension and resumes at the speaking brief |
+| R2B-03 (medium) | A mock's legs shared the single standalone session slot, so another paper started mid-mock wiped them and a new mock could restore an older sitting | Mock legs are persisted under the mock sitting's own identity, separately from standalone sessions; the player restores, saves, clears and reconciles by that identity |
+
+**Inspection 3** (a fresh session, after those fixes, one round past the
+skill's default budget at Alex's standing instruction to run the loop with
+Codex directly) is recorded below once run.
 

@@ -120,6 +120,12 @@ export const strings: Record<string, string> = {
      came back after another account took over the page (R2-02). */
   'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.':
     'Пока шла проверка, на этой странице сменился аккаунт, поэтому эта попытка здесь не показана. Она сохранена для того студента, который её начал.',
+  /* WritingTester.tsx: the essay editor belongs to the student who started
+     it, and the page changed hands while it was open (R2B-01). */
+  'The account on this page changed. Any essay in progress was kept for the student who was writing it.':
+    'На этой странице сменился аккаунт. Начатое эссе сохранено для того студента, который его писал.',
+  'This essay was started under a different account, so it was not sent for grading. It is kept for the student who wrote it.':
+    'Это эссе было начато в другом аккаунте, поэтому оно не отправлено на проверку. Оно сохранено для того студента, который его написал.',
   'Start over': 'Начать заново',
   'Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading.':
     'Без ИИ-экзаменатора реальный сигнал есть только по критерию Fluency & Coherence (по одному хронометражу). Для оценки Словарного запаса, Грамматики и Pronunciation нужна модель, которая слушает вашу запись. Ваш преподаватель может включить проверку ИИ.',

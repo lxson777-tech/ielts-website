@@ -31,6 +31,24 @@ SECOND CODEX ROUND (23 September 2026), two more journeys:
     offers A's own sitting back with Listening still done, and a reload in
     the Writing leg keeps both the essay and the Writing deadline.
 
+THIRD CODEX ROUND (23 September 2026), two more journeys:
+  - Step 11, R2B-02: carrying on from Step 10, A finishes Writing, signs out
+    on the Speaking brief, and again with the examiner open, and each time
+    comes back to the Speaking brief, never to the results; a deliberate Back
+    on the examiner still skips Speaking. The stand-in cannot run a real
+    interview, and none is started: the site is pointed at an examiner
+    address on the stand-in that has nothing behind it
+    (PUBLIC_LIVE_EXAMINER_URL below), so the examiner opens, fails to connect
+    before any microphone or session is asked for, and sits on its own error
+    screen. That is enough to take it off screen by an account change, which
+    is the path that used to finish the mock.
+  - Step 12, R2B-03: A answers part of a mock's Listening paper, leaves for a
+    standalone Reading drill (answers it too), comes back and resumes the
+    mock with the Listening answers and the same deadline; then starts a
+    fresh mock on the SAME Listening paper and gets an empty paper with a
+    clock of its own. A mock's papers are kept inside that mock sitting now,
+    never in the one slot a paper opened on its own uses.
+
 WHAT THIS IS NOT
 - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for it,
   in memory, on this machine only. Every fact below is about that stand-in,
@@ -40,19 +58,23 @@ WHAT THIS IS NOT
 - No real account, no real key, no paid API call, no deployment.
 
 Requires, already running before this script starts (the second round used
-the stand-in on 8813 and the site on 4366; override with IELTS_STANDIN_URL
-and IELTS_BASE_URL):
-  1. the stand-in:  MR_EZ_DEV_PORT=8813 node tools/mr-ez-dev-server.mjs
+the stand-in on 8813 and the site on 4366, the third 8821 and 4374; override
+with IELTS_STANDIN_URL and IELTS_BASE_URL):
+  1. the stand-in:  MR_EZ_DEV_PORT=8821 node tools/mr-ez-dev-server.mjs
   2. the site, with its OWN Vite dependency cache (astro.config.f22.mjs;
      see astro.config.f21.mjs for why two dev servers on one checkout must
      not share one):
-                    PUBLIC_SUPABASE_URL=http://127.0.0.1:8813
+                    PUBLIC_SUPABASE_URL=http://127.0.0.1:8821
                     PUBLIC_SUPABASE_ANON_KEY=local-anon-key
-                    PUBLIC_MR_EZ_URL=http://127.0.0.1:8813/tutor
-                    npx astro dev --config astro.config.f22.mjs --port 4366 --host 127.0.0.1
+                    PUBLIC_MR_EZ_URL=http://127.0.0.1:8821/tutor
+                    PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8821/no-examiner-here
+                    npx astro dev --config astro.config.f22.mjs --port 4374 --host 127.0.0.1
+     The examiner address is deliberately one the stand-in answers "not
+     found" on (step 12). Without it, Step 12's examiner checks are reported
+     as not run rather than passed.
 
 Run with:
-  IELTS_STANDIN_URL=http://127.0.0.1:8813 python tests/browser/f22_unfinished_test_owner.py
+  IELTS_STANDIN_URL=http://127.0.0.1:8821 python tests/browser/f22_unfinished_test_owner.py
 
 Every email, password and answer below is SYNTHETIC, made up for this run.
 """
@@ -67,11 +89,12 @@ sys.path.insert(0, os.path.dirname(__file__))
 # final_helpers.py reads these at IMPORT time, so they must be set before the
 # import below. Its own results file and screenshot prefix, so nothing here
 # can collide with another tester's evidence. The first round wrote
-# results-unfinished-test.md with "unfinished-" screenshots; this round's
-# defaults write a second file beside it and leave that one as it was.
-os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4366/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-2")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished2-")
+# results-unfinished-test.md with "unfinished-" screenshots and the second
+# results-unfinished-test-2.md with "unfinished2-"; this round's defaults
+# write a third file beside them and leave both as they were.
+os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4374/ielts-website")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-3")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished3-")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -94,7 +117,7 @@ from final_helpers import (  # noqa: E402
 # The stand-in this run talks to, read the same way f20 and f21 read it, so
 # one environment variable points every journey script at the same place.
 # f20's own reads go through journey.STANDIN_URL, so it is kept in step.
-STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8813")  # the local stand-in; override per run
+STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8821")  # the local stand-in; override per run
 journey.STANDIN_URL = STANDIN_URL
 
 EMAIL_A = "synthetic-student-a-f22@example.test"
@@ -505,11 +528,15 @@ def run_mock_steps(browser, a_id, b_id):
         b_mock.get("startedAt") and b_mock.get("startedAt") != a_done.get("startedAt"),
         f'B started {b_mock.get("startedAt")}, A started {a_done.get("startedAt")}',
     )
-    b_sitting = session_for(page_b, f"u:{b_id}") or {}
+    # Third round (R2B-03): a mock's paper is kept inside its own mock
+    # sitting, not in the one slot a paper opened on its own uses.
+    b_leg = (b_mock.get("legSittings") or {}).get(b_mock.get("listeningTestId") or "") or {}
+    b_standalone = session_for(page_b, f"u:{b_id}")
     write_row(
-        "B's Listening paper is B's own, with no answers carried over",
-        b_sitting.get("owner") == f"u:{b_id}" and not (b_sitting.get("answers") or {}),
-        f"B's sitting = {json.dumps(b_sitting)}",
+        "B's Listening paper is B's own, with no answers carried over, kept inside B's own mock "
+        "sitting (not in the standalone slot)",
+        bool(b_leg) and not (b_leg.get("answers") or {}) and b_standalone is None,
+        f"B's Listening paper = {json.dumps(b_leg)}, B's standalone slot = {json.dumps(b_standalone)}",
     )
     write_row(
         "A's written-down mock was not touched by B's fresh one",
@@ -575,9 +602,11 @@ def run_mock_steps(browser, a_id, b_id):
         resumed
         and bool(held.get("listening"))
         and held.get("startedAt") == a_done.get("startedAt")
-        and held.get("mockId") == a_done.get("mockId"),
+        and held.get("mockId") == a_done.get("mockId")
+        and bool(held.get("sittingId"))
+        and held.get("sittingId") == a_done.get("sittingId"),
         f'stage = {held.get("stage")}, listening = {json.dumps(held.get("listening"))}, '
-        f'mockId = {held.get("mockId")}, startedAt = {held.get("startedAt")}',
+        f'mockId = {held.get("mockId")}, startedAt = {held.get("startedAt")}, sittingId = {held.get("sittingId")}',
     )
     shot(page_d, "14-a-resumed-own-mock", MOCK_PATH)
 
@@ -662,8 +691,403 @@ def run_mock_steps(browser, a_id, b_id):
         f'clock shows "{clock_text}" ({left} s), the stored deadline leaves {expected} s',
     )
     shot(page_d, "16-a-writing-resumed-same-deadline", MOCK_PATH)
-    report_diagnostics("Steps 7, 9 and 10 (A's tabs)", errors7 + errors7d, failed7 + failed7d)
+
+    run_speaking_steps(ctx7, page_d, a_id)
+    report_diagnostics("Steps 7, 9, 10 and 11 (A's tabs)", errors7 + errors7d, failed7 + failed7d)
     ctx7.close()
+
+
+# ── Third Codex round (R2B-02, R2B-03) ──────────────────────────────────────
+
+SPEAKING_START = "Start speaking test"
+INTERRUPTED_NOTE = "Your speaking test was interrupted before it finished"
+RESULTS_HEADING = "You've finished the sitting"
+MOCK_HISTORY_KEY = "ielts.mock.v1"
+# Two SYNTHETIC answers typed into the first two gaps of the mock's Listening
+# paper in Step 12.
+LEG_ANSWERS = ["synthetic library", "synthetic tuesday"]
+
+
+def mock_history_for(page, namespace):
+    value = json_item(page, f"{MOCK_HISTORY_KEY}::{namespace}")
+    return value if isinstance(value, list) else []
+
+
+def on_speaking_brief(page):
+    return text_count(page, "Part 4 of 4") > 0 and page.get_by_role("button", name=SPEAKING_START).count() > 0
+
+
+def on_results(page):
+    return text_count(page, RESULTS_HEADING) > 0
+
+
+def examiner_error_showing(page):
+    return page.get_by_role("button", name="Back").count() > 0 and (
+        text_count(page, "Examiner service error") > 0 or text_count(page, "Could not reach the examiner service") > 0
+    )
+
+
+def run_speaking_steps(ctx, page_a, a_id):
+    """Step 11 (R2B-02), on A's own tab, carrying on from Step 10 (Writing)."""
+    ns_a = f"u:{a_id}"
+    key_a = f"{ACTIVE_MOCK_KEY}::{ns_a}"
+    write_section(
+        "Step 11 - A signs out on the Speaking brief, and again with the examiner open, and is back "
+        "on the brief each time, never at the results (Codex R2B-02)",
+        "An account change used to take the examiner off screen in a way it reported as the student "
+        "cancelling Speaking: the mock skipped Speaking, went to its results, and when A was back it "
+        "recorded itself without Speaking and forgot the sitting. The examiner here is opened against "
+        "an address on the stand-in with nothing behind it, so no interview, microphone or paid session "
+        "is ever started; it stops on its own error screen, which is enough to be taken off screen.",
+    )
+    to_brief = journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name="Finish Writing"),
+        lambda: on_speaking_brief(page_a),
+    )
+    page_a.wait_for_timeout(800)
+    held = active_mock_for(page_a, ns_a) or {}
+    write_row(
+        "A finishes Writing and is on the Speaking brief, written down as such",
+        to_brief and held.get("stage") == "speaking-brief",
+        f'on the brief = {to_brief}, stage = {held.get("stage")}',
+    )
+    shot(page_a, "17-a-speaking-brief", MOCK_PATH)
+    mark_page(page_a)
+
+    other = ctx.new_page()
+    errors_o, failed_o = attach_diagnostics(other)
+    goto(other, "/dashboard")
+    other.wait_for_timeout(1200)
+
+    # ── Signed out on the brief ──
+    journey.ws_sign_out(other)
+    other.wait_for_timeout(1000)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(1500)
+    reloaded_since(page_a, "A's mock tab, after signing out on the Speaking brief")
+    write_row(
+        "Signed out on the brief, A's open mock stops, and does not go to the results",
+        text_count(page_a, "You signed out during this mock exam") > 0 and not on_results(page_a),
+        f'stopped screen: {text_count(page_a, "You signed out during this mock exam")}, results: {on_results(page_a)}',
+    )
+    after = json_item(other, key_a) or {}
+    history = mock_history_for(other, ns_a)
+    write_row(
+        "A's sitting is still written down at the Speaking brief, and no mock was recorded",
+        after.get("stage") == "speaking-brief" and not after.get("speakingSkipped") and not history,
+        f'stage = {after.get("stage")}, speakingSkipped = {after.get("speakingSkipped")}, A\'s mock history = {json.dumps(history)}',
+    )
+    back = journey.ws_sign_in(other, EMAIL_A, PASSWORD_A)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2000)
+    write_row(
+        "A signs back in and the open tab is on the Speaking brief again, not the results",
+        back == a_id and on_speaking_brief(page_a) and not on_results(page_a),
+        f"signed in as {back}, on the brief = {on_speaking_brief(page_a)}, results = {on_results(page_a)}",
+    )
+    shot(page_a, "18-a-back-on-the-brief", MOCK_PATH)
+
+    # ── Signed out with the examiner open ──
+    start = page_a.get_by_role("button", name=SPEAKING_START)
+    if not (start.count() and start.first.is_enabled()):
+        write_note(
+            "**Not run:** \"Start speaking test\" is disabled, so this dev server was started without "
+            "`PUBLIC_LIVE_EXAMINER_URL` (see the header). The examiner checks below are reported as "
+            "failed, not skipped silently."
+        )
+        write_row("The examiner could be opened against the stand-in's empty examiner address", False, "Start disabled")
+        report_diagnostics("Step 11 (second tab)", errors_o, failed_o)
+        other.close()
+        return
+    opened = journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name=SPEAKING_START),
+        lambda: examiner_error_showing(page_a),
+    )
+    held = active_mock_for(page_a, ns_a) or {}
+    write_row(
+        "A opens the examiner; with nothing behind its address it stops on its own error screen before "
+        "any microphone or session is asked for, and the sitting is written down as in the interview",
+        opened and held.get("stage") == "speaking",
+        f'examiner error screen = {opened}, stage = {held.get("stage")}',
+    )
+    shot(page_a, "19-a-examiner-open-no-service", MOCK_PATH)
+
+    journey.ws_sign_out(other)
+    other.wait_for_timeout(1000)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(1500)
+    write_row(
+        "Signed out with the examiner open, A's tab stops; it neither skips Speaking nor goes to the results",
+        text_count(page_a, "You signed out during this mock exam") > 0 and not on_results(page_a),
+        f'stopped screen: {text_count(page_a, "You signed out during this mock exam")}, results: {on_results(page_a)}',
+    )
+    after = json_item(other, key_a) or {}
+    history = mock_history_for(other, ns_a)
+    write_row(
+        "A's sitting is still written down in the interview: not cleared, Speaking not skipped, no mock recorded",
+        after.get("stage") == "speaking" and after.get("speakingSkipped") is False and not history,
+        f'stage = {after.get("stage")}, speakingSkipped = {after.get("speakingSkipped")}, A\'s mock history = {json.dumps(history)}',
+    )
+    shot(page_a, "20-a-stopped-with-examiner-open", MOCK_PATH)
+    back = journey.ws_sign_in(other, EMAIL_A, PASSWORD_A)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2000)
+    write_row(
+        "A signs back in: the open tab is on the Speaking brief, saying the interview was interrupted, "
+        "and not on the results",
+        back == a_id
+        and on_speaking_brief(page_a)
+        and text_count(page_a, INTERRUPTED_NOTE) > 0
+        and not on_results(page_a),
+        f"on the brief = {on_speaking_brief(page_a)}, interrupted note = {text_count(page_a, INTERRUPTED_NOTE)}, "
+        f"results = {on_results(page_a)}",
+    )
+    write_row(
+        "Still nothing recorded for A's mock, and A's sitting is still there",
+        not mock_history_for(page_a, ns_a) and bool(active_mock_for(page_a, ns_a)),
+        f"A's mock history = {json.dumps(mock_history_for(page_a, ns_a))}",
+    )
+    shot(page_a, "21-a-back-on-brief-after-examiner", MOCK_PATH)
+
+    # ── A reload picks it up at Speaking too ──
+    try:
+        page_a.reload(wait_until="load")
+    except Exception:
+        goto(page_a, MOCK_PATH)
+    wait_for_mock_ready(page_a)
+    try:
+        page_a.wait_for_selector(f"text={RESUME_HEADING}", timeout=8000)
+    except Exception:
+        pass
+    write_row(
+        "After a reload A is offered the sitting back, picking up at Speaking",
+        text_count(page_a, RESUME_HEADING) > 0 and text_count(page_a, "It picks up at Speaking") > 0,
+        f'offer: {text_count(page_a, RESUME_HEADING)}, "It picks up at Speaking": {text_count(page_a, "It picks up at Speaking")}',
+    )
+    resumed = journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name="Continue where you left off"),
+        lambda: on_speaking_brief(page_a),
+    )
+    write_row(
+        "Continue lands on the Speaking brief with the interrupted note, never back inside an interview",
+        resumed and text_count(page_a, INTERRUPTED_NOTE) > 0 and not examiner_error_showing(page_a),
+        f"on the brief = {resumed}, interrupted note = {text_count(page_a, INTERRUPTED_NOTE)}",
+    )
+    shot(page_a, "22-a-reload-resumes-at-speaking-brief", MOCK_PATH)
+
+    # ── A's own Back still skips Speaking ──
+    journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name=SPEAKING_START),
+        lambda: examiner_error_showing(page_a),
+    )
+    to_results = journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name="Back"),
+        lambda: on_results(page_a),
+    )
+    page_a.wait_for_timeout(1200)
+    history = mock_history_for(page_a, ns_a)
+    write_row(
+        "A's own Back on the examiner still goes to the results, with Speaking skipped",
+        to_results and text_count(page_a, "you skipped Speaking") > 0,
+        f'results = {to_results}, "you skipped Speaking": {text_count(page_a, "you skipped Speaking")}',
+    )
+    write_row(
+        "The mock is recorded once, for A, with Speaking marked skipped, and is no longer offered as unfinished",
+        len(history) == 1 and history[0].get("speakingSkipped") is True and active_mock_for(page_a, ns_a) is None,
+        f"A's mock history = {json.dumps(history)}, written-down sitting = {raw_item(page_a, key_a)}",
+    )
+    shot(page_a, "23-a-deliberate-back-skips-speaking", MOCK_PATH)
+    report_diagnostics("Step 11 (second tab)", errors_o, failed_o)
+    other.close()
+
+
+def run_mock_legs_step(browser, a_id):
+    """Step 12 (R2B-03), on a fresh browser for A."""
+    ns_a = f"u:{a_id}"
+    write_section(
+        "Step 12 - A's mock paper survives a standalone drill opened part way through, and a fresh mock "
+        "on the same paper starts empty (Codex R2B-03)",
+        "A mock's Listening and Reading papers used to share the ONE slot a paper opened on its own "
+        "uses, found by paper id alone: a drill opened mid-mock overwrote the mock's answers and clock, "
+        "and a new mock on a paper that happened to be in the slot picked up the older sitting. They are "
+        "now kept inside the mock sitting itself, under its own identity.",
+    )
+    ctx = new_context(browser)
+    page = ctx.new_page()
+    errors, failed = attach_diagnostics(page)
+    # Leaving a running paper asks "leave site?"; a student who navigates
+    # away says yes, and so does this script.
+    page.on("dialog", lambda dialog: dialog.accept())
+    goto(page, "/dashboard")
+    page.wait_for_timeout(1200)
+    back = journey.ws_sign_in(page, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    goto(page, MOCK_PATH)
+    wait_for_mock_ready(page)
+    listening_id = page.locator("select").first.input_value()
+    started = journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start Mock Exam"),
+        lambda: page.locator('[role="timer"]').count() > 0,
+    )
+    page.wait_for_timeout(1000)
+    gaps = page.locator('input[type="text"]:visible')
+    for index, answer in enumerate(LEG_ANSWERS):
+        try:
+            gaps.nth(index).fill(answer)
+        except Exception:
+            pass
+    page.wait_for_timeout(1500)
+    held = active_mock_for(page, ns_a) or {}
+    leg = (held.get("legSittings") or {}).get(listening_id) or {}
+    first_sitting = held.get("sittingId")
+    deadline = leg.get("endsAt")
+    leg_before = json.dumps(leg, sort_keys=True)
+    write_row(
+        "A's answers on the mock's Listening paper are kept inside the mock sitting, with the paper's deadline",
+        started
+        and bool(first_sitting)
+        and sorted((leg.get("answers") or {}).values()) == sorted(LEG_ANSWERS)
+        and isinstance(deadline, (int, float)),
+        f"sittingId = {first_sitting}, {listening_id} = {leg_before}",
+    )
+    standalone_before = session_for(page, ns_a)
+    write_row(
+        "Nothing of the mock's paper is in the standalone slot",
+        standalone_before is None,
+        f"standalone slot = {json.dumps(standalone_before)}",
+    )
+    shot(page, "24-a-mock-listening-answered", MOCK_PATH)
+
+    # ── A leaves for a standalone Reading drill and answers it ──
+    open_drill_from_hub(page)
+    journey.start_drill_if_needed(page)
+    page.wait_for_timeout(700)
+    try:
+        page.locator("select").first.select_option(index=A_CHOICE_INDEX)
+    except Exception:
+        pass
+    page.wait_for_timeout(900)
+    drill = session_for(page, ns_a) or {}
+    write_row(
+        "A's standalone Reading drill uses the standalone slot, with A's answer in it",
+        drill.get("testId") == "reading-full-006-drill-p2" and bool(drill.get("answers")),
+        f"standalone slot = {json.dumps(drill)}",
+    )
+    held_mid = active_mock_for(page, ns_a) or {}
+    leg_mid = (held_mid.get("legSittings") or {}).get(listening_id) or {}
+    write_row(
+        "The drill did not touch the mock's Listening paper: same answers, same deadline, byte for byte",
+        json.dumps(leg_mid, sort_keys=True) == leg_before and held_mid.get("sittingId") == first_sitting,
+        f"{listening_id} now = {json.dumps(leg_mid, sort_keys=True)}",
+    )
+    shot(page, "25-a-standalone-drill-mid-mock", DRILL_PATH)
+
+    # ── Back to the mock ──
+    goto(page, MOCK_PATH)
+    wait_for_mock_ready(page)
+    try:
+        page.wait_for_selector(f"text={RESUME_HEADING}", timeout=8000)
+    except Exception:
+        pass
+    write_row(
+        "Back on the mock page, A is offered the same sitting, picking up at Listening",
+        text_count(page, RESUME_HEADING) > 0 and text_count(page, "It picks up at Listening") > 0,
+        f'offer: {text_count(page, RESUME_HEADING)}, "It picks up at Listening": {text_count(page, "It picks up at Listening")}',
+    )
+    resumed = journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Continue where you left off"),
+        lambda: page.locator('[role="timer"]').count() > 0,
+    )
+    page.wait_for_timeout(1500)
+    gaps = page.locator('input[type="text"]:visible')
+    values = []
+    for index in range(len(LEG_ANSWERS)):
+        try:
+            values.append(gaps.nth(index).input_value())
+        except Exception:
+            values.append(None)
+    clock_text, left = clock_seconds(page)
+    now_ms = int(time.time() * 1000)
+    expected = round((deadline - now_ms) / 1000) if isinstance(deadline, (int, float)) else None
+    write_row(
+        "A resumes the mock's Listening paper with both answers still in their gaps",
+        resumed and values == LEG_ANSWERS,
+        f"gaps read {json.dumps(values)}, typed {json.dumps(LEG_ANSWERS)}",
+    )
+    write_row(
+        "The Listening clock counts down to the same deadline it had before the drill",
+        left is not None and expected is not None and abs(left - expected) <= 5,
+        f'clock shows "{clock_text}" ({left} s), the stored deadline leaves {expected} s',
+    )
+    shot(page, "26-a-mock-listening-resumed", MOCK_PATH)
+
+    # ── A fresh mock on the SAME Listening paper ──
+    try:
+        page.reload(wait_until="load")
+    except Exception:
+        goto(page, MOCK_PATH)
+    wait_for_mock_ready(page)
+    try:
+        page.locator("select").first.select_option(listening_id)
+    except Exception:
+        pass
+    fresh_started = journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start Mock Exam"),
+        lambda: page.locator('[role="timer"]').count() > 0,
+    )
+    page.wait_for_timeout(1500)
+    fresh = active_mock_for(page, ns_a) or {}
+    fresh_leg = (fresh.get("legSittings") or {}).get(listening_id) or {}
+    gaps = page.locator('input[type="text"]:visible')
+    fresh_values = []
+    for index in range(len(LEG_ANSWERS)):
+        try:
+            fresh_values.append(gaps.nth(index).input_value())
+        except Exception:
+            fresh_values.append(None)
+    write_row(
+        "The fresh mock is a NEW sitting on the same Listening paper",
+        fresh_started
+        and bool(fresh.get("sittingId"))
+        and fresh.get("sittingId") != first_sitting
+        and fresh.get("listeningTestId") == listening_id,
+        f'sittingId {first_sitting} -> {fresh.get("sittingId")}, Listening paper = {fresh.get("listeningTestId")}',
+    )
+    write_row(
+        "Its Listening paper starts empty, on screen and in storage",
+        fresh_values == ["", ""] and bool(fresh_leg) and not (fresh_leg.get("answers") or {}),
+        f"gaps read {json.dumps(fresh_values)}, stored paper = {json.dumps(fresh_leg)}",
+    )
+    write_row(
+        "Its Listening clock is its own: a later deadline than the older sitting's",
+        isinstance(fresh_leg.get("endsAt"), (int, float))
+        and isinstance(deadline, (int, float))
+        and fresh_leg["endsAt"] > deadline,
+        f'older deadline {deadline}, fresh deadline {fresh_leg.get("endsAt")}',
+    )
+    fresh_text = json.dumps(fresh)
+    write_row(
+        "Nothing of the older sitting's answers is anywhere in the fresh sitting",
+        not any(answer in fresh_text for answer in LEG_ANSWERS),
+        "searched the whole written-down fresh sitting for the two older answers",
+    )
+    write_row(
+        "A's standalone drill is still in the standalone slot, untouched by either mock",
+        (session_for(page, ns_a) or {}) == drill,
+        f"standalone slot = {json.dumps(session_for(page, ns_a))}",
+    )
+    shot(page, "27-a-fresh-mock-empty-listening", MOCK_PATH)
+    report_diagnostics("Step 12", errors, failed)
+    ctx.close()
 
 
 def record_answers(record):
@@ -696,9 +1120,11 @@ def run():
         "`docs/audits/claude-personal-learning-review-2026-09-23.md` "
         "(original reproduction: `docs/audits/claude-review-2026-09-23/independent-browser.py`) "
         "against the fixed code, and adds A's resume and the mounted-player owner change. "
-        "Steps 6 to 9 are the second Codex round: R2-01 (an old unowned sitting and a history "
+        "Steps 6 to 10 are the second Codex round: R2-01 (an old unowned sitting and a history "
         "stamp naming A) and R2-03 (the unfinished mock exam, per student, resumable by its own "
-        "student only)."
+        "student only). Steps 11 and 12 are the third: R2B-02 (an account change during Speaking "
+        "is a suspension back to the Speaking brief, not a cancellation to the results) and R2B-03 "
+        "(a mock's papers are kept inside their own sitting, apart from standalone papers)."
     )
 
     with sync_playwright() as p:
@@ -924,6 +1350,7 @@ def run():
 
         run_legacy_stamp_step(browser, a_id)
         run_mock_steps(browser, a_id, b_id)
+        run_mock_legs_step(browser, a_id)
         browser.close()
 
     write_note(

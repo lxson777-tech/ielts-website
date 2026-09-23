@@ -34,9 +34,17 @@ import ExplainResult from './tutor/ExplainResult';
 import SessionContinueBar from './learning/SessionContinueBar';
 import WorkOnOverview from './learning/WorkOnOverview';
 import { modelAnswerHref } from './library-links';
-import { getLearnerStore, ownerNamespace, recordWritingGradedFor } from '../lib/learning/store.browser';
-import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
-import type { CacheOwner } from '../lib/learning/contracts/sync';
+import { recordWritingGradedFor } from '../lib/learning/store.browser';
+import { onOwnerChange, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import {
+  claimSubmission,
+  handOverEssayEditing,
+  openEssayEditing,
+  writeEssayDraft,
+  clearEssayDraft,
+  type EssayEditingSession,
+  type OpenedEssay,
+} from './writing-editor-owner';
 import { nt } from '../lib/i18n/translate';
 import { writingActivityId } from '../lib/learning/catalog';
 
@@ -56,49 +64,32 @@ function pad(n: number): string {
  * unfinished essay can never surface for the next one signed in on the
  * same browser (architecture section 1.1's account-isolation finding).
  * Cleared the moment a real report comes back, since after that the essay
- * lives in ielts.progress.v1's writing history instead, which is durable. */
-const ESSAY_DRAFT_PREFIX = 'ielts.writing.draft.v1';
-
-/** The draft key for one prompt, under `owner` (the owner on screen when
-    none is named). A grade that comes back after the page moved on clears
-    the draft of the student who submitted it, never the next one's. */
-function draftKey(promptId: string, owner: CacheOwner = getLearnerStore().owner()): string {
-  return `${ESSAY_DRAFT_PREFIX}::${ownerNamespace(owner)}::${promptId}`;
-}
-
-function loadEssayDraft(promptId: string): string {
-  if (typeof window === 'undefined') return '';
-  try {
-    return window.localStorage.getItem(draftKey(promptId)) ?? '';
-  } catch {
-    return '';
-  }
-}
-
-function saveEssayDraft(promptId: string, text: string, owner?: CacheOwner): void {
-  if (typeof window === 'undefined') return;
-  try {
-    if (text) window.localStorage.setItem(draftKey(promptId, owner), text);
-    else window.localStorage.removeItem(draftKey(promptId, owner));
-  } catch {
-    /* Best effort, the essay is still safe in this tab's own state. */
-  }
-}
-
-function clearEssayDraft(promptId: string, owner?: CacheOwner): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.removeItem(draftKey(promptId, owner));
-  } catch {
-    /* Nothing to do. */
-  }
-}
+ * lives in ielts.progress.v1's writing history instead, which is durable.
+ *
+ * The draft store, and the editing session that writes it, live in
+ * ./writing-editor-owner.ts (R2B-01): the essay on screen and every draft
+ * write it makes belong to the owner who started or restored it, and a
+ * change of owner hands the editor over rather than carrying the text
+ * across. */
 
 /** Shown in place of a result when the page changed hands while the work
     was being graded (R2-02). One sentence, shared with the speaking
     trainers, that names nobody and shows nothing of the attempt. */
 const OWNER_CHANGED_NOTICE = nt(
   'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.',
+);
+
+/** Shown when the page changes hands while an essay is open (R2B-01). The
+    editor now holds the incoming owner's own draft, or nothing. Names
+    nobody. */
+const ACCOUNT_CHANGED_NOTE = nt(
+  'The account on this page changed. Any essay in progress was kept for the student who was writing it.',
+);
+
+/** Shown when an essay started under one owner is submitted after another
+    took over (R2B-01). Nothing was sent, so nothing was graded or recorded. */
+const SUBMISSION_REFUSED_NOTE = nt(
+  'This essay was started under a different account, so it was not sent for grading. It is kept for the student who wrote it.',
 );
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
@@ -118,6 +109,10 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
      to explain this result" points at — he then reads the marking that was
      already paid for instead of anything being sent for grading twice. */
   const [attemptAt, setAttemptAt] = useState<string | null>(null);
+  /* A calm one-line note after the page changed hands (R2B-01). Holds the
+     English key and is translated where it is shown, so a note set from the
+     owner-change listener still follows the language on screen. */
+  const [ownerNote, setOwnerNote] = useState<string | null>(null);
 
   // Lightbox for the Task 1 chart: the imported prompt markup hard-caps the
   // image at 560px inline, and students need to read exact numbers off it,
@@ -129,31 +124,93 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const [elapsedMs, setElapsedMs] = useState(0);
   const timerStartedRef = useRef(false);
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* The essay on screen, bound to the owner who started or restored it
+     (R2B-01, ./writing-editor-owner.ts). Every draft write it makes lands
+     under that owner, however late its timer fires, and only that owner can
+     submit it. Replaced, never re-pointed, when the page changes hands. */
+  const editRef = useRef<EssayEditingSession | null>(null);
   /* The essay being graded, bound to the student who submitted it (R2-02,
      runOwnedGrade in src/lib/store-owner.ts). Cancelled on unmount, so a
      grade that comes back after this screen has gone is still kept for that
      student but never touches the screen. */
   const gradingBindingRef = useRef<OwnerBinding | null>(null);
+  /* Mirrors `grading` for the owner-change listener, which is subscribed
+     once and so cannot read state. */
+  const gradingRef = useRef(false);
 
   useEffect(() => {
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+      /* A pending draft is written, not dropped: it is the essay's only copy. */
+      editRef.current?.close();
       gradingBindingRef.current?.cancel();
     };
   }, []);
 
   /* Keep the local draft current as the student types, so a failed grading
-     request or a closed tab never loses the essay. Debounced so a fast
-     typist is not writing to localStorage on every keystroke. */
+     request or a closed tab never loses the essay. Debounced by the editing
+     session, and always written under the owner the session belongs to. */
   function handleEssayChange(value: string) {
     setEssay(value);
-    if (!prompt) return;
-    const promptId = prompt.id;
-    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-    draftTimerRef.current = setTimeout(() => saveEssayDraft(promptId, value), 600);
+    setOwnerNote(null);
+    editRef.current?.edited(value);
   }
+
+  /* Start or restore the essay for one prompt, bound to the owner on the
+     page right now (R2B-01). The essay that was open before, if any, is
+     written to its own owner's draft first. Returns the draft to show. */
+  function openEditor(promptId: string): string {
+    editRef.current?.close();
+    const opened = openEssayEditing(promptId);
+    editRef.current = opened.session;
+    return opened.draft;
+  }
+
+  /* The page changed hands (R2B-01). Everything on screen belonged to the
+     outgoing owner: their essay is already in their own draft, and a grade
+     still on its way is kept for them by runOwnedGrade. None of it stays
+     here. The editor now shows the incoming owner's own draft of the same
+     prompt, or nothing, with one calm line saying why. Touches only refs and
+     setters, so the listener below can call it from any render. */
+  function showHandedOver(opened: OpenedEssay, note: string) {
+    editRef.current = opened.session;
+    if (gradingRef.current) {
+      /* The screen lets go of the attempt. The grade is still KEPT for the
+         student who submitted it when it arrives (runOwnedGrade keeps it
+         whatever the binding's state); it is just never painted here. */
+      gradingBindingRef.current?.cancel();
+      gradingBindingRef.current = null;
+      gradingRef.current = false;
+      setGrading(false);
+    }
+    setEssay(opened.draft);
+    setResult(null);
+    setAttemptAt(null);
+    setGradingError(null);
+    setLightboxImg(null);
+    /* A sign-out followed by a sign-in is two changes of owner. If the first
+       one took an essay that was being graded, that notice is still the
+       explanation the incoming student needs, until they start writing. */
+    setOwnerNote((shown) => (note === ACCOUNT_CHANGED_NOTE && shown === OWNER_CHANGED_NOTICE ? shown : note));
+    restartTimer();
+  }
+
+  /* A sign-out, sign-in or account switch, from this tab's menu or from
+     another tab. The same owner being told its stores changed (the
+     anonymous-work claim) replaces nothing. */
+  useEffect(() => {
+    const stop = onOwnerChange(() => {
+      const session = editRef.current;
+      if (!session) return;
+      const wasGrading = gradingRef.current;
+      const opened = handOverEssayEditing(session);
+      if (opened) showHandedOver(opened, wasGrading ? OWNER_CHANGED_NOTICE : ACCOUNT_CHANGED_NOTE);
+    });
+    return () => {
+      stop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* The checker is the exam-conditions counterpart to the coached trainer, so
      while an essay is in progress here Mr EZ must not help with the task
@@ -203,15 +260,31 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
   async function submit() {
     if (!prompt || grading || !isGraderConfigured()) return;
+    /* The essay goes out only for the owner who is writing it (R2B-01). Their
+       latest text is written to their own draft first, so whatever happens
+       next it is not lost. */
+    const session = editRef.current;
+    session?.flush();
+    const binding = claimSubmission(session);
+    if (!binding) {
+      /* Started under an owner who is no longer the one on the page. Nothing
+         is sent, so nothing is graded, paid for or recorded. The text is in
+         its own owner's draft, and it leaves this screen. */
+      const opened = session ? handOverEssayEditing(session) : null;
+      if (opened) showHandedOver(opened, SUBMISSION_REFUSED_NOTE);
+      else setOwnerNote(SUBMISSION_REFUSED_NOTE);
+      return;
+    }
     /* Everything the grade will be kept against is fixed NOW, with the owner
-       it belongs to: the student who pressed submit. */
+       it belongs to: the student who started this essay and pressed submit. */
     const submitted = { prompt, essay, wordCount };
-    const binding = bindToCurrentOwner();
     gradingBindingRef.current?.cancel();
     gradingBindingRef.current = binding;
+    gradingRef.current = true;
     setGrading(true);
     setGradingStartedAt(Date.now());
     setGradingError(null);
+    setOwnerNote(null);
     let at = '';
     try {
       await runOwnedGrade(binding, () => gradeEssay({ prompt: submitted.prompt, essay: submitted.essay }), {
@@ -283,11 +356,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         },
         hide: () => {
           /* Somebody else is using the page now. The essay and its report
-             are kept for the student who wrote it; none of it stays here. */
-          setEssay('');
-          setResult(null);
-          setAttemptAt(null);
-          setGradingError(t(OWNER_CHANGED_NOTICE));
+             are kept for the student who wrote it; none of it stays here.
+             Normally the owner-change listener has already handed the editor
+             over (and so let go of this attempt); this is the same hand-over
+             for an owner that changed without a notification reaching it. */
+          leaveForCurrentOwner();
         },
       });
     } catch {
@@ -295,9 +368,8 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         /* The request failed after the page moved on to somebody else. The
            essay is the submitter's only copy, so it goes back into THEIR
            draft, and it leaves this screen. */
-        saveEssayDraft(submitted.prompt.id, submitted.essay, binding.owner);
-        setEssay('');
-        setGradingError(t(OWNER_CHANGED_NOTICE));
+        writeEssayDraft(submitted.prompt.id, binding.owner, submitted.essay);
+        leaveForCurrentOwner();
       } else {
         // The button is disabled whenever isGraderConfigured() is false, so any
         // error reaching here happened after a real request went out - network,
@@ -309,8 +381,25 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         );
       }
     } finally {
-      if (binding.state() !== 'cancelled') setGrading(false);
+      if (binding.state() !== 'cancelled') {
+        gradingRef.current = false;
+        setGrading(false);
+      }
     }
+  }
+
+  /* The grading attempt found the page in somebody else's hands. */
+  function leaveForCurrentOwner() {
+    const session = editRef.current;
+    const opened = session ? handOverEssayEditing(session) : null;
+    if (opened) {
+      showHandedOver(opened, OWNER_CHANGED_NOTICE);
+      return;
+    }
+    setEssay('');
+    setResult(null);
+    setAttemptAt(null);
+    setOwnerNote(OWNER_CHANGED_NOTICE);
   }
 
   /* Serve the next prompt in the given task's rotation and clear the workspace. */
@@ -327,9 +416,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     setPrompt(nextPrompt);
     // Restore an unfinished draft of this exact prompt if one is sitting
     // there from an earlier visit (a failed or abandoned grading attempt);
-    // otherwise a genuinely fresh prompt starts blank, same as before.
-    setEssay(nextPrompt ? loadEssayDraft(nextPrompt.id) : '');
+    // otherwise a genuinely fresh prompt starts blank, same as before. Either
+    // way the essay is now bound to the owner on the page (R2B-01).
+    setEssay(nextPrompt ? openEditor(nextPrompt.id) : '');
     setResult(null);
+    setOwnerNote(null);
     restartTimer();
   }
 
@@ -337,8 +428,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     if (essay.trim() && !window.confirm(t('Get a different task? Your current answer will be cleared.'))) return;
     // A confirmed "clear it" is a deliberate discard, not a failure or a
     // navigation away, so the draft this prompt was kept under should not
-    // reappear next time the rotation serves it again.
-    if (prompt && essay.trim()) clearEssayDraft(prompt.id);
+    // reappear next time the rotation serves it again. The discard also
+    // drops a draft write still waiting on the debounce.
+    if (essay.trim()) editRef.current?.discard();
     startTask(taskType!);
   }
 
@@ -356,7 +448,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
       if (found) {
         setTaskType(found.task);
         setPrompt(found);
-        setEssay(loadEssayDraft(found.id));
+        setEssay(openEditor(found.id));
         setResult(null);
         restartTimer();
         return;
@@ -672,6 +764,12 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
               </p>
             )}
           </div>
+
+          {ownerNote && (
+            <p role="status" className="rounded-lg border border-border bg-surface-alt px-3 py-2 text-sm text-ink-muted">
+              {t(ownerNote)}
+            </p>
+          )}
 
           <textarea
             value={essay}

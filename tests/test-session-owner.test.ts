@@ -31,6 +31,16 @@
  *      (Codex round 2, R2-03): B never sees it, B's fresh mock is kept
  *      apart, A picks it up with the finished legs still done, and the
  *      Writing deadline is kept as a moment, never restarted.
+ *   6. A mock's Listening and Reading papers are kept inside that mock
+ *      sitting, under its own identity (Codex round 3, R2B-03): a paper
+ *      opened on its own mid-mock never touches them, a new mock never picks
+ *      up an older sitting's answers, and resuming restores only that
+ *      sitting's papers, answers and deadlines included.
+ *   7. The Speaking interview taken off screen by an account change is a
+ *      suspension, not a cancellation (Codex round 3, R2B-02): the sitting
+ *      goes back to its Speaking brief for its own student, during the
+ *      interview and during grading alike, while a deliberate cancel still
+ *      skips Speaking.
  *
  * There is no DOM here and no real browser. `window.localStorage` is a Map,
  * which is what every module under test reaches for, and the two screen-level
@@ -551,18 +561,25 @@ function activeKey(namespace: string): string {
   return `${mock.ACTIVE_MOCK_KEY}::${namespace}`;
 }
 
-type ActiveMock = Parameters<typeof mock.saveActiveMock>[0];
+type ActiveMock = import('../src/lib/tests/mock.ts').ActiveMock;
 
 const MOCK_STARTED = '2026-09-23T09:00:00.000Z';
 const LISTENING_LEG = { raw: 31, total: 40, band: 7, bandLabel: '7', secondsUsed: 1_800 };
 /** A fixed Writing deadline, so "never restarted" is an exact comparison. */
 const WRITING_DEADLINE = 1_790_150_000_000;
+/** The identity of the SYNTHETIC mock sitting most tests below use. */
+const SITTING_1 = 'SYNTHETIC-sitting-1';
+/** The two SYNTHETIC papers of that sitting, as the player hands them over. */
+const LISTENING_PAPER = { id: 'listening-full-001', durationMinutes: 40 };
+const READING_PAPER = { id: 'reading-full-001', durationMinutes: 60 };
+const READING_LEG = { raw: 28, total: 40, band: 6.5, bandLabel: '6.5', secondsUsed: 3_500 };
 
 /** A SYNTHETIC mock day part way through, for `owner`. */
 function activeMock(owner: string, overrides: Partial<ActiveMock> = {}): ActiveMock {
   return {
     version: 1,
     owner,
+    sittingId: SITTING_1,
     mockId: 'mock-2026-09-23-1',
     startedAt: MOCK_STARTED,
     stage: 'transition-reading',
@@ -578,6 +595,7 @@ function activeMock(owner: string, overrides: Partial<ActiveMock> = {}): ActiveM
     speakingBand: null,
     speakingCriteria: null,
     speakingSkipped: false,
+    legSittings: {},
     savedAt: 0,
     ...overrides,
   };
@@ -631,7 +649,7 @@ test("B never sees A's unfinished mock, B's fresh mock is kept apart, and A resu
   setCurrentOwner(B);
   assert.equal(mock.loadActiveMock(), null, "B was offered A's unfinished mock");
   /* B's own history has no Listening leg from A's sitting either. */
-  assert.equal(mock.legFinishedSince('listening-full-001', MOCK_STARTED), null, "A's finished leg counted for B");
+  assert.deepEqual(progress.getAttempts('listening-full-001'), [], "A's finished leg counted for B");
 
   /* B starts a fresh mock of their own. */
   const bFresh = activeMock(NS_B, {
@@ -725,54 +743,50 @@ test('the Writing deadline is stored as a moment and is never restarted', () => 
   assert.equal(mock.writingSecondsLeftAt(null, WRITING_DEADLINE, 3_600), 3_600);
 });
 
-test('a leg handed in just before the page went away counts as done when the mock is picked up', () => {
+test('a leg handed in inside THIS sitting counts as done when it is picked up; the same paper sat elsewhere does not (R2B-03)', () => {
   freshBrowser();
   setCurrentOwner(A);
-  /* An older standalone sitting of the same paper, BEFORE this mock began,
-     is not this mock's leg. */
-  progress.recordTestAttempt('listening-full-001', {
-    at: '2026-09-20T09:00:00.000Z',
-    raw: 20,
-    total: 40,
-    band: 5.5,
-    bandLabel: '5.5',
-    secondsUsed: 1_900,
-    kind: 'full',
-    skill: 'listening',
-  });
-  const onLeg = activeMock(NS_A, { stage: 'listening', listening: null });
-  assert.equal(mock.reconcileActiveMock(onLeg).stage, 'listening');
+  assert.equal(mock.saveActiveMock(activeMock(NS_A, { stage: 'listening', listening: null })), true);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
 
-  /* Submitted inside this mock, then the page went away before "Back to
-     results": the leg is done and the sitting moves on. */
+  /* The same paper handed in as a full paper AFTER this mock began, but on
+     its own (during a pause): in the history, and still not this sitting's
+     leg. The old rule matched the history by paper id and counted it. */
   progress.recordTestAttempt('listening-full-001', {
-    at: '2026-09-23T09:31:00.000Z',
-    raw: 31,
+    at: '2026-09-23T09:20:00.000Z',
+    raw: 12,
     total: 40,
-    band: 7,
-    bandLabel: '7',
-    secondsUsed: 1_800,
+    band: 4.5,
+    bandLabel: '4.5',
+    secondsUsed: 1_500,
     kind: 'full',
     skill: 'listening',
   });
-  const picked = mock.reconcileActiveMock(onLeg);
+  assert.equal(mock.reconcileActiveMock(mock.loadActiveMock()!).stage, 'listening');
+
+  /* Handed in inside this sitting, then the page went away before "Back to
+     results": the leg is done, with ITS result, and the sitting moves on. */
+  const player = mock.mockLegSitting(ref, LISTENING_PAPER);
+  player.start();
+  player.save({ q1: 'SYNTHETIC-A' }, NS_A);
+  player.finish(NS_A, LISTENING_LEG);
+  const picked = mock.reconcileActiveMock(mock.loadActiveMock()!);
   assert.equal(picked.stage, 'transition-reading');
-  assert.equal(picked.listening?.raw, 31);
+  assert.deepEqual(picked.listening, LISTENING_LEG);
+  /* Handed in: nothing of it is offered to a player as still running, and
+     its answers went, exactly as a submitted standalone paper's do. */
+  assert.equal(player.load(), null);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, {});
 
   /* The same for Reading. */
-  const onReading = activeMock(NS_A, { stage: 'reading', reading: null });
-  assert.equal(mock.reconcileActiveMock(onReading).stage, 'reading');
-  progress.recordTestAttempt('reading-full-001', {
-    at: '2026-09-23T10:35:00.000Z',
-    raw: 28,
-    total: 40,
-    band: 6.5,
-    bandLabel: '6.5',
-    secondsUsed: 3_500,
-    kind: 'full',
-    skill: 'reading',
-  });
-  assert.equal(mock.reconcileActiveMock(onReading).stage, 'transition-writing');
+  mock.saveActiveMock({ ...mock.loadActiveMock()!, stage: 'reading', listening: LISTENING_LEG });
+  assert.equal(mock.reconcileActiveMock(mock.loadActiveMock()!).stage, 'reading');
+  const reading = mock.mockLegSitting(ref, READING_PAPER);
+  reading.start();
+  reading.finish(NS_A, READING_LEG);
+  const next = mock.reconcileActiveMock(mock.loadActiveMock()!);
+  assert.equal(next.stage, 'transition-writing');
+  assert.deepEqual(next.reading, READING_LEG);
 });
 
 test('a mock picked up in the live interview lands on its brief, never back inside a paid session', () => {
@@ -997,4 +1011,413 @@ test('the two re-stamp rules change the owner and nothing else, and refuse what 
   assert.equal(mock.restampActiveMock(JSON.stringify(activeMock(NS_ANON, { stage: 'start' })), NS_ANON, NS_A), null);
   assert.equal(mock.restampActiveMock(JSON.stringify(activeMock(NS_ANON, { stage: 'results' })), NS_ANON, NS_A), null);
   assert.equal(mock.restampActiveMock('{', NS_ANON, NS_A), null);
+});
+
+/* ------------------------------------------------------------------ */
+/* 9. A mock's papers are kept inside that mock sitting (Codex R2B-03)  */
+/* ------------------------------------------------------------------ */
+
+/* The third Codex inspection found the mock's Listening and Reading papers
+   still sharing the ONE per-student slot a paper opened on its own uses,
+   found by paper id alone. A standalone paper started mid-mock overwrote
+   the mock's answers and deadline, and a new mock on a paper that happened
+   to be in the slot picked up that older sitting. These drive the exact
+   functions the test player calls for a mock leg (mockLegSitting) and for a
+   paper on its own (standaloneSitting). */
+
+/** A SYNTHETIC mock sitting just begun by `owner`, written down the way
+    MockExam's beginMock writes it: a fresh identity and no papers yet. */
+function beginSitting(owner: string, sittingId: string, overrides: Partial<ActiveMock> = {}): ActiveMock {
+  const fresh = activeMock(owner, { sittingId, stage: 'listening', listening: null, ...overrides });
+  assert.equal(mock.saveActiveMock(fresh), true);
+  return fresh;
+}
+
+const A_LISTENING_ANSWERS = { q1: 'SYNTHETIC-A-library', q2: 'SYNTHETIC-A-tuesday' };
+
+test("a standalone paper started mid-mock never touches the mock's papers, and resuming brings them back whole", () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+
+  /* A is part way through the mock's Listening paper. */
+  const leg = mock.mockLegSitting(ref, LISTENING_PAPER);
+  const started = leg.start();
+  assert.equal(started.owner, NS_A);
+  assert.equal(leg.save(A_LISTENING_ANSWERS, NS_A), true);
+  const deadline = started.endsAt;
+  /* Kept inside the sitting, not in the standalone slot. */
+  assert.equal(session.activeSession(), null, 'the mock leg went into the standalone slot');
+  assert.equal(storage.data.has(sessionKey(NS_A)), false);
+
+  /* A leaves the mock and opens a Reading drill on its own, answers it and
+     hands it in: the standalone slot is used, and only it. */
+  const before = JSON.stringify(mock.loadActiveMock()!.legSittings);
+  const drill = session.standaloneSitting(DRILL);
+  drill.start();
+  assert.equal(drill.save(A_ANSWER, NS_A), true);
+  assert.equal(session.activeSession()?.testId, DRILL.id);
+  assert.equal(JSON.stringify(mock.loadActiveMock()!.legSittings), before, "the drill changed the mock's papers");
+  drill.finish(NS_A, READING_LEG);
+  assert.equal(session.activeSession(), null);
+  assert.equal(JSON.stringify(mock.loadActiveMock()!.legSittings), before, "submitting the drill changed the mock's papers");
+
+  /* A opens yet another paper on its own, the mock's OWN Listening paper,
+     and leaves it running: still the standalone slot, still nothing of the
+     mock's. */
+  session.standaloneSitting(LISTENING_PAPER as unknown as typeof DRILL).start();
+  assert.equal(JSON.stringify(mock.loadActiveMock()!.legSittings), before);
+
+  /* A goes back to the mock: it offers the same sitting, and the Listening
+     player restores A's answers and the SAME deadline, not a fresh clock. */
+  const held = mock.loadActiveMock()!;
+  assert.equal(held.sittingId, SITTING_1);
+  assert.equal(mock.reconcileActiveMock(held).stage, 'listening');
+  const resumed = mock.mockLegSitting({ owner: held.owner, sittingId: held.sittingId }, LISTENING_PAPER).load();
+  assert.deepEqual(resumed?.answers, A_LISTENING_ANSWERS, "the mock's Listening answers did not survive");
+  assert.equal(resumed?.endsAt, deadline, "the mock's Listening deadline was restarted");
+  assert.equal(resumed?.owner, NS_A);
+});
+
+test('a new mock never restores an older sitting, even on the same papers and the same mock id', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const oldRef = { owner: NS_A, sittingId: SITTING_1 };
+  /* The older sitting's Listening began twenty minutes ago. */
+  const oldStart = mock.startMockLeg(oldRef, LISTENING_PAPER, Date.now() - 20 * 60_000)!;
+  assert.ok(oldStart);
+  const old = mock.mockLegSitting(oldRef, LISTENING_PAPER);
+  old.save(A_LISTENING_ANSWERS, NS_A);
+  /* The same paper also left running on its own in the standalone slot. */
+  const standalone = session.standaloneSitting(LISTENING_PAPER as unknown as typeof DRILL);
+  standalone.start();
+  standalone.save({ q1: 'SYNTHETIC-standalone' }, NS_A);
+
+  /* A starts a fresh mock the same day. Nothing was recorded in between, so
+     the mock id counts to the same number; the sitting id does not. */
+  const fresh = beginSitting(NS_A, 'SYNTHETIC-sitting-2', { startedAt: '2026-09-23T11:00:00.000Z' });
+  assert.equal(fresh.mockId, 'mock-2026-09-23-1');
+  const now = mock.loadActiveMock()!;
+  assert.equal(now.sittingId, 'SYNTHETIC-sitting-2');
+  assert.deepEqual(now.legSittings, {}, "the fresh mock was written down with the older sitting's papers");
+
+  const player = mock.mockLegSitting({ owner: NS_A, sittingId: 'SYNTHETIC-sitting-2' }, LISTENING_PAPER);
+  assert.equal(player.load(), null, 'the fresh mock restored an older sitting');
+  const first = player.start();
+  assert.deepEqual(first.answers, {});
+  /* A clock of its own: the full forty minutes from now, not the twenty or
+     so the older sitting had left. */
+  assert.ok(first.endsAt - oldStart.endsAt >= 19 * 60_000, 'the fresh leg kept an older clock');
+  assert.ok(first.endsAt - Date.now() > 39 * 60_000);
+
+  /* A player still holding the OLD sitting's identity can neither read nor
+     write the new one. */
+  assert.equal(old.load(), null);
+  assert.equal(old.save({ q1: 'SYNTHETIC-late-keystroke' }, NS_A), false);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, {});
+
+  /* The standalone sitting of the same paper is untouched, and was never
+     offered to the mock. */
+  assert.deepEqual(standalone.load()?.answers, { q1: 'SYNTHETIC-standalone' });
+});
+
+test('resuming restores only that sitting\'s papers, with their answers and deadlines, and never another student\'s', () => {
+  freshBrowser();
+  const A_READING_ANSWERS = { q14: 'SYNTHETIC-A-vi', q15: 'SYNTHETIC-A-true' };
+
+  /* A: Listening handed in, Reading part way through. */
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const refA = { owner: NS_A, sittingId: SITTING_1 };
+  const aListening = mock.mockLegSitting(refA, LISTENING_PAPER);
+  aListening.start();
+  aListening.finish(NS_A, LISTENING_LEG);
+  mock.saveActiveMock({ ...mock.loadActiveMock()!, stage: 'reading', listening: LISTENING_LEG });
+  const aReading = mock.mockLegSitting(refA, READING_PAPER);
+  const aReadingStart = aReading.start();
+  aReading.save(A_READING_ANSWERS, NS_A);
+
+  /* A signs out; B signs in and sits their own mock on the SAME papers. */
+  setCurrentOwner(B);
+  assert.equal(aReading.load(), null, "B's browser reads A's Reading paper");
+  assert.equal(aReading.save({ q14: 'SYNTHETIC-typed-after-B' }, NS_A), false);
+  beginSitting(NS_B, 'SYNTHETIC-sitting-B', { stage: 'reading', listening: LISTENING_LEG });
+  const refB = { owner: NS_B, sittingId: 'SYNTHETIC-sitting-B' };
+  const bReading = mock.mockLegSitting(refB, READING_PAPER);
+  assert.equal(bReading.load(), null, "B's mock picked up A's Reading paper");
+  bReading.start();
+  bReading.save({ q14: 'SYNTHETIC-B-ii' }, NS_B);
+  /* A's identity on B's browser opens nothing, and B's opens nothing of A's. */
+  assert.equal(mock.mockLegSitting({ owner: NS_A, sittingId: 'SYNTHETIC-sitting-B' }, READING_PAPER).load(), null);
+
+  /* A signs back in and picks the sitting up. */
+  setCurrentOwner(A);
+  const held = mock.loadActiveMock()!;
+  assert.equal(held.sittingId, SITTING_1);
+  const back = mock.reconcileActiveMock(held);
+  assert.equal(back.stage, 'reading');
+  assert.deepEqual(back.listening, LISTENING_LEG);
+  const resumed = mock.mockLegSitting({ owner: back.owner, sittingId: back.sittingId }, READING_PAPER).load();
+  assert.deepEqual(resumed?.answers, A_READING_ANSWERS, "A's Reading answers did not come back");
+  assert.equal(resumed?.endsAt, aReadingStart.endsAt, "A's Reading deadline moved");
+  assert.equal(resumed?.startedAt, aReadingStart.startedAt);
+  /* B's paper is not in A's sitting at all. */
+  assert.equal(JSON.stringify(held.legSittings).includes('SYNTHETIC-B-ii'), false);
+  assert.equal(mock.mockLegSitting(refB, READING_PAPER).load(), null, "A's browser reads B's Reading paper");
+});
+
+test('a paper that is not one of the sitting\'s two, or already handed in, is never started over it', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  assert.equal(mock.startMockLeg(ref, { id: 'listening-full-009', durationMinutes: 40 }), null);
+  assert.equal(mock.startMockLeg(ref, LISTENING_PAPER) !== null, true);
+  assert.equal(mock.finishMockLeg(ref, LISTENING_PAPER.id, LISTENING_LEG), true);
+  /* A second start of a handed-in paper would throw its result away. */
+  assert.equal(mock.startMockLeg(ref, LISTENING_PAPER), null);
+  assert.deepEqual(mock.mockLegResult(ref, LISTENING_PAPER.id), LISTENING_LEG);
+});
+
+test('the screen\'s own saves keep the papers the player wrote; a new sitting replaces them', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  mock.mockLegSitting(ref, LISTENING_PAPER).start();
+  mock.mockLegSitting(ref, LISTENING_PAPER).save(A_LISTENING_ANSWERS, NS_A);
+  /* The screen's snapshot carries no papers at all, and saves an essay. */
+  const { legSittings: _none, ...snapshot } = mock.loadActiveMock()!;
+  assert.equal(mock.saveActiveMock({ ...snapshot, essay1: 'SYNTHETIC draft' }), true);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, A_LISTENING_ANSWERS);
+  assert.equal(mock.loadActiveMock()!.essay1, 'SYNTHETIC draft');
+  /* A snapshot of a DIFFERENT sitting replaces the stored one whole. */
+  assert.equal(mock.saveActiveMock({ ...snapshot, sittingId: 'SYNTHETIC-sitting-2' }), true);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings, {});
+});
+
+test('a sitting written down before sitting ids existed is named by its mock id and start, and keeps its papers', () => {
+  const { sittingId: _gone, ...older } = activeMock(NS_A, { stage: 'listening', listening: null });
+  freshBrowser({ [activeKey(NS_A)]: JSON.stringify(older) });
+  setCurrentOwner(A);
+  const held = mock.loadActiveMock()!;
+  assert.equal(held.sittingId, `${older.mockId}@${older.startedAt}`);
+  const player = mock.mockLegSitting({ owner: NS_A, sittingId: held.sittingId }, LISTENING_PAPER);
+  player.start();
+  assert.equal(player.save(A_LISTENING_ANSWERS, NS_A), true);
+  assert.deepEqual(player.load()?.answers, A_LISTENING_ANSWERS);
+});
+
+test("the claim carries a paused mock's papers, answers and deadlines, and the account's player accepts them", () => {
+  freshBrowser();
+  setCurrentOwner(null);
+  beginSitting(NS_ANON, SITTING_1);
+  const device = mock.mockLegSitting({ owner: NS_ANON, sittingId: SITTING_1 }, LISTENING_PAPER);
+  const deviceStart = device.start();
+  device.save(A_LISTENING_ANSWERS, NS_ANON);
+
+  setCurrentOwner(A);
+  assert.deepEqual(storeOwner.claimableOwnerStampedStores(storage, ANON, A), [mock.ACTIVE_MOCK_KEY]);
+  const outcome = storeOwner.claimLegacyStores(storage, ANON, A);
+  assert.ok(outcome.moved.includes(mock.ACTIVE_MOCK_KEY), JSON.stringify(outcome));
+
+  /* The papers carry no owner of their own: re-stamping the sitting is all
+     the account's player needs. */
+  const held = mock.loadActiveMock()!;
+  assert.equal(held.owner, NS_A);
+  assert.equal(held.sittingId, SITTING_1);
+  const mine = mock.mockLegSitting({ owner: held.owner, sittingId: held.sittingId }, LISTENING_PAPER);
+  const resumed = mine.load();
+  assert.deepEqual(resumed?.answers, A_LISTENING_ANSWERS);
+  assert.equal(resumed?.endsAt, deviceStart.endsAt);
+  assert.equal(resumed?.owner, NS_A);
+  assert.equal(mine.save({ ...A_LISTENING_ANSWERS, q3: 'SYNTHETIC-after-claim' }, NS_A), true);
+
+  /* Moved with the sitting, not copied: the device offers none of it, and
+     a player still holding the device's identity reads and writes nothing. */
+  setCurrentOwner(null);
+  assert.equal(mock.loadActiveMock(), null);
+  assert.equal(device.load(), null);
+  assert.equal(device.save({ q1: 'SYNTHETIC-late' }, NS_ANON), false);
+});
+
+/* ------------------------------------------------------------------ */
+/* 10. Speaking taken off screen by an account change (Codex R2B-02)    */
+/* ------------------------------------------------------------------ */
+
+/* The examiner inside the mock reported ANY exit without a band as the
+   student cancelling Speaking, including its unmount under the mock's
+   stopped screen after an account change. The mock then skipped Speaking,
+   went to its results and, when the student was back, recorded itself
+   without Speaking and forgot the sitting. These drive the three decisions
+   the examiner and the mock now make (src/lib/tests/mock.ts), with the real
+   owner bindings of src/lib/store-owner.ts underneath. */
+
+/** A SYNTHETIC grade, standing in for the speaking grader. No request is made. */
+const SYNTHETIC_SPEAKING_GRADE = { overallBand: 6.5 };
+
+function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((r) => {
+    resolve = r;
+  });
+  return { promise, resolve };
+}
+
+/** A's sitting as it stands while the interview is running: every paper and
+    both essays done, stage 'speaking', written down under A. */
+function inTheInterview(): ActiveMock {
+  const sitting = activeMock(NS_A, {
+    stage: 'speaking',
+    reading: READING_LEG,
+    essay1: 'SYNTHETIC Task 1 by A',
+    essay2: 'SYNTHETIC Task 2 by A',
+    writingEndsAt: WRITING_DEADLINE,
+  });
+  assert.equal(mock.saveActiveMock(sitting), true);
+  return sitting;
+}
+
+test('an account change during the interview is a suspension: the sitting goes back to the Speaking brief, never to results', () => {
+  for (const next of [null, B] as const) {
+    freshBrowser();
+    setCurrentOwner(A);
+    const sitting = inTheInterview();
+    const stored = storage.data.get(activeKey(NS_A));
+    /* The examiner opens for A. */
+    const openedFor = storeOwner.bindToCurrentOwner();
+
+    /* The account changes (a sign-out, or B signing in); the mock's stopped
+       screen takes the examiner away, and its teardown decides. */
+    setCurrentOwner(next);
+    assert.equal(mock.examinerLeftScreen(openedFor), 'suspended');
+    openedFor.cancel();
+    const exit = mock.speakingExitFor('suspended', NS_A);
+    assert.equal(exit, 'suspended');
+    const after = mock.afterSpeakingExit(exit);
+    assert.deepEqual(after, { stage: 'speaking-brief', speakingSkipped: false });
+
+    /* Nothing is written while A is away, and nothing is cleared. */
+    assert.equal(mock.saveActiveMock({ ...sitting, ...after }), false);
+    assert.equal(storage.data.get(activeKey(NS_A)), stored, "A's sitting changed while A was away");
+    assert.equal(mock.listMockAttempts().length, 0, 'a mock was recorded for the next student');
+
+    /* A is back: the sitting is there, at the Speaking brief, with nothing
+       skipped and nothing recorded. */
+    setCurrentOwner(A);
+    const held = mock.loadActiveMock();
+    assert.ok(held, "A's sitting was forgotten");
+    const resumed = mock.reconcileActiveMock(held!);
+    assert.equal(resumed.stage, 'speaking-brief');
+    assert.equal(resumed.speakingSkipped, false);
+    assert.deepEqual(resumed.reading, READING_LEG);
+    assert.equal(resumed.essay2, 'SYNTHETIC Task 2 by A');
+    assert.equal(mock.listMockAttempts().length, 0, 'the sitting was recorded without Speaking');
+  }
+});
+
+test('an account change during GRADING is a suspension too, and the late grade is kept for A alone', async () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  inTheInterview();
+  const openedFor = storeOwner.bindToCurrentOwner();
+  /* The interview finished and went off to be graded, bound to A. */
+  const gradeBinding = storeOwner.bindToCurrentOwner();
+  const grader = deferred<typeof SYNTHETIC_SPEAKING_GRADE>();
+  const kept: string[] = [];
+  let shown = 0;
+  const settling = storeOwner.runOwnedGrade(gradeBinding, () => grader.promise, {
+    keep: (_grade, owner) => kept.push(ownerNamespace(owner)),
+    show: () => {
+      shown += 1;
+    },
+  });
+
+  /* B signs in; the stopped screen unmounts the examiner mid-grading. */
+  setCurrentOwner(B);
+  assert.equal(mock.examinerLeftScreen(openedFor), 'suspended');
+  openedFor.cancel();
+  gradeBinding.cancel();
+  assert.deepEqual(mock.afterSpeakingExit(mock.speakingExitFor('suspended', NS_A)), {
+    stage: 'speaking-brief',
+    speakingSkipped: false,
+  });
+
+  /* The grade arrives while B is signed in: kept under A, shown to nobody,
+     and it completes nothing. */
+  grader.resolve(SYNTHETIC_SPEAKING_GRADE);
+  assert.equal(await settling, 'cancelled');
+  assert.deepEqual(kept, [NS_A]);
+  assert.equal(shown, 0);
+
+  /* A is back at the brief of the same sitting. */
+  setCurrentOwner(A);
+  assert.equal(mock.reconcileActiveMock(mock.loadActiveMock()!).stage, 'speaking-brief');
+});
+
+test('an abort that arrives while the sitting\'s student is away is still a suspension', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  inTheInterview();
+  setCurrentOwner(B);
+  assert.equal(mock.speakingExitFor('cancelled', NS_A), 'suspended');
+  setCurrentOwner(null);
+  assert.equal(mock.speakingExitFor('cancelled', NS_A), 'suspended');
+});
+
+test("the student's own cancel still skips Speaking and goes to the results", () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  inTheInterview();
+  const openedFor = storeOwner.bindToCurrentOwner();
+  /* Nothing changed hands: a teardown without a band is a cancellation. */
+  assert.equal(mock.examinerLeftScreen(openedFor), 'cancelled');
+  openedFor.cancel();
+  /* Back on the examiner's error screen, or "Skip speaking" on the brief. */
+  const exit = mock.speakingExitFor('cancelled', NS_A);
+  assert.equal(exit, 'cancelled');
+  assert.deepEqual(mock.afterSpeakingExit(exit), { stage: 'results', speakingSkipped: true });
+  /* A binding already let go never passes for an owner change. */
+  assert.equal(mock.examinerLeftScreen(openedFor), 'cancelled');
+});
+
+/* ------------------------------------------------------------------ */
+/* 11. The screens really are wired this way                            */
+/* ------------------------------------------------------------------ */
+
+const COMPONENTS = new URL('../src/components/', import.meta.url);
+
+async function componentCode(name: string): Promise<string> {
+  const { readFile } = await import('node:fs/promises');
+  const source = await readFile(new URL(name, COMPONENTS), 'utf8');
+  /* Comments describe the old way too; only code counts. */
+  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+}
+
+test('every paper of a mock is told its sitting, and the player never reaches the standalone slot directly', async () => {
+  const mockExam = await componentCode('MockExam.tsx');
+  const players = [...mockExam.matchAll(/<TestPlayer\b[\s\S]*?\/>/g)].map((match) => match[0]);
+  assert.equal(players.length, 2, 'expected the Listening and the Reading player');
+  for (const player of players) {
+    assert.match(player, /mockSitting=\{/, 'a mock paper is not told which sitting it belongs to');
+    assert.match(player, /key=\{`\$\{sittingId\}:/, 'a mock paper is not keyed by its sitting');
+  }
+  const testPlayer = await componentCode('TestPlayer.tsx');
+  for (const direct of ['startSession(', 'loadSession(', 'saveAnswers(', 'clearSession(']) {
+    assert.equal(testPlayer.includes(direct), false, `TestPlayer calls ${direct} directly, around the sitting store`);
+  }
+  assert.match(testPlayer, /mockLegSitting\(/);
+  assert.match(testPlayer, /standaloneSitting\(/);
+});
+
+test('the examiner reports a suspension, not an abort, when it is taken away by an account change, and the mock acts on it', async () => {
+  const examiner = await componentCode('LiveExaminer.tsx');
+  assert.match(examiner, /examinerLeftScreen\(openedFor\) === 'suspended'\) onSuspend\?\.\(\)/);
+  /* onAbort only ever runs once, and never from the teardown unconditionally. */
+  assert.doesNotMatch(examiner, /if \(mock && !mock\w+Ref\.current\) onAbort\?\.\(\)/);
+  const mockExam = await componentCode('MockExam.tsx');
+  assert.match(mockExam, /onSuspend=\{\(\) => leaveSpeaking\('suspended'\)\}/);
+  assert.match(mockExam, /onAbort=\{\(\) => leaveSpeaking\('cancelled'\)\}/);
 });

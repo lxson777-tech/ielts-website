@@ -15,15 +15,13 @@ import {
 import { recordTestAttempt } from '../lib/progress';
 import {
   activeSession,
-  clearSession,
   currentSessionOwner,
-  loadSession,
   ownerStillCurrent,
-  saveAnswers,
   secondsLeft,
-  startSession,
+  standaloneSitting,
   type TestSession,
 } from '../lib/test-session';
+import { mockLegSitting, type MockSittingRef } from '../lib/tests/mock';
 import { onOwnerChange } from '../lib/store-owner';
 import { drillTypes } from '../lib/tests/drills';
 import Html from './Html';
@@ -67,6 +65,12 @@ interface Props {
       "Back to results" button that hands the final scored ids back to the
       parent so it can report what improved. */
   onFinish?: (scoredIds: Set<string>) => void;
+  /** Present only when this paper is a leg of a Mock Exam Day sitting
+      (MockExam.tsx): the student who started that sitting and its own id.
+      The paper's answers and deadline are then kept inside that sitting
+      (src/lib/tests/mock.ts, mockLegSitting) and restored only from it, never
+      from the one standalone slot a paper opened on its own uses (R2B-03). */
+  mockSitting?: MockSittingRef;
 }
 
 /** Base-prefixed URL for images stored under /public. */
@@ -256,7 +260,7 @@ function recordStaleSessionAbandonment(stale: TestSession): void {
   });
 }
 
-export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish }: Props) {
+export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish, mockSitting }: Props) {
   /* Interface language. Declared first so every hook below keeps a stable
      order, and read as `t`/`tn` only for text: nothing in the timer, the
      session or the scoring reads it. */
@@ -266,10 +270,25 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
   const isRetake = !!onFinish;
 
+  /* WHERE THIS PAPER'S SITTING IS KEPT (R2B-03). A leg of a mock sitting is
+     kept inside that sitting, found by its identity; any other paper uses the
+     one standalone slot. Everything below restores, saves and finishes
+     through this and never through the storage directly, so a mock leg and a
+     paper opened on its own can no longer overwrite, or pick up, each other. */
+  const mockOwner = mockSitting?.owner ?? '';
+  const mockSittingId = mockSitting?.sittingId ?? '';
+  const sittingStore = useMemo(
+    () =>
+      mockSittingId
+        ? mockLegSitting({ owner: mockOwner, sittingId: mockSittingId }, test)
+        : standaloneSitting(test),
+    [test, mockOwner, mockSittingId],
+  );
+
   // Resume an in-progress session if one exists (survives refresh / tab close).
   const resumed = useMemo(
-    () => (typeof window !== 'undefined' ? loadSession(test.id) : null),
-    [test.id],
+    () => (typeof window !== 'undefined' ? sittingStore.load() : null),
+    [sittingStore],
   );
 
   /* WHOSE SITTING THIS IS (finding 1 of the 23 September 2026 review).
@@ -281,7 +300,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      `resumed.owner` is preferred where a resumed sitting names one, so a
      refresh keeps the same binding rather than quietly re-deciding it. */
   const sittingOwnerRef = useRef<string>(
-    typeof window === 'undefined' ? '' : resumed?.owner ?? currentSessionOwner(),
+    typeof window === 'undefined' ? '' : mockOwner || (resumed?.owner ?? currentSessionOwner()),
   );
   /* Set when the owner changes while this player is mounted. 'signed-out'
      when nobody is signed in now, 'other-student' when somebody else is.
@@ -394,8 +413,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   }
 
   function start() {
-    sittingOwnerRef.current = currentSessionOwner();
-    const s = startSession(test);
+    /* A mock leg always belongs to the student who started the mock. */
+    sittingOwnerRef.current = mockOwner || currentSessionOwner();
+    const s = sittingStore.start();
     setTimeLeft(secondsLeft(s));
     setStarted(true);
   }
@@ -431,15 +451,15 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      both work normally within the retake. */
   useEffect(() => {
     if (isRetake && !resumed) {
-      sittingOwnerRef.current = currentSessionOwner();
-      const s = startSession(test);
+      sittingOwnerRef.current = mockOwner || currentSessionOwner();
+      const s = sittingStore.start();
       setTimeLeft(secondsLeft(s));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Learner-evidence recording (WP12): a paper or drill "starting" IS the
-     TestSession written by startSession() above (and by start() below),
+     TestSession written by sittingStore.start() (above, and in start()),
      there is no separate started marker to write. What needs catching here
      is the other half: a student who opened a DIFFERENT test, left without
      submitting, and is only now loading a test page again. test-session.ts
@@ -452,8 +472,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      itself is left untouched: clearing it here would break a legitimate
      "come back to this exact test" resume later, and the deterministic id
      below means finding the same stale session again on some other test
-     page is harmless, it re-records the identical row, not a new one. */
+     page is harmless, it re-records the identical row, not a new one.
+
+     Not for a mock leg (R2B-03): it is kept inside its own mock sitting and
+     never replaces the standalone slot, so opening it abandons nothing that
+     was sitting there. */
   useEffect(() => {
+    if (mockSittingId) return;
     const stale = activeSession();
     if (stale && stale.testId !== test.id) recordStaleSessionAbandonment(stale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -557,9 +582,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       if (value) next[qid] = value;
       else delete next[qid];
       /* Bound to the student who started this sitting: once somebody else is
-         signed in on this browser, saveAnswers writes nothing at all rather
+         signed in on this browser, the save writes nothing at all rather
          than dropping this keystroke into their key. */
-      saveAnswers(next, sittingOwnerRef.current);
+      sittingStore.save(next, sittingOwnerRef.current);
       return next;
     });
   }
@@ -588,13 +613,16 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       if (scoredIds.has(question.id)) t.correct += 1;
     }
     const at = new Date().toISOString();
-    recordTestAttempt(test.id, {
-      at,
+    const outcome = {
       raw,
       total: SCORED_TOTAL,
       band: bandMidpoint(raw, SCORED_TOTAL, test.skill),
       bandLabel: bandEstimate(raw, SCORED_TOTAL, test.skill),
       secondsUsed: test.durationMinutes * 60 - timeLeft,
+    };
+    recordTestAttempt(test.id, {
+      at,
+      ...outcome,
       byType,
       kind: attemptKind,
       skill: test.skill,
@@ -634,8 +662,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
 
     // in-progress state done; permanent attempt kept in progress history. The
     // owner is passed so this clears only the sitting that was just
-    // submitted, never a different student's sitting.
-    clearSession(sittingOwnerRef.current);
+    // submitted, never a different student's sitting. A mock leg also keeps
+    // its result inside its own mock sitting here, which is what picking
+    // that sitting up later counts as done (R2B-03).
+    sittingStore.finish(sittingOwnerRef.current, outcome);
     // onFinish itself is wired to the score modal's "Back to results" button,
     // not called here — the retake still shows its own score/review first.
   }

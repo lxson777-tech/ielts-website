@@ -11,7 +11,7 @@
    one combined "a mock happened" record. */
 
 import type { PracticeTest } from './schema';
-import { getAttempts, getBestBand, recordTestAttempt } from '../progress';
+import { getBestBand, recordTestAttempt } from '../progress';
 import {
   currentOwner,
   deviceStorage,
@@ -20,12 +20,20 @@ import {
   safeRemove,
   safeSet,
   scopedKeyFor,
+  type BrowserStorage,
+  type OwnerBinding,
 } from '../store-owner';
 /* The same "is this still the student who started the sitting" rule the test
    player uses, imported rather than written a second time: a mock day and a
    single paper must not be able to disagree about whose work they are. The
    key rule comes from the same place, for the same reason. */
-import { currentSessionOwner, ownerStillCurrent, unownedScopedKey } from '../test-session';
+import {
+  currentSessionOwner,
+  ownerStillCurrent,
+  unownedScopedKey,
+  type PaperSittingStore,
+  type TestSession,
+} from '../test-session';
 
 export interface TestPair {
   listening: PracticeTest;
@@ -304,10 +312,34 @@ export interface MockLegResult {
   secondsUsed: number;
 }
 
+/** One timed paper of a mock day as it stands, kept INSIDE that sitting
+    (third Codex round, R2B-03; see "The two timed papers, kept inside their
+    own sitting" below). */
+export interface MockLegSitting {
+  /** The paper, always one of the sitting's own two. */
+  testId: string;
+  /** Epoch ms the paper started. */
+  startedAt: number;
+  /** Epoch ms the paper's clock runs out. A deadline, never a remaining
+      count, for the same reason the Writing clock is one. */
+  endsAt: number;
+  /** The answers so far, by question id. Emptied once the paper is handed
+      in, exactly as a standalone paper's sitting is cleared then. */
+  answers: Record<string, string>;
+  /** The paper's result once it was handed in INSIDE this sitting, else
+      null. What picking the sitting back up counts as done. */
+  result: MockLegResult | null;
+}
+
 export interface ActiveMock {
   version: 1;
   /** The owner who started this sitting, as store-owner.ts spells an owner. */
   owner: string;
+  /** This sitting's own identity, made when it starts and never reused
+      (R2B-03). The mock id cannot serve: it counts only the mocks already
+      recorded today, so a sitting abandoned part way and a fresh one started
+      the same day would share one. */
+  sittingId: string;
   mockId: string;
   /** ISO datetime the sitting started. */
   startedAt: string;
@@ -324,17 +356,27 @@ export interface ActiveMock {
   essay2: string;
   /** Epoch ms the Writing hour runs out, null before Writing starts. A
       deadline, never a remaining count: that is what keeps the clock
-      honest across a reload. The Listening and Reading clocks are not
-      here because they never were: each leg's deadline is the in-progress
-      sitting in src/lib/test-session.ts, under the same owner. The short
-      beat between two papers is not exam time and is not stored. */
+      honest across a reload. The Listening and Reading clocks are in
+      `legSittings` below, each paper's own. The short beat between two
+      papers is not exam time and is not stored. */
   writingEndsAt: number | null;
   speakingBand: number | null;
   speakingCriteria: Record<string, number> | null;
   speakingSkipped: boolean;
+  /** The Listening and Reading papers of THIS sitting as they stand, by
+      test id: answers, deadline, and the result once handed in. Written by
+      the test player through the leg functions below, never by the
+      screen's own snapshot (see saveActiveMock). */
+  legSittings: Record<string, MockLegSitting>;
   /** Epoch ms of the last write. */
   savedAt: number;
 }
+
+/** What the mock screen writes down: everything but the papers' own
+    sittings, which are the test player's to write. */
+export type ActiveMockSnapshot = Omit<ActiveMock, 'legSittings'> & {
+  legSittings?: Record<string, MockLegSitting>;
+};
 
 function isStage(value: unknown): value is MockStage {
   return typeof value === 'string' && (MOCK_STAGES as readonly string[]).includes(value);
@@ -365,6 +407,53 @@ function asNumberOrNull(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
+function asAnswers(value: unknown): Record<string, string> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const out: Record<string, string> = {};
+  for (const [id, answer] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof answer === 'string') out[id] = answer;
+  }
+  return out;
+}
+
+/** One paper's stored sitting, or null when its clock cannot be read: a
+    paper with no readable deadline is started again rather than guessed. */
+function asLegSitting(value: unknown, testId: string): MockLegSitting | null {
+  if (!value || typeof value !== 'object') return null;
+  const leg = value as Partial<MockLegSitting>;
+  const startedAt = asNumberOrNull(leg.startedAt);
+  const endsAt = asNumberOrNull(leg.endsAt);
+  if (startedAt === null || endsAt === null) return null;
+  return { testId, startedAt, endsAt, answers: asAnswers(leg.answers), result: asLeg(leg.result) };
+}
+
+function asLegSittings(value: unknown): Record<string, MockLegSitting> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const out: Record<string, MockLegSitting> = {};
+  for (const [testId, raw] of Object.entries(value as Record<string, unknown>)) {
+    const leg = asLegSitting(raw, testId);
+    if (leg) out[testId] = leg;
+  }
+  return out;
+}
+
+/** A sitting written down before sitting ids existed (earlier in this same
+    build) is named by its mock id and the moment it started, which together
+    are unique for one student. */
+function fallbackSittingId(mockId: string, startedAt: string): string {
+  return `${mockId}@${startedAt}`;
+}
+
+/** A fresh identity for a sitting that is starting now. */
+export function newMockSittingId(): string {
+  const cryptoApi = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+  const random =
+    typeof cryptoApi?.randomUUID === 'function'
+      ? cryptoApi.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return `sitting-${random}`;
+}
+
 /** Read a stored sitting back field by field. The version, the owner and
     the stage decide whose it is and where it stands, so a record missing any
     of them is not a sitting at all. Every other field falls back to "not
@@ -382,11 +471,14 @@ function parseActive(raw: string | null): ActiveMock | null {
   if (typeof parsed.owner !== 'string' || parsed.owner.length === 0) return null;
   if (!isStage(parsed.stage)) return null;
   const criteria = parsed.speakingCriteria;
+  const mockId = asText(parsed.mockId);
+  const startedAt = asText(parsed.startedAt);
   return {
     version: 1,
     owner: parsed.owner,
-    mockId: asText(parsed.mockId),
-    startedAt: asText(parsed.startedAt),
+    sittingId: asIdOrNull(parsed.sittingId) ?? fallbackSittingId(mockId, startedAt),
+    mockId,
+    startedAt,
     stage: parsed.stage,
     listeningTestId: asText(parsed.listeningTestId),
     readingTestId: asText(parsed.readingTestId),
@@ -400,8 +492,13 @@ function parseActive(raw: string | null): ActiveMock | null {
     speakingBand: asNumberOrNull(parsed.speakingBand),
     speakingCriteria: criteria && typeof criteria === 'object' ? (criteria as Record<string, number>) : null,
     speakingSkipped: parsed.speakingSkipped === true,
+    legSittings: asLegSittings(parsed.legSittings),
     savedAt: asNumberOrNull(parsed.savedAt) ?? 0,
   };
+}
+
+function sameSitting(a: { owner: string; sittingId: string }, b: { owner: string; sittingId: string }): boolean {
+  return a.owner === b.owner && a.sittingId === b.sittingId;
 }
 
 /** A stage with something to pick up. The start screen has nothing yet, and
@@ -434,13 +531,23 @@ export function loadActiveMock(): ActiveMock | null {
     all once somebody else has signed in: a mock day that outlived its
     student is never copied into the next student's key. A stage with
     nothing to pick up (the start screen, the results) is not written
-    either. */
-export function saveActiveMock(state: ActiveMock): boolean {
+    either.
+ *
+ * The two papers' own sittings are the test player's to write. For the
+ * sitting already written down (same student, same sitting id) they are kept
+ * exactly as stored, whatever the snapshot carries. A DIFFERENT sitting
+ * replaces the stored one whole, so a fresh mock starts with fresh papers
+ * (the ones the snapshot names, none if it names none) and can never pick up
+ * an older sitting's answers. */
+export function saveActiveMock(state: ActiveMockSnapshot): boolean {
   if (!inProgress(state.stage)) return false;
   if (!ownerStillCurrent(state.owner)) return false;
   const storage = deviceStorage();
   if (!storage) return false;
-  return safeSet(storage, activeKeyNow(), JSON.stringify({ ...state, savedAt: Date.now() }));
+  const key = activeKeyNow();
+  const stored = parseActive(safeGet(storage, key));
+  const legSittings = stored && sameSitting(stored, state) ? stored.legSittings : (state.legSittings ?? {});
+  return safeSet(storage, key, JSON.stringify({ ...state, legSittings, savedAt: Date.now() }));
 }
 
 /** Forget the CURRENT owner's in-progress sitting, once it has been
@@ -458,8 +565,11 @@ export function clearActiveMock(sittingOwner?: string): void {
 
 /** A written-down mock day held by `from`, re-stamped so that `to` can pick
     it up: the `owner` field names `to` and every other field (the stage,
-    the finished legs, the essays, the Writing deadline) is exactly as it was
-    stored. Owners are spelled as store-owner.ts spells them.
+    the finished legs, the essays, the Writing deadline, and the two papers'
+    own sittings with their answers and deadlines) is exactly as it was
+    stored. The papers carry no owner of their own, only the sitting does,
+    so this one change is all the account's player needs to accept them.
+    Owners are spelled as store-owner.ts spells them.
  *
  * Null when it is not `from`'s to hand over: not a sitting this file can
  * read, a sitting with nothing to pick up (the start screen or the results,
@@ -476,8 +586,219 @@ export function restampActiveMock(raw: string, from: string, to: string): string
 }
 
 /* The claim carries a paused mock day with this rule. Born owner-scoped, it
-   has no older build's value to park first. */
+   has no older build's value to park first. The papers' own sittings live
+   inside the same value, so they travel with it and cannot be split from it. */
 registerOwnerStampedStore(ACTIVE_MOCK_KEY, { restamp: restampActiveMock });
+
+/* ── The two timed papers, kept inside their own sitting ─────────────────── */
+
+/* WHY (third Codex round, 23 September 2026, R2B-03)
+   A mock's Listening and Reading papers used to keep their answers and their
+   deadline in the single per-student slot of src/lib/test-session.ts, the
+   same slot as any paper opened on its own, found by nothing but the paper's
+   id. Two things went wrong. A student who paused a mock on its Listening
+   paper and opened a Reading drill in the meantime overwrote that slot, and
+   the mock's Listening then started again from nothing with a fresh clock.
+   And a new mock on a paper that happened to be in the slot picked up that
+   older sitting's answers and deadline.
+
+   So a paper of a mock is now kept INSIDE that mock sitting, in
+   `legSittings`, and is only ever reached through the sitting's own identity
+   (the student who started it and its sitting id). The standalone slot is
+   never read or written for it. A fresh mock has a fresh identity and no
+   papers; picking a sitting back up restores that sitting's papers and no
+   other. Handing a paper in keeps its result with the sitting, which is what
+   picking it up later counts as done (reconcileActiveMock). */
+
+/** Which mock sitting a paper belongs to, as the test player is told it. */
+export interface MockSittingRef {
+  owner: string;
+  sittingId: string;
+}
+
+interface HeldSitting {
+  storage: BrowserStorage;
+  key: string;
+  /** The stored value itself, so a field this build does not know about is
+      written back untouched. */
+  raw: Record<string, unknown>;
+  held: ActiveMock;
+}
+
+/** The written-down sitting `ref` names, when it is the current owner's own,
+    still has something to pick up, and is still the SAME sitting. Null
+    otherwise, including once somebody else is using this browser: a paper
+    never reads or writes another student's sitting, or an older one. */
+function heldSitting(ref: MockSittingRef): HeldSitting | null {
+  if (!ref.owner || !ref.sittingId || !ownerStillCurrent(ref.owner)) return null;
+  const storage = deviceStorage();
+  if (!storage) return null;
+  const key = activeKeyNow();
+  const text = safeGet(storage, key);
+  const held = parseActive(text);
+  if (!held || !inProgress(held.stage) || !sameSitting(held, ref)) return null;
+  return { storage, key, raw: JSON.parse(text!) as Record<string, unknown>, held };
+}
+
+function writeLegs(sitting: HeldSitting, legSittings: Record<string, MockLegSitting>): boolean {
+  return safeSet(sitting.storage, sitting.key, JSON.stringify({ ...sitting.raw, legSittings, savedAt: Date.now() }));
+}
+
+function isPaperOf(held: ActiveMock, testId: string): boolean {
+  return testId.length > 0 && (testId === held.listeningTestId || testId === held.readingTestId);
+}
+
+/** Paper `testId` of the sitting `ref`, still being sat: its answers and its
+    deadline. Null when this browser's current owner holds no such sitting,
+    or it was never started inside it, or it has already been handed in. */
+export function loadMockLeg(ref: MockSittingRef, testId: string): MockLegSitting | null {
+  const leg = heldSitting(ref)?.held.legSittings[testId];
+  return leg && !leg.result ? leg : null;
+}
+
+/** Start paper `test` as a leg of the sitting `ref`: a fresh deadline and no
+    answers, written into that sitting and nowhere else. Returns what was
+    written, or null, writing nothing, when the sitting is not the current
+    owner's, the paper is not one of its two, or the paper was already handed
+    in inside it (a result is never replaced by a fresh start). */
+export function startMockLeg(
+  ref: MockSittingRef,
+  test: Pick<PracticeTest, 'id' | 'durationMinutes'>,
+  now: number = Date.now(),
+): MockLegSitting | null {
+  const sitting = heldSitting(ref);
+  if (!sitting || !isPaperOf(sitting.held, test.id)) return null;
+  if (sitting.held.legSittings[test.id]?.result) return null;
+  const leg: MockLegSitting = {
+    testId: test.id,
+    startedAt: now,
+    endsAt: now + test.durationMinutes * 60_000,
+    answers: {},
+    result: null,
+  };
+  return writeLegs(sitting, { ...sitting.held.legSittings, [test.id]: leg }) ? leg : null;
+}
+
+/** Save the answers of paper `testId` inside the sitting `ref`. False, and
+    nothing written, once somebody else is using this browser, or when that
+    paper is not being sat in that sitting. */
+export function saveMockLegAnswers(ref: MockSittingRef, testId: string, answers: Record<string, string>): boolean {
+  const sitting = heldSitting(ref);
+  const leg = sitting?.held.legSittings[testId];
+  if (!sitting || !leg || leg.result) return false;
+  return writeLegs(sitting, { ...sitting.held.legSittings, [testId]: { ...leg, answers: { ...answers } } });
+}
+
+/** Paper `testId` was handed in inside the sitting `ref`: its result is kept
+    with the sitting and its in-progress answers go, exactly as a standalone
+    paper's sitting is cleared on submit. A no-op returning false once
+    somebody else is using this browser. */
+export function finishMockLeg(ref: MockSittingRef, testId: string, result: MockLegResult): boolean {
+  const sitting = heldSitting(ref);
+  if (!sitting || !isPaperOf(sitting.held, testId)) return false;
+  const leg = sitting.held.legSittings[testId];
+  const now = Date.now();
+  const base: MockLegSitting = leg ?? { testId, startedAt: now, endsAt: now, answers: {}, result: null };
+  return writeLegs(sitting, { ...sitting.held.legSittings, [testId]: { ...base, answers: {}, result: { ...result } } });
+}
+
+/** The result paper `testId` was handed in with inside the sitting `ref`, if
+    it was. */
+export function mockLegResult(ref: MockSittingRef, testId: string): MockLegResult | null {
+  return heldSitting(ref)?.held.legSittings[testId]?.result ?? null;
+}
+
+/** One paper of the sitting `ref`, in the shape the test player uses for
+    every paper (src/lib/test-session.ts, PaperSittingStore). The sitting it
+    reads and writes is named by `ref` and nothing else, so it never touches
+    the standalone slot and never finds an older sitting's answers. */
+export function mockLegSitting(
+  ref: MockSittingRef,
+  test: Pick<PracticeTest, 'id' | 'durationMinutes'>,
+): PaperSittingStore {
+  const asSession = (leg: MockLegSitting): TestSession => ({
+    version: 1,
+    testId: leg.testId,
+    startedAt: leg.startedAt,
+    endsAt: leg.endsAt,
+    answers: leg.answers,
+    owner: ref.owner,
+  });
+  return {
+    load: () => {
+      const leg = loadMockLeg(ref, test.id);
+      return leg ? asSession(leg) : null;
+    },
+    start: () => {
+      const now = Date.now();
+      /* Should the write fail (no room, or the sitting already gone), the
+         paper still gets its clock on screen; it simply is not kept. */
+      const leg = startMockLeg(ref, test, now) ?? {
+        testId: test.id,
+        startedAt: now,
+        endsAt: now + test.durationMinutes * 60_000,
+        answers: {},
+        result: null,
+      };
+      return asSession(leg);
+    },
+    save: (answers, sittingOwner) => {
+      if (sittingOwner && sittingOwner !== ref.owner) return false;
+      return saveMockLegAnswers(ref, test.id, answers);
+    },
+    finish: (sittingOwner, outcome) => {
+      if (sittingOwner && sittingOwner !== ref.owner) return;
+      finishMockLeg(ref, test.id, outcome);
+    },
+  };
+}
+
+/* ── The Speaking leg leaving the screen without a band (R2B-02) ─────────── */
+
+/* WHY (third Codex round, 23 September 2026, R2B-02)
+   The live examiner used to report ANY exit without a band as the student
+   cancelling Speaking, including the one where it did not choose to leave at
+   all: the account on this browser changed, the mock's stopped screen took
+   its place, and its unmount reported a cancellation. The mock then skipped
+   Speaking, went to its results and, once the student was back, recorded the
+   sitting without Speaking and forgot it. Now the two are told apart. */
+
+/** How the interview left the screen without a band.
+ * - 'cancelled': the student's own way out (Back on the examiner's error
+ *   screen), or a speaking service that could not run the interview at all.
+ * - 'suspended': the account using this browser changed and the mock's
+ *   stopped screen took the examiner away. Not the student's choice. */
+export type SpeakingExit = 'cancelled' | 'suspended';
+
+/** What an examiner being taken off screen, before it reported anything,
+    should report. `binding` is the one it made for the student on screen
+    when it opened: an owner change since then is a suspension, anything
+    else is a cancellation. Read before the binding is let go (a cancelled
+    binding no longer says whether the owner changed). */
+export function examinerLeftScreen(binding: Pick<OwnerBinding, 'state'>): SpeakingExit {
+  return binding.state() === 'owner-changed' ? 'suspended' : 'cancelled';
+}
+
+/** The exit the mock acts on. A cancellation that arrives while the sitting's
+    own student is no longer the one on this browser is treated as a
+    suspension all the same: a mock never moves to its results on somebody
+    else's watch. */
+export function speakingExitFor(reported: SpeakingExit, sittingOwner: string): SpeakingExit {
+  return reported === 'suspended' || !ownerStillCurrent(sittingOwner) ? 'suspended' : 'cancelled';
+}
+
+/** Where the sitting goes after the interview left without a band.
+    Cancelled: Speaking is skipped and the sitting moves to its results.
+    Suspended: nothing is skipped and nothing is recorded; the sitting goes
+    back to the Speaking brief, where its own student starts or skips it once
+    they are back. A grade that was still on its way is kept for that student
+    by the examiner itself (runOwnedGrade in src/lib/store-owner.ts), and is
+    not folded into this sitting. */
+export function afterSpeakingExit(exit: SpeakingExit): { stage: MockStage; speakingSkipped: boolean } {
+  return exit === 'suspended'
+    ? { stage: 'speaking-brief', speakingSkipped: false }
+    : { stage: 'results', speakingSkipped: true };
+}
 
 /** Seconds left on the Writing clock at `now`, from its stored deadline.
     Before Writing has started (no deadline yet) the whole hour is left. A
@@ -488,27 +809,16 @@ export function writingSecondsLeftAt(writingEndsAt: number | null, now: number, 
   return Math.max(0, Math.round((writingEndsAt - now) / 1000));
 }
 
-/** The result of `testId` if the CURRENT owner submitted it as a full paper
-    at or after `sinceIso` (the moment the mock started), else null. A leg
-    submitted just before the page went away (after Submit, before "Back to
-    results") is already in the history, and must count as done rather than
-    be sat a second time. */
-export function legFinishedSince(testId: string, sinceIso: string): MockLegResult | null {
-  if (!testId || !sinceIso) return null;
-  const since = getAttempts(testId).filter(
-    ({ attempt }) => (attempt.kind ?? 'full') === 'full' && attempt.at >= sinceIso,
-  );
-  const last = since[since.length - 1]?.attempt;
-  if (!last) return null;
-  return { raw: last.raw, total: last.total, band: last.band, bandLabel: last.bandLabel, secondsUsed: last.secondsUsed };
-}
-
 /** A written-down sitting, made ready to put back on screen.
  *
- * - A leg submitted before the page went away counts as done, and the
- *   sitting moves on to the short beat before the next paper. Without this,
- *   the embedded player (which starts a mock leg straight away) would open a
- *   second sitting of a paper the student had already handed in.
+ * - A leg handed in INSIDE THIS SITTING before the page went away (after
+ *   Submit, before "Back to results") counts as done, and the sitting moves
+ *   on to the short beat before the next paper. Without this, the embedded
+ *   player (which starts a mock leg straight away) would open a second
+ *   sitting of a paper the student had already handed in. It is read from
+ *   the sitting's own papers, never from the history by paper id: the same
+ *   paper sat on its own during a pause, or in another mock, is not this
+ *   sitting's leg (R2B-03).
  * - The live voice interview is never re-entered on its own: it opens a
  *   real-time session that costs real money, so a sitting picked up there
  *   lands on the Speaking brief, where the student starts or skips it.
@@ -516,12 +826,13 @@ export function legFinishedSince(testId: string, sinceIso: string): MockLegResul
  *   clock and each paper's own clock carry on from where they stood. */
 export function reconcileActiveMock(held: ActiveMock): ActiveMock {
   let next: ActiveMock = { ...held };
+  const handedIn = (testId: string): MockLegResult | null => next.legSittings[testId]?.result ?? null;
   if (next.stage === 'listening' && !next.listening) {
-    const done = legFinishedSince(next.listeningTestId, next.startedAt);
+    const done = handedIn(next.listeningTestId);
     if (done) next = { ...next, listening: done, stage: 'transition-reading' };
   }
   if (next.stage === 'reading' && !next.reading) {
-    const done = legFinishedSince(next.readingTestId, next.startedAt);
+    const done = handedIn(next.readingTestId);
     if (done) next = { ...next, reading: done, stage: 'transition-writing' };
   }
   if (next.stage === 'speaking') next = { ...next, stage: 'speaking-brief' };

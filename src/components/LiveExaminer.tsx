@@ -25,10 +25,19 @@
    report/menu screens: `onComplete` once grading finishes (MockExam then
    swaps straight to its combined results screen, same as the Listening,
    Reading and Writing legs already do), or `onAbort` if the session ends
-   without a report (mic/connection failure, or the student navigating away
-   mid-interview — "End test early" is not an abort, it still grades and
-   completes normally, same as the standalone examiner). Everything else —
-   clock, stages, recorder, grading, `?preview` — is untouched. */
+   without a report (mic/connection failure followed by the student's own
+   Back, or a speaking service that cannot run it; "End test early" is not
+   an abort, it still grades and completes normally, same as the standalone
+   examiner). Everything else (clock, stages, recorder, grading, `?preview`)
+   is untouched.
+
+   ABORT IS NOT SUSPEND (third Codex round, 23 September 2026, R2B-02). When
+   the account on the browser changes mid-interview or mid-grading, MockExam
+   puts its stopped screen up and this component unmounts. That is not the
+   student cancelling Speaking, and reporting it as `onAbort` made the mock
+   skip Speaking and record itself without it. An unmount after the owner
+   this component opened for has changed now reports `onSuspend` instead,
+   and nothing is reported twice. */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -66,6 +75,7 @@ import IdeaHints from './IdeaHints';
 import AuthModal from './AuthModal';
 import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
 import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import { examinerLeftScreen } from '../lib/tests/mock';
 import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
@@ -112,18 +122,26 @@ const OWNER_CHANGED_NOTICE = nt(
 
 /** variant="full": the complete three-part mock test (/speaking/examiner).
     variant="drills": the same live examiner scoped to a single part, with a
-    Part 1/2/3 picker menu (/trainers/speaking). `mock`, `onComplete` and
-    `onAbort` are for the Mock Exam Day embed — see the file header. */
+    Part 1/2/3 picker menu (/trainers/speaking). `mock`, `onComplete`,
+    `onAbort` and `onSuspend` are for the Mock Exam Day embed (see the file
+    header). */
 export default function LiveExaminer({
   variant = 'full',
   mock = false,
   onComplete,
   onAbort,
+  onSuspend,
 }: {
   variant?: 'full' | 'drills';
   mock?: boolean;
   onComplete?: (result: { overallBand: number; criteria: Record<string, number> }) => void;
+  /** Mock embed: the interview ended without a band by the student's own
+      choice, or because the speaking service cannot run it. */
   onAbort?: () => void;
+  /** Mock embed: this component was taken off screen because the account
+      using the browser changed, not by the student. Reported INSTEAD of
+      onAbort, so the mock can keep the sitting where it was. */
+  onSuspend?: () => void;
 }) {
   const { t, tn } = useT();
   const [phase, setPhase] = useState<Phase>('menu');
@@ -178,10 +196,18 @@ export default function LiveExaminer({
   const endedRef = useRef(false);
   const forceEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   /* mock embed bookkeeping: guards startTest('full') firing more than once
-     on mount, and tells the unmount cleanup below whether onComplete already
-     ran (so it doesn't also report an abort for a normal finish). */
+     on mount, and tells the unmount cleanup below whether onComplete or
+     onAbort already ran (so it reports nothing a second time, neither an
+     abort after a normal finish nor a suspension after an abort). */
   const mockAutoStartedRef = useRef(false);
-  const mockCompletedRef = useRef(false);
+  const mockReportedRef = useRef(false);
+
+  /** Mock embed: report the interview ending without a band, once. */
+  function abortMock() {
+    if (mockReportedRef.current) return;
+    mockReportedRef.current = true;
+    onAbort?.();
+  }
   /* The interview on screen, bound to the student who started it (R2-02,
      runOwnedGrade in src/lib/store-owner.ts). Made when a session starts, so
      the recording belongs to whoever began the interview; cancelled when the
@@ -252,13 +278,13 @@ export default function LiveExaminer({
     if (!mock || mockAutoStartedRef.current) return;
     if (!TOKEN_URL) {
       mockAutoStartedRef.current = true;
-      onAbort?.();
+      abortMock();
       return;
     }
     if (liveConfig === null && !configError) return; // config fetch still in flight
     if (needsSignIn || authUnavailable) {
       mockAutoStartedRef.current = true;
-      onAbort?.();
+      abortMock();
       return;
     }
     mockAutoStartedRef.current = true;
@@ -690,11 +716,11 @@ export default function LiveExaminer({
             // "Done" click. It swaps to its own combined results screen the
             // moment this fires (same beat as the Listening/Reading/Writing legs),
             // so in practice this component's own report screen never gets a
-            // chance to paint. mockCompletedRef tells the unmount cleanup below
+            // chance to paint. mockReportedRef tells the unmount cleanup below
             // this was a real finish, not an abort. Reached ONLY while the
             // student who took the interview is still the one on screen.
             if (mock) {
-              mockCompletedRef.current = true;
+              mockReportedRef.current = true;
               onComplete?.({
                 overallBand: graded.overallBand,
                 criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
@@ -747,12 +773,28 @@ export default function LiveExaminer({
   }
 
   useEffect(
-    () => () => {
-      // Mock embed: a teardown that isn't the completion path above (the
-      // student navigated away, or MockExam itself unmounted this component
-      // for some other reason) is exactly what onAbort is for.
-      if (mock && !mockCompletedRef.current) onAbort?.();
-      abandonToMenu();
+    () => {
+      /* The student on screen when this component opened, kept only to tell
+         the two kinds of teardown apart (R2B-02). The interview's own
+         recording and grade are bound separately, in startTest. */
+      const openedFor = mock ? bindToCurrentOwner() : null;
+      return () => {
+        // Mock embed: a teardown that isn't the completion path above.
+        // MockExam takes this component away mid-interview (or mid-grading)
+        // for one reason only: the account on the browser changed and its
+        // stopped screen went up. That is a suspension, not the student
+        // cancelling Speaking, and it is reported as one; the mock keeps the
+        // sitting at its Speaking brief for the student who started it. Any
+        // other teardown without a report is still an abort. Read before the
+        // binding is let go, and never after onComplete or onAbort ran.
+        if (mock && !mockReportedRef.current && openedFor) {
+          mockReportedRef.current = true;
+          if (examinerLeftScreen(openedFor) === 'suspended') onSuspend?.();
+          else onAbort?.();
+        }
+        openedFor?.cancel();
+        abandonToMenu();
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -1062,7 +1104,7 @@ export default function LiveExaminer({
         <p className="mx-auto max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>
         <button
           type="button"
-          onClick={() => (mock ? onAbort?.() : abandonToMenu())}
+          onClick={() => (mock ? abortMock() : abandonToMenu())}
           className="mt-6 rounded-button border border-border px-5 py-2 text-sm font-semibold hover:bg-surface-alt"
         >
           {t('Back')}

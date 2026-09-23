@@ -18,6 +18,18 @@
  * happened since, and it is SHOWN (and a completion callback runs) only while
  * that owner is still the one on screen and the screen has not let go.
  *
+ * AND THE ESSAY BEFORE IT IS SUBMITTED (finding R2B-01 of the second fresh
+ * Codex inspection)
+ * The grade was bound; the editor was not. The writing trainer resolved its
+ * owner only at submit, and its draft autosave resolved it when the 600 ms
+ * timer fired. So A could type an essay, the page could change hands, and B
+ * could submit A's text into B's own history; a switch inside those 600 ms
+ * saved A's text under the new owner's draft key. Section 5 drives the
+ * editing session that now owns the essay (src/components/
+ * writing-editor-owner.ts) with a hand-cranked clock: switches BEFORE
+ * submission and DURING the debounce, a switch back, and the late grade
+ * again with the editor handed over first.
+ *
  * WHAT IS SIMULATED, AND WHAT IS NOT
  * Simulated: the graders. Every grade below is a SYNTHETIC object handed back
  * by a promise this file resolves by hand, at the moment it chooses, so no
@@ -72,6 +84,7 @@ let storage = memoryStorage();
 const storeOwner = await import('../src/lib/store-owner.ts');
 const progress = await import('../src/lib/progress.ts');
 const learner = await import('../src/lib/learning/store.browser.ts');
+const editor = await import('../src/components/writing-editor-owner.ts');
 
 import type { CacheOwner } from '../src/lib/learning/contracts/sync.ts';
 
@@ -488,7 +501,15 @@ function componentSource(name: string): string {
 for (const name of ['WritingTester.tsx', 'SpeakingTester.tsx', 'LiveExaminer.tsx']) {
   test(`${name} keeps every grade under the owner it was started for, and lets go on unmount`, () => {
     const code = componentSource(name);
-    assert.match(code, /\bbindToCurrentOwner\(\)/, `${name} never binds its attempt to an owner`);
+    if (name === 'WritingTester.tsx') {
+      /* The essay's binding comes from its editing session (R2B-01), which
+         binds to the current owner only when that owner is still the one
+         who started the essay. */
+      assert.match(code, /\bclaimSubmission\(/, `${name} never binds its attempt to an owner`);
+      assert.match(componentSource('writing-editor-owner.ts'), /\bbindToCurrentOwner\(\)/);
+    } else {
+      assert.match(code, /\bbindToCurrentOwner\(\)/, `${name} never binds its attempt to an owner`);
+    }
     assert.match(code, /\brunOwnedGrade\(/, `${name} does not settle its grade through runOwnedGrade`);
     assert.match(code, /\.cancel\(\)/, `${name} never lets go of a pending grade`);
     /* The current-owner writers are exactly the defect: a grade arriving
@@ -513,4 +534,310 @@ test('the embedded examiner reports a finished mock only from the step that runs
   const hide = code.indexOf('hide: ()');
   assert.ok(show > 0 && hide > show, 'the show and hide steps were not found in order');
   assert.ok(calls[0]! > show && calls[0]! < hide, 'onComplete is reachable outside the "show" step');
+});
+
+/* ------------------------------------------------------------------ */
+/* 5. The essay in the editor belongs to the student who started it   */
+/*    (R2B-01)                                                         */
+/* ------------------------------------------------------------------ */
+
+const B_ESSAY = 'SYNTHETIC essay, written by student B on the same page.';
+const EDITOR_PROMPT = 'SYNTHETIC-editor-prompt';
+
+/** A clock this file winds by hand, standing in for the browser's timers so
+    "inside the 600 ms" and "after it" are exact rather than raced. */
+function handCrankedClock() {
+  let now = 0;
+  let nextId = 1;
+  const waiting = new Map<number, { at: number; run: () => void }>();
+  return {
+    timers: {
+      set: (run: () => void, ms: number) => {
+        const id = nextId++;
+        waiting.set(id, { at: now + ms, run });
+        return id;
+      },
+      clear: (handle: unknown) => void waiting.delete(handle as number),
+    },
+    pending: () => waiting.size,
+    advance(ms: number) {
+      now += ms;
+      const due = [...waiting].filter(([, entry]) => entry.at <= now).sort((a, b) => a[1].at - b[1].at);
+      for (const [id, entry] of due) {
+        if (!waiting.has(id)) continue;
+        waiting.delete(id);
+        entry.run();
+      }
+    },
+  };
+}
+
+function draftOf(owner: CacheOwner, promptId = EDITOR_PROMPT): string | undefined {
+  return storage.data.get(editor.essayDraftKey(promptId, owner));
+}
+
+function draftKeysOf(promptId = EDITOR_PROMPT): string[] {
+  return [...storage.data.keys()]
+    .filter((key) => key.startsWith(editor.ESSAY_DRAFT_PREFIX) && key.endsWith(`::${promptId}`))
+    .sort();
+}
+
+type EditingSession = ReturnType<typeof editor.openEssayEditing>['session'];
+
+/** The component's own submit, reduced to its ownership decision: claim a
+    binding from the editing session, and only with one reach the grader and
+    keep the grade. Returns how many times the grader was reached. */
+async function submitFromEditor(session: EditingSession): Promise<number> {
+  let graderCalls = 0;
+  const binding = editor.claimSubmission(session);
+  if (!binding) return graderCalls;
+  await storeOwner.runOwnedGrade(
+    binding,
+    async () => {
+      graderCalls += 1;
+      return ESSAY_GRADE;
+    },
+    { keep: (grade, owner) => keepEssay(grade, owner, '2026-09-23T18:00:00.000Z') },
+  );
+  return graderCalls;
+}
+
+test("a switch from A to B before submission keeps A's text in A's draft, gives B an empty editor, and refuses A's stale submission", async () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  assert.equal(opened.draft, '');
+  assert.deepEqual(opened.session.owner, A);
+  opened.session.edited(A_ESSAY);
+  clock.advance(editor.ESSAY_DRAFT_DEBOUNCE_MS);
+  assert.equal(draftOf(A), A_ESSAY, "A's draft was not kept under A");
+
+  /* The menu, or another tab, hands the page to B. */
+  signInAs(B);
+
+  /* Before the editor is handed over: A's session is stale and cannot send. */
+  assert.equal(opened.session.isCurrent(), false);
+  assert.equal(editor.claimSubmission(opened.session), null, "A's essay could be submitted while B is on the page");
+  assert.equal(await submitFromEditor(opened.session), 0, "the grader was reached with A's essay under B");
+
+  /* The hand-over the component runs from its owner-change listener. */
+  const handed = editor.handOverEssayEditing(opened.session, { timers: clock.timers });
+  assert.ok(handed, 'a change of owner did not hand the editor over');
+  assert.deepEqual(handed.session.owner, B);
+  assert.equal(handed.draft, '', "B's editor opened with text in it");
+
+  /* And after it: A's closed session still cannot send. */
+  assert.equal(editor.claimSubmission(opened.session), null);
+  assert.equal(await submitFromEditor(opened.session), 0);
+
+  /* A's text is in A's draft and nowhere else; nothing was graded or recorded. */
+  assert.equal(draftOf(A), A_ESSAY);
+  assert.equal(draftOf(B), undefined, "A's text reached B's draft");
+  assert.deepEqual(keysCarrying([A_ESSAY]), [editor.essayDraftKey(EDITOR_PROMPT, A)]);
+  assert.deepEqual(recordEventsOf(B), []);
+  assert.deepEqual(recordEventsOf(A), []);
+  assert.deepEqual(progress.getWritingAttempts(), [], 'a writing attempt was recorded for B');
+  assert.deepEqual(progress.getProgressFor(A).writing, {}, 'a refused submission was recorded for A');
+
+  /* B's own editor works for B, and only for B. */
+  const bBinding = editor.claimSubmission(handed.session);
+  assert.ok(bBinding, "B cannot submit B's own essay");
+  assert.deepEqual(bBinding.owner, B);
+  bBinding.cancel();
+});
+
+test("a switch during the 600 ms debounce writes A's text under A only, even when the timer fires after the switch", () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  clock.advance(300);
+  assert.equal(draftOf(A), undefined, 'the draft was written before the debounce ran out');
+
+  /* The owner changes inside the 600 ms, and nothing hands the editor over:
+     the timer fires on its own, with B on the page. The draft must still be
+     A's (this is exactly where the old autosave asked "who is here now"). */
+  signInAs(B);
+  clock.advance(300);
+  assert.equal(draftOf(A), A_ESSAY, "the late timer did not write A's text under A");
+  assert.equal(draftOf(B), undefined, "the late timer wrote A's text under B");
+  assert.deepEqual(draftKeysOf(), [editor.essayDraftKey(EDITOR_PROMPT, A)]);
+});
+
+test("an owner change during the debounce writes A's latest text to A at once and cancels the pending write", () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  opened.session.edited('SYNTHETIC first version by A');
+  clock.advance(editor.ESSAY_DRAFT_DEBOUNCE_MS);
+  opened.session.edited(A_ESSAY);
+  clock.advance(200);
+  assert.equal(clock.pending(), 1);
+
+  signInAs(null);
+  const device = storeOwner.currentOwner();
+  const handed = editor.handOverEssayEditing(opened.session, { timers: clock.timers });
+  assert.ok(handed);
+  assert.equal(clock.pending(), 0, 'the pending draft write survived the hand-over');
+  assert.equal(draftOf(A), A_ESSAY, "A's latest text was not kept under A at the hand-over");
+  assert.equal(draftOf(device), undefined, "A's text reached the signed-out device owner's draft");
+
+  /* Typing that reaches the old session after the hand-over goes nowhere. */
+  opened.session.edited('SYNTHETIC keystroke arriving late');
+  clock.advance(5000);
+  assert.equal(draftOf(A), A_ESSAY);
+  assert.deepEqual(draftKeysOf(), [editor.essayDraftKey(EDITOR_PROMPT, A)]);
+});
+
+test("a switch back to A restores A's draft, and B's own draft stays B's", () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const a = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  a.session.edited(A_ESSAY);
+  clock.advance(editor.ESSAY_DRAFT_DEBOUNCE_MS);
+
+  signInAs(B);
+  const b = editor.handOverEssayEditing(a.session, { timers: clock.timers });
+  assert.ok(b);
+  assert.equal(b.draft, '');
+  b.session.edited(B_ESSAY);
+  clock.advance(100);
+
+  signInAs(A);
+  const back = editor.handOverEssayEditing(b.session, { timers: clock.timers });
+  assert.ok(back);
+  assert.deepEqual(back.session.owner, A);
+  assert.equal(back.draft, A_ESSAY, 'A did not find their draft on coming back');
+  assert.equal(draftOf(B), B_ESSAY, "B's own pending text was not kept for B at the hand-over");
+  assert.equal(draftOf(A), A_ESSAY);
+
+  const binding = editor.claimSubmission(back.session);
+  assert.ok(binding, 'A cannot submit their own restored essay');
+  assert.deepEqual(binding.owner, A);
+  binding.cancel();
+});
+
+test('the same owner being told its stores changed does not hand the editor over', () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  storeOwner.announceStoresChanged();
+  assert.equal(editor.handOverEssayEditing(opened.session, { timers: clock.timers }), null);
+  assert.equal(opened.session.closed(), false);
+  assert.equal(clock.pending(), 1, 'a refresh for the same owner dropped the pending draft');
+  clock.advance(editor.ESSAY_DRAFT_DEBOUNCE_MS);
+  assert.equal(draftOf(A), A_ESSAY);
+});
+
+test('an essay started signed out stays with this device when a student signs in', () => {
+  freshDevice();
+  signInAs(null);
+  const device = storeOwner.currentOwner();
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  clock.advance(100);
+
+  signInAs(A);
+  const handed = editor.handOverEssayEditing(opened.session, { timers: clock.timers });
+  assert.ok(handed);
+  assert.equal(handed.draft, '', "the device's unfinished essay opened in the account's editor");
+  assert.equal(draftOf(device), A_ESSAY);
+  assert.equal(draftOf(A), undefined);
+  assert.equal(editor.claimSubmission(opened.session), null);
+});
+
+test('a confirmed "different task" discards the pending write and the draft', () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(EDITOR_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  clock.advance(editor.ESSAY_DRAFT_DEBOUNCE_MS);
+  opened.session.edited(`${A_ESSAY} and more`);
+  opened.session.discard();
+  clock.advance(5000);
+  assert.equal(draftOf(A), undefined);
+  assert.equal(clock.pending(), 0);
+});
+
+test('a late grade still goes to A when the editor was handed to B while it was being graded', async () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(A_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  /* Submit: the latest text into A's draft first, then the binding. */
+  opened.session.flush();
+  const binding = editor.claimSubmission(opened.session);
+  assert.ok(binding);
+  const grader = pendingGrade<SyntheticGrade>();
+  let shown = 0;
+  let hidden = 0;
+  const settling = storeOwner.runOwnedGrade(binding, () => grader.promise, {
+    keep: (grade, owner) => {
+      keepEssay(grade, owner, '2026-09-23T19:00:00.000Z');
+      /* The component clears the submitter's draft once the report is kept. */
+      editor.clearEssayDraft(A_PROMPT, owner);
+    },
+    show: () => (shown += 1),
+    hide: () => (hidden += 1),
+  });
+
+  /* B takes the page. The component's listener hands the editor over and,
+     because a grade is on its way, lets go of the attempt on screen. */
+  signInAs(B);
+  const handed = editor.handOverEssayEditing(opened.session, { timers: clock.timers });
+  assert.ok(handed);
+  assert.equal(handed.draft, '');
+  assert.equal(draftOf(A, A_PROMPT), A_ESSAY, "A's submitted essay is not safe in A's draft while it is graded");
+  binding.cancel();
+
+  grader.resolve(ESSAY_GRADE);
+  assert.equal(await settling, 'cancelled');
+  assert.equal(shown, 0, "A's report was painted on B's page");
+  assert.equal(hidden, 0);
+
+  /* Kept for A, exactly once; nothing under B. */
+  assert.equal(progress.getProgressFor(A).writing[A_PROMPT]?.length, 1);
+  assert.equal(progress.getProgressFor(A).writing[A_PROMPT]?.[0]?.essay, A_ESSAY);
+  assert.deepEqual(
+    recordEventsOf(A).map((event) => event.activityId),
+    [`write:${A_PROMPT}`],
+  );
+  assert.deepEqual(recordEventsOf(B), []);
+  assert.deepEqual(progress.getWritingAttempts(), []);
+  assert.equal(draftOf(A, A_PROMPT), undefined, "A's draft outlived the report it became");
+  assert.equal(draftOf(B, A_PROMPT), undefined);
+});
+
+test('WritingTester binds the editor to its owner, hands it over on a change, and checks it before grading', () => {
+  const code = componentSource('WritingTester.tsx');
+  assert.match(code, /\bonOwnerChange\(/, 'the editor does not notice a change of owner');
+  assert.match(code, /\bhandOverEssayEditing\(/, 'the editor is not handed over on a change of owner');
+  assert.match(code, /\bopenEssayEditing\(/, 'the essay is not opened through an editing session');
+  const claim = code.indexOf('claimSubmission(');
+  const grade = code.indexOf('gradeEssay(');
+  assert.ok(claim > 0 && grade > claim, 'the essay can reach the grader before its owner is checked');
+  /* Every draft write goes through the session or names its owner. */
+  assert.doesNotMatch(code, /localStorage/, 'the component reaches storage directly');
+  assert.doesNotMatch(code, /setTimeout\(/, 'the component keeps its own draft timer outside the session');
+  assert.doesNotMatch(code, /getLearnerStore\(\)\s*\.\s*owner\(\)/, 'a draft key is resolved from whoever is on the page');
+  for (const call of code.matchAll(/\b(writeEssayDraft|clearEssayDraft)\(([^)]*)\)/g)) {
+    assert.ok(call[2]!.split(',').length >= 2, `${call[1]} is called without naming an owner: ${call[0]}`);
+  }
 });

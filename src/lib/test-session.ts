@@ -295,6 +295,55 @@ export function clearSession(sittingOwner?: string): void {
   safeRemove(storage, keyFor(currentOwner()));
 }
 
+/* ── One paper's sitting, wherever it is kept ────────────────────────────── */
+
+/* WHY THERE ARE TWO PLACES (third Codex round, 23 September 2026, R2B-03)
+   The slot above holds ONE sitting per student, and a mock exam's Listening
+   and Reading papers used to be kept in it too. So a student who paused a
+   mock on its Listening paper and opened any other paper in the meantime
+   overwrote the mock's answers and deadline, and resuming the mock started
+   Listening again from nothing; and a new mock on a paper that happened to be
+   sitting in the slot picked up that older sitting, because the slot knows
+   the paper and nothing else. A mock's papers are now kept INSIDE that mock
+   sitting (src/lib/tests/mock.ts, mockLegSitting), under its own identity,
+   and this slot is for papers opened on their own. The test player is handed
+   one of the two and asks it, never the storage, so it cannot mix them. */
+
+/** A handed-in paper's result, as the test player computed it. */
+export interface PaperOutcome {
+  raw: number;
+  total: number;
+  band: number;
+  bandLabel: string;
+  secondsUsed: number;
+}
+
+/** Where ONE paper's in-progress sitting is kept, as the test player uses
+    it: restore, start, save the answers, and finish once handed in. */
+export interface PaperSittingStore {
+  /** The sitting of this paper the current owner can resume, if any. */
+  load(): TestSession | null;
+  /** A fresh sitting of this paper, with a fresh deadline and no answers. */
+  start(): TestSession;
+  /** Save the answers of the sitting `sittingOwner` started. False, writing
+      nothing, once somebody else is using this browser. */
+  save(answers: Record<string, string>, sittingOwner?: string): boolean;
+  /** The paper was handed in: the in-progress sitting is done with. A no-op
+      once somebody else is using this browser. */
+  finish(sittingOwner: string | undefined, outcome: PaperOutcome): void;
+}
+
+/** A paper opened on its own: the one slot per student above, exactly as
+    it has always behaved. */
+export function standaloneSitting(test: PracticeTest): PaperSittingStore {
+  return {
+    load: () => loadSession(test.id),
+    start: () => startSession(test),
+    save: (answers, sittingOwner) => saveAnswers(answers, sittingOwner),
+    finish: (sittingOwner) => clearSession(sittingOwner),
+  };
+}
+
 /* ── Handing a sitting to an account, on the student's say-so ────────────── */
 
 /** A stored sitting held by `from`, re-stamped so that `to` can resume it:
