@@ -94,7 +94,6 @@ export const strings: Record<string, string> = {
   'Not open yet: its length is still being decided': 'Пока закрыт: длительность ещё уточняется',
   'Included in your trial': 'Входит в пробный период',
   'Continue test': 'Продолжить тест',
-  'See my results': 'Мои результаты',
   'Available with full access': 'Доступно с полным доступом',
   'See what full access includes in {section}': 'Что входит в полный доступ по {section}',
   'Your trial opens one introduction and one test in each section. Everything else stays listed, so you can see what full access adds.':

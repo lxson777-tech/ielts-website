@@ -14,10 +14,12 @@ model. Every proof below is local, against synthetic accounts.
   which carry the fixes for Codex's third and fourth ownership inspections. The second
   merge had one conflict in `TestPlayer.tsx`, resolved by keeping the platform's
   "finish the sitting before recording anything" order and reporting the trial test
-  after the result is recorded (the platform session confirmed that order). Everything
-  below was rerun after it. `main` (`b61d8c4`, vocabulary practice) is not in yet: it
-  conflicts with the platform branch in vocabulary and dashboard files, and the
-  platform session will fold it in there first. Not built on the older marketing checkout in the root folder,
+  after the result is recorded (the platform session confirmed that order). Then merged
+  again at `c5cf425`, where the platform session had folded in the published `main`
+  (`9b775df`, marked-question vocabulary practice) and resolved its conflicts; the only
+  conflict here was two neighbouring style imports, both kept, and one sentence ("See my
+  results") that the merged work already translates, whose Russian is now theirs.
+  Everything below was rerun after that merge. Not built on the older marketing checkout in the root folder,
   which was only read for Codex's design files.
 
 ## The switch
@@ -165,7 +167,7 @@ needs the same pattern, and signed short-lived links for audio.
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite) | 1,941 of 1,941 pass (63 of them are the trial tests below) |
+| `npm test` (whole suite, after the merge with `c5cf425`) | 2,031 of 2,031 pass (63 of them are the trial tests below) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
 | `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 12 of 12 |

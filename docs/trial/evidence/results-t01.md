@@ -1,6 +1,6 @@
 # Trial journey (t01), local stand-in
 
-Run 1790165496. Site http://localhost:4331/ielts-website, backend http://127.0.0.1:8795 (--trial: real migration in PGlite, real Workers,
+Run 1790178985. Site http://localhost:4331/ielts-website, backend http://127.0.0.1:8795 (--trial: real migration in PGlite, real Workers,
 simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. Nothing billed.
 
 **70 of 70 checks passed.**
@@ -14,7 +14,7 @@ simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. N
 | PASS | join: questionnaire carried through the sign-in round trip |  |
 | PASS | join: no trial exists before the student presses start |  |
 | PASS | no trial yet: lesson covered with a start invitation |  |
-| PASS | start: server recorded the trial with the questionnaire | {"user_id": "f99c4118-6c4e-4613-b0ec-7c20425f7538", "started_at": "2026-09-23T12:11:54.793Z", "ends_at": "2026-09-26T12:11:54.793Z", "questionnaire": {"band": " |
+| PASS | start: server recorded the trial with the questionnaire | {"user_id": "30c551b1-4e96-462c-85ce-25521415d2c9", "started_at": "2026-09-23T15:56:50.619Z", "ends_at": "2026-09-26T15:56:50.619Z", "questionnaire": {"band": " |
 | PASS | dashboard: time left from the server clock |  |
 | PASS | dashboard: suggested section tab (Writing) opens first |  |
 | PASS | keyboard: ArrowRight moves to Speaking and focuses it |  |
@@ -54,7 +54,7 @@ simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. N
 | PASS | trial test: result shown after submitting |  |
 | PASS | trial test: submission settled the Reading test on the server |  |
 | PASS | trial test: reopening says the section's test is used |  |
-| PASS | two tabs: one Listening sitting between them | [{"user_id": "f99c4118-6c4e-4613-b0ec-7c20425f7538", "kind": "test", "section": "listening", "request_id": "sit-7ab4affd-fce2-43f2-a4ee-3be1351416ec", "activity |
+| PASS | two tabs: one Listening sitting between them | [{"user_id": "30c551b1-4e96-462c-85ce-25521415d2c9", "kind": "test", "section": "listening", "request_id": "sit-cbd0d739-3ff3-47ec-88dd-67b732b54c49", "activity |
 | PASS | writing: checker says it is the one Writing test |  |
 | PASS | writing: begun on the server when the task started |  |
 | PASS | writing: a failed grade leaves the test available and says so |  |
