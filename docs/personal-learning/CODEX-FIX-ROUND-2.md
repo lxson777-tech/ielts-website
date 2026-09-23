@@ -89,3 +89,37 @@ and a dev server pointed at it; the recipe is in `tests/browser/README.md`.
 - The Writing, Speaking, claim and mobile fixes from the first round must
   remain intact.
 - Exam material stays English; every new interface string has Russian.
+
+## Inspection round 1 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `2eabb37` against this specification, diff from `48b1d17`,
+write-capable integrations switched off, model the CLI default (gpt-6-astra,
+medium effort), 149 seconds, about 1.1 million input tokens of which 0.97
+million cached, 3,000 output tokens. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-1-of-2eabb37.json`.
+
+Verdict: REVISE. Four findings, all accepted by the host. Dispositions:
+
+- **R2-01 (high) accepted.** A pre-existing unowned test session was adopted
+  into whoever the history migration stamp named, which is a different
+  question from who started the test; the spec required the anonymous device
+  owner. The builder's own test asserted the wrong rule. Fix: unowned sessions
+  and mock state adopt into the anonymous owner only; the case "stamp names A,
+  session started by B" is covered.
+- **R2-02 (high) accepted, and generalised.** A speaking grade returning after
+  the owner changed was recorded under the current owner. The same pattern
+  exists for the essay grader and the standalone examiner, so every delayed
+  grade is now bound to its starting owner and a cancellation generation, and
+  a late grade is kept for the student who earned it rather than written under
+  the next one or dropped.
+- **R2-03 (medium) accepted.** The stopped mock offered no way back for its
+  own student and kept its progress only in memory. Fix: the active mock is
+  persisted per owner and resumable only by that owner; B's fresh mock is
+  separate.
+- **R2-04 (medium) accepted.** The initial owner was read from any Supabase
+  token on the origin; GitHub Pages shares one origin across applications.
+  Fix: only this application's project token is honoured, and unconfigured
+  accounts are anonymous.
+
+A second, fresh inspection follows the fixes, as the skill's inspection budget
+allows (two rounds).

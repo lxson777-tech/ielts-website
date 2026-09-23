@@ -1,0 +1,87 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "0c15390eeb5785fad1f601c5c27b515cc46af0639eac8e316ef7fed0c1b878fd",
+  "base": "48b1d17",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0ccb8-ee63-77e0-a94b-13d559176f9a",
+  "usage": {
+    "input_tokens": 1115548,
+    "cached_input_tokens": 969088,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 3010,
+    "reasoning_output_tokens": 736
+  },
+  "elapsed_seconds": 149.41,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence"
+  ],
+  "inspected_commit": "2eabb37",
+  "snapshot_sha256": "d7d82aeaeba62f0baa90d21fd0b620e95b0290bd43a202e1f7ebcc00c705eb3f",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "The main ownership fixes are present, but migration and delayed Speaking grading still permit misattribution. Mock recovery and session discovery also need correction.",
+    "findings": [
+      {
+        "id": "R2-01",
+        "severity": "high",
+        "path": "src/lib/test-session.ts:70",
+        "evidence": "Session migration uses scopedKeyIn(), whose adoption rule trusts the device-wide LEGACY_MIGRATION_OWNER_KEY (store-owner.ts:402). That stamp describes previously migrated history, not who started an unfinished test. If the stamp names A but B subsequently started the old device-wide session before this update, A now automatically receives B's answers and can submit them. The new test 'an unowned sitting DOES go to the owner the device itself names' explicitly preserves behavior forbidden by the plan.",
+        "fix": "Give previously unowned test sessions a separate migration rule that always adopts them into the anonymous device namespace. Do not infer their owner from the older history migration stamp. Cover a stamp naming A alongside an unfinished session created by B."
+      },
+      {
+        "id": "R2-02",
+        "severity": "high",
+        "path": "src/components/LiveExaminer.tsx:600",
+        "evidence": "The mock embeds LiveExaminer, which awaits gradeInterview() and then calls getLearnerStore().recordSpeakingGraded() at line 639 without checking the sitting owner or cancellation. If A's grade is pending while another tab switches to B, MockExam's new guard unmounts the examiner, but its cleanup does not cancel this continuation. The reply then records A's Speaking evidence in B's current store. The parent guard protects only the combined mock record.",
+        "fix": "Bind the examiner and grading request to their starting owner and a cancellation generation. Invalidate pending work on owner change or unmount, and check both before recording evidence or invoking completion callbacks. Add a delayed-grade account-switch regression case."
+      },
+      {
+        "id": "R2-03",
+        "severity": "medium",
+        "path": "src/components/MockExam.tsx:327",
+        "evidence": "ownerChanged becomes permanently true when A signs out; signing back in as A never clears it. The stopped screen offers only Back or a fresh mock, which clears the essays and completed-leg state. Those values exist only in React state, so navigation or refresh also loses them. This does not meet the requirement that A's unfinished mock work remain resumable by A.",
+        "fix": "Persist the active mock's owner, stage, selected material, completed legs, essays and deadlines. Restore it only for that owner, and provide a resume path when A returns. Keep B's fresh mock separate."
+      },
+      {
+        "id": "R2-04",
+        "severity": "medium",
+        "path": "src/lib/store-owner.ts:219",
+        "evidence": "storedSessionUserId() selects the first matching sb-*-auth-token key without identifying the configured Supabase project. Local storage is shared across paths on an origin, including other GitHub Pages applications. A session from another project can therefore establish the wrong initial owner, restore that owner's sitting, or receive new local evidence before the real account lifecycle responds. With accounts unconfigured, wireAccount() leaves that incorrect owner in place.",
+        "fix": "Resolve only the storage key belonging to this application's configured auth client, using a shared lightweight configuration. Treat unconfigured accounts as anonymous. Cover multiple project tokens and a foreign token with this application's accounts disabled."
+      }
+    ],
+    "coverage": [
+      "Inspected the on-disk plan and confirmed its supplied SHA256.",
+      "Reviewed all 25 manifest entries and their supplied changed hunks.",
+      "Traced test-session restoration, answer persistence, submission, owner notifications and mock stage transitions.",
+      "Traced auth lifecycle, session callbacks, sync cancellation, legacy migration stamps, anonymous claims and learner-store ownership.",
+      "Inspected the mock's LiveExaminer grading continuation and unmount cleanup beyond the manifest.",
+      "Inspected full-screen paper, Reading drill, Listening drill and mock route wiring, regression test sources, and existing direct-entry and unfinished-test evidence logs."
+    ],
+    "limitations": [
+      "Static review only. No files edited, tests executed, browser journeys run or work delegated.",
+      "Existing test and browser reports were treated as supplied evidence, not independently verified results.",
+      "Production Supabase policies, real account reconciliation, live grading and visual behavior were not verified."
+    ]
+  }
+}

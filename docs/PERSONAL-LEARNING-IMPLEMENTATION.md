@@ -427,3 +427,39 @@ full journey against the stand-in started in-process.
 
 Gates after the whole round: `npm test` 1737 pass, 0 fail; `npx astro check`
 0 errors, 0 warnings; `npm run build` complete.
+
+## 12. Codex's second review (23 September) and the fixes
+
+Codex reviewed commit `48b1d17` again (`docs/audits/claude-personal-learning-review-2026-09-23.md`,
+proof scripts and logs beside it), confirmed the five earlier fixes, and found
+three remaining ownership paths, all P1. All three were confirmed by the lead
+with Codex's own scripts before any fix and are fixed on this branch at the
+root cause. The specification the fixes were inspected against is
+`docs/personal-learning/CODEX-FIX-ROUND-2.md`.
+
+| Finding | Root cause | Fix | Commit |
+|---|---|---|---|
+| 1 (P1) Another student's unfinished test could be submitted into the new account | The half-finished sitting (`ielts.testsession.v1`) and the mock history (`ielts.mock.v1`) were device-wide, and the player restored whatever was there for whoever was signed in | Both stores are owner-scoped through the same one-time adoption rule as the older stores (old keys copied, never modified or deleted, never to a different signed-in student). A sitting is bound in memory to the owner it started under; if the owner changes while the player or the mock is mounted, the timer freezes, nothing more is saved, submission refuses and a calm card offers a fresh start. Submission records only under the sitting's own owner while that owner is current. The mock history joins the explicit claim list. `tests/test-session-owner.test.ts` (13 tests); browser journey `f22` against the stand-in, 22 of 22 (`results-unfinished-test.md`). | `0f7a7c0`, `2eabb37` |
+| 2 (P1) A cancelled sign-in could restore the signed-out student's owner | Only the caller checked the sign-in generation, after a helper had already moved the owner; a cancelled sign-in finished anyway | Each sign-in step holds the current generation and asks it before moving an owner, writing a store, sending a request or adding a subscription; a cancelled step leaves every store on the current owner; the learning sync layer is handed the same check. Codex's `signout-race.mjs` now prints the owner anonymous both immediately after sign-out and after the cancelled sign-in finishes, with no essay visible. Cancellation and A-to-B switch cases in `tests/account-isolation.test.ts`. | `2eabb37` |
+| 3 (P1) Direct entry or refresh on a full-screen test page recorded signed-in work as anonymous | The owner defaulted to anonymous until a menu component mounted, and the bare test, drill and mock pages mount no menu | One app-wide account lifecycle (`src/lib/auth/lifecycle.ts`, started by `AccountLifecycle.astro` from the base layout on every route, outside every bare branch) answers the owner from the session the browser already holds on the first read, so no page or mount order can be too early; the two menus read it instead of owning it. Cold-initialisation test and a source-scan test that every page on the bare layout renders the lifecycle; browser journey `f21` against the stand-in, 22 of 22 (`results-direct-entry.md`): a drill entered by URL while signed in lands in the student's own record and reaches the stand-in under them alone, a mid-paper refresh keeps the sitting and its timer, signed-out use still records anonymously. | `2eabb37` |
+
+Also in this round: the browser suite's dates come from the real clock rather
+than a frozen 22 September (`a8abf89`, Codex's request); raw control bytes in
+two source files written as escapes; the incorrect claim in section 11 that
+unfinished tests could not reach another account replaced with the truth.
+
+Gates after the round, on the committed tree `2eabb37`: `npm test` 1755 pass,
+0 fail; `npx astro check` 0 errors, 0 warnings; `npm run build` 661 pages;
+the activity index unchanged by regeneration.
+
+Browser evidence for the whole suite after this round is in
+`docs/personal-learning/evidence/final/results-round2.md` (frozen snapshot of
+`2eabb37`, the three stand-in journeys, and Codex's own two browser
+reproductions rerun against the fixed build). Real accounts on real devices,
+production access policies and live AI remain external, as in section 7.
+
+Independent inspection: at Alex's request the lead ran a fresh read-only
+Codex inspection of this round itself (the claudex-loop contract: plan,
+change manifest and diff against `48b1d17`, structured verdict, write-capable
+integrations switched off for the run) on a clean copy of `2eabb37`; its
+verdict and findings are recorded in section 13.
