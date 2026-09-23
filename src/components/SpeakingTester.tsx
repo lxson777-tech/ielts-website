@@ -16,7 +16,7 @@ import type { StructureMethod } from '../data/speaking-structure-guides';
 import { nextInRotation } from '../lib/rotation';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../lib/speaking/recorder';
 import { toAnsweredClip, gradeSpeaking, isSpeakingGraderConfigured } from '../lib/speaking/grader';
-import { recordSpeakingAttempt } from '../lib/progress';
+import { recordSpeakingAttemptFor } from '../lib/progress';
 import { useT } from '../lib/i18n/react';
 import BandReport from './BandReport';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
@@ -24,7 +24,9 @@ import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
 import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
-import { getLearnerStore } from '../lib/learning/store.browser';
+import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
+import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
 import SessionContinueBar from './learning/SessionContinueBar';
@@ -76,6 +78,12 @@ function requiredSpeakingBand(): number | null {
   }
 }
 
+/** Shown in place of a result when the page changed hands while the answers
+    were being graded (R2-02). The same sentence the writing trainer uses. */
+const OWNER_CHANGED_NOTICE = nt(
+  'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.',
+);
+
 export default function SpeakingTester() {
   const { t, tn } = useT();
   const [mode, setMode] = useState<Mode | null>(null);
@@ -117,6 +125,20 @@ export default function SpeakingTester() {
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prepResolveRef = useRef<(() => void) | null>(null);
   const readyResolveRef = useRef<(() => void) | null>(null);
+  /* The attempt on screen, bound to the student who started it (R2-02,
+     runOwnedGrade in src/lib/store-owner.ts). Made when a part starts, so the
+     answers belong to whoever began speaking them; cancelled when a new part
+     starts, on "Start over" and on unmount. A grade that comes back after
+     any of those is still kept for that student, and never touches the
+     screen or anybody else's history. */
+  const attemptBindingRef = useRef<OwnerBinding | null>(null);
+
+  useEffect(
+    () => () => {
+      attemptBindingRef.current?.cancel();
+    },
+    [],
+  );
 
   /* Exact deep link (WP12 requirement 4): ?part=1&topic=<id> opens that
      Part 1 topic directly, ?part=2&card=<id> opens that cue card's Part 2
@@ -154,6 +176,8 @@ export default function SpeakingTester() {
     streamRef.current = stream;
     clipsRef.current = [];
     modeRef.current = m;
+    attemptBindingRef.current?.cancel();
+    attemptBindingRef.current = bindToCurrentOwner();
     setMode(m);
     setResult(null);
 
@@ -307,70 +331,117 @@ export default function SpeakingTester() {
   }
 
   async function runGrading() {
+    /* Everything the grade is kept against is read NOW, before the wait: a
+       new part started after this screen let go must not relabel it. */
+    const binding = attemptBindingRef.current ?? bindToCurrentOwner();
+    attemptBindingRef.current = binding;
     const clips = clipsRef.current;
-    const answered: AnsweredClip[] = await Promise.all(clips.map((c) => toAnsweredClip(c.question, c)));
-
-    const monologueIdx = turnsRef.current.findIndex((t) => t.isMonologue);
-    const attempt: SpeakingAttempt =
-      modeRef.current === 'part1'
-        ? { kind: 'part1', topic: promptTitleRef.current, answers: answered }
-        : {
-            kind: 'part2and3',
-            cueCard: cueCardRef.current!,
-            monologue: monologueIdx >= 0 ? answered[monologueIdx] : undefined,
-            followUps: answered.filter((_, i) => i !== monologueIdx),
-          };
-
-    const graded = await gradeSpeaking(attempt, clips, expectedMinMsRef.current);
-    if (streamRef.current) {
-      releaseMic(streamRef.current);
-      streamRef.current = null;
-    }
-    // Persist to the on-device history so speaking shows a band-over-time trend
-    // like reading and writing already do (previously it was never recorded).
     const gradedMode = modeRef.current;
-    if (gradedMode) {
-      const at = new Date().toISOString();
-      setAttemptAt(at);
-      recordSpeakingAttempt({
-        at,
-        mode: gradedMode,
-        topic: promptTitleRef.current,
-        overallBand: graded.overallBand,
-        criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
-        live: graded.grader.live,
-      });
+    const topic = promptTitleRef.current;
+    const promptId = promptIdRef.current;
+    const cueCard = cueCardRef.current;
+    const expectedMinMs = expectedMinMsRef.current;
+    const monologueIdx = turnsRef.current.findIndex((t) => t.isMonologue);
+    let at: string | null = null;
 
-      /* Learner-evidence recording (WP12), written alongside the row above,
-         never instead of it: part scope, the four criterion bands, whether
-         this was a live grade, and NO audio anywhere in it (createEvidenceEvent
-         refuses anything that looks like a recording, see evidence.ts's
-         assertNoRawAudio). promptIdRef names the exact topic or cue card, set
-         when this mode started (startMode), so the activity id matches the
-         catalogue exactly whether the prompt came from the rotation or from
-         an exact deep link. */
-      const promptId = promptIdRef.current;
-      getLearnerStore().recordSpeakingGraded({
-        activityId: promptId
-          ? gradedMode === 'part3'
-            ? speakingPart3ActivityId(promptId)
-            : speakingActivityId(promptId)
-          : 'trainer:speaking',
-        paper: 'speaking',
-        promptId: promptId ?? undefined,
-        part: gradedMode === 'part1' ? 1 : gradedMode === 'part2' ? 2 : 3,
-        at,
-        overallBand: graded.overallBand,
-        criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
-        grader: graded.grader,
-        legacyRef: { store: 'speaking', key: gradedMode, at },
-      });
-    }
-    setResult(graded);
-    setPhase('report');
+    /* The microphone THIS attempt used. Released by that handle rather than
+       by whatever streamRef holds when the grade arrives, which after a new
+       part has started would be the new attempt's microphone. */
+    const gradedStream = streamRef.current;
+    const releaseStream = () => {
+      if (gradedStream) releaseMic(gradedStream);
+      if (streamRef.current === gradedStream) streamRef.current = null;
+    };
+
+    const outcome = await runOwnedGrade(
+      binding,
+      async () => {
+        const answered: AnsweredClip[] = await Promise.all(clips.map((c) => toAnsweredClip(c.question, c)));
+        const attempt: SpeakingAttempt =
+          gradedMode === 'part1'
+            ? { kind: 'part1', topic, answers: answered }
+            : {
+                kind: 'part2and3',
+                cueCard: cueCard!,
+                monologue: monologueIdx >= 0 ? answered[monologueIdx] : undefined,
+                followUps: answered.filter((_, i) => i !== monologueIdx),
+              };
+        return gradeSpeaking(attempt, clips, expectedMinMs);
+      },
+      {
+        /* Persist to the on-device history so speaking shows a band-over-time
+           trend like reading and writing already do, under `owner`: the
+           student who spoke, not necessarily the one using the page now. */
+        keep: (graded, owner) => {
+          if (!gradedMode) return;
+          at = new Date().toISOString();
+          const criteria = Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band]));
+
+          /* Learner-evidence recording (WP12), written alongside the row
+             below, never instead of it: part scope, the four criterion bands,
+             whether this was a live grade, and NO audio anywhere in it
+             (createEvidenceEvent refuses anything that looks like a
+             recording, see evidence.ts's assertNoRawAudio). promptId names
+             the exact topic or cue card, set when this mode started
+             (startMode), so the activity id matches the catalogue exactly
+             whether the prompt came from the rotation or from an exact deep
+             link. Written first, so that a record opened for the first time
+             on this device takes its one-time copy of the older stores
+             before the row below is in them rather than after it. */
+          recordSpeakingGradedFor(owner, {
+            activityId: promptId
+              ? gradedMode === 'part3'
+                ? speakingPart3ActivityId(promptId)
+                : speakingActivityId(promptId)
+              : 'trainer:speaking',
+            paper: 'speaking',
+            promptId: promptId ?? undefined,
+            part: gradedMode === 'part1' ? 1 : gradedMode === 'part2' ? 2 : 3,
+            at,
+            overallBand: graded.overallBand,
+            criteria,
+            grader: graded.grader,
+            legacyRef: { store: 'speaking', key: gradedMode, at },
+          });
+          recordSpeakingAttemptFor(owner, {
+            at,
+            mode: gradedMode,
+            topic,
+            overallBand: graded.overallBand,
+            criteria,
+            live: graded.grader.live,
+          });
+        },
+        show: (graded) => {
+          releaseStream();
+          if (at) setAttemptAt(at);
+          setResult(graded);
+          setPhase('report');
+        },
+        hide: () => {
+          /* Somebody else is using the page now. The grade is kept for the
+             student who spoke; their recordings and their result leave the
+             screen, and the page goes back to the start. */
+          releaseStream();
+          clipsRef.current = [];
+          setMode(null);
+          setResult(null);
+          setAttemptAt(null);
+          setMicError(t(OWNER_CHANGED_NOTICE));
+          setPhase('menu');
+        },
+      },
+    );
+    /* The screen let go while the grade was on its way. It has been kept;
+       all that is left is to let go of the microphone. */
+    if (outcome === 'cancelled') releaseStream();
   }
 
   function backToMenu() {
+    /* A deliberate start-over lets go of the attempt: anything of it still
+       being graded is kept for its student but no longer shown here. */
+    attemptBindingRef.current?.cancel();
+    attemptBindingRef.current = null;
     if (recordingRef.current) void recordingRef.current.stop();
     if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
     if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);

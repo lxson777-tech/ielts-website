@@ -51,7 +51,7 @@ import {
   type DrillPlan,
 } from '../lib/speaking/live/script';
 import { gradeInterview, gradingAvailable, FULL_TEST_EXPECTED_MIN_MS } from '../lib/speaking/live/grade';
-import { recordSpeakingAttempt } from '../lib/progress';
+import { recordSpeakingAttemptFor } from '../lib/progress';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange, getAccessToken } from '../lib/auth/session';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prompts';
@@ -64,7 +64,9 @@ import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
 import AuthModal from './AuthModal';
-import { getLearnerStore } from '../lib/learning/store.browser';
+import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
+import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
 
@@ -100,6 +102,13 @@ const DRILL_METHOD: Record<DrillMode, StructureMethod> = { part1: 'ARE', part2: 
 type Phase = 'menu' | 'connecting' | 'interview' | 'grading' | 'report' | 'error';
 type Stage = 'part1' | 'part2prep' | 'part2talk' | 'part3' | 'wrapup';
 type LiveMode = 'full' | DrillMode;
+
+/** Shown in place of a result when the page changed hands while the
+    interview was being graded (R2-02). The same sentence the other trainers
+    use. */
+const OWNER_CHANGED_NOTICE = nt(
+  'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.',
+);
 
 /** variant="full": the complete three-part mock test (/speaking/examiner).
     variant="drills": the same live examiner scoped to a single part, with a
@@ -173,6 +182,14 @@ export default function LiveExaminer({
      ran (so it doesn't also report an abort for a normal finish). */
   const mockAutoStartedRef = useRef(false);
   const mockCompletedRef = useRef(false);
+  /* The interview on screen, bound to the student who started it (R2-02,
+     runOwnedGrade in src/lib/store-owner.ts). Made when a session starts, so
+     the recording belongs to whoever began the interview; cancelled when the
+     next one starts and on unmount. Inside the mock that unmount is exactly
+     what MockExam does when the account changes part way through, and it is
+     what stops a late grade from reaching onComplete: the grade is still
+     kept for the student who spoke, and nothing is written for anybody else. */
+  const sessionBindingRef = useRef<OwnerBinding | null>(null);
   /* Learner-evidence recording (WP12): the catalogue prompt id a drill is
      evidence about (a Part 1 topic id, or a cue-card id for Part 2/3), set
      the moment the plan is built in startTest: from an exact deep link
@@ -283,6 +300,8 @@ export default function LiveExaminer({
     if (startingRef.current || !(phase === 'menu' || phase === 'report' || phase === 'error')) return;
     startingRef.current = true;
     modeRef.current = m;
+    sessionBindingRef.current?.cancel();
+    sessionBindingRef.current = bindToCurrentOwner();
     setError(null);
     setNotice(null);
     setPhase('connecting');
@@ -595,73 +614,103 @@ export default function LiveExaminer({
     setGradingAudioSeconds(recording.durationMs / 1000);
     setGradingStartedAt(Date.now());
     setPhase('grading');
+    /* Everything the grade is kept against is read NOW, before the wait,
+       together with the student it belongs to. */
     const m = modeRef.current;
+    const binding = sessionBindingRef.current ?? bindToCurrentOwner();
+    sessionBindingRef.current = binding;
+    const topic = titleRef.current;
+    const promptId = promptIdRef.current;
     try {
-      const graded = await gradeInterview(
-        transcript,
-        recording,
-        m === 'full'
-          ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS }
-          : { expectedMinMs: DRILL_EXPECTED_MIN_MS[m], scope: DRILL_GRADE_SCOPE[m] },
+      await runOwnedGrade(
+        binding,
+        () =>
+          gradeInterview(
+            transcript,
+            recording,
+            m === 'full'
+              ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS }
+              : { expectedMinMs: DRILL_EXPECTED_MIN_MS[m], scope: DRILL_GRADE_SCOPE[m] },
+          ),
+        {
+          /* Kept under `owner`: the student who took the interview, who is
+             not necessarily the one using the page by the time the grade
+             comes back. */
+          keep: (graded, owner) => {
+            const at = new Date().toISOString();
+            const criteria = Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band]));
+
+            /* Learner-evidence recording (WP12), written alongside the row
+               below for a drill and freshly for the full interview (which the
+               legacy store never captured): part scope for a drill, none for
+               the whole three-part interview, the four criterion bands,
+               always live here (this pipeline has no offline stub), and NO
+               audio: the MediaRecorder blob stays local to gradeInterview's
+               own request and is never part of what gets recorded as
+               evidence. promptId names the exact topic or cue card for a
+               drill, set when the plan was built in startTest, so a
+               deep-linked prompt and a rotated one write against the same
+               catalogue id either way. Written first, so that a record opened
+               for the first time on this device takes its one-time copy of
+               the older stores before the row below is in them. */
+            const activityId =
+              m === 'full'
+                ? 'trainer:examiner'
+                : promptId
+                  ? m === 'part3'
+                    ? speakingPart3ActivityId(promptId)
+                    : speakingActivityId(promptId)
+                  : 'trainer:speaking';
+            recordSpeakingGradedFor(owner, {
+              activityId,
+              paper: 'speaking',
+              promptId: promptId ?? undefined,
+              part: m === 'full' ? undefined : m === 'part1' ? 1 : m === 'part2' ? 2 : 3,
+              at,
+              overallBand: graded.overallBand,
+              criteria,
+              grader: graded.grader,
+            });
+            // Drills feed the same band-over-time history as the recorded checker did.
+            if (m !== 'full') {
+              recordSpeakingAttemptFor(owner, {
+                at,
+                mode: m,
+                topic,
+                overallBand: graded.overallBand,
+                criteria,
+                live: true,
+              });
+            }
+          },
+          show: (graded) => {
+            setResult(graded);
+            setPhase('report');
+            // Mock embed: report straight back to MockExam instead of waiting on a
+            // "Done" click. It swaps to its own combined results screen the
+            // moment this fires (same beat as the Listening/Reading/Writing legs),
+            // so in practice this component's own report screen never gets a
+            // chance to paint. mockCompletedRef tells the unmount cleanup below
+            // this was a real finish, not an abort. Reached ONLY while the
+            // student who took the interview is still the one on screen.
+            if (mock) {
+              mockCompletedRef.current = true;
+              onComplete?.({
+                overallBand: graded.overallBand,
+                criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
+              });
+            }
+          },
+          hide: () => {
+            /* Somebody else is using the page now: nothing of the interview
+               is shown, and the mock's completion is not reported. The Back
+               button on this screen is the way out (onAbort in the mock). */
+            setResult(null);
+            setPhase('error');
+            setError(t(OWNER_CHANGED_NOTICE));
+          },
+        },
       );
-      const at = new Date().toISOString();
-      // Drills feed the same band-over-time history as the recorded checker did.
-      if (m !== 'full') {
-        recordSpeakingAttempt({
-          at,
-          mode: m,
-          topic: titleRef.current,
-          overallBand: graded.overallBand,
-          criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
-          live: true,
-        });
-      }
-
-      /* Learner-evidence recording (WP12), written alongside the row above
-         for a drill and freshly for the full interview (which the legacy
-         store above never captured): part scope for a drill, none for the
-         whole three-part interview, the four criterion bands, always live
-         here (this pipeline has no offline stub), and NO audio: the
-         MediaRecorder blob stays local to gradeInterview's own request and
-         is never part of what gets recorded as evidence. promptIdRef names
-         the exact topic or cue card for a drill, set when the plan was
-         built in startTest, so a deep-linked prompt and a rotated one write
-         against the same catalogue id either way. */
-      const promptId = promptIdRef.current;
-      const activityId =
-        m === 'full'
-          ? 'trainer:examiner'
-          : promptId
-            ? m === 'part3'
-              ? speakingPart3ActivityId(promptId)
-              : speakingActivityId(promptId)
-            : 'trainer:speaking';
-      getLearnerStore().recordSpeakingGraded({
-        activityId,
-        paper: 'speaking',
-        promptId: promptId ?? undefined,
-        part: m === 'full' ? undefined : m === 'part1' ? 1 : m === 'part2' ? 2 : 3,
-        at,
-        overallBand: graded.overallBand,
-        criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
-        grader: graded.grader,
-      });
-
-      setResult(graded);
-      setPhase('report');
-      // Mock embed: report straight back to MockExam instead of waiting on a
-      // "Done" click — it swaps to its own combined results screen the
-      // moment this fires (same beat as the Listening/Reading/Writing legs),
-      // so in practice this component's own report screen never gets a
-      // chance to paint. mockCompletedRef tells the unmount cleanup below
-      // this was a real finish, not an abort.
-      if (mock) {
-        mockCompletedRef.current = true;
-        onComplete?.({
-          overallBand: graded.overallBand,
-          criteria: Object.fromEntries(SPEAKING_CRITERIA.map((c) => [c.key, graded.criteria[c.key].band])),
-        });
-      }
     } catch (e) {
       setPhase('error');
       setError(e instanceof Error ? e.message : t('Grading failed.'));
@@ -677,6 +726,9 @@ export default function LiveExaminer({
   }
 
   function abandonToMenu() {
+    /* Letting go of the session: a grade still on its way is kept for the
+       student who spoke, but it no longer shows here or completes a mock. */
+    sessionBindingRef.current?.cancel();
     endedRef.current = true;
     timersRef.current.forEach(clearTimeout);
     intervalsRef.current.forEach(clearInterval);

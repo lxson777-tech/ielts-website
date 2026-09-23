@@ -1396,6 +1396,42 @@ export function getLearnerStore(): LearnerStore {
   return defaultStore;
 }
 
+/** A store for ONE named owner's record: the shared one when that is the
+    owner it already holds, otherwise a store opened on that owner's own key
+    for this one write.
+ *
+ * WHY (finding R2-02 of the second Codex inspection). A grade can come back
+ * after the page has moved on to another student. It belongs to the student
+ * it was started for (runOwnedGrade in src/lib/store-owner.ts), and the
+ * shared store is by then holding somebody else, so writing through it would
+ * put one student's band into the other's record. The store opened here is
+ * built exactly as the shared one is, with the same catalogue maps, so if the
+ * one-time migration of the old stores has not yet run for that owner on this
+ * device it runs now, before the grade is added, exactly as it would have on
+ * their own next visit. Nothing subscribes to it: the account sync of
+ * whoever is signed in now never sees this write, and the owner's own next
+ * sign-in finds it in their record and sends it to their own account. */
+export function learnerStoreFor(owner: CacheOwner): LearnerStore {
+  const shared = getLearnerStore();
+  if (ownerNamespace(shared.owner()) === ownerNamespace(owner)) return shared;
+  return createLearnerStore({
+    ...defaultOptions,
+    owner,
+    lessonSubskills: () => provided(defaultOptions.lessonSubskills, {}),
+    lessonMinutes: () => provided(defaultOptions.lessonMinutes, {}),
+  });
+}
+
+/** recordWritingGraded, into one named owner's record. See learnerStoreFor. */
+export function recordWritingGradedFor(owner: CacheOwner, input: WritingGradedInput): EvidenceEvent | null {
+  return learnerStoreFor(owner).recordWritingGraded(input);
+}
+
+/** recordSpeakingGraded, into one named owner's record. See learnerStoreFor. */
+export function recordSpeakingGradedFor(owner: CacheOwner, input: SpeakingGradedInput): EvidenceEvent | null {
+  return learnerStoreFor(owner).recordSpeakingGraded(input);
+}
+
 export function readLearnerRecord(): LearnerRecordV1 {
   return getLearnerStore().read();
 }

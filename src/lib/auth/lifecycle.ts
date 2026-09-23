@@ -41,7 +41,7 @@
 
 import type { User } from '@supabase/supabase-js';
 import type { CacheOwner } from '../learning/contracts/sync';
-import { currentOwner } from '../store-owner';
+import { currentOwner, setCurrentOwner } from '../store-owner';
 
 /** What every surface that shows an account needs to know, and nothing else. */
 export interface AccountState {
@@ -141,7 +141,14 @@ async function wireAccount(): Promise<void> {
 
   if (!configured) {
     /* No project wired up at all. There is no account to have, which is a
-       known answer, not a pending one. */
+       known answer, not a pending one.
+       And so nobody can be the owner but this device's anonymous one. The
+       owner is already that (store-owner.ts reads only this application's
+       own session, and with no project there is none to read), so this is
+       belt and braces: if anything ever did leave a signed-in owner in
+       place, a session from another application on the same origin for
+       instance, it is not left there (finding R2-04). */
+    if (currentOwner().kind === 'user') setCurrentOwner(null);
     publish({ known: true });
     return;
   }

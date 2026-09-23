@@ -146,6 +146,20 @@ const syntheticSupabase = {
 
 (globalThis as Record<string, unknown>).__syntheticSupabase = syntheticSupabase;
 
+/* This application's own account project, as the build would name it. Since
+   the second Codex inspection (R2-04) src/lib/store-owner.ts reads ONLY the
+   session stored under this project's key, `sb-<project ref>-auth-token`, and
+   treats a browser as signed out when accounts are not configured here at
+   all. The address is SYNTHETIC and reaches nothing; its first label,
+   `synthetic-local`, is what makes the key `sb-synthetic-local-auth-token`.
+   A test switches accounts off by setting both of these to undefined/false. */
+const THIS_PROJECT_ENV = {
+  PUBLIC_SUPABASE_URL: 'https://synthetic-local.supabase.co',
+  PUBLIC_SUPABASE_ANON_KEY: 'SYNTHETIC-anon-key',
+};
+(globalThis as Record<string, unknown>).__syntheticAuthEnv = THIS_PROJECT_ENV;
+(globalThis as Record<string, unknown>).__syntheticAuthConfigured = true;
+
 /* The account module is the ONLY thing replaced. Everything else in the
    import graph is the real file. */
 registerHooks({
@@ -156,7 +170,7 @@ registerHooks({
         shortCircuit: true,
         source:
           'export const getSupabase = () => globalThis.__syntheticSupabase;\n' +
-          'export const isAuthConfigured = () => true;\n',
+          'export const isAuthConfigured = () => globalThis.__syntheticAuthConfigured !== false;\n',
       };
     }
     const loaded = next(url, context);
@@ -168,6 +182,21 @@ registerHooks({
        file reading no environment at all, exactly as before. The file itself
        is the shipping one: it still builds its own transport, with its own
        token refresh, and nothing about sign-in is stubbed. */
+    /* src/lib/store-owner.ts reads the same two public settings to know
+       which stored session is this application's own. Same one-line front,
+       answering from a separate global so the learning tables above stay
+       exactly as off as they were. */
+    if (url.endsWith('/src/lib/store-owner.ts')) {
+      const source =
+        typeof loaded.source === 'string'
+          ? loaded.source
+          : Buffer.from(loaded.source as ArrayBuffer).toString('utf8');
+      return {
+        ...loaded,
+        source:
+          'Object.defineProperty(import.meta, "env", { get: () => globalThis.__syntheticAuthEnv });\n' + source,
+      };
+    }
     if (url.endsWith('/src/lib/auth/sync.ts')) {
       const source =
         typeof loaded.source === 'string'
@@ -1286,6 +1315,173 @@ test('the same page, signed out, records under this device and nowhere else', as
   } finally {
     lifecycle.resetAccountLifecycleForTest();
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* 6b. Only THIS application's session names the owner (R2-04)         */
+/* ------------------------------------------------------------------ */
+
+/* A browser's storage is shared by every page on one origin, and on GitHub
+ * Pages that origin is shared by every application its owner publishes. The
+ * owner used to be read from the FIRST `sb-*-auth-token` key found, so a
+ * session belonging to a different Supabase project could decide whose work
+ * this site showed, restore that stranger's sitting and take new work under
+ * their id; with accounts unconfigured here nothing ever corrected it. */
+
+const FOREIGN_USER = 'SYNTHETIC-USER-OF-ANOTHER-APPLICATION';
+
+/** A session another application on the same origin left in this storage. */
+function holdForeignSession(key = 'sb-another-application-auth-token'): void {
+  storage.data.set(
+    key,
+    JSON.stringify({
+      access_token: 'SYNTHETIC-foreign-access-token',
+      user: { id: FOREIGN_USER, email: 'synthetic-foreign@example.test' },
+    }),
+  );
+}
+
+/** Accounts switched off for one test, and back on afterwards. */
+async function withAccountsUnconfigured(run: () => Promise<void> | void): Promise<void> {
+  const globals = globalThis as Record<string, unknown>;
+  globals.__syntheticAuthEnv = undefined;
+  globals.__syntheticAuthConfigured = false;
+  try {
+    await run();
+  } finally {
+    globals.__syntheticAuthEnv = THIS_PROJECT_ENV;
+    globals.__syntheticAuthConfigured = true;
+  }
+}
+
+/** Let the lifecycle's on-demand half (the account modules) land and answer. */
+async function lifecycleSettled(): Promise<void> {
+  for (let tick = 0; tick < 50 && !lifecycle.accountState().known; tick += 1) {
+    await new Promise((resolve) => setImmediate(resolve));
+  }
+  assert.ok(lifecycle.accountState().known, 'the account lifecycle never answered');
+}
+
+function foreignKeys(): string[] {
+  return [...storage.data.keys()].filter((key) => key.includes(`u:${FOREIGN_USER}`));
+}
+
+test("the session key is the account client's own: sb-<project ref>-auth-token", async () => {
+  assert.equal(storeOwner.authProjectRef('https://abcd1234.supabase.co'), 'abcd1234');
+  assert.equal(storeOwner.authSessionKeyFor('https://abcd1234.supabase.co'), 'sb-abcd1234-auth-token');
+  assert.equal(storeOwner.authSessionKeyFor('  https://abcd1234.supabase.co/  '), 'sb-abcd1234-auth-token');
+  /* The local stand-in the browser scripts use. */
+  assert.equal(storeOwner.authSessionKeyFor('http://127.0.0.1:8803'), 'sb-127-auth-token');
+  for (const nothing of [undefined, null, '', 'synthetic-local.supabase.co', 'ftp://x.supabase.co', 'https://']) {
+    assert.equal(storeOwner.authSessionKeyFor(nothing), null, `"${String(nothing)}" named a session key`);
+  }
+  assert.equal(storeOwner.configuredAuthSessionKey(), 'sb-synthetic-local-auth-token');
+
+  /* And it is the key the library itself would pick for the same address,
+     checked against the library rather than against a copy of its rule. The
+     client is built with nothing persisted and nothing refreshed: no
+     storage, no timer, no request. */
+  const { createClient } = await import('@supabase/supabase-js');
+  for (const url of ['https://abcd1234.supabase.co', 'http://127.0.0.1:8803', THIS_PROJECT_ENV.PUBLIC_SUPABASE_URL]) {
+    const client = createClient(url, 'SYNTHETIC-anon-key', {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    });
+    assert.equal(
+      (client as unknown as { storageKey: string }).storageKey,
+      storeOwner.authSessionKeyFor(url),
+      `the account client keeps ${url}'s session somewhere this site does not look`,
+    );
+  }
+});
+
+test("with several projects' sessions on one origin, only this project's student is the owner", async () => {
+  coldDevice();
+  /* The other application's session goes in FIRST, so a lookup that took the
+     first matching key would find it. */
+  holdForeignSession();
+  holdForeignSession('sb-yet-another-app-auth-token');
+  holdSessionFor(A.id);
+
+  assert.equal(storeOwner.storedSessionUserId(storage), A.id);
+  assert.equal(storeOwner.storedSessionUserId(storage, 'sb-another-application-auth-token'), FOREIGN_USER);
+
+  try {
+    lifecycle.startAccountLifecycle();
+    learnerStore.recordLessonStudied({ lessonKey: 'reading-matching-headings' });
+    assert.deepEqual(storeOwner.currentOwner(), { kind: 'user', userId: A.id });
+    assert.ok(recordKeyFor(`u:${A.id}`), "this project's student was not the owner");
+    assert.deepEqual(foreignKeys(), [], "another application's user received work from this site");
+  } finally {
+    lifecycle.resetAccountLifecycleForTest();
+  }
+});
+
+test("another project's session alone is nobody here: the owner is this device, before and after the account answers", async () => {
+  coldDevice();
+  holdForeignSession();
+
+  try {
+    lifecycle.startAccountLifecycle();
+    assert.equal(storeOwner.currentOwner().kind, 'anonymous', "a foreign session made its user the owner at start-up");
+    learnerStore.recordLessonStudied({ lessonKey: 'reading-matching-headings' });
+    progressStore.markLessonComplete('reading-matching-headings');
+
+    await lifecycleSettled();
+    assert.equal(storeOwner.currentOwner().kind, 'anonymous', 'the lifecycle adopted a foreign session');
+    assert.equal(lifecycle.accountState().user, null);
+    assert.ok(recordKeyFor(anonymousNamespace()), 'the work was not recorded on this device');
+    assert.deepEqual(foreignKeys(), [], "another application's user received work from this site");
+  } finally {
+    lifecycle.resetAccountLifecycleForTest();
+  }
+});
+
+test('with accounts not configured here, a browser holding sessions is still signed out, and stays so', async () => {
+  await withAccountsUnconfigured(async () => {
+    coldDevice();
+    holdForeignSession();
+    /* Even a session under the very key this site WOULD use, were it
+       configured: with no project there is no account to be signed in to. */
+    holdSessionFor(A.id);
+
+    assert.equal(storeOwner.configuredAuthSessionKey(), null);
+    assert.equal(storeOwner.storedSessionUserId(storage), null);
+
+    try {
+      lifecycle.startAccountLifecycle();
+      assert.equal(storeOwner.currentOwner().kind, 'anonymous', 'an unconfigured site started with a signed-in owner');
+      learnerStore.recordLessonStudied({ lessonKey: 'reading-matching-headings' });
+
+      await lifecycleSettled();
+      assert.equal(storeOwner.currentOwner().kind, 'anonymous', 'an unconfigured site ended with a signed-in owner');
+      assert.equal(lifecycle.accountState().user, null);
+      assert.ok(recordKeyFor(anonymousNamespace()), 'signed-out work was not recorded on this device');
+      assert.deepEqual(
+        [...storage.data.keys()].filter((key) => key.startsWith('ielts.learning.record.v1::u:')),
+        [],
+        'work was filed under an account on a site with no accounts',
+      );
+    } finally {
+      lifecycle.resetAccountLifecycleForTest();
+    }
+  });
+});
+
+test('with accounts not configured, the lifecycle does not leave a signed-in owner in place, however it got there', async () => {
+  await withAccountsUnconfigured(async () => {
+    coldDevice();
+    /* Nothing in this build can set this any more without a configured
+       project; set by hand here to prove the lifecycle's own backstop. */
+    storeOwner.setCurrentOwner(storeOwner.userOwner(FOREIGN_USER));
+
+    try {
+      lifecycle.startAccountLifecycle();
+      await lifecycleSettled();
+      assert.equal(storeOwner.currentOwner().kind, 'anonymous', 'the lifecycle left a signed-in owner on a site with no accounts');
+    } finally {
+      lifecycle.resetAccountLifecycleForTest();
+    }
+  });
 });
 
 /* ------------------------------------------------------------------ */

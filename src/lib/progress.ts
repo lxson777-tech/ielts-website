@@ -24,6 +24,7 @@ import {
   deviceStorage,
   onOwnerChange,
   registerLegacyStoreMerge,
+  sameOwner,
   scopedKey,
   scopedKeyIn,
 } from './store-owner';
@@ -265,6 +266,24 @@ function save(p: ProgressV1): void {
   }
 }
 
+/** Write one NAMED owner's copy, for a grade that arrived after the page had
+    moved on to somebody else (see runOwnedGrade in store-owner.ts). The
+    screens are told only when that owner is the one they are showing: a
+    write into another student's copy changes nothing anybody is looking at,
+    and the account sync must not be nudged into a push for the wrong
+    student. */
+function saveFor(owner: CacheOwner, p: ProgressV1): void {
+  if (!sameOwner(owner, currentOwner())) {
+    try {
+      window.localStorage.setItem(keyFor(owner), JSON.stringify(p));
+    } catch {
+      /* storage full/blocked, same as save() */
+    }
+    return;
+  }
+  save(p);
+}
+
 /** Overwrite the whole store — used when a cloud pull brings down merged state.
     Goes through save() so change listeners still fire (minus any re-entrancy:
     the sync layer guards against echoing its own writes). */
@@ -331,14 +350,21 @@ function pruneWritingReports(p: ProgressV1): void {
 }
 
 export function recordWritingAttempt(promptId: string, attempt: WritingAttempt): void {
-  const p = getProgress();
+  recordWritingAttemptFor(currentOwner(), promptId, attempt);
+}
+
+/** The same, into one named owner's copy: the student the essay was
+    submitted by, even when somebody else is using the browser by the time
+    the grade comes back. */
+export function recordWritingAttemptFor(owner: CacheOwner, promptId: string, attempt: WritingAttempt): void {
+  const p = getProgressFor(owner);
   (p.writing[promptId] ??= []).push(attempt);
   pruneWritingReports(p);
   // No real duration is recorded for a writing session, so this uses a flat
   // estimate for a Task 2 essay (roughly the exam's own 40-minute budget for
   // it), same spirit as the other per-item minute estimates above.
   bumpActivity(p, localDateKey(attempt.at), { minutes: 40, attempts: 1 });
-  save(p);
+  saveFor(owner, p);
 }
 
 export function getWritingAttempts(promptId?: string): { promptId: string; attempt: WritingAttempt }[] {
@@ -350,12 +376,18 @@ export function getWritingAttempts(promptId?: string): { promptId: string; attem
 }
 
 export function recordSpeakingAttempt(attempt: SpeakingAttempt): void {
-  const p = getProgress();
+  recordSpeakingAttemptFor(currentOwner(), attempt);
+}
+
+/** The same, into one named owner's copy: the student who spoke, even when
+    somebody else is using the browser by the time the grade comes back. */
+export function recordSpeakingAttemptFor(owner: CacheOwner, attempt: SpeakingAttempt): void {
+  const p = getProgressFor(owner);
   (p.speaking ??= []).push(attempt);
   // Estimate: one part of the interview, not a full mock (see the flat
   // Task-2 estimate in recordWritingAttempt for the same reasoning).
   bumpActivity(p, localDateKey(attempt.at), { minutes: 10, attempts: 1 });
-  save(p);
+  saveFor(owner, p);
 }
 
 export function getSpeakingAttempts(): SpeakingAttempt[] {

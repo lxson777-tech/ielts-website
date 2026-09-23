@@ -6,6 +6,7 @@
    of the existing offline-first storage, never a requirement. */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { authSessionKeyFor } from '../store-owner';
 
 const url = import.meta.env?.PUBLIC_SUPABASE_URL as string | undefined;
 const anonKey = import.meta.env?.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
@@ -25,12 +26,19 @@ export function getSupabase(): SupabaseClient | null {
   if (typeof window === 'undefined') return null; // browser-only; there is no server here
   if (!url || !anonKey) return null;
   if (!client) {
+    /* The session is kept under the SAME key src/lib/store-owner.ts reads to
+       know whose work this browser holds before this client has loaded. It
+       is the key the library would pick by itself (sb-<project ref>-auth-
+       token), named here so the two can never drift apart: a session from
+       another project on the same origin is never mistaken for this one's. */
+    const storageKey = authSessionKeyFor(url);
     client = createClient(url, anonKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         // Complete the magic-link / OAuth redirect automatically on load.
         detectSessionInUrl: true,
+        ...(storageKey ? { storageKey } : {}),
       },
     });
   }

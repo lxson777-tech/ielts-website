@@ -48,7 +48,9 @@
  * `src/lib/progress.ts` is imported for its types by files the Mr EZ Worker
  * bundles, so this module it now depends on carries no catalogue, no React,
  * no data: types and a handful of string constants, and nothing that runs at
- * import time except three empty registries.
+ * import time except three empty registries. The one thing it reads from the
+ * build is the account project's two public settings, and only to know which
+ * stored session is this application's own (see WHICH SESSION, EXACTLY).
  */
 
 import type { CacheOwner } from './learning/contracts/sync';
@@ -183,54 +185,79 @@ export function deviceIdFrom(storage: BrowserStorage | null): string {
  * nobody else can read it.
  */
 
-/** The shape the account client persists its session under in this browser's
-    own storage: `sb-<project ref>-auth-token`. Matched rather than computed,
-    so this module keeps its promise of importing nothing: no client, no
-    environment, no account code. */
-const SESSION_KEY_PATTERN = /^sb-.+-auth-token$/;
+/* WHICH SESSION, EXACTLY (finding R2-04 of the second Codex inspection)
+ *
+ * This used to take the first `sb-<anything>-auth-token` key it found. A
+ * browser's storage is shared by every page on one origin, and on GitHub
+ * Pages that origin is shared by every application its owner publishes, so a
+ * session belonging to a DIFFERENT Supabase project could decide whose work
+ * this site was showing, restore that stranger's sitting, and take new work
+ * under their id before the real account layer had answered. With accounts
+ * not configured here at all, nothing ever corrected it.
+ *
+ * So the key is now the one THIS application's account client uses, derived
+ * from the same public setting the client is built from, and nothing else is
+ * read. No configured project means no account, which means anonymous, however
+ * many other projects' sessions happen to be sitting in the same storage. */
 
-/** A real browser store can be walked; the three-method interface above
-    cannot. Anything that does not offer both is simply not walkable, which is
-    the server render, the build, and a test's few lines of memory. */
-interface ListableStorage {
-  length: number;
-  key(index: number): string | null;
-}
-
-function storedKeys(storage: BrowserStorage): string[] {
-  const listable = storage as unknown as Partial<ListableStorage>;
-  if (typeof listable.length !== 'number' || typeof listable.key !== 'function') return [];
-  const keys: string[] = [];
+/** The project reference in an account project address, exactly as the
+    account client derives it: the first label of the host name, so
+    `https://abcd1234.supabase.co` gives `abcd1234`. Null for anything that is
+    not an http or https address. Pure, so a test can hand in any address. */
+export function authProjectRef(url: string | null | undefined): string | null {
+  const trimmed = typeof url === 'string' ? url.trim() : '';
+  if (!trimmed || !/^https?:\/\//i.test(trimmed)) return null;
   try {
-    for (let index = 0; index < listable.length; index += 1) {
-      const key = listable.key(index);
-      if (typeof key === 'string') keys.push(key);
-    }
+    const ref = new URL(trimmed).hostname.split('.')[0];
+    return ref ? ref : null;
   } catch {
-    /* A store that throws while being walked is treated as empty, exactly
-       like one that is switched off. */
-    return [];
+    return null;
   }
-  return keys;
 }
 
-/** The user id in the account session this browser is holding, or null when
-    it holds none, and on a server render, a build, or blocked storage. */
-export function storedSessionUserId(storage: BrowserStorage | null): string | null {
-  if (!storage) return null;
-  for (const key of storedKeys(storage)) {
-    if (!SESSION_KEY_PATTERN.test(key)) continue;
-    const raw = safeGet(storage, key);
-    if (!raw) continue;
-    try {
-      const parsed = JSON.parse(raw) as { user?: { id?: unknown } } | null;
-      const id = parsed?.user?.id;
-      if (typeof id === 'string' && id.length > 0) return id;
-    } catch {
-      /* Not a session this code understands. Keep looking. */
-    }
+/** The storage key the account client keeps its session under for the project
+    at `url`: `sb-<project ref>-auth-token`. src/lib/auth/supabase.ts hands
+    this same value to the client as its storage key, so the two cannot
+    drift apart. */
+export function authSessionKeyFor(url: string | null | undefined): string | null {
+  const ref = authProjectRef(url);
+  return ref ? `sb-${ref}-auth-token` : null;
+}
+
+/** This application's own session key, or null when accounts are not
+    configured here (either public setting missing, the same test
+    src/lib/auth/supabase.ts uses). Read from the build's public settings
+    directly rather than from the account client, so answering it costs no
+    client, no network and no download. */
+export function configuredAuthSessionKey(): string | null {
+  const url = import.meta.env?.PUBLIC_SUPABASE_URL as string | undefined;
+  const anonKey = import.meta.env?.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+  if (!url || !anonKey) return null;
+  return authSessionKeyFor(url);
+}
+
+/** The user id in THIS application's account session on this browser, or
+    null when it holds none, when accounts are not configured here, and on a
+    server render, a build, or blocked storage. Another project's session in
+    the same storage is never read. `sessionKey` defaults to this
+    application's own; a test may name one. */
+export function storedSessionUserId(
+  storage: BrowserStorage | null,
+  sessionKey: string | null = configuredAuthSessionKey(),
+): string | null {
+  if (!storage || !sessionKey) return null;
+  const raw = safeGet(storage, sessionKey);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { user?: { id?: unknown } } | null;
+    const id = parsed?.user?.id;
+    return typeof id === 'string' && id.length > 0 ? id : null;
+  } catch {
+    /* Not a session this code understands: nobody is signed in as far as
+       the owner is concerned, and the account layer answers properly a
+       moment later. */
+    return null;
   }
-  return null;
 }
 
 /** Whose work this device holds before anything has been told otherwise: the
@@ -291,6 +318,144 @@ export function announceStoresChanged(): void {
 export function onOwnerChange(listener: () => void): () => void {
   ownerListeners.add(listener);
   return () => ownerListeners.delete(listener);
+}
+
+/* ── Work that finishes after the page has moved on ─────────────────────── */
+
+/* WHY (finding R2-02 of the second Codex inspection)
+ *
+ * An essay or a spoken answer is sent away to be graded and comes back
+ * seconds, sometimes a minute, later. The screens used to write whatever came
+ * back into whoever the current owner was AT THAT MOMENT. If student A's
+ * grade was still on its way when another tab signed A out and B in, A's band
+ * and A's report landed in B's history, and the mock exam's embedded
+ * examiner went on to report A's result into B's sitting.
+ *
+ * So a piece of work that outlives its screen is now bound, when it starts,
+ * to the owner it was started for, and carries its own cancellation:
+ *
+ *   - the grade is KEPT under that starting owner, whatever has happened on
+ *     the page since. The student who took the test (and whose grading was
+ *     paid for) finds it the next time they are the one using this browser.
+ *     It is never written under anybody else, and never silently dropped;
+ *   - it is SHOWN, and a completion callback runs, only while that owner is
+ *     still the one on screen and the screen has not let go of it;
+ *   - a screen that is still there but now belongs to somebody else says so
+ *     without showing any of the result.
+ *
+ * The binding is the cancellation generation: each new attempt makes a new
+ * one and cancels the last, and a screen cancels its own when it unmounts.
+ * An owner change is noticed the moment it happens, not merely compared at
+ * the end, so A signing out and back in while the grade is on its way still
+ * counts as "the page moved on" for the screen, though the grade is kept for
+ * A either way. */
+
+/** Where a bound piece of work stands. */
+export type OwnerBindingState =
+  /** The owner it was started for is still the current one, and the screen
+      that started it is still waiting for it. */
+  | 'current'
+  /** A different owner took over at some point since it started. Sticky:
+      the first owner coming back does not undo it. */
+  | 'owner-changed'
+  /** The screen let go: it unmounted, started over, or began a new attempt. */
+  | 'cancelled';
+
+export interface OwnerBinding {
+  /** Whose work this is: the current owner at the moment it was bound.
+      Never changes afterwards. */
+  readonly owner: CacheOwner;
+  state(): OwnerBindingState;
+  /** state() === 'current'. */
+  current(): boolean;
+  /** The screen is letting go. Safe to call any number of times, and it
+      stops listening for owner changes. */
+  cancel(): void;
+}
+
+/** Bind a piece of work that is about to start to the owner it is for. */
+export function bindToCurrentOwner(): OwnerBinding {
+  const owner = currentOwner();
+  let ownerChanged = false;
+  let cancelled = false;
+  let stopListening: (() => void) | null = null;
+
+  const release = (): void => {
+    if (!stopListening) return;
+    stopListening();
+    stopListening = null;
+  };
+
+  /* announceStoresChanged also fires for the SAME owner (after the
+     anonymous-work claim moves work in), so the owner itself is compared
+     rather than the notification being taken as a change. */
+  stopListening = onOwnerChange(() => {
+    if (sameOwner(currentOwner(), owner)) return;
+    ownerChanged = true;
+    release();
+  });
+
+  const state = (): OwnerBindingState => {
+    if (cancelled) return 'cancelled';
+    if (!ownerChanged && !sameOwner(currentOwner(), owner)) {
+      /* Belt and braces for an owner set without a notification reaching
+         this listener: compared directly as well. */
+      ownerChanged = true;
+      release();
+    }
+    return ownerChanged ? 'owner-changed' : 'current';
+  };
+
+  return {
+    owner,
+    state,
+    current: () => state() === 'current',
+    cancel: () => {
+      cancelled = true;
+      release();
+    },
+  };
+}
+
+/** What a screen does with a grade, in the three situations it can arrive in.
+    See runOwnedGrade. */
+export interface OwnedGradeSteps<T> {
+  /** Keep it: write the grade into the history of `owner`, which is always
+      the owner the work was bound to and never anybody else. Runs once for
+      every grade that arrives, whatever has happened on the page since. */
+  keep(result: T, owner: CacheOwner): void;
+  /** Show it: the screen is still waiting and still this owner's. The only
+      place a report may be painted or a completion callback invoked. */
+  show?(result: T): void;
+  /** The screen is still there but belongs to somebody else now: say so,
+      and show none of the result. */
+  hide?(result: T): void;
+}
+
+/** Wait for a grade, keep it for the owner it was bound to, and only then
+    decide what the screen may do with it.
+ *
+ * Returns where the binding stood when the grade arrived. A grading request
+ * that FAILS has nothing to keep: for a screen that has let go it is
+ * swallowed (there is nobody to tell), and otherwise it is thrown on to the
+ * screen's own error handling exactly as before. */
+export async function runOwnedGrade<T>(
+  binding: OwnerBinding,
+  grade: () => Promise<T>,
+  steps: OwnedGradeSteps<T>,
+): Promise<OwnerBindingState> {
+  let result: T;
+  try {
+    result = await grade();
+  } catch (error) {
+    if (binding.state() === 'cancelled') return 'cancelled';
+    throw error;
+  }
+  steps.keep(result, binding.owner);
+  const state = binding.state();
+  if (state === 'current') steps.show?.(result);
+  else if (state === 'owner-changed') steps.hide?.(result);
+  return state;
 }
 
 /* ── The four older stores, named once ───────────────────────────────────── */

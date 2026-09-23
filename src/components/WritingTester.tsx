@@ -24,7 +24,7 @@ import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { getModelAnswers } from '../data/model-answers';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
-import { recordWritingAttempt } from '../lib/progress';
+import { recordWritingAttemptFor } from '../lib/progress';
 import { useT } from '../lib/i18n/react';
 import BandReport from './BandReport';
 import Html from './Html';
@@ -34,7 +34,10 @@ import ExplainResult from './tutor/ExplainResult';
 import SessionContinueBar from './learning/SessionContinueBar';
 import WorkOnOverview from './learning/WorkOnOverview';
 import { modelAnswerHref } from './library-links';
-import { getLearnerStore, ownerNamespace } from '../lib/learning/store.browser';
+import { getLearnerStore, ownerNamespace, recordWritingGradedFor } from '../lib/learning/store.browser';
+import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import type { CacheOwner } from '../lib/learning/contracts/sync';
+import { nt } from '../lib/i18n/translate';
 import { writingActivityId } from '../lib/learning/catalog';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
@@ -56,8 +59,11 @@ function pad(n: number): string {
  * lives in ielts.progress.v1's writing history instead, which is durable. */
 const ESSAY_DRAFT_PREFIX = 'ielts.writing.draft.v1';
 
-function draftKey(promptId: string): string {
-  return `${ESSAY_DRAFT_PREFIX}::${ownerNamespace(getLearnerStore().owner())}::${promptId}`;
+/** The draft key for one prompt, under `owner` (the owner on screen when
+    none is named). A grade that comes back after the page moved on clears
+    the draft of the student who submitted it, never the next one's. */
+function draftKey(promptId: string, owner: CacheOwner = getLearnerStore().owner()): string {
+  return `${ESSAY_DRAFT_PREFIX}::${ownerNamespace(owner)}::${promptId}`;
 }
 
 function loadEssayDraft(promptId: string): string {
@@ -69,24 +75,31 @@ function loadEssayDraft(promptId: string): string {
   }
 }
 
-function saveEssayDraft(promptId: string, text: string): void {
+function saveEssayDraft(promptId: string, text: string, owner?: CacheOwner): void {
   if (typeof window === 'undefined') return;
   try {
-    if (text) window.localStorage.setItem(draftKey(promptId), text);
-    else window.localStorage.removeItem(draftKey(promptId));
+    if (text) window.localStorage.setItem(draftKey(promptId, owner), text);
+    else window.localStorage.removeItem(draftKey(promptId, owner));
   } catch {
     /* Best effort, the essay is still safe in this tab's own state. */
   }
 }
 
-function clearEssayDraft(promptId: string): void {
+function clearEssayDraft(promptId: string, owner?: CacheOwner): void {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.removeItem(draftKey(promptId));
+    window.localStorage.removeItem(draftKey(promptId, owner));
   } catch {
     /* Nothing to do. */
   }
 }
+
+/** Shown in place of a result when the page changed hands while the work
+    was being graded (R2-02). One sentence, shared with the speaking
+    trainers, that names nobody and shows nothing of the attempt. */
+const OWNER_CHANGED_NOTICE = nt(
+  'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.',
+);
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
   const { t, tn } = useT();
@@ -117,11 +130,17 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const timerStartedRef = useRef(false);
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* The essay being graded, bound to the student who submitted it (R2-02,
+     runOwnedGrade in src/lib/store-owner.ts). Cancelled on unmount, so a
+     grade that comes back after this screen has gone is still kept for that
+     student but never touches the screen. */
+  const gradingBindingRef = useRef<OwnerBinding | null>(null);
 
   useEffect(() => {
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+      gradingBindingRef.current?.cancel();
     };
   }, []);
 
@@ -184,77 +203,113 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
   async function submit() {
     if (!prompt || grading || !isGraderConfigured()) return;
+    /* Everything the grade will be kept against is fixed NOW, with the owner
+       it belongs to: the student who pressed submit. */
+    const submitted = { prompt, essay, wordCount };
+    const binding = bindToCurrentOwner();
+    gradingBindingRef.current?.cancel();
+    gradingBindingRef.current = binding;
     setGrading(true);
     setGradingStartedAt(Date.now());
     setGradingError(null);
+    let at = '';
     try {
-      const graded = await gradeEssay({ prompt, essay });
-      setResult(graded);
-      const criteria: Record<string, number> = {};
-      for (const key of Object.keys(graded.criteria)) criteria[key] = graded.criteria[key as keyof typeof graded.criteria].band;
-      const at = new Date().toISOString();
-      setAttemptAt(at);
-      recordWritingAttempt(prompt.id, {
-        at,
-        overallBand: graded.overallBand,
-        criteria,
-        wordCount,
-        live: graded.grader.live,
-        essay,
-        promptTitle: prompt.title,
-        task: prompt.task,
-        report: {
-          criteria: graded.criteria,
-          moments: graded.moments,
-          strengths: graded.strengths,
-          improvements: graded.improvements,
-          actionPlan: graded.actionPlan,
-          mechanics: {
-            wordCount: graded.mechanics.wordCount,
-            sentenceCount: graded.mechanics.sentenceCount,
-            lexicalDiversity: graded.mechanics.lexicalDiversity,
-            linkingDevices: graded.mechanics.linkingDevices,
-            underLength: graded.mechanics.underLength,
-            notes: graded.mechanics.notes,
-          },
-          grader: graded.grader,
+      await runOwnedGrade(binding, () => gradeEssay({ prompt: submitted.prompt, essay: submitted.essay }), {
+        keep: (graded, owner) => {
+          const criteria: Record<string, number> = {};
+          for (const key of Object.keys(graded.criteria)) criteria[key] = graded.criteria[key as keyof typeof graded.criteria].band;
+          at = new Date().toISOString();
+
+          /* Learner-evidence recording (WP12), written alongside the row
+             below, never instead of it: the prompt identity, Task 1/2 scope,
+             word count, the four criterion bands, whether this was a live
+             grade, and a pointer back into the row saved below rather than
+             a second copy of the essay text. A not-live (stub) grade is
+             still recorded here for the student's own history, but
+             classifyEvidence excludes it with reason 'stub-graded', so it
+             can never move an ability estimate. Written first, so that a
+             record opened for the first time on this device takes its
+             one-time copy of the older stores before the row below is in
+             them rather than after it.
+             Both writes go to `owner`: the student who submitted the essay,
+             who is not necessarily the one using the page by now. */
+          recordWritingGradedFor(owner, {
+            activityId: writingActivityId(submitted.prompt.id),
+            paper: 'writing',
+            promptId: submitted.prompt.id,
+            task: submitted.prompt.task,
+            at,
+            overallBand: graded.overallBand,
+            criteria,
+            wordCount: submitted.wordCount,
+            grader: graded.grader,
+            legacyRef: { store: 'writing', key: submitted.prompt.id, at },
+          });
+          recordWritingAttemptFor(owner, submitted.prompt.id, {
+            at,
+            overallBand: graded.overallBand,
+            criteria,
+            wordCount: submitted.wordCount,
+            live: graded.grader.live,
+            essay: submitted.essay,
+            promptTitle: submitted.prompt.title,
+            task: submitted.prompt.task,
+            report: {
+              criteria: graded.criteria,
+              moments: graded.moments,
+              strengths: graded.strengths,
+              improvements: graded.improvements,
+              actionPlan: graded.actionPlan,
+              mechanics: {
+                wordCount: graded.mechanics.wordCount,
+                sentenceCount: graded.mechanics.sentenceCount,
+                lexicalDiversity: graded.mechanics.lexicalDiversity,
+                linkingDevices: graded.mechanics.linkingDevices,
+                underLength: graded.mechanics.underLength,
+                notes: graded.mechanics.notes,
+              },
+              grader: graded.grader,
+            },
+          });
+          // The report just landed, so the working draft this prompt was kept
+          // under is no longer the only copy of the essay: it now lives in
+          // ielts.progress.v1's writing history, which is durable. The
+          // submitter's draft, which is not necessarily the one on screen.
+          clearEssayDraft(submitted.prompt.id, owner);
+        },
+        show: (graded) => {
+          setResult(graded);
+          setAttemptAt(at);
+        },
+        hide: () => {
+          /* Somebody else is using the page now. The essay and its report
+             are kept for the student who wrote it; none of it stays here. */
+          setEssay('');
+          setResult(null);
+          setAttemptAt(null);
+          setGradingError(t(OWNER_CHANGED_NOTICE));
         },
       });
-
-      /* Learner-evidence recording (WP12), written alongside the row above,
-         never instead of it: the prompt identity, Task 1/2 scope, word
-         count, the four criterion bands, whether this was a live grade, and
-         a pointer back into the row just saved rather than a second copy of
-         the essay text. A not-live (stub) grade is still recorded here for
-         the student's own history, but classifyEvidence excludes it with
-         reason 'stub-graded', so it can never move an ability estimate. */
-      getLearnerStore().recordWritingGraded({
-        activityId: writingActivityId(prompt.id),
-        paper: 'writing',
-        promptId: prompt.id,
-        task: prompt.task,
-        at,
-        overallBand: graded.overallBand,
-        criteria,
-        wordCount,
-        grader: graded.grader,
-        legacyRef: { store: 'writing', key: prompt.id, at },
-      });
-      // The report just landed, so the working draft this prompt was kept
-      // under is no longer the only copy of the essay: it now lives in
-      // ielts.progress.v1's writing history, which is durable.
-      clearEssayDraft(prompt.id);
     } catch {
-      // The button is disabled whenever isGraderConfigured() is false, so any
-      // error reaching here happened after a real request went out - network,
-      // timeout, or the Worker itself failing. Show one calm, specific
-      // message rather than surfacing the raw error (which might read like a
-      // permanent "not configured" state the student can't do anything about).
-      setGradingError(
-        t('We could not reach the grading service. Your essay is safe on this page; try again in a minute.'),
-      );
+      if (binding.state() === 'owner-changed') {
+        /* The request failed after the page moved on to somebody else. The
+           essay is the submitter's only copy, so it goes back into THEIR
+           draft, and it leaves this screen. */
+        saveEssayDraft(submitted.prompt.id, submitted.essay, binding.owner);
+        setEssay('');
+        setGradingError(t(OWNER_CHANGED_NOTICE));
+      } else {
+        // The button is disabled whenever isGraderConfigured() is false, so any
+        // error reaching here happened after a real request went out - network,
+        // timeout, or the Worker itself failing. Show one calm, specific
+        // message rather than surfacing the raw error (which might read like a
+        // permanent "not configured" state the student can't do anything about).
+        setGradingError(
+          t('We could not reach the grading service. Your essay is safe on this page; try again in a minute.'),
+        );
+      }
     } finally {
-      setGrading(false);
+      if (binding.state() !== 'cancelled') setGrading(false);
     }
   }
 

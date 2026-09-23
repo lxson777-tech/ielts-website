@@ -116,6 +116,10 @@ export const strings: Record<string, string> = {
   'We could not reach the grading service. Your answers are still here, try grading them again in a minute.':
     'Не удалось связаться со службой проверки. Ваши ответы никуда не делись, попробуйте проверить их снова через минуту.',
   'Try grading again': 'Проверить ещё раз',
+  /* WritingTester.tsx, SpeakingTester.tsx, LiveExaminer.tsx: a grade that
+     came back after another account took over the page (R2-02). */
+  'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.':
+    'Пока шла проверка, на этой странице сменился аккаунт, поэтому эта попытка здесь не показана. Она сохранена для того студента, который её начал.',
   'Start over': 'Начать заново',
   'Only Fluency & Coherence has any real signal without an AI examiner (from timing alone). Vocabulary, Grammar and Pronunciation need a model listening to your recording. Your teacher can enable AI grading.':
     'Без ИИ-экзаменатора реальный сигнал есть только по критерию Fluency & Coherence (по одному хронометражу). Для оценки Словарного запаса, Грамматики и Pronunciation нужна модель, которая слушает вашу запись. Ваш преподаватель может включить проверку ИИ.',

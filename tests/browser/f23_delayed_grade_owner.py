@@ -1,0 +1,615 @@
+"""Scenario 23 - A grade that comes back AFTER the account changed, against the FREE LOCAL STAND-IN.
+
+WHY THIS FILE EXISTS
+Finding R2-02 of the second Codex inspection (23 September 2026): an essay or
+a spoken answer is sent away to be graded and comes back seconds, sometimes a
+minute, later. The writing trainer, the speaking trainer and the live examiner
+used to write whatever came back into whoever the CURRENT owner was when it
+arrived. If student A's grade was still on its way when A signed out and B
+signed in, A's band and report landed in B's history and went up to B's
+account.
+
+The fix binds every grading request to the owner it was started for
+(bindToCurrentOwner / runOwnedGrade in src/lib/store-owner.ts): the grade is
+KEPT under that owner whatever has happened since, and SHOWN only while that
+owner is still the one on screen. This script proves it in a real browser for
+the two trainers that can be driven without a paid service:
+
+  1. Writing: A submits an essay; the grading request is HELD; A signs out and
+     B signs up on the same page; the held request is then answered. The
+     screen must show B none of it, B's browser store and B's account must
+     hold nothing of A's, and A's own store must hold the essay and its grade.
+     A then signs back in and finds it, and it reaches A's own account.
+  2. Speaking: the same, for a Part 2 answer recorded through a fake
+     microphone, with students C and D.
+
+The live examiner cannot be driven here (it needs a paid voice session); it
+runs through the same runOwnedGrade and the same writers, and
+tests/delayed-grade-owner.test.ts pins both that and the mock's completion
+callback deterministically.
+
+HOW THE GRADERS ARE STOOD IN FOR
+Nothing is graded by any model. The site is started with its grader
+addresses pointed at the local stand-in's own port, on paths the stand-in
+does not serve, and this script INTERCEPTS those requests in the browser
+before they leave: it holds each one, then answers it with a reply that is
+labelled SYNTHETIC in every text field. Even if interception failed, the
+request would reach a local 404, never a grader.
+
+WHAT THIS IS NOT
+  - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for
+    it, in memory, on this machine only.
+  - Not the frozen production snapshot other testers use. Its own ports: the
+    stand-in on 8815, the site on 4368.
+  - No real account, no real key, no paid API call, no deployment.
+
+Run with, both already running:
+  1. the stand-in:
+       MR_EZ_DEV_PORT=8815 node tools/mr-ez-dev-server.mjs
+  2. the site, with its own Vite dependency cache (see astro.config.f21.mjs
+     for why), graders pointed at the intercepted local paths:
+       PUBLIC_SUPABASE_URL=http://127.0.0.1:8815 \\
+       PUBLIC_SUPABASE_ANON_KEY=local-anon-key \\
+       PUBLIC_MR_EZ_URL=http://127.0.0.1:8815/tutor \\
+       PUBLIC_GRADER_URL=http://127.0.0.1:8815/SYNTHETIC-intercepted-grade-essay \\
+       PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8815/SYNTHETIC-intercepted-grade-speaking \\
+       npx astro dev --config <a config like astro.config.f21.mjs> --port 4368
+     where that config ALSO sets vite.server.watch.ignored to docs/, tests/
+     and .codex/. Without it, every evidence file written mid-run (by this
+     script, or by another builder in the same checkout) reloads the page and
+     abandons the held grading request; the "same page (no reload)" checks
+     below then fail, as they should.
+  then:
+       IELTS_STANDIN_URL=http://127.0.0.1:8815 python tests/browser/f23_delayed_grade_owner.py
+
+Every email, password, essay and band below is SYNTHETIC, made up for this run.
+"""
+import json
+import os
+import sys
+import time
+from datetime import date
+
+sys.path.insert(0, os.path.dirname(__file__))
+
+# Read at IMPORT time by final_helpers and f20, so these come first.
+os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4368/ielts-website")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed-")
+os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8815")
+
+from playwright.sync_api import sync_playwright  # noqa: E402
+
+import f20_account_journey as journey  # noqa: E402  (its page actions are reused as-is)
+from final_helpers import (  # noqa: E402
+    BASE_URL,
+    RESULTS_PATH,
+    attach_diagnostics,
+    goto,
+    new_context,
+    report_diagnostics,
+    shot,
+    write_note,
+    write_row,
+    write_section,
+)
+
+STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8815")  # the local stand-in; override per run
+
+RUN = time.strftime("%H%M%S")
+EMAIL_A = f"synthetic-student-a-f23-{RUN}@example.test"
+EMAIL_B = f"synthetic-student-b-f23-{RUN}@example.test"
+EMAIL_C = f"synthetic-student-c-f23-{RUN}@example.test"
+EMAIL_D = f"synthetic-student-d-f23-{RUN}@example.test"
+PASSWORD = "Synthetic-Pass-F23"
+
+PROMPT_ID = "pte-wt-132-task2"
+PROMPT_TITLE = "Primary schools focus too much on formal learning"
+ESSAY_MARK = f"SYNTHETIC-F23-ESSAY-OF-A-{RUN}"
+ESSAY = (
+    f"{ESSAY_MARK} This essay is synthetic and was written by a test script for student A. "
+    + " ".join(
+        [
+            "Children learn a great deal through play, and a primary classroom that only drills formal "
+            "lessons may leave them less curious and less confident than they could be."
+        ]
+        * 9
+    )
+)
+
+CUE_CARD = "p2-journey"
+CUE_TOPIC = "Describe a memorable journey or trip you have taken."
+
+GRADER_ESSAY_PATH = "SYNTHETIC-intercepted-grade-essay"
+GRADER_SPEAKING_PATH = "SYNTHETIC-intercepted-grade-speaking"
+
+CORS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+}
+
+NOTICE = "The account on this page changed while this was being graded"
+
+SYNTHETIC_NOTE = "SYNTHETIC intercepted reply from f23: no model was called."
+
+
+def essay_reply() -> dict:
+    criterion = {"band": 7, "comment": SYNTHETIC_NOTE, "tip": SYNTHETIC_NOTE}
+    return {
+        "criteria": {
+            "taskResponse": criterion,
+            "coherenceCohesion": criterion,
+            "lexicalResource": criterion,
+            "grammaticalRange": criterion,
+        },
+        "moments": [],
+        "strengths": [SYNTHETIC_NOTE],
+        "improvements": [SYNTHETIC_NOTE],
+        "actionPlan": [SYNTHETIC_NOTE],
+    }
+
+
+def speaking_reply() -> dict:
+    criterion = {"band": 6, "comment": SYNTHETIC_NOTE, "tip": SYNTHETIC_NOTE}
+    return {
+        "criteria": {
+            "fluencyCoherence": criterion,
+            "lexicalResource": criterion,
+            "grammaticalRange": criterion,
+            "pronunciation": criterion,
+        },
+        "moments": [],
+        "strengths": [SYNTHETIC_NOTE],
+        "improvements": [SYNTHETIC_NOTE],
+        "actionPlan": [SYNTHETIC_NOTE],
+    }
+
+
+def reset_results() -> None:
+    RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    header = f"""# A grade that arrives after the account changed: whose it is
+
+Run on {date.today().isoformat()} against a DEV server at {BASE_URL}, with the free local
+accounts stand-in (`node tools/mr-ez-dev-server.mjs`) at {STANDIN_URL}. Both were started for
+this run and stopped afterwards. This is NOT the frozen production snapshot the `results.md`
+suite uses, and it is NOT a real Supabase project: nothing below is evidence about one.
+
+It is the browser half of the fix for finding R2-02 of the second Codex inspection: a grade that
+came back after the owner changed was written under whoever was signed in by then. The
+deterministic half is `tests/delayed-grade-owner.test.ts`.
+
+**No grader and no model was called.** The essay and speaking grader addresses point at paths the
+local stand-in does not serve, and this script intercepts those requests in the browser, holds
+them, and answers them with a reply whose every text field reads "{SYNTHETIC_NOTE}". The
+browser's own client still labels a grade from its remote grader "AI examiner"; in this run that
+label sits on a synthetic reply, for synthetic students, on a local stand-in.
+
+Every student, email, password, essay and band here is SYNTHETIC, invented for this run.
+"""
+    RESULTS_PATH.write_text(header, encoding="utf-8")
+
+
+# ── reading the browser's own store ────────────────────────────────────────
+
+def local_items(page) -> dict:
+    return journey.settle(
+        page,
+        lambda p: p.evaluate(
+            "() => Object.fromEntries(Object.keys(localStorage).map((k) => [k, localStorage.getItem(k)]))"
+        ),
+    )
+
+
+def parsed(items: dict, key: str):
+    raw = items.get(key)
+    if not raw:
+        return None
+    try:
+        return json.loads(raw)
+    except Exception:
+        return None
+
+
+def record_activity_ids(items: dict, user_id: str) -> list:
+    record = parsed(items, f"ielts.learning.record.v1::u:{user_id}") or {}
+    return [e.get("activityId") for e in record.get("events", [])]
+
+
+def keys_carrying(items: dict, mark: str) -> list:
+    return sorted(k for k, v in items.items() if v and mark in v)
+
+
+# ── the page must not have reloaded ────────────────────────────────────────
+#
+# A reload abandons the request the run is holding, and would make "B sees
+# nothing of A's" true for the wrong reason. So a marker is put on the page's
+# own window before the grading starts and read back afterwards: a reload
+# (for instance a dev server reacting to a file written mid-run) clears it.
+
+def mark_page(page) -> None:
+    page.evaluate("() => { window.__f23SamePage = true; }")
+
+
+def same_page(page) -> bool:
+    try:
+        return bool(page.evaluate("() => window.__f23SamePage === true"))
+    except Exception:
+        return False
+
+
+# ── the held grader ────────────────────────────────────────────────────────
+
+class HeldGrader:
+    """Intercepts one grader path. A preflight is answered straight away;
+    a POST is held, never sent anywhere, until release() answers it."""
+
+    def __init__(self, page, path_fragment: str):
+        self.page = page
+        self.path_fragment = path_fragment
+        self.held = []
+        self.bodies = []
+        page.route(f"**/{path_fragment}**", self._handle)
+
+    def _handle(self, route):
+        request = route.request
+        if request.method == "OPTIONS":
+            route.fulfill(status=204, headers=CORS, body="")
+            return
+        try:
+            self.bodies.append(request.post_data or "")
+        except Exception:
+            self.bodies.append("")
+        self.held.append(route)
+
+    def wait_until_held(self, timeout_ms=45000) -> bool:
+        waited = 0
+        while not self.held and waited < timeout_ms:
+            self.page.wait_for_timeout(250)
+            waited += 250
+        return bool(self.held)
+
+    def release(self, reply: dict) -> None:
+        route = self.held.pop(0)
+        route.fulfill(
+            status=200,
+            content_type="application/json",
+            headers=CORS,
+            body=json.dumps(reply),
+        )
+
+    def refuse(self) -> None:
+        """Answer the held request with a failure, so nothing is graded and
+        nothing is recorded. Used only by the warm-up below."""
+        route = self.held.pop(0)
+        route.fulfill(
+            status=503,
+            content_type="application/json",
+            headers=CORS,
+            body=json.dumps({"error": "SYNTHETIC warm-up request from f23: not graded."}),
+        )
+
+
+# ── warming the dev server up ─────────────────────────────────────────────
+#
+# Found on the first run of this script: the first time the speaking trainer
+# converts a recording (the MP3 encoder is imported on demand), the DEV
+# server discovers a dependency it had not prepared yet, prepares it, and
+# reloads the page. That reload lands in the middle of the account switch
+# and abandons the held request, so the scenario proves nothing. It is a
+# dev-server artefact (a production build has no such step), so the run
+# first takes one signed-out recording through the same path, refuses its
+# grading request, and only then starts the real scenario. Nothing from the
+# warm-up is recorded anywhere: a refused grading request writes nothing.
+
+def warm_up_speaking(browser) -> None:
+    ctx = new_context(browser, permissions=["microphone"])
+    page = ctx.new_page()
+    grader = HeldGrader(page, GRADER_SPEAKING_PATH)
+    goto(page, f"/trainers/speaking?part=2&card={CUE_CARD}")
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start prep time"),
+        lambda: page.get_by_role("button", name="Start speaking now").count() > 0,
+    )
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start speaking now"),
+        lambda: page.get_by_role("button", name="Stop answering").count() > 0,
+    )
+    page.wait_for_timeout(2000)
+    journey.try_click(page.get_by_role("button", name="Stop answering"))
+    if grader.wait_until_held(timeout_ms=30000):
+        grader.refuse()
+    page.wait_for_timeout(6000)
+    ctx.close()
+
+
+# ── stand-in rows ──────────────────────────────────────────────────────────
+
+def standin_user_state_text(user_id: str) -> str:
+    snapshot = journey.settled_store_snapshot(user_id, attempts=6, delay_ms=1000)
+    return json.dumps(snapshot.get("user_state") or [])
+
+
+def standin_event_ids(user_id: str) -> list:
+    snapshot = journey.settled_store_snapshot(user_id, attempts=6, delay_ms=1000)
+    return [str(r.get("activity_id")) for r in snapshot.get("learning_events") or []]
+
+
+# ── 1. writing ─────────────────────────────────────────────────────────────
+
+def writing_scenario(browser) -> None:
+    write_section(
+        "1. Writing: A's essay is graded after A signed out and B signed in on the same page",
+        "A submits an essay on the writing trainer. The grading request is held in the browser. "
+        "A signs out and B signs up from the avatar menu of the SAME page, while the grading "
+        "progress is still on screen. Then the held request is answered with a synthetic reply.",
+    )
+    ctx = new_context(browser)
+    page = ctx.new_page()
+    errors, failed = attach_diagnostics(page)
+
+    goto(page, "/dashboard")
+    journey.wait_for_dashboard(page)
+    user_a = journey.ws_sign_up(page, EMAIL_A, PASSWORD)
+    write_row("Student A signed up on the local stand-in", bool(user_a), f"user id {user_a}")
+
+    grader = HeldGrader(page, GRADER_ESSAY_PATH)
+    goto(page, f"/trainers/writing?task={PROMPT_ID}")
+    textarea = page.locator("textarea").first
+    textarea.wait_for(timeout=20000)
+    journey.click_until(
+        page,
+        lambda: page.locator("textarea"),
+        lambda: page.locator("textarea").first.is_editable(),
+    )
+    textarea.fill(ESSAY)
+    page.wait_for_timeout(900)
+    mark_page(page)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Check my essay"),
+        lambda: bool(grader.held),
+        attempts=6,
+        delay=1500,
+    )
+    held = grader.wait_until_held()
+    write_row(
+        "A's grading request went out and is being held (nothing reached any grader)",
+        held and ESSAY_MARK in (grader.bodies[0] if grader.bodies else ""),
+        f"held={len(grader.held)}, request body carries A's essay: "
+        f"{bool(grader.bodies and ESSAY_MARK in grader.bodies[0])}",
+    )
+    shot(page, "01-essay-grading-held-for-a", "/trainers/writing")
+
+    journey.ws_sign_out(page)
+    user_b = journey.ws_sign_up(page, EMAIL_B, PASSWORD)
+    page.wait_for_timeout(1500)
+    state = journey.ws_menu_state(page)
+    write_row(
+        "B is signed in on the same page, never reloaded, while A's essay is still being graded",
+        bool(user_b) and bool(state.get("shows_sign_out")) and bool(grader.held) and same_page(page),
+        f"user id {user_b}, menu identity {state.get('identity')!r}, request still held: {bool(grader.held)}, "
+        f"same page as the submission (no reload): {same_page(page)}",
+    )
+    shot(page, "02-essay-b-signed-in-while-grading", "/trainers/writing")
+
+    grader.release(essay_reply())
+    try:
+        page.wait_for_selector(f"text={NOTICE}", timeout=15000)
+    except Exception:
+        pass
+    page.wait_for_timeout(800)
+    body = page.locator("body").inner_text()
+    textarea_value = page.locator("textarea").first.input_value() if page.locator("textarea").count() else ""
+    write_row(
+        "The page B is using says the attempt went elsewhere, and shows none of A's result or essay",
+        NOTICE in body and SYNTHETIC_NOTE not in body and ESSAY_MARK not in textarea_value and same_page(page),
+        f"notice shown: {NOTICE in body}; synthetic report text on screen: {SYNTHETIC_NOTE in body}; "
+        f"A's essay still in the text box: {ESSAY_MARK in textarea_value}; same page: {same_page(page)}",
+    )
+    shot(page, "03-essay-grade-arrived-b-sees-notice", "/trainers/writing")
+
+    items = local_items(page)
+    progress_a = parsed(items, f"ielts.progress.v1::u:{user_a}") or {}
+    progress_b = parsed(items, f"ielts.progress.v1::u:{user_b}") or {}
+    a_rows = (progress_a.get("writing") or {}).get(PROMPT_ID) or []
+    b_rows = (progress_b.get("writing") or {}).get(PROMPT_ID) or []
+    write_row(
+        "A's essay and its grade are kept in A's own history on this device",
+        any(ESSAY_MARK in (r.get("essay") or "") for r in a_rows)
+        and f"write:{PROMPT_ID}" in record_activity_ids(items, user_a),
+        f"A's writing rows for the prompt: {len(a_rows)}, band {[r.get('overallBand') for r in a_rows]}; "
+        f"A's record: {record_activity_ids(items, user_a)}",
+    )
+    carrying = keys_carrying(items, ESSAY_MARK)
+    write_row(
+        "Nothing of A's essay is under B, or under anybody but A, on this device",
+        not b_rows
+        and f"write:{PROMPT_ID}" not in record_activity_ids(items, user_b)
+        and all(f"u:{user_a}" in k for k in carrying),
+        f"B's writing rows for the prompt: {len(b_rows)}; B's record: {record_activity_ids(items, user_b)}; "
+        f"keys carrying A's essay: {carrying}",
+    )
+    page.wait_for_timeout(3000)
+    b_state = standin_user_state_text(user_b)
+    b_events = standin_event_ids(user_b)
+    write_row(
+        "B's account on the stand-in received nothing of A's",
+        ESSAY_MARK not in b_state and not any(PROMPT_ID in e for e in b_events),
+        f"B's user_state carries A's essay: {ESSAY_MARK in b_state}; B's events: {b_events}",
+    )
+
+    journey.ws_sign_out(page)
+    signed_in = journey.ws_sign_in(page, EMAIL_A, PASSWORD)
+    goto(page, "/trainers/writing")
+    try:
+        page.wait_for_selector(f"#history >> text={PROMPT_TITLE}", timeout=20000)
+    except Exception:
+        pass
+    page.wait_for_timeout(1200)
+    history = page.locator("#history").inner_text() if page.locator("#history").count() else ""
+    write_row(
+        "A signs back in and finds the essay in their own writing history",
+        bool(signed_in) and PROMPT_TITLE in history,
+        f"signed in as {signed_in}; history lists the prompt: {PROMPT_TITLE in history}",
+    )
+    page.locator("#history").scroll_into_view_if_needed()
+    shot(page, "04-essay-a-back-finds-it", "/trainers/writing")
+
+    page.wait_for_timeout(3000)
+    a_state = standin_user_state_text(user_a)
+    a_events = standin_event_ids(user_a)
+    write_row(
+        "It reached A's own account on the stand-in once A was signed in again",
+        ESSAY_MARK in a_state and any(f"write:{PROMPT_ID}" in e for e in a_events),
+        f"A's user_state carries the essay: {ESSAY_MARK in a_state}; A's events: {a_events}",
+    )
+    b_state_after = standin_user_state_text(user_b)
+    write_row(
+        "B's account still holds nothing of A's after A's sync",
+        ESSAY_MARK not in b_state_after and not any(PROMPT_ID in e for e in standin_event_ids(user_b)),
+        f"B's user_state carries A's essay: {ESSAY_MARK in b_state_after}",
+    )
+    report_diagnostics("Writing", errors, failed)
+    ctx.close()
+
+
+# ── 2. speaking ────────────────────────────────────────────────────────────
+
+def speaking_scenario(browser) -> None:
+    warm_up_speaking(browser)
+    write_section(
+        "2. Speaking: C's recorded answer is graded after C signed out and D signed in",
+        "The speaking trainer (the recorded checker, which is what /trainers/speaking shows when the "
+        "live examiner is not configured) opens a Part 2 cue card by its exact link. C records a few "
+        "seconds through the browser's FAKE microphone (a test tone, no real voice). The grading "
+        "request is held; C signs out and D signs up on the same page; then it is answered.",
+    )
+    write_note(
+        "Before this section a signed-out warm-up recording went through the same page and its grading "
+        "request was answered with a synthetic failure, so nothing was graded or recorded. It exists "
+        "because the dev server prepares the MP3 encoder on first use and reloads the page when it has, "
+        "which on the first run of this script landed in the middle of the account switch."
+    )
+    ctx = new_context(browser, permissions=["microphone"])
+    page = ctx.new_page()
+    errors, failed = attach_diagnostics(page)
+
+    goto(page, "/dashboard")
+    journey.wait_for_dashboard(page)
+    user_c = journey.ws_sign_up(page, EMAIL_C, PASSWORD)
+    write_row("Student C signed up on the local stand-in", bool(user_c), f"user id {user_c}")
+
+    grader = HeldGrader(page, GRADER_SPEAKING_PATH)
+    goto(page, f"/trainers/speaking?part=2&card={CUE_CARD}")
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start prep time"),
+        lambda: page.get_by_role("button", name="Start speaking now").count() > 0,
+    )
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start speaking now"),
+        lambda: page.get_by_role("button", name="Stop answering").count() > 0,
+    )
+    mark_page(page)
+    page.wait_for_timeout(3500)
+    journey.try_click(page.get_by_role("button", name="Stop answering"))
+    held = grader.wait_until_held()
+    write_row(
+        "C's recorded answer went out for grading and is being held (nothing reached any grader)",
+        held,
+        f"held={len(grader.held)}",
+    )
+    shot(page, "05-speaking-grading-held-for-c", "/trainers/speaking")
+
+    journey.ws_sign_out(page)
+    user_d = journey.ws_sign_up(page, EMAIL_D, PASSWORD)
+    page.wait_for_timeout(1500)
+    write_row(
+        "D is signed in on the same page, never reloaded, while C's answer is still being graded",
+        bool(user_d) and bool(grader.held) and same_page(page),
+        f"user id {user_d}, request still held: {bool(grader.held)}, same page (no reload): {same_page(page)}",
+    )
+
+    grader.release(speaking_reply())
+    try:
+        page.wait_for_selector(f"text={NOTICE}", timeout=15000)
+    except Exception:
+        pass
+    page.wait_for_timeout(800)
+    body = page.locator("body").inner_text()
+    write_row(
+        "The page D is using says the attempt went elsewhere, and shows none of C's result",
+        NOTICE in body and SYNTHETIC_NOTE not in body and same_page(page),
+        f"notice shown: {NOTICE in body}; synthetic report text on screen: {SYNTHETIC_NOTE in body}; "
+        f"same page: {same_page(page)}",
+    )
+    shot(page, "06-speaking-grade-arrived-d-sees-notice", "/trainers/speaking")
+
+    items = local_items(page)
+    progress_c = parsed(items, f"ielts.progress.v1::u:{user_c}") or {}
+    progress_d = parsed(items, f"ielts.progress.v1::u:{user_d}") or {}
+    c_rows = [r for r in progress_c.get("speaking") or [] if r.get("topic") == CUE_TOPIC]
+    d_rows = progress_d.get("speaking") or []
+    speak_id = f"speak:{CUE_CARD}"
+    write_row(
+        "C's speaking grade is kept in C's own history on this device",
+        len(c_rows) == 1 and speak_id in record_activity_ids(items, user_c),
+        f"C's speaking rows: {len(c_rows)}, band {[r.get('overallBand') for r in c_rows]}; "
+        f"C's record: {record_activity_ids(items, user_c)}",
+    )
+    write_row(
+        "Nothing of C's answer is under D on this device",
+        not d_rows and speak_id not in record_activity_ids(items, user_d),
+        f"D's speaking rows: {len(d_rows)}; D's record: {record_activity_ids(items, user_d)}",
+    )
+    page.wait_for_timeout(3000)
+    d_events = standin_event_ids(user_d)
+    d_state = standin_user_state_text(user_d)
+    write_row(
+        "D's account on the stand-in received nothing of C's",
+        speak_id not in d_events and CUE_TOPIC not in d_state,
+        f"D's events: {d_events}; D's user_state carries C's cue card: {CUE_TOPIC in d_state}",
+    )
+
+    journey.ws_sign_out(page)
+    signed_in = journey.ws_sign_in(page, EMAIL_C, PASSWORD)
+    page.wait_for_timeout(3000)
+    c_events = standin_event_ids(user_c)
+    c_state = standin_user_state_text(user_c)
+    write_row(
+        "C signs back in and the grade reaches C's own account on the stand-in",
+        bool(signed_in) and speak_id in c_events and CUE_TOPIC in c_state,
+        f"signed in as {signed_in}; C's events: {c_events}; C's user_state carries the cue card: "
+        f"{CUE_TOPIC in c_state}",
+    )
+    goto(page, "/account")
+    page.wait_for_timeout(2500)
+    shot(page, "07-speaking-c-back-account", "/account")
+    report_diagnostics("Speaking", errors, failed)
+    ctx.close()
+
+
+def run():
+    reset_results()
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            args=["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+        )
+        try:
+            writing_scenario(browser)
+            speaking_scenario(browser)
+        finally:
+            browser.close()
+    text = RESULTS_PATH.read_text(encoding="utf-8")
+    passes, fails = text.count("| PASS |"), text.count("| FAIL |")
+    write_note(f"**Totals:** {passes} PASS, {fails} FAIL.")
+    print(f"done: {passes} PASS, {fails} FAIL -> {RESULTS_PATH}")
+    return 1 if fails else 0
+
+
+if __name__ == "__main__":
+    sys.exit(run())
