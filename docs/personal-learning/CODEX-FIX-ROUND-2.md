@@ -463,3 +463,94 @@ being closed when the inspection ran; Codex adds a requirement to each.
   are idempotent by sitting id.
 
 A fifth fresh inspection follows the fixes.
+
+## Fixes after inspection round 4 (for inspection round 5)
+
+Base for the round-5 inspection diff is still `48b1d17`. All three fixes are
+in `222feb6`, each with deterministic tests and a browser journey against the
+local stand-in (no grader, model or voice service called):
+
+- **R2D-01** (`src/components/LiveExaminer.tsx`,
+  `src/components/speaking-attempt-owner.ts` additions): every session start,
+  embedded or standalone, is numbered (`sessionGenerations`) and tied to the
+  student who pressed Start (`guardSessionStart`). The start waits on four
+  things, the examiner's settings, the microphone permission, the sign-in
+  token and the voice connection, and after each one checks that it is still
+  the screen's latest start, the screen is still mounted and the same student
+  is on the page. If any check fails the start lets go: a microphone that
+  arrives late has its tracks stopped (`stopStream`), a connection that comes
+  up late is closed (`closeConnection`), and no recording, token fetch or
+  connection follows; a failure arriving after the screen let go is ignored.
+  Every teardown (unmount, account switch, the student's own Back, a newer
+  start) makes a waiting start stale, and the connection's own messages and
+  later waits are checked too, so a let-go session cannot end, time or add
+  audio to a newer one. Before grading, the session is checked once more
+  after its shutdown: a switch or unmount during shutdown means no paid
+  grading call (a deliberate change: such an interview used to be graded and
+  kept), while a grade already requested is still kept for its student. The
+  mock's onSuspend and onAbort reporting is unchanged and still pinned.
+  Fourteen new cases and a source scan in `tests/delayed-grade-owner.test.ts`
+  (removing the checks fails nine; keeping only the start number fails four;
+  keeping only the student check fails one; not releasing what arrives late
+  fails six); `f23` section 7 in the browser with a fake microphone and the
+  voice-session request intercepted: the microphone request held while J
+  signs out and K signs up, the session request held then refused with a
+  synthetic failure, and the standalone page the same way, counting the
+  page's tracks, recorders, connections and sockets each time, 70 of 70
+  overall (`results-delayed-grade-4.md`). A comparison run against the
+  pre-fix examiner, recorded in that file outside its totals, showed the
+  late microphone staying live and recording and a session request going out
+  carrying K's token; with the fix all of those are zero.
+- **R2D-02** (`src/lib/test-session.ts`, `TestPlayer.tsx`): every standalone
+  sitting gets its own identity when it starts (`sittingId`; a sitting saved
+  by an earlier build is named by its paper and start moment,
+  `sittingRefOf`). Only Start test, or a retake starting, may replace the
+  stored sitting; every other save and the clear after handing in must match
+  the same student, paper and sitting or write nothing (`saveAnswers` and
+  `clearSession` take the sitting; `clearSession` reports whether it removed
+  anything). A mounted paper stops for good when its sitting is replaced or
+  removed, noticing through the storage event (`isTestSessionStorageKey`) or
+  its own refused save (`standaloneSittingStatus`, `sittingLossFrom`); the
+  stop screen shows the paper's title, one sentence for the replaced case and
+  one for the submitted-or-closed case, and a Back link. Handing in first
+  finishes and clears this exact sitting (`PaperSittingStore.finish`,
+  returning a `PaperFinish`) and records the attempt in the progress history
+  and the learning evidence only after that succeeded; a stale tab records
+  nothing anywhere. The same paper open twice still shares its sitting while
+  both tabs are live, but once one tab hands it in the other stops instead
+  of recording it a second time. A sitting the browser never managed to save
+  (full or blocked storage) is recorded without the clear-first step, since
+  there is nothing to clear and no other tab can hold it; that is the one
+  deliberate departure from Codex's wording. Opening any other paper's page
+  still marks the stored paper abandoned in the learning history as before.
+- **R2D-03** (`src/lib/tests/mock.ts`, `MockExam.tsx`, `TestPlayer.tsx`): a
+  tab that had seen its sitting saved and finds the record gone (finished, or
+  claimed into an account, in another tab) stops with its own sentence and
+  never writes again (`mockSittingStatus`); the replaced case keeps its
+  sentence. The results step clears this exact sitting first and records the
+  mock only after that succeeded. The mock history takes one record per
+  sitting: `MockAttempt` carries the `sittingId`, a second record of the same
+  sitting is refused without duplicating or replacing the first, older rows
+  without an id are left untouched, and the mock's learning event is written
+  only when the history write succeeded. A mock paper that finds its sitting
+  lost tells the mock screen through `onSittingLost`, which stops the whole
+  sitting. A sitting that was never saved never counts as lost. Not covered,
+  and stated: two tabs on the same mock sitting and the same paper can each
+  hand that paper in (the mock itself is still recorded once). Sixteen new
+  cases in `tests/test-session-owner.test.ts` (each fix was removed in turn
+  to confirm the cases catch it); `f22` steps 15 and 16 in the browser, 131
+  of 131 overall (`results-unfinished-test-5.md`). Three new sentences, each
+  with Russian.
+
+One window the R2D-01 builder found in files it did not own is being closed
+in a follow-up commit before the fifth inspection: inside the live-session
+setup (src/lib/speaking/live/), the connection is prepared for up to ten
+seconds and then the request that creates the paid voice session is sent,
+with no check for an account change in between; a switch in that window
+still lets the request out, and the session is then closed the moment it
+comes up. The follow-up adds a may-I-continue check right before that
+request and before the Gemini socket.
+
+Proof commands are unchanged. Gates at `222feb6`: `npm test` 1878 of 1878,
+`npx astro check` 0 errors and 0 warnings, Codex's `signout-race.mjs`
+printing anonymous both times; the build is rerun at the final commit.
