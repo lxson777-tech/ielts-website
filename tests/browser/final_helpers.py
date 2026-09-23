@@ -31,6 +31,7 @@ real student's work.
 import json
 import os
 import re
+from datetime import date, timedelta
 from pathlib import Path
 
 import helpers
@@ -38,8 +39,6 @@ from helpers import (  # re-exported for the scenario scripts
     DESKTOP,
     PHONE,
     attach_diagnostics,
-    days_after,
-    days_before,
     goto,
     new_context,
     progress_v1,
@@ -81,6 +80,40 @@ USER_PREFIX = "u:"
 NS_SEP = "::"
 
 
+# ── "today", computed fresh on every call ─────────────────────────────────
+#
+# helpers.TODAY is a single frozen calendar date (2026-09-22): the day the
+# fixtures in tests/fixtures/learning-profiles.ts were written against, and
+# the day helpers.days_before()/days_after() used to count every "N days
+# ago" seed and aged-date assertion from. That is exactly right on the day
+# it was written and quietly wrong on every day after, because the SITE
+# stamps a fresh session with ITS OWN real "today" (the same local clock
+# this machine's browser and this Python process both read), while the
+# frozen-date expectation stays put. Codex's 2026-09-23 review caught this
+# in scenario 6: the browser correctly aged an active session from 23
+# September to 18 September, but the expectation, still anchored to 22
+# September, said 17 September. Recomputing "today" here on every call
+# keeps every seed date and every aged-date assertion this module hands
+# out anchored to the real calendar day the suite is actually running on,
+# so it stays meaningful on any day, not only on 22 September.
+#
+# This shadows helpers.days_before()/days_after() for every "f" scenario
+# script (they all import these two names from final_helpers, never from
+# helpers directly); the older stage-2 "s" scripts still import the frozen
+# versions straight from helpers, which is correct, since that is a closed
+# evidence run pinned to the day it was recorded.
+def _runtime_today() -> date:
+    return date.today()
+
+
+def days_before(n: int, frm: date | None = None) -> str:
+    return ((frm or _runtime_today()) - timedelta(days=n)).isoformat()
+
+
+def days_after(n: int, frm: date | None = None) -> str:
+    return ((frm or _runtime_today()) + timedelta(days=n)).isoformat()
+
+
 def reset_results() -> None:
     EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
     rerun_note = (
@@ -91,7 +124,7 @@ def reset_results() -> None:
     )
     helpers.RESULTS_PATH.write_text(
         "# Personal learning build: final verification evidence\n\n"
-        f"Run against the FROZEN PRODUCTION SNAPSHOT at {BASE_URL} on 2026-09-22.\n\n"
+        f"Run against the FROZEN PRODUCTION SNAPSHOT at {BASE_URL} on {_runtime_today().isoformat()}.\n\n"
         f"{rerun_note}"
         "Nothing on that server can hot reload, so no result below can be explained away as a "
         "dev-server artifact.\n\n"

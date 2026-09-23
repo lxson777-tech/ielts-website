@@ -314,16 +314,26 @@ def run(base_url: str = BASE_URL):
         # from the same seed dates, rather than hardcoding 5, is what
         # actually checks "the count matches what was really missed" against
         # THIS profile's real activity, instead of assuming a clean scenario
-        # this profile does not provide.
+        # this profile does not provide. days_before() itself is anchored to
+        # the real "today" this run happens on (final_helpers._runtime_today,
+        # not a frozen calendar date), so this stays correct on any day the
+        # suite runs rather than only on the day it was written.
         activity_days = {days_before(11), days_before(3), days_before(9),
                          days_before(8), days_before(7)}
         window_days = {days_before(n) for n in range(1, 6)}
         expected_missed = len(window_days - activity_days)
+        # The before/after dates named below are the browser's OWN observed
+        # values from the ageing step above (`aged`), not a recomputed or
+        # hardcoded guess, so the message stays accurate regardless of what
+        # day this runs on.
+        aged_before_active = (aged or {}).get("before", {}).get("active", "?")
+        aged_after_active = (aged or {}).get("after", {}).get("active", "?")
         write_row(
             "The number of missed days it tells the student matches the number actually missed",
             counted_n == expected_missed,
             f"the plan was aged by exactly 5 days (active session and every scheduled day moved from "
-            f"2026-09-22 to 2026-09-17); of those 5 days, {len(window_days & activity_days)} "
+            f"{aged_before_active} to {aged_after_active}); of those 5 days, "
+            f"{len(window_days & activity_days)} "
             f"(days_before(3), a real Reading attempt in the SYNTHETIC-matching-headings seed) was "
             f"actually worked, so the honestly expected count is {expected_missed}, and the wording says "
             f"{counted_n} missed study day(s)",
