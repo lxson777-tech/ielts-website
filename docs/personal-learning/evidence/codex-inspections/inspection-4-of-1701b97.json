@@ -1,0 +1,77 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-4\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "f385ebe44fbcfc7575b299820b88b9aa7b1da2c3d55056904594ccedcd0bcfd7",
+  "base": "48b1d17",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0cd84-540c-7a61-a117-f59f80395e7d",
+  "usage": {
+    "input_tokens": 1250885,
+    "cached_input_tokens": 916480,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 2125,
+    "reasoning_output_tokens": 405
+  },
+  "elapsed_seconds": 265.21,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence"
+  ],
+  "inspected_commit": "1701b97",
+  "snapshot_sha256": "3a7cc66a1b72bcaca8ded2c147d35911360584ed0761d705b33de6a266ca96a2",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "Three material defects remain: suspended mock interviews can restart microphone capture, standalone tabs can corrupt each other's saved answers, and stale mock tabs can record a completed sitting twice.",
+    "findings": [
+      {
+        "id": "R2D-01",
+        "severity": "high",
+        "path": "src/components/LiveExaminer.tsx:366",
+        "evidence": "For the mock embed, attempt is null and stillHere() always returns true. If A changes accounts while getUserMedia is pending, MockExam unmounts the examiner and cleanup runs before a stream exists. When permission resolves, the continuation still installs the stream, starts recording, fetches the current account's token and opens the examiner connection. A connection resolving after cleanup is likewise retained. This can leave microphone capture and a paid session running behind the stopped screen. Cancelling sessionBindingRef only prevents displaying the eventual grade; it does not cancel these continuations.",
+        "fix": "Guard both embedded and standalone startup with a captured session generation and owner binding. After every await, reject cancelled, unmounted or changed-owner sessions, release newly returned streams and close late connections. Apply the same guard before initiating grading after asynchronous session shutdown, while preserving grades already requested before suspension."
+      },
+      {
+        "id": "R2D-02",
+        "severity": "medium",
+        "path": "src/lib/test-session.ts:311",
+        "evidence": "saveAnswers reads the current standalone slot and checks only its owner; clearSession also checks only the owner. standaloneSitting passes no sitting identity. A starts paper P1 in one tab and P2 in another, then types in P1: P1's answers overwrite P2's answers while P2's paper identity and deadline remain. Submitting P1 clears P2's saved sitting. TestPlayer also records submission evidence before calling finish. This is the unresolved standalone-tab gap acknowledged by the plan.",
+        "fix": "Give standalone sittings unique identities and require matching owner, paper and sitting identity for updates and completion. Stop stale players when their sitting is replaced or removed, and validate completion before recording evidence."
+      },
+      {
+        "id": "R2D-03",
+        "severity": "medium",
+        "path": "src/components/MockExam.tsx:332",
+        "evidence": "mockSittingReplaced returns false when the active record is missing (src/lib/tests/mock.ts:624). The results effect therefore proceeds after another tab finishes the same resumed sitting, ignores clearActiveMock returning false, and calls saveMockAttempt again. saveMockAttempt unconditionally appends to mock history (mock.ts:233). Two tabs resuming the same mock can consequently record it twice, potentially with different essays or results. This is the missing-record gap acknowledged by the plan.",
+        "fix": "Treat disappearance of a previously persisted sitting as a terminal state for stale tabs. Require successful, identity-checked finalization before recording results, and make completed-history writes idempotent by sittingId so concurrent completion cannot duplicate or replace the sitting's evidence."
+      }
+    ],
+    "coverage": [
+      "Reviewed the supplied plan and manifest changes, including ownership, authentication lifecycle, claims, grading, timers, translations and regression-test changes.",
+      "Inspected related authentication session callbacks, learning-store recording and synchronization, legacy adoption, progress writers and live-examiner connection and grading paths.",
+      "Verified the on-disk plan SHA256 matches the requested hash."
+    ],
+    "limitations": [
+      "Static review only. No files edited, tests run, browser journeys executed or work delegated.",
+      "Reported test and browser results are host-provided evidence, not independently verified results.",
+      "Production authentication, backend policies, real microphone behavior and paid model integrations were not exercised."
+    ]
+  }
+}

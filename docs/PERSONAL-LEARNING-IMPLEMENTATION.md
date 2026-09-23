@@ -518,6 +518,55 @@ instruction to run the loop with Codex directly:
 | R2C-03 (medium) | When the sitting's own student returned to a still-mounted paper after an account change, the timer resumed from the frozen count, granting the time away back | The saved deadline is the timer's only authority, including after an owner change and before a submission; an expired sitting is handled as on a fresh load |
 | R2C-04 (high) | The speaking trainer bound its owner but kept recording and stepping through questions after the account changed, so the next student's answers could become the first student's evidence | The attempt is suspended the moment the owner changes: capture stopped, pending turns cancelled, an unfinished recording dropped and never graded; a grade already requested is still kept for the first student; the standalone live examiner ends its session the same way |
 
-**Inspection 4** (a fresh session, after those fixes) is recorded below once
+The fixes for those four landed in `b3a2689` (a late report spares a
+revision through `clearSubmittedEssayDraft`; a speaking attempt bound to its
+owner in `src/components/speaking-attempt-owner.ts`, used by the trainer and
+the standalone examiner; only Start Mock Exam creates or replaces a sitting,
+and a replaced tab stops; the player's clock reads the saved deadline through
+`paperClockAt`). Gates at that commit: 1848 tests, type check clean, 661
+pages, learning index unchanged, race script anonymous both times, f23 56 of
+56 with a fake microphone, f22 107 of 107.
+
+**A bug beyond the brief, found and fixed on the way, and present on the
+published site.** When a paper ran out of time, the player handed it in with
+the answers as they were when the timer started, usually none, so anything
+the student typed after that was lost. The published main branch carries the
+same timer (its time-up path calls the submit function captured when the
+timer started). The fix is part of `b3a2689`; the browser run proves it (with
+the old timer, a time-up recorded the paper as blank despite the student's
+answer). Publishing this branch fixes it on the live site; that is Alex's
+call, as everything published is.
+
+Two same-student two-tab gaps the mock builder found (a standalone paper
+opened in a second tab is overwritten by, and cleared from, the first tab; a
+mock whose record was finished or claimed in another tab keeps running and
+can be recorded twice) were not part of any finding. They are being closed
+in a follow-up commit before the loop ends, so that the inspection does not
+have to raise them.
+
+**Inspection 4, of `1701b97`: REVISE, three findings, all accepted.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-4-of-1701b97.json`.
+Two of the three are the two-tab gaps named just above, which were already
+being closed when the inspection ran; Codex adds a requirement to each. The
+third is new and rated high:
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2D-01 (high) | In the mock, a microphone permission or a voice connection that resolved after the examiner had been taken off screen (an account change mid-start) was still installed and started, with a token fetched for the account now on the browser, so capture and a paid session could run behind the stopped screen | Every session start captures a generation and the owner binding; after every await a cancelled, unmounted or changed-owner session releases the stream it was handed, closes a late connection and starts nothing; the same guard runs before grading after an asynchronous shutdown; grades already requested are preserved |
+| R2D-02 (medium) | The standalone slot's saves and clear checked only the owner, the standalone sitting had no identity, and the player recorded submission evidence before finishing the sitting, so a second paper in another tab could be overwritten and cleared by the first | Standalone sittings get their own identity; updates and completion require owner, paper and sitting identity to match; a stale player stops when its sitting is replaced or removed; completion is validated before any evidence is recorded |
+| R2D-03 (medium) | A mock whose record was finished in another tab was not treated as replaced, the results step ignored a refused clear, and the history write appended unconditionally, so a mock could be recorded twice | The disappearance of a persisted sitting is terminal for the stale tab; results are recorded only after a successful, identity-checked finalisation; mock history writes are idempotent by sitting id |
+
+The fixes for those three landed in `222feb6` (every examiner start numbered
+and tied to its student, with a late microphone or connection released;
+standalone sittings with their own identity and a stale tab that stops;
+the mock recorded once per sitting, only after an identity-checked
+finalisation). Gates at that commit: 1878 tests, type check clean, race
+script anonymous both times, f22 131 of 131, f23 70 of 70 with a
+before-versus-after run of the examiner race. One window the examiner
+builder found inside the live-session setup (a paid session request that can
+still go out a few seconds after a switch, then be closed at once) is being
+closed in a follow-up commit before the fifth inspection.
+
+**Inspection 5** (a fresh session, after those fixes) is recorded below once
 run.
 

@@ -51,7 +51,46 @@
    file, and the parking rule below runs first so a sitting left by an older
    build is claimed from the device, never from the history stamp. If the
    account already has an unfinished sitting of its own, that one wins and
-   the device's is left where it is. */
+   the device's is left where it is.
+
+   WHICH SITTING, NOT ONLY WHOSE (fifth Codex round, 23 September 2026,
+   R2D-02)
+   The slot holds ONE sitting per student, and opening a different paper
+   replaces it. Every save and the clear used to check only the student,
+   never which sitting they were for. So one student with paper P open in
+   one tab and paper Q started in a second tab had P's keystrokes written
+   over Q's saved answers, and handing P in cleared Q's sitting; and P's
+   result was recorded before that clear, so a stale tab recorded a paper
+   whose sitting was no longer its own.
+
+   Every sitting now carries its own identity, `sittingId`, made when it
+   starts and never reused (a sitting written before this build has none,
+   and is named by its paper and the moment it started, which is unique for
+   one student; see sittingRefOf). The paper id alone cannot serve: the same
+   paper started again is a different sitting. The rule is the mock's rule
+   (src/lib/tests/mock.ts, R2C-02), applied to this slot:
+     - startSession is the one write that may put a sitting in another's
+       place. Only "Start test" calls it (and a retake starting).
+     - Every other save, and the clear once a paper is handed in, must name
+       the SAME student, the SAME paper and the SAME sitting as the stored
+       one, and writes nothing at all otherwise.
+     - The test player learns that its sitting is no longer the stored one
+       from the storage event another tab's write raises (see
+       isTestSessionStorageKey) or from a refused save, and stops for good:
+       'replaced' when a newer sitting took the slot, 'gone' when the slot is
+       empty after having held this sitting (it was handed in, or added to an
+       account, in another tab). A slot that NEVER held the sitting (the
+       browser could not save it in the first place) is not a loss, so a
+       full or blocked storage never stops a paper by mistake.
+     - Handing a paper in FINALISES first (PaperSittingStore.finish, which
+       checks the identity and clears) and only a paper that was finalised,
+       or that this browser never managed to write down, is recorded. A
+       stale tab's submit records nothing anywhere.
+   The same sitting open in two tabs (the SAME paper opened twice, which
+   resumes the same sitting) is outside this rule and behaves as before:
+   both tabs save into it, the last keystroke wins. Only when one of them
+   hands it in does the other find it gone, and then it stops rather than
+   recording the paper a second time. */
 
 import type { CacheOwner } from './learning/contracts/sync';
 import { LEGACY_ADOPTION_KEY } from './learning/contracts/sync';
@@ -79,6 +118,11 @@ const KEY = TEST_SESSION_KEY;
 export interface TestSession {
   version: 1;
   testId: string;
+  /** This sitting's own identity (R2D-02), made when it starts and never
+      reused. Optional because a sitting written before this build has none;
+      read it through sittingRefOf, which names such a sitting by its paper
+      and the moment it started. */
+  sittingId?: string;
   startedAt: number; // epoch ms
   endsAt: number; // epoch ms, startedAt plus the duration
   answers: Record<string, string>;
@@ -228,14 +272,52 @@ function write(s: TestSession): void {
   safeSet(storage, keyFor(currentOwner()), JSON.stringify(s));
 }
 
+/* ── Which sitting (R2D-02) ─────────────────────────────────────────────── */
+
+/** Which sitting of which paper a player holds: what every ordinary save
+    and the clear must name, and must find stored, to write anything. */
+export interface PaperSittingRef {
+  testId: string;
+  sittingId: string;
+}
+
+/** A fresh identity for a sitting that is starting now. */
+export function newSittingId(): string {
+  const cryptoApi = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+  const random =
+    typeof cryptoApi?.randomUUID === 'function'
+      ? cryptoApi.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return `sitting-${random}`;
+}
+
+/** The identity of a stored sitting. One written before sitting ids existed
+    is named by its paper and the moment it started, which is unique for one
+    student and never changes (no save touches `startedAt`, and neither does
+    the claim), so every tab reading it agrees on the same name. */
+export function sittingRefOf(s: Pick<TestSession, 'testId' | 'startedAt' | 'sittingId'>): PaperSittingRef {
+  return {
+    testId: s.testId,
+    sittingId: typeof s.sittingId === 'string' && s.sittingId.length > 0 ? s.sittingId : `${s.testId}@${s.startedAt}`,
+  };
+}
+
+function isSitting(s: TestSession, ref: PaperSittingRef): boolean {
+  const own = sittingRefOf(s);
+  return own.testId === ref.testId && own.sittingId === ref.sittingId;
+}
+
 /** Start a fresh session for this test, replacing any previous one OF THE
     SAME OWNER. Another student's unfinished sitting on this device is under
-    their own key and is left exactly where it is. */
+    their own key and is left exactly where it is. The one write that may
+    put a sitting in another's place (R2D-02): only "Start test", and a
+    retake starting, call it. */
 export function startSession(test: PracticeTest): TestSession {
   const now = Date.now();
   const s: TestSession = {
     version: 1,
     testId: test.id,
+    sittingId: newSittingId(),
     startedAt: now,
     endsAt: now + test.durationMinutes * 60_000,
     answers: {},
@@ -307,12 +389,25 @@ export function ownerStillCurrent(sittingOwner: string | null | undefined): bool
 
 /** Save the answers of the sitting `sittingOwner` started. Returns false,
     and writes nothing at all, once somebody else is using this browser: the
-    previous student's answers stay under the previous student's key. */
-export function saveAnswers(answers: Record<string, string>, sittingOwner?: string): boolean {
+    previous student's answers stay under the previous student's key.
+ *
+ * Naming the sitting (`sitting`, R2D-02) makes this an ORDINARY save: it
+ * writes only when the stored sitting is that very sitting, the same paper
+ * and the same identity, and false, writing nothing, when another sitting
+ * has taken the slot or nothing is stored. The test player always names it
+ * (through standaloneSitting). Without it, the save goes into whatever
+ * sitting this student has stored, which is only right straight after
+ * startSession, the way the older callers and tests use it. */
+export function saveAnswers(
+  answers: Record<string, string>,
+  sittingOwner?: string,
+  sitting?: PaperSittingRef,
+): boolean {
   if (!ownerStillCurrent(sittingOwner)) return false;
   const s = read();
   if (!s) return false;
   if (sittingOwner && s.owner && s.owner !== sittingOwner) return false;
+  if (sitting && !isSitting(s, sitting)) return false;
   write({ ...s, answers });
   return true;
 }
@@ -321,12 +416,67 @@ export function saveAnswers(answers: Record<string, string>, sittingOwner?: stri
     this browser is under their own key and is not touched, and neither is
     the old device-wide key. Passing the owner the sitting started under
     makes this a no-op once somebody else has signed in, so a submit that
-    arrives late can never wipe the new student's own sitting. */
-export function clearSession(sittingOwner?: string): void {
-  if (!ownerStillCurrent(sittingOwner)) return;
+    arrives late can never wipe the new student's own sitting.
+ *
+ * Naming the sitting (R2D-02) makes it an ORDINARY clear as well: only the
+ * stored sitting that is that very sitting is removed, so a paper handed in
+ * in a stale tab can never clear the newer sitting another tab started.
+ * Returns whether anything was removed. */
+export function clearSession(sittingOwner?: string, sitting?: PaperSittingRef): boolean {
+  if (!ownerStillCurrent(sittingOwner)) return false;
   const storage = deviceStorage();
-  if (!storage) return;
+  if (!storage) return false;
+  if (sitting) {
+    const s = read();
+    if (!s || !isSitting(s, sitting)) return false;
+    if (sittingOwner && s.owner && s.owner !== sittingOwner) return false;
+  }
   safeRemove(storage, keyFor(currentOwner()));
+  return true;
+}
+
+/* ── Is the sitting on screen still the stored one (R2D-02, R2D-03) ──────── */
+
+/** Where one sitting stands in the store that keeps it, read now.
+ * - 'held': it is the stored sitting, of the student using this browser.
+ * - 'replaced': that student's stored sitting is a DIFFERENT one now.
+ * - 'absent': nothing in progress is stored for that student.
+ * - 'owner-changed': somebody else is using this browser (that has its own
+ *   stopped screen, and the sitting is still there for its student).
+ * - 'no-storage': this browser keeps nothing at all. */
+export type SittingStatus = 'held' | 'replaced' | 'absent' | 'owner-changed' | 'no-storage';
+
+/** Why a sitting on screen is no longer the one written down, for good.
+ * - 'replaced': a newer sitting took its place (started in another tab).
+ * - 'gone': it was written down, and is not any more (handed in, finished,
+ *   or added to an account, in another tab). */
+export type SittingLoss = 'replaced' | 'gone';
+
+/** The loss a status means for a screen. `everHeld` is whether that screen
+    ever found its sitting written down: a sitting the browser never managed
+    to write (a full or blocked storage) is 'absent' from the start, and that
+    is not a loss, so such a paper is never stopped by mistake. Shared by the
+    test player's two stores and the mock screen, so they cannot disagree. */
+export function sittingLossFrom(status: SittingStatus, everHeld: boolean): SittingLoss | null {
+  if (status === 'replaced') return 'replaced';
+  if (status === 'absent' && everHeld) return 'gone';
+  return null;
+}
+
+/** Where the standalone sitting `sitting`, started by `sittingOwner`, stands
+    in this student's slot right now. */
+export function standaloneSittingStatus(sittingOwner: string | undefined, sitting: PaperSittingRef): SittingStatus {
+  if (!ownerStillCurrent(sittingOwner)) return 'owner-changed';
+  if (!deviceStorage()) return 'no-storage';
+  const s = read();
+  if (!s || (sittingOwner && s.owner && s.owner !== sittingOwner)) return 'absent';
+  return isSitting(s, sitting) ? 'held' : 'replaced';
+}
+
+/** Whether a storage event another tab raised (its `key`, null when the
+    whole storage was cleared) can concern a standalone sitting. */
+export function isTestSessionStorageKey(key: string | null): boolean {
+  return key === null || key === KEY || key.startsWith(`${KEY}::`);
 }
 
 /* ── One paper's sitting, wherever it is kept ────────────────────────────── */
@@ -352,29 +502,73 @@ export interface PaperOutcome {
   secondsUsed: number;
 }
 
+/** What handing a paper in found, BEFORE anything is recorded (R2D-02).
+ * - 'finished': the sitting was this tab's own and live, and it is now done
+ *   with (cleared, or its result kept inside its mock sitting).
+ * - 'unsaved': it is this tab's own, but the browser never managed to write
+ *   it down, so there is nothing to finalise. Nothing else can have it.
+ * - 'replaced' / 'gone': it is no longer this tab's to hand in (see
+ *   SittingLoss). Nothing was written.
+ * - 'owner-changed': somebody else is using this browser. Nothing written.
+ * Only 'finished' and 'unsaved' may be recorded. */
+export type PaperFinish = 'finished' | 'unsaved' | SittingLoss | 'owner-changed';
+
 /** Where ONE paper's in-progress sitting is kept, as the test player uses
-    it: restore, start, save the answers, and finish once handed in. */
+    it: restore, start, save the answers, notice a loss, and finish once
+    handed in. Each player makes its own store, which remembers whether the
+    sitting it handed out was ever found written down (so a browser that
+    cannot save never reads as having lost it). */
 export interface PaperSittingStore {
   /** The sitting of this paper the current owner can resume, if any. */
   load(): TestSession | null;
   /** A fresh sitting of this paper, with a fresh deadline and no answers. */
   start(): TestSession;
-  /** Save the answers of the sitting `sittingOwner` started. False, writing
-      nothing, once somebody else is using this browser. */
-  save(answers: Record<string, string>, sittingOwner?: string): boolean;
-  /** The paper was handed in: the in-progress sitting is done with. A no-op
-      once somebody else is using this browser. */
-  finish(sittingOwner: string | undefined, outcome: PaperOutcome): void;
+  /** Save the answers of the sitting `sitting`, which `sittingOwner`
+      started. False, writing nothing, once somebody else is using this
+      browser, or when the stored sitting is not that one (R2D-02). */
+  save(answers: Record<string, string>, sittingOwner: string | undefined, sitting: PaperSittingRef | null): boolean;
+  /** Why `sitting` is no longer the stored one, for good, or null while it
+      still is (or the account changed, which is not a loss). */
+  lost(sittingOwner: string | undefined, sitting: PaperSittingRef | null): SittingLoss | null;
+  /** The paper was handed in. Checks that `sitting` is still this tab's own
+      and live, and only then finalises it; says what it found, and writes
+      nothing unless it is 'finished'. Called BEFORE the attempt is recorded
+      anywhere, and the attempt is recorded only on 'finished' or 'unsaved'. */
+  finish(sittingOwner: string | undefined, outcome: PaperOutcome, sitting: PaperSittingRef | null): PaperFinish;
 }
 
-/** A paper opened on its own: the one slot per student above, exactly as
-    it has always behaved. */
+/** A paper opened on its own: the one slot per student above. Every save
+    and the finish name the sitting this store handed out (R2D-02). */
 export function standaloneSitting(test: PracticeTest): PaperSittingStore {
+  /* Whether the sitting this store handed out was ever found written down:
+     picked up from the slot, started with a write that landed, or saved. */
+  let everHeld = false;
   return {
-    load: () => loadSession(test.id),
-    start: () => startSession(test),
-    save: (answers, sittingOwner) => saveAnswers(answers, sittingOwner),
-    finish: (sittingOwner) => clearSession(sittingOwner),
+    load: () => {
+      const s = loadSession(test.id);
+      everHeld = s !== null;
+      return s;
+    },
+    start: () => {
+      const s = startSession(test);
+      everHeld = standaloneSittingStatus(s.owner, sittingRefOf(s)) === 'held';
+      return s;
+    },
+    save: (answers, sittingOwner, sitting) => {
+      if (!sitting) return false;
+      const saved = saveAnswers(answers, sittingOwner, sitting);
+      if (saved) everHeld = true;
+      return saved;
+    },
+    lost: (sittingOwner, sitting) =>
+      sitting ? sittingLossFrom(standaloneSittingStatus(sittingOwner, sitting), everHeld) : null,
+    finish: (sittingOwner, _outcome, sitting) => {
+      if (!sitting) return 'unsaved';
+      const status = standaloneSittingStatus(sittingOwner, sitting);
+      if (status === 'owner-changed') return 'owner-changed';
+      if (status === 'held') return clearSession(sittingOwner, sitting) ? 'finished' : 'unsaved';
+      return sittingLossFrom(status, everHeld) ?? 'unsaved';
+    },
   };
 }
 

@@ -44,6 +44,20 @@
  * session, so its suspension is proven here and not in a browser: the same
  * attempt, and a source scan of how the examiner uses it.
  *
+ * AND THE EXAMINER'S START (finding R2D-01 of the Codex inspection of
+ * 1701b97), section 8
+ * Starting a live examiner session waits for the microphone permission, a
+ * sign-in token and the voice connection. The mock exam's embedded examiner
+ * asked nothing after those waits: taken off screen at an account change
+ * while the permission prompt was up, it still kept the microphone, started
+ * recording, fetched a token and opened a paid session once the prompt was
+ * answered. Every start is now numbered and bound (guardSessionStart in
+ * src/components/speaking-attempt-owner.ts). Section 8 drives that guard
+ * with promises resolved by hand after the unmount, the switch or a newer
+ * start (a microphone, a token, a connection, a failure) and with the
+ * grading step after the session's shutdown, using a stream and a
+ * connection of this file's own. Nothing real is opened or called.
+ *
  * WHAT IS SIMULATED, AND WHAT IS NOT
  * Simulated: the graders. Every grade below is a SYNTHETIC object handed back
  * by a promise this file resolves by hand, at the moment it chooses, so no
@@ -1311,11 +1325,15 @@ test('the standalone examiner ends its session on a switch, and asks before ever
   );
   assert.match(code, /attempt \? attempt\.binding : bindToCurrentOwner\(\)/);
 
+  /* Since R2D-01 every wait of the start goes through the start's own
+     guard, which asks the attempt first (section 8 proves the guard). */
   const start = functionBody(code, 'startTest');
-  before(start, 'await getAccessToken()', 'stillHere()', 'the token wait is not followed by a check');
-  before(start, 'await openExaminerLink(', 'link.close()', 'a session that opened after a switch is not closed');
-  before(start, 'link.close()', 'linkRef.current = link', 'a session that opened after a switch is kept');
-  before(start, 'attempt.mayStartRecording()', 'streamRef.current = stream', 'the microphone is kept without a check');
+  assert.match(start, /guardSessionStart\(\{\s*generations,\s*binding:\s*sessionBindingRef\.current,\s*attempt\s*\}\)/);
+  before(start, 'session.step(getAccessToken())', 'dropStart(session', 'the token wait is not followed by a check');
+  before(start, 'openExaminerLink(', 'closeConnection', 'a session that opened after a switch is not closed');
+  before(start, 'closeConnection', 'linkRef.current = opened.value', 'a session that opened after a switch is kept');
+  before(start, 'navigator.mediaDevices.getUserMedia(', 'releaseMic', 'a microphone that answered after a switch is kept');
+  before(start, 'releaseMic', 'streamRef.current = stream', 'the microphone is kept without a check');
 
   const finish = functionBody(code, 'finishTest');
   before(finish, 'attempt.mayStartTurn()', 'endedRef.current = true', 'the interview can finish for a student who has gone');
@@ -1341,4 +1359,552 @@ test('the standalone examiner ends its session on a switch, and asks before ever
   assert.match(functionBody(code, 'abandonToMenu'), /attemptRef\.current\?\.close\(\)/);
   /* The mock embed's own teardown is untouched (R2B-02). */
   assert.match(code, /examinerLeftScreen\(openedFor\) === 'suspended'\) onSuspend\?\.\(\)/);
+});
+
+/* ------------------------------------------------------------------ */
+/* 8. The examiner's start asks after every wait (R2D-01)             */
+/* ------------------------------------------------------------------ */
+
+/* WHAT IS SIMULATED HERE
+   The microphone, the token and the voice connection are promises this
+   file resolves by hand, at the moment it chooses, after the unmount, the
+   switch or the newer start it is testing. The stream is an object of this
+   file's own with tracks that can be stopped; the connection is one that
+   counts its closes. The guard, the start numbers, the owner binding, the
+   attempt and runOwnedGrade are the shipping code.
+
+   examinerStart and examinerFinish below are the examiner's own start and
+   finish (src/components/LiveExaminer.tsx startTest and finishTest)
+   reduced to their waits and to what each wait is followed by, in the same
+   order. The source scan at the end of this section pins that the
+   component really does route every one of those waits through the guard. */
+
+/** Let every continuation that is ready run (all pending microtasks). */
+function settle(): Promise<void> {
+  return new Promise((resolve) => setImmediate(resolve));
+}
+
+/** A microphone stream of this file's own. */
+function syntheticMicrophone() {
+  const tracks = [0, 1].map(() => {
+    const track = {
+      readyState: 'live' as 'live' | 'ended',
+      stop() {
+        track.readyState = 'ended';
+      },
+    };
+    return track;
+  });
+  return {
+    getTracks: () => tracks,
+    liveTracks: () => tracks.filter((track) => track.readyState === 'live').length,
+  };
+}
+type SyntheticMicrophone = ReturnType<typeof syntheticMicrophone>;
+
+/** A voice connection of this file's own. */
+function syntheticConnection() {
+  const connection = {
+    closes: 0,
+    close() {
+      connection.closes += 1;
+      return Promise.resolve();
+    },
+  };
+  return connection;
+}
+type SyntheticConnection = ReturnType<typeof syntheticConnection>;
+
+/** Everything the start could reach, counted. */
+function startWorld() {
+  return {
+    microphone: pendingGrade<SyntheticMicrophone>(),
+    token: pendingGrade<string | null>(),
+    connection: pendingGrade<SyntheticConnection>(),
+    microphoneRequests: 0,
+    recordersStarted: 0,
+    recordersStopped: 0,
+    tokenFetches: 0,
+    connectionRequests: 0,
+    streamKept: null as SyntheticMicrophone | null,
+    linkKept: null as SyntheticConnection | null,
+  };
+}
+type StartWorld = ReturnType<typeof startWorld>;
+
+/** The examiner's start, reduced to its waits and what follows each. What a
+    start that may not go on does is dropStart: stop its own recorder and
+    microphone, nothing else. */
+async function examinerStart(session: ReturnType<typeof speaking.guardSessionStart>, world: StartWorld): Promise<string> {
+  world.microphoneRequests += 1;
+  const granted = await session.step(world.microphone.promise, speaking.stopStream);
+  if (!granted) return 'let go at the microphone';
+  const stream = granted.value;
+  world.streamKept = stream;
+  world.recordersStarted += 1;
+  const dropStart = (): void => {
+    world.recordersStopped += 1;
+    speaking.stopStream(stream);
+    world.streamKept = null;
+  };
+
+  world.tokenFetches += 1;
+  const token = await session.step(world.token.promise);
+  if (!token) {
+    dropStart();
+    return 'let go at the token';
+  }
+
+  world.connectionRequests += 1;
+  let opened: { value: SyntheticConnection } | null;
+  try {
+    opened = await session.step(world.connection.promise, speaking.closeConnection);
+  } catch {
+    dropStart();
+    return 'the connection failed while the start was live';
+  }
+  if (!opened) {
+    dropStart();
+    return 'let go at the connection';
+  }
+  world.linkKept = opened.value;
+  return 'started';
+}
+
+/** The start of the mock embed: a plain binding and no attempt, exactly as
+    the component makes it when `mock` is set. */
+function mockStart(generations: ReturnType<typeof speaking.sessionGenerations>) {
+  const binding = storeOwner.bindToCurrentOwner();
+  const session = speaking.guardSessionStart({ generations, binding, attempt: null });
+  return { binding, session };
+}
+
+/** The mock embed's unmount, as far as the start is concerned: the
+    component lets go of its binding and moves every number on for good. */
+function unmountMock(generations: ReturnType<typeof speaking.sessionGenerations>, binding: { cancel(): void }): void {
+  generations.unmount();
+  binding.cancel();
+}
+
+test('R2D-01: the start numbers go stale at every new start and for good at the unmount', () => {
+  const generations = speaking.sessionGenerations();
+  const first = generations.next();
+  assert.ok(generations.isCurrent(first));
+  const second = generations.next();
+  assert.equal(generations.isCurrent(first), false, 'an older start is still current after a newer one');
+  assert.ok(generations.isCurrent(second));
+  assert.equal(generations.current(), second);
+  generations.unmount();
+  assert.equal(generations.isCurrent(second), false, 'a start is still current after the unmount');
+  const late = generations.next();
+  assert.equal(generations.isCurrent(late), false, 'a start begun after the unmount counts as current');
+});
+
+test('R2D-01: nothing changed, the start goes through: the microphone is kept, the connection is kept and not closed', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { session } = mockStart(generations);
+  const world = startWorld();
+  const starting = examinerStart(session, world);
+
+  const microphone = syntheticMicrophone();
+  const connection = syntheticConnection();
+  world.microphone.resolve(microphone);
+  world.token.resolve('SYNTHETIC-token-of-A');
+  world.connection.resolve(connection);
+  assert.equal(await starting, 'started');
+  assert.equal(microphone.liveTracks(), 2, 'a live start lost its microphone');
+  assert.equal(connection.closes, 0, 'a live start closed its own connection');
+  assert.equal(world.linkKept, connection);
+  assert.ok(session.live());
+});
+
+test('R2D-01: a microphone that answers after the mock took the examiner off screen is released at once; no recording, token or connection follows', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { binding, session } = mockStart(generations);
+  const world = startWorld();
+  const starting = examinerStart(session, world);
+  assert.equal(world.microphoneRequests, 1, 'the permission prompt is up');
+
+  /* Another tab signs A out and B in; MockExam puts its stopped screen up
+     and the examiner unmounts BEFORE any stream exists. */
+  signInAs(B);
+  unmountMock(generations, binding);
+
+  /* The student answers the permission prompt afterwards. */
+  const microphone = syntheticMicrophone();
+  world.microphone.resolve(microphone);
+  assert.equal(await starting, 'let go at the microphone');
+  assert.equal(microphone.liveTracks(), 0, 'the microphone stayed live behind the stopped screen');
+  assert.equal(world.streamKept, null, 'the stream was installed');
+  assert.equal(world.recordersStarted, 0, 'a recording started after the unmount');
+  assert.equal(world.tokenFetches, 0, "a token was fetched (B's, by then) after the unmount");
+  assert.equal(world.connectionRequests, 0, 'a paid voice session was requested after the unmount');
+});
+
+test('R2D-01: the same late microphone after an unmount with nobody else arriving is released too', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { binding, session } = mockStart(generations);
+  const world = startWorld();
+  const starting = examinerStart(session, world);
+
+  /* The page is left (or the sitting replaced) with A still signed in. */
+  unmountMock(generations, binding);
+  const microphone = syntheticMicrophone();
+  world.microphone.resolve(microphone);
+  assert.equal(await starting, 'let go at the microphone');
+  assert.equal(microphone.liveTracks(), 0);
+  assert.equal(world.recordersStarted + world.tokenFetches + world.connectionRequests, 0);
+});
+
+test('R2D-01: the two locks each hold on their own: the number moved on with the binding untouched, and the binding let go with the number untouched', async () => {
+  freshDevice();
+  signInAs(A);
+
+  /* Only the start number moves on (a teardown that did not reach the
+     binding, as the component's own teardowns all also do it). */
+  const numbers = speaking.sessionGenerations();
+  const byNumber = mockStart(numbers);
+  const numberWorld = startWorld();
+  const numberStart = examinerStart(byNumber.session, numberWorld);
+  numbers.next();
+  assert.equal(byNumber.binding.state(), 'current', 'the binding was touched');
+  const numberMicrophone = syntheticMicrophone();
+  numberWorld.microphone.resolve(numberMicrophone);
+  assert.equal(await numberStart, 'let go at the microphone', 'a start whose number went stale carried on');
+  assert.equal(numberMicrophone.liveTracks(), 0);
+  assert.equal(numberWorld.recordersStarted + numberWorld.tokenFetches + numberWorld.connectionRequests, 0);
+
+  /* Only the binding is let go (the number untouched). */
+  const kept = speaking.sessionGenerations();
+  const byBinding = mockStart(kept);
+  const bindingWorld = startWorld();
+  const bindingStart = examinerStart(byBinding.session, bindingWorld);
+  byBinding.binding.cancel();
+  assert.equal(byBinding.session.current(), true, 'the number was touched');
+  const bindingMicrophone = syntheticMicrophone();
+  bindingWorld.microphone.resolve(bindingMicrophone);
+  assert.equal(await bindingStart, 'let go at the microphone', 'a start whose binding was let go carried on');
+  assert.equal(bindingMicrophone.liveTracks(), 0);
+  assert.equal(bindingWorld.recordersStarted + bindingWorld.tokenFetches + bindingWorld.connectionRequests, 0);
+});
+
+test('R2D-01: a connection that comes up after the unmount is closed at once and never kept, and the microphone is released', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { binding, session } = mockStart(generations);
+  const world = startWorld();
+  const starting = examinerStart(session, world);
+
+  const microphone = syntheticMicrophone();
+  world.microphone.resolve(microphone);
+  world.token.resolve('SYNTHETIC-token-of-A');
+  /* Let the start reach the connection wait. */
+  await settle();
+  assert.equal(world.connectionRequests, 1, 'the start never reached the connection wait');
+
+  signInAs(B);
+  unmountMock(generations, binding);
+  const connection = syntheticConnection();
+  world.connection.resolve(connection);
+  assert.equal(await starting, 'let go at the connection');
+  assert.equal(connection.closes, 1, 'a connection that came up after the unmount was left open');
+  assert.equal(world.linkKept, null, 'a connection that came up after the unmount was kept');
+  assert.equal(microphone.liveTracks(), 0, 'the microphone stayed live');
+  assert.equal(world.recordersStopped, 1, 'the recorder the start began was not stopped');
+});
+
+test("R2D-01: an owner change during the token fetch opens nothing with the new student's token, in the mock embed and standalone", async () => {
+  /* The mock embed, a moment before MockExam takes the examiner away. */
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { session } = mockStart(generations);
+  const world = startWorld();
+  const starting = examinerStart(session, world);
+  const microphone = syntheticMicrophone();
+  world.microphone.resolve(microphone);
+  await settle();
+  assert.equal(world.tokenFetches, 1, 'the start never reached the token wait');
+
+  signInAs(B);
+  world.token.resolve('SYNTHETIC-token-of-B');
+  assert.equal(await starting, 'let go at the token');
+  assert.equal(world.connectionRequests, 0, "a voice session was requested with B's token for A's start");
+  assert.equal(microphone.liveTracks(), 0);
+  assert.equal(session.current(), true, 'the screen is still there, so it is the screen that says the session closed');
+  assert.equal(session.live(), false);
+
+  /* Standalone: the attempt's own teardown runs at the switch, and the
+     component's teardown moves the number on. */
+  freshDevice();
+  signInAs(A);
+  const standalone = speaking.sessionGenerations();
+  const left: string[] = [];
+  const attempt = speaking.openSpeakingAttempt({
+    onOwnerLeft: (stage) => {
+      left.push(stage);
+      standalone.next();
+    },
+  });
+  const guarded = speaking.guardSessionStart({ generations: standalone, binding: attempt.binding, attempt });
+  const world2 = startWorld();
+  const starting2 = examinerStart(guarded, world2);
+  const microphone2 = syntheticMicrophone();
+  world2.microphone.resolve(microphone2);
+  await settle();
+  signInAs(B);
+  assert.deepEqual(left, ['open'], 'the standalone attempt was not stopped at the switch');
+  world2.token.resolve('SYNTHETIC-token-of-B');
+  assert.equal(await starting2, 'let go at the token');
+  assert.equal(world2.connectionRequests, 0);
+  assert.equal(microphone2.liveTracks(), 0);
+  assert.equal(guarded.current(), false, 'the switch did not move the number on');
+});
+
+test('R2D-01: an owner change that reached no listener is still caught when the wait ends', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { session } = mockStart(generations);
+  const world = startWorld();
+  const starting = examinerStart(session, world);
+
+  /* The owner moves without a notification (the owner module forgets it). */
+  storeOwner.resetStoreOwnerForTest();
+  const microphone = syntheticMicrophone();
+  world.microphone.resolve(microphone);
+  assert.equal(await starting, 'let go at the microphone');
+  assert.equal(microphone.liveTracks(), 0);
+  assert.equal(world.recordersStarted, 0);
+  signInAs(A);
+});
+
+test('R2D-01: a failure that arrives after the screen let go is swallowed; the same failure while live reaches the screen', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+
+  const late = mockStart(generations);
+  const lateWorld = startWorld();
+  const lateStart = examinerStart(late.session, lateWorld);
+  lateWorld.microphone.resolve(syntheticMicrophone());
+  lateWorld.token.resolve('SYNTHETIC-token-of-A');
+  await settle();
+  unmountMock(generations, late.binding);
+  lateWorld.connection.reject(new Error('SYNTHETIC connection failure after the unmount'));
+  assert.equal(await lateStart, 'let go at the connection', 'a failure after the unmount was reported to a screen that is gone');
+
+  const fresh = speaking.sessionGenerations();
+  const live = mockStart(fresh);
+  const liveWorld = startWorld();
+  const liveStart = examinerStart(live.session, liveWorld);
+  const microphone = syntheticMicrophone();
+  liveWorld.microphone.resolve(microphone);
+  liveWorld.token.resolve('SYNTHETIC-token-of-A');
+  await settle();
+  liveWorld.connection.reject(new Error('SYNTHETIC connection failure while live'));
+  assert.equal(await liveStart, 'the connection failed while the start was live');
+  assert.equal(microphone.liveTracks(), 0);
+});
+
+test('R2D-01: a newer start makes the older one stale; its late microphone never reaches the newer session', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const older = mockStart(generations);
+  const olderWorld = startWorld();
+  const olderStart = examinerStart(older.session, olderWorld);
+
+  /* The screen starts again (the component cancels the older binding
+     first, exactly as startTest does). */
+  older.binding.cancel();
+  const newer = mockStart(generations);
+  assert.equal(older.session.current(), false);
+  assert.ok(newer.session.live());
+
+  const olderMicrophone = syntheticMicrophone();
+  olderWorld.microphone.resolve(olderMicrophone);
+  assert.equal(await olderStart, 'let go at the microphone');
+  assert.equal(olderMicrophone.liveTracks(), 0);
+  assert.equal(olderWorld.recordersStarted, 0);
+  assert.ok(newer.session.live(), 'the older start disturbed the newer one');
+});
+
+/* The finish: the session is shut down (two waits), and only then may it be
+   sent for grading. */
+
+function finishWorld() {
+  return {
+    linkClosed: pendingGrade<void>(),
+    recorderStopped: pendingGrade<void>(),
+    graderCalls: 0,
+    shown: 0,
+    hidden: 0,
+    notice: null as string | null,
+  };
+}
+type FinishWorld = ReturnType<typeof finishWorld>;
+
+/** The examiner's finish, reduced to its waits and what follows each. */
+async function examinerFinish(
+  session: ReturnType<typeof speaking.guardSessionStart>,
+  world: FinishWorld,
+  grader: Promise<SyntheticGrade>,
+): Promise<string> {
+  if (!session.current()) return 'not this screen\'s session';
+  await world.linkClosed.promise;
+  if (!session.current()) return 'let go while the connection closed';
+  await world.recorderStopped.promise;
+  if (!session.current()) return 'let go while the recorder stopped';
+  if (!session.live()) {
+    if (session.current()) world.notice = 'SESSION_CLOSED_NOTICE';
+    return 'not graded';
+  }
+  await storeOwner.runOwnedGrade(
+    session.binding,
+    () => {
+      world.graderCalls += 1;
+      return grader;
+    },
+    {
+      keep: (grade, owner) => keepSpeaking(grade, owner, '2026-09-23T22:00:00.000Z'),
+      show: () => (world.shown += 1),
+      hide: () => (world.hidden += 1),
+    },
+  );
+  return 'graded';
+}
+
+test('R2D-01: a switch during the shutdown starts no paid grading call; the mock screen says the session closed', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { session } = mockStart(generations);
+  const world = finishWorld();
+  const grader = pendingGrade<SyntheticGrade>();
+  const finishing = examinerFinish(session, world, grader.promise);
+
+  /* The closing line was heard; the connection is closing when the page
+     changes hands, before MockExam has taken the examiner away. */
+  signInAs(B);
+  world.linkClosed.resolve();
+  world.recorderStopped.resolve();
+  assert.equal(await finishing, 'not graded');
+  assert.equal(world.graderCalls, 0, 'a session whose student had left was sent for (paid) grading');
+  assert.equal(world.notice, 'SESSION_CLOSED_NOTICE');
+  assert.deepEqual(recordEventsOf(A), []);
+  assert.deepEqual(recordEventsOf(B), []);
+});
+
+test('R2D-01: an unmount during the shutdown starts no paid grading call and touches nothing more', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { binding, session } = mockStart(generations);
+  const world = finishWorld();
+  const grader = pendingGrade<SyntheticGrade>();
+  const finishing = examinerFinish(session, world, grader.promise);
+
+  world.linkClosed.resolve();
+  await settle();
+  signInAs(B);
+  unmountMock(generations, binding);
+  world.recorderStopped.resolve();
+  assert.equal(await finishing, 'let go while the recorder stopped');
+  assert.equal(world.graderCalls, 0, 'a session let go during its shutdown was sent for (paid) grading');
+  assert.equal(world.notice, null, 'a screen that is gone was told something');
+});
+
+test('R2D-01: a grade requested before the switch and the unmount is still kept for A, and shown to nobody', async () => {
+  freshDevice();
+  signInAs(A);
+  const generations = speaking.sessionGenerations();
+  const { binding, session } = mockStart(generations);
+  const world = finishWorld();
+  const grader = pendingGrade<SyntheticGrade>();
+  const finishing = examinerFinish(session, world, grader.promise);
+
+  world.linkClosed.resolve();
+  world.recorderStopped.resolve();
+  await settle();
+  assert.equal(world.graderCalls, 1, 'the grading request never went out');
+
+  signInAs(B);
+  unmountMock(generations, binding);
+  grader.resolve(SPEAKING_GRADE);
+  assert.equal(await finishing, 'graded');
+  assert.equal(recordEventsOf(A).length, 1, 'a grade requested before the suspension was not kept for A');
+  assert.deepEqual(recordEventsOf(B), [], "A's grade reached B");
+  assert.equal(world.shown, 0, "A's report was shown on B's page");
+  assert.equal(world.hidden, 0);
+  assert.equal(world.graderCalls, 1, 'the grade was requested twice');
+});
+
+test('LiveExaminer routes every wait of its start through the guard, asks again after the shutdown, and moves the number on at every teardown', () => {
+  const code = componentSource('LiveExaminer.tsx');
+  const start = functionBody(code, 'startTest');
+
+  /* Every wait of the start goes through the start's guard. */
+  const waits = [...start.matchAll(/\bawait\s+([\w.]+)/g)].map((match) => match[1]);
+  assert.ok(waits.length >= 4, 'the start has fewer waits than expected');
+  assert.deepEqual(
+    waits.filter((name) => name !== 'session.step'),
+    [],
+    'a wait in startTest is not routed through the guard',
+  );
+  for (const step of ['fetchLiveConfig(', 'navigator.mediaDevices.getUserMedia(', 'getAccessToken()', 'openExaminerLink(']) {
+    assert.match(start, new RegExp(`session\\.step\\(\\s*${step.replace(/[.()]/g, '\\$&')}`), `${step} is not waited for through the guard`);
+  }
+  /* A late microphone has its tracks stopped; a late connection is closed. */
+  assert.match(start, /getUserMedia\([\s\S]*?\}\),\s*releaseMic,\s*\)/, 'a late microphone is not released');
+  assert.match(start, /openExaminerLink\([\s\S]*?\}\),\s*closeConnection,\s*\)/, 'a late connection is not closed');
+  /* Each no is followed by the start letting go, before anything else. */
+  for (const [answer, what] of [
+    ['if (!fetched)', 'the settings'],
+    ['if (!granted)', 'the microphone'],
+    ['if (!token)', 'the token'],
+    ['if (!opened)', 'the connection'],
+  ] as const) {
+    before(start, answer, 'dropStart(session', `a no at ${what} is not followed by the start letting go`);
+  }
+  before(start, 'if (!granted)', 'new MediaRecorder(', 'the recorder can start before the microphone is checked');
+  before(start, 'if (!token)', 'openExaminerLink(', 'the connection can be requested before the token is checked');
+  /* The connection's own callbacks speak only for the current start. */
+  assert.match(start, /onTranscript:\s*\(turns\)\s*=>\s*\{\s*if \(session\.current\(\)\)/);
+  assert.match(start, /onClosed:\s*\(reason, wasClean\)\s*=>\s*\{\s*if \(!session\.current\(\) \|\| endedRef\.current\) return;/);
+  assert.match(start, /if \(e\.data\.size > 0 && session\.current\(\)\)/, "a let-go recorder's last chunk can join a later session");
+
+  /* dropStart lets go of the start's own recorder and microphone first, and
+     only then decides whether the screen is still this start's. */
+  const drop = functionBody(code, 'dropStart');
+  before(drop, 'rec.stop()', 'if (!session.current()) return;', 'a let-go start does not stop its own recorder');
+  before(drop, 'releaseMic(stream)', 'if (!session.current()) return;', 'a let-go start does not release its own microphone');
+  before(drop, 'if (!session.current()) return;', 'setError(t(SESSION_CLOSED_NOTICE))', 'the notice can go over a screen that moved on');
+
+  /* The finish asks after each shutdown wait, and before grading. */
+  const finish = functionBody(code, 'finishTest');
+  before(finish, 'const session = sessionRef.current', 'endedRef.current = true', 'the session being finished is read too late');
+  before(finish, 'await link.close()', 'if (!session.current()) return;', 'the connection closing is not followed by a check');
+  before(finish, 'await stopRecorder()', 'if (!session.current()) return;', 'the recorder stopping is not followed by a check');
+  before(finish, 'attempt.mayAcceptRecording()', 'if (!session.live())', 'grading is not guarded after the shutdown');
+  before(finish, 'if (!session.live())', 'gradeInterview(', 'the interview can be graded without the guard');
+  before(finish, 'if (!session.live())', 'setPhase(\'grading\')', 'the grading screen can come up without the guard');
+
+  /* The later steps ask as well. */
+  before(functionBody(code, 'startPart2Flow'), 'await waitForExaminerQuiet(', 'if (!session?.current()) return;', 'the cue-card wait is not followed by a check');
+  before(functionBody(code, 'onTranscriptUpdate'), 'waitUntilQuiet()', 'if (!session?.current()) return;', 'the closing-line wait is not followed by a check');
+
+  /* Every teardown moves the number on. */
+  assert.match(functionBody(code, 'leaveForOwnerChange'), /generations\.next\(\)/, 'the switch does not make a waiting start stale');
+  assert.match(functionBody(code, 'abandonToMenu'), /generations\.next\(\)/, "the student's own Back does not make a waiting start stale");
+  assert.match(code, /generations\.unmount\(\);\s*abandonToMenu\(\);/, 'the unmount does not make a waiting start stale for good');
+  /* ...and the mock's own reporting at the unmount is exactly as it was. */
+  assert.match(code, /if \(mock && !mockReportedRef\.current && openedFor\) \{\s*mockReportedRef\.current = true;\s*if \(examinerLeftScreen\(openedFor\) === 'suspended'\) onSuspend\?\.\(\);\s*else onAbort\?\.\(\);\s*\}/);
 });

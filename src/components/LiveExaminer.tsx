@@ -51,7 +51,27 @@
    session closing, the grading call), so a change that reached no listener
    is caught too, and the one-second clock asks as well. A grade that had
    already begun is kept for its student and never shown here. The mock
-   embed does not use this: its own teardown above is unchanged. */
+   embed does not use this: its own teardown above is unchanged.
+
+   THE START ASKS AFTER EVERY WAIT, IN BOTH MODES (finding R2D-01, Codex
+   inspection of 1701b97). Starting a session waits for the examiner's
+   settings, the microphone permission, the sign-in token and the voice
+   connection. In the mock embed nothing asked after those waits: MockExam
+   could take the examiner away while the permission was still being asked
+   for, and when it came back the start kept the microphone, started
+   recording, fetched the token of whoever was signed in by then and opened
+   a paid voice session behind the stopped screen. Every start is now
+   numbered and bound (guardSessionStart in ./speaking-attempt-owner.ts) and
+   every wait goes through it: a start that has been let go (an unmount, a
+   switch, the student's own Back, a newer start) or whose student is no
+   longer the one on the page stops the stream it was just handed, closes a
+   connection that came up late, and goes no further. The teardowns move the
+   number on, the connection's own callbacks and the later steps (the
+   cue-card wait, the closing line) ask the same, and the session is asked
+   once more after it has been shut down and before grading is requested, so
+   no paid grading call starts for a session that was let go. A grade
+   already requested is kept for its student exactly as before, and the
+   mock's onSuspend and onAbort reporting is unchanged. */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -90,7 +110,11 @@ import AuthModal from './AuthModal';
 import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
 import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
 import {
+  closeConnection,
+  guardSessionStart,
   openSpeakingAttempt,
+  sessionGenerations,
+  type GuardedSessionStart,
   type OwnedSpeakingAttempt,
   type SpeakingStageAtSwitch,
 } from './speaking-attempt-owner';
@@ -247,6 +271,12 @@ export default function LiveExaminer({
      it (R2C-04). Its binding is the session binding above. Null in the mock
      embed, where MockExam handles a change of owner by unmounting this. */
   const attemptRef = useRef<OwnedSpeakingAttempt | null>(null);
+  /* Both modes (R2D-01): this screen's start numbers, and the start (and
+     then the session it became) the screen is running now. Every teardown
+     moves the number on, so a start that was waiting when it happened can
+     never carry on after it. */
+  const [generations] = useState(sessionGenerations);
+  const sessionRef = useRef<GuardedSessionStart | null>(null);
   /* Learner-evidence recording (WP12): the catalogue prompt id a drill is
      evidence about (a Part 1 topic id, or a cue-card id for Part 2/3), set
      the moment the plan is built in startTest: from an exact deep link
@@ -365,10 +395,16 @@ export default function LiveExaminer({
     const attempt = mock ? null : openSpeakingAttempt({ onOwnerLeft: leaveForOwnerChange });
     attemptRef.current = attempt;
     sessionBindingRef.current = attempt ? attempt.binding : bindToCurrentOwner();
-    /** Is this still the interview of the student on the page? Asked after
-        every wait below; a no has already ended the session and put the
-        notice up. Always yes in the mock embed. */
-    const stillHere = () => !attempt || attempt.mayStartTurn();
+    /* This start, numbered and bound to the student starting it, in BOTH
+       modes (R2D-01). Every wait below goes through session.step, which
+       hands the result back only while the start may go on, and otherwise
+       lets go of it (a stream's tracks stopped, a late connection closed). */
+    const session = guardSessionStart({ generations, binding: sessionBindingRef.current, attempt });
+    sessionRef.current = session;
+    /** Is this still this screen's start, for the student on the page?
+        Standalone, a no from a switch has already ended the session and put
+        the notice up (the attempt's teardown); dropStart does the rest. */
+    const stillHere = () => session.live();
     setError(null);
     setNotice(null);
     setPhase('connecting');
@@ -382,12 +418,19 @@ export default function LiveExaminer({
     let config = liveConfig;
     if (!config) {
       try {
-        config = await fetchLiveConfig(TOKEN_URL);
-        if (!stillHere()) return;
+        const fetched = await session.step(fetchLiveConfig(TOKEN_URL));
+        if (!fetched) {
+          dropStart(session);
+          return;
+        }
+        config = fetched.value;
         setLiveConfig(config);
         setConfigError(null);
       } catch (e) {
-        if (!stillHere()) return;
+        if (!stillHere()) {
+          dropStart(session);
+          return;
+        }
         startingRef.current = false;
         setPhase(mock ? 'error' : 'menu');
         setError(e instanceof Error ? e.message : t('Could not reach the live examiner service.'));
@@ -397,31 +440,44 @@ export default function LiveExaminer({
 
     let stream: MediaStream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        // Mono: the Live API gets one channel anyway; asking for it up front
-        // lets the device apply its voice processing to the right signal.
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
-      });
+      /* The permission prompt waits for as long as the student leaves it.
+         If the page changed hands meanwhile, or the screen let go of this
+         start (MockExam taking the examiner away), the stream it hands back
+         has every track stopped at once, and nothing below runs: no
+         recording, no token, no connection. */
+      const granted = await session.step(
+        navigator.mediaDevices.getUserMedia({
+          // Mono: the Live API gets one channel anyway; asking for it up front
+          // lets the device apply its voice processing to the right signal.
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
+        }),
+        releaseMic,
+      );
+      if (!granted) {
+        dropStart(session);
+        return;
+      }
+      stream = granted.value;
     } catch {
-      if (!stillHere()) return;
+      if (!stillHere()) {
+        dropStart(session);
+        return;
+      }
       startingRef.current = false;
       setPhase(mock ? 'error' : 'menu');
       setError(t('Microphone access is required. Please allow the permission and try again.'));
       return;
     }
-    /* The page may have changed hands while the permission prompt was up:
-       then this microphone records nothing for anybody. */
-    if (attempt && !attempt.mayStartRecording()) {
-      releaseMic(stream);
-      return;
-    }
     streamRef.current = stream;
 
+    let rec: MediaRecorder | null = null;
     try {
       const mime = pickMimeType();
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
       rec.ondataavailable = (e) => {
-        if (e.data.size > 0) recChunksRef.current.push(e.data);
+        /* A recorder of a start that was let go adds nothing to whatever
+           session the screen runs now. */
+        if (e.data.size > 0 && session.current()) recChunksRef.current.push(e.data);
       };
       rec.start(1000);
       recActiveSinceRef.current = performance.now();
@@ -450,45 +506,62 @@ export default function LiveExaminer({
         request = planRequestFor(plan);
       }
 
-      const accessToken = await getAccessToken();
-      /* A change while the token was fetched has already stopped the
-         recorder and released the microphone (the teardown). */
-      if (!stillHere()) return;
-
-      const link = await openExaminerLink({
-        endpoint: TOKEN_URL,
-        config,
-        stream,
-        plan: request,
-        instruction,
-        mode: m,
-        accessToken,
-        cb: {
-          onTranscript: onTranscriptUpdate,
-          onClosed: (reason, wasClean) => {
-            if (endedRef.current) return;
-            // The conversation died under us — salvage a report from whatever
-            // was said rather than throwing the attempt away.
-            const reasonText = wasClean ? reason || t('closed') : t('network problem');
-            setNotice(t('The connection ended early ({reason}). Grading what we have…', { reason: reasonText }));
-            void finishTest();
-          },
-          onError: () => {
-            /* transient — onClosed decides what actually matters */
-          },
-        },
-      });
-      /* A voice session that came up after the page changed hands is closed
-         at once: no audio of anybody's goes to it. */
-      if (!stillHere()) {
-        void link.close();
+      /* The token read here is whoever's is signed in when it answers, so
+         a start that is no longer its student's goes no further: the
+         recorder it started stops and the microphone is released. */
+      const token = await session.step(getAccessToken());
+      if (!token) {
+        dropStart(session, { stream, rec });
         return;
       }
-      linkRef.current = link;
+      const accessToken = token.value;
+
+      const opened = await session.step(
+        openExaminerLink({
+          endpoint: TOKEN_URL,
+          config,
+          stream,
+          plan: request,
+          instruction,
+          mode: m,
+          accessToken,
+          cb: {
+            /* A connection this start has let go of says nothing to the
+               screen: its transcript and its closing are not the session the
+               screen runs now. */
+            onTranscript: (turns) => {
+              if (session.current()) onTranscriptUpdate(turns);
+            },
+            onClosed: (reason, wasClean) => {
+              if (!session.current() || endedRef.current) return;
+              // The conversation died under us: salvage a report from whatever
+              // was said rather than throwing the attempt away.
+              const reasonText = wasClean ? reason || t('closed') : t('network problem');
+              setNotice(t('The connection ended early ({reason}). Grading what we have…', { reason: reasonText }));
+              void finishTest();
+            },
+            onError: () => {
+              /* transient; onClosed decides what actually matters */
+            },
+          },
+        }),
+        closeConnection,
+      );
+      /* A voice session that came up after the page changed hands, or after
+         the screen let go, has been closed at once (session.step): no audio
+         of anybody's goes to it. */
+      if (!opened) {
+        dropStart(session, { stream, rec });
+        return;
+      }
+      linkRef.current = opened.value;
     } catch (e) {
-      if (!stillHere()) return;
-      const rec = recorderRef.current;
-      if (rec && rec.state !== 'inactive') rec.stop();
+      if (!stillHere()) {
+        dropStart(session, { stream, rec });
+        return;
+      }
+      const running = recorderRef.current;
+      if (running && running.state !== 'inactive') running.stop();
       cleanupAudio();
       startingRef.current = false;
       setPhase(mock ? 'error' : 'menu');
@@ -541,8 +614,12 @@ export default function LiveExaminer({
     if (lastExaminer && lastExaminer.text.toLowerCase().includes(CLOSING_PHRASE) && !endedRef.current) {
       if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
       setStageBoth('wrapup');
+      const session = sessionRef.current;
       void (async () => {
         await linkRef.current?.waitUntilQuiet();
+        /* R2D-01: only the session that heard the closing line is finished,
+           never one the screen started after it. */
+        if (!session?.current()) return;
         await finishTest();
       })();
     }
@@ -582,11 +659,15 @@ export default function LiveExaminer({
       Part 1) and the Part 2 drill (right after the greeting). */
   async function startPart2Flow(cue: DirectorCue) {
     if (endedRef.current) return;
+    const session = sessionRef.current;
     setStageBoth('part2prep');
     void linkRef.current?.direct(cue);
     // Let the examiner finish reading the cue-card intro before the minute starts.
     await waitForExaminerQuiet(30_000);
     if (endedRef.current || !stageIs('part2prep')) return;
+    /* R2D-01: a session the screen started after this wait began is not
+       this one's to mute or to time. */
+    if (!session?.current()) return;
 
     linkRef.current?.setMicMuted(true);
     pauseRecorder();
@@ -680,6 +761,11 @@ export default function LiveExaminer({
        teardown, with nothing graded (R2C-04). Null in the mock embed. */
     const attempt = attemptRef.current;
     if (attempt && !attempt.mayStartTurn()) return;
+    /* Both modes (R2D-01): the session being finished, read before the
+       shutdown waits below. A finish reaching a session the screen has let
+       go of does nothing. */
+    const session = sessionRef.current;
+    if (!session || !session.current()) return;
     endedRef.current = true;
     if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
     timersRef.current.forEach(clearTimeout);
@@ -692,12 +778,30 @@ export default function LiveExaminer({
     const link = linkRef.current;
     linkRef.current = null;
     if (link) await link.close();
+    /* The screen may have let go while the connection closed (an unmount,
+       a switch). Its teardown stopped this session's recorder and released
+       its microphone, and whatever the screen holds now is not this
+       finish's to stop. */
+    if (!session.current()) return;
 
     const recording = await stopRecorder();
+    if (!session.current()) return;
     cleanupAudio();
     /* Standalone: the page may have changed hands while the session was
        closing. The recording is then nobody's to grade, and it is dropped. */
     if (attempt && !attempt.mayAcceptRecording()) return;
+    /* Both modes, before anything is sent for (paid) grading (R2D-01): is
+       this still the screen's session, for the student who spoke? A no
+       sends nothing. In the mock embed the student can have changed a
+       moment before MockExam takes this away; the screen then says the
+       session was closed, as the standalone one does. */
+    if (!session.live()) {
+      if (session.current()) {
+        setPhase('error');
+        setError(t(SESSION_CLOSED_NOTICE));
+      }
+      return;
+    }
 
     if (!gradingAvailable()) {
       setPhase('error');
@@ -852,6 +956,8 @@ export default function LiveExaminer({
   function leaveForOwnerChange(stage: SpeakingStageAtSwitch, attempt: OwnedSpeakingAttempt) {
     if (attemptRef.current !== attempt) return;
     attemptRef.current = null;
+    /* Nothing begun before the switch carries on after it (R2D-01). */
+    generations.next();
     endedRef.current = true;
     startingRef.current = false;
     timersRef.current.forEach(clearTimeout);
@@ -879,13 +985,50 @@ export default function LiveExaminer({
     setError(t(stage === 'grading' ? OWNER_CHANGED_NOTICE : SESSION_CLOSED_NOTICE));
   }
 
-  function abandonToMenu() {
-    /* Letting go of the session: a grade still on its way is kept for the
-       student who spoke, but it no longer shows here or completes a mock. */
+  /* R2D-01. A start that may not go on lets go of what it was handed
+     itself (the microphone stream it opened, the recorder it started; a
+     connection that came up late has been closed by session.step), and
+     touches nothing the screen holds for anybody else. If the screen has
+     moved on (an unmount, a switch, the student's own Back, a newer start),
+     that teardown owns the screen and nothing more is done here. If the
+     screen is still this start's, its student is no longer the one on the
+     page: the mock embed a moment before MockExam takes it away, or a
+     change that reached no listener. It then closes the way a switch does:
+     nothing graded, nothing kept, the notice up. */
+  function dropStart(session: GuardedSessionStart, own: { stream?: MediaStream; rec?: MediaRecorder | null } = {}) {
+    const { stream, rec } = own;
+    if (rec) {
+      rec.ondataavailable = null;
+      if (rec.state !== 'inactive') rec.stop();
+      if (recorderRef.current === rec) recorderRef.current = null;
+    }
+    if (stream) {
+      releaseMic(stream);
+      if (streamRef.current === stream) streamRef.current = null;
+    }
+    if (!session.current()) return;
+    generations.next();
     attemptRef.current?.close();
     attemptRef.current = null;
     sessionBindingRef.current?.cancel();
     endedRef.current = true;
+    startingRef.current = false;
+    recChunksRef.current = [];
+    recAccumMsRef.current = 0;
+    setPhase(mock ? 'error' : 'menu');
+    setError(t(SESSION_CLOSED_NOTICE));
+  }
+
+  function abandonToMenu() {
+    /* Letting go of the session: a grade still on its way is kept for the
+       student who spoke, but it no longer shows here or completes a mock.
+       A start still waiting goes no further (R2D-01). */
+    generations.next();
+    attemptRef.current?.close();
+    attemptRef.current = null;
+    sessionBindingRef.current?.cancel();
+    endedRef.current = true;
+    startingRef.current = false;
     timersRef.current.forEach(clearTimeout);
     intervalsRef.current.forEach(clearInterval);
     timersRef.current = [];
@@ -923,6 +1066,8 @@ export default function LiveExaminer({
           else onAbort?.();
         }
         openedFor?.cancel();
+        /* Nothing a start was waiting for carries on after this (R2D-01). */
+        generations.unmount();
         abandonToMenu();
       };
     },
