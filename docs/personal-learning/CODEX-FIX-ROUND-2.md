@@ -969,3 +969,54 @@ the loop stops once a round returns nothing rated high and nothing that
 leaks between students; a seventh inspection confirms these two are closed
 and whatever it finds beyond that is recorded rather than fixed unless it
 meets that bar.
+
+## Fixes after inspection round 6 (for inspection round 7)
+
+Base for the round-7 inspection diff: `c4a7793`, with the same exclusions
+as round 6. Both fixes are in `c693b43`, each with deterministic tests and a
+browser journey against the local stand-in (no model called):
+
+- **R2F-01** (`src/components/learning/spoken-task-owner.ts`,
+  `SpokenFocusedTask.tsx`, `src/lib/speaking/recorder.ts`): every recording
+  goes through one keeper (`openSpokenTakes`). Pressing Start while the
+  microphone prompt is open does nothing, so the microphone is asked for
+  once; when a microphone arrives, the continuation checks that this exact
+  take is still the one on screen (`takeIsLive` now takes the current take),
+  not only that the same student is, and switches it off otherwise; a new
+  recording stops the previous one first; an account change, a refused press
+  or leaving the page stops every recording and switches off every
+  microphone the keeper holds; the ninety-second limit switches the
+  microphone off too (`endTracksAtTimeout`, off by default because the timed
+  Speaking trainer reuses one microphone across questions); a recording that
+  fails while stopping releases the microphone. Seven new cases in
+  `tests/last-screens-owner.test.ts` (each part removed in turn fails named
+  cases; weakening "stop everything" fails seven).
+- **R2F-02** (`src/components/learning/written-focused-task.ts`,
+  `WritingFocusedTask.tsx`): appending the submitted attempt is separated
+  from updating the editable draft (`appendAttempt`; `withAttempt` unchanged
+  for its other callers). When an evaluation returns, on screen or off, the
+  attempt is appended and the draft box left alone; the submitted words are
+  saved as the draft at the moment Check is pressed, so the no-switch case is
+  unchanged; a revision written after coming back, one still waiting to
+  autosave, or one saved from another tab survives. Five new cases in
+  `tests/lesson-evidence-owner.test.ts` (putting the old words back in the
+  draft fails three).
+
+`f22` step 23 in the browser: the microphone prompt held, Start pressed
+twice, the prompt released, the account switched in a second tab, every
+recorder stopped and every track ended (counted in the page); then an
+evaluation held, the student away and back, a revision autosaved, the
+evaluation released with a synthetic reply, and the revision on screen after
+a reload with the submitted text in the history; 218 of 218 overall
+(`results-unfinished-test-11.md`). The old-code comparison of that step was
+interrupted by a pause and not rerun, so the browser has not shown the old
+code failing; the deterministic cases carry that proof. Step 22's spoken
+check was pointed at the spoken task's own sentence (it had still counted
+the exercises' line). Stated: the spoken screen keeps saying "Recording..."
+after the limit until Stop is pressed, with the microphone already off; the
+written task still loses the last half-second of typing when the page is
+left mid-word (pre-existing).
+
+Gates at `c693b43`: `npm test` 2016 of 2016, `npx astro check` 0 errors and 0
+warnings, `npm run build` 661 pages, the learning index byte-identical,
+Codex's `signout-race.mjs` printing anonymous both times.
