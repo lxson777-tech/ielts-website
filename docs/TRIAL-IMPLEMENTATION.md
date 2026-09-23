@@ -9,10 +9,11 @@ model. Every proof below is local, against synthetic accounts.
 
 - Branch `claude/ielts-trial-implementation-9790a4`, worktree
   `.claude/worktrees/ielts-trial-implementation-9790a4`.
-- Base: `7c5264a`, the newest commit on the current platform branch
-  (`claude/todays-tab-ai-tutor-rework-8af4cd`, the personal-learning build with the
-  ownership fixes). Not the older marketing checkout in the root folder, which was
-  only read for Codex's design files.
+- Built on `7c5264a`, then merged with the current platform branch
+  (`claude/todays-tab-ai-tutor-rework-8af4cd`) at `1701b97`, which carries the fixes for
+  Codex's third ownership inspection. The merge had no conflicts and everything below
+  was rerun after it. Not built on the older marketing checkout in the root folder,
+  which was only read for Codex's design files.
 
 ## The switch
 
@@ -91,14 +92,14 @@ Today page, lessons and tests with no gate, `/trial` says there is nothing to st
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite) | 1,874 of 1,874 pass (1,822 before, 52 new trial tests) |
+| `npm test` (whole suite, after the merge) | 1,900 of 1,900 pass (52 of them are the new trial tests) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
 | `tests/trial-graders.test.ts`: the real essay, speaking and live-examiner handlers | 9 of 9 |
 | `tests/trial-status.test.ts`: what the screens may say | 9 of 9 |
 | `tests/browser/t01_trial_journey.py`: the real site in a real browser | 63 of 63 (`docs/trial/evidence/results-t01.md`) |
 | `npx astro check` | 0 errors, 0 warnings, 19 hints (same hints as before) |
-| `npm run build`, open and trial | 663 pages each |
+| `npm run build`, open and trial, after the merge | 663 pages each |
 
 The browser journey covers: signed-out offer; sign-up then explicit start; questionnaire
 carried over; 72-hour display from the server clock; restarting never restarts; locked
@@ -128,8 +129,10 @@ rechecked on this base, because the trial must not sit on cross-account behaviou
 - Finding 1 (another student's unfinished test): Codex's `independent-browser.py` stops
   early because it looks for the old shared storage key, which the fix removed. The
   owner-scoped tests (`test-session-owner`, `account-isolation`, `delayed-grade-owner`,
-  94 of 94) and the other session's browser journeys f22 and f23 cover it. A third
-  Codex inspection of that work was pending at the time of writing.
+  94 of 94 before the merge) and the other session's browser journeys f22 and f23
+  cover it. Codex's third inspection then found four more ownership details
+  (R2C-01 to R2C-04); their fixes are merged here, and a fourth inspection is pending
+  on the platform branch.
 
 **Not proven** (and not claimed): the migration on a real Supabase project; real
 two-device use on real accounts; live AI quality or cost under the trial; the Worker
