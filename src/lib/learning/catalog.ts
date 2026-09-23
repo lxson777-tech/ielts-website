@@ -1249,19 +1249,42 @@ function buildSpokenFocusedActivities(): CatalogueActivity[] {
 
 /* ── Vocabulary ──────────────────────────────────────────────────────────── */
 
+/** One topic's vocabulary practice: /review?topic=<slug>, the round in
+ *  src/components/VocabReview.tsx.
+ *
+ *  What it claims follows what that screen does. The published main
+ *  (merged 23 September 2026) replaced the self-graded flashcards with ten
+ *  marked questions built from example sentences: the word is missing, its
+ *  meaning is the clue, and the student picks it from four words of the
+ *  same topic. That is recognition, not recall, and the screen records every
+ *  answer under 'recognise-meaning' with direction 'recognise', never toward
+ *  a word being "known". So recognise-meaning and topic-breadth are direct,
+ *  and recall-from-meaning is only 'borrowed': meeting the word again in a
+ *  sentence does help recall, and nothing else in the library works on
+ *  recall at all, but it is not recall practice, and a real recall activity
+ *  takes the direct slot the day one exists. The planner is unaffected
+ *  either way: it proposes objectives only from activities that belong to a
+ *  paper, and vocabulary reaches a session only through the recall slot
+ *  (session.ts, vocabularyRecallStep), which picks by topic and due words.
+ *
+ *  completionEvidence stays 'recall-outcome'. That value names the per-word
+ *  RecallResult event the screen really writes (outcome kind 'recall', each
+ *  word with its direction), which is what policy.ts reads for vocabulary.
+ *  'scored-items' would promise a ScoredResult the screen never writes, and
+ *  would list the activity among session.ts's diagnostic evidence kinds. */
 function buildVocabularyActivities(index: GeneratedIndexV1): CatalogueActivity[] {
   return index.vocabTopics.map((topic: VocabTopicIndexEntry) => ({
     id: vocabReviewActivityId(topic.slug),
     contentVersion: 1,
     kind: 'vocab-review',
     domain: 'vocabulary',
-    subskill: 'recall-from-meaning',
+    subskill: 'recognise-meaning',
     covers: mergeCoverage([
-      { subskill: 'recall-from-meaning', fit: 'direct' },
       { subskill: 'recognise-meaning', fit: 'direct' },
       { subskill: 'topic-breadth', fit: 'direct' },
+      { subskill: 'recall-from-meaning', fit: 'borrowed' },
     ]),
-    objective: "Recall this topic's words from memory, not only recognise them.",
+    objective: "Recognise this topic's words by picking the missing one in each example sentence.",
     prerequisites: topic.lessonKey ? [lessonActivityId(topic.lessonKey)] : [],
     expectedMinutes: VOCAB_REVIEW_MINUTES,
     indivisible: false,
@@ -1495,16 +1518,19 @@ function buildFixedActivities(): CatalogueActivity[] {
       tags: ['needs-microphone', 'needs-account'],
     },
     {
+      /* The /review page itself: a topic browser, practice one topic at a
+         time, due words first. Same honesty as the per-topic entries (see
+         buildVocabularyActivities): recognition direct, recall borrowed. */
       id: 'review:vocabulary',
       contentVersion: 1,
       kind: 'vocab-review',
       domain: 'vocabulary',
-      subskill: 'recall-from-meaning',
+      subskill: 'recognise-meaning',
       covers: mergeCoverage([
-        { subskill: 'recall-from-meaning', fit: 'direct' },
         { subskill: 'recognise-meaning', fit: 'direct' },
+        { subskill: 'recall-from-meaning', fit: 'borrowed' },
       ]),
-      objective: 'Review every word due today by recall, not only by recognition.',
+      objective: 'Choose a topic and pick the missing word in each example sentence, starting with the words due today.',
       prerequisites: [],
       expectedMinutes: VOCAB_REVIEW_MINUTES,
       indivisible: false,

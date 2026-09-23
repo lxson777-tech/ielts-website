@@ -17,6 +17,17 @@
  *    microphone is unavailable, so the plan moves on rather than getting
  *    stuck (src/lib/learning's updateGoalsAndConstraints, the same setting
  *    the planner already reads to skip needs-microphone activities).
+ *
+ * WHOSE TASK IS ON SCREEN (the follow-up to R2B-01, 23 September 2026)
+ * The task is bound to the student on the page when it is opened
+ * (./spoken-task-owner.ts). Every press that starts, stops or records
+ * anything is claimed for that student first and refused for anybody else,
+ * "Done for now" is written under them through recordEventFor, and when the
+ * page changes hands a recording under way is stopped and dropped (never
+ * played back, graded or recorded, for anybody), the microphone is
+ * released, and the incoming student sees an empty task with one calm line
+ * of this screen's own, which says the recording was not kept
+ * (SPOKEN_TASK_OWNER_CHANGED_NOTE in ./spoken-task-owner.ts).
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -30,14 +41,27 @@ import {
   updateGoalsAndConstraints,
   type SharedSessionView,
 } from '../../lib/learning';
-import { getLearnerStore, ownerNamespace } from '../../lib/learning/store.browser';
+import { onOwnerChange, type OwnerBinding } from '../../lib/store-owner';
 import { requestMic, recordSegment, releaseMic, type RecordingHandle } from '../../lib/speaking/recorder';
 import SessionContinueBar from './SessionContinueBar';
+import {
+  claimExerciseCheck,
+  exerciseIsCurrent,
+  openExerciseSession,
+  type ExerciseSession,
+} from './exercise-owner';
+import {
+  SPOKEN_TASK_OWNER_CHANGED_NOTE,
+  dropTake,
+  openTake,
+  recordSpokenPracticeFor,
+  takeIsLive,
+  type SpokenTake,
+} from './spoken-task-owner';
 import {
   checkedCount,
   emptyChecklist,
   micProblemText,
-  spokenEvidenceDraft,
   toggleChecklistItem,
   type ChecklistState,
   type MicProblem,
@@ -56,6 +80,11 @@ type Phase = 'ready' | 'recording' | 'reviewing';
 
 const MAX_RECORDING_MS = 90_000;
 
+/** Whether the plan on the page says there is no microphone. */
+function microphoneTurnedOff(): boolean {
+  return (readPersonalPlan()?.constraints.unavailable ?? []).includes('microphone');
+}
+
 export default function SpokenFocusedTask({ view }: Props) {
   const { t } = useT();
   const [phase, setPhase] = useState<Phase>('ready');
@@ -66,17 +95,35 @@ export default function SpokenFocusedTask({ view }: Props) {
   const [recorded, setRecorded] = useState(false);
   const [saved, setSaved] = useState(false);
   const [session, setSession] = useState<SharedSessionView | null>(null);
-  const owner = useRef('anon');
-  const streamRef = useRef<MediaStream | null>(null);
-  const recordingRef = useRef<RecordingHandle | null>(null);
+  /* Whose task this screen holds (./spoken-task-owner.ts): bound on mount
+     to the owner on the page, and moved to the incoming student only by
+     handOver below. State, so every render's recording and checklist and
+     the student they belong to go together; the ref is for the
+     owner-change listener and for an awaited microphone or recorder, which
+     finish outside any render. */
+  const [exercise, setExercise] = useState<ExerciseSession | null>(null);
+  const exerciseRef = useRef<ExerciseSession | null>(null);
+  /* The one calm line after the page changed hands. */
+  const [ownerNote, setOwnerNote] = useState<string | null>(null);
+  /* True when this tab missed an account change and refused a press: the
+     task leaves the screen until the tab hears who is here. */
+  const [withheld, setWithheld] = useState(false);
+  /* Bumped at every hand-over, so the incoming student's own plan is read
+     for the microphone setting once the sign-in has finished moving it. */
+  const [handOvers, setHandOvers] = useState(0);
+  /* The recording under way, or the last one made, bound to its session. */
+  const takeRef = useRef<SpokenTake<MediaStream, RecordingHandle> | null>(null);
+  /* The same address as `audioUrl`, readable from the listener. */
+  const audioUrlRef = useRef<string | null>(null);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    try {
-      owner.current = ownerNamespace(getLearnerStore().owner());
-    } catch {
-      /* No store on this device: the recording still happens, it is just
-         not recorded as evidence. */
-    }
+    /* The owner every store on this device is using right now, from the
+       one place that decides it (src/lib/store-owner.ts), fixed for this
+       task. */
+    const opened = openExerciseSession();
+    exerciseRef.current = opened;
+    setExercise(opened);
     try {
       const current = getCurrentSession();
       setSession(current);
@@ -85,15 +132,112 @@ export default function SpokenFocusedTask({ view }: Props) {
     } catch {
       /* No plan on this device: the task still works. */
     }
-    setMicUnavailable((readPersonalPlan()?.constraints.unavailable ?? []).includes('microphone'));
+    setMicUnavailable(microphoneTurnedOff());
     return () => {
-      if (streamRef.current) releaseMic(streamRef.current);
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
+      if (takeRef.current) dropTake(takeRef.current, releaseMic);
+      if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.activityId]);
 
+  /* A sign-out, sign-in or account switch, from this tab or another. The
+     same owner being told its stores changed (the anonymous-work claim)
+     replaces nothing. */
+  useEffect(() => {
+    mounted.current = true;
+    const stop = onOwnerChange(() => {
+      if (exerciseRef.current === null || exerciseIsCurrent(exerciseRef.current)) return;
+      handOver();
+    });
+    return () => {
+      mounted.current = false;
+      stop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* The incoming student's own plan says whether their microphone practice
+     is on. Read after the hand-over has rendered: the owner changes a moment
+     before the plan store has moved to them. */
+  useEffect(() => {
+    if (handOvers === 0) return;
+    setMicUnavailable(microphoneTurnedOff());
+  }, [handOvers]);
+
+  /** True while this render's session is the one on screen. A handler from
+      a render made before a hand-over (the gap between the hand-over and
+      the next render) must not act on the next student's task. */
+  function live(): boolean {
+    return exercise !== null && exercise === exerciseRef.current && !withheld;
+  }
+
+  /** Stop and drop the take on screen, if any, and let the microphone go. */
+  function dropCurrentTake() {
+    const take = takeRef.current;
+    takeRef.current = null;
+    if (take) dropTake(take, releaseMic);
+  }
+
+  /* The page changed hands, here or in another tab. Everything on screen
+     was the outgoing student's: a recording under way is stopped and
+     dropped, never played back, graded or recorded, and the microphone is
+     released. A "Done for now" they pressed is already in their own record.
+     None of it stays here. The screen shows the incoming student an empty
+     task, with one calm line. Touches only refs and setters, so the
+     listener above can call it from any render. */
+  function handOver() {
+    dropCurrentTake();
+    if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+    audioUrlRef.current = null;
+    const opened = openExerciseSession();
+    exerciseRef.current = opened;
+    setExercise(opened);
+    setAudioUrl(null);
+    setChecklist(emptyChecklist());
+    setMicProblem(null);
+    setRecorded(false);
+    setSaved(false);
+    setPhase('ready');
+    /* The plan step this page was opened from belongs to the outgoing
+       student's plan. The incoming student's work here is their own,
+       outside it. */
+    setSession(null);
+    setWithheld(false);
+    setHandOvers((count) => count + 1);
+    setOwnerNote(SPOKEN_TASK_OWNER_CHANGED_NOTE);
+  }
+
+  /* This tab missed the account change: it still names the previous
+     student, but this device's account session is somebody else's
+     (claimExerciseCheck said 'device-changed'). Nothing is recorded; a
+     recording under way is dropped and the microphone released, and the
+     task leaves the screen until this tab hears who is here, when the
+     listener above hands over. */
+  function withhold() {
+    dropCurrentTake();
+    setWithheld(true);
+    setOwnerNote(SPOKEN_TASK_OWNER_CHANGED_NOTE);
+  }
+
+  /** The binding a press is made under, bound NOW, or null when the press
+   *  is refused: nothing is started or recorded, and the screen has handed
+   *  over or taken the task off the screen. */
+  function claimPress(): OwnerBinding | null {
+    if (!live()) return null;
+    const claim = claimExerciseCheck(exercise);
+    if ('binding' in claim) return claim.binding;
+    if (claim.refused === 'owner-changed') handOver();
+    else withhold();
+    return null;
+  }
+
   async function startRecording() {
+    /* A recording starts only for the student whose task this is. */
+    const binding = claimPress();
+    if (!binding) return;
+    binding.cancel();
+    const take = openTake<MediaStream, RecordingHandle>(exercise!);
+    takeRef.current = take;
     setMicProblem(null);
     if (typeof MediaRecorder === 'undefined' || typeof navigator === 'undefined' || !navigator.mediaDevices) {
       setMicProblem('unsupported');
@@ -103,83 +247,130 @@ export default function SpokenFocusedTask({ view }: Props) {
     try {
       stream = await requestMic();
     } catch (error) {
+      /* The screen moved on while the browser was asking: nobody here is
+         waiting for this answer. */
+      if (!mounted.current || !takeIsLive(take, exerciseRef.current)) return;
       const name = error instanceof Error ? error.name : '';
       setMicProblem(name === 'NotFoundError' || name === 'OverconstrainedError' ? 'unavailable' : 'permission-denied');
       return;
     }
-    streamRef.current = stream;
+    /* The microphone arrived after the page changed hands, or after the
+       screen let go: it is released at once and nothing is recorded. */
+    if (!mounted.current || !takeIsLive(take, exerciseRef.current)) {
+      releaseMic(stream);
+      return;
+    }
+    take.stream = stream;
     setPhase('recording');
     try {
-      recordingRef.current = recordSegment(stream, { maxMs: MAX_RECORDING_MS });
+      take.recording = recordSegment(stream, { maxMs: MAX_RECORDING_MS });
     } catch {
       setMicProblem('recording-failed');
       releaseMic(stream);
-      streamRef.current = null;
+      take.stream = null;
       setPhase('ready');
     }
   }
 
   async function stopRecording() {
-    const handle = recordingRef.current;
-    if (!handle) return;
-    recordingRef.current = null;
+    const take = takeRef.current;
+    const handle = take?.recording;
+    if (!take || !handle) return;
+    /* A stop pressed for a student who is no longer here drops the take
+       instead (handOver and withhold both do): it is never played back. */
+    const binding = claimPress();
+    if (!binding) return;
+    binding.cancel();
+    take.recording = null;
     try {
       const segment = await handle.stop();
-      if (streamRef.current) {
-        releaseMic(streamRef.current);
-        streamRef.current = null;
+      /* The page changed hands while the recording was being finished: it
+         is dropped (the hand-over has released the microphone), and none
+         of it reaches this screen. */
+      if (!mounted.current || !takeIsLive(take, exerciseRef.current)) return;
+      if (take.stream) {
+        releaseMic(take.stream);
+        take.stream = null;
       }
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-      setAudioUrl(URL.createObjectURL(segment.blob));
+      if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+      const url = URL.createObjectURL(segment.blob);
+      audioUrlRef.current = url;
+      setAudioUrl(url);
       setRecorded(true);
       setPhase('reviewing');
     } catch {
+      if (!mounted.current || !takeIsLive(take, exerciseRef.current)) return;
       setMicProblem('recording-failed');
       setPhase('ready');
     }
   }
 
   function recordAgain() {
+    if (!live()) return;
     setPhase('ready');
     setChecklist(emptyChecklist());
     setSaved(false);
   }
 
+  function toggleChecklist(index: number) {
+    if (!live()) return;
+    setChecklist((current) => toggleChecklistItem(current, index));
+  }
+
   function save() {
+    /* Accepted only for the student whose task this is, and written into
+       THEIR record, bound at the press. */
+    const binding = claimPress();
+    if (!binding) return;
     const at = new Date().toISOString();
     try {
-      getLearnerStore().recordEvent(
-        spokenEvidenceDraft({
-          view,
-          hasRecording: recorded,
-          at,
-          ...(session?.sessionId ? { sessionId: session.sessionId } : {}),
-        }),
-      );
+      recordSpokenPracticeFor(binding.owner, {
+        view,
+        hasRecording: recorded,
+        at,
+        ...(session?.sessionId ? { sessionId: session.sessionId } : {}),
+      });
     } catch {
       /* A blocked or full browser store costs the record, never the
          practice itself; the recording stays on screen either way. */
+    } finally {
+      binding.cancel();
     }
     setSaved(true);
   }
 
+  /* The microphone setting is the plan's, and the plan on the page is the
+     current owner's: a press is claimed first, so it is only ever changed
+     for the student whose task this is. */
   function turnOffMicrophonePractice() {
-    const plan = readPersonalPlan();
-    const constraints = plan?.constraints;
-    if (!constraints) return;
-    const unavailable = new Set(constraints.unavailable ?? []);
-    unavailable.add('microphone');
-    updateGoalsAndConstraints({ constraints: { ...constraints, unavailable: [...unavailable] } });
-    setMicUnavailable(true);
+    const binding = claimPress();
+    if (!binding) return;
+    try {
+      const plan = readPersonalPlan();
+      const constraints = plan?.constraints;
+      if (!constraints) return;
+      const unavailable = new Set(constraints.unavailable ?? []);
+      unavailable.add('microphone');
+      updateGoalsAndConstraints({ constraints: { ...constraints, unavailable: [...unavailable] } });
+      setMicUnavailable(true);
+    } finally {
+      binding.cancel();
+    }
   }
 
   function turnOnMicrophonePractice() {
-    const plan = readPersonalPlan();
-    const constraints = plan?.constraints;
-    if (!constraints) return;
-    const unavailable = (constraints.unavailable ?? []).filter((entry) => entry !== 'microphone');
-    updateGoalsAndConstraints({ constraints: { ...constraints, unavailable } });
-    setMicUnavailable(false);
+    const binding = claimPress();
+    if (!binding) return;
+    try {
+      const plan = readPersonalPlan();
+      const constraints = plan?.constraints;
+      if (!constraints) return;
+      const unavailable = (constraints.unavailable ?? []).filter((entry) => entry !== 'microphone');
+      updateGoalsAndConstraints({ constraints: { ...constraints, unavailable } });
+      setMicUnavailable(false);
+    } finally {
+      binding.cancel();
+    }
   }
 
   return (
@@ -204,7 +395,13 @@ export default function SpokenFocusedTask({ view }: Props) {
         </p>
       )}
 
-      {micUnavailable ? (
+      {ownerNote && (
+        <p className="focused-rule" role="status">
+          {t(ownerNote)}
+        </p>
+      )}
+
+      {withheld ? null : micUnavailable ? (
         <div className="spoken-mic-off" role="status">
           <p>{t('Microphone practice is turned off for your plan right now, so this task is skipped when it comes up.')}</p>
           <button type="button" className="spoken-mic-toggle" onClick={turnOnMicrophonePractice}>
@@ -260,7 +457,7 @@ export default function SpokenFocusedTask({ view }: Props) {
                     <input
                       type="checkbox"
                       checked={Boolean(checklist[index])}
-                      onChange={() => setChecklist((current) => toggleChecklistItem(current, index))}
+                      onChange={() => toggleChecklist(index)}
                     />
                     <span>{t(line)}</span>
                   </label>
@@ -284,7 +481,7 @@ export default function SpokenFocusedTask({ view }: Props) {
         </section>
       )}
 
-      {saved && (
+      {saved && !withheld && (
         <>
           <p className="spoken-send-note">
             {t(

@@ -827,3 +827,189 @@ test('source scan: the learner store writes an event for a named owner through t
     /export function recordEventFor\(owner: CacheOwner, draft: EvidenceDraft\): EvidenceEvent \| null \{\s*return learnerStoreFor\(owner\)\.recordEvent\(draft\);\s*\}/,
   );
 });
+
+/* ------------------------------------------------------------------ */
+/* 5. A tab that missed the switch (the written task's presses)         */
+/* ------------------------------------------------------------------ */
+
+/* A tab hears of another tab's sign-in from an event, a moment after the
+ * session in shared storage has changed, or never. Until then it still names
+ * student A, so the owner check at the press passes. The focused exercise
+ * also asks this device's stored account session at every press
+ * (claimExerciseCheck, storedSessionAgrees); the written task's Check, "Write
+ * it again" and "Try it on a sentence of your own" did not, so a Check from
+ * such a tab went out, its reply was dropped by the tutor client, and the
+ * answer was recorded, unjudged, under A. They now ask it too (23 September
+ * 2026). The mirror below follows the component's evaluate() head, its
+ * claimPress(), withhold() and the listener's hand-over, with the REAL
+ * storedSessionAgrees reading a session stored the way the account client
+ * stores it. This file gives the owner module no public settings, so the
+ * session key is named here; the component uses this application's own. */
+
+const DEVICE_SESSION_KEY = 'sb-synthetic-lesson-auth-token';
+const OWNER_NOTE = 'The account on this page changed. Any answer in progress was kept for the student who was writing it.';
+
+/** The session the account client keeps in this device's shared storage. */
+function storeDeviceSession(session: { token: string; userId: string }): void {
+  local.data.set(DEVICE_SESSION_KEY, JSON.stringify({ access_token: session.token, user: { id: session.userId } }));
+}
+
+/** The screen as a tab holds it: the written task's screen, whether its work
+    is withheld, and whether a revise press has been let through. */
+interface Tab {
+  screen: Screen;
+  withheld: boolean;
+  revising: boolean;
+  stop(): void;
+}
+
+/** The mount effect and the listener: a different owner hands over, which
+    also brings withheld work back as the incoming student's own. */
+function openTab(): Tab {
+  const screen = openScreen(false);
+  const tab: Tab = { screen, withheld: false, revising: false, stop: () => {} };
+  tab.stop = onOwnerChange(() => {
+    if (ownerNamespace(currentOwner()) === screen.owner) return;
+    handOver(screen);
+    tab.withheld = false;
+  });
+  return tab;
+}
+
+/** withhold(): nothing sent or recorded, the evaluation let go of, the work
+    off the screen with the calm line. */
+function withholdTab(tab: Tab): void {
+  tab.screen.evaluating?.cancel();
+  tab.screen.evaluating = null;
+  tab.withheld = true;
+  tab.screen.note = OWNER_NOTE;
+}
+
+/** sessionAgrees() */
+function sessionAgreesOn(tab: Tab): boolean {
+  if (storeOwner.storedSessionAgrees(currentOwner(), local, DEVICE_SESSION_KEY)) return true;
+  withholdTab(tab);
+  return false;
+}
+
+/** evaluate(), up to the binding, then the rest exactly as pressCheck. */
+async function pressCheckOnTab(tab: Tab, text: string): Promise<OwnerBindingState | 'refused' | 'withheld'> {
+  if (tab.withheld) return 'withheld';
+  if (ownerNamespace(currentOwner()) !== tab.screen.owner) {
+    handOver(tab.screen);
+    tab.withheld = false;
+    return 'refused';
+  }
+  if (!sessionAgreesOn(tab)) return 'withheld';
+  return pressCheck(tab.screen, text);
+}
+
+/** claimPress(), for "Write it again" and "Try it on a sentence of your own". */
+function pressReviseOnTab(tab: Tab): 'revising' | 'refused' | 'withheld' {
+  if (tab.withheld) return 'withheld';
+  if (ownerNamespace(currentOwner()) !== tab.screen.owner) {
+    handOver(tab.screen);
+    tab.withheld = false;
+    return 'refused';
+  }
+  if (!sessionAgreesOn(tab)) return 'withheld';
+  tab.revising = true;
+  return 'revising';
+}
+
+test("written task: on a tab that missed the switch (still naming A, while this device's session is B's), Check, \"Write it again\" and \"Try it on a sentence of your own\" send nothing, record nothing, and take A's work off the screen until the tab hears", { timeout: 10_000 }, async () => {
+  freshBrowser();
+  answer = async () => reply(EVALUATION_REPLY);
+  storeDeviceSession(A_SESSION);
+  const tab = openTab();
+
+  /* No switch: the stored session agrees, and everything works as before. */
+  assert.equal(await pressCheckOnTab(tab, A_ANSWER), 'current');
+  assert.equal(sent.length, 1);
+  assert.equal(eventsOf(A).length, 1);
+  assert.equal(pressReviseOnTab(tab), 'revising', '"Write it again" works for the student whose work it is');
+  tab.revising = false;
+
+  /* Another tab signs A out and B in. Only the shared storage and the
+     account client change; this tab hears nothing and still names A. */
+  storeDeviceSession(B_SESSION);
+  held = B_SESSION;
+  assert.equal(tab.screen.owner, NS_A);
+  assert.deepEqual(currentOwner(), A, 'this tab missed the change');
+
+  /* A Check from it: nothing sent, nothing recorded, for anybody. */
+  const sentBefore = sent.length;
+  assert.equal(await pressCheckOnTab(tab, 'SYNTHETIC second answer by A, from a tab that missed the switch'), 'withheld');
+  assert.equal(sent.length, sentBefore, 'the answer was sent from a tab whose device is somebody else’s now');
+  assert.equal(eventsOf(A).length, 1, 'an attempt was recorded under A from a tab that missed the switch');
+  assert.deepEqual(eventsOf(B), [], 'something was recorded under B');
+  assert.equal(tab.withheld, true, 'A’s work stayed on the screen');
+  assert.equal(tab.screen.note, OWNER_NOTE, 'with the calm line');
+  assert.equal(pressReviseOnTab(tab), 'withheld', 'a withheld screen lets no press through');
+
+  /* Both revise buttons, pressed on a screen of that tab that had not yet
+     refused anything, are refused the same way and change nothing. */
+  for (const button of ['Write it again', 'Try it on a sentence of your own']) {
+    const other = openTab();
+    assert.equal(pressReviseOnTab(other), 'withheld', `"${button}" acted on a tab that missed the switch`);
+    assert.equal(other.revising, false);
+    assert.equal(other.withheld, true);
+    other.stop();
+  }
+  assert.equal(sent.length, sentBefore);
+
+  /* The tab hears at last: it hands over, and B's own work is B's. */
+  signInAs(B, B_SESSION);
+  assert.equal(tab.withheld, false, 'the work came back once the tab heard who is here');
+  assert.equal(tab.screen.owner, NS_B);
+  assert.equal(tab.screen.text, '', 'B sees an empty task, not A’s');
+  assert.equal(await pressCheckOnTab(tab, 'SYNTHETIC answer written by B'), 'current');
+  tab.stop();
+  assert.equal(sent[sent.length - 1]!.auth, `Bearer ${B_SESSION.token}`);
+  assert.equal(eventsOf(B).length, 1);
+  assert.equal(eventsOf(A).length, 1, 'A’s record is untouched');
+});
+
+test('source scan: the written task asks the stored session at Check and at both revise buttons, and a refusal withholds the work', { timeout: 10_000 }, () => {
+  const code = source('components/learning/WritingFocusedTask.tsx');
+  assert.match(code, /storedSessionAgrees,/, 'the stored-session check is not imported');
+
+  /* Check: after the owner check, before anything is bound or sent. */
+  const evaluate = body(code, 'async function evaluate()', /\n  const feedback = /);
+  const ownerCheck = evaluate.search(/if \(ownerNamespace\(currentOwner\(\)\) !== owner\.current\) \{\s*handOver\(\);\s*return;\s*\}/);
+  const sessionCheck = evaluate.indexOf('if (!sessionAgrees()) return;');
+  const bindAt = evaluate.indexOf('const binding = bindToCurrentOwner();');
+  assert.ok(ownerCheck > 0, 'the owner check at Check is gone');
+  assert.ok(sessionCheck > ownerCheck, 'Check no longer asks the stored session, or asks it before the owner');
+  assert.ok(sessionCheck < bindAt, 'Check binds its request before asking the stored session');
+  assert.ok(bindAt < evaluate.indexOf('await askPracticeEvaluation('));
+
+  const agrees = body(code, '  function sessionAgrees(): boolean {', /\n  \}\n/);
+  assert.match(agrees, /if \(storedSessionAgrees\(currentOwner\(\)\)\) return true;\s*withhold\(\);\s*return false;/);
+
+  const claim = body(code, '  function claimPress(): boolean {', /\n  \}\n/);
+  assert.match(
+    claim,
+    /if \(!live\(\) \|\| withheld\) return false;\s*if \(ownerNamespace\(currentOwner\(\)\) !== owner\.current\) \{\s*handOver\(\);\s*return false;\s*\}\s*return sessionAgrees\(\);/,
+  );
+
+  /* Both revise buttons claim the press before they change anything. */
+  for (const label of ["t('Try it on a sentence of your own')", "t('Write it again')"]) {
+    const at = code.indexOf(label);
+    assert.ok(at > 0, `${label} is gone`);
+    const button = code.slice(code.lastIndexOf('<button', at), at);
+    assert.match(button, /onClick=\{\(\) => \{[\s\S]*?if \(!claimPress\(\)\) return;\s*[\s\S]*?setRevising\(true\);/, `${label} acts without claiming the press`);
+    assert.ok(button.indexOf('if (!claimPress()) return;') < button.indexOf('setRevising(true);'));
+  }
+
+  /* A refusal: the words go to their own student's draft, the evaluation is
+     let go of, and the work leaves the screen with the calm line; a
+     hand-over brings it back. */
+  const withhold = body(code, '  function withhold() {', /\n  \}\n/);
+  assert.match(withhold, /writeWrittenDraft\(storage\(\), holder, view\.exerciseId, \{ \.\.\.kept, draft: pending \}\)/);
+  assert.match(withhold, /evaluating\.current\?\.cancel\(\);/);
+  assert.match(withhold, /setWithheld\(true\);\s*setOwnerNote\(OWNER_CHANGED_NOTE\);/);
+  assert.match(body(code, '  function handOver()', /\n  \}\n/), /setWithheld\(false\);/);
+  assert.match(code, /\{!withheld && \(\s*<div className="written-body">/, 'withheld work is still on the screen');
+  assert.match(code, /\{phase === 'answered' && evaluation && feedback && !withheld && \(/, 'a withheld verdict is still on the screen');
+});

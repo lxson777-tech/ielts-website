@@ -137,6 +137,21 @@ screens that host the lesson help buttons), one more journey:
     signs in elsewhere; a check pressed in each is refused, records nothing
     for anybody, and takes the answers off that screen.
 
+TENTH ROUND (23 September 2026, the last screens that recorded through the
+shared store), one more journey:
+  - Step 22: A answers part of the inline quiz written into a lesson body
+    (no lesson carries one today, so the scraper's markup is written into the
+    real True/False/Not Given lesson page before its own script runs) and
+    part of a vocabulary practice round, and B signs in from another tab.
+    Both of A's tabs hand over (the calm line, nothing of A's on screen), A's
+    quiz answers are kept in A's own run and A's vocabulary answers stay in
+    A's schedule and record only, B's own visits show nothing of A's, and a
+    press in a tab that hears nothing from the others records nothing. Then
+    the spoken task, in a second browser with Chromium's fake microphone: a
+    recording under way when B signs in is stopped and dropped (recorder
+    stopped, microphone released, nothing recorded), and "Done for now" in a
+    deaf tab is refused.
+
 WHAT THIS IS NOT
 - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for it,
   in memory, on this machine only. Every fact below is about that stand-in,
@@ -184,12 +199,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 # results-unfinished-test-4.md with "unfinished4-", the fifth
 # results-unfinished-test-5.md with "unfinished5-", the sixth
 # results-unfinished-test-6.md with "unfinished6-", the seventh
-# results-unfinished-test-7.md with "unfinished7-" and the eighth
-# results-unfinished-test-8.md with "unfinished8-"; this round's defaults
-# write a ninth file beside them and leave all eight as they were.
+# results-unfinished-test-7.md with "unfinished7-", the eighth
+# results-unfinished-test-8.md with "unfinished8-" and the ninth
+# results-unfinished-test-9.md with "unfinished9-"; this round's defaults
+# write a tenth file beside them and leave all nine as they were.
 os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4386/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-9")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished9-")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-10")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished10-")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -3664,6 +3680,755 @@ def run_exercise_switch_step(browser, a_id, b_id):
     ctx.close()
 
 
+# ── Tenth round: the last screens that recorded through the shared store ──
+
+INLINE_PATH = "/lessons/reading/tfng"
+INLINE_LESSON = "reading-tfng"
+INLINE_ACTIVITY = f"check:lesson-quiz:{INLINE_LESSON}"
+INLINE_RUN_SET = f"lesson-quiz:{INLINE_LESSON}:c0"
+# A's answers to three of the four questions below. Nothing is checked for
+# being right, only for whose it is.
+INLINE_A = ["true", "false", "not given"]
+VOCAB_TOPIC = "environment"
+VOCAB_PATH = f"/review?topic={VOCAB_TOPIC}"
+VOCAB_ACTIVITY = f"review:vocabulary:{VOCAB_TOPIC}"
+VOCAB_STORE_BASE = "ielts.vocab.v1"
+SPOKEN_ID = "speaking-part1-extend-an-answer"
+SPOKEN_PATH = f"/trainers/speaking-focus/{SPOKEN_ID}"
+SPOKEN_ACTIVITY = f"focus:{SPOKEN_ID}"
+
+# No lesson body on the site carries an inline quiz today (the reading
+# lessons' quick quizzes were taken out of the bodies earlier in the
+# project), but src/scripts/lesson-quiz.ts still runs on every lesson page
+# and tools/scrape_ielts_materials.py still writes the markup it reads. So
+# this script writes that markup (build_reading_quiz_html's shape, four
+# SYNTHETIC True/False/Not Given statements) into a REAL lesson page, the
+# moment the lesson body is parsed and before any of the page's own scripts
+# run, exactly where the scraper would have put it. The page's own script
+# then finds it on page load, as it would find a scraped one. Nothing in the
+# site is changed.
+INLINE_QUIZ_SCRIPT = """
+(() => {
+  const questions = [
+    ['SYNTHETIC statement one about the passage.', 'true'],
+    ['SYNTHETIC statement two about the passage.', 'false'],
+    ['SYNTHETIC statement three about the passage.', 'not given'],
+    ['SYNTHETIC statement four about the passage.', 'true'],
+  ];
+  const markup = () => {
+    const items = questions.map(([text, answer], i) =>
+      '<div class="quiz-item" data-answer="' + answer + '">' +
+      '<span class="quiz-num">' + (i + 1) + '.</span>' +
+      '<span class="quiz-q">' + text + '</span>' +
+      '<select class="quiz-select"><option value="">-</option><option value="true">True</option>' +
+      '<option value="false">False</option><option value="not given">Not Given</option></select>' +
+      '</div>').join('');
+    return '<div class="section" id="quiz"><div class="section-header"><div class="section-num">Q</div>' +
+      '<div class="section-title-block"><div class="tag">Quick Quiz</div><h2>Practice Quiz</h2></div></div>' +
+      '<div class="exercise-box" data-quiz="reading"><p class="quiz-h3">SYNTHETIC Reading Quiz</p>' + items +
+      '<button class="quiz-check-btn">Check Answers</button><p class="quiz-score" hidden></p>' +
+      '<p class="material-source">Source: SYNTHETIC, written by the test</p></div></div>';
+  };
+  const place = () => {
+    if (document.querySelector('[data-quiz="reading"]')) return true;
+    const body = document.querySelector('[data-lesson-body]');
+    if (!body) return false;
+    body.insertAdjacentHTML('afterbegin', markup());
+    return true;
+  };
+  const watch = new MutationObserver(() => {
+    if (place()) watch.disconnect();
+  });
+  watch.observe(document, { childList: true, subtree: true });
+})();
+"""
+
+# Installed before any page script runs, in the spoken part only: records
+# every microphone track the page is given and every recorder it starts, so
+# the run can MEASURE that a recording stopped and the microphone was
+# released rather than infer it from the screen. It changes nothing the page
+# does. The same probe f23 uses.
+SPOKEN_MEDIA_PROBE = """
+(() => {
+  const probe = { tracks: [], recorders: [] };
+  window.__f22Media = probe;
+  const md = navigator.mediaDevices;
+  if (md && md.getUserMedia) {
+    const original = md.getUserMedia.bind(md);
+    md.getUserMedia = async (constraints) => {
+      const stream = await original(constraints);
+      stream.getTracks().forEach((track) => probe.tracks.push(track));
+      return stream;
+    };
+  }
+  const Recorder = window.MediaRecorder;
+  if (Recorder) {
+    const start = Recorder.prototype.start;
+    Recorder.prototype.start = function (...args) { probe.recorders.push(this); return start.apply(this, args); };
+  }
+})();
+"""
+
+
+def inline_values(page):
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            "() => Array.from(document.querySelectorAll('[data-quiz=\"reading\"] select')).map((s) => s.value)"
+        ),
+    )
+
+
+def inline_state(page):
+    """The inline quiz as it stands on screen: answers, marks, the score
+    line, the calm line and whether it can be used."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            """() => {
+                const box = document.querySelector('[data-quiz="reading"]');
+                if (!box) return null;
+                const note = box.querySelector('.quiz-owner-note');
+                const score = box.querySelector('.quiz-score');
+                return {
+                    values: Array.from(box.querySelectorAll('select')).map((s) => s.value),
+                    marked: box.querySelectorAll('.quiz-correct, .quiz-wrong').length,
+                    score: score && !score.hidden ? score.textContent : '',
+                    note: note && !note.hidden ? note.textContent : '',
+                    disabled: box.querySelector('.quiz-check-btn').disabled,
+                };
+            }"""
+        ),
+    )
+
+
+def inline_answer(page, answers):
+    selects = page.locator('[data-quiz="reading"] select.quiz-select')
+    for index, value in enumerate(answers):
+        selects.nth(index).scroll_into_view_if_needed(timeout=8000)
+        selects.nth(index).select_option(value, timeout=8000)
+
+
+def inline_check(page):
+    button = page.locator('[data-quiz="reading"] .quiz-check-btn').first
+    try:
+        button.scroll_into_view_if_needed(timeout=8000)
+        button.click(timeout=8000)
+        return True
+    except Exception:
+        return False
+
+
+def inline_run_of(page, namespace):
+    return stored_json(page, f"{QUIZ_RUN_BASE}::{namespace}::{INLINE_RUN_SET}")
+
+
+def vocab_cards_of(page, namespace):
+    return (stored_json(page, f"{VOCAB_STORE_BASE}::{namespace}") or {}).get("cards") or {}
+
+
+def open_vocab_practice(page):
+    goto(page, VOCAB_PATH)
+    page.wait_for_timeout(1800)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Practise these words"),
+        lambda: page.locator(".vocab-option").count() > 0,
+    )
+    page.wait_for_timeout(600)
+
+
+def vocab_state(page):
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            """(note) => ({
+                options: document.querySelectorAll('.vocab-option').length,
+                progress: (document.querySelector('.vocab-progress') || {}).textContent || '',
+                feedback: document.querySelectorAll('.vocab-feedback').length,
+                answered: document.querySelectorAll('.vocab-option.is-right, .vocab-option.is-wrong').length,
+                note: Array.from(document.querySelectorAll('[role="status"]')).some((el) => el.textContent.trim() === note),
+            })""",
+            EXERCISE_NOTE,
+        ),
+    )
+
+
+def vocab_answer_one(page):
+    """Answer the question on screen with its first option and go on. Returns
+    the word the question was about (the option marked right afterwards)."""
+    try:
+        page.locator(".vocab-option").first.click(timeout=8000)
+    except Exception:
+        return None
+    page.wait_for_timeout(500)
+    right = page.locator(".vocab-option.is-right span")
+    word = right.first.inner_text().strip() if right.count() else None
+    try:
+        page.locator(".vocab-next").first.click(timeout=8000)
+    except Exception:
+        pass
+    page.wait_for_timeout(500)
+    return word
+
+
+def spoken_media(page):
+    try:
+        return page.evaluate(
+            """() => {
+                const probe = window.__f22Media || { tracks: [], recorders: [] };
+                return {
+                    tracks: probe.tracks.length,
+                    liveTracks: probe.tracks.filter((t) => t.readyState === 'live').length,
+                    recorders: probe.recorders.length,
+                    activeRecorders: probe.recorders.filter((r) => r.state !== 'inactive').length,
+                };
+            }"""
+        )
+    except Exception:
+        return {}
+
+
+def spoken_screen(page):
+    return {
+        "recording": text_count(page, "Recording..."),
+        "start": page.get_by_role("button", name="Start recording").count(),
+        "audio": page.locator("audio.spoken-audio").count(),
+        "done": page.get_by_role("button", name="Done for now").count(),
+        "saved": text_count(page, "Recorded as practice."),
+        "note": text_count(page, EXERCISE_NOTE),
+    }
+
+
+def spoken_record(page, stop=True):
+    """Start a recording on the fake microphone, and stop it for listening
+    back when `stop`. Returns whether each step reached its screen."""
+    started = journey.try_click(page.get_by_role("button", name="Start recording"), timeout=8000)
+    page.wait_for_timeout(1800)
+    recording = text_count(page, "Recording...") > 0
+    if not stop:
+        return started and recording
+    journey.try_click(page.get_by_role("button", name="Stop and listen back"), timeout=8000)
+    page.wait_for_timeout(1800)
+    return started and recording and page.locator("audio.spoken-audio").count() > 0
+
+
+def run_last_screens_step(browser, a_id, b_id):
+    """Step 22 (the inline lesson quiz, the vocabulary practice round and the
+    spoken focused task belong to the student they were opened for), on a
+    fresh browser for A, then B."""
+    write_section(
+        "Step 22 - The inline lesson quiz, the vocabulary practice round and the spoken task hand over when "
+        "the account changes, and record only for the student whose work they are (the follow-up to R2B-01)",
+        "Three more screens looked the owner up once and recorded through the shared learner store, which "
+        "answers for whoever is signed in at the press: the quiz written into a lesson body, the vocabulary "
+        "practice round, and the spoken focused task. Now each is bound to the student it was opened for: when "
+        "the page changes hands it hands over (the outgoing student's work stays theirs, the screen shows the "
+        "next student's own or nothing, with one calm line), a press for a student who is no longer here is "
+        "refused and records nothing, and a recording under way is stopped and dropped. Tabs that hear nothing "
+        "from the others stand in for tabs that missed the switch. No model or grader is called at any point: "
+        "none of these screens asks for one. No lesson body carries an inline quiz today, so this step writes "
+        "the scraper's quiz markup (four SYNTHETIC statements) into the real True/False/Not Given lesson page "
+        "before the page's own script runs; the site itself is unchanged.",
+    )
+    ns_a = f"u:{a_id}"
+    ns_b = f"u:{b_id}"
+    ctx = new_context(browser)
+    ctx.add_init_script(INLINE_QUIZ_SCRIPT)
+
+    # ── Tab 3 is where the accounts change hands; A signs in there first ──
+    tab3 = ctx.new_page()
+    errors3, failed3 = attach_diagnostics(tab3)
+    tab3.on("dialog", lambda dialog: dialog.accept())
+    goto(tab3, "/dashboard")
+    tab3.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    # ── Tab 1: A answers three of four on the inline lesson quiz ──
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    goto(tab1, INLINE_PATH)
+    tab1.wait_for_timeout(2400)
+    try:
+        inline_answer(tab1, INLINE_A)
+    except Exception as error:
+        write_note(f"**Diagnostic:** answering the inline quiz raised {type(error).__name__}.")
+    tab1.wait_for_timeout(700)
+    a_inline = inline_state(tab1) or {}
+    write_row(
+        "A answers three of the four questions of the inline quiz on the real True/False/Not Given lesson page; "
+        "as it always has, the quiz keeps and records nothing before a check",
+        (a_inline.get("values") or [])[:3] == INLINE_A
+        and inline_run_of(tab1, ns_a) is None
+        and not activity_events_of(tab1, ns_a, INLINE_ACTIVITY),
+        f"on screen: {json.dumps(a_inline.get('values'))}; A's kept run: {json.dumps(inline_run_of(tab1, ns_a))}; "
+        f"A's events for it: {len(activity_events_of(tab1, ns_a, INLINE_ACTIVITY))}",
+    )
+    shot(tab1, "75-a-inline-quiz-part-answered", INLINE_PATH)
+
+    # ── Tab 2: A answers two questions of a vocabulary practice round ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    open_vocab_practice(tab2)
+    a_words = [vocab_answer_one(tab2), vocab_answer_one(tab2)]
+    a_cards = vocab_cards_of(tab2, ns_a)
+    a_vocab_events = activity_events_of(tab2, ns_a, VOCAB_ACTIVITY)
+    write_row(
+        "A answers two questions of a vocabulary practice round, and each answer is written at its click into "
+        "A's own review schedule and A's learner record",
+        all(a_words)
+        and all(word in a_cards for word in a_words)
+        and len(a_vocab_events) == 2,
+        f"A's words: {json.dumps(a_words)}; in A's schedule: {json.dumps(sorted(a_cards))}; A's events for "
+        f"{VOCAB_ACTIVITY}: {len(a_vocab_events)}",
+    )
+    a_state = vocab_state(tab2) or {}
+    shot(tab2, "76-a-vocab-round-part-answered", "/review")
+    mark_page(tab1)
+    mark_page(tab2)
+
+    # ── Tab 3: A signs out and B signs in ──
+    tab3.bring_to_front()
+    journey.ws_sign_out(tab3)
+    b_back = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    reloaded_since(tab1, "tab 1 (A's inline quiz), after B signed in in tab 3")
+    inline_now = inline_state(tab1) or {}
+    write_row(
+        "B signs in in another tab: A's inline quiz tab hands over, with one calm line and nothing of A's "
+        "answers",
+        b_back == b_id
+        and not any(inline_now.get("values") or ["x"])
+        and inline_now.get("note") == EXERCISE_NOTE
+        and inline_now.get("marked") == 0,
+        f"B = {b_back}; quiz now: {json.dumps(inline_now)}",
+    )
+    shot(tab1, "77-inline-quiz-handed-to-b", INLINE_PATH)
+    a_run = inline_run_of(tab1, ns_a) or {}
+    a_run_unit = ((a_run.get("units") or [{}])[0]) or {}
+    write_row(
+        "A's answers were kept for A at the hand-over, in A's own unfinished run of the quiz (unchecked), and "
+        "nothing is kept or recorded under B",
+        (a_run_unit.get("drafts") or [])[:3] == INLINE_A
+        and a_run_unit.get("checked") is False
+        and inline_run_of(tab1, ns_b) is None
+        and not activity_events_of(tab1, ns_a, INLINE_ACTIVITY)
+        and not activity_events_of(tab1, ns_b, INLINE_ACTIVITY),
+        f"A's run, unit 1: {json.dumps(a_run_unit)}; B's run: {json.dumps(inline_run_of(tab1, ns_b))}; events "
+        f"for it under A {len(activity_events_of(tab1, ns_a, INLINE_ACTIVITY))}, under B "
+        f"{len(activity_events_of(tab1, ns_b, INLINE_ACTIVITY))}",
+    )
+
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1500)
+    reloaded_since(tab2, "tab 2 (A's vocabulary round), after B signed in in tab 3")
+    vocab_now = vocab_state(tab2) or {}
+    b_cards = vocab_cards_of(tab2, ns_b)
+    # A's learner record leaves this device at A's sign-out (the account
+    # layer's own sign-out on a shared machine, by design), so A's two
+    # answers are checked where they now live, on A's account, further down.
+    write_row(
+        "A's vocabulary round tab hands over to a fresh round with the same calm line: A's answers and their "
+        "feedback are gone from the screen, and none of A's words is in B's schedule or B's record",
+        vocab_now.get("note") is True
+        and vocab_now.get("answered") == 0
+        and vocab_now.get("feedback") == 0
+        and str(vocab_now.get("progress", "")).startswith("1 of")
+        and not any(word in b_cards for word in a_words)
+        and not activity_events_of(tab2, ns_b, VOCAB_ACTIVITY),
+        f"before: {json.dumps(a_state)}; now: {json.dumps(vocab_now)}; B's schedule: {json.dumps(sorted(b_cards))}; "
+        f"events under B {len(activity_events_of(tab2, ns_b, VOCAB_ACTIVITY))}",
+    )
+    shot(tab2, "78-vocab-round-handed-to-b", "/review")
+
+    # ── B's own visits show nothing of A's ──
+    tab3.bring_to_front()
+    goto(tab3, INLINE_PATH)
+    tab3.wait_for_timeout(2400)
+    b_inline = inline_state(tab3) or {}
+    shot(tab3, "79-b-own-inline-quiz-empty", INLINE_PATH)
+    open_vocab_practice(tab3)
+    b_vocab = vocab_state(tab3) or {}
+    write_row(
+        "B opening the same lesson quiz and the same practice round afresh finds nothing of A's",
+        len(b_inline.get("values") or []) == 4
+        and not any(b_inline.get("values") or ["x"])
+        and b_inline.get("marked") == 0
+        and b_vocab.get("answered") == 0
+        and not any(word in vocab_cards_of(tab3, ns_b) for word in a_words),
+        f"B's inline quiz: {json.dumps(b_inline)}; B's practice round: {json.dumps(b_vocab)}",
+    )
+    if b_inline.get("note") or b_vocab.get("note"):
+        write_note(
+            "**Diagnostic (not a failure of this step, and not caused by it):** B's own fresh page shows the calm "
+            "line although nothing of A's is on it. Traced in this round: on a signed-in page load the account "
+            "layer's startSyncForUser (src/lib/auth/sync.ts) calls stopSync first, which resets the owner to "
+            "this device's anonymous owner, and then sets B again, so every screen bound to its owner hears two "
+            "account changes (B, anonymous, B) when it mounts before the account layer has finished. It depends "
+            "on timing, so it does not happen on every load. Nothing is written for anybody by it; the screen "
+            "ends on B's own work. Reported to the lead."
+        )
+    shot(tab3, "80-b-own-vocab-round", "/review")
+
+    # ── A signs back in: the open quiz tab finds A's answers again ──
+    goto(tab3, "/dashboard")
+    tab3.wait_for_timeout(1200)
+    journey.ws_sign_out(tab3)
+    a_again = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    inline_back = inline_state(tab1) or {}
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1500)
+    vocab_back = vocab_state(tab2) or {}
+    write_row(
+        "A signs back in: the open inline quiz tab shows A's own answers again, and the practice round tab "
+        "hands over to a fresh round of A's own",
+        a_again == a_id
+        and (inline_back.get("values") or [])[:3] == INLINE_A
+        and vocab_back.get("answered") == 0
+        and vocab_back.get("note") is True
+        and len(activity_events_of(tab2, ns_a, VOCAB_ACTIVITY)) == 2,
+        f"A = {a_again}; inline quiz: {json.dumps(inline_back)}; practice round: {json.dumps(vocab_back)}",
+    )
+    shot(tab1, "81-a-back-inline-quiz-restored", INLINE_PATH)
+
+    # ── Two tabs that hear nothing, open for A ──
+    tab4 = ctx.new_page()
+    errors4, failed4 = attach_diagnostics(tab4)
+    tab4.add_init_script(DEAF_TAB_SCRIPT)
+    goto(tab4, INLINE_PATH)
+    tab4.wait_for_timeout(2400)
+    tab5 = ctx.new_page()
+    errors5, failed5 = attach_diagnostics(tab5)
+    tab5.add_init_script(DEAF_TAB_SCRIPT)
+    open_vocab_practice(tab5)
+    deaf_inline = inline_state(tab4) or {}
+    deaf_vocab = vocab_state(tab5) or {}
+    write_row(
+        "Two tabs that hear nothing from the others open the inline quiz (showing A's answers) and a practice "
+        "round for A",
+        (deaf_inline.get("values") or [])[:3] == INLINE_A and (deaf_vocab.get("options") or 0) > 0,
+        f"deaf quiz tab: {json.dumps(deaf_inline)}; deaf practice tab: {json.dumps(deaf_vocab)}",
+    )
+
+    tab3.bring_to_front()
+    journey.ws_sign_out(tab3)
+    b_again = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+    tab4.bring_to_front()
+    tab4.wait_for_timeout(2000)
+    session_now = auth_session(tab4) or {}
+    still_inline = inline_state(tab4) or {}
+    write_row(
+        "B signs in again elsewhere; the deaf quiz tab misses it and still shows A's answers, while the session "
+        "this browser holds is B's",
+        b_again == b_id
+        and session_now.get("user") == b_id
+        and (still_inline.get("values") or [])[:3] == INLINE_A
+        and still_inline.get("disabled") is False,
+        f"B = {b_again}; stored session names {session_now.get('user')}; deaf quiz tab: {json.dumps(still_inline)}",
+    )
+    shot(tab4, "82-deaf-inline-quiz-still-shows-a", INLINE_PATH)
+    mark_page(tab4)
+    mark_page(tab5)
+
+    before = {
+        "a_inline": len(activity_events_of(tab4, ns_a, INLINE_ACTIVITY)),
+        "b_inline": len(activity_events_of(tab4, ns_b, INLINE_ACTIVITY)),
+        "a_vocab": len(activity_events_of(tab4, ns_a, VOCAB_ACTIVITY)),
+        "b_vocab": len(activity_events_of(tab4, ns_b, VOCAB_ACTIVITY)),
+    }
+    a_cards_before = vocab_cards_of(tab4, ns_a)
+    pressed4 = inline_check(tab4)
+    tab4.wait_for_timeout(1500)
+    reloaded_since(tab4, "the deaf quiz tab, after its press")
+    refused_inline = inline_state(tab4) or {}
+    a_run_end = inline_run_of(tab4, ns_a) or {}
+    a_run_end_unit = ((a_run_end.get("units") or [{}])[0]) or {}
+    write_row(
+        "A check pressed in the deaf quiz tab is refused: nothing is recorded or marked for A or for B, A's "
+        "answers leave that screen (the quiz is disabled until the tab hears), with the calm line, and stay in "
+        "A's own run, unchecked",
+        pressed4
+        and len(activity_events_of(tab4, ns_a, INLINE_ACTIVITY)) == before["a_inline"] == 0
+        and len(activity_events_of(tab4, ns_b, INLINE_ACTIVITY)) == before["b_inline"] == 0
+        and not any(refused_inline.get("values") or ["x"])
+        and refused_inline.get("marked") == 0
+        and not refused_inline.get("score")
+        and refused_inline.get("disabled") is True
+        and refused_inline.get("note") == EXERCISE_NOTE
+        and (a_run_end_unit.get("drafts") or [])[:3] == INLINE_A
+        and a_run_end_unit.get("checked") is False,
+        f"pressed: {pressed4}; quiz now: {json.dumps(refused_inline)}; events under A {before['a_inline']} -> "
+        f"{len(activity_events_of(tab4, ns_a, INLINE_ACTIVITY))}, under B {before['b_inline']} -> "
+        f"{len(activity_events_of(tab4, ns_b, INLINE_ACTIVITY))}; A's run, unit 1: {json.dumps(a_run_end_unit)}",
+    )
+    shot(tab4, "83-deaf-inline-quiz-check-refused", INLINE_PATH)
+
+    tab5.bring_to_front()
+    tab5.wait_for_timeout(800)
+    try:
+        tab5.locator(".vocab-option").first.click(timeout=8000)
+        pressed5 = True
+    except Exception:
+        pressed5 = False
+    tab5.wait_for_timeout(1500)
+    reloaded_since(tab5, "the deaf practice tab, after its click")
+    refused_vocab = vocab_state(tab5) or {}
+    write_row(
+        "An answer clicked in the deaf practice tab is refused the same way: nothing is written to either "
+        "student's schedule or record, and the round leaves that screen with the calm line",
+        pressed5
+        and vocab_cards_of(tab5, ns_a) == a_cards_before
+        and not vocab_cards_of(tab5, ns_b)
+        and len(activity_events_of(tab5, ns_a, VOCAB_ACTIVITY)) == before["a_vocab"]
+        and len(activity_events_of(tab5, ns_b, VOCAB_ACTIVITY)) == before["b_vocab"] == 0
+        and refused_vocab.get("options") == 0
+        and refused_vocab.get("note") is True,
+        f"clicked: {pressed5}; practice tab now: {json.dumps(refused_vocab)}; A's schedule unchanged: "
+        f"{vocab_cards_of(tab5, ns_a) == a_cards_before}; B's schedule: {json.dumps(sorted(vocab_cards_of(tab5, ns_b)))}; "
+        f"events under A {before['a_vocab']} -> {len(activity_events_of(tab5, ns_a, VOCAB_ACTIVITY))}, under B "
+        f"{before['b_vocab']} -> {len(activity_events_of(tab5, ns_b, VOCAB_ACTIVITY))}",
+    )
+    shot(tab5, "84-deaf-vocab-click-refused", "/review")
+
+    tab3.wait_for_timeout(2500)
+    remote_a = journey.settled_store_snapshot(a_id)
+    remote_b = journey.settled_store_snapshot(b_id)
+    rows_a = [row.get("activity_id") for row in remote_a.get("learning_events") or []]
+    rows_b = [row.get("activity_id") for row in remote_b.get("learning_events") or []]
+    b_dump = json.dumps(remote_b, separators=(",", ":"))
+    a_words_on_b = [word for word in a_words if word and ('"' + word + '"') in b_dump]
+    write_row(
+        "The stand-in holds no inline quiz row for anybody, A's two vocabulary answers only on A's account, and "
+        "nothing of A's vocabulary round anywhere on B's",
+        INLINE_ACTIVITY not in rows_a
+        and INLINE_ACTIVITY not in rows_b
+        and rows_a.count(VOCAB_ACTIVITY) == 2
+        and VOCAB_ACTIVITY not in rows_b
+        and not a_words_on_b,
+        f"A's rows for the quiz {rows_a.count(INLINE_ACTIVITY)}, for the round {rows_a.count(VOCAB_ACTIVITY)}; "
+        f"B's rows for the quiz {rows_b.count(INLINE_ACTIVITY)}, for the round {rows_b.count(VOCAB_ACTIVITY)}; "
+        f"A's words anywhere in what the stand-in holds for B: {json.dumps(a_words_on_b)}",
+    )
+
+    # ── A back once more: on the tabs that followed every change, a check
+    #    and an answer are recorded again, for A only ──
+    tab3.bring_to_front()
+    journey.ws_sign_out(tab3)
+    a_last = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(2500)
+    ready_inline = inline_state(tab1) or {}
+    checked1 = inline_check(tab1)
+    tab1.wait_for_timeout(1500)
+    done_inline = inline_state(tab1) or {}
+    a_inline_events = activity_events_of(tab1, ns_a, INLINE_ACTIVITY)
+    a_inline_given = [item.get("firstAnswer") for item in ((a_inline_events[0].get("items") or []) if a_inline_events else [])]
+    write_row(
+        "A signs back in; on the quiz tab that followed every change, A's check is recorded once, under A, with "
+        "the answers kept for A, and marked as it always was; nothing under B",
+        a_last == a_id
+        and (ready_inline.get("values") or [])[:3] == INLINE_A
+        and checked1
+        and len(a_inline_events) == 1
+        and a_inline_given == INLINE_A
+        and done_inline.get("marked") == 3
+        and done_inline.get("score") == "3 / 4 correct"
+        and not activity_events_of(tab1, ns_b, INLINE_ACTIVITY),
+        f"A = {a_last}; before the press: {json.dumps(ready_inline)}; after: {json.dumps(done_inline)}; events "
+        f"under A: {len(a_inline_events)}, first answers {json.dumps(a_inline_given)}; events under B: "
+        f"{len(activity_events_of(tab1, ns_b, INLINE_ACTIVITY))}",
+    )
+    shot(tab1, "85-a-inline-quiz-recorded-for-a", INLINE_PATH)
+
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1500)
+    a_third = vocab_answer_one(tab2)
+    write_row(
+        "On the practice tab that followed every change, A's next answer is written once, under A, and nothing "
+        "under B",
+        bool(a_third)
+        and len(activity_events_of(tab2, ns_a, VOCAB_ACTIVITY)) == 3
+        and not activity_events_of(tab2, ns_b, VOCAB_ACTIVITY)
+        and a_third in vocab_cards_of(tab2, ns_a),
+        f"A's word: {a_third}; events under A {len(activity_events_of(tab2, ns_a, VOCAB_ACTIVITY))}, under B "
+        f"{len(activity_events_of(tab2, ns_b, VOCAB_ACTIVITY))}",
+    )
+    report_diagnostics("Step 22 (tab 1, inline quiz)", errors1, failed1)
+    report_diagnostics("Step 22 (tab 2, practice round)", errors2, failed2)
+    report_diagnostics("Step 22 (tab 3, accounts)", errors3, failed3)
+    report_diagnostics("Step 22 (tab 4, deaf inline quiz)", errors4, failed4)
+    report_diagnostics("Step 22 (tab 5, deaf practice round)", errors5, failed5)
+    ctx.close()
+
+    run_spoken_switch_part(browser, a_id, b_id)
+
+
+def run_spoken_switch_part(browser, a_id, b_id):
+    """Step 22, the spoken task: a recording under way when the page changes
+    hands, and "Done for now" from a tab that missed it. Needs a browser with
+    Chromium's FAKE microphone (a test tone, no real voice), so it launches
+    one of its own beside the run's browser, the way f23 does."""
+    ns_a = f"u:{a_id}"
+    ns_b = f"u:{b_id}"
+    try:
+        fake = browser.browser_type.launch(
+            args=["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+        )
+    except Exception as error:
+        write_row(
+            "A browser with the fake microphone starts for the spoken task",
+            False,
+            f"{type(error).__name__}: the spoken task's checks were not run",
+        )
+        return
+    try:
+        ctx = new_context(fake)
+        ctx.add_init_script(SPOKEN_MEDIA_PROBE)
+        tab3 = ctx.new_page()
+        errors3, failed3 = attach_diagnostics(tab3)
+        tab3.on("dialog", lambda dialog: dialog.accept())
+        goto(tab3, "/dashboard")
+        tab3.wait_for_timeout(1200)
+        back = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+
+        tab1 = ctx.new_page()
+        errors1, failed1 = attach_diagnostics(tab1)
+        goto(tab1, SPOKEN_PATH)
+        tab1.wait_for_timeout(2200)
+        recording = spoken_record(tab1, stop=False)
+        media_before = spoken_media(tab1)
+        write_row(
+            "A opens the spoken task (a browser with the fake microphone) and is recording an answer",
+            back == a_id
+            and recording
+            and media_before.get("liveTracks", 0) >= 1
+            and media_before.get("activeRecorders", 0) >= 1,
+            f"A = {back}; recording on screen: {recording}; microphone and recorder: {json.dumps(media_before)}",
+        )
+        shot(tab1, "86-a-spoken-task-recording", SPOKEN_PATH)
+        mark_page(tab1)
+
+        tab3.bring_to_front()
+        journey.ws_sign_out(tab3)
+        b_back = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+        tab1.bring_to_front()
+        tab1.wait_for_timeout(2500)
+        reloaded_since(tab1, "tab 1 (A's spoken task), after B signed in in tab 3")
+        media_after = spoken_media(tab1)
+        screen_after = spoken_screen(tab1)
+        write_row(
+            "B signs in in another tab: A's recording is stopped and dropped (the recorder stopped, the "
+            "microphone released), nothing is played back, and the task hands over empty with the calm line",
+            b_back == b_id
+            and media_after.get("liveTracks") == 0
+            and media_after.get("activeRecorders") == 0
+            and screen_after["recording"] == 0
+            and screen_after["audio"] == 0
+            and screen_after["start"] == 1
+            and screen_after["note"] > 0,
+            f"B = {b_back}; microphone and recorder: {json.dumps(media_after)}; screen: {json.dumps(screen_after)}",
+        )
+        shot(tab1, "87-spoken-task-handed-to-b", SPOKEN_PATH)
+        write_row(
+            "Nothing of A's recording is recorded for anybody",
+            not activity_events_of(tab1, ns_a, SPOKEN_ACTIVITY) and not activity_events_of(tab1, ns_b, SPOKEN_ACTIVITY),
+            f"events for {SPOKEN_ACTIVITY} under A {len(activity_events_of(tab1, ns_a, SPOKEN_ACTIVITY))}, under B "
+            f"{len(activity_events_of(tab1, ns_b, SPOKEN_ACTIVITY))}",
+        )
+
+        # ── A back; a tab that hears nothing records and listens back ──
+        tab3.bring_to_front()
+        journey.ws_sign_out(tab3)
+        a_again = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+        tab4 = ctx.new_page()
+        errors4, failed4 = attach_diagnostics(tab4)
+        tab4.add_init_script(DEAF_TAB_SCRIPT)
+        goto(tab4, SPOKEN_PATH)
+        tab4.wait_for_timeout(2200)
+        listened = spoken_record(tab4, stop=True)
+        write_row(
+            "A signs back in; a tab that hears nothing from the others records an answer and listens back",
+            a_again == a_id and listened and spoken_screen(tab4)["done"] == 1,
+            f"A = {a_again}; listening back: {listened}; screen: {json.dumps(spoken_screen(tab4))}",
+        )
+        tab3.bring_to_front()
+        journey.ws_sign_out(tab3)
+        b_again = journey.ws_sign_in(tab3, EMAIL_B, PASSWORD_B)
+        tab4.bring_to_front()
+        tab4.wait_for_timeout(1500)
+        session_now = auth_session(tab4) or {}
+        missed = spoken_screen(tab4)
+        mark_page(tab4)
+        pressed = journey.try_click(tab4.get_by_role("button", name="Done for now"), timeout=8000)
+        tab4.wait_for_timeout(1500)
+        reloaded_since(tab4, "the deaf spoken tab, after its press")
+        refused = spoken_screen(tab4)
+        write_row(
+            "B signs in again elsewhere; the deaf tab still shows A's recording, and its \"Done for now\" is "
+            "refused: nothing recorded for A or B, and the recording leaves that screen with the calm line",
+            b_again == b_id
+            and session_now.get("user") == b_id
+            and missed["audio"] == 1
+            and missed["done"] == 1
+            and pressed
+            and refused["audio"] == 0
+            and refused["saved"] == 0
+            and refused["note"] > 0
+            and not activity_events_of(tab4, ns_a, SPOKEN_ACTIVITY)
+            and not activity_events_of(tab4, ns_b, SPOKEN_ACTIVITY),
+            f"B = {b_again}; stored session names {session_now.get('user')}; before the press: {json.dumps(missed)}; "
+            f"after: {json.dumps(refused)}; events under A {len(activity_events_of(tab4, ns_a, SPOKEN_ACTIVITY))}, "
+            f"under B {len(activity_events_of(tab4, ns_b, SPOKEN_ACTIVITY))}",
+        )
+        shot(tab4, "88-deaf-spoken-done-refused", SPOKEN_PATH)
+
+        # ── A back once more: the tab that followed every change records for A ──
+        tab3.bring_to_front()
+        journey.ws_sign_out(tab3)
+        a_last = journey.ws_sign_in(tab3, EMAIL_A, PASSWORD_A)
+        tab1.bring_to_front()
+        tab1.wait_for_timeout(2500)
+        listened1 = spoken_record(tab1, stop=True)
+        done1 = journey.try_click(tab1.get_by_role("button", name="Done for now"), timeout=8000)
+        tab1.wait_for_timeout(1500)
+        a_events = activity_events_of(tab1, ns_a, SPOKEN_ACTIVITY)
+        write_row(
+            "A signs back in; on the tab that followed every change, A records, listens back and presses \"Done "
+            "for now\": recorded once, under A, as practice (never a grade), and nothing under B",
+            a_last == a_id
+            and listened1
+            and done1
+            and spoken_screen(tab1)["saved"] == 1
+            and len(a_events) == 1
+            and ((a_events[0].get("outcome") or {}).get("kind") == "studied")
+            and not activity_events_of(tab1, ns_b, SPOKEN_ACTIVITY),
+            f"A = {a_last}; listened back: {listened1}; pressed: {done1}; events under A: {len(a_events)} "
+            f"({json.dumps([(e.get('outcome') or {}).get('kind') for e in a_events])}); under B: "
+            f"{len(activity_events_of(tab1, ns_b, SPOKEN_ACTIVITY))}",
+        )
+        shot(tab1, "89-a-spoken-recorded-for-a", SPOKEN_PATH)
+        tab3.wait_for_timeout(2500)
+        remote_b = journey.settled_store_snapshot(b_id)
+        remote_a = journey.settled_store_snapshot(a_id)
+        write_row(
+            "The stand-in holds the spoken practice once on A's account and never on B's",
+            [row.get("activity_id") for row in remote_a.get("learning_events") or []].count(SPOKEN_ACTIVITY) == 1
+            and SPOKEN_ACTIVITY not in [row.get("activity_id") for row in remote_b.get("learning_events") or []],
+            f"A's rows for it: {[row.get('activity_id') for row in remote_a.get('learning_events') or []].count(SPOKEN_ACTIVITY)}; "
+            f"B's rows for it: {[row.get('activity_id') for row in remote_b.get('learning_events') or []].count(SPOKEN_ACTIVITY)}",
+        )
+        report_diagnostics("Step 22 (spoken, tab 1)", errors1, failed1)
+        report_diagnostics("Step 22 (spoken, tab 3, accounts)", errors3, failed3)
+        report_diagnostics("Step 22 (spoken, tab 4, deaf)", errors4, failed4)
+        ctx.close()
+    finally:
+        fake.close()
+
+
 def record_answers(record):
     """Every first answer in every item of every event in a learner record."""
     out = []
@@ -3715,7 +4480,10 @@ def run():
         "draft, shown to nobody, and the task is handed to the new student empty. "
         "Step 21 is the ninth, the follow-up to R2B-01 for the focused Reading exercise and the lesson quick "
         "check: both hand over when the account changes, keep the outgoing student's answers for that student, "
-        "and a check from a tab that missed the change records nothing."
+        "and a check from a tab that missed the change records nothing. "
+        "Step 22 is the tenth, for the last screens that recorded through the shared store: the inline lesson "
+        "quiz, the vocabulary practice round and the spoken task hand over the same way, record only for the "
+        "student whose work they are, and a recording under way when the account changes is stopped and dropped."
     )
 
     with sync_playwright() as p:
@@ -3951,6 +4719,7 @@ def run():
         run_panel_switch_step(browser, a_id, b_id)
         run_lesson_evaluation_step(browser, a_id, b_id)
         run_exercise_switch_step(browser, a_id, b_id)
+        run_last_screens_step(browser, a_id, b_id)
         browser.close()
 
     write_note(

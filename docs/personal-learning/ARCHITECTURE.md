@@ -904,8 +904,13 @@ definitions" implementable and what feeds observed vocabulary problems back
 into the plan. Vocabulary never becomes a fifth paper: its scope is
 `{kind:'vocabulary'}` and it never carries a band.
 
-**Missing and must be authored:** the "use in a sentence" mode. Recognition
-and recall exist; use does not.
+**Missing and must be authored:** unassisted recall and the "use in a
+sentence" mode. Since the published main was merged (23 September 2026) the
+vocabulary screen is ten marked questions in which the student picks the
+missing word from four in its example sentence, which is recognition only and
+is recorded with direction `recognise`, so the catalogue's vocabulary
+activities claim `recognise-meaning` and `topic-breadth` directly and
+`recall-from-meaning` only as borrowed.
 
 ### 6.6 Tests, mock and supporting libraries
 

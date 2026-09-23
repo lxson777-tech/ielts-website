@@ -20,7 +20,8 @@
 
 import { WORDS } from '../data/words';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
-import { VOCAB_STORE_KEY, scopedKey } from './store-owner';
+import type { CacheOwner } from './learning/contracts/sync';
+import { VOCAB_STORE_KEY, currentOwner, deviceStorage, scopedKey, scopedKeyIn } from './store-owner';
 
 export interface VocabCard {
   word: string;
@@ -448,14 +449,26 @@ export const VOCAB_KEY = VOCAB_STORE_KEY;
 
 const KEY = VOCAB_STORE_KEY;
 
+/* ONE NAMED OWNER (the follow-up to R2B-01 for the vocabulary practice
+   round, 23 September 2026). Every function here reads and writes the
+   CURRENT owner's copy, which is right for everything except an answer in a
+   practice round: that belongs to the student the round was started for
+   (src/components/vocab-round-owner.ts), whoever is on the page by the
+   time it is written. So the two store functions take an optional owner,
+   and rateFor() below names one. Without an owner the key is exactly the
+   one it has always been. */
+function storeKey(owner?: CacheOwner): string {
+  return owner ? scopedKeyIn(deviceStorage(), KEY, owner) : scopedKey(KEY);
+}
+
 function emptyStore(): VocabStoreV1 {
   return { version: 1, settings: { newPerDay: 10 }, cards: {} };
 }
 
-function loadStore(): VocabStoreV1 {
+function loadStore(owner?: CacheOwner): VocabStoreV1 {
   if (typeof window === 'undefined') return emptyStore();
   try {
-    const raw = window.localStorage.getItem(scopedKey(KEY));
+    const raw = window.localStorage.getItem(storeKey(owner));
     if (!raw) return emptyStore();
     const parsed = JSON.parse(raw);
     if (parsed?.version !== 1) return emptyStore();
@@ -470,9 +483,9 @@ function loadStore(): VocabStoreV1 {
   }
 }
 
-function saveStore(store: VocabStoreV1): void {
+function saveStore(store: VocabStoreV1, owner?: CacheOwner): void {
   try {
-    window.localStorage.setItem(scopedKey(KEY), JSON.stringify(store));
+    window.localStorage.setItem(storeKey(owner), JSON.stringify(store));
   } catch {
     /* storage full/blocked — review progress is a nice-to-have, never fatal */
   }
@@ -569,14 +582,23 @@ function scheduleNext(state: VocabCardState, grade: Grade, today: string): Vocab
     recordReviewOutcome() (below) uses the return value to report the
     resulting due date without a second read of storage. */
 export function rate(word: string, grade: Grade): VocabCardState | undefined {
+  return rateFor(currentOwner(), word, grade);
+}
+
+/** rate(), into one named owner's review state rather than the current
+    owner's. The practice round's answers are written through this, under
+    the student the round was started for, so an answer can never land in
+    the schedule of a student who signed in after the round began. With no
+    account change it is exactly rate(). */
+export function rateFor(owner: CacheOwner, word: string, grade: Grade): VocabCardState | undefined {
   if (!CARD_BY_WORD.has(word)) return undefined;
-  const store = loadStore();
+  const store = loadStore(owner);
   const today = todayStr();
   const base = store.cards[word] ?? freshState(today);
   const next = scheduleNext(base, grade, today);
   next.lastReviewed = new Date().toISOString();
   store.cards[word] = next;
-  saveStore(store);
+  saveStore(store, owner);
   return next;
 }
 

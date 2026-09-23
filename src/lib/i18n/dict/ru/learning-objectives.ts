@@ -373,6 +373,12 @@ export const strings: Record<string, string> = {
   'Want a real band on this? Send the same kind of answer to the Speaking trainer, which grades from your actual recording and costs a real AI check.':
     'Хотите настоящий балл за это? Отправьте похожий ответ в тренажёр Speaking: он оценивает по вашей реальной записи и стоит реальную AI-проверку.',
   'Open the Speaking trainer': 'Открыть тренажёр Speaking',
+  /* spoken-task-owner.ts, shown by SpokenFocusedTask.tsx when the page
+     changes hands (23 September 2026). The spoken task's own line: a
+     recording in progress is dropped, never kept, so it does not borrow
+     the exercises' "answers were kept" line from learning-focus. */
+  'The account on this page changed. Any recording on this screen was stopped and not kept.':
+    'На этой странице сменился аккаунт. Запись на этом экране, если она была, остановлена и не сохранена.',
 
   /* Recovery text: mic problems (spoken-focused-task.ts's micProblemText,
      nt() marked, rendered elsewhere via t()) */

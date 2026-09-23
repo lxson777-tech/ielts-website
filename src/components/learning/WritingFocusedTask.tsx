@@ -38,6 +38,17 @@
  * nothing judged, because the tutor client drops a reply that comes back
  * after the switch), and the incoming student sees their own draft of this
  * task or an empty one, with one calm line saying why.
+ *
+ * A TAB THAT MISSED THE SWITCH (23 September 2026)
+ * A tab hears of another tab's sign-in from an event, a moment after the
+ * session in shared storage has changed, or never. Until then it still names
+ * the previous student. So Check, "Write it again" and "Try it on a sentence
+ * of your own" also ask this device's stored account session at the press
+ * (storedSessionAgrees in src/lib/store-owner.ts, the same check the focused
+ * exercise makes through claimExerciseCheck in ./exercise-owner.ts). When it
+ * names somebody else, nothing is sent, judged or recorded, the words go to
+ * their own student's draft, and the work leaves the screen with the calm
+ * line until the tab hears who is here and hands over.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -62,6 +73,7 @@ import {
   onOwnerChange,
   ownerNamespace,
   runOwnedGrade,
+  storedSessionAgrees,
   type OwnerBinding,
 } from '../../lib/store-owner';
 import { askPracticeEvaluation, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
@@ -155,9 +167,20 @@ export default function WritingFocusedTask({ view }: Props) {
      and evidence path; the difference is only what is shown above it. */
   const [transferring, setTransferring] = useState(false);
   const [ownerNote, setOwnerNote] = useState<string | null>(null);
+  /* True when this tab missed an account change and refused a press: the
+     work leaves the screen until the tab hears who is here. */
+  const [withheld, setWithheld] = useState(false);
   /* Whose work this screen holds, as ownerNamespace spells an owner. Set
      on mount, and moved to the incoming student only by handOver below. */
   const owner = useRef('anon');
+  /* Which hand-over this screen is on. The ref moves the instant the page
+     changes hands; the state moves with the render that shows the incoming
+     student's work. A handler from a render made before that one (a
+     keystroke, a press) still sees the old number and is ignored, so the
+     outgoing student's words can never be saved under, or sent for, the
+     incoming student. */
+  const [shownHandOver, setShownHandOver] = useState(0);
+  const handOverNow = useRef(0);
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   /* The words still waiting on the autosave, so a hand-over can put them
      in their own student's draft at once instead of dropping them. */
@@ -261,7 +284,18 @@ export default function WritingFocusedTask({ view }: Props) {
     [text, view.minWords, view.maxWords, view.checks, view.correctionSentence, view.promptHtml],
   );
 
+  /** True while this render shows the work of the student the screen
+      holds now. False only in the moment between a hand-over and the
+      render that follows it. */
+  function live(): boolean {
+    return shownHandOver === handOverNow.current;
+  }
+
   function onType(value: string) {
+    /* A keystroke from a render that still shows the outgoing student's
+       text arrives after the hand-over has moved `owner` to the incoming
+       student: it is theirs to lose, never the next student's to keep. */
+    if (!live()) return;
     setText(value);
     setOwnerNote(null);
     if (draftTimer.current) clearTimeout(draftTimer.current);
@@ -337,6 +371,8 @@ export default function WritingFocusedTask({ view }: Props) {
 
     const incoming = ownerNamespace(currentOwner());
     owner.current = incoming;
+    handOverNow.current += 1;
+    setShownHandOver(handOverNow.current);
     const resumed = readWrittenDraft(storage(), incoming, view.exerciseId);
     helpNow.current = resumed.help;
     setHeld(resumed);
@@ -353,7 +389,57 @@ export default function WritingFocusedTask({ view }: Props) {
     setSession(null);
     setStepRole(null);
     setPhase('working');
+    setWithheld(false);
     setOwnerNote(OWNER_CHANGED_NOTE);
+  }
+
+  /* This tab missed the account change: it still names the student whose
+     work is on screen, but this device's stored account session names
+     somebody else. Nothing is sent, judged or recorded. The words still
+     waiting on the autosave go to that student's own draft now, an
+     evaluation still on its way is let go of here (runOwnedGrade still keeps
+     it for them), and the work leaves the screen until this tab hears who
+     is here, when the listener above hands over. */
+  function withhold() {
+    const holder = owner.current;
+    if (draftTimer.current) clearTimeout(draftTimer.current);
+    draftTimer.current = null;
+    const pending = pendingDraft.current;
+    pendingDraft.current = null;
+    if (pending !== null) {
+      const kept = readWrittenDraft(storage(), holder, view.exerciseId);
+      writeWrittenDraft(storage(), holder, view.exerciseId, { ...kept, draft: pending });
+    }
+    evaluating.current?.cancel();
+    evaluating.current = null;
+    setWithheld(true);
+    setOwnerNote(OWNER_CHANGED_NOTE);
+  }
+
+  /** This device's stored account session still agrees that the student
+   *  this screen holds is the one here: the check the focused exercise makes
+   *  at its presses (claimExerciseCheck in ./exercise-owner.ts). When it
+   *  names somebody else, this tab missed a change: the work is withheld and
+   *  the press does nothing. Asked only once the owner on the page has been
+   *  found to be this screen's, so the owner it is asked about is theirs. */
+  function sessionAgrees(): boolean {
+    if (storedSessionAgrees(currentOwner())) return true;
+    withhold();
+    return false;
+  }
+
+  /** Whether "Write it again" or "Try it on a sentence of your own" may act:
+   *  only from the render that shows the work of the student this screen
+   *  holds, only while that student is the one on the page (otherwise the
+   *  screen hands over), and only while this device's stored session agrees
+   *  (otherwise the work is withheld). */
+  function claimPress(): boolean {
+    if (!live() || withheld) return false;
+    if (ownerNamespace(currentOwner()) !== owner.current) {
+      handOver();
+      return false;
+    }
+    return sessionAgrees();
   }
 
   /** Write one attempt to the learner record.
@@ -437,6 +523,9 @@ export default function WritingFocusedTask({ view }: Props) {
 
   async function evaluate() {
     if (phase === 'asking') return;
+    /* A press from a render made before a hand-over holds the outgoing
+       student's text, while `owner` already names the incoming one. */
+    if (!live()) return;
     const written = text;
     if (!written.trim()) return;
     /* The answer goes out only for the student whose work this screen
@@ -446,6 +535,10 @@ export default function WritingFocusedTask({ view }: Props) {
       handOver();
       return;
     }
+    /* A tab that missed an account change still names that student while
+       this device's session is somebody else's: nothing is sent, judged or
+       recorded, and the work leaves the screen. */
+    if (!sessionAgrees()) return;
     /* Bound to that student NOW, before anything is sent: whatever comes
        back is kept for them and shown only while they are still the one
        here (runOwnedGrade in src/lib/store-owner.ts). */
@@ -565,6 +658,9 @@ export default function WritingFocusedTask({ view }: Props) {
         </p>
       )}
 
+      {/* A tab that missed an account change shows none of the work it
+          still holds until it hears who is here (withhold above). */}
+      {!withheld && (
       <div className="written-body">
         <section className="written-prompt" aria-label={t('The task')}>
           <p className="written-prompt-label">{t(writtenTaskLabel(view.task))} · {view.promptTitle}</p>
@@ -594,7 +690,7 @@ export default function WritingFocusedTask({ view }: Props) {
                 <button
                   type="button"
                   className="written-guide-open"
-                  onClick={() => noteHelp({ guidingQuestionsOpened: true })}
+                  onClick={() => live() && noteHelp({ guidingQuestionsOpened: true })}
                 >
                   {t(wording.showQuestionsKey)}
                 </button>
@@ -666,8 +762,9 @@ export default function WritingFocusedTask({ view }: Props) {
           )}
         </section>
       </div>
+      )}
 
-      {phase === 'answered' && evaluation && feedback && (
+      {phase === 'answered' && evaluation && feedback && !withheld && (
         <section className="written-result" aria-live="polite">
           {evaluation.judged ? (
             <>
@@ -719,7 +816,7 @@ export default function WritingFocusedTask({ view }: Props) {
           {view.modelOverview && mayShowModel(held.attempts) && (
             <div className="written-model">
               {!help.modelShown ? (
-                <button type="button" className="written-model-open" onClick={() => noteHelp({ modelShown: true })}>
+                <button type="button" className="written-model-open" onClick={() => live() && noteHelp({ modelShown: true })}>
                   {t('Show one way to write it')}
                 </button>
               ) : (
@@ -749,7 +846,7 @@ export default function WritingFocusedTask({ view }: Props) {
           {view.correctionNote && mayShowModel(held.attempts) && (
             <div className="written-model">
               {!help.modelShown ? (
-                <button type="button" className="written-model-open" onClick={() => noteHelp({ modelShown: true })}>
+                <button type="button" className="written-model-open" onClick={() => live() && noteHelp({ modelShown: true })}>
                   {t('Show what was wrong with it')}
                 </button>
               ) : (
@@ -785,6 +882,9 @@ export default function WritingFocusedTask({ view }: Props) {
               type="button"
               className="written-revise"
               onClick={() => {
+                /* Only for the student whose work this is, from a tab that
+                   has not missed an account change. */
+                if (!claimPress()) return;
                 setTransferring(true);
                 setRevising(true);
                 setText('');
@@ -800,6 +900,7 @@ export default function WritingFocusedTask({ view }: Props) {
               type="button"
               className="written-revise"
               onClick={() => {
+                if (!claimPress()) return;
                 setRevising(true);
                 setPhase('working');
               }}
