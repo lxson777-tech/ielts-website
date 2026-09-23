@@ -582,6 +582,29 @@ Structured result: `docs/personal-learning/evidence/codex-inspections/inspection
 | R2E-02 (medium) | Once a paper was submitted, its review stayed on screen for whoever signed in next, with the review controls and "ask why this is wrong" still active | Owner checks apply to completed reviews; the previous student's answers, score and tutor controls leave the screen on an owner change; review requests and cached replies are bound to their owner |
 | R2E-03 (medium) | Two tabs on the same mock paper could each hand it in, the second overwriting the first and recording a second attempt | Completion is terminal per leg; an already-completed leg is rejected; stale players stop; evidence is recorded only for the first accepted completion |
 
-**Inspection 6** (a fresh session, after those fixes) is recorded below once
-run.
+The fixes for those three landed in `fd9bdf8`, together with four holes of
+the same class that the builders themselves reported and that were closed
+before asking Codex again: every Mr EZ request is bound to its student and
+the panel's conversation, previously one nameless copy per browser tab, is
+stored per student; the in-lesson practice evaluation and lesson help record
+only under the student who pressed; the focused Reading and Listening
+exercise and the lesson quick check are sessions bound to their student that
+hand over on a switch. Gates at that commit: 1958 tests, type check clean,
+661 pages, index unchanged, race script anonymous both times, f23 90 of 90
+(with a genuinely successful loopback voice connection torn down within 2.5
+seconds of a switch), f22 185 of 185.
+
+**The published main was merged in at `c5cf425`** (origin/main `9b775df`:
+the new vocabulary practice with marked questions from example sentences,
+two reading-practice content commits, and the study-screen polish). Four
+conflicts were resolved so that both intentions survive (the vocabulary
+store and screen, the dashboard card, the plan-settings page), and the
+learning-index generator was taught main's per-question practice sources
+(compact index format 3). Gates on the merged tree: 1968 tests, type check
+clean, index regenerated and deterministic, race script anonymous both
+times. Vocabulary practice now records recognition rather than recall; the
+course catalogue's wording for that activity is corrected in a follow-up.
+
+**Inspection 6** (a fresh session, after those fixes and the merge) is
+recorded below once run.
 
