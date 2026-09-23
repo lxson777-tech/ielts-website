@@ -1,0 +1,78 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-2\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "3fc20c71fd7d7a68c150fd7c9d92d7b9367d802ddc29829d9c6556330753583c",
+  "base": "48b1d17",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0cd1f-756d-7c31-811a-1a8b621123a7",
+  "usage": {
+    "input_tokens": 1296188,
+    "cached_input_tokens": 1115008,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 3609,
+    "reasoning_output_tokens": 1312
+  },
+  "elapsed_seconds": 187.54,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence"
+  ],
+  "inspected_commit": "3fec8f4",
+  "snapshot_sha256": "c4d1b52565d6767be4dc22e56820a9f11a6fa9c57457f260b89fe4f0d19722fa",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "The fixes close the reviewed delayed-grade paths, but unfinished essays can still cross accounts, and mock resumption has two material defects.",
+    "findings": [
+      {
+        "id": "R2B-01",
+        "severity": "high",
+        "path": "src/components/WritingTester.tsx:150",
+        "evidence": "Ownership is captured only when submit() calls bindToCurrentOwner() at line 209. The mounted editor never clears or rebinds its essay on an owner change. A can type an essay, switch to B through the menu or another tab, and B can submit A's retained text into B's history and learning record. Additionally, the draft timeout at line 155 resolves the owner when it fires, so a switch during its 600 ms delay saves A's text under the new owner. The delayed-grade tests switch accounts only after submission and miss both paths.",
+        "fix": "Bind the editing session and draft writes to the owner who starts or restores the essay. On an owner change, preserve that owner's draft, cancel pending draft callbacks, and replace the editor with the new owner's state. Reject submission of an essay whose editing owner is no longer current. Cover switches before submission and during the draft debounce."
+      },
+      {
+        "id": "R2B-02",
+        "severity": "medium",
+        "path": "src/components/MockExam.tsx:704",
+        "evidence": "Changing accounts during the Speaking leg causes the owner-changed screen to unmount LiveExaminer. Its cleanup calls onAbort() at LiveExaminer.tsx:754, which sets speakingSkipped=true and stage='results' in the still-mounted MockExam. When A signs back in, the results effect saves the mock without Speaking and clears its persisted sitting. The resume effect explicitly skips stage='results' at line 495. Thus an account interruption finalizes the mock instead of returning A to the Speaking brief; a delayed grade saved separately cannot repair the combined result.",
+        "fix": "Distinguish deliberate Speaking cancellation from unmount caused by account suspension. Do not advance the mock to results on suspension. Preserve the sitting and resume at the Speaking brief, keeping late grades owned by their original student. Cover account changes during both interviewing and grading."
+      },
+      {
+        "id": "R2B-03",
+        "severity": "medium",
+        "path": "src/lib/tests/mock.ts:307",
+        "evidence": "ActiveMock persists the current paper's id but not its answers, deadline, or sitting identity. Those remain in the single per-owner test-session slot. A can leave an unfinished mock Listening leg, start a different standalone paper, and overwrite that slot through startSession(). Resuming the mock then mounts TestPlayer with no matching session and starts Listening again with empty answers and a fresh deadline. Conversely, starting a new mock using a paper already in that slot restores the earlier sitting because TestPlayer.tsx:270 matches only test.id. This contradicts the promised preservation across navigation and the fresh-mock action.",
+        "fix": "Persist mock legs by mock sitting identity, including their answers and deadlines, separately from standalone sessions. Pass that identity through TestPlayer restoration, saving, clearing, and completion reconciliation. Starting a new mock must create fresh legs; resuming must restore only that mock's legs."
+      }
+    ],
+    "coverage": [
+      "Read the on-disk plan and verified its SHA256 against the supplied hash.",
+      "Reviewed the supplied changes for every manifest entry, including regression tests, browser scripts, translations, configuration, and documentation.",
+      "Inspected surrounding ownership, draft, grading, mock, and test-player code; traced shared-state callers and writers beyond the manifest through auth/session.ts, learning/index.ts, and route wrappers.",
+      "Read portions of the recorded delayed-grade and unfinished-mock browser evidence and compared their scenarios with the uncovered paths."
+    ],
+    "limitations": [
+      "Static review only. No tests, builds, browser journeys, edits, or delegation were performed.",
+      "Recorded test results are host-provided evidence, not independently verified passes.",
+      "Production Supabase policies, real cross-device behavior, live grading, and visual behavior were not verified."
+    ]
+  }
+}

@@ -176,3 +176,37 @@ and `f23` need the stand-in (`IELTS_STANDIN_URL`) and a dev server started
 with the dedicated `astro.config.f22.mjs` or `astro.config.f23.mjs` (their
 headers say why: a second dev server against this checkout needs its own Vite
 cache and must not watch the evidence folders).
+
+## Inspection round 2 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `3fec8f4` against this specification, diff from `48b1d17`,
+same settings as round 1, 188 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-2-of-3fec8f4.json`.
+
+Verdict: REVISE. Codex confirms the delayed-grade paths are closed and finds
+three remaining defects, all accepted by the host:
+
+- **R2B-01 (high) accepted.** The essay editor binds its owner only at
+  submit, so an essay typed by A could be submitted by B after a switch, and
+  the draft autosave resolves the owner when its timer fires. Fix: the editing
+  session and every draft write are bound to the owner who starts or restores
+  the essay; an owner change preserves that owner's draft, cancels pending
+  draft timers and replaces the editor with the new owner's state; submission
+  of an essay whose editing owner is no longer current is refused.
+- **R2B-02 (medium) accepted.** An account change during the mock's speaking
+  leg unmounts the examiner, whose cleanup reports a deliberate cancellation,
+  so the mock advances to results and clears its saved sitting; the original
+  student cannot resume. Fix: suspension by an owner change is distinguished
+  from a deliberate cancellation; the mock never advances on suspension and
+  resumes at the speaking brief.
+- **R2B-03 (medium) accepted.** A mock's legs share the single per-owner
+  standalone session slot, so another paper started mid-mock overwrites the
+  leg and a new mock can restore an older sitting because the player matches
+  on paper id only. Fix: mock legs (answers, deadlines, sitting identity) are
+  persisted under the mock sitting's own identity, separately from standalone
+  sessions; the player restores, saves, clears and reconciles by that identity;
+  a new mock creates fresh legs; resuming restores only that mock's legs.
+
+The skill's default inspection budget is two rounds. At Alex's standing
+instruction to run this loop with Codex directly, the host extends it by one:
+a third fresh inspection follows these fixes.
