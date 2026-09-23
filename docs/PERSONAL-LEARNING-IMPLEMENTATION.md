@@ -605,6 +605,23 @@ clean, index regenerated and deterministic, race script anonymous both
 times. Vocabulary practice now records recognition rather than recall; the
 course catalogue's wording for that activity is corrected in a follow-up.
 
+**The last screens of the same class landed in `34b7583`**, reported by the
+builders rather than by an inspection: the inline lesson quiz, the
+vocabulary round (on main's merged screen) and the spoken focused task are
+bound to their student and hand over on a switch; the written task ignores
+presses on a screen that was about to be handed over; the course catalogue's
+two vocabulary activities now declare recognition, not recall, with
+objectives that describe the merged practice, in English and Russian; and
+the sign-in path no longer resets the owner to anonymous and back for a
+student who is already the owner, so a signed-in page load announces no
+false account change and a real change is announced exactly once. Gates at
+that commit: 2004 tests, type check clean, 661 pages, index unchanged, race
+script anonymous both times, f22 207 of 207 (the spoken task measured on a
+fake microphone). Known and stated rather than fixed: five "mark as studied"
+or intake buttons still write at the press through the shared store (no
+other student's answers are involved; a tab that missed a switch would
+record that mark under the student it thinks is there).
+
 **Inspection 6** (a fresh session, after those fixes and the merge) is
 recorded below once run.
 
