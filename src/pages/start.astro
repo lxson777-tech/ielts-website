@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import CourseGate from '../components/CourseGate';
 ---
 
@@ -9,11 +8,12 @@ import CourseGate from '../components/CourseGate';
   description="Work through every lesson on the site in the right order. Tell us your target band and test date, and the course sets your pace, tracks what you've finished, and always shows the next lesson."
 >
   <div class="platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
-    <SectionHeading
-      eyebrow="Start Here"
-      title="The IELTS course"
-      subtitle="Every lesson on the site, in an order that builds. Tell us your target band and test date, and we'll set your pace and keep a Continue button on the next lesson you haven't finished."
-    />
+    <header class="hub-heading">
+      <div>
+        <h1 data-i18n>The IELTS course</h1>
+        <p data-i18n>Every lesson on the site, in an order that builds. Tell us your target band and test date, and we'll set your pace and keep a Continue button on the next lesson you haven't finished.</p>
+      </div>
+    </header>
     <CourseGate client:load />
   </div>
 </BaseLayout>

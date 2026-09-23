@@ -1154,7 +1154,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         <AnimatePresence>
           {showScore && (
             <motion.div
-              className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4"
+              className="test-result-overlay fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4"
               role="dialog"
               aria-modal="true"
               initial={{ opacity: 0 }}
@@ -1163,7 +1163,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className="w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover"
+                className="test-result-panel w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover"
                 initial={{ opacity: 0, scale: 0.96, y: 8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
@@ -1183,7 +1183,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                   {t('Estimated Band: {band}', { band: t(bandEstimate(correctCount, SCORED_TOTAL, test.skill)) })}
                 </p>
                 {weakestType && (
-                  <p className="mt-4 text-left text-sm text-ink-muted">
+                  <p className="result-focus mt-4 text-left text-sm text-ink-muted">
                     {/* One sentence, one key. The question type name stays in
                         English on purpose (the student meets it in that form on
                         the real paper), and it used to be <strong> mid
@@ -1210,7 +1210,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                   <button
                     type="button"
                     onClick={openRetake}
-                    className="mt-4 w-full rounded-button border border-brand/30 bg-brand-tint px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint/70"
+                    className="result-retry mt-4 w-full rounded-button border border-brand/30 bg-brand-tint px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand-tint/70"
                   >
                     {tn(wrongCount, {
                       one: 'Retry the {n} you got wrong',
@@ -1237,7 +1237,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                   ) : (
                     <a
                       href={hubUrl}
-                      className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+                      className="result-more rounded-button px-4 py-2 text-sm font-semibold"
                     >
                       {t('More Tests')}
                     </a>

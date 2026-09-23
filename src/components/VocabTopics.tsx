@@ -97,6 +97,13 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           <h1>{active.title}</h1>
         </div>
 
+
+        <div className="vocab-topic-practise">
+          <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
+            {t('Practise these words')}
+          </button>
+        </div>
+
         {active.words.length > 0 && (
           <section className="vocab-topic-group">
             <h2>{t('Words and phrases')}</h2>
@@ -127,11 +134,6 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           </section>
         ))}
 
-        <div className="vocab-topic-practise">
-          <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
-            {t('Practise these words')}
-          </button>
-        </div>
       </div>
     );
   }
