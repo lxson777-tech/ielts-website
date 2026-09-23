@@ -496,7 +496,28 @@ Codex confirmed the delayed-grade paths were closed and found:
 | R2B-02 (medium) | An account change during the mock's speaking leg was handled as a deliberate cancellation, so the mock advanced to results and its own student could not resume | Suspension is distinguished from cancellation; the mock never advances on suspension and resumes at the speaking brief |
 | R2B-03 (medium) | A mock's legs shared the single standalone session slot, so another paper started mid-mock wiped them and a new mock could restore an older sitting | Mock legs are persisted under the mock sitting's own identity, separately from standalone sessions; the player restores, saves, clears and reconciles by that identity |
 
-**Inspection 3** (a fresh session, after those fixes, one round past the
-skill's default budget at Alex's standing instruction to run the loop with
-Codex directly) is recorded below once run.
+The fixes for those three landed in `b10fc10` (essay editing session bound
+to its owner in `src/components/writing-editor-owner.ts`; the examiner's
+suspend-versus-abort split; mock legs kept inside the sitting's own record
+under its `sittingId`). Gates at that commit: 1822 tests, type check clean,
+661 pages, learning index unchanged, Codex's race script anonymous both
+times, f22 83 of 83, f23 37 of 37. The frozen-suite rerun of that build
+(`results-round3.md`, on disk) matched round 2 row for row: 296 pass and
+the one by-design fail.
+
+**Inspection 3, of `7c5264a`: REVISE, four findings, all accepted.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-3-of-7c5264a.json`.
+Codex calls the round-2 fixes "substantially implemented" and names four
+edge cases, one round past the skill's default budget at Alex's standing
+instruction to run the loop with Codex directly:
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2C-01 (medium) | The late grade's keep step cleared the submitter's draft unconditionally, so a revision A made after returning to the page, before the older grade arrived, was deleted by it | Draft deletion is tied to the submitted revision; a newer revision, including one still waiting on the debounce, is preserved |
+| R2C-02 (medium) | The mock screen's own snapshot writes and its clear checked only the owner, so a second mock started in another tab could be replaced or deleted by the older tab | Creation is separated from updates; ordinary saves and clears must match both owner and sitting id; a mounted mock whose sitting was replaced stops and never writes again |
+| R2C-03 (medium) | When the sitting's own student returned to a still-mounted paper after an account change, the timer resumed from the frozen count, granting the time away back | The saved deadline is the timer's only authority, including after an owner change and before a submission; an expired sitting is handled as on a fresh load |
+| R2C-04 (high) | The speaking trainer bound its owner but kept recording and stepping through questions after the account changed, so the next student's answers could become the first student's evidence | The attempt is suspended the moment the owner changes: capture stopped, pending turns cancelled, an unfinished recording dropped and never graded; a grade already requested is still kept for the first student; the standalone live examiner ends its session the same way |
+
+**Inspection 4** (a fresh session, after those fixes) is recorded below once
+run.
 

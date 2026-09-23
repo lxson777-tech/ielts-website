@@ -28,6 +28,34 @@
  * `ielts.writing.draft.v1::<owner namespace>::<prompt id>`, the same
  * convenience-only role (never evidence), cleared once a real report is back.
  *
+ * A LATE REPORT CLEARS ONLY THE TEXT IT GRADED (finding R2C-01 of the third
+ * Codex inspection)
+ * The report used to clear its student's draft of the prompt whatever the
+ * draft held by then. Student A could submit, sign out and back in while the
+ * grade was on its way, get the submitted essay back in the editor, and go
+ * on revising it. Once the revision had autosaved, the older grade arrived
+ * and deleted it: a reload lost the revision, and the history held only the
+ * original submission.
+ *
+ * So the report now removes the draft only while the draft still holds
+ * EXACTLY the text that was graded (clearSubmittedEssayDraft). That text is
+ * now in the student's history, so the draft is a spare copy of it and
+ * nothing is lost. A draft that says anything else is a later revision, and
+ * it stays.
+ *
+ * Why the text itself and not a revision number stored with the draft: the
+ * question the report has to answer is "does the history now hold what this
+ * draft holds?", and comparing the two texts answers exactly that, with no
+ * change to what is stored under the draft key, nothing for older drafts to
+ * migrate, and no counter that could drift from the text it describes. A
+ * revision still waiting on the 600 ms autosave is safe too: at the moment
+ * the report lands the stored text still equals the submission, so that copy
+ * is removed, and the pending write lands a moment later with the revision.
+ * The same rule covers the one other place the trainer writes a draft on the
+ * student's behalf: a failed request puts the submitted essay back only when
+ * the student has no draft of the prompt at all (restoreEssayDraft), so it
+ * can never overwrite a later revision either.
+ *
  * Pure apart from the storage and the timer it is handed, so
  * tests/delayed-grade-owner.test.ts drives it with a Map and a hand-cranked
  * clock instead of a browser.
@@ -92,6 +120,39 @@ export function clearEssayDraft(
 ): void {
   if (!storage) return;
   safeRemove(storage, essayDraftKey(promptId, owner));
+}
+
+/** A report for `submitted` has just been kept in `owner`'s history: remove
+    their draft of this prompt, but ONLY while it still holds exactly that
+    text (R2C-01). A draft that says anything else is a later revision and
+    is kept. True when the draft was removed. */
+export function clearSubmittedEssayDraft(
+  promptId: string,
+  owner: CacheOwner,
+  submitted: string,
+  storage: BrowserStorage | null = deviceStorage(),
+): boolean {
+  if (!storage) return false;
+  const key = essayDraftKey(promptId, owner);
+  if (safeGet(storage, key) !== submitted) return false;
+  safeRemove(storage, key);
+  return true;
+}
+
+/** A grading request for `text` failed after the page moved on: put the
+    essay back as `owner`'s draft of this prompt, but only when they have no
+    draft of it at all. A draft that is there already is the same essay or a
+    later revision, and it wins (R2C-01). True when the essay was written. */
+export function restoreEssayDraft(
+  promptId: string,
+  owner: CacheOwner,
+  text: string,
+  storage: BrowserStorage | null = deviceStorage(),
+): boolean {
+  if (!storage || !text) return false;
+  const key = essayDraftKey(promptId, owner);
+  if (safeGet(storage, key)) return false;
+  return safeSet(storage, key, text);
 }
 
 /* ── The editing session ─────────────────────────────────────────────────── */

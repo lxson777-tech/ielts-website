@@ -258,9 +258,43 @@ export function loadSession(testId: string): TestSession | null {
   return s && s.testId === testId ? s : null;
 }
 
-/** Seconds left for a session, floored at 0. */
-export function secondsLeft(s: TestSession): number {
-  return Math.max(0, Math.round((s.endsAt - Date.now()) / 1000));
+/** Seconds left for a session at `now`, floored at 0. */
+export function secondsLeft(s: Pick<TestSession, 'endsAt'>, now: number = Date.now()): number {
+  return paperClockAt(s.endsAt, now).secondsLeft;
+}
+
+/* THE CLOCK OF A PAPER ON SCREEN IS ITS DEADLINE (fourth Codex round, 23
+   September 2026, R2C-03)
+   The test player used to count a number down, one second per tick, and
+   froze that number while the sitting's student was away (a sign-out, or
+   somebody else signing in, in this tab or another). When the student came
+   back to the same open page, the count simply carried on from where it had
+   frozen. So a paper with five minutes left, put down for ten, still offered
+   five minutes on that page, while a reload of the very same sitting found
+   it expired. A background tab, whose ticks the browser slows down, drifted
+   the same way.
+
+   Now every reading of a running paper's clock is taken from its saved
+   deadline (TestSession.endsAt, the same value a reload reads) and the
+   moment of reading, never from a count: each tick, the student coming back
+   to the open page, and the moment a paper is handed in. A deadline that
+   passed while the student was away is then exactly the expired sitting a
+   fresh load finds, handled the same way (time is up, and the paper is
+   handed in with the answers it has), and no time is ever given back. */
+
+/** A running paper's clock, read at one moment. */
+export interface PaperClockReading {
+  /** Whole seconds left before the deadline, floored at 0. */
+  secondsLeft: number;
+  /** The deadline has been reached: the paper is handed in as it stands. */
+  timeUp: boolean;
+}
+
+/** The clock of a paper whose saved deadline is `endsAt`, as it reads at
+    `now`. The only clock rule the test player uses (R2C-03). */
+export function paperClockAt(endsAt: number, now: number = Date.now()): PaperClockReading {
+  const left = Math.max(0, Math.round((endsAt - now) / 1000));
+  return { secondsLeft: left, timeUp: left <= 0 };
 }
 
 /** True while `sittingOwner` (captured when the sitting started) is still

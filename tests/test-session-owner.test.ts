@@ -41,6 +41,15 @@
  *      goes back to its Speaking brief for its own student, during the
  *      interview and during grading alike, while a deliberate cancel still
  *      skips Speaking.
+ *   8. Only starting a mock may put a sitting in another's place (Codex
+ *      round 4, R2C-02): the screen's ordinary saves and its tidy-up must
+ *      name the stored sitting itself, so a mock left open in one tab can
+ *      neither overwrite nor remove a fresh one the same student started in
+ *      another, and it can tell that it was replaced.
+ *   9. A paper's clock is its saved deadline (Codex round 4, R2C-03): time
+ *      that passed while the student was away, or while the tab slept, is
+ *      never handed back, and a deadline that passed meanwhile is the same
+ *      expired sitting a fresh load finds. Driven with a fake clock.
  *
  * There is no DOM here and no real browser. `window.localStorage` is a Map,
  * which is what every module under test reaches for, and the two screen-level
@@ -617,7 +626,7 @@ test("a mock day is written down under its own student and read back whole", () 
     essay2: 'SYNTHETIC Task 2 draft by A',
     writingEndsAt: WRITING_DEADLINE,
   });
-  assert.equal(mock.saveActiveMock(mine), true);
+  assert.equal(mock.beginActiveMock(mine), true);
   assert.ok(storage.data.has(activeKey(NS_A)));
   assert.deepEqual(withoutSavedAt(mock.loadActiveMock()), withoutSavedAt(mine));
   /* Born owner-scoped: nothing was written under a device-wide key. */
@@ -640,7 +649,7 @@ test("B never sees A's unfinished mock, B's fresh mock is kept apart, and A resu
     kind: 'full',
     skill: 'listening',
   });
-  assert.equal(mock.saveActiveMock(activeMock(NS_A)), true);
+  assert.equal(mock.beginActiveMock(activeMock(NS_A)), true);
   const aStored = storage.data.get(activeKey(NS_A));
 
   /* A signs out; B signs in on the same browser. */
@@ -658,12 +667,12 @@ test("B never sees A's unfinished mock, B's fresh mock is kept apart, and A resu
     stage: 'listening',
     listening: null,
   });
-  assert.equal(mock.saveActiveMock(bFresh), true);
+  assert.equal(mock.beginActiveMock(bFresh), true);
   assert.deepEqual(withoutSavedAt(mock.loadActiveMock()), withoutSavedAt(bFresh));
   assert.equal(storage.data.get(activeKey(NS_A)), aStored, "B's fresh mock changed A's saved sitting");
 
   /* B finishes and tidies up: only B's copy goes. */
-  mock.clearActiveMock(NS_B);
+  assert.equal(mock.clearActiveMock({ owner: NS_B, sittingId: SITTING_1 }), true);
   assert.equal(storage.data.has(activeKey(NS_B)), false);
   assert.equal(storage.data.get(activeKey(NS_A)), aStored, "B's tidy-up removed A's sitting");
 
@@ -682,7 +691,7 @@ test("B never sees A's unfinished mock, B's fresh mock is kept apart, and A resu
 test('a mock day that outlived its student writes nothing and clears nothing', () => {
   freshBrowser();
   setCurrentOwner(A);
-  mock.saveActiveMock(activeMock(NS_A));
+  mock.beginActiveMock(activeMock(NS_A));
   const aStored = storage.data.get(activeKey(NS_A));
 
   setCurrentOwner(B);
@@ -691,12 +700,14 @@ test('a mock day that outlived its student writes nothing and clears nothing', (
     false,
     "A's open mock saved after B signed in",
   );
+  assert.equal(mock.beginActiveMock(activeMock(NS_A)), false, "A's sitting was begun under B");
   assert.equal(storage.data.has(activeKey(NS_B)), false, "A's mock was written into B's key");
-  mock.clearActiveMock(NS_A);
+  assert.equal(mock.clearActiveMock({ owner: NS_A, sittingId: SITTING_1 }), false);
   assert.equal(storage.data.get(activeKey(NS_A)), aStored, "a stale tidy-up from A's tab removed A's sitting");
 
   setCurrentOwner(null);
   assert.equal(mock.saveActiveMock(activeMock(NS_A)), false);
+  assert.equal(mock.beginActiveMock(activeMock(NS_A)), false);
   assert.equal(storage.data.has(activeKey(NS_ANON)), false);
 });
 
@@ -719,9 +730,17 @@ test('a device-wide active mock (no build ever wrote one) is adopted by nobody',
 test('the start screen and the results are never written down or offered', () => {
   freshBrowser();
   setCurrentOwner(A);
+  assert.equal(mock.beginActiveMock(activeMock(NS_A, { stage: 'start' })), false);
+  assert.equal(mock.beginActiveMock(activeMock(NS_A, { stage: 'results' })), false);
+  assert.equal(storage.data.has(activeKey(NS_A)), false);
+  /* An ordinary save of either, over a sitting that IS written down, is
+     refused too, and leaves that sitting as it was. */
+  mock.beginActiveMock(activeMock(NS_A));
+  const held = storage.data.get(activeKey(NS_A));
   assert.equal(mock.saveActiveMock(activeMock(NS_A, { stage: 'start' })), false);
   assert.equal(mock.saveActiveMock(activeMock(NS_A, { stage: 'results' })), false);
-  assert.equal(storage.data.has(activeKey(NS_A)), false);
+  assert.equal(storage.data.get(activeKey(NS_A)), held);
+  storage.data.delete(activeKey(NS_A));
 
   storage.data.set(activeKey(NS_A), JSON.stringify(activeMock(NS_A, { stage: 'results' })));
   assert.equal(mock.loadActiveMock(), null);
@@ -730,7 +749,7 @@ test('the start screen and the results are never written down or offered', () =>
 test('the Writing deadline is stored as a moment and is never restarted', () => {
   freshBrowser();
   setCurrentOwner(A);
-  mock.saveActiveMock(activeMock(NS_A, { stage: 'writing', writingEndsAt: WRITING_DEADLINE, essay1: 'SYNTHETIC draft' }));
+  mock.beginActiveMock(activeMock(NS_A, { stage: 'writing', writingEndsAt: WRITING_DEADLINE, essay1: 'SYNTHETIC draft' }));
   const back = mock.loadActiveMock()!;
   assert.equal(back.writingEndsAt, WRITING_DEADLINE);
   assert.equal(mock.reconcileActiveMock(back).writingEndsAt, WRITING_DEADLINE);
@@ -746,7 +765,7 @@ test('the Writing deadline is stored as a moment and is never restarted', () => 
 test('a leg handed in inside THIS sitting counts as done when it is picked up; the same paper sat elsewhere does not (R2B-03)', () => {
   freshBrowser();
   setCurrentOwner(A);
-  assert.equal(mock.saveActiveMock(activeMock(NS_A, { stage: 'listening', listening: null })), true);
+  assert.equal(mock.beginActiveMock(activeMock(NS_A, { stage: 'listening', listening: null })), true);
   const ref = { owner: NS_A, sittingId: SITTING_1 };
 
   /* The same paper handed in as a full paper AFTER this mock began, but on
@@ -825,7 +844,7 @@ function leaveUnfinishedWorkOnTheDevice(): { sitting: string; paused: string } {
   setCurrentOwner(null);
   session.startSession(DRILL);
   assert.equal(session.saveAnswers(A_ANSWER, NS_ANON), true);
-  assert.equal(mock.saveActiveMock(activeMock(NS_ANON, { stage: 'reading' })), true);
+  assert.equal(mock.beginActiveMock(activeMock(NS_ANON, { stage: 'reading' })), true);
   return { sitting: storage.data.get(sessionKey(NS_ANON))!, paused: storage.data.get(activeKey(NS_ANON))! };
 }
 
@@ -911,7 +930,7 @@ test("the account's own sitting and paused mock win, and the device's are left e
   setCurrentOwner(A);
   session.startSession(OTHER_DRILL);
   session.saveAnswers({ q1: 'SYNTHETIC-A-own' }, NS_A);
-  mock.saveActiveMock(activeMock(NS_A, { stage: 'writing', essay1: 'SYNTHETIC own draft by A', writingEndsAt: WRITING_DEADLINE }));
+  mock.beginActiveMock(activeMock(NS_A, { stage: 'writing', essay1: 'SYNTHETIC own draft by A', writingEndsAt: WRITING_DEADLINE }));
   const aSitting = storage.data.get(sessionKey(NS_A));
   const aPaused = storage.data.get(activeKey(NS_A));
 
@@ -1029,7 +1048,7 @@ test('the two re-stamp rules change the owner and nothing else, and refuse what 
     MockExam's beginMock writes it: a fresh identity and no papers yet. */
 function beginSitting(owner: string, sittingId: string, overrides: Partial<ActiveMock> = {}): ActiveMock {
   const fresh = activeMock(owner, { sittingId, stage: 'listening', listening: null, ...overrides });
-  assert.equal(mock.saveActiveMock(fresh), true);
+  assert.equal(mock.beginActiveMock(fresh), true);
   return fresh;
 }
 
@@ -1181,7 +1200,7 @@ test('a paper that is not one of the sitting\'s two, or already handed in, is ne
   assert.deepEqual(mock.mockLegResult(ref, LISTENING_PAPER.id), LISTENING_LEG);
 });
 
-test('the screen\'s own saves keep the papers the player wrote; a new sitting replaces them', () => {
+test('the screen\'s own saves keep the papers the player wrote; only a new sitting begun on purpose replaces them', () => {
   freshBrowser();
   setCurrentOwner(A);
   beginSitting(NS_A, SITTING_1);
@@ -1193,9 +1212,19 @@ test('the screen\'s own saves keep the papers the player wrote; a new sitting re
   assert.equal(mock.saveActiveMock({ ...snapshot, essay1: 'SYNTHETIC draft' }), true);
   assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, A_LISTENING_ANSWERS);
   assert.equal(mock.loadActiveMock()!.essay1, 'SYNTHETIC draft');
-  /* A snapshot of a DIFFERENT sitting replaces the stored one whole. */
-  assert.equal(mock.saveActiveMock({ ...snapshot, sittingId: 'SYNTHETIC-sitting-2' }), true);
+  /* A snapshot naming papers of its own cannot write them either: they are
+     the player's to write. */
+  assert.equal(mock.saveActiveMock({ ...snapshot, legSittings: {} }), true);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, A_LISTENING_ANSWERS);
+  /* An ordinary save of a DIFFERENT sitting is refused and writes nothing
+     (R2C-02); it used to replace the stored one whole. */
+  const stored = storage.data.get(activeKey(NS_A));
+  assert.equal(mock.saveActiveMock({ ...snapshot, sittingId: 'SYNTHETIC-sitting-2' }), false);
+  assert.equal(storage.data.get(activeKey(NS_A)), stored);
+  /* Beginning a new sitting on purpose does replace it, with fresh papers. */
+  assert.equal(mock.beginActiveMock({ ...snapshot, sittingId: 'SYNTHETIC-sitting-2' }), true);
   assert.deepEqual(mock.loadActiveMock()!.legSittings, {});
+  assert.equal(mock.loadActiveMock()!.sittingId, 'SYNTHETIC-sitting-2');
 });
 
 test('a sitting written down before sitting ids existed is named by its mock id and start, and keeps its papers', () => {
@@ -1276,7 +1305,7 @@ function inTheInterview(): ActiveMock {
     essay2: 'SYNTHETIC Task 2 by A',
     writingEndsAt: WRITING_DEADLINE,
   });
-  assert.equal(mock.saveActiveMock(sitting), true);
+  assert.equal(mock.beginActiveMock(sitting), true);
   return sitting;
 }
 
@@ -1420,4 +1449,430 @@ test('the examiner reports a suspension, not an abort, when it is taken away by 
   const mockExam = await componentCode('MockExam.tsx');
   assert.match(mockExam, /onSuspend=\{\(\) => leaveSpeaking\('suspended'\)\}/);
   assert.match(mockExam, /onAbort=\{\(\) => leaveSpeaking\('cancelled'\)\}/);
+});
+
+/* ------------------------------------------------------------------ */
+/* 12. Only starting a mock replaces a sitting (Codex R2C-02)           */
+/* ------------------------------------------------------------------ */
+
+/* The fourth Codex inspection found the papers' own writes checked the
+   sitting id, while the screen's snapshot and its tidy-up did not. A mock
+   left open in one tab (M1, in Writing) and a fresh one the same student
+   started in another tab (M2): one keystroke in M1 replaced M2, papers and
+   all, and finishing M1 deleted M2. Two tabs are two screens holding two
+   sitting identities over one storage, which is exactly what these drive:
+   the functions MockExam calls for its snapshot (saveActiveMock), its
+   tidy-up (clearActiveMock), a fresh start (beginActiveMock) and its
+   stopped screen (mockSittingReplaced), with the player's own
+   (mockLegSitting) alongside. */
+
+const SITTING_2 = 'SYNTHETIC-sitting-2';
+const M2_LISTENING_ANSWERS = { q1: 'SYNTHETIC-M2-harbour', q2: 'SYNTHETIC-M2-friday' };
+
+/** Tab 1 holds M1 in Writing, with a draft; tab 2 then starts M2 and answers
+    part of its Listening paper. Returns both screens' identities and the
+    record exactly as tab 2 left it. */
+function twoTabsSameStudent(): { m1: { owner: string; sittingId: string }; m2: { owner: string; sittingId: string }; m1Snapshot: ActiveMock; afterM2: string } {
+  const m1Snapshot = activeMock(NS_A, {
+    stage: 'writing',
+    reading: READING_LEG,
+    essay1: 'SYNTHETIC M1 draft',
+    writingEndsAt: WRITING_DEADLINE,
+  });
+  assert.equal(mock.beginActiveMock(m1Snapshot), true);
+  const m1 = { owner: NS_A, sittingId: SITTING_1 };
+  /* Tab 2: "Start Mock Exam", which the resume offer says replaces M1. */
+  beginSitting(NS_A, SITTING_2, { startedAt: '2026-09-23T11:00:00.000Z' });
+  const m2 = { owner: NS_A, sittingId: SITTING_2 };
+  const leg = mock.mockLegSitting(m2, LISTENING_PAPER);
+  leg.start();
+  assert.equal(leg.save(M2_LISTENING_ANSWERS, NS_A), true);
+  return { m1, m2, m1Snapshot, afterM2: storage.data.get(activeKey(NS_A))! };
+}
+
+test('R2C-02: the older of two open sittings, typing after the newer began, writes nothing, and the newer keeps its papers', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const { m1, m2, m1Snapshot, afterM2 } = twoTabsSameStudent();
+
+  /* Tab 1's snapshot effect after a keystroke in the essay. It used to be
+     taken as a replacement and overwrite M2 whole. */
+  assert.equal(
+    mock.saveActiveMock({ ...m1Snapshot, essay1: 'SYNTHETIC M1 draft, one more word' }),
+    false,
+    "the older sitting's keystroke was saved over the newer sitting",
+  );
+  /* The Writing clock running out, and the move on to the Speaking brief,
+     are the same ordinary save: refused as well. */
+  assert.equal(mock.saveActiveMock({ ...m1Snapshot, stage: 'speaking-brief' }), false);
+  /* And the older sitting's paper writes, as before. */
+  assert.equal(mock.mockLegSitting(m1, LISTENING_PAPER).save({ q1: 'SYNTHETIC-M1-late' }, NS_A), false);
+  assert.equal(mock.mockLegSitting(m1, LISTENING_PAPER).load(), null);
+
+  /* Nothing changed, byte for byte: M2 is still the record, papers intact. */
+  assert.equal(storage.data.get(activeKey(NS_A)), afterM2, 'the newer sitting changed');
+  const held = mock.loadActiveMock()!;
+  assert.equal(held.sittingId, SITTING_2);
+  assert.deepEqual(held.legSittings[LISTENING_PAPER.id]?.answers, M2_LISTENING_ANSWERS);
+  assert.deepEqual(mock.mockLegSitting(m2, LISTENING_PAPER).load()?.answers, M2_LISTENING_ANSWERS);
+
+  /* Tab 1 can tell why it was refused, and so stops; tab 2 is not told to. */
+  assert.equal(mock.mockSittingReplaced(m1), true);
+  assert.equal(mock.mockSittingReplaced(m2), false);
+  /* Tab 2 carries on saving normally. */
+  assert.equal(mock.saveActiveMock({ ...mock.loadActiveMock()!, stage: 'listening' }), true);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, M2_LISTENING_ANSWERS);
+});
+
+test('R2C-02: the older sitting finishing after the replacement does not clear the newer one', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  const { m1, m2, afterM2 } = twoTabsSameStudent();
+
+  /* Tab 1's tidy-up once its sitting reaches the results. It used to check
+     the student only, and deleted M2. */
+  assert.equal(mock.clearActiveMock(m1), false, "the older sitting's tidy-up removed the newer sitting");
+  assert.equal(storage.data.get(activeKey(NS_A)), afterM2);
+  assert.equal(mock.loadActiveMock()?.sittingId, SITTING_2);
+
+  /* M2 finishing clears M2, as it should. */
+  assert.equal(mock.clearActiveMock(m2), true);
+  assert.equal(storage.data.has(activeKey(NS_A)), false);
+  /* Once nothing is written down, neither ordinary write creates anything,
+     and nothing reads as replaced. */
+  assert.equal(mock.saveActiveMock(activeMock(NS_A)), false);
+  assert.equal(mock.clearActiveMock(m1), false);
+  assert.equal(storage.data.has(activeKey(NS_A)), false);
+  assert.equal(mock.mockSittingReplaced(m1), false);
+});
+
+test('R2C-02: a plain mock in one tab still saves every stage and clears itself when it is recorded', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const ref = { owner: NS_A, sittingId: SITTING_1 };
+  const leg = mock.mockLegSitting(ref, LISTENING_PAPER);
+  leg.start();
+  leg.save(A_LISTENING_ANSWERS, NS_A);
+  leg.finish(NS_A, LISTENING_LEG);
+
+  /* The screen moves through the day, one ordinary save per step. */
+  const { legSittings: _papers, ...base } = mock.loadActiveMock()!;
+  const steps: Partial<ActiveMock>[] = [
+    { stage: 'transition-reading', listening: LISTENING_LEG },
+    { stage: 'reading' },
+    { stage: 'transition-writing', reading: READING_LEG },
+    { stage: 'writing', writingEndsAt: WRITING_DEADLINE },
+    { stage: 'writing', essay1: 'SYNTHETIC Task 1', essay2: 'SYNTHETIC Task 2' },
+    { stage: 'speaking-brief' },
+  ];
+  let now: Omit<ActiveMock, 'legSittings'> = base;
+  for (const step of steps) {
+    now = { ...now, ...step };
+    assert.equal(mock.saveActiveMock(now), true, `the ordinary save at ${step.stage} was refused`);
+    assert.equal(mock.mockSittingReplaced(ref), false);
+  }
+  const held = mock.loadActiveMock()!;
+  assert.equal(held.stage, 'speaking-brief');
+  assert.equal(held.essay2, 'SYNTHETIC Task 2');
+  assert.equal(held.writingEndsAt, WRITING_DEADLINE);
+  assert.deepEqual(held.legSittings[LISTENING_PAPER.id]?.result, LISTENING_LEG, "the player's paper was lost along the way");
+
+  /* Recorded: the tidy-up removes it, and nothing is offered any more. */
+  assert.equal(mock.clearActiveMock(ref), true);
+  assert.equal(mock.loadActiveMock(), null);
+  assert.equal(storage.data.has(activeKey(NS_A)), false);
+});
+
+test('R2C-02: an account change is not a replacement, and a replaced sitting is only ever the same student\'s', () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  beginSitting(NS_A, SITTING_1);
+  const refA = { owner: NS_A, sittingId: SITTING_1 };
+
+  /* B signs in and starts a mock of their own: A's open tab is stopped for
+     the account change (its own screen), never as replaced, and B's record
+     is not A's to replace. */
+  setCurrentOwner(B);
+  beginSitting(NS_B, SITTING_2);
+  assert.equal(mock.mockSittingReplaced(refA), false);
+  assert.equal(mock.clearActiveMock(refA), false);
+  assert.equal(mock.loadActiveMock()?.sittingId, SITTING_2);
+
+  /* A is back: A's sitting is still the stored one. */
+  setCurrentOwner(A);
+  assert.equal(mock.mockSittingReplaced(refA), false);
+  assert.equal(mock.loadActiveMock()?.sittingId, SITTING_1);
+
+  /* A begin for somebody who is not the one using this browser, or with no
+     identity, writes nothing. */
+  assert.equal(mock.beginActiveMock(activeMock(NS_B, { sittingId: 'SYNTHETIC-sitting-3' })), false);
+  assert.equal(mock.beginActiveMock(activeMock(NS_A, { sittingId: '' })), false);
+  assert.equal(mock.loadActiveMock()?.sittingId, SITTING_1);
+});
+
+test('R2C-02: after the claim, the account\'s own screen saves and clears the claimed sitting normally, papers kept', () => {
+  freshBrowser();
+  setCurrentOwner(null);
+  beginSitting(NS_ANON, SITTING_1);
+  const deviceRef = { owner: NS_ANON, sittingId: SITTING_1 };
+  const device = mock.mockLegSitting(deviceRef, LISTENING_PAPER);
+  device.start();
+  device.save(A_LISTENING_ANSWERS, NS_ANON);
+
+  setCurrentOwner(A);
+  storeOwner.claimLegacyStores(storage, ANON, A);
+  const claimed = mock.loadActiveMock()!;
+  assert.equal(claimed.owner, NS_A);
+  assert.equal(claimed.sittingId, SITTING_1, 'the claim changed the sitting identity');
+  assert.deepEqual(claimed.legSittings[LISTENING_PAPER.id]?.answers, A_LISTENING_ANSWERS);
+
+  /* A picks it up: the screen's ordinary saves match it, papers kept. */
+  const mine = { owner: NS_A, sittingId: SITTING_1 };
+  const { legSittings: _papers, ...snapshot } = claimed;
+  assert.equal(mock.saveActiveMock({ ...snapshot, stage: 'listening' }), true);
+  assert.deepEqual(mock.loadActiveMock()!.legSittings[LISTENING_PAPER.id]?.answers, A_LISTENING_ANSWERS);
+  assert.equal(mock.mockSittingReplaced(mine), false);
+  /* The device's own identity neither saves nor clears it. */
+  assert.equal(mock.saveActiveMock({ ...snapshot, owner: NS_ANON }), false);
+  assert.equal(mock.clearActiveMock(deviceRef), false);
+  assert.equal(mock.loadActiveMock()?.owner, NS_A);
+  /* Recorded by A: cleared. */
+  assert.equal(mock.clearActiveMock(mine), true);
+  assert.equal(mock.loadActiveMock(), null);
+});
+
+test('R2C-02: only the in-progress mock record\'s own keys are worth a look on a storage event', () => {
+  assert.equal(mock.isActiveMockStorageKey(`${mock.ACTIVE_MOCK_KEY}::${NS_A}`), true);
+  assert.equal(mock.isActiveMockStorageKey(`${mock.ACTIVE_MOCK_KEY}::${NS_ANON}`), true);
+  assert.equal(mock.isActiveMockStorageKey(mock.ACTIVE_MOCK_KEY), true);
+  /* The whole storage cleared. */
+  assert.equal(mock.isActiveMockStorageKey(null), true);
+  /* The mock history and a paper's own slot are not the in-progress record. */
+  assert.equal(mock.isActiveMockStorageKey(`${mock.MOCK_STORE_KEY}::${NS_A}`), false);
+  assert.equal(mock.isActiveMockStorageKey(sessionKey(NS_A)), false);
+});
+
+/* ------------------------------------------------------------------ */
+/* 13. A paper's clock is its saved deadline (Codex R2C-03)             */
+/* ------------------------------------------------------------------ */
+
+/* The test player counted a number down and froze it while the sitting's
+   student was away; back on the same open page, the count carried on from
+   the frozen number, so ten minutes away cost nothing, while a reload of the
+   same sitting found it expired. Now every reading comes from the saved
+   deadline (paperClockAt in src/lib/test-session.ts), which is what the
+   player's timer, its owner-change listener and its submit all call. These
+   drive that rule through both places a sitting is kept, with a FAKE clock:
+   no test here waits for real time. */
+
+const MINUTE = 60_000;
+const T0 = 1_790_100_000_000;
+
+/** Date.now, under the test's control until restore(). */
+function fakeClock(start: number): { advance(ms: number): void; now(): number; restore(): void } {
+  const real = Date.now;
+  let at = start;
+  Date.now = () => at;
+  return {
+    advance: (ms) => {
+      at += ms;
+    },
+    now: () => at,
+    restore: () => {
+      Date.now = real;
+    },
+  };
+}
+
+/** What the player shows when its own student is back on the open page, the
+    way TestPlayer.tsx works it out: the deadline of the sitting it holds,
+    read at this moment. `frozen` is what the old count would have shown. */
+function backOnTheOpenPage(held: { endsAt: number }, frozen: number): { secondsLeft: number; timeUp: boolean; frozen: number } {
+  return { ...session.paperClockAt(held.endsAt), frozen };
+}
+
+test('R2C-03: A away 10 minutes on a paper with 15 left comes back to 5 left, not the frozen 15', () => {
+  const clock = fakeClock(T0);
+  try {
+    freshBrowser();
+    setCurrentOwner(A);
+    const store = session.standaloneSitting(DRILL); // 20 minutes
+    const held = store.start();
+    assert.equal(held.endsAt, T0 + 20 * MINUTE);
+
+    /* Five minutes in: 15 left, and A has answered. */
+    clock.advance(5 * MINUTE);
+    assert.equal(store.save(A_ANSWER, NS_A), true);
+    const atSignOut = session.paperClockAt(held.endsAt);
+    assert.deepEqual(atSignOut, { secondsLeft: 15 * 60, timeUp: false });
+
+    /* A signs out in another tab and is away for ten minutes. Nothing is
+       saved for A meanwhile, and the deadline itself does not move. */
+    setCurrentOwner(null);
+    assert.equal(store.save({ q14: 'SYNTHETIC-typed-while-away' }, NS_A), false);
+    clock.advance(10 * MINUTE);
+
+    /* A is back on the same open page. */
+    setCurrentOwner(A);
+    const back = backOnTheOpenPage(held, atSignOut.secondsLeft);
+    assert.equal(back.secondsLeft, 5 * 60, `the page offered ${back.secondsLeft} s, the deadline leaves 300`);
+    assert.notEqual(back.secondsLeft, back.frozen, 'the frozen count came back');
+    assert.equal(back.timeUp, false);
+    /* It is exactly what a reload of the same sitting reads. */
+    const reloaded = store.load()!;
+    assert.equal(reloaded.endsAt, held.endsAt, 'the deadline moved while A was away');
+    assert.equal(session.secondsLeft(reloaded), back.secondsLeft);
+    assert.deepEqual(reloaded.answers, A_ANSWER);
+  } finally {
+    clock.restore();
+  }
+});
+
+test('R2C-03: A away past the deadline comes back to time up, handled as a fresh load handles it, with no time given back', () => {
+  const clock = fakeClock(T0);
+  try {
+    freshBrowser();
+    setCurrentOwner(A);
+    const store = session.standaloneSitting(DRILL); // 20 minutes
+    const held = store.start();
+    clock.advance(5 * MINUTE);
+    store.save(A_ANSWER, NS_A);
+
+    setCurrentOwner(B);
+    clock.advance(25 * MINUTE); // ten minutes past the deadline
+    setCurrentOwner(A);
+
+    const back = backOnTheOpenPage(held, 15 * 60);
+    assert.deepEqual({ secondsLeft: back.secondsLeft, timeUp: back.timeUp }, { secondsLeft: 0, timeUp: true });
+    /* A fresh load finds the same sitting, with A's answers, equally out of
+       time: both hand the paper in as it stands. */
+    const reloaded = store.load();
+    assert.ok(reloaded, 'the expired sitting was lost');
+    assert.deepEqual(reloaded!.answers, A_ANSWER);
+    assert.deepEqual(session.paperClockAt(reloaded!.endsAt), { secondsLeft: 0, timeUp: true });
+    assert.equal(reloaded!.endsAt, T0 + 20 * MINUTE, 'time was given back');
+    /* Time used, as the player works it out when it hands the paper in: the
+       whole paper, never more. */
+    assert.equal(DRILL.durationMinutes * 60 - back.secondsLeft, 20 * 60);
+  } finally {
+    clock.restore();
+  }
+});
+
+test('R2C-03: the same for a paper of a mock, through its own sitting', () => {
+  const clock = fakeClock(T0);
+  try {
+    freshBrowser();
+    setCurrentOwner(A);
+    beginSitting(NS_A, SITTING_1);
+    const ref = { owner: NS_A, sittingId: SITTING_1 };
+    const leg = mock.mockLegSitting(ref, LISTENING_PAPER); // 40 minutes
+    const held = leg.start();
+    assert.equal(held.endsAt, T0 + 40 * MINUTE);
+
+    /* 25 minutes in: 15 left. A goes away for ten. */
+    clock.advance(25 * MINUTE);
+    leg.save(A_LISTENING_ANSWERS, NS_A);
+    setCurrentOwner(B);
+    assert.equal(leg.load(), null, "B's browser reads A's paper");
+    assert.equal(leg.save({ q1: 'SYNTHETIC-typed-while-away' }, NS_A), false);
+    clock.advance(10 * MINUTE);
+
+    /* Back: the mock puts the paper on screen again from its own sitting,
+       and the clock reads the deadline: 5 minutes, not 15. */
+    setCurrentOwner(A);
+    const resumed = leg.load()!;
+    assert.equal(resumed.endsAt, held.endsAt, "the mock paper's deadline moved");
+    assert.deepEqual(resumed.answers, A_LISTENING_ANSWERS);
+    assert.deepEqual(session.paperClockAt(resumed.endsAt), { secondsLeft: 5 * 60, timeUp: false });
+    assert.equal(session.secondsLeft(resumed), 5 * 60);
+
+    /* Away again, past the deadline: back to time up, nothing given back,
+       the answers still there to be handed in. */
+    setCurrentOwner(null);
+    clock.advance(20 * MINUTE);
+    setCurrentOwner(A);
+    const expired = leg.load()!;
+    assert.deepEqual(session.paperClockAt(expired.endsAt), { secondsLeft: 0, timeUp: true });
+    assert.equal(expired.endsAt, T0 + 40 * MINUTE);
+    assert.deepEqual(expired.answers, A_LISTENING_ANSWERS);
+  } finally {
+    clock.restore();
+  }
+});
+
+test('R2C-03: the clock depends on the deadline and the moment only, however few ticks a background tab got', () => {
+  const endsAt = T0 + 20 * MINUTE;
+  /* A tab ticking every second and a tab the browser throttled to one tick
+     a minute read the same at the same moment. */
+  assert.deepEqual(session.paperClockAt(endsAt, T0 + 10 * MINUTE), { secondsLeft: 600, timeUp: false });
+  assert.deepEqual(session.paperClockAt(endsAt, T0 + 10 * MINUTE + 400), { secondsLeft: 600, timeUp: false });
+  assert.deepEqual(session.paperClockAt(endsAt, endsAt - 1_000), { secondsLeft: 1, timeUp: false });
+  assert.deepEqual(session.paperClockAt(endsAt, endsAt), { secondsLeft: 0, timeUp: true });
+  assert.deepEqual(session.paperClockAt(endsAt, endsAt + 60 * MINUTE), { secondsLeft: 0, timeUp: true });
+  /* secondsLeft is the same rule. */
+  assert.equal(session.secondsLeft({ endsAt }, T0), 20 * 60);
+});
+
+/* ------------------------------------------------------------------ */
+/* 14. The screens use those rules (R2C-02, R2C-03)                     */
+/* ------------------------------------------------------------------ */
+
+/** The body of the first `useEffect(() => { ... }, [deps])` whose code
+    contains `marker`, comments stripped. */
+function effectContaining(code: string, marker: string): string {
+  const at = code.indexOf(marker);
+  assert.ok(at >= 0, `no code contains ${marker}`);
+  const start = code.lastIndexOf('useEffect(', at);
+  const end = code.indexOf('}, [', at);
+  assert.ok(start >= 0 && end > at, `${marker} is not inside an effect`);
+  return code.slice(start, code.indexOf(']', end) + 1);
+}
+
+test('R2C-03: the player\'s timer, its owner listener and its submit all read the deadline, and nothing counts down', async () => {
+  const player = await componentCode('TestPlayer.tsx');
+  const timer = effectContaining(player, 'submitRef.current()');
+  assert.match(timer, /paperClockAt\(deadline\)/, 'the timer does not read the deadline');
+  assert.match(timer, /\[started, submitted, ownerChange\]/);
+  assert.doesNotMatch(player, /t - 1/, 'a count-down is back');
+  assert.doesNotMatch(timer, /handleSubmit\(\)/, 'the timer calls the submit of the render it was set up in');
+  /* The student coming back to the open page reads the deadline again. */
+  const listener = player.slice(player.indexOf('return onOwnerChange('), player.indexOf('return onOwnerChange(') + 1200);
+  assert.match(listener, /ownerStillCurrent\(sittingOwnerRef\.current\)\) \{\s*const deadline = deadlineRef\.current;\s*if \(deadline !== null\) setTimeLeft\(paperClockAt\(deadline\)\.secondsLeft\);/);
+  /* Handing in reads it too, for the time used. */
+  assert.match(player, /const left = deadline !== null \? paperClockAt\(deadline\)\.secondsLeft : timeLeft;/);
+  assert.equal((player.match(/secondsUsed: test\.durationMinutes \* 60 - left/g) ?? []).length, 2);
+  assert.doesNotMatch(player, /secondsUsed: test\.durationMinutes \* 60 - timeLeft/);
+  /* Every place a sitting is picked up or started sets the deadline. */
+  assert.equal((player.match(/deadlineRef\.current = s\.endsAt;/g) ?? []).length, 2);
+  assert.match(player, /useRef<number \| null>\(\s*typeof window === 'undefined' \? null : \(resumed\?\.endsAt \?\? null\),\s*\)/);
+});
+
+test('R2C-02: the mock screen begins a sitting only on Start, saves and clears only its own, and stops when replaced', async () => {
+  const screen = await componentCode('MockExam.tsx');
+  /* Begun in exactly two places: "Start Mock Exam" and the dev shortcut. */
+  assert.equal((screen.match(/beginActiveMock\(/g) ?? []).length, 2);
+  assert.match(screen.slice(screen.indexOf('function beginMock()')), /^[\s\S]*?beginActiveMock\(\{/);
+  /* The snapshot effect is an ordinary save, and a refusal is checked. */
+  const snapshotEffect = effectContaining(screen, 'saveActiveMock(snapshot())');
+  assert.match(snapshotEffect, /if \(replacedRef\.current\) return;/);
+  assert.match(snapshotEffect, /if \(saveActiveMock\(snapshot\(\)\)\) return;\s*if \(mockSittingReplaced\(\{ owner: mockOwnerRef\.current, sittingId \}\)\) stopAsReplaced\(\);/);
+  /* The tidy-up names the sitting, after checking it was not replaced. */
+  const recording = effectContaining(screen, 'clearActiveMock(');
+  assert.match(recording, /replacedRef\.current\) return;/);
+  assert.match(recording, /if \(mockSittingReplaced\(sitting\)\) \{\s*stopAsReplaced\(\);\s*return;\s*\}\s*savedRef\.current = true;/);
+  assert.match(recording, /clearActiveMock\(sitting\);/);
+  assert.doesNotMatch(screen, /clearActiveMock\(mockOwnerRef\.current\)/);
+  /* The other tab's write is listened for. */
+  const listener = effectContaining(screen, "addEventListener('storage'");
+  assert.match(listener, /isActiveMockStorageKey\(event\.key\)/);
+  assert.match(listener, /mockSittingReplaced\(\{ owner: mockOwnerRef\.current, sittingId \}\)\) stopAsReplaced\(\);/);
+  /* The stopped screen comes first and says what happened. */
+  const replacedScreen = screen.indexOf('if (replaced) {');
+  assert.ok(
+    replacedScreen > 0 && replacedScreen < screen.indexOf("const otherStudent = ownerChange === 'other-student';"),
+    'the replaced screen is not checked before the account-change screen',
+  );
+  assert.match(screen, /t\('A newer mock exam was started in another tab, so this one is no longer being saved\.'\)/);
 });

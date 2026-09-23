@@ -47,6 +47,27 @@ every account change made from a SECOND tab of the same browser:
      itself measuring the gap between the last keystroke and the hand-over:
      E's latest text must land under E and nowhere else.
 
+AND THE TWO FINDINGS OF THE THIRD CODEX INSPECTION (of 7c5264a)
+  5. R2C-01: the late grade's keep step cleared its student's draft whatever
+     the draft held by then. G submits (the grade is held), signs out and back
+     in on the SAME page, gets the submitted essay back and revises it; the
+     held grade is then answered. G's draft must still be the revision after
+     a reload, and G's history must hold the original submission and report.
+  6. R2C-04: the speaking attempt was never stopped when the page changed
+     hands, so another student could answer the remaining questions and the
+     combined recording became the first student's evidence. H answers Part 1
+     question 1 and is recording question 2 through the FAKE microphone when
+     H signs out and I signs up in a second tab. The first tab must stop at
+     once (recorder stopped, microphone released, back at its menu with the
+     notice), no grading request may leave, I must see no attempt, and H's
+     history must hold nothing from it. The page's own recorder and
+     microphone are observed through a small wrapper installed before the
+     page loads, so "stopped" is measured, not inferred from the screen.
+  The standalone live examiner (/speaking/examiner) needs a paid voice
+  session and cannot be started against the stand-in, so its suspension is
+  proven only in tests/delayed-grade-owner.test.ts (the same attempt, and a
+  source scan of how the examiner uses it), and the results file says so.
+
 HOW THE GRADERS ARE STOOD IN FOR
 Nothing is graded by any model. The site is started with its grader
 addresses pointed at the local stand-in's own port, on paths the stand-in
@@ -61,30 +82,35 @@ WHAT THIS IS NOT
   - Not the frozen production snapshot other testers use. Its own ports: the
     first run (results-delayed-grade.md, sections 1 and 2) used the stand-in
     on 8815 and the site on 4368; the R2B-01 run (results-delayed-grade-2.md,
-    screenshots prefixed "delayed2-", all four sections) uses 8819 and 4372,
-    which are now the defaults.
+    screenshots prefixed "delayed2-", sections 1 to 4) used 8819 and 4372;
+    the R2C run (results-delayed-grade-3.md, screenshots prefixed "delayed3-",
+    all six sections) uses 8831 and 4384, which are now the defaults.
   - No real account, no real key, no paid API call, no deployment.
 
 Run with, both already running:
   1. the stand-in:
-       MR_EZ_DEV_PORT=8819 node tools/mr-ez-dev-server.mjs
+       MR_EZ_DEV_PORT=8831 node tools/mr-ez-dev-server.mjs
   2. the site, with its own Vite dependency cache (see astro.config.f21.mjs
      for why), graders pointed at the intercepted local paths:
-       PUBLIC_SUPABASE_URL=http://127.0.0.1:8819 \\
+       PUBLIC_SUPABASE_URL=http://127.0.0.1:8831 \\
        PUBLIC_SUPABASE_ANON_KEY=local-anon-key \\
-       PUBLIC_MR_EZ_URL=http://127.0.0.1:8819/tutor \\
-       PUBLIC_GRADER_URL=http://127.0.0.1:8819/SYNTHETIC-intercepted-grade-essay \\
-       PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8819/SYNTHETIC-intercepted-grade-speaking \\
-       npx astro dev --config <a config like astro.config.f21.mjs> --port 4372
+       PUBLIC_MR_EZ_URL=http://127.0.0.1:8831/tutor \\
+       PUBLIC_GRADER_URL=http://127.0.0.1:8831/SYNTHETIC-intercepted-grade-essay \\
+       PUBLIC_SPEAKING_GRADER_URL=http://127.0.0.1:8831/SYNTHETIC-intercepted-grade-speaking \\
+       npx astro dev --config <a config like astro.config.f21.mjs> --port 4384
      where that config ALSO sets vite.server.watch.ignored to docs/, tests/
      and .codex/. Without it, every evidence file written mid-run (by this
      script, or by another builder in the same checkout) reloads the page and
      abandons the held grading request; the "same page (no reload)" checks
-     below then fail, as they should. Astro resolves --config relative to the
+     below then fail, as they should. The same goes for source files another
+     builder is editing in the same checkout during the run: on the first R2C
+     run an edit to src/components/TestPlayer.tsx reloaded the pages under
+     test, so that run's config also ignores the files that builder owned
+     (none of them is part of what this script proves). Astro resolves --config relative to the
      project root, so a config kept outside the project (in a scratch folder,
      say) is passed as a relative path to it.
   then:
-       IELTS_STANDIN_URL=http://127.0.0.1:8819 python tests/browser/f23_delayed_grade_owner.py
+       IELTS_STANDIN_URL=http://127.0.0.1:8831 python tests/browser/f23_delayed_grade_owner.py
 
 Every email, password, essay and band below is SYNTHETIC, made up for this run.
 """
@@ -97,12 +123,13 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(__file__))
 
 # Read at IMPORT time by final_helpers and f20, so these come first.
-# The R2B-01 run: its own results file and screenshot prefix, so the first
-# run's results-delayed-grade.md and "delayed-" screenshots stay as they were.
-os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4372/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-2")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed2-")
-os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8819")
+# The R2C run: its own results file and screenshot prefix, so the earlier
+# runs' results-delayed-grade.md and -2.md, and their "delayed-" and
+# "delayed2-" screenshots, stay exactly as they were.
+os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4384/ielts-website")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-3")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed3-")
+os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8831")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -120,7 +147,7 @@ from final_helpers import (  # noqa: E402
     write_section,
 )
 
-STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8819")  # the local stand-in; override per run
+STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8831")  # the local stand-in; override per run
 
 RUN = time.strftime("%H%M%S")
 EMAIL_A = f"synthetic-student-a-f23-{RUN}@example.test"
@@ -162,6 +189,61 @@ LATE_TEXT = f"{EARLY_TEXT} {LATE_MARK} and the sentence E typed a moment before 
 
 DRAFT_PREFIX = "ielts.writing.draft.v1"
 ACCOUNT_NOTE = "The account on this page changed. Any essay in progress was kept for the student who was writing it."
+
+# Section 5 (R2C-01): student G, the essay G submits, and the revision G
+# types after coming back while that essay is still being graded.
+EMAIL_G = f"synthetic-student-g-f23-{RUN}@example.test"
+G_MARK = f"SYNTHETIC-F23-ESSAY-OF-G-{RUN}"
+G_ESSAY = (
+    f"{G_MARK} This essay is synthetic and was submitted by a test script for student G. "
+    + " ".join(
+        [
+            "A primary school that leaves room for play and projects can still teach reading and "
+            "number well, and its pupils may carry more curiosity into the years that follow."
+        ]
+        * 8
+    )
+)
+REVISION_MARK = f"SYNTHETIC-F23-REVISION-OF-G-{RUN}"
+G_REVISION = f"{G_ESSAY} {REVISION_MARK} A sentence G added after coming back, while the first grade was on its way."
+
+# Section 6 (R2C-04): students H and I, and a Part 1 topic with several
+# questions, so there is a "next question" for the second student to reach.
+EMAIL_H = f"synthetic-student-h-f23-{RUN}@example.test"
+EMAIL_I = f"synthetic-student-i-f23-{RUN}@example.test"
+PART1_TOPIC = "p1-work"
+PART1_Q1 = "What do you do for work or study?"
+PART1_Q2 = "Why did you choose that field?"
+PART1_Q3 = "What do you enjoy most about it?"
+SESSION_CLOSED = "The account on this page changed, so the speaking session on screen was closed."
+
+# Installed before any page script runs, in section 6 only: records every
+# microphone track the page is given and every recorder it starts, and the
+# moment each recorder is told to stop, so the run can MEASURE that the
+# recording stopped and the microphone was released rather than infer it
+# from what the screen shows. It changes nothing the page does.
+MEDIA_PROBE = """
+(() => {
+  const probe = { tracks: [], recorders: [], stopCalls: [] };
+  window.__f23Media = probe;
+  const md = navigator.mediaDevices;
+  if (md && md.getUserMedia) {
+    const original = md.getUserMedia.bind(md);
+    md.getUserMedia = async (constraints) => {
+      const stream = await original(constraints);
+      stream.getTracks().forEach((track) => probe.tracks.push(track));
+      return stream;
+    };
+  }
+  const Recorder = window.MediaRecorder;
+  if (Recorder) {
+    const start = Recorder.prototype.start;
+    const stop = Recorder.prototype.stop;
+    Recorder.prototype.start = function (...args) { probe.recorders.push(this); return start.apply(this, args); };
+    Recorder.prototype.stop = function (...args) { probe.stopCalls.push(Date.now()); return stop.apply(this, args); };
+  }
+})();
+"""
 
 CUE_CARD = "p2-journey"
 CUE_TOPIC = "Describe a memorable journey or trip you have taken."
@@ -221,12 +303,24 @@ accounts stand-in (`node tools/mr-ez-dev-server.mjs`) at {STANDIN_URL}. Both wer
 this run and stopped afterwards. This is NOT the frozen production snapshot the `results.md`
 suite uses, and it is NOT a real Supabase project: nothing below is evidence about one.
 
-It is the browser half of two fixes. Sections 1 and 2: finding R2-02 of the second Codex
+It is the browser half of four fixes. Sections 1 and 2: finding R2-02 of the second Codex
 inspection, a grade that came back after the owner changed was written under whoever was signed in
 by then. Sections 3 and 4: finding R2B-01 of the second fresh Codex inspection, the essay editor
 itself was nobody's, so a student who took over the page could submit the previous student's text,
-and a switch inside the 600 ms draft autosave saved it under the newcomer. The deterministic half of
-both is `tests/delayed-grade-owner.test.ts`.
+and a switch inside the 600 ms draft autosave saved it under the newcomer. Section 5: finding R2C-01
+of the third Codex inspection, a late grade deleted the draft its student had revised since
+submitting. Section 6: finding R2C-04 of the same inspection, a speaking attempt went on after the
+page changed hands, so a second student could answer the first student's remaining questions. The
+deterministic half of all of them is `tests/delayed-grade-owner.test.ts`.
+
+**What this run does not cover, and where it is covered instead.** The standalone live examiner
+(`/speaking/examiner`, and the live drills) now ends its voice session the moment the page changes
+hands (R2C-04), but it cannot be started here: it needs a paid voice session, and the stand-in has
+none. Its suspension is proven only by `tests/delayed-grade-owner.test.ts`, section 7: the same
+attempt object the speaking trainer uses (asked before every stage, suspended at the switch, its
+clocks cleared, nothing graded) and a source scan of how the examiner uses it (the voice session
+closed, the recorder stopped and emptied, the microphone released, every clock cleared, and the mock
+exam's own embedded path left as it was).
 
 **No grader and no model was called.** The essay and speaking grader addresses point at paths the
 local stand-in does not serve, and this script intercepts those requests in the browser, holds
@@ -971,6 +1065,345 @@ def debounce_scenario(page_a, page_b, grader_a, user_e) -> None:
     )
 
 
+# ── 5. a late grade and a revised draft (R2C-01) ──────────────────────────
+#
+# Found by the third Codex inspection: the grade's keep step cleared its
+# student's draft whatever the draft held by then. The fix clears it only
+# while it still holds exactly the text that was graded.
+
+def revision_scenario(browser) -> None:
+    write_section(
+        "5. A late grade leaves a later revision alone (Codex R2C-01)",
+        "Student G submits an essay; the grading request is held. G signs out and back in from the "
+        "avatar menu of the SAME page, gets the submitted essay back in the editor, and revises it; the "
+        "revision autosaves. Only then is the held request answered. Before the fix, that older grade "
+        "deleted G's draft, so a reload lost the revision.",
+    )
+    ctx = new_context(browser)
+    page = ctx.new_page()
+    errors, failed = attach_diagnostics(page)
+
+    goto(page, "/dashboard")
+    journey.wait_for_dashboard(page)
+    user_g = journey.ws_sign_up(page, EMAIL_G, PASSWORD)
+    write_row("Student G signed up on the local stand-in", bool(user_g), f"user id {user_g}")
+    g_key = draft_key(f"u:{user_g}")
+
+    grader = HeldGrader(page, GRADER_ESSAY_PATH)
+    open_writing_task(page)
+    page.locator("textarea").first.fill(G_ESSAY)
+    page.wait_for_timeout(900)
+    mark_page(page)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Check my essay"),
+        lambda: bool(grader.held),
+        attempts=6,
+        delay=1500,
+    )
+    held = grader.wait_until_held()
+    sent = grader.bodies[0] if grader.bodies else ""
+    write_row(
+        "G's grading request went out and is being held (nothing reached any grader)",
+        held and G_MARK in sent and REVISION_MARK not in sent,
+        f"held={len(grader.held)}; request carries G's essay: {G_MARK in sent}",
+    )
+    shot(page, "14-revision-g-grading-held", "/trainers/writing")
+
+    journey.ws_sign_out(page)
+    signed_in = journey.ws_sign_in(page, EMAIL_G, PASSWORD)
+    try:
+        page.wait_for_function(
+            "(mark) => { const t = document.querySelector('textarea'); return !!t && t.value.includes(mark); }",
+            arg=G_MARK,
+            timeout=15000,
+        )
+    except Exception:
+        pass
+    value = textarea_value(page)
+    write_row(
+        "G signs out and back in on the same page: the submitted essay is back in G's editor, grade still held",
+        bool(signed_in) and G_MARK in value and bool(grader.held) and same_page(page),
+        f"signed in as {signed_in}; essay in the text box: {G_MARK in value}; request still held: "
+        f"{bool(grader.held)}; same page (no reload): {same_page(page)}",
+    )
+
+    page.locator("textarea").first.fill(G_REVISION)
+    page.wait_for_timeout(1500)
+    items = local_items(page)
+    write_row(
+        "G revises the essay and the revision autosaves as G's draft",
+        REVISION_MARK in (items.get(g_key) or ""),
+        f"{g_key} carries the revision: {REVISION_MARK in (items.get(g_key) or '')}",
+    )
+    shot(page, "15-revision-g-revised-while-grading", "/trainers/writing")
+
+    grader.release(essay_reply())
+    page.wait_for_timeout(3000)
+    items = local_items(page)
+    rows = ((parsed(items, f"ielts.progress.v1::u:{user_g}") or {}).get("writing") or {}).get(PROMPT_ID) or []
+    body = body_text(page)
+    write_row(
+        "The earlier grade arrives: it is kept in G's history (the original essay), and not painted over the editor",
+        len(rows) == 1
+        and G_MARK in (rows[0].get("essay") or "")
+        and REVISION_MARK not in (rows[0].get("essay") or "")
+        and f"write:{PROMPT_ID}" in record_activity_ids(items, user_g)
+        and SYNTHETIC_NOTE not in body
+        and same_page(page),
+        f"G's writing rows: {len(rows)}; row is the original essay: "
+        f"{bool(rows) and G_MARK in (rows[0].get('essay') or '') and REVISION_MARK not in (rows[0].get('essay') or '')}; "
+        f"G's record: {record_activity_ids(items, user_g)}; report text on screen: {SYNTHETIC_NOTE in body}; "
+        f"same page: {same_page(page)}",
+    )
+    write_row(
+        "G's draft still holds the revision after the earlier grade was kept (before the fix it was deleted here)",
+        REVISION_MARK in (items.get(g_key) or "") and REVISION_MARK in textarea_value(page),
+        f"{g_key} carries the revision: {REVISION_MARK in (items.get(g_key) or '')}; "
+        f"revision in the text box: {REVISION_MARK in textarea_value(page)}",
+    )
+    shot(page, "16-revision-grade-arrived-revision-kept", "/trainers/writing")
+
+    open_writing_task(page)
+    try:
+        page.wait_for_function(
+            "(mark) => { const t = document.querySelector('textarea'); return !!t && t.value.includes(mark); }",
+            arg=REVISION_MARK,
+            timeout=15000,
+        )
+    except Exception:
+        pass
+    value = textarea_value(page)
+    write_row(
+        "After a reload the editor opens G's revision",
+        REVISION_MARK in value and not same_page(page),
+        f"revision in the text box: {REVISION_MARK in value}; the page really was reloaded: {not same_page(page)}",
+    )
+    try:
+        page.wait_for_selector(f"#history >> text={PROMPT_TITLE}", timeout=15000)
+    except Exception:
+        pass
+    history = page.locator("#history").inner_text() if page.locator("#history").count() else ""
+    write_row(
+        "G's writing history on the page lists the graded attempt",
+        PROMPT_TITLE in history,
+        f"history lists the prompt: {PROMPT_TITLE in history}",
+    )
+    shot(page, "17-revision-after-reload", "/trainers/writing")
+
+    page.wait_for_timeout(3000)
+    g_events = standin_event_ids(user_g)
+    g_state = standin_user_state_text(user_g)
+    write_row(
+        "G's account on the stand-in received the original essay's grade, and never the unsubmitted revision",
+        any(f"write:{PROMPT_ID}" in e for e in g_events) and G_MARK in g_state and REVISION_MARK not in g_state,
+        f"G's events: {g_events}; user_state carries the essay: {G_MARK in g_state}, the revision: "
+        f"{REVISION_MARK in g_state}",
+    )
+    write_row(
+        "Exactly one grading request left the page",
+        len(grader.bodies) == 1,
+        f"grading requests seen: {len(grader.bodies)}",
+    )
+    report_diagnostics("Revision", errors, failed)
+    ctx.close()
+
+
+# ── 6. a speaking attempt stops the moment its student leaves (R2C-04) ────
+#
+# Found by the third Codex inspection: nothing stopped the speaking attempt
+# when the page changed hands, so the next student could answer the first
+# student's remaining questions and the combined recording became the first
+# student's evidence. The fix suspends the attempt at the switch.
+
+def media_state(page) -> dict:
+    try:
+        return page.evaluate(
+            """() => {
+                const probe = window.__f23Media || { tracks: [], recorders: [], stopCalls: [] };
+                return {
+                    tracks: probe.tracks.length,
+                    liveTracks: probe.tracks.filter((t) => t.readyState === 'live').length,
+                    recorders: probe.recorders.length,
+                    activeRecorders: probe.recorders.filter((r) => r.state !== 'inactive').length,
+                    stopCalls: probe.stopCalls.slice(),
+                };
+            }"""
+        )
+    except Exception:
+        return {}
+
+
+def speaking_switch_scenario(browser) -> None:
+    write_section(
+        "6. A speaking attempt stops the moment its student leaves (Codex R2C-04)",
+        "Student H opens a Part 1 topic on the speaking trainer (the recorded checker) by its exact "
+        "link, answers question 1 through the browser's FAKE microphone (a test tone, no real voice), "
+        "and is recording question 2 when H signs out and student I signs up in a SECOND tab of the same "
+        "browser. Before the fix the first tab carried on: I could answer the remaining questions, and "
+        "the whole recording was then graded as H's.",
+    )
+    ctx = new_context(browser, permissions=["microphone"])
+    ctx.add_init_script(MEDIA_PROBE)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+    grader_a = HeldGrader(page_a, GRADER_SPEAKING_PATH)
+
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_h = journey.ws_sign_up(page_a, EMAIL_H, PASSWORD)
+    write_row("Student H signed up on the local stand-in", bool(user_h), f"user id {user_h}")
+
+    goto(page_a, f"/trainers/speaking?part=1&topic={PART1_TOPIC}")
+    journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name="Start answering"),
+        lambda: page_a.get_by_role("button", name="Stop answering").count() > 0,
+    )
+    page_a.wait_for_timeout(2500)
+    journey.try_click(page_a.get_by_role("button", name="Stop answering"))
+    try:
+        page_a.wait_for_selector(f"text={PART1_Q2}", timeout=15000)
+    except Exception:
+        pass
+    journey.click_until(
+        page_a,
+        lambda: page_a.get_by_role("button", name="Start answering"),
+        lambda: page_a.get_by_role("button", name="Stop answering").count() > 0,
+    )
+    page_a.wait_for_timeout(1500)
+    mark_page(page_a)
+    before_switch = media_state(page_a)
+    body = body_text(page_a)
+    write_row(
+        "H answered question 1 and is recording question 2 through the fake microphone",
+        PART1_Q2 in body
+        and page_a.get_by_role("button", name="Stop answering").count() > 0
+        and before_switch.get("activeRecorders") == 1
+        and (before_switch.get("liveTracks") or 0) >= 1,
+        f"question 2 on screen: {PART1_Q2 in body}; recorders started: {before_switch.get('recorders')}, "
+        f"recording now: {before_switch.get('activeRecorders')}; live microphone tracks: "
+        f"{before_switch.get('liveTracks')}",
+    )
+    shot(page_a, "18-speaking-h-recording-question-2", "/trainers/speaking")
+
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    grader_b = HeldGrader(page_b, GRADER_SPEAKING_PATH)
+    goto(page_b, "/dashboard")
+    journey.wait_for_dashboard(page_b)
+    journey.open_workspace_menu(page_b)
+    sign_out = page_b.get_by_role("menuitem", name="Sign out").first
+    try:
+        sign_out.wait_for(timeout=8000)
+    except Exception:
+        pass
+    clicked_at = time.time() * 1000
+    try:
+        sign_out.click(timeout=4000)
+    except Exception:
+        pass
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2000)
+    after_switch = media_state(page_a)
+    stops = [t for t in (after_switch.get("stopCalls") or []) if t >= clicked_at - 50]
+    stop_gap = (stops[0] - clicked_at) if stops else None
+    body = body_text(page_a)
+    write_row(
+        "H signs out in the second tab: the first tab's recording stops and its microphone is released at once",
+        after_switch.get("activeRecorders") == 0
+        and after_switch.get("liveTracks") == 0
+        and stop_gap is not None
+        and stop_gap < 3000
+        and same_page(page_a),
+        f"recording now: {after_switch.get('activeRecorders')}; live microphone tracks: "
+        f"{after_switch.get('liveTracks')}; recorder told to stop "
+        f"{'%.0f ms' % stop_gap if stop_gap is not None else 'never'} after the sign-out click "
+        f"(the other tab hears of it through the browser's shared storage); same page (no reload): {same_page(page_a)}",
+    )
+    write_row(
+        "The first tab is back at its menu with the one-line notice, and nothing of the attempt is left on it",
+        SESSION_CLOSED in body
+        and PART1_Q2 not in body
+        and page_a.get_by_role("button", name="Stop answering").count() == 0
+        and page_a.get_by_role("button", name="Start answering").count() == 0,
+        f"notice shown: {SESSION_CLOSED in body}; question 2 still on screen: {PART1_Q2 in body}; "
+        f"answer buttons left: {page_a.get_by_role('button', name='Stop answering').count() + page_a.get_by_role('button', name='Start answering').count()}",
+    )
+    shot(page_a, "19-speaking-stopped-at-switch", "/trainers/speaking")
+
+    user_i = journey.ws_sign_up(page_b, EMAIL_I, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    state_i = media_state(page_a)
+    write_row(
+        "I signs up in the second tab: the first tab shows I no attempt and no way to answer H's remaining questions",
+        bool(user_i)
+        and PART1_Q2 not in body
+        and PART1_Q3 not in body
+        and page_a.get_by_role("button", name="Stop answering").count() == 0
+        and page_a.get_by_role("button", name="Start answering").count() == 0
+        and state_i.get("activeRecorders") == 0
+        and state_i.get("liveTracks") == 0
+        and same_page(page_a),
+        f"user id {user_i}; question 2 or 3 on screen: {PART1_Q2 in body or PART1_Q3 in body}; recording now: "
+        f"{state_i.get('activeRecorders')}; live microphone tracks: {state_i.get('liveTracks')}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "20-speaking-i-sees-no-attempt", "/trainers/speaking")
+
+    page_a.wait_for_timeout(3000)
+    sent = grader_a.bodies + grader_b.bodies
+    write_row(
+        "No grading request left either tab (nothing was graded or paid for)",
+        not sent and not grader_a.held and not grader_b.held,
+        f"grading requests seen: {len(sent)}",
+    )
+    items = local_items(page_a)
+    speak_id = f"speak:{PART1_TOPIC}"
+    rows_h = (parsed(items, f"ielts.progress.v1::u:{user_h}") or {}).get("speaking") or []
+    rows_i = (parsed(items, f"ielts.progress.v1::u:{user_i}") or {}).get("speaking") or []
+    write_row(
+        "Nothing from the attempt was recorded for H, or for I, on this device",
+        not rows_h
+        and not rows_i
+        and speak_id not in record_activity_ids(items, user_h)
+        and speak_id not in record_activity_ids(items, user_i),
+        f"H's speaking rows: {len(rows_h)}; I's: {len(rows_i)}; H's record: {record_activity_ids(items, user_h)}; "
+        f"I's record: {record_activity_ids(items, user_i)}",
+    )
+    h_events = standin_event_ids(user_h)
+    i_events = standin_event_ids(user_i)
+    write_row(
+        "Nothing from the attempt reached H's or I's account on the stand-in",
+        not any(e.startswith("speak:") for e in h_events) and not any(e.startswith("speak:") for e in i_events),
+        f"H's events: {h_events}; I's events: {i_events}",
+    )
+
+    journey.ws_sign_out(page_b)
+    signed_in = journey.ws_sign_in(page_b, EMAIL_H, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    state_h = media_state(page_a)
+    write_row(
+        "H signs back in (second tab): the stopped attempt does not come back to life, and nothing records",
+        bool(signed_in)
+        and PART1_Q2 not in body
+        and page_a.get_by_role("button", name="Stop answering").count() == 0
+        and state_h.get("activeRecorders") == 0
+        and state_h.get("liveTracks") == 0
+        and not (grader_a.bodies + grader_b.bodies)
+        and same_page(page_a),
+        f"signed in as {signed_in}; question 2 on screen: {PART1_Q2 in body}; recording now: "
+        f"{state_h.get('activeRecorders')}; grading requests: {len(grader_a.bodies + grader_b.bodies)}; "
+        f"same page (no reload): {same_page(page_a)}",
+    )
+    report_diagnostics("Speaking switch, first tab", errors, failed)
+    report_diagnostics("Speaking switch, second tab", errors_b, failed_b)
+    ctx.close()
+
+
 def run():
     reset_results()
     with sync_playwright() as p:
@@ -981,6 +1414,8 @@ def run():
             writing_scenario(browser)
             speaking_scenario(browser)
             editor_scenario(browser)
+            revision_scenario(browser)
+            speaking_switch_scenario(browser)
         finally:
             browser.close()
     text = RESULTS_PATH.read_text(encoding="utf-8")

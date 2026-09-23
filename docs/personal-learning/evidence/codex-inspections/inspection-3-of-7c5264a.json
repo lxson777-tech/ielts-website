@@ -1,0 +1,85 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-3\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "6527cc29de9e94f457724d6ac7e2e8a143e6db87324f3d8b639322d021343616",
+  "base": "48b1d17",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0cd48-c2ba-7602-9747-3ff9ae14ca28",
+  "usage": {
+    "input_tokens": 1183047,
+    "cached_input_tokens": 971904,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 3117,
+    "reasoning_output_tokens": 1224
+  },
+  "elapsed_seconds": 170.33,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence"
+  ],
+  "inspected_commit": "7c5264a",
+  "snapshot_sha256": "37e886ab769ee521f156f33723d54a60cfb94b7bccf1762e147149efde02dd65",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "The original ownership fixes are substantially implemented, but four concrete edge cases remain: newer drafts can be deleted, stale mock screens can overwrite replacement sittings, resumed papers gain extra time, and speaking recordings can span different students.",
+    "findings": [
+      {
+        "id": "R2C-01",
+        "severity": "medium",
+        "path": "src/components/WritingTester.tsx:351",
+        "evidence": "The delayed grade's keep callback unconditionally clears the submitter's draft for that prompt. A can submit, sign out, sign back in before grading finishes, and revise the restored essay. Once the revised draft has autosaved, the older grade deletes it. The cancelled binding suppresses the report but does not suppress keep. Reloading then loses the revision, while history contains only the original submission.",
+        "fix": "Associate draft deletion with the submitted draft revision. Clear it only if the stored revision still matches the submitted revision; preserve any newer editing session's work. Cover returning to A and editing the same prompt before the earlier grade resolves."
+      },
+      {
+        "id": "R2C-02",
+        "severity": "medium",
+        "path": "src/lib/tests/mock.ts:542",
+        "evidence": "Leg writes check sittingId, but parent snapshot writes and cleanup do not. saveActiveMock treats any different sittingId as an authorized replacement, and clearActiveMock checks only the owner. If A leaves mock M1 open during Writing and starts M2 in another tab, typing in M1 invokes MockExam's snapshot effect and replaces M2, including its saved legs. Finishing M1 can instead delete M2 through clearActiveMock. The new identity protection therefore does not cover all writers of the active mock record.",
+        "fix": "Separate explicit creation/replacement from updates. Require ordinary saves and clears to match both owner and sittingId, and stop a mounted mock when its stored sitting has been replaced. Cover two mounted mock tabs and an older tab finishing after a replacement."
+      },
+      {
+        "id": "R2C-03",
+        "severity": "medium",
+        "path": "src/components/TestPlayer.tsx:509",
+        "evidence": "When the original owner returns, the listener only clears ownerChange. The timer effect at lines 693 onward then resumes decrementing the frozen timeLeft instead of recalculating from the saved endsAt. A paper with five minutes remaining can be signed out for ten minutes and still offer five minutes after A signs back in on the same mounted page. Refreshing that identical sitting instead finds it expired, so resume behavior depends on whether the page stayed open.",
+        "fix": "Keep the deadline as the timer's authority, including after owner changes. Recompute remaining time when A returns and before accepting submission, and handle an expired sitting under A without granting additional time."
+      },
+      {
+        "id": "R2C-04",
+        "severity": "high",
+        "path": "src/components/SpeakingTester.tsx:180",
+        "evidence": "The binding records an owner change, but the component does not suspend the recording or question sequence when that happens. A can begin Part 1, switch to B through another tab, and B can continue answering the remaining questions on the still-mounted trainer. beginTurn, beginRecording, stopAnswering and runGrading have no current-owner guard. runOwnedGrade still invokes the grader and its unconditional keep callback, so the combined recording, including B's answers, becomes A's speaking evidence. Hiding the eventual report does not prevent this misattribution.",
+        "fix": "Suspend the speaking attempt immediately on an owner change, stop microphone capture and pending turn continuations, and prevent subsequent answers from joining the old attempt. Distinguish an already-submitted grade, which should still be retained for A, from an unfinished recording. Apply the same check to the standalone LiveExaminer path."
+      }
+    ],
+    "coverage": [
+      "Verified the on-disk plan SHA256 matches the supplied hash.",
+      "Read the supplied changes for every manifest entry, including regression tests, browser scripts, translations, configuration and review documentation.",
+      "Inspected repository implementations for account session notifications, lifecycle startup, sign-in cancellation, learning sync teardown, explicit-owner grade writers, draft ownership, test sessions and mock persistence.",
+      "Traced mock snapshot and leg writers, session callers, anonymous claiming, and the speaking recording-to-grading path beyond the plan's file list."
+    ],
+    "limitations": [
+      "Static review only. No files were edited, tests executed, browser journeys run or work delegated.",
+      "Reported test and browser pass counts are host-provided evidence, not independently verified results.",
+      "Production Supabase policies, cross-device reconciliation and live grading behavior were not verified."
+    ]
+  }
+}

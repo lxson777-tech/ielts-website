@@ -37,7 +37,21 @@
    student cancelling Speaking, and reporting it as `onAbort` made the mock
    skip Speaking and record itself without it. An unmount after the owner
    this component opened for has changed now reports `onSuspend` instead,
-   and nothing is reported twice. */
+   and nothing is reported twice.
+
+   THE STANDALONE INTERVIEW STOPS ITSELF (fourth Codex round, R2C-04). On
+   /speaking/examiner and in the live drills nothing takes this component
+   away when the account changes, so it now does that itself: the interview
+   is an attempt bound to the student who starts it
+   (./speaking-attempt-owner.ts), and the moment the page changes hands the
+   voice session is ended, the recorder stops and drops what it held, the
+   microphone is released, nothing is graded and nothing is recorded, and
+   the menu says why in one line. Every step of the interview asks first
+   (the connection coming up, the recording starting or resuming, the
+   session closing, the grading call), so a change that reached no listener
+   is caught too, and the one-second clock asks as well. A grade that had
+   already begun is kept for its student and never shown here. The mock
+   embed does not use this: its own teardown above is unchanged. */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -75,6 +89,11 @@ import IdeaHints from './IdeaHints';
 import AuthModal from './AuthModal';
 import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
 import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
+import {
+  openSpeakingAttempt,
+  type OwnedSpeakingAttempt,
+  type SpeakingStageAtSwitch,
+} from './speaking-attempt-owner';
 import { examinerLeftScreen } from '../lib/tests/mock';
 import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
@@ -118,6 +137,14 @@ type LiveMode = 'full' | DrillMode;
     use. */
 const OWNER_CHANGED_NOTICE = nt(
   'The account on this page changed while this was being graded, so nothing from that attempt is shown here. It is kept for the student who started it.',
+);
+
+/** Standalone only: shown when the page changes hands during the interview,
+    or while its report is on screen (R2C-04). The voice session was ended
+    at the switch and nothing from it was graded or recorded. The same
+    sentence the recorded speaking trainer uses. Names nobody. */
+const SESSION_CLOSED_NOTICE = nt(
+  'The account on this page changed, so the speaking session on screen was closed. Answers that had not yet been sent for grading were not kept.',
 );
 
 /** variant="full": the complete three-part mock test (/speaking/examiner).
@@ -216,6 +243,10 @@ export default function LiveExaminer({
      what stops a late grade from reaching onComplete: the grade is still
      kept for the student who spoke, and nothing is written for anybody else. */
   const sessionBindingRef = useRef<OwnerBinding | null>(null);
+  /* Standalone only: the interview as an attempt of the student who started
+     it (R2C-04). Its binding is the session binding above. Null in the mock
+     embed, where MockExam handles a change of owner by unmounting this. */
+  const attemptRef = useRef<OwnedSpeakingAttempt | null>(null);
   /* Learner-evidence recording (WP12): the catalogue prompt id a drill is
      evidence about (a Part 1 topic id, or a cue-card id for Part 2/3), set
      the moment the plan is built in startTest: from an exact deep link
@@ -327,7 +358,17 @@ export default function LiveExaminer({
     startingRef.current = true;
     modeRef.current = m;
     sessionBindingRef.current?.cancel();
-    sessionBindingRef.current = bindToCurrentOwner();
+    attemptRef.current?.close();
+    /* Standalone: the interview belongs to the student starting it, and stops
+       itself the moment the page changes hands (R2C-04). The mock embed keeps
+       its plain binding, and its own teardown. */
+    const attempt = mock ? null : openSpeakingAttempt({ onOwnerLeft: leaveForOwnerChange });
+    attemptRef.current = attempt;
+    sessionBindingRef.current = attempt ? attempt.binding : bindToCurrentOwner();
+    /** Is this still the interview of the student on the page? Asked after
+        every wait below; a no has already ended the session and put the
+        notice up. Always yes in the mock embed. */
+    const stillHere = () => !attempt || attempt.mayStartTurn();
     setError(null);
     setNotice(null);
     setPhase('connecting');
@@ -342,9 +383,11 @@ export default function LiveExaminer({
     if (!config) {
       try {
         config = await fetchLiveConfig(TOKEN_URL);
+        if (!stillHere()) return;
         setLiveConfig(config);
         setConfigError(null);
       } catch (e) {
+        if (!stillHere()) return;
         startingRef.current = false;
         setPhase(mock ? 'error' : 'menu');
         setError(e instanceof Error ? e.message : t('Could not reach the live examiner service.'));
@@ -360,9 +403,16 @@ export default function LiveExaminer({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
       });
     } catch {
+      if (!stillHere()) return;
       startingRef.current = false;
       setPhase(mock ? 'error' : 'menu');
       setError(t('Microphone access is required. Please allow the permission and try again.'));
+      return;
+    }
+    /* The page may have changed hands while the permission prompt was up:
+       then this microphone records nothing for anybody. */
+    if (attempt && !attempt.mayStartRecording()) {
+      releaseMic(stream);
       return;
     }
     streamRef.current = stream;
@@ -401,8 +451,11 @@ export default function LiveExaminer({
       }
 
       const accessToken = await getAccessToken();
+      /* A change while the token was fetched has already stopped the
+         recorder and released the microphone (the teardown). */
+      if (!stillHere()) return;
 
-      linkRef.current = await openExaminerLink({
+      const link = await openExaminerLink({
         endpoint: TOKEN_URL,
         config,
         stream,
@@ -425,7 +478,15 @@ export default function LiveExaminer({
           },
         },
       });
+      /* A voice session that came up after the page changed hands is closed
+         at once: no audio of anybody's goes to it. */
+      if (!stillHere()) {
+        void link.close();
+        return;
+      }
+      linkRef.current = link;
     } catch (e) {
+      if (!stillHere()) return;
       const rec = recorderRef.current;
       if (rec && rec.state !== 'inactive') rec.stop();
       cleanupAudio();
@@ -439,7 +500,13 @@ export default function LiveExaminer({
     setPhase('interview');
 
     const startedAt = performance.now();
-    every(() => setElapsedS(Math.round((performance.now() - startedAt) / 1000)), 1000);
+    /* The one-second clock also asks whether this is still the student's
+       interview, so a change of owner that reached no listener still ends
+       it within a second (standalone; always yes in the mock embed). */
+    every(() => {
+      if (!stillHere()) return;
+      setElapsedS(Math.round((performance.now() - startedAt) / 1000));
+    }, 1000);
     every(() => setExaminerTalking(linkRef.current?.isSpeaking() ?? false), 250);
     startOrbLoop();
 
@@ -537,6 +604,8 @@ export default function LiveExaminer({
 
   function beginPart2Talk() {
     if (endedRef.current || stageRef.current !== 'part2prep') return;
+    /* Standalone: the recorder resumes only for the student who started. */
+    if (attemptRef.current && !attemptRef.current.mayStartRecording()) return;
     linkRef.current?.setMicMuted(false);
     resumeRecorder();
     setStageBoth('part2talk');
@@ -606,6 +675,11 @@ export default function LiveExaminer({
 
   async function finishTest() {
     if (endedRef.current) return;
+    /* Standalone: the attempt this interview belongs to. Asking it runs the
+       owner check; a change found here ends the session through the same
+       teardown, with nothing graded (R2C-04). Null in the mock embed. */
+    const attempt = attemptRef.current;
+    if (attempt && !attempt.mayStartTurn()) return;
     endedRef.current = true;
     if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
     timersRef.current.forEach(clearTimeout);
@@ -621,6 +695,9 @@ export default function LiveExaminer({
 
     const recording = await stopRecorder();
     cleanupAudio();
+    /* Standalone: the page may have changed hands while the session was
+       closing. The recording is then nobody's to grade, and it is dropped. */
+    if (attempt && !attempt.mayAcceptRecording()) return;
 
     if (!gradingAvailable()) {
       setPhase('error');
@@ -637,6 +714,9 @@ export default function LiveExaminer({
       return;
     }
 
+    /* Standalone: may this be graded? Only while the student who took the
+       interview is still the one on the page (R2C-04). */
+    if (attempt && !attempt.beginGrading()) return;
     setGradingAudioSeconds(recording.durationMs / 1000);
     setGradingStartedAt(Date.now());
     setPhase('grading');
@@ -710,6 +790,7 @@ export default function LiveExaminer({
             }
           },
           show: (graded) => {
+            attempt?.graded();
             setResult(graded);
             setPhase('report');
             // Mock embed: report straight back to MockExam instead of waiting on a
@@ -728,6 +809,13 @@ export default function LiveExaminer({
             }
           },
           hide: () => {
+            /* Standalone: no notification told the attempt the owner had
+               changed. Asking it runs the owner check, which ends the
+               session and puts the notice up (R2C-04). */
+            if (attempt) {
+              attempt.ownerStillHere();
+              return;
+            }
             /* Somebody else is using the page now: nothing of the interview
                is shown, and the mock's completion is not reported. The Back
                button on this screen is the way out (onAbort in the mock). */
@@ -738,6 +826,9 @@ export default function LiveExaminer({
         },
       );
     } catch (e) {
+      /* Standalone: a failure after the page changed hands is not this
+         student's to see; the owner check ends the session instead. */
+      if (attempt && !attempt.gradingFailed()) return;
       setPhase('error');
       setError(e instanceof Error ? e.message : t('Grading failed.'));
     }
@@ -751,9 +842,48 @@ export default function LiveExaminer({
     recorderRef.current = null;
   }
 
+  /* Standalone only (R2C-04). The page changed hands while this interview
+     was on screen: end the voice session at once, with no grading and no
+     recording. The connection to the examiner is closed, the recorder stops
+     and drops what it held, the microphone is released and every clock is
+     cleared, so no audio after the switch belongs to the student who
+     started. A grade that had already begun is kept for that student
+     (runOwnedGrade) and never shown here. */
+  function leaveForOwnerChange(stage: SpeakingStageAtSwitch, attempt: OwnedSpeakingAttempt) {
+    if (attemptRef.current !== attempt) return;
+    attemptRef.current = null;
+    endedRef.current = true;
+    startingRef.current = false;
+    timersRef.current.forEach(clearTimeout);
+    intervalsRef.current.forEach(clearInterval);
+    timersRef.current = [];
+    intervalsRef.current = [];
+    if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
+    const link = linkRef.current;
+    linkRef.current = null;
+    void link?.close();
+    const rec = recorderRef.current;
+    if (rec) {
+      rec.ondataavailable = null;
+      if (rec.state !== 'inactive') rec.stop();
+    }
+    recChunksRef.current = [];
+    recAccumMsRef.current = 0;
+    transcriptFlushRef.current = null;
+    cleanupAudio();
+    setResult(null);
+    setFinalTranscript([]);
+    setCaption('');
+    setNotice(null);
+    setPhase('menu');
+    setError(t(stage === 'grading' ? OWNER_CHANGED_NOTICE : SESSION_CLOSED_NOTICE));
+  }
+
   function abandonToMenu() {
     /* Letting go of the session: a grade still on its way is kept for the
        student who spoke, but it no longer shows here or completes a mock. */
+    attemptRef.current?.close();
+    attemptRef.current = null;
     sessionBindingRef.current?.cancel();
     endedRef.current = true;
     timersRef.current.forEach(clearTimeout);

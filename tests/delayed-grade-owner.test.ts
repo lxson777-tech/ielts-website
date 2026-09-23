@@ -30,6 +30,20 @@
  * submission and DURING the debounce, a switch back, and the late grade
  * again with the editor handed over first.
  *
+ * AND THE TWO FINDINGS OF THE THIRD CODEX INSPECTION (of 7c5264a)
+ * R2C-01, section 6: the late grade's keep step cleared its student's draft
+ * whatever the draft held by then, so A could submit, leave and come back,
+ * revise the restored essay, and lose the revision to the older grade. The
+ * draft is now removed only while it still holds exactly the graded text.
+ * R2C-04, section 7: the speaking attempt was never stopped when the page
+ * changed hands, so B could answer A's remaining questions and the combined
+ * recording became A's evidence. The attempt (src/components/
+ * speaking-attempt-owner.ts) now stops at the switch, is asked before every
+ * question, recording, clip and grading call, and drops what was not sent.
+ * The standalone live examiner cannot be started without a paid voice
+ * session, so its suspension is proven here and not in a browser: the same
+ * attempt, and a source scan of how the examiner uses it.
+ *
  * WHAT IS SIMULATED, AND WHAT IS NOT
  * Simulated: the graders. Every grade below is a SYNTHETIC object handed back
  * by a promise this file resolves by hand, at the moment it chooses, so no
@@ -85,6 +99,7 @@ const storeOwner = await import('../src/lib/store-owner.ts');
 const progress = await import('../src/lib/progress.ts');
 const learner = await import('../src/lib/learning/store.browser.ts');
 const editor = await import('../src/components/writing-editor-owner.ts');
+const speaking = await import('../src/components/speaking-attempt-owner.ts');
 
 import type { CacheOwner } from '../src/lib/learning/contracts/sync.ts';
 
@@ -507,11 +522,17 @@ for (const name of ['WritingTester.tsx', 'SpeakingTester.tsx', 'LiveExaminer.tsx
          who started the essay. */
       assert.match(code, /\bclaimSubmission\(/, `${name} never binds its attempt to an owner`);
       assert.match(componentSource('writing-editor-owner.ts'), /\bbindToCurrentOwner\(\)/);
+    } else if (name === 'SpeakingTester.tsx') {
+      /* The attempt's binding comes from the attempt itself (R2C-04), made
+         when the part starts, for the owner on the page then. */
+      assert.match(code, /\bopenSpeakingAttempt\(/, `${name} never binds its attempt to an owner`);
+      assert.match(componentSource('speaking-attempt-owner.ts'), /\bbindToCurrentOwner\(\)/);
     } else {
       assert.match(code, /\bbindToCurrentOwner\(\)/, `${name} never binds its attempt to an owner`);
     }
     assert.match(code, /\brunOwnedGrade\(/, `${name} does not settle its grade through runOwnedGrade`);
-    assert.match(code, /\.cancel\(\)/, `${name} never lets go of a pending grade`);
+    /* A cancelled binding, or a closed attempt (which cancels its binding). */
+    assert.match(code, /\.(cancel|close)\(\)/, `${name} never lets go of a pending grade`);
     /* The current-owner writers are exactly the defect: a grade arriving
        late would land under whoever is signed in by then. */
     assert.doesNotMatch(code, /\brecordSpeakingAttempt\(/, `${name} writes a speaking attempt under the current owner`);
@@ -791,8 +812,9 @@ test('a late grade still goes to A when the editor was handed to B while it was 
   const settling = storeOwner.runOwnedGrade(binding, () => grader.promise, {
     keep: (grade, owner) => {
       keepEssay(grade, owner, '2026-09-23T19:00:00.000Z');
-      /* The component clears the submitter's draft once the report is kept. */
-      editor.clearEssayDraft(A_PROMPT, owner);
+      /* The component clears the submitter's draft once the report is kept,
+         while it still holds the text that was graded (R2C-01). */
+      editor.clearSubmittedEssayDraft(A_PROMPT, owner, A_ESSAY);
     },
     show: () => (shown += 1),
     hide: () => (hidden += 1),
@@ -837,7 +859,486 @@ test('WritingTester binds the editor to its owner, hands it over on a change, an
   assert.doesNotMatch(code, /localStorage/, 'the component reaches storage directly');
   assert.doesNotMatch(code, /setTimeout\(/, 'the component keeps its own draft timer outside the session');
   assert.doesNotMatch(code, /getLearnerStore\(\)\s*\.\s*owner\(\)/, 'a draft key is resolved from whoever is on the page');
-  for (const call of code.matchAll(/\b(writeEssayDraft|clearEssayDraft)\(([^)]*)\)/g)) {
+  for (const call of code.matchAll(/\b(writeEssayDraft|clearEssayDraft|restoreEssayDraft|clearSubmittedEssayDraft)\(([^)]*)\)/g)) {
     assert.ok(call[2]!.split(',').length >= 2, `${call[1]} is called without naming an owner: ${call[0]}`);
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* 6. A late report clears only the text it graded (R2C-01)           */
+/* ------------------------------------------------------------------ */
+
+const A_REVISION = `${A_ESSAY} SYNTHETIC revision, typed by A after coming back to the page.`;
+
+/** The writing trainer's own submit and keep, reduced to what touches the
+    draft: the latest text into the draft, a binding claimed from the editing
+    session, the grade kept under the bound owner and, in the same step, the
+    draft removed only while it still holds the submitted text. The grade is
+    held until the test answers it. */
+function submitAndHold(session: EditingSession, submitted: string, at: string) {
+  session.flush();
+  const binding = editor.claimSubmission(session);
+  assert.ok(binding, 'the student cannot submit their own essay');
+  const grader = pendingGrade<SyntheticGrade>();
+  const cleared: boolean[] = [];
+  const settling = storeOwner.runOwnedGrade(binding, () => grader.promise, {
+    keep: (grade, owner) => {
+      keepEssay(grade, owner, at);
+      cleared.push(editor.clearSubmittedEssayDraft(A_PROMPT, owner, submitted));
+    },
+  });
+  return { binding, grader, settling, cleared };
+}
+
+/** A signs out and back in on the same page while the grade is on its way.
+    The component's owner-change listener hands the editor over at each
+    change, and at the first one lets go of the attempt on screen. Returns
+    A's editor as it opens on coming back. */
+function awayAndBack(session: EditingSession, binding: { cancel(): void }, clock: ReturnType<typeof handCrankedClock>) {
+  signInAs(null);
+  const away = editor.handOverEssayEditing(session, { timers: clock.timers });
+  assert.ok(away, 'signing out did not hand the editor over');
+  binding.cancel();
+  signInAs(A);
+  const back = editor.handOverEssayEditing(away.session, { timers: clock.timers });
+  assert.ok(back, 'signing back in did not hand the editor back');
+  assert.deepEqual(back.session.owner, A);
+  return back;
+}
+
+function aWritingRows(): string[] {
+  return (progress.getProgressFor(A).writing[A_PROMPT] ?? []).map((row) => row.essay ?? '');
+}
+
+test("R2C-01: A submits, leaves, comes back and revises; the earlier grade keeps A's report and leaves the revision as A's draft", async () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(A_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  const held = submitAndHold(opened.session, A_ESSAY, '2026-09-23T20:00:00.000Z');
+  assert.equal(draftOf(A, A_PROMPT), A_ESSAY);
+
+  const back = awayAndBack(opened.session, held.binding, clock);
+  assert.equal(back.draft, A_ESSAY, 'A did not get the submitted essay back in the editor');
+
+  /* A revises the restored essay, and the revision autosaves. */
+  back.session.edited(A_REVISION);
+  clock.advance(editor.ESSAY_DRAFT_DEBOUNCE_MS);
+  assert.equal(draftOf(A, A_PROMPT), A_REVISION);
+
+  /* Only now does the earlier grade come back. */
+  held.grader.resolve(ESSAY_GRADE);
+  assert.equal(await held.settling, 'cancelled');
+  assert.deepEqual(held.cleared, [false], 'the earlier grade removed a draft that is not the text it graded');
+  assert.equal(draftOf(A, A_PROMPT), A_REVISION, "the earlier grade deleted A's revision");
+
+  /* A reload opens the revision, and A's history holds the original
+     submission and its report, exactly once. */
+  assert.equal(editor.openEssayEditing(A_PROMPT, { timers: clock.timers }).draft, A_REVISION);
+  assert.deepEqual(aWritingRows(), [A_ESSAY]);
+  assert.deepEqual(
+    recordEventsOf(A).map((event) => event.activityId),
+    [`write:${A_PROMPT}`],
+  );
+  /* And the revision is A's alone: nothing under the signed-out device. */
+  assert.deepEqual(keysCarrying([A_REVISION]), [editor.essayDraftKey(A_PROMPT, A)]);
+});
+
+test('R2C-01: the unchanged case is still cleared, straight through and after a trip away', async () => {
+  /* Straight through: the draft is a spare copy of what the history now
+     holds, so it goes. */
+  freshDevice();
+  signInAs(A);
+  let clock = handCrankedClock();
+  const straight = editor.openEssayEditing(A_PROMPT, { timers: clock.timers });
+  straight.session.edited(A_ESSAY);
+  const first = submitAndHold(straight.session, A_ESSAY, '2026-09-23T20:10:00.000Z');
+  first.grader.resolve(ESSAY_GRADE);
+  assert.equal(await first.settling, 'current');
+  assert.deepEqual(first.cleared, [true]);
+  assert.equal(draftOf(A, A_PROMPT), undefined, 'a draft identical to the graded essay outlived its report');
+
+  /* Away and back with no revision: the same. */
+  freshDevice();
+  signInAs(A);
+  clock = handCrankedClock();
+  const opened = editor.openEssayEditing(A_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  const held = submitAndHold(opened.session, A_ESSAY, '2026-09-23T20:20:00.000Z');
+  const back = awayAndBack(opened.session, held.binding, clock);
+  assert.equal(back.draft, A_ESSAY);
+  held.grader.resolve(ESSAY_GRADE);
+  assert.equal(await held.settling, 'cancelled');
+  assert.deepEqual(held.cleared, [true]);
+  assert.equal(draftOf(A, A_PROMPT), undefined);
+  assert.deepEqual(aWritingRows(), [A_ESSAY]);
+});
+
+test('R2C-01: a revision still waiting in the 600 ms autosave when the earlier grade lands survives it', async () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  const opened = editor.openEssayEditing(A_PROMPT, { timers: clock.timers });
+  opened.session.edited(A_ESSAY);
+  const held = submitAndHold(opened.session, A_ESSAY, '2026-09-23T20:30:00.000Z');
+  const back = awayAndBack(opened.session, held.binding, clock);
+
+  /* A types the revision; its write is still waiting when the grade lands. */
+  back.session.edited(A_REVISION);
+  clock.advance(300);
+  assert.equal(clock.pending(), 1, 'the revision is not waiting on the autosave');
+  assert.equal(draftOf(A, A_PROMPT), A_ESSAY, 'the revision was written before the autosave wait ran out');
+
+  held.grader.resolve(ESSAY_GRADE);
+  assert.equal(await held.settling, 'cancelled');
+  /* At that moment the stored draft was still the submission, so that
+     spare copy went... */
+  assert.deepEqual(held.cleared, [true]);
+  assert.equal(clock.pending(), 1, 'the grade dropped the pending revision');
+
+  /* ...and the revision lands when the wait runs out. */
+  clock.advance(300);
+  assert.equal(draftOf(A, A_PROMPT), A_REVISION, 'the pending revision did not survive the earlier grade');
+  assert.equal(editor.openEssayEditing(A_PROMPT, { timers: clock.timers }).draft, A_REVISION);
+  assert.deepEqual(aWritingRows(), [A_ESSAY]);
+});
+
+test('R2C-01: a failed request puts the essay back only where there is no draft, so it never overwrites a revision', () => {
+  freshDevice();
+  signInAs(A);
+  assert.equal(editor.restoreEssayDraft(A_PROMPT, A, A_ESSAY), true);
+  assert.equal(draftOf(A, A_PROMPT), A_ESSAY);
+
+  editor.writeEssayDraft(A_PROMPT, A, A_REVISION);
+  assert.equal(editor.restoreEssayDraft(A_PROMPT, A, A_ESSAY), false);
+  assert.equal(draftOf(A, A_PROMPT), A_REVISION, 'restoring the submitted essay overwrote a later revision');
+  assert.equal(draftOf(B, A_PROMPT), undefined);
+});
+
+test('WritingTester clears a draft only through the revision check, from the keep step, and never writes one over a revision', () => {
+  const code = componentSource('WritingTester.tsx');
+  assert.doesNotMatch(code, /\bclearEssayDraft\(/, 'the writing trainer can still delete a draft whatever it holds');
+  assert.doesNotMatch(code, /\bwriteEssayDraft\(/, "the writing trainer can still overwrite a draft on the student's behalf");
+  assert.match(
+    code,
+    /clearSubmittedEssayDraft\(\s*submitted\.prompt\.id,\s*owner,\s*submitted\.essay\s*\)/,
+    'the draft is not compared with the essay that was submitted',
+  );
+  const keep = code.indexOf('keep: (graded, owner)');
+  const clear = code.indexOf('clearSubmittedEssayDraft(');
+  const show = code.indexOf('show: (graded)');
+  assert.ok(keep > 0 && clear > keep && show > clear, 'the draft is not cleared from the keep step');
+  assert.match(code, /restoreEssayDraft\(\s*submitted\.prompt\.id,\s*binding\.owner,\s*submitted\.essay\s*\)/);
+});
+
+/* ------------------------------------------------------------------ */
+/* 7. A speaking attempt stops the moment its student leaves (R2C-04) */
+/* ------------------------------------------------------------------ */
+
+type SpeakingStage = 'open' | 'grading' | 'done';
+
+function openAttempt(clock: ReturnType<typeof handCrankedClock>, onLeft?: (stage: SpeakingStage) => void) {
+  const left: SpeakingStage[] = [];
+  const attempt = speaking.openSpeakingAttempt({
+    timers: clock.timers,
+    onOwnerLeft: (stage) => {
+      left.push(stage);
+      onLeft?.(stage);
+    },
+  });
+  return { attempt, left };
+}
+
+test("R2C-04: an owner change mid-answer suspends A's attempt at once: its clocks stop and no question, recording, clip or grading follows", () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+  const { attempt, left } = openAttempt(clock);
+  assert.deepEqual(attempt.owner, A);
+  assert.equal(attempt.stage(), 'open');
+  assert.ok(attempt.mayStartTurn());
+  assert.ok(attempt.mayStartRecording());
+
+  /* Recording has started: the answer clock and the automatic move to the
+     next question, as the trainer sets them. */
+  const ticks: number[] = [];
+  const movedOn: number[] = [];
+  attempt.every(200, () => ticks.push(1));
+  attempt.after(45_100, () => movedOn.push(1));
+  for (let tick = 0; tick < 5; tick += 1) clock.advance(200);
+  assert.equal(ticks.length, 5);
+
+  /* Another tab signs A out and B in. */
+  signInAs(B);
+  assert.deepEqual(left, ['open'], 'the screen was not told at the moment of the switch');
+  assert.equal(attempt.stage(), 'suspended');
+  assert.equal(clock.pending(), 0, "a timer of A's attempt survived the switch");
+  assert.equal(attempt.binding.state(), 'cancelled', "the switch did not let go of A's binding");
+
+  clock.advance(60_000);
+  assert.equal(ticks.length, 5, 'the answer clock ran on after the switch');
+  assert.deepEqual(movedOn, [], 'the attempt moved on to its next question after the switch');
+  assert.equal(attempt.mayStartTurn(), false, 'a question may start after the switch');
+  assert.equal(attempt.mayStartRecording(), false, 'the microphone may record after the switch');
+  assert.equal(attempt.mayAcceptRecording(), false, 'a clip may join after the switch');
+  assert.equal(attempt.beginGrading(), false, 'the attempt may be graded after the switch');
+  assert.equal(attempt.gradingFailed(), false);
+  assert.equal(attempt.ownerStillHere(), false);
+
+  /* Final: A coming back does not revive it, and nothing is told twice. */
+  signInAs(A);
+  assert.equal(attempt.mayStartTurn(), false, 'the first student coming back revived the suspended attempt');
+  assert.deepEqual(left, ['open']);
+});
+
+test("R2C-04: B cannot answer A's remaining questions; nothing said after the switch joins A's attempt, and nothing is graded or recorded", async () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+  const questions = ['SYNTHETIC question 1', 'SYNTHETIC question 2', 'SYNTHETIC question 3'];
+  const clips: string[] = [];
+  /* The trainer drops everything not sent for grading when it is told. */
+  const { attempt, left } = openAttempt(clock, () => {
+    clips.length = 0;
+  });
+
+  /* The trainer's own loop for one question, reduced to what it asks. */
+  function answer(index: number, speaker: string): boolean {
+    if (!attempt.mayStartTurn()) return false;
+    if (!attempt.mayStartRecording()) return false;
+    /* ...the speaker answers, the clip stops... */
+    if (!attempt.mayAcceptRecording()) return false;
+    clips.push(`${speaker}: ${questions[index]}`);
+    return true;
+  }
+
+  assert.equal(answer(0, 'A'), true);
+  assert.deepEqual(clips, ['A: SYNTHETIC question 1']);
+
+  /* Question 2 is on screen and recording when another tab hands the page
+     to B, and B answers into the still-open microphone. */
+  assert.ok(attempt.mayStartTurn());
+  assert.ok(attempt.mayStartRecording());
+  signInAs(B);
+  assert.equal(attempt.mayAcceptRecording(), false, "B's answer to question 2 joined A's attempt");
+  assert.equal(answer(2, 'B'), false, "B could go on to A's next question");
+
+  /* The trainer's finishing step. */
+  let graderCalls = 0;
+  if (attempt.beginGrading()) {
+    await storeOwner.runOwnedGrade(
+      attempt.binding,
+      async () => {
+        graderCalls += 1;
+        return SPEAKING_GRADE;
+      },
+      { keep: (grade, owner) => keepSpeaking(grade, owner, '2026-09-23T21:00:00.000Z') },
+    );
+  }
+  assert.equal(graderCalls, 0, 'an attempt whose student had left was sent for (paid) grading');
+  assert.deepEqual(left, ['open']);
+  assert.deepEqual(clips, [], "A's unfinished answers were kept after the switch");
+  assert.deepEqual(recordEventsOf(A), [], 'the attempt became A\'s evidence');
+  assert.deepEqual(recordEventsOf(B), []);
+  assert.deepEqual(progress.getProgressFor(A).speaking, []);
+  assert.deepEqual(progress.getSpeakingAttempts(), [], 'B sees an attempt');
+});
+
+test('R2C-04: an owner change that reached no listener is caught at the next step, and by the answer clock within one tick', () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+
+  /* The owner moves WITHOUT a notification: the owner module forgets it,
+     and its next read resolves the signed-out device owner. */
+  const stepped = openAttempt(clock);
+  storeOwner.resetStoreOwnerForTest();
+  assert.deepEqual(stepped.left, [], 'nothing has asked yet');
+  assert.equal(stepped.attempt.mayAcceptRecording(), false, 'a clip joined after an unannounced switch');
+  assert.deepEqual(stepped.left, ['open'], 'the step that found the switch did not stop the attempt');
+
+  signInAs(A);
+  const ticked = openAttempt(clock);
+  const ticks: number[] = [];
+  ticked.attempt.every(200, () => ticks.push(1));
+  storeOwner.resetStoreOwnerForTest();
+  clock.advance(200);
+  assert.deepEqual(ticks, [], 'the answer clock ticked on for a student who had gone');
+  assert.deepEqual(ticked.left, ['open']);
+  assert.equal(clock.pending(), 0);
+  signInAs(A);
+});
+
+test('R2C-04: grading that began before the switch goes on and is kept for A; the screen lets go and shows none of it', async () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+  const { attempt, left } = openAttempt(clock);
+
+  assert.ok(attempt.mayAcceptRecording(), "A's last answer is in");
+  assert.equal(attempt.beginGrading(), true);
+  assert.equal(attempt.stage(), 'grading');
+  assert.equal(attempt.mayStartTurn(), false, 'an attempt being graded took another question');
+  assert.equal(attempt.beginGrading(), false, 'the same attempt could be sent for grading twice');
+
+  const grader = pendingGrade<SyntheticGrade>();
+  let shown = 0;
+  let hidden = 0;
+  const settling = storeOwner.runOwnedGrade(attempt.binding, () => grader.promise, {
+    keep: (grade, owner) => keepSpeaking(grade, owner, '2026-09-23T21:10:00.000Z'),
+    show: () => (shown += 1),
+    hide: () => (hidden += 1),
+  });
+
+  signInAs(B);
+  assert.deepEqual(left, ['grading'], 'the screen was not told to let go of the grading attempt');
+  grader.resolve(SPEAKING_GRADE);
+  assert.equal(await settling, 'cancelled');
+  assert.equal(shown, 0, "A's report was painted on B's page");
+  assert.equal(hidden, 0);
+  assert.equal(recordEventsOf(A).length, 1, 'a grade that had begun was not kept for A');
+  assert.equal(progress.getProgressFor(A).speaking.length, 1);
+  assert.deepEqual(recordEventsOf(B), []);
+  assert.deepEqual(progress.getSpeakingAttempts(), []);
+});
+
+test('R2C-04: a failed grading request can be tried again only while the same student is on the page', () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+  const { attempt, left } = openAttempt(clock);
+
+  assert.equal(attempt.beginGrading(), true);
+  assert.equal(attempt.gradingFailed(), true);
+  assert.equal(attempt.stage(), 'open', 'the answers are not waiting to be graded again');
+  assert.equal(attempt.beginGrading(), true, 'A cannot retry grading their own answers');
+  assert.equal(attempt.gradingFailed(), true);
+
+  /* The answers are waiting on the "try again" screen when B takes over. */
+  signInAs(B);
+  assert.deepEqual(left, ['open'], "A's waiting answers were not dropped at the switch");
+  assert.equal(attempt.beginGrading(), false, "B could send A's answers for grading");
+});
+
+test('R2C-04: a report on screen leaves it when the page changes hands', () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+  const { attempt, left } = openAttempt(clock);
+  assert.equal(attempt.beginGrading(), true);
+  attempt.graded();
+  assert.equal(attempt.stage(), 'done');
+  assert.equal(attempt.ownerStillHere(), true);
+  signInAs(B);
+  assert.deepEqual(left, ['done']);
+  assert.equal(attempt.ownerStillHere(), false);
+});
+
+test('R2C-04: letting go on purpose is not a suspension, and the same owner told its stores changed stops nothing', () => {
+  freshDevice();
+  signInAs(A);
+  const clock = handCrankedClock();
+  const { attempt, left } = openAttempt(clock);
+  const ticks: number[] = [];
+  attempt.every(200, () => ticks.push(1));
+
+  storeOwner.announceStoresChanged();
+  assert.equal(attempt.stage(), 'open');
+  assert.ok(attempt.mayStartTurn());
+  clock.advance(200);
+  assert.equal(ticks.length, 1, 'a refresh for the same owner stopped the answer clock');
+
+  attempt.close();
+  assert.equal(attempt.stage(), 'closed');
+  assert.equal(clock.pending(), 0);
+  assert.equal(attempt.binding.state(), 'cancelled');
+  assert.equal(attempt.mayStartTurn(), false);
+  signInAs(B);
+  assert.deepEqual(left, [], 'a screen that let go on purpose was told about a switch');
+});
+
+/* How the two components use the attempt. The decisions are proven above;
+   these pin that every step of the components really asks. */
+
+function functionBody(code: string, name: string): string {
+  const start = code.search(new RegExp(`(async )?function ${name}\\(`));
+  assert.ok(start >= 0, `${name} was not found`);
+  const rest = code.slice(start + 1);
+  const next = rest.search(/\n {2}(async )?function \w+\(/);
+  return next >= 0 ? rest.slice(0, next) : rest;
+}
+
+/** `second` appears somewhere after the first `first` in `body`. */
+function before(body: string, first: string, second: string, what: string): void {
+  const a = body.indexOf(first);
+  const b = a >= 0 ? body.indexOf(second, a + first.length) : -1;
+  assert.ok(a >= 0 && b > a, what);
+}
+
+test('SpeakingTester asks its attempt before every question, recording, clip and grading call, and stops everything on a switch', () => {
+  const code = componentSource('SpeakingTester.tsx');
+  assert.match(code, /\bopenSpeakingAttempt\(\s*\{\s*onOwnerLeft:\s*leaveForOwnerChange\s*\}\s*\)/);
+
+  const beginTurn = functionBody(code, 'beginTurn');
+  assert.ok((beginTurn.match(/attempt\.mayStartTurn\(\)/g) ?? []).length >= 3, 'a wait in beginTurn is not followed by a check');
+  before(beginTurn, 'attempt.mayStartTurn()', 'finishAndGrade(', 'the last question can end in grading without a check');
+  before(beginTurn, 'attempt.mayStartTurn()', 'beginRecording(', 'a question can start recording without a check');
+  before(functionBody(code, 'beginRecording'), 'attempt.mayStartRecording()', 'recordSegment(', 'the microphone records without a check');
+  before(functionBody(code, 'stopAnswering'), 'attempt.mayAcceptRecording()', 'clipsRef.current.push(', 'a clip joins without a check');
+  before(functionBody(code, 'finishAndGrade'), 'attempt.beginGrading()', 'runGrading(', 'the attempt is graded without a check');
+  assert.match(functionBody(code, 'finishAndGrade'), /attempt\.gradingFailed\(\)/, 'a retry is offered after a switch');
+
+  const leave = functionBody(code, 'leaveForOwnerChange');
+  for (const step of ['stopCapture()', 'clipsRef.current = []', "setPhase('menu')", 'SESSION_CLOSED_NOTICE']) {
+    assert.ok(leave.includes(step), `the switch does not ${step}`);
+  }
+  const stop = functionBody(code, 'stopCapture');
+  assert.match(stop, /handle\.stop\(\)/, 'the recorder is not stopped at the switch');
+  assert.match(stop, /releaseMic\(/, 'the microphone is not released at the switch');
+  /* Every clock of the attempt runs through it, so none outlives it. */
+  assert.doesNotMatch(code, /\bset(Timeout|Interval)\(/, 'a timer of the attempt runs outside it');
+});
+
+test('the standalone examiner ends its session on a switch, and asks before every stage; the mock embed is left as it was', () => {
+  const code = componentSource('LiveExaminer.tsx');
+  assert.match(
+    code,
+    /mock \? null : openSpeakingAttempt\(\s*\{\s*onOwnerLeft:\s*leaveForOwnerChange\s*\}\s*\)/,
+    'the standalone interview is not an attempt of its student, or the mock embed became one',
+  );
+  assert.match(code, /attempt \? attempt\.binding : bindToCurrentOwner\(\)/);
+
+  const start = functionBody(code, 'startTest');
+  before(start, 'await getAccessToken()', 'stillHere()', 'the token wait is not followed by a check');
+  before(start, 'await openExaminerLink(', 'link.close()', 'a session that opened after a switch is not closed');
+  before(start, 'link.close()', 'linkRef.current = link', 'a session that opened after a switch is kept');
+  before(start, 'attempt.mayStartRecording()', 'streamRef.current = stream', 'the microphone is kept without a check');
+
+  const finish = functionBody(code, 'finishTest');
+  before(finish, 'attempt.mayStartTurn()', 'endedRef.current = true', 'the interview can finish for a student who has gone');
+  before(finish, 'await stopRecorder()', 'attempt.mayAcceptRecording()', 'the recording is not checked once it has stopped');
+  before(finish, 'attempt.mayAcceptRecording()', 'attempt.beginGrading()', 'the checks are out of order');
+  before(finish, 'attempt.beginGrading()', 'gradeInterview(', 'the interview is graded without a check');
+
+  const leave = functionBody(code, 'leaveForOwnerChange');
+  for (const step of [
+    'endedRef.current = true',
+    'link?.close()',
+    'rec.ondataavailable = null',
+    'rec.stop()',
+    'recChunksRef.current = []',
+    'cleanupAudio()',
+    'clearTimeout',
+    'clearInterval',
+    "setPhase('menu')",
+    'SESSION_CLOSED_NOTICE',
+  ]) {
+    assert.ok(leave.includes(step), `the switch does not ${step}`);
+  }
+  assert.match(functionBody(code, 'abandonToMenu'), /attemptRef\.current\?\.close\(\)/);
+  /* The mock embed's own teardown is untouched (R2B-02). */
+  assert.match(code, /examinerLeftScreen\(openedFor\) === 'suspended'\) onSuspend\?\.\(\)/);
 });

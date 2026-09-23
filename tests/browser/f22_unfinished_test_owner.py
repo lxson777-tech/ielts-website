@@ -49,6 +49,22 @@ THIRD CODEX ROUND (23 September 2026), two more journeys:
     clock of its own. A mock's papers are kept inside that mock sitting now,
     never in the one slot a paper opened on its own uses.
 
+FOURTH CODEX ROUND (23 September 2026), two more journeys:
+  - Step 13, R2C-02: A has a mock (M1) open in Writing in one tab and starts
+    a fresh mock (M2) in a second tab. M1's tab stops on its own stopped
+    screen, told by the other tab's write, and nothing it does changes M2 or
+    its answers. Two more variants stand in for a storage event that a tab
+    MISSED (a write made from the page itself raises no event in that same
+    page, which is exactly a missed event): typing in a sitting that was
+    replaced, and finishing one, are both refused, the replacement is found
+    from the refusal, and the newer record is left byte for byte.
+  - Step 14, R2C-03: the drill's saved deadline is moved close (a reload
+    then puts that short deadline on screen), A signs out in a second tab and
+    back in. The still-open page shows the time the deadline leaves, not the
+    number frozen at the sign-out; past the deadline it hands the paper in
+    at once with A's answers and no time given back. A plain time-up is
+    checked too: the answer given after the page opened is the one handed in.
+
 WHAT THIS IS NOT
 - Not a real Supabase project. `tools/mr-ez-dev-server.mjs` stands in for it,
   in memory, on this machine only. Every fact below is about that stand-in,
@@ -58,23 +74,23 @@ WHAT THIS IS NOT
 - No real account, no real key, no paid API call, no deployment.
 
 Requires, already running before this script starts (the second round used
-the stand-in on 8813 and the site on 4366, the third 8821 and 4374; override
-with IELTS_STANDIN_URL and IELTS_BASE_URL):
-  1. the stand-in:  MR_EZ_DEV_PORT=8821 node tools/mr-ez-dev-server.mjs
+the stand-in on 8813 and the site on 4366, the third 8821 and 4374, the
+fourth 8833 and 4386; override with IELTS_STANDIN_URL and IELTS_BASE_URL):
+  1. the stand-in:  MR_EZ_DEV_PORT=8833 node tools/mr-ez-dev-server.mjs
   2. the site, with its OWN Vite dependency cache (astro.config.f22.mjs;
      see astro.config.f21.mjs for why two dev servers on one checkout must
      not share one):
-                    PUBLIC_SUPABASE_URL=http://127.0.0.1:8821
+                    PUBLIC_SUPABASE_URL=http://127.0.0.1:8833
                     PUBLIC_SUPABASE_ANON_KEY=local-anon-key
-                    PUBLIC_MR_EZ_URL=http://127.0.0.1:8821/tutor
-                    PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8821/no-examiner-here
-                    npx astro dev --config astro.config.f22.mjs --port 4374 --host 127.0.0.1
+                    PUBLIC_MR_EZ_URL=http://127.0.0.1:8833/tutor
+                    PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8833/no-examiner-here
+                    npx astro dev --config astro.config.f22.mjs --port 4386 --host 127.0.0.1
      The examiner address is deliberately one the stand-in answers "not
-     found" on (step 12). Without it, Step 12's examiner checks are reported
+     found" on (step 11). Without it, Step 11's examiner checks are reported
      as not run rather than passed.
 
 Run with:
-  IELTS_STANDIN_URL=http://127.0.0.1:8821 python tests/browser/f22_unfinished_test_owner.py
+  IELTS_STANDIN_URL=http://127.0.0.1:8833 python tests/browser/f22_unfinished_test_owner.py
 
 Every email, password and answer below is SYNTHETIC, made up for this run.
 """
@@ -89,12 +105,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 # final_helpers.py reads these at IMPORT time, so they must be set before the
 # import below. Its own results file and screenshot prefix, so nothing here
 # can collide with another tester's evidence. The first round wrote
-# results-unfinished-test.md with "unfinished-" screenshots and the second
-# results-unfinished-test-2.md with "unfinished2-"; this round's defaults
-# write a third file beside them and leave both as they were.
-os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4374/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-3")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished3-")
+# results-unfinished-test.md with "unfinished-" screenshots, the second
+# results-unfinished-test-2.md with "unfinished2-" and the third
+# results-unfinished-test-3.md with "unfinished3-"; this round's defaults
+# write a fourth file beside them and leave all three as they were.
+os.environ.setdefault("IELTS_BASE_URL", "http://127.0.0.1:4386/ielts-website")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-unfinished-test-4")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished4-")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 
@@ -102,6 +119,7 @@ import f20_account_journey as journey  # noqa: E402
 from final_helpers import (  # noqa: E402
     BASE_URL,
     attach_diagnostics,
+    events_for,
     goto,
     new_context,
     read_record,
@@ -117,7 +135,7 @@ from final_helpers import (  # noqa: E402
 # The stand-in this run talks to, read the same way f20 and f21 read it, so
 # one environment variable points every journey script at the same place.
 # f20's own reads go through journey.STANDIN_URL, so it is kept in step.
-STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8821")  # the local stand-in; override per run
+STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8833")  # the local stand-in; override per run
 journey.STANDIN_URL = STANDIN_URL
 
 EMAIL_A = "synthetic-student-a-f22@example.test"
@@ -1090,6 +1108,506 @@ def run_mock_legs_step(browser, a_id):
     ctx.close()
 
 
+# ── Fourth Codex round (R2C-02, R2C-03) ─────────────────────────────────────
+
+REPLACED_SENTENCE = "A newer mock exam was started in another tab, so this one is no longer being saved."
+M1_DRAFT = "SYNTHETIC Task 1 draft in the OLDER mock, typed in the first tab."
+M2_ANSWERS = ["synthetic harbour", "synthetic friday"]
+DRILL_ACTIVITY = "drill:reading-full-006-drill-p2"
+DRILL_SECONDS = 20 * 60
+
+
+def through_to_writing(page):
+    """From a mock just started on its Listening paper: hand Listening and
+    Reading in (blank is fine, nothing here is about the scores) and carry on
+    into Writing. True once the Writing screen is up."""
+    journey.submit_and_confirm(page)
+    page.wait_for_timeout(1500)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Back to results"),
+        lambda: text_count(page, "starts in") > 0,
+    )
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start now"),
+        lambda: page.locator('[role="timer"]').count() > 0,
+    )
+    page.wait_for_timeout(800)
+    journey.submit_and_confirm(page)
+    page.wait_for_timeout(1500)
+    journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Back to results"),
+        lambda: text_count(page, "Writing starts in") > 0,
+    )
+    return journey.click_until(
+        page,
+        lambda: page.get_by_role("button", name="Start now"),
+        lambda: page.locator("textarea").count() > 0,
+    )
+
+
+def put_newer_sitting_in_place(page, key, sitting_id, answers):
+    """Write, FROM THIS PAGE ITSELF, a newer sitting over the stored one: the
+    same record with a new sitting id and a Listening paper of its own with
+    `answers`. A page's own write raises no storage event in that page, so
+    this is precisely "another tab started a fresh mock and this tab missed
+    the event". Returns the value written, byte for byte."""
+    return page.evaluate(
+        """([key, sittingId, answers]) => {
+            const held = JSON.parse(localStorage.getItem(key));
+            const paper = held.listeningTestId;
+            const now = Date.now();
+            const newer = { ...held, sittingId, legSittings: { [paper]: {
+                testId: paper, startedAt: now, endsAt: now + 40 * 60000, answers, result: null } } };
+            const text = JSON.stringify(newer);
+            localStorage.setItem(key, text);
+            return text;
+        }""",
+        [key, sitting_id, answers],
+    )
+
+
+def run_replaced_mock_step(browser, a_id):
+    """Step 13 (R2C-02), on a fresh browser for A."""
+    ns_a = f"u:{a_id}"
+    key_a = f"{ACTIVE_MOCK_KEY}::{ns_a}"
+    write_section(
+        "Step 13 - A mock left open in one tab stops when A starts a fresh one in another, and never "
+        "overwrites or removes it (Codex R2C-02)",
+        "The papers' own writes already had to name their sitting; the mock screen's own saves and its "
+        "tidy-up did not. A keystroke in an older mock (M1) left open in one tab replaced a fresh mock (M2) "
+        "the same student had started in another, papers and all, and finishing M1 deleted M2. Now only "
+        "starting a mock may replace a sitting; every other save and the tidy-up must name the stored "
+        "sitting itself, and a replaced tab stops for good.",
+    )
+    ctx = new_context(browser)
+    tab1 = ctx.new_page()
+    errors1, failed1 = attach_diagnostics(tab1)
+    tab1.on("dialog", lambda dialog: dialog.accept())
+    goto(tab1, "/dashboard")
+    tab1.wait_for_timeout(1200)
+    back = journey.ws_sign_in(tab1, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+
+    # ── Tab 1: M1, through to Writing, with a draft ──
+    goto(tab1, MOCK_PATH)
+    wait_for_mock_ready(tab1)
+    journey.click_until(
+        tab1,
+        lambda: tab1.get_by_role("button", name="Start Mock Exam"),
+        lambda: tab1.locator('[role="timer"]').count() > 0,
+    )
+    tab1.wait_for_timeout(1000)
+    in_writing = through_to_writing(tab1)
+    if in_writing:
+        tab1.locator("textarea").first.fill(M1_DRAFT)
+    tab1.wait_for_timeout(1500)
+    m1 = active_mock_for(tab1, ns_a) or {}
+    write_row(
+        "Tab 1: A's mock M1 is in Writing, with A's draft written down",
+        in_writing and m1.get("stage") == "writing" and m1.get("essay1") == M1_DRAFT and bool(m1.get("sittingId")),
+        f'stage = {m1.get("stage")}, sittingId = {m1.get("sittingId")}, essay1 = "{m1.get("essay1")}"',
+    )
+    shot(tab1, "28-m1-in-writing", MOCK_PATH)
+    mark_page(tab1)
+
+    # ── Tab 2: A starts a fresh mock M2 and answers part of its Listening ──
+    tab2 = ctx.new_page()
+    errors2, failed2 = attach_diagnostics(tab2)
+    tab2.on("dialog", lambda dialog: dialog.accept())
+    goto(tab2, MOCK_PATH)
+    wait_for_mock_ready(tab2)
+    try:
+        tab2.wait_for_selector(f"text={RESUME_HEADING}", timeout=8000)
+    except Exception:
+        pass
+    write_row(
+        "Tab 2's start screen offers M1 back and says that starting a new mock replaces it",
+        text_count(tab2, RESUME_HEADING) > 0 and text_count(tab2, "replaces this unfinished one") > 0,
+        f'offer: {text_count(tab2, RESUME_HEADING)}, "replaces this unfinished one": '
+        f'{text_count(tab2, "replaces this unfinished one")}',
+    )
+    m2_started = journey.click_until(
+        tab2,
+        lambda: tab2.get_by_role("button", name="Start Mock Exam"),
+        lambda: tab2.locator('[role="timer"]').count() > 0,
+    )
+    tab2.wait_for_timeout(1000)
+    gaps = tab2.locator('input[type="text"]:visible')
+    for index, answer in enumerate(M2_ANSWERS):
+        try:
+            gaps.nth(index).fill(answer)
+        except Exception:
+            pass
+    tab2.wait_for_timeout(1500)
+    m2 = active_mock_for(tab2, ns_a) or {}
+    m2_leg = (m2.get("legSittings") or {}).get(m2.get("listeningTestId") or "") or {}
+    m2_raw = raw_item(tab2, key_a)
+    write_row(
+        "Tab 2: M2 is a NEW sitting, with its own Listening answers kept inside it",
+        m2_started
+        and bool(m2.get("sittingId"))
+        and m2.get("sittingId") != m1.get("sittingId")
+        and sorted((m2_leg.get("answers") or {}).values()) == sorted(M2_ANSWERS),
+        f'M1 {m1.get("sittingId")} -> M2 {m2.get("sittingId")}, M2 Listening answers = '
+        f'{json.dumps(m2_leg.get("answers"))}',
+    )
+    shot(tab2, "29-m2-started-in-second-tab", MOCK_PATH)
+
+    # ── Tab 1: told by tab 2's write ──
+    tab1.bring_to_front()
+    tab1.wait_for_timeout(1500)
+    reloaded_since(tab1, "tab 1 (M1), after tab 2 started M2")
+    write_row(
+        "Tab 1 stops on its own calm screen, told by the other tab's write: the new sentence, no essay "
+        "boxes, no Finish Writing",
+        text_count(tab1, REPLACED_SENTENCE) > 0
+        and text_count(tab1, "Mock exam stopped") > 0
+        and tab1.locator("textarea").count() == 0
+        and tab1.get_by_role("button", name="Finish Writing").count() == 0,
+        f'sentence: {text_count(tab1, REPLACED_SENTENCE)}, textareas: {tab1.locator("textarea").count()}, '
+        f'Finish Writing: {tab1.get_by_role("button", name="Finish Writing").count()}',
+    )
+    shot(tab1, "30-m1-stopped-replaced-by-m2", MOCK_PATH)
+    # A student typing away at tab 1 regardless.
+    try:
+        tab1.keyboard.type("SYNTHETIC keystrokes on the stopped tab")
+    except Exception:
+        pass
+    tab1.wait_for_timeout(2500)
+    write_row(
+        "Nothing tab 1 does writes: the record is still M2, byte for byte, its Listening answers intact",
+        raw_item(tab1, key_a) == m2_raw and bool(m2_raw),
+        f"{key_a} compared byte for byte with M2 as tab 2 left it",
+    )
+    write_row(
+        "No mock was recorded for A from the stopped M1",
+        not mock_history_for(tab1, ns_a),
+        f"A's mock history = {json.dumps(mock_history_for(tab1, ns_a))}",
+    )
+    tab2.bring_to_front()
+    tab2.wait_for_timeout(1000)
+    write_row(
+        "Tab 2 carries on untouched: M2's paper is on screen with its answers, and it is not stopped",
+        tab2.locator('[role="timer"]').count() > 0 and text_count(tab2, REPLACED_SENTENCE) == 0,
+        f'timers: {tab2.locator("[role=timer]").count()}, stopped sentence: {text_count(tab2, REPLACED_SENTENCE)}',
+    )
+    report_diagnostics("Step 13 (tab 1)", errors1, failed1)
+    tab1.close()
+
+    # ── A missed event, while typing ──
+    write_note(
+        "**The two variants below stand in for a tab that MISSED the other tab's storage event.** "
+        "The newer sitting is written from the page itself, which raises no storage event in that page. "
+        "The record is otherwise exactly what a fresh mock would write."
+    )
+    in_writing2 = through_to_writing(tab2)
+    tab2.wait_for_timeout(1200)
+    m2_now = active_mock_for(tab2, ns_a) or {}
+    write_row(
+        "Tab 2 takes M2 on into Writing (the setting for the next check)",
+        in_writing2 and m2_now.get("stage") == "writing" and m2_now.get("sittingId") == m2.get("sittingId"),
+        f'stage = {m2_now.get("stage")}, sittingId = {m2_now.get("sittingId")}',
+    )
+    newer = put_newer_sitting_in_place(tab2, key_a, "SYNTHETIC-newer-sitting-missed-event", {"q1": "SYNTHETIC newer answer"})
+    mark_page(tab2)
+    tab2.wait_for_timeout(800)
+    before_typing = text_count(tab2, REPLACED_SENTENCE)
+    if tab2.locator("textarea").count():
+        tab2.locator("textarea").first.fill("SYNTHETIC Task 1 typed in M2 after it was replaced")
+    tab2.wait_for_timeout(1500)
+    reloaded_since(tab2, "tab 2 (M2), after the missed-event replacement")
+    write_row(
+        "With the event missed, tab 2 was still open before typing; the first keystroke's save is refused, "
+        "the replacement is found from that refusal, and the stopped screen shows",
+        before_typing == 0 and text_count(tab2, REPLACED_SENTENCE) > 0,
+        f"stopped sentence before typing: {before_typing}, after: {text_count(tab2, REPLACED_SENTENCE)}",
+    )
+    write_row(
+        "The keystroke wrote nothing: the newer record is there byte for byte, its paper and answer intact",
+        raw_item(tab2, key_a) == newer,
+        f"{key_a} compared byte for byte with the newer sitting written before the keystroke",
+    )
+    shot(tab2, "31-m2-stopped-on-refused-save", MOCK_PATH)
+    report_diagnostics("Step 13 (tab 2)", errors2, failed2)
+    tab2.close()
+
+    # ── A missed event, while finishing ──
+    tab3 = ctx.new_page()
+    errors3, failed3 = attach_diagnostics(tab3)
+    tab3.on("dialog", lambda dialog: dialog.accept())
+    goto(tab3, MOCK_PATH)
+    wait_for_mock_ready(tab3)
+    try:
+        tab3.wait_for_selector(f"text={RESUME_HEADING}", timeout=8000)
+    except Exception:
+        pass
+    resumed = journey.click_until(
+        tab3,
+        lambda: tab3.get_by_role("button", name="Continue where you left off"),
+        lambda: tab3.locator("textarea").count() > 0,
+    )
+    to_brief = journey.click_until(
+        tab3,
+        lambda: tab3.get_by_role("button", name="Finish Writing"),
+        lambda: on_speaking_brief(tab3),
+    )
+    tab3.wait_for_timeout(1000)
+    held = active_mock_for(tab3, ns_a) or {}
+    write_row(
+        "A third tab picks up the stored sitting and saves normally into it, on to the Speaking brief",
+        resumed and to_brief and held.get("stage") == "speaking-brief"
+        and held.get("sittingId") == "SYNTHETIC-newer-sitting-missed-event",
+        f'stage = {held.get("stage")}, sittingId = {held.get("sittingId")}',
+    )
+    newest = put_newer_sitting_in_place(tab3, key_a, "SYNTHETIC-newest-sitting-missed-event", {"q1": "SYNTHETIC newest answer"})
+    mark_page(tab3)
+    skipped = journey.click_until(
+        tab3,
+        lambda: tab3.get_by_role("button", name="Skip speaking"),
+        lambda: text_count(tab3, REPLACED_SENTENCE) > 0 or on_results(tab3),
+    )
+    tab3.wait_for_timeout(1500)
+    reloaded_since(tab3, "tab 3, after finishing a replaced sitting")
+    write_row(
+        "Finishing the replaced sitting (Skip speaking, straight to the results) stops on the stopped "
+        "screen instead of the results",
+        skipped and text_count(tab3, REPLACED_SENTENCE) > 0 and not on_results(tab3),
+        f"stopped sentence: {text_count(tab3, REPLACED_SENTENCE)}, results: {on_results(tab3)}",
+    )
+    write_row(
+        "Finishing it removed nothing: the newer record is still there byte for byte",
+        raw_item(tab3, key_a) == newest,
+        f"{key_a} compared byte for byte with the newer sitting written before the finish",
+    )
+    write_row(
+        "And recorded nothing: A's mock history is still empty",
+        not mock_history_for(tab3, ns_a),
+        f"A's mock history = {json.dumps(mock_history_for(tab3, ns_a))}",
+    )
+    shot(tab3, "32-finish-of-replaced-sitting-refused", MOCK_PATH)
+    report_diagnostics("Step 13 (tab 3)", errors3, failed3)
+    ctx.close()
+
+
+def set_saved_deadline(page, namespace, ends_at):
+    """Move the saved deadline of `namespace`'s drill sitting to `ends_at`,
+    leaving every other field exactly as it is."""
+    return journey.settle(
+        page,
+        lambda pg: pg.evaluate(
+            """([key, endsAt]) => {
+                const held = JSON.parse(localStorage.getItem(key));
+                if (!held) return null;
+                held.endsAt = endsAt;
+                localStorage.setItem(key, JSON.stringify(held));
+                return held;
+            }""",
+            [f"{SESSION_KEY}::{namespace}", ends_at],
+        ),
+    )
+
+
+def reload_into_paper(page):
+    try:
+        page.reload(wait_until="load")
+    except Exception:
+        goto(page, DRILL_PATH)
+    try:
+        page.wait_for_selector('[role="timer"]', timeout=20000)
+    except Exception:
+        pass
+    page.wait_for_timeout(1500)
+
+
+def score_showing(page):
+    return page.get_by_role("button", name="Review Answers").count() > 0
+
+
+LEARNER_RECORD_KEY = "ielts.learning.record.v1"
+
+
+def drill_events(page, namespace):
+    """The drill's events in `namespace`'s own learner record, read by its
+    exact key (read_record prefers the anonymous owner's record, which is
+    not the one a signed-in student's paper is recorded in)."""
+    return events_for(json_item(page, f"{LEARNER_RECORD_KEY}::{namespace}"), DRILL_ACTIVITY)
+
+
+def run_deadline_step(browser, a_id):
+    """Step 14 (R2C-03), on a fresh browser for A."""
+    ns_a = f"u:{a_id}"
+    write_section(
+        "Step 14 - The open page's clock follows the saved deadline across a sign-out, and a paper that "
+        "ran out while A was away is handed in at once (Codex R2C-03)",
+        "The player used to freeze a count-down while A was away and carry on from the frozen number when "
+        "A was back on the same open page: ten minutes away cost nothing there, while a reload of the same "
+        "sitting found it expired. Every reading now comes from the saved deadline. To keep the run short "
+        "the saved deadline is moved close and the page reloaded, so the page holds that short deadline "
+        "BEFORE the sign-out; from there it is never reloaded.",
+    )
+    ctx = new_context(browser)
+    page = ctx.new_page()
+    errors, failed = attach_diagnostics(page)
+    page.on("dialog", lambda dialog: dialog.accept())
+    goto(page, "/dashboard")
+    page.wait_for_timeout(1200)
+    back = journey.ws_sign_in(page, EMAIL_A, PASSWORD_A)
+    write_row("A is signed in on a fresh browser", back == a_id, f"signed in as {back}")
+    other = ctx.new_page()
+    goto(other, "/dashboard")
+    other.wait_for_timeout(1200)
+
+    # ── 14a: back before the deadline ──
+    page.bring_to_front()
+    open_drill_from_hub(page)
+    journey.start_drill_if_needed(page)
+    page.wait_for_timeout(700)
+    try:
+        page.locator("select").first.select_option(index=A_CHOICE_INDEX)
+    except Exception:
+        pass
+    page.wait_for_timeout(900)
+    deadline = int(time.time() * 1000) + 150_000
+    set_saved_deadline(page, ns_a, deadline)
+    reload_into_paper(page)
+    mark_page(page)
+    _, shown = clock_seconds(page)
+    expected = round((deadline - time.time() * 1000) / 1000)
+    write_row(
+        "The drill runs with a saved deadline about 150 seconds ahead, and the open page shows it",
+        shown is not None and abs(shown - expected) <= 3,
+        f"clock shows {shown} s, the saved deadline leaves {expected} s",
+    )
+    _, at_signout = clock_seconds(page)
+    journey.ws_sign_out(other)
+    page.bring_to_front()
+    page.wait_for_timeout(1500)
+    write_row(
+        "A signs out in the second tab and the open drill stops",
+        text_count(page, "You signed out during this test") > 0,
+        f'"You signed out during this test": {text_count(page, "You signed out during this test")}',
+    )
+    away_until = time.time() + 25
+    while time.time() < away_until:
+        page.wait_for_timeout(1000)
+    again = journey.ws_sign_in(other, EMAIL_A, PASSWORD_A)
+    page.bring_to_front()
+    page.wait_for_timeout(1200)
+    reloaded_since(page, "A's drill, after signing back in (deadline ahead)")
+    text, left = clock_seconds(page)
+    expected = round((deadline - time.time() * 1000) / 1000)
+    write_row(
+        "Back on the same open page, the clock shows what the deadline leaves, not the number frozen at "
+        "the sign-out",
+        again == a_id
+        and left is not None
+        and at_signout is not None
+        and abs(left - expected) <= 3
+        and left <= at_signout - 15,
+        f'at the sign-out the clock read {at_signout} s; back after about 25 s away it reads "{text}" '
+        f"({left} s); the saved deadline leaves {expected} s",
+    )
+    shot(page, "33-back-before-deadline-clock-from-deadline", DRILL_PATH)
+
+    # ── 14b: back after the deadline ──
+    try:
+        page.locator("select").nth(1).select_option(index=2)
+    except Exception:
+        pass
+    page.wait_for_timeout(900)
+    deadline = int(time.time() * 1000) + 20_000
+    set_saved_deadline(page, ns_a, deadline)
+    reload_into_paper(page)
+    mark_page(page)
+    kept = (session_for(page, ns_a) or {}).get("answers") or {}
+    journey.ws_sign_out(other)
+    page.bring_to_front()
+    page.wait_for_timeout(1200)
+    stopped = text_count(page, "You signed out during this test") > 0
+    while time.time() * 1000 < deadline + 8_000:
+        page.wait_for_timeout(1000)
+    anon_ns = anon_namespace(page)
+    a_events_away = drill_events(page, ns_a)
+    anon_events_away = drill_events(page, anon_ns) if anon_ns else []
+    write_row(
+        "A is away past the deadline; the stopped paper was not handed in for anybody meanwhile",
+        stopped and not a_events_away and not anon_events_away and bool(session_for(page, ns_a)),
+        f"stopped = {stopped}, drill events in A's record = {len(a_events_away)}, in the signed-out "
+        f"device's = {len(anon_events_away)}, A's sitting still saved = {bool(session_for(page, ns_a))}",
+    )
+    again = journey.ws_sign_in(other, EMAIL_A, PASSWORD_A)
+    page.bring_to_front()
+    page.wait_for_timeout(2500)
+    reloaded_since(page, "A's drill, after signing back in (deadline passed)")
+    text, left = clock_seconds(page)
+    events = drill_events(page, ns_a)
+    latest = events[-1] if events else {}
+    answered = {
+        (item.get("itemId") or "").split(":")[-1]: item.get("firstAnswer")
+        for item in latest.get("items") or []
+        if item.get("firstAnswer")
+    }
+    write_row(
+        "Back on the open page, the paper is handed in at once, as an expired sitting is on a fresh load: "
+        "the score is showing and the clock reads 00:00",
+        again == a_id and score_showing(page) and left == 0,
+        f'score showing = {score_showing(page)}, clock "{text}"',
+    )
+    used = (latest.get("outcome") or {}).get("secondsUsed")
+    write_row(
+        "No time was given back: the time used is the whole paper, and A's answers (both, including the "
+        "one given after the first reload) were handed in",
+        used == DRILL_SECONDS
+        and len(answered) >= 2
+        and set(kept.values()) <= set(answered.values()),
+        f"secondsUsed = {used} (paper {DRILL_SECONDS} s), saved answers {json.dumps(kept)}, "
+        f"handed in {json.dumps(answered)}",
+    )
+    write_row(
+        "The finished sitting is no longer saved as unfinished",
+        session_for(page, ns_a) is None,
+        f"A's standalone slot = {json.dumps(session_for(page, ns_a))}",
+    )
+    shot(page, "34-back-after-deadline-handed-in", DRILL_PATH)
+
+    # ── 14c: a plain time-up hands in the answer given after the page opened ──
+    events_before = len(drill_events(page, ns_a))
+    open_drill_from_hub(page)
+    journey.start_drill_if_needed(page)
+    page.wait_for_timeout(700)
+    deadline = int(time.time() * 1000) + 18_000
+    set_saved_deadline(page, ns_a, deadline)
+    reload_into_paper(page)
+    mark_page(page)
+    try:
+        page.locator("select").first.select_option(index=A_CHOICE_INDEX)
+    except Exception:
+        pass
+    chosen = ((session_for(page, ns_a) or {}).get("answers") or {})
+    while time.time() * 1000 < deadline + 6_000:
+        page.wait_for_timeout(1000)
+    reloaded_since(page, "A's drill, plain time-up")
+    events = drill_events(page, ns_a)
+    latest = events[-1] if len(events) > events_before else {}
+    answered = [item.get("firstAnswer") for item in latest.get("items") or [] if item.get("firstAnswer")]
+    write_row(
+        "When time runs out on the open page, the paper is handed in WITH the answer given after the page "
+        "opened (the timer used to hand in the answers of the moment it started)",
+        score_showing(page)
+        and bool(chosen)
+        and latest.get("completion") == "completed"
+        and set(chosen.values()) <= set(answered),
+        f'score showing = {score_showing(page)}, answer given after the reload {json.dumps(chosen)}, '
+        f'handed in {json.dumps(answered)}, completion = {latest.get("completion")}',
+    )
+    shot(page, "35-plain-time-up-keeps-late-answer", DRILL_PATH)
+    report_diagnostics("Step 14", errors, failed)
+    ctx.close()
+
+
 def record_answers(record):
     """Every first answer in every item of every event in a learner record."""
     out = []
@@ -1124,7 +1642,10 @@ def run():
         "stamp naming A) and R2-03 (the unfinished mock exam, per student, resumable by its own "
         "student only). Steps 11 and 12 are the third: R2B-02 (an account change during Speaking "
         "is a suspension back to the Speaking brief, not a cancellation to the results) and R2B-03 "
-        "(a mock's papers are kept inside their own sitting, apart from standalone papers)."
+        "(a mock's papers are kept inside their own sitting, apart from standalone papers). "
+        "Steps 13 and 14 are the fourth: R2C-02 (a mock left open in one tab never overwrites or "
+        "removes a fresh one started in another, and stops) and R2C-03 (the open page's clock "
+        "follows the saved deadline across a sign-out, with no time given back)."
     )
 
     with sync_playwright() as p:
@@ -1351,6 +1872,8 @@ def run():
         run_legacy_stamp_step(browser, a_id)
         run_mock_steps(browser, a_id, b_id)
         run_mock_legs_step(browser, a_id)
+        run_replaced_mock_step(browser, a_id)
+        run_deadline_step(browser, a_id)
         browser.close()
 
     write_note(
