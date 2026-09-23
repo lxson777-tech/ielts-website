@@ -28,7 +28,15 @@ import {
   currentMockOwner,
   saveMockAttempt,
   overallMockBand,
+  clearActiveMock,
+  loadActiveMock,
+  reconcileActiveMock,
+  saveActiveMock,
+  writingSecondsLeftAt,
+  type ActiveMock,
   type MockEssay,
+  type MockLegResult,
+  type MockStage,
 } from '../lib/tests/mock';
 import { ownerStillCurrent } from '../lib/test-session';
 import { onOwnerChange } from '../lib/store-owner';
@@ -45,16 +53,10 @@ import TestPlayer from './TestPlayer';
 import LiveExaminer from './LiveExaminer';
 import AuthModal from './AuthModal';
 
-type Stage =
-  | 'start'
-  | 'listening'
-  | 'transition-reading'
-  | 'reading'
-  | 'transition-writing'
-  | 'writing'
-  | 'speaking-brief'
-  | 'speaking'
-  | 'results';
+/* The stages, and the shape one finished paper takes, are declared in
+   src/lib/tests/mock.ts, because a sitting is written down as it goes and
+   what is saved has to match what the screen reads back. */
+type Stage = MockStage;
 
 /** Result handed back by the embedded live examiner (LiveExaminer's
     `onComplete`), kept as its own type since MockAttempt only stores the
@@ -64,13 +66,7 @@ interface SpeakingLegResult {
   criteria: Record<string, number>;
 }
 
-interface LegResult {
-  raw: number;
-  total: number;
-  band: number;
-  bandLabel: string;
-  secondsUsed: number;
-}
+type LegResult = MockLegResult;
 
 const TASK1_ACADEMIC = WRITING_PROMPTS.filter((p) => p.task === 'task1' && p.variant !== 'letter');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
@@ -176,6 +172,19 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const [speakingSkipped, setSpeakingSkipped] = useState(false);
   const savedRef = useRef(false);
 
+  /* THE ONE CLOCK THIS SCREEN OWNS, AS A DEADLINE (R2-03, 23 September 2026).
+     A remaining count cannot survive being put down and picked up again
+     without handing the student extra exam time, so Writing's hour is stored
+     as the moment it runs out. The Listening and Reading legs keep their own
+     deadline in src/lib/test-session.ts, where they always did, under the
+     same owner. The short beat between two papers is not exam time and is
+     simply restarted. */
+  const [writingEndsAt, setWritingEndsAt] = useState<number | null>(null);
+
+  /* A sitting of this student's own, written down earlier and not finished:
+     the offer to pick it up again. Null while there is nothing to offer. */
+  const [resumable, setResumable] = useState<ActiveMock | null>(null);
+
   /* WHOSE MOCK DAY THIS IS (finding 1 of the 23 September 2026 review).
      Captured when the sitting begins, the same way a single paper binds
      itself in TestPlayer.tsx. A mock chains four papers over nearly three
@@ -183,7 +192,15 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      a sign-out here, or a sign-in in another tab, must not turn one
      student's essays and bands into another student's record. */
   const mockOwnerRef = useRef('');
-  const [ownerChanged, setOwnerChanged] = useState(false);
+  /* Why the sitting on screen is stopped, or null while it is not: nobody
+     signed in now, or somebody else. Kept as the reason rather than a yes or
+     no, so that A signing out and B then signing in redraws the stopped
+     screen with the right heading (a flag that was already "yes" would not
+     have redrawn it). */
+  const [ownerChange, setOwnerChange] = useState<'signed-out' | 'other-student' | null>(null);
+  const ownerChanged = ownerChange !== null;
+  const stoppedReason = (): 'signed-out' | 'other-student' =>
+    currentMockOwner().startsWith('u:') ? 'other-student' : 'signed-out';
 
   /* A mock sitting is a timed assessment from the first paper to the last, so
      flag it on <body> for the Mr EZ tutor panel (see readPlace() in
@@ -206,9 +223,11 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const readingTest: PracticeTest | undefined = readingTests.find((t) => t.id === readingId) ?? readingTests[0];
 
   // Stable for the sitting: the same Task 1/Task 2 pair is shown whether the
-  // student is still on the start screen or deep into the Writing leg.
-  const [task1Prompt] = useState<EssayPrompt | undefined>(() => randomOf(TASK1_ACADEMIC));
-  const [task2Prompt] = useState<EssayPrompt | undefined>(() => randomOf(TASK2_PROMPTS));
+  // student is still on the start screen or deep into the Writing leg. Both
+  // are written down with the sitting, so picking it up again does not
+  // quietly swap the questions for two different ones.
+  const [task1Prompt, setTask1Prompt] = useState<EssayPrompt | undefined>(() => randomOf(TASK1_ACADEMIC));
+  const [task2Prompt, setTask2Prompt] = useState<EssayPrompt | undefined>(() => randomOf(TASK2_PROMPTS));
 
   /* Leaving mid-mock: Listening and Reading already warn on their own (see
      TestPlayer's beforeunload effect, active for the whole time each nested
@@ -233,33 +252,47 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     return () => window.removeEventListener('beforeunload', handler);
   }, [stage]);
 
-  /* Writing's single 60-minute clock, running only while stage === 'writing'. */
+  /* Writing's single 60-minute clock, running only while stage === 'writing'.
+     It counts DOWN TO A MOMENT rather than counting a number down, so a
+     refresh or a reopened sitting resumes with the time that is actually
+     left. A deadline already in the past simply ends the leg. */
   useEffect(() => {
     if (stage !== 'writing') return;
-    const id = window.setInterval(() => {
-      setWritingSecondsLeft((t) => {
-        if (t <= 1) {
-          window.clearInterval(id);
-          setStage('results');
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
+    if (writingEndsAt === null) {
+      setWritingEndsAt(Date.now() + WRITING_SECONDS * 1000);
+      return;
+    }
+    const tick = () => {
+      const left = writingSecondsLeftAt(writingEndsAt, Date.now(), WRITING_SECONDS);
+      setWritingSecondsLeft(left);
+      if (left <= 0) {
+        window.clearInterval(id);
+        setStage('results');
+      }
+    };
+    const id = window.setInterval(tick, 1000);
+    tick();
     return () => window.clearInterval(id);
-  }, [stage]);
+  }, [stage, writingEndsAt]);
 
   /* Record the combined mock attempt exactly once, as soon as both legs'
-     results and the essays are available. */
+     results and the essays are available. `ownerChanged` is a dependency
+     so that a sitting which reached its results while its student was
+     signed out (the Writing clock ran out behind the stopped screen) is
+     recorded the moment that same student is back, rather than never. */
   useEffect(() => {
     if (stage !== 'results' || savedRef.current) return;
     if (!listeningResult || !readingResult || !listeningTest || !readingTest) return;
     /* Never record a sitting under somebody who did not sit it. */
     if (!ownerStillCurrent(mockOwnerRef.current)) {
-      setOwnerChanged(true);
+      setOwnerChange(stoppedReason());
       return;
     }
     savedRef.current = true;
+    /* The sitting is over and recorded, so it is no longer "in progress":
+       the written-down copy goes, and only this student's copy of it. What
+       was recorded lives in the mock history from here on. */
+    clearActiveMock(mockOwnerRef.current);
     const essays: MockEssay[] = [];
     if (task1Prompt) essays.push({ promptId: task1Prompt.id, task: 'task1', text: essay1, wordCount: countWords(essay1) });
     if (task2Prompt) essays.push({ promptId: task2Prompt.id, task: 'task2', text: essay2, wordCount: countWords(essay2) });
@@ -307,27 +340,162 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       sourceMaterial: [paperExposureKey(listeningTest.id), paperExposureKey(readingTest.id)],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage]);
+  }, [stage, ownerChanged]);
 
   function beginMock() {
     const now = new Date().toISOString();
     mockOwnerRef.current = currentMockOwner();
-    setOwnerChanged(false);
+    setOwnerChange(null);
+    /* A fresh sitting replaces only THIS student's written-down one. Another
+       student's unfinished mock on this browser is under their own key and
+       is left exactly where it is. */
+    setResumable(null);
+    savedRef.current = false;
     setMockId(nextMockId(now));
     setStartedAt(now);
+    setListeningResult(null);
+    setReadingResult(null);
+    setSpeakingResult(null);
+    setSpeakingSkipped(false);
+    setEssay1('');
+    setEssay2('');
+    setWritingEndsAt(null);
+    setWritingSecondsLeft(WRITING_SECONDS);
     setStage('listening');
   }
 
+  /* ── The sitting, written down as it goes (R2-03) ──────────────────────
+     Everything that would otherwise exist only in this component's memory:
+     which stage, which papers, which prompts, the legs already finished,
+     both essays and the Writing deadline. Saved under the student sitting
+     it, so a refresh, a stray navigation or a sign-out and a sign-in later
+     hands it back to that same student and to nobody else. */
+  function snapshot(): ActiveMock {
+    return {
+      version: 1,
+      owner: mockOwnerRef.current,
+      mockId,
+      startedAt,
+      stage,
+      listeningTestId: listeningId,
+      readingTestId: readingId,
+      task1PromptId: task1Prompt?.id ?? null,
+      task2PromptId: task2Prompt?.id ?? null,
+      listening: listeningResult,
+      reading: readingResult,
+      essay1,
+      essay2,
+      writingEndsAt,
+      speakingBand: speakingResult?.overallBand ?? null,
+      speakingCriteria: speakingResult?.criteria ?? null,
+      speakingSkipped,
+      savedAt: Date.now(),
+    };
+  }
+
+  /* Declared after the recording effect on purpose: effects run in order, so
+     on the results stage the record is written and the in-progress copy
+     cleared first, and this one then has nothing to write (saveActiveMock
+     refuses the start and results stages, and refuses outright once the
+     student who started the sitting is no longer the one signed in). */
+  useEffect(() => {
+    if (stage === 'start' || stage === 'results' || !mockOwnerRef.current) return;
+    if (!ownerStillCurrent(mockOwnerRef.current)) return;
+    saveActiveMock(snapshot());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    stage,
+    mockId,
+    startedAt,
+    listeningId,
+    readingId,
+    task1Prompt,
+    task2Prompt,
+    listeningResult,
+    readingResult,
+    essay1,
+    essay2,
+    writingEndsAt,
+    speakingResult,
+    speakingSkipped,
+  ]);
+
+  /** Put a written-down sitting back on screen. Only ever called with a
+      record that belongs to the owner using this browser right now: the
+      student's own offer on the start screen, or their own sitting when they
+      sign back in while it is still open. */
+  function resume(written: ActiveMock) {
+    const held = reconcileActiveMock(written);
+    mockOwnerRef.current = held.owner;
+    savedRef.current = false;
+    setOwnerChange(null);
+    setResumable(null);
+    setMockId(held.mockId);
+    setStartedAt(held.startedAt);
+    setListeningId(held.listeningTestId || listeningId);
+    setReadingId(held.readingTestId || readingId);
+    setTask1Prompt(WRITING_PROMPTS.find((p) => p.id === held.task1PromptId) ?? task1Prompt);
+    setTask2Prompt(WRITING_PROMPTS.find((p) => p.id === held.task2PromptId) ?? task2Prompt);
+    setListeningResult(held.listening);
+    setReadingResult(held.reading);
+    setEssay1(held.essay1);
+    setEssay2(held.essay2);
+    setSpeakingSkipped(held.speakingSkipped);
+    setSpeakingResult(
+      held.speakingBand != null ? { overallBand: held.speakingBand, criteria: held.speakingCriteria ?? {} } : null,
+    );
+    /* The deadline exactly as it was written down: never restarted, never
+       extended. A between-papers screen picked up later starts its short
+       beat again, which is not exam time. The Speaking interview is never
+       re-entered on its own (reconcileActiveMock lands it on the brief). */
+    setWritingEndsAt(held.writingEndsAt);
+    setWritingSecondsLeft(writingSecondsLeftAt(held.writingEndsAt, Date.now(), WRITING_SECONDS));
+    setStage(held.stage);
+  }
+
+  /* An unfinished sitting of this student's own, found when the page opens.
+     Offered, never forced: the student chooses to carry on or to start again. */
+  useEffect(() => {
+    setResumable(loadActiveMock());
+  }, []);
+
   /* The account using this browser changed part way through the sitting.
-     The mock stops here and records nothing: each leg TestPlayer already
-     finished is saved under the student who sat it, and the combined record
-     is simply not written, because it would have to be written under
-     somebody who did not sit it. */
+     The mock stops and records nothing under the new account: each leg
+     TestPlayer already finished is saved under the student who sat it, and
+     the combined record is simply not written, because it would have to be
+     written under somebody who did not sit it.
+
+     The flag is recomputed rather than latched, so the student who started
+     the sitting signing back in clears it and lands back in their own mock
+     (R2-03, see the effect below). Whoever is using the browser now is also
+     offered their OWN unfinished sitting, if they have one. */
   useEffect(() => {
     return onOwnerChange(() => {
-      if (mockOwnerRef.current && !ownerStillCurrent(mockOwnerRef.current)) setOwnerChanged(true);
+      setOwnerChange(
+        mockOwnerRef.current && !ownerStillCurrent(mockOwnerRef.current) ? stoppedReason() : null,
+      );
+      setResumable(loadActiveMock());
     });
   }, []);
+
+  /* The student who started the sitting is back, in this same open tab. The
+     stopped screen had unmounted whatever paper was on screen, so the sitting
+     is put back through the same path a reopened page uses: a paper handed
+     in just before the sign-out counts as done instead of opening a second
+     sitting of it, and a live interview lands on its brief. */
+  const wasStoppedRef = useRef(false);
+  useEffect(() => {
+    if (ownerChanged) {
+      wasStoppedRef.current = true;
+      return;
+    }
+    if (!wasStoppedRef.current) return;
+    wasStoppedRef.current = false;
+    if (!mockOwnerRef.current || !ownerStillCurrent(mockOwnerRef.current)) return;
+    if (stage === 'start' || stage === 'results') return;
+    resume(snapshot());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownerChanged]);
 
   /* Developer shortcut for manual/automated verification: ?stage=speaking
      jumps straight to the Speaking brief screen with synthesized Listening,
@@ -372,9 +540,13 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
 
   /* The account changed part way through: the sitting stops here, nothing is
      recorded, and the screen says so plainly. Whatever each finished leg
-     already saved stays with the student who sat it. */
+     already saved stays with the student who sat it, and so does the
+     written-down sitting itself: "Start a fresh mock exam" only clears this
+     screen's memory and never touches that student's saved copy, so they
+     can pick it up when they are back (straight away in this tab, or from
+     the offer on the start screen). */
   if (ownerChanged) {
-    const otherStudent = currentMockOwner().startsWith('u:');
+    const otherStudent = ownerChange === 'other-student';
     return (
       <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
         <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover" role="status">
@@ -387,6 +559,9 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
           <p className="mt-3 text-ink-muted">
             {t('The account on this browser changed part way through, so nothing from this sitting was saved to it. Each paper that was already finished stays with the student who sat it.')}
           </p>
+          <p className="mt-2 text-ink-muted">
+            {t('The sitting itself is kept for the student who started it, and it picks up where it stopped when they sign back in on this browser.')}
+          </p>
           <div className="mt-8 flex items-center justify-between gap-3">
             <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
               {t('Back')}
@@ -394,16 +569,24 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
             <button
               type="button"
               onClick={() => {
-                setOwnerChanged(false);
+                /* Memory only. The previous student's saved sitting stays
+                   under their own key, untouched. */
+                mockOwnerRef.current = '';
+                setOwnerChange(null);
                 savedRef.current = false;
+                setMockId('');
+                setStartedAt('');
                 setListeningResult(null);
                 setReadingResult(null);
                 setSpeakingResult(null);
                 setSpeakingSkipped(false);
                 setEssay1('');
                 setEssay2('');
+                setWritingEndsAt(null);
                 setWritingSecondsLeft(WRITING_SECONDS);
-                mockOwnerRef.current = '';
+                /* The start screen then offers whoever is here now their OWN
+                   unfinished sitting, if they have one. */
+                setResumable(loadActiveMock());
                 setStage('start');
               }}
               className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
@@ -436,6 +619,15 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
         onChangeReading={setReadingId}
         pairLabelText={pairLabel(ALL_TESTS, { listening: listeningTest, reading: readingTest })}
         onStart={beginMock}
+        resumable={resumable}
+        onResume={() => {
+          /* Read again at the moment of the click, never taken from what
+             was on screen: the account may have changed since the offer
+             was drawn, and only the current owner's own sitting resumes. */
+          const held = loadActiveMock();
+          if (held) resume(held);
+          else setResumable(null);
+        }}
       />
     );
   }
@@ -546,6 +738,8 @@ function StartScreen({
   onChangeReading,
   pairLabelText,
   onStart,
+  resumable,
+  onResume,
 }: {
   hubUrl: string;
   listeningTests: PracticeTest[];
@@ -556,6 +750,8 @@ function StartScreen({
   onChangeReading: (id: string) => void;
   pairLabelText: string;
   onStart: () => void;
+  resumable: ActiveMock | null;
+  onResume: () => void;
 }) {
   const { t } = useT();
   return (
@@ -563,6 +759,7 @@ function StartScreen({
       <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover">
         <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Mock Exam Day')}</p>
         <h1 className="mt-1 font-display text-2xl font-extrabold">{t('A full IELTS sitting, back to back')}</h1>
+        {resumable && <ResumeOffer held={resumable} onResume={onResume} />}
         <p className="mt-2 text-ink-muted">
           {t('Listening, then Reading, then Writing, then Speaking, the same order and pace as the real test day, with no breaks in between. About 2 hours 45 minutes for the first three papers, plus 14 minutes for Speaking.')}
         </p>
@@ -654,6 +851,72 @@ function StartScreen({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The paper a sitting stopped on, as the student would name it. Paper names
+    stay English in both interface languages. */
+function paperAt(stage: MockStage): string {
+  if (stage === 'listening') return 'Listening';
+  if (stage === 'transition-reading' || stage === 'reading') return 'Reading';
+  if (stage === 'transition-writing' || stage === 'writing') return 'Writing';
+  return 'Speaking';
+}
+
+/** The student's own unfinished sitting, offered back on the start screen
+    (R2-03). Only ever given a record loadActiveMock() returned, which is
+    the current owner's and nobody else's. It says what is already done and
+    where the sitting picks up, in plain words, and it is honest about the
+    Writing clock: that deadline kept running while the student was away. */
+function ResumeOffer({ held, onResume }: { held: ActiveMock; onResume: () => void }) {
+  const { t, tn } = useT();
+  /* Read as the sitting WILL be put back: a paper handed in just before the
+     page went away already counts as finished here. */
+  const shown = useMemo(() => reconcileActiveMock(held), [held]);
+  const finished: string[] = [];
+  if (shown.listening) finished.push('Listening');
+  if (shown.reading) finished.push('Reading');
+  if (shown.stage === 'speaking-brief' || shown.stage === 'speaking') finished.push('Writing');
+  const writingLeft =
+    shown.stage === 'writing' && shown.writingEndsAt !== null
+      ? writingSecondsLeftAt(shown.writingEndsAt, Date.now(), WRITING_SECONDS)
+      : null;
+  return (
+    <div className="mt-6 mb-6 rounded-card border border-brand/30 bg-brand-tint p-5" role="region" aria-labelledby="mock-resume-heading">
+      <p id="mock-resume-heading" className="font-display text-base font-bold text-ink">
+        {t('You have an unfinished mock exam')}
+      </p>
+      <p className="mt-1 text-sm text-ink-muted">
+        {finished.length > 0
+          ? t('Finished so far: {papers}.', { papers: finished.join(', ') })
+          : t('No paper is finished yet.')}{' '}
+        {t('It picks up at {paper}.', { paper: paperAt(shown.stage) })}
+      </p>
+      {writingLeft !== null && (
+        <p className="mt-1 text-sm text-ink-muted">
+          {/* Whole minutes, rounded DOWN: never promise a minute that is
+              not there. The clock itself shows the seconds once resumed. */}
+          {writingLeft >= 60
+            ? tn(Math.floor(writingLeft / 60), {
+                one: '{n} minute is left on the Writing clock.',
+                other: '{n} minutes are left on the Writing clock.',
+              })
+            : writingLeft > 0
+              ? t('Less than a minute is left on the Writing clock.')
+              : t('The Writing time has run out.')}
+        </p>
+      )}
+      <button
+        type="button"
+        onClick={onResume}
+        className="mt-4 rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+      >
+        {t('Continue where you left off')}
+      </button>
+      <p className="mt-3 text-xs text-ink-muted">
+        {t('Starting a new mock exam below replaces this unfinished one. Papers you already finished stay in your history.')}
+      </p>
     </div>
   );
 }

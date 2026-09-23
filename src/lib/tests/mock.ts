@@ -11,12 +11,13 @@
    one combined "a mock happened" record. */
 
 import type { PracticeTest } from './schema';
-import { getBestBand, recordTestAttempt } from '../progress';
-import { deviceStorage, safeGet, safeSet, scopedKey } from '../store-owner';
+import { getAttempts, getBestBand, recordTestAttempt } from '../progress';
+import { currentOwner, deviceStorage, safeGet, safeRemove, safeSet, scopedKeyFor } from '../store-owner';
 /* The same "is this still the student who started the sitting" rule the test
    player uses, imported rather than written a second time: a mock day and a
-   single paper must not be able to disagree about whose work they are. */
-import { currentSessionOwner, ownerStillCurrent } from '../test-session';
+   single paper must not be able to disagree about whose work they are. The
+   key rule comes from the same place, for the same reason. */
+import { currentSessionOwner, ownerStillCurrent, unownedScopedKey } from '../test-session';
 
 export interface TestPair {
   listening: PracticeTest;
@@ -103,19 +104,27 @@ export interface MockAttempt {
    carries the student's own essays, so a second student signing in on the
    same browser could read the first one's writing. Every read and write
    below now resolves its key through store-owner.ts. The old device-wide
-   key keeps its value for good: it is copied, once, into the key of
-   whichever owner the device's own stamp names, or the anonymous device
-   owner when there is no stamp. A different signed-in student never
-   inherits it. */
+   key keeps its value for good: it is copied, once, into the ANONYMOUS
+   device owner's key and nowhere else (see adoptUnownedIntoDevice in
+   src/lib/test-session.ts, and the R2-01 note in that file's header for why
+   the device's history stamp is not allowed to answer this question). No
+   signed-in account ever inherits it automatically. */
 export const MOCK_STORE_KEY = 'ielts.mock.v1';
 
 const MOCK_KEY = MOCK_STORE_KEY;
+
+/** Where the CURRENT owner's copy of the mock history lives, having first
+    parked an older build's device-wide copy with the anonymous device owner
+    (never with a signed-in account; see src/lib/test-session.ts). */
+function keyNow(base: string): string {
+  return unownedScopedKey(deviceStorage(), base, currentOwner());
+}
 
 function readStore(): MockAttempt[] {
   const storage = deviceStorage();
   if (!storage) return [];
   try {
-    const raw = safeGet(storage, scopedKey(MOCK_KEY));
+    const raw = safeGet(storage, keyNow(MOCK_KEY));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -129,7 +138,7 @@ function writeStore(list: MockAttempt[]): void {
   if (!storage) return;
   /* safeSet swallows a blocked or full store: a mock record is a
      nice-to-have, never a reason to lose the results screen. */
-  safeSet(storage, scopedKey(MOCK_KEY), JSON.stringify(list));
+  safeSet(storage, keyNow(MOCK_KEY), JSON.stringify(list));
 }
 
 function localDateKey(iso: string): string {
@@ -226,4 +235,261 @@ export function saveMockAttempt(attempt: MockAttempt, sittingOwner?: string): bo
     skill: 'reading',
   });
   return true;
+}
+
+/* ── The mock sitting that is still running ──────────────────────────────── */
+
+/* WHY THIS STORE EXISTS (second Codex round, 23 September 2026, R2-03)
+   A mock day is nearly three hours long and it used to live entirely in one
+   React component's memory: the stage, the papers chosen, the two essays,
+   the legs already finished. A refresh, a stray navigation, or a sign-out
+   and a sign-in threw all of it away, and the only thing on offer was a
+   fresh mock, which is not a small loss to a student two papers in.
+
+   It is now written down as it goes, under the owner who is sitting it, so
+   that it survives a reload and so that it can be handed back to that same
+   student and to nobody else. Every timed leg keeps its DEADLINE rather
+   than a remaining count, so a sitting put down and picked up again cannot
+   buy the student more exam time than the clock allowed. */
+
+/** The base key. What reaches localStorage is this plus the owner, for
+    example 'ielts.mock.active.v1::u:9f0c'. Born owner-scoped, so unlike the
+    history above it has no device-wide past to adopt and is never read
+    through the adoption rule. */
+export const ACTIVE_MOCK_KEY = 'ielts.mock.active.v1';
+
+/** The stages a mock sitting moves through, in order. Named here rather
+    than in the screen so that what is written down and what is read back
+    cannot drift apart. */
+export type MockStage =
+  | 'start'
+  | 'listening'
+  | 'transition-reading'
+  | 'reading'
+  | 'transition-writing'
+  | 'writing'
+  | 'speaking-brief'
+  | 'speaking'
+  | 'results';
+
+const MOCK_STAGES: readonly MockStage[] = [
+  'start',
+  'listening',
+  'transition-reading',
+  'reading',
+  'transition-writing',
+  'writing',
+  'speaking-brief',
+  'speaking',
+  'results',
+] as const;
+
+/** One finished paper of a mock day, as the screen hands it over. */
+export interface MockLegResult {
+  raw: number;
+  total: number;
+  band: number;
+  bandLabel: string;
+  secondsUsed: number;
+}
+
+export interface ActiveMock {
+  version: 1;
+  /** The owner who started this sitting, as store-owner.ts spells an owner. */
+  owner: string;
+  mockId: string;
+  /** ISO datetime the sitting started. */
+  startedAt: string;
+  stage: MockStage;
+  listeningTestId: string;
+  readingTestId: string;
+  /** The two Writing prompts drawn for this sitting, so picking the sitting
+      back up does not quietly hand the student different questions. */
+  task1PromptId: string | null;
+  task2PromptId: string | null;
+  listening: MockLegResult | null;
+  reading: MockLegResult | null;
+  essay1: string;
+  essay2: string;
+  /** Epoch ms the Writing hour runs out, null before Writing starts. A
+      deadline, never a remaining count: that is what keeps the clock
+      honest across a reload. The Listening and Reading clocks are not
+      here because they never were: each leg's deadline is the in-progress
+      sitting in src/lib/test-session.ts, under the same owner. The short
+      beat between two papers is not exam time and is not stored. */
+  writingEndsAt: number | null;
+  speakingBand: number | null;
+  speakingCriteria: Record<string, number> | null;
+  speakingSkipped: boolean;
+  /** Epoch ms of the last write. */
+  savedAt: number;
+}
+
+function isStage(value: unknown): value is MockStage {
+  return typeof value === 'string' && (MOCK_STAGES as readonly string[]).includes(value);
+}
+
+function asLeg(value: unknown): MockLegResult | null {
+  if (!value || typeof value !== 'object') return null;
+  const leg = value as Partial<MockLegResult>;
+  if (typeof leg.raw !== 'number' || typeof leg.total !== 'number' || typeof leg.band !== 'number') return null;
+  return {
+    raw: leg.raw,
+    total: leg.total,
+    band: leg.band,
+    bandLabel: typeof leg.bandLabel === 'string' ? leg.bandLabel : String(leg.band),
+    secondsUsed: typeof leg.secondsUsed === 'number' ? leg.secondsUsed : 0,
+  };
+}
+
+function asText(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
+
+function asIdOrNull(value: unknown): string | null {
+  return typeof value === 'string' && value.length > 0 ? value : null;
+}
+
+function asNumberOrNull(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+/** Read a stored sitting back field by field. The version, the owner and
+    the stage decide whose it is and where it stands, so a record missing any
+    of them is not a sitting at all. Every other field falls back to "not
+    done yet" rather than failing the whole record: a damaged essay field
+    must not cost a student the papers they already finished. */
+function parseActive(raw: string | null): ActiveMock | null {
+  if (!raw) return null;
+  let parsed: Partial<ActiveMock> | null;
+  try {
+    parsed = JSON.parse(raw) as Partial<ActiveMock> | null;
+  } catch {
+    return null;
+  }
+  if (!parsed || parsed.version !== 1) return null;
+  if (typeof parsed.owner !== 'string' || parsed.owner.length === 0) return null;
+  if (!isStage(parsed.stage)) return null;
+  const criteria = parsed.speakingCriteria;
+  return {
+    version: 1,
+    owner: parsed.owner,
+    mockId: asText(parsed.mockId),
+    startedAt: asText(parsed.startedAt),
+    stage: parsed.stage,
+    listeningTestId: asText(parsed.listeningTestId),
+    readingTestId: asText(parsed.readingTestId),
+    task1PromptId: asIdOrNull(parsed.task1PromptId),
+    task2PromptId: asIdOrNull(parsed.task2PromptId),
+    listening: asLeg(parsed.listening),
+    reading: asLeg(parsed.reading),
+    essay1: asText(parsed.essay1),
+    essay2: asText(parsed.essay2),
+    writingEndsAt: asNumberOrNull(parsed.writingEndsAt),
+    speakingBand: asNumberOrNull(parsed.speakingBand),
+    speakingCriteria: criteria && typeof criteria === 'object' ? (criteria as Record<string, number>) : null,
+    speakingSkipped: parsed.speakingSkipped === true,
+    savedAt: asNumberOrNull(parsed.savedAt) ?? 0,
+  };
+}
+
+/** A stage with something to pick up. The start screen has nothing yet, and
+    a sitting that reached its results has been recorded in the history. */
+function inProgress(stage: MockStage): boolean {
+  return stage !== 'start' && stage !== 'results';
+}
+
+/** Where the CURRENT owner's in-progress sitting is kept. */
+function activeKeyNow(): string {
+  return scopedKeyFor(ACTIVE_MOCK_KEY, currentOwner());
+}
+
+/** The sitting the CURRENT owner has in progress, if any. A record stamped
+    with somebody else is never returned, even from this owner's own key:
+    the stamp is checked rather than trusted, exactly as an unfinished
+    single paper is (see read() in src/lib/test-session.ts). A sitting that
+    never left the start screen, or that has reached its results, has
+    nothing to pick up and is not offered either. */
+export function loadActiveMock(): ActiveMock | null {
+  const storage = deviceStorage();
+  if (!storage) return null;
+  const held = parseActive(safeGet(storage, activeKeyNow()));
+  if (!held || !inProgress(held.stage)) return null;
+  return held.owner === currentSessionOwner() ? held : null;
+}
+
+/** Write the sitting down, under the owner named on it, and only while that
+    is still the owner of this browser. Returns false and writes nothing at
+    all once somebody else has signed in: a mock day that outlived its
+    student is never copied into the next student's key. A stage with
+    nothing to pick up (the start screen, the results) is not written
+    either. */
+export function saveActiveMock(state: ActiveMock): boolean {
+  if (!inProgress(state.stage)) return false;
+  if (!ownerStillCurrent(state.owner)) return false;
+  const storage = deviceStorage();
+  if (!storage) return false;
+  return safeSet(storage, activeKeyNow(), JSON.stringify({ ...state, savedAt: Date.now() }));
+}
+
+/** Forget the CURRENT owner's in-progress sitting, once it has been
+    recorded or the student has chosen to start again. Another student's
+    unfinished mock on this browser is under their own key and is not
+    touched, and passing the owner the sitting started under makes this a
+    no-op after a sign-in, so a late tidy-up cannot wipe the new student's
+    own sitting. */
+export function clearActiveMock(sittingOwner?: string): void {
+  if (!ownerStillCurrent(sittingOwner)) return;
+  const storage = deviceStorage();
+  if (!storage) return;
+  safeRemove(storage, activeKeyNow());
+}
+
+/** Seconds left on the Writing clock at `now`, from its stored deadline.
+    Before Writing has started (no deadline yet) the whole hour is left. A
+    deadline is never moved: a sitting picked up after it passed has no
+    Writing time left at all. */
+export function writingSecondsLeftAt(writingEndsAt: number | null, now: number, fullSeconds: number): number {
+  if (writingEndsAt === null) return fullSeconds;
+  return Math.max(0, Math.round((writingEndsAt - now) / 1000));
+}
+
+/** The result of `testId` if the CURRENT owner submitted it as a full paper
+    at or after `sinceIso` (the moment the mock started), else null. A leg
+    submitted just before the page went away (after Submit, before "Back to
+    results") is already in the history, and must count as done rather than
+    be sat a second time. */
+export function legFinishedSince(testId: string, sinceIso: string): MockLegResult | null {
+  if (!testId || !sinceIso) return null;
+  const since = getAttempts(testId).filter(
+    ({ attempt }) => (attempt.kind ?? 'full') === 'full' && attempt.at >= sinceIso,
+  );
+  const last = since[since.length - 1]?.attempt;
+  if (!last) return null;
+  return { raw: last.raw, total: last.total, band: last.band, bandLabel: last.bandLabel, secondsUsed: last.secondsUsed };
+}
+
+/** A written-down sitting, made ready to put back on screen.
+ *
+ * - A leg submitted before the page went away counts as done, and the
+ *   sitting moves on to the short beat before the next paper. Without this,
+ *   the embedded player (which starts a mock leg straight away) would open a
+ *   second sitting of a paper the student had already handed in.
+ * - The live voice interview is never re-entered on its own: it opens a
+ *   real-time session that costs real money, so a sitting picked up there
+ *   lands on the Speaking brief, where the student starts or skips it.
+ * - Nothing else changes. In particular no deadline is touched: the Writing
+ *   clock and each paper's own clock carry on from where they stood. */
+export function reconcileActiveMock(held: ActiveMock): ActiveMock {
+  let next: ActiveMock = { ...held };
+  if (next.stage === 'listening' && !next.listening) {
+    const done = legFinishedSince(next.listeningTestId, next.startedAt);
+    if (done) next = { ...next, listening: done, stage: 'transition-reading' };
+  }
+  if (next.stage === 'reading' && !next.reading) {
+    const done = legFinishedSince(next.readingTestId, next.startedAt);
+    if (done) next = { ...next, reading: done, stage: 'transition-writing' };
+  }
+  if (next.stage === 'speaking') next = { ...next, stage: 'speaking-brief' };
+  return next;
 }

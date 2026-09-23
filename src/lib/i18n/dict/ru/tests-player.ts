@@ -209,6 +209,21 @@ export const strings: Record<string, string> = {
   'The account on this browser changed part way through, so nothing from this sitting was saved to it. Each paper that was already finished stays with the student who sat it.':
     'Аккаунт в этом браузере сменился посреди экзамена, поэтому ничего из этой попытки в него не сохранено. Каждая уже законченная часть остаётся у того студента, который её писал.',
   'Start a fresh mock exam': 'Начать новый пробный экзамен',
+  'The sitting itself is kept for the student who started it, and it picks up where it stopped when they sign back in on this browser.':
+    'Сама попытка сохранена для студента, который её начал, и продолжится с того же места, когда он снова войдёт в аккаунт в этом браузере.',
+
+  /* The student's own unfinished mock, offered back on the start screen
+     (ResumeOffer in MockExam.tsx). {papers} and {paper} are paper names,
+     which stay English. */
+  'You have an unfinished mock exam': 'У вас есть незаконченный пробный экзамен',
+  'Finished so far: {papers}.': 'Уже закончено: {papers}.',
+  'No paper is finished yet.': 'Пока не закончена ни одна часть.',
+  'It picks up at {paper}.': 'Продолжите с части {paper}.',
+  'The Writing time has run out.': 'Время на Writing истекло.',
+  'Less than a minute is left on the Writing clock.': 'На часах Writing осталось меньше минуты.',
+  'Continue where you left off': 'Продолжить с того же места',
+  'Starting a new mock exam below replaces this unfinished one. Papers you already finished stay in your history.':
+    'Если начать новый пробный экзамен ниже, он заменит этот незаконченный. Уже законченные части останутся в вашей истории.',
 
   /* Between two papers. */
   'Exam continues': 'Экзамен продолжается',
@@ -286,6 +301,12 @@ export const plurals: Record<string, { one: string; few: string; many: string; o
     few: 'Повторить {n} ошибки',
     many: 'Повторить {n} ошибок',
     other: 'Повторить {n} ошибки',
+  },
+  '{n} minutes are left on the Writing clock.': {
+    one: 'На часах Writing осталась {n} минута.',
+    few: 'На часах Writing осталось {n} минуты.',
+    many: 'На часах Writing осталось {n} минут.',
+    other: 'На часах Writing осталось {n} минуты.',
   },
   '{n} words: limit is {limit}': {
     one: '{n} слово: лимит {limit}',
