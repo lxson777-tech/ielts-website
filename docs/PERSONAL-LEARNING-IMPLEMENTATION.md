@@ -563,9 +563,15 @@ the mock recorded once per sitting, only after an identity-checked
 finalisation). Gates at that commit: 1878 tests, type check clean, race
 script anonymous both times, f22 131 of 131, f23 70 of 70 with a
 before-versus-after run of the examiner race. One window the examiner
-builder found inside the live-session setup (a paid session request that can
-still go out a few seconds after a switch, then be closed at once) is being
-closed in a follow-up commit before the fifth inspection.
+builder found inside the live-session setup (a paid session request that
+could still go out a few seconds after a switch, then be closed at once) was
+closed in `b7b083a`: the session-opening functions ask the examiner's own
+"may I continue" check immediately before the request that creates the paid
+session and before the Gemini socket (`src/lib/speaking/live/start-check.ts`),
+letting go of what was built and sending nothing on a no. Gates at that
+commit: 1892 tests, type check clean, 661 pages, index unchanged, race script
+anonymous both times, f23 81 of 81 with section 8 failing three ways against
+the pre-fix code.
 
 **Inspection 5** (a fresh session, after those fixes) is recorded below once
 run.
