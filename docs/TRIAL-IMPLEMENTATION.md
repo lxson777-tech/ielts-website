@@ -10,9 +10,14 @@ model. Every proof below is local, against synthetic accounts.
 - Branch `claude/ielts-trial-implementation-9790a4`, worktree
   `.claude/worktrees/ielts-trial-implementation-9790a4`.
 - Built on `7c5264a`, then merged with the current platform branch
-  (`claude/todays-tab-ai-tutor-rework-8af4cd`) at `1701b97`, which carries the fixes for
-  Codex's third ownership inspection. The merge had no conflicts and everything below
-  was rerun after it. Not built on the older marketing checkout in the root folder,
+  (`claude/todays-tab-ai-tutor-rework-8af4cd`) at `1701b97` and again at `dd03541`,
+  which carry the fixes for Codex's third and fourth ownership inspections. The second
+  merge had one conflict in `TestPlayer.tsx`, resolved by keeping the platform's
+  "finish the sitting before recording anything" order and reporting the trial test
+  after the result is recorded (the platform session confirmed that order). Everything
+  below was rerun after it. `main` (`b61d8c4`, vocabulary practice) is not in yet: it
+  conflicts with the platform branch in vocabulary and dashboard files, and the
+  platform session will fold it in there first. Not built on the older marketing checkout in the root folder,
   which was only read for Codex's design files.
 
 ## The switch
@@ -92,7 +97,7 @@ Today page, lessons and tests with no gate, `/trial` says there is nothing to st
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite, after the merge) | 1,900 of 1,900 pass (52 of them are the new trial tests) |
+| `npm test` (whole suite, after the merge with `dd03541`) | 1,930 of 1,930 pass (52 of them are the new trial tests) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
 | `tests/trial-graders.test.ts`: the real essay, speaking and live-examiner handlers | 9 of 9 |
