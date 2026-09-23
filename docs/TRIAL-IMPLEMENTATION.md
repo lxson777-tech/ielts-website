@@ -61,8 +61,8 @@ Today page, lessons and tests with no gate, `/trial` says there is nothing to st
 - Essay grader: in trial mode it needs the student's sign-in and their begun Writing
   test, takes a five-minute grading lease (two submissions cannot both be paid for),
   settles on a grade, and releases on failure so the essay can be submitted again.
-- Speaking grader and live examiner: in trial mode they refuse before any spend while
-  the Speaking test is switched off (see decisions).
+- Speaking grader and live examiner: see "The Speaking test" below (Part 1, about five
+  minutes, Alex's decision).
 
 **Site** (Codex's design, on the real platform shell)
 - `/trial`: the offer (signed out), the existing sign-in, then an explicit
@@ -93,35 +93,107 @@ Today page, lessons and tests with no gate, `/trial` says there is nothing to st
   payment plainly not connected. No checkout, no fake success.
 - Russian for every new sentence; paper names stay English inside Russian sentences.
 
+## Alex's decisions (23 September 2026)
+
+Recorded in the second brain (`Decisions/2026-09-23 IELTS trial content, test rule,
+Speaking length and content protection`):
+
+- **Trial content as proposed**: Spotting Paraphrase + Academic Reading Test 1;
+  Part 1. Everyday Conversation + IELTS Listening Test 1; How to Answer Task 2 + one
+  Writing Checker essay; Speaking Part 1 + the Speaking test. Each lesson's own quiz is
+  the "small exercise".
+- **What uses a test, as built**: pressing Start binds the section's test to that paper;
+  it is used when submitted (Reading, Listening) or graded (Writing, Speaking); a failure
+  on our side uses nothing; an abandoned test stays the student's; a test begun before
+  the end can be finished after it; nothing new starts after the end.
+- **Speaking test: Part 1 only, about five minutes.** Built on the server (below); the
+  examiner screen follows once the platform branch's examiner work and main are merged
+  in (agreed with that session), so until then the Speaking test page still says "not
+  open yet" while Today already shows it as available.
+- **Protect the content itself, built locally first.** Built (below), not deployed.
+
+Two safeguards Claude added and flags as adjustable, not decided by Alex: a trial
+Speaking interview is hung up by the server after five minutes (a once-a-minute check,
+so at most about six), and at most two interviews may start under the one Speaking test
+(the first, and one retry after a dropped connection).
+
+## The Speaking test (server side, built)
+
+- Live examiner, trial mode: opens a paid voice session only for the student's own begun
+  Speaking test, only in Part 1, counts it (at most two), and gives the count back if the
+  session never opens. The Gemini rollback has no sign-in, so it cannot be the trial.
+- A cron trigger (every minute, in `workers/live-examiner/wrangler.jsonc`) runs
+  `closeOverdueTrialSessions`: every session still open after five minutes is sent
+  `session.close` over the server's own channel and marked ended. On the open site it
+  does nothing. Whether OpenAI stops billing the moment that close arrives is not proven
+  without a short paid check, which needs Alex's approval (cost: at most one five-minute
+  session, about $0.25).
+- Speaking grader, trial mode: grades only the live interview of the begun test, uses the
+  test on a grade, keeps it on a failure.
+
+## The locked door (built locally, not deployed)
+
+In a trial build the public site no longer carries any lesson body (English or Russian),
+lesson practice quiz, practice paper or drill, answer notes, or Mr EZ's data files. The
+pages are shells; `workers/content-gate` hands each item to a signed-in student only
+after the database says that student may open it now (`trial_can_open`). The content
+lives in a private folder (`gated-content/`, written by `tools/build-gated-content.mjs`)
+that stands in for a private storage bucket. The open site is unchanged. Details and the
+upload proposal: `workers/content-gate/README.md`.
+
+Measured with `tools/trial-content-audit.mjs`, which searches every public file of a
+build for phrases from all 70 papers and all 139 lesson bodies (English and Russian):
+
+| Trial build | Files leaking a paper, an answer or a lesson |
+|---|---|
+| Before the door | 344 |
+| After | 0 (six files share a single line with a lesson; one named exception) |
+
+The six single shared lines are a cue-card question that is also in the public question
+list, a one-line strategy tip, and a useful-phrase line from the writing coach. The named
+exception (`tools/trial-content-allowed.json`) is the 146-word word-of-the-day sampler,
+shown site-wide; some of its example sentences also appear in vocabulary lessons. It is
+kept public as a free taster until Alex decides.
+
+**Not behind the door yet**: model answers, cue cards, band guides, writing and speaking
+prompts, focused-exercise content and the writing coach's phrase bank still ship inside
+the site's code (locked pages no longer show them, but a determined student could dig
+them out of the code files). Listening recordings are public audio files. Closing those
+needs the same pattern, and signed short-lived links for audio.
+
 ## Proof
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite, after the merge with `dd03541`) | 1,930 of 1,930 pass (52 of them are the new trial tests) |
+| `npm test` (whole suite) | 1,941 of 1,941 pass (63 of them are the trial tests below) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
-| `tests/trial-graders.test.ts`: the real essay, speaking and live-examiner handlers | 9 of 9 |
+| `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 12 of 12 |
+| `tests/trial-content.test.ts`: the real content gate against the real migration | 8 of 8 |
 | `tests/trial-status.test.ts`: what the screens may say | 9 of 9 |
-| `tests/browser/t01_trial_journey.py`: the real site in a real browser | 63 of 63 (`docs/trial/evidence/results-t01.md`) |
+| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 70 of 70 (`docs/trial/evidence/results-t01.md`) |
+| `tools/trial-content-audit.mjs` on the trial build | no leaks (see above) |
 | `npx astro check` | 0 errors, 0 warnings, 19 hints (same hints as before) |
-| `npm run build`, open and trial, after the merge | 663 pages each |
+| `npm run build`, open and trial | 663 pages each |
 
 The browser journey covers: signed-out offer; sign-up then explicit start; questionnaire
 carried over; 72-hour display from the server clock; restarting never restarts; locked
-lesson by direct link; the included lesson opens; five Mr EZ messages in Reading then
-stop; a failed request (twice, including the site's own automatic retry) uses nothing
-and its retry counts once; direct calls to the Worker for a lesson outside the trial,
-for general chat and for a sixth message are refused; the browser cannot call the
-Workers' database functions; other sections keep their own five; a test outside the
-trial and a drill of the trial paper are locked; the trial Reading test begins on the
-server, survives a refresh, is used on submit and cannot be reopened; two tabs starting
+lesson by direct link; the included lesson opens with its text fetched through the door
+while the page source carries none of it; locked lessons and papers never reach the
+browser; the old public data files are gone; five Mr EZ messages in Reading then stop; a
+failed request (twice, including the site's own automatic retry) uses nothing and its
+retry counts once; direct calls to the Worker for a lesson outside the trial, for
+general chat and for a sixth message are refused; the browser cannot call the Workers'
+database functions; other sections keep their own five; a test outside the trial and a
+drill of the trial paper are locked; the trial Reading test begins on the server,
+survives a refresh, is used on submit and cannot be reopened; two tabs starting
 Listening together get one sitting; a failed essay grade keeps the Writing test and a
-successful one uses it; Speaking pages say not open yet; plans page; a second device
-sees the same trial and counts; sign-out covers the lesson again without restarting; a
-second student on the same device inherits nothing; a server failure keeps content
-covered with Try again; expiry from the stored start (dashboard, lesson, Mr EZ, a test
-not begun); a Russian phone screen with no sideways scroll; reduced motion. Screenshots
-`t01` to `t14` are in `docs/trial/evidence/`.
+successful one uses it; plans page; a second device sees the same trial and counts;
+sign-out covers the lesson again without restarting; a second student on the same
+device inherits nothing; a server failure keeps content covered with Try again; expiry
+from the stored start (dashboard, lesson, Mr EZ, a test not begun); a Russian phone
+screen with no sideways scroll; reduced motion. Screenshots `t01` to `t14` are in
+`docs/trial/evidence/`.
 
 The ownership audit (`docs/audits/claude-personal-learning-review-2026-09-23.md`) was
 rechecked on this base, because the trial must not sit on cross-account behaviour:
@@ -133,16 +205,14 @@ rechecked on this base, because the trial must not sit on cross-account behaviou
   account and no anonymous record. Closed.
 - Finding 1 (another student's unfinished test): Codex's `independent-browser.py` stops
   early because it looks for the old shared storage key, which the fix removed. The
-  owner-scoped tests (`test-session-owner`, `account-isolation`, `delayed-grade-owner`,
-  94 of 94 before the merge) and the other session's browser journeys f22 and f23
-  cover it. Codex's third inspection then found four more ownership details
-  (R2C-01 to R2C-04); their fixes are merged here, and a fourth inspection is pending
-  on the platform branch.
+  owner-scoped tests and the platform session's browser journeys f22 and f23 cover it.
+  Codex's third and fourth inspections found further ownership details; their fixes (to
+  `dd03541`) are merged here, and a fifth inspection is pending on the platform branch.
 
 **Not proven** (and not claimed): the migration on a real Supabase project; real
-two-device use on real accounts; live AI quality or cost under the trial; the Worker
-running on Cloudflare. The local backend's tutor replies are labelled simulated and its
-essay assessment says SIMULATED on every line.
+two-device use on real accounts; live AI quality or cost under the trial; any Worker
+running on Cloudflare; the private bucket. The local backend's tutor replies are
+labelled simulated and its essay assessment says SIMULATED on every line.
 
 ## How to run it locally
 
@@ -151,67 +221,60 @@ MR_EZ_DEV_PORT=8795 MR_EZ_SITE_ORIGIN=http://localhost:4331 node --import ./test
 ```
 
 ```bash
-PUBLIC_ACCESS_MODE=trial PUBLIC_SUPABASE_URL=http://127.0.0.1:8795 PUBLIC_SUPABASE_ANON_KEY=local-anon-key PUBLIC_MR_EZ_URL=http://127.0.0.1:8795/tutor PUBLIC_GRADER_URL=http://127.0.0.1:8795/grade-essay npx astro dev --port 4331
+PUBLIC_ACCESS_MODE=trial PUBLIC_SUPABASE_URL=http://127.0.0.1:8795 PUBLIC_SUPABASE_ANON_KEY=local-anon-key PUBLIC_MR_EZ_URL=http://127.0.0.1:8795/tutor PUBLIC_GRADER_URL=http://127.0.0.1:8795/grade-essay PUBLIC_CONTENT_URL=http://127.0.0.1:8795/content npx astro dev --port 4331
 ```
 
 Then open `http://localhost:4331/ielts-website/trial`. Sign-up on the local backend
-needs no email. To see the ended state: `POST http://127.0.0.1:8795/__trial/rewind`
-with `{"email": "...", "minutes": 4320}`. `GET /__trial/state` shows the trial tables.
+needs no email. The backend builds `gated-content/` on first run. To see the ended
+state: `POST http://127.0.0.1:8795/__trial/rewind` with `{"email": "...", "minutes":
+4320}`. `GET /__trial/state` shows the trial tables. To check a trial build for leaks:
+build with the same variables (`npx astro build`), then
+`node --import ./tests/ts-extension-loader.mjs tools/trial-content-audit.mjs dist`.
 
 ## Decisions still needed (nothing below was invented)
 
-1. **Speaking test**: maximum session length, and whether the one Speaking test covers
-   all three parts. Until then the Speaking test is switched off
-   (`TRIAL_OFFER.speaking.testEnabled = false` and the matching database row), both
-   Speaking graders refuse in trial mode, and the join page says the Speaking test opens
-   once its length is confirmed. The Speaking introduction lesson and Mr EZ's Speaking
-   messages work.
-2. **Which lessons and tests**: proposed, needs confirming. Lessons: Spotting
-   Paraphrase (Reading), Part 1. Everyday Conversation (Listening), How to Answer Task 2
-   (Writing), Speaking Part 1. Tests: Academic Reading Test 1, IELTS Listening Test 1, the Writing Checker (Task 1 or
-   Task 2, the student's choice). The "small exercise" is each lesson's own quick check.
-   Changing them is one entry in `src/lib/trial/offer.ts` plus the seed rows in the
-   migration (a test fails if the two disagree).
-3. **What uses a test** (built as a provisional rule, please confirm or change):
-   pressing Start binds the section's test to that paper; Reading and Listening are used
-   when submitted, Writing when graded; a failed grade keeps it; an abandoned test stays
-   the student's (resumable, cannot be swapped for another paper); a test begun before
-   the trial ends can still be finished and graded after it; nothing new starts after it.
-4. **General Mr EZ chat**: refused in the trial (not a fifth bucket). On the trial's
+1. **General Mr EZ chat**: refused in the trial (not a fifth bucket). On the trial's
    Today page a question is charged to the section tab the student chose. The welcome,
    weekly review, unit notes, plan proposals and focused-exercise marking are off during
    the trial. Paid-plan allowances are not set.
-5. **Results after expiry**: nothing is deleted. Today the report and score history stay
+2. **Results after expiry**: nothing is deleted. Today the report and score history stay
    readable after the trial ends; confirm that is the policy.
-6. **Repeat trials**: built as one trial per account. A person with a new email gets a
+3. **Repeat trials**: built as one trial per account. A person with a new email gets a
    new trial, and deleting an account and signing up again with the same email would
    too (the trial row is deleted with the account). Blocking that means keeping some
    record of past emails, which is a privacy decision.
-7. **Protecting the content itself** (the biggest one before launch): the site is static
-   on GitHub Pages, so every lesson, question, answer and transcript is in public HTML
-   and JSON. The gate here only decides what the screen shows; a determined student can
-   read the page source. Paid AI is protected for real (the Workers check the server).
-   Closing the content needs a hosting change, for example a Cloudflare Worker that
-   checks the sign-in and the trial before serving restricted lesson bodies and test
-   data, with the pages becoming shells. Proposal only; nothing built or deployed.
-8. **Existing students and full access**: switching the site to trial mode today would
+4. **The word-of-the-day sampler**: public (the one named exception) or locked?
+5. **The rest of the content**: whether to put the supporting libraries and the
+   listening audio behind the door too (see "Not behind the door yet").
+6. **Existing students and full access**: switching the site to trial mode today would
    lock every current free student out of everything but the trial, including those
    with history. There is no "full access" state yet (no payment, no manual grant
-   table), so nobody could have more than the trial. Both need deciding before the
-   switch.
-9. **Payments, renewals, refunds, support, recording retention**: not built. The plans
+   table), so nobody could have more than the trial; when there is, it is checked in
+   `trial_can_open`. Both need deciding before the switch.
+7. **Payments, renewals, refunds, support, recording retention**: not built. The plans
    page says payment is not connected.
 
-## If Alex approves applying the database change
+## If Alex approves going live (each step separately)
 
-In the Supabase SQL editor: paste the whole of `supabase/migrations/2026-09-23-trial.sql`
-and run it (idempotent, touches no existing table). Rollback: the commented `drop`
-statements at the bottom of the same file, run by hand. Verify: the three tables exist
-with row security on, and `select public.trial_status()` as a signed-in user returns
-`{"state":"none",...}`. Applying the migration alone changes nothing for students;
-only `ACCESS_MODE=trial` on the Workers and `PUBLIC_ACCESS_MODE=trial` on the site do.
-The essay grader would also need `SUPABASE_URL` and the service role secret in trial
-mode. Each of these is a separate, externally visible step for Alex to approve.
+1. **Database**: in the Supabase SQL editor, paste the whole of
+   `supabase/migrations/2026-09-23-trial.sql` and run it (idempotent, touches no existing
+   table). Rollback: the commented `drop` statements at the bottom, run by hand. Verify:
+   the three tables exist with row security on, and `select public.trial_status()` as a
+   signed-in user returns `{"state":"none",...}`. On its own this changes nothing for
+   students.
+2. **Private bucket and gate**: create the private R2 bucket, upload `gated-content/`,
+   deploy `workers/content-gate` with its two secrets (`SUPABASE_SERVICE_ROLE_KEY`,
+   `CONTENT_SERVICE_KEY`). Rollback: delete the Worker; the bucket is private and serves
+   nothing without it.
+3. **Workers to trial mode**: set `ACCESS_MODE` to `trial` on mr-ez (plus
+   `CONTENT_SERVICE_KEY`, and `SITE_DATA_URL` / `LESSON_BLOCKS_URL` pointed at the
+   gate's `/data/...`), grade-essay and grade-speaking (plus `SUPABASE_URL` and the
+   service role secret), and live-examiner (its cron trigger is already in its config).
+   Rollback: set `ACCESS_MODE` back to `open` and redeploy.
+4. **Site**: build with `PUBLIC_ACCESS_MODE=trial` and `PUBLIC_CONTENT_URL`, run the
+   leak audit on `dist`, then publish. Rollback: republish the open build.
+
+Nothing above has been run. Each step is externally visible and some are billable.
 
 ## Deviations from Codex's preview, for Codex to review
 
@@ -236,7 +299,10 @@ New: `supabase/migrations/2026-09-23-trial.sql`; `src/lib/trial/{offer,status,ga
 `src/components/trial/{TrialBlock,TrialGate,TrialHome,TrialJoin,TrialPlans}.tsx`,
 `src/components/trial/useTrialTest.ts`; `src/styles/trial.css`; `src/pages/{trial,plans}.astro`;
 `src/lib/i18n/dict/ru/trial.ts`; `tools/trial-db.mjs`;
-`tests/{trial-sql,trial-worker,trial-graders,trial-status}.test.ts`;
+the locked door: `workers/content-gate/*`, `src/lib/trial/{content,tests-light}.ts`,
+`src/components/trial/{GatedTestPlayer,GatedPracticeQuiz}.tsx`,
+`tools/{build-gated-content.mjs,trial-content-audit.mjs,trial-content-allowed.json}`;
+`tests/{trial-sql,trial-worker,trial-graders,trial-status,trial-content}.test.ts`;
 `tests/browser/t01_trial_journey.py`; `docs/TRIAL-IMPLEMENTATION.md`; `docs/trial/evidence/*`.
 
 Changed: `workers/{mr-ez,grade-essay,grade-speaking,live-examiner}/src/index.ts` and
