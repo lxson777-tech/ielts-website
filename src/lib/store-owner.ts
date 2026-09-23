@@ -269,6 +269,37 @@ export function bootOwner(): CacheOwner {
   return userId ? userOwner(userId) : anonymousOwner(deviceIdFrom(storage));
 }
 
+/** Whether THIS device's own stored account session still agrees that
+    `owner` is the student here: false only when it names a DIFFERENT
+    student (another signed-in user, or any signed-in user when `owner` is
+    this device's anonymous owner).
+ *
+ * WHY (the follow-up to R2B-01 for the focused exercise and the lesson quick
+ * check, 23 September 2026). A tab learns of another tab's sign-in from an
+ * event, a moment after the session in shared storage has already changed,
+ * or never, if it missed that event. Until then `currentOwner()` in that tab
+ * still names the previous student. A screen that records locally, with no
+ * token to compare the way the tutor client compares one (src/lib/tutor/
+ * review-owner.ts), asks this at the press instead, and records nothing
+ * while the answer is no.
+ *
+ * "Cannot tell" is always yes, so that nothing that works today stops
+ * working: no storage to read, no accounts configured here, or no session
+ * stored at all (a student who signed out elsewhere, or an account client
+ * that could only keep its session in memory). `storage` and `sessionKey`
+ * default to this device's and this application's own; a test may name
+ * others. */
+export function storedSessionAgrees(
+  owner: CacheOwner,
+  storage: BrowserStorage | null = deviceStorage(),
+  sessionKey: string | null = configuredAuthSessionKey(),
+): boolean {
+  if (!storage || !sessionKey) return true;
+  const userId = storedSessionUserId(storage, sessionKey);
+  if (userId === null) return true;
+  return owner.kind === 'user' && owner.userId === userId;
+}
+
 /* ── The current owner ───────────────────────────────────────────────────── */
 
 let current: CacheOwner | null = null;

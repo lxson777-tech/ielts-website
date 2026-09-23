@@ -34,10 +34,29 @@
    use it: the peer is closed at once, before any audio can flow, and the
    session is ended at the Worker exactly as close() ends it, so it stops
    counting against the student's limits. A no anywhere rejects with
-   LiveStartCancelled once the audio pieces made here are stopped. The link
-   is returned as soon as OpenAiLiveSession.start resolves, so a start let
-   go during that last wait is closed by the caller's own guard, through the
-   link's own close(). */
+   LiveStartCancelled once the audio pieces made here are stopped.
+
+   THE SCREEN CAN REACH A START STILL UNDER WAY (finding R2E-01, Codex
+   inspection of c4a7793). The link used to be closable only once it had been
+   returned, and the last wait (OpenAiLiveSession.start, up to twenty
+   seconds for the session to begin) came AFTER the answer had been applied
+   and the examiner's audio had started playing. A switch or an unmount in
+   that wait left the connection and its audio running until the wait ran
+   out, and a timeout or an error there closed the connection without
+   ending the session at the Worker. Now openExaminerLink also takes the
+   screen's StartHandle (./start-check.ts) and hands it, with the question,
+   to every step. A pull releases everything made so far there and then:
+   the peer connection and its data channel (or the Gemini socket), the
+   playback, the level meters, and a paid session already created is ended
+   at the Worker. The audio pieces are stopped at once and once more when a
+   start of theirs still under way finishes, so nothing such a start makes
+   after the pull is left running. A remote track that arrives after a let-go
+   is stopped and never played. And EVERY failure after the paid session was
+   created (a let-go, the start timing out, an error from the service, the
+   connection closing) ends it at the Worker, exactly as close() does, so no
+   failure leaves a paid session counting against the student's limits. The
+   handle is let go of when the link is returned: from then on the screen's
+   own teardown closes it through close(), as before. */
 
 import type { LiveMode, LiveProvider, SessionPlanRequest } from './instructions';
 import type { TranscriptTurn } from './session';
@@ -46,9 +65,15 @@ import { ExaminerPlayback, MicCapture, RemoteAudioOutput, StreamLevelMeter } fro
 import { OpenAiLiveSession, connectWebRtc } from './openai-session';
 import type { DirectorCue } from './cues';
 import { cueText } from './cues';
-import { LiveStartCancelled, mayGoOn, type MayContinue } from './start-check';
+import { watchStart, type MayContinue, type StartHandle } from './start-check';
 
-export { LiveStartCancelled, isLiveStartCancelled, type MayContinue } from './start-check';
+export {
+  LiveStartCancelled,
+  isLiveStartCancelled,
+  startHandle,
+  type MayContinue,
+  type StartHandle,
+} from './start-check';
 
 export interface LiveConfig {
   provider: LiveProvider;
@@ -144,8 +169,15 @@ export interface OpenExaminerLinkOptions {
   cb: ExaminerLinkCallbacks;
   /** The caller's "may I continue" check, asked inside the setup right
       before the paid session request and right before the Gemini socket
-      (R2D-01). A no rejects with LiveStartCancelled. Not given: never asked. */
+      (R2D-01), and before the answer is applied and in every callback that
+      could start something (R2E-01). A no rejects with LiveStartCancelled.
+      Not given: never asked. */
   mayContinue?: MayContinue;
+  /** The screen's side of this start (R2E-01): pulled the moment the screen
+      lets go of it, which releases everything the setup has made at once
+      and rejects with LiveStartCancelled. Listened to only until the link is
+      returned. Not given: nothing but the question can stop the setup. */
+  handle?: StartHandle;
 }
 
 export async function openExaminerLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLink> {
@@ -153,26 +185,85 @@ export async function openExaminerLink(opts: OpenExaminerLinkOptions): Promise<E
   return openOpenAiLink(opts);
 }
 
+/** An audio piece the setup may have to let go of while it is still
+    starting. */
+interface AudioPiece {
+  stop(): Promise<void>;
+}
+
+/** Stops an audio piece now, and once more when a start of it that is still
+    under way has finished, so nothing that start makes after this moment is
+    left running (R2E-01). Resolves when the first stop has; never rejects,
+    and never waits for the start, which may never finish. */
+function stopNowAndAfterStart(piece: AudioPiece, starting: Promise<unknown> | null): Promise<void> {
+  if (starting) {
+    void starting.then(
+      () => piece.stop(),
+      () => piece.stop(),
+    ).catch(() => {});
+  }
+  return piece.stop().catch(() => {});
+}
+
+/** Stops every track of a stream that a start let go of was handed. */
+function stopTracks(stream: MediaStream): void {
+  for (const track of stream.getTracks()) {
+    try {
+      track.stop();
+    } catch {
+      /* already ended */
+    }
+  }
+}
+
 async function openGeminiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLink> {
+  const watch = watchStart(opts.mayContinue, opts.handle);
   const playback = new ExaminerPlayback();
   const mic = new MicCapture();
   let session: ExaminerSession | null = null;
+  let playbackStarting: Promise<void> | null = null;
+  let micStarting: Promise<void> | null = null;
+  let releasing: Promise<void> | null = null;
+
+  /* R2E-01: everything made so far, released at once on a pull or a
+     failure. The socket is ExaminerSession.connect's own, and it closes it
+     itself on the same pull. */
+  const release = (): Promise<void> => {
+    releasing ??= Promise.all([
+      stopNowAndAfterStart(mic, micStarting),
+      stopNowAndAfterStart(playback, playbackStarting),
+    ]).then(() => {});
+    return releasing;
+  };
+  watch.onLetGo(() => {
+    void release();
+  });
 
   try {
-    await playback.start();
-    await mic.start(opts.stream, (chunk) => session?.sendAudioChunk(chunk));
-    session = await ExaminerSession.connect(liveEndpoint(opts.endpoint, ''), opts.instruction, {
-      onAudio: (chunk) => playback.enqueue(chunk),
-      onInterrupted: () => playback.flush(),
-      onTranscript: opts.cb.onTranscript,
-      onClosed: opts.cb.onClosed,
-      onError: opts.cb.onError,
-    }, opts.mayContinue);
+    watch.check();
+    playbackStarting = playback.start();
+    await watch.wait(playbackStarting);
+    micStarting = mic.start(opts.stream, (chunk) => session?.sendAudioChunk(chunk));
+    await watch.wait(micStarting);
+    session = await ExaminerSession.connect(
+      liveEndpoint(opts.endpoint, ''),
+      opts.instruction,
+      {
+        onAudio: (chunk) => playback.enqueue(chunk),
+        onInterrupted: () => playback.flush(),
+        onTranscript: opts.cb.onTranscript,
+        onClosed: opts.cb.onClosed,
+        onError: opts.cb.onError,
+      },
+      opts.mayContinue,
+      { handle: opts.handle },
+    );
   } catch (err) {
-    await mic.stop();
-    await playback.stop();
+    watch.done();
+    await release();
     throw err;
   }
+  watch.done();
 
   if (!session) throw new Error('The examiner session did not start.');
   const activeSession = session;
@@ -222,10 +313,17 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
   const accessToken = opts.accessToken;
   const base = opts.endpoint;
 
+  const watch = watchStart(opts.mayContinue, opts.handle);
   const output = new RemoteAudioOutput();
   const micMeter = new StreamLevelMeter();
   let peer: Awaited<ReturnType<typeof connectWebRtc>> | null = null;
   let session: OpenAiLiveSession | null = null;
+  let meterStarting: Promise<void> | null = null;
+  let playbackStarting: Promise<void> | null = null;
+  let released = false;
+  let releasing: Promise<void> | null = null;
+  /** Sessions already ended at the Worker, so none is ended twice. */
+  const ended = new Set<string>();
 
   /** Posts one cue to the Worker's /direct endpoint. Never throws: a stale
       transition (409) is logged and swallowed, anything else surfaces
@@ -254,8 +352,10 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
 
   /** Tells our Worker the session is over, so its record stops counting
       against the student's limits. Best effort, fire and forget: never
-      blocks the UI on a network hiccup. */
+      blocks the UI on a network hiccup. Once per session. */
   function endAtWorker(sessionId: string): void {
+    if (!sessionId || ended.has(sessionId)) return;
+    ended.add(sessionId);
     fetch(liveEndpoint(base, 'end'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
@@ -265,39 +365,76 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
     });
   }
 
+  /** R2E-01: lets go of everything this setup has made, at once, on a pull
+      or on ANY failure: the connection (its data channel and peer), the
+      playback and the meter (now, and again once a start of theirs still
+      under way has finished), and a paid session already created is ended
+      at the Worker. A session created by a request the setup stopped
+      waiting for is ended by connectWebRtc's onSessionUnused when it
+      answers. Safe to call more than once. */
+  const release = (): Promise<void> => {
+    if (releasing) return releasing;
+    released = true;
+    if (peer) {
+      peer.transport.close();
+      endAtWorker(peer.sessionId);
+    }
+    releasing = Promise.all([
+      stopNowAndAfterStart(output, playbackStarting),
+      stopNowAndAfterStart(micMeter, meterStarting),
+    ]).then(() => {});
+    return releasing;
+  };
+  watch.onLetGo(() => {
+    void release();
+  });
+
   try {
-    await micMeter.start(opts.stream);
+    watch.check();
+    meterStarting = micMeter.start(opts.stream);
+    await watch.wait(meterStarting);
     peer = await connectWebRtc({
       endpoint: liveEndpoint(base, ''),
       stream: opts.stream,
       plan: opts.plan,
       accessToken,
       onRemoteStream: (stream) => {
-        void output.start(stream);
+        /* R2E-01: the examiner's audio arrives while the setup is still
+           under way. A start that was let go plays none of it. */
+        if (released || !watch.going()) {
+          stopTracks(stream);
+          return;
+        }
+        playbackStarting = output.start(stream).catch(() => {});
       },
       mayContinue: opts.mayContinue,
+      handle: opts.handle,
+      onSessionUnused: endAtWorker,
     });
     /* The paid session exists now. If the start was let go while its
-       request was out, do not use it: the catch below closes the peer before
-       any audio flows, and the session is ended at the Worker. */
-    if (!mayGoOn(opts.mayContinue)) {
-      endAtWorker(peer.sessionId);
-      throw new LiveStartCancelled();
-    }
-    session = await OpenAiLiveSession.start(peer.transport, {
-      onTranscript: opts.cb.onTranscript,
-      onClosed: opts.cb.onClosed,
-      onError: opts.cb.onError,
-      onDelegation: (id) => {
-        void sendCue({ type: 'delegation', delegationId: id });
+       request was out, do not use it: the catch below closes the peer, and
+       the session is ended at the Worker. */
+    watch.check();
+    session = await OpenAiLiveSession.start(
+      peer.transport,
+      {
+        onTranscript: opts.cb.onTranscript,
+        onClosed: opts.cb.onClosed,
+        onError: opts.cb.onError,
+        onDelegation: (id) => {
+          void sendCue({ type: 'delegation', delegationId: id });
+        },
       },
-    });
+      { mayContinue: opts.mayContinue, handle: opts.handle },
+    );
   } catch (err) {
-    peer?.transport.close();
-    await output.stop();
-    await micMeter.stop();
+    /* Every failure after the session was created ends it at the Worker:
+       a let-go, the start timing out, an error, the connection closing. */
+    watch.done();
+    await release();
     throw err;
   }
+  watch.done();
 
   if (!session) throw new Error('The examiner session did not start.');
   const activeSession = session;

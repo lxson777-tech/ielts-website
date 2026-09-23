@@ -19,6 +19,8 @@ import {
   isTestSessionStorageKey,
   ownerStillCurrent,
   paperClockAt,
+  paperFinishLoss,
+  paperMayBeRecorded,
   secondsLeft,
   sittingRefOf,
   standaloneSitting,
@@ -26,8 +28,9 @@ import {
   type SittingLoss,
   type TestSession,
 } from '../lib/test-session';
-import { mockLegSitting, type MockSittingRef } from '../lib/tests/mock';
+import { isActiveMockStorageKey, mockLegSitting, type MockSittingRef } from '../lib/tests/mock';
 import { onOwnerChange } from '../lib/store-owner';
+import type { ReviewOwnerChange } from '../lib/tutor/review-owner';
 import { drillTypes } from '../lib/tests/drills';
 import Html from './Html';
 import StrategyPanel from './StrategyPanel';
@@ -316,6 +319,18 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      when nobody is signed in now, 'other-student' when somebody else is.
      Either way the sitting stops where it is and nothing is submitted. */
   const [ownerChange, setOwnerChange] = useState<'signed-out' | 'other-student' | null>(null);
+  /** Which of the two account changes this browser is in now. */
+  const ownerChangeNow = (): 'signed-out' | 'other-student' =>
+    currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out';
+  /* THE REVIEW, WITHHELD BY THE TUTOR'S OWN CHECK (sixth Codex round,
+     R2E-02). A request to Mr EZ from the review is bound to the student who
+     sat the paper, and it compares that student with the account whose
+     token it would be sent with. When they differ, although this tab has
+     not yet been told of any account change (the other tab's sign-in
+     arrives here a moment later, or not at all), nothing is sent and this
+     is set: the review leaves the screen for the same stopped screen an
+     account change shows, and stays off it in this tab. */
+  const [reviewWithheld, setReviewWithheld] = useState<ReviewOwnerChange | null>(null);
 
   /* WHICH SITTING THIS IS (fifth Codex round, R2D-02). The identity of the
      sitting on screen (its paper and its own sitting id), taken when it is
@@ -500,6 +515,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     setConfirmSubmit(false);
     setByTypeStats(null);
     setActivePart(0);
+    /* A review the previous student left open goes with everything of it:
+       a retake of it, what that retake fixed, and the review's own filter
+       (R2E-02). */
+    setRetake(null);
+    setRetakeResult(null);
+    setReviewFilter('all');
+    setReviewWithheld(null);
     setOwnerChange(null);
     /* The previous student's deadline and sitting go with their sitting; the
        paper gets its own when it is started for whoever is here now. */
@@ -525,6 +547,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       sittingRef.current = sittingRefOf(s);
       deadlineRef.current = s.endsAt;
       setTimeLeft(secondsLeft(s));
+      /* A paper of a mock that another tab of the same sitting handed in
+         just before this one opened is refused a fresh start (a result is
+         never started over), and is stopped at once rather than sat for
+         nothing (R2E-03). A fresh start that landed reads as held. */
+      if (mockSittingId) noticeLost();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -564,14 +591,24 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      in the previous student's own scoped key, exactly as they were, ready
      for them to resume when they sign back in.
 
-     A submitted paper is left alone. Its result is already recorded under
-     the owner who sat it, and the review screen on top of it is that
-     student's own reading of their own answers. */
+     A SUBMITTED PAPER IS NOT LEFT ALONE (sixth Codex round, R2E-02). Its
+     result is already recorded under the owner who sat it, but the review
+     on top of it is that student's answers, score and per-question review,
+     held in this component's memory, which no namespace protects. Left on
+     screen after a switch, the next student read the previous student's
+     answers and could ask Mr EZ about them with their own account. So the
+     review belongs to the student who sat the paper: once somebody else is
+     using this browser it leaves the screen (every answer, the score and
+     every tutor control) for the owner-changed stopped screen, and it
+     comes back only when that same student is the one using it again. */
   useEffect(() => {
     return onOwnerChange(() => {
-      if (submittedRef.current) return;
       /* A sitting that is over in this tab stays over (R2D-02). */
       if (lostRef.current) return;
+      if (submittedRef.current) {
+        setOwnerChange(ownerStillCurrent(sittingOwnerRef.current) ? null : ownerChangeNow());
+        return;
+      }
       if (!startedRef.current) {
         /* Still on the instructions gate: there is no sitting yet, so the
            new student simply gets the paper, with no interruption at all. */
@@ -596,7 +633,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         noticeLost();
         return;
       }
-      setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
+      setOwnerChange(ownerChangeNow());
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -606,13 +643,20 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      raises on the one standalone slot: a newer sitting started there
      replaces this one, and this one handed in there (or added to an
      account) is gone. Either stops this tab for good. A write of this same
-     sitting (the same paper carrying on in another tab) stops nothing. A
-     mock's paper does not listen here: its sitting is the mock screen's to
-     watch, and that screen stops the whole mock. */
+     sitting (the same paper carrying on in another tab) stops nothing.
+
+     A mock's paper listens on the mock's own record (R2E-03). The mock
+     screen watches the SITTING and stops the whole mock when it is replaced
+     or gone, but it cannot see that THIS PAPER inside a sitting that is
+     still written down was handed in from another tab that had picked up
+     the same sitting. The paper's own store can (mockLegSitting's `lost`
+     reads the paper's state as well), so a stale paper stops here on the
+     other tab's hand-in, before it can hand the paper in over it. */
   useEffect(() => {
-    if (mockSittingId || !started || submitted || lost) return;
+    if (!started || submitted || lost) return;
     const onStorage = (event: StorageEvent) => {
-      if (!isTestSessionStorageKey(event.key)) return;
+      const ours = mockSittingId ? isActiveMockStorageKey(event.key) : isTestSessionStorageKey(event.key);
+      if (!ours) return;
       noticeLost();
     };
     window.addEventListener('storage', onStorage);
@@ -717,7 +761,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
        not submitted at all: it stays saved under its own owner and the
        screen says so. */
     if (!ownerStillCurrent(sittingOwnerRef.current)) {
-      setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
+      setOwnerChange(ownerChangeNow());
       return;
     }
     /* The time used is read from the deadline at the moment of handing in,
@@ -752,16 +796,25 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
        evidence, and nothing is cleared. The tab stops for good and says why.
        A paper this browser never managed to write down ('unsaved') has
        nothing to finalise and no other tab can have it, so it is recorded
-       as before. */
+       as before.
+
+       A PAPER OF A MOCK IS HANDED IN ONCE (sixth Codex round, R2E-03). Two
+       tabs that picked up the same mock sitting hold the same paper, and the
+       sitting reads as theirs in both. The first hand-in is final: a second
+       one is refused as 'handed-in', the first result stays, and this tab
+       records nothing, exactly like a lost sitting. Only the first accepted
+       completion reaches the history and the evidence (paperMayBeRecorded). */
     const finished = sittingStore.finish(sittingOwnerRef.current, outcome, sittingRef.current);
-    if (finished === 'replaced' || finished === 'gone') {
-      stopAsLost(finished);
+    const refusedAs = paperFinishLoss(finished);
+    if (refusedAs) {
+      stopAsLost(refusedAs);
       return;
     }
     if (finished === 'owner-changed') {
-      setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
+      setOwnerChange(ownerChangeNow());
       return;
     }
+    if (!paperMayBeRecorded(finished)) return;
     submittedRef.current = true;
     setSubmitted(true);
     setShowScore(true);
@@ -1025,6 +1078,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   // Everything else about showing these (is there a tutor, did anything go
   // wrong, is the student signed in) is decided by the components.
   const tutorTestId = isRetake ? undefined : test.id;
+  /* WHOSE REVIEW MR EZ IS ASKED ABOUT (R2E-02): the student who sat the
+     paper, never whoever holds the token at the moment of the press. Both
+     review requests carry this owner and are refused, sending nothing, once
+     it is not the one using this browser; a refusal withholds the review. */
+  const tutorOwner = sittingOwnerRef.current;
 
   /* The student's own language for the answer notes (src/lib/i18n/
      test-explanations.ts). Three things are worth knowing here:
@@ -1078,11 +1136,18 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     );
   }
 
-  /* ── The sitting on screen belongs to somebody else now ── */
-  if (ownerChange) {
+  /* ── The sitting on screen belongs to somebody else now ──
+     A handed-in paper's review as well as an unfinished sitting (R2E-02):
+     its answers, its score, the per-question review and every Mr EZ
+     control leave the screen together, since this is returned INSTEAD of
+     all of them. A review withheld by the tutor's own owner check shows the
+     same screen. */
+  const accountChanged = ownerChange ?? reviewWithheld;
+  if (accountChanged) {
     return (
       <SittingStoppedScreen
-        reason={ownerChange}
+        reason={accountChanged}
+        review={submitted}
         inMock={!!mockSittingId}
         paperTitle={practiceTestTitle(test, t)}
         hubUrl={hubUrl}
@@ -1435,6 +1500,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 answers={answers}
                 correctIds={scoredIds}
                 scoredTotal={SCORED_TOTAL}
+                owner={tutorOwner}
+                onOwnerChanged={setReviewWithheld}
               />
             )}
             {part.groups.map((group, groupIndex) => {
@@ -1511,6 +1578,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                         testTitle={test.title}
                         bookmarkHref={bookmarkBase ? `${bookmarkBase}#q${nq.n}` : undefined}
                         tutorTestId={tutorTestId}
+                        tutorOwner={tutorOwner}
+                        onTutorOwnerChanged={setReviewWithheld}
                       />
                     ))
                   )}
@@ -1760,6 +1829,8 @@ function QuestionItem({
   testTitle,
   bookmarkHref,
   tutorTestId,
+  tutorOwner,
+  onTutorOwnerChanged,
 }: {
   nq: Numbered;
   value: string;
@@ -1780,6 +1851,10 @@ function QuestionItem({
   /** The paper's id when Mr EZ may be offered for a wrong answer here,
       undefined when he may not (see tutorTestId in TestPlayer). */
   tutorTestId?: string;
+  /** Whose review this is, and what to do when a press is refused because
+      it is somebody else's now (see tutorOwner in TestPlayer, R2E-02). */
+  tutorOwner?: string;
+  onTutorOwnerChanged?: (now: ReviewOwnerChange) => void;
 }) {
   const { t } = useT();
   const { question: q, group, n } = nq;
@@ -1956,6 +2031,8 @@ function QuestionItem({
           skill={skill}
           className="sm:ml-10"
           tutorTestId={tutorTestId}
+          tutorOwner={tutorOwner}
+          onTutorOwnerChanged={onTutorOwnerChanged}
         />
       )}
     </div>
@@ -2030,6 +2107,8 @@ function AnswerReview({
   skill,
   className,
   tutorTestId,
+  tutorOwner,
+  onTutorOwnerChanged,
 }: {
   q: Question;
   ok: boolean;
@@ -2043,6 +2122,10 @@ function AnswerReview({
       those blanks are marked as one widget, and the debrief card above the
       list already covers them. */
   tutorTestId?: string;
+  /** Whose review this is (R2E-02). No owner, no button: a press that could
+      not say whose answer it sends is never offered. */
+  tutorOwner?: string;
+  onTutorOwnerChanged?: (now: ReviewOwnerChange) => void;
 }) {
   /* Our marker forgives more than an examiner will (a hyphen, a currency sign,
      punctuation). Saying nothing would train the student into a habit that
@@ -2100,8 +2183,14 @@ function AnswerReview({
       {/* The note above says why the KEY is right. This says why what the
           student actually wrote is not, which nothing written in advance
           could. One click, one tutor turn, and only ever on a click. */}
-      {!ok && q.scored !== false && tutorTestId && (
-        <AskWhyWrong testId={tutorTestId} questionId={q.id} given={given} />
+      {!ok && q.scored !== false && tutorTestId && tutorOwner && (
+        <AskWhyWrong
+          testId={tutorTestId}
+          questionId={q.id}
+          given={given}
+          owner={tutorOwner}
+          onOwnerChanged={onTutorOwnerChanged}
+        />
       )}
     </div>
   );
@@ -2845,29 +2934,44 @@ function PerQuestionMultiAnswer({
    "paused" would not be true, and the only way on is Back: starting this
    paper fresh here would replace the other tab's newer sitting. A paper of
    a mock says it of the mock exam, in the mock screen's own words; the mock
-   screen normally takes over at once anyway. */
+   screen normally takes over at once anyway.
+
+   'handed-in' (R2E-03) is a paper of a mock that another tab of the same
+   sitting had already handed in: this tab's copy was not handed in over it,
+   and the mock carries on from that tab.
+
+   The same card again, for a HANDED-IN paper's review (`review`, R2E-02):
+   the answers and the score are hidden, not paused, and nothing is waiting
+   to be carried on, so it says that instead. The paper's title heads it,
+   and "Start this test fresh" hands the paper to whoever is here now. */
 function SittingStoppedScreen({
   reason,
+  review = false,
   inMock,
   paperTitle,
   hubUrl,
   onStartFresh,
 }: {
   reason: 'signed-out' | 'other-student' | SittingLoss;
+  /** The paper had been handed in: this is its review leaving the screen. */
+  review?: boolean;
   inMock: boolean;
   paperTitle: string;
   hubUrl: string;
   onStartFresh: () => void;
 }) {
   const { t } = useT();
-  if (reason === 'replaced' || reason === 'gone') {
-    const sentence = inMock
-      ? reason === 'replaced'
-        ? t('A newer mock exam was started in another tab, so this one is no longer being saved.')
-        : t('This mock exam was finished or closed in another tab, so this one is no longer being saved.')
-      : reason === 'replaced'
-        ? t('A newer test was started in another tab, so this one is no longer being saved.')
-        : t('This test was submitted or closed in another tab, so this one is no longer being saved.');
+  if (reason === 'replaced' || reason === 'gone' || reason === 'handed-in') {
+    const sentence =
+      reason === 'handed-in'
+        ? t('This paper was already handed in from another tab, so it was not handed in again here. The mock exam carries on from that tab.')
+        : inMock
+          ? reason === 'replaced'
+            ? t('A newer mock exam was started in another tab, so this one is no longer being saved.')
+            : t('This mock exam was finished or closed in another tab, so this one is no longer being saved.')
+          : reason === 'replaced'
+            ? t('A newer test was started in another tab, so this one is no longer being saved.')
+            : t('This test was submitted or closed in another tab, so this one is no longer being saved.');
     return (
       <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
         <div
@@ -2880,6 +2984,40 @@ function SittingStoppedScreen({
             <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
               {t('Back')}
             </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (review) {
+    return (
+      <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
+        <div
+          className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover"
+          role="status"
+        >
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">{paperTitle}</p>
+          <h1 className="mt-1 font-display text-2xl font-extrabold">
+            {reason === 'other-student'
+              ? t('This test belongs to another student')
+              : t('You signed out, so this result is hidden')}
+          </h1>
+          <p className="mt-3 text-ink-muted">
+            {reason === 'other-student'
+              ? t('A different account is using this browser now, so the answers and the score are hidden. The result is saved in the history of the student who took the test.')
+              : t('You are signed out now, so the answers and the score are hidden. The result is saved in the history of the account that took the test, ready for when you sign back in.')}
+          </p>
+          <div className="mt-8 flex items-center justify-between gap-3">
+            <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+              {t('Back')}
+            </a>
+            <button
+              type="button"
+              onClick={onStartFresh}
+              className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
+            >
+              {t('Start this test fresh')}
+            </button>
           </div>
         </div>
       </div>

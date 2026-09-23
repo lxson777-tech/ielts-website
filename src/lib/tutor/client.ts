@@ -8,10 +8,17 @@
    Every request carries an idempotency key, and a retry re-uses the SAME
    key. That is the point: a retry after a timeout must not be able to buy a
    second answer. The key is generated once per user action, not per
-   attempt. */
+   attempt.
 
-import { getAccessToken } from '../auth/session';
-import { isAuthConfigured } from '../auth/supabase';
+   Every request also belongs to ONE student, fixed when it is made (see
+   ./review-owner.ts). It is sent only with that student's own token, not
+   retried for anybody else, and what comes back is handed to the caller
+   only while that student is still the one on the page. Nothing here is
+   optional and no caller has to ask for it: send() below is the only way
+   out of this module, and it binds first. */
+
+import { getSupabase, isAuthConfigured } from '../auth/supabase';
+import { bindTutorRequest, tokenForRequest, type TutorSession } from './review-owner';
 import { t } from '../i18n/translate';
 import { getLocale, type Locale } from '../i18n/locale';
 import { tutorErrorMessage } from './errors';
@@ -95,6 +102,23 @@ interface AskOptions {
   signal?: AbortSignal;
   /** Retry once, automatically, on a transient failure. Default true. */
   retry?: boolean;
+  /** Whose review this request is about, as src/lib/store-owner.ts spells
+      an owner ('u:<id>'): the student who sat the paper. Set by the two
+      review requests (R2E-02), and refused with TutorOwnerChangedError,
+      sending nothing and fetching no token, when that owner is no longer
+      the current one. Left out, the request is bound to the owner on the
+      page at the moment it is made. Either way it is bound: see send(). */
+  owner?: string;
+}
+
+/** The session a bound request is checked against: its token AND the user
+    it was issued to, read together from the one place both live. */
+async function readTutorSession(): Promise<TutorSession | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const { data } = await sb.auth.getSession();
+  const session = data.session;
+  return session ? { token: session.access_token, userId: session.user.id } : null;
 }
 
 async function post<TReply>(url: string, token: string, req: unknown, signal?: AbortSignal): Promise<TReply> {
@@ -133,33 +157,60 @@ async function post<TReply>(url: string, token: string, req: unknown, signal?: A
   return (await resp.json()) as TReply;
 }
 
-/** Sign in, stamp the language and the repeat-send key, send, and retry a
-    transient failure exactly once with the SAME key. Shared by the tutor
-    tasks and the three learning ones, so a retry can never buy a second
-    answer on any of them. */
+/** Bind to one student, sign in as them, stamp the language and the
+    repeat-send key, send, and retry a transient failure exactly once with
+    the SAME key. Shared by the tutor tasks and the three learning ones, so
+    a retry can never buy a second answer on any of them, and none of them
+    can be sent as, or answered to, the wrong student. */
 async function send<TRequest extends { locale?: Locale; idempotencyKey?: string }, TReply>(
   req: TRequest,
   options: AskOptions,
 ): Promise<TReply> {
   if (!TUTOR_URL) throw new TutorClientError('not-configured', t('Mr EZ is not switched on for this build yet.'));
 
-  const token = await getAccessToken();
-  if (!token) throw new TutorClientError('sign-in-required', t('Sign in and Mr EZ can see your own results.'));
-
-  const withKey = {
-    ...req,
-    locale: req.locale ?? getLocale(),
-    idempotencyKey: req.idempotencyKey ?? newIdempotencyKey(),
-  };
-
+  /* Bound FIRST, before anything is read: a review's own student, or the
+     owner on the page right now. A review whose student has gone is
+     refused here, before any token is fetched. */
+  const binding = bindTutorRequest(options.owner);
   try {
-    return await post<TReply>(TUTOR_URL, token, withKey, options.signal);
-  } catch (err) {
-    const transient = err instanceof TutorClientError && (err.code === 'busy' || err.code === 'unavailable');
-    if (!transient || options.retry === false || options.signal?.aborted) throw err;
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    if (options.signal?.aborted) throw err;
-    return post<TReply>(TUTOR_URL, token, withKey, options.signal);
+    /* Refused again if the session this token came from is anybody but
+       that owner's. */
+    const token = await tokenForRequest(binding, readTutorSession);
+    if (!token) throw new TutorClientError('sign-in-required', t('Sign in and Mr EZ can see your own results.'));
+
+    const withKey = {
+      ...req,
+      locale: req.locale ?? getLocale(),
+      idempotencyKey: req.idempotencyKey ?? newIdempotencyKey(),
+    };
+
+    let reply: TReply;
+    try {
+      reply = await post<TReply>(TUTOR_URL, token, withKey, options.signal);
+    } catch (err) {
+      /* A failure is an answer too, and it belongs to the same student:
+         one that comes back after the page changed hands is dropped. */
+      binding.check(true);
+      const transient = err instanceof TutorClientError && (err.code === 'busy' || err.code === 'unavailable');
+      if (!transient || options.retry === false || options.signal?.aborted) throw err;
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      if (options.signal?.aborted) throw err;
+      /* The account may have changed during the pause: nothing is sent a
+         second time for somebody who is no longer here. */
+      binding.check(true);
+      try {
+        reply = await post<TReply>(TUTOR_URL, token, withKey, options.signal);
+      } catch (retryErr) {
+        binding.check(true);
+        throw retryErr;
+      }
+    }
+    /* Handed over only while the student it was asked for is still the one
+       on the page, and has been all along. */
+    binding.check(true);
+    return reply;
+  } finally {
+    binding.release();
   }
 }
 

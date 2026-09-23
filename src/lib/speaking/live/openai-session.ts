@@ -30,11 +30,38 @@
    no rejects with LiveStartCancelled after closing the data channel and the
    peer connection, which stops the microphone track it was given from being
    sent (the track itself belongs to the caller, who releases it). The
-   request is never sent. */
+   request is never sent.
+
+   AND AFTER THE REQUEST IS ANSWERED (finding R2E-01, Codex inspection of
+   c4a7793). The check above was the last one: an answer that came back
+   after the start had been let go was still APPLIED (the remote answer set
+   on the connection, so the examiner's audio track arrived and the caller
+   began playing it), and OpenAiLiveSession.start then waited up to twenty
+   seconds for the session to begin with nothing able to reach it. Now:
+     - both functions also take the screen's StartHandle (./start-check.ts),
+       which the screen pulls the moment it lets go. A pull closes the data
+       channel and the peer connection there and then, wherever the setup is
+       waiting, and the wait rejects with LiveStartCancelled at once instead
+       of when the preparation, the request or the twenty seconds are over;
+     - the check (handle and question) is asked immediately before the
+       remote answer is applied, so a let-go answer is never applied and no
+       audio can flow;
+     - every callback that could start something asks first and, on a no,
+       releases what it was handed and does nothing else: the track callback
+       stops the track instead of passing it on to be played, the data
+       channel's callbacks do nothing once the connection is torn down, and
+       OpenAiLiveSession.start does not accept a session.started (or report
+       an error) for a start that was let go;
+     - a session the request created that this setup does not hand back (it
+       was let go, or a later step failed) is reported through
+       onSessionUnused, so the caller ends it at the Worker. When the let-go
+       came while the request was out, the request is left to finish (it is
+       never aborted: an aborted request could leave a session nobody knows
+       the id of) and its session is reported the moment it answers. */
 
 import type { TranscriptTurn } from './session';
 import type { SessionPlanRequest } from './instructions';
-import { continueOrCancel, type MayContinue } from './start-check';
+import { LiveStartCancelled, watchStart, type MayContinue, type StartHandle } from './start-check';
 
 export interface LiveServerEvent {
   type: string;
@@ -64,6 +91,12 @@ export interface OpenAiSessionOptions {
   startTimeoutMs?: number;
   closeTimeoutMs?: number;
   turnGapMs?: number;
+  /** Asked before the start acts on anything the channel says (R2E-01). A
+      no rejects with LiveStartCancelled and closes the transport. */
+  mayContinue?: MayContinue;
+  /** Pulled by the screen the moment it lets go: the transport is closed
+      and the start rejects with LiveStartCancelled at once (R2E-01). */
+  handle?: StartHandle;
 }
 
 interface CloseResult {
@@ -104,13 +137,15 @@ export class OpenAiLiveSession {
 
   /** Resolves on session.started; rejects (and calls transport.close()) on:
       an error event before start, the transport closing before start, or
-      startTimeoutMs elapsing. */
+      startTimeoutMs elapsing; and with LiveStartCancelled, at once, when the
+      handle is pulled or the question says no (R2E-01). */
   static start(
     transport: LiveEventTransport,
     cb: OpenAiSessionCallbacks,
     opts: OpenAiSessionOptions = {},
   ): Promise<OpenAiLiveSession> {
     const startTimeoutMs = opts.startTimeoutMs ?? DEFAULT_START_TIMEOUT_MS;
+    const watch = watchStart(opts.mayContinue, opts.handle);
 
     return new Promise((resolve, reject) => {
       let settled = false;
@@ -123,24 +158,40 @@ export class OpenAiLiveSession {
         }
       };
 
-      const settleReject = (message: string) => {
+      const settleReject = (error: Error) => {
         if (settled) return;
         settled = true;
         clearTimer();
+        watch.done();
         transport.close();
-        reject(new Error(message));
+        reject(error);
       };
+      /* R2E-01: the start was let go. The transport is closed at once and
+         nothing the channel says afterwards is acted on. */
+      const cancelled = () => settleReject(new LiveStartCancelled());
+
+      if (!watch.going()) {
+        cancelled();
+        return;
+      }
+      watch.onLetGo(cancelled);
 
       timer = setTimeout(() => {
-        settleReject('Timed out waiting for the examiner session to start.');
+        settleReject(new Error('Timed out waiting for the examiner session to start.'));
       }, startTimeoutMs);
 
       transport.setHandlers({
         onEvent(ev) {
           if (settled) return;
+          /* Asked before anything the channel says is acted on: a
+             session.started for a start that was let go is not accepted. */
+          if (!watch.going()) {
+            cancelled();
+            return;
+          }
           if (ev.type === 'error') {
             const error = ev.error as { message?: string } | undefined;
-            settleReject(error?.message ?? 'The examiner service reported an error before the session started.');
+            settleReject(new Error(error?.message ?? 'The examiner service reported an error before the session started.'));
             return;
           }
           if (ev.type === 'session.started') {
@@ -148,6 +199,7 @@ export class OpenAiLiveSession {
             const id = typeof session?.id === 'string' ? session.id : '';
             settled = true;
             clearTimer();
+            watch.done();
             const instance = new OpenAiLiveSession(transport, cb, id, opts);
             instance.attach();
             resolve(instance);
@@ -156,7 +208,11 @@ export class OpenAiLiveSession {
           // Anything else before start (info, response.event, ...) is ignored.
         },
         onClose() {
-          settleReject('The connection closed before the examiner session started.');
+          if (!watch.going()) {
+            cancelled();
+            return;
+          }
+          settleReject(new Error('The connection closed before the examiner session started.'));
         },
       });
     });
@@ -343,13 +399,28 @@ export interface WebRtcConnectOptions {
   accessToken: string | null;
   onRemoteStream(stream: MediaStream): void;
   iceTimeoutMs?: number;
-  /** Asked before anything is made and immediately before the request that
-      creates the paid voice session (R2D-01). A no rejects with
+  /** Asked before anything is made, immediately before the request that
+      creates the paid voice session (R2D-01), immediately before its answer
+      is applied, and in the track callback (R2E-01). A no rejects with
       LiveStartCancelled and sends nothing. Not given: never asked. */
   mayContinue?: MayContinue;
+  /** Pulled by the screen the moment it lets go (R2E-01): the data channel
+      and the peer connection are closed at once and the setup rejects with
+      LiveStartCancelled without waiting for its current step. */
+  handle?: StartHandle;
+  /** Called at most once with the id of a session the request created that
+      this setup did not hand back (it was let go, or a later step failed),
+      so the caller can end it at the Worker (R2E-01). It can come AFTER the
+      setup has rejected: a let-go while the request was out is reported
+      when the request answers. */
+  onSessionUnused?(sessionId: string): void;
 }
 
-function waitForIceGatheringComplete(pc: RTCPeerConnection, timeoutMs: number): Promise<void> {
+function waitForIceGatheringComplete(
+  pc: RTCPeerConnection,
+  timeoutMs: number,
+  onLetGo?: (release: () => void) => void,
+): Promise<void> {
   if (pc.iceGatheringState === 'complete') return Promise.resolve();
   return new Promise((resolve) => {
     let done = false;
@@ -367,6 +438,8 @@ function waitForIceGatheringComplete(pc: RTCPeerConnection, timeoutMs: number): 
     };
     pc.addEventListener('icegatheringstatechange', onChange);
     timer = setTimeout(finish, timeoutMs);
+    /* A start let go stops waiting at once (its timer included). */
+    onLetGo?.(finish);
   });
 }
 
@@ -377,11 +450,19 @@ export async function connectWebRtc(
   opts: WebRtcConnectOptions,
 ): Promise<{ transport: LiveEventTransport; sessionId: string; model: string; peer: RTCPeerConnection }> {
   const iceTimeoutMs = opts.iceTimeoutMs ?? 10000;
-  continueOrCancel(opts.mayContinue);
+  const watch = watchStart(opts.mayContinue, opts.handle);
+  watch.check();
   const pc = new RTCPeerConnection();
   let dc: RTCDataChannel | null = null;
   let handlers: { onEvent(ev: LiveServerEvent): void; onClose(): void } | null = null;
   let torndown = false;
+  /* The session the request created, once its answer has been read, and
+     whether it has been handed back (then it is the caller's to end) or
+     given up on (then it is reported through onSessionUnused). */
+  let createdId: string | null = null;
+  let handedOver = false;
+  let gaveUp = false;
+  let unusedReported = false;
 
   const teardown = () => {
     if (torndown) return;
@@ -397,9 +478,31 @@ export async function connectWebRtc(
       /* already closed */
     }
   };
+  const reportUnused = () => {
+    if (!createdId || handedOver || unusedReported) return;
+    unusedReported = true;
+    try {
+      opts.onSessionUnused?.(createdId);
+    } catch {
+      /* the caller's report must never turn into a failure here */
+    }
+  };
+  /* R2E-01: a pull closes the channel and the peer at once, wherever the
+     setup is waiting. */
+  watch.onLetGo(teardown);
 
   try {
     pc.addEventListener('track', (e) => {
+      /* R2E-01: a track that arrives once the start was let go (or the
+         connection torn down) is stopped, never passed on to be played. */
+      if (torndown || !watch.going()) {
+        try {
+          e.track.stop();
+        } catch {
+          /* already ended */
+        }
+        return;
+      }
       opts.onRemoteStream(new MediaStream([e.track]));
     });
 
@@ -409,7 +512,7 @@ export async function connectWebRtc(
 
     dc = pc.createDataChannel('oai-events');
     dc.addEventListener('message', (e: MessageEvent) => {
-      if (!handlers) return;
+      if (torndown || !handlers) return;
       if (typeof e.data !== 'string') return;
       let parsed: LiveServerEvent;
       try {
@@ -420,18 +523,20 @@ export async function connectWebRtc(
       handlers.onEvent(parsed);
     });
     dc.addEventListener('close', () => {
+      if (torndown) return;
       handlers?.onClose();
     });
 
     pc.addEventListener('connectionstatechange', () => {
+      if (torndown) return;
       if (pc.connectionState === 'failed' || pc.connectionState === 'closed') {
         handlers?.onClose();
       }
     });
 
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    await waitForIceGatheringComplete(pc, iceTimeoutMs);
+    const offer = await watch.wait(pc.createOffer());
+    await watch.wait(pc.setLocalDescription(offer));
+    await watch.wait(waitForIceGatheringComplete(pc, iceTimeoutMs, (finish) => watch.onLetGo(finish)));
 
     const sdp = pc.localDescription?.sdp;
     if (!sdp) throw new Error('Could not prepare the connection offer.');
@@ -443,32 +548,48 @@ export async function connectWebRtc(
        immediately before the request that creates the paid voice session:
        a no sends nothing, and the catch below closes the data channel and
        the peer connection. */
-    continueOrCancel(opts.mayContinue);
-    const resp = await fetch(opts.endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ sdp, plan: opts.plan }),
-    });
-    if (!resp.ok) {
-      const body = (await resp.json().catch(() => null)) as { error?: string } | null;
-      // A 400 here means the Worker rejected the plan, which in practice only
-      // happens when the site ships a question bank the deployed Worker does
-      // not have yet (see "Deploying after a question-bank change" in the
-      // Worker README). The Worker's message names internal ids, so it is
-      // never shown to a student.
-      if (resp.status === 400) {
-        throw new Error('The examiner service is being updated. Please try again in a few minutes.');
+    watch.check();
+    const answered = (async () => {
+      const resp = await fetch(opts.endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ sdp, plan: opts.plan }),
+      });
+      if (!resp.ok) {
+        const body = (await resp.json().catch(() => null)) as { error?: string } | null;
+        // A 400 here means the Worker rejected the plan, which in practice only
+        // happens when the site ships a question bank the deployed Worker does
+        // not have yet (see "Deploying after a question-bank change" in the
+        // Worker README). The Worker's message names internal ids, so it is
+        // never shown to a student.
+        if (resp.status === 400) {
+          throw new Error('The examiner service is being updated. Please try again in a few minutes.');
+        }
+        throw new Error(body?.error ?? `Session service error (${resp.status})`);
       }
-      throw new Error(body?.error ?? `Session service error (${resp.status})`);
-    }
-    const data = (await resp.json()) as {
-      provider: string;
-      session: { id: string };
-      transport: { type: string; sdp: string };
-      model: string;
-    };
+      const data = (await resp.json()) as {
+        provider: string;
+        session: { id: string };
+        transport: { type: string; sdp: string };
+        model: string;
+      };
+      if (typeof data?.session?.id === 'string' && data.session.id) createdId = data.session.id;
+      /* Let go while the request was out: the session exists now and is
+         nobody's, so it is reported the moment its id is known. */
+      if (gaveUp) reportUnused();
+      return data;
+    })();
+    const data = await watch.wait(answered);
 
-    await pc.setRemoteDescription({ type: 'answer', sdp: data.transport.sdp });
+    /* R2E-01: asked immediately before the remote answer is applied. A no
+       applies nothing, so no audio can flow; the catch below closes the
+       peer and reports the session, which is ended at the Worker. */
+    watch.check();
+    await watch.wait(pc.setRemoteDescription({ type: 'answer', sdp: data.transport.sdp }));
+    /* Applying the answer takes a moment of its own (the track callback runs
+       inside it, and asks for itself): a no that came in between hands
+       nothing back. */
+    watch.check();
 
     const transport: LiveEventTransport = {
       send(event) {
@@ -482,9 +603,14 @@ export async function connectWebRtc(
       },
     };
 
+    handedOver = true;
+    watch.done();
     return { transport, sessionId: data.session.id, model: data.model, peer: pc };
   } catch (err) {
+    gaveUp = true;
     teardown();
+    watch.done();
+    reportUnused();
     throw err;
   }
 }

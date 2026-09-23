@@ -76,7 +76,16 @@
    socket, so a switch or an unmount while the connection prepares itself
    sends no such request at all. A grade
    already requested is kept for its student exactly as before, and the
-   mock's onSuspend and onAbort reporting is unchanged. */
+   mock's onSuspend and onAbort reporting is unchanged.
+
+   THE SCREEN REACHES A CONNECTION STILL COMING UP (finding R2E-01, Codex
+   inspection of c4a7793). The screen could close a connection only once the
+   setup had handed it over, and the setup's last wait (up to twenty seconds
+   for the session to begin) came after the examiner's audio had started
+   playing. Each start now also hands the setup its handle (session.handle,
+   pulled whenever the start number moves on, so by every teardown above),
+   and a setup still under way closes its connection, stops its audio and
+   ends a paid session it had created the moment the screen lets go. */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
@@ -534,6 +543,13 @@ export default function LiveExaminer({
              the connection prepares itself sends no request that would
              create a paid voice session, and opens no Gemini socket. */
           mayContinue: stillHere,
+          /* And pulled by this screen (R2E-01): every teardown moves the
+             start number on, which pulls this handle, so a setup still under
+             way (the answer being applied, the session starting, the audio
+             starting to play) closes its connection and its audio at once
+             and ends a paid session it had created, instead of carrying on
+             until its own wait runs out. */
+          handle: session.handle,
           cb: {
             /* A connection this start has let go of says nothing to the
                screen: its transcript and its closing are not the session the

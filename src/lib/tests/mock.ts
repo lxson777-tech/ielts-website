@@ -821,17 +821,57 @@ export function saveMockLegAnswers(ref: MockSittingRef, testId: string, answers:
   return writeLegs(sitting, { ...sitting.held.legSittings, [testId]: { ...leg, answers: { ...answers } } });
 }
 
+/* HANDING A PAPER IN IS FINAL (sixth Codex round, 23 September 2026, R2E-03)
+   Two tabs can pick up the same mock sitting and so hold the same Listening
+   paper. The sitting's identity cannot tell them apart: both are the SAME
+   sitting, still written down, still this student's, so every check on the
+   sitting reads 'held' in both. Handing the paper in used to overwrite
+   whatever result it already had, so the second tab to hand it in replaced
+   the first tab's result with its own answers, and its player recorded the
+   paper a second time, in the progress history and in the learner evidence.
+   The mock's own one-record-per-sitting rule does not cover a paper's rows.
+
+   Now the first hand-in of a paper is final. A second one is refused with
+   its own outcome, 'handed-in', and writes nothing: the first result stays
+   exactly as it was. The paper's own state is read as well as the sitting's
+   when a player asks whether its paper is still its own (mockLegSitting's
+   `lost` below), so a stale tab stops on the other tab's write, or on its
+   next refused save, and never gets as far as a hand-in that records
+   anything. */
+
+/** What handing paper `testId` in inside the sitting `ref` found.
+ * - 'finished': this was its first hand-in, and its result is now kept.
+ * - 'handed-in': it had ALREADY been handed in inside this sitting (from
+ *   another tab). Nothing was written: the first result stands.
+ * - 'refused': nothing was written for any other reason (somebody else is
+ *   using this browser, the sitting is not the written-down one, the paper
+ *   is not one of its two, or there was no room to write). */
+export type MockLegFinish = 'finished' | 'handed-in' | 'refused';
+
 /** Paper `testId` was handed in inside the sitting `ref`: its result is kept
     with the sitting and its in-progress answers go, exactly as a standalone
-    paper's sitting is cleared on submit. A no-op returning false once
-    somebody else is using this browser. */
-export function finishMockLeg(ref: MockSittingRef, testId: string, result: MockLegResult): boolean {
+    paper's sitting is cleared on submit. Only ever once per paper: a paper
+    that already holds a result is refused as 'handed-in' and its result is
+    never replaced (R2E-03). 'refused', writing nothing, once somebody else
+    is using this browser. */
+export function finishMockLeg(ref: MockSittingRef, testId: string, result: MockLegResult): MockLegFinish {
   const sitting = heldSitting(ref);
-  if (!sitting || !isPaperOf(sitting.held, testId)) return false;
+  if (!sitting || !isPaperOf(sitting.held, testId)) return 'refused';
   const leg = sitting.held.legSittings[testId];
+  if (leg?.result) return 'handed-in';
   const now = Date.now();
   const base: MockLegSitting = leg ?? { testId, startedAt: now, endsAt: now, answers: {}, result: null };
-  return writeLegs(sitting, { ...sitting.held.legSittings, [testId]: { ...base, answers: {}, result: { ...result } } });
+  return writeLegs(sitting, { ...sitting.held.legSittings, [testId]: { ...base, answers: {}, result: { ...result } } })
+    ? 'finished'
+    : 'refused';
+}
+
+/** Whether paper `testId` of the sitting `ref` has already been handed in
+    inside it: the paper's own state, which the sitting's status cannot show
+    (R2E-03). False when the sitting is not this browser's current owner's
+    written-down one. */
+export function mockLegHandedIn(ref: MockSittingRef, testId: string): boolean {
+  return Boolean(heldSitting(ref)?.held.legSittings[testId]?.result);
 }
 
 /** The result paper `testId` was handed in with inside the sitting `ref`, if
@@ -849,7 +889,14 @@ export function mockLegResult(ref: MockSittingRef, testId: string): MockLegResul
  * newer sitting, or gone after it was written down (finished, or added to an
  * account, in another tab). Handing the paper in then writes nothing and
  * reports why, before the player records anything, and the mock screen is
- * told so it stops as a whole. */
+ * told so it stops as a whole.
+ *
+ * It is also lost, as 'handed-in', when the sitting is still written down
+ * but THIS PAPER inside it was already handed in, from another tab that had
+ * picked up the same sitting (R2E-03). `lost` reads the paper's own state
+ * for that, so the stale player stops on the other tab's write or on its
+ * next refused save, and a hand-in that still arrives is refused the same
+ * way, recording nothing. The first hand-in's result is never replaced. */
 export function mockLegSitting(
   ref: MockSittingRef,
   test: Pick<PracticeTest, 'id' | 'durationMinutes'>,
@@ -897,13 +944,24 @@ export function mockLegSitting(
     },
     lost: (sittingOwner) => {
       if (sittingOwner && sittingOwner !== ref.owner) return null;
-      return sittingLossFrom(mockSittingStatus(ref), everHeld);
+      const status = mockSittingStatus(ref);
+      /* The sitting is still this one, but the paper is not this tab's to
+         hand in any more (R2E-03). A result is a positive fact written down
+         by a hand-in, never an absence, so it counts whether or not this
+         player ever managed to write the paper itself. */
+      if (status === 'held' && mockLegHandedIn(ref, test.id)) return 'handed-in';
+      return sittingLossFrom(status, everHeld);
     },
     finish: (sittingOwner, outcome): PaperFinish => {
       if (sittingOwner && sittingOwner !== ref.owner) return 'owner-changed';
       const status = mockSittingStatus(ref);
       if (status === 'owner-changed') return 'owner-changed';
-      if (status === 'held') return finishMockLeg(ref, test.id, outcome) ? 'finished' : 'unsaved';
+      if (status === 'held') {
+        const done = finishMockLeg(ref, test.id, outcome);
+        if (done === 'finished') return 'finished';
+        if (done === 'handed-in') return 'handed-in';
+        return 'unsaved';
+      }
       return sittingLossFrom(status, everHeld) ?? 'unsaved';
     },
   };

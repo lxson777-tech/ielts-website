@@ -183,6 +183,18 @@ export const strings: Record<string, string> = {
     'В другой вкладке начат более новый тест, поэтому этот больше не сохраняется.',
   'This test was submitted or closed in another tab, so this one is no longer being saved.':
     'Этот тест был отправлен или закрыт в другой вкладке, поэтому здесь он больше не сохраняется.',
+  /* A paper of a mock that another tab of the same sitting had already
+     handed in (R2E-03). Shown by the test player and by the mock screen. */
+  'This paper was already handed in from another tab, so it was not handed in again here. The mock exam carries on from that tab.':
+    'Эта часть уже была отправлена из другой вкладки, поэтому здесь она повторно не отправлена. Пробный экзамен продолжается в той вкладке.',
+  /* A handed-in paper's review leaves the screen when the account on this
+     browser changes (R2E-02). The other-student heading reuses "This test
+     belongs to another student" above. SittingStoppedScreen, `review`. */
+  'You signed out, so this result is hidden': 'Вы вышли из аккаунта, поэтому этот результат скрыт',
+  'A different account is using this browser now, so the answers and the score are hidden. The result is saved in the history of the student who took the test.':
+    'Сейчас этим браузером пользуется другой аккаунт, поэтому ответы и результат скрыты. Результат сохранён в истории того студента, который проходил тест.',
+  'You are signed out now, so the answers and the score are hidden. The result is saved in the history of the account that took the test, ready for when you sign back in.':
+    'Сейчас вы не в аккаунте, поэтому ответы и результат скрыты. Результат сохранён в истории того аккаунта, в котором проходили тест, и будет ждать вас, когда вы снова войдёте.',
 
   /* ---------------------------------------------------------------- */
   /* Mock Exam Day: the start screen                                   */
@@ -226,6 +238,13 @@ export const strings: Record<string, string> = {
      finished, or added to an account, in another tab (MockExam.tsx, R2D-03). */
   'This mock exam was finished or closed in another tab, so this one is no longer being saved.':
     'Этот пробный экзамен был завершён или закрыт в другой вкладке, поэтому здесь он больше не сохраняется.',
+  /* The results of a mock already recorded leave the screen when the
+     account on this browser changes (MockExam.tsx, R2E-02). */
+  'You signed out, so these results are hidden': 'Вы вышли из аккаунта, поэтому эти результаты скрыты',
+  'A different account is using this browser now, so the results of this mock exam are hidden. They are saved in the history of the student who sat it.':
+    'Сейчас этим браузером пользуется другой аккаунт, поэтому результаты этого пробного экзамена скрыты. Они сохранены в истории того студента, который его сдавал.',
+  'You are signed out now, so the results of this mock exam are hidden. They are saved in the history of the account that sat it, ready for when you sign back in.':
+    'Сейчас вы не в аккаунте, поэтому результаты этого пробного экзамена скрыты. Они сохранены в истории того аккаунта, в котором его сдавали, и будут ждать вас, когда вы снова войдёте.',
 
   /* The student's own unfinished mock, offered back on the start screen
      (ResumeOffer in MockExam.tsx). {papers} and {paper} are paper names,

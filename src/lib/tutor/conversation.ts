@@ -18,13 +18,34 @@
    essays and test attempts live in `user_state.progress` and are a separate
    record with a separate lifetime. The UI says so in those words, because a
    student who clears a chat and loses their score history would never trust
-   the button again. */
+   the button again.
+
+   ONE STUDENT'S CONVERSATION PER KEY (follow-up to Codex R2E-02, 23
+   September 2026). The session copy used to sit under one key with nobody's
+   name on it, so after an account change in this tab, or in another one,
+   the next student opened the panel on the last student's conversation,
+   and a reload served it back to them. It now lives under the owner's own
+   key (scopedKeyFor in src/lib/store-owner.ts, the same shape every other
+   store uses), and every read and write here names the owner it is for,
+   defaulting to the current one. The old unowned key is never read again:
+   there is no way to know whose it was, and the durable copy in the
+   account restores a signed-in student's conversation anyway. Clearing
+   removes it as well. The durable copy is restored only for the student it
+   belongs to (restoreLatestConversation below). */
 
 import { getSupabase } from '../auth/supabase';
 import { t, tn } from '../i18n/translate';
+import { currentOwner, scopedKeyFor } from '../store-owner';
+import type { CacheOwner } from '../learning/contracts/sync';
 import type { TutorMood, TutorRecommendation } from './schema';
 
-const SESSION_KEY = 'ielts.mrez.conversation.v1';
+/** The base key. Never used on its own any more: see conversationKey. */
+export const CONVERSATION_SESSION_KEY = 'ielts.mrez.conversation.v1';
+
+/** Where one student's conversation is kept in this tab's session storage. */
+export function conversationKey(owner: CacheOwner): string {
+  return scopedKeyFor(CONVERSATION_SESSION_KEY, owner);
+}
 
 export interface ChatTurn {
   id: string;
@@ -46,10 +67,11 @@ export interface ConversationState {
 
 export const EMPTY_CONVERSATION: ConversationState = { conversationId: null, turns: [] };
 
-export function loadConversation(): ConversationState {
+/** `owner`'s conversation in this tab, the current owner's when left out. */
+export function loadConversation(owner?: CacheOwner): ConversationState {
   if (typeof window === 'undefined') return { ...EMPTY_CONVERSATION };
   try {
-    const raw = window.sessionStorage.getItem(SESSION_KEY);
+    const raw = window.sessionStorage.getItem(conversationKey(owner ?? currentOwner()));
     if (!raw) return { ...EMPTY_CONVERSATION };
     const parsed = JSON.parse(raw) as ConversationState;
     if (!Array.isArray(parsed?.turns)) return { ...EMPTY_CONVERSATION };
@@ -59,7 +81,11 @@ export function loadConversation(): ConversationState {
   }
 }
 
-export function saveConversation(state: ConversationState): void {
+/** Keep `state` as `owner`'s conversation. The panel always names the
+    owner the conversation on its screen belongs to, never "whoever is
+    current by the time this runs": a save can run a moment after the
+    account changed. Left out, the current owner. */
+export function saveConversation(state: ConversationState, owner?: CacheOwner): void {
   try {
     // A turn that failed is a question that was never answered. Its retry
     // button lives in the panel's in-memory error state, which a reload
@@ -68,28 +94,39 @@ export function saveConversation(state: ConversationState): void {
     // again. Drop it: the student's draft is gone either way, and a clean
     // conversation is more honest than a dead one.
     const durable: ConversationState = { ...state, turns: state.turns.filter((t) => !t.failed) };
-    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(durable));
+    window.sessionStorage.setItem(conversationKey(owner ?? currentOwner()), JSON.stringify(durable));
   } catch {
     /* storage blocked — the conversation just won't survive a reload */
   }
 }
 
-export function clearLocalConversation(): void {
+/** Forget `owner`'s conversation in this tab (the current owner's when left
+    out), and the old unowned copy with it, which nothing reads any more. */
+export function clearLocalConversation(owner?: CacheOwner): void {
   try {
-    window.sessionStorage.removeItem(SESSION_KEY);
+    window.sessionStorage.removeItem(conversationKey(owner ?? currentOwner()));
+    window.sessionStorage.removeItem(CONVERSATION_SESSION_KEY);
   } catch {
     /* ignore */
   }
 }
 
-/** The student's most recent conversation, read straight from Supabase under
-    RLS. Returns null when accounts are off, nobody is signed in, or there is
-    nothing stored — all of which are "start fresh", not errors. */
-export async function restoreLatestConversation(): Promise<ConversationState | null> {
+/** `owner`'s most recent conversation (the current owner's when left out),
+    read straight from Supabase under RLS. Returns null when accounts are
+    off, nobody is signed in, or there is nothing stored, all of which are
+    "start fresh", not errors.
+ *
+ * Also null when the session this browser holds is not `owner`'s, before
+ * the rows are read or after: the rows come back for whoever the session
+ * belongs to at that moment, and another tab can change that. A student is
+ * only ever given their own conversation back. */
+export async function restoreLatestConversation(owner?: CacheOwner): Promise<ConversationState | null> {
+  const forOwner = owner ?? currentOwner();
+  if (forOwner.kind !== 'user') return null;
   const sb = getSupabase();
   if (!sb) return null;
   const { data: auth } = await sb.auth.getUser();
-  if (!auth.user) return null;
+  if (!auth.user || auth.user.id !== forOwner.userId) return null;
 
   const { data: conversations, error } = await sb
     .from('mr_ez_conversations')
@@ -105,6 +142,12 @@ export async function restoreLatestConversation(): Promise<ConversationState | n
     .eq('conversation_id', conversationId)
     .order('created_at', { ascending: true })
     .limit(60);
+
+  /* Read again, from this browser's own copy (no network): if the session
+     changed hands while the rows were being read, they may not be this
+     student's. */
+  const { data: held } = await sb.auth.getSession();
+  if (held.session?.user.id !== forOwner.userId) return null;
 
   return {
     conversationId,

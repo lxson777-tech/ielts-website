@@ -14,6 +14,7 @@ import { useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, newIdempotencyKey, tutorUnavailableReason, TutorClientError } from '../../lib/tutor/client';
+import { TutorOwnerChangedError } from '../../lib/tutor/review-owner';
 import type { TutorAttemptRef, TutorRecommendation } from '../../lib/tutor/schema';
 import ProposalCard from './ProposalCard';
 
@@ -46,6 +47,11 @@ export default function ExplainResult({ attempt, summary }: ExplainResultProps) 
       setRecommendation(reply.recommendation ?? null);
       setLive(reply.live);
     } catch (err) {
+      /* The account changed while he was reading it (the tutor client binds
+         every request to the student on the page, src/lib/tutor/review-owner.ts):
+         whatever came back was the previous student's, and there is nothing
+         to say about it here. */
+      if (err instanceof TutorOwnerChangedError) return;
       setError(err instanceof TutorClientError ? err.message : t('Mr EZ could not explain this just now.'));
     } finally {
       setBusy(false);

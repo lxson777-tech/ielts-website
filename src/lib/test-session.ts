@@ -449,8 +449,14 @@ export type SittingStatus = 'held' | 'replaced' | 'absent' | 'owner-changed' | '
 /** Why a sitting on screen is no longer the one written down, for good.
  * - 'replaced': a newer sitting took its place (started in another tab).
  * - 'gone': it was written down, and is not any more (handed in, finished,
- *   or added to an account, in another tab). */
-export type SittingLoss = 'replaced' | 'gone';
+ *   or added to an account, in another tab).
+ * - 'handed-in': a paper of a MOCK was already handed in inside its sitting,
+ *   from another tab (sixth Codex round, R2E-03). The mock sitting itself is
+ *   still written down and still this student's, so neither of the two
+ *   above is true: this paper's first hand-in stands, and this tab's copy of
+ *   it may never be handed in over it. A paper opened on its own never reads
+ *   this way, because handing it in clears its slot, which reads as 'gone'. */
+export type SittingLoss = 'replaced' | 'gone' | 'handed-in';
 
 /** The loss a status means for a screen. `everHeld` is whether that screen
     ever found its sitting written down: a sitting the browser never managed
@@ -507,11 +513,28 @@ export interface PaperOutcome {
  *   with (cleared, or its result kept inside its mock sitting).
  * - 'unsaved': it is this tab's own, but the browser never managed to write
  *   it down, so there is nothing to finalise. Nothing else can have it.
- * - 'replaced' / 'gone': it is no longer this tab's to hand in (see
- *   SittingLoss). Nothing was written.
+ * - 'replaced' / 'gone' / 'handed-in': it is no longer this tab's to hand
+ *   in (see SittingLoss). Nothing was written.
  * - 'owner-changed': somebody else is using this browser. Nothing written.
  * Only 'finished' and 'unsaved' may be recorded. */
 export type PaperFinish = 'finished' | 'unsaved' | SittingLoss | 'owner-changed';
+
+/** Whether a hand-in that found `finish` may be recorded anywhere (the
+    progress history, the learner evidence). Only the first accepted
+    completion of a sitting is: 'finished', or 'unsaved' for a sitting this
+    browser never managed to write down, which no other tab can have. The
+    test player asks this and nothing else before it records (R2D-02,
+    R2E-03). */
+export function paperMayBeRecorded(finish: PaperFinish): boolean {
+  return finish === 'finished' || finish === 'unsaved';
+}
+
+/** The loss a refused hand-in stops the tab for good with, or null when the
+    hand-in was accepted or refused only because the account changed (which
+    has its own stopped screen and can be undone). */
+export function paperFinishLoss(finish: PaperFinish): SittingLoss | null {
+  return finish === 'replaced' || finish === 'gone' || finish === 'handed-in' ? finish : null;
+}
 
 /** Where ONE paper's in-progress sitting is kept, as the test player uses
     it: restore, start, save the answers, notice a loss, and finish once

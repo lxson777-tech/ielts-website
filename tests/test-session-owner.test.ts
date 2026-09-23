@@ -60,6 +60,16 @@
  *      step records only after it finalised that very sitting; and the mock
  *      history takes one record per sitting id, so two tabs finishing the
  *      same sitting record it once.
+ *  12. A mock's paper is handed in once (Codex round 6, R2E-03): two tabs
+ *      holding the same paper of the same sitting, handing it in one after
+ *      the other with different answers, keep the first result; the second
+ *      is refused as 'handed-in', stops, and records nothing, so the paper
+ *      has one progress attempt and one learner submission.
+ *  13. A handed-in paper's review belongs to the student who sat it (Codex
+ *      round 6, R2E-02): it leaves the screen on an account change, and both
+ *      review requests to Mr EZ are bound to that student, refused before
+ *      any token is read, and refused again if the token is anybody else's;
+ *      the answered-question cache is keyed by that student too.
  *
  * There is no DOM here and no real browser. `window.localStorage` is a Map,
  * which is what every module under test reaches for, and the two screen-level
@@ -1204,7 +1214,7 @@ test('a paper that is not one of the sitting\'s two, or already handed in, is ne
   const ref = { owner: NS_A, sittingId: SITTING_1 };
   assert.equal(mock.startMockLeg(ref, { id: 'listening-full-009', durationMinutes: 40 }), null);
   assert.equal(mock.startMockLeg(ref, LISTENING_PAPER) !== null, true);
-  assert.equal(mock.finishMockLeg(ref, LISTENING_PAPER.id, LISTENING_LEG), true);
+  assert.equal(mock.finishMockLeg(ref, LISTENING_PAPER.id, LISTENING_LEG), 'finished');
   /* A second start of a handed-in paper would throw its result away. */
   assert.equal(mock.startMockLeg(ref, LISTENING_PAPER), null);
   assert.deepEqual(mock.mockLegResult(ref, LISTENING_PAPER.id), LISTENING_LEG);
@@ -2084,28 +2094,35 @@ test('R2D-02: the player finalises before it records anything, names its sitting
   assert.ok(finishAt < submit.indexOf('recordTestAttempt('), 'the attempt is recorded before the sitting is finalised');
   assert.ok(finishAt < submit.indexOf('recordSubmission('), 'the evidence is recorded before the sitting is finalised');
   assert.ok(finishAt < submit.indexOf('submittedRef.current = true;'));
+  /* A refused hand-in stops the tab for good (R2D-02, and 'handed-in' since
+     R2E-03), and only an accepted one goes on to be recorded. */
   assert.match(
     submit,
-    /const finished = sittingStore\.finish\(sittingOwnerRef\.current, outcome, sittingRef\.current\);\s*if \(finished === 'replaced' \|\| finished === 'gone'\) \{\s*stopAsLost\(finished\);\s*return;\s*\}/,
+    /const finished = sittingStore\.finish\(sittingOwnerRef\.current, outcome, sittingRef\.current\);\s*const refusedAs = paperFinishLoss\(finished\);\s*if \(refusedAs\) \{\s*stopAsLost\(refusedAs\);\s*return;\s*\}/,
   );
+  assert.match(submit, /if \(!paperMayBeRecorded\(finished\)\) return;\s*submittedRef\.current = true;/);
   assert.equal((player.match(/sittingStore\.finish\(/g) ?? []).length, 1, 'the sitting is finished in more than one place');
   /* Every save names the sitting. */
   assert.match(player, /sittingStore\.save\(next, sittingOwnerRef\.current, sittingRef\.current\)/);
   assert.equal((player.match(/sittingRef\.current = sittingRefOf\(s\);/g) ?? []).length, 2);
-  /* The other tab's write is listened for, on the standalone slot only. */
+  /* The other tab's write is listened for: the standalone slot for a paper
+     on its own, the mock's own record for a paper of a mock (R2E-03). */
   const listener = effectContaining(player, "addEventListener('storage'");
-  assert.match(listener, /if \(mockSittingId \|\| !started \|\| submitted \|\| lost\) return;/);
-  assert.match(listener, /isTestSessionStorageKey\(event\.key\)/);
+  assert.match(listener, /if \(!started \|\| submitted \|\| lost\) return;/);
+  assert.match(
+    listener,
+    /const ours = mockSittingId \? isActiveMockStorageKey\(event\.key\) : isTestSessionStorageKey\(event\.key\);\s*if \(!ours\) return;/,
+  );
   assert.match(listener, /noticeLost\(\);/);
   /* A refused save is looked into once the render has happened. */
   assert.match(effectContaining(player, 'saveRefusedRef.current = false;'), /noticeLost\(\);/);
   /* The stopped screen comes before the account-change screen, with its own
      sentences, and the lost sitting stays lost across an account change. */
   const lostScreen = player.indexOf('if (lost) {');
-  assert.ok(lostScreen > 0 && lostScreen < player.indexOf('if (ownerChange) {'), 'the lost screen is not checked first');
+  assert.ok(lostScreen > 0 && lostScreen < player.indexOf('if (accountChanged) {'), 'the lost screen is not checked first');
   assert.match(player, /t\('A newer test was started in another tab, so this one is no longer being saved\.'\)/);
   assert.match(player, /t\('This test was submitted or closed in another tab, so this one is no longer being saved\.'\)/);
-  assert.match(player, /if \(lostRef\.current\) return;\s*if \(!startedRef\.current\) \{/);
+  assert.match(player, /return onOwnerChange\(\(\) => \{\s*if \(lostRef\.current\) return;\s*if \(submittedRef\.current\) \{/);
   /* A mock paper tells its screen. */
   assert.match(player, /onSittingLost\?\.\(loss\);/);
 });
@@ -2310,9 +2327,437 @@ test('R2D-03: the mock screen stops on a gone record as well as a replaced one, 
   const players = [...screen.matchAll(/<TestPlayer\b[\s\S]*?\/>/g)].map((match) => match[0]);
   assert.equal(players.length, 2);
   for (const player of players) assert.match(player, /onSittingLost=\{stopAs\}/);
-  /* One true sentence per case. */
+  /* One true sentence per case, the paper handed in from another tab
+     (R2E-03) included. */
   assert.match(
     screen,
-    /ended === 'replaced'\s*\? t\('A newer mock exam was started in another tab, so this one is no longer being saved\.'\)\s*: t\('This mock exam was finished or closed in another tab, so this one is no longer being saved\.'\)/,
+    /ended === 'replaced'\s*\? t\('A newer mock exam was started in another tab, so this one is no longer being saved\.'\)\s*: ended === 'handed-in'\s*\? t\('This paper was already handed in from another tab, so it was not handed in again here\. The mock exam carries on from that tab\.'\)\s*: t\('This mock exam was finished or closed in another tab, so this one is no longer being saved\.'\)/,
   );
+});
+
+/* ------------------------------------------------------------------ */
+/* 16. A mock paper is handed in once (Codex R2E-03)                    */
+/* ------------------------------------------------------------------ */
+
+/* The sixth Codex inspection found that finishing a mock's paper never
+   refused a paper that already had a result. Two tabs that picked up the
+   same mock sitting hold the same Listening paper, and the sitting reads
+   'held' in both, so the second tab to hand it in overwrote the first
+   tab's result and its player recorded the paper a second time, in the
+   progress history and in the learner evidence. `handInLikeThePlayer` is
+   TestPlayer's handleSubmit, step for step (the R2D-02 source check above
+   pins that shape: finish, stop on a refusal, record only what may be
+   recorded), writing into the real progress store and a real learner
+   store, so "recorded once" is counted, not assumed. */
+
+const { createLearnerStore } = await import('../src/lib/learning/store.browser.ts');
+const { buildQuestionItems } = await import('../src/components/attempt-recording.ts');
+
+type PaperSittingStore = import('../src/lib/test-session.ts').PaperSittingStore;
+type PaperSittingRef = import('../src/lib/test-session.ts').PaperSittingRef;
+type PaperOutcome = import('../src/lib/test-session.ts').PaperOutcome;
+type PaperFinish = import('../src/lib/test-session.ts').PaperFinish;
+
+/** Two SYNTHETIC questions of the Listening paper, as the player numbers them. */
+const LEG_ENTRIES = [
+  { question: { id: 'q1' }, group: { title: 'Questions 1-2', type: 'form-completion' } },
+  { question: { id: 'q2' }, group: { title: 'Questions 1-2', type: 'form-completion' } },
+] as unknown as Parameters<typeof buildQuestionItems>[1];
+const TAB1_ANSWERS = { q1: 'SYNTHETIC-tab-1-library', q2: 'SYNTHETIC-tab-1-tuesday' };
+const TAB2_ANSWERS = { q1: 'SYNTHETIC-tab-2-museum', q2: 'SYNTHETIC-tab-2-friday' };
+const TAB1_OUTCOME: PaperOutcome = { raw: 2, total: 2, band: 9, bandLabel: '9', secondsUsed: 600 };
+const TAB2_OUTCOME: PaperOutcome = { raw: 0, total: 2, band: 1, bandLabel: '1', secondsUsed: 900 };
+
+function learnerFor(namespace: string) {
+  const data = new Map<string, string>();
+  return createLearnerStore({
+    storage: {
+      getItem: (key: string) => data.get(key) ?? null,
+      setItem: (key: string, value: string) => void data.set(key, value),
+      removeItem: (key: string) => void data.delete(key),
+    },
+    owner: userOwner(namespace.replace(/^u:/, '')),
+    now: () => '2026-09-23T10:00:00.000Z',
+    legacy: () => ({ progress: null, plan: null }),
+  });
+}
+
+/** What TestPlayer's handleSubmit does with one paper, from one tab. */
+function handInLikeThePlayer(
+  store: PaperSittingStore,
+  sitting: PaperSittingRef,
+  testId: string,
+  outcome: PaperOutcome,
+  answers: Record<string, string>,
+  learner: ReturnType<typeof learnerFor>,
+): { finished: PaperFinish; stopped: string | null; recorded: boolean } {
+  const finished = store.finish(NS_A, outcome, sitting);
+  const refusedAs = session.paperFinishLoss(finished);
+  if (refusedAs) return { finished, stopped: refusedAs, recorded: false };
+  if (finished === 'owner-changed' || !session.paperMayBeRecorded(finished)) {
+    return { finished, stopped: null, recorded: false };
+  }
+  const at = '2026-09-23T10:00:00.000Z';
+  progress.recordTestAttempt(testId, { at, ...outcome, byType: {}, kind: 'full', skill: 'listening' });
+  const correct = new Set(Object.keys(answers).filter((id) => answers[id]!.includes('tab-1')));
+  learner.recordSubmission({
+    activityId: `test:${testId}`,
+    paper: 'listening',
+    at,
+    mode: 'assessment',
+    completion: 'completed',
+    items: buildQuestionItems(testId, LEG_ENTRIES, answers, correct, new Set()),
+    raw: outcome.raw,
+    total: outcome.total,
+    bandEstimate: outcome.band,
+    secondsUsed: outcome.secondsUsed,
+    sourceTestId: testId,
+  });
+  return { finished, stopped: null, recorded: true };
+}
+
+function paperEvents(learner: ReturnType<typeof learnerFor>, testId: string) {
+  return learner.read().events.filter((event) => event.activityId === `test:${testId}`);
+}
+
+test(
+  'R2E-03: two tabs hand in the same mock paper one after the other with different answers: the first is kept, the second is refused and stops, and the paper is recorded once',
+  { timeout: 10_000 },
+  () => {
+    freshBrowser();
+    setCurrentOwner(A);
+    beginSitting(NS_A, SITTING_1);
+    const ref = { owner: NS_A, sittingId: SITTING_1 };
+    const learner = learnerFor(NS_A);
+
+    /* Tab 1 starts the paper; tab 2 picks up the SAME sitting and paper. */
+    const tab1 = mock.mockLegSitting(ref, LISTENING_PAPER);
+    const p1 = session.sittingRefOf(tab1.start());
+    const tab2 = mock.mockLegSitting(ref, LISTENING_PAPER);
+    const held = tab2.load();
+    assert.ok(held, 'tab 2 did not pick the paper up');
+    const p2 = session.sittingRefOf(held!);
+    assert.deepEqual(p2, p1, 'the two tabs hold different sittings');
+
+    /* Both answer, differently; the last keystroke wins in storage, and
+       neither tab is told to stop while the paper is still being sat. */
+    assert.equal(tab2.save(TAB2_ANSWERS, NS_A, p2), true);
+    assert.equal(tab1.save(TAB1_ANSWERS, NS_A, p1), true);
+    assert.equal(tab1.lost(NS_A, p1), null);
+    assert.equal(tab2.lost(NS_A, p2), null);
+
+    /* Tab 1 hands it in first: accepted and recorded. */
+    assert.deepEqual(handInLikeThePlayer(tab1, p1, LISTENING_PAPER.id, TAB1_OUTCOME, TAB1_ANSWERS, learner), {
+      finished: 'finished',
+      stopped: null,
+      recorded: true,
+    });
+    const afterFirst = storage.data.get(activeKey(NS_A));
+
+    /* Tab 2 learns it is over from the paper's own state: on the other
+       tab's write (lost), and on its next keystroke (a refused save). */
+    assert.equal(mock.mockSittingStatus(ref), 'held', 'the sitting itself should still be written down');
+    assert.equal(tab2.lost(NS_A, p2), 'handed-in', 'the stale tab was not told the paper was handed in');
+    assert.equal(tab2.save({ ...TAB2_ANSWERS, q3: 'SYNTHETIC-late' }, NS_A, p2), false, 'a keystroke was saved into a handed-in paper');
+
+    /* Tab 2 hands in anyway, with different answers: refused, nothing written. */
+    assert.deepEqual(handInLikeThePlayer(tab2, p2, LISTENING_PAPER.id, TAB2_OUTCOME, TAB2_ANSWERS, learner), {
+      finished: 'handed-in',
+      stopped: 'handed-in',
+      recorded: false,
+    });
+    assert.equal(storage.data.get(activeKey(NS_A)), afterFirst, 'the second hand-in changed the sitting');
+    assert.deepEqual(mock.mockLegResult(ref, LISTENING_PAPER.id), TAB1_OUTCOME, 'the first result was replaced');
+
+    /* One attempt in the history, one submission in the evidence, both tab 1's. */
+    const attempts = progress.getAttempts(LISTENING_PAPER.id);
+    assert.equal(attempts.length, 1, 'the paper was recorded twice in the progress history');
+    assert.equal(attempts[0]!.attempt.raw, TAB1_OUTCOME.raw);
+    const events = paperEvents(learner, LISTENING_PAPER.id);
+    assert.equal(events.length, 1, 'the paper was recorded twice in the learner evidence');
+    assert.deepEqual(
+      (events[0]!.items ?? []).map((item) => item.firstAnswer).sort(),
+      Object.values(TAB1_ANSWERS).sort(),
+      "the evidence does not carry tab 1's answers",
+    );
+  },
+);
+
+test(
+  "R2E-03: finishing a paper that already holds a result is refused as handed-in and writes nothing; an owner change or a paper that is not the sitting's is refused plainly",
+  { timeout: 10_000 },
+  () => {
+    freshBrowser();
+    setCurrentOwner(A);
+    beginSitting(NS_A, SITTING_1);
+    const ref = { owner: NS_A, sittingId: SITTING_1 };
+    assert.notEqual(mock.startMockLeg(ref, LISTENING_PAPER), null);
+    assert.equal(mock.mockLegHandedIn(ref, LISTENING_PAPER.id), false);
+    assert.equal(mock.finishMockLeg(ref, LISTENING_PAPER.id, TAB1_OUTCOME), 'finished');
+    assert.equal(mock.mockLegHandedIn(ref, LISTENING_PAPER.id), true);
+    const first = storage.data.get(activeKey(NS_A));
+
+    assert.equal(mock.finishMockLeg(ref, LISTENING_PAPER.id, TAB2_OUTCOME), 'handed-in');
+    assert.equal(storage.data.get(activeKey(NS_A)), first, 'a second hand-in wrote something');
+    assert.deepEqual(mock.mockLegResult(ref, LISTENING_PAPER.id), TAB1_OUTCOME);
+
+    /* The other paper of the sitting is still its own, and finishes once. */
+    assert.equal(mock.finishMockLeg(ref, READING_PAPER.id, READING_LEG), 'finished');
+    assert.equal(mock.finishMockLeg(ref, READING_PAPER.id, TAB2_OUTCOME), 'handed-in');
+    /* A paper that is not one of the two, and anything once B is signed in. */
+    assert.equal(mock.finishMockLeg(ref, 'listening-full-009', TAB2_OUTCOME), 'refused');
+    setCurrentOwner(B);
+    assert.equal(mock.finishMockLeg(ref, LISTENING_PAPER.id, TAB2_OUTCOME), 'refused');
+    assert.equal(mock.mockLegHandedIn(ref, LISTENING_PAPER.id), false, "B can read A's paper state");
+  },
+);
+
+test(
+  'R2E-03: a tab that opens a paper already handed in is stopped at once; a replaced or gone sitting still reads as such; a paper on its own never reads handed-in',
+  { timeout: 10_000 },
+  () => {
+    freshBrowser();
+    setCurrentOwner(A);
+    beginSitting(NS_A, SITTING_1);
+    const ref = { owner: NS_A, sittingId: SITTING_1 };
+    const tab1 = mock.mockLegSitting(ref, LISTENING_PAPER);
+    const p1 = session.sittingRefOf(tab1.start());
+    assert.equal(tab1.finish(NS_A, TAB1_OUTCOME, p1), 'finished');
+
+    /* A player mounted after the hand-in: nothing to pick up, a fresh start
+       refused (it never held the paper), and still read as handed in. */
+    const late = mock.mockLegSitting(ref, LISTENING_PAPER);
+    assert.equal(late.load(), null);
+    const l = session.sittingRefOf(late.start());
+    assert.equal(late.lost(NS_A, l), 'handed-in', 'a paper already handed in was offered to be sat again');
+    assert.equal(late.finish(NS_A, TAB2_OUTCOME, l), 'handed-in');
+    assert.deepEqual(mock.mockLegResult(ref, LISTENING_PAPER.id), TAB1_OUTCOME);
+
+    /* The sitting's own losses come first, exactly as before. */
+    beginSitting(NS_A, 'SYNTHETIC-sitting-2');
+    assert.equal(late.lost(NS_A, l), 'replaced');
+    assert.equal(mock.clearActiveMock({ owner: NS_A, sittingId: 'SYNTHETIC-sitting-2' }), true);
+    assert.equal(tab1.lost(NS_A, p1), 'gone');
+    /* An account change is still not a loss. */
+    beginSitting(NS_A, SITTING_1);
+    setCurrentOwner(B);
+    assert.equal(tab1.lost(NS_A, p1), null);
+
+    /* A paper on its own, open twice: the second hand-in still reads as
+       gone (its slot was cleared), never handed-in, and records nothing. */
+    freshBrowser();
+    setCurrentOwner(A);
+    const s1 = session.standaloneSitting(DRILL);
+    const s = session.sittingRefOf(s1.start());
+    const s2 = session.standaloneSitting(DRILL);
+    assert.deepEqual(session.sittingRefOf(s2.load()!), s);
+    assert.equal(s1.finish(NS_A, P_OUTCOME, s), 'finished');
+    assert.equal(s2.lost(NS_A, s), 'gone');
+    const second = s2.finish(NS_A, P_OUTCOME, s);
+    assert.equal(second, 'gone');
+    assert.equal(session.paperMayBeRecorded(second), false);
+  },
+);
+
+test('R2E-03: only the first accepted completion may be recorded, and every refusal but an account change stops the tab', { timeout: 10_000 }, () => {
+  const cases: Array<[PaperFinish, boolean, string | null]> = [
+    ['finished', true, null],
+    ['unsaved', true, null],
+    ['replaced', false, 'replaced'],
+    ['gone', false, 'gone'],
+    ['handed-in', false, 'handed-in'],
+    ['owner-changed', false, null],
+  ];
+  for (const [finish, recorded, loss] of cases) {
+    assert.equal(session.paperMayBeRecorded(finish), recorded, `${finish} recorded`);
+    assert.equal(session.paperFinishLoss(finish), loss, `${finish} stops as`);
+  }
+});
+
+test('R2E-03: a mock paper listens on the mock record, is stopped at once when opened too late, and both screens say it was handed in elsewhere', { timeout: 10_000 }, async () => {
+  const player = await componentCode('TestPlayer.tsx');
+  const listener = effectContaining(player, "addEventListener('storage'");
+  assert.match(listener, /mockSittingId \? isActiveMockStorageKey\(event\.key\)/);
+  const opening = effectContaining(player, 'if (isRetake && !resumed) {');
+  assert.match(opening, /if \(mockSittingId\) noticeLost\(\);/);
+  assert.match(
+    player,
+    /reason === 'handed-in'\s*\? t\('This paper was already handed in from another tab, so it was not handed in again here\. The mock exam carries on from that tab\.'\)/,
+  );
+  const { readFile } = await import('node:fs/promises');
+  const mockSource = await readFile(new URL('../src/lib/tests/mock.ts', import.meta.url), 'utf8');
+  /* The leg store reads the paper's own state, and maps the refusal. */
+  assert.match(mockSource, /if \(status === 'held' && mockLegHandedIn\(ref, test\.id\)\) return 'handed-in';/);
+  assert.match(mockSource, /if \(done === 'handed-in'\) return 'handed-in';/);
+  assert.match(mockSource, /if \(leg\?\.result\) return 'handed-in';/);
+});
+
+/* ------------------------------------------------------------------ */
+/* 17. A handed-in paper's review belongs to who sat it (Codex R2E-02)  */
+/* ------------------------------------------------------------------ */
+
+/* The sixth Codex inspection found that the test player's owner listener
+   returned at once for a submitted paper. A handed in a paper and left the
+   review open; A signed out and B signed in in another tab; B then read A's
+   answers and score, and "Why was my answer wrong?" sent A's answer to Mr
+   EZ with B's token. The tutor binding lives in src/lib/tutor/review-owner.ts,
+   which the tutor client calls, so it is driven directly here with a
+   session reader that counts its calls: a refusal "before any token is
+   fetched" means that counter stays at zero. */
+
+const reviewOwner = await import('../src/lib/tutor/review-owner.ts');
+
+function countingSession(held: { token: string; userId: string } | null, onRead?: () => void) {
+  const calls = { n: 0 };
+  return {
+    calls,
+    read: async () => {
+      calls.n += 1;
+      onRead?.();
+      return held;
+    },
+  };
+}
+
+const A_SESSION = { token: 'SYNTHETIC-token-A', userId: 'SYNTHETIC-STUDENT-A' };
+const B_SESSION = { token: 'SYNTHETIC-token-B', userId: 'SYNTHETIC-STUDENT-B' };
+
+async function refusal(promise: Promise<unknown>): Promise<string | null> {
+  try {
+    await promise;
+    return null;
+  } catch (error) {
+    assert.ok(error instanceof reviewOwner.TutorOwnerChangedError, `not an owner refusal: ${String(error)}`);
+    return (error as InstanceType<typeof reviewOwner.TutorOwnerChangedError>).now;
+  }
+}
+
+test('R2E-02: a review request bound to A is refused before any token is read once somebody else is using the browser', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  /* A's own request, while A is here, is sent with A's token. */
+  const own = countingSession(A_SESSION);
+  assert.equal(await reviewOwner.tokenForOwner(NS_A, own.read), A_SESSION.token);
+  assert.equal(own.calls.n, 1);
+
+  /* B signs in (in another tab): the press on A's still-open review. */
+  setCurrentOwner(B);
+  const asB = countingSession(B_SESSION);
+  assert.equal(await refusal(reviewOwner.tokenForOwner(NS_A, asB.read)), 'other-student');
+  assert.equal(asB.calls.n, 0, "a token was fetched for a review that is not the current student's");
+
+  /* Nobody signed in: the same, as a sign-out. */
+  setCurrentOwner(null);
+  const signedOut = countingSession(null);
+  assert.equal(await refusal(reviewOwner.tokenForOwner(NS_A, signedOut.read)), 'signed-out');
+  assert.equal(signedOut.calls.n, 0);
+});
+
+test('R2E-02: a token read while this tab still names A, but issued to someone else, is never used', { timeout: 10_000 }, async () => {
+  freshBrowser();
+  setCurrentOwner(A);
+  /* The other tab's sign-in has changed the stored session, and this tab has
+     not been told yet: it still names A. */
+  assert.equal(await refusal(reviewOwner.tokenForOwner(NS_A, countingSession(B_SESSION).read)), 'other-student');
+  /* The other tab signed A out and nobody is in yet. */
+  assert.equal(await refusal(reviewOwner.tokenForOwner(NS_A, countingSession(null).read)), 'signed-out');
+  /* The account changes while the session is being read. */
+  const midway = countingSession(A_SESSION, () => setCurrentOwner(B));
+  assert.equal(await refusal(reviewOwner.tokenForOwner(NS_A, midway.read)), 'other-student');
+  assert.equal(midway.calls.n, 1);
+
+  /* A request about nobody's review is bound to the owner on the page
+     (follow-up to R2E-02, tests/tutor-request-owner.test.ts): sent with
+     that owner's own token, refused with anybody else's, and with no
+     session at all it is simply not signed in. */
+  setCurrentOwner(A);
+  assert.equal(await reviewOwner.tokenForOwner(undefined, countingSession(A_SESSION).read), A_SESSION.token);
+  assert.equal(await refusal(reviewOwner.tokenForOwner(undefined, countingSession(B_SESSION).read)), 'other-student');
+  assert.equal(await reviewOwner.tokenForOwner(undefined, countingSession(null).read), null);
+  /* An anonymous review with no session: nothing to send it with, no refusal. */
+  setCurrentOwner(null);
+  assert.equal(await reviewOwner.tokenForOwner(NS_ANON, countingSession(null).read), null);
+  /* The retry's own check. */
+  assert.throws(() => reviewOwner.refuseUnlessOwnerCurrent(NS_A), reviewOwner.TutorOwnerChangedError);
+  assert.doesNotThrow(() => reviewOwner.refuseUnlessOwnerCurrent(undefined));
+});
+
+test("R2E-02: the answered-question cache is keyed by whose review it is: B never gets A's reply, A gets A's back", { timeout: 10_000 }, () => {
+  let made = 0;
+  const cache = reviewOwner.whyWrongCache(() => `SYNTHETIC-key-${++made}`);
+  const aCell = cache.slot(NS_A, 'reading-full-006-drill-p2', 'q14', 'i');
+  aCell.text = 'SYNTHETIC reply bought by A';
+  aCell.live = false;
+
+  /* B, same paper, same question, same answer, same open page. */
+  const bCell = cache.slot(NS_B, 'reading-full-006-drill-p2', 'q14', 'i');
+  assert.notEqual(bCell, aCell);
+  assert.equal(bCell.text, null, "B was shown A's reply");
+  assert.notEqual(bCell.idempotencyKey, aCell.idempotencyKey, "B's press would replay A's paid answer");
+
+  /* A, back: the reply A already bought, under the same key. */
+  assert.equal(cache.slot(NS_A, 'reading-full-006-drill-p2', 'q14', 'i'), aCell);
+  assert.equal(cache.size(), 2);
+  /* The four parts cannot run into each other. */
+  assert.notEqual(
+    reviewOwner.whyWrongCacheKey('u:a|b', 'c', 'd', 'e'),
+    reviewOwner.whyWrongCacheKey('u:a', 'b|c', 'd', 'e'),
+  );
+});
+
+test('R2E-02: a submitted review leaves the screen on an account change, tutor controls and all, and both review requests carry their owner', { timeout: 10_000 }, async () => {
+  const player = await componentCode('TestPlayer.tsx');
+  /* The owner listener no longer leaves a submitted paper alone. */
+  const listener = player.slice(player.indexOf('return onOwnerChange('), player.indexOf('return onOwnerChange(') + 400);
+  assert.match(
+    listener,
+    /if \(submittedRef\.current\) \{\s*setOwnerChange\(ownerStillCurrent\(sittingOwnerRef\.current\) \? null : ownerChangeNow\(\)\);\s*return;\s*\}/,
+  );
+  /* The stopped screen is returned INSTEAD of the review, before it. */
+  const stoppedAt = player.indexOf('if (accountChanged) {');
+  assert.ok(stoppedAt > 0, 'no account-change screen');
+  assert.ok(stoppedAt < player.indexOf('<TestDebrief'), 'the debrief can render before the account check');
+  assert.ok(stoppedAt < player.indexOf('<QuestionItem'), 'the answers can render before the account check');
+  assert.match(player, /const accountChanged = ownerChange \?\? reviewWithheld;/);
+  assert.match(player, /reason=\{accountChanged\}\s*review=\{submitted\}/);
+  /* Both requests carry the student who sat the paper, and a refusal withholds the review. */
+  assert.match(player, /const tutorOwner = sittingOwnerRef\.current;/);
+  assert.match(player, /<TestDebrief[\s\S]*?owner=\{tutorOwner\}\s*onOwnerChanged=\{setReviewWithheld\}/);
+  assert.match(player, /<AskWhyWrong\s*testId=\{tutorTestId\}\s*questionId=\{q\.id\}\s*given=\{given\}\s*owner=\{tutorOwner\}/);
+  assert.match(player, /tutorTestId && tutorOwner && \(/);
+  /* Start fresh takes the previous student's retake with it. */
+  const fresh = player.slice(player.indexOf('function startFreshUnderCurrentOwner()'), player.indexOf('function startFreshUnderCurrentOwner()') + 700);
+  assert.match(fresh, /setRetake\(null\);/);
+  assert.match(fresh, /setReviewWithheld\(null\);/);
+
+  const tutorDir = new URL('../src/components/tutor/', import.meta.url);
+  const { readFile } = await import('node:fs/promises');
+  const strip = (source: string) => source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  const why = strip(await readFile(new URL('AskWhyWrong.tsx', tutorDir), 'utf8'));
+  assert.match(why, /asked\.slot\(owner, testId, questionId, given\)/);
+  assert.match(why, /\{ owner \},\s*\);/);
+  assert.match(why, /if \(!ownersTurn\) return null;/);
+  /* A refusal before sending leaves the review; a reply dropped after
+     sending (the review has already reacted to the change) does not. */
+  assert.match(why, /if \(err instanceof TutorOwnerChangedError\) \{\s*if \(!err\.sent\) onOwnerChanged\?\.\(err\.now\);\s*return;/);
+  assert.doesNotMatch(why, /new Map<string, Answered>/, 'the owner-blind cache is back');
+  const debrief = strip(await readFile(new URL('TestDebrief.tsx', tutorDir), 'utf8'));
+  assert.match(debrief, /\{ owner \},\s*\);/);
+  assert.match(debrief, /if \(!ownersTurn\) return null;/);
+  assert.match(debrief, /if \(err instanceof TutorOwnerChangedError\) \{\s*if \(!err\.sent\) onOwnerChanged\?\.\(err\.now\);\s*return;/);
+
+  /* The client binds the review's owner before it fetches a token, and
+     checks again before a retry (tests/tutor-request-owner.test.ts has the
+     rest, for every request). */
+  const client = strip(await readFile(new URL('../src/lib/tutor/client.ts', import.meta.url), 'utf8'));
+  assert.match(
+    client,
+    /const binding = bindTutorRequest\(options\.owner\);\s*try \{\s*const token = await tokenForRequest\(binding, readTutorSession\);/,
+  );
+  assert.match(client, /binding\.check\(true\);\s*try \{\s*reply = await post<TReply>/);
+
+  /* The mock's results leave the screen too, with sentences true for them. */
+  const screen = await componentCode('MockExam.tsx');
+  assert.match(screen, /const recordedResults = stage === 'results' && savedRef\.current;/);
+  assert.ok(screen.indexOf('if (ownerChanged) {') < screen.indexOf('<ResultsScreen'), 'the mock results can render before the account check');
 });

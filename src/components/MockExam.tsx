@@ -769,11 +769,16 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
 
   /* This sitting is over in this tab: a newer sitting of this same student
      took its place in another tab (R2C-02), or the record this tab had seen
-     is gone, finished or added to an account in another tab (R2D-03).
-     Checked before the account change below because it is for good: the
-     sitting is no longer written down anywhere, so the promise that it
-     picks up again when its student signs back in would not hold. Nothing
-     of it is written or recorded from here on. One sentence per case, each
+     is gone, finished or added to an account in another tab (R2D-03), or
+     the paper on screen was already handed in from another tab that had
+     picked up this same sitting (R2E-03, told by the paper's player: the
+     sitting itself is still written down and carries on from that tab).
+     Checked before the account change below because it is for good in this
+     tab: the sitting is no longer this tab's to carry on (replaced or gone,
+     it is written down nowhere as this tab left it; handed in, it carries
+     on from the other tab), so the promise that it picks up again here when
+     its student signs back in would not hold. Nothing of it is written or
+     recorded from here on. One sentence per case, each
      true for its case, says what happened and what it means; the way on is
      the other tab, or the hub. */
   if (ended) {
@@ -784,7 +789,9 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
           <h1 className="mt-1 font-display text-xl font-extrabold leading-snug">
             {ended === 'replaced'
               ? t('A newer mock exam was started in another tab, so this one is no longer being saved.')
-              : t('This mock exam was finished or closed in another tab, so this one is no longer being saved.')}
+              : ended === 'handed-in'
+                ? t('This paper was already handed in from another tab, so it was not handed in again here. The mock exam carries on from that tab.')
+                : t('This mock exam was finished or closed in another tab, so this one is no longer being saved.')}
           </h1>
           <div className="mt-8 flex items-center justify-between gap-3">
             <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
@@ -805,6 +812,10 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      the offer on the start screen). */
   if (ownerChanged) {
     const otherStudent = ownerChange === 'other-student';
+    /* The results of a sitting already recorded (R2E-02): its essays and
+       bands leave the screen like any review, and what is true to say is
+       where they are kept, not that a sitting is waiting to pick up. */
+    const recordedResults = stage === 'results' && savedRef.current;
     return (
       <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
         <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover" role="status">
@@ -812,14 +823,26 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
           <h1 className="mt-1 font-display text-2xl font-extrabold">
             {otherStudent
               ? t('This mock exam belongs to another student')
-              : t('You signed out during this mock exam')}
+              : recordedResults
+                ? t('You signed out, so these results are hidden')
+                : t('You signed out during this mock exam')}
           </h1>
-          <p className="mt-3 text-ink-muted">
-            {t('The account on this browser changed part way through, so nothing from this sitting was saved to it. Each paper that was already finished stays with the student who sat it.')}
-          </p>
-          <p className="mt-2 text-ink-muted">
-            {t('The sitting itself is kept for the student who started it, and it picks up where it stopped when they sign back in on this browser.')}
-          </p>
+          {recordedResults ? (
+            <p className="mt-3 text-ink-muted">
+              {otherStudent
+                ? t('A different account is using this browser now, so the results of this mock exam are hidden. They are saved in the history of the student who sat it.')
+                : t('You are signed out now, so the results of this mock exam are hidden. They are saved in the history of the account that sat it, ready for when you sign back in.')}
+            </p>
+          ) : (
+            <>
+              <p className="mt-3 text-ink-muted">
+                {t('The account on this browser changed part way through, so nothing from this sitting was saved to it. Each paper that was already finished stays with the student who sat it.')}
+              </p>
+              <p className="mt-2 text-ink-muted">
+                {t('The sitting itself is kept for the student who started it, and it picks up where it stopped when they sign back in on this browser.')}
+              </p>
+            </>
+          )}
           <div className="mt-8 flex items-center justify-between gap-3">
             <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
               {t('Back')}

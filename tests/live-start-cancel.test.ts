@@ -27,6 +27,21 @@
  * itself (connectWebRtc, ExaminerSession.connect, openExaminerLink) and the
  * examiner's guard (guardSessionStart, openSpeakingAttempt, the owner) are
  * the shipping code. Every id, token, address and student is SYNTHETIC.
+ *
+ * AND THE HANDLE (finding R2E-01, Codex inspection of c4a7793), section 5
+ * below. The check above came too late once the session request had been
+ * ANSWERED: the answer was applied (so the examiner's audio track arrived
+ * and was played) before anything asked again, and the twenty-second wait
+ * for the session to start could not be reached by the screen at all. The
+ * setup now also takes the screen's StartHandle, asks immediately before the
+ * answer is applied and inside every callback that could start something,
+ * and ends at the Worker every session it created and did not hand over.
+ * Section 5 drives SUCCESSFUL delayed answers and handshakes, not only
+ * refusals: the answer is applied by the stand-in peer exactly as a real
+ * one would be, the examiner's track arrives, and playback starts (a stand-in
+ * audio element whose play() the test holds), so each let-go below happens
+ * at a point where, before the fix, the connection was up and its audio was
+ * playing.
  */
 
 import test, { afterEach } from 'node:test';
@@ -125,7 +140,25 @@ class FakeChannel {
     this.readyState = 'open';
     this.listeners.fire('message', { data: JSON.stringify(event) });
   }
+  /** The channel closing under the setup (R2E-01). */
+  fireClose(): void {
+    this.readyState = 'closed';
+    this.listeners.fire('close');
+  }
 }
+
+/** The examiner's audio track as it arrives on the connection. */
+function remoteTrack() {
+  const track = {
+    kind: 'audio',
+    readyState: 'live' as 'live' | 'ended',
+    stop() {
+      track.readyState = 'ended';
+    },
+  };
+  return track;
+}
+type RemoteTrack = ReturnType<typeof remoteTrack>;
 
 /** RTCPeerConnection. Its connection preparation (ICE gathering) is
     finished by the test, by hand, at the moment the test chooses. */
@@ -174,8 +207,26 @@ class FakePeer {
     this.iceGatheringState = 'complete';
     this.listeners.fire('icegatheringstatechange');
   }
+  /** R2E-01: how often an answer was applied, the examiner's tracks that
+      arrived, whether the next answer brings one (a browser fires the track
+      callback from inside setRemoteDescription, before it resolves), and a
+      hook the test runs inside that call, before the track arrives. */
+  remoteCalls = 0;
+  remoteTracks: RemoteTrack[] = [];
+  trackOnAnswer = false;
+  whileApplying: (() => void) | null = null;
   async setRemoteDescription(description: { type: string; sdp: string }): Promise<void> {
+    this.remoteCalls += 1;
     this.remoteDescription = description;
+    this.whileApplying?.();
+    if (this.trackOnAnswer) this.deliverTrack();
+  }
+  /** The examiner's audio track arriving on the connection. */
+  deliverTrack(): RemoteTrack {
+    const track = remoteTrack();
+    this.remoteTracks.push(track);
+    this.listeners.fire('track', { track });
+    return track;
   }
   close(): void {
     this.closes += 1;
@@ -253,6 +304,43 @@ class FakeAudioContext {
   }
   createMediaStreamSource() {
     return fakeNode();
+  }
+}
+
+/** The hidden audio element the paid path plays the examiner through
+    (RemoteAudioOutput). Its play() can be HELD, as a browser holds it until
+    the stream has data: that is the "playback initialisation pending"
+    window. pause() rejects a held play(), as a browser's does. */
+class FakeAudio {
+  static made: FakeAudio[] = [];
+  static hold = false;
+  autoplay = false;
+  srcObject: unknown = null;
+  paused = true;
+  plays = 0;
+  waiting: Array<{ resolve: () => void; reject: (error: Error) => void }> = [];
+  constructor() {
+    FakeAudio.made.push(this);
+  }
+  play(): Promise<void> {
+    this.plays += 1;
+    this.paused = false;
+    if (!FakeAudio.hold) return Promise.resolve();
+    return new Promise<void>((resolve, reject) => this.waiting.push({ resolve, reject }));
+  }
+  pause(): void {
+    this.paused = true;
+    const waiting = this.waiting.splice(0);
+    waiting.forEach((each) => each.reject(new Error('SYNTHETIC AbortError: paused while starting')));
+  }
+  /** The stream has data: a held play() goes on. */
+  letPlay(): void {
+    const waiting = this.waiting.splice(0);
+    waiting.forEach((each) => each.resolve());
+  }
+  /** Playing now, from the page's point of view. */
+  playing(): boolean {
+    return !this.paused && this.srcObject !== null;
   }
 }
 
@@ -341,7 +429,15 @@ const originals = {
   AudioContext: (globalThis as Record<string, unknown>).AudioContext,
   AudioWorkletNode: (globalThis as Record<string, unknown>).AudioWorkletNode,
   MediaStream: (globalThis as Record<string, unknown>).MediaStream,
+  Audio: (globalThis as Record<string, unknown>).Audio,
+  setInterval: globalThis.setInterval,
+  clearInterval: globalThis.clearInterval,
 };
+
+/* The playback's level poll is a setInterval: every one still running is
+   counted, so a playback left behind by a let-go start is measured, and
+   cleared after each test so it can never keep the runner alive. */
+const liveIntervals = new Set<unknown>();
 
 /** Put this file's stand-ins in place for one test. */
 function surroundings(): Network {
@@ -356,15 +452,33 @@ function surroundings(): Network {
   g.AudioContext = FakeAudioContext;
   g.AudioWorkletNode = FakeWorkletNode;
   g.MediaStream = class {
-    tracks: unknown[];
-    constructor(tracks: unknown[]) {
+    tracks: Array<{ stop(): void }>;
+    constructor(tracks: Array<{ stop(): void }>) {
       this.tracks = tracks;
     }
+    getTracks() {
+      return this.tracks;
+    }
+  };
+  FakeAudio.made = [];
+  FakeAudio.hold = false;
+  g.Audio = FakeAudio;
+  liveIntervals.clear();
+  g.setInterval = (run: () => void, ms?: number) => {
+    const handle = originals.setInterval(run, ms);
+    liveIntervals.add(handle);
+    return handle;
+  };
+  g.clearInterval = (handle: ReturnType<typeof setInterval> | undefined) => {
+    liveIntervals.delete(handle);
+    originals.clearInterval(handle);
   };
   return net;
 }
 
 afterEach(() => {
+  for (const handle of liveIntervals) originals.clearInterval(handle as ReturnType<typeof setInterval>);
+  liveIntervals.clear();
   const g = globalThis as Record<string, unknown>;
   for (const [name, value] of Object.entries(originals)) {
     if (value === undefined) delete g[name];
@@ -491,7 +605,9 @@ test('R2D-01 setup: a yes goes on exactly as before: one session request with th
   assert.deepEqual(peer.remoteDescription, { type: 'answer', sdp: 'SYNTHETIC-answer-sdp' });
   assert.equal(opened.sessionId, 'SYNTHETIC-session-id');
   assert.equal(peer.closes, 0, 'a start that may go on had its connection closed');
-  assert.equal(may.asked.count, 2);
+  /* Before anything, before the request (R2D-01), and immediately before
+     and after the answer is applied (R2E-01). */
+  assert.equal(may.asked.count, 4);
   opened.transport.close();
   assert.equal(peer.closes, 1);
 });
@@ -563,7 +679,10 @@ test('R2D-01 setup: on the Gemini rollback, a yes opens the socket with the toke
   assert.equal(JSON.parse(socket.sent[0]!).setup.model, 'models/SYNTHETIC-no-model');
   socket.receive({ setupComplete: {} });
   const session = await connecting;
-  assert.equal(may.asked.count, 2);
+  /* Before the token and before the socket (R2D-01), then in the open
+     callback before the setup is sent and in the message callback before
+     the setup is taken as complete (R2E-01). */
+  assert.equal(may.asked.count, 4);
   session.close();
   assert.equal(socket.closes, 1);
 });
@@ -706,7 +825,11 @@ test('R2D-01 link: a yes on the paid path opens the link exactly as before, and 
   assert.equal(opened.provider, 'openai');
   assert.equal(sessionRequests(net).length, 1);
   assert.equal(peer.closes, 0);
-  assert.equal(may.asked.count, 3, 'the paid path asks before anything, before the request, and once it is answered');
+  /* The link before its meter; the connection before anything, before the
+     request, and before and after the answer is applied; the link once the
+     connection is handed over; the session start before it waits and before
+     it accepts session.started (R2D-01 and R2E-01). */
+  assert.equal(may.asked.count, 8, 'the paid path asks at the wrong points');
 
   const closing = opened.close();
   peer.channels[0]!.deliver({ type: 'session.closed', reason: 'close_requested' });
@@ -762,43 +885,51 @@ test('R2D-01 source: the session request and the Gemini socket are each immediat
   const openai = source('src/lib/speaking/live/openai-session.ts');
   const connect = openai.slice(openai.indexOf('export async function connectWebRtc('));
   assert.equal((connect.match(/\bfetch\(/g) ?? []).length, 1, 'connectWebRtc makes more than one request');
+  assert.match(connect, /const watch = watchStart\(opts\.mayContinue, opts\.handle\);/, 'the setup does not watch the question and the handle');
   assert.match(
     connect,
-    /continueOrCancel\(opts\.mayContinue\);\n\s*const resp = await fetch\(opts\.endpoint,/,
+    /watch\.check\(\);\n\s*const answered = \(async \(\) => \{\n\s*const resp = await fetch\(opts\.endpoint,/,
     'the request that creates the paid voice session is not immediately preceded by the check',
   );
   assert.match(
     connect,
-    /continueOrCancel\(opts\.mayContinue\);\n\s*const pc = new RTCPeerConnection\(\);/,
+    /watch\.check\(\);\n\s*const pc = new RTCPeerConnection\(\);/,
     'the peer connection is made without asking first',
   );
-  const iceWait = connect.indexOf('await waitForIceGatheringComplete(');
-  const lastCheck = connect.lastIndexOf('continueOrCancel(opts.mayContinue)', connect.indexOf('const resp = await fetch('));
+  const iceWait = connect.indexOf('waitForIceGatheringComplete(pc,');
+  const lastCheck = connect.lastIndexOf('watch.check()', connect.indexOf('const resp = await fetch('));
   assert.ok(iceWait >= 0 && lastCheck > iceWait, 'the check comes before the connection preparation, not after it');
 
   const session = source('src/lib/speaking/live/session.ts');
   assert.equal((session.match(/new WebSocket\(/g) ?? []).length, 1, 'more than one place opens the Gemini socket');
-  assert.equal((session.match(/\.open\(token, model, systemInstruction\)/g) ?? []).length, 1);
+  assert.equal((session.match(/\.open\(token, model, systemInstruction, /g) ?? []).length, 1);
   assert.match(
     session,
-    /continueOrCancel\(mayContinue\);\n\s*const session = new ExaminerSession\(cb\);\n\s*await session\.open\(token, model, systemInstruction\);/,
+    /watch\.check\(\);\n\s*const session = new ExaminerSession\(cb\);\n\s*await session\.open\(token, model, systemInstruction, watch,/,
     'the Gemini socket is not immediately preceded by the check',
   );
   assert.match(
     session,
-    /continueOrCancel\(mayContinue\);\n\s*const resp = await fetch\(tokenEndpoint,/,
+    /watch\.check\(\);\n\s*const resp = await watch\.wait\(fetch\(tokenEndpoint,/,
     'the Gemini token request is not preceded by the check',
   );
   const openBody = session.slice(session.indexOf('  private open('));
   assert.ok(openBody.indexOf('new WebSocket(') > 0, 'the socket is opened somewhere other than open()');
 
   const linkCode = source('src/lib/speaking/live/link.ts');
-  assert.match(linkCode, /ExaminerSession\.connect\([\s\S]*?\},\s*opts\.mayContinue\);/, 'the Gemini link does not pass the check through');
-  assert.match(linkCode, /connectWebRtc\(\{[\s\S]*?mayContinue:\s*opts\.mayContinue,\s*\}\);/, 'the paid link does not pass the check through');
-  const afterConnect = linkCode.slice(linkCode.indexOf('mayContinue: opts.mayContinue,'));
+  assert.match(
+    linkCode,
+    /ExaminerSession\.connect\([\s\S]*?\},\s*opts\.mayContinue,\s*\{ handle: opts\.handle \},\s*\);/,
+    'the Gemini link does not pass the check and the handle through',
+  );
+  assert.match(
+    linkCode,
+    /connectWebRtc\(\{[\s\S]*?mayContinue:\s*opts\.mayContinue,\s*handle:\s*opts\.handle,\s*onSessionUnused:\s*endAtWorker,\s*\}\);/,
+    'the paid link does not pass the check and the handle through, or does not end an unused session',
+  );
+  const afterConnect = linkCode.slice(linkCode.indexOf('onSessionUnused: endAtWorker,'));
   assert.ok(
-    afterConnect.indexOf('if (!mayGoOn(opts.mayContinue))') >= 0 &&
-      afterConnect.indexOf('if (!mayGoOn(opts.mayContinue))') < afterConnect.indexOf('OpenAiLiveSession.start('),
+    afterConnect.indexOf('watch.check();') >= 0 && afterConnect.indexOf('watch.check();') < afterConnect.indexOf('OpenAiLiveSession.start('),
     'the answered session is started without asking',
   );
 
@@ -807,4 +938,588 @@ test('R2D-01 source: the session request and the Gemini socket are each immediat
   assert.match(start, /const stillHere = \(\) => session\.live\(\);/, "the examiner's check is not its guard");
   assert.match(start, /openExaminerLink\(\{[\s\S]*?mayContinue:\s*stillHere,[\s\S]*?\}\),\s*closeConnection,\s*\)/, 'the examiner does not hand its guard to the setup');
   assert.match(start, /if \(!stillHere\(\) \|\| isLiveStartCancelled\(e\)\) \{\s*dropStart\(session, \{ stream, rec \}\);/, 'a cancelled setup could be shown as an error');
+});
+
+/* ------------------------------------------------------------------ */
+/* 5. R2E-01: a SUCCESSFUL delayed connection, the handle, every failure */
+/* ------------------------------------------------------------------ */
+
+/* WHAT IS DIFFERENT HERE
+   Sections 1 to 3 let the start go BEFORE the paid session request, or
+   refused it. Here the request SUCCEEDS: the stand-in peer applies the
+   answer exactly as a browser would, the examiner's track arrives from
+   inside that call (as a browser fires it), and the playback starts on a
+   stand-in audio element whose play() can be held. The start is then let go
+   at the points finding R2E-01 names: after the answer arrived but before it
+   was applied, inside the track callback, while the session is starting
+   (the old twenty-second window), and while the playback is still starting.
+   A let-go comes two ways, as it does on the page: the handle, pulled by the
+   screen's own teardown (a switch the screen heard of, an unmount, a newer
+   start), and the question, for a switch that reached no listener. */
+
+const END_BODY = { sessionId: 'SYNTHETIC-session-id' };
+
+function endRequests(net: Network): Call[] {
+  return net.calls.filter((call) => call.url === END_REQUEST && call.method === 'POST');
+}
+
+/** A few turns, for whatever a release left to finish. */
+async function settleTurns(turns = 10): Promise<void> {
+  for (let turn = 0; turn < turns; turn += 1) await new Promise((resolve) => setImmediate(resolve));
+}
+
+/** The paid link, driven to its session request (held). */
+async function linkToSessionRequest(net: Network): Promise<FakePeer> {
+  await until(() => FakePeer.made.length === 1, 'the peer connection');
+  const peer = FakePeer.made[0]!;
+  await peer.gatheringStarted;
+  peer.finishGathering();
+  await until(() => net.waitingCount() === 1, 'the session request');
+  return peer;
+}
+
+/** The paid link, driven past a SUCCESSFUL session request: the answer is
+    applied (bringing the examiner's track when asked to), and the link is
+    waiting for the session to start, the window that used to last twenty
+    seconds with nothing able to reach it. */
+async function linkToSessionStart(net: Network, withTrack = true): Promise<FakePeer> {
+  const peer = await linkToSessionRequest(net);
+  peer.trackOnAnswer = withTrack;
+  net.answer(201, SESSION_ANSWER);
+  await until(() => peer.remoteDescription !== null, 'the answer applied');
+  await settleTurns(5);
+  return peer;
+}
+
+function everyContextClosed(): boolean {
+  return FakeAudioContext.made.every((context) => context.state === 'closed');
+}
+
+test('R2E-01 setup: an answer that arrives after the page changed hands is never applied; the peer closes and the created session is reported so it can be ended', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const may = question();
+  const unused: string[] = [];
+  const connecting = webrtc.connectWebRtc({
+    endpoint: SESSION_REQUEST,
+    stream: syntheticMicrophone() as unknown as MediaStream,
+    plan: PLAN,
+    accessToken: 'SYNTHETIC-token-of-A',
+    onRemoteStream() {},
+    mayContinue: may.ask,
+    onSessionUnused: (id: string) => unused.push(id),
+  });
+  const outcome = connecting.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = FakePeer.made[0]!;
+  await peer.gatheringStarted;
+  peer.finishGathering();
+  await until(() => net.waitingCount() === 1, 'the session request');
+
+  /* The request SUCCEEDS (the session exists), and the page changes hands
+     before the setup has applied the answer. */
+  net.answer(201, SESSION_ANSWER);
+  may.refuse();
+
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the setup did not report itself cancelled: ${String(result)}`);
+  assert.equal(peer.remoteCalls, 0, 'the answer was applied for a start that had been let go (audio could flow)');
+  assert.equal(peer.remoteDescription, null);
+  assert.equal(peer.closes, 1, 'the peer connection was left open');
+  assert.equal(peer.channels[0]?.closes, 1, 'the data channel was left open');
+  assert.deepEqual(unused, ['SYNTHETIC-session-id'], 'the session the request created was not reported for ending');
+});
+
+test('R2E-01 setup: the handle pulled while the session request is out closes the peer AT ONCE; the late answer is never applied, and its session is reported the moment it answers', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const handle = check.startHandle();
+  const unused: string[] = [];
+  const connecting = webrtc.connectWebRtc({
+    endpoint: SESSION_REQUEST,
+    stream: syntheticMicrophone() as unknown as MediaStream,
+    plan: PLAN,
+    accessToken: 'SYNTHETIC-token-of-A',
+    onRemoteStream() {},
+    handle,
+    onSessionUnused: (id: string) => unused.push(id),
+  });
+  const outcome = connecting.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = FakePeer.made[0]!;
+  await peer.gatheringStarted;
+  peer.finishGathering();
+  await until(() => net.waitingCount() === 1, 'the session request');
+
+  handle.pull();
+  /* Measured in the same turn as the pull, not after some wait. */
+  assert.equal(peer.closes, 1, 'the pull did not close the peer connection at once');
+  assert.equal(peer.channels[0]?.closes, 1, 'the pull did not close the data channel at once');
+
+  /* The setup gives up without waiting for its request... */
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the setup did not report itself cancelled: ${String(result)}`);
+  /* ...which is left to finish, never aborted: an aborted request could
+     leave a session nobody knows the id of. */
+  assert.equal(net.waitingCount(), 1, 'the session request was dropped, so its session could never be ended');
+  assert.deepEqual(unused, []);
+
+  net.answer(201, SESSION_ANSWER);
+  await until(() => unused.length === 1, 'the late session reported');
+  assert.deepEqual(unused, ['SYNTHETIC-session-id']);
+  assert.equal(peer.remoteCalls, 0, 'the late answer was applied');
+});
+
+test('R2E-01 setup: the handle pulled while the connection prepares itself rejects at once, without waiting for the preparation to end', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const handle = check.startHandle();
+  const connecting = webrtc.connectWebRtc({
+    endpoint: SESSION_REQUEST,
+    stream: syntheticMicrophone() as unknown as MediaStream,
+    plan: PLAN,
+    accessToken: 'SYNTHETIC-token-of-A',
+    onRemoteStream() {},
+    handle,
+    /* Longer than this test's limit: waiting for it would fail by name. */
+    iceTimeoutMs: 60_000,
+  });
+  const peer = FakePeer.made[0]!;
+  await peer.gatheringStarted;
+  handle.pull();
+  assert.equal(peer.closes, 1, 'the pull did not close the peer connection at once');
+  await assert.rejects(connecting, (error: unknown) => check.isLiveStartCancelled(error));
+  assert.equal(net.calls.length, 0, 'a request was sent after the pull');
+});
+
+test('R2E-01 setup: a switch while the answer is being applied: the track callback asks first, stops the examiner track and passes nothing on to be played', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const may = question();
+  const played: unknown[] = [];
+  const unused: string[] = [];
+  const connecting = webrtc.connectWebRtc({
+    endpoint: SESSION_REQUEST,
+    stream: syntheticMicrophone() as unknown as MediaStream,
+    plan: PLAN,
+    accessToken: 'SYNTHETIC-token-of-A',
+    onRemoteStream: (stream: unknown) => played.push(stream),
+    mayContinue: may.ask,
+    onSessionUnused: (id: string) => unused.push(id),
+  });
+  const outcome = connecting.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = FakePeer.made[0]!;
+  await peer.gatheringStarted;
+  peer.finishGathering();
+  await until(() => net.waitingCount() === 1, 'the session request');
+  /* The page changes hands INSIDE the answer being applied, just before the
+     examiner's track arrives (a browser fires it from inside that call). */
+  peer.trackOnAnswer = true;
+  peer.whileApplying = () => may.refuse();
+  net.answer(201, SESSION_ANSWER);
+
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the setup did not report itself cancelled: ${String(result)}`);
+  assert.equal(peer.remoteTracks.length, 1, 'the stand-in never delivered the track');
+  assert.equal(played.length, 0, 'the examiner track was passed on to be played after the switch');
+  assert.equal(peer.remoteTracks[0]?.readyState, 'ended', 'the examiner track was left running');
+  assert.equal(peer.closes, 1);
+  assert.deepEqual(unused, ['SYNTHETIC-session-id']);
+});
+
+test('R2E-01 link: the handle pulled while the session is starting (answer applied, examiner audio still starting to play) closes the peer and stops the audio AT ONCE, not after twenty seconds, and ends the session at the Worker', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  FakeAudio.hold = true; // the playback's start stays pending: "playback initialisation"
+  const handle = check.startHandle();
+  const opening = link.openExaminerLink({ ...linkOptions('openai', undefined), handle });
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = await linkToSessionStart(net);
+  const audio = FakeAudio.made[0];
+  assert.ok(audio, 'the examiner audio never started (the stand-in track did not reach the playback)');
+  assert.equal(audio.playing(), true);
+  assert.equal(endRequests(net).length, 0);
+
+  handle.pull();
+  /* All of it in the same turn as the pull. */
+  assert.equal(peer.closes, 1, 'the peer connection was left open after the pull');
+  assert.equal(peer.channels[0]?.closes, 1, 'the data channel was left open after the pull');
+  assert.equal(audio.playing(), false, 'the examiner audio went on playing after the pull');
+  assert.equal(audio.srcObject, null, 'the playback element kept the examiner stream');
+  assert.equal(endRequests(net).length, 1, 'the paid session was not ended at the Worker at the pull');
+  assert.deepEqual(JSON.parse(endRequests(net)[0]!.body ?? '{}'), END_BODY);
+  assert.equal(endRequests(net)[0]!.headers.Authorization, 'Bearer SYNTHETIC-token-of-A');
+
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the link did not report itself cancelled: ${String(result)}`);
+  /* The playback's start carried on after the pull (its held play() was
+     refused by the pause): what it made afterwards is released as well. */
+  await settleTurns();
+  assert.ok(FakeAudioContext.made.length >= 1);
+  assert.ok(everyContextClosed(), 'an audio context made after the pull was left running');
+  assert.equal(liveIntervals.size, 0, "the playback's level poll was left running");
+  assert.equal(audio.playing(), false);
+  assert.deepEqual(peer.channels[0]?.sent, [], 'something was sent on the data channel');
+  assert.equal(endRequests(net).length, 1, 'the session was ended more than once');
+});
+
+test('R2E-01 link: an examiner track that arrives after the let-go starts no playback, and is stopped', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const handle = check.startHandle();
+  const opening = link.openExaminerLink({ ...linkOptions('openai', undefined), handle });
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  /* The answer is applied without a track this time; the track comes late. */
+  const peer = await linkToSessionStart(net, false);
+  handle.pull();
+  const late = peer.deliverTrack();
+  assert.equal(FakeAudio.made.length, 0, 'a playback element was made for a start that had been let go');
+  assert.equal(late.readyState, 'ended', 'the late examiner track was left running');
+  assert.ok(check.isLiveStartCancelled(await outcome));
+  assert.equal(endRequests(net).length, 1);
+});
+
+test('R2E-01 link: a switch that reached no listener: a late examiner track plays nothing, the session.started that follows is not accepted, and the session is ended at the Worker', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const may = question();
+  const opening = link.openExaminerLink(linkOptions('openai', may.ask));
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = await linkToSessionStart(net, false);
+  may.refuse();
+  const late = peer.deliverTrack();
+  assert.equal(FakeAudio.made.length, 0, 'the examiner audio was played after the switch');
+  assert.equal(late.readyState, 'ended');
+  /* OpenAI says the session has started: the start asks before accepting. */
+  peer.channels[0]!.deliver({ type: 'session.started', session: { id: 'SYNTHETIC-session-id' } });
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the link was handed over after the switch: ${String(result)}`);
+  assert.equal(peer.closes, 1);
+  assert.equal(endRequests(net).length, 1, 'the session was not ended at the Worker');
+});
+
+test('R2E-01 link: the session start timing out ends the session at the Worker', { timeout: LIMIT_MS }, async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const net = surroundings();
+  const opening = link.openExaminerLink(linkOptions('openai', undefined));
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = await linkToSessionStart(net);
+  assert.equal(endRequests(net).length, 0);
+  /* Nothing more comes from OpenAI for twenty seconds. */
+  t.mock.timers.tick(20_000);
+  const result = await outcome;
+  assert.ok(result instanceof Error && /Timed out waiting for the examiner session to start/.test(result.message), String(result));
+  assert.equal(peer.closes, 1);
+  assert.equal(endRequests(net).length, 1, 'a session that timed out was left open at the Worker');
+  assert.deepEqual(JSON.parse(endRequests(net)[0]!.body ?? '{}'), END_BODY);
+  await settleTurns();
+  assert.ok(everyContextClosed());
+  assert.equal(liveIntervals.size, 0);
+});
+
+test('R2E-01 link: an error from the service before the session starts ends the session at the Worker', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const opening = link.openExaminerLink(linkOptions('openai', undefined));
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = await linkToSessionStart(net);
+  peer.channels[0]!.deliver({ type: 'error', error: { message: 'SYNTHETIC service failure' } });
+  const result = await outcome;
+  assert.ok(result instanceof Error && result.message === 'SYNTHETIC service failure', String(result));
+  assert.equal(peer.closes, 1);
+  assert.equal(endRequests(net).length, 1, 'a session that failed was left open at the Worker');
+  await settleTurns();
+  assert.ok(everyContextClosed());
+  assert.equal(liveIntervals.size, 0);
+});
+
+test('R2E-01 link: the connection closing before the session starts ends the session at the Worker', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const opening = link.openExaminerLink(linkOptions('openai', undefined));
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  const peer = await linkToSessionStart(net);
+  peer.channels[0]!.fireClose();
+  const result = await outcome;
+  assert.ok(result instanceof Error && /closed before the examiner session started/.test(result.message), String(result));
+  assert.equal(endRequests(net).length, 1, 'a session whose connection closed was left open at the Worker');
+});
+
+test('R2E-01 session start: a session.started after the question said no is not accepted, and a pull rejects at once', { timeout: LIMIT_MS }, async () => {
+  function transport() {
+    const record = {
+      closes: 0,
+      handlers: null as { onEvent(ev: Record<string, unknown> & { type: string }): void; onClose(): void } | null,
+      send() {},
+      setHandlers(h: { onEvent(ev: Record<string, unknown> & { type: string }): void; onClose(): void }) {
+        record.handlers = h;
+      },
+      close() {
+        record.closes += 1;
+      },
+    };
+    return record;
+  }
+
+  const first = transport();
+  const may = question();
+  const starting = webrtc.OpenAiLiveSession.start(first, noCallbacks, { mayContinue: may.ask, startTimeoutMs: 60_000 });
+  may.refuse();
+  first.handlers!.onEvent({ type: 'session.started', session: { id: 'SYNTHETIC-session-id' } });
+  await assert.rejects(starting, (error: unknown) => check.isLiveStartCancelled(error));
+  assert.equal(first.closes, 1, 'the transport of a start that was let go was left open');
+
+  const second = transport();
+  const handle = check.startHandle();
+  const waiting = webrtc.OpenAiLiveSession.start(second, noCallbacks, { handle, startTimeoutMs: 60_000 });
+  handle.pull();
+  assert.equal(second.closes, 1, 'the pull did not close the transport at once');
+  /* Rejected without waiting for the sixty seconds (this test's limit is ten). */
+  await assert.rejects(waiting, (error: unknown) => check.isLiveStartCancelled(error));
+});
+
+test('R2E-01 Gemini: a socket that opens after the page changed hands sends no setup and is closed', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const may = question();
+  const connecting = gemini.ExaminerSession.connect(SESSION_REQUEST, 'SYNTHETIC instruction', { ...noCallbacks, onAudio() {}, onInterrupted() {} }, may.ask);
+  const outcome = connecting.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  await until(() => net.waitingCount() === 1, 'the token request');
+  net.answer(200, { token: 'SYNTHETIC-not-a-token', model: 'SYNTHETIC-no-model' });
+  await until(() => FakeSocket.made.length === 1, 'the socket');
+  const socket = FakeSocket.made[0]!;
+
+  /* The switch comes after the socket was made, before it opens. */
+  may.refuse();
+  socket.open();
+
+  assert.equal(socket.sent.length, 0, 'the setup was sent on a socket whose start had been let go');
+  assert.equal(socket.closes, 1, 'the socket was left open');
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the setup did not report itself cancelled: ${String(result)}`);
+});
+
+test('R2E-01 Gemini: the handle pulled while the socket is connecting closes it at once and nothing is ever sent on it', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const handle = check.startHandle();
+  const connecting = gemini.ExaminerSession.connect(
+    SESSION_REQUEST,
+    'SYNTHETIC instruction',
+    { ...noCallbacks, onAudio() {}, onInterrupted() {} },
+    undefined,
+    { handle },
+  );
+  const outcome = connecting.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  await until(() => net.waitingCount() === 1, 'the token request');
+  net.answer(200, { token: 'SYNTHETIC-not-a-token', model: 'SYNTHETIC-no-model' });
+  await until(() => FakeSocket.made.length === 1, 'the socket');
+  const socket = FakeSocket.made[0]!;
+
+  handle.pull();
+  assert.equal(socket.closes, 1, 'the pull did not close the socket at once');
+  socket.open();
+  assert.equal(socket.sent.length, 0, 'the setup was sent after the pull');
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), `the setup did not report itself cancelled: ${String(result)}`);
+});
+
+test('R2E-01 Gemini: the setup wait has an end: no setupComplete in time closes the socket and fails the start', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  let closedReports = 0;
+  const connecting = gemini.ExaminerSession.connect(
+    SESSION_REQUEST,
+    'SYNTHETIC instruction',
+    {
+      ...noCallbacks,
+      onAudio() {},
+      onInterrupted() {},
+      onClosed() {
+        closedReports += 1;
+      },
+    },
+    undefined,
+    { setupTimeoutMs: 40 },
+  );
+  const outcome = connecting.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  await until(() => net.waitingCount() === 1, 'the token request');
+  net.answer(200, { token: 'SYNTHETIC-not-a-token', model: 'SYNTHETIC-no-model' });
+  await until(() => FakeSocket.made.length === 1, 'the socket');
+  const socket = FakeSocket.made[0]!;
+  socket.open();
+  assert.equal(socket.sent.length, 1, 'the setup was not sent');
+
+  /* Gemini never answers the setup. */
+  const result = await outcome;
+  assert.ok(result instanceof Error && /Timed out waiting for the examiner session to start/.test(result.message), String(result));
+  assert.equal(socket.closes, 1, 'the socket of a setup that timed out was left open');
+  assert.equal(closedReports, 0, 'a start that failed reported a closed session as well');
+});
+
+test('R2E-01 Gemini link: the handle pulled during the token request stops the playback and the capture at once, and no socket follows', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  const handle = check.startHandle();
+  const opening = link.openExaminerLink({ ...linkOptions('gemini', undefined), handle });
+  const outcome = opening.then(
+    () => 'opened',
+    (error: unknown) => error,
+  );
+  await until(() => net.waitingCount() === 1, 'the token request');
+  assert.ok(FakeAudioContext.made.length >= 2, 'the Gemini link did not set up its playback and capture');
+  handle.pull();
+  assert.ok(everyContextClosed(), "the link's playback or capture was left running after the pull");
+  const result = await outcome;
+  assert.ok(check.isLiveStartCancelled(result), String(result));
+  net.answer(200, { token: 'SYNTHETIC-not-a-token', model: 'SYNTHETIC-no-model' });
+  await settleTurns();
+  assert.equal(FakeSocket.made.length, 0, 'a socket was opened after the pull');
+});
+
+test('R2E-01 guard: a start handle is pulled the moment its number goes stale (a newer start, a teardown, the unmount), and a release registered late runs at once', { timeout: LIMIT_MS }, () => {
+  storeOwner.setCurrentOwner(A);
+  const generations = speaking.sessionGenerations();
+  const binding = storeOwner.bindToCurrentOwner();
+  const pulls: string[] = [];
+
+  const first = speaking.guardSessionStart({ generations, binding, attempt: null });
+  first.handle.onLetGo(() => pulls.push('first'));
+  assert.equal(first.handle.letGo(), false);
+  /* A newer start. */
+  const second = speaking.guardSessionStart({ generations, binding, attempt: null });
+  assert.deepEqual(pulls, ['first']);
+  assert.equal(first.handle.letGo(), true);
+  first.handle.onLetGo(() => pulls.push('first, late'));
+  assert.deepEqual(pulls, ['first', 'first, late'], 'a release registered after the pull did not run at once');
+
+  second.handle.onLetGo(() => pulls.push('second'));
+  const takenBack = second.handle.onLetGo(() => pulls.push('second, taken back'));
+  takenBack();
+  /* A teardown (Back, a switch, dropStart) moves the number on. */
+  generations.next();
+  assert.deepEqual(pulls, ['first', 'first, late', 'second']);
+
+  const third = speaking.guardSessionStart({ generations, binding, attempt: null });
+  third.handle.onLetGo(() => pulls.push('third'));
+  generations.unmount();
+  assert.deepEqual(pulls, ['first', 'first, late', 'second', 'third']);
+  assert.equal(third.handle.letGo(), true);
+  binding.cancel();
+});
+
+test('R2E-01 link through the examiner guard: the mock is taken away while its session is starting: the peer closes at once and the session is ended at the Worker', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  storeOwner.setCurrentOwner(A);
+  const { generations, binding, session } = mockStart();
+  FakeAudio.hold = true;
+  /* Exactly the examiner's own call, with its guard's question AND handle. */
+  const opened = session.step(
+    link.openExaminerLink({ ...linkOptions('openai', () => session.live()), handle: session.handle }),
+    speaking.closeConnection,
+  );
+  const peer = await linkToSessionStart(net);
+  const audio = FakeAudio.made[0]!;
+  assert.equal(audio.playing(), true);
+
+  /* MockExam takes the examiner away (the account changed on another tab). */
+  storeOwner.setCurrentOwner(B);
+  generations.unmount();
+  binding.cancel();
+  assert.equal(peer.closes, 1, 'the unmount did not reach the connection still coming up');
+  assert.equal(audio.playing(), false, 'the examiner audio went on playing behind the stopped mock');
+  assert.equal(endRequests(net).length, 1, 'the paid session was not ended at the Worker');
+
+  assert.equal(await opened, null, 'the examiner would have been handed a link, or an error to show');
+  await settleTurns();
+  assert.ok(everyContextClosed());
+  assert.equal(liveIntervals.size, 0);
+});
+
+test('R2E-01 link through the examiner guard: on the standalone page a switch that reaches the attempt closes the connection while its request is out; the successful late answer is never applied and its session is ended', { timeout: LIMIT_MS }, async () => {
+  const net = surroundings();
+  storeOwner.setCurrentOwner(A);
+  const generations = speaking.sessionGenerations();
+  /* The screen's own teardown at a switch (leaveForOwnerChange) moves the
+     start number on first; that is all this stand-in for it does. */
+  const attempt = speaking.openSpeakingAttempt({ onOwnerLeft: () => void generations.next() });
+  const session = speaking.guardSessionStart({ generations, binding: attempt.binding, attempt });
+  const opened = session.step(
+    link.openExaminerLink({ ...linkOptions('openai', () => session.live()), handle: session.handle }),
+    speaking.closeConnection,
+  );
+  const peer = await linkToSessionRequest(net);
+
+  storeOwner.setCurrentOwner(B);
+  assert.equal(attempt.stage(), 'suspended');
+  assert.equal(peer.closes, 1, 'the switch did not reach the connection still coming up');
+  assert.equal(await opened, null);
+
+  /* The request then SUCCEEDS, late. */
+  peer.trackOnAnswer = true;
+  net.answer(201, SESSION_ANSWER);
+  await until(() => endRequests(net).length === 1, 'the late session ended at the Worker');
+  assert.deepEqual(JSON.parse(endRequests(net)[0]!.body ?? '{}'), END_BODY);
+  assert.equal(peer.remoteCalls, 0, 'the late answer was applied after the switch');
+  assert.equal(FakeAudio.made.length, 0, 'the examiner audio was played after the switch');
+});
+
+test('R2E-01 source: the answer is applied only after a check, every callback asks, every failure ends the session, and the examiner hands its handle in', { timeout: LIMIT_MS }, () => {
+  const openai = source('src/lib/speaking/live/openai-session.ts');
+  const connect = openai.slice(openai.indexOf('export async function connectWebRtc('));
+  assert.match(
+    connect,
+    /watch\.check\(\);\n\s*await watch\.wait\(pc\.setRemoteDescription\(/,
+    'the remote answer is not immediately preceded by the check',
+  );
+  assert.equal((connect.match(/setRemoteDescription\(/g) ?? []).length, 1, 'the answer is applied in more than one place');
+  const trackCallback = connect.slice(connect.indexOf("pc.addEventListener('track'"), connect.indexOf('opts.onRemoteStream(') + 1);
+  assert.match(trackCallback, /if \(torndown \|\| !watch\.going\(\)\) \{[\s\S]*?e\.track\.stop\(\);[\s\S]*?return;/, 'the track callback plays without asking');
+  assert.match(connect, /watch\.onLetGo\(teardown\);/, 'a pull does not close the connection');
+  assert.match(connect, /catch \(err\) \{\s*gaveUp = true;\s*teardown\(\);\s*watch\.done\(\);\s*reportUnused\(\);/, 'a failed setup does not report its session');
+
+  const start = openai.slice(openai.indexOf('  static start('), openai.indexOf('  private attach('));
+  assert.match(start, /onEvent\(ev\) \{\s*if \(settled\) return;[\s\S]*?if \(!watch\.going\(\)\) \{\s*cancelled\(\);/, 'the session start acts on the channel without asking');
+  assert.match(start, /watch\.onLetGo\(cancelled\);/, 'a pull does not reach the session start');
+
+  const session = source('src/lib/speaking/live/session.ts');
+  const onOpen = session.slice(session.indexOf('ws.onopen = () => {'), session.indexOf('ws.send('));
+  assert.match(onOpen, /if \(settled \|\| !watch\.going\(\)\) \{\s*cancelled\(\);\s*return;/, 'the Gemini open callback sends the setup without asking');
+  assert.match(session, /timer = setTimeout\(\(\) => \{\s*fail\(new Error\('Timed out waiting for the examiner session to start\.'\)\);/, 'the Gemini setup wait has no end');
+  assert.match(session, /watch\.onLetGo\(cancelled\);/, 'a pull does not close the Gemini socket');
+
+  const linkCode = source('src/lib/speaking/live/link.ts');
+  const paid = linkCode.slice(linkCode.indexOf('async function openOpenAiLink('));
+  const release = paid.slice(paid.indexOf('const release = (): Promise<void> => {'), paid.indexOf('watch.onLetGo(() => {'));
+  assert.match(release, /peer\.transport\.close\(\);\s*endAtWorker\(peer\.sessionId\);/, 'letting go does not end a created session at the Worker');
+  assert.match(paid, /\} catch \(err\) \{[\s\S]*?watch\.done\(\);\s*await release\(\);\s*throw err;/, 'a failure of the paid setup does not release (and end) what it made');
+  assert.match(paid, /onRemoteStream: \(stream\) => \{[\s\S]*?if \(released \|\| !watch\.going\(\)\) \{\s*stopTracks\(stream\);\s*return;/, 'the examiner audio is played without asking');
+
+  const owner = source('src/components/speaking-attempt-owner.ts');
+  assert.match(owner, /onLetGo: \(release\) => generations\.whenStale\(generation, release\)/, "the start's handle is not pulled by its number going stale");
+
+  const examiner = source('src/components/LiveExaminer.tsx');
+  const startTest = examiner.slice(examiner.indexOf('async function startTest('));
+  assert.match(startTest, /openExaminerLink\(\{[\s\S]*?mayContinue:\s*stillHere,[\s\S]*?handle:\s*session\.handle,[\s\S]*?\}\),\s*closeConnection,\s*\)/, 'the examiner does not hand its handle to the setup');
 });

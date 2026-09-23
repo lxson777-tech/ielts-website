@@ -13,10 +13,22 @@
    a function) and asks it before the token request, since the audio set-up
    before connect can wait, and again immediately before the socket, which is
    the voice session itself. A no rejects with LiveStartCancelled: the socket
-   is never opened, and nothing more is sent. */
+   is never opened, and nothing more is sent.
+
+   AND ONCE THE SOCKET IS MADE (finding R2E-01, Codex inspection of
+   c4a7793). A let-go after the socket had been constructed could not stop
+   its open callback from sending the setup, and the wait for the setup to
+   complete had no end. Now connect also takes the screen's StartHandle
+   (./start-check.ts): a pull closes the socket at once and rejects with
+   LiveStartCancelled, wherever the start is waiting. The open callback asks
+   (handle and question) before it sends the setup, and the message callback
+   before it acts, so a socket that opens after the let-go sends nothing and
+   is closed. The setup wait now ends after setupTimeoutMs (twenty seconds
+   by default, like the paid path's) with the socket closed. A socket closed
+   by a failed or let-go start says nothing more to the callbacks. */
 
 import { EXAMINER_VOICE } from './script';
-import { continueOrCancel, type MayContinue } from './start-check';
+import { LiveStartCancelled, watchStart, type MayContinue, type StartHandle, type StartWatch } from './start-check';
 
 /* NOTE: ephemeral tokens only authenticate against the ...Constrained method
    (verified 2026-07-10: plain BidiGenerateContent rejects them with 1008
@@ -56,6 +68,16 @@ interface ServerMessage {
   goAway?: { timeLeft?: string };
 }
 
+export interface SessionConnectOptions {
+  /** Pulled by the screen the moment it lets go (R2E-01). */
+  handle?: StartHandle;
+  /** How long to wait for the setup to complete once the socket is made.
+      Twenty seconds when not given. */
+  setupTimeoutMs?: number;
+}
+
+const DEFAULT_SETUP_TIMEOUT_MS = 20000;
+
 export class ExaminerSession {
   private ws: WebSocket | null = null;
   private turns: TranscriptTurn[] = [];
@@ -72,31 +94,69 @@ export class ExaminerSession {
     systemInstruction: string,
     cb: SessionCallbacks,
     mayContinue?: MayContinue,
+    options: SessionConnectOptions = {},
   ): Promise<ExaminerSession> {
-    continueOrCancel(mayContinue);
-    const resp = await fetch(tokenEndpoint, { method: 'POST' });
-    if (!resp.ok) {
-      const err = (await resp.json().catch(() => null)) as { error?: string } | null;
-      throw new Error(err?.error ?? `Token service error (${resp.status})`);
-    }
-    const { token, model } = (await resp.json()) as { token: string; model: string };
+    const watch = watchStart(mayContinue, options.handle);
+    try {
+      watch.check();
+      const resp = await watch.wait(fetch(tokenEndpoint, { method: 'POST' }));
+      if (!resp.ok) {
+        const err = (await resp.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(err?.error ?? `Token service error (${resp.status})`);
+      }
+      const { token, model } = (await watch.wait(resp.json())) as { token: string; model: string };
 
-    /* The token request took its time: ask again, immediately before the
-       socket. A no opens nothing (the minted token is single use and simply
-       expires unused). */
-    continueOrCancel(mayContinue);
-    const session = new ExaminerSession(cb);
-    await session.open(token, model, systemInstruction);
-    return session;
+      /* The token request took its time: ask again, immediately before the
+         socket. A no opens nothing (the minted token is single use and simply
+         expires unused). */
+      watch.check();
+      const session = new ExaminerSession(cb);
+      await session.open(token, model, systemInstruction, watch, options.setupTimeoutMs ?? DEFAULT_SETUP_TIMEOUT_MS);
+      return session;
+    } finally {
+      watch.done();
+    }
   }
 
-  private open(token: string, model: string, systemInstruction: string): Promise<void> {
+  private open(token: string, model: string, systemInstruction: string, watch: StartWatch, setupTimeoutMs: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const ws = new WebSocket(`${WS_HOST}?access_token=${encodeURIComponent(token)}`);
       this.ws = ws;
       let settled = false;
+      let failed = false;
+      let timer: ReturnType<typeof setTimeout> | null = null;
+
+      /** The setup did not complete (let go, timed out, failed): the socket
+          is closed at once, none of its callbacks does anything more, and
+          the start rejects. */
+      const fail = (error: Error) => {
+        if (settled) return;
+        settled = true;
+        failed = true;
+        if (timer) clearTimeout(timer);
+        timer = null;
+        this.closedByUs = true;
+        ws.onopen = null;
+        ws.onmessage = null;
+        ws.onerror = null;
+        ws.onclose = null;
+        try {
+          if (ws.readyState <= WebSocket.OPEN) ws.close(1000, 'client done');
+        } catch {
+          /* already closing */
+        }
+        if (this.ws === ws) this.ws = null;
+        reject(error);
+      };
+      const cancelled = () => fail(new LiveStartCancelled());
 
       ws.onopen = () => {
+        /* R2E-01: a socket that opens after the start was let go sends no
+           setup. */
+        if (settled || !watch.going()) {
+          cancelled();
+          return;
+        }
         ws.send(
           JSON.stringify({
             setup: {
@@ -137,6 +197,14 @@ export class ExaminerSession {
 
       ws.onmessage = async (ev: MessageEvent) => {
         const raw = typeof ev.data === 'string' ? ev.data : await (ev.data as Blob).text();
+        /* R2E-01: a start that failed or was let go while this message was
+           being read acts on none of it, and until the setup has completed
+           nothing the socket says is acted on for a start that was let go. */
+        if (failed) return;
+        if (!settled && !watch.going()) {
+          cancelled();
+          return;
+        }
         let msg: ServerMessage;
         try {
           msg = JSON.parse(raw) as ServerMessage;
@@ -146,6 +214,8 @@ export class ExaminerSession {
 
         if (msg.setupComplete !== undefined && !settled) {
           settled = true;
+          if (timer) clearTimeout(timer);
+          timer = null;
           resolve();
           return;
         }
@@ -172,8 +242,7 @@ export class ExaminerSession {
 
       ws.onerror = () => {
         if (!settled) {
-          settled = true;
-          reject(new Error('Could not connect to the examiner service.'));
+          fail(new Error('Could not connect to the examiner service.'));
         } else {
           this.cb.onError('Connection error.');
         }
@@ -181,12 +250,20 @@ export class ExaminerSession {
 
       ws.onclose = (ev) => {
         if (!settled) {
-          settled = true;
-          reject(new Error(`Connection closed before setup (${ev.code}${ev.reason ? `: ${ev.reason}` : ''}).`));
+          fail(new Error(`Connection closed before setup (${ev.code}${ev.reason ? `: ${ev.reason}` : ''}).`));
           return;
         }
         if (!this.closedByUs) this.cb.onClosed(ev.reason || `code ${ev.code}`, ev.wasClean);
       };
+
+      /* The setup wait has an end (R2E-01): no answer within setupTimeoutMs
+         closes the socket and fails the start. */
+      timer = setTimeout(() => {
+        fail(new Error('Timed out waiting for the examiner session to start.'));
+      }, setupTimeoutMs);
+      /* A pull closes the socket at once, wherever the setup is. Registered
+         last, so a start that was let go already is closed right here. */
+      watch.onLetGo(cancelled);
     });
   }
 

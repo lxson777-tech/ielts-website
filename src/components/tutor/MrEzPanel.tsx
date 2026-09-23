@@ -17,7 +17,19 @@
    IT KNOWS WHERE YOU ARE, CHEAPLY. The current lesson comes off a data
    attribute the layout already writes, and a running timed assessment sets
    another. No polling, no extra request, and nothing sent to the model that
-   the server would not independently verify. */
+   the server would not independently verify.
+
+   IT IS ONE STUDENT'S CONVERSATION (follow-up to Codex R2E-02). Surviving
+   navigation also meant surviving an account change: after A signed out and
+   B signed in, here or in another tab, the panel went on showing A's
+   conversation to B, and a reply still on its way for A landed in it. Now
+   the conversation on screen belongs to the owner it was loaded for, is
+   saved under that owner only, and is swapped for the new owner's the
+   moment the owner changes, taking A's draft, pending retry and error with
+   it. The tutor client drops a reply that comes back for A after that
+   (src/lib/tutor/review-owner.ts); `epochRef` below is the panel's own
+   second line, so nothing that returns for a previous owner, reply or
+   failure, is shown or saved. */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
@@ -41,6 +53,8 @@ import {
 } from '../../lib/tutor/conversation';
 import { MAX_MESSAGE_CHARS, type TutorMood, type TutorPlace } from '../../lib/tutor/schema';
 import { onAuthChange } from '../../lib/auth/session';
+import { bindToCurrentOwner, currentOwner, onOwnerChange, sameOwner } from '../../lib/store-owner';
+import type { CacheOwner } from '../../lib/learning/contracts/sync';
 import { BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER, chatBlocked } from './mrez-boundary';
 import { selectTutorMood } from './mrez-mood';
 
@@ -95,6 +109,14 @@ export default function MrEzPanel() {
   /** The message currently being retried, so a retry re-uses one key and
       cannot be charged twice. */
   const pendingRef = useRef<{ text: string; key: string } | null>(null);
+  /** Whose conversation is on screen. State, so each save names the owner
+      of the conversation it saves; mirrored in a ref for the owner
+      listener. Null until mounted. */
+  const [conversationOwner, setConversationOwner] = useState<CacheOwner | null>(null);
+  const ownerRef = useRef<CacheOwner | null>(null);
+  /** Bumped on every owner change. A send remembers the value it started
+      under and lets nothing that comes back later through if it moved. */
+  const epochRef = useRef(0);
 
   const configured = isTutorConfigured();
   const unavailableReason = tutorUnavailableReason();
@@ -102,24 +124,54 @@ export default function MrEzPanel() {
   // Restore the conversation: this session's copy immediately, then the
   // durable copy if it has more in it.
   useEffect(() => {
-    setState(loadConversation());
+    const owner = currentOwner();
+    ownerRef.current = owner;
+    setConversationOwner(owner);
+    setState(loadConversation(owner));
     setPlace(readPlace());
     void getTutorConfig().then((c) => setModel(c ? (c.live ? c.model : 'simulated') : null));
     return onAuthChange((user) => setSignedIn(Boolean(user)));
   }, []);
 
+  // Somebody else is using this browser now: their conversation, not the
+  // last student's. Everything of the last student's goes: the turns, the
+  // draft, the retry, the error, the "thinking" dots. An announcement for
+  // the SAME owner (the anonymous-work claim) changes nothing here.
+  useEffect(
+    () =>
+      onOwnerChange(() => {
+        const now = currentOwner();
+        if (ownerRef.current && sameOwner(ownerRef.current, now)) return;
+        ownerRef.current = now;
+        epochRef.current += 1;
+        pendingRef.current = null;
+        setConversationOwner(now);
+        setState(loadConversation(now));
+        setRestored(false);
+        setError(null);
+        setBusy(false);
+        setDraft('');
+      }),
+    [],
+  );
+
   useEffect(() => {
     if (!signedIn || restored) return;
     setRestored(true);
-    void restoreLatestConversation().then((remote) => {
-      if (!remote) return;
-      setState((current) => (remote.turns.length > current.turns.length ? remote : current));
-    });
+    // For the student on the page now, and kept only if they still are
+    // when it arrives (the same rule as a tutor reply).
+    const binding = bindToCurrentOwner();
+    void restoreLatestConversation(binding.owner)
+      .then((remote) => {
+        if (!remote || !binding.current()) return;
+        setState((current) => (remote.turns.length > current.turns.length ? remote : current));
+      })
+      .finally(() => binding.cancel());
   }, [signedIn, restored]);
 
   useEffect(() => {
-    if (state.turns.length || state.conversationId) saveConversation(state);
-  }, [state]);
+    if (conversationOwner && (state.turns.length || state.conversationId)) saveConversation(state, conversationOwner);
+  }, [state, conversationOwner]);
 
   // The route and the lesson change under a client-side navigation without
   // this island remounting, which is the whole point of persisting it.
@@ -201,6 +253,7 @@ export default function MrEzPanel() {
       if (chatBlocked(readPlace())) return;
 
       const key = idempotencyKey ?? newIdempotencyKey();
+      const epoch = epochRef.current;
       pendingRef.current = { text: trimmed, key };
       setError(null);
       setBusy(true);
@@ -222,6 +275,10 @@ export default function MrEzPanel() {
           place: readPlace(),
           idempotencyKey: key,
         });
+        // The client only hands a reply back while the student who asked
+        // is still the one on the page; this is the panel keeping the same
+        // promise on its own account.
+        if (epochRef.current !== epoch) return;
         pendingRef.current = null;
         setState((s) => ({
           conversationId: reply.conversationId || s.conversationId,
@@ -239,6 +296,10 @@ export default function MrEzPanel() {
           ],
         }));
       } catch (err) {
+        // Whatever comes back for a student who has since left (a dropped
+        // reply, a refusal, a failure) is theirs, and the panel is somebody
+        // else's now: nothing to show.
+        if (epochRef.current !== epoch) return;
         const clientError = err instanceof TutorClientError ? err : null;
         setError({
           code: clientError?.code ?? 'unavailable',
@@ -251,7 +312,8 @@ export default function MrEzPanel() {
           turns: s.turns.map((t) => (t.id === studentTurn.id ? { ...t, failed: true } : t)),
         }));
       } finally {
-        setBusy(false);
+        // The new owner's panel may be busy with a message of its own.
+        if (epochRef.current === epoch) setBusy(false);
       }
     },
     [busy, state.conversationId, t],

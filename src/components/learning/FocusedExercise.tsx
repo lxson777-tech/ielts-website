@@ -31,6 +31,19 @@
  * ./focused-exercise.ts, "Pausing and coming back"), restored on mount and
  * cleared the moment the run is recorded. Every decision about it is in
  * that file; the three calls below are glue.
+ *
+ * WHOSE EXERCISE IS ON SCREEN (the follow-up to R2B-01, 23 September 2026)
+ * The exercise is a session bound to the student on the page when it is
+ * opened or restored (./exercise-owner.ts), never re-resolved. Its
+ * in-progress copy is written under that student's key from the render that
+ * holds their answers. When the page changes hands, here or in another tab,
+ * the screen hands over: the outgoing student's answers stay in their own
+ * copy, a help reply still on its way is kept for them (keepHelp), and the
+ * screen shows the incoming student's own copy of this exercise, or an empty
+ * one, with one calm line. Every press that records (check, the stated
+ * reason, the second go) is claimed at the press: refused, recording
+ * nothing, when the session's student is no longer the one here, and
+ * otherwise written through recordSubmissionFor under that student.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -46,8 +59,21 @@ import {
   readPersonalPlan,
   type SharedSessionView,
 } from '../../lib/learning';
-import { getLearnerStore, ownerNamespace, recordSubmission } from '../../lib/learning/store.browser';
+import { recordSubmissionFor } from '../../lib/learning/store.browser';
 import type { ItemOutcomeDraft } from '../../lib/learning/evidence';
+import type { CacheOwner } from '../../lib/learning/contracts/sync';
+import { onOwnerChange, ownerNamespace, type OwnerBinding } from '../../lib/store-owner';
+import type { HelpResult } from './lesson-help';
+import {
+  EXERCISE_OWNER_CHANGED_NOTE,
+  claimExerciseCheck,
+  exerciseIsCurrent,
+  helpFromRestored,
+  keepFocusedHelpFor,
+  keepFocusedProgress,
+  openFocusedExercise,
+  type ExerciseSession,
+} from './exercise-owner';
 import SessionContinueBar from './SessionContinueBar';
 import LessonHelpControls from './LessonHelpControls';
 import AudioSegmentPlayer, { type AudioSegmentPlayerHandle } from './AudioSegmentPlayer';
@@ -55,18 +81,15 @@ import {
   NO_DIAGNOSIS_SENTENCE,
   NO_HELP,
   TENTATIVE_DIAGNOSIS_SENTENCE,
-  applyFocusedProgress,
   assistedCount,
   bySubskillOf,
   completionOf,
   countCorrect,
   feedbackFor,
-  focusedProgressAction,
   isCorrect,
   itemDrafts,
   itemsAffectedBySeek,
   modeFor,
-  readFocusedProgress,
   tentativeDiagnosis,
   withHelp,
   type FocusedExerciseView,
@@ -121,17 +144,28 @@ export default function FocusedExercise({ view }: Props) {
      material, and the Russian run of the language check reads the passage
      text on a 390px screen to prove the exam content is still English. */
   const [passageOpen, setPassageOpen] = useState(true);
-  /* True once the in-progress store has been consulted. Nothing is written
-     back before it has been: on the first commit the boxes are still empty,
-     and a write then would clear the very row about to be restored. */
-  const [restored, setRestored] = useState(false);
+  /* Whose answers this screen holds (./exercise-owner.ts): bound on mount to
+     the owner on the page, and moved to the incoming student only by
+     handOver below. Null until the in-progress store has been consulted.
+     Nothing is written back before it has been: on the first commit the
+     boxes are still empty, and a write then would clear the very row about
+     to be restored. State, so every render's answers and the key they are
+     kept under belong to the same student; the ref is for the owner-change
+     listener and for a help reply, which may run from an older render. */
+  const [exercise, setExercise] = useState<ExerciseSession | null>(null);
+  const exerciseRef = useRef<ExerciseSession | null>(null);
+  /* The one calm line after the page changed hands. */
+  const [ownerNote, setOwnerNote] = useState<string | null>(null);
+  /* True when this tab missed an account change and refused a press: the
+     answers leave the screen until the tab hears who is here. */
+  const [withheld, setWithheld] = useState(false);
+  /* Bumped at every hand-over, so the recording player starts fresh for the
+     incoming student (a check plays once, and that once was the previous
+     student's). */
+  const [handOvers, setHandOvers] = useState(0);
+  const mounted = useRef(true);
   const recorded = useRef(false);
   const storage = useMemo(deviceStorage, []);
-  /* The owner namespace the learner record itself uses. Null when it cannot
-     be resolved, and then nothing is kept at all: an unnamespaced key could
-     hand one student's answers to another, and losing a resumption is the
-     cheaper of the two failures by a wide margin. */
-  const owner = useRef<string | null>(null);
   /* Items whose stated reason has already reached the record, so saying
      how you chose and then also correcting the answer does not file the
      same sentence twice. */
@@ -167,46 +201,59 @@ export default function FocusedExercise({ view }: Props) {
      the keeping effect below see the restored answers on its first run
      instead of the empty ones. */
   useEffect(() => {
-    try {
-      owner.current = ownerNamespace(getLearnerStore().owner());
-    } catch {
-      /* No learner store on this device: nothing is kept, and the exercise
-         works exactly as it did. */
-      owner.current = null;
+    /* The owner every store on this device is using right now, from the one
+       place that decides it (src/lib/store-owner.ts), fixed for this
+       session. It never throws: with no storage nothing is restored and
+       nothing is kept. */
+    const opened = openFocusedExercise(storage, view, new Date().toISOString());
+    exerciseRef.current = opened.session;
+    const held = opened.restored;
+    if (Object.keys(held.answers).length > 0) {
+      setAnswers(held.answers);
+      setHelp((current) => {
+        const next = { ...current };
+        for (const [itemId, assistance] of Object.entries(held.assistance)) {
+          next[itemId] = withHelp(next[itemId] ?? NO_HELP, { assistance });
+        }
+        return next;
+      });
     }
-    if (owner.current) {
-      const held = readFocusedProgress(storage, owner.current, view, new Date().toISOString());
-      if (Object.keys(held.answers).length > 0) {
-        setAnswers(held.answers);
-        setHelp((current) => {
-          const next = { ...current };
-          for (const [itemId, assistance] of Object.entries(held.assistance)) {
-            next[itemId] = withHelp(next[itemId] ?? NO_HELP, { assistance });
-          }
-          return next;
-        });
-      }
-    }
-    setRestored(true);
+    setExercise(opened.session);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view.exerciseId]);
+
+  /* A sign-out, sign-in or account switch, from this tab or another. The
+     same owner being told its stores changed (the anonymous-work claim)
+     replaces nothing. */
+  useEffect(() => {
+    mounted.current = true;
+    const stop = onOwnerChange(() => {
+      if (exerciseRef.current === null || exerciseIsCurrent(exerciseRef.current)) return;
+      handOver();
+    });
+    return () => {
+      mounted.current = false;
+      stop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* Keep the boxes as they stand, and drop the copy the moment the run is
      recorded. What to do is decided in ./focused-exercise.ts, so this stays
      one call: every path that changes an answer or adds help goes through
      here, including check(), which is what clears it. */
   useEffect(() => {
-    if (!restored || !owner.current) return;
-    const action = focusedProgressAction({
-      exerciseId: view.exerciseId,
-      answers,
-      help,
-      settled: phase === 'checked',
-      now: new Date().toISOString(),
-    });
-    if (!applyFocusedProgress(storage, owner.current, view.exerciseId, action)) setStorageProblem(true);
+    if (!exercise) return;
+    const kept = keepFocusedProgress(
+      storage,
+      exercise,
+      view.exerciseId,
+      { answers, help, settled: phase === 'checked' },
+      new Date().toISOString(),
+    );
+    if (!kept) setStorageProblem(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [restored, answers, help, phase]);
+  }, [exercise, answers, help, phase]);
 
   /* A check is a timed assessment as far as the tutor panel is concerned:
      the same flag TestPlayer and MockExam set, so a direct chat message is
@@ -225,12 +272,97 @@ export default function FocusedExercise({ view }: Props) {
   const correctCount = useMemo(() => countCorrect(view.items, firstAnswers), [view.items, firstAnswers]);
   const helpUsed = useMemo(() => assistedCount(view.items, help), [view.items, help]);
 
+  /** True while this render's session is the one on screen. A handler from
+      a render made before a hand-over (the gap between the hand-over and
+      the next render) must not put one student's answer on the next
+      student's screen. */
+  function live(): boolean {
+    return exercise !== null && exercise === exerciseRef.current && !withheld;
+  }
+
   function setAnswer(itemId: string, value: string) {
+    if (!live()) return;
+    setOwnerNote(null);
     setAnswers((held) => ({ ...held, [itemId]: value }));
   }
 
   function noteHelp(itemId: string, change: Partial<ItemHelpState>) {
+    if (!live()) return;
     setHelp((held) => ({ ...held, [itemId]: withHelp(held[itemId] ?? NO_HELP, change) }));
+  }
+
+  /** A help reply, kept for `whose`, the student who pressed, whoever is on
+   *  the page by now. While this screen still holds their answers it is
+   *  noted exactly as before. Otherwise it goes into their own in-progress
+   *  copy, and nothing on this screen changes. Called for every reply
+   *  (LessonHelpControls' keepHelp), possibly from an older render, so it
+   *  reads the session from the ref. */
+  function keepHelp(itemId: string, result: HelpResult, whose: CacheOwner) {
+    if (mounted.current && exerciseRef.current?.namespace === ownerNamespace(whose)) {
+      setHelp((held) => {
+        const current = held[itemId] ?? NO_HELP;
+        return {
+          ...held,
+          [itemId]: withHelp(current, { hints: [...current.hints, result.text], assistance: result.assistanceAfter }),
+        };
+      });
+      return;
+    }
+    keepFocusedHelpFor(storage, whose, view, itemId, result.assistanceAfter, new Date().toISOString());
+  }
+
+  /* The page changed hands, here or in another tab. Everything on screen
+     was the outgoing student's: their answers are already in their own
+     in-progress copy (the keeping effect writes it from the render that
+     holds them), and their help replies are let go of by the help buttons
+     and kept for them by keepHelp. None of it stays here. The screen shows
+     the incoming student's own copy of this exercise, or an empty one, with
+     one calm line. Touches only refs, setters and props, so the listener
+     above can call it from any render. */
+  function handOver() {
+    const opened = openFocusedExercise(storage, view, new Date().toISOString());
+    exerciseRef.current = opened.session;
+    recorded.current = false;
+    reasonRecorded.current = new Set();
+    setExercise(opened.session);
+    setAnswers(opened.restored.answers);
+    setHelp(helpFromRestored(opened.restored.assistance));
+    setFirstAnswers({});
+    setStated({});
+    setNotes({});
+    setRetrying({});
+    setPhase('working');
+    setPlanChange(null);
+    /* The plan step this page was opened from belongs to the outgoing
+       student's plan. The incoming student's work here is their own,
+       outside it. */
+    setSession(null);
+    setWithheld(false);
+    setHandOvers((count) => count + 1);
+    setOwnerNote(EXERCISE_OWNER_CHANGED_NOTE);
+  }
+
+  /* This tab missed the account change: it still names the previous
+     student, but this device's account session is somebody else's
+     (claimExerciseCheck said 'device-changed'). Nothing is recorded and
+     nothing is written. The answers are already in their own student's
+     in-progress copy; they leave the screen until this tab hears who is
+     here, when the listener above hands over. */
+  function withhold() {
+    setWithheld(true);
+    setOwnerNote(EXERCISE_OWNER_CHANGED_NOTE);
+  }
+
+  /** The binding a recording press is written under, bound NOW, or null
+   *  when the press is refused: nothing is recorded, and the screen has
+   *  handed over or taken the answers off the screen. */
+  function claimPress(): OwnerBinding | null {
+    if (!live()) return null;
+    const claim = claimExerciseCheck(exercise);
+    if ('binding' in claim) return claim.binding;
+    if (claim.refused === 'owner-changed') handOver();
+    else withhold();
+    return null;
   }
 
   /* Listening only: re-listening is help, exactly like a hint or a pointed
@@ -262,12 +394,16 @@ export default function FocusedExercise({ view }: Props) {
   }
 
   /** Write one run to the learner record. Never throws into the exercise:
-      a blocked or full browser store costs the record, not the work. */
-  function record(drafts: readonly ItemOutcomeDraft[], answersNow: Record<string, string>) {
+      a blocked or full browser store costs the record, not the work.
+      `whose` is the student the press was bound to (claimPress), and the
+      run is written into THEIR record, never the one the page happens to
+      hold. Recording is synchronous, so they are still the one here when
+      the plan is read for what changed. */
+  function record(drafts: readonly ItemOutcomeDraft[], answersNow: Record<string, string>, whose: CacheOwner) {
     if (drafts.length === 0) return;
     const historyBefore = readPersonalPlan()?.history.length ?? 0;
     try {
-      recordSubmission({
+      recordSubmissionFor(whose, {
         activityId: view.activityId,
         contentVersion: view.contentVersion,
         paper: view.paper,
@@ -297,16 +433,25 @@ export default function FocusedExercise({ view }: Props) {
 
   function check() {
     if (phase === 'checked') return;
-    const drafts = itemDrafts({ view, answers, help });
-    setFirstAnswers({ ...answers });
-    if (!recorded.current) {
-      recorded.current = true;
-      record(drafts, answers);
+    /* Accepted only for the student whose answers these are, and bound to
+       them before anything is recorded. */
+    const binding = claimPress();
+    if (!binding) return;
+    try {
+      const drafts = itemDrafts({ view, answers, help });
+      setFirstAnswers({ ...answers });
+      if (!recorded.current) {
+        recorded.current = true;
+        record(drafts, answers, binding.owner);
+      }
+      setPhase('checked');
+    } finally {
+      binding.cancel();
     }
-    setPhase('checked');
   }
 
   function openRetry(item: FocusedItemView) {
+    if (!live()) return;
     /* Pointing at the sentence in the passage is help, so the item is
        assisted from here on whatever happens next. */
     noteHelp(item.itemId, { evidenceShown: true, assistance: 'hint' });
@@ -323,21 +468,34 @@ export default function FocusedExercise({ view }: Props) {
    *  only record of it, so it is stored on its own; a correction attempt
    *  afterwards is a separate, later fact and records itself as before. */
   function noteStatedReason(item: FocusedItemView, reason: StatedReason) {
-    setStated((held) => ({ ...held, [item.itemId]: reason }));
-    if (reasonRecorded.current.has(item.itemId)) return;
-    reasonRecorded.current.add(item.itemId);
-    record(
-      itemDrafts({ view, answers, help, stated: { [item.itemId]: reason }, onlyItemIds: [item.itemId] }),
-      answers,
-    );
+    const binding = claimPress();
+    if (!binding) return;
+    try {
+      setStated((held) => ({ ...held, [item.itemId]: reason }));
+      if (reasonRecorded.current.has(item.itemId)) return;
+      reasonRecorded.current.add(item.itemId);
+      record(
+        itemDrafts({ view, answers, help, stated: { [item.itemId]: reason }, onlyItemIds: [item.itemId] }),
+        answers,
+        binding.owner,
+      );
+    } finally {
+      binding.cancel();
+    }
   }
 
   function submitRetry(item: FocusedItemView) {
-    /* The student's own account of the first attempt rides with the second
-       one, on the item it is about. It is kept as what they said, never as
-       something the platform observed. */
-    const drafts = itemDrafts({ view, answers, help, stated, onlyItemIds: [item.itemId] });
-    record(drafts, answers);
+    const binding = claimPress();
+    if (!binding) return;
+    try {
+      /* The student's own account of the first attempt rides with the
+         second one, on the item it is about. It is kept as what they said,
+         never as something the platform observed. */
+      const drafts = itemDrafts({ view, answers, help, stated, onlyItemIds: [item.itemId] });
+      record(drafts, answers, binding.owner);
+    } finally {
+      binding.cancel();
+    }
     setRetrying((held) => ({ ...held, [item.itemId]: false }));
     noteHelp(item.itemId, { explanationShown: true, assistance: 'answer-shown' });
   }
@@ -370,12 +528,19 @@ export default function FocusedExercise({ view }: Props) {
         </p>
       )}
 
+      {ownerNote && (
+        <p className="focused-rule" role="status">
+          {t(ownerNote)}
+        </p>
+      )}
+
       {storageProblem && (
         <p className="focused-storage" role="status">
           {t('This browser is not saving your work right now, so this run cannot be added to your record.')}
         </p>
       )}
 
+      {!withheld && (
       <div className="focused-body">
         {view.passage && (
           /* On a wide screen this is its own sticky column, so the passage
@@ -422,6 +587,7 @@ export default function FocusedExercise({ view }: Props) {
               </div>
             </div>
             <AudioSegmentPlayer
+              key={handOvers}
               ref={audioPlayerRef}
               src={withBase(view.audio.recordingSrc)}
               segment={view.audio.segment}
@@ -543,12 +709,7 @@ export default function FocusedExercise({ view }: Props) {
                       attempted={false}
                       kinds={['hint']}
                       assistance={itemHelp.assistance}
-                      onHelp={(result) =>
-                        noteHelp(item.itemId, {
-                          hints: [...itemHelp.hints, result.text],
-                          assistance: result.assistanceAfter,
-                        })
-                      }
+                      keepHelp={(result, whose) => keepHelp(item.itemId, result, whose)}
                     />
                   )}
 
@@ -690,8 +851,9 @@ export default function FocusedExercise({ view }: Props) {
           )}
         </section>
       </div>
+      )}
 
-      {phase === 'checked' && (
+      {phase === 'checked' && !withheld && (
         <section className="focused-summary" aria-live="polite">
           <p className="focused-score">
             {correctCount} / {view.items.length}

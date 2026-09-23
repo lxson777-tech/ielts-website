@@ -32,16 +32,40 @@
    which is exactly the notification that may never arrive, and the guard
    already is a function, so nothing has to be adapted to pass it through.
 
+   AND A HANDLE AS WELL (finding R2E-01, Codex inspection of c4a7793)
+   A question is only answered when somebody asks it, and the setup asked
+   only between its steps. Once the paid session request had been ANSWERED
+   the setup applied the answer before it asked again (so the examiner's
+   audio could start playing), and while it then waited up to twenty seconds
+   for the session to start, nothing could reach it: the screen hands the
+   connection its teardown only once the setup has finished. A switch or an
+   unmount in that wait left the connection, and its audio, running until
+   the wait ran out.
+
+   So the setup now takes a StartHandle too: the screen's own side of the
+   start, which the screen pulls the moment it lets go of it (its unmount,
+   the page changing hands, the student's own Back, a newer start). A pull
+   reaches the setup at once, wherever it is waiting: the peer connection,
+   its data channel, a socket and the audio pieces are released there and
+   then, the wait rejects with LiveStartCancelled, and a session that had
+   already been created is ended at the Worker. The question stays exactly
+   as it was, and every step and every callback asks BOTH: the handle for a
+   let-go that reached the screen, the question for one that did not.
+
+   watchStart puts the two together for one setup, and is what the setup
+   functions use.
+
    Pure: no browser globals, so tests/live-start-cancel.test.ts uses it as is. */
 
 /** Asked by the setup before each step that could start a voice session.
     True: go on. */
 export type MayContinue = () => boolean;
 
-/** What a session-opening function rejects with when its MayContinue said no
-    before the voice session was created (or, on the paid path, before it was
-    used). Everything the setup had made has been let go of and nothing more
-    was sent. Never shown to a student. */
+/** What a session-opening function rejects with when its MayContinue said no,
+    or its StartHandle was pulled, before the voice session was created (or,
+    on the paid path, before it was used). Everything the setup had made has
+    been let go of, nothing more was sent, and a paid session already created
+    has been ended at the Worker. Never shown to a student. */
 export class LiveStartCancelled extends Error {
   constructor() {
     super('The examiner session was not opened: its start was let go.');
@@ -68,4 +92,153 @@ export function mayGoOn(mayContinue: MayContinue | undefined): boolean {
 /** Throws LiveStartCancelled when the answer is no. */
 export function continueOrCancel(mayContinue: MayContinue | undefined): void {
   if (!mayGoOn(mayContinue)) throw new LiveStartCancelled();
+}
+
+/* ── The handle (finding R2E-01) ──────────────────────────────────────── */
+
+/** The screen's side of a start: pulled by the screen itself the moment it
+    lets go of the start. The examiner's own comes from its start numbers
+    (guardSessionStart in src/components/speaking-attempt-owner.ts), so every
+    teardown that moves the number on pulls it. */
+export interface StartHandle {
+  /** Has the screen let go of this start? */
+  letGo(): boolean;
+  /** Runs `release` once, the moment the screen lets go (at once when it
+      already has). Returns a function that takes it back, for a setup that
+      has finished and handed its connection over. */
+  onLetGo(release: () => void): () => void;
+}
+
+/** A handle pulled by hand: for a caller with no start numbers of its own,
+    and for the tests. */
+export function startHandle(): StartHandle & { pull(): void } {
+  let pulled = false;
+  const releases = new Set<() => void>();
+  return {
+    letGo: () => pulled,
+    onLetGo(release) {
+      if (pulled) {
+        runRelease(release);
+        return () => {};
+      }
+      releases.add(release);
+      return () => {
+        releases.delete(release);
+      };
+    },
+    pull() {
+      if (pulled) return;
+      pulled = true;
+      const waiting = [...releases];
+      releases.clear();
+      waiting.forEach(runRelease);
+    },
+  };
+}
+
+/** Letting go must never throw into whoever pulled. */
+function runRelease(release: () => void): void {
+  try {
+    release();
+  } catch {
+    /* a release that failed has nothing more to let go of */
+  }
+}
+
+/** One setup's view of its start: the question and the handle together. */
+export interface StartWatch {
+  /** May the setup go on? No once the handle has been pulled, or when the
+      question says no. Asking runs the question. */
+  going(): boolean;
+  /** Throws LiveStartCancelled on a no. */
+  check(): void;
+  /** Waits for `pending`, but rejects with LiveStartCancelled the moment the
+      handle is pulled, without waiting for it. A `pending` that fails after
+      that is swallowed: nobody is waiting for it any more. */
+  wait<T>(pending: Promise<T>): Promise<T>;
+  /** Runs `release` the moment the handle is pulled (at once when it
+      already has been), while the setup is still under way. */
+  onLetGo(release: () => void): void;
+  /** The setup is over (handed over, or failed): the handle is no longer
+      listened to, and a later pull releases nothing of this setup. */
+  done(): void;
+}
+
+export function watchStart(mayContinue?: MayContinue, handle?: StartHandle): StartWatch {
+  let pulled = false;
+  let finished = false;
+  const releases: Array<() => void> = [];
+  const waiters = new Set<() => void>();
+
+  const onPull = (): void => {
+    if (finished || pulled) return;
+    pulled = true;
+    /* What the setup made is released FIRST, so whatever resumes after the
+       rejection below finds it closed already. */
+    releases.splice(0).forEach(runRelease);
+    const waiting = [...waiters];
+    waiters.clear();
+    waiting.forEach(runRelease);
+  };
+  const takeBack = handle ? handle.onLetGo(onPull) : () => {};
+
+  const going = (): boolean => {
+    if (pulled) return false;
+    if (handle) {
+      let letGo = true;
+      try {
+        letGo = handle.letGo();
+      } catch {
+        /* a handle that cannot say counts as pulled */
+      }
+      if (letGo) {
+        onPull();
+        return false;
+      }
+    }
+    return mayGoOn(mayContinue);
+  };
+
+  return {
+    going,
+    check() {
+      if (!going()) throw new LiveStartCancelled();
+    },
+    wait<T>(pending: Promise<T>): Promise<T> {
+      return new Promise<T>((resolve, reject) => {
+        const cancel = (): void => reject(new LiveStartCancelled());
+        if (pulled) {
+          pending.catch(() => {});
+          cancel();
+          return;
+        }
+        waiters.add(cancel);
+        pending.then(
+          (value) => {
+            waiters.delete(cancel);
+            resolve(value);
+          },
+          (error: unknown) => {
+            waiters.delete(cancel);
+            reject(error);
+          },
+        );
+      });
+    },
+    onLetGo(release) {
+      if (finished) return;
+      if (pulled) {
+        runRelease(release);
+        return;
+      }
+      releases.push(release);
+    },
+    done() {
+      if (finished) return;
+      finished = true;
+      releases.length = 0;
+      waiters.clear();
+      takeBack();
+    },
+  };
 }
