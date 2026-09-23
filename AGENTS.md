@@ -236,6 +236,17 @@ recommend,prompt,assessment,ru}.ts`. Browser-only: `client.ts`,
   calibration scenarios the same way; results in `docs/MR-EZ-CALIBRATION.md`.
   Never present a simulated reply as evidence that the live integration works.
 
+## Three-day trial (built 2026-09-23, switched off)
+
+The trial is behind one setting: `PUBLIC_ACCESS_MODE=trial` on the site and
+`ACCESS_MODE=trial` on each Worker (all four are `"open"` today). Anything else is
+the open site, unchanged. The server-owned rules are the proposed migration
+`supabase/migrations/2026-09-23-trial.sql` (not applied); shared code is in
+`src/lib/trial/`, screens in `src/components/trial/`. The gate on pages is display
+only (static hosting); paid AI is protected by the Workers. Read
+`docs/TRIAL-IMPLEMENTATION.md` before changing any of it, including the open decisions
+it lists. Local run: `tools/mr-ez-dev-server.mjs --trial` (free, real migration in PGlite).
+
 ## Content-automation tools (WAT: Workflows, Agents, Tools)
 
 `tools/` and `workflows/` are a separate subsystem from the site: Python scripts that generate

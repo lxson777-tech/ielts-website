@@ -1,0 +1,10 @@
+---
+/* Full access: the approved prices, with payment plainly not connected.
+   Kept out of search until purchase terms are approved. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TrialPlans from '../components/trial/TrialPlans';
+---
+
+<BaseLayout noindex title="Full access · IELTS is EZ" description="Full access to the IELTS is EZ course.">
+  <TrialPlans client:load />
+</BaseLayout>

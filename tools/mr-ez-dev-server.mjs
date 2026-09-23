@@ -57,6 +57,31 @@
  * Failure states can be forced with query flags on the tutor URL, so the
  * loading, retry, unavailable and limit-reached screens can all be seen:
  *   ?fail=unavailable   ?fail=busy   ?fail=limit   ?slow=3000
+ *
+ * THE THREE-DAY TRIAL (--trial, under the TypeScript loader):
+ *
+ *   node --import ./tests/ts-extension-loader.mjs tools/mr-ez-dev-server.mjs --trial
+ *
+ *   Still free: no model is called and no key is read. Three things change.
+ *   - /rest/v1/rpc/trial_* is answered by the REAL trial migration
+ *     (supabase/migrations/2026-09-23-trial.sql) running in PGlite
+ *     (tools/trial-db.mjs), as the signed-in student, as anon, or as the
+ *     service role, exactly as PostgREST would call it.
+ *   - /tutor is answered by the REAL Mr EZ Worker handler with
+ *     ACCESS_MODE=trial and TUTOR_SIMULATE=on: its auth, trial allowances,
+ *     reservations, idempotency and persistence all run for real, and every
+ *     reply is flagged simulated.
+ *   - /grade-essay is answered by the REAL essay grader handler with
+ *     ACCESS_MODE=trial. Its call to the model is answered here with a fixed
+ *     assessment whose every comment says SIMULATED, so a trial Writing test
+ *     can be clicked through end to end. It is not a grade.
+ *   Point the site at it with PUBLIC_ACCESS_MODE=trial and
+ *   PUBLIC_GRADER_URL=http://127.0.0.1:8787/grade-essay (see
+ *   docs/TRIAL-IMPLEMENTATION.md). Local helpers: POST /__trial/rewind
+ *   {email, minutes} ages one student's trial; GET /__trial/state shows the
+ *   trial tables. POST /__force {fail: 'grader'} makes the next essay grades
+ *   fail; {fail: 'save-turn', times: 2} makes Mr EZ's next two saves fail after
+ *   his answer (two, because the site retries a failed request once).
  */
 
 import { createServer } from 'node:http';
@@ -67,6 +92,13 @@ import { fileURLToPath } from 'node:url';
 
 const PORT = Number(process.env.MR_EZ_DEV_PORT ?? 8787);
 const LIVE = process.argv.includes('--live');
+const TRIAL = process.argv.includes('--trial');
+if (LIVE && TRIAL) {
+  console.error('--trial runs simulated only, so it never spends. Drop --live.');
+  process.exit(1);
+}
+/** The trial migration in PGlite, only with --trial. */
+let trialDb = null;
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* ── In-memory database ────────────────────────────────────────────────── */
@@ -182,6 +214,7 @@ async function handleAuth(req, res, url) {
     const existing = db.users.get(email);
     const user = existing ?? { id: randomUUID(), email, password: body.password };
     db.users.set(email, user);
+    if (trialDb) await trialDb.addUser(user.id, email);
     return send(res, 200, session(user));
   }
 
@@ -229,8 +262,30 @@ function isServiceRole(req) {
   return (req.headers.apikey ?? '') === 'local-service-role-key';
 }
 
+/* PostgREST's /rest/v1/rpc/<function>, answered by the real trial migration
+   in PGlite. The caller's role is decided exactly as Supabase decides it:
+   the service key is the service role, a student's token is that student,
+   anything else is anon. The database's own grants then refuse what that
+   role may not call. */
+async function handleRpc(req, res, fn) {
+  if (!trialDb) return send(res, 404, { message: 'the trial database is off: start this server with --trial' });
+  const args = await readBody(req);
+  const caller = userByToken(req);
+  const opts = isServiceRole(req)
+    ? { role: 'service_role' }
+    : caller
+      ? { role: 'authenticated', userId: caller }
+      : { role: 'anon' };
+  try {
+    return send(res, 200, await trialDb.rpc(fn, args, opts));
+  } catch (err) {
+    return send(res, err.status ?? 400, { message: err.message, code: err.code });
+  }
+}
+
 async function handleRest(req, res, url) {
   const table = url.pathname.replace('/rest/v1/', '');
+  if (table.startsWith('rpc/')) return handleRpc(req, res, table.slice(4));
   const where = filters(url);
   const caller = userByToken(req);
   const service = isServiceRole(req);
@@ -447,6 +502,11 @@ async function handleRest(req, res, url) {
     } else if (table === 'mr_ez_messages') {
       db.messages.push(...stamped);
     } else if (table === 'mr_ez_turns') {
+      if (db.forcedFailure === 'save-turn') {
+        db.forcedTimes = (db.forcedTimes || 1) - 1;
+        if (db.forcedTimes <= 0) db.forcedFailure = null;
+        return send(res, 500, { message: 'forced save failure (local)' });
+      }
       db.turns.push(...stamped);
     } else if (table.startsWith('mr_ez_recommendations')) {
       for (const item of stamped) db.recommendations.set(item.user_id, item);
@@ -927,6 +987,14 @@ async function handleTutor(req, res, url) {
   for await (const chunk of req) bodyChunks.push(chunk);
   const bodyText = Buffer.concat(bodyChunks).toString('utf8') || '{}';
 
+  if (TRIAL && liveHandler) {
+    // The real Worker handler in trial mode, simulated: its trial allowances
+    // run against the real migration, and no model is called.
+    const resp = await liveHandler(bodyText, req.headers.authorization);
+    const text = await resp.text();
+    return send(res, resp.status, text ? JSON.parse(text) : null);
+  }
+
   if (LIVE && liveHandler) {
     // The real Worker handler answers, using the real model. Its own auth,
     // ownership, limits, idempotency and persistence run against this file's
@@ -1108,10 +1176,13 @@ const STUB_SUPABASE = 'https://stub.invalid';
    site does (src/pages/data/tests/[id].json.ts), so the debrief and item tasks
    run against real question content with no network beyond this machine.
    Start the site separately with `npm run dev`. */
-const LIVE_SITE_DATA_URL = 'http://localhost:4321/ielts-website/data/tests';
+/* MR_EZ_SITE_ORIGIN moves both of these when the site runs on another port
+   (a second checkout's dev server, for instance). */
+const SITE_ORIGIN = process.env.MR_EZ_SITE_ORIGIN || 'http://localhost:4321';
+const LIVE_SITE_DATA_URL = `${SITE_ORIGIN}/ielts-website/data/tests`;
 /* And the published lesson blocks, which contextual help is grounded in.
    Same Astro dev server, same reasoning. */
-const LIVE_LESSON_BLOCKS_URL = 'http://localhost:4321/ielts-website/data/lesson-blocks';
+const LIVE_LESSON_BLOCKS_URL = `${SITE_ORIGIN}/ielts-website/data/lesson-blocks`;
 
 async function initLive() {
   const { createHandler } = await import('../workers/mr-ez/src/index.ts');
@@ -1188,6 +1259,117 @@ async function initLive() {
     );
 }
 
+/* -- Trial bridge (--trial) -----------------------------------------------
+   The real Mr EZ Worker and the real essay grader, both with
+   ACCESS_MODE=trial, both answering from this file's store and the trial
+   migration in PGlite. Nothing leaves this machine: the tutor is simulated,
+   and the grader's model call is answered here with a labelled SIMULATED
+   assessment. */
+
+let essayHandler = null;
+
+function simulatedAssessment() {
+  const note = 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.';
+  const criterion = { evidence: note, band: 6, comment: note, tip: note };
+  return {
+    criteria: { taskResponse: criterion, coherenceCohesion: criterion, lexicalResource: criterion, grammaticalRange: criterion },
+    moments: [{ quote: 'SIMULATED', note }],
+    strengths: [note],
+    improvements: [note],
+  };
+}
+
+function bridgeFetch({ onModel }) {
+  const realFetch = globalThis.fetch;
+  return async (input, init) => {
+    const url = typeof input === 'string' ? input : (input.url ?? String(input));
+    if (url.startsWith('https://api.openai.com/')) return onModel(input, init);
+    if (url.startsWith(LIVE_SITE_DATA_URL) || url.startsWith(LIVE_LESSON_BLOCKS_URL)) return realFetch(input, init);
+    if (!url.startsWith(STUB_SUPABASE)) throw new Error('unexpected fetch to ' + url);
+    const parsed = new URL(url);
+    const lower = {};
+    for (const [k, v] of Object.entries(init && init.headers ? init.headers : {})) lower[k.toLowerCase()] = v;
+    const fakeReq = {
+      method: (init && init.method) || 'GET',
+      headers: lower,
+      [Symbol.asyncIterator]: async function* () {
+        if (init && init.body) yield Buffer.from(String(init.body));
+      },
+    };
+    return await new Promise((done) => {
+      const fakeRes = {
+        writeHead(status, h) { this._status = status; this._headers = h; },
+        end(body) {
+          done(new Response(body || null, { status: this._status || 200, headers: this._headers || {} }));
+        },
+      };
+      if (parsed.pathname.startsWith('/auth/v1')) void handleAuth(fakeReq, fakeRes, parsed);
+      else void handleRest(fakeReq, fakeRes, parsed);
+    });
+  };
+}
+
+async function initTrial() {
+  const { createTrialDb } = await import('./trial-db.mjs');
+  trialDb = await createTrialDb();
+  const { createHandler } = await import('../workers/mr-ez/src/index.ts');
+  const { createHandler: createEssayHandler } = await import('../workers/grade-essay/src/index.ts');
+
+  const noModel = async () => {
+    throw new Error('trial stand-in: the tutor is simulated and must not call a model');
+  };
+  const tutor = createHandler({ now: () => new Date(), uuid: () => randomUUID(), fetch: bridgeFetch({ onModel: noModel }) });
+  const tutorEnv = {
+    ALLOWED_ORIGINS: 'http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322',
+    SUPABASE_URL: STUB_SUPABASE,
+    SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+    SITE_DATA_URL: LIVE_SITE_DATA_URL,
+    LESSON_BLOCKS_URL: LIVE_LESSON_BLOCKS_URL,
+    TUTOR_SIMULATE: 'on',
+    ACCESS_MODE: 'trial',
+  };
+  liveHandler = (bodyText, authHeader) =>
+    tutor(
+      new Request('http://localhost:4321/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:4321', Authorization: authHeader || '' },
+        body: bodyText,
+      }),
+      tutorEnv,
+    );
+
+  const essay = createEssayHandler({
+    fetch: bridgeFetch({
+      onModel: async () => {
+        if (db.forcedFailure === 'grader') {
+          return new Response('{}', { status: 500 });
+        }
+        return new Response(
+          JSON.stringify({ output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(simulatedAssessment()) }] }] }),
+          { status: 200 },
+        );
+      },
+    }),
+  });
+  const essayEnv = {
+    ALLOWED_ORIGINS: 'http://localhost:4321',
+    OPENAI_API_KEY: 'sk-trial-stand-in-never-used',
+    GRADING_SAMPLES: '1',
+    ACCESS_MODE: 'trial',
+    SUPABASE_URL: STUB_SUPABASE,
+    SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+  };
+  essayHandler = (bodyText, authHeader) =>
+    essay.fetch(
+      new Request('http://localhost:4321/grade-essay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:4321', Authorization: authHeader || '' },
+        body: bodyText,
+      }),
+      essayEnv,
+    );
+}
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
@@ -1197,10 +1379,43 @@ const server = createServer(async (req, res) => {
     if (url.pathname.startsWith('/auth/v1')) return await handleAuth(req, res, url);
     if (url.pathname.startsWith('/rest/v1/')) return await handleRest(req, res, url);
     if (url.pathname.startsWith('/tutor')) return await handleTutor(req, res, url);
+    if (url.pathname === '/grade-essay' && req.method === 'POST') {
+      if (!essayHandler) return send(res, 404, { message: 'the essay grader stand-in runs only with --trial' });
+      const chunks = [];
+      for await (const chunk of req) chunks.push(chunk);
+      const resp = await essayHandler(Buffer.concat(chunks).toString('utf8') || '{}', req.headers.authorization);
+      const text = await resp.text();
+      return send(res, resp.status, text ? JSON.parse(text) : null);
+    }
+    if (url.pathname === '/__trial/rewind' && req.method === 'POST') {
+      // Local only: age one student's trial, to see the ended state.
+      if (!trialDb) return send(res, 404, { message: 'start with --trial' });
+      const body = await readBody(req);
+      const user = db.users.get(String(body.email ?? '').trim().toLowerCase());
+      if (!user) return send(res, 404, { message: 'no such local user' });
+      await trialDb.rewind(user.id, Number(body.minutes) || 0);
+      return send(res, 200, { rewound: user.email, minutes: Number(body.minutes) || 0 });
+    }
+    if (url.pathname === '/__trial/state') {
+      if (!trialDb) return send(res, 404, { message: 'start with --trial' });
+      const emailOf = (id) => [...db.users.values()].find((u) => u.id === id)?.email ?? id;
+      const accounts = await trialDb.select('select user_id, started_at, ends_at, questionnaire from public.trial_accounts', [], { role: 'service_role' });
+      const usage = await trialDb.select(
+        'select user_id, kind, section, request_id, activity_id, status, reserved_at, settled_at from public.trial_usage order by reserved_at',
+        [],
+        { role: 'service_role' },
+      );
+      return send(res, 200, {
+        accounts: accounts.map((a) => ({ ...a, email: emailOf(a.user_id) })),
+        usage: usage.map((u) => ({ ...u, email: emailOf(u.user_id) })),
+      });
+    }
     if (url.pathname === '/__force') {
       const body = await readBody(req);
       db.forcedFailure = body.fail ?? null;
-      return send(res, 200, { forcedFailure: db.forcedFailure });
+      // How many requests the failure applies to; 'save-turn' only.
+      db.forcedTimes = Number(body.times) || 1;
+      return send(res, 200, { forcedFailure: db.forcedFailure, times: db.forcedTimes });
     }
     if (url.pathname === '/__state') {
       // A read-only window into the fake database, so a verification run can
@@ -1244,11 +1459,16 @@ const server = createServer(async (req, res) => {
 export { server, db };
 
 if (LIVE) await initLive();
+if (TRIAL) await initTrial();
 
 server.listen(PORT, '127.0.0.1', () => {
   console.log(`Mr EZ dev backend on http://127.0.0.1:${PORT}`);
   console.log('  Supabase stand-in : /auth/v1/*  /rest/v1/*');
-  if (LIVE) {
+  if (TRIAL) {
+    console.log('  Trial database    : /rest/v1/rpc/trial_*  (the real migration, in PGlite)');
+    console.log('  Tutor             : /tutor  (real Worker, ACCESS_MODE=trial, simulated replies)');
+    console.log('  Essay grader      : /grade-essay  (real Worker, ACCESS_MODE=trial, SIMULATED assessment)');
+  } else if (LIVE) {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');
     console.log(`  Test data         : ${LIVE_SITE_DATA_URL} (needs \`npm run dev\` running)`);

@@ -19,7 +19,12 @@ import type { GradeResult } from '../lib/writing/schema';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
 import { WRITING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { countWords } from '../lib/writing/mechanics';
-import { gradeEssay, isGraderConfigured } from '../lib/writing/grader';
+import { GraderRefusal, gradeEssay, isGraderConfigured, type TrialGrading } from '../lib/writing/grader';
+import TrialBlock from './trial/TrialBlock';
+import { useTrialTest } from './trial/useTrialTest';
+import { refreshTrial } from '../lib/trial/client';
+import { TRIAL_OFFER } from '../lib/trial/offer';
+import { getAccessToken } from '../lib/auth/session';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { getModelAnswers } from '../data/model-answers';
 import { nextInRotation } from '../lib/rotation';
@@ -95,6 +100,10 @@ const SUBMISSION_REFUSED_NOTE = nt(
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
   const { t, tn } = useT();
   const coached = variant === 'trainer';
+  /* The trial's Writing test is the checker (a trial build only; inert on
+     the open site). The practice trainer is not in the trial, and its page
+     is covered by the layout's gate. */
+  const trialTest = useTrialTest(TRIAL_OFFER.writing.testId, variant !== 'checker');
   const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
   const [essay, setEssay] = useState('');
@@ -286,8 +295,17 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     setGradingError(null);
     setOwnerNote(null);
     let at = '';
+    /* In a trial build the grader needs the student's sign-in and the id the
+       Writing test was begun under; it refuses anything else before it
+       spends. Fetched now, for the student who pressed submit. */
+    let trialGrading: TrialGrading | undefined;
+    if (trialTest.active) {
+      const token = await getAccessToken();
+      const sitting = trialTest.sittingId();
+      if (token && sitting) trialGrading = { token, sitting };
+    }
     try {
-      await runOwnedGrade(binding, () => gradeEssay({ prompt: submitted.prompt, essay: submitted.essay }), {
+      await runOwnedGrade(binding, () => gradeEssay({ prompt: submitted.prompt, essay: submitted.essay }, trialGrading), {
         keep: (graded, owner) => {
           const criteria: Record<string, number> = {};
           for (const key of Object.keys(graded.criteria)) criteria[key] = graded.criteria[key as keyof typeof graded.criteria].band;
@@ -363,7 +381,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           leaveForCurrentOwner();
         },
       });
-    } catch {
+    } catch (err) {
       if (binding.state() === 'owner-changed') {
         /* The request failed after the page moved on to somebody else. The
            essay is the submitter's only copy, so it goes back into THEIR
@@ -377,10 +395,21 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         // message rather than surfacing the raw error (which might read like a
         // permanent "not configured" state the student can't do anything about).
         setGradingError(
-          t('We could not reach the grading service. Your essay is safe on this page; try again in a minute.'),
+          err instanceof GraderRefusal
+            ? err.code === 'trial-test-used'
+              ? t('Your trial Writing test has already been graded. Your essay is safe on this page.')
+              : err.code === 'sign-in-required'
+                ? t('Sign in again to have your essay graded. Your essay is safe on this page.')
+                : t('Your trial could not accept this essay for grading. Your essay is safe on this page.')
+            : trialTest.active
+              ? t('We could not reach the grading service. Your essay is safe on this page and your Writing test has not been used; try again in a minute.')
+              : t('We could not reach the grading service. Your essay is safe on this page; try again in a minute.'),
         );
       }
     } finally {
+      // The server may have used the Writing test (a grade) or kept it (a
+      // failure). Either way the trial page should say what it now says.
+      if (trialTest.active) void refreshTrial();
       if (binding.state() !== 'cancelled') {
         gradingRef.current = false;
         setGrading(false);
@@ -440,7 +469,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
        ?type=task1|task2 the next question of that type, from the rotation
      Runs once, and only when nothing has been started yet. */
   useEffect(() => {
-    if (prompt || typeof window === 'undefined') return;
+    /* Not in a trial build: there the Writing test has to be begun on the
+       server first, which only the student's own press on Start does. */
+    if (prompt || typeof window === 'undefined' || trialTest.active) return;
     const params = new URLSearchParams(window.location.search);
     const wanted = params.get('task');
     if (wanted) {
@@ -458,6 +489,12 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     if (type === 'task1' || type === 'task2') startTask(type);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /* ── The trial: its Writing test is used, or not open to this student ──
+     Never over a grade or a report on screen. */
+  if (trialTest.block && !result && !grading) {
+    return <TrialBlock reason={trialTest.block} title="Writing Checker" section="Writing" />;
+  }
 
   /* ── 1. Start screen ── */
   if (!prompt) {
@@ -488,12 +525,30 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             ? t('A different exam-style prompt each attempt, with AI feedback on all four criteria.')
             : t('A different exam-style prompt each attempt. Just you and the question, under exam conditions.')}
         </p>
+        {trialTest.startUsesTest && (
+          <p className="choice-description">
+            {t('This is your one Writing test for the trial. It is used when your essay is graded; if grading fails, you can submit again.')}
+          </p>
+        )}
+        {trialTest.error && (
+          <p className="choice-description" role="alert">
+            {trialTest.error}
+          </p>
+        )}
         <div className="writing-choice-grid">
           {taskCards.map((card) => (
             <button
               key={card.task}
               type="button"
-              onClick={() => startTask(card.task)}
+              disabled={trialTest.busy}
+              onClick={() => {
+                /* A trial build binds the Writing test on the server before
+                   the clock starts; if that fails nothing is used. */
+                if (!trialTest.active) return startTask(card.task);
+                void trialTest.begin().then((ok) => {
+                  if (ok) startTask(card.task);
+                });
+              }}
               className="writing-choice-card group"
             >
               <span className="font-display text-lg font-extrabold">

@@ -42,6 +42,38 @@ import {
 import { MAX_MESSAGE_CHARS, type TutorMood, type TutorPlace } from '../../lib/tutor/schema';
 import { onAuthChange } from '../../lib/auth/session';
 import { BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER, chatBlocked } from './mrez-boundary';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+import { TRIAL_OFFER, isTrialLesson, isTrialSection, lessonSection, type TrialSection } from '../../lib/trial/offer';
+import { refreshTrial } from '../../lib/trial/client';
+import { useTrial } from '../../lib/trial/react';
+import { tutorAllowance } from '../../lib/trial/status';
+
+const SECTION_LABEL: Record<TrialSection, string> = {
+  reading: 'Reading',
+  listening: 'Listening',
+  writing: 'Writing',
+  speaking: 'Speaking',
+};
+
+/** In a trial build, what a question on this page is ABOUT, as the
+    reference the Worker charges it to: the trial lesson open on the page,
+    the section chosen on the trial page (sent as that section's trial
+    lesson), or the Writing test's page. Null when the page is about none of
+    them. The Worker works the section out again from this reference and
+    refuses anything outside the trial, so nothing here is trusted. */
+function trialPlace(place: TutorPlace): { place: TutorPlace; section: TrialSection } | null {
+  if (place.lessonKey && isTrialLesson(place.lessonKey)) {
+    return { place, section: lessonSection(place.lessonKey)! };
+  }
+  const chosen = typeof document !== 'undefined' ? document.body.dataset.trialSection : undefined;
+  if (isTrialSection(chosen)) {
+    return { place: { ...place, lessonKey: TRIAL_OFFER[chosen].lessonKey }, section: chosen };
+  }
+  if (place.route?.startsWith('/writing/checker')) {
+    return { place: { ...place, testId: TRIAL_OFFER.writing.testId }, section: 'writing' };
+  }
+  return null;
+}
 import { selectTutorMood } from './mrez-mood';
 
 /** Where the student is, read off the DOM the layout already labelled. */
@@ -79,6 +111,8 @@ function suggestionsFor(place: TutorPlace, t: Translator['t']): string[] {
 
 export default function MrEzPanel() {
   const { t, tn } = useT();
+  const trial = useTrial();
+  const trialMode = ACCESS_MODE === 'trial';
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ConversationState>(EMPTY_CONVERSATION);
   const [draft, setDraft] = useState('');
@@ -140,7 +174,7 @@ export default function MrEzPanel() {
   useEffect(() => {
     if (typeof MutationObserver === 'undefined') return;
     const observer = new MutationObserver(() => setPlace(readPlace()));
-    observer.observe(document.body, { attributes: true, attributeFilter: ['data-exam-running'] });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-exam-running', 'data-trial-section'] });
     return () => observer.disconnect();
   }, []);
 
@@ -171,6 +205,26 @@ export default function MrEzPanel() {
       nothing must not wear a face that says he is explaining something. */
   const blocked = chatBlocked(place);
 
+  /* The trial (a trial build only): which section a question here is
+     charged to, and what is left of it. Worked out for the screen; the
+     Worker decides again, and a refusal it sends uses nothing. */
+  const trialScope = trialMode ? trialPlace(place) : null;
+  const trialAllowance =
+    trialMode && trialScope && trial.status ? tutorAllowance(trial.status, trialScope.section, trial.now) : null;
+  const trialStop: string | null = !trialMode
+    ? null
+    : trial.phase === 'signed-out' || trial.phase === 'checking'
+      ? null
+      : !trial.status || trial.status.state === 'none'
+        ? 'no-trial'
+        : trialAllowance?.state === 'ended' || (trial.status.state === 'ended' && !trialAllowance)
+          ? 'ended'
+          : !trialScope
+            ? 'no-section'
+            : trialAllowance?.state === 'exhausted'
+              ? 'exhausted'
+              : null;
+
   /* One mood for the launcher AND the panel header, decided from facts
      about the tutor only (see mrez-mood.ts). It deliberately knows nothing
      about `open`: opening the drawer used to flip the launcher to
@@ -199,6 +253,10 @@ export default function MrEzPanel() {
       // (HELP_BLOCKED_MODES) is the real boundary and stays in place
       // independently of this check.
       if (chatBlocked(readPlace())) return;
+      /* Nothing is sent that the trial would refuse: it would use nothing,
+         but it would still be a pointless wait for the student. */
+      if (trialStop) return;
+      const scoped = trialMode ? trialPlace(readPlace()) : null;
 
       const key = idempotencyKey ?? newIdempotencyKey();
       pendingRef.current = { text: trimmed, key };
@@ -219,10 +277,11 @@ export default function MrEzPanel() {
           task: 'chat',
           message: trimmed,
           conversationId: state.conversationId ?? undefined,
-          place: readPlace(),
+          place: scoped?.place ?? readPlace(),
           idempotencyKey: key,
         });
         pendingRef.current = null;
+        if (trialMode) void refreshTrial();
         setState((s) => ({
           conversationId: reply.conversationId || s.conversationId,
           turns: [
@@ -240,6 +299,8 @@ export default function MrEzPanel() {
         }));
       } catch (err) {
         const clientError = err instanceof TutorClientError ? err : null;
+        // A trial refusal means the server's count moved on elsewhere.
+        if (trialMode && clientError?.code.startsWith('trial-')) void refreshTrial();
         setError({
           code: clientError?.code ?? 'unavailable',
           message: clientError?.message ?? t('Something went wrong. Try again in a moment.'),
@@ -254,7 +315,7 @@ export default function MrEzPanel() {
         setBusy(false);
       }
     },
-    [busy, state.conversationId, t],
+    [busy, state.conversationId, t, trialStop, trialMode],
   );
 
   const retry = useCallback(() => {
@@ -263,7 +324,8 @@ export default function MrEzPanel() {
     void send(pending.text, pending.key);
   }, [send]);
 
-  const suggestions = blocked ? [] : suggestionsFor(place, t);
+  const suggestions = blocked || trialStop ? [] : suggestionsFor(place, t);
+  const composerLocked = Boolean(trialStop);
   const remaining = MAX_MESSAGE_CHARS - draft.length;
 
   return (
@@ -278,7 +340,16 @@ export default function MrEzPanel() {
       >
         {/* The same mood whether the drawer is open or shut: see mrez-mood.ts. */}
         <MrEzAvatar mood={mood} size={42} />
-        <span className="mrez-launcher-label">{open ? t('Close Mr EZ') : t('Ask Mr EZ')}<small>{t('Your AI tutor')}</small></span>
+        <span className="mrez-launcher-label">
+          {open ? t('Close Mr EZ') : t('Ask Mr EZ')}
+          <small>
+            {trialScope && trialAllowance
+              ? trialAllowance.state === 'ended'
+                ? `${SECTION_LABEL[trialScope.section]} · ${t('Trial ended')}`
+                : `${SECTION_LABEL[trialScope.section]} · ${tn(trialAllowance.remaining, { one: '{n} message left', other: '{n} messages left' })}`
+              : t('Your AI tutor')}
+          </small>
+        </span>
       </button>
 
       <div
@@ -339,6 +410,35 @@ export default function MrEzPanel() {
           )}
           {!configured && (
             <p className="mrez-note">{unavailableReason} {t('Your next step on the dashboard still works, it just comes with a plain explanation instead of his.')}</p>
+          )}
+
+          {/* The trial's allowance, above the conversation, so the student
+              knows what a question costs before asking it. */}
+          {configured && trialMode && !blocked && (trialStop || trialAllowance) && (
+            <div className="mrez-trial-note" role="status">
+              {trialStop === 'no-trial' ? (
+                <>
+                  {t('Start your free trial to talk to Mr EZ.')} <a href={withBase('/trial')}>{t('Start my free trial')}</a>
+                </>
+              ) : trialStop === 'ended' ? (
+                <>
+                  {t('Your trial has ended, so Mr EZ cannot reply to new questions.')} <a href={withBase('/plans')}>{t('View plans')}</a>
+                </>
+              ) : trialStop === 'no-section' ? (
+                t('During your trial, Mr EZ answers questions about one section at a time. Open a trial lesson, or choose a section on your trial page.')
+              ) : trialStop === 'exhausted' && trialScope ? (
+                <>
+                  {t('You have used your five messages for {section}. The other sections have their own.', { section: SECTION_LABEL[trialScope.section] })}{' '}
+                  <a href={withBase('/plans')}>{t('See full access')}</a>
+                </>
+              ) : trialScope && trialAllowance ? (
+                t('{section}: {left} of {limit} messages left. Only answered messages count.', {
+                  section: SECTION_LABEL[trialScope.section],
+                  left: trialAllowance.remaining,
+                  limit: trialAllowance.limit,
+                })
+              ) : null}
+            </div>
           )}
 
           {configured && signedIn === false && !blocked && (
@@ -424,7 +524,7 @@ export default function MrEzPanel() {
                   ? t('Ask Mr EZ…')
                   : t('Mr EZ is not available on this build')
             }
-            disabled={!configured || busy || signedIn === false || blocked}
+            disabled={!configured || busy || signedIn === false || blocked || composerLocked}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -436,7 +536,7 @@ export default function MrEzPanel() {
           <button
             type="submit"
             className="mrez-send"
-            disabled={!configured || busy || !draft.trim() || signedIn === false || blocked}
+            disabled={!configured || busy || !draft.trim() || signedIn === false || blocked || composerLocked}
           >
             <span className="sr-only">{t('Send')}</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

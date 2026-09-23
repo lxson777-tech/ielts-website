@@ -81,6 +81,7 @@ import {
   type LessonHelpWireRequest,
   type ProposeNextWireReply,
   type ProposeNextWireRequest,
+  type TrialUsageNote,
   type TutorErrorCode,
   type TutorRecommendation,
   type TutorReply,
@@ -112,6 +113,18 @@ import { readUnit, unitFingerprint, unitFallbackText, type UnitFacts, type UnitN
 import { isSiteTest, resolveItems, summariseByType, type SiteTest } from '../../../src/lib/tutor/test-items';
 import { formatDate, tutorCount, tutorText } from '../../../src/lib/tutor/ru';
 import { buildCourse, courseLessonCount } from '../../../src/lib/course';
+import { parseAccessMode } from '../../../src/lib/trial/offer';
+import {
+  TrialRefusal,
+  TrialServiceError,
+  refusal,
+  releaseUse,
+  reserveTutorMessage,
+  serviceRpc,
+  settleUse,
+  tutorScope,
+  type TutorScopeInput,
+} from '../../../src/lib/trial/gate';
 import type { Locale } from '../../../src/lib/i18n/locale';
 import type { ProgressV1 } from '../../../src/lib/progress';
 import type { SavedPlan } from '../../../src/lib/study-plan';
@@ -217,6 +230,11 @@ export interface Env {
       production: the site shows a "simulated" badge whenever it is on, but
       the honest place to keep it off is here. */
   TUTOR_SIMULATE?: string;
+  /** 'trial' switches on the three-day trial's allowances (five answered
+      requests per section, only about what the trial includes; see
+      src/lib/trial/gate.ts and supabase/migrations/2026-09-23-trial.sql).
+      Anything else, including unset, is today's open site. */
+  ACCESS_MODE?: string;
 }
 
 export interface Deps {
@@ -305,6 +323,10 @@ const STATUS_FOR: Record<TutorErrorCode, number> = {
   'not-found': 404,
   unavailable: 503,
   busy: 429,
+  'trial-required': 403,
+  'trial-ended': 403,
+  'trial-allowance-used': 429,
+  'trial-not-included': 403,
 };
 
 function fail(code: TutorErrorCode, message: string, cors: Record<string, string>, retryAfter?: number): Response {
@@ -1704,6 +1726,9 @@ export function createHandler(deps: Deps) {
              number rather than the conversation one. */
           helpPerDay: intVar(env.TUTOR_MAX_HELP_PER_USER_PER_DAY, LEARNING_AI_DEFAULT_CAPS.helpPerUserPerDay),
           configured: missingConfig(env).length === 0,
+          /* So the site can tell a trial Worker from an open one without
+             spending a turn. */
+          accessMode: parseAccessMode(env.ACCESS_MODE),
         },
         200,
         cors,
@@ -1731,16 +1756,49 @@ export function createHandler(deps: Deps) {
          runLearningTurn), so they are parsed and answered separately;
          everything that protects a turn is shared, not copied. */
       if (isRecord(body) && isLearningTask(body.task)) {
-        return json(await runLearningTurn(deps, env, userId, parseLearningRequest(body)), 200, cors);
+        const learningReq = parseLearningRequest(body);
+        const reply = await withTrial(
+          deps,
+          env,
+          userId,
+          learningReq,
+          () => runLearningTurn(deps, env, userId, learningReq),
+          learningAnswered,
+          () => readLearningCache(deps, env, userId, learningCacheKeyFor(learningReq)),
+        );
+        return json(reply, 200, cors);
       }
 
       const req = parseTutorRequest(body);
 
-      const reply = await runTurn(deps, env, userId, req);
+      const reply = await withTrial(
+        deps,
+        env,
+        userId,
+        req,
+        () => runTurn(deps, env, userId, req),
+        () => true,
+        () => storedTurnReply(deps, env, userId, req.idempotencyKey),
+      );
       return json(reply, 200, cors);
     } catch (err) {
       if (err instanceof TutorRequestError) {
         return fail(err.code, err.message, cors, err.code === 'busy' ? 10 : undefined);
+      }
+      if (err instanceof TrialRefusal) {
+        // The same request already being answered is "busy": the client
+        // retries once with the same key, and by then it is a free replay.
+        if (err.code === 'trial-in-flight') return fail('busy', err.message, cors, 3);
+        const code: TutorErrorCode =
+          err.code === 'trial-required' || err.code === 'trial-ended' || err.code === 'trial-allowance-used'
+            ? err.code
+            : 'trial-not-included';
+        return fail(code, err.message, cors);
+      }
+      if (err instanceof TrialServiceError) {
+        // Fail closed, like every other allowance check in this file.
+        console.error('mr-ez: trial allowance check failed', err.message);
+        return fail('unavailable', 'Mr EZ cannot check your trial right now. Try again shortly.', cors);
       }
       if (err instanceof SupabaseError) {
         // Fail closed. A limits or ownership query we could not run is not a
@@ -1752,6 +1810,100 @@ export function createHandler(deps: Deps) {
       return fail('unavailable', 'Something went wrong. Try again in a moment.', cors);
     }
   };
+}
+
+/* ── The trial ─────────────────────────────────────────────────────────────
+   With ACCESS_MODE=trial every answered request is charged to one section's
+   five-message allowance (supabase/migrations/2026-09-23-trial.sql). The
+   order is the whole point:
+
+     1. work out the section from what the request is ABOUT (a trial lesson,
+        a trial test, one of the student's own results), never from a label,
+        and refuse anything the trial does not include;
+     2. reserve one message in the database, before anything is fetched or
+        spent, which is where "five" is decided for every tab and device at
+        once;
+     3. answer exactly as the open site would;
+     4. settle the message if a real answer went back, release it if the
+        request failed or the answer was the deterministic fallback.
+
+   A retry re-uses the request's idempotency key, so a retry after a failure
+   re-reserves the same row rather than taking a second one, and a retry
+   after a success is served the stored answer for nothing. A success is
+   settled here, on the server, so a browser closing after the answer does
+   not give the message back. */
+
+type WithTrialNote<T> = T & { trial?: TrialUsageNote };
+
+async function withTrial<T extends { cached?: boolean }>(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  req: TutorScopeInput & { idempotencyKey?: string },
+  run: () => Promise<T>,
+  answered: (reply: T) => boolean,
+  stored: () => Promise<T | null>,
+): Promise<WithTrialNote<T>> {
+  if (parseAccessMode(env.ACCESS_MODE) !== 'trial') return run();
+
+  const scope = tutorScope(req);
+  if (!scope) throw refusal('trial-not-included');
+  const requestId = req.idempotencyKey;
+  if (!requestId) throw new TutorRequestError('bad-request', 'A request id is required.');
+
+  const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+  const reservation = await reserveTutorMessage(rpc, userId, scope, requestId);
+  const note = (used: number): TrialUsageNote => ({ section: scope.section, used, limit: reservation.limit });
+
+  if (reservation.replay) {
+    /* Already answered and counted. The stored answer, or nothing: a re-used
+       key must never buy a fresh answer for free. */
+    const previous = await stored();
+    if (!previous) throw new TutorRequestError('bad-request', 'That request was already answered.');
+    return { ...previous, cached: true, trial: note(reservation.used) };
+  }
+
+  let reply: T;
+  try {
+    reply = await run();
+  } catch (err) {
+    await releaseUse(rpc, userId, 'tutor', requestId).catch(() => {
+      /* Not released now, it stops counting after five minutes anyway. */
+      console.error('mr-ez: could not release a trial message after a failure');
+    });
+    throw err;
+  }
+
+  const counted = answered(reply) && !reply.cached;
+  try {
+    if (counted) await settleUse(rpc, userId, 'tutor', requestId);
+    else await releaseUse(rpc, userId, 'tutor', requestId);
+  } catch {
+    /* The student has their answer either way. An unsettled reservation
+       stops counting after five minutes, so this errs towards the student. */
+    console.error('mr-ez: could not settle a trial message');
+  }
+  return { ...reply, trial: note(counted ? reservation.used : Math.max(0, reservation.used - 1)) };
+}
+
+/** Whether a learning reply was a real (or, locally, simulated) answer
+    rather than the deterministic fallback, which is not charged. */
+function learningAnswered(reply: LearningReply): boolean {
+  if (reply.task === 'evaluate-practice') return reply.judged || !reply.live;
+  return !/reply rejected/.test(reply.model);
+}
+
+/** The stored reply for one idempotency key, however old. Used only for a
+    trial replay, which the database has already confirmed was answered. */
+async function storedTurnReply(deps: Deps, env: Env, userId: string, key: string | undefined): Promise<TutorReply | null> {
+  if (!key) return null;
+  const rows = await restGet(
+    deps,
+    env,
+    `mr_ez_turns?user_id=eq.${userId}&idempotency_key=eq.${encodeURIComponent(key)}&select=reply`,
+  );
+  const stored = rows[0];
+  return isRecord(stored) && isRecord(stored.reply) ? (stored.reply as unknown as TutorReply) : null;
 }
 
 async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest): Promise<TutorReply> {

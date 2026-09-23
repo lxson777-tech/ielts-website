@@ -2,12 +2,24 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import CourseGate from '../components/CourseGate';
+import { TrialLibraryPage } from '../components/trial/TrialHome';
+import { ACCESS_MODE } from '../lib/trial/mode';
+import { trialLibrary } from '../lib/trial/library';
+import { ALL_TESTS } from '../data/tests';
+
+/* A trial build shows the library with only the trial's lessons open. The
+   personal course, its intake and its pace wait for full access. */
+const trial = ACCESS_MODE === 'trial';
+const sections = trial ? trialLibrary((id) => ALL_TESTS.find((test) => test.id === id)?.title) : [];
 ---
 
 <BaseLayout
   title="Start Here · The IELTS Course"
   description="Work through every lesson on the site in the right order. Tell us your target band and test date, and the course sets your pace, tracks what you've finished, and always shows the next lesson."
 >
+  {trial ? (
+    <TrialLibraryPage client:load sections={sections} />
+  ) : (
   <div class="platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <SectionHeading
       eyebrow="Start Here"
@@ -16,6 +28,7 @@ import CourseGate from '../components/CourseGate';
     />
     <CourseGate client:load />
   </div>
+  )}
 </BaseLayout>
 
 <style is:global>

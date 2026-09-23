@@ -13,6 +13,8 @@ import {
   scoredQuestionIds,
 } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
+import TrialBlock from './trial/TrialBlock';
+import { useTrialTest } from './trial/useTrialTest';
 import {
   activeSession,
   currentSessionOwner,
@@ -269,6 +271,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   const TOTAL = numbered.length;
   const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
   const isRetake = !!onFinish;
+  /* The three-day trial, in a trial build only (useTrialTest is inert on
+     the open site). A nested retake of a submitted paper and a mock leg are
+     not the section's test: the retake reviews a paper already sat, and the
+     mock page is gated as a whole. */
+  const trialTest = useTrialTest(test.id, isRetake || !!mockSitting);
 
   /* WHERE THIS PAPER'S SITTING IS KEPT (R2B-03). A leg of a mock sitting is
      kept inside that sitting, found by its identity; any other paper uses the
@@ -666,6 +673,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     // its result inside its own mock sitting here, which is what picking
     // that sitting up later counts as done (R2B-03).
     sittingStore.finish(sittingOwnerRef.current, outcome);
+    // The trial's Reading or Listening test is used now (a no-op on the open
+    // site). Reported in the background; the result above is already saved.
+    trialTest.finish();
     // onFinish itself is wired to the score modal's "Back to results" button,
     // not called here — the retake still shows its own score/review first.
   }
@@ -912,9 +922,45 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     );
   }
 
+  /* ── The trial: a paper it does not open, or not yet ──
+     Never while a result is on screen: submitting uses the test, and the
+     student must still see what they just did. */
+  if (trialTest.block && !submitted) {
+    return (
+      <TrialBlock
+        reason={trialTest.block}
+        title={test.title}
+        section={test.skill === 'listening' ? 'Listening' : 'Reading'}
+        variant="full"
+      />
+    );
+  }
+
   /* ── Instructions gate — timer does not run until Start ── */
   if (!started) {
-    return <InstructionsScreen test={test} hubUrl={hubUrl} onStart={start} attemptKind={attemptKind} />;
+    /* In a trial build the server binds the section's one test to this
+       paper BEFORE the timer starts; if that fails nothing is used and the
+       button simply works again. */
+    const onStart = trialTest.active
+      ? () => {
+          void trialTest.begin().then((ok) => {
+            if (ok) start();
+          });
+        }
+      : start;
+    return (
+      <InstructionsScreen
+        test={test}
+        hubUrl={hubUrl}
+        onStart={onStart}
+        attemptKind={attemptKind}
+        trial={
+          trialTest.active
+            ? { usesTest: trialTest.startUsesTest, busy: trialTest.busy, error: trialTest.error }
+            : undefined
+        }
+      />
+    );
   }
 
   return (
@@ -2708,11 +2754,15 @@ function InstructionsScreen({
   hubUrl,
   onStart,
   attemptKind,
+  trial,
 }: {
   test: PracticeTest;
   hubUrl: string;
   onStart: () => void;
   attemptKind: 'full' | 'drill';
+  /** Present in a trial build: whether starting uses the section's one test,
+      whether the server is being asked, and why it last said no. */
+  trial?: { usesTest: boolean; busy: boolean; error: string | null };
 }) {
   const { t, tn } = useT();
   const listening = test.skill === 'listening';
@@ -2836,6 +2886,19 @@ function InstructionsScreen({
           </li>
         </ul>
 
+        {trial?.usesTest && (
+          <p className="mt-6 rounded-card bg-surface-alt p-3 text-sm text-ink">
+            {test.skill === 'listening'
+              ? t('Starting uses your one Listening test for this trial. If something goes wrong before it starts, nothing is used.')
+              : t('Starting uses your one Reading test for this trial. If something goes wrong before it starts, nothing is used.')}
+          </p>
+        )}
+        {trial?.error && (
+          <p className="mt-4 text-sm text-ink" role="alert">
+            {trial.error}
+          </p>
+        )}
+
         <div className="mt-8 flex items-center justify-between gap-3">
           <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
             {t('Back')}
@@ -2843,9 +2906,11 @@ function InstructionsScreen({
           <button
             type="button"
             onClick={onStart}
-            className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
+            disabled={trial?.busy}
+            aria-busy={trial?.busy || undefined}
+            className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover disabled:cursor-wait disabled:opacity-70"
           >
-            {t('Start test')}
+            {trial?.busy ? t('Starting…') : t('Start test')}
           </button>
         </div>
       </div>

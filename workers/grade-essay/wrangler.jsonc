@@ -7,6 +7,10 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
+    // "trial" requires sign-in and the student's begun trial Writing test, and
+    // then also needs SUPABASE_URL (var) and SUPABASE_SERVICE_ROLE_KEY (secret).
+    // Anything else is today's open grader. Leave "open" until the offer is on.
+    "ACCESS_MODE": "open",
     // 'openai' (default) or 'gemini'. Flip to 'gemini' as a one-variable
     // rollback if the OpenAI path misbehaves; GEMINI_API_KEY must be set too.
     "GRADER_PROVIDER": "openai",

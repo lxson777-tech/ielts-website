@@ -273,6 +273,8 @@ export interface TutorReply {
   cached?: boolean;
   /** What this turn cost and how much headroom is left today. */
   usage?: TutorUsage;
+  /** The section's trial allowance after this reply, on a trial Worker. */
+  trial?: TrialUsageNote;
 }
 
 export interface TutorUsage {
@@ -297,7 +299,21 @@ export type TutorErrorCode =
   | 'bad-request'
   | 'not-found' // conversation or attempt isn't theirs / doesn't exist
   | 'unavailable' // upstream model or database down
-  | 'busy'; // upstream rate limit, worth retrying
+  | 'busy' // upstream rate limit, worth retrying
+  /* The trial (src/lib/trial/gate.ts), only when the Worker runs with
+     ACCESS_MODE=trial. None of these is ever returned by the open site. */
+  | 'trial-required' // signed in, no trial started on this account
+  | 'trial-ended' // the 72 hours are over
+  | 'trial-allowance-used' // this section's five messages are used
+  | 'trial-not-included'; // about something the trial does not include
+
+/** How much of one section's trial allowance is used, after this reply.
+    Present only on replies from a Worker running the trial. */
+export interface TrialUsageNote {
+  section: 'reading' | 'listening' | 'writing' | 'speaking';
+  used: number;
+  limit: number;
+}
 
 export interface TutorError {
   error: string;
@@ -580,6 +596,8 @@ export type LearningAiRequest = LessonHelpWireRequest | EvaluatePracticeWireRequ
 /** What comes back. Each one is the contract's reply plus the few fields a
     surface needs to record what happened honestly. */
 export interface LessonHelpWireReply extends LessonHelpReply {
+  /** The section's trial allowance after this reply, on a trial Worker. */
+  trial?: TrialUsageNote;
   /** The kind of help actually given, which is not always the kind asked
       for: an explanation before any attempt is served as a hint. */
   kind: LessonHelpKind;

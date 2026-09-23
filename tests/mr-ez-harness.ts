@@ -110,6 +110,16 @@ export interface FakeState {
       when `learningTables` is 'present', like the other two, and an empty
       list is a student who has synced no companion document yet. */
   learningCompanions?: { user_id: string; kind: string; data: unknown }[];
+  /** The trial's database functions (supabase/migrations/2026-09-23-trial.sql)
+      running for real in PGlite (tools/trial-db.mjs). When present,
+      /rest/v1/rpc/<fn> is answered by it, as the service role when the call
+      carries the service key and as anon otherwise. Absent, an rpc call
+      is unexpected, which is what the open site must never make. */
+  trialDb?: {
+    rpc(fn: string, args: Record<string, unknown>, opts: { role: 'anon' | 'service_role' }): Promise<unknown>;
+  };
+  /** Make every trial rpc fail, to prove the Worker fails closed. */
+  trialDbDown?: boolean;
 }
 
 export interface Recorder {
@@ -208,6 +218,18 @@ export function makeDeps(state: FakeState, recorder: Recorder) {
         return new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } });
       }
       return json(body);
+    }
+
+    if (url.startsWith(`${SUPABASE_URL}/rest/v1/rpc/`) && state.trialDb) {
+      if (state.trialDbDown) return new Response('{}', { status: 503 });
+      const fn = url.slice(`${SUPABASE_URL}/rest/v1/rpc/`.length).split('?')[0];
+      const role = headers.apikey === SERVICE_KEY ? 'service_role' : 'anon';
+      try {
+        return json(await state.trialDb.rpc(fn, JSON.parse(String(init?.body ?? '{}')), { role }));
+      } catch (err) {
+        const status = (err as { status?: number }).status ?? 400;
+        return json({ message: (err as Error).message }, status);
+      }
     }
 
     if (url.startsWith(`${SUPABASE_URL}/rest/v1/`)) return rest(url, method, init, headers, state);

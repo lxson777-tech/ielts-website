@@ -65,7 +65,12 @@ const bodyHtml = LESSON_BODIES[`../content/lesson-bodies/${slug}.html`];
 const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id) : [];
 ---
 
-<BaseLayout title={`${lesson.title} · IELTS Portal`} description={lesson.description} lessonKey={slug}>
+<BaseLayout
+  title={`${lesson.title} · IELTS Portal`}
+  description={lesson.description}
+  lessonKey={slug}
+  trialGate={{ kind: 'lesson', lessonKey: slug, title: lesson.title }}
+>
   <div class={`skill-${lesson.skill}`}>
     <!-- Lesson hero band -->
     <section class="lesson-hero border-b border-border">

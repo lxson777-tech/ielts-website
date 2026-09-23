@@ -64,6 +64,9 @@ export const APP_ROUTE_PREFIXES = [
   '/account',
   '/review',
   '/report',
+  // The three-day trial's own pages (src/pages/trial.astro, plans.astro).
+  '/trial',
+  '/plans',
   '/reset-password',
 ];
 

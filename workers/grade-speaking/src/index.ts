@@ -36,10 +36,18 @@
    talks to this endpoint through the provider-agnostic RemoteSpeakingGrader. */
 
 import { SPEAKING_ANCHORS } from './anchors';
+import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
+import { TRIAL_REFUSAL_TEXT } from '../../../src/lib/trial/gate';
 
 export interface Env {
   /** vars: 'openai' (default) | 'gemini'. */
   GRADER_PROVIDER?: string;
+  /** 'trial' makes this grader part of the three-day trial. While the
+      trial's Speaking test is switched off (TRIAL_OFFER.speaking, waiting on
+      Alex's decision about its length and parts) every grading request is
+      refused before anything is paid for. Anything else, including unset,
+      is today's open grader. */
+  ACCESS_MODE?: string;
   OPENAI_API_KEY?: string; // wrangler secret (openai provider)
   /** vars: 'hybrid' (default) | 'audio'. See README "Hybrid pipeline". */
   OPENAI_SPEAKING_MODE?: string;
@@ -1787,6 +1795,10 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     if (request.method !== 'POST') return json({ error: 'POST only' }, 405, cors);
+
+    if (parseAccessMode(env.ACCESS_MODE) === 'trial' && !TRIAL_OFFER.speaking.testEnabled) {
+      return json({ error: TRIAL_REFUSAL_TEXT['trial-not-included'], code: 'trial-not-included' }, 403, cors);
+    }
 
     const provider = resolveProvider(env);
     if (!provider) return json({ error: 'GRADER_PROVIDER must be openai or gemini' }, 500, cors);

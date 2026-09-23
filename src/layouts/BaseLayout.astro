@@ -4,6 +4,7 @@ import '../styles/global.css';
 import '../styles/platform.css';
 import '../styles/workspace-redesign.css';
 import '../styles/mr-ez.css';
+import '../styles/trial.css';
 import '@fontsource-variable/manrope';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -12,6 +13,8 @@ import WorkspaceFooter from '../components/WorkspaceFooter.astro';
 import MrEzPanel from '../components/tutor/MrEzPanel';
 import VocabQuizInit from '../components/VocabQuizInit.astro';
 import AccountLifecycle from '../components/AccountLifecycle.astro';
+import TrialGate, { type TrialGateSpec } from '../components/trial/TrialGate';
+import { ACCESS_MODE } from '../lib/trial/mode';
 import { withBase } from '../lib/url';
 import { isAppRoute as routeIsApp, isWideRoute, toRoute } from '../lib/platform-nav';
 import { LOCALE_STORAGE_KEY, PENDING_CLASS, SUPPORTED_LOCALES, DEFAULT_LOCALE, RUSSIAN_DEVICE_LANGUAGES } from '../lib/i18n/locale';
@@ -34,6 +37,15 @@ interface Props {
       key: the Worker resolves it against the real course registry and
       ignores anything that does not match, so it carries no authority. */
   lessonKey?: string;
+  /** What this page is to the three-day trial. Ignored by the open site.
+      In a trial build (PUBLIC_ACCESS_MODE=trial) the page's content waits
+      behind TrialGate until the server has answered for the signed-in
+      student, and stays covered with a reason if the trial does not open
+      it. A display rule, not a security boundary (see TrialGate). */
+  trialGate?: TrialGateSpec;
+  /** Keep this page out of search results (the trial's own pages, until
+      the offer is switched on). */
+  noindex?: boolean;
 }
 
 const {
@@ -44,7 +56,10 @@ const {
   ogType = 'website',
   wide,
   lessonKey,
+  trialGate,
+  noindex = false,
 } = Astro.props;
+const gated = ACCESS_MODE === 'trial' && Boolean(trialGate);
 const pageTitle = title.replaceAll('IELTS Portal', 'IELTS is EZ');
 
 const absoluteOgImage = new URL(withBase(ogImage), Astro.site).toString();
@@ -73,6 +88,7 @@ const jsonLd = {
     <meta name="description" content={description} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex" />}
     <title>{pageTitle}</title>
 
     <meta property="og:type" content={ogType} />
@@ -165,6 +181,7 @@ const jsonLd = {
     class:list={["flex min-h-screen flex-col bg-surface text-ink", { "workspace-v2": isAppRoute }]}
     data-route={route}
     data-lesson-key={lessonKey}
+    data-trial-gate={gated ? 'pending' : undefined}
   >
     {/* Whose work this is, decided once, on every route, before anything on
         the page loads a draft, restores a sitting or records an answer. It
@@ -178,7 +195,16 @@ const jsonLd = {
         <WorkspaceHeader />
         <a class="ws-skip" href="#workspace-content" data-i18n>Skip to content</a>
         <main class="ws-main" id="workspace-content">
-          <div class:list={['ws-page', { 'is-wide': isWide }]}><slot /></div>
+          <div class:list={['ws-page', { 'is-wide': isWide }]}>
+            {gated && trialGate ? (
+              <>
+                <TrialGate client:load spec={trialGate} />
+                <div data-trial-protected><slot /></div>
+              </>
+            ) : (
+              <slot />
+            )}
+          </div>
           <WorkspaceFooter />
         </main>
         {/* transition:persist keeps the same island, and therefore the same
@@ -191,7 +217,16 @@ const jsonLd = {
     ) : (
       <>
         {!bare && <Nav />}
-        <main class="flex-1" transition:animate="fade"><slot /></main>
+        <main class="flex-1" transition:animate="fade">
+          {gated && trialGate ? (
+            <>
+              <TrialGate client:load spec={trialGate} />
+              <div data-trial-protected><slot /></div>
+            </>
+          ) : (
+            <slot />
+          )}
+        </main>
         {!bare && <Footer />}
       </>
     )}

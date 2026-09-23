@@ -229,3 +229,14 @@ into the SQL Editor by hand if this ever needs to come out. Rolling back
 cannot affect `user_state` or any other existing table: nothing in this
 migration alters them, so there is nothing for a rollback to undo there
 either.
+
+## Three-day trial tables (proposal, not applied)
+
+`migrations/2026-09-23-trial.sql` adds `trial_offer_items`, `trial_accounts` and
+`trial_usage`, and the functions that start a trial, bind a section's one test and
+reserve, settle or release Mr EZ messages. The browser can only read its own rows and
+call the student functions; the Workers' functions are granted to the service role
+only. It touches no existing table. It is tested in `tests/trial-sql.test.ts` against a
+real Postgres (PGlite, `tools/trial-db.mjs`), never against a real project. How to
+apply, verify and roll it back, and what else must be decided first:
+`docs/TRIAL-IMPLEMENTATION.md`. Nobody but Alex applies it.

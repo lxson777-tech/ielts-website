@@ -11,6 +11,9 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
+    // "trial" creates no session while the trial Speaking test is switched off
+    // (src/lib/trial/offer.ts). Anything else is today's behaviour.
+    "ACCESS_MODE": "open",
     // Which provider answers GET/POST requests: "openai" (default, GPT-Live-1
     // over WebRTC) or "gemini" (rollback, ephemeral-token WebSocket path).
     "LIVE_PROVIDER": "openai",

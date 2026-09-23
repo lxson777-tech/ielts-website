@@ -17,6 +17,20 @@
    The Worker is the ONLY provider-specific code in the project, the site
    talks to this endpoint through the provider-agnostic RemoteGrader. */
 
+import { parseAccessMode } from '../../../src/lib/trial/offer';
+import {
+  TrialRefusal,
+  bearer,
+  leaseTrialTest,
+  readSittingId,
+  refusal,
+  releaseUse,
+  serviceRpc,
+  settleUse,
+  verifyAccessToken,
+  type TrialRpc,
+} from '../../../src/lib/trial/gate';
+
 export interface Env {
   /** 'openai' (default) | 'gemini'. */
   GRADER_PROVIDER?: string; // vars
@@ -29,6 +43,15 @@ export interface Env {
   /** How many independent grading runs to take the median of (vars,
       default 3). More runs = less band variance; all run in parallel. */
   GRADING_SAMPLES?: string;
+  /** 'trial' makes grading part of the three-day trial: the student must be
+      signed in and must have begun the trial's Writing test, and that test
+      is used only when a grade comes back (src/lib/trial/gate.ts). Anything
+      else, including unset, is today's open grader. */
+  ACCESS_MODE?: string;
+  /** Needed only in trial mode, to verify the student and to take and
+      settle the test in supabase/migrations/2026-09-23-trial.sql. */
+  SUPABASE_URL?: string; // vars
+  SUPABASE_SERVICE_ROLE_KEY?: string; // wrangler secret
 }
 
 /* ── request/response shapes (mirrors the site's schema.ts) ── */
@@ -41,6 +64,8 @@ interface GradeRequest {
     minWords: number;
   };
   essay: string;
+  /** Trial mode only: the id the student's Writing test was begun under. */
+  trialSitting?: string;
   mechanics?: {
     wordCount?: number;
     underLength?: boolean;
@@ -553,7 +578,8 @@ function corsHeaders(origin: string | null, env: Env): Record<string, string> {
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    // Authorization carries the student's sign-in in trial mode.
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
   };
 }
@@ -925,6 +951,33 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         return json({ error: 'The essay grader is not configured' }, 503, cors);
       }
 
+      /* The trial, before a single token is paid for: who is asking, and
+         is this their begun Writing test that nobody else is grading right
+         now. The lease is what stops two submissions of the one test both
+         being paid for. */
+      let trial: { rpc: TrialRpc; userId: string; sitting: string } | null = null;
+      if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
+        if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+          return json({ error: 'The essay grader is not configured' }, 503, cors);
+        }
+        try {
+          const token = bearer(request);
+          const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
+          if (!userId) return json({ error: 'Sign in to have your essay graded.', code: 'sign-in-required' }, 401, cors);
+          const sitting = readSittingId(body.trialSitting);
+          if (!sitting) throw refusal('trial-no-test');
+          const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+          await leaseTrialTest(rpc, userId, 'writing', sitting);
+          trial = { rpc, userId, sitting };
+        } catch (err) {
+          if (err instanceof TrialRefusal) {
+            return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
+          }
+          // Fail closed: an allowance that cannot be checked is not spent.
+          return json({ error: 'Your trial could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
+        }
+      }
+
       const systemText = systemInstruction(task, body.prompt.variant);
       const userText = userMessage(body);
 
@@ -942,11 +995,20 @@ export function createHandler(deps: { fetch: typeof fetch }) {
           ? gradeOnceOpenAi(deps.fetch, env, systemText, userText)
           : gradeOnceGemini(deps.fetch, env, systemText, userText);
 
-      const runs = await Promise.all(Array.from({ length: samples }, gradeOnce));
+      let runs: GradeOnceResult[];
+      try {
+        runs = await Promise.all(Array.from({ length: samples }, gradeOnce));
+      } catch (err) {
+        if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
+        throw err;
+      }
       const good = runs.filter((r): r is { assessment: Record<string, unknown> } => 'assessment' in r);
 
       if (good.length === 0) {
         const firstFail = runs.find((r): r is { failStatus: number; failError: string } => 'failStatus' in r)!;
+        /* Nothing was graded, so the trial test is still the student's to
+           submit again. A release that fails expires on its own in minutes. */
+        if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
         return json({ error: firstFail.failError }, firstFail.failStatus, cors);
       }
 
@@ -957,6 +1019,12 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       good.sort((a, b) => meanBand(a.assessment) - meanBand(b.assessment));
       const median = good[Math.floor((good.length - 1) / 2)]!.assessment;
 
+      if (trial) {
+        /* Graded: the Writing test is used. Settled here, on the server, so
+           a browser that closes now does not get it back. */
+        await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
+        return json({ ...median, trial: { section: 'writing', test: 'used' } }, 200, cors);
+      }
       return json(median, 200, cors);
     },
   };

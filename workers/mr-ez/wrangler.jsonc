@@ -11,6 +11,10 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
+    // "trial" turns on the three-day trial: five answered requests per section,
+    // only about what the trial includes (src/lib/trial/gate.ts). Anything else
+    // is today's open tutor. Leave "open" until Alex switches the offer on.
+    "ACCESS_MODE": "open",
     // Everyday tutoring model. Verified 2026-09-19 against the official model
     // page: Responses API, strict structured outputs, prompt caching,
     // reasoning effort, 1.05M context, 128K max output.

@@ -7,6 +7,9 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
   "vars": {
+    // "trial" refuses grading while the trial Speaking test is switched off
+    // (src/lib/trial/offer.ts). Anything else is today's open grader.
+    "ACCESS_MODE": "open",
     // Which provider grades requests: "openai" (default) or "gemini" (the
     // original path, kept as a one-variable rollback). See README.md.
     "GRADER_PROVIDER": "openai",

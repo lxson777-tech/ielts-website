@@ -1,0 +1,11 @@
+---
+/* Joining the three-day trial. Meaningful only in a trial build
+   (PUBLIC_ACCESS_MODE=trial); on the open site the page says there is
+   nothing to start and is kept out of search either way. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TrialJoin from '../components/trial/TrialJoin';
+---
+
+<BaseLayout noindex title="Start your free trial · IELTS is EZ" description="Three days, no payment card: a selected introduction and one test in each IELTS section.">
+  <TrialJoin client:load />
+</BaseLayout>

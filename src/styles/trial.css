@@ -1,0 +1,207 @@
+/* The three-day trial, inside the platform shell.
+
+   Ported from Codex's approved design preview (src/styles/trial-preview.css
+   in the design checkout, 23 September 2026): forest #193b36, warm cream
+   #f7f3eb, orange #efa76b, Manrope headings, Inter body, generous spacing and
+   restrained borders. Everything is scoped under .trial-ui so none of it can
+   reach a lesson, a test or the rest of the workspace. The preview's review
+   toolbar, sample header and simulated counters are deliberately not here. */
+
+.trial-ui {
+  --trial-ink: #193b36;
+  --trial-muted: #54695f;
+  --trial-cream: #f7f3eb;
+  --trial-paper: #fffdf7;
+  --trial-line: #d9dfd2;
+  --trial-line-soft: #e0e2d7;
+  --trial-orange: #efa76b;
+  --trial-orange-soft: #fae5d1;
+  --trial-orange-hover: #f5ba8a;
+  --trial-rust: #995224;
+  --trial-focus: #a14f23;
+  --trial-ended: #85411f;
+  color: var(--trial-ink);
+  font-family: var(--font-sans);
+}
+.trial-ui h1,
+.trial-ui h2,
+.trial-ui h3 {
+  font-family: 'Manrope Variable', 'Manrope', var(--font-display-ui), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--trial-ink);
+}
+.trial-ui h1 { font-size: 36px; line-height: 1.2; margin: 0 0 14px; max-width: 700px; }
+.trial-ui h2 { font-size: 25px; line-height: 1.3; margin: 10px 0 14px; }
+.trial-ui h3 { font-size: 18px; line-height: 1.4; margin: 0; }
+.trial-ui p { line-height: 1.75; }
+.trial-ui em { font-style: normal; color: var(--trial-rust); }
+.trial-ui small, .trial-ui .trial-small { display: block; font-size: 12px; line-height: 1.6; color: var(--trial-muted); }
+.trial-ui a { color: inherit; }
+
+.trial-ui :where(button, a, input, textarea, select):focus-visible {
+  outline: 3px solid var(--trial-focus);
+  outline-offset: 4px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.trial-ui .trial-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 12px 18px;
+  border: 1px solid #b2bdb4; border-radius: 10px; background: transparent;
+  color: var(--trial-ink); font: inherit; font-size: 14px; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease;
+}
+.trial-ui .trial-btn:hover:not(:disabled) { background: #e8eadd; }
+.trial-ui .trial-btn:active:not(:disabled) { transform: translateY(1px); }
+.trial-ui .trial-btn:disabled, .trial-ui .trial-btn[aria-disabled='true'] { cursor: not-allowed; opacity: 0.6; }
+.trial-ui .trial-primary { background: var(--trial-orange); border-color: var(--trial-orange); font-weight: 600; padding: 14px 22px; }
+.trial-ui .trial-primary:hover:not(:disabled) { background: var(--trial-orange-hover); }
+.trial-ui .trial-quiet { border-color: transparent; }
+.trial-ui .trial-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* ── Status strip ────────────────────────────────────────── */
+.trial-ui .trial-status {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  border-bottom: 1px solid #cfd9cd; padding: 0 0 22px; margin-bottom: 34px;
+}
+.trial-ui .trial-status b, .trial-ui .trial-status span { display: block; font-size: 13px; line-height: 1.8; }
+.trial-ui .trial-status span { color: var(--trial-muted); }
+.trial-ui .trial-status.is-ended b { color: var(--trial-ended); }
+.trial-ui .trial-status .trial-btn { font-size: 12px; min-height: 40px; padding: 10px 14px; }
+
+.trial-ui .trial-lead { color: var(--trial-muted); font-size: 15px; margin: 0 0 26px; }
+
+/* ── Section tabs (capsules) ─────────────────────────────── */
+.trial-ui .trial-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 26px 0 28px; }
+.trial-ui .trial-tabs button {
+  min-height: 44px; padding: 10px 18px; border: 1px solid transparent; border-radius: 999px;
+  background: transparent; color: var(--trial-ink); font: inherit; font-size: 14px; cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+.trial-ui .trial-tabs button:hover { background: #e8eadd; }
+.trial-ui .trial-tabs button[aria-selected='true'] { background: var(--trial-ink); color: var(--trial-paper); }
+
+/* ── The next step and the allowance ─────────────────────── */
+.trial-ui .trial-card {
+  background: var(--trial-paper); border: 1px solid var(--trial-line-soft); border-radius: 18px; padding: 32px;
+}
+.trial-ui .trial-next { display: grid; grid-template-columns: 1.2fr 1fr; gap: 35px; }
+.trial-ui .trial-eyebrow { display: block; font-size: 12px; color: var(--trial-muted); }
+.trial-ui .trial-next p { font-size: 14px; color: var(--trial-muted); margin: 0 0 22px; }
+.trial-ui .trial-allowance { border-left: 1px solid var(--trial-line-soft); padding-left: 30px; }
+.trial-ui .trial-allowance dl { margin: 20px 0; }
+.trial-ui .trial-allowance dl > div {
+  display: flex; justify-content: space-between; gap: 15px; padding: 12px 0;
+  font-size: 13px; border-bottom: 1px solid var(--trial-line-soft);
+}
+.trial-ui .trial-allowance dt { color: var(--trial-ink); }
+.trial-ui .trial-allowance dd { margin: 0; font-weight: 600; white-space: nowrap; }
+.trial-ui .trial-allowance dd.is-muted { color: var(--trial-muted); font-weight: 500; }
+
+/* ── Library rows ────────────────────────────────────────── */
+.trial-ui .trial-library { margin-top: 40px; }
+.trial-ui .trial-library > h2 { font-size: 20px; }
+.trial-ui .trial-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  border-top: 1px solid var(--trial-line); padding: 20px 0;
+}
+.trial-ui .trial-row b { display: block; font-size: 14px; font-weight: 500; }
+.trial-ui .trial-row small { margin-top: 4px; }
+.trial-ui .trial-row .trial-btn { font-size: 12px; min-height: 40px; flex-shrink: 0; }
+.trial-ui .trial-locked-list { list-style: none; margin: 0 0 8px; padding: 0 0 0 2px; }
+.trial-ui .trial-locked-list li {
+  display: flex; align-items: baseline; gap: 10px; padding: 8px 0;
+  font-size: 13px; color: var(--trial-muted); border-top: 1px dashed var(--trial-line-soft);
+}
+.trial-ui .trial-lock-icon { flex-shrink: 0; width: 12px; height: 12px; color: var(--trial-muted); }
+
+/* ── Notices and failures ────────────────────────────────── */
+.trial-ui .trial-notice { padding: 16px 18px; background: var(--trial-orange-soft); border-radius: 10px; font-size: 13px; line-height: 1.7; }
+.trial-ui .trial-notice p { margin: 0; }
+.trial-ui .trial-notice .trial-btn { margin-top: 12px; }
+.trial-ui .trial-fine { font-size: 12px; line-height: 1.7; color: var(--trial-muted); }
+.trial-ui .trial-sug {
+  margin: 24px 0 0; padding: 18px 20px; border-radius: 14px; background: #eef3e7; border: 1px solid #c8d6c5;
+  font-size: 13px; line-height: 1.7;
+}
+.trial-ui .trial-sug b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+
+/* ── The gate on a lesson, test or trainer page ──────────── */
+.trial-ui.trial-gate { max-width: 740px; margin: 24px auto 40px; }
+.trial-ui.trial-gate .trial-card { padding: 36px; }
+.trial-ui.trial-gate .trial-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.trial-ui .trial-skeleton { display: grid; gap: 12px; }
+.trial-ui .trial-skeleton span {
+  display: block; height: 14px; border-radius: 7px;
+  background: linear-gradient(90deg, #ecefe6, #f6f7f1, #ecefe6); background-size: 200% 100%;
+  animation: trial-shimmer 1.4s ease-in-out infinite;
+}
+.trial-ui .trial-skeleton span:nth-child(1) { width: 42%; height: 22px; }
+.trial-ui .trial-skeleton span:nth-child(2) { width: 88%; }
+.trial-ui .trial-skeleton span:nth-child(3) { width: 64%; }
+@keyframes trial-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* Protected content is not painted until the gate has decided. This is a
+   display rule, not a security boundary: the static HTML still carries the
+   content, which is exactly why the content-delivery boundary is listed as
+   a hosting decision in docs/TRIAL-IMPLEMENTATION.md. */
+body[data-trial-gate='pending'] [data-trial-protected],
+body[data-trial-gate='locked'] [data-trial-protected] { display: none !important; }
+
+/* ── Joining ─────────────────────────────────────────────── */
+.trial-ui.trial-join { display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 56px; padding: 24px 0 40px; }
+.trial-ui.trial-join h1 { font-size: 46px; }
+.trial-ui.trial-join > div > p { color: var(--trial-muted); }
+.trial-ui .trial-includes { list-style: disc; padding-left: 20px; margin: 26px 0; line-height: 1.8; }
+.trial-ui .trial-includes li::marker { color: var(--trial-rust); }
+.trial-ui .trial-includes li { margin-bottom: 10px; }
+.trial-ui.trial-join figure { margin: 0; text-align: center; }
+.trial-ui.trial-join figure img { width: 100%; max-height: 460px; object-fit: contain; }
+.trial-ui.trial-join figcaption { font-size: 13px; color: var(--trial-muted); }
+.trial-ui .trial-steps { display: grid; gap: 14px; margin: 24px 0; padding: 0; list-style: none; }
+.trial-ui .trial-steps li { display: flex; gap: 14px; align-items: baseline; font-size: 14px; }
+.trial-ui .trial-steps li > span:first-child {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center;
+  background: var(--trial-ink); color: var(--trial-paper); font-size: 12px; font-weight: 600;
+}
+
+/* ── Full access ─────────────────────────────────────────── */
+.trial-ui .trial-prices { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+.trial-ui .trial-prices article { background: var(--trial-paper); border: 1px solid var(--trial-line); border-radius: 16px; padding: 30px; display: flex; flex-direction: column; }
+.trial-ui .trial-prices article + article { background: var(--trial-orange-soft); }
+.trial-ui .trial-prices strong { font-size: 32px; font-weight: 500; }
+.trial-ui .trial-prices .trial-btn { margin-top: auto; }
+.trial-ui .trial-prices small { margin-bottom: 24px; }
+
+/* ── Mr EZ's allowance line (inside the existing panel) ──── */
+.mrez-trial-note { margin: 0 0 12px; padding: 12px 14px; border-radius: 12px; background: #f7f3eb; color: #193b36; font-size: 13px; line-height: 1.6; }
+.mrez-trial-note a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 950px) {
+  .trial-ui .trial-next { grid-template-columns: 1fr; }
+  .trial-ui .trial-allowance { border-left: 0; border-top: 1px solid var(--trial-line-soft); padding: 22px 0 0; }
+  .trial-ui.trial-join { gap: 24px; }
+  .trial-ui.trial-join h1 { font-size: 38px; }
+}
+@media (max-width: 640px) {
+  .trial-ui h1 { font-size: 28px; }
+  .trial-ui h2 { font-size: 22px; }
+  .trial-ui .trial-status { gap: 12px; }
+  .trial-ui .trial-status span { font-size: 12px; }
+  .trial-ui .trial-card, .trial-ui.trial-gate .trial-card { padding: 24px; }
+  .trial-ui .trial-tabs { gap: 6px; display: grid; grid-template-columns: 1fr 1fr; }
+  .trial-ui .trial-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .trial-ui .trial-prices { grid-template-columns: 1fr; }
+  .trial-ui.trial-join { grid-template-columns: 1fr; padding-top: 8px; }
+  .trial-ui.trial-join h1 { font-size: 34px; }
+  .trial-ui.trial-join figure { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trial-ui *, .trial-ui *::before, .trial-ui *::after { transition: none !important; animation: none !important; }
+}
+
+/* The gate filling a bare test page (TestPlayer has no workspace shell). */
+.trial-ui.trial-gate.is-full { max-width: none; min-height: 100dvh; margin: 0; padding: 16px; display: grid; place-items: center; background: var(--trial-cream); }
+.trial-ui.trial-gate.is-full > .trial-card { width: 100%; max-width: 620px; }

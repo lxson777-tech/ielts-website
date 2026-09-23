@@ -101,10 +101,17 @@ import {
   PlanRequestError,
 } from '../../../src/lib/speaking/live/instructions';
 import type { LiveMode, ResolvedPlan } from '../../../src/lib/speaking/live/instructions';
+import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
+import { TRIAL_REFUSAL_TEXT } from '../../../src/lib/trial/gate';
 import { parseDirectorCue, nextStage, cueEvent, CueError } from '../../../src/lib/speaking/live/cues';
 import type { SessionStage } from '../../../src/lib/speaking/live/cues';
 
 export interface Env {
+  /** 'trial' makes live sessions part of the three-day trial. While the
+      trial's Speaking test is switched off (TRIAL_OFFER.speaking, waiting on
+      Alex's decision about session length and parts) no session is created.
+      Anything else, including unset, is today's behaviour. */
+  ACCESS_MODE?: string;
   GEMINI_API_KEY?: string; // wrangler secret (gemini provider)
   OPENAI_API_KEY?: string; // wrangler secret (openai provider)
   SUPABASE_URL?: string; // vars: required for the openai provider; fail closed (503) if missing
@@ -843,6 +850,11 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     if (request.method === 'GET') {
       if (path !== '/') return json({ error: 'Not found' }, 404, cors);
       return handleGet(env, cors);
+    }
+
+    /* Creating a session is the only spend; ending one must always work. */
+    if ((path === '/' || path === '/direct') && parseAccessMode(env.ACCESS_MODE) === 'trial' && !TRIAL_OFFER.speaking.testEnabled) {
+      return json({ error: TRIAL_REFUSAL_TEXT['trial-not-included'], code: 'trial-not-included' }, 403, cors);
     }
 
     switch (path) {

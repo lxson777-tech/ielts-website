@@ -42,6 +42,15 @@ export function tutorErrorMessage(code: TutorErrorCode, locale?: Locale): string
       return t('Mr EZ is busy right now. Give it a few seconds and ask again.', undefined, undefined, locale);
     case 'unavailable':
       return t('Mr EZ could not answer just now.', undefined, undefined, locale);
+    /* The trial (a trial build only). None of these used a message. */
+    case 'trial-required':
+      return t('Start your free trial to talk to Mr EZ.', undefined, undefined, locale);
+    case 'trial-ended':
+      return t('Your trial has ended, so Mr EZ cannot reply to new questions.', undefined, undefined, locale);
+    case 'trial-allowance-used':
+      return t('You have used your five Mr EZ messages for this section. The other sections have their own.', undefined, undefined, locale);
+    case 'trial-not-included':
+      return t('During your trial, Mr EZ answers questions about the lessons and tests your trial includes.', undefined, undefined, locale);
     default:
       // 'bad-request', and anything a future Worker adds that this build has
       // never heard of. Its English sentence beats a vague translated one.

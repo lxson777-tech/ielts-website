@@ -82,6 +82,7 @@ const view: SpokenTaskView = {
 <BaseLayout
   wide
   title={`${task.title} · IELTS Portal`}
+  trialGate={{ kind: 'locked', title: task.title }}
   description="A short self-check speaking task on one objective, built from a real Speaking prompt."
 >
   <SpokenFocusedTask client:load view={view} />

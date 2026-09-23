@@ -8,18 +8,43 @@ import { overallBand } from './schema';
 import { analyzeEssay } from './mechanics';
 import { t } from '../i18n/translate';
 
+/** A grading failure the Worker named with a code: a trial refusal
+    ('trial-test-used', 'trial-no-test', ...) or 'sign-in-required'. The
+    message is the Worker's English; the screen shows its own words. */
+export class GraderRefusal extends Error {
+  readonly code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+    this.name = 'GraderRefusal';
+  }
+}
+
+/** Only in a trial build: the student's sign-in and the id their Writing
+    test was begun under, which the essay Worker checks before it grades.
+    Absent on the open site, which sends exactly what it always sent. */
+export interface TrialGrading {
+  token: string;
+  sitting: string;
+}
+
 /* Remote grader — POSTs to our Cloudflare Worker, which holds the API key and
    calls the actual model (Gemini Flash today; the site doesn't know or care). */
 class RemoteGrader implements EssayGrader {
   readonly name = 'AI examiner';
   readonly live = true;
 
-  constructor(private endpoint: string) {}
+  constructor(
+    private endpoint: string,
+    private trial?: TrialGrading,
+  ) {}
 
   async grade(input: EssayInput, mechanics: MechanicsReport): Promise<EssayAssessment> {
     const resp = await fetch(this.endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.trial
+        ? { 'Content-Type': 'application/json', Authorization: `Bearer ${this.trial.token}` }
+        : { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: {
           task: input.prompt.task,
@@ -29,6 +54,7 @@ class RemoteGrader implements EssayGrader {
         },
         essay: input.essay,
         mechanics,
+        ...(this.trial ? { trialSitting: this.trial.sitting } : {}),
       }),
       // Three reasoning-model runs are taken and the median kept; allow three minutes.
       signal: AbortSignal.timeout(180000),
@@ -36,11 +62,15 @@ class RemoteGrader implements EssayGrader {
     if (!resp.ok) {
       // Surface the Worker's message (e.g. daily-limit) if it sent one.
       let detail = '';
+      let code = '';
       try {
-        detail = ((await resp.json()) as { error?: string }).error ?? '';
+        const body = (await resp.json()) as { error?: string; code?: string };
+        detail = body.error ?? '';
+        code = body.code ?? '';
       } catch {
         /* non-JSON error body */
       }
+      if (code === 'sign-in-required' || code.startsWith('trial-')) throw new GraderRefusal(code, detail);
       throw new Error(detail || `Grader responded ${resp.status}`);
     }
     const a = (await resp.json()) as EssayAssessment;
@@ -64,10 +94,10 @@ export function isGraderConfigured(): boolean {
     missing config, network, quota, a malformed response — propagates so the
     caller can tell the student grading failed rather than showing a
     fabricated band. */
-export async function gradeEssay(input: EssayInput): Promise<GradeResult> {
+export async function gradeEssay(input: EssayInput, trial?: TrialGrading): Promise<GradeResult> {
   if (!GRADER_URL) throw new Error(t('The AI examiner is not configured for this site yet.'));
   const mechanics = analyzeEssay(input);
-  const grader: EssayGrader = new RemoteGrader(GRADER_URL);
+  const grader: EssayGrader = new RemoteGrader(GRADER_URL, trial);
   const assessment = await grader.grade(input, mechanics);
   return {
     ...assessment,
