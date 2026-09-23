@@ -19,10 +19,22 @@
 
    connectWebRtc is the only piece that touches RTCPeerConnection: it does
    the offer/answer exchange with our own Worker (never OpenAI directly from
-   here) and hands back a LiveEventTransport for OpenAiLiveSession to drive. */
+   here) and hands back a LiveEventTransport for OpenAiLiveSession to drive.
+
+   ASKED BEFORE THE PAID REQUEST (finding R2D-01, inside the setup).
+   connectWebRtc takes the examiner's own "may I continue" check
+   (./start-check.ts says why it is a function) and asks it twice: before
+   anything is made, since the caller's own audio set-up can wait, and
+   immediately before the request that creates the paid voice session, after
+   the connection has prepared itself (which can take up to ten seconds). A
+   no rejects with LiveStartCancelled after closing the data channel and the
+   peer connection, which stops the microphone track it was given from being
+   sent (the track itself belongs to the caller, who releases it). The
+   request is never sent. */
 
 import type { TranscriptTurn } from './session';
 import type { SessionPlanRequest } from './instructions';
+import { continueOrCancel, type MayContinue } from './start-check';
 
 export interface LiveServerEvent {
   type: string;
@@ -331,6 +343,10 @@ export interface WebRtcConnectOptions {
   accessToken: string | null;
   onRemoteStream(stream: MediaStream): void;
   iceTimeoutMs?: number;
+  /** Asked before anything is made and immediately before the request that
+      creates the paid voice session (R2D-01). A no rejects with
+      LiveStartCancelled and sends nothing. Not given: never asked. */
+  mayContinue?: MayContinue;
 }
 
 function waitForIceGatheringComplete(pc: RTCPeerConnection, timeoutMs: number): Promise<void> {
@@ -361,6 +377,7 @@ export async function connectWebRtc(
   opts: WebRtcConnectOptions,
 ): Promise<{ transport: LiveEventTransport; sessionId: string; model: string; peer: RTCPeerConnection }> {
   const iceTimeoutMs = opts.iceTimeoutMs ?? 10000;
+  continueOrCancel(opts.mayContinue);
   const pc = new RTCPeerConnection();
   let dc: RTCDataChannel | null = null;
   let handlers: { onEvent(ev: LiveServerEvent): void; onClose(): void } | null = null;
@@ -422,6 +439,11 @@ export async function connectWebRtc(
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (opts.accessToken) headers.Authorization = `Bearer ${opts.accessToken}`;
 
+    /* The preparation above can take up to iceTimeoutMs. Ask again,
+       immediately before the request that creates the paid voice session:
+       a no sends nothing, and the catch below closes the data channel and
+       the peer connection. */
+    continueOrCancel(opts.mayContinue);
     const resp = await fetch(opts.endpoint, {
       method: 'POST',
       headers,

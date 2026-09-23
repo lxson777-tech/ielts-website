@@ -21,7 +21,23 @@
      Worker's /direct endpoint, which validates the transition against the
      session's stage and injects the text itself through the trusted
      sideband. A delegation event from OpenAI is answered the same way,
-     wired through onDelegation. */
+     wired through onDelegation.
+
+   ASKED INSIDE THE SETUP (finding R2D-01). openExaminerLink passes the
+   caller's optional `mayContinue` (./start-check.ts) through to both setups:
+   ExaminerSession.connect asks it before its token request and immediately
+   before the Gemini socket; connectWebRtc before it makes anything and
+   immediately before the request that creates the paid voice session. Here
+   it is asked once more, when that request has been answered. The session
+   exists then and its first seconds are billed whatever happens, but if the
+   start was let go while the request was out, the link does not go on to
+   use it: the peer is closed at once, before any audio can flow, and the
+   session is ended at the Worker exactly as close() ends it, so it stops
+   counting against the student's limits. A no anywhere rejects with
+   LiveStartCancelled once the audio pieces made here are stopped. The link
+   is returned as soon as OpenAiLiveSession.start resolves, so a start let
+   go during that last wait is closed by the caller's own guard, through the
+   link's own close(). */
 
 import type { LiveMode, LiveProvider, SessionPlanRequest } from './instructions';
 import type { TranscriptTurn } from './session';
@@ -30,6 +46,9 @@ import { ExaminerPlayback, MicCapture, RemoteAudioOutput, StreamLevelMeter } fro
 import { OpenAiLiveSession, connectWebRtc } from './openai-session';
 import type { DirectorCue } from './cues';
 import { cueText } from './cues';
+import { LiveStartCancelled, mayGoOn, type MayContinue } from './start-check';
+
+export { LiveStartCancelled, isLiveStartCancelled, type MayContinue } from './start-check';
 
 export interface LiveConfig {
   provider: LiveProvider;
@@ -123,6 +142,10 @@ export interface OpenExaminerLinkOptions {
   /** Supabase access token; required for openai, ignored for gemini. */
   accessToken: string | null;
   cb: ExaminerLinkCallbacks;
+  /** The caller's "may I continue" check, asked inside the setup right
+      before the paid session request and right before the Gemini socket
+      (R2D-01). A no rejects with LiveStartCancelled. Not given: never asked. */
+  mayContinue?: MayContinue;
 }
 
 export async function openExaminerLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLink> {
@@ -144,7 +167,7 @@ async function openGeminiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       onTranscript: opts.cb.onTranscript,
       onClosed: opts.cb.onClosed,
       onError: opts.cb.onError,
-    });
+    }, opts.mayContinue);
   } catch (err) {
     await mic.stop();
     await playback.stop();
@@ -229,6 +252,19 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
     opts.cb.onError(body?.error ?? `Could not send the stage direction (${resp.status})`);
   }
 
+  /** Tells our Worker the session is over, so its record stops counting
+      against the student's limits. Best effort, fire and forget: never
+      blocks the UI on a network hiccup. */
+  function endAtWorker(sessionId: string): void {
+    fetch(liveEndpoint(base, 'end'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+      body: JSON.stringify({ sessionId }),
+    }).catch(() => {
+      /* best effort */
+    });
+  }
+
   try {
     await micMeter.start(opts.stream);
     peer = await connectWebRtc({
@@ -239,7 +275,15 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       onRemoteStream: (stream) => {
         void output.start(stream);
       },
+      mayContinue: opts.mayContinue,
     });
+    /* The paid session exists now. If the start was let go while its
+       request was out, do not use it: the catch below closes the peer before
+       any audio flows, and the session is ended at the Worker. */
+    if (!mayGoOn(opts.mayContinue)) {
+      endAtWorker(peer.sessionId);
+      throw new LiveStartCancelled();
+    }
     session = await OpenAiLiveSession.start(peer.transport, {
       onTranscript: opts.cb.onTranscript,
       onClosed: opts.cb.onClosed,
@@ -292,14 +336,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       await activeSession.close();
       await output.stop();
       await micMeter.stop();
-      // Best effort, fire and forget: never blocks the UI on a network hiccup.
-      fetch(liveEndpoint(base, 'end'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ sessionId }),
-      }).catch(() => {
-        /* best effort */
-      });
+      endAtWorker(sessionId);
     },
   };
 }

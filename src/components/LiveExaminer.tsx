@@ -69,7 +69,12 @@
    number on, the connection's own callbacks and the later steps (the
    cue-card wait, the closing line) ask the same, and the session is asked
    once more after it has been shut down and before grading is requested, so
-   no paid grading call starts for a session that was let go. A grade
+   no paid grading call starts for a session that was let go. The same
+   question goes into the connection setup as well (mayContinue, see
+   ../lib/speaking/live/start-check.ts), which asks it right before the
+   request that creates the paid voice session and right before the Gemini
+   socket, so a switch or an unmount while the connection prepares itself
+   sends no such request at all. A grade
    already requested is kept for its student exactly as before, and the
    mock's onSuspend and onAbort reporting is unchanged. */
 
@@ -79,7 +84,7 @@ import type { User } from '@supabase/supabase-js';
 import type { CueCard, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import { releaseMic, pickMimeType } from '../lib/speaking/recorder';
-import { openExaminerLink, fetchLiveConfig, type ExaminerLink, type LiveConfig } from '../lib/speaking/live/link';
+import { openExaminerLink, fetchLiveConfig, isLiveStartCancelled, type ExaminerLink, type LiveConfig } from '../lib/speaking/live/link';
 import type { TranscriptTurn } from '../lib/speaking/live/session';
 import type { DirectorCue } from '../lib/speaking/live/cues';
 import {
@@ -525,6 +530,10 @@ export default function LiveExaminer({
           instruction,
           mode: m,
           accessToken,
+          /* Asked inside the setup too (R2D-01): a switch or an unmount while
+             the connection prepares itself sends no request that would
+             create a paid voice session, and opens no Gemini socket. */
+          mayContinue: stillHere,
           cb: {
             /* A connection this start has let go of says nothing to the
                screen: its transcript and its closing are not the session the
@@ -556,7 +565,9 @@ export default function LiveExaminer({
       }
       linkRef.current = opened.value;
     } catch (e) {
-      if (!stillHere()) {
+      /* A setup that stopped at our own check started nothing: treated as
+         the let-go start it is, never as an error to show. */
+      if (!stillHere() || isLiveStartCancelled(e)) {
         dropStart(session, { stream, rec });
         return;
       }

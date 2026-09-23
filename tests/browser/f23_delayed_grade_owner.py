@@ -90,6 +90,27 @@ AND THE FINDING OF THE FOURTH CODEX INSPECTION (of 1701b97)
      own, against a second start of the dev server, and appended to the same
      results file (F23_SECTIONS and F23_APPEND below).
 
+AND THE LAST WINDOW OF THAT START (R2D-01, inside the connection setup)
+  8. After the fix above one window was left, inside the connection setup
+     itself (src/lib/speaking/live/openai-session.ts, and session.ts for the
+     Gemini rollback): the connection prepares itself for up to ten seconds
+     AFTER the sign-in token has been read, and nothing asked again before
+     the request that creates the paid voice session (or, on the rollback,
+     before the voice socket). Those functions now take the examiner's own
+     "may I continue" check and ask it right before that request and that
+     socket. The same wrapper as section 7 can HOLD the page's connection
+     preparation (its offer), so the account changes inside exactly that
+     window: (a) the mock's examiner and (b) the standalone examiner page,
+     both on the paid path, the offer held after the token was read and let
+     go after the switch; (c) the standalone page on the Gemini rollback,
+     the ephemeral token request held and answered with a SYNTHETIC token
+     after the switch. The voice session request must never be sent (it is
+     intercepted, and would be refused with a SYNTHETIC failure if it were),
+     and no socket may be opened. The wrapper refuses every socket to another
+     host outright, so even a failure of the fix could not reach a real
+     service. Section 8 needs the examiner address as well and runs with
+     section 7.
+
 HOW THE GRADERS ARE STOOD IN FOR
 Nothing is graded by any model. The site is started with its grader
 addresses pointed at the local stand-in's own port, on paths the stand-in
@@ -107,8 +128,10 @@ WHAT THIS IS NOT
     screenshots prefixed "delayed2-", sections 1 to 4) used 8819 and 4372;
     the R2C run (results-delayed-grade-3.md, screenshots prefixed "delayed3-",
     all six sections) used 8831 and 4384; the R2D run (results-delayed-grade-4.md,
-    screenshots prefixed "delayed4-", sections 1 to 7) uses them again, and
-    they are the defaults.
+    screenshots prefixed "delayed4-", sections 1 to 7) used them again, and
+    so does the run for the connection setup (results-delayed-grade-5.md,
+    screenshots prefixed "delayed5-", sections 1 to 8). They are the
+    defaults.
   - No real account, no real key, no paid API call, no deployment.
 
 Run with, both already running:
@@ -135,17 +158,17 @@ Run with, both already running:
      say) is passed as a relative path to it.
   then:
        IELTS_STANDIN_URL=http://127.0.0.1:8831 python tests/browser/f23_delayed_grade_owner.py
-  which runs sections 1 to 6 and starts a fresh results file. For section 7,
-  stop the site and start it again with ONE more variable,
+  which runs sections 1 to 6 and starts a fresh results file. For sections
+  7 and 8, stop the site and start it again with ONE more variable,
        PUBLIC_LIVE_EXAMINER_URL=http://127.0.0.1:8831/SYNTHETIC-intercepted-live-examiner
   (a path the stand-in does not serve; the script intercepts it in the
   browser), then:
-       F23_SECTIONS=7 F23_APPEND=1 F23_EXAMINER_CONFIGURED=1 \\
+       F23_SECTIONS=7,8 F23_APPEND=1 F23_EXAMINER_CONFIGURED=1 \\
        IELTS_STANDIN_URL=http://127.0.0.1:8831 python tests/browser/f23_delayed_grade_owner.py
   F23_SECTIONS picks the sections (default 1,2,3,4,5,6), F23_APPEND=1 adds
   to the results file instead of starting it again, and
   F23_EXAMINER_CONFIGURED=1 says the site was started with the examiner
-  address (without it section 7 reports itself as not run).
+  address (without it sections 7 and 8 report themselves as not run).
 
 Every email, password, essay and band below is SYNTHETIC, made up for this run.
 """
@@ -158,12 +181,13 @@ from datetime import date
 sys.path.insert(0, os.path.dirname(__file__))
 
 # Read at IMPORT time by final_helpers and f20, so these come first.
-# The R2D run: its own results file and screenshot prefix, so the earlier
-# runs' results-delayed-grade.md, -2.md and -3.md, and their "delayed-",
-# "delayed2-" and "delayed3-" screenshots, stay exactly as they were.
+# The run for the connection setup (section 8): its own results file and
+# screenshot prefix, so the earlier runs' results-delayed-grade.md, -2.md,
+# -3.md and -4.md, and their "delayed-", "delayed2-", "delayed3-" and
+# "delayed4-" screenshots, stay exactly as they were.
 os.environ.setdefault("IELTS_BASE_URL", "http://localhost:4384/ielts-website")
-os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-4")
-os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed4-")
+os.environ.setdefault("IELTS_RESULTS_SUFFIX", "-delayed-grade-5")
+os.environ.setdefault("IELTS_SHOT_PREFIX", "delayed5-")
 os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8831")
 
 from playwright.sync_api import sync_playwright  # noqa: E402
@@ -338,7 +362,7 @@ accounts stand-in (`node tools/mr-ez-dev-server.mjs`) at {STANDIN_URL}. Both wer
 this run and stopped afterwards. This is NOT the frozen production snapshot the `results.md`
 suite uses, and it is NOT a real Supabase project: nothing below is evidence about one.
 
-It is the browser half of five fixes. Sections 1 and 2: finding R2-02 of the second Codex
+It is the browser half of six fixes. Sections 1 and 2: finding R2-02 of the second Codex
 inspection, a grade that came back after the owner changed was written under whoever was signed in
 by then. Sections 3 and 4: finding R2B-01 of the second fresh Codex inspection, the essay editor
 itself was nobody's, so a student who took over the page could submit the previous student's text,
@@ -348,20 +372,23 @@ submitting. Section 6: finding R2C-04 of the same inspection, a speaking attempt
 page changed hands, so a second student could answer the first student's remaining questions.
 Section 7: finding R2D-01 of the Codex inspection of 1701b97, the live examiner's START asked
 nothing after its waits, so an account change while the microphone permission was up left the
-microphone, a recording and a paid voice session running behind the mock's stopped screen. The
-deterministic half of all of them is `tests/delayed-grade-owner.test.ts`.
+microphone, a recording and a paid voice session running behind the mock's stopped screen.
+Section 8: the last window of that start, inside the connection setup, where the connection
+prepared itself for up to ten seconds after the sign-in token was read and then sent the request
+that creates the paid voice session without asking again. The deterministic half of sections 1 to
+7 is `tests/delayed-grade-owner.test.ts`; of section 8, `tests/live-start-cancel.test.ts`.
 
 **Two starts of the dev server.** Sections 1 to 6 drive the recorded speaking trainer on
 `/trainers/speaking`, which the site shows only while no live examiner address is configured.
-Section 7 needs one, so it ran against a second start of the same dev server with
+Sections 7 and 8 need one, so they ran against a second start of the same dev server with
 `PUBLIC_LIVE_EXAMINER_URL` pointed at a path on the stand-in that the stand-in does not serve, and was
 appended below.
 
 **What this run does not cover, and where it is covered instead.** No live interview runs here: the
-examiner needs a paid voice session, and the stand-in has none. Section 7 starts the examiner as far
-as it can go without one (its settings and every voice session request are intercepted in the browser
-and answered by the run itself) and races the account change against the microphone request and the
-voice session request. What happens once a voice session is up (the suspension mid-interview, the
+examiner needs a paid voice session, and the stand-in has none. Sections 7 and 8 start the examiner
+as far as it can go without one (its settings and every voice session request are intercepted in the
+browser and answered by the run itself) and race the account change against the microphone request,
+the connection setup and the voice session request. What happens once a voice session is up (the suspension mid-interview, the
 grading guard after the session is shut down, a grade already requested being kept for its student)
 is proven only by `tests/delayed-grade-owner.test.ts`, sections 7 and 8: the same attempt and start
 guard the examiner uses, driven with promises resolved by hand, and a source scan of how the examiner
@@ -1504,6 +1531,11 @@ EXAMINER_PROBE = """
     recorderStops: 0,
     peers: [],
     sockets: [],
+    // Section 8: the connection setup's offer, held while it is prepared.
+    offers: 0,
+    holdOffer: false,
+    heldOffers: [],
+    blockedSockets: 0,
   };
   window.__f23Examiner = probe;
   const md = navigator.mediaDevices;
@@ -1522,6 +1554,12 @@ EXAMINER_PROBE = """
       });
     };
   }
+  window.__f23ReleaseOffer = () => {
+    probe.holdOffer = false;
+    const waiting = probe.heldOffers.splice(0);
+    waiting.forEach((run) => run());
+    return waiting.length;
+  };
   window.__f23ReleaseMicrophone = () => {
     probe.hold = false;
     const waiting = probe.held.splice(0);
@@ -1537,6 +1575,15 @@ EXAMINER_PROBE = """
   }
   const Peer = window.RTCPeerConnection;
   if (Peer) {
+    const createOffer = Peer.prototype.createOffer;
+    Peer.prototype.createOffer = function (...args) {
+      probe.offers += 1;
+      const run = () => createOffer.apply(this, args);
+      if (!probe.holdOffer) return run();
+      return new Promise((resolve, reject) => {
+        probe.heldOffers.push(() => run().then(resolve, reject));
+      });
+    };
     window.RTCPeerConnection = new Proxy(Peer, {
       construct(target, args) {
         const peer = new target(...args);
@@ -1549,7 +1596,14 @@ EXAMINER_PROBE = """
   if (Socket) {
     window.WebSocket = new Proxy(Socket, {
       construct(target, args) {
-        probe.sockets.push(String(args[0]));
+        const url = String(args[0]);
+        probe.sockets.push(url);
+        // No socket of this run may leave this machine: a voice socket would
+        // go to a real service. Only the dev server's own is let through.
+        if (!url.includes(location.host)) {
+          probe.blockedSockets += 1;
+          throw new DOMException('SYNTHETIC: f23 refuses every socket to another host.', 'SecurityError');
+        }
         return new target(...args);
       },
     });
@@ -1562,8 +1616,9 @@ class InterceptedExaminer:
     """Stands in for the live examiner's address, for every page of one
     browser context. Nothing it answers can reach a voice service."""
 
-    def __init__(self, ctx, hold_connections: bool = False):
+    def __init__(self, ctx, hold_connections: bool = False, settings: dict | None = None):
         self.hold_connections = hold_connections
+        self.settings = settings or EXAMINER_SETTINGS
         self.settings_requests = 0
         self.connection_requests = 0
         # The sign-in token each voice session request carried, so the run
@@ -1582,7 +1637,7 @@ class InterceptedExaminer:
         if path.endswith(EXAMINER_PATH) and request.method == "GET":
             self.settings_requests += 1
             route.fulfill(
-                status=200, content_type="application/json", headers=EXAMINER_CORS, body=json.dumps(EXAMINER_SETTINGS)
+                status=200, content_type="application/json", headers=EXAMINER_CORS, body=json.dumps(self.settings)
             )
             return
         if path.endswith(EXAMINER_PATH) and request.method == "POST":
@@ -1620,6 +1675,22 @@ class InterceptedExaminer:
             self._refuse(self.held.pop(0))
             refused += 1
         return refused
+
+    def answer_held_with_token(self) -> int:
+        """Section 8, the Gemini rollback: the held request is the one for an
+        ephemeral voice token. It is answered with a SYNTHETIC value that is
+        no token at all, so that what the page does NEXT (open the voice
+        socket, or not) can be seen."""
+        answered = 0
+        while self.held:
+            self.held.pop(0).fulfill(
+                status=200,
+                content_type="application/json",
+                headers=EXAMINER_CORS,
+                body=json.dumps(SYNTHETIC_GEMINI_TOKEN),
+            )
+            answered += 1
+        return answered
 
 
 def token_owner(bearer: str) -> str | None:
@@ -1667,6 +1738,9 @@ def examiner_state(page) -> dict:
                     // host) is not the examiner's, so it is counted apart.
                     sockets: p.sockets.filter((url) => !url.includes(location.host)).length,
                     devServerSockets: p.sockets.filter((url) => url.includes(location.host)).length,
+                    offers: p.offers || 0,
+                    heldOffers: (p.heldOffers || []).length,
+                    blockedSockets: p.blockedSockets || 0,
                 };
             }"""
         )
@@ -2065,6 +2139,358 @@ def examiner_scenario(browser) -> None:
     ctx.close()
 
 
+# -- Section 8 (R2D-01, inside the connection setup): the last window --------
+#
+# Section 7 races the account change against the microphone request and
+# against the voice session request itself. Between the two there is one
+# more wait, inside the connection setup (src/lib/speaking/live/
+# openai-session.ts): once the sign-in token has been read, the connection
+# prepares its offer for up to ten seconds and then sends the request that
+# creates the paid voice session. On the Gemini rollback (session.ts) the
+# same window is the request for an ephemeral voice token, followed by the
+# voice socket. The setup now asks the examiner's own "may I continue" check
+# right before that request and that socket. Here the probe HOLDS the page's
+# offer (or the run holds the token request), the account changes from a
+# second tab, and only then is the wait let go.
+
+EMAIL_N = f"synthetic-student-n-f23-{RUN}@example.test"
+EMAIL_O = f"synthetic-student-o-f23-{RUN}@example.test"
+EMAIL_P = f"synthetic-student-p-f23-{RUN}@example.test"
+EMAIL_Q = f"synthetic-student-q-f23-{RUN}@example.test"
+EMAIL_R = f"synthetic-student-r-f23-{RUN}@example.test"
+EMAIL_S = f"synthetic-student-s-f23-{RUN}@example.test"
+
+# The Gemini rollback: free, no sign-in required. SYNTHETIC values only.
+GEMINI_SETTINGS = {
+    "provider": "gemini",
+    "model": "SYNTHETIC-no-model",
+    "backendModel": None,
+    "requiresSignIn": False,
+}
+SYNTHETIC_GEMINI_TOKEN = {"token": "SYNTHETIC-f23-not-a-token", "model": "SYNTHETIC-no-model"}
+
+# Once let go, the connection may prepare itself for up to ten seconds
+# before it would send its request, so the run watches for longer.
+SETUP_WATCH_MS = 13000
+
+
+def link_state_text(state: dict) -> str:
+    return (
+        f"{state_text(state)}; connection offers prepared {state.get('offers')}, held {state.get('heldOffers')}; "
+        f"sockets refused by the run's wrapper {state.get('blockedSockets')}"
+    )
+
+
+def bearers_text(examiner, names: dict) -> str:
+    """Whose sign-in token each voice session request carried. A token the
+    stand-in no longer accepts belongs to a student who has signed out since
+    (the token is read BEFORE the window this section races)."""
+    if not examiner.bearers:
+        return "none sent"
+    labels = []
+    for bearer in examiner.bearers:
+        if not bearer:
+            labels.append("no token")
+            continue
+        owner = token_owner(bearer)
+        labels.append(names.get(owner, owner) if owner else "a token the stand-in no longer accepts (its student signed out)")
+    return ", ".join(labels)
+
+
+def watch_for_requests(page, examiner, ms: int) -> None:
+    waited = 0
+    while examiner.connection_requests == 0 and waited < ms:
+        page.wait_for_timeout(500)
+        waited += 500
+
+
+def open_standalone_examiner(page, examiner) -> bool:
+    goto(page, "/speaking/examiner")
+    # The start button is drawn, enabled, by the server; a press before the
+    # page has come alive does nothing (see section 7 (c)).
+    try:
+        page.wait_for_selector('astro-island[component-url*="LiveExaminer"]:not([ssr])', state="attached", timeout=20000)
+    except Exception:
+        pass
+    waited = 0
+    while examiner.settings_requests < 1 and waited < 15000:
+        page.wait_for_timeout(250)
+        waited += 250
+    page.wait_for_timeout(1500)
+    return wait_until_enabled(page, EXAMINER_START)
+
+
+def link_window_scenario(browser) -> None:
+    write_section(
+        "8. The connection setup asks before the paid request (Codex R2D-01, the last window)",
+        "After section 7's fix one window was left inside the connection setup: once the sign-in token has "
+        "been read, the connection prepares itself for up to ten seconds and then sends the request that "
+        "creates the paid voice session, and nothing asked again in between (on the Gemini rollback, the "
+        "same window lies between the ephemeral token request and the voice socket). The setup now asks the "
+        "examiner's own check right before that request and that socket. A wrapper installed before the "
+        "page loads HOLDS the connection's offer while it is being prepared, so the account changes inside "
+        "exactly that window: (a) student N in the mock's examiner, (b) student P on the standalone examiner "
+        "page, both on the paid path; (c) student R on the standalone page with the Gemini rollback, where "
+        "the run holds the ephemeral token request instead and answers it with a SYNTHETIC value after the "
+        "switch. Every voice session request is intercepted in the browser (held, then refused with a "
+        "SYNTHETIC failure if one ever came), and the wrapper refuses every socket to another host, so "
+        "nothing in this section can reach a real service even if the fix failed.",
+    )
+    if not os.environ.get("F23_EXAMINER_CONFIGURED"):
+        write_note(
+            "**Section 8 not run:** it needs the site started with PUBLIC_LIVE_EXAMINER_URL pointed at the "
+            f"intercepted path `{EXAMINER_PATH}` and F23_EXAMINER_CONFIGURED=1 (see the header)."
+        )
+        write_row("The examiner could be started against the intercepted address", False, "not configured for this run")
+        return
+
+    # -- (a) the mock's examiner, paid path, the offer held after the token --
+    ctx = new_context(browser, permissions=["microphone"])
+    ctx.add_init_script(EXAMINER_PROBE)
+    # Held from the start: a request that did go out would stay visible.
+    examiner = InterceptedExaminer(ctx, hold_connections=True)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_n = journey.ws_sign_up(page_a, EMAIL_N, PASSWORD)
+    write_row("Student N signed up on the local stand-in", bool(user_n), f"user id {user_n}")
+    if not user_n:
+        report_diagnostics("Connection setup (mock), first tab", errors, failed)
+        ctx.close()
+        return
+    seed_speaking_brief(page_a, user_n)
+    ready = open_speaking_brief(page_a)
+    page_a.evaluate("() => { window.__f23Examiner.holdOffer = true; }")
+    mark_page(page_a)
+    journey.try_click(page_a.get_by_role("button", name=SPEAKING_START))
+    held = wait_for_state(page_a, lambda s: (s.get("heldOffers") or 0) >= 1, timeout_ms=30000)
+    write_row(
+        "(a) N presses Start in the mock: the microphone is granted, the recording starts, the sign-in token "
+        "is read, and the connection's offer is held while it is prepared (no voice session request yet)",
+        ready
+        and held.get("heldOffers") == 1
+        and held.get("peers") == 1
+        and held.get("activeRecorders") == 1
+        and (held.get("liveTracks") or 0) >= 1
+        and examiner.connection_requests == 0,
+        f"Start enabled: {ready}; {link_state_text(held)}; voice session requests: {examiner.connection_requests}",
+    )
+    shot(page_a, "28-link-mock-offer-held", MOCK_PATH)
+
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    sign_out_in_second_tab(page_b)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    mid = examiner_state(page_a)
+    write_row(
+        "(a) N signs out in the second tab while the offer is still held: the mock stops, the recording stops "
+        "and the microphone is released",
+        shows(body, MOCK_STOPPED)
+        and mid.get("heldOffers") == 1
+        and mid.get("activeRecorders") == 0
+        and mid.get("liveTracks") == 0
+        and examiner.connection_requests == 0
+        and same_page(page_a),
+        f"stopped screen: {shows(body, MOCK_STOPPED)}; {link_state_text(mid)}; voice session requests: "
+        f"{examiner.connection_requests}; same page: {same_page(page_a)}",
+    )
+    user_o = journey.ws_sign_up(page_b, EMAIL_O, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(1500)
+    write_row(
+        "(a) Student O signs up in the second tab while N's offer is still held",
+        bool(user_o) and examiner_state(page_a).get("heldOffers") == 1,
+        f"user id {user_o}; held offers: {examiner_state(page_a).get('heldOffers')}",
+    )
+
+    released = page_a.evaluate("() => window.__f23ReleaseOffer()")
+    watch_for_requests(page_a, examiner, SETUP_WATCH_MS)
+    after = examiner_state(page_a)
+    write_row(
+        "(a) The offer is let go after the switch: the setup asks before its request, so NO voice session "
+        "request is sent (with N's token or anybody's), the peer connection is closed, and no socket, "
+        "recording or microphone request follows",
+        released == 1
+        and examiner.connection_requests == 0
+        and after.get("peers") == 1
+        and after.get("openPeers") == 0
+        and after.get("sockets") == 0
+        and after.get("recorders") == held.get("recorders")
+        and after.get("micRequests") == held.get("micRequests")
+        and after.get("activeRecorders") == 0
+        and after.get("liveTracks") == 0
+        and same_page(page_a),
+        f"offers let go now: {released}; voice session requests: {examiner.connection_requests} (whose token: "
+        f"{bearers_text(examiner, {user_n: 'N', user_o: 'O'})}); {link_state_text(after)}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "29-link-mock-after-offer-let-go", MOCK_PATH)
+    paid_requests = examiner.connection_requests
+    examiner.refuse_held()
+    report_diagnostics("Connection setup (mock), first tab", errors, failed)
+    report_diagnostics("Connection setup (mock), second tab", errors_b, failed_b)
+    ctx.close()
+
+    # -- (b) the standalone examiner page, paid path, the offer held --
+    ctx = new_context(browser, permissions=["microphone"])
+    ctx.add_init_script(EXAMINER_PROBE)
+    standalone = InterceptedExaminer(ctx, hold_connections=True)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_p = journey.ws_sign_up(page_a, EMAIL_P, PASSWORD)
+    ready = open_standalone_examiner(page_a, standalone)
+    page_a.evaluate("() => { window.__f23Examiner.holdOffer = true; }")
+    mark_page(page_a)
+    journey.try_click(page_a.get_by_role("button", name=EXAMINER_START))
+    held = wait_for_state(page_a, lambda s: (s.get("heldOffers") or 0) >= 1, timeout_ms=30000)
+    write_row(
+        "(b) Student P presses Start on the standalone examiner: recording, the token read, and the "
+        "connection's offer held (no voice session request yet)",
+        bool(user_p)
+        and ready
+        and held.get("heldOffers") == 1
+        and held.get("peers") == 1
+        and held.get("activeRecorders") == 1
+        and (held.get("liveTracks") or 0) >= 1
+        and standalone.connection_requests == 0,
+        f"user id {user_p}; Start enabled: {ready}; {link_state_text(held)}; voice session requests: "
+        f"{standalone.connection_requests}",
+    )
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    sign_out_in_second_tab(page_b)
+    user_q = journey.ws_sign_up(page_b, EMAIL_Q, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    mid = examiner_state(page_a)
+    write_row(
+        "(b) P signs out and student Q signs up in the second tab while the offer is held: the page stops "
+        "the session and says so, the recording stops and the microphone is released",
+        bool(user_q)
+        and shows(body, SESSION_CLOSED)
+        and mid.get("heldOffers") == 1
+        and mid.get("activeRecorders") == 0
+        and mid.get("liveTracks") == 0
+        and standalone.connection_requests == 0
+        and same_page(page_a),
+        f"user id {user_q}; notice shown: {shows(body, SESSION_CLOSED)}; {link_state_text(mid)}; same page: "
+        f"{same_page(page_a)}",
+    )
+    released = page_a.evaluate("() => window.__f23ReleaseOffer()")
+    watch_for_requests(page_a, standalone, SETUP_WATCH_MS)
+    body = body_text(page_a)
+    after = examiner_state(page_a)
+    write_row(
+        "(b) The offer is let go after the switch: NO voice session request is sent, the peer connection is "
+        "closed, no socket opens, nothing records, and the notice stays",
+        released == 1
+        and standalone.connection_requests == 0
+        and after.get("peers") == 1
+        and after.get("openPeers") == 0
+        and after.get("sockets") == 0
+        and after.get("recorders") == held.get("recorders")
+        and after.get("activeRecorders") == 0
+        and after.get("liveTracks") == 0
+        and shows(body, SESSION_CLOSED)
+        and same_page(page_a),
+        f"offers let go now: {released}; voice session requests: {standalone.connection_requests} (whose token: "
+        f"{bearers_text(standalone, {user_p: 'P', user_q: 'Q'})}); {link_state_text(after)}; notice shown: "
+        f"{shows(body, SESSION_CLOSED)}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "30-link-standalone-after-offer-let-go", "/speaking/examiner")
+    paid_requests += standalone.connection_requests
+    standalone.refuse_held()
+    report_diagnostics("Connection setup (standalone), first tab", errors, failed)
+    report_diagnostics("Connection setup (standalone), second tab", errors_b, failed_b)
+    ctx.close()
+
+    # -- (c) the standalone page on the Gemini rollback, the token request held --
+    ctx = new_context(browser, permissions=["microphone"])
+    ctx.add_init_script(EXAMINER_PROBE)
+    rollback = InterceptedExaminer(ctx, hold_connections=True, settings=GEMINI_SETTINGS)
+    page_a = ctx.new_page()
+    errors, failed = attach_diagnostics(page_a)
+    goto(page_a, "/dashboard")
+    journey.wait_for_dashboard(page_a)
+    user_r = journey.ws_sign_up(page_a, EMAIL_R, PASSWORD)
+    ready = open_standalone_examiner(page_a, rollback)
+    mark_page(page_a)
+    journey.try_click(page_a.get_by_role("button", name=EXAMINER_START))
+    held_request = rollback.wait_until_held(page_a)
+    before = examiner_state(page_a)
+    write_row(
+        "(c) Student R presses Start on the Gemini rollback: recording, and the request for an ephemeral "
+        "voice token held in the browser (no socket yet)",
+        bool(user_r)
+        and ready
+        and held_request
+        and rollback.connection_requests == 1
+        and before.get("activeRecorders") == 1
+        and (before.get("liveTracks") or 0) >= 1
+        and before.get("peers") == 0
+        and before.get("sockets") == 0,
+        f"user id {user_r}; Start enabled: {ready}; token request held: {held_request}; {link_state_text(before)}",
+    )
+    shot(page_a, "31-link-gemini-token-request-held", "/speaking/examiner")
+    page_b = ctx.new_page()
+    errors_b, failed_b = attach_diagnostics(page_b)
+    sign_out_in_second_tab(page_b)
+    user_s = journey.ws_sign_up(page_b, EMAIL_S, PASSWORD)
+    page_a.bring_to_front()
+    page_a.wait_for_timeout(2500)
+    body = body_text(page_a)
+    mid = examiner_state(page_a)
+    write_row(
+        "(c) R signs out and student S signs up in the second tab while the token request is held: the page "
+        "stops the session and says so, the recording stops and the microphone is released",
+        bool(user_s)
+        and shows(body, SESSION_CLOSED)
+        and mid.get("activeRecorders") == 0
+        and mid.get("liveTracks") == 0
+        and mid.get("sockets") == 0
+        and same_page(page_a),
+        f"user id {user_s}; notice shown: {shows(body, SESSION_CLOSED)}; {link_state_text(mid)}; same page: "
+        f"{same_page(page_a)}",
+    )
+    answered = rollback.answer_held_with_token()
+    page_a.wait_for_timeout(4000)
+    body = body_text(page_a)
+    after = examiner_state(page_a)
+    write_row(
+        "(c) The token request is then answered with a SYNTHETIC value: the setup asks before its socket, so "
+        "NO voice socket is even attempted (the wrapper, which would refuse it, saw none), nothing records, "
+        "and the notice stays",
+        answered == 1
+        and after.get("sockets") == 0
+        and after.get("blockedSockets") == 0
+        and after.get("peers") == 0
+        and after.get("activeRecorders") == 0
+        and after.get("liveTracks") == 0
+        and rollback.connection_requests == 1
+        and shows(body, SESSION_CLOSED)
+        and same_page(page_a),
+        f"answered: {answered}; token requests in all: {rollback.connection_requests}; {link_state_text(after)}; "
+        f"notice shown: {shows(body, SESSION_CLOSED)}; same page: {same_page(page_a)}",
+    )
+    shot(page_a, "32-link-gemini-after-token", "/speaking/examiner")
+    report_diagnostics("Connection setup (Gemini rollback), first tab", errors, failed)
+    report_diagnostics("Connection setup (Gemini rollback), second tab", errors_b, failed_b)
+    write_note(
+        "Every request to the examiner address in section 8 was answered inside the browser by the run "
+        "itself: settings with SYNTHETIC values, every paid voice session request held and then refused with a "
+        f"SYNTHETIC 503 ({paid_requests} came in this section), and the Gemini token request answered with a "
+        "SYNTHETIC value that is no token. The wrapper refuses every socket to another host "
+        f"({after.get('blockedSockets')} attempted in (c)), so no voice service, model or token service could "
+        "be reached."
+    )
+    ctx.close()
+
+
 def run():
     sections = selected_sections()
     if os.environ.get("F23_APPEND") == "1" and RESULTS_PATH.exists():
@@ -2093,6 +2519,8 @@ def run():
                 speaking_switch_scenario(browser)
             if "7" in sections:
                 examiner_scenario(browser)
+            if "8" in sections:
+                link_window_scenario(browser)
         finally:
             browser.close()
     text = RESULTS_PATH.read_text(encoding="utf-8")
@@ -2103,7 +2531,7 @@ def run():
 
 
 def selected_sections() -> set:
-    """F23_SECTIONS, for example "7" or "1,2,3,4,5,6" (the default)."""
+    """F23_SECTIONS, for example "7,8" or "1,2,3,4,5,6" (the default)."""
     raw = os.environ.get("F23_SECTIONS", "1,2,3,4,5,6")
     return {part.strip() for part in raw.split(",") if part.strip()}
 

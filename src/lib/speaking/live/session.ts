@@ -6,9 +6,17 @@
    there): client sends one `setup` frame, then streams 16 kHz PCM16 mic
    chunks as `realtimeInput`; the server streams 24 kHz PCM16 speech back in
    `serverContent` frames plus incremental input/output transcriptions,
-   which we accumulate into the interview transcript used for grading. */
+   which we accumulate into the interview transcript used for grading.
+
+   ASKED BEFORE THE SOCKET (finding R2D-01, inside the setup). connect takes
+   the examiner's own "may I continue" check (./start-check.ts says why it is
+   a function) and asks it before the token request, since the audio set-up
+   before connect can wait, and again immediately before the socket, which is
+   the voice session itself. A no rejects with LiveStartCancelled: the socket
+   is never opened, and nothing more is sent. */
 
 import { EXAMINER_VOICE } from './script';
+import { continueOrCancel, type MayContinue } from './start-check';
 
 /* NOTE: ephemeral tokens only authenticate against the ...Constrained method
    (verified 2026-07-10: plain BidiGenerateContent rejects them with 1008
@@ -63,7 +71,9 @@ export class ExaminerSession {
     tokenEndpoint: string,
     systemInstruction: string,
     cb: SessionCallbacks,
+    mayContinue?: MayContinue,
   ): Promise<ExaminerSession> {
+    continueOrCancel(mayContinue);
     const resp = await fetch(tokenEndpoint, { method: 'POST' });
     if (!resp.ok) {
       const err = (await resp.json().catch(() => null)) as { error?: string } | null;
@@ -71,6 +81,10 @@ export class ExaminerSession {
     }
     const { token, model } = (await resp.json()) as { token: string; model: string };
 
+    /* The token request took its time: ask again, immediately before the
+       socket. A no opens nothing (the minted token is single use and simply
+       expires unused). */
+    continueOrCancel(mayContinue);
     const session = new ExaminerSession(cb);
     await session.open(token, model, systemInstruction);
     return session;
