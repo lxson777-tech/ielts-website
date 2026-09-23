@@ -30,14 +30,19 @@ What it does:
 
 Re-run this whenever the reading test bank changes (new tests added,
 existing ones edited) and the practice exercises should be refreshed to
-match. It always regenerates the same 11 lesson keys; the "paraphrase"
-lesson is left untouched (see NOTE below).
+match. It always regenerates the same 11 lesson keys, plus the real
+passage at the end of the "paraphrase" lesson (see NOTE below).
 
 NOTE on "paraphrase": it is a skill lesson, not an official IELTS reading
-question type (see the comment on it in src/data/reading.ts), so none of
-the imported tests contain a matching question group. Its practice
-exercise is intentionally left as hand-written content; this script keeps
-it byte-for-byte from the current file.
+question type (see the comment on it in src/data/reading.ts), so no
+imported test has a question group tagged for it. Its exercise has two
+parts. The first is a hand-written warm-up of single sentences, kept
+byte-for-byte below. The second is one real passage with its real
+questions, chosen by hand in PARAPHRASE_SOURCE because every one of its
+statements turns on a paraphrase the lesson teaches (a quantifier shift, a
+restated rank, words reused with a different claim). It was added on
+2026-09-23 after the owner pointed out that the lesson had questions but
+nothing to actually read.
 
 NOTE on "diagram": the 40 reading tests have no group tagged
 "diagram-labelling" (only the listening tests do), but two groups are real
@@ -651,9 +656,9 @@ def indent_block(text, spaces):
 # Verbatim paraphrase block, kept byte-for-byte from the current file.
 PARAPHRASE_BLOCK = """  paraphrase: {
     title: 'Exercise. Spot the Correct Paraphrase',
-    intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
     units: [
       {
+        intro: 'Warm-up, written for this lesson: for each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
         questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
@@ -745,8 +750,61 @@ PARAPHRASE_BLOCK = """  paraphrase: {
       },
         ],
       },
-    ],
+"""
+PARAPHRASE_TAIL = """    ],
   },"""
+
+# The real passage that ends the paraphrase lesson: test number, the start
+# of the passage title, and the question groups to take from it. Its third
+# group (sentence endings, questions 7 to 9) is left out because the
+# imported copy merged its answer options into the last question's text.
+PARAPHRASE_SOURCE = {"test": 20, "title": "Sleeping on the job", "kinds": ("mc", "ynng")}
+PARAPHRASE_REAL_INTRO = (
+    "Every answer below depends on a paraphrase of the passage above: "
+    "find the sentence that talks about the same idea, then check whether it really makes the same claim. "
+    "For the Yes / No / Not Given statements: Yes means the passage says the same thing in other words, "
+    "No means it says the opposite, and Not Given means it never says it."
+)
+
+
+def build_paraphrase_real_unit(groups):
+    """The real passage for the paraphrase lesson: one passage shown once,
+       followed by every chosen question group in test order."""
+    src = PARAPHRASE_SOURCE
+    picked = [
+        gr for gr in groups
+        if gr["test_num"] == src["test"]
+        and gr["passage_title"].startswith(src["title"])
+        and classify(gr) in src["kinds"]
+    ]
+    if not picked:
+        raise SystemExit(f"paraphrase: no groups found for Test {src['test']} '{src['title']}'")
+    questions = []
+    for gr in picked:
+        kind = classify(gr)
+        questions += conv_mc(gr) if kind == "mc" else conv_tfng_ynng(gr, YNNG_OPTS if kind == "ynng" else TFNG_OPTS)
+    first = picked[0]
+    # Name exactly the questions shown. Groups left out leave gaps in the
+    # numbering, so "1 to 13" would promise questions that are not there.
+    numbers = []
+    for gr in picked:
+        ends = [int(n) for n in gr["qrange"].split(" to ")]
+        numbers += list(range(ends[0], ends[-1] + 1))
+    spans, run = [], [numbers[0]]
+    for n in numbers[1:]:
+        if n == run[-1] + 1:
+            run.append(n)
+        else:
+            spans.append(run); run = [n]
+    spans.append(run)
+    parts = [str(r[0]) if len(r) == 1 else f"{r[0]} to {r[-1]}" for r in spans]
+    qrange = parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
+    label = f"Academic Reading Test {first['test_num']}, {first['part_label']}, Questions {qrange}"
+    return {
+        "passages": [{"label": label, "title": first["passage_title"], "paragraphs": first["passage_paras"]}],
+        "intro": PARAPHRASE_REAL_INTRO,
+        "questions": questions,
+    }
 
 
 def main():
@@ -776,6 +834,8 @@ def main():
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(HEADER)
         f.write(PARAPHRASE_BLOCK)
+        f.write(indent_block(ts_json(build_paraphrase_real_unit(groups), 0), 6) + ",\n")
+        f.write(PARAPHRASE_TAIL)
         f.write("\n\n")
         for i, (slug, pset) in enumerate(entries):
             body = ts_json(pset, 2)

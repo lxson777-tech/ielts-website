@@ -73,9 +73,9 @@ export interface PracticeSet {
 export const READING_PRACTICE: Record<string, PracticeSet> = {
   paraphrase: {
     title: 'Exercise. Spot the Correct Paraphrase',
-    intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
     units: [
       {
+        intro: 'Warm-up, written for this lesson: for each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
         questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
@@ -166,6 +166,189 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
       },
         ],
+      },
+      {
+        "passages": [
+          {
+            "label": "Academic Reading Test 20, Passage 1, Questions 1 to 6 and 12 to 13",
+            "title": "Sleeping on the job",
+            "paragraphs": [
+              "North Americans are not a people of the siesta. There is a tendency to associate afternoon naps with laziness and non-productivity. Latin Americans and some in European cultures take a different view. In Mexico and Greece, for example, it is customary to close businesses between noon and about 4:00 pm – siesta time. Recent studies are showing that if you can take a 15 to 30-minute nap while at work in the afternoon, you’ll be more alert, more energetic, happier doing what you do, more productive and therefore more likely to get ahead. Napping on the job is not yet a trend but there is serious talk in academic circles about the merits of ‘power napping’.",
+              "By some estimate, the average American collects an annual ‘sleep debt’ of 500 hours – subtracting from an assumed norm of eight hours a night. Two out of three Americans get less than eight hours of sleep a night during the work week, according to a recent study by the National Sleep Foundation in Washington. Forty percent say they’re so tired that it interferes with their daily activities. Sleep researcher William Anthony, a professor of psychology at Boston University, says fatigue is a significant problem in modern society. He says sleepiness is a leading cause of auto accidents, second only to drunkenness. All that drowsiness costs an estimated $18 billion annually in lost productivity. ‘We have a simple message,’ says Professor Anthony. ‘People should be allowed to nap at their breaks. The rationale is a productivity one – workers are sleepy, and when they’re sleepy on the job they’re not productive.’",
+              "Some companies are encouraging sleep at work, primarily for safety. The Metropolitan Transit Authority, which runs the New York subway system and two suburban railroads, is considering power naps for its train operators and bus drivers. Another railway has started letting its train operators take nap breaks of up to 45 minutes but only when trains are stopped at designated spots off the main lines and dispatchers have been notified. Some overseas air carriers permit airline pilots, when not on duty, to nap in the cockpit. Airlines in the United States have not accepted this practice yet.",
+              "According to the Encyclopedia of Sleep and Dreaming: ‘There is a biologically-based tendency to fall asleep in mid-afternoon just as there is a tendency to fall asleep at night. Moreover, if sleep the night before is reduced or disturbed for any reason, a nap the subsequent afternoon is not only more likely to occur, but it can also relieve sleepiness and increase alertness.’ The nap zone, documented in numerous studies, is typically between noon and 3:00 pm. Some people power through this natural slowdown with caffeine or sugar but if employers allowed naps, the benefits would be improvements in mood and performance, especially in mid-afternoon. Workers would concentrate better and persevere in tasks longer. Workers commonly sneak naps even without permission but some companies have begun encouraging naps as part of their policies on boosting production. One US distributor is opening a 2,000-square-foot nap facility that provides beds for up to 20 of its 225 workers at a time. A company in Japan sets up tents in business offices, provides eyeshades and ear plugs, and encourages employees to snooze in the middle of the work day. According to Professor Anthony, ‘You’re not going to see napping at traditional types of operations … but in 21st century-style operations, this isn’t going to be a perk. It’s going to have more to do with productivity. Smart employers are understanding that their employees need rest to do their best.’",
+              "Some suspect that corporate naptime, like other perks, is just a way to keep people at the office longer. On the other hand, growing flexibility in hours, for some workers, is allowing nap times to become more common. With eleven million Americans telecommuting and another forty million winking out of their bonus full- or part-time, office hours are basically as long as you can stay awake. One thing is sure: longer commutes, more intense, stressful workday and higher production demands are taking a toll. So, with Americans sleeping less and working longer hours, some employers are warming up to the idea that a little nap in the middle of the day can be good for business."
+            ]
+          }
+        ],
+        "intro": "Every answer below depends on a paraphrase of the passage above: find the sentence that talks about the same idea, then check whether it really makes the same claim. For the Yes / No / Not Given statements: Yes means the passage says the same thing in other words, No means it says the opposite, and Not Given means it never says it.",
+        "questions": [
+          {
+            "prompt": "According to the passage, which of the following statements is supported by recent research?",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "A",
+                "label": "A) Napping is an indicator of laziness"
+              },
+              {
+                "value": "B",
+                "label": "B) Two thirds of Americans sleep too much"
+              },
+              {
+                "value": "C",
+                "label": "C) Napping in the workplace is a current trend"
+              },
+              {
+                "value": "D",
+                "label": "D) Short naps at work increase productivity"
+              }
+            ],
+            "answer": "D",
+            "explanation": "The passage says a short afternoon nap makes workers 'more alert, more energetic... more productive', directly supporting D.",
+            "source": "Academic Reading Test 20, Questions 1"
+          },
+          {
+            "prompt": "The number one cause of car accidents is fatigue",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "No",
+            "explanation": "The passage says sleepiness is 'a leading cause of auto accidents, second only to drunkenness', so it is not the number one cause, contradicting the statement.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "People who nap in the afternoon are lazy",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "Not Given",
+            "explanation": "The opening mentions a general tendency 'to associate afternoon naps with laziness', but the writer never states that nappers actually are lazy, so there is no information either way.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "A nap in the middle of the day can improve your mood",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "Yes",
+            "explanation": "The passage says allowing naps would bring 'improvements in mood and performance', directly matching the claim.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "People who nap regularly live longer",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "Not Given",
+            "explanation": "The passage discusses productivity, safety and alertness benefits of napping but never mentions any link to lifespan.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "The majority of Americans sleep at least eight hours a night",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "No",
+            "explanation": "The passage says 'two out of three Americans get less than eight hours of sleep a night', meaning most do not reach eight hours, contradicting the statement.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "According to the writer, in America the workplace is becoming …",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "A",
+                "label": "A) less flexible"
+              },
+              {
+                "value": "B",
+                "label": "B) more exciting"
+              },
+              {
+                "value": "C",
+                "label": "C) less demanding"
+              },
+              {
+                "value": "D",
+                "label": "D) more stressful"
+              }
+            ],
+            "answer": "D",
+            "explanation": "The passage lists 'longer commutes, more intense, stressful workday and higher production demands', matching D, more stressful.",
+            "source": "Academic Reading Test 20, Questions 12 to 13"
+          },
+          {
+            "prompt": "According to the writer, what is the main reason why employers support the idea of naps at work?",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "A",
+                "label": "A) for health reasons"
+              },
+              {
+                "value": "B",
+                "label": "B) to promote safety"
+              },
+              {
+                "value": "C",
+                "label": "C) to increase productivity"
+              },
+              {
+                "value": "D",
+                "label": "D) to encourage creativity"
+              }
+            ],
+            "answer": "C",
+            "explanation": "Anthony says workplace napping is 'going to have more to do with productivity', matching C.",
+            "source": "Academic Reading Test 20, Questions 12 to 13"
+          }
+        ]
       },
     ],
   },
