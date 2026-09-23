@@ -12,6 +12,11 @@
 
 import type { PracticeTest } from './schema';
 import { getBestBand, recordTestAttempt } from '../progress';
+import { deviceStorage, safeGet, safeSet, scopedKey } from '../store-owner';
+/* The same "is this still the student who started the sitting" rule the test
+   player uses, imported rather than written a second time: a mock day and a
+   single paper must not be able to disagree about whose work they are. */
+import { currentSessionOwner, ownerStillCurrent } from '../test-session';
 
 export interface TestPair {
   listening: PracticeTest;
@@ -88,12 +93,29 @@ export interface MockAttempt {
   secondsUsed: number;
 }
 
-const MOCK_KEY = 'ielts.mock.v1';
+/* The store's base key, unchanged. What actually reaches localStorage is
+   this plus the owner, for example 'ielts.mock.v1::u:9f0c'.
+
+   WHOSE MOCK SITTINGS (23 September 2026)
+   This was a device-wide pile with nobody's name on it, exactly like the
+   active test session and the four older stores before it (see
+   src/lib/store-owner.ts's header and src/lib/progress.ts's). A mock day
+   carries the student's own essays, so a second student signing in on the
+   same browser could read the first one's writing. Every read and write
+   below now resolves its key through store-owner.ts. The old device-wide
+   key keeps its value for good: it is copied, once, into the key of
+   whichever owner the device's own stamp names, or the anonymous device
+   owner when there is no stamp. A different signed-in student never
+   inherits it. */
+export const MOCK_STORE_KEY = 'ielts.mock.v1';
+
+const MOCK_KEY = MOCK_STORE_KEY;
 
 function readStore(): MockAttempt[] {
+  const storage = deviceStorage();
+  if (!storage) return [];
   try {
-    if (typeof window === 'undefined') return [];
-    const raw = window.localStorage.getItem(MOCK_KEY);
+    const raw = safeGet(storage, scopedKey(MOCK_KEY));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -103,12 +125,11 @@ function readStore(): MockAttempt[] {
 }
 
 function writeStore(list: MockAttempt[]): void {
-  try {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(MOCK_KEY, JSON.stringify(list));
-  } catch {
-    /* storage blocked or full — nothing else to do client-side */
-  }
+  const storage = deviceStorage();
+  if (!storage) return;
+  /* safeSet swallows a blocked or full store: a mock record is a
+     nice-to-have, never a reason to lose the results screen. */
+  safeSet(storage, scopedKey(MOCK_KEY), JSON.stringify(list));
 }
 
 function localDateKey(iso: string): string {
@@ -122,6 +143,12 @@ export function nextMockId(at: string): string {
   const date = localDateKey(at);
   const todayCount = readStore().filter((m) => m.id.startsWith(`mock-${date}-`)).length;
   return `mock-${date}-${todayCount + 1}`;
+}
+
+/** The owner a mock sitting is bound to, captured by MockExam.tsx when the
+    sitting begins and handed back to saveMockAttempt when it ends. */
+export function currentMockOwner(): string {
+  return currentSessionOwner();
 }
 
 export function listMockAttempts(): MockAttempt[] {
@@ -165,8 +192,19 @@ export function overallMockBand(bands: number[]): number {
     'part1' | 'part2' | 'part3' only, the same shape the standalone
     /speaking/examiner full test already leaves alone — see the `m !== 'full'`
     guard in LiveExaminer's finishTest). This entry exists only so something
-    in progress records that a mock sitting happened on this day. */
-export function saveMockAttempt(attempt: MockAttempt): void {
+    in progress records that a mock sitting happened on this day.
+
+    Returns false, writing nothing at all, when `sittingOwner` (the owner the
+    sitting began under, see currentMockOwner) is no longer the owner of this
+    browser. */
+export function saveMockAttempt(attempt: MockAttempt, sittingOwner?: string): boolean {
+  /* Finding 1 of the 23 September 2026 review, the mock's half of it: a mock
+     day that outlived the student who sat it (they signed out, or somebody
+     else signed in on this browser part way through) records nothing at all,
+     rather than filing four papers and two essays under whoever happens to
+     be signed in when the results screen appears. */
+  if (!ownerStillCurrent(sittingOwner)) return false;
+
   const list = readStore();
   list.push(attempt);
   writeStore(list);
@@ -187,4 +225,5 @@ export function saveMockAttempt(attempt: MockAttempt): void {
     kind: 'drill',
     skill: 'reading',
   });
+  return true;
 }

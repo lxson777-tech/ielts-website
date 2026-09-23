@@ -25,10 +25,13 @@ import {
   pairLabel,
   testNumber,
   nextMockId,
+  currentMockOwner,
   saveMockAttempt,
   overallMockBand,
   type MockEssay,
 } from '../lib/tests/mock';
+import { ownerStillCurrent } from '../lib/test-session';
+import { onOwnerChange } from '../lib/store-owner';
 import { recordSubmission } from '../lib/learning/store.browser';
 import { paperExposureKey } from '../lib/learning/evidence';
 import { mockOverallAllowed } from './mock-summary';
@@ -173,6 +176,15 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   const [speakingSkipped, setSpeakingSkipped] = useState(false);
   const savedRef = useRef(false);
 
+  /* WHOSE MOCK DAY THIS IS (finding 1 of the 23 September 2026 review).
+     Captured when the sitting begins, the same way a single paper binds
+     itself in TestPlayer.tsx. A mock chains four papers over nearly three
+     hours, so it is the sitting most likely to outlive whoever started it:
+     a sign-out here, or a sign-in in another tab, must not turn one
+     student's essays and bands into another student's record. */
+  const mockOwnerRef = useRef('');
+  const [ownerChanged, setOwnerChanged] = useState(false);
+
   /* A mock sitting is a timed assessment from the first paper to the last, so
      flag it on <body> for the Mr EZ tutor panel (see readPlace() in
      src/components/tutor/MrEzPanel.tsx). The nested TestPlayer sets the same
@@ -242,6 +254,11 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
   useEffect(() => {
     if (stage !== 'results' || savedRef.current) return;
     if (!listeningResult || !readingResult || !listeningTest || !readingTest) return;
+    /* Never record a sitting under somebody who did not sit it. */
+    if (!ownerStillCurrent(mockOwnerRef.current)) {
+      setOwnerChanged(true);
+      return;
+    }
     savedRef.current = true;
     const essays: MockEssay[] = [];
     if (task1Prompt) essays.push({ promptId: task1Prompt.id, task: 'task1', text: essay1, wordCount: countWords(essay1) });
@@ -261,7 +278,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       speakingBand: speakingResult?.overallBand,
       speakingSkipped,
       secondsUsed: listeningResult.secondsUsed + readingResult.secondsUsed + (WRITING_SECONDS - writingSecondsLeft),
-    });
+    }, mockOwnerRef.current);
 
     /* Learner-evidence recording (WP12): one aggregate event for the whole
        indivisible sitting (catalogue activity 'test:mock', domain
@@ -294,10 +311,23 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
 
   function beginMock() {
     const now = new Date().toISOString();
+    mockOwnerRef.current = currentMockOwner();
+    setOwnerChanged(false);
     setMockId(nextMockId(now));
     setStartedAt(now);
     setStage('listening');
   }
+
+  /* The account using this browser changed part way through the sitting.
+     The mock stops here and records nothing: each leg TestPlayer already
+     finished is saved under the student who sat it, and the combined record
+     is simply not written, because it would have to be written under
+     somebody who did not sit it. */
+  useEffect(() => {
+    return onOwnerChange(() => {
+      if (mockOwnerRef.current && !ownerStillCurrent(mockOwnerRef.current)) setOwnerChanged(true);
+    });
+  }, []);
 
   /* Developer shortcut for manual/automated verification: ?stage=speaking
      jumps straight to the Speaking brief screen with synthesized Listening,
@@ -308,6 +338,7 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
     if (!import.meta.env.DEV) return;
     if (new URLSearchParams(window.location.search).get('stage') !== 'speaking') return;
     const now = new Date().toISOString();
+    mockOwnerRef.current = currentMockOwner();
     setMockId(nextMockId(now));
     setStartedAt(now);
     setListeningResult({ raw: 32, total: 40, band: 7, bandLabel: '7', secondsUsed: 28 * 60 });
@@ -337,6 +368,52 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
       setReadingResult({ raw: last.raw, total: last.total, band: last.band, bandLabel: last.bandLabel, secondsUsed: last.secondsUsed });
     }
     setStage('transition-writing');
+  }
+
+  /* The account changed part way through: the sitting stops here, nothing is
+     recorded, and the screen says so plainly. Whatever each finished leg
+     already saved stays with the student who sat it. */
+  if (ownerChanged) {
+    const otherStudent = currentMockOwner().startsWith('u:');
+    return (
+      <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
+        <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover" role="status">
+          <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Mock exam stopped')}</p>
+          <h1 className="mt-1 font-display text-2xl font-extrabold">
+            {otherStudent
+              ? t('This mock exam belongs to another student')
+              : t('You signed out during this mock exam')}
+          </h1>
+          <p className="mt-3 text-ink-muted">
+            {t('The account on this browser changed part way through, so nothing from this sitting was saved to it. Each paper that was already finished stays with the student who sat it.')}
+          </p>
+          <div className="mt-8 flex items-center justify-between gap-3">
+            <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+              {t('Back')}
+            </a>
+            <button
+              type="button"
+              onClick={() => {
+                setOwnerChanged(false);
+                savedRef.current = false;
+                setListeningResult(null);
+                setReadingResult(null);
+                setSpeakingResult(null);
+                setSpeakingSkipped(false);
+                setEssay1('');
+                setEssay2('');
+                setWritingSecondsLeft(WRITING_SECONDS);
+                mockOwnerRef.current = '';
+                setStage('start');
+              }}
+              className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
+            >
+              {t('Start a fresh mock exam')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!listeningTest || !readingTest) {

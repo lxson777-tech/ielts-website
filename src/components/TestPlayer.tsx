@@ -13,7 +13,18 @@ import {
   scoredQuestionIds,
 } from '../lib/tests/schema';
 import { recordTestAttempt } from '../lib/progress';
-import { activeSession, clearSession, loadSession, saveAnswers, secondsLeft, startSession, type TestSession } from '../lib/test-session';
+import {
+  activeSession,
+  clearSession,
+  currentSessionOwner,
+  loadSession,
+  ownerStillCurrent,
+  saveAnswers,
+  secondsLeft,
+  startSession,
+  type TestSession,
+} from '../lib/test-session';
+import { onOwnerChange } from '../lib/store-owner';
 import { drillTypes } from '../lib/tests/drills';
 import Html from './Html';
 import StrategyPanel from './StrategyPanel';
@@ -261,6 +272,22 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     [test.id],
   );
 
+  /* WHOSE SITTING THIS IS (finding 1 of the 23 September 2026 review).
+     Captured the moment this player picks a sitting up, and never read off
+     storage again: a sitting is bound to the student who started it for as
+     long as it is on screen. Everything that saves, submits or clears
+     checks against it first, so a sign-out or a sign-in in another tab can
+     never turn one student's answers into another student's result.
+     `resumed.owner` is preferred where a resumed sitting names one, so a
+     refresh keeps the same binding rather than quietly re-deciding it. */
+  const sittingOwnerRef = useRef<string>(
+    typeof window === 'undefined' ? '' : resumed?.owner ?? currentSessionOwner(),
+  );
+  /* Set when the owner changes while this player is mounted. 'signed-out'
+     when nobody is signed in now, 'other-student' when somebody else is.
+     Either way the sitting stops where it is and nothing is submitted. */
+  const [ownerChange, setOwnerChange] = useState<'signed-out' | 'other-student' | null>(null);
+
   // A retake is coaching, not a fresh exam start: it skips the instructions
   // gate and begins straight away, same as if "Start test" had been clicked.
   const [started, setStarted] = useState(() => !!resumed || isRetake);
@@ -367,9 +394,35 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   }
 
   function start() {
+    sittingOwnerRef.current = currentSessionOwner();
     const s = startSession(test);
     setTimeLeft(secondsLeft(s));
     setStarted(true);
+  }
+
+  /* "Start fresh" on the owner-changed screen: throw away what is on screen
+     (it is still saved under the student who typed it, untouched) and hand
+     the paper to whoever is using this browser now, from the beginning. A
+     retake has no instructions gate to fall back to, so it starts straight
+     away, exactly as it did when it was opened. */
+  function startFreshUnderCurrentOwner() {
+    submittedRef.current = false;
+    setSubmitted(false);
+    setShowScore(false);
+    setAnswers({});
+    setFlagged(new Set());
+    setAssistedIds(new Set());
+    setConfirmSubmit(false);
+    setByTypeStats(null);
+    setActivePart(0);
+    setOwnerChange(null);
+    if (isRetake) {
+      start();
+      return;
+    }
+    sittingOwnerRef.current = currentSessionOwner();
+    setTimeLeft(test.durationMinutes * 60);
+    setStarted(false);
   }
 
   /* Retake mode starts immediately (see `started`'s initializer above) but
@@ -378,6 +431,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      both work normally within the retake. */
   useEffect(() => {
     if (isRetake && !resumed) {
+      sittingOwnerRef.current = currentSessionOwner();
       const s = startSession(test);
       setTimeLeft(secondsLeft(s));
     }
@@ -404,6 +458,44 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     if (stale && stale.testId !== test.id) recordStaleSessionAbandonment(stale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /* The owner changed while this player was on screen: a sign-out here, or a
+     sign-in, sign-out or account switch in another tab (store-owner.ts's
+     onOwnerChange fires for all of them). The sitting on screen belongs to
+     whoever started it, so it stops here: the timer is frozen by
+     `ownerChange`, nothing more is saved, and handleSubmit refuses. Nothing
+     is deleted, and nothing is written under the new owner: the answers stay
+     in the previous student's own scoped key, exactly as they were, ready
+     for them to resume when they sign back in.
+
+     A submitted paper is left alone. Its result is already recorded under
+     the owner who sat it, and the review screen on top of it is that
+     student's own reading of their own answers. */
+  useEffect(() => {
+    return onOwnerChange(() => {
+      if (submittedRef.current) return;
+      if (!startedRef.current) {
+        /* Still on the instructions gate: there is no sitting yet, so the
+           new student simply gets the paper, with no interruption at all. */
+        sittingOwnerRef.current = currentSessionOwner();
+        setOwnerChange(null);
+        return;
+      }
+      if (ownerStillCurrent(sittingOwnerRef.current)) {
+        setOwnerChange(null);
+        return;
+      }
+      setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* `started` as a ref, so the owner-change listener above (subscribed once,
+     on mount) reads today's value rather than the one it closed over. */
+  const startedRef = useRef(started);
+  useEffect(() => {
+    startedRef.current = started;
+  }, [started]);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
@@ -464,13 +556,26 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       // Normalisation happens once, at scoring time (isCorrect).
       if (value) next[qid] = value;
       else delete next[qid];
-      saveAnswers(next);
+      /* Bound to the student who started this sitting: once somebody else is
+         signed in on this browser, saveAnswers writes nothing at all rather
+         than dropping this keystroke into their key. */
+      saveAnswers(next, sittingOwnerRef.current);
       return next;
     });
   }
 
   function handleSubmit() {
     if (submittedRef.current) return;
+    /* The one rule that closes finding 1 of the 23 September 2026 review: a
+       result is recorded under the student who SAT the paper, and only while
+       that student is still the one using this browser. A sitting that
+       outlived its owner (they signed out, or somebody else signed in) is
+       not submitted at all: it stays saved under its own owner and the
+       screen says so. */
+    if (!ownerStillCurrent(sittingOwnerRef.current)) {
+      setOwnerChange(currentSessionOwner().startsWith('u:') ? 'other-student' : 'signed-out');
+      return;
+    }
     submittedRef.current = true;
     setSubmitted(true);
     setShowScore(true);
@@ -527,7 +632,10 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       sourceTestId: baseId,
     });
 
-    clearSession(); // in-progress state done; permanent attempt kept in progress history
+    // in-progress state done; permanent attempt kept in progress history. The
+    // owner is passed so this clears only the sitting that was just
+    // submitted, never a different student's sitting.
+    clearSession(sittingOwnerRef.current);
     // onFinish itself is wired to the score modal's "Back to results" button,
     // not called here — the retake still shows its own score/review first.
   }
@@ -550,9 +658,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     handleSubmit();
   }
 
-  /* Timer — runs only once started, auto-submits at zero. */
+  /* Timer: runs only once started, auto-submits at zero. Frozen the moment
+     the owner changes: a clock that kept running would auto-submit the
+     previous student's paper into whoever is signed in now. */
   useEffect(() => {
-    if (!started || submitted) return;
+    if (!started || submitted || ownerChange) return;
     const id = window.setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
@@ -565,7 +675,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     }, 1000);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [started, submitted]);
+  }, [started, submitted, ownerChange]);
 
   /* Flag a running paper on <body> so the Mr EZ tutor panel switches to
      invigilator mode (see readPlace() in src/components/tutor/MrEzPanel.tsx).
@@ -760,6 +870,17 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
             null,
           )
       : null;
+
+  /* ── The sitting on screen belongs to somebody else now ── */
+  if (ownerChange) {
+    return (
+      <SittingOwnerChangedScreen
+        reason={ownerChange}
+        hubUrl={hubUrl}
+        onStartFresh={startFreshUnderCurrentOwner}
+      />
+    );
+  }
 
   /* ── Instructions gate — timer does not run until Start ── */
   if (!started) {
@@ -2495,6 +2616,57 @@ function PerQuestionMultiAnswer({
             </label>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+/* Shown when the account using this browser changed while a paper was open:
+   a sign-out here, or a sign-in or account switch in another tab. The sitting
+   on screen belongs to the student who started it, so it is stopped and left
+   exactly where it is, under their own key, ready for them to resume. It is
+   not an error and nothing was lost, so it reads calmly and offers the two
+   things that are actually useful: start this paper fresh as whoever is
+   signed in now, or go back to the hub. */
+function SittingOwnerChangedScreen({
+  reason,
+  hubUrl,
+  onStartFresh,
+}: {
+  reason: 'signed-out' | 'other-student';
+  hubUrl: string;
+  onStartFresh: () => void;
+}) {
+  const { t } = useT();
+  return (
+    <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
+      <div
+        className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover"
+        role="status"
+      >
+        <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('Test paused')}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">
+          {reason === 'other-student'
+            ? t('This test belongs to another student')
+            : t('You signed out during this test')}
+        </h1>
+        <p className="mt-3 text-ink-muted">
+          {reason === 'other-student'
+            ? t('A different account is signed in on this browser now, so this test was not submitted. The answers are saved for the student who started it, and they can carry on from here when they sign back in.')
+            : t('You are signed out now, so this test was not submitted. The answers are saved for the account that started it, and you can carry on from here when you sign back in.')}
+        </p>
+        <div className="mt-8 flex items-center justify-between gap-3">
+          <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">
+            {t('Back')}
+          </a>
+          <button
+            type="button"
+            onClick={onStartFresh}
+            className="rounded-button bg-brand px-6 py-3 font-display text-sm font-bold text-white hover:bg-brand-hover"
+          >
+            {t('Start this test fresh')}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -164,6 +164,19 @@ export const strings: Record<string, string> = {
   Back: 'Назад',
   'Start test': 'Начать тест',
 
+  /* The account on this browser changed while a paper was open (a sign-out
+     here, or a sign-in in another tab). The sitting stops and is kept for
+     the student who started it. See SittingOwnerChangedScreen in
+     src/components/TestPlayer.tsx. */
+  'Test paused': 'Тест приостановлен',
+  'This test belongs to another student': 'Этот тест принадлежит другому студенту',
+  'You signed out during this test': 'Вы вышли из аккаунта во время теста',
+  'A different account is signed in on this browser now, so this test was not submitted. The answers are saved for the student who started it, and they can carry on from here when they sign back in.':
+    'Сейчас в этом браузере выполнен вход в другой аккаунт, поэтому тест не был отправлен. Ответы сохранены для того студента, который его начал, и он сможет продолжить с этого места, когда снова войдёт в аккаунт.',
+  'You are signed out now, so this test was not submitted. The answers are saved for the account that started it, and you can carry on from here when you sign back in.':
+    'Сейчас вы не в аккаунте, поэтому тест не был отправлен. Ответы сохранены для того аккаунта, в котором вы его начали, и вы сможете продолжить с этого места, когда снова войдёте.',
+  'Start this test fresh': 'Начать этот тест заново',
+
   /* ---------------------------------------------------------------- */
   /* Mock Exam Day: the start screen                                   */
   /* ---------------------------------------------------------------- */
@@ -188,6 +201,14 @@ export const strings: Record<string, string> = {
   "Defaulted to the next tests you haven't taken: {pair}.":
     'По умолчанию выбраны следующие непройденные тесты: {pair}.',
   'Start Mock Exam': 'Начать пробный экзамен',
+
+  /* The same owner change, caught during a mock sitting (MockExam.tsx). */
+  'Mock exam stopped': 'Пробный экзамен остановлен',
+  'This mock exam belongs to another student': 'Этот пробный экзамен принадлежит другому студенту',
+  'You signed out during this mock exam': 'Вы вышли из аккаунта во время пробного экзамена',
+  'The account on this browser changed part way through, so nothing from this sitting was saved to it. Each paper that was already finished stays with the student who sat it.':
+    'Аккаунт в этом браузере сменился посреди экзамена, поэтому ничего из этой попытки в него не сохранено. Каждая уже законченная часть остаётся у того студента, который её писал.',
+  'Start a fresh mock exam': 'Начать новый пробный экзамен',
 
   /* Between two papers. */
   'Exam continues': 'Экзамен продолжается',

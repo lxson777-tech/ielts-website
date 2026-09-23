@@ -339,7 +339,7 @@ export function isIsoDateTime(v: unknown): v is string {
     model authority over anything, not by filtering prose. */
 export function sanitiseText(raw: string, maxChars: number): string {
   return raw
-    .replace(/[ --]/g, ' ')
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, ' ')
     .replace(/\r\n?/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
