@@ -573,6 +573,15 @@ commit: 1892 tests, type check clean, 661 pages, index unchanged, race script
 anonymous both times, f23 81 of 81 with section 8 failing three ways against
 the pre-fix code.
 
-**Inspection 5** (a fresh session, after those fixes) is recorded below once
+**Inspection 5, of `c4a7793`: REVISE, three findings, all accepted.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-5-of-c4a7793.json`.
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2E-01 (high) | Inside the voice-session setup the cancellation was checked too late once the session request had succeeded: the remote answer was applied first, playback started unconditionally, a pending connection could not be closed by the screen until startup resolved, failure paths did not end the session at the Worker, and the Gemini open callback could still send its setup | Pending setup is directly cancellable; the check runs before the remote answer and inside the callbacks; peers, sockets and playback are released at once; every created session is ended at the Worker on every failure path; successful delayed-connection cases are tested |
+| R2E-02 (medium) | Once a paper was submitted, its review stayed on screen for whoever signed in next, with the review controls and "ask why this is wrong" still active | Owner checks apply to completed reviews; the previous student's answers, score and tutor controls leave the screen on an owner change; review requests and cached replies are bound to their owner |
+| R2E-03 (medium) | Two tabs on the same mock paper could each hand it in, the second overwriting the first and recording a second attempt | Completion is terminal per leg; an already-completed leg is rejected; stale players stop; evidence is recorded only for the first accepted completion |
+
+**Inspection 6** (a fresh session, after those fixes) is recorded below once
 run.
 

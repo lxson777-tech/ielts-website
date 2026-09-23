@@ -589,3 +589,49 @@ not have reached a real service.
 Gates at `b7b083a`: `npm test` 1892 of 1892, `npx astro check` 0 errors and
 0 warnings, `npm run build` 661 pages, the learning index byte-identical,
 Codex's `signout-race.mjs` printing anonymous both times.
+
+## Inspection round 5 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `c4a7793` against this specification, diff from `48b1d17`,
+same settings as the earlier rounds, 437 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-5-of-c4a7793.json`.
+
+Verdict: REVISE. Three findings, all accepted by the host. One is the
+same-paper two-tab case the previous section named as not covered.
+
+- **R2E-01 (high) accepted.** The cancellation inside the voice-session
+  setup is checked too late once the session request has succeeded: the
+  remote answer is applied before the check, the track callback starts
+  playback unconditionally, the component cannot close a pending connection
+  because its handle is assigned only after startup resolves (a switch during
+  that wait leaves the connection alive until startup completes or its
+  twenty-second timeout expires), the timeout and error cleanup do not end
+  the session at the Worker, and on the Gemini path a cancellation after the
+  socket is constructed cannot stop the later open callback from sending the
+  setup, whose wait has no timeout. The browser fixture returned synthetic
+  failures rather than exercising a successful delayed connection. Fix:
+  pending setup is directly cancellable while the owner checks stay;
+  cancellation is checked before the remote answer is applied and inside the
+  socket and track callbacks; pending peers, sockets and playback are
+  released immediately on cancellation; every created paid session is ended
+  at the Worker on every failure path; successful delayed-answer and
+  delayed-handshake cases are added, including cancellation while playback
+  initialisation is pending.
+- **R2E-02 (medium) accepted.** The player's owner-change listener returns
+  at once once the paper is submitted, so a completed review stays on
+  screen for whoever signs in next, its review controls stay active, and
+  "ask why this is wrong" could send the previous student's answer under the
+  next student's token. Fix: owner checks apply to completed reviews as well
+  as unfinished sittings; the previous owner's answers, score and tutor
+  controls leave the screen when ownership changes; review requests and
+  cached replies are bound to their owner.
+- **R2E-03 (medium) accepted.** Finishing a mock leg does not reject a leg
+  that already has a result, so two tabs on the same mock's paper can each
+  hand it in: the second overwrites the first leg result and records another
+  attempt and submission, and the stale player is not stopped because the
+  loss check reads only the parent sitting. Fix: completion is terminal per
+  leg, an already-completed leg is rejected with an explicit outcome, stale
+  players stop or reconcile, and paper evidence is recorded only for the
+  first accepted completion.
+
+A sixth fresh inspection follows the fixes.
