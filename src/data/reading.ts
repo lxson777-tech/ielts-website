@@ -34,7 +34,10 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 1,
     image: '/pics/reading/quiz.png',
     blurb: nt('Not a question type, but the skill behind all of them: recognising the same idea in different words.'),
-    minutes: 15,
+    // A warm-up of single sentences plus one real passage with eight real
+    // questions (src/data/reading-practice.ts), so a little longer than the
+    // question-type lessons.
+    minutes: 20,
   },
   {
     slug: 'mc',

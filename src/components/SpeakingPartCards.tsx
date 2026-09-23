@@ -53,17 +53,17 @@ export default function SpeakingPartCards({
     },
   ];
   return (
-    <div className="mx-auto mt-7 grid max-w-3xl gap-4 sm:grid-cols-3">
+    <div className="speaking-part-grid mx-auto mt-7 grid max-w-3xl gap-4 sm:grid-cols-3">
       {PART_CARDS.map((p) => (
         <button
           key={p.mode}
           type="button"
           onClick={() => onStart(p.mode)}
           disabled={disabled}
-          className="group flex flex-col rounded-card border border-border bg-surface-alt/60 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--skill,#0E9F6E)]/60 hover:shadow-card disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-border disabled:hover:shadow-none"
+          className="speaking-part-card group flex flex-col rounded-card border border-border bg-surface-alt/60 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-[var(--skill,#0E9F6E)]/60 hover:shadow-card disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-border disabled:hover:shadow-none"
         >
           <span className="font-display text-lg font-extrabold">
-            {p.title} <span className="font-bold text-ink-muted">· {p.kind}</span>
+            <span className="speaking-part-number">{p.title}</span><span className="speaking-part-kind">{p.kind}</span>
           </span>
           <p className="mt-1.5 flex-1 text-sm text-ink-muted">{p.description}</p>
           <span className="mt-3 flex flex-wrap gap-1.5">
@@ -76,7 +76,7 @@ export default function SpeakingPartCards({
               </span>
             ))}
           </span>
-          <span className="mt-4 inline-flex w-full items-center justify-center rounded-button bg-[var(--skill,#0E9F6E)] px-4 py-2.5 font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
+          <span className="speaking-part-action mt-4 inline-flex w-full items-center justify-center rounded-button bg-[var(--skill,#0E9F6E)] px-4 py-2.5 font-display text-sm font-bold text-white transition-opacity group-hover:opacity-90">
             {t('Start {task}', { task: p.title })}
           </span>
         </button>

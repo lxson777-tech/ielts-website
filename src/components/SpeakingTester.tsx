@@ -721,7 +721,7 @@ export default function SpeakingTester() {
         <div className="speaking-choice">
           <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">Speaking</p>
-          <h3 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">{t('Choose your speaking practice')}</h3>
+          <h2 className="mt-2 font-display text-2xl font-extrabold sm:text-3xl">{t('Choose your speaking practice')}</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
             {t(
               'Pick a part. Each question appears on screen, you record your answer with your microphone, and an AI examiner grades you on the four official IELTS Speaking criteria. A coach panel with the answer structure, useful phrases, and topic vocabulary stays beside you.',

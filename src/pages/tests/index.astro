@@ -54,7 +54,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         </div>
         <div class="relative flex flex-1 flex-col p-6">
           <Badge tone="skill">Reading</Badge>
-          <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Reading Test</h3>
+          <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Reading Test</h2>
           {/* Opens with a build-time count baked into the sentence: no clean
               way to mark this for translation without a counted-phrase
               mechanism reaching static Astro pages, so it stays English
@@ -100,7 +100,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
           </div>
           <div class="relative flex flex-1 flex-col p-6">
             <Badge tone="skill">Listening</Badge>
-            <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Listening Test</h3>
+            <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Listening Test</h2>
             <p class="mt-1.5 text-sm text-ink-muted" data-i18n>
               Hear the complete recording once, answer all four parts, then get your score and estimated band instantly.
             </p>
@@ -144,7 +144,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <Badge tone="skill">Writing</Badge>
             <Badge tone="brand"><span data-i18n>Exam conditions</span></Badge>
           </div>
-          <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Writing Checker</h3>
+          <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Writing Checker</h2>
           <p class="mt-1.5 text-sm text-ink-muted" data-i18n>Write a Task 1 or Task 2 answer under exam conditions, then get AI-graded feedback plus a mechanics check on length, vocabulary, cohesion and spelling.</p>
           <div class="mt-4 flex flex-wrap gap-2">
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task1Count} Task 1 prompts</span>
@@ -182,7 +182,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <Badge tone="skill">Speaking</Badge>
             <Badge tone="brand"><span data-i18n>Exam conditions</span></Badge>
           </div>
-          <h3 class="mt-3 font-display text-xl font-extrabold" data-i18n>Live AI Examiner</h3>
+          <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Live AI Examiner</h2>
           <p class="mt-1.5 text-sm text-ink-muted" data-i18n>A full three-part mock speaking test as a real voice conversation: the examiner speaks, listens, and asks follow-ups based on what you actually say.</p>
           <div class="mt-4 flex flex-wrap gap-2">
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>3 parts</span>

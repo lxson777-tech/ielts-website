@@ -66,7 +66,7 @@ export default function CourseGate() {
   }
 
   const switcher = (
-    <div className="mx-auto mb-6 max-w-2xl">
+    <div className="course-view-switcher mb-6">
       <div
         className="inline-flex rounded-full border border-border bg-surface-alt p-1"
         role="group"
@@ -83,8 +83,8 @@ export default function CourseGate() {
             type="button"
             onClick={() => selectView(id)}
             aria-pressed={view === id}
-            className={`rounded-full px-4 py-1.5 font-display text-xs font-bold transition-colors ${
-              view === id ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+            className={`rounded-full px-5 py-3 font-display text-sm font-bold transition-colors ${
+              view === id ? 'bg-ink text-white' : 'text-ink-muted hover:text-ink'
             }`}
           >
             {t(label)}

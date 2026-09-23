@@ -78,9 +78,9 @@ export interface PracticeSet {
 export const READING_PRACTICE: Record<string, PracticeSet> = {
   paraphrase: {
     title: 'Exercise. Spot the Correct Paraphrase',
-    intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
     units: [
       {
+        intro: 'Warm-up, written for this lesson: for each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
         questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
@@ -171,6 +171,189 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
         explanation: '“Fewer than one in ten” do exercise regularly, so the vast majority do not. A inverts the fraction, and C misreads it as roughly half.',
       },
         ],
+      },
+      {
+        "passages": [
+          {
+            "label": "Academic Reading Test 20, Passage 1, Questions 1 to 6 and 12 to 13",
+            "title": "Sleeping on the job",
+            "paragraphs": [
+              "North Americans are not a people of the siesta. There is a tendency to associate afternoon naps with laziness and non-productivity. Latin Americans and some in European cultures take a different view. In Mexico and Greece, for example, it is customary to close businesses between noon and about 4:00 pm – siesta time. Recent studies are showing that if you can take a 15 to 30-minute nap while at work in the afternoon, you’ll be more alert, more energetic, happier doing what you do, more productive and therefore more likely to get ahead. Napping on the job is not yet a trend but there is serious talk in academic circles about the merits of ‘power napping’.",
+              "By some estimate, the average American collects an annual ‘sleep debt’ of 500 hours – subtracting from an assumed norm of eight hours a night. Two out of three Americans get less than eight hours of sleep a night during the work week, according to a recent study by the National Sleep Foundation in Washington. Forty percent say they’re so tired that it interferes with their daily activities. Sleep researcher William Anthony, a professor of psychology at Boston University, says fatigue is a significant problem in modern society. He says sleepiness is a leading cause of auto accidents, second only to drunkenness. All that drowsiness costs an estimated $18 billion annually in lost productivity. ‘We have a simple message,’ says Professor Anthony. ‘People should be allowed to nap at their breaks. The rationale is a productivity one – workers are sleepy, and when they’re sleepy on the job they’re not productive.’",
+              "Some companies are encouraging sleep at work, primarily for safety. The Metropolitan Transit Authority, which runs the New York subway system and two suburban railroads, is considering power naps for its train operators and bus drivers. Another railway has started letting its train operators take nap breaks of up to 45 minutes but only when trains are stopped at designated spots off the main lines and dispatchers have been notified. Some overseas air carriers permit airline pilots, when not on duty, to nap in the cockpit. Airlines in the United States have not accepted this practice yet.",
+              "According to the Encyclopedia of Sleep and Dreaming: ‘There is a biologically-based tendency to fall asleep in mid-afternoon just as there is a tendency to fall asleep at night. Moreover, if sleep the night before is reduced or disturbed for any reason, a nap the subsequent afternoon is not only more likely to occur, but it can also relieve sleepiness and increase alertness.’ The nap zone, documented in numerous studies, is typically between noon and 3:00 pm. Some people power through this natural slowdown with caffeine or sugar but if employers allowed naps, the benefits would be improvements in mood and performance, especially in mid-afternoon. Workers would concentrate better and persevere in tasks longer. Workers commonly sneak naps even without permission but some companies have begun encouraging naps as part of their policies on boosting production. One US distributor is opening a 2,000-square-foot nap facility that provides beds for up to 20 of its 225 workers at a time. A company in Japan sets up tents in business offices, provides eyeshades and ear plugs, and encourages employees to snooze in the middle of the work day. According to Professor Anthony, ‘You’re not going to see napping at traditional types of operations … but in 21st century-style operations, this isn’t going to be a perk. It’s going to have more to do with productivity. Smart employers are understanding that their employees need rest to do their best.’",
+              "Some suspect that corporate naptime, like other perks, is just a way to keep people at the office longer. On the other hand, growing flexibility in hours, for some workers, is allowing nap times to become more common. With eleven million Americans telecommuting and another forty million winking out of their bonus full- or part-time, office hours are basically as long as you can stay awake. One thing is sure: longer commutes, more intense, stressful workday and higher production demands are taking a toll. So, with Americans sleeping less and working longer hours, some employers are warming up to the idea that a little nap in the middle of the day can be good for business."
+            ]
+          }
+        ],
+        "intro": "Every answer below depends on a paraphrase of the passage above: find the sentence that talks about the same idea, then check whether it really makes the same claim. For the Yes / No / Not Given statements: Yes means the passage says the same thing in other words, No means it says the opposite, and Not Given means it never says it.",
+        "questions": [
+          {
+            "prompt": "According to the passage, which of the following statements is supported by recent research?",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "A",
+                "label": "A) Napping is an indicator of laziness"
+              },
+              {
+                "value": "B",
+                "label": "B) Two thirds of Americans sleep too much"
+              },
+              {
+                "value": "C",
+                "label": "C) Napping in the workplace is a current trend"
+              },
+              {
+                "value": "D",
+                "label": "D) Short naps at work increase productivity"
+              }
+            ],
+            "answer": "D",
+            "explanation": "The passage says a short afternoon nap makes workers 'more alert, more energetic... more productive', directly supporting D.",
+            "source": "Academic Reading Test 20, Questions 1"
+          },
+          {
+            "prompt": "The number one cause of car accidents is fatigue",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "No",
+            "explanation": "The passage says sleepiness is 'a leading cause of auto accidents, second only to drunkenness', so it is not the number one cause, contradicting the statement.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "People who nap in the afternoon are lazy",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "Not Given",
+            "explanation": "The opening mentions a general tendency 'to associate afternoon naps with laziness', but the writer never states that nappers actually are lazy, so there is no information either way.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "A nap in the middle of the day can improve your mood",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "Yes",
+            "explanation": "The passage says allowing naps would bring 'improvements in mood and performance', directly matching the claim.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "People who nap regularly live longer",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "Not Given",
+            "explanation": "The passage discusses productivity, safety and alertness benefits of napping but never mentions any link to lifespan.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "The majority of Americans sleep at least eight hours a night",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "Yes"
+              },
+              {
+                "value": "No"
+              },
+              {
+                "value": "Not Given"
+              }
+            ],
+            "answer": "No",
+            "explanation": "The passage says 'two out of three Americans get less than eight hours of sleep a night', meaning most do not reach eight hours, contradicting the statement.",
+            "source": "Academic Reading Test 20, Questions 2 to 6"
+          },
+          {
+            "prompt": "According to the writer, in America the workplace is becoming …",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "A",
+                "label": "A) less flexible"
+              },
+              {
+                "value": "B",
+                "label": "B) more exciting"
+              },
+              {
+                "value": "C",
+                "label": "C) less demanding"
+              },
+              {
+                "value": "D",
+                "label": "D) more stressful"
+              }
+            ],
+            "answer": "D",
+            "explanation": "The passage lists 'longer commutes, more intense, stressful workday and higher production demands', matching D, more stressful.",
+            "source": "Academic Reading Test 20, Questions 12 to 13"
+          },
+          {
+            "prompt": "According to the writer, what is the main reason why employers support the idea of naps at work?",
+            "kind": "choice",
+            "options": [
+              {
+                "value": "A",
+                "label": "A) for health reasons"
+              },
+              {
+                "value": "B",
+                "label": "B) to promote safety"
+              },
+              {
+                "value": "C",
+                "label": "C) to increase productivity"
+              },
+              {
+                "value": "D",
+                "label": "D) to encourage creativity"
+              }
+            ],
+            "answer": "C",
+            "explanation": "Anthony says workplace napping is 'going to have more to do with productivity', matching C.",
+            "source": "Academic Reading Test 20, Questions 12 to 13"
+          }
+        ]
       },
     ],
   },
@@ -2267,7 +2450,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 6, Questions 27 to 33"
         },
         {
-          "prompt": "There are those who look forward to robots developing greater intelligence. List of Experts A. Martin Rees B. Daniel Wolpert C. Kathleen Richardson",
+          "prompt": "There are those who look forward to robots developing greater intelligence.",
           "kind": "choice",
           "options": [
             {
@@ -2890,190 +3073,121 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
     {
       "passages": [
         {
-          "label": "Academic Reading Test 15, Passage 2, Questions 14 to 24",
-          "title": "Physiology and Criminality",
+          "label": "Academic Reading Test 24, Passage 2, Questions 18 to 22",
+          "title": "The global importance of wetlands",
           "paragraphs": [
-            "Prior to the 19th century, criminality was considered more of a moral or philosophical issue. Only with the advent of Italian anthropologist Cesare Lombroso did the subject of criminality take a more scientific turn. With the publication of his theories of criminal behaviour, Lombroso advanced the idea that criminal behaviour was attributable to physiological disposition rather than to any existential reasons.",
-            "In his ‘atavistic form’ theory published in 1876, Lombroso claimed that criminality was heritable. He proposed that a distinct biological class of people were prone to criminality. Such people, he claimed, exhibited ‘atavistic’ or primitive features and were ‘throwbacks’, bearing physical resemblances to Man’s predecessors, the Neanderthals. Characterised by a strong, well-defined jaw and heavy brow, they certainly had little to recommend them in the beauty stakes. With such features, coupled with a tendency towards criminal behaviour, Lombroso’s atavistic type was certainly not cut out for social success. Just for good measure, Lombroso also included other distinguishing features to identify criminals, such as bloodshot eyes and curly hair for murderers and thick lips and protruding ears for sex offenders. It has to be wondered, given the unusual appearance with which they were credited, how such individuals would have got close enough to their victims to begin with and, more to the point, how any such criminals hoped to get away with their crime, seeing as they were so readily identifiable.",
-            "In hindsight, Lombroso’s hypothesis seems ludicrous and deeply flawed. One major failing in Lombroso’s theory of an atavistic type is that no proper controls were used in studies designed to support his hypothesis. All individuals were confined to a criminal population, no comparison being made at the time with non-criminal control groups. Secondly, the concept of what constitutes a crime is in itself a social construct and can vary cross-culturally and over time. Therefore, the argument that criminal behaviour is inherited is hard to sustain. Finally, in the light of modern genetic research, complex behaviours are not considered to be controlled by single genes, thereby completely ruling out any possibility of inherited criminality.",
-            "Surprisingly, given his strong conviction of a biological disposition towards criminality, Lombroso later modified his views to admit environmental influences in determining criminal behaviour. Such views now form the basis of contemporary theories of criminality. In recognition of this fact, contemporary criminologists have bestowed on Lombroso the honorary title ‘the father of criminology’. Furthermore, despite scientific failings in his experimental approach, Lombroso is to be credited with shifting the study of criminal behaviour from a moral basis to an empirical one, thereby placing the study of criminology on a more scientific footing.",
-            "The argument for a biological basis to criminality resurfaced, however, nearly a century later with Sheldon’s theory of somatotypes. In 1949, Sheldon advanced the theory that individuals fell within three broad physical types: the ectomorph, mesomorph and endomorph. The ectomorph was essentially thin, the mesomorph muscular and athletic, whilst the endomorph type was said to be fat and rather lethargic. Each physical type, Sheldon claimed, was associated with a distinct personality and temperament. Ectomorphs were characterised by a solitary and restrained nature, whilst mesomorphs were said to be adventurous and endomorphs relaxed and pleasure-loving. Unfortunately for the mesomorphs, Sheldon also claimed that those corresponding to this physical type had criminal tendencies. By linking inherited physical types with personality, Sheldon thereby was hypothesising a hereditary aspect to criminal behaviour. Sheldon’s studies of mesomorphic college students did to some extent confirm his theory as did a later study conducted by Putwain and Sammons as recently as 2002. In partial support of Sheldon’s theory, an increased level of testosterone associated with a mesomorphic build could explain such a biological disposition towards criminality associated with a particular body type. However, social prejudices and self-fulfilling prophecies could also be at play in the above average correlation between mesomorphic types and criminal behaviour in society.",
-            "Following on from Sheldon’s hypothesis, a further argument for a biological disposition to criminality was proposed in the 1960s. This time, hereditary tendencies were linked to genetic defect or chromosomal abnormality. Variations of the normal ‘XY’ genetic component or genotype of males were hypothesised to determine criminal behaviour from homicide to violent crime. The theory was based on the unproven assumption that possession of an extra ‘X’ chromosome ‘feminises’ a man and so conversely having an extra male ‘Y’ chromosome should make a man more masculine and aggressive. However, this somewhat weak hypothesis was severely undermined by the study of Epps in 1995. Epps demonstrated that possessing an extra ‘Y’ chromosome, as in the ‘XYY’ genotype, made an individual no more likely to commit violent crime than anyone else. The further finding that testosterone levels amongst ‘XYY’ men are no different from ‘XY’ men and that the former are no more aggressive than the latter sounded the final death knell for the hypothesis of a criminal type determined by genotype alone.",
-            "At least those who place trust in rehabilitation programmes to reform criminal types can now breathe a sigh of relief. It would seem that the rather pessimistic prognosis for individuals born with a certain physique or genotype no longer holds credence in scientific circles. If biological predisposition does play a role in criminality, it seems to be at least tempered by environmental and social factors to a large extent."
+            "Wetlands are areas where water covers the soil, or is present either at or near the surface of the soil, for all or part of the year. These are complex ecosystems, rich in unique plant and animal life. But according to the World Wide Fund for Nature (WWFN), half of the world’s wetlands have disappeared since 1990 converted or destroyed for commercial development, drainage schemes and the extraction of minerals and peat’. Many of those that remain have been damaged by agricultural pesticides and fertilisers, industrial pollutants, and construction works.",
+            "Throughout history, humans have gathered around wetlands, and their fertile ecosystems have played an important part in human development. Consequently, they are of considerable religious, historical and archaeological value to many communities around the world. ‘Wetlands directly support the livelihoods and well-being of millions of people,’ says Dr Matthew McCartney, principal researcher and hydrologist at the International Water Management Institute (IWMI). ‘In many developing countries, large numbers of people are dependent on wetland agriculture for their livelihoods.’",
+            "They also serve a crucial environmental purpose. ‘Wetlands are one of the key tools in mitigating climate change across the planet,’ says Pieter van Eijk, head of Climate Adaptation at Wetlands International (WI), pointing to their use as buffers that protect coastal areas from sea-level rise and extreme weather events such as hurricanes and flooding. Wetland coastal forests provide food and water, as well as shelter from storms, and Wi and other agencies are working to restore those forests which have been lost. ‘It can be as simple as planting a few trees per hectare to create shade and substantially change a microclimate,’ he says. ‘Implementing climate change projects isn’t so much about money.’",
+            "The world’s wetlands are, unfortunately, rich sources for in-demand commodities, such as palm oil and pulpwood. Peatlands – wetlands with a waterlogged organic soil layer-are particularly targeted. When peatlands are drained for cultivation, they become net carbon emitters instead of active carbon stores, and, according to Marcel Silvius, head of Climate- smart Land-use at WI, this practice causes six per cent of all global carbon emissions. The clearance of peatlands for planting also increases the risk of forest fires, which release huge amounts of CO2 ‘We’re seeing huge peatland forests with extremely high biodiversity value being lost for a few decades of oil palm revenues,’ says Silvius.",
+            "The damage starts when logging companies arrive to clear the trees. They dig ditches to enter the peat swamps by boat and then float the logs out the same way. These are then used to drain water out of the peatlands to allow for the planting of corn, oil palms or pulpwood trees. Once the water has drained away, bacteria and fungi then break down the carbon in the peat and turn it into C02 and methane. Meanwhile, the remainder of the solid matter in the peat starts to move downwards, in a process known as subsidence**. Peat comprises 90 per cent water, so this is one of the most alarming consequences of peatland clearances. ‘In the tropics, peat subsides at about four centimetres a year, so within half a century, very large landscapes on Sumatra and Borneo will become flooded as the peat drops below water level,’ says Silvius. ‘It’s a huge catastrophe that’s in preparation. Some provinces will lose 40 per cent of their landmass.’",
+            "And while these industries affect wetlands in ways that can easily be documented, Dr Dave Tickner of the WWFN believes that more subtle impacts can be even more devastating. ‘Sediment run-off and fertilisers can be pretty invisible,’ says Tickner. ‘Over-extraction of water is equally invisible. You do get shock stories about rivers running red, or even catching fire, but there’s seldom one big impact that really hurts a wetland.’ Tickner does not blame anyone for deliberate damage, however. ‘I’ve worked on wetland issues for 20 years and have never met anybody who wanted to damage a wetland,’ he says. ‘It isn’t something that people generally set out to do. Quite often, the effects simply come from people trying to make a living.’",
+            "Silvius also acknowledges the importance of income generation. ‘It’s not that we just want to restore the biodiversity of wetlands – which we do – but we recognise there’s a need to provide an income for local people. ’This approach is supported by 1WMI. ‘The idea is that people in a developing country will only protect wetlands if they value and profit from them,’ says McCartney. ‘For sustainability, it’s essential that local people are involved in wetland planning and decision making and have clear rights to use wetlands.’",
+            "The fortunes of wetlands would be improved, Silvius suggests, if more governments recognised their long-term value. ‘Different governments have different attitudes,’ he says, and goes on to explain that some countries place a high priority on restoring wetlands, while others still deny the issue. McCartney is cautiously optimistic, however. ‘Awareness of the importance of wetlands is growing,’ he says. ‘It’s true that wetland degradation still continues at a rapid pace, but my impression is that things are slowly changing.’"
           ]
         }
       ],
       "questions": [
         {
-          "prompt": "…………….. realm. Italian scientist, Lombroso proposes a ________",
+          "prompt": "Peatlands which have been drained begin to release ________ instead of storing it",
           "kind": "text",
           "answer": [
-            "moral or philosophical"
+            "Carbon"
           ],
-          "explanation": "Before the 19th century, criminality was seen as a moral or philosophical matter.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
+          "explanation": "Paragraph D says that once peatlands are drained for farming they stop storing carbon and start giving it off instead, so the missing word is ‘carbon’.",
+          "source": "Academic Reading Test 24, Questions 18 to 22"
         },
         {
-          "prompt": "………………. to criminality. A biological theory of criminality presupposes that such a condition is ________",
+          "prompt": "Once peatland areas have been cleared ________ are more likely to occur",
           "kind": "text",
           "answer": [
-            "physiological disposition",
-            "biological disposition"
+            "Fires"
           ],
-          "explanation": "Lombroso proposed that criminal behaviour came from a physiological, biological disposition.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
+          "explanation": "Paragraph D says clearing peatlands for planting makes forest fires more likely, and those fires release large amounts of CO2. So the missing word is ‘fires’.",
+          "source": "Academic Reading Test 24, Questions 18 to 22"
         },
         {
-          "prompt": "……………… Criminal types are claimed to be ________",
+          "prompt": "Clearing peatland forests to make way for oil palm plantations destroys the ________ of the local environment",
           "kind": "text",
           "answer": [
-            "heritable",
-            "inherited"
+            "Biodiversity"
           ],
-          "explanation": "Lombroso claimed criminality was heritable, passed down biologically.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
+          "explanation": "Paragraph D quotes Silvius saying peatland forests with very high biodiversity value are being lost for a few decades of oil palm money, so what is destroyed is the biodiversity.",
+          "source": "Academic Reading Test 24, Questions 18 to 22"
         },
         {
-          "prompt": "………………. distinctive ‘atavistic’ or primitive features. 1949 In common with Lombroso, Sheldon proposes a ________",
+          "prompt": "Water is drained out of peatlands through the ________ which are created by logging companies",
           "kind": "text",
           "answer": [
-            "characterised by"
+            "Ditches"
           ],
-          "explanation": "Criminal types were said to be marked by primitive, atavistic physical features.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
+          "explanation": "Paragraph E says logging companies dig ditches so they can reach the swamps by boat, and those same ditches are then used to drain the water away. So the missing word is ‘ditches’.",
+          "source": "Academic Reading Test 24, Questions 18 to 22"
         },
         {
-          "prompt": "……………… to criminality. Body types are ________",
+          "prompt": "Draining peatlands leads to ________ ; a serious problem which can eventually result in coastal flooding and land loss",
           "kind": "text",
           "answer": [
-            "hereditary aspect",
-            "biological basis"
+            "Subsidence"
           ],
-          "explanation": "Sheldon, like Lombroso, proposed a hereditary, biological basis for criminality through body type.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
-        },
-        {
-          "prompt": "……………… particular dispositions. Mesomorphs are types considered to have ________",
-          "kind": "text",
-          "answer": [
-            "associated with"
-          ],
-          "explanation": "Each physical body type was linked with a distinct personality.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
-        },
-        {
-          "prompt": "……………….. 1960s ________",
-          "kind": "text",
-          "answer": [
-            "criminal tendencies"
-          ],
-          "explanation": "Sheldon claimed the muscular mesomorph type had criminal tendencies.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
-        },
-        {
-          "prompt": "……………. is now implicated in a biological disposition towards criminality. An additional ‘Y’ chromosome is associated with more ________",
-          "kind": "text",
-          "answer": [
-            "Chromosomal abnormality"
-          ],
-          "explanation": "In the 1960s, chromosomal abnormality became the new proposed biological cause of criminality.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
-        },
-        {
-          "prompt": "………………… males. The proposed link between criminality and genotype is ________",
-          "kind": "text",
-          "answer": [
-            "masculine and aggressive"
-          ],
-          "explanation": "An extra Y chromosome was hypothesised to make men more masculine and aggressive.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
-        },
-        {
-          "prompt": "…………………. Epps’ study of 1995. Today A purely biological basis to criminality is discredited. Genetic factors are thought to be moderated by ________",
-          "kind": "text",
-          "answer": [
-            "severely undermined by"
-          ],
-          "explanation": "Epps' 1995 study seriously undermined the chromosome theory of criminality.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
-        },
-        {
-          "prompt": "……………… elements ________",
-          "kind": "text",
-          "answer": [
-            "environmental and social"
-          ],
-          "explanation": "Today, biological factors are seen as moderated by environmental and social influences.",
-          "source": "Academic Reading Test 15, Questions 14 to 24"
+          "explanation": "Paragraph E says that once the water is gone the solid part of the peat sinks downwards, and it gives that process the name subsidence, which later leaves large areas below water level.",
+          "source": "Academic Reading Test 24, Questions 18 to 22"
         }
       ]
     },
     {
       "passages": [
         {
-          "label": "Academic Reading Test 10, Passage 3, Questions 36 to 40",
-          "title": "THE MYTH OF LEARNING STYLES",
+          "label": "Academic Reading Test 34, Passage 1, Questions 7 to 10",
+          "title": "Putting the brakes on climate change: Are hydrogen cars the answer?",
           "paragraphs": [
-            "The idea that teaching methods should match a student’s particular learning style — their personal way of learning — is popular with teachers and students alike. But the evidence suggests it may not be helpful.",
-            "The concept of learning styles is one of the most influential — and widely criticized — theories in education. It is the idea that each person finds it easier to learn through a particular method of instruction. Some people, for example, are thought to learn better when they’re taught visually; others, when instruction is auditory, or through movement, and so on.",
-            "The idea is popular in part because it reflects the intuition of teachers and students. Everyone knows from personal experience that some kinds of learning feel easier than others, and that they may prefer one way of learning over another. And it is also popular because it claims to be based on science. The idea of learning styles was developed in the 1970s, as psychologists and educational theorists were trying to understand how people learn. The idea that different people learn information in different ways was appealing, and it soon became clear that many people had strong preferences about how they liked information to be presented. In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’. All the students would then be asked to learn something, with half the visual learners being taught visually, and half being taught aurally. The auditory learners would also be split into the two groups. If the theory was correct, the visual learners should do better when taught visually, and the auditory learners should do better when taught aurally.",
-            "But that’s not what psychologists found. As early as 2004, a review of the evidence by cognitive scientists found that the great majority of studies did not provide any evidence supporting the idea that matching the material to a student’s particular learning style was helpful. More recently, a team of psychologists led by Daniel Willingham at the University of Virginia has examined the evidence for learning styles again. They found that the vast majority of studies either found no evidence for the theory, or actually contradicted it. As the researchers point out, people may have preferences about how they learn, but that doesn’t mean that they will learn better when the teaching matches those preferences.",
-            "There are several possible explanations for these findings. One is that some students might not actually have a ‘style’ that is strong enough to affect their learning. Another possibility is that students do have preferences about how they learn, but these preferences don’t affect their learning. A third possibility is that students do have preferences, and these preferences do affect their learning, but only because they have learned less well through other methods in the past.",
-            "But the most likely explanation is that different ways of learning are useful for learning different things. For example, learning to drive a car involves a mix of visual learning (such as watching the instructor), auditory learning (listening to instructions), and hands-on learning (actually driving the car). In a 2009 article in the journal Psychological Science in the Public Interest, psychologists Harold Pashler, Mark McDaniel, Doug Rohrer and Robert Bjork argued that the learning-styles approach is not only unsupported by science, but may actually be harmful, because it leads teachers to teach students in ways that are not very effective. For example, a student who is a ‘visual learner’ might be encouraged to learn only through visual materials, and never to practice learning by listening, reading or acting.",
-            "The idea of learning styles is also harmful because it can give students the impression that they have fixed, or fixed amounts of, intelligence. In recent years, a great deal of research has shown that people’s attitudes to learning can have a large impact on how much they learn. For example, students who believe that intelligence is fixed, and that they are either smart or stupid and there is nothing they can do about it, tend to do less well than students who believe that intelligence can change, and that they can become smarter by working hard at their studies. Similarly, students who have been told that they are ‘visual learners’ might put less effort into tasks that are based on reading or listening. This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’.",
-            "Despite the lack of evidence for learning styles, the idea is still very popular. A 2014 study of more than 400 teachers in the UK and the Netherlands found that more than 90 percent of them believed that people learn better if they are taught in their preferred learning style, and that the majority of them used learning styles as a method of instruction. In the US, a 2017 survey of more than 300 teachers found that 96 percent of them agreed with the idea of learning styles, and 24 percent of them used it to guide their teaching.",
-            "The idea of learning styles is also popular among students. In a 2018 study, researchers asked more than 600 students in the US about their beliefs about learning. They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style.",
-            "The evidence is clear: matching teaching to a student’s particular learning style is unlikely to lead to better learning. It may in fact be holding students back."
+            "It is tempting to think that the conservation of coral reefs and rainforests is a separate issue from traffic and air pollution. But it is not. Scientists are now confident that rapid changes in the Earth’s climate are already disrupting and altering many wildlife habitats. Pollution from vehicles is a big part of the problem.",
+            "The United Nation’s Climate Change Panel has estimated that the global average temperature rise expected by the year 2100 could be as much as 6°C, causing forest fires and dieback on land and coral bleaching in the ocean. Few species, if any, will be immune from the changes in temperature, rainfall and sea levels. The panel believes that if such catastrophic temperature rises are to be avoided, the quantity of greenhouse gases, especially carbon dioxide, being released into the atmosphere must be reduced. That will depend on slowing the rate of deforestation and, more crucially, finding alternatives to coal, oil and gas as our principal energy sources.",
+            "Technologies do exist to reduce or eliminate carbon dioxide as a waste product of our energy consumption. Wind power and solar power are both spreading fast, but what are we doing about traffic? Electric cars are one possible option, but their range and the time it takes to charge their batteries pose serious limitations. However, the technology that shows the most potential to make cars climate-friendly is fuel-cell technology. This was actually invented in the late nineteenth century, but because the world’s motor industry put its effort into developing the combustion engine, it was never refined for mass production. One of the first prototype fuel-cell-powered vehicles have been built by the Ford Motor Company. It is like a conventional car, only with better acceleration and a smoother ride. Ford engineers expect to be able to produce a virtually silent vehicle in the future.",
+            "So what’s the process involved – and is there a catch? Hydrogen goes into the fuel tank, producing electricity. The only emission from the exhaust pipe is water. The fuel-cell is, in some ways similar to a battery, but unlike a battery, it does not run down. As long as hydrogen and oxygen are supplied to the cell, it will keep on generating electricity. Some cells work off methane and a few use liquid fuels such as methanol, but fuel-ceils using hydrogen probably have the most potential. Furthermore, they need not be limited to transport. Fuel-cells can be made in a huge range of size, small enough for portable computers or large enough for power stations. They have no moving parts and therefore need no oil. They just need a supply of hydrogen. The big question, then, is where to get it from.",
+            "One source of hydrogen is water. But to exploit the abundant resource, electricity is needed, and if the electricity is produced by a coal-fired power station or other fossil fuel, then the overall carbon reduction benefit of the fuel-cell disappears. Renewable sources, such as wind and solar power, do not produce enough energy for it to be economically viable to use them in the ‘manufacture’ of hydrogen as a transport fuel. Another source of hydrogen is, however, available and could provide a supply pending the development of more efficient and cheaper renewable energy technologies. By splitting natural gas (methane) into its constituent parts, hydrogen and carbon dioxide are produced. One way round the problem of what to do with the carbon dioxide could be to store it back below ground – so-called geological sequestration. Oil companies, such as Norway’s Statoil, are experimenting with storing carbon dioxide below ground in oil and gas wells.",
+            "With freak weather conditions, arguably caused by global warming, frequently in the headlines, the urgent need to get fuel-cell vehicles will be available in most showrooms. Even now, fuel-cell buses are operating in the US, while in Germany a courier company is planning to take delivery of fuel-cell-powered vans in the near future. The fact that centrally-run fleets of buses and vans are the first fuel-cell vehicles identifies another challenge – fuel distribution. The refueling facilities necessary to top up hydrogen-powered vehicles are available only in a very few places at present. Public transport and delivery firms are logical places to start since their vehicles are operated from central depots.",
+            "Fuel-cell technology is being developed right across the automotive industry. This technology could have a major impact in slowing down climate change, but further investment is needed if the industry – and the world’s wildlife – is to have a long-term future."
           ]
         }
       ],
       "questions": [
         {
-          "prompt": "…………………. Students who believe that intelligence is ________",
+          "prompt": "In the late nineteenth century, the car industry invested in the development of the ________ , rather than fuel-cell technology",
           "kind": "text",
           "answer": [
-            "Intelligence"
+            "Combustion engine"
           ],
-          "explanation": "Paragraph 7 says learning styles can give students a fixed idea about their level of intelligence.",
-          "source": "Academic Reading Test 10, Questions 36 to 40"
+          "explanation": "Paragraph C says the world's motor industry spent its effort on the combustion engine, which is why the fuel cell, invented at the same period, was never developed for mass production.",
+          "source": "Academic Reading Test 34, Questions 7 to 10"
         },
         {
-          "prompt": "………………… tend to do better than other students. Students who have been told that they are ________",
+          "prompt": "Ford engineers predict that they will eventually design an almost ________ car",
           "kind": "text",
           "answer": [
-            "Changeable",
-            "Changing"
+            "Silent"
           ],
-          "explanation": "Paragraph 7 says students who believe that intelligence can change tend to do better than those who think it is fixed. The gap follows 'is', so it needs an adjective: 'changeable' or 'changing'.",
-          "source": "Academic Reading Test 10, Questions 36 to 40"
+          "explanation": "The end of Paragraph C says Ford engineers expect to build a vehicle in the future that makes almost no noise, so the missing word is 'silent'.",
+          "source": "Academic Reading Test 34, Questions 7 to 10"
         },
         {
-          "prompt": "…………………… learners might not try so hard to learn by reading or listening. Research has shown that students who use a ________",
+          "prompt": "While a fuel-cell lasts longer, some aspects of it are comparable to a ________",
           "kind": "text",
           "answer": [
-            "Visual"
+            "Battery"
           ],
-          "explanation": "Paragraph 8 says students told they are visual learners might not try as hard at reading or listening tasks.",
-          "source": "Academic Reading Test 10, Questions 36 to 40"
+          "explanation": "Paragraph D says the fuel-cell resembles a battery in some ways, but that unlike a battery it does not run down, which matches the idea of lasting longer while still being comparable.",
+          "source": "Academic Reading Test 34, Questions 7 to 10"
         },
         {
-          "prompt": "………………….. of learning methods often learn more effectively. In a 2018 study, 78 percent of students said that they had a particular ________",
+          "prompt": "Fuel-cells can come in many sizes and can be used in power stations and in ________ as well as in vehicles",
           "kind": "text",
           "answer": [
-            "Mix"
+            "Portable computers",
+            "computers"
           ],
-          "explanation": "Paragraph 8 says students who use a mix of learning methods often learn more effectively.",
-          "source": "Academic Reading Test 10, Questions 36 to 40"
-        },
-        {
-          "prompt": "………………… ________",
-          "kind": "text",
-          "answer": [
-            "Style",
-            "Learning style"
-          ],
-          "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style. The instruction allows one word only, so the answer to write is 'style'.",
-          "source": "Academic Reading Test 10, Questions 36 to 40"
+          "explanation": "Paragraph D says fuel-cells can be made in a huge range of sizes, small enough for portable computers at one end and big enough for power stations at the other.",
+          "source": "Academic Reading Test 34, Questions 7 to 10"
         }
       ]
     }
@@ -3234,7 +3348,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
       ],
       "questions": [
         {
-          "prompt": "………………. to cut down on delays • passengers pay fares before ________",
+          "prompt": "the buses use designated ________ to cut down on delays",
           "kind": "text",
           "answer": [
             "Lanes"
@@ -3243,7 +3357,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "………………. • passengers in ________",
+          "prompt": "passengers pay fares before ________",
           "kind": "text",
           "answer": [
             "Boarding"
@@ -3252,7 +3366,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "…………………. can use every part of the system Problems • the temperature control is sometimes not activated in order to reduce ________",
+          "prompt": "passengers in ________ can use every part of the system",
           "kind": "text",
           "answer": [
             "Wheelchairs"
@@ -3261,7 +3375,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "………………. use • insufficient number of vehicles are available due to the effects of a severe ________",
+          "prompt": "the temperature control is sometimes not activated in order to reduce ________ use",
           "kind": "text",
           "answer": [
             "Fuel"
@@ -3270,7 +3384,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "………………… • passengers are unable to use ________",
+          "prompt": "insufficient number of vehicles are available due to the effects of a severe ________",
           "kind": "text",
           "answer": [
             "Flood"
@@ -3279,7 +3393,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "……………….. because some equipment is out of action • tickets have to be checked manually at station ________",
+          "prompt": "passengers are unable to use ________ because some equipment is out of action",
           "kind": "text",
           "answer": [
             "Smartcards"
@@ -3288,7 +3402,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "……………. • ________",
+          "prompt": "tickets have to be checked manually at station ________",
           "kind": "text",
           "answer": [
             "Gates"
@@ -3297,7 +3411,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 2, Questions 19 to 26"
         },
         {
-          "prompt": "………………. frequently build up during rush hours ________",
+          "prompt": "________ frequently build up during rush hours",
           "kind": "text",
           "answer": [
             "Queues"
@@ -3340,7 +3454,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "the royal antelope",
             "royal antelope"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "Paragraph B contrasts the two extremes of size, and the smaller extreme is the royal antelope of West Africa, which reaches only 25 cm at the shoulder. The bison at the other extreme is the largest, not the smallest.",
           "source": "Academic Reading Test 29, Questions 22 to 26"
         },
         {
@@ -3350,16 +3464,18 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "the auroch",
             "auroch"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "Paragraph E says the auroch, the ancestor of Europe's domestic cattle, is extinct, so it is the member of the Bovinae that has died out. The banteng, gaur, yak and water buffalo listed just before it are only rare and endangered, not gone.",
           "source": "Academic Reading Test 29, Questions 22 to 26"
         },
         {
           "prompt": "What facilitates the movement of the sitatunga over wetland?",
           "kind": "text",
           "answer": [
-            "Long, splayed hooves"
+            "Long, splayed hooves",
+            "long splayed hooves",
+            "splayed hooves"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "Paragraph F says the sitatunga has long, splayed hooves that let it walk freely on swampy ground, and swampy ground is the wetland in the question. Write the hooves themselves, since that is the thing that helps it move.",
           "source": "Academic Reading Test 29, Questions 22 to 26"
         },
         {
@@ -3368,7 +3484,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "answer": [
             "Arid deserts"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "Paragraph G says Barbary and bighorn sheep have adapted to arid deserts, so arid desert is the terrain the Barbary sheep lives in. The mountains and the arctic tundra in the same sentence belong to Rocky Mountain sheep and musk oxen instead.",
           "source": "Academic Reading Test 29, Questions 22 to 26"
         },
         {
@@ -3378,7 +3494,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "the pronghorn",
             "pronghorn"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "Paragraph I says the pronghorn is the sole survivor of the Antilocapridae, and sole survivor means the only member still alive. It is still found in large numbers across North America, but it has no surviving relatives in its sub-family.",
           "source": "Academic Reading Test 29, Questions 22 to 26"
         }
       ]
@@ -3407,7 +3523,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "answer": [
             "Trade not aid"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "The second paragraph, which is about the gap between rich and poor countries, says church groups and trade unions used the catchphrase Trade Not Aid.",
           "source": "Academic Reading Test 35, Questions 28 to 32"
         },
         {
@@ -3416,25 +3532,27 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "answer": [
             "Coffee"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "The third paragraph lists the main fair-trade goods and says coffee is the most recognisable of them, seen in supermarkets and cafe chains across the developed world.",
           "source": "Academic Reading Test 35, Questions 28 to 32"
         },
         {
           "prompt": "According to the writer, in terms of total global trade, what do fair-trade producers represent?",
           "kind": "text",
           "answer": [
-            "A tiny number"
+            "A tiny number",
+            "tiny number"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "The fourth paragraph says the two million people who produce fair-trade items are a tiny number when you set them against total global trade.",
           "source": "Academic Reading Test 35, Questions 28 to 32"
         },
         {
           "prompt": "How do its supporters think fair trade has aﬀected many people?",
           "kind": "text",
           "answer": [
-            "Positively"
+            "Positively",
+            "positively impacted"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "The fourth paragraph says supporters maintain the system has positively impacted many more people worldwide, so the missing word is positively.",
           "source": "Academic Reading Test 35, Questions 28 to 32"
         },
         {
@@ -3443,7 +3561,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "answer": [
             "Higher prices"
           ],
-          "explanation": "See the passage above for the exact wording this answer is taken from.",
+          "explanation": "The fourth paragraph says critics claim that if those producers went back to the mainstream system they would receive higher prices for their goods or labour.",
           "source": "Academic Reading Test 35, Questions 28 to 32"
         }
       ]
@@ -3612,7 +3730,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
  * GENERATED, NOT WRITTEN. Every value here comes from
  * tools/generate-learning-index.mjs (buildLessonChecks), which computes
  * it from the questions above. tests/lesson-check-evidence.test.ts
- * recomputes all 269 of them and fails when this block no longer
+ * recomputes all 270 of them and fails when this block no longer
  * matches, so a rewritten or reordered question is caught rather than
  * quietly inheriting the old question identity. If that test fails,
  * regenerate this block from the index rather than editing it by hand.
@@ -3797,7 +3915,7 @@ export const PRACTICE_ITEM_IDENTITY: Record<string, readonly LessonCheckItemIden
     { key: 'u0-q3', version: '2153fa5df8acb8a1', type: 'matching-features', testId: 'reading-full-006', questionId: 'q30' },
     { key: 'u0-q4', version: 'dcd9bf24f465dba2', type: 'matching-features', testId: 'reading-full-006', questionId: 'q31' },
     { key: 'u0-q5', version: '36177cfe6eb3926d', type: 'matching-features', testId: 'reading-full-006', questionId: 'q32' },
-    { key: 'u0-q6', version: '3a22f179ef3d0501', type: 'matching-features', testId: 'reading-full-006', questionId: 'q33' },
+    { key: 'u0-q6', version: 'c75d21c24346c340', type: 'matching-features', testId: 'reading-full-006', questionId: 'q33' },
     { key: 'u1-q0', version: '55b461f991b55c7d', type: 'matching-features', testId: 'reading-full-018', questionId: 'q28' },
     { key: 'u1-q1', version: '0887a68069988b77', type: 'matching-features', testId: 'reading-full-018', questionId: 'q29' },
     { key: 'u1-q2', version: 'c0c8abd89e07ac5d', type: 'matching-features', testId: 'reading-full-018', questionId: 'q30' },
@@ -3853,35 +3971,36 @@ export const PRACTICE_ITEM_IDENTITY: Record<string, readonly LessonCheckItemIden
     { key: 'u0-q5', version: 'd9717278625faa89', type: 'paraphrase' },
     { key: 'u0-q6', version: '7c17d58672227b68', type: 'paraphrase' },
     { key: 'u0-q7', version: '3847216b33f30308', type: 'paraphrase' },
+    { key: 'u1-q0', version: '17d417db09ac566f', type: 'multiple-choice', testId: 'reading-full-020', questionId: 'q1' },
+    { key: 'u1-q1', version: '5f34ea15fbbc7bd9', type: 'yes-no-notgiven', testId: 'reading-full-020', questionId: 'q2' },
+    { key: 'u1-q2', version: '0cfce93d396f3985', type: 'yes-no-notgiven', testId: 'reading-full-020', questionId: 'q3' },
+    { key: 'u1-q3', version: 'e51c0d92904dad46', type: 'yes-no-notgiven', testId: 'reading-full-020', questionId: 'q4' },
+    { key: 'u1-q4', version: 'ec0423ea486d4d78', type: 'yes-no-notgiven', testId: 'reading-full-020', questionId: 'q5' },
+    { key: 'u1-q5', version: '21c0cd2f59f7bcb4', type: 'yes-no-notgiven', testId: 'reading-full-020', questionId: 'q6' },
+    { key: 'u1-q6', version: 'a767e4de8741f38a', type: 'multiple-choice', testId: 'reading-full-020', questionId: 'q12' },
+    { key: 'u1-q7', version: 'e06668ce5221877f', type: 'multiple-choice', testId: 'reading-full-020', questionId: 'q13' },
   ],
   'practice-reading-sentence': [
-    { key: 'u0-q0', version: 'ed8774fe3548b0c4', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q14' },
-    { key: 'u0-q1', version: '68ac8baab1b6a496', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q15' },
-    { key: 'u0-q2', version: '64d48169eb7e289a', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q16' },
-    { key: 'u0-q3', version: '6b6476620978bd63', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q17' },
-    { key: 'u0-q4', version: 'd1f5c4a2aad7c71d', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q18' },
-    { key: 'u0-q5', version: '75a05eccfc795ed1', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q19' },
-    { key: 'u0-q6', version: '82a1edb7c3d3e08c', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q20' },
-    { key: 'u0-q7', version: '7e80fa5a2bfbfcf0', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q21' },
-    { key: 'u0-q8', version: 'd04643abed81ae14', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q22' },
-    { key: 'u0-q9', version: '1d7610e62a7f1003', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q23' },
-    { key: 'u0-q10', version: '4049dbd670a38fc5', type: 'sentence-completion', testId: 'reading-full-015', questionId: 'q24' },
-    { key: 'u1-q0', version: '83b5a281c703d3ef', type: 'sentence-completion', testId: 'reading-full-010', questionId: 'q36' },
-    { key: 'u1-q1', version: '4ec0ee6b4a9ea495', type: 'sentence-completion', testId: 'reading-full-010', questionId: 'q37' },
-    { key: 'u1-q2', version: '5595d04866acc33c', type: 'sentence-completion', testId: 'reading-full-010', questionId: 'q38' },
-    { key: 'u1-q3', version: '61b9611638dd7d77', type: 'sentence-completion', testId: 'reading-full-010', questionId: 'q39' },
-    { key: 'u1-q4', version: 'e70279e54529c2a5', type: 'sentence-completion', testId: 'reading-full-010', questionId: 'q40' },
+    { key: 'u0-q0', version: '00c2ee0df4b84315', type: 'sentence-completion', testId: 'reading-full-024', questionId: 'q18' },
+    { key: 'u0-q1', version: '93a93e8fa490a9c0', type: 'sentence-completion', testId: 'reading-full-024', questionId: 'q19' },
+    { key: 'u0-q2', version: '148948c1fbd211a1', type: 'sentence-completion', testId: 'reading-full-024', questionId: 'q20' },
+    { key: 'u0-q3', version: '29fff630142279f9', type: 'sentence-completion', testId: 'reading-full-024', questionId: 'q21' },
+    { key: 'u0-q4', version: '6b74659149b74ce1', type: 'sentence-completion', testId: 'reading-full-024', questionId: 'q22' },
+    { key: 'u1-q0', version: 'fb596bacfe23f60d', type: 'sentence-completion', testId: 'reading-full-034', questionId: 'q7' },
+    { key: 'u1-q1', version: '5c55dd2eba0767b8', type: 'sentence-completion', testId: 'reading-full-034', questionId: 'q8' },
+    { key: 'u1-q2', version: 'd03f199b60ebd309', type: 'sentence-completion', testId: 'reading-full-034', questionId: 'q9' },
+    { key: 'u1-q3', version: '9d98b901a535da26', type: 'sentence-completion', testId: 'reading-full-034', questionId: 'q10' },
   ],
   'practice-reading-short-answer': [
     { key: 'u0-q0', version: 'f34f902bf66af722', type: 'sentence-completion', testId: 'reading-full-029', questionId: 'q22' },
     { key: 'u0-q1', version: '5f3da0a01b8e09da', type: 'sentence-completion', testId: 'reading-full-029', questionId: 'q23' },
-    { key: 'u0-q2', version: '277daaeb13d7ce74', type: 'sentence-completion', testId: 'reading-full-029', questionId: 'q24' },
+    { key: 'u0-q2', version: '40ac9d151d4848a8', type: 'sentence-completion', testId: 'reading-full-029', questionId: 'q24' },
     { key: 'u0-q3', version: '95ea57231f680fea', type: 'sentence-completion', testId: 'reading-full-029', questionId: 'q25' },
     { key: 'u0-q4', version: '37c080df5b929f06', type: 'sentence-completion', testId: 'reading-full-029', questionId: 'q26' },
     { key: 'u1-q0', version: 'c4c1be2eaeb09e61', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q28' },
     { key: 'u1-q1', version: '32171e883b1963aa', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q29' },
-    { key: 'u1-q2', version: '74a0d58a57074c12', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q30' },
-    { key: 'u1-q3', version: 'cf239bd21e2fc8c3', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q31' },
+    { key: 'u1-q2', version: '8d1158691fda7326', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q30' },
+    { key: 'u1-q3', version: 'f0631c09746afb7f', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q31' },
     { key: 'u1-q4', version: 'ceea3bf86f4f65d3', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q32' },
   ],
   'practice-reading-summary-completion': [
@@ -3895,14 +4014,14 @@ export const PRACTICE_ITEM_IDENTITY: Record<string, readonly LessonCheckItemIden
     { key: 'u0-q7', version: '0822b598a2624ccb', type: 'table-completion', testId: 'reading-full-016', questionId: 'q8' },
     { key: 'u0-q8', version: '8cc7500f9c70e101', type: 'table-completion', testId: 'reading-full-016', questionId: 'q9' },
     { key: 'u0-q9', version: '72c5e028a3263aa4', type: 'table-completion', testId: 'reading-full-016', questionId: 'q10' },
-    { key: 'u1-q0', version: 'b661814a365e8d8e', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q19' },
-    { key: 'u1-q1', version: '511c2f2523c6bbec', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q20' },
-    { key: 'u1-q2', version: 'd8407d8615aadf8a', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q21' },
-    { key: 'u1-q3', version: '67d04ba69909533b', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q22' },
-    { key: 'u1-q4', version: 'c42f21a5ff1020da', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q23' },
-    { key: 'u1-q5', version: 'e6e66e929fcf0284', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q24' },
-    { key: 'u1-q6', version: 'e47a754778e786a6', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q25' },
-    { key: 'u1-q7', version: '923453f475ca734d', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q26' },
+    { key: 'u1-q0', version: '4a6e10f67ea7eea5', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q19' },
+    { key: 'u1-q1', version: 'afd077e37f6dfbcf', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q20' },
+    { key: 'u1-q2', version: '27a21561c7026733', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q21' },
+    { key: 'u1-q3', version: 'ecdd7cd8afaebad5', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q22' },
+    { key: 'u1-q4', version: '996554606d1682f4', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q23' },
+    { key: 'u1-q5', version: 'fef779e5ef3c60d6', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q24' },
+    { key: 'u1-q6', version: '1835918d5943ec9b', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q25' },
+    { key: 'u1-q7', version: '3c6320c0950cf3ee', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q26' },
   ],
   'practice-reading-tfng': [
     { key: 'u0-q0', version: '58165a959f848315', type: 'tfng', testId: 'reading-full-003', questionId: 'q6' },

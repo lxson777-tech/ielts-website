@@ -79,10 +79,6 @@ export interface VocabSummary {
   reviewedToday: number;
 }
 
-export interface StrugglingCard extends VocabCard {
-  lapses: number;
-}
-
 /* ---------------------------------------------------------------------- */
 /* Card set: words.ts + every vocabulary lesson fragment                  */
 /* ---------------------------------------------------------------------- */
@@ -233,22 +229,29 @@ export function buildCardSetFromFragments(fragments: Readonly<Record<string, str
 }
 
 function buildCardSet(): VocabCard[] {
-  // import.meta.glob is a Vite/Astro build-time feature: guarded so this
-  // module can also be imported under plain Node (the tests/*.test.ts
-  // runner has no Vite plugin; see src/lib/plan/schedule.ts, which needs
-  // getVocabSummary() for the daily plan's vocabulary item). Falls back to
-  // the words.ts-only card set there; the real Astro build always has
-  // import.meta.glob and gets the full set. tests/vocab-learning.test.ts
+  // import.meta.glob is a Vite/Astro build-time feature, so this module
+  // must also survive plain Node (the tests/*.test.ts runner has no Vite
+  // plugin; see src/lib/plan/schedule.ts, which needs getVocabSummary()
+  // for the daily plan's vocabulary item). There the call throws and the
+  // deck falls back to the words.ts cards only. tests/vocab-learning.test.ts
   // proves the real-build path separately, by feeding the real 36 lesson
   // bodies (read from disk) into buildCardSetFromFragments() above.
-  const fragments =
-    typeof import.meta.glob === 'function'
-      ? import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
-          query: '?raw',
-          import: 'default',
-          eager: true,
-        })
-      : {};
+  //
+  // It must be a try/catch, not `typeof import.meta.glob === 'function'`.
+  // Vite replaces the glob CALL with the file contents at build time but
+  // leaves a bare `import.meta.glob` alone, so in the real site that typeof
+  // check was always false and the deck silently held only the 146
+  // words.ts cards instead of every lesson word (found 2026-09-23).
+  let fragments: Record<string, string> = {};
+  try {
+    fragments = import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    });
+  } catch {
+    fragments = {};
+  }
   return buildCardSetFromFragments(fragments);
 }
 
@@ -530,8 +533,8 @@ function freshState(today: string): VocabCardState {
 }
 
 /** Applies one rating to a card's current state and returns the next state.
-    Pure — doesn't touch storage, so it also powers the "next interval"
-    preview under each rating button. */
+    Pure, with no storage access. The practice round (VocabReview.tsx)
+    maps each answer onto one of these grades. */
 function scheduleNext(state: VocabCardState, grade: Grade, today: string): VocabCardState {
   let { ease, interval, reps, lapses } = state;
 
@@ -561,23 +564,9 @@ function scheduleNext(state: VocabCardState, grade: Grade, today: string): Vocab
   return { ...state, ease, interval, reps, lapses, due: addDays(today, interval) };
 }
 
-/** Days until a card would next be due for each possible rating, without
-    saving anything — feeds the "Good: 4 days" captions under the rating
-    buttons. Uses the card's current stored state, or a fresh new-card state
-    if it hasn't been rated before. */
-export function previewIntervals(word: string): Record<Grade, number> {
-  const store = loadStore();
-  const today = todayStr();
-  const base = store.cards[word] ?? freshState(today);
-  const grades: Grade[] = ['again', 'hard', 'good', 'easy'];
-  const out = {} as Record<Grade, number>;
-  for (const g of grades) out[g] = scheduleNext(base, g, today).interval;
-  return out;
-}
-
-/** Returns the card's new state, additively: existing callers that treated
-    this as void (every one before the recall/use modes) are unaffected,
-    and recordReviewOutcome() (below) uses the return value to report the
+/** Returns the card's new state, additively: a caller that treats this
+    as void (the practice round in VocabReview.tsx) is unaffected, and
+    recordReviewOutcome() (below) uses the return value to report the
     resulting due date without a second read of storage. */
 export function rate(word: string, grade: Grade): VocabCardState | undefined {
   if (!CARD_BY_WORD.has(word)) return undefined;
@@ -604,25 +593,37 @@ function shuffled<T>(items: T[]): T[] {
   return out;
 }
 
-/** Today's review queue: every already-introduced card that's due, plus as
-    many not-yet-seen cards as the daily new-card cap still allows (counting
-    cards already introduced today, wherever they were introduced from). */
-export function getDueCards(topic?: string): VocabCard[] {
+/** Every card in one topic, in lesson order. The practice round draws its
+    wrong answers from here. */
+export function getTopicCards(topic: string): VocabCard[] {
+  return CARD_SET.filter((c) => c.topic === topic);
+}
+
+/** One practice round for a topic (VocabReview.tsx): up to `size` words,
+    most useful first. Words that are due for review come first, the ones
+    missed most often at the front; then words never practised, in the order
+    the lesson teaches them; then, once everything has been seen, the words
+    whose review is nearest.
+
+    Deliberately ignores the daily cap on new words that getDueCards()
+    applies across the whole deck. That cap meant a student who practised
+    one topic and then opened another was told "You're all caught up" with
+    nothing to do, which read as a broken page. A round always has words in
+    it; the spacing still decides which ones. */
+export function getPracticeRound(topic: string, size = 10): VocabCard[] {
   const store = loadStore();
   const today = todayStr();
-  const pool = topic ? CARD_SET.filter((c) => c.topic === topic) : CARD_SET;
+  const pool = getTopicCards(topic);
 
-  const due: VocabCard[] = [];
-  for (const card of pool) {
-    const state = store.cards[card.word];
-    if (state && state.due <= today) due.push(card);
-  }
+  const due = pool
+    .filter((c) => store.cards[c.word] && store.cards[c.word]!.due <= today)
+    .sort((a, b) => store.cards[b.word]!.lapses - store.cards[a.word]!.lapses);
+  const unseen = pool.filter((c) => !store.cards[c.word]);
+  const later = pool
+    .filter((c) => store.cards[c.word] && store.cards[c.word]!.due > today)
+    .sort((a, b) => store.cards[a.word]!.due.localeCompare(store.cards[b.word]!.due));
 
-  const introducedToday = Object.values(store.cards).filter((s) => s.introducedDate === today).length;
-  const newSlots = Math.max(0, store.settings.newPerDay - introducedToday);
-  const newCards = pool.filter((c) => !store.cards[c.word]).slice(0, newSlots);
-
-  return shuffled([...due, ...newCards]);
+  return shuffled([...due, ...unseen, ...later].slice(0, size));
 }
 
 export function getVocabSummary(): VocabSummary {
@@ -647,19 +648,8 @@ export function getVocabSummary(): VocabSummary {
   return { due, newToday, learned, total: CARD_SET.length, reviewedToday };
 }
 
-/** Cards the student keeps getting wrong (2+ lapses), across the whole deck
-    — shown as a "Words I struggle with" list at the end of a session. */
-export function getStrugglingCards(): StrugglingCard[] {
-  const store = loadStore();
-  return Object.entries(store.cards)
-    .filter(([, state]) => state.lapses >= 2)
-    .map(([word, state]) => ({ ...(CARD_BY_WORD.get(word) as VocabCard), lapses: state.lapses }))
-    .filter((c) => c.word)
-    .sort((a, b) => b.lapses - a.lapses);
-}
-
 /* ---------------------------------------------------------------------- */
-/* Review modes: recognise (existing), recall, use in a sentence          */
+/* Review modes: recognise, recall, use in a sentence                     */
 /*                                                                          */
 /* Vocabulary is supporting knowledge, never a fifth IELTS paper: nothing */
 /* below produces a band, and "known" (isWordKnown) is a planning signal, */
@@ -667,6 +657,14 @@ export function getStrugglingCards(): StrugglingCard[] {
 /* localStorage, so tests/vocab-learning.test.ts drives all of it with    */
 /* plain objects, and the planner-facing functions further down can be    */
 /* called from anywhere without a browser.                                */
+/*                                                                          */
+/* Since 23 September 2026 the page practises words one way: the marked   */
+/* practice round (VocabReview.tsx, built by src/lib/vocab-practice.ts),  */
+/* where the student picks the missing word from four. That is            */
+/* recognition, so it is recorded as direction 'recognise' and never      */
+/* adds a recall success. The recall and use-in-a-sentence checks below   */
+/* are kept, with their tests, because the planner and the synced store   */
+/* still model them.                                                      */
 /* ---------------------------------------------------------------------- */
 
 export type ReviewMode = 'recognise' | 'recall' | 'use';
@@ -780,22 +778,16 @@ export function checkSentenceUsage(sentence: string, word: string): SentenceChec
   return { mentionsWord, longEnough, passes: mentionsWord && longEnough };
 }
 
-/** Every due card paired with the mode it is ready for (chooseReviewMode).
-    The session-building counterpart of getDueCards(): same queue, same
-    shuffle, with each card's mode already decided so the component never
-    reaches back into storage per-card while rendering. */
-export function getDueCardsWithModes(topic?: string): { card: VocabCard; mode: ReviewMode }[] {
-  const store = loadStore();
-  return getDueCards(topic).map((card) => ({ card, mode: chooseReviewMode(store.cards[card.word]) }));
-}
-
 /** Records one review outcome against the local spaced-review state: the
     same scheduler every mode has always used (rate(), unchanged behaviour
     and unchanged stored shape), plus, for an unassisted correct RECALL
     only, today's local date added to the word's recallSuccessDates.
     Browser-only, like rate() itself; the pure decisions above (outcomeGrade,
     isRecallSuccess) are what make this a thin, testable-by-composition
-    wrapper rather than new scheduling logic of its own. */
+    wrapper rather than new scheduling logic of its own. No screen calls
+    it at present: the practice round grades through rate() directly. It
+    stays as the one writer of recallSuccessDates, for when a real
+    recall step returns. */
 export function recordReviewOutcome(
   word: string,
   direction: ReviewMode,
@@ -833,11 +825,11 @@ export interface VocabDueWord {
 
 /** Words ready for production practice today: already introduced (rated at
     least once) AND due AND past the point where recognise is still the
-    right mode. Deliberately narrower than getDueCards(), which also offers
-    brand-new words: a plan's "recall" step is for testing production on
-    words the student has already met, not first exposure. Pure and
-    deterministic for a fixed `today`: no shuffling here, that stays a
-    session-building concern (getDueCardsWithModes, above). */
+    right mode. Deliberately narrower than getPracticeRound(), which also
+    offers brand-new words: a plan's "recall" step is for testing
+    production on words the student has already met, not first exposure.
+    Pure and deterministic for a fixed `today`: no shuffling here, that
+    stays a session-building concern (getPracticeRound, above). */
 export function wordsDueForRecall(
   cardSet: readonly VocabCard[],
   store: VocabStoreV1,
@@ -982,8 +974,9 @@ export const LOW_LEXICAL_RESOURCE_BAND = 5.5;
 
 /** Genuinely observed vocabulary problems, never invented ones:
       - a word the student has failed to recall at least twice (the same
-        lapses count getStrugglingCards() already reads, so "struggling" and
-        "a vocabulary problem" always agree);
+        lapses count getPracticeRound() sorts its due words by, so the
+        words a round brings back first and "a vocabulary problem" always
+        agree);
       - a recent Lexical Resource average below LOW_LEXICAL_RESOURCE_BAND,
         when the caller supplies one.
     This function never reads graded writing or speaking itself, and never

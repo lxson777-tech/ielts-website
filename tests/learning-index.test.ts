@@ -36,6 +36,7 @@ import {
   INDEX_FILE,
   REPO_ROOT,
   buildLearningIndex,
+  resolveUnitSource,
   serialiseIndex,
 } from '../tools/generate-learning-index.mjs';
 
@@ -293,14 +294,124 @@ test('a lesson check is typed from the paper it quotes, not from the lesson it s
   assert.ok(endings.items.length > 0);
   for (const item of endings.items) assert.notEqual(item.type, 'sentence-endings');
 
-  /* And the one hand-written set, which quotes no paper, is typed by what
-     it teaches instead. */
+  /* Every quoted item carries the type its own paper gives that question,
+     including a unit that quotes its paper question by question. */
+  for (const entry of index.lessonChecks) {
+    for (const item of entry.items) {
+      if (!item.sourceTestId) continue;
+      assert.equal(
+        item.type,
+        typeOfPaperQuestion(item.sourceTestId, item.sourceQuestionId),
+        `${entry.id} ${item.itemKey} is typed differently from ${item.sourceTestId} ${item.sourceQuestionId}`,
+      );
+    }
+  }
+
+  /* The paraphrase lesson opens with a hand-written warm-up, which quotes
+     no paper and is typed by what it teaches instead. Its second unit is a
+     real passage and is typed from the paper like any other. */
   const paraphrase = index.lessonChecks.find((c: { id: string }) => c.id === 'practice-reading-paraphrase');
   assert.ok(paraphrase);
-  for (const item of paraphrase.items) {
+  const warmUp = paraphrase.items.filter((item: { itemKey: string }) => item.itemKey.startsWith('u0-'));
+  assert.ok(warmUp.length > 0, 'the paraphrase warm-up is missing');
+  for (const item of warmUp) {
     assert.equal(item.type, 'paraphrase');
     assert.equal(item.fromImportedPaper, false);
   }
+});
+
+function typeOfPaperQuestion(testId: string, questionId: string): string | undefined {
+  for (const part of testsById.get(testId)?.parts ?? []) {
+    for (const group of part.groups) if (group.questions.some((q) => q.id === questionId)) return group.type;
+  }
+  return undefined;
+}
+
+/* A unit names its source in one of two shapes (see the comment above
+   UNIT_SOURCE_RE in tools/generate-learning-index.mjs). Made-up units
+   against a real paper, reading-full-020, whose first passage is q1
+   multiple choice, q2 to q6 yes / no / not given, q7 to q11 sentence
+   completion and q12 to q13 multiple choice. */
+
+function unitQuoting(...sources: (string | undefined)[]) {
+  return { questions: sources.map((source) => ({ prompt: 'p', kind: 'text', answer: 'a', explanation: 'e', source })) };
+}
+
+function resolved(unit: unknown, skill = 'reading') {
+  return resolveUnitSource(skill, unit, testsById, 'made-up unit') as {
+    testId: string;
+    questions: { questionId: string; type: string }[];
+  } | null;
+}
+
+test('a unit with one source for all its questions maps them in order onto its range', () => {
+  const line = 'Academic Reading Test 20, Questions 2 to 6';
+  const result = resolved(unitQuoting(line, line, line, line, line));
+  assert.equal(result?.testId, 'reading-full-020');
+  assert.deepEqual(
+    result?.questions.map((q) => q.questionId),
+    ['q2', 'q3', 'q4', 'q5', 'q6'],
+  );
+  assert.ok(result?.questions.every((q) => q.type === 'yes-no-notgiven'));
+
+  /* Listening names it once, on the audio segment. */
+  const listening = resolveUnitSource(
+    'listening',
+    { segment: { source: 'Listening Test 11, Part 1, Questions 1 to 3' }, questions: [{}, {}, {}] },
+    testsById,
+    'made-up listening unit',
+  ) as { testId: string; questions: { questionId: string }[] };
+  assert.equal(listening.testId, 'listening-full-011');
+  assert.deepEqual(listening.questions.map((q) => q.questionId), ['q1', 'q2', 'q3']);
+
+  /* No source anywhere is a hand-written unit. */
+  assert.equal(resolved(unitQuoting(undefined, undefined)), null);
+});
+
+test('a unit with a source per question maps each run onto its own range, skipped questions and all', () => {
+  const one = 'Academic Reading Test 20, Questions 1';
+  const run = 'Academic Reading Test 20, Questions 2 to 6';
+  const last = 'Academic Reading Test 20, Questions 12 to 13';
+  const result = resolved(unitQuoting(one, run, run, run, run, run, last, last));
+  assert.equal(result?.testId, 'reading-full-020');
+  assert.deepEqual(
+    result?.questions.map((q) => [q.questionId, q.type]),
+    [
+      ['q1', 'multiple-choice'],
+      ['q2', 'yes-no-notgiven'],
+      ['q3', 'yes-no-notgiven'],
+      ['q4', 'yes-no-notgiven'],
+      ['q5', 'yes-no-notgiven'],
+      ['q6', 'yes-no-notgiven'],
+      ['q12', 'multiple-choice'],
+      ['q13', 'multiple-choice'],
+    ],
+  );
+});
+
+test('a unit whose source lines and questions have drifted apart fails loudly', () => {
+  const run = 'Academic Reading Test 20, Questions 2 to 6';
+  /* One range, the wrong number of questions. */
+  assert.throws(() => resolved(unitQuoting(run, run, run)), /covers 5 questions but the unit has 3/);
+  /* A run inside a per-question unit, the wrong length. */
+  assert.throws(
+    () => resolved(unitQuoting('Academic Reading Test 20, Questions 1', run, run)),
+    /covers 5 questions but 2 consecutive questions carry it/,
+  );
+  /* Two papers in one unit. */
+  assert.throws(
+    () => resolved(unitQuoting('Academic Reading Test 20, Questions 1', 'Academic Reading Test 19, Questions 2')),
+    /points at reading-full-019, but the unit's earlier questions come from reading-full-020/,
+  );
+  /* The same paper question claimed twice. */
+  assert.throws(
+    () => resolved(unitQuoting('Academic Reading Test 20, Questions 1', 'Academic Reading Test 20, Questions 2', 'Academic Reading Test 20, Questions 1')),
+    /reading-full-020 q1 is claimed by two questions/,
+  );
+  /* Some questions sourced and some not. */
+  assert.throws(() => resolved(unitQuoting('Academic Reading Test 20, Questions 1', undefined)), /some questions name a source paper and some do not/);
+  /* A sentence that names no paper at all. */
+  assert.throws(() => resolved(unitQuoting('Test Twenty, the first one')), /cannot read which paper/);
 });
 
 test('every writing prompt in the index is a real prompt with its real model answers', () => {

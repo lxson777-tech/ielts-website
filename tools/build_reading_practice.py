@@ -21,8 +21,9 @@ What it does:
        source data, and "complete the summary using a word list" is tagged
        "matching-features"; this script looks at the instruction text to
        sort those out correctly rather than trusting the tag alone).
-    3. Picks two groups per lesson from two different tests (preferring
-       tests 001-020, which carry real explanation + evidence text) and
+    3. Takes the two groups per lesson pinned in PRACTICE_SOURCES (and
+       stops with an error if one has gone or no longer reads as that
+       lesson's question type), and
        converts them into the site's PracticeQuestion/PracticeSet shape,
        carrying the real passage text, the real answer, the real
        explanation and evidence, and a source credit line.
@@ -30,14 +31,19 @@ What it does:
 
 Re-run this whenever the reading test bank changes (new tests added,
 existing ones edited) and the practice exercises should be refreshed to
-match. It always regenerates the same 11 lesson keys; the "paraphrase"
-lesson is left untouched (see NOTE below).
+match. It always regenerates the same 11 lesson keys, plus the real
+passage at the end of the "paraphrase" lesson (see NOTE below).
 
 NOTE on "paraphrase": it is a skill lesson, not an official IELTS reading
-question type (see the comment on it in src/data/reading.ts), so none of
-the imported tests contain a matching question group. Its practice
-exercise is intentionally left as hand-written content; this script keeps
-it byte-for-byte from the current file.
+question type (see the comment on it in src/data/reading.ts), so no
+imported test has a question group tagged for it. Its exercise has two
+parts. The first is a hand-written warm-up of single sentences, kept
+byte-for-byte below. The second is one real passage with its real
+questions, chosen by hand in PARAPHRASE_SOURCE because every one of its
+statements turns on a paraphrase the lesson teaches (a quantifier shift, a
+restated rank, words reused with a different claim). It was added on
+2026-09-23 after the owner pointed out that the lesson had questions but
+nothing to actually read.
 
 NOTE on "diagram": the 40 reading tests have no group tagged
 "diagram-labelling" (only the listening tests do), but two groups are real
@@ -137,7 +143,6 @@ def load_tests():
         data = json.loads(m.group(1))
         num = int(NUM_PAT.search(path).group(1))
         data["_num"] = num
-        data["_has_explanations"] = num <= 20
         tests.append(data)
     return tests
 
@@ -153,7 +158,6 @@ def flatten_groups(tests):
                 groups.append({
                     "test_num": t["_num"],
                     "test_title": t["title"],
-                    "has_expl": t["_has_explanations"],
                     "part_label": part["label"],
                     "passage_title": stim.get("title", ""),
                     "passage_paras": passage_paras,
@@ -190,8 +194,10 @@ def classify(gr):
     if t == "sentence-completion" and "<img" in legend and ("diagram" in instr or "label the diagram" in instr):
         return "diagram"
 
-    # Sentence-ending groups are also mistagged "sentence-completion".
-    if "ending" in instr and has_before:
+    # Sentence-ending groups are also mistagged "sentence-completion". Some
+    # say "ending"; others say "choose one phrase from the list ... to
+    # complete each sentence" (Test 20 Q7 to 9, Test 21 Q38 to 40).
+    if has_before and ("ending" in instr or ("phrase" in instr and "list" in instr)):
         return "matching-sentence-endings"
 
     # Short-answer: a real question (ends with "?"), answered in words.
@@ -208,8 +214,10 @@ def classify(gr):
     if (t == "matching-features" and "summary" not in instr) or t == "categorisation":
         return "matching-features"
 
-    # Plain sentence completion: fill words into given sentences.
-    if t == "sentence-completion" and has_before:
+    # Plain sentence completion: fill words into given sentences. Groups
+    # answered with a letter from a list are mistagged too, and are not
+    # sentence completion whatever their tag says.
+    if t == "sentence-completion" and has_before and not re.search(r"\bletters?\b|\blist\b", instr):
         return "sentence"
 
     return None
@@ -229,35 +237,42 @@ def summary_subtype(gr):
     return "summary"
 
 
-def pick_candidates(all_groups, slug, n=2):
-    cands = [gr for gr in all_groups if classify(gr) == slug]
-    # Prefer tests with real explanations (001-020), then bigger groups
-    # (more practice value), then lowest test number for determinism.
-    cands.sort(key=lambda gr: (not gr["has_expl"], -len(gr["group"]["questions"]), gr["test_num"]))
+# The question groups each lesson uses, in the order they appear on the
+# page: (test number, question range as printed in the passage label).
+# Chosen by hand and pinned, so adding or editing a test never silently
+# swaps a lesson's passage. The order matters beyond looks: the Russian
+# explanations in src/data/tests/ru/practice-reading-<slug>.json are keyed
+# by unit and question position. To change a lesson's source, edit it
+# here, re-run, and re-check that file with
+# `node tools/explanations-ru.mjs check practice-reading-<slug>`.
+PRACTICE_SOURCES = {
+    "mc": [(19, "24 to 28"), (1, "37 to 40")],
+    "tfng": [(3, "6 to 13"), (1, "1 to 7")],
+    "ynng": [(17, "7 to 13"), (2, "35 to 40")],
+    "headings": [(6, "14 to 19"), (14, "14 to 19")],
+    "matching-information": [(9, "27 to 33"), (12, "14 to 20")],
+    "matching-features": [(6, "27 to 33"), (18, "28 to 33")],
+    "matching-sentence-endings": [(8, "31 to 35"), (13, "1 to 5")],
+    # Until 2026-09-23 this lesson used Test 15 Q14 to 24 (a timeline
+    # diagram) and Test 10 Q36 to 40 (notes), built from an older import
+    # in which the words around each gap belonged to the next question.
+    "sentence": [(24, "18 to 22"), (34, "7 to 10")],
+    "summary-completion": [(16, "1 to 10"), (2, "19 to 26")],
+    "short-answer": [(29, "22 to 26"), (35, "28 to 32")],
+    "diagram": [(15, "27 to 32"), (13, "10 to 13")],
+}
 
-    if slug == "summary-completion":
-        chosen, used = [], set()
-        table_first = [c for c in cands if summary_subtype(c) == "table"]
-        rest = [c for c in cands if summary_subtype(c) != "table"]
-        for c in table_first:
-            if c["test_num"] not in used:
-                chosen.append(c); used.add(c["test_num"]); break
-        for c in rest:
-            if c["test_num"] not in used:
-                chosen.append(c); used.add(c["test_num"]); break
-        for c in cands:
-            if len(chosen) >= n:
-                break
-            if c["test_num"] not in used:
-                chosen.append(c); used.add(c["test_num"])
-        return chosen
 
-    chosen, used = [], set()
-    for c in cands:
-        if len(chosen) >= n:
-            break
-        if c["test_num"] not in used:
-            chosen.append(c); used.add(c["test_num"])
+def pinned_groups(all_groups, slug):
+    chosen = []
+    for test_num, qrange in PRACTICE_SOURCES[slug]:
+        found = [gr for gr in all_groups if gr["test_num"] == test_num and gr["qrange"] == qrange]
+        if len(found) != 1:
+            raise SystemExit(f"{slug}: expected one group for Test {test_num} Q{qrange}, found {len(found)}")
+        kind = classify(found[0])
+        if kind != slug:
+            raise SystemExit(f"{slug}: Test {test_num} Q{qrange} now reads as '{kind}', not '{slug}'")
+        chosen.append(found[0])
     return chosen
 
 
@@ -396,16 +411,52 @@ def conv_sentence_endings(gr):
     return out
 
 
+GAP_PAT = re.compile(r"\s*(?:…[….]*|\.{4,})\s*")
+BLANK = " ________ "
+
+
+def fill_blank(text):
+    """The test data prints a gap as a run of dots; show it as ________."""
+    return re.sub(r"\s+", " ", GAP_PAT.sub(BLANK, text, count=1)).strip()
+
+
+def legend_gap_lines(gr):
+    """Notes / summary groups whose questions carry no text of their own:
+       the words around each gap live in the group's legend, one gap per
+       line, marked "(19) ......". Returns {question number: prompt}."""
+    html = re.sub(r"<br\s*/?>|</p>|</span>|</li>", "\n", gr["group"].get("legendHtml") or "")
+    gap = re.compile(r"\((\d+)\)(?:\s*(?:…[….]*|\.{4,}))?")
+    lines = {}
+    for raw in html.split("\n"):
+        line = strip_html(raw).lstrip("•· ").strip()
+        for m in gap.finditer(line):
+            # This question's gap becomes the blank; any other gap sharing
+            # the line is shown as a plain "…" so it is not mistaken for it.
+            text = gap.sub(lambda o: BLANK if o.start() == m.start() else " … ", line)
+            lines[int(m.group(1))] = re.sub(r"\s+", " ", text).strip()
+    return lines
+
+
 def conv_fill(gr, question_style=False):
     """question_style=False: sentence with a blank (before ____ after).
        question_style=True: a real question, before is the full question."""
     src = source_note(gr)
+    legend_lines = None
     out = []
     for q in gr["group"]["questions"]:
         before = strip_html(q.get("before", ""))
         after = strip_html(q.get("after", ""))
         if question_style:
             prompt = before or strip_html(q.get("textHtml", ""))
+        elif not before and not after:
+            if legend_lines is None:
+                legend_lines = legend_gap_lines(gr)
+            num = int(re.sub(r"\D", "", q.get("id", "")) or 0)
+            if num not in legend_lines:
+                raise SystemExit(f"Test {gr['test_num']} Q{gr['qrange']}: no gap ({num}) in the group's legend")
+            prompt = legend_lines[num]
+        elif GAP_PAT.search(before):
+            prompt = fill_blank(f"{before} {after}")
         else:
             prompt = re.sub(r"\s+", " ", f"{before} ________ {after}").strip()
         out.append({
@@ -651,9 +702,9 @@ def indent_block(text, spaces):
 # Verbatim paraphrase block, kept byte-for-byte from the current file.
 PARAPHRASE_BLOCK = """  paraphrase: {
     title: 'Exercise. Spot the Correct Paraphrase',
-    intro: 'For each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
     units: [
       {
+        intro: 'Warm-up, written for this lesson: for each "passage" sentence, choose the option that means the same thing. Not the one that just reuses the same words.',
         questions: [
       {
         prompt: 'Passage: "The number of visitors to the museum has risen sharply since it introduced free admission."',
@@ -745,8 +796,61 @@ PARAPHRASE_BLOCK = """  paraphrase: {
       },
         ],
       },
-    ],
+"""
+PARAPHRASE_TAIL = """    ],
   },"""
+
+# The real passage that ends the paraphrase lesson: test number, the start
+# of the passage title, and the question groups to take from it. Its third
+# group (sentence endings, questions 7 to 9) is left out because the
+# imported copy merged its answer options into the last question's text.
+PARAPHRASE_SOURCE = {"test": 20, "title": "Sleeping on the job", "kinds": ("mc", "ynng")}
+PARAPHRASE_REAL_INTRO = (
+    "Every answer below depends on a paraphrase of the passage above: "
+    "find the sentence that talks about the same idea, then check whether it really makes the same claim. "
+    "For the Yes / No / Not Given statements: Yes means the passage says the same thing in other words, "
+    "No means it says the opposite, and Not Given means it never says it."
+)
+
+
+def build_paraphrase_real_unit(groups):
+    """The real passage for the paraphrase lesson: one passage shown once,
+       followed by every chosen question group in test order."""
+    src = PARAPHRASE_SOURCE
+    picked = [
+        gr for gr in groups
+        if gr["test_num"] == src["test"]
+        and gr["passage_title"].startswith(src["title"])
+        and classify(gr) in src["kinds"]
+    ]
+    if not picked:
+        raise SystemExit(f"paraphrase: no groups found for Test {src['test']} '{src['title']}'")
+    questions = []
+    for gr in picked:
+        kind = classify(gr)
+        questions += conv_mc(gr) if kind == "mc" else conv_tfng_ynng(gr, YNNG_OPTS if kind == "ynng" else TFNG_OPTS)
+    first = picked[0]
+    # Name exactly the questions shown. Groups left out leave gaps in the
+    # numbering, so "1 to 13" would promise questions that are not there.
+    numbers = []
+    for gr in picked:
+        ends = [int(n) for n in gr["qrange"].split(" to ")]
+        numbers += list(range(ends[0], ends[-1] + 1))
+    spans, run = [], [numbers[0]]
+    for n in numbers[1:]:
+        if n == run[-1] + 1:
+            run.append(n)
+        else:
+            spans.append(run); run = [n]
+    spans.append(run)
+    parts = [str(r[0]) if len(r) == 1 else f"{r[0]} to {r[-1]}" for r in spans]
+    qrange = parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
+    label = f"Academic Reading Test {first['test_num']}, {first['part_label']}, Questions {qrange}"
+    return {
+        "passages": [{"label": label, "title": first["passage_title"], "paragraphs": first["passage_paras"]}],
+        "intro": PARAPHRASE_REAL_INTRO,
+        "questions": questions,
+    }
 
 
 def main():
@@ -762,10 +866,7 @@ def main():
     report_rows = []
     entries = []
     for slug in slugs:
-        chosen = pick_candidates(groups, slug, n=2)
-        if not chosen:
-            print(f"WARNING: no source groups found for '{slug}'", file=sys.stderr)
-            continue
+        chosen = pinned_groups(groups, slug)
         pset = build_set(slug, chosen)
         entries.append((slug, pset))
         sources = "; ".join(f"Test {g['test_num']} Q{g['qrange']}" for g in chosen)
@@ -776,6 +877,8 @@ def main():
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(HEADER)
         f.write(PARAPHRASE_BLOCK)
+        f.write(indent_block(ts_json(build_paraphrase_real_unit(groups), 0), 6) + ",\n")
+        f.write(PARAPHRASE_TAIL)
         f.write("\n\n")
         for i, (slug, pset) in enumerate(entries):
             body = ts_json(pset, 2)

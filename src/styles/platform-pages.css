@@ -85,7 +85,7 @@
 
 /* vocab review — /review ("Words"), src/components/VocabTopics.tsx and
    src/components/VocabReview.tsx. Landing grid + topic groups first, then
-   the flashcard session, which reuses .vocab-review-space/-head/-back-link
+   the practice round, which reuses .vocab-review-space/-head/-back-link
    from the landing/topic views for one consistent page frame. */
 .vocab-review-space{max-width:640px;margin:0 auto;padding:48px 24px 80px}
 .vocab-review-head{margin-bottom:26px}
@@ -96,7 +96,7 @@
 .vocab-review-head h1{margin:.4rem 0 0;font-family:var(--font-display);font-size:clamp(1.7rem,3.4vw,2.3rem);letter-spacing:-.03em}
 .vocab-review-head p{margin:.55rem 0 0;color:var(--color-ink-muted);font-size:.92rem;max-width:46ch;line-height:1.55}
 
-/* landing: the 14 topics */
+/* landing: every topic */
 .vocab-topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .vocab-topic-card{display:flex;flex-direction:column;gap:6px;text-align:left;border:1px solid var(--color-border);border-radius:var(--radius-card,16px);background:var(--color-surface);padding:18px 20px;transition:border-color .2s ease,transform .2s ease}
 .vocab-topic-card:hover{border-color:var(--color-vocabulary,#d99000);transform:translateY(-2px)}
@@ -122,58 +122,77 @@
 
 .vocab-progress{margin:0 0 14px;color:var(--color-ink-muted);font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums}
 
-.vocab-card{position:relative;min-height:280px;border:1px solid var(--color-border);border-radius:var(--radius-card,16px);background:var(--color-surface);box-shadow:0 12px 32px rgb(32 37 34 / 5%);padding:44px 32px 32px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.vocab-card:focus-visible{outline:2px solid var(--color-vocabulary,#d99000);outline-offset:3px}
-.vocab-card-topic{position:absolute;top:20px;left:20px;right:20px;text-align:center;color:var(--color-vocabulary,#d99000);font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.vocab-card-word{font-family:var(--font-display);font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:-.02em;opacity:0;transform:translateY(6px);animation:vocab-face-in .2s ease forwards}
-.vocab-card-back{width:100%;opacity:0;transform:translateY(6px);animation:vocab-face-in .2s ease forwards}
-@keyframes vocab-face-in{to{opacity:1;transform:translateY(0)}}
-.vocab-card-def{margin:0;font-size:1.05rem;line-height:1.55;color:var(--color-ink)}
-.vocab-card-example{margin:14px 0 0;color:var(--color-ink-muted);font-size:.92rem;font-style:italic;line-height:1.55}
+.vocab-hint{margin:16px 0 0;text-align:center;color:var(--color-ink-muted);font-size:.8rem;line-height:1.5}
 
-.vocab-hint{margin:16px 0 0;text-align:center;color:var(--color-ink-muted);font-size:.8rem}
+/* practice round: one question at a time, marked by the site */
+.vocab-round-progress{height:4px;border-radius:999px;background:color-mix(in srgb,var(--color-border) 70%,transparent);overflow:hidden;margin:0 0 10px}
+.vocab-round-progress span{display:block;height:100%;border-radius:inherit;background:var(--color-vocabulary,#d99000);transition:width .35s cubic-bezier(.16,1,.3,1)}
+.vocab-question{border:1px solid var(--color-border);border-radius:var(--radius-card,16px);background:var(--color-surface);box-shadow:0 12px 32px rgb(32 37 34 / 5%);padding:30px 30px 26px;animation:vocab-face-in .25s cubic-bezier(.16,1,.3,1) both}
+@keyframes vocab-face-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.vocab-question-label{margin:0 0 14px;color:var(--color-vocabulary,#d99000);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.vocab-question-sentence{margin:0;font-family:var(--font-display);font-size:clamp(1.15rem,2.6vw,1.4rem);line-height:1.5;letter-spacing:-.01em;color:var(--color-ink)}
+.vocab-gap{display:inline-block;min-width:5.5em;margin:0 .15em;padding:0 .3em;border-bottom:2px solid color-mix(in srgb,var(--color-vocabulary,#d99000) 60%,var(--color-border));line-height:1.25;vertical-align:baseline;transition:background-color .2s ease,border-color .2s ease}
+.vocab-gap.is-right{min-width:0;border-radius:6px 6px 0 0;border-color:var(--color-success,#16a34a);background:color-mix(in srgb,var(--color-success,#16a34a) 12%,transparent);color:var(--color-success,#15803d)}
+.vocab-gap.is-revealed{min-width:0;border-radius:6px 6px 0 0;border-color:var(--color-vocabulary,#d99000);background:color-mix(in srgb,var(--color-vocabulary,#d99000) 14%,transparent)}
+.vocab-question-clue{margin:18px 0 0;padding-top:16px;border-top:1px solid var(--color-border);color:var(--color-ink);font-size:.9rem;line-height:1.55}
+.vocab-question-clue span{display:block;margin-bottom:3px;color:var(--color-ink-muted);font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.vocab-question-note{margin:10px 0 0;color:var(--color-ink-muted);font-size:.78rem;line-height:1.5}
 
-.vocab-ratings{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}
-.vocab-rating{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);padding:11px 6px;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
-.vocab-rating:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgb(32 37 34 / 8%)}
-.vocab-rating span{font-weight:800;font-size:.84rem}
-.vocab-rating small{color:var(--color-ink-muted);font-size:.66rem}
-.vocab-rating-again{border-color:color-mix(in srgb,var(--color-error,#dc2626) 35%,var(--color-border))}
-.vocab-rating-again span{color:var(--color-error,#dc2626)}
-.vocab-rating-hard span{color:var(--color-warning,#d97706)}
-.vocab-rating-good span{color:var(--color-vocabulary,#d99000)}
-.vocab-rating-easy span{color:var(--color-success,#16a34a)}
+.vocab-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.vocab-option{display:flex;align-items:center;gap:12px;min-height:56px;text-align:left;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);padding:12px 16px;color:var(--color-ink);font-weight:700;font-size:.95rem;cursor:pointer;transition:border-color .18s ease,background-color .18s ease,transform .18s cubic-bezier(.16,1,.3,1),opacity .18s ease}
+.vocab-option kbd{flex:none;display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--color-border);border-radius:7px;font:700 .7rem/1 var(--font-body,inherit);color:var(--color-ink-muted);background:var(--color-surface-alt,transparent)}
+.vocab-option:focus-visible{outline:2px solid var(--color-vocabulary,#d99000);outline-offset:2px}
+@media (hover:hover){.vocab-option:not(:disabled):hover{border-color:var(--color-vocabulary,#d99000);transform:translateY(-1px)}}
+.vocab-option:disabled{cursor:default}
+.vocab-option.is-right{border-color:var(--color-success,#16a34a);background:color-mix(in srgb,var(--color-success,#16a34a) 10%,var(--color-surface))}
+.vocab-option.is-right kbd{border-color:var(--color-success,#16a34a);background:var(--color-success,#16a34a);color:#fff}
+.vocab-option.is-wrong{border-color:var(--color-error,#dc2626);background:color-mix(in srgb,var(--color-error,#dc2626) 8%,var(--color-surface))}
+.vocab-option.is-wrong kbd{border-color:var(--color-error,#dc2626);background:var(--color-error,#dc2626);color:#fff}
+.vocab-option.is-dim{opacity:.45}
+
+.vocab-feedback{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;border-radius:12px;padding:14px 16px;animation:vocab-face-in .25s cubic-bezier(.16,1,.3,1) both}
+.vocab-feedback.is-right{background:color-mix(in srgb,var(--color-success,#16a34a) 10%,transparent)}
+.vocab-feedback.is-wrong{background:color-mix(in srgb,var(--color-vocabulary,#d99000) 12%,transparent)}
+.vocab-feedback strong{font-size:.92rem;color:var(--color-ink)}
+.vocab-feedback p{margin:4px 0 0;color:var(--color-ink-muted);font-size:.82rem;line-height:1.5}
+.vocab-next{flex:none;border:0;border-radius:var(--radius-button,10px);background:var(--color-ink,#1f2a24);color:#fff;font-weight:800;font-size:.88rem;padding:11px 22px;cursor:pointer;transition:transform .18s cubic-bezier(.16,1,.3,1),opacity .18s ease}
+@media (hover:hover){.vocab-next:hover{transform:translateY(-1px)}}
+.vocab-next:focus-visible{outline:2px solid var(--color-vocabulary,#d99000);outline-offset:2px}
 
 .vocab-finished{border:1px solid var(--color-border);border-radius:var(--radius-card,16px);background:var(--color-surface);padding:36px 32px;text-align:center}
 .vocab-finished h2{margin:0;font-family:var(--font-display);font-size:1.6rem;letter-spacing:-.02em}
-.vocab-finished>p{margin:10px 0 0;color:var(--color-ink-muted);font-size:.9rem;line-height:1.55}
-.vocab-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0}
-.vocab-summary-grid div{border:1px solid var(--color-border);border-radius:12px;padding:14px 8px}
-.vocab-summary-grid strong{display:block;font-family:var(--font-display);font-size:1.5rem}
-.vocab-summary-grid span{display:block;margin-top:2px;color:var(--color-ink-muted);font-size:.68rem}
-.vocab-struggle{margin-top:8px;text-align:left;border-top:1px solid var(--color-border);padding-top:20px}
+.vocab-score{margin:10px 0 0;font-family:var(--font-display);font-size:1.05rem;color:var(--color-vocabulary,#d99000);font-weight:700}
+.vocab-finished-note{margin:18px 0 0;color:var(--color-ink-muted);font-size:.9rem}
+.vocab-struggle{margin-top:24px;text-align:left;border-top:1px solid var(--color-border);padding-top:20px}
 .vocab-struggle h3{margin:0 0 10px;font-family:var(--font-display);font-size:1rem}
 .vocab-struggle ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
-.vocab-struggle li{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--color-border);border-radius:10px;padding:9px 12px;font-size:.83rem}
-.vocab-struggle li strong{white-space:nowrap}
-.vocab-struggle li span{color:var(--color-ink-muted);text-align:right}
+.vocab-struggle li{display:grid;gap:3px;border:1px solid var(--color-border);border-radius:12px;padding:12px 14px;font-size:.85rem;line-height:1.5}
+.vocab-struggle li strong{font-family:var(--font-display);font-size:.95rem}
+.vocab-struggle li span{color:var(--color-ink)}
+.vocab-struggle li em{color:var(--color-ink-muted);font-size:.82rem}
 .vocab-finished-actions{display:flex;justify-content:center;gap:12px;margin-top:26px;flex-wrap:wrap}
 .vocab-finished-actions button{border:0;border-radius:var(--radius-button,10px);background:var(--color-vocabulary,#d99000);color:#fff;font-weight:800;padding:11px 20px;font-size:.85rem}
 .vocab-finished-actions .vocab-finished-secondary{border:1px solid var(--color-border);background:none;padding:10px 19px;font-size:.85rem;font-weight:700;color:var(--color-ink-muted)}
 .vocab-finished-actions .vocab-finished-secondary:hover{border-color:var(--color-vocabulary,#d99000);color:var(--color-vocabulary,#d99000)}
 
+/* the 1-4 badges are keyboard shortcuts, meaningless on a touch screen */
+@media (hover:none) and (pointer:coarse){.vocab-option kbd{display:none}}
+
 @media (prefers-reduced-motion: reduce){
-  .vocab-card-word,.vocab-card-back{animation:none;opacity:1;transform:none}
-  .vocab-rating,.vocab-topic-card,.vocab-finished-actions .vocab-finished-secondary{transition:none}
+  .vocab-question,.vocab-feedback{animation:none}
+  .vocab-option,.vocab-next,.vocab-round-progress span,.vocab-topic-card,.vocab-finished-actions .vocab-finished-secondary{transition:none}
 }
 
 @media (max-width:600px){
   .vocab-review-space{padding:32px 16px 64px}
   .vocab-topic-grid{grid-template-columns:1fr}
   .vocab-word-list li{grid-template-columns:1fr;gap:4px}
-  .vocab-card{min-height:240px;padding:34px 20px 24px}
-  .vocab-ratings{grid-template-columns:repeat(2,1fr)}
-  .vocab-summary-grid{grid-template-columns:repeat(2,1fr)}
+  .vocab-options{gap:8px}
+  .vocab-option{min-height:52px;padding:10px 12px;font-size:.88rem;line-height:1.3}
+  .vocab-question{padding:22px 18px 18px}
+  .vocab-question-clue{margin-top:14px;padding-top:12px}
+  .vocab-feedback{flex-direction:column;align-items:stretch;scroll-margin-bottom:160px}
+  .vocab-finished{padding:28px 20px}
 }
 
 /* model answers */
@@ -311,7 +330,7 @@
 .dash-card-label{color:var(--color-ink-muted);font-size:.74rem;font-weight:600}
 .dash-card-title{font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:-.015em;color:var(--color-ink);line-height:1.3}
 .dash-card-meta{margin-top:auto;color:var(--color-ink-muted);font-size:.76rem;line-height:1.45}
-/* Words card only: the muted "N due for flashcard practice" line, above the
+/* Words card only: the muted "N words ready to practise" line, above the
    "Browse topics" meta line that .dash-card-meta's margin-top:auto still
    pins to the bottom. */
 .dash-card-due{color:var(--color-ink-muted);font-size:.74rem}
@@ -359,7 +378,6 @@
 .plan-item-label,
 .library-heading h1,
 .vocab-topic-card-title,
-.vocab-card-word,
 .library-count strong {
   font-family: var(--font-display-ui);
 }
@@ -413,27 +431,8 @@
     border-color var(--dur-base) ease;
 }
 
-/* Flashcards: each face fades and rises 4px as it takes over. */
-.vocab-card-word,
-.vocab-card-back {
-  transform: translateY(4px);
-  animation-duration: 200ms;
-  animation-timing-function: var(--ease-out-expo);
-}
-.vocab-card {
-  transition:
-    transform var(--dur-base) var(--ease-out-expo),
-    box-shadow var(--dur-base) ease;
-}
 @media (hover: hover) {
-  .vocab-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 40px rgb(32 37 34 / 8%);
-  }
-}
-@media (hover: hover) {
-  .vocab-topic-card:hover,
-  .vocab-rating:hover {
+  .vocab-topic-card:hover {
     transform: translateY(-2px);
   }
 }
@@ -444,23 +443,13 @@
   .dash-skill-fill,
   .plan-item,
   .plan-item-tick,
-  .vocab-card,
-  .vocab-topic-card,
-  .vocab-rating {
+  .vocab-topic-card {
     transition-duration: 1ms;
   }
   .dash-card:hover,
   .dash-card:active,
   .plan-item:hover,
-  .vocab-card:hover,
-  .vocab-topic-card:hover,
-  .vocab-rating:hover {
-    transform: none;
-  }
-  .vocab-card-word,
-  .vocab-card-back {
-    animation-duration: 1ms;
-    opacity: 1;
+  .vocab-topic-card:hover {
     transform: none;
   }
 }

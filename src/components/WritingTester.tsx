@@ -100,6 +100,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
   const [essay, setEssay] = useState('');
+  const [mobileView, setMobileView] = useState<'write' | 'help'>('write');
   const [result, setResult] = useState<GradeResult | null>(null);
   const [grading, setGrading] = useState(false);
   const [gradingError, setGradingError] = useState<string | null>(null);
@@ -728,8 +729,12 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           card's side margin clears the clock's own width (~135px plus its
           right-6 offset), which is xl. Below xl: it renders inline in the
           card header instead. */}
-      <div className={`screen-in ${coached ? 'lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-8' : ''}`}>
-        <div className="space-y-4">
+      {coached && <div className="writing-view-switch" role="group" aria-label={t('Writing')}>
+        <button type="button" aria-pressed={mobileView === 'write'} onClick={() => setMobileView('write')}>{t('Writing')}</button>
+        <button type="button" aria-pressed={mobileView === 'help'} onClick={() => setMobileView('help')}>{t('Help')}</button>
+      </div>}
+      <div data-mobile-view={mobileView} className={`writing-workspace screen-in ${coached ? 'lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-8' : ''}`}>
+        <div className="writing-editor space-y-4">
           <div
             className="writing-prompt max-w-[820px] rounded-card border border-border bg-surface p-5 shadow-card"
             onClick={handlePromptClick}
@@ -800,7 +805,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             </div>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="writing-submit-row flex items-center justify-between">
             <span className={`text-sm font-semibold ${under ? 'text-ink-muted' : 'text-success'}`}>
               {t('{count} / {min}+ words', { count: wordCount, min: prompt.minWords })}
             </span>
@@ -818,7 +823,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         {/* The coach is what makes the trainer a trainer. The Checker is the
             exam: question, clock, word count, nothing to lean on. */}
         {coached && (
-          <div className="mt-4 lg:sticky lg:top-24 lg:mt-0">
+          <div className="writing-guidance mt-4 lg:sticky lg:top-24 lg:mt-0">
             <WritingCoachPanel key={prompt.id} prompt={prompt} />
           </div>
         )}

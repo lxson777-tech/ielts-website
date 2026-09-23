@@ -276,11 +276,11 @@ export const plurals: Record<string, { one: string; few: string; many: string; o
     many: '{n} слов',
     other: '{n} слова',
   },
-  '{n} due for flashcard practice': {
-    one: '{n} слово к повторению',
-    few: '{n} слова к повторению',
-    many: '{n} слов к повторению',
-    other: '{n} слова к повторению',
+  '{n} words ready to practise': {
+    one: '{n} слово для практики',
+    few: '{n} слова для практики',
+    many: '{n} слов для практики',
+    other: '{n} слова для практики',
   },
   '{n} days behind': {
     one: 'отстаёт на {n} день',

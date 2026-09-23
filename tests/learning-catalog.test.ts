@@ -682,12 +682,15 @@ test('authored material is marked as authored and as unverified', () => {
   assert.equal(lesson.provenance, 'project-authored');
   assert.equal(lesson.verified, false, 'nobody has teacher-checked the lessons, and the catalogue says so');
 
-  /* The one lesson check built from questions this project wrote rather
-     than lifted from a paper. */
+  /* The one lesson check not wholly lifted from a paper: the paraphrase
+     lesson opens with questions this project wrote, so the set as a whole
+     is authored and unverified. Its second unit is a real passage from
+     Test 20, and sitting the check spends those questions, so it names
+     that paper and no other. */
   const paraphrase = findActivity('check:practice-reading-paraphrase') as CatalogueActivity;
   assert.equal(paraphrase.provenance, 'project-authored');
   assert.equal(paraphrase.verified, false);
-  assert.deepEqual(paraphrase.sourcePaperIds, [], 'it spends no paper, because it quotes none');
+  assert.deepEqual(paraphrase.sourcePaperIds, ['reading-full-020'], 'it spends the one paper its real passage quotes');
 
   /* Unverified material can never become an independent check. */
   for (const check of checksForSubskill('paraphrase')) {
