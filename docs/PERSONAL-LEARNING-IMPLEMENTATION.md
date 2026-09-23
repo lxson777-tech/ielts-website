@@ -556,6 +556,17 @@ third is new and rated high:
 | R2D-02 (medium) | The standalone slot's saves and clear checked only the owner, the standalone sitting had no identity, and the player recorded submission evidence before finishing the sitting, so a second paper in another tab could be overwritten and cleared by the first | Standalone sittings get their own identity; updates and completion require owner, paper and sitting identity to match; a stale player stops when its sitting is replaced or removed; completion is validated before any evidence is recorded |
 | R2D-03 (medium) | A mock whose record was finished in another tab was not treated as replaced, the results step ignored a refused clear, and the history write appended unconditionally, so a mock could be recorded twice | The disappearance of a persisted sitting is terminal for the stale tab; results are recorded only after a successful, identity-checked finalisation; mock history writes are idempotent by sitting id |
 
+The fixes for those three landed in `222feb6` (every examiner start numbered
+and tied to its student, with a late microphone or connection released;
+standalone sittings with their own identity and a stale tab that stops;
+the mock recorded once per sitting, only after an identity-checked
+finalisation). Gates at that commit: 1878 tests, type check clean, race
+script anonymous both times, f22 131 of 131, f23 70 of 70 with a
+before-versus-after run of the examiner race. One window the examiner
+builder found inside the live-session setup (a paid session request that can
+still go out a few seconds after a switch, then be closed at once) is being
+closed in a follow-up commit before the fifth inspection.
+
 **Inspection 5** (a fresh session, after those fixes) is recorded below once
 run.
 
