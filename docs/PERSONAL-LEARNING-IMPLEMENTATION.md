@@ -654,5 +654,10 @@ stopping rule agreed with Alex after round 5 the loop ends here.
 closed by the builders themselves. Final code commit `c693b43`. The full
 account of every finding and disposition is
 `docs/personal-learning/CODEX-FIX-ROUND-2.md`; the final browser evidence is
-the `-final` set under `docs/personal-learning/evidence/final/`.
+the `-final` set under `docs/personal-learning/evidence/final/`: the frozen
+suite on the `c693b43` build, 296 pass and the one by-design fail
+(`results-final.md`), and the four account journeys on that commit against
+the local stand-in, 363 of 363 (`results-journeys-final.md`; f20 33, f21 22,
+f22 218, f23 90), with all seven of Codex's original reproduction scripts
+no longer reproducing.
 
