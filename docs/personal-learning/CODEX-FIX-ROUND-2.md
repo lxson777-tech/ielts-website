@@ -210,3 +210,68 @@ three remaining defects, all accepted by the host:
 The skill's default inspection budget is two rounds. At Alex's standing
 instruction to run this loop with Codex directly, the host extends it by one:
 a third fresh inspection follows these fixes.
+
+## Fixes after inspection round 2 (for inspection round 3)
+
+Base for the round-3 inspection diff is still `48b1d17`. All three fixes are
+in `b10fc10`, each with deterministic tests and a browser journey against the
+local stand-in (no grader and no model called):
+
+- **R2B-01** (`src/components/writing-editor-owner.ts`, `WritingTester.tsx`):
+  the essay on screen is an editing session bound to the owner on the page
+  when the essay is started or restored, and never re-resolved. Every draft
+  write carries that owner and lands under that owner's key however late the
+  600 ms timer fires. An owner change (this tab's menu or another tab) writes
+  the outgoing student's latest text to their own draft at once, cancels the
+  pending timer, and hands the editor over to the incoming student's own
+  draft of the same prompt, or nothing, with a one-line notice. A submission
+  is accepted only from a session whose owner is still the one on the page;
+  otherwise nothing is sent, graded or recorded (`claimSubmission`). A grade
+  in flight when the page changes hands is still kept for the student who
+  submitted it, and the screen lets go of it at once. Nine new cases in
+  `tests/delayed-grade-owner.test.ts` (switch before submit, switch inside the
+  debounce with the timer firing late, switch back, same-owner refresh,
+  signed-out essay then sign-in, discard, late grade after a hand-over, source
+  scan); `f23` sections 3 and 4, 37 of 37 (`results-delayed-grade-2.md`).
+- **R2B-02** (`LiveExaminer.tsx`, `MockExam.tsx`, `src/lib/tests/mock.ts`):
+  the examiner binds the student it opened for and, on an unmount before it
+  reported anything, reports `onSuspend` when that student is no longer on the
+  page and `onAbort` otherwise; nothing is reported twice. The mock treats a
+  suspension (and any cancellation arriving while its own student is away,
+  `speakingExitFor`) by going back to the speaking brief with nothing skipped
+  and nothing recorded, and its saved sitting untouched; its own student
+  resumes at the brief with a note that the interview was interrupted. A
+  deliberate Back on the examiner's own error screen still skips Speaking and
+  goes to results. Covered during the interview and during grading in
+  `tests/test-session-owner.test.ts`; `f22` step 11 in the browser (the
+  examiner is pointed at a stand-in path that answers not found, so it stops
+  on its own error screen before any microphone or session; the grading-time
+  case is deterministic only).
+- **R2B-03** (`mock.ts`, `src/lib/test-session.ts`, `TestPlayer.tsx`,
+  `MockExam.tsx`): each mock sitting has its own `sittingId`, and its
+  Listening and Reading legs (answers, deadline, result) are kept in
+  `legSittings` inside that sitting's record under `ielts.mock.active.v1`,
+  never in the standalone slot. The player takes a `mockSitting` reference and
+  restores, saves and finishes the leg through `mockLegSitting`, or through
+  `standaloneSitting` when opened on its own; the two cannot overwrite or pick
+  up each other. The record is written before the first player mounts, with a
+  fresh identity and empty legs, so a new mock on the same paper and mock id
+  starts empty; resuming restores only that sitting's legs; "is this leg
+  done" reads the leg's own result rather than the history by paper id
+  (`legFinishedSince` removed). Sittings saved before this get an id derived
+  from their mock id and start time. The claim re-stamp carries the legs
+  because they live in the same record (a test proves it). `f22` step 12, 83
+  of 83 overall (`results-unfinished-test-3.md`).
+
+Known consequences, stated rather than hidden: a mock leg abandoned by
+starting a fresh mock is no longer written to the learning history as an
+abandoned attempt (before, the next standalone page did that because the leg
+sat in the shared slot); mocks paused by the earlier, never-deployed build
+keep their Listening and Reading answers in the old shared slot and those are
+not carried over. New interface strings: two on the essay editor and one on
+the speaking brief, each with Russian.
+
+Proof commands are unchanged. Gates at `b10fc10`: `npm test` 1822 of 1822,
+`npx astro check` 0 errors and 0 warnings, `npm run build` 661 pages, the
+learning index byte-identical, Codex's `signout-race.mjs` printing anonymous
+both times.
