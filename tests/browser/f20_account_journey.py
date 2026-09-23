@@ -119,7 +119,7 @@ from final_helpers import (  # noqa: E402
     write_section,
 )
 
-STANDIN_URL = "http://127.0.0.1:8799"
+STANDIN_URL = os.environ.get("IELTS_STANDIN_URL", "http://127.0.0.1:8807")  # the local stand-in; override per run
 SERVICE_ROLE_HEADERS = {"apikey": "local-service-role-key"}
 
 EMAIL_A = "synthetic-student-a-f20@example.test"
