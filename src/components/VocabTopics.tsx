@@ -1,14 +1,14 @@
 /* /review ("Vocabulary"): a plain topic browser, replacing the flashcard-first
    landing page the owner found "weird and confusing". Pick a topic, see
    every word for it with its meaning and example, grouped the way the
-   lesson itself teaches it, no flipping required. Flashcards are still
-   there (VocabReview.tsx) but demoted to one quiet action at the bottom of
-   a topic, not the first thing you see.
+   lesson itself teaches it, no flipping required. Practice (VocabReview.tsx,
+   ten marked questions built from the example sentences) is one quiet
+   action at the bottom of a topic, not the first thing you see.
 
    Three views, one component, no client-side router:
      landing — every topic as a card (word count + a three-word preview)
      topic   — one topic's vocabulary, grouped into categories
-     session — VocabReview.tsx's flashcard loop, filtered to that topic
+     session — VocabReview.tsx's practice round, filtered to that topic
 
    The chosen topic lives in the `topic` query string param so a link like
    /review?topic=environment (the dashboard's plan item, or anywhere else)
@@ -129,7 +129,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
 
         <div className="vocab-topic-practise">
           <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
-            {t('Practise this topic with flashcards')}
+            {t('Practise these words')}
           </button>
         </div>
       </div>

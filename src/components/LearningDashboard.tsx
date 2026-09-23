@@ -190,7 +190,7 @@ export default function LearningDashboard() {
           <strong className="dash-card-title">
             {tn(VOCABULARY_PARTS.length, { one: '{n} topic', other: '{n} topics' })}, {tn(vocab?.total ?? 0, { one: '{n} word', other: '{n} words' })}
           </strong>
-          {vocabDue > 0 && <span className="dash-card-due">{tn(vocabDue, { one: '{n} due for flashcard practice', other: '{n} due for flashcard practice' })}</span>}
+          {vocabDue > 0 && <span className="dash-card-due">{tn(vocabDue, { one: '{n} word ready to practise', other: '{n} words ready to practise' })}</span>}
           <span className="dash-card-meta">{t('Browse topics')}</span>
         </a>
       </div>

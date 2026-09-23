@@ -69,10 +69,6 @@ export interface VocabSummary {
   reviewedToday: number;
 }
 
-export interface StrugglingCard extends VocabCard {
-  lapses: number;
-}
-
 /* ---------------------------------------------------------------------- */
 /* Card set: words.ts + every vocabulary lesson fragment                  */
 /* ---------------------------------------------------------------------- */
@@ -188,20 +184,27 @@ function buildCardSet(): VocabCard[] {
     });
   }
 
-  // import.meta.glob is a Vite/Astro build-time feature: guarded so this
-  // module can also be imported under plain Node (the tests/*.test.ts
-  // runner has no Vite plugin — see src/lib/plan/schedule.ts, which needs
-  // getVocabSummary() for the daily plan's vocabulary item). Falls back to
-  // the words.ts-only card set there; the real Astro build always has
-  // import.meta.glob and gets the full set.
-  const fragments =
-    typeof import.meta.glob === 'function'
-      ? import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
-          query: '?raw',
-          import: 'default',
-          eager: true,
-        })
-      : {};
+  // import.meta.glob is a Vite/Astro build-time feature, so this module
+  // must also survive plain Node (the tests/*.test.ts runner has no Vite
+  // plugin; see src/lib/plan/schedule.ts, which needs getVocabSummary()
+  // for the daily plan's vocabulary item). There the call throws and the
+  // deck falls back to the words.ts cards only.
+  //
+  // It must be a try/catch, not `typeof import.meta.glob === 'function'`.
+  // Vite replaces the glob CALL with the file contents at build time but
+  // leaves a bare `import.meta.glob` alone, so in the real site that typeof
+  // check was always false and the deck silently held only the 158
+  // words.ts cards instead of every lesson word (found 2026-09-23).
+  let fragments: Record<string, string> = {};
+  try {
+    fragments = import.meta.glob<string>('../content/lesson-bodies/vocabulary-*.html', {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    });
+  } catch {
+    fragments = {};
+  }
 
   for (const path of Object.keys(fragments).sort()) {
     const match = path.match(/vocabulary-([a-z-]+)\.html$/);
@@ -479,8 +482,8 @@ function freshState(today: string): VocabCardState {
 }
 
 /** Applies one rating to a card's current state and returns the next state.
-    Pure — doesn't touch storage, so it also powers the "next interval"
-    preview under each rating button. */
+    Pure, with no storage access. The practice round (VocabReview.tsx)
+    maps each answer onto one of these grades. */
 function scheduleNext(state: VocabCardState, grade: Grade, today: string): VocabCardState {
   let { ease, interval, reps, lapses } = state;
 
@@ -510,20 +513,6 @@ function scheduleNext(state: VocabCardState, grade: Grade, today: string): Vocab
   return { ...state, ease, interval, reps, lapses, due: addDays(today, interval) };
 }
 
-/** Days until a card would next be due for each possible rating, without
-    saving anything — feeds the "Good: 4 days" captions under the rating
-    buttons. Uses the card's current stored state, or a fresh new-card state
-    if it hasn't been rated before. */
-export function previewIntervals(word: string): Record<Grade, number> {
-  const store = loadStore();
-  const today = todayStr();
-  const base = store.cards[word] ?? freshState(today);
-  const grades: Grade[] = ['again', 'hard', 'good', 'easy'];
-  const out = {} as Record<Grade, number>;
-  for (const g of grades) out[g] = scheduleNext(base, g, today).interval;
-  return out;
-}
-
 export function rate(word: string, grade: Grade): void {
   if (!CARD_BY_WORD.has(word)) return;
   const store = loadStore();
@@ -548,25 +537,37 @@ function shuffled<T>(items: T[]): T[] {
   return out;
 }
 
-/** Today's review queue: every already-introduced card that's due, plus as
-    many not-yet-seen cards as the daily new-card cap still allows (counting
-    cards already introduced today, wherever they were introduced from). */
-export function getDueCards(topic?: string): VocabCard[] {
+/** Every card in one topic, in lesson order. The practice round draws its
+    wrong answers from here. */
+export function getTopicCards(topic: string): VocabCard[] {
+  return CARD_SET.filter((c) => c.topic === topic);
+}
+
+/** One practice round for a topic (VocabReview.tsx): up to `size` words,
+    most useful first. Words that are due for review come first, the ones
+    missed most often at the front; then words never practised, in the order
+    the lesson teaches them; then, once everything has been seen, the words
+    whose review is nearest.
+
+    Deliberately ignores the daily cap on new words that getDueCards()
+    applies across the whole deck. That cap meant a student who practised
+    one topic and then opened another was told "You're all caught up" with
+    nothing to do, which read as a broken page. A round always has words in
+    it; the spacing still decides which ones. */
+export function getPracticeRound(topic: string, size = 10): VocabCard[] {
   const store = loadStore();
   const today = todayStr();
-  const pool = topic ? CARD_SET.filter((c) => c.topic === topic) : CARD_SET;
+  const pool = getTopicCards(topic);
 
-  const due: VocabCard[] = [];
-  for (const card of pool) {
-    const state = store.cards[card.word];
-    if (state && state.due <= today) due.push(card);
-  }
+  const due = pool
+    .filter((c) => store.cards[c.word] && store.cards[c.word]!.due <= today)
+    .sort((a, b) => store.cards[b.word]!.lapses - store.cards[a.word]!.lapses);
+  const unseen = pool.filter((c) => !store.cards[c.word]);
+  const later = pool
+    .filter((c) => store.cards[c.word] && store.cards[c.word]!.due > today)
+    .sort((a, b) => store.cards[a.word]!.due.localeCompare(store.cards[b.word]!.due));
 
-  const introducedToday = Object.values(store.cards).filter((s) => s.introducedDate === today).length;
-  const newSlots = Math.max(0, store.settings.newPerDay - introducedToday);
-  const newCards = pool.filter((c) => !store.cards[c.word]).slice(0, newSlots);
-
-  return shuffled([...due, ...newCards]);
+  return shuffled([...due, ...unseen, ...later].slice(0, size));
 }
 
 export function getVocabSummary(): VocabSummary {
@@ -591,13 +592,3 @@ export function getVocabSummary(): VocabSummary {
   return { due, newToday, learned, total: CARD_SET.length, reviewedToday };
 }
 
-/** Cards the student keeps getting wrong (2+ lapses), across the whole deck
-    — shown as a "Words I struggle with" list at the end of a session. */
-export function getStrugglingCards(): StrugglingCard[] {
-  const store = loadStore();
-  return Object.entries(store.cards)
-    .filter(([, state]) => state.lapses >= 2)
-    .map(([word, state]) => ({ ...(CARD_BY_WORD.get(word) as VocabCard), lapses: state.lapses }))
-    .filter((c) => c.word)
-    .sort((a, b) => b.lapses - a.lapses);
-}

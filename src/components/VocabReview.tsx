@@ -1,133 +1,143 @@
-/* One flashcard session over a single topic's deck — the "Practise this
-   topic with flashcards" action at the bottom of a topic view in
-   VocabTopics.tsx. All scheduling logic (what's due, what the next interval
-   would be for each rating, where lapsed words go) lives in
-   src/lib/vocab-review.ts; this component only drives one session's UI:
-   which card is showing, whether it's flipped, and the running queue.
+/* One practice round over a single topic: the "Practise these words"
+   action at the bottom of a topic view in VocabTopics.tsx.
 
-   Used to be the whole /review page (topic chips, a session, a "New words
-   per day" picker). The owner's feedback was that the landing experience
-   was "weird and confusing" — VocabTopics.tsx is the plain topic browser
-   that replaced it, and this component is now a session that always opens
-   already filtered to one topic, with no chips of its own.
+   Replaced the self-graded flashcards. Those showed a word, flipped to the
+   definition, and then asked the student to rate their own memory as
+   Again / Hard / Good / Easy with captions like "3 · 6 days". The owner
+   found it confusing, and nothing on screen explained what the ratings
+   were for. A round is now ten real questions that the site marks:
 
-   "Again" doesn't leave the queue — it gets pushed back onto the end, so it
-   resurfaces later in the same session rather than waiting for the next
-   day, while the progress line ("N of M") grows to match. */
+     - the word's example sentence with the word missing, its meaning as a
+       clue, and four words from the same topic to choose from;
+     - instant right or wrong, with the finished sentence shown either way;
+     - a word missed once comes back at the end of the round;
+     - a result screen listing the words to look at again.
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  getDueCards,
-  getStrugglingCards,
-  getVocabSummary,
-  previewIntervals,
-  rate,
-  type Grade,
-  type StrugglingCard,
-  type VocabCard,
-  type VocabSummary,
-} from '../lib/vocab-review';
-import { useT, type Translator } from '../lib/i18n/react';
-import { nt } from '../lib/i18n/translate';
+   Question building lives in src/lib/vocab-practice.ts. Which words go in
+   a round, and the spacing that brings them back on later days, is still
+   src/lib/vocab-review.ts: an answer is recorded there exactly as a rating
+   used to be (right first time = "good", missed = "again", right on the
+   second go = "hard"), so progress saved under the old flashcards keeps
+   working and the daily plan's vocabulary count is unchanged. */
 
-const GRADES: Grade[] = ['again', 'hard', 'good', 'easy'];
-const GRADE_LABEL: Record<Grade, string> = { again: nt('Again'), hard: nt('Hard'), good: nt('Good'), easy: nt('Easy') };
-const GRADE_KEY: Record<string, Grade> = { '1': 'again', '2': 'hard', '3': 'good', '4': 'easy' };
-
-/** "Good: 4 days" style captions under each rating button. Takes the
-    translator functions as parameters (rather than importing t/tn at module
-    scope) because this is a plain helper called from render, not a hook. */
-function formatInterval(days: number, t: Translator['t'], tn: Translator['tn']): string {
-  if (days <= 0) return t('later today');
-  if (days < 30) return tn(days, { one: '{n} day', other: '{n} days' }, { n: days });
-  const months = Math.round(days / 30);
-  if (months < 12) return tn(months, { one: '{n} month', other: '{n} months' }, { n: months });
-  const years = Math.round(days / 365);
-  return tn(years, { one: '{n} year', other: '{n} years' }, { n: years });
-}
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { getPracticeRound, getTopicCards, rate, type VocabCard } from '../lib/vocab-review';
+import { buildQuestion, type PracticeQuestion } from '../lib/vocab-practice';
+import { useT } from '../lib/i18n/react';
 
 type Phase = 'loading' | 'active' | 'finished';
 
+/** A question in the round's queue. `retry` marks the second showing of a
+    word missed earlier in the same round. */
+type Queued = PracticeQuestion & { retry: boolean };
+
+const ROUND_SIZE = 10;
+
+function newRound(topic: string): Queued[] {
+  const pool = getTopicCards(topic);
+  return getPracticeRound(topic, ROUND_SIZE).map((card) => ({ ...buildQuestion(card, pool), retry: false }));
+}
+
 export default function VocabReview({ topic, onExit }: { topic: string; onExit: () => void }) {
-  const { t, tn } = useT();
+  const { t } = useT();
   const [phase, setPhase] = useState<Phase>('loading');
-  const [queue, setQueue] = useState<VocabCard[]>([]);
+  const [questions, setQuestions] = useState<Queued[]>([]);
   const [index, setIndex] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const [sessionCount, setSessionCount] = useState(0);
-  const [summary, setSummary] = useState<VocabSummary | null>(null);
-  const [struggling, setStruggling] = useState<StrugglingCard[]>([]);
+  const [chosen, setChosen] = useState<string | null>(null);
+  const [roundSize, setRoundSize] = useState(0);
+  const [rightFirstTime, setRightFirstTime] = useState(0);
+  const [missed, setMissed] = useState<VocabCard[]>([]);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
 
-  // Deferred to the client so the deck (parsed at build time but scheduled
-  // against localStorage) and the browser's stored progress agree from the
-  // first render, with no server/client mismatch.
-  useEffect(() => {
-    setQueue(getDueCards(topic));
+  const start = useCallback(() => {
+    const round = newRound(topic);
+    setQuestions(round);
+    setRoundSize(round.length);
     setIndex(0);
-    setFlipped(false);
-    setSessionCount(0);
-    setPhase('active');
+    setChosen(null);
+    setRightFirstTime(0);
+    setMissed([]);
+    setPhase(round.length ? 'active' : 'finished');
   }, [topic]);
 
-  const current = queue[index];
+  // Deferred to the client so the round (scheduled against localStorage)
+  // matches the student's saved progress from the first render.
+  useEffect(() => {
+    start();
+  }, [start]);
 
-  const intervals = useMemo(() => (current ? previewIntervals(current.word) : null), [current]);
+  const current = questions[index];
+  const answered = chosen !== null;
+  const isRetry = current?.retry ?? false;
 
-  const finishSession = useCallback(() => {
-    setSummary(getVocabSummary());
-    setStruggling(getStrugglingCards().filter((c) => c.topic === topic));
-    setPhase('finished');
-  }, [topic]);
+  // Once an answer is marked: scroll only as far as needed to bring the
+  // result and Next into view (on a phone they start below the fold; its
+  // scroll-margin keeps them clear of the tab bar and the Mr EZ button),
+  // with keyboard focus on Next. Focus goes first: in Chrome a focus()
+  // call cancels a smooth scroll already under way, even with
+  // preventScroll. autoFocus alone scrolled the finished sentence off the
+  // top of a phone screen.
+  useEffect(() => {
+    if (chosen === null) return;
+    nextRef.current?.focus({ preventScroll: true });
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    feedbackRef.current?.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [chosen]);
 
-  const handleRate = useCallback(
-    (grade: Grade) => {
-      if (!current) return;
-      rate(current.word, grade);
-      setSessionCount((n) => n + 1);
-      if (grade === 'again') {
-        const requeued = current;
-        setQueue((q) => [...q, requeued]);
+  const choose = useCallback(
+    (option: string) => {
+      if (!current || chosen !== null) return;
+      const correct = option === current.card.word;
+      setChosen(option);
+      if (isRetry) {
+        if (correct) rate(current.card.word, 'hard');
+        return;
       }
-      setFlipped(false);
-      setIndex((i) => i + 1);
+      rate(current.card.word, correct ? 'good' : 'again');
+      if (correct) {
+        setRightFirstTime((n) => n + 1);
+      } else {
+        setMissed((m) => [...m, current.card]);
+        // Once more at the end of the round, with the options reshuffled so
+        // the right answer is not simply remembered by its position.
+        const pool = getTopicCards(topic);
+        setQuestions((q) => [...q, { ...buildQuestion(current.card, pool), retry: true }]);
+      }
     },
-    [current],
+    [current, chosen, isRetry, topic],
   );
 
-  useEffect(() => {
-    if (phase === 'active' && queue.length > 0 && index >= queue.length) finishSession();
-  }, [phase, queue, index, finishSession]);
-
-  useEffect(() => {
-    if (phase === 'active' && queue.length === 0) finishSession();
-  }, [phase, queue, finishSession]);
+  const next = useCallback(() => {
+    if (index + 1 >= questions.length) {
+      setPhase('finished');
+      return;
+    }
+    setIndex((i) => i + 1);
+    setChosen(null);
+  }, [index, questions.length]);
 
   useEffect(() => {
     if (phase !== 'active' || !current) return;
     function onKey(e: KeyboardEvent) {
       const target = e.target as HTMLElement | null;
       if (target && ['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
-      if (e.code === 'Space') {
+      if (!answered) {
+        const n = Number(e.key);
+        if (n >= 1 && n <= current!.options.length) choose(current!.options[n - 1]!);
+      } else if (e.key === 'Enter' && target?.tagName !== 'BUTTON') {
         e.preventDefault();
-        setFlipped((f) => !f);
-        return;
-      }
-      if (flipped) {
-        const grade = GRADE_KEY[e.key];
-        if (grade) handleRate(grade);
+        next();
       }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [phase, flipped, current, handleRate]);
+  }, [phase, current, answered, choose, next]);
 
-  const restart = () => {
-    setQueue(getDueCards(topic));
-    setIndex(0);
-    setFlipped(false);
-    setSessionCount(0);
-    setPhase('active');
-  };
+  const isLast = index + 1 >= questions.length;
+  const wasCorrect = answered && current ? chosen === current.card.word : false;
+  const formChanged =
+    current?.kind === 'gap' && current.answerText !== undefined && current.answerText.toLowerCase() !== current.card.word.toLowerCase();
 
   return (
     <div className="vocab-review-space">
@@ -137,121 +147,122 @@ export default function VocabReview({ topic, onExit }: { topic: string; onExit: 
             {topic}
           </button>
         </p>
-        <h1>{t('Flashcards')}</h1>
+        <h1>{t('Practice')}</h1>
       </div>
 
-      {phase === 'loading' && <p className="vocab-hint">{t('Loading your deck…')}</p>}
+      {phase === 'loading' && <p className="vocab-hint">{t('Getting your words ready…')}</p>}
 
       {phase === 'active' && current && (
         <>
-          <p className="vocab-progress">{t('{current} of {total}', { current: index + 1, total: queue.length })}</p>
+          <div className="vocab-round-progress" aria-hidden="true">
+            <span style={{ width: `${((index + (answered ? 1 : 0)) / questions.length) * 100}%` }} />
+          </div>
+          <p className="vocab-progress">{t('{current} of {total}', { current: index + 1, total: questions.length })}</p>
 
-          <div
-            className="vocab-card"
-            role="button"
-            tabIndex={0}
-            aria-pressed={flipped}
-            aria-label={
-              flipped
-                ? t('{word}: definition shown, tap to hide', { word: current.word })
-                : t('{word}: tap or press space to reveal the definition', { word: current.word })
-            }
-            onClick={() => setFlipped((f) => !f)}
-            onKeyDown={(e) => {
-              // Space is also handled by the document-level listener below (so it
-              // works even when focus isn't on the card). Stop it here so a
-              // focused card doesn't flip twice — once from this handler, once
-              // from that one — which would cancel back out to unflipped.
-              if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
-                e.preventDefault();
-                e.stopPropagation();
-                setFlipped((f) => !f);
-              }
-            }}
-          >
-            <span className="vocab-card-topic">{current.topic}</span>
-            {!flipped ? (
-              <div className="vocab-card-word" key={`${current.word}-front`}>
-                {current.word}
-              </div>
+          <div className="vocab-question" key={`${index}-${current.card.word}`}>
+            <p className="vocab-question-label">
+              {current.kind === 'gap'
+                ? t('Choose the word that completes the sentence.')
+                : t('Choose the word that matches this meaning.')}
+            </p>
+
+            {current.kind === 'gap' ? (
+              <>
+                <p className="vocab-question-sentence">
+                  {current.before}
+                  <span className={`vocab-gap${answered ? (wasCorrect ? ' is-right' : ' is-revealed') : ''}`}>
+                    {answered ? current.answerText : <span className="sr-only">{t('blank')}</span>}
+                  </span>
+                  {current.after}
+                </p>
+                <p className="vocab-question-clue">
+                  <span>{t('Meaning')}</span>
+                  {current.card.definition}
+                </p>
+                {formChanged && !answered && (
+                  <p className="vocab-question-note">{t('The word may change a little to fit, for example by adding -s.')}</p>
+                )}
+              </>
             ) : (
-              <div className="vocab-card-back" key={`${current.word}-back`}>
-                <p className="vocab-card-def">{current.definition}</p>
-                {current.example && <p className="vocab-card-example">“{current.example}”</p>}
-              </div>
+              <p className="vocab-question-sentence">{current.card.definition}</p>
             )}
           </div>
 
-          {!flipped ? (
-            <p className="vocab-hint">{t('Tap the card or press space to reveal')}</p>
-          ) : (
-            <div className="vocab-ratings" role="group" aria-label={t('Rate how well you knew this word')}>
-              {GRADES.map((g, i) => (
-                <button key={g} type="button" className={`vocab-rating vocab-rating-${g}`} onClick={() => handleRate(g)}>
-                  <span>{t(GRADE_LABEL[g])}</span>
-                  <small>
-                    {i + 1} · {formatInterval(intervals ? intervals[g] : 0, t, tn)}
-                  </small>
+          <div className="vocab-options" role="group" aria-label={t('Answer options')}>
+            {current.options.map((option, i) => {
+              const state = !answered
+                ? ''
+                : option === current.card.word
+                  ? ' is-right'
+                  : option === chosen
+                    ? ' is-wrong'
+                    : ' is-dim';
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  className={`vocab-option${state}`}
+                  onClick={() => choose(option)}
+                  disabled={answered}
+                  aria-pressed={option === chosen}
+                >
+                  <kbd aria-hidden="true">{i + 1}</kbd>
+                  <span>{option}</span>
                 </button>
-              ))}
+              );
+            })}
+          </div>
+
+          {answered && (
+            <div className={`vocab-feedback${wasCorrect ? ' is-right' : ' is-wrong'}`} role="status" ref={feedbackRef}>
+              <div>
+                <strong>{wasCorrect ? t('Correct!') : t('Not quite. The answer is “{word}”.', { word: current.card.word })}</strong>
+                {current.kind === 'meaning' && current.card.example && <p>“{current.card.example}”</p>}
+                {!wasCorrect && !isRetry && <p>{t('This word will come back at the end of the round.')}</p>}
+              </div>
+              <button type="button" className="vocab-next" onClick={next} ref={nextRef}>
+                {isLast ? t('See my results') : t('Next')}
+              </button>
             </div>
           )}
         </>
       )}
 
-      {phase === 'finished' && summary && (
+      {phase === 'finished' && (
         <div className="vocab-finished">
-          <h2>{sessionCount > 0 ? t('Session complete') : t("You're all caught up")}</h2>
-          <p>
-            {sessionCount > 0
-              ? tn(sessionCount, {
-                  one: 'You reviewed {n} word this session.',
-                  other: 'You reviewed {n} words this session.',
-                })
-              : t('Nothing from {topic} is due right now. Come back tomorrow for more.', { topic })}
-          </p>
+          <h2>{t('Round complete')}</h2>
+          {roundSize > 0 && (
+            <p className="vocab-score">
+              {t('{score} of {total} right first time', { score: rightFirstTime, total: roundSize })}
+            </p>
+          )}
 
-          <div className="vocab-summary-grid">
-            <div>
-              <strong>{summary.due}</strong>
-              <span>{t('Due now')}</span>
-            </div>
-            <div>
-              <strong>{summary.newToday}</strong>
-              <span>{t('New left today')}</span>
-            </div>
-            <div>
-              <strong>{summary.learned}</strong>
-              <span>{t('Learned')}</span>
-            </div>
-            <div>
-              <strong>{summary.reviewedToday}</strong>
-              <span>{t('Reviewed today')}</span>
-            </div>
-          </div>
-
-          {struggling.length > 0 && (
+          {missed.length > 0 ? (
             <div className="vocab-struggle">
-              <h3>{t('Words you struggle with')}</h3>
+              <h3>{t('Words to look at again')}</h3>
               <ul>
-                {struggling.map((c) => (
+                {missed.map((c) => (
                   <li key={c.word}>
                     <strong>{c.word}</strong>
                     <span>{c.definition}</span>
+                    {c.example && <em>“{c.example}”</em>}
                   </li>
                 ))}
               </ul>
             </div>
+          ) : (
+            roundSize > 0 && <p className="vocab-finished-note">{t('Every word right first time. Well done.')}</p>
           )}
 
           <div className="vocab-finished-actions">
-            <button type="button" onClick={restart}>
-              {t('Review more')}
+            <button type="button" onClick={start}>
+              {t('Practise another round')}
             </button>
             <button type="button" className="vocab-finished-secondary" onClick={onExit}>
               {t('Back to {topic}', { topic })}
             </button>
           </div>
+          <p className="vocab-hint">{t('Words you miss come back sooner. Words you know come back less often.')}</p>
         </div>
       )}
     </div>

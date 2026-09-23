@@ -192,7 +192,7 @@ export const RU_STRINGS: Record<string, string> = {
   'A live mock interview with the AI examiner': 'Живое пробное интервью с ИИ-экзаменатором',
   'A spoken interview end to end, with a band report afterwards.':
     'Устное интервью целиком, с отчётом по баллам в конце.',
-  'Vocabulary flashcards': 'Карточки со словами',
+  'Vocabulary practice': 'Практика словаря',
   'Spaced review of the words due today.': 'Повторение слов, которые пора повторить сегодня.',
   'Model answers': 'Образцовые ответы',
   'Band 8 and 9 answers with the examiner reasoning beside them.':

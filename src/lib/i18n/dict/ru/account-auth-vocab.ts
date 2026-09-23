@@ -90,35 +90,33 @@ export const strings: Record<string, string> = {
   Notes: 'Заметки',
   'Empty note': 'Пустая заметка',
 
-  /* VocabReview.tsx: one flashcard session over a topic's deck. */
-  Again: 'Снова',
-  Hard: 'Сложно',
-  Good: 'Хорошо',
-  Easy: 'Легко',
-  'later today': 'сегодня позже',
-  Flashcards: 'Карточки',
-  'Loading your deck…': 'Загружаем карточки…',
+  /* VocabReview.tsx: one practice round over a topic. "Next", "Correct!"
+     and "Practice" are shared with other screens and live in their files. */
+  'Getting your words ready…': 'Готовим слова…',
   '{current} of {total}': '{current} из {total}',
-  '{word}: definition shown, tap to hide': '{word}: значение показано, нажмите, чтобы скрыть',
-  '{word}: tap or press space to reveal the definition': '{word}: нажмите или используйте пробел, чтобы увидеть значение',
-  'Tap the card or press space to reveal': 'Нажмите на карточку или используйте пробел, чтобы открыть',
-  'Rate how well you knew this word': 'Оцените, насколько хорошо вы знали это слово',
-  'Session complete': 'Тренировка завершена',
-  "You're all caught up": 'Все карточки повторены',
-  'Nothing from {topic} is due right now. Come back tomorrow for more.':
-    'Из темы {topic} пока нечего повторять. Возвращайтесь завтра.',
-  'Due now': 'К повторению',
-  'New left today': 'Новых осталось',
-  Learned: 'Изучено',
-  'Reviewed today': 'Повторено сегодня',
-  'Words you struggle with': 'Слова, которые даются сложнее',
-  'Review more': 'Повторить ещё',
+  'Choose the word that completes the sentence.': 'Выберите слово, которое подходит в предложение.',
+  'Choose the word that matches this meaning.': 'Выберите слово с этим значением.',
+  blank: 'пропуск',
+  Meaning: 'Значение',
+  'The word may change a little to fit, for example by adding -s.':
+    'Форма слова может немного измениться, например, добавится окончание -s.',
+  'Answer options': 'Варианты ответа',
+  'Not quite. The answer is “{word}”.': 'Не совсем. Правильный ответ: «{word}».',
+  'This word will come back at the end of the round.': 'Это слово ещё раз появится в конце раунда.',
+  'See my results': 'Посмотреть результат',
+  'Round complete': 'Раунд завершён',
+  '{score} of {total} right first time': '{score} из {total} с первой попытки',
+  'Words to look at again': 'Слова, которые стоит повторить',
+  'Every word right first time. Well done.': 'Все слова верно с первой попытки. Отлично.',
+  'Practise another round': 'Ещё один раунд',
+  'Words you miss come back sooner. Words you know come back less often.':
+    'Слова с ошибками вернутся скорее. Слова, которые вы знаете, будут появляться реже.',
   'Back to {topic}': 'Назад к теме {topic}',
 
   /* VocabTopics.tsx: the plain topic browser at /review. */
   'All topics': 'Все темы',
   'Words and phrases': 'Слова и выражения',
-  'Practise this topic with flashcards': 'Потренировать эту тему с карточками',
+  'Practise these words': 'Потренировать эти слова',
   Dashboard: 'Дашборд',
   Vocabulary: 'Словарь',
   'Every IELTS topic, its vocabulary, meanings and examples. Pick a topic to see it all at once.':
@@ -136,14 +134,5 @@ export const strings: Record<string, string> = {
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
   /* Keyed by the English "other" form exactly as written at the call site
      (docs/I18N-GUIDE.md), not the singular. */
-  '{n} days': { one: '{n} день', few: '{n} дня', many: '{n} дней', other: '{n} дня' },
-  '{n} months': { one: '{n} месяц', few: '{n} месяца', many: '{n} месяцев', other: '{n} месяца' },
-  '{n} years': { one: '{n} год', few: '{n} года', many: '{n} лет', other: '{n} года' },
-  'You reviewed {n} words this session.': {
-    one: 'Вы повторили {n} слово в этой тренировке.',
-    few: 'Вы повторили {n} слова в этой тренировке.',
-    many: 'Вы повторили {n} слов в этой тренировке.',
-    other: 'Вы повторили {n} слова в этой тренировке.',
-  },
   '{n} words': { one: '{n} слово', few: '{n} слова', many: '{n} слов', other: '{n} слова' },
 };
