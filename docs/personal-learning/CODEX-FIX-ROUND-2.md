@@ -1020,3 +1020,51 @@ left mid-word (pre-existing).
 Gates at `c693b43`: `npm test` 2016 of 2016, `npx astro check` 0 errors and 0
 warnings, `npm run build` 661 pages, the learning index byte-identical,
 Codex's `signout-race.mjs` printing anonymous both times.
+
+## Inspection round 7 (fresh Codex session, read-only, 24 September)
+
+Inspected: commit `05c206f`, diff from `c4a7793` with the round-6
+exclusions, 445 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-7-of-05c206f.json`.
+
+Verdict: REVISE. Two findings, both medium, both about one student's own
+work, neither a leak between students and neither rated high. By the
+stopping rule agreed with Alex after round 5, the loop ends here: both are
+accepted as true and recorded as open items for a follow-up rather than
+built inside this loop.
+
+- **R2G-01 (medium) accepted, open.** The written focused task, same
+  student, two tabs: A submits text X in tab 1 and leaves it mounted; while
+  the evaluation is pending A opens the same exercise in tab 2 and saves
+  revision Y; when the evaluation returns, tab 1's on-screen branch appends
+  the attempt from its own stale state and rewrites the stored document,
+  restoring X over Y; there is no storage-event reconciliation, and the
+  round-6 regression for the other-tab case unmounts tab 1, so it exercises
+  only the branch that rereads storage. Codex's fix: append attempts against
+  the latest stored document without replacing its editable draft, reconcile
+  pending local edits separately (revision identities), and add a regression
+  with both tabs mounted.
+- **R2G-02 (medium) accepted, open.** For an already-persisted mock,
+  `finishMockLeg` returns "refused" when the leg write fails, but the
+  player's sitting store converts that refusal to "unsaved", which the
+  player accepts as a never-persisted sitting: the result is shown and
+  evidence written although the stored leg stays unfinished, so a refresh
+  can resume and submit that leg again; `clearActiveMock` and `clearSession`
+  also report success after a removal that `safeRemove` swallowed. Codex's
+  fix: distinguish a persistence failure from a never-persisted sitting,
+  return an explicit failure, keep the attempt for retry, record and advance
+  only after finalisation succeeds, and propagate removal failures.
+
+Both need a full or blocked browser store, or the same student with the
+same exercise open in two tabs during one evaluation, to occur. They are the
+right next two items if the ownership work continues.
+
+## Where the loop ended
+
+Seven fresh read-only inspections between 23 and 24 September: nineteen
+findings from Codex, seventeen fixed and two open above, plus twelve holes of
+the same class the builders reported themselves and closed before asking
+again. Final code commit of the loop: `c693b43` (the merge of the published
+main at `c5cf425` is inside it). Every browser journey was rerun on that
+commit against the local stand-in and the whole frozen suite on its build;
+the results are the `-final` files under `docs/personal-learning/evidence/final/`.

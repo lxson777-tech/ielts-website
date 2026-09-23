@@ -633,7 +633,26 @@ merge of main was inside it; the spec records the exclusions.)
 | R2F-01 (high) | On the spoken focused task, two presses of Start while the microphone permission was pending started two recorders, and a switch stopped only the last, leaving a microphone capturing behind the cleared screen; the recorder's timeout did not release the tracks | Startup is single-flight; each take is checked to be current after every wait and stale streams released; the previous take is cancelled before replacement; the timeout releases the tracks |
 | R2F-02 (medium) | On the written focused task, a late evaluation's record step also reset the editable draft to the submitted text, overwriting a revision written after returning to the page | Appending the attempt is separated from updating the draft; a newer draft or a pending autosave is preserved |
 
-**Inspection 7** (a fresh session, after those two fixes; by the stopping
-rule agreed after round 5, the last unless it returns something rated high
-or a leak between students) is recorded below once run.
+The two fixes landed in `c693b43` (one recording at a time on the spoken
+task, every microphone released on a switch; a late evaluation never
+overwrites a newer draft). Gates: 2016 tests, type check clean, 661 pages,
+index unchanged, race script anonymous both times, f22 218 of 218.
+
+**Inspection 7, of `05c206f`: REVISE, two findings, both medium, both
+accepted as true and left open.** Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-7-of-05c206f.json`.
+Neither is rated high and neither leaks anything between students, so by the
+stopping rule agreed with Alex after round 5 the loop ends here.
+
+| Finding | What is wrong | Status |
+|---|---|---|
+| R2G-01 (medium) | Written focused task, same student, two tabs: a late evaluation in a tab still on screen can restore its submitted text over a revision saved from the other tab, because that branch rewrites the stored document from its own stale state | Open. Fix known: append the attempt against the latest stored document without touching the draft, reconcile local edits by revision identity |
+| R2G-02 (medium) | Mock exam: if the browser's store refuses a write while a leg is being finished, the refusal is treated like a never-saved sitting, so the result is shown and recorded while the stored leg stays unfinished and a refresh can hand it in again; removal failures are swallowed the same way | Open. Fix known: report a persistence failure as a failure, keep the attempt for retry, record only after finalisation succeeds |
+
+**Where the loop ended.** Seven inspections, nineteen Codex findings
+(seventeen fixed, two open), twelve more holes of the same class found and
+closed by the builders themselves. Final code commit `c693b43`. The full
+account of every finding and disposition is
+`docs/personal-learning/CODEX-FIX-ROUND-2.md`; the final browser evidence is
+the `-final` set under `docs/personal-learning/evidence/final/`.
 
