@@ -424,3 +424,42 @@ Proof commands are unchanged. Gates at `b3a2689`: `npm test` 1848 of 1848,
 `npx astro check` 0 errors and 0 warnings, `npm run build` 661 pages, the
 learning index byte-identical, Codex's `signout-race.mjs` printing anonymous
 both times.
+
+## Inspection round 4 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `1701b97` against this specification, diff from `48b1d17`,
+same settings as the earlier rounds, 265 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-4-of-1701b97.json`.
+
+Verdict: REVISE. Three findings, all accepted by the host. Two of them are
+the same-student two-tab gaps the previous section named, which were already
+being closed when the inspection ran; Codex adds a requirement to each.
+
+- **R2D-01 (high) accepted.** In the mock embed the examiner's startup
+  continuations are not guarded against the component having been taken off
+  screen: a microphone permission or a connection that resolves after the
+  unmount is installed and started anyway, and a token is fetched for the
+  account now on the browser, which can leave microphone capture and a paid
+  session running behind the stopped screen. Cancelling the session binding
+  only hides the eventual grade. Fix: both embedded and standalone startup
+  capture a session generation and the owner binding; after every await a
+  cancelled, unmounted or changed-owner session releases a newly returned
+  stream, closes a late connection and starts nothing; the same guard runs
+  before grading after an asynchronous shutdown; grades already requested
+  before the suspension are preserved.
+- **R2D-02 (medium) accepted.** The standalone two-tab gap: saves and the
+  clear of the standalone slot check only the owner, the standalone sitting
+  carries no identity, and the player records submission evidence before it
+  finishes the sitting. Fix: standalone sittings get their own identity;
+  updates and completion require owner, paper and sitting identity to match;
+  a stale player stops when its sitting is replaced or removed; completion is
+  validated before any evidence is recorded.
+- **R2D-03 (medium) accepted.** The missing-record gap: a sitting whose
+  record is gone is not treated as replaced, the results step ignores a
+  refused clear, and the mock history write appends unconditionally, so two
+  tabs resuming the same mock can record it twice. Fix: the disappearance of
+  a persisted sitting is terminal for the stale tab; results are recorded
+  only after a successful, identity-checked finalisation; mock history writes
+  are idempotent by sitting id.
+
+A fifth fresh inspection follows the fixes.
