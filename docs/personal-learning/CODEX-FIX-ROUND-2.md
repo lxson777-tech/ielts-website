@@ -320,3 +320,107 @@ and names four remaining edge cases, all accepted by the host:
 
 At Alex's standing instruction to run this loop with Codex directly until it
 converges, a fourth fresh inspection follows these fixes.
+
+## Fixes after inspection round 3 (for inspection round 4)
+
+Base for the round-4 inspection diff is still `48b1d17`. All four fixes are
+in `b3a2689`, each with deterministic tests and a browser journey against the
+local stand-in (no grader and no model called):
+
+- **R2C-01** (`src/components/writing-editor-owner.ts`, `WritingTester.tsx`):
+  a late report removes its student's draft of the prompt only while the
+  draft still holds exactly the text that was graded
+  (`clearSubmittedEssayDraft`); any other text is a later revision and stays.
+  The text itself is compared rather than a stored revision number, because
+  the question is "does the history now hold what this draft holds", which
+  the comparison answers with nothing new stored and nothing to migrate. A
+  revision still waiting on the 600 ms autosave survives: the stored copy
+  still equals the submission when the report lands, so it is removed, and
+  the pending write then lands with the revision. The one other write on the
+  student's behalf, putting a submitted essay back after a failed request,
+  now happens only when the student has no draft of the prompt at all
+  (`restoreEssayDraft`), so it cannot overwrite a revision either. Four new
+  cases in `tests/delayed-grade-owner.test.ts`; `f23` section 5 in the
+  browser (revise after returning, reload, history holds the original
+  report).
+- **R2C-04** (`src/components/speaking-attempt-owner.ts`, new;
+  `SpeakingTester.tsx`; `LiveExaminer.tsx` standalone path only): a speaking
+  attempt is bound to the owner on the page when it starts and is suspended
+  for good the moment that owner is no longer on the page. It listens for
+  owner changes and also asks before every question, every recording start,
+  every accepted clip and the grading call, and its timers (answer clock,
+  prep countdown, automatic advance) re-check the owner on every tick, so a
+  change that sent no notification is caught at the next step. On
+  suspension the microphone is released, the recorder stopped, timers and
+  pending steps cancelled, unsent answers dropped, nothing graded (grading is
+  paid) and nothing recorded (an unfinished attempt is no evidence and is
+  the one piece of A's work that could carry B's voice); the trainer returns
+  to its menu with one neutral line. Grading that had already begun before
+  the switch goes on and is kept for the first student through
+  `runOwnedGrade`, shown to nobody; a report on screen leaves it; a failed
+  request can be retried only by the same student. The standalone live
+  examiner (full test and drills) uses the same helper: at a switch it closes
+  the voice session, stops and empties the recorder, releases the microphone,
+  clears every clock, and grades and records nothing. The mock embed's
+  examiner is untouched (a test pins its suspend path). Ten new cases and
+  three source scans in `tests/delayed-grade-owner.test.ts`; `f23` section 6
+  in the browser with a fake microphone (recorder told to stop about 40 ms
+  after the sign-out in the other tab, microphone released, no grading
+  request, nothing recorded for either student), 56 of 56 overall
+  (`results-delayed-grade-3.md`). The standalone examiner cannot be started
+  on the stand-in, so it is covered deterministically only, and the results
+  file says so. One bug outside the finding was fixed on the way: an answer
+  that ran out of time, rather than being stopped by hand, was labelled with
+  the previous question and the same question was asked again.
+- **R2C-02** (`src/lib/tests/mock.ts`, `MockExam.tsx`): a sitting is put
+  in place of an older one only by Start Mock Exam (`beginActiveMock`; the
+  developer shortcut goes through the same path). Every other save
+  (`saveActiveMock`, now strict) and the clear (`clearActiveMock`, now taking
+  the sitting reference and reporting whether it removed anything) must
+  match both the student and the sitting id of the stored record, or write
+  nothing. A tab whose sitting was replaced stops for good: it notices
+  through the other tab's save (`isActiveMockStorageKey`, the storage event)
+  or, failing that, when its own save or finish is refused
+  (`mockSittingReplaced`); from then on it records nothing, clears nothing
+  and no longer warns about leaving the page, on the existing stopped screen
+  with one new sentence. An account change is not a replacement and keeps
+  its own stopped screen. The explicit claim still carries the sitting id
+  and the legs, and the account's later saves match it. Seven new cases and
+  one updated case in `tests/test-session-owner.test.ts` (the two headline
+  cases were confirmed by putting the old code back: M1's keystroke
+  overwrote M2 and finishing M1 deleted it); `tests/account-isolation.test.ts`
+  now creates its paused mock the one allowed way. `f22` step 13 in the
+  browser, including simulated missed-notice cases.
+- **R2C-03** (`src/lib/test-session.ts`, `TestPlayer.tsx`): the saved
+  deadline is the clock's only source (`paperClockAt`; `secondsLeft` takes an
+  optional moment). Every tick, the student's return to the still-open page
+  and the hand-in all read the time from it, so time away or in a background
+  tab is never handed back. A deadline that passed while the student was
+  away hands the paper in at once with the saved answers and the full paper
+  time recorded, the same path an expired sitting takes on a fresh load.
+  Mock legs were already right here (the mock takes the paper off screen at
+  an account change and restores it through the fresh-load path). Five new
+  cases with a fake clock and a source check in
+  `tests/test-session-owner.test.ts`; `f22` step 14 in the browser (ahead,
+  past, and a plain time-up; with the old code the page showed 145 seconds
+  where the deadline left 104, then sat at 00:14 without handing in). 107 of
+  107 overall (`results-unfinished-test-4.md`).
+
+A pre-existing bug was fixed in the same rewrite, and it matters beyond this
+round: when a paper ran out of time, the player handed it in with the answers
+as they were when the timer started, usually none, so anything typed after
+that was lost. The timer now hands in this render's answers. The published
+main branch carries the old timer; a note for Alex follows in the report.
+
+Two same-student gaps the builder found are NOT fixed by these commits and
+are named here so the inspector sees them: (1) a standalone paper opened in a
+second tab replaces the first tab's sitting, and the first tab keeps writing
+into, and on submit clears, the second's slot (the mock's must-match rule
+would fix it); (2) a mock whose record disappears (finished, abandoned or
+claimed in another tab) is not stopped and can be recorded twice from the
+stale tab. Both were the case before this round.
+
+Proof commands are unchanged. Gates at `b3a2689`: `npm test` 1848 of 1848,
+`npx astro check` 0 errors and 0 warnings, `npm run build` 661 pages, the
+learning index byte-identical, Codex's `signout-race.mjs` printing anonymous
+both times.
