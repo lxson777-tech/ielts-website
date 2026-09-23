@@ -544,6 +544,18 @@ can be recorded twice) were not part of any finding. They are being closed
 in a follow-up commit before the loop ends, so that the inspection does not
 have to raise them.
 
-**Inspection 4** (a fresh session, after those fixes) is recorded below once
+**Inspection 4, of `1701b97`: REVISE, three findings, all accepted.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-4-of-1701b97.json`.
+Two of the three are the two-tab gaps named just above, which were already
+being closed when the inspection ran; Codex adds a requirement to each. The
+third is new and rated high:
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2D-01 (high) | In the mock, a microphone permission or a voice connection that resolved after the examiner had been taken off screen (an account change mid-start) was still installed and started, with a token fetched for the account now on the browser, so capture and a paid session could run behind the stopped screen | Every session start captures a generation and the owner binding; after every await a cancelled, unmounted or changed-owner session releases the stream it was handed, closes a late connection and starts nothing; the same guard runs before grading after an asynchronous shutdown; grades already requested are preserved |
+| R2D-02 (medium) | The standalone slot's saves and clear checked only the owner, the standalone sitting had no identity, and the player recorded submission evidence before finishing the sitting, so a second paper in another tab could be overwritten and cleared by the first | Standalone sittings get their own identity; updates and completion require owner, paper and sitting identity to match; a stale player stops when its sitting is replaced or removed; completion is validated before any evidence is recorded |
+| R2D-03 (medium) | A mock whose record was finished in another tab was not treated as replaced, the results step ignored a refused clear, and the history write appended unconditionally, so a mock could be recorded twice | The disappearance of a persisted sitting is terminal for the stale tab; results are recorded only after a successful, identity-checked finalisation; mock history writes are idempotent by sitting id |
+
+**Inspection 5** (a fresh session, after those fixes) is recorded below once
 run.
 
